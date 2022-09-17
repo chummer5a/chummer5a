@@ -439,7 +439,7 @@ namespace Chummer
                 XPathNodeIterator xmlBaseTalentPriorityList = _xmlBasePriorityDataNode.Select("priorities/priority[category = \"Talent\" and value = " + (await cboTalent.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token) ?? string.Empty).CleanXPath() + " and (not(prioritytable) or prioritytable = " + _objCharacter.Settings.PriorityTable.CleanXPath() + ")]");
                 foreach (XPathNavigator xmlBaseTalentPriority in xmlBaseTalentPriorityList)
                 {
-                    if (xmlBaseTalentPriorityList.Count == 1 || await xmlBaseTalentPriority.SelectSingleNodeAndCacheExpressionAsync("prioritytable") != null)
+                    if (xmlBaseTalentPriorityList.Count == 1 || await xmlBaseTalentPriority.SelectSingleNodeAndCacheExpressionAsync("prioritytable", token) != null)
                     {
                         xmlTalentNode = xmlBaseTalentPriority.SelectSingleNode("talents/talent[value = " + strSelectedTalents.CleanXPath() + ']');
                         break;
@@ -448,12 +448,12 @@ namespace Chummer
 
                 if (xmlTalentNode != null)
                 {
-                    string strSkillCount = (await xmlTalentNode.SelectSingleNodeAndCacheExpressionAsync("skillqty"))?.Value ?? (await xmlTalentNode.SelectSingleNodeAndCacheExpressionAsync("skillgroupqty"))?.Value ?? string.Empty;
+                    string strSkillCount = (await xmlTalentNode.SelectSingleNodeAndCacheExpressionAsync("skillqty", token))?.Value ?? (await xmlTalentNode.SelectSingleNodeAndCacheExpressionAsync("skillgroupqty", token))?.Value ?? string.Empty;
                     if (!string.IsNullOrEmpty(strSkillCount) && int.TryParse(strSkillCount, out int intSkillCount))
                     {
-                        XPathNavigator xmlSkillTypeNode = await xmlTalentNode.SelectSingleNodeAndCacheExpressionAsync("skilltype") ?? await xmlTalentNode.SelectSingleNodeAndCacheExpressionAsync("skillgrouptype");
+                        XPathNavigator xmlSkillTypeNode = await xmlTalentNode.SelectSingleNodeAndCacheExpressionAsync("skilltype", token) ?? await xmlTalentNode.SelectSingleNodeAndCacheExpressionAsync("skillgrouptype", token);
                         string strSkillType = xmlSkillTypeNode?.Value ?? string.Empty;
-                        XPathNodeIterator objNodeList = await xmlTalentNode.SelectAndCacheExpressionAsync("skillgroupchoices/skillgroup");
+                        XPathNodeIterator objNodeList = await xmlTalentNode.SelectAndCacheExpressionAsync("skillgroupchoices/skillgroup", token);
                         XPathNodeIterator xmlSkillsList;
                         switch (strSkillType)
                         {
@@ -474,13 +474,13 @@ namespace Chummer
                                 break;
 
                             case "specific":
-                                xmlSkillsList = BuildSkillList(await xmlTalentNode.SelectAndCacheExpressionAsync("skillchoices/skill"));
+                                xmlSkillsList = BuildSkillList(await xmlTalentNode.SelectAndCacheExpressionAsync("skillchoices/skill", token));
                                 break;
 
                             case "xpath":
                                 xmlSkillsList = GetActiveSkillList(
                                     xmlSkillTypeNode != null
-                                        ? (await xmlSkillTypeNode.SelectSingleNodeAndCacheExpressionAsync("@xpath"))
+                                        ? (await xmlSkillTypeNode.SelectSingleNodeAndCacheExpressionAsync("@xpath", token))
                                         ?.Value
                                         : null);
                                 strSkillType = "active";
@@ -503,19 +503,19 @@ namespace Chummer
                                         string strInnerText = objXmlSkill.Value;
                                         lstSkills.Add(new ListItem(strInnerText,
                                                                    (await objXmlSkill.SelectSingleNodeAndCacheExpressionAsync(
-                                                                       "@translate"))?.Value ?? strInnerText));
+                                                                       "@translate", token))?.Value ?? strInnerText));
                                     }
                                 }
                                 else
                                 {
                                     foreach (XPathNavigator objXmlSkill in xmlSkillsList)
                                     {
-                                        string strName = (await objXmlSkill.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value
+                                        string strName = (await objXmlSkill.SelectSingleNodeAndCacheExpressionAsync("name", token))?.Value
                                                          ?? await LanguageManager.GetStringAsync("String_Unknown", token: token);
                                         lstSkills.Add(
                                             new ListItem(
                                                 strName,
-                                                (await objXmlSkill.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
+                                                (await objXmlSkill.SelectSingleNodeAndCacheExpressionAsync("translate", token))?.Value
                                                 ?? strName));
                                     }
                                 }
@@ -611,9 +611,9 @@ namespace Chummer
                                     await LanguageManager.GetStringAsync("String_MetamagicSkills", token: token));
                                 // strSkillType can have the following values: magic, resonance, matrix, active, specific, grouped
                                 // So the language file should contain each of those like String_MetamagicSkillType_magic
-                                string strSkillVal = (await xmlTalentNode.SelectSingleNodeAndCacheExpressionAsync("skillval"))?.Value
+                                string strSkillVal = (await xmlTalentNode.SelectSingleNodeAndCacheExpressionAsync("skillval", token))?.Value
                                                      ?? (await xmlTalentNode
-                                                         .SelectSingleNodeAndCacheExpressionAsync("skillgroupval"))
+                                                         .SelectSingleNodeAndCacheExpressionAsync("skillgroupval", token))
                                                         ?.Value;
                                 string strMetamagicSkillType = await LanguageManager.GetStringAsync(
                                     "String_MetamagicSkillType_" + strSkillType, token: token);
@@ -635,21 +635,21 @@ namespace Chummer
                             XPathNodeIterator xmlBaseMetatypePriorityList = _xmlBasePriorityDataNode.Select("priorities/priority[category = \"Heritage\" and value = " + (await cboHeritage.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token) ?? string.Empty).CleanXPath() + " and (not(prioritytable) or prioritytable = " + _objCharacter.Settings.PriorityTable.CleanXPath() + ")]");
                             foreach (XPathNavigator xmlBaseMetatypePriority in xmlBaseMetatypePriorityList)
                             {
-                                if (xmlBaseMetatypePriorityList.Count == 1 || await xmlBaseMetatypePriority.SelectSingleNodeAndCacheExpressionAsync("prioritytable") != null)
+                                if (xmlBaseMetatypePriorityList.Count == 1 || await xmlBaseMetatypePriority.SelectSingleNodeAndCacheExpressionAsync("prioritytable", token) != null)
                                 {
                                     XPathNavigator objXmlMetatypePriorityNode = xmlBaseMetatypePriority.SelectSingleNode("metatypes/metatype[name = " + strSelectedMetatype.CleanXPath() + ']');
                                     if (!string.IsNullOrEmpty(strSelectedMetavariant) && strSelectedMetavariant != "None")
                                         objXmlMetatypePriorityNode = objXmlMetatypePriorityNode?.SelectSingleNode("metavariants/metavariant[name = " + strSelectedMetavariant.CleanXPath() + ']');
                                     if (objXmlMetatypePriorityNode != null && int.TryParse(
                                             (await objXmlMetatypePriorityNode.SelectSingleNodeAndCacheExpressionAsync(
-                                                "value"))?.Value, out int intTemp))
+                                                "value", token))?.Value, out int intTemp))
                                         intSpecialAttribPoints += intTemp;
                                     break;
                                 }
                             }
                         }
 
-                        if (int.TryParse((await xmlTalentNode.SelectSingleNodeAndCacheExpressionAsync("specialattribpoints"))?.Value, out int intTalentSpecialAttribPoints))
+                        if (int.TryParse((await xmlTalentNode.SelectSingleNodeAndCacheExpressionAsync("specialattribpoints", token))?.Value, out int intTalentSpecialAttribPoints))
                             intSpecialAttribPoints += intTalentSpecialAttribPoints;
 
                         await lblSpecialAttributes.DoThreadSafeAsync(x => x.Text = intSpecialAttribPoints.ToString(GlobalSettings.CultureInfo), token);
@@ -1116,8 +1116,8 @@ namespace Chummer
                 foreach (XPathNavigator xmlResourcesPriority in xmlResourcesPriorityList)
                 {
                     if (xmlResourcesPriorityList.Count == 1 ||
-                        (await xmlResourcesPriority.SelectSingleNodeAndCacheExpressionAsync("prioritytable") != null &&
-                         await xmlResourcesPriority.SelectSingleNodeAndCacheExpressionAsync("gameplayoption") != null))
+                        (await xmlResourcesPriority.SelectSingleNodeAndCacheExpressionAsync("prioritytable", token) != null &&
+                         await xmlResourcesPriority.SelectSingleNodeAndCacheExpressionAsync("gameplayoption", token) != null))
                     {
                         decimal decResources = 0;
                         if (xmlResourcesPriority.TryGetDecFieldQuickly("resources", ref decResources))
@@ -1157,7 +1157,7 @@ namespace Chummer
                     foreach (XPathNavigator xmlBaseTalentPriority in xmlBaseTalentPriorityList)
                     {
                         if (xmlBaseTalentPriorityList.Count == 1
-                            || await xmlBaseTalentPriority.SelectSingleNodeAndCacheExpressionAsync("gameplayoption")
+                            || await xmlBaseTalentPriority.SelectSingleNodeAndCacheExpressionAsync("gameplayoption", token)
                             != null)
                         {
                             XPathNavigator xmlTalentPriorityNode
@@ -1168,14 +1168,14 @@ namespace Chummer
                             {
                                 // Create the Qualities that come with the Talent.
                                 foreach (XPathNavigator objXmlQualityItem in await xmlTalentPriorityNode
-                                             .SelectAndCacheExpressionAsync("qualities/quality"))
+                                             .SelectAndCacheExpressionAsync("qualities/quality", token))
                                 {
                                     XmlNode objXmlQuality
                                         = _xmlQualityDocumentQualitiesNode.SelectSingleNode(
                                             "quality[name = " + objXmlQualityItem.Value.CleanXPath() + ']');
                                     Quality objQuality = new Quality(_objCharacter);
                                     string strForceValue
-                                        = (await objXmlQualityItem.SelectSingleNodeAndCacheExpressionAsync("@select"))
+                                        = (await objXmlQualityItem.SelectSingleNodeAndCacheExpressionAsync("@select", token))
                                         ?.Value ?? string.Empty;
                                     objQuality.Create(objXmlQuality, QualitySource.Heritage, lstWeapons, strForceValue);
                                     Quality objExistingQuality = lstOldPriorityQualities.Find(
@@ -1238,13 +1238,13 @@ namespace Chummer
                                 int intFreeLevels = 0;
                                 Improvement.ImprovementType eType = Improvement.ImprovementType.SkillBase;
                                 XPathNavigator objTalentSkillValNode
-                                    = await xmlTalentPriorityNode.SelectSingleNodeAndCacheExpressionAsync("skillval");
+                                    = await xmlTalentPriorityNode.SelectSingleNodeAndCacheExpressionAsync("skillval", token);
                                 if (objTalentSkillValNode == null
                                     || !int.TryParse(objTalentSkillValNode.Value, out intFreeLevels))
                                 {
                                     objTalentSkillValNode
                                         = await xmlTalentPriorityNode.SelectSingleNodeAndCacheExpressionAsync(
-                                            "skillgroupval");
+                                            "skillgroupval", token);
                                     if (objTalentSkillValNode != null
                                         && int.TryParse(objTalentSkillValNode.Value, out intFreeLevels))
                                     {
@@ -1257,7 +1257,7 @@ namespace Chummer
 
                                 if (int.TryParse(
                                         (await xmlTalentPriorityNode.SelectSingleNodeAndCacheExpressionAsync(
-                                            "specialattribpoints"))?.Value, out int intTalentSpecialAttribPoints))
+                                            "specialattribpoints", token))?.Value, out int intTalentSpecialAttribPoints))
                                     intSpecialAttribPoints += intTalentSpecialAttribPoints;
                             }
 
@@ -1292,7 +1292,7 @@ namespace Chummer
                 foreach (XPathNavigator xmlBaseMetatypePriority in xmlBaseMetatypePriorityList)
                 {
                     if (xmlBaseMetatypePriorityList.Count == 1
-                        || await xmlBaseMetatypePriority.SelectSingleNodeAndCacheExpressionAsync("prioritytable")
+                        || await xmlBaseMetatypePriority.SelectSingleNodeAndCacheExpressionAsync("prioritytable", token)
                         != null)
                     {
                         XPathNavigator objXmlMetatypePriorityNode
@@ -1302,7 +1302,7 @@ namespace Chummer
                             objXmlMetatypePriorityNode = objXmlMetatypePriorityNode?.SelectSingleNode(
                                 "metavariants/metavariant[name = " + _objCharacter.Metavariant.CleanXPath() + ']');
                         if (objXmlMetatypePriorityNode != null && int.TryParse(
-                                (await objXmlMetatypePriorityNode.SelectSingleNodeAndCacheExpressionAsync("value"))
+                                (await objXmlMetatypePriorityNode.SelectSingleNodeAndCacheExpressionAsync("value", token))
                                 ?.Value, out int intTemp))
                             intSpecialAttribPoints += intTemp;
                         break;
@@ -1321,9 +1321,9 @@ namespace Chummer
                 foreach (XPathNavigator objXmlAttributesPriority in objXmlAttributesPriorityList)
                 {
                     if (objXmlAttributesPriorityList.Count == 1 ||
-                        (await objXmlAttributesPriority.SelectSingleNodeAndCacheExpressionAsync("prioritytable") != null
+                        (await objXmlAttributesPriority.SelectSingleNodeAndCacheExpressionAsync("prioritytable", token) != null
                          &&
-                         await objXmlAttributesPriority.SelectSingleNodeAndCacheExpressionAsync("gameplayoption")
+                         await objXmlAttributesPriority.SelectSingleNodeAndCacheExpressionAsync("gameplayoption", token)
                          != null))
                     {
                         int intAttributes = 0;
@@ -1345,8 +1345,8 @@ namespace Chummer
                 foreach (XPathNavigator objXmlSkillsPriority in objXmlSkillsPriorityList)
                 {
                     if (objXmlSkillsPriorityList.Count == 1 ||
-                        (await objXmlSkillsPriority.SelectSingleNodeAndCacheExpressionAsync("prioritytable") != null &&
-                         await objXmlSkillsPriority.SelectSingleNodeAndCacheExpressionAsync("gameplayoption") != null))
+                        (await objXmlSkillsPriority.SelectSingleNodeAndCacheExpressionAsync("prioritytable", token) != null &&
+                         await objXmlSkillsPriority.SelectSingleNodeAndCacheExpressionAsync("gameplayoption", token) != null))
                     {
                         int intTemp = 0;
                         if (objXmlSkillsPriority.TryGetInt32FieldQuickly("skills", ref intTemp))
@@ -1733,7 +1733,7 @@ namespace Chummer
             foreach (XPathNavigator xmlBaseMetatypePriority in xmlBaseMetatypePriorityList)
             {
                 if (xmlBaseMetatypePriorityList.Count == 1
-                    || await xmlBaseMetatypePriority.SelectSingleNodeAndCacheExpressionAsync("prioritytable")
+                    || await xmlBaseMetatypePriority.SelectSingleNodeAndCacheExpressionAsync("prioritytable", token)
                     != null)
                 {
                     objXmlMetatypePriorityNode
@@ -1761,76 +1761,76 @@ namespace Chummer
                     await cmdOK.DoThreadSafeAsync(x => x.Enabled = true, token);
                 }
 
-                string strMin = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("bodmin"))?.Value
+                string strMin = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("bodmin", token))?.Value
                                 ?? 0.ToString(GlobalSettings.CultureInfo);
-                string strMax = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("bodmax"))?.Value
+                string strMax = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("bodmax", token))?.Value
                                 ?? 0.ToString(GlobalSettings.CultureInfo);
-                string strAug = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("bodaug"))?.Value
+                string strAug = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("bodaug", token))?.Value
                                 ?? 0.ToString(GlobalSettings.CultureInfo);
                 await lblBOD.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug), token);
-                strMin = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("agimin"))?.Value
+                strMin = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("agimin", token))?.Value
                                 ?? 0.ToString(GlobalSettings.CultureInfo);
-                strMax = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("agimax"))?.Value
+                strMax = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("agimax", token))?.Value
                                 ?? 0.ToString(GlobalSettings.CultureInfo);
-                strAug = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("agiaug"))?.Value
+                strAug = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("agiaug", token))?.Value
                                 ?? 0.ToString(GlobalSettings.CultureInfo);
                 await lblAGI.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug), token);
-                strMin = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("reamin"))?.Value
+                strMin = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("reamin", token))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
-                strMax = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("reamax"))?.Value
+                strMax = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("reamax", token))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
-                strAug = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("reaaug"))?.Value
+                strAug = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("reaaug", token))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
                 await lblREA.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug), token);
-                strMin = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("strmin"))?.Value
+                strMin = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("strmin", token))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
-                strMax = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("strmax"))?.Value
+                strMax = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("strmax", token))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
-                strAug = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("straug"))?.Value
+                strAug = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("straug", token))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
                 await lblSTR.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug), token);
-                strMin = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("chamin"))?.Value
+                strMin = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("chamin", token))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
-                strMax = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("chamax"))?.Value
+                strMax = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("chamax", token))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
-                strAug = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("chaaug"))?.Value
+                strAug = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("chaaug", token))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
                 await lblCHA.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug), token);
-                strMin = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("intmin"))?.Value
+                strMin = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("intmin", token))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
-                strMax = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("intmax"))?.Value
+                strMax = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("intmax", token))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
-                strAug = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("intaug"))?.Value
+                strAug = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("intaug", token))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
                 await lblINT.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug), token);
-                strMin = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("logmin"))?.Value
+                strMin = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("logmin", token))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
-                strMax = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("logmax"))?.Value
+                strMax = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("logmax", token))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
-                strAug = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("logaug"))?.Value
+                strAug = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("logaug", token))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
                 await lblLOG.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug), token);
-                strMin = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("wilmin"))?.Value
+                strMin = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("wilmin", token))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
-                strMax = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("wilmax"))?.Value
+                strMax = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("wilmax", token))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
-                strAug = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("wilaug"))?.Value
+                strAug = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("wilaug", token))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
                 await lblWIL.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug), token);
 
                 string strKarmaText
-                    = (await objXmlMetavariantPriorityNode.SelectSingleNodeAndCacheExpressionAsync("karma"))
+                    = (await objXmlMetavariantPriorityNode.SelectSingleNodeAndCacheExpressionAsync("karma", token))
                       ?.Value
                       ?? 0.ToString(GlobalSettings.CultureInfo);
                 await lblMetavariantKarma.DoThreadSafeAsync(x => x.Text = strKarmaText, token);
 
-                string strSource = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("source"))
+                string strSource = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("source", token))
                     ?.Value;
                 if (!string.IsNullOrEmpty(strSource))
                 {
                     string strPage
-                        = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("altpage"))?.Value
-                          ?? (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("page"))?.Value;
+                        = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("altpage", token))?.Value
+                          ?? (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("page", token))?.Value;
                     if (!string.IsNullOrEmpty(strPage))
                     {
                         SourceString objSource = await SourceString.GetSourceStringAsync(
@@ -1855,7 +1855,7 @@ namespace Chummer
 
                 // Set the special attributes label.
                 if (objXmlMetavariantPriorityNode == null || !int.TryParse(
-                        (await objXmlMetavariantPriorityNode.SelectSingleNodeAndCacheExpressionAsync("value"))
+                        (await objXmlMetavariantPriorityNode.SelectSingleNodeAndCacheExpressionAsync("value", token))
                         ?.Value,
                         NumberStyles.Any,
                         GlobalSettings.InvariantCultureInfo, out int intSpecialAttribPoints))
@@ -1869,7 +1869,7 @@ namespace Chummer
                 foreach (XPathNavigator xmlBaseTalentPriority in xmlBaseTalentPriorityList)
                 {
                     if (xmlBaseTalentPriorityList.Count == 1
-                        || await xmlBaseTalentPriority.SelectSingleNodeAndCacheExpressionAsync("prioritytable")
+                        || await xmlBaseTalentPriority.SelectSingleNodeAndCacheExpressionAsync("prioritytable", token)
                         != null)
                     {
                         XPathNavigator objXmlTalentsNode = xmlBaseTalentPriority.SelectSingleNode(
@@ -1878,7 +1878,7 @@ namespace Chummer
                         if (objXmlTalentsNode != null
                             && int.TryParse(
                                 (await objXmlTalentsNode.SelectSingleNodeAndCacheExpressionAsync(
-                                    "specialattribpoints"))
+                                    "specialattribpoints", token))
                                 ?.Value, out int intTemp))
                             intSpecialAttribPoints += intTemp;
                         break;
@@ -1890,7 +1890,7 @@ namespace Chummer
                 Dictionary<string, int> dicQualities = new Dictionary<string, int>(5);
                 // Build a list of the Metavariant's Qualities.
                 foreach (XPathNavigator objXmlQuality in await objXmlMetavariant.SelectAndCacheExpressionAsync(
-                             "qualities/*/quality"))
+                             "qualities/*/quality", token))
                 {
                     string strQuality;
                     if (!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
@@ -1903,7 +1903,7 @@ namespace Chummer
                                      ?? objXmlQuality.Value;
 
                         string strSelect
-                            = (await objXmlQuality.SelectSingleNodeAndCacheExpressionAsync("@select"))
+                            = (await objXmlQuality.SelectSingleNodeAndCacheExpressionAsync("@select", token))
                             ?.Value;
                         if (!string.IsNullOrEmpty(strSelect))
                             strQuality += strSpace + '(' + await _objCharacter.TranslateExtraAsync(strSelect, token: token)
@@ -1913,7 +1913,7 @@ namespace Chummer
                     {
                         strQuality = objXmlQuality.Value;
                         string strSelect
-                            = (await objXmlQuality.SelectSingleNodeAndCacheExpressionAsync("@select"))
+                            = (await objXmlQuality.SelectSingleNodeAndCacheExpressionAsync("@select", token))
                             ?.Value;
                         if (!string.IsNullOrEmpty(strSelect))
                             strQuality += strSpace + '(' + strSelect + ')';
@@ -1955,72 +1955,72 @@ namespace Chummer
             else if (objXmlMetatype != null)
             {
                 await cmdOK.DoThreadSafeAsync(x => x.Enabled = true, token);
-                string strMin = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("bodmin"))?.Value
+                string strMin = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("bodmin", token))?.Value
                                 ?? 0.ToString(GlobalSettings.CultureInfo);
-                string strMax = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("bodmax"))?.Value
+                string strMax = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("bodmax", token))?.Value
                                 ?? 0.ToString(GlobalSettings.CultureInfo);
-                string strAug = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("bodaug"))?.Value
+                string strAug = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("bodaug", token))?.Value
                                 ?? 0.ToString(GlobalSettings.CultureInfo);
                 await lblBOD.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug), token);
-                strMin = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("agimin"))?.Value
+                strMin = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("agimin", token))?.Value
                                 ?? 0.ToString(GlobalSettings.CultureInfo);
-                strMax = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("agimax"))?.Value
+                strMax = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("agimax", token))?.Value
                                 ?? 0.ToString(GlobalSettings.CultureInfo);
-                strAug = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("agiaug"))?.Value
+                strAug = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("agiaug", token))?.Value
                                 ?? 0.ToString(GlobalSettings.CultureInfo);
                 await lblAGI.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug), token);
-                strMin = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("reamin"))?.Value
+                strMin = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("reamin", token))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
-                strMax = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("reamax"))?.Value
+                strMax = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("reamax", token))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
-                strAug = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("reaaug"))?.Value
+                strAug = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("reaaug", token))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
                 await lblREA.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug), token);
-                strMin = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("strmin"))?.Value
+                strMin = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("strmin", token))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
-                strMax = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("strmax"))?.Value
+                strMax = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("strmax", token))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
-                strAug = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("straug"))?.Value
+                strAug = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("straug", token))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
                 await lblSTR.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug), token);
-                strMin = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("chamin"))?.Value
+                strMin = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("chamin", token))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
-                strMax = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("chamax"))?.Value
+                strMax = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("chamax", token))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
-                strAug = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("chaaug"))?.Value
+                strAug = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("chaaug", token))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
                 await lblCHA.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug), token);
-                strMin = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("intmin"))?.Value
+                strMin = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("intmin", token))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
-                strMax = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("intmax"))?.Value
+                strMax = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("intmax", token))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
-                strAug = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("intaug"))?.Value
+                strAug = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("intaug", token))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
                 await lblINT.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug), token);
-                strMin = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("logmin"))?.Value
+                strMin = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("logmin", token))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
-                strMax = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("logmax"))?.Value
+                strMax = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("logmax", token))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
-                strAug = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("logaug"))?.Value
+                strAug = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("logaug", token))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
                 await lblLOG.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug), token);
-                strMin = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("wilmin"))?.Value
+                strMin = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("wilmin", token))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
-                strMax = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("wilmax"))?.Value
+                strMax = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("wilmax", token))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
-                strAug = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("wilaug"))?.Value
+                strAug = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("wilaug", token))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
                 await lblWIL.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug), token);
 
                 string strKarmaText
-                    = (await objXmlMetatypePriorityNode.SelectSingleNodeAndCacheExpressionAsync("karma"))?.Value
+                    = (await objXmlMetatypePriorityNode.SelectSingleNodeAndCacheExpressionAsync("karma", token))?.Value
                       ?? 0.ToString(GlobalSettings.CultureInfo);
                 await lblMetavariantKarma.DoThreadSafeAsync(x => x.Text = strKarmaText, token);
 
                 Dictionary<string, int> dicQualities = new Dictionary<string, int>(5);
                 // Build a list of the Metatype's Qualities.
                 foreach (XPathNavigator xmlQuality in await objXmlMetatype.SelectAndCacheExpressionAsync(
-                             "qualities/*/quality"))
+                             "qualities/*/quality", token))
                 {
                     string strQuality;
                     if (!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
@@ -2029,11 +2029,11 @@ namespace Chummer
                         XPathNavigator objQuality
                             = _xmlBaseQualityDataNode.SelectSingleNode(
                                 "qualities/quality[name = " + xmlQuality.Value.CleanXPath() + ']');
-                        strQuality = (await objQuality.SelectSingleNodeAndCacheExpressionAsync("translate"))
+                        strQuality = (await objQuality.SelectSingleNodeAndCacheExpressionAsync("translate", token))
                                      ?.Value
                                      ?? xmlQuality.Value;
 
-                        string strSelect = (await xmlQuality.SelectSingleNodeAndCacheExpressionAsync("@select"))
+                        string strSelect = (await xmlQuality.SelectSingleNodeAndCacheExpressionAsync("@select", token))
                             ?.Value;
                         if (!string.IsNullOrEmpty(strSelect))
                             strQuality += strSpace + '(' + await _objCharacter.TranslateExtraAsync(strSelect, token: token)
@@ -2042,7 +2042,7 @@ namespace Chummer
                     else
                     {
                         strQuality = xmlQuality.Value;
-                        string strSelect = (await xmlQuality.SelectSingleNodeAndCacheExpressionAsync("@select"))
+                        string strSelect = (await xmlQuality.SelectSingleNodeAndCacheExpressionAsync("@select", token))
                             ?.Value;
                         if (!string.IsNullOrEmpty(strSelect))
                             strQuality += strSpace + '(' + strSelect + ')';
@@ -2081,13 +2081,13 @@ namespace Chummer
                     await lblMetavariantQualities.DoThreadSafeAsync(x => x.Text = strNone, token);
                 }
 
-                string strSource = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("source"))
+                string strSource = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("source", token))
                     ?.Value;
                 if (!string.IsNullOrEmpty(strSource))
                 {
                     string strPage
-                        = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("altpage"))?.Value
-                          ?? (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("page"))?.Value;
+                        = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("altpage", token))?.Value
+                          ?? (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("page", token))?.Value;
                     if (!string.IsNullOrEmpty(strPage))
                     {
                         SourceString objSource = await SourceString.GetSourceStringAsync(
@@ -2111,7 +2111,7 @@ namespace Chummer
 
                 // Set the special attributes label.
                 if (!int.TryParse(
-                        (await objXmlMetatypePriorityNode.SelectSingleNodeAndCacheExpressionAsync("value"))
+                        (await objXmlMetatypePriorityNode.SelectSingleNodeAndCacheExpressionAsync("value", token))
                         ?.Value,
                         NumberStyles.Any,
                         GlobalSettings.InvariantCultureInfo, out int intSpecialAttribPoints))
@@ -2125,7 +2125,7 @@ namespace Chummer
                 foreach (XPathNavigator xmlBaseTalentPriority in xmlBaseTalentPriorityList)
                 {
                     if (xmlBaseTalentPriorityList.Count == 1
-                        || await xmlBaseTalentPriority.SelectSingleNodeAndCacheExpressionAsync("prioritytable")
+                        || await xmlBaseTalentPriority.SelectSingleNodeAndCacheExpressionAsync("prioritytable", token)
                         != null)
                     {
                         XPathNavigator objXmlTalentsNode = xmlBaseTalentPriority.SelectSingleNode(
@@ -2134,7 +2134,7 @@ namespace Chummer
                         if (objXmlTalentsNode != null
                             && int.TryParse(
                                 (await objXmlTalentsNode.SelectSingleNodeAndCacheExpressionAsync(
-                                    "specialattribpoints"))
+                                    "specialattribpoints", token))
                                 ?.Value, out int intTemp))
                             intSpecialAttribPoints += intTemp;
                         break;
@@ -2163,7 +2163,7 @@ namespace Chummer
                 foreach (XPathNavigator xmlBaseTalentPriority in xmlBaseTalentPriorityList)
                 {
                     if (xmlBaseTalentPriorityList.Count == 1
-                        || await xmlBaseTalentPriority.SelectSingleNodeAndCacheExpressionAsync("prioritytable")
+                        || await xmlBaseTalentPriority.SelectSingleNodeAndCacheExpressionAsync("prioritytable", token)
                         != null)
                     {
                         XPathNavigator objXmlTalentsNode = xmlBaseTalentPriority.SelectSingleNode(
@@ -2172,7 +2172,7 @@ namespace Chummer
                         if (objXmlTalentsNode != null
                             && int.TryParse(
                                 (await objXmlTalentsNode.SelectSingleNodeAndCacheExpressionAsync(
-                                    "specialattribpoints"))
+                                    "specialattribpoints", token))
                                 ?.Value, out int intTemp))
                             intSpecialAttribPoints += intTemp;
                         break;
@@ -2227,19 +2227,19 @@ namespace Chummer
                 foreach (XPathNavigator xmlBaseTalentPriority in xmlBaseTalentPriorityList)
                 {
                     if (xmlBaseTalentPriorityList.Count == 1
-                        || await xmlBaseTalentPriority.SelectSingleNodeAndCacheExpressionAsync("prioritytable") != null)
+                        || await xmlBaseTalentPriority.SelectSingleNodeAndCacheExpressionAsync("prioritytable", token) != null)
                     {
                         foreach (XPathNavigator objXmlPriorityTalent in await xmlBaseTalentPriority.SelectAndCacheExpressionAsync(
-                                     "talents/talent"))
+                                     "talents/talent", token))
                         {
                             XPathNavigator xmlQualitiesNode
-                                = await objXmlPriorityTalent.SelectSingleNodeAndCacheExpressionAsync("qualities");
+                                = await objXmlPriorityTalent.SelectSingleNodeAndCacheExpressionAsync("qualities", token);
                             if (xmlQualitiesNode != null)
                             {
                                 bool blnFoundUnavailableQuality = false;
 
                                 foreach (XPathNavigator xmlQuality in await xmlQualitiesNode.SelectAndCacheExpressionAsync(
-                                             "quality"))
+                                             "quality", token))
                                 {
                                     if (_xmlBaseQualityDataNode.SelectSingleNode(
                                             "qualities/quality[" + _objCharacter.Settings.BookXPath() + " and name = "
@@ -2255,14 +2255,14 @@ namespace Chummer
                             }
 
                             XPathNavigator xmlForbiddenNode
-                                = await objXmlPriorityTalent.SelectSingleNodeAndCacheExpressionAsync("forbidden");
+                                = await objXmlPriorityTalent.SelectSingleNodeAndCacheExpressionAsync("forbidden", token);
                             if (xmlForbiddenNode != null)
                             {
                                 bool blnRequirementForbidden = false;
 
                                 // Loop through the oneof requirements.
                                 XPathNodeIterator objXmlForbiddenList
-                                    = await xmlForbiddenNode.SelectAndCacheExpressionAsync("oneof");
+                                    = await xmlForbiddenNode.SelectAndCacheExpressionAsync("oneof", token);
                                 foreach (XPathNavigator objXmlOneOf in objXmlForbiddenList)
                                 {
                                     XPathNodeIterator objXmlOneOfList
@@ -2308,14 +2308,14 @@ namespace Chummer
                             }
 
                             XPathNavigator xmlRequiredNode
-                                = await objXmlPriorityTalent.SelectSingleNodeAndCacheExpressionAsync("required");
+                                = await objXmlPriorityTalent.SelectSingleNodeAndCacheExpressionAsync("required", token);
                             if (xmlRequiredNode != null)
                             {
                                 bool blnRequirementMet = false;
 
                                 // Loop through the oneof requirements.
                                 XPathNodeIterator objXmlForbiddenList
-                                    = await xmlRequiredNode.SelectAndCacheExpressionAsync("oneof");
+                                    = await xmlRequiredNode.SelectAndCacheExpressionAsync("oneof", token);
                                 foreach (XPathNavigator objXmlOneOf in objXmlForbiddenList)
                                 {
                                     XPathNodeIterator objXmlOneOfList
@@ -2361,10 +2361,10 @@ namespace Chummer
                             }
 
                             lstTalent.Add(new ListItem(
-                                              (await objXmlPriorityTalent.SelectSingleNodeAndCacheExpressionAsync("value"))?.Value,
-                                              (await objXmlPriorityTalent.SelectSingleNodeAndCacheExpressionAsync("translate"))
+                                              (await objXmlPriorityTalent.SelectSingleNodeAndCacheExpressionAsync("value", token))?.Value,
+                                              (await objXmlPriorityTalent.SelectSingleNodeAndCacheExpressionAsync("translate", token))
                                                                   ?.Value ??
-                                              (await objXmlPriorityTalent.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value ??
+                                              (await objXmlPriorityTalent.SelectSingleNodeAndCacheExpressionAsync("name", token))?.Value ??
                                               await LanguageManager.GetStringAsync("String_Unknown", token: token)));
                         }
 
@@ -2403,7 +2403,7 @@ namespace Chummer
                     + " and (not(prioritytable) or prioritytable = " + _objCharacter.Settings.PriorityTable.CleanXPath() + ")]");
                 foreach (XPathNavigator xmlBaseMetatypePriority in xmlBaseMetatypePriorityList)
                 {
-                    if (xmlBaseMetatypePriorityList.Count == 1 || await xmlBaseMetatypePriority.SelectSingleNodeAndCacheExpressionAsync("prioritytable") != null)
+                    if (xmlBaseMetatypePriorityList.Count == 1 || await xmlBaseMetatypePriority.SelectSingleNodeAndCacheExpressionAsync("prioritytable", token) != null)
                     {
                         objXmlMetatypeBP = xmlBaseMetatypePriority.SelectSingleNode("metatypes/metatype[name = " + strSelectedMetatype.CleanXPath() + ']');
                         break;
@@ -2420,7 +2420,7 @@ namespace Chummer
                         foreach (XPathNavigator objXmlMetavariant in objXmlMetatype.Select(
                                      "metavariants/metavariant[" + _objCharacter.Settings.BookXPath() + ']'))
                         {
-                            string strName = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value
+                            string strName = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("name", token))?.Value
                                              ?? await LanguageManager.GetStringAsync("String_Unknown", token: token);
                             if (objXmlMetatypeBP.SelectSingleNode(
                                     "metavariants/metavariant[name = " + strName.CleanXPath() + ']') != null)
@@ -2428,7 +2428,7 @@ namespace Chummer
                                 lstMetavariants.Add(new ListItem(
                                                         strName,
                                                         (await objXmlMetavariant
-                                                            .SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
+                                                            .SelectSingleNodeAndCacheExpressionAsync("translate", token))?.Value
                                                         ?? strName));
                             }
                         }
@@ -2449,10 +2449,10 @@ namespace Chummer
                         }, token);
 
                         // If the Metatype has Force enabled, show the Force NUD.
-                        string strEssMax = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("essmax"))?.Value
+                        string strEssMax = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("essmax", token))?.Value
                                            ?? string.Empty;
                         int intPos = strEssMax.IndexOf("D6", StringComparison.Ordinal);
-                        if (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("forcecreature") != null || intPos != -1)
+                        if (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("forcecreature", token) != null || intPos != -1)
                         {
                             if (intPos != -1)
                             {
@@ -2476,7 +2476,7 @@ namespace Chummer
                             else
                             {
                                 lblForceLabel.Text = await LanguageManager.GetStringAsync(
-                                    await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("forceislevels") != null
+                                    await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("forceislevels", token) != null
                                         ? "String_Level"
                                         : "String_Force", token: token);
                                 await nudForce.DoThreadSafeAsync(x => x.Maximum = 100, token);
@@ -2530,21 +2530,21 @@ namespace Chummer
                     foreach (XPathNavigator xmlBaseMetatypePriority in xmlBaseMetatypePriorityList)
                     {
                         if (xmlBaseMetatypePriorityList.Count == 1
-                            || await xmlBaseMetatypePriority.SelectSingleNodeAndCacheExpressionAsync("prioritytable") != null)
+                            || await xmlBaseMetatypePriority.SelectSingleNodeAndCacheExpressionAsync("prioritytable", token) != null)
                         {
                             foreach (XPathNavigator objXmlMetatype in _xmlBaseMetatypeDataNode.Select(
                                          "metatypes/metatype[(" + _objCharacter.Settings.BookXPath()
                                                                 + ") and category = " + strSelectedCategory.CleanXPath()
                                                                 + ']'))
                             {
-                                string strName = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value;
+                                string strName = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("name", token))?.Value;
                                 if (!string.IsNullOrEmpty(strName)
                                     && xmlBaseMetatypePriority.SelectSingleNode(
                                         "metatypes/metatype[name = " + strName.CleanXPath() + ']') != null)
                                 {
                                     lstMetatype.Add(new ListItem(
                                                         strName,
-                                                        (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("translate"))
+                                                        (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("translate", token))
                                                                       ?.Value ?? strName));
                                 }
                             }
@@ -2607,7 +2607,7 @@ namespace Chummer
                                                             out HashSet<string> setRemoveCategories))
             {
                 foreach (XPathNavigator objXmlCategory in await _xmlBaseMetatypeDataNode.SelectAndCacheExpressionAsync(
-                             "categories/category"))
+                             "categories/category", token))
                 {
                     XPathNodeIterator xmlBaseMetatypePriorityList = _xmlBasePriorityDataNode.Select(
                         "priorities/priority[category = \"Heritage\" and value = "
@@ -2618,7 +2618,7 @@ namespace Chummer
                     foreach (XPathNavigator xmlBaseMetatypePriority in xmlBaseMetatypePriorityList)
                     {
                         if (xmlBaseMetatypePriorityList.Count == 1
-                            || await xmlBaseMetatypePriority.SelectSingleNodeAndCacheExpressionAsync("prioritytable") != null)
+                            || await xmlBaseMetatypePriority.SelectSingleNodeAndCacheExpressionAsync("prioritytable", token) != null)
                         {
                             foreach (XPathNavigator objXmlMetatype in _xmlBaseMetatypeDataNode.Select(
                                          "metatypes/metatype[category = " + objXmlCategory.Value.CleanXPath() + " and ("
@@ -2626,7 +2626,7 @@ namespace Chummer
                             {
                                 if (xmlBaseMetatypePriority.SelectSingleNode(
                                         "metatypes/metatype[name = "
-                                        + ((await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value
+                                        + ((await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("name", token))?.Value
                                            ?? string.Empty).CleanXPath() + ']') != null)
                                 {
                                     blnRemoveCategory = false;
@@ -2647,7 +2647,7 @@ namespace Chummer
                 using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstCategory))
                 {
                     foreach (XPathNavigator objXmlCategory in await _xmlBaseMetatypeDataNode.SelectAndCacheExpressionAsync(
-                                 "categories/category"))
+                                 "categories/category", token))
                     {
                         string strInnerText = objXmlCategory.Value;
 
@@ -2657,7 +2657,7 @@ namespace Chummer
                             lstCategory.All(objItem => objItem.Value.ToString() != strInnerText))
                         {
                             lstCategory.Add(new ListItem(strInnerText,
-                                                         (await objXmlCategory.SelectSingleNodeAndCacheExpressionAsync("@translate"))
+                                                         (await objXmlCategory.SelectSingleNodeAndCacheExpressionAsync("@translate", token))
                                                                        ?.Value ?? strInnerText));
                         }
                     }

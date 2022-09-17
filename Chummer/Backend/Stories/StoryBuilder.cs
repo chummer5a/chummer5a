@@ -78,7 +78,7 @@ namespace Chummer
 
             string[] story = new string[modules.Count];
             Task<string>[] atskStoryTasks = new Task<string>[modules.Count];
-            XPathNavigator xmlBaseMacrosNode = await xdoc.SelectSingleNodeAndCacheExpressionAsync("/chummer/storybuilder/macros");
+            XPathNavigator xmlBaseMacrosNode = await xdoc.SelectSingleNodeAndCacheExpressionAsync("/chummer/storybuilder/macros", token: token);
             //Actually "write" the story
             for (int i = 0; i < modules.Count; ++i)
             {
@@ -210,7 +210,7 @@ namespace Chummer
                         {
                             case "random":
                                 {
-                                    XPathNodeIterator xmlPossibleNodeList = await xmlUserMacroFirstChild.SelectAndCacheExpressionAsync("./*[not(self::default)]");
+                                    XPathNodeIterator xmlPossibleNodeList = await xmlUserMacroFirstChild.SelectAndCacheExpressionAsync("./*[not(self::default)]", token: token);
                                     if (xmlPossibleNodeList.Count > 0)
                                     {
                                         int intUseIndex = xmlPossibleNodeList.Count > 1
@@ -234,7 +234,7 @@ namespace Chummer
                             case "persistent":
                                 {
                                     //Any node not named
-                                    XPathNodeIterator xmlPossibleNodeList = await xmlUserMacroFirstChild.SelectAndCacheExpressionAsync("./*[not(self::default)]");
+                                    XPathNodeIterator xmlPossibleNodeList = await xmlUserMacroFirstChild.SelectAndCacheExpressionAsync("./*[not(self::default)]", token: token);
                                     if (xmlPossibleNodeList.Count > 0)
                                     {
                                         int intUseIndex = xmlPossibleNodeList.Count > 1
@@ -270,7 +270,7 @@ namespace Chummer
                             return strSelected;
                     }
 
-                    string strDefault = (await xmlUserMacroFirstChild.SelectSingleNodeAndCacheExpressionAsync("default"))?.Value;
+                    string strDefault = (await xmlUserMacroFirstChild.SelectSingleNodeAndCacheExpressionAsync("default", token: token))?.Value;
                     if (!string.IsNullOrEmpty(strDefault))
                     {
                         return strDefault;

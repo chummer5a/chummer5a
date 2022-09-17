@@ -19,6 +19,7 @@
 using System;
 using System.ComponentModel;
 using System.Globalization;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 
@@ -54,9 +55,9 @@ namespace Chummer.Backend.Equipment
             return _objWeapon.DisplayName(objCulture, strLanguage);
         }
 
-        public ValueTask<string> DisplayWeaponNameAsync(CultureInfo objCulture = null, string strLanguage = "")
+        public ValueTask<string> DisplayWeaponNameAsync(CultureInfo objCulture = null, string strLanguage = "", CancellationToken token = default)
         {
-            return _objWeapon.DisplayNameAsync(objCulture, strLanguage);
+            return _objWeapon.DisplayNameAsync(objCulture, strLanguage, token);
         }
 
         public string DisplayWeaponNameShort(string strLanguage = "")
@@ -64,9 +65,9 @@ namespace Chummer.Backend.Equipment
             return _objWeapon.DisplayNameShort(strLanguage);
         }
 
-        public ValueTask<string> DisplayWeaponNameShortAsync(string strLanguage = "")
+        public ValueTask<string> DisplayWeaponNameShortAsync(string strLanguage = "", CancellationToken token = default)
         {
-            return _objWeapon.DisplayNameShortAsync(strLanguage);
+            return _objWeapon.DisplayNameShortAsync(strLanguage, token);
         }
 
         public string DisplayAmmoName(string strLanguage = "")
@@ -75,11 +76,11 @@ namespace Chummer.Backend.Equipment
                    ?? LanguageManager.GetString("String_MountInternal", strLanguage);
         }
 
-        public Task<string> DisplayAmmoNameAsync(string strLanguage = "")
+        public Task<string> DisplayAmmoNameAsync(string strLanguage = "", CancellationToken token = default)
         {
             return AmmoGear != null
-                ? AmmoGear.DisplayNameShortAsync(strLanguage)
-                : LanguageManager.GetStringAsync("String_MountInternal", strLanguage);
+                ? AmmoGear.DisplayNameShortAsync(strLanguage, token)
+                : LanguageManager.GetStringAsync("String_MountInternal", strLanguage, token: token);
         }
 
         public Gear AmmoGear

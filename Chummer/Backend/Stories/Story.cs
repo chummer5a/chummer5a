@@ -115,15 +115,15 @@ namespace Chummer
             XPathNavigator xmlStoryPool = _xmlStoryDocumentBaseNode.SelectSingleNode("storypools/storypool[name = " + strFunction.CleanXPath() + ']');
             if (xmlStoryPool != null)
             {
-                XPathNodeIterator xmlPossibleStoryList = await xmlStoryPool.SelectAndCacheExpressionAsync("story");
+                XPathNodeIterator xmlPossibleStoryList = await xmlStoryPool.SelectAndCacheExpressionAsync("story", token: token);
                 Dictionary<string, int> dicStoriesListWithWeights = new Dictionary<string, int>(xmlPossibleStoryList.Count);
                 int intTotalWeight = 0;
                 foreach (XPathNavigator xmlStory in xmlPossibleStoryList)
                 {
-                    string strStoryId = (await xmlStory.SelectSingleNodeAndCacheExpressionAsync("id"))?.Value;
+                    string strStoryId = (await xmlStory.SelectSingleNodeAndCacheExpressionAsync("id", token: token))?.Value;
                     if (!string.IsNullOrEmpty(strStoryId))
                     {
-                        if (!int.TryParse((await xmlStory.SelectSingleNodeAndCacheExpressionAsync("weight"))?.Value ?? "1", out int intWeight))
+                        if (!int.TryParse((await xmlStory.SelectSingleNodeAndCacheExpressionAsync("weight", token: token))?.Value ?? "1", out int intWeight))
                             intWeight = 1;
                         intTotalWeight += intWeight;
                         if (dicStoriesListWithWeights.TryGetValue(strStoryId, out int intExistingWeight))

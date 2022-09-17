@@ -465,9 +465,9 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteElementString("sourceid", SourceIDString);
                 objWriter.WriteElementString("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint));
             }
-            objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
+            objWriter.WriteElementString("name", await DisplayNameShortAsync(strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);
-            objWriter.WriteElementString("fullname", DisplayName(strLanguageToPrint));
+            objWriter.WriteElementString("fullname", await DisplayNameAsync(strLanguageToPrint));
             objWriter.WriteElementString("category", DisplayCategory(strLanguageToPrint));
             objWriter.WriteElementString("category_english", Category);
             objWriter.WriteElementString("limit", Limit);
@@ -1088,6 +1088,26 @@ namespace Chummer.Backend.Equipment
             return this.GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? Name;
         }
 
+        /// <summary>
+        /// The name of the object as it should be displayed on printouts (translated name only).
+        /// </summary>
+        public async ValueTask<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
+        {
+            XPathNavigator xmlDataNode = await this.GetNodeXPathAsync(strLanguage, token: token);
+            if (xmlDataNode == null)
+                return Name;
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+            {
+                // Because of the weird way in which weapon mounts work with and without Rigger 5.0, instead of hiding built-in mounts from disabled sourcebooks,
+                // we instead display them as if they were one of the CRB mounts, but give them a different name
+                if (IncludedInVehicle && !string.IsNullOrEmpty(Source) && !_objCharacter.Settings.BookEnabled(Source))
+                    return (await xmlDataNode.SelectSingleNodeAndCacheExpressionAsync("name", token))?.Value ?? Name;
+                return Name;
+            }
+
+            return (await xmlDataNode.SelectSingleNodeAndCacheExpressionAsync("translate", token))?.Value ?? Name;
+        }
+
         public string CurrentDisplayNameShort => DisplayNameShort(GlobalSettings.Language);
 
         /// <summary>
@@ -1102,6 +1122,41 @@ namespace Chummer.Backend.Equipment
                 {
                     sbdReturn.Append(strReturn);
                     string strSpace = LanguageManager.GetString("String_Space", strLanguage);
+                    sbdReturn.Append(strSpace).Append('(');
+                    bool blnCloseParantheses = false;
+                    foreach (WeaponMountOption objOption in WeaponMountOptions)
+                    {
+                        if (objOption.Name != "None")
+                        {
+                            blnCloseParantheses = true;
+                            sbdReturn.Append(objOption.DisplayName(strLanguage)).Append(',').Append(strSpace);
+                        }
+                    }
+
+                    sbdReturn.Length -= 1 + strSpace.Length;
+                    if (blnCloseParantheses)
+                        sbdReturn.Append(')');
+                    if (!string.IsNullOrWhiteSpace(Location))
+                        sbdReturn.Append(strSpace).Append('-').Append(strSpace).Append(Location);
+                    strReturn = sbdReturn.ToString();
+                }
+            }
+
+            return strReturn;
+        }
+
+        /// <summary>
+        /// The name of the object as it should be displayed in lists. Qty Name (Rating) (Extra).
+        /// </summary>
+        public async ValueTask<string> DisplayNameAsync(string strLanguage, CancellationToken token = default)
+        {
+            string strReturn = await DisplayNameShortAsync(strLanguage, token);
+            if (WeaponMountOptions.Count > 0)
+            {
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+                {
+                    sbdReturn.Append(strReturn);
+                    string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token);
                     sbdReturn.Append(strSpace).Append('(');
                     bool blnCloseParantheses = false;
                     foreach (WeaponMountOption objOption in WeaponMountOptions)

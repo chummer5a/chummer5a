@@ -65,6 +65,13 @@ namespace Chummer.Backend.Skills
             }
         }
 
+        public async ValueTask<int> GetBaseAsync(CancellationToken token = default)
+        {
+            return await GetIsDisabledAsync(token)
+                ? 0
+                : Math.Min(BasePoints + await GetFreeBaseAsync(token), await GetRatingMaximumAsync(token));
+        }
+
         public int Karma
         {
             get
@@ -93,6 +100,17 @@ namespace Chummer.Backend.Skills
                     skill.OnPropertyChanged(nameof(Skill.Karma));
                 }
             }
+        }
+
+        public async ValueTask<int> GetKarmaAsync(CancellationToken token = default)
+        {
+            if (!await GetKarmaUnbrokenAsync(token) && KarmaPoints > 0)
+            {
+                KarmaPoints = 0;
+            }
+            return await GetIsDisabledAsync(token)
+                ? 0
+                : Math.Min(KarmaPoints + await GetFreeLevelsAsync(token), await GetRatingMaximumAsync(token));
         }
 
         /// <summary>
@@ -153,6 +171,44 @@ namespace Chummer.Backend.Skills
             }
         }
 
+        /// <summary>
+        /// Is it possible to increment this skill group from points
+        /// Inverted to simplify databinding
+        /// </summary>
+        public async ValueTask<bool> GetBaseUnbrokenAsync(CancellationToken token = default)
+        {
+            if (_intCachedBaseUnbroken < 0)
+            {
+                if (await GetIsDisabledAsync(token) || SkillList.Count == 0
+                                                    || !await _objCharacter
+                                                        .GetEffectiveBuildMethodUsesPriorityTablesAsync(token))
+                    _intCachedBaseUnbroken = 0;
+                else
+                {
+                    CharacterSettings objSettings = await _objCharacter.GetSettingsAsync(token);
+                    if (await objSettings.GetStrictSkillGroupsInCreateModeAsync(token)
+                        && !await _objCharacter.GetCreatedAsync(token))
+                        _intCachedBaseUnbroken =
+                            await SkillList.AllAsync(async x => x.BasePoints + await x.GetFreeBaseAsync(token) <= 0,
+                                                     token: token)
+                            && await SkillList.AllAsync(
+                                async x => x.KarmaPoints + await x.GetFreeKarmaAsync(token) <= 0, token: token)
+                                ? 1
+                                : 0;
+                    else if (await objSettings.GetUsePointsOnBrokenGroupsAsync(token))
+                        _intCachedBaseUnbroken = await GetKarmaUnbrokenAsync(token) ? 1 : 0;
+                    else
+                        _intCachedBaseUnbroken
+                            = await SkillList.AllAsync(async x => x.BasePoints + await x.GetFreeBaseAsync(token) <= 0,
+                                                       token: token)
+                                ? 1
+                                : 0;
+                }
+            }
+
+            return _intCachedBaseUnbroken > 0;
+        }
+
         private int _intCachedKarmaUnbroken = int.MinValue;
 
         /// <summary>
@@ -185,6 +241,43 @@ namespace Chummer.Backend.Skills
             }
         }
 
+        /// <summary>
+        /// Is it possible to increment this skill group from karma
+        /// Inverted to simplify databinding
+        /// </summary>
+        public async ValueTask<bool> GetKarmaUnbrokenAsync(CancellationToken token = default)
+        {
+            if (_intCachedKarmaUnbroken < 0)
+            {
+                if (await GetIsDisabledAsync(token) || SkillList.Count == 0)
+                    _intCachedKarmaUnbroken = 0;
+                else if (await (await _objCharacter.GetSettingsAsync(token))
+                             .GetStrictSkillGroupsInCreateModeAsync(token)
+                         && !await _objCharacter.GetCreatedAsync(token))
+                    _intCachedBaseUnbroken =
+                        await SkillList.AllAsync(async x => x.BasePoints + await x.GetFreeBaseAsync(token) <= 0,
+                                                 token: token)
+                        && await SkillList.AllAsync(
+                            async x => x.KarmaPoints + await x.GetFreeKarmaAsync(token) <= 0, token: token)
+                            ? 1
+                            : 0;
+                else
+                {
+                    int intHigh = await SkillList.MaxAsync(async x => x.BasePoints + await x.GetFreeBaseAsync(token),
+                                                           token: token);
+
+                    _intCachedKarmaUnbroken
+                        = await SkillList.AllAsync(
+                            async x => x.BasePoints + await x.GetFreeBaseAsync(token) + x.KarmaPoints
+                                + await x.GetFreeKarmaAsync(token) >= intHigh, token: token)
+                            ? 1
+                            : 0;
+                }
+            }
+
+            return _intCachedKarmaUnbroken > 0;
+        }
+
         private int _intCachedIsDisabled = int.MinValue;
 
         public bool IsDisabled
@@ -207,6 +300,25 @@ namespace Chummer.Backend.Skills
                 }
                 return _intCachedIsDisabled > 0;
             }
+        }
+
+        public async ValueTask<bool> GetIsDisabledAsync(CancellationToken token = default)
+        {
+            if (_intCachedIsDisabled < 0)
+            {
+                _intCachedIsDisabled = (await ImprovementManager
+                                           .GetCachedImprovementListForValueOfAsync(
+                                               _objCharacter, Improvement.ImprovementType.SkillGroupDisable, Name, token: token))
+                                       .Count > 0
+                                       || (await ImprovementManager
+                                           .GetCachedImprovementListForValueOfAsync(
+                                               _objCharacter, Improvement.ImprovementType.SkillGroupCategoryDisable, token: token))
+                                          .Any(
+                                              x => GetRelevantSkillCategories.Contains(x.ImprovedName))
+                    ? 1
+                    : 0;
+            }
+            return _intCachedIsDisabled > 0;
         }
 
         /// <summary>
@@ -273,19 +385,52 @@ namespace Chummer.Backend.Skills
 
         public int Rating => Karma + Base;
 
+        public async ValueTask<int> GetRatingAsync(CancellationToken token = default)
+        {
+            return await GetKarmaAsync(token) + await GetBaseAsync(token);
+        }
+
         public int FreeBase =>
             !string.IsNullOrEmpty(Name)
                 ? ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.SkillGroupBase, false, Name).StandardRound()
                 : 0;
+
+        public async ValueTask<int> GetFreeBaseAsync(CancellationToken token = default)
+        {
+            return !string.IsNullOrEmpty(Name)
+                ? (await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.SkillGroupBase, false, Name, token: token)).StandardRound()
+                : 0;
+        }
 
         public int FreeLevels =>
             !string.IsNullOrEmpty(Name)
                 ? ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.SkillGroupLevel, false, Name).StandardRound()
                 : 0;
 
+        public async ValueTask<int> GetFreeLevelsAsync(CancellationToken token = default)
+        {
+            return !string.IsNullOrEmpty(Name)
+                ? (await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.SkillGroupLevel, false, Name, token: token)).StandardRound()
+                : 0;
+        }
+
+        /// <summary>
+        /// Maximum possible rating
+        /// </summary>
         public int RatingMaximum => _objCharacter.Created || _objCharacter.IgnoreRules
             ? _objCharacter.Settings.MaxSkillRating
             : _objCharacter.Settings.MaxSkillRatingCreate;
+
+        /// <summary>
+        /// Maximum possible rating
+        /// </summary>
+        public async ValueTask<int> GetRatingMaximumAsync(CancellationToken token = default)
+        {
+            CharacterSettings objSettings = await CharacterObject.GetSettingsAsync(token);
+            return await _objCharacter.GetCreatedAsync(token) || await _objCharacter.GetIgnoreRulesAsync(token)
+                ? await objSettings.GetMaxSkillRatingAsync(token)
+                : await objSettings.GetMaxSkillRatingCreateAsync(token);
+        }
 
         public void Upgrade()
         {
@@ -933,6 +1078,71 @@ namespace Chummer.Backend.Skills
             }
         }
 
+        public async ValueTask<int> GetCurrentSpCostAsync(CancellationToken token = default)
+        {
+            int intReturn = BasePoints;
+            int intValue = intReturn;
+
+            decimal decMultiplier = 1.0m;
+            decimal decExtra = 0;
+            using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                            out HashSet<string>
+                                                                lstRelevantCategories))
+            {
+                lstRelevantCategories.AddRange(GetRelevantSkillCategories);
+                await (await _objCharacter.GetImprovementsAsync(token)).ForEachAsync(objLoopImprovement =>
+                {
+                    if ((objLoopImprovement.Maximum != 0 && intValue > objLoopImprovement.Maximum)
+                        || objLoopImprovement.Minimum > intValue || !objLoopImprovement.Enabled)
+                        return;
+                    if (objLoopImprovement.ImprovedName == Name
+                        || string.IsNullOrEmpty(objLoopImprovement.ImprovedName))
+                    {
+                        switch (objLoopImprovement.ImproveType)
+                        {
+                            case Improvement.ImprovementType.SkillGroupPointCost:
+                                decExtra += objLoopImprovement.Value
+                                            * (Math.Min(
+                                                intValue,
+                                                objLoopImprovement.Maximum == 0
+                                                    ? int.MaxValue
+                                                    : objLoopImprovement.Maximum) - objLoopImprovement.Minimum);
+                                break;
+
+                            case Improvement.ImprovementType.SkillGroupPointCostMultiplier:
+                                decMultiplier *= objLoopImprovement.Value / 100.0m;
+                                break;
+                        }
+                    }
+                    else if (lstRelevantCategories.Contains(objLoopImprovement.ImprovedName))
+                    {
+                        switch (objLoopImprovement.ImproveType)
+                        {
+                            case Improvement.ImprovementType.SkillGroupCategoryPointCost:
+                                decExtra += objLoopImprovement.Value
+                                            * (Math.Min(
+                                                intValue,
+                                                objLoopImprovement.Maximum == 0
+                                                    ? int.MaxValue
+                                                    : objLoopImprovement.Maximum) - objLoopImprovement.Minimum);
+                                break;
+
+                            case Improvement.ImprovementType.SkillGroupCategoryPointCostMultiplier:
+                                decMultiplier *= objLoopImprovement.Value / 100.0m;
+                                break;
+                        }
+                    }
+                }, token: token);
+            }
+
+            if (decMultiplier != 1.0m)
+                intReturn = (intReturn * decMultiplier + decExtra).StandardRound();
+            else
+                intReturn += decExtra.StandardRound();
+
+            return Math.Max(intReturn, 0);
+        }
+
         public int CurrentKarmaCost
         {
             get
@@ -1017,6 +1227,91 @@ namespace Chummer.Backend.Skills
 
                 return Math.Max(intCost, 0);
             }
+        }
+
+        public async ValueTask<int> GetCurrentKarmaCostAsync(CancellationToken token = default)
+        {
+            if (KarmaPoints == 0)
+                return 0;
+
+            int intUpper = await SkillList.MinAsync(x => x.GetTotalBaseRatingAsync(token).AsTask(), token);
+            int intLower = intUpper - KarmaPoints;
+
+            int intCost = intUpper * (intUpper + 1);
+            intCost -= intLower * (intLower + 1);
+            intCost /= 2; //We get square, need triangle
+
+            CharacterSettings objSettings = await _objCharacter.GetSettingsAsync(token);
+            if (intCost == 1)
+                intCost *= await objSettings.GetKarmaNewSkillGroupAsync(token);
+            else
+                intCost *= await objSettings.GetKarmaImproveSkillGroupAsync(token);
+
+            decimal decMultiplier = 1.0m;
+            decimal decExtra = 0;
+            using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                            out HashSet<string>
+                                                                lstRelevantCategories))
+            {
+                lstRelevantCategories.AddRange(GetRelevantSkillCategories);
+                ThreadSafeObservableCollection<Improvement> lstImprovements = await _objCharacter.GetImprovementsAsync(token);
+                await lstImprovements.ForEachAsync(objLoopImprovement =>
+                {
+                    if (objLoopImprovement.Minimum <= intLower &&
+                        (string.IsNullOrEmpty(objLoopImprovement.Condition)
+                         || (objLoopImprovement.Condition == "career") == _objCharacter.Created
+                         || (objLoopImprovement.Condition == "create") != _objCharacter.Created)
+                        && objLoopImprovement.Enabled)
+                    {
+                        if (objLoopImprovement.ImprovedName == Name
+                            || string.IsNullOrEmpty(objLoopImprovement.ImprovedName))
+                        {
+                            switch (objLoopImprovement.ImproveType)
+                            {
+                                case Improvement.ImprovementType.SkillGroupKarmaCost:
+                                    decExtra += objLoopImprovement.Value
+                                                * (Math.Min(
+                                                       intUpper,
+                                                       objLoopImprovement.Maximum == 0
+                                                           ? int.MaxValue
+                                                           : objLoopImprovement.Maximum)
+                                                   - Math.Max(intLower, objLoopImprovement.Minimum - 1));
+                                    break;
+
+                                case Improvement.ImprovementType.SkillGroupKarmaCostMultiplier:
+                                    decMultiplier *= objLoopImprovement.Value / 100.0m;
+                                    break;
+                            }
+                        }
+                        else if (lstRelevantCategories.Contains(objLoopImprovement.ImprovedName))
+                        {
+                            switch (objLoopImprovement.ImproveType)
+                            {
+                                case Improvement.ImprovementType.SkillGroupCategoryKarmaCost:
+                                    decExtra += objLoopImprovement.Value
+                                                * (Math.Min(
+                                                       intUpper,
+                                                       objLoopImprovement.Maximum == 0
+                                                           ? int.MaxValue
+                                                           : objLoopImprovement.Maximum)
+                                                   - Math.Max(intLower, objLoopImprovement.Minimum - 1));
+                                    break;
+
+                                case Improvement.ImprovementType.SkillGroupCategoryKarmaCostMultiplier:
+                                    decMultiplier *= objLoopImprovement.Value / 100.0m;
+                                    break;
+                            }
+                        }
+                    }
+                }, token: token);
+            }
+
+            if (decMultiplier != 1.0m)
+                intCost = (intCost * decMultiplier + decExtra).StandardRound();
+            else
+                intCost += decExtra.StandardRound();
+
+            return Math.Max(intCost, 0);
         }
 
         public int UpgradeKarmaCost

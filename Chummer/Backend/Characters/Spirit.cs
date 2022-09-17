@@ -293,8 +293,8 @@ namespace Chummer
                     {
                         //Dump skills, (optional)powers if present to output
 
-                        XPathNavigator xmlSpiritPowersBaseChummerNode = await (await _objLinkedCharacter.LoadDataXPathAsync("spiritpowers.xml", strLanguageToPrint, token: token)).SelectSingleNodeAndCacheExpressionAsync("/chummer");
-                        XPathNavigator xmlCritterPowersBaseChummerNode = await (await _objLinkedCharacter.LoadDataXPathAsync("critterpowers.xml", strLanguageToPrint, token: token)).SelectSingleNodeAndCacheExpressionAsync("/chummer");
+                        XPathNavigator xmlSpiritPowersBaseChummerNode = await (await _objLinkedCharacter.LoadDataXPathAsync("spiritpowers.xml", strLanguageToPrint, token: token)).SelectSingleNodeAndCacheExpressionAsync("/chummer", token: token);
+                        XPathNavigator xmlCritterPowersBaseChummerNode = await (await _objLinkedCharacter.LoadDataXPathAsync("critterpowers.xml", strLanguageToPrint, token: token)).SelectSingleNodeAndCacheExpressionAsync("/chummer", token: token);
 
                         XmlNode xmlPowersNode = objXmlCritterNode["powers"];
                         if (xmlPowersNode != null)

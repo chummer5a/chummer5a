@@ -1045,7 +1045,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteStartElement("vehicle");
             objWriter.WriteElementString("guid", InternalId);
             objWriter.WriteElementString("sourceid", SourceIDString);
-            objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
+            objWriter.WriteElementString("name", await DisplayNameShortAsync(strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);
             objWriter.WriteElementString("fullname", DisplayName(strLanguageToPrint));
             objWriter.WriteElementString("category", DisplayCategory(strLanguageToPrint));
@@ -1675,6 +1675,20 @@ namespace Chummer.Backend.Equipment
                 return Name;
 
             return this.GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? Name;
+        }
+
+        /// <summary>
+        /// The name of the object as it should appear on printouts (translated name only).
+        /// </summary>
+        public async ValueTask<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
+        {
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                return Name;
+
+            XPathNavigator xmlDataNode = await this.GetNodeXPathAsync(strLanguage, token: token);
+            if (xmlDataNode == null)
+                return Name;
+            return (await xmlDataNode.SelectSingleNodeAndCacheExpressionAsync("translate", token))?.Value ?? Name;
         }
 
         /// <summary>

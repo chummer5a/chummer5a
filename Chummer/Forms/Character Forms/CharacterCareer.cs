@@ -6523,9 +6523,9 @@ namespace Chummer
                     {
                         // Look up the cost of the Quality.
                         int intBP = 0;
-                        if (objSelectedQuality.Type == QualityType.Negative || await objXmlDeleteQuality.SelectSingleNodeAndCacheExpressionAsync("refundkarmaonremove") != null)
+                        if (objSelectedQuality.Type == QualityType.Negative || await objXmlDeleteQuality.SelectSingleNodeAndCacheExpressionAsync("refundkarmaonremove", token: token) != null)
                         {
-                            intBP = Convert.ToInt32((await objXmlDeleteQuality.SelectSingleNodeAndCacheExpressionAsync("karma"))?.Value, GlobalSettings.InvariantCultureInfo) * CharacterObjectSettings.KarmaQuality;
+                            intBP = Convert.ToInt32((await objXmlDeleteQuality.SelectSingleNodeAndCacheExpressionAsync("karma", token: token))?.Value, GlobalSettings.InvariantCultureInfo) * CharacterObjectSettings.KarmaQuality;
                             if (blnCompleteDelete)
                                 intBP *= objSelectedQuality.Levels;
                             if (!CharacterObjectSettings.DontDoubleQualityPurchases && objSelectedQuality.DoubleCost)
@@ -6548,7 +6548,7 @@ namespace Chummer
 
             if (objSelectedQuality.Type == QualityType.Positive)
             {
-                if (await objXmlDeleteQuality.SelectSingleNodeAndCacheExpressionAsync("refundkarmaonremove") != null)
+                if (await objXmlDeleteQuality.SelectSingleNodeAndCacheExpressionAsync("refundkarmaonremove", token: token) != null)
                 {
                     int intKarmaCost = objSelectedQuality.BP * CharacterObjectSettings.KarmaQuality;
 
@@ -6610,11 +6610,11 @@ namespace Chummer
             }
 
             // Remove any Critter Powers that are gained through the Quality (Infected).
-            if (await objXmlDeleteQuality.SelectSingleNodeAndCacheExpressionAsync("powers/power") != null)
+            if (await objXmlDeleteQuality.SelectSingleNodeAndCacheExpressionAsync("powers/power", token: token) != null)
             {
-                foreach (XPathNavigator objXmlPower in await (await CharacterObject.LoadDataXPathAsync("critterpowers.xml", token: token)).SelectAndCacheExpressionAsync("optionalpowers/optionalpower"))
+                foreach (XPathNavigator objXmlPower in await (await CharacterObject.LoadDataXPathAsync("critterpowers.xml", token: token)).SelectAndCacheExpressionAsync("optionalpowers/optionalpower", token: token))
                 {
-                    string strExtra = (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("@select"))?.Value;
+                    string strExtra = (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("@select", token: token))?.Value;
 
                     foreach (CritterPower objPower in CharacterObject.CritterPowers)
                     {
@@ -6656,10 +6656,10 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             XPathNavigator objQualityNode = await objSelectedQuality.GetNodeXPathAsync(token);
             string strLimitString = objQualityNode != null
-                ? (await objQualityNode.SelectSingleNodeAndCacheExpressionAsync("limit"))?.Value ?? string.Empty
+                ? (await objQualityNode.SelectSingleNodeAndCacheExpressionAsync("limit", token: token))?.Value ?? string.Empty
                 : string.Empty;
             token.ThrowIfCancellationRequested();
-            if (!string.IsNullOrWhiteSpace(strLimitString) && await objQualityNode.SelectSingleNodeAndCacheExpressionAsync("nolevels") == null && int.TryParse(strLimitString, out int intMaxRating))
+            if (!string.IsNullOrWhiteSpace(strLimitString) && await objQualityNode.SelectSingleNodeAndCacheExpressionAsync("nolevels", token: token) == null && int.TryParse(strLimitString, out int intMaxRating))
             {
                 await nudQualityLevel.DoThreadSafeAsync(x =>
                 {

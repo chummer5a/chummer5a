@@ -425,7 +425,6 @@
     <Compile Include="Backend\Skills\ExoticSkill.cs" />
     <Compile Include="Backend\Skills\KnowledgeSkill.cs" />
     <Compile Include="Backend\Skills\Skill.cs" />
-    <Compile Include="Backend\Skills\SkillExtensions.cs" />
     <Compile Include="Backend\Skills\SkillGroup.cs" />
     <Compile Include="Backend\Skills\SkillSorters.cs" />
     <Compile Include="Backend\Skills\SkillsSection.cs" />

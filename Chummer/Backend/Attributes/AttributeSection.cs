@@ -948,7 +948,7 @@ namespace Chummer.Backend.Attributes
                                                                 xmlNode != null
                                                                     ? (await xmlNode
                                                                         .SelectSingleNodeAndCacheExpressionAsync(
-                                                                            "name/@translate"))
+                                                                            "name/@translate", token: token))
                                                                     ?.Value ?? _objCharacter.Metatype
                                                                     : _objCharacter.Metatype, token: token);
                     }
@@ -1137,18 +1137,18 @@ namespace Chummer.Backend.Attributes
                                                                            (dicValueOverrides?.ContainsKey(strCharAttributeName) == true
                                                                                ? dicValueOverrides[strCharAttributeName]
                                                                                : await objAttribute.GetTotalValueAsync(token).ConfigureAwait(false))
-                                                                           .ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false))
+                                                                           .ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false))
                                              .CheapReplaceAsync('{' + strCharAttributeName + "Unaug}", async () =>
                                                                     (dicValueOverrides?.ContainsKey(strCharAttributeName + "Unaug")
                                                                      == true
                                                                         ? dicValueOverrides[strCharAttributeName + "Unaug"]
                                                                         : await objAttribute.GetValueAsync(token).ConfigureAwait(false))
-                                                                    .ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false))
+                                                                    .ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false))
                                       .CheapReplaceAsync('{' + strCharAttributeName + "Base}", async () =>
                                                              (dicValueOverrides?.ContainsKey(strCharAttributeName + "Base") == true
                                                                  ? dicValueOverrides[strCharAttributeName + "Base"]
                                                                  : await objAttribute.GetTotalBaseAsync(token).ConfigureAwait(false))
-                                                             .ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
+                                                             .ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                 }
 
                 return strReturn;
@@ -1359,7 +1359,7 @@ namespace Chummer.Backend.Attributes
                                           }
 
                                           return strInnerReturn;
-                                      })
+                                      }, token: token)
                                       .CheapReplaceAsync('{' + strCharAttributeName + "Unaug}", async () =>
                                       {
                                           string strInnerReturn = await (await _objCharacter.GetAttributeAsync(strCharAttributeName, token: token))
@@ -1380,7 +1380,7 @@ namespace Chummer.Backend.Attributes
                                                                await LanguageManager.GetStringAsync(
                                                                    "String_NaturalAttribute", strLanguage, token: token),
                                                                strInnerReturn);
-                                      })
+                                      }, token: token)
                                       .CheapReplaceAsync('{' + strCharAttributeName + "Base}", async () =>
                                       {
                                           string strInnerReturn = await (await _objCharacter.GetAttributeAsync(strCharAttributeName, token: token))
@@ -1401,7 +1401,7 @@ namespace Chummer.Backend.Attributes
                                                                await LanguageManager.GetStringAsync(
                                                                    "String_BaseAttribute", strLanguage, token: token),
                                                                strInnerReturn);
-                                      });
+                                      }, token: token);
                 }
             }
 

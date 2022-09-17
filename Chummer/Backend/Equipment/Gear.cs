@@ -3179,18 +3179,18 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The name of the object as it should appear on printouts (translated name only).
         /// </summary>
-        public async Task<string> DisplayNameShortAsync(string strLanguage)
+        public async Task<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
-            XPathNavigator xmlGearDataNode = await this.GetNodeXPathAsync(strLanguage);
+            XPathNavigator xmlGearDataNode = await this.GetNodeXPathAsync(strLanguage, token: token);
             if (xmlGearDataNode?.SelectSingleNode("name")?.Value == "Custom Item")
             {
-                return await _objCharacter.TranslateExtraAsync(Name, strLanguage);
+                return await _objCharacter.TranslateExtraAsync(Name, strLanguage, token: token);
             }
 
-            return xmlGearDataNode != null ? (await xmlGearDataNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value ?? Name : Name;
+            return xmlGearDataNode != null ? (await xmlGearDataNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token))?.Value ?? Name : Name;
         }
 
         /// <summary>
@@ -3242,27 +3242,34 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The name of the object as it should be displayed in lists. Qty Name (Rating) (Extra).
         /// </summary>
-        public async ValueTask<string> DisplayNameAsync(CultureInfo objCulture, string strLanguage, bool blnOverrideQuantity = false, decimal decQuantityToUse = 0.0m)
+        public async ValueTask<string> DisplayNameAsync(CultureInfo objCulture, string strLanguage, bool blnOverrideQuantity = false, decimal decQuantityToUse = 0.0m, CancellationToken token = default)
         {
             string strQuantity = DisplayQuantity(objCulture, true, blnOverrideQuantity, decQuantityToUse);
-            string strReturn = await DisplayNameShortAsync(strLanguage);
-            string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage);
+            string strReturn = await DisplayNameShortAsync(strLanguage, token);
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token);
             if (!string.IsNullOrEmpty(strQuantity))
                 strReturn = strQuantity + strSpace + strReturn;
 
             if (Rating > 0)
-                strReturn += strSpace + '(' + await LanguageManager.GetStringAsync(RatingLabel, strLanguage) + strSpace +
+                strReturn += strSpace + '(' + await LanguageManager.GetStringAsync(RatingLabel, strLanguage, token: token) + strSpace +
                              Rating.ToString(objCulture) + ')';
             if (!string.IsNullOrEmpty(Extra))
-                strReturn += strSpace + '(' + await _objCharacter.TranslateExtraAsync(Extra, strLanguage) + ')';
+                strReturn += strSpace + '(' + await _objCharacter.TranslateExtraAsync(Extra, strLanguage, token: token) + ')';
             if (!string.IsNullOrEmpty(GearName))
                 strReturn += strSpace + "(\"" + GearName + "\")";
             if (LoadedIntoClip != null)
-                strReturn += strSpace + '(' + string.Format(objCulture, await LanguageManager.GetStringAsync("Label_Loaded"), await LoadedIntoClip.DisplayWeaponNameAsync(objCulture, strLanguage)) + ')';
+                strReturn += strSpace + '('
+                                      + string.Format(
+                                          objCulture,
+                                          await LanguageManager.GetStringAsync("Label_Loaded", token: token),
+                                          await LoadedIntoClip.DisplayWeaponNameAsync(objCulture, strLanguage, token))
+                                      + ')';
             return strReturn;
         }
 
         public string CurrentDisplayName => DisplayName(GlobalSettings.CultureInfo, GlobalSettings.Language);
+
+        public ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default) => DisplayNameAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token: token);
 
         /// <summary>
         /// Weapon Bonus Damage.

@@ -1941,7 +1941,7 @@ namespace Chummer.Backend.Equipment
                             else
                                 blnFirst = false;
 
-                            CharacterAttrib objLoopAttribute = _objCharacter.GetAttribute(strAbbrev);
+                            CharacterAttrib objLoopAttribute = await _objCharacter.GetAttributeAsync(strAbbrev);
                             if (objLoopAttribute != null)
                                 sbdName.Append(await objLoopAttribute.GetDisplayAbbrevAsync(strLanguageToPrint));
                             else
@@ -2223,13 +2223,13 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
         /// </summary>
-        public async ValueTask<string> DisplayNameShortAsync(string strLanguage)
+        public async ValueTask<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
-            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage);
-            return objNode != null ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value ?? Name : Name;
+            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token);
+            return objNode != null ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token))?.Value ?? Name : Name;
         }
 
         public string CurrentDisplayNameShort => DisplayNameShort(GlobalSettings.Language);
@@ -2278,19 +2278,19 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The name of the object as it should be displayed in lists. Qty Name (Rating) (Extra).
         /// </summary>
-        public async ValueTask<string> DisplayNameAsync(CultureInfo objCulture, string strLanguage)
+        public async ValueTask<string> DisplayNameAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
-            string strReturn = await DisplayNameShortAsync(strLanguage);
-            string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage);
+            string strReturn = await DisplayNameShortAsync(strLanguage, token);
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token);
             if (Rating > 0 && SourceID != EssenceHoleGUID && SourceID != EssenceAntiHoleGUID)
             {
-                strReturn += strSpace + '(' + await LanguageManager.GetStringAsync(RatingLabel, strLanguage) + strSpace + Rating.ToString(objCulture) + ')';
+                strReturn += strSpace + '(' + await LanguageManager.GetStringAsync(RatingLabel, strLanguage, token: token) + strSpace + Rating.ToString(objCulture) + ')';
             }
 
             if (!string.IsNullOrEmpty(Extra))
             {
                 // Attempt to retrieve the CharacterAttribute name.
-                strReturn += strSpace + '(' + await _objCharacter.TranslateExtraAsync(Extra, strLanguage) + ')';
+                strReturn += strSpace + '(' + await _objCharacter.TranslateExtraAsync(Extra, strLanguage, token: token) + ')';
             }
 
             if (!string.IsNullOrEmpty(Location))
@@ -2299,11 +2299,11 @@ namespace Chummer.Backend.Equipment
                 switch (Location)
                 {
                     case "Left":
-                        strSide = await LanguageManager.GetStringAsync("String_Improvement_SideLeft", strLanguage);
+                        strSide = await LanguageManager.GetStringAsync("String_Improvement_SideLeft", strLanguage, token: token);
                         break;
 
                     case "Right":
-                        strSide = await LanguageManager.GetStringAsync("String_Improvement_SideRight", strLanguage);
+                        strSide = await LanguageManager.GetStringAsync("String_Improvement_SideRight", strLanguage, token: token);
                         break;
                 }
                 if (!string.IsNullOrEmpty(strSide))
@@ -4835,7 +4835,7 @@ namespace Chummer.Backend.Equipment
 
             if (ParentVehicle == null)
             {
-                CharacterAttrib objAttribute = _objCharacter.GetAttribute(strAbbrev);
+                CharacterAttrib objAttribute = await _objCharacter.GetAttributeAsync(strAbbrev, token: token);
                 return Math.Min(intValue, objAttribute != null ? await objAttribute.GetTotalMaximumAsync(token) : 0);
             }
             return Math.Min(intValue, Math.Max(ParentVehicle.TotalBody * 2, 1));
@@ -4954,7 +4954,7 @@ namespace Chummer.Backend.Equipment
             int intReturn = await GetAttributeValueAsync(strAbbrev, token) + intBonus;
             if (ParentVehicle == null)
             {
-                CharacterAttrib objAttribute = _objCharacter.GetAttribute(strAbbrev);
+                CharacterAttrib objAttribute = await _objCharacter.GetAttributeAsync(strAbbrev, token: token);
                 return Math.Min(intReturn, objAttribute != null ? await objAttribute.GetTotalAugmentedMaximumAsync(token) : 0);
             }
             return Math.Min(intReturn, Math.Max(ParentVehicle.TotalBody * 2, 1));

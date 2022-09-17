@@ -1365,7 +1365,7 @@ namespace Chummer
             {
                 Text = objCache.CalculatedName(),
                 ToolTipText = await objCache.FilePath.CheapReplaceAsync(Utils.GetStartupPath,
-                                                                        () => '<' + Application.ProductName + '>').ConfigureAwait(false),
+                                                                        () => '<' + Application.ProductName + '>', token: token).ConfigureAwait(false),
                 Tag = objCache
             };
             if (!string.IsNullOrEmpty(objCache.ErrorText))
@@ -1462,7 +1462,7 @@ namespace Chummer
                         }, token).ConfigureAwait(false);
                         await lblFilePath.SetToolTipAsync(
                             await objCache.FilePath.CheapReplaceAsync(Utils.GetStartupPath,
-                                                                      () => '<' + Application.ProductName + '>').ConfigureAwait(false),
+                                                                      () => '<' + Application.ProductName + '>', token: token).ConfigureAwait(false),
                             token).ConfigureAwait(false);
                         await picMugshot.DoThreadSafeAsync(x => x.Image = objCache.Mugshot, token).ConfigureAwait(false);
                         // Populate character information fields.
@@ -1482,7 +1482,7 @@ namespace Chummer
 
                             token.ThrowIfCancellationRequested();
                             string strMetatype = objMetatypeNode != null
-                                ? (await objMetatypeNode.SelectSingleNodeAndCacheExpressionAsync("translate").ConfigureAwait(false))?.Value
+                                ? (await objMetatypeNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value
                                   ?? objCache.Metatype
                                 : objCache.Metatype;
 
@@ -1493,7 +1493,7 @@ namespace Chummer
 
                                 strMetatype += await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '('
                                     + (objMetatypeNode != null
-                                        ? (await objMetatypeNode.SelectSingleNodeAndCacheExpressionAsync("translate").ConfigureAwait(false))
+                                        ? (await objMetatypeNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))
                                           ?.Value
                                           ?? objCache.Metavariant
                                         : objCache.Metavariant) + ')';

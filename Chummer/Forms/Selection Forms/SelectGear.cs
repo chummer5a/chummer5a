@@ -972,7 +972,7 @@ namespace Chummer
                                                                        GlobalSettings.InvariantCultureInfo)
                                                                    ?? int.MaxValue.ToString(
                                                                        GlobalSettings.InvariantCultureInfo));
-                            _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdValue, strExpression);
+                            await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdValue, strExpression);
 
                             // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
                             objProcess = CommonFunctions.EvaluateInvariantXPath(sbdValue.ToString(), out blnIsSuccess);
@@ -1017,7 +1017,7 @@ namespace Chummer
                                                                            .ToString(
                                                                                GlobalSettings.InvariantCultureInfo)
                                                                            ?? "0");
-                                    _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdValue, strExpression);
+                                    await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdValue, strExpression);
 
                                     // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
                                     objProcess = CommonFunctions.EvaluateInvariantXPath(

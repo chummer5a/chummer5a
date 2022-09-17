@@ -20,6 +20,7 @@
 using System;
 using System.Globalization;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.XPath;
@@ -591,14 +592,17 @@ namespace Chummer
         /// </summary>
         /// <param name="xmlNode"></param>
         /// <param name="xpath"></param>
+        /// <param name="token"></param>
         /// <returns></returns>
-        public static async ValueTask<XPathNavigator> SelectSingleNodeAndCacheExpressionAsync(this XPathNavigator xmlNode, string xpath)
+        public static async ValueTask<XPathNavigator> SelectSingleNodeAndCacheExpressionAsync(this XPathNavigator xmlNode, string xpath, CancellationToken token = default)
         {
-            (bool blnSuccess, XPathExpression objExpression) = await s_dicCachedExpressions.TryGetValueAsync(xpath);
+            token.ThrowIfCancellationRequested();
+            (bool blnSuccess, XPathExpression objExpression) = await s_dicCachedExpressions.TryGetValueAsync(xpath, token);
             if (blnSuccess)
                 return xmlNode.SelectSingleNode(objExpression);
+            token.ThrowIfCancellationRequested();
             objExpression = XPathExpression.Compile(xpath);
-            await s_dicCachedExpressions.TryAddAsync(xpath, objExpression);
+            await s_dicCachedExpressions.TryAddAsync(xpath, objExpression, token);
             return xmlNode.SelectSingleNode(objExpression);
         }
 
@@ -609,15 +613,18 @@ namespace Chummer
         /// </summary>
         /// <param name="tskNode"></param>
         /// <param name="xpath"></param>
+        /// <param name="token"></param>
         /// <returns></returns>
-        public static async ValueTask<XPathNavigator> SelectSingleNodeAndCacheExpressionAsync(this Task<XPathNavigator> tskNode, string xpath)
+        public static async ValueTask<XPathNavigator> SelectSingleNodeAndCacheExpressionAsync(this Task<XPathNavigator> tskNode, string xpath, CancellationToken token = default)
         {
-            (bool blnSuccess, XPathExpression objExpression) = await s_dicCachedExpressions.TryGetValueAsync(xpath);
+            token.ThrowIfCancellationRequested();
+            (bool blnSuccess, XPathExpression objExpression) = await s_dicCachedExpressions.TryGetValueAsync(xpath, token);
             XPathNavigator xmlNode = await tskNode;
             if (blnSuccess)
                 return xmlNode.SelectSingleNode(objExpression);
+            token.ThrowIfCancellationRequested();
             objExpression = XPathExpression.Compile(xpath);
-            await s_dicCachedExpressions.TryAddAsync(xpath, objExpression);
+            await s_dicCachedExpressions.TryAddAsync(xpath, objExpression, token);
             return xmlNode.SelectSingleNode(objExpression);
         }
 
@@ -645,14 +652,17 @@ namespace Chummer
         /// </summary>
         /// <param name="xmlNode"></param>
         /// <param name="xpath"></param>
+        /// <param name="token"></param>
         /// <returns></returns>
-        public static async ValueTask<XPathNodeIterator> SelectAndCacheExpressionAsync(this XPathNavigator xmlNode, string xpath)
+        public static async ValueTask<XPathNodeIterator> SelectAndCacheExpressionAsync(this XPathNavigator xmlNode, string xpath, CancellationToken token = default)
         {
-            (bool blnSuccess, XPathExpression objExpression) = await s_dicCachedExpressions.TryGetValueAsync(xpath);
+            token.ThrowIfCancellationRequested();
+            (bool blnSuccess, XPathExpression objExpression) = await s_dicCachedExpressions.TryGetValueAsync(xpath, token);
             if (blnSuccess)
                 return xmlNode.Select(objExpression);
             objExpression = XPathExpression.Compile(xpath);
-            await s_dicCachedExpressions.TryAddAsync(xpath, objExpression);
+            token.ThrowIfCancellationRequested();
+            await s_dicCachedExpressions.TryAddAsync(xpath, objExpression, token);
             return xmlNode.Select(objExpression);
         }
 
@@ -663,15 +673,18 @@ namespace Chummer
         /// </summary>
         /// <param name="tskNode"></param>
         /// <param name="xpath"></param>
+        /// <param name="token"></param>
         /// <returns></returns>
-        public static async ValueTask<XPathNodeIterator> SelectAndCacheExpressionAsync(this Task<XPathNavigator> tskNode, string xpath)
+        public static async ValueTask<XPathNodeIterator> SelectAndCacheExpressionAsync(this Task<XPathNavigator> tskNode, string xpath, CancellationToken token = default)
         {
-            (bool blnSuccess, XPathExpression objExpression) = await s_dicCachedExpressions.TryGetValueAsync(xpath);
+            token.ThrowIfCancellationRequested();
+            (bool blnSuccess, XPathExpression objExpression) = await s_dicCachedExpressions.TryGetValueAsync(xpath, token);
             XPathNavigator xmlNode = await tskNode;
             if (blnSuccess)
                 return xmlNode.Select(objExpression);
             objExpression = XPathExpression.Compile(xpath);
-            await s_dicCachedExpressions.TryAddAsync(xpath, objExpression);
+            token.ThrowIfCancellationRequested();
+            await s_dicCachedExpressions.TryAddAsync(xpath, objExpression, token);
             return xmlNode.Select(objExpression);
         }
 

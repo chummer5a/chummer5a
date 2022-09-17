@@ -7764,11 +7764,11 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             XPathNavigator objQualityNode = await objSelectedQuality.GetNodeXPathAsync(token: token);
             string strLimitString = objQualityNode != null
-                ? (await objQualityNode.SelectSingleNodeAndCacheExpressionAsync("chargenlimit"))?.Value
-                  ?? (await objQualityNode.SelectSingleNodeAndCacheExpressionAsync("limit"))?.Value
+                ? (await objQualityNode.SelectSingleNodeAndCacheExpressionAsync("chargenlimit", token: token))?.Value
+                  ?? (await objQualityNode.SelectSingleNodeAndCacheExpressionAsync("limit", token: token))?.Value
                 : string.Empty;
             token.ThrowIfCancellationRequested();
-            if (!string.IsNullOrWhiteSpace(strLimitString) && await objQualityNode.SelectSingleNodeAndCacheExpressionAsync("nolevels") == null && int.TryParse(strLimitString, out int intMaxRating))
+            if (!string.IsNullOrWhiteSpace(strLimitString) && await objQualityNode.SelectSingleNodeAndCacheExpressionAsync("nolevels", token: token) == null && int.TryParse(strLimitString, out int intMaxRating))
             {
                 await nudQualityLevel.DoThreadSafeAsync(x =>
                 {
@@ -10408,7 +10408,7 @@ namespace Chummer
                         intContactPointsLeft = over;
                     }
                 }
-            }, token);
+            }, token).ConfigureAwait(false);
 
             await CharacterObject.SetContactPointsUsedAsync(intContactPointsLeft, token).ConfigureAwait(false);
             int intChaValue = await (await CharacterObject.GetAttributeAsync("CHA", token: token).ConfigureAwait(false)).GetValueAsync(token).ConfigureAwait(false);
@@ -10467,7 +10467,7 @@ namespace Chummer
                 if (blnDoUIUpdate)
                 {
                     token.ThrowIfCancellationRequested();
-                    if (await lstContacts.AnyAsync(x => x.EntityType == ContactType.Contact && x.IsGroup && !x.Free, token))
+                    if (await lstContacts.AnyAsync(x => x.EntityType == ContactType.Contact && x.IsGroup && !x.Free, token).ConfigureAwait(false))
                     {
                         sbdPositiveQualityTooltip.AppendLine(await LanguageManager.GetStringAsync("Label_GroupContacts", token: token).ConfigureAwait(false));
                         await lstContacts.ForEachAsync(async objGroupContact =>
@@ -10489,7 +10489,7 @@ namespace Chummer
                                                                    strSpace,
                                                                    objGroupContact.ContactPoints
                                                                    * CharacterObjectSettings.KarmaContact).AppendLine();
-                        }, token);
+                        }, token).ConfigureAwait(false);
                     }
 
                     await lblPositiveQualitiesBP.SetToolTipAsync(sbdPositiveQualityTooltip.ToString(), token).ConfigureAwait(false);
@@ -10525,7 +10525,8 @@ namespace Chummer
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdMartialArtsBPToolTip))
             {
-                await (await CharacterObject.GetMartialArtsAsync(token)).ForEachAsync(objMartialArt =>
+                int intKarmaTechnique = await CharacterObjectSettings.GetKarmaTechniqueAsync(token).ConfigureAwait(false);
+                await (await CharacterObject.GetMartialArtsAsync(token).ConfigureAwait(false)).ForEachAsync(objMartialArt =>
                 {
                     token.ThrowIfCancellationRequested();
                     if (objMartialArt.IsQuality)
@@ -10550,7 +10551,7 @@ namespace Chummer
                                 continue;
                             }
 
-                            intLoopCost = CharacterObjectSettings.KarmaTechnique;
+                            intLoopCost = intKarmaTechnique;
                             intMartialArtsPoints += intLoopCost;
 
                             sbdMartialArtsBPToolTip.AppendLine().Append(strSpace).Append('+').Append(strSpace)
@@ -10563,8 +10564,8 @@ namespace Chummer
                     else
                         // Add in the Techniques
                         intMartialArtsPoints += Math.Max(objMartialArt.Techniques.Count - 1, 0)
-                                                * CharacterObjectSettings.KarmaTechnique;
-                }, token);
+                                                * intKarmaTechnique;
+                }, token).ConfigureAwait(false);
 
                 token.ThrowIfCancellationRequested();
 
@@ -10579,19 +10580,19 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             // ------------------------------------------------------------------------------
             // Calculate the BP used by Skill Groups.
-            int intSkillGroupsPoints = objSkillSection.SkillGroups.TotalCostKarma();
+            int intSkillGroupsPoints = await objSkillSection.SkillGroups.SumAsync(x => x.GetCurrentKarmaCostAsync(token).AsTask(), token: token).ConfigureAwait(false);
             intKarmaPointsRemain -= intSkillGroupsPoints;
 
             token.ThrowIfCancellationRequested();
             // ------------------------------------------------------------------------------
             // Calculate the BP used by Active Skills.
-            int skillPointsKarma = objSkillSection.Skills.TotalCostKarma();
+            int skillPointsKarma = await objSkillSection.Skills.SumAsync(x => x.GetCurrentKarmaCostAsync(token).AsTask(), token: token).ConfigureAwait(false);
             intKarmaPointsRemain -= skillPointsKarma;
 
             token.ThrowIfCancellationRequested();
             // ------------------------------------------------------------------------------
             // Calculate the points used by Knowledge Skills.
-            int knowledgeKarmaUsed = objSkillSection.KnowledgeSkills.TotalCostKarma();
+            int knowledgeKarmaUsed = await objSkillSection.KnowledgeSkills.SumAsync(x => x.GetCurrentKarmaCostAsync(token).AsTask(), token: token).ConfigureAwait(false);
 
             token.ThrowIfCancellationRequested();
             //TODO: Remaining is named USED?
@@ -10602,7 +10603,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             // ------------------------------------------------------------------------------
             // Calculate the BP used by Resources/Nuyen.
-            int intNuyenBP = (await CharacterObject.GetNuyenBPAsync(token)).StandardRound();
+            int intNuyenBP = (await CharacterObject.GetNuyenBPAsync(token).ConfigureAwait(false)).StandardRound();
 
             intKarmaPointsRemain -= intNuyenBP;
 
@@ -10620,12 +10621,12 @@ namespace Chummer
                 || (await ImprovementManager.GetCachedImprovementListForValueOfAsync(CharacterObject, Improvement.ImprovementType.FreeSpellsATT, token: token).ConfigureAwait(false)).Count > 0
                 || (await ImprovementManager.GetCachedImprovementListForValueOfAsync(CharacterObject, Improvement.ImprovementType.FreeSpellsSkill, token: token).ConfigureAwait(false)).Count > 0)
             {
-                ThreadSafeObservableCollection<Spell> lstSpells = await CharacterObject.GetSpellsAsync(token);
+                ThreadSafeObservableCollection<Spell> lstSpells = await CharacterObject.GetSpellsAsync(token).ConfigureAwait(false);
                 // Count the number of Spells the character currently has and make sure they do not try to select more Spells than they are allowed.
-                int spells = await lstSpells.CountAsync(spell => spell.Grade == 0 && !spell.Alchemical && spell.Category != "Rituals" && !spell.FreeBonus, token: token);
-                int intTouchOnlySpells = await lstSpells.CountAsync(spell => spell.Grade == 0 && !spell.Alchemical && spell.Category != "Rituals" && (spell.Range == "T (A)" || spell.Range == "T") && !spell.FreeBonus, token: token);
-                int rituals = await lstSpells.CountAsync(spell => spell.Grade == 0 && !spell.Alchemical && spell.Category == "Rituals" && !spell.FreeBonus, token: token);
-                int preps = await lstSpells.CountAsync(spell => spell.Grade == 0 && spell.Alchemical && !spell.FreeBonus, token: token);
+                int spells = await lstSpells.CountAsync(spell => spell.Grade == 0 && !spell.Alchemical && spell.Category != "Rituals" && !spell.FreeBonus, token: token).ConfigureAwait(false);
+                int intTouchOnlySpells = await lstSpells.CountAsync(spell => spell.Grade == 0 && !spell.Alchemical && spell.Category != "Rituals" && (spell.Range == "T (A)" || spell.Range == "T") && !spell.FreeBonus, token: token).ConfigureAwait(false);
+                int rituals = await lstSpells.CountAsync(spell => spell.Grade == 0 && !spell.Alchemical && spell.Category == "Rituals" && !spell.FreeBonus, token: token).ConfigureAwait(false);
+                int preps = await lstSpells.CountAsync(spell => spell.Grade == 0 && spell.Alchemical && !spell.FreeBonus, token: token).ConfigureAwait(false);
 
                 token.ThrowIfCancellationRequested();
 
@@ -10640,7 +10641,7 @@ namespace Chummer
 
                 // Factor in any qualities that can be bought with spell points.
                 // It is only karma-efficient to use spell points for Mastery qualities if real spell karma cost is not greater than unmodified spell karma cost
-                int intKarmaSpell = await CharacterObjectSettings.GetKarmaSpellAsync(token);
+                int intKarmaSpell = await CharacterObjectSettings.GetKarmaSpellAsync(token).ConfigureAwait(false);
                 if (spellCost <= intKarmaSpell && intFreeSpells > 0)
                 {
                     int intQualityKarmaToSpellPoints = intKarmaSpell;
@@ -10684,7 +10685,7 @@ namespace Chummer
                     Skill skill = await objSkillSection.GetActiveSkillAsync(imp.ImprovedName, token).ConfigureAwait(false);
                     if (skill == null)
                         continue;
-                    int intSkillValue = skill.TotalBaseRating;
+                    int intSkillValue = await skill.GetTotalBaseRatingAsync(token).ConfigureAwait(false);
 
                     if (imp.UniqueName.Contains("half"))
                         intSkillValue = (intSkillValue + 1) / 2;
@@ -10694,20 +10695,25 @@ namespace Chummer
                         intLimitMod += intSkillValue;
                     //TODO: I don't like this being hardcoded, even though I know full well CGL are never going to reuse this.
                     spells -= await skill.Specializations.CountAsync(
-                        spec => CharacterObject.Spells.AnyAsync(spell => spell.Category == spec.Name && !spell.FreeBonus, token), token);
+                                             async spec =>
+                                                 await (await CharacterObject.GetSpellsAsync(token)
+                                                                             .ConfigureAwait(false)).AnyAsync(
+                                                     spell => spell.Category == spec.Name && !spell.FreeBonus, token),
+                                             token)
+                                         .ConfigureAwait(false);
                 }
 
                 token.ThrowIfCancellationRequested();
 
-                if (nudMysticAdeptMAGMagician.Value > 0)
+                int intPPBought = await nudMysticAdeptMAGMagician.DoThreadSafeFuncAsync(x => x.ValueAsInt, token).ConfigureAwait(false);
+                if (intPPBought > 0)
                 {
-                    int intPPBought = nudMysticAdeptMAGMagician.ValueAsInt;
                     if (await CharacterObjectSettings.GetPrioritySpellsAsAdeptPowersAsync(token).ConfigureAwait(false))
                     {
                         spells += Math.Min(limit, intPPBought);
                         intPPBought = Math.Max(0, intPPBought - limit);
                     }
-                    intAttributePointsUsed = intPPBought * CharacterObjectSettings.KarmaMysticAdeptPowerPoint;
+                    intAttributePointsUsed = intPPBought * await CharacterObjectSettings.GetKarmaMysticAdeptPowerPointAsync(token).ConfigureAwait(false);
                     intKarmaPointsRemain -= intAttributePointsUsed;
                 }
                 spells -= intTouchOnlySpells - Math.Max(0, intTouchOnlySpells - intLimitModTouchOnly);
@@ -10852,40 +10858,40 @@ namespace Chummer
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdFociPointsTooltip))
             {
-                foreach (Focus objFocus in CharacterObject.Foci)
+                await (await CharacterObject.GetFociAsync(token).ConfigureAwait(false)).ForEachAsync(async objFocus =>
                 {
                     token.ThrowIfCancellationRequested();
                     int intBindingCost = await objFocus.BindingKarmaCostAsync(token).ConfigureAwait(false);
                     intFociPointsUsed += intBindingCost;
 
                     if (!blnDoUIUpdate)
-                        continue;
+                        return;
                     if (sbdFociPointsTooltip.Length > 0)
                         sbdFociPointsTooltip.AppendLine().Append(strSpace).Append('+').Append(strSpace);
-                    sbdFociPointsTooltip.Append(objFocus.GearObject.CurrentDisplayName).Append(strSpace).Append('(')
+                    sbdFociPointsTooltip.Append(await objFocus.GearObject.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)).Append(strSpace).Append('(')
                                         .Append(intBindingCost.ToString(GlobalSettings.CultureInfo))
                                         .Append(')');
-                }
+                }, token).ConfigureAwait(false);
 
                 intKarmaPointsRemain -= intFociPointsUsed;
 
                 // Calculate the BP used by Stacked Foci.
-                foreach (StackedFocus objFocus in CharacterObject.StackedFoci)
+                await (await CharacterObject.GetStackedFociAsync(token).ConfigureAwait(false)).ForEachAsync(async objFocus =>
                 {
                     token.ThrowIfCancellationRequested();
                     if (!objFocus.Bonded)
-                        continue;
-                    int intBindingCost = objFocus.BindingCost;
+                        return;
+                    int intBindingCost = await objFocus.GetBindingCostAsync(token).ConfigureAwait(false);
                     intKarmaPointsRemain -= intBindingCost;
                     intFociPointsUsed += intBindingCost;
 
                     if (!blnDoUIUpdate)
-                        continue;
+                        return;
                     if (sbdFociPointsTooltip.Length > 0)
                         sbdFociPointsTooltip.AppendLine().Append(strSpace).Append('+').Append(strSpace);
-                    sbdFociPointsTooltip.Append(objFocus.CurrentDisplayName).Append(strSpace).Append('(')
+                    sbdFociPointsTooltip.Append(await objFocus.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)).Append(strSpace).Append('(')
                                         .Append(intBindingCost.ToString(GlobalSettings.CultureInfo)).Append(')');
-                }
+                }, token).ConfigureAwait(false);
 
                 intFreestyleBP += intFociPointsUsed;
 
@@ -10900,10 +10906,10 @@ namespace Chummer
             // Calculate the BP used by Spirits and Sprites.
             int intSpiritPointsUsed = 0;
             int intSpritePointsUsed = 0;
-            foreach (Spirit objSpirit in CharacterObject.Spirits)
+            await (await CharacterObject.GetSpiritsAsync(token).ConfigureAwait(false)).ForEachAsync(async objSpirit =>
             {
                 token.ThrowIfCancellationRequested();
-                int intLoopKarma = objSpirit.ServicesOwed * CharacterObjectSettings.KarmaSpirit;
+                int intLoopKarma = objSpirit.ServicesOwed * await CharacterObjectSettings.GetKarmaSpiritAsync(token).ConfigureAwait(false);
                 // Each Sprite costs KarmaSpirit x Services Owed.
                 intKarmaPointsRemain -= intLoopKarma;
                 if (objSpirit.EntityType == SpiritType.Spirit)
@@ -10912,29 +10918,26 @@ namespace Chummer
                     // Each Fettered Spirit costs 3 x Force.
                     if (objSpirit.Fettered)
                     {
-                        intKarmaPointsRemain -= objSpirit.Force * CharacterObjectSettings.KarmaSpiritFettering;
-                        intSpiritPointsUsed += objSpirit.Force * CharacterObjectSettings.KarmaSpiritFettering;
+                        int intTemp = objSpirit.Force
+                                      * await CharacterObjectSettings.GetKarmaSpiritFetteringAsync(token).ConfigureAwait(false);
+                        intKarmaPointsRemain -= intTemp;
+                        intSpiritPointsUsed += intTemp;
                     }
                 }
                 else
                 {
                     intSpritePointsUsed += intLoopKarma;
                 }
-            }
+            }, token: token).ConfigureAwait(false);
             intFreestyleBP += intSpiritPointsUsed + intSpritePointsUsed;
 
             token.ThrowIfCancellationRequested();
             // ------------------------------------------------------------------------------
             // Calculate the BP used by Complex Forms.
-            int intFormsPointsUsed = 0;
-            foreach (ComplexForm objComplexForm in CharacterObject.ComplexForms)
-            {
-                token.ThrowIfCancellationRequested();
-                if (objComplexForm.Grade == 0)
-                    ++intFormsPointsUsed;
-            }
-            if (intFormsPointsUsed > CharacterObject.CFPLimit)
-                intKarmaPointsRemain -= (intFormsPointsUsed - CharacterObject.CFPLimit) * CharacterObject.ComplexFormKarmaCost;
+            int intFormsPointsUsed = await (await CharacterObject.GetComplexFormsAsync(token).ConfigureAwait(false)).CountAsync(x => x.Grade == 0, token).ConfigureAwait(false);
+            int intCfpLimit = await CharacterObject.GetCFPLimitAsync(token).ConfigureAwait(false);
+            if (intFormsPointsUsed > intCfpLimit)
+                intKarmaPointsRemain -= (intFormsPointsUsed - intCfpLimit) * await CharacterObject.GetComplexFormKarmaCostAsync(token).ConfigureAwait(false);
             intFreestyleBP += intFormsPointsUsed;
 
             token.ThrowIfCancellationRequested();
@@ -10942,32 +10945,37 @@ namespace Chummer
             // Calculate the BP used by Programs and Advanced Programs.
             int intAINormalProgramPointsUsed = 0;
             int intAIAdvancedProgramPointsUsed = 0;
-            foreach (AIProgram objProgram in CharacterObject.AIPrograms)
+            await (await CharacterObject.GetAIProgramsAsync(token).ConfigureAwait(false)).ForEachAsync(objProgram =>
             {
                 token.ThrowIfCancellationRequested();
-                if (objProgram.CanDelete)
-                {
-                    if (objProgram.IsAdvancedProgram)
-                        ++intAIAdvancedProgramPointsUsed;
-                    else
-                        ++intAINormalProgramPointsUsed;
-                }
-            }
+                if (!objProgram.CanDelete)
+                    return;
+                if (objProgram.IsAdvancedProgram)
+                    ++intAIAdvancedProgramPointsUsed;
+                else
+                    ++intAINormalProgramPointsUsed;
+            }, token).ConfigureAwait(false);
             int intKarmaCost = 0;
             int intNumAdvancedProgramPointsAsNormalPrograms = 0;
-            if (intAINormalProgramPointsUsed > CharacterObject.AINormalProgramLimit)
+            int intAiNormalProgramLimit = await CharacterObject.GetAINormalProgramLimitAsync(token).ConfigureAwait(false);
+            int intAiAdvancedProgramLimit = await CharacterObject.GetAIAdvancedProgramLimitAsync(token).ConfigureAwait(false);
+            int intAiNormalProgramKarmaCost = await CharacterObject.GetAIProgramKarmaCostAsync(token).ConfigureAwait(false);
+            int intAiAdvancedProgramKarmaCost = await CharacterObject.GetAIAdvancedProgramKarmaCostAsync(token).ConfigureAwait(false);
+            if (intAINormalProgramPointsUsed > intAiNormalProgramLimit)
             {
-                if (intAIAdvancedProgramPointsUsed < CharacterObject.AIAdvancedProgramLimit)
+                if (intAIAdvancedProgramPointsUsed < intAiAdvancedProgramLimit)
                 {
-                    intNumAdvancedProgramPointsAsNormalPrograms = Math.Min(intAINormalProgramPointsUsed - CharacterObject.AINormalProgramLimit, CharacterObject.AIAdvancedProgramLimit - intAIAdvancedProgramPointsUsed);
+                    intNumAdvancedProgramPointsAsNormalPrograms = Math.Min(
+                        intAINormalProgramPointsUsed - intAiNormalProgramLimit,
+                        intAiAdvancedProgramLimit - intAIAdvancedProgramPointsUsed);
                     intAINormalProgramPointsUsed -= intNumAdvancedProgramPointsAsNormalPrograms;
                 }
-                if (intAINormalProgramPointsUsed > CharacterObject.AINormalProgramLimit)
-                    intKarmaCost += (intAINormalProgramPointsUsed - CharacterObject.AINormalProgramLimit) * CharacterObject.AIProgramKarmaCost;
+                if (intAINormalProgramPointsUsed > intAiNormalProgramLimit)
+                    intKarmaCost += (intAINormalProgramPointsUsed - intAiNormalProgramLimit) * intAiNormalProgramKarmaCost;
             }
-            if (intAIAdvancedProgramPointsUsed > CharacterObject.AIAdvancedProgramLimit)
+            if (intAIAdvancedProgramPointsUsed > intAiAdvancedProgramLimit)
             {
-                intKarmaCost += (intAIAdvancedProgramPointsUsed - CharacterObject.AIAdvancedProgramLimit) * CharacterObject.AIAdvancedProgramKarmaCost;
+                intKarmaCost += (intAIAdvancedProgramPointsUsed - intAiAdvancedProgramLimit) * intAiAdvancedProgramKarmaCost;
             }
             intKarmaPointsRemain -= intKarmaCost;
             intFreestyleBP += intAIAdvancedProgramPointsUsed + intAINormalProgramPointsUsed + intNumAdvancedProgramPointsAsNormalPrograms;
@@ -10976,49 +10984,35 @@ namespace Chummer
             // ------------------------------------------------------------------------------
             // Calculate the BP used by Initiation.
             int intInitiationPoints = 0;
-            foreach (InitiationGrade objGrade in CharacterObject.InitiationGrades)
+            await (await CharacterObject.GetInitiationGradesAsync(token).ConfigureAwait(false)).ForEachAsync(async objGrade =>
             {
-                token.ThrowIfCancellationRequested();
                 intInitiationPoints += objGrade.KarmaCost;
                 // Add the Karma cost of extra Metamagic/Echoes to the Initiation cost.
-                int metamagicKarma = Math.Max(await CharacterObject.Metamagics.CountAsync(x => x.Grade == objGrade.Grade, token: token) - 1, 0);
-                intInitiationPoints += CharacterObjectSettings.KarmaMetamagic * metamagicKarma;
-            }
+                int metamagicKarma = Math.Max(await (await CharacterObject.GetMetamagicsAsync(token).ConfigureAwait(false)).CountAsync(x => x.Grade == objGrade.Grade, token: token).ConfigureAwait(false) - 1, 0);
+                intInitiationPoints += await CharacterObjectSettings.GetKarmaMetamagicAsync(token).ConfigureAwait(false) * metamagicKarma;
+            }, token).ConfigureAwait(false);
 
             // Add the Karma cost of extra Metamagic/Echoes to the Initiation cost.
-            intInitiationPoints += CharacterObject.Enhancements.Count * 2;
-            /*
-            foreach (Enhancement objEnhancement in CharacterObject.Enhancements)
-            {
-                intInitiationPoints += 2;
-            }
-            */
-            foreach (Power objPower in CharacterObject.Powers)
-            {
-                token.ThrowIfCancellationRequested();
-                intInitiationPoints += objPower.Enhancements.Count * 2;
-                /*
-                foreach (Enhancement objEnhancement in objPower.Enhancements)
-                    intInitiationPoints += 2;
-                    */
-            }
+            intInitiationPoints += (await CharacterObject.GetEnhancementsAsync(token).ConfigureAwait(false)).Count * 2;
+            await (await CharacterObject.GetPowersAsync(token).ConfigureAwait(false)).ForEachAsync(
+                objPower => intInitiationPoints += objPower.Enhancements.Count * 2, token).ConfigureAwait(false);
 
             // Joining a Network does not cost Karma for Technomancers, so this only applies to Magicians/Adepts.
             // Check to see if the character is a member of a Group.
-            if (CharacterObject.GroupMember && CharacterObject.MAGEnabled)
-                intInitiationPoints += CharacterObjectSettings.KarmaJoinGroup;
+            if (await CharacterObject.GetGroupMemberAsync(token).ConfigureAwait(false) && await CharacterObject.GetMAGEnabledAsync(token).ConfigureAwait(false))
+                intInitiationPoints += await CharacterObjectSettings.GetKarmaJoinGroupAsync(token).ConfigureAwait(false);
 
             intKarmaPointsRemain -= intInitiationPoints;
             intFreestyleBP += intInitiationPoints;
 
             // Add the Karma cost of any Critter Powers.
-            foreach (CritterPower objPower in CharacterObject.CritterPowers)
+            foreach (CritterPower objPower in await CharacterObject.GetCritterPowersAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 intKarmaPointsRemain -= objPower.Karma;
             }
 
-            await CharacterObject.SetKarmaAsync(intKarmaPointsRemain, token);
+            await CharacterObject.SetKarmaAsync(intKarmaPointsRemain, token).ConfigureAwait(false);
 
             if (!blnDoUIUpdate)
                 return intKarmaPointsRemain;
@@ -11067,15 +11061,15 @@ namespace Chummer
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdComplexFormsBP))
             {
-                if (CharacterObject.CFPLimit > 0)
+                if (intCfpLimit > 0)
                 {
                     sbdComplexFormsBP.Append(intFormsPointsUsed.ToString(GlobalSettings.CultureInfo)).Append(strOf)
-                                     .Append(CharacterObject.CFPLimit.ToString(GlobalSettings.CultureInfo));
-                    if (intFormsPointsUsed > CharacterObject.CFPLimit)
+                                     .Append(intCfpLimit.ToString(GlobalSettings.CultureInfo));
+                    if (intFormsPointsUsed > intCfpLimit)
                     {
                         sbdComplexFormsBP.Append(strColon).Append(strSpace)
-                                         .Append(((intFormsPointsUsed - CharacterObject.CFPLimit)
-                                                  * CharacterObject.ComplexFormKarmaCost)
+                                         .Append(((intFormsPointsUsed - intCfpLimit)
+                                                  * await CharacterObject.GetComplexFormKarmaCostAsync(token).ConfigureAwait(false))
                                                  .ToString(GlobalSettings.CultureInfo)).Append(strSpace)
                                          .Append(strPoints);
                     }
@@ -11083,25 +11077,25 @@ namespace Chummer
                 else
                 {
                     sbdComplexFormsBP
-                        .Append(((intFormsPointsUsed - CharacterObject.CFPLimit) * CharacterObject.ComplexFormKarmaCost)
+                        .Append(((intFormsPointsUsed - intCfpLimit) * await CharacterObject.GetComplexFormKarmaCostAsync(token).ConfigureAwait(false))
                                 .ToString(GlobalSettings.CultureInfo)).Append(strSpace).Append(strPoints);
                 }
                 await lblComplexFormsBP.DoThreadSafeAsync(x => x.Text = sbdComplexFormsBP.ToString(), token).ConfigureAwait(false);
             }
             await lblAINormalProgramsBP.DoThreadSafeAsync(
-                x => x.Text = ((intAINormalProgramPointsUsed - CharacterObject.AINormalProgramLimit)
-                               * CharacterObject.AIProgramKarmaCost).ToString(GlobalSettings.CultureInfo) + strSpace
+                x => x.Text = ((intAINormalProgramPointsUsed - intAiNormalProgramLimit)
+                               * intAiNormalProgramKarmaCost).ToString(GlobalSettings.CultureInfo) + strSpace
                     + strPoints, token).ConfigureAwait(false);
             await lblAIAdvancedProgramsBP.DoThreadSafeAsync(
-                x => x.Text = ((intAIAdvancedProgramPointsUsed - CharacterObject.AIAdvancedProgramLimit)
-                               * CharacterObject.AIAdvancedProgramKarmaCost).ToString(GlobalSettings.CultureInfo)
+                x => x.Text = ((intAIAdvancedProgramPointsUsed - intAiAdvancedProgramLimit)
+                               * intAiAdvancedProgramKarmaCost).ToString(GlobalSettings.CultureInfo)
                               + strSpace + strPoints, token).ConfigureAwait(false);
             await lblInitiationBP.DoThreadSafeAsync(x => x.Text = intInitiationPoints.ToString(GlobalSettings.CultureInfo)
                                                                   + strSpace + strPoints, token).ConfigureAwait(false);
             // ------------------------------------------------------------------------------
             // Update the number of BP remaining in the StatusBar.
             Color objControlTextColor = await ColorManager.ControlTextAsync.ConfigureAwait(false);
-            int intBuildKarma = _blnFreestyle ? 0 : await CharacterObjectSettings.GetBuildKarmaAsync(token);
+            int intBuildKarma = _blnFreestyle ? 0 : await CharacterObjectSettings.GetBuildKarmaAsync(token).ConfigureAwait(false);
             await tsMain.DoThreadSafeAsync(() =>
             {
                 tslKarmaRemaining.Text = intKarmaPointsRemain.ToString(GlobalSettings.CultureInfo);
@@ -11138,7 +11132,7 @@ namespace Chummer
             {
                 strTemp = CharacterObject.SkillsSection.SkillPoints.ToString(GlobalSettings.CultureInfo) + strOf + intActiveSkillPointsMaximum.ToString(GlobalSettings.CultureInfo);
             }
-            int intActiveSkillsTotalCostKarma = CharacterObject.SkillsSection.Skills.TotalCostKarma();
+            int intActiveSkillsTotalCostKarma = await CharacterObject.SkillsSection.Skills.SumAsync(x => x.CurrentKarmaCost, token: token);
             if (intActiveSkillsTotalCostKarma > 0)
             {
                 if (strTemp != strZeroKarma)
@@ -11158,7 +11152,9 @@ namespace Chummer
             {
                 strTemp2 = CharacterObject.SkillsSection.KnowledgeSkillPointsRemain.ToString(GlobalSettings.CultureInfo) + strOf + intKnowledgeSkillPointsMaximum.ToString(GlobalSettings.CultureInfo);
             }
-            int intKnowledgeSkillsTotalCostKarma = CharacterObject.SkillsSection.KnowledgeSkills.TotalCostKarma();
+
+            int intKnowledgeSkillsTotalCostKarma
+                = await CharacterObject.SkillsSection.KnowledgeSkills.SumAsync(x => x.CurrentKarmaCost, token: token);
             if (intKnowledgeSkillsTotalCostKarma > 0)
             {
                 if (strTemp2 != strZeroKarma)
@@ -11178,7 +11174,7 @@ namespace Chummer
             {
                 strTemp3 = CharacterObject.SkillsSection.SkillGroupPoints.ToString(GlobalSettings.CultureInfo) + strOf + intSkillGroupPointsMaximum.ToString(GlobalSettings.CultureInfo);
             }
-            int intSkillGroupsTotalCostKarma = CharacterObject.SkillsSection.SkillGroups.TotalCostKarma();
+            int intSkillGroupsTotalCostKarma = await CharacterObject.SkillsSection.SkillGroups.SumAsync(x => x.GetCurrentKarmaCostAsync(token).AsTask(), token: token);
             if (intSkillGroupsTotalCostKarma > 0)
             {
                 if (strTemp3 != strZeroKarma)
@@ -11605,7 +11601,7 @@ namespace Chummer
                                                                                  ? "cyberware.xml"
                                                                                  : "bioware.xml", token: token))
                                                                      .SelectSingleNodeAndCacheExpressionAsync(
-                                                                         "/chummer"), token)
+                                                                         "/chummer", token: token), token)
                                                              .Contains(objCyberware.Category);
                             await chkCyberwareBlackMarketDiscount.DoThreadSafeAsync(x =>
                             {
@@ -11727,7 +11723,7 @@ namespace Chummer
                                                                                await (await CharacterObject
                                                                                        .LoadDataXPathAsync("gear.xml", token: token))
                                                                                    .SelectSingleNodeAndCacheExpressionAsync(
-                                                                                       "/chummer"), token)
+                                                                                       "/chummer", token: token), token)
                                                                            .Contains(objGear.Category);
                             await chkCyberwareBlackMarketDiscount.DoThreadSafeAsync(x =>
                             {
@@ -11934,7 +11930,7 @@ namespace Chummer
                                                                                          .LoadDataXPathAsync(
                                                                                              "weapons.xml", token: token))
                                                                                      .SelectSingleNodeAndCacheExpressionAsync(
-                                                                                         "/chummer"), token)
+                                                                                         "/chummer", token: token), token)
                                                                              .Contains(objWeapon.Category);
                             await chkWeaponBlackMarketDiscount.DoThreadSafeAsync(x =>
                             {
@@ -12191,7 +12187,7 @@ namespace Chummer
                                                      await (await CharacterObject
                                                              .LoadDataXPathAsync("weapons.xml", token: token))
                                                          .SelectSingleNodeAndCacheExpressionAsync(
-                                                             "/chummer"), token)
+                                                             "/chummer", token: token), token)
                                                  .Contains(objSelectedAccessory.Parent?.Category);
                             await chkWeaponBlackMarketDiscount.DoThreadSafeAsync(x =>
                             {
@@ -12390,7 +12386,7 @@ namespace Chummer
                                                                                await (await CharacterObject
                                                                                        .LoadDataXPathAsync("gear.xml", token: token))
                                                                                    .SelectSingleNodeAndCacheExpressionAsync(
-                                                                                       "/chummer"), token)
+                                                                                       "/chummer", token: token), token)
                                                                            .Contains(objGear.Category);
                             await chkWeaponBlackMarketDiscount.DoThreadSafeAsync(x =>
                             {
@@ -12555,7 +12551,7 @@ namespace Chummer
                                               await (await CharacterObject.LoadDataXPathAsync(
                                                       "armor.xml", token: token))
                                                   .SelectSingleNodeAndCacheExpressionAsync(
-                                                      "/chummer"), token).Contains(objArmor.Category);
+                                                      "/chummer", token: token), token).Contains(objArmor.Category);
                         await chkArmorBlackMarketDiscount.DoThreadSafeAsync(x =>
                         {
                             x.Enabled = blnEnabled;
@@ -12688,7 +12684,7 @@ namespace Chummer
                                                                                           .LoadDataXPathAsync(
                                                                                               "armor.xml", token: token))
                                                                                       .SelectSingleNodeAndCacheExpressionAsync(
-                                                                                          "/chummer/modcategories"), token)
+                                                                                          "/chummer/modcategories", token: token), token)
                                                                               .Contains(objArmorMod.Category);
                             await chkArmorBlackMarketDiscount.DoThreadSafeAsync(x =>
                             {
@@ -12777,7 +12773,7 @@ namespace Chummer
                                                                      .LoadDataXPathAsync(
                                                                          "gear.xml", token: token))
                                                                  .SelectSingleNodeAndCacheExpressionAsync(
-                                                                     "/chummer"), token)
+                                                                     "/chummer", token: token), token)
                                                          .Contains(objSelectedGear.Category);
                                     await chkArmorBlackMarketDiscount.DoThreadSafeAsync(x =>
                                     {
@@ -13099,7 +13095,7 @@ namespace Chummer
                                                                            await (await CharacterObject
                                                                                    .LoadDataXPathAsync("gear.xml", token: token))
                                                                                .SelectSingleNodeAndCacheExpressionAsync(
-                                                                                   "/chummer"), token)
+                                                                                   "/chummer", token: token), token)
                                                                        .Contains(objGear.Category);
                         await chkGearBlackMarketDiscount.DoThreadSafeAsync(x =>
                         {
@@ -14205,7 +14201,7 @@ namespace Chummer
                                                   await (await CharacterObject.LoadDataXPathAsync(
                                                           "vehicles.xml", token: token))
                                                       .SelectSingleNodeAndCacheExpressionAsync(
-                                                          "/chummer"), token)
+                                                          "/chummer", token: token), token)
                                               .Contains(objVehicle.Category);
                             await chkVehicleBlackMarketDiscount.DoThreadSafeAsync(x =>
                             {
@@ -14380,7 +14376,7 @@ namespace Chummer
                             bool blnEnabled = !objWeaponMount.IncludedInVehicle && CharacterObject
                                 .GenerateBlackMarketMappings(
                                     await (await CharacterObject.LoadDataXPathAsync("vehicles.xml", token: token))
-                                        .SelectSingleNodeAndCacheExpressionAsync("/chummer/weaponmountcategories"), token)
+                                        .SelectSingleNodeAndCacheExpressionAsync("/chummer/weaponmountcategories", token: token), token)
                                 .Contains(objWeaponMount.Category);
                             await chkVehicleBlackMarketDiscount.DoThreadSafeAsync(x =>
                             {
@@ -14498,7 +14494,7 @@ namespace Chummer
                                                                                        .LoadDataXPathAsync(
                                                                                            "weapons.xml", token: token))
                                                                                    .SelectSingleNodeAndCacheExpressionAsync(
-                                                                                       "/chummer/modcategories"), token)
+                                                                                       "/chummer/modcategories", token: token), token)
                                                                            .Contains(objMod.Category);
                             await chkVehicleBlackMarketDiscount.DoThreadSafeAsync(x =>
                             {
@@ -14596,7 +14592,7 @@ namespace Chummer
                                                                                          .LoadDataXPathAsync(
                                                                                              "weapons.xml", token: token))
                                                                                      .SelectSingleNodeAndCacheExpressionAsync(
-                                                                                         "/chummer"), token)
+                                                                                         "/chummer", token: token), token)
                                                                              .Contains(objWeapon.Category);
                             await chkVehicleBlackMarketDiscount.DoThreadSafeAsync(x =>
                             {
@@ -14873,7 +14869,7 @@ namespace Chummer
                                             .LoadDataXPathAsync(
                                                 "weapons.xml", token: token))
                                         .SelectSingleNodeAndCacheExpressionAsync(
-                                            "/chummer"), token)
+                                            "/chummer", token: token), token)
                                 .Contains(objAccessory.Parent.Category);
                             await chkVehicleBlackMarketDiscount.DoThreadSafeAsync(x =>
                             {
@@ -15048,7 +15044,7 @@ namespace Chummer
                                                                              == Improvement.ImprovementSource.Cyberware
                                                                                  ? "cyberware.xml"
                                                                                  : "bioware.xml", token: token))
-                                                                     .SelectSingleNodeAndCacheExpressionAsync("/chummer"), token)
+                                                                     .SelectSingleNodeAndCacheExpressionAsync("/chummer", token: token), token)
                                                              .Contains(objCyberware.Category);
                             await chkVehicleBlackMarketDiscount.DoThreadSafeAsync(x =>
                             {
@@ -15199,7 +15195,7 @@ namespace Chummer
                                                                                await (await CharacterObject
                                                                                        .LoadDataXPathAsync("gear.xml", token: token))
                                                                                    .SelectSingleNodeAndCacheExpressionAsync(
-                                                                                       "/chummer"), token)
+                                                                                       "/chummer", token: token), token)
                                                                            .Contains(objGear.Category);
                             await chkVehicleBlackMarketDiscount.DoThreadSafeAsync(x =>
                             {

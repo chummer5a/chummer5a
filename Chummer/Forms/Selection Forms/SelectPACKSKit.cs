@@ -191,7 +191,7 @@ namespace Chummer
                             string strNameUpper = objXmlAttribute.Name.ToUpperInvariant();
                             TreeNode objChild = new TreeNode
                             {
-                                Text = await LanguageManager.GetStringAsync("String_Attribute" + strNameUpper + "Short") + strSpace + (objXmlAttribute.ValueAsInt - (6 - _objCharacter.GetAttribute(strNameUpper).MetatypeMaximum)).ToString(GlobalSettings.CultureInfo)
+                                Text = await LanguageManager.GetStringAsync("String_Attribute" + strNameUpper + "Short") + strSpace + (objXmlAttribute.ValueAsInt - (6 - await (await _objCharacter.GetAttributeAsync(strNameUpper)).GetMetatypeMaximumAsync())).ToString(GlobalSettings.CultureInfo)
                             };
                             objParent.Nodes.Add(objChild);
                         }

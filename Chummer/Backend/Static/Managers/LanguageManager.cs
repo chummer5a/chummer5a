@@ -1918,7 +1918,7 @@ namespace Chummer
 
                 token.ThrowIfCancellationRequested();
 
-                XPathNavigator node = await xmlDocument.CreateNavigator().SelectSingleNodeAndCacheExpressionAsync("/chummer/name").ConfigureAwait(false);
+                XPathNavigator node = await xmlDocument.CreateNavigator().SelectSingleNodeAndCacheExpressionAsync("/chummer/name", token: token).ConfigureAwait(false);
 
                 if (node == null)
                     continue;

@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 
@@ -89,11 +90,11 @@ namespace Chummer.Backend.Skills
                 : CharacterObject.TranslateExtra(Specific, strLanguage);
         }
 
-        public async ValueTask<string> DisplaySpecificAsync(string strLanguage)
+        public async ValueTask<string> DisplaySpecificAsync(string strLanguage, CancellationToken token = default)
         {
             return strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
                 ? Specific
-                : await CharacterObject.TranslateExtraAsync(Specific, strLanguage);
+                : await CharacterObject.TranslateExtraAsync(Specific, strLanguage, token: token);
         }
 
         public override string DisplaySpecialization(string strLanguage)
@@ -101,9 +102,9 @@ namespace Chummer.Backend.Skills
             return DisplaySpecific(strLanguage);
         }
 
-        public override ValueTask<string> DisplaySpecializationAsync(string strLanguage)
+        public override ValueTask<string> DisplaySpecializationAsync(string strLanguage, CancellationToken token = default)
         {
-            return DisplaySpecificAsync(strLanguage);
+            return DisplaySpecificAsync(strLanguage, token);
         }
     }
 }

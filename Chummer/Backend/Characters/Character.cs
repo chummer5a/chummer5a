@@ -4789,11 +4789,11 @@ namespace Chummer
                                            out HashSet<string> setSavedBooks))
                                 {
                                     foreach (XPathNavigator xmlBook in (blnSync
-                                                 // ReSharper disable once MethodHasAsyncOverload
+                                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                  ? xmlCharacterNavigator.SelectAndCacheExpression(
                                                      "sources/source")
                                                  : await xmlCharacterNavigator.SelectAndCacheExpressionAsync(
-                                                     "sources/source").ConfigureAwait(false)))
+                                                     "sources/source", token: token).ConfigureAwait(false)))
                                     {
                                         if (!string.IsNullOrEmpty(xmlBook.Value))
                                             setSavedBooks.Add(xmlBook.Value);
@@ -4803,11 +4803,11 @@ namespace Chummer
                                         setSavedBooks.AddRange(objDefaultSettings.Books);
 
                                     XPathNodeIterator xmlCustomDirectoryNames = blnSync
-                                        // ReSharper disable once MethodHasAsyncOverload
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         ? xmlCharacterNavigator.SelectAndCacheExpression(
                                             "customdatadirectorynames/directoryname")
                                         : await xmlCharacterNavigator.SelectAndCacheExpressionAsync(
-                                            "customdatadirectorynames/directoryname").ConfigureAwait(false);
+                                            "customdatadirectorynames/directoryname", token: token).ConfigureAwait(false);
                                     List<string> lstSavedCustomDataDirectoryNames
                                         = new List<string>(xmlCustomDirectoryNames.Count);
                                     foreach (XPathNavigator xmlCustomDataDirectoryName in xmlCustomDirectoryNames)
@@ -5313,11 +5313,11 @@ namespace Chummer
                                 else
                                     await _lstPrioritySkills.ClearAsync(token).ConfigureAwait(false);
                                 foreach (XPathNavigator xmlSkillName in (blnSync
-                                             // ReSharper disable once MethodHasAsyncOverload
+                                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                              ? xmlCharacterNavigator.SelectAndCacheExpression(
                                                  "priorityskills/priorityskill")
                                              : await xmlCharacterNavigator.SelectAndCacheExpressionAsync(
-                                                 "priorityskills/priorityskill").ConfigureAwait(false)))
+                                                 "priorityskills/priorityskill", token: token).ConfigureAwait(false)))
                                 {
                                     if (blnSync)
                                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
@@ -5655,10 +5655,10 @@ namespace Chummer
                                 // Contacts.
                                 foreach (XPathNavigator xmlContact in
                                          (blnSync
-                                             // ReSharper disable once MethodHasAsyncOverload
+                                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                              ? xmlCharacterNavigator.SelectAndCacheExpression("contacts/contact")
                                              : await xmlCharacterNavigator.SelectAndCacheExpressionAsync(
-                                                 "contacts/contact").ConfigureAwait(false)))
+                                                 "contacts/contact", token: token).ConfigureAwait(false)))
                                 {
                                     Contact objContact = new Contact(this);
                                     objContact.Load(xmlContact);
@@ -6873,10 +6873,10 @@ namespace Chummer
                             {
                                 // Spirits/Sprites.
                                 foreach (XPathNavigator xmlSpirit in (blnSync
-                                             // ReSharper disable once MethodHasAsyncOverload
+                                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                              ? xmlCharacterNavigator.SelectAndCacheExpression("spirits/spirit")
                                              : await xmlCharacterNavigator.SelectAndCacheExpressionAsync(
-                                                 "spirits/spirit").ConfigureAwait(false)))
+                                                 "spirits/spirit", token: token).ConfigureAwait(false)))
                                 {
                                     Spirit objSpirit = new Spirit(this);
                                     objSpirit.Load(xmlSpirit);
@@ -8050,20 +8050,20 @@ namespace Chummer
                                                             MetavariantGuid.ToString(
                                                                 "D", GlobalSettings.InvariantCultureInfo), token: token);
                     // <movement />
-                    await objWriter.WriteElementStringAsync("movement", FullMovement(objCulture, strLanguageToPrint), token: token);
+                    await objWriter.WriteElementStringAsync("movement", await FullMovementAsync(objCulture, strLanguageToPrint, token), token: token);
                     // <walk />
-                    await objWriter.WriteElementStringAsync("walk", FullMovement(objCulture, strLanguageToPrint), token: token);
+                    await objWriter.WriteElementStringAsync("walk", await FullMovementAsync(objCulture, strLanguageToPrint, token), token: token);
                     // <run />
-                    await objWriter.WriteElementStringAsync("run", FullMovement(objCulture, strLanguageToPrint), token: token);
+                    await objWriter.WriteElementStringAsync("run", await FullMovementAsync(objCulture, strLanguageToPrint, token), token: token);
                     // <sprint />
-                    await objWriter.WriteElementStringAsync("sprint", FullMovement(objCulture, strLanguageToPrint), token: token);
+                    await objWriter.WriteElementStringAsync("sprint", await FullMovementAsync(objCulture, strLanguageToPrint, token), token: token);
                     // <movementwalk />
                     await objWriter.WriteElementStringAsync("movementwalk",
-                                                            GetMovement(objCulture, strLanguageToPrint), token: token);
+                                                            await GetMovementAsync(objCulture, strLanguageToPrint, token), token: token);
                     // <movementswim />
-                    await objWriter.WriteElementStringAsync("movementswim", GetSwim(objCulture, strLanguageToPrint), token: token);
+                    await objWriter.WriteElementStringAsync("movementswim", await GetSwimAsync(objCulture, strLanguageToPrint, token), token: token);
                     // <movementfly />
-                    await objWriter.WriteElementStringAsync("movementfly", GetFly(objCulture, strLanguageToPrint), token: token);
+                    await objWriter.WriteElementStringAsync("movementfly", await GetFlyAsync(objCulture, strLanguageToPrint, token), token: token);
 
                     // <prioritymetatype />
                     await objWriter.WriteElementStringAsync("prioritymetatype", MetatypePriority, token: token);
@@ -10222,9 +10222,9 @@ namespace Chummer
                                                                                       && x.SourceType == eSource);
                             if (objCyberware != null)
                             {
-                                string strWareReturn = await objCyberware.DisplayNameShortAsync(strLanguage);
+                                string strWareReturn = await objCyberware.DisplayNameShortAsync(strLanguage, token);
                                 if (objCyberware.Parent != null)
-                                    strWareReturn += strSpace + '(' + await objCyberware.Parent.DisplayNameShortAsync(strLanguage)
+                                    strWareReturn += strSpace + '(' + await objCyberware.Parent.DisplayNameShortAsync(strLanguage, token)
                                                      + ')';
                                 if (blnWireless)
                                     strWareReturn += strSpace + await LanguageManager.GetStringAsync("String_Wireless", strLanguage, token: token);
@@ -10240,12 +10240,12 @@ namespace Chummer
                                     if (objCyberware != null)
                                     {
                                         string strWareReturn
-                                            = await objCyberware.DisplayNameShortAsync(strLanguage) + strSpace + '('
-                                              + objVehicle.DisplayNameShort(strLanguage) + ','
-                                              + strSpace + await objVehicleMod.DisplayNameShortAsync(strLanguage);
+                                            = await objCyberware.DisplayNameShortAsync(strLanguage, token) + strSpace + '('
+                                              + await objVehicle.DisplayNameShortAsync(strLanguage, token) + ','
+                                              + strSpace + await objVehicleMod.DisplayNameShortAsync(strLanguage, token: token);
                                         if (objCyberware.Parent != null)
                                             strWareReturn += ',' + strSpace
-                                                                 + await objCyberware.Parent.DisplayNameShortAsync(strLanguage);
+                                                                 + await objCyberware.Parent.DisplayNameShortAsync(strLanguage, token);
                                         strWareReturn += ')';
                                         if (blnWireless)
                                             strWareReturn
@@ -10263,13 +10263,13 @@ namespace Chummer
                                         if (objCyberware != null)
                                         {
                                             string strWareReturn
-                                                = await objCyberware.DisplayNameShortAsync(strLanguage) + strSpace + '('
-                                                  + objVehicle.DisplayNameShort(strLanguage) + ',' + strSpace
-                                                  + objMount.DisplayNameShort(strLanguage) + ','
-                                                  + strSpace + await objVehicleMod.DisplayNameShortAsync(strLanguage);
+                                                = await objCyberware.DisplayNameShortAsync(strLanguage, token) + strSpace + '('
+                                                  + await objVehicle.DisplayNameShortAsync(strLanguage, token) + ',' + strSpace
+                                                  + await objMount.DisplayNameShortAsync(strLanguage, token) + ','
+                                                  + strSpace + await objVehicleMod.DisplayNameShortAsync(strLanguage, token);
                                             if (objCyberware.Parent != null)
                                                 strWareReturn += ',' + strSpace
-                                                                     + await objCyberware.Parent.DisplayNameShortAsync(strLanguage);
+                                                                     + await objCyberware.Parent.DisplayNameShortAsync(strLanguage, token);
                                             strWareReturn += ')';
                                             if (blnWireless)
                                                 strWareReturn += strSpace
@@ -10289,9 +10289,9 @@ namespace Chummer
                                 Gear.DeepFirstOrDefault(x => x.Children, x => x.InternalId == strImprovedSourceName);
                             if (objReturnGear != null)
                             {
-                                string strGearReturn = await objReturnGear.DisplayNameShortAsync(strLanguage);
+                                string strGearReturn = await objReturnGear.DisplayNameShortAsync(strLanguage, token: token);
                                 if (objReturnGear.Parent is Gear parent)
-                                    strGearReturn += strSpace + '(' + await parent.DisplayNameShortAsync(strLanguage) + ')';
+                                    strGearReturn += strSpace + '(' + await parent.DisplayNameShortAsync(strLanguage, token: token) + ')';
                                 if (blnWireless)
                                     strGearReturn += strSpace + await LanguageManager.GetStringAsync("String_Wireless", strLanguage, token: token);
                                 return strGearReturn;
@@ -10302,17 +10302,17 @@ namespace Chummer
 
                             if (objReturnGear != null)
                             {
-                                string strGearReturn = await objReturnGear.DisplayNameShortAsync(strLanguage);
+                                string strGearReturn = await objReturnGear.DisplayNameShortAsync(strLanguage, token: token);
                                 if (objReturnGear.Parent is Gear parent)
-                                    strGearReturn += strSpace + '(' + await objGearAccessory.Parent.DisplayNameShortAsync(strLanguage)
+                                    strGearReturn += strSpace + '(' + await objGearAccessory.Parent.DisplayNameShortAsync(strLanguage, token: token)
                                                      + ','
                                                      + strSpace
-                                                     + await objGearAccessory.DisplayNameShortAsync(strLanguage) + ',' + strSpace
-                                                     + await parent.DisplayNameShortAsync(strLanguage) + ')';
+                                                     + await objGearAccessory.DisplayNameShortAsync(strLanguage, token: token) + ',' + strSpace
+                                                     + await parent.DisplayNameShortAsync(strLanguage, token) + ')';
                                 else
-                                    strGearReturn += strSpace + '(' + await objGearAccessory.Parent.DisplayNameShortAsync(strLanguage)
+                                    strGearReturn += strSpace + '(' + await objGearAccessory.Parent.DisplayNameShortAsync(strLanguage, token: token)
                                                      + ','
-                                                     + strSpace + await objGearAccessory.DisplayNameShortAsync(strLanguage) + ')';
+                                                     + strSpace + await objGearAccessory.DisplayNameShortAsync(strLanguage, token: token) + ')';
                                 if (blnWireless)
                                     strGearReturn
                                         += strSpace + await LanguageManager.GetStringAsync("String_Wireless", strLanguage, token: token);
@@ -10323,20 +10323,20 @@ namespace Chummer
                                 = Armor.FindArmorGear(strImprovedSourceName, out Armor objArmor, out ArmorMod objArmorMod);
                             if (objReturnGear != null)
                             {
-                                string strGearReturn = await objReturnGear.DisplayNameShortAsync(strLanguage);
+                                string strGearReturn = await objReturnGear.DisplayNameShortAsync(strLanguage, token);
                                 if (objReturnGear.Parent is Gear objParent)
                                 {
-                                    strGearReturn += strSpace + '(' + await objArmor.DisplayNameShortAsync(strLanguage) + ','
+                                    strGearReturn += strSpace + '(' + await objArmor.DisplayNameShortAsync(strLanguage, token) + ','
                                                      + strSpace
-                                                     + await objArmorMod.DisplayNameShortAsync(strLanguage) + ',' + strSpace
-                                                     + await objParent.DisplayNameShortAsync(strLanguage) + ')';
+                                                     + await objArmorMod.DisplayNameShortAsync(strLanguage, token) + ',' + strSpace
+                                                     + await objParent.DisplayNameShortAsync(strLanguage, token) + ')';
                                 }
                                 else if (objArmorMod != null)
-                                    strGearReturn += strSpace + '(' + await objArmor.DisplayNameShortAsync(strLanguage) + ','
+                                    strGearReturn += strSpace + '(' + await objArmor.DisplayNameShortAsync(strLanguage, token) + ','
                                                      + strSpace
-                                                     + await objArmorMod.DisplayNameShortAsync(strLanguage) + ')';
+                                                     + await objArmorMod.DisplayNameShortAsync(strLanguage, token) + ')';
                                 else
-                                    strGearReturn += strSpace + '(' + await objArmor.DisplayNameShortAsync(strLanguage) + ')';
+                                    strGearReturn += strSpace + '(' + await objArmor.DisplayNameShortAsync(strLanguage, token) + ')';
 
                                 if (blnWireless)
                                     strGearReturn += strSpace + await LanguageManager.GetStringAsync("String_Wireless", strLanguage, token: token);
@@ -10348,13 +10348,13 @@ namespace Chummer
 
                             if (objReturnGear != null)
                             {
-                                string strGearReturn = await objReturnGear.DisplayNameShortAsync(strLanguage);
+                                string strGearReturn = await objReturnGear.DisplayNameShortAsync(strLanguage, token: token);
                                 if (objReturnGear.Parent is Gear parent)
-                                    strGearReturn += strSpace + '(' + await objGearCyberware.DisplayNameShortAsync(strLanguage) + ','
+                                    strGearReturn += strSpace + '(' + await objGearCyberware.DisplayNameShortAsync(strLanguage, token: token) + ','
                                                      + strSpace
-                                                     + strSpace + await parent.DisplayNameShortAsync(strLanguage) + ')';
+                                                     + strSpace + await parent.DisplayNameShortAsync(strLanguage, token: token) + ')';
                                 else
-                                    strGearReturn += strSpace + '(' + await objGearCyberware.DisplayNameShortAsync(strLanguage) + ')';
+                                    strGearReturn += strSpace + '(' + await objGearCyberware.DisplayNameShortAsync(strLanguage, token: token) + ')';
                                 if (blnWireless)
                                     strGearReturn += strSpace + await LanguageManager.GetStringAsync("String_Wireless", strLanguage, token: token);
                                 return strGearReturn;
@@ -10366,13 +10366,13 @@ namespace Chummer
                                     x => x.InternalId == strImprovedSourceName);
                                 if (objReturnGear != null)
                                 {
-                                    string strGearReturn = await objReturnGear.DisplayNameShortAsync(strLanguage);
+                                    string strGearReturn = await objReturnGear.DisplayNameShortAsync(strLanguage, token: token);
                                     if (objReturnGear.Parent is Gear parent)
-                                        strGearReturn += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage) + ','
+                                        strGearReturn += strSpace + '(' + await objVehicle.DisplayNameShortAsync(strLanguage, token: token) + ','
                                                          + strSpace
-                                                         + strSpace + await parent.DisplayNameShortAsync(strLanguage) + ')';
+                                                         + strSpace + await parent.DisplayNameShortAsync(strLanguage, token: token) + ')';
                                     else
-                                        strGearReturn += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage) + ')';
+                                        strGearReturn += strSpace + '(' + await objVehicle.DisplayNameShortAsync(strLanguage, token: token) + ')';
                                     if (blnWireless)
                                         strGearReturn
                                             += strSpace + await LanguageManager.GetStringAsync("String_Wireless", strLanguage, token: token);
@@ -10388,20 +10388,20 @@ namespace Chummer
                                             x => x.InternalId == strImprovedSourceName);
                                         if (objReturnGear != null)
                                         {
-                                            string strGearReturn = await objReturnGear.DisplayNameShortAsync(strLanguage);
+                                            string strGearReturn = await objReturnGear.DisplayNameShortAsync(strLanguage, token);
                                             if (objReturnGear.Parent is Gear parent)
                                                 strGearReturn
-                                                    += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage) + ','
+                                                    += strSpace + '(' + await objVehicle.DisplayNameShortAsync(strLanguage, token) + ','
                                                        + strSpace
-                                                       + await objWeapon.DisplayNameShortAsync(strLanguage) + ',' + strSpace
-                                                       + await objAccessory.DisplayNameShortAsync(strLanguage) + ','
-                                                       + strSpace + await parent.DisplayNameShortAsync(strLanguage) + ')';
+                                                       + await objWeapon.DisplayNameShortAsync(strLanguage, token) + ',' + strSpace
+                                                       + await objAccessory.DisplayNameShortAsync(strLanguage, token) + ','
+                                                       + strSpace + await parent.DisplayNameShortAsync(strLanguage, token) + ')';
                                             else
                                                 strGearReturn
-                                                    += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage) + ','
+                                                    += strSpace + '(' + await objVehicle.DisplayNameShortAsync(strLanguage, token) + ','
                                                        + strSpace
-                                                       + await objWeapon.DisplayNameShortAsync(strLanguage) + ',' + strSpace
-                                                       + await objAccessory.DisplayNameShortAsync(strLanguage) + ')';
+                                                       + await objWeapon.DisplayNameShortAsync(strLanguage, token) + ',' + strSpace
+                                                       + await objAccessory.DisplayNameShortAsync(strLanguage, token) + ')';
                                             if (blnWireless)
                                                 strGearReturn += strSpace
                                                                  + await LanguageManager.GetStringAsync(
@@ -10422,20 +10422,20 @@ namespace Chummer
                                                 x => x.InternalId == strImprovedSourceName);
                                             if (objReturnGear != null)
                                             {
-                                                string strGearReturn = await objReturnGear.DisplayNameShortAsync(strLanguage);
+                                                string strGearReturn = await objReturnGear.DisplayNameShortAsync(strLanguage, token);
                                                 if (objReturnGear.Parent is Gear parent)
                                                     strGearReturn
-                                                        += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage) + ','
-                                                           + strSpace + await objVehicleMod.DisplayNameShortAsync(strLanguage)
-                                                           + ',' + strSpace + await objWeapon.DisplayNameShortAsync(strLanguage) + ','
-                                                           + strSpace + await objAccessory.DisplayNameShortAsync(strLanguage)
-                                                           + ',' + strSpace + await parent.DisplayNameShortAsync(strLanguage) + ')';
+                                                        += strSpace + '(' + await objVehicle.DisplayNameShortAsync(strLanguage, token) + ','
+                                                           + strSpace + await objVehicleMod.DisplayNameShortAsync(strLanguage, token)
+                                                           + ',' + strSpace + await objWeapon.DisplayNameShortAsync(strLanguage, token) + ','
+                                                           + strSpace + await objAccessory.DisplayNameShortAsync(strLanguage, token)
+                                                           + ',' + strSpace + await parent.DisplayNameShortAsync(strLanguage, token) + ')';
                                                 else
                                                     strGearReturn
-                                                        += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage) + ','
-                                                           + strSpace + await objVehicleMod.DisplayNameShortAsync(strLanguage)
-                                                           + ',' + strSpace + await objWeapon.DisplayNameShortAsync(strLanguage) + ','
-                                                           + strSpace + await objAccessory.DisplayNameShortAsync(strLanguage) + ')';
+                                                        += strSpace + '(' + await objVehicle.DisplayNameShortAsync(strLanguage, token) + ','
+                                                           + strSpace + await objVehicleMod.DisplayNameShortAsync(strLanguage, token)
+                                                           + ',' + strSpace + await objWeapon.DisplayNameShortAsync(strLanguage, token) + ','
+                                                           + strSpace + await objAccessory.DisplayNameShortAsync(strLanguage, token) + ')';
                                                 if (blnWireless)
                                                     strGearReturn += strSpace
                                                                      + await LanguageManager.GetStringAsync(
@@ -10452,18 +10452,18 @@ namespace Chummer
                                             x => x.InternalId == strImprovedSourceName);
                                         if (objReturnGear != null)
                                         {
-                                            string strGearReturn = await objReturnGear.DisplayNameShortAsync(strLanguage);
+                                            string strGearReturn = await objReturnGear.DisplayNameShortAsync(strLanguage, token);
                                             if (objReturnGear.Parent is Gear parent)
                                                 strGearReturn
-                                                    += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage) + ','
-                                                       + strSpace + await objVehicleMod.DisplayNameShortAsync(strLanguage)
-                                                       + ',' + strSpace + await objCyberware.DisplayNameShortAsync(strLanguage) + ','
-                                                       + strSpace + await parent.DisplayNameShortAsync(strLanguage) + ')';
+                                                    += strSpace + '(' + await objVehicle.DisplayNameShortAsync(strLanguage, token) + ','
+                                                       + strSpace + await objVehicleMod.DisplayNameShortAsync(strLanguage, token)
+                                                       + ',' + strSpace + await objCyberware.DisplayNameShortAsync(strLanguage, token) + ','
+                                                       + strSpace + await parent.DisplayNameShortAsync(strLanguage, token) + ')';
                                             else
                                                 strGearReturn
-                                                    += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage) + ','
-                                                       + strSpace + await objVehicleMod.DisplayNameShortAsync(strLanguage)
-                                                       + ',' + strSpace + await objCyberware.DisplayNameShortAsync(strLanguage) + ')';
+                                                    += strSpace + '(' + await objVehicle.DisplayNameShortAsync(strLanguage, token) + ','
+                                                       + strSpace + await objVehicleMod.DisplayNameShortAsync(strLanguage, token)
+                                                       + ',' + strSpace + await objCyberware.DisplayNameShortAsync(strLanguage, token) + ')';
                                             if (blnWireless)
                                                 strGearReturn += strSpace
                                                                  + await LanguageManager.GetStringAsync(
@@ -10487,27 +10487,27 @@ namespace Chummer
                                                     x => x.InternalId == strImprovedSourceName);
                                                 if (objReturnGear != null)
                                                 {
-                                                    string strGearReturn = await objReturnGear.DisplayNameShortAsync(strLanguage);
+                                                    string strGearReturn = await objReturnGear.DisplayNameShortAsync(strLanguage, token);
                                                     if (objReturnGear.Parent is Gear parent)
                                                         strGearReturn
-                                                            += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage)
+                                                            += strSpace + '(' + await objVehicle.DisplayNameShortAsync(strLanguage, token)
                                                                + ','
-                                                               + strSpace + objMount.DisplayNameShort(strLanguage) + ','
-                                                               + strSpace + await objVehicleMod.DisplayNameShortAsync(strLanguage)
-                                                               + ',' + strSpace + await objWeapon.DisplayNameShortAsync(strLanguage)
+                                                               + strSpace + await objMount.DisplayNameShortAsync(strLanguage, token) + ','
+                                                               + strSpace + await objVehicleMod.DisplayNameShortAsync(strLanguage, token)
+                                                               + ',' + strSpace + await objWeapon.DisplayNameShortAsync(strLanguage, token)
                                                                + ','
-                                                               + strSpace + await objAccessory.DisplayNameShortAsync(strLanguage)
-                                                               + ',' + strSpace + await parent.DisplayNameShortAsync(strLanguage)
+                                                               + strSpace + await objAccessory.DisplayNameShortAsync(strLanguage, token)
+                                                               + ',' + strSpace + await parent.DisplayNameShortAsync(strLanguage, token)
                                                                + ')';
                                                     else
                                                         strGearReturn
-                                                            += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage)
+                                                            += strSpace + '(' + await objVehicle.DisplayNameShortAsync(strLanguage, token)
                                                                + ','
-                                                               + strSpace + objMount.DisplayNameShort(strLanguage) + ','
-                                                               + strSpace + await objVehicleMod.DisplayNameShortAsync(strLanguage)
-                                                               + ',' + strSpace + await objWeapon.DisplayNameShortAsync(strLanguage)
+                                                               + strSpace + await objMount.DisplayNameShortAsync(strLanguage, token) + ','
+                                                               + strSpace + await objVehicleMod.DisplayNameShortAsync(strLanguage, token)
+                                                               + ',' + strSpace + await objWeapon.DisplayNameShortAsync(strLanguage, token)
                                                                + ','
-                                                               + strSpace + await objAccessory.DisplayNameShortAsync(strLanguage)
+                                                               + strSpace + await objAccessory.DisplayNameShortAsync(strLanguage, token)
                                                                + ')';
                                                     if (blnWireless)
                                                         strGearReturn += strSpace
@@ -10526,23 +10526,23 @@ namespace Chummer
                                                 x => x.InternalId == strImprovedSourceName);
                                             if (objReturnGear != null)
                                             {
-                                                string strGearReturn = await objReturnGear.DisplayNameShortAsync(strLanguage);
+                                                string strGearReturn = await objReturnGear.DisplayNameShortAsync(strLanguage, token);
                                                 if (objReturnGear.Parent is Gear parent)
                                                     strGearReturn
-                                                        += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage) + ','
-                                                           + strSpace + objMount.DisplayNameShort(strLanguage) + ','
+                                                        += strSpace + '(' + await objVehicle.DisplayNameShortAsync(strLanguage, token) + ','
+                                                           + strSpace + await objMount.DisplayNameShortAsync(strLanguage, token) + ','
                                                            + strSpace
-                                                           + await objVehicleMod.DisplayNameShortAsync(strLanguage)
-                                                           + ',' + strSpace + await objCyberware.DisplayNameShortAsync(strLanguage)
+                                                           + await objVehicleMod.DisplayNameShortAsync(strLanguage, token)
+                                                           + ',' + strSpace + await objCyberware.DisplayNameShortAsync(strLanguage, token)
                                                            + ','
-                                                           + strSpace + await parent.DisplayNameShortAsync(strLanguage) + ')';
+                                                           + strSpace + await parent.DisplayNameShortAsync(strLanguage, token) + ')';
                                                 else
                                                     strGearReturn
-                                                        += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage) + ','
-                                                           + strSpace + objMount.DisplayNameShort(strLanguage) + ','
+                                                        += strSpace + '(' + await objVehicle.DisplayNameShortAsync(strLanguage, token) + ','
+                                                           + strSpace + await objMount.DisplayNameShortAsync(strLanguage, token) + ','
                                                            + strSpace
-                                                           + await objVehicleMod.DisplayNameShortAsync(strLanguage)
-                                                           + ',' + strSpace + await objCyberware.DisplayNameShortAsync(strLanguage)
+                                                           + await objVehicleMod.DisplayNameShortAsync(strLanguage, token)
+                                                           + ',' + strSpace + await objCyberware.DisplayNameShortAsync(strLanguage, token)
                                                            + ')';
                                                 if (blnWireless)
                                                     strGearReturn += strSpace
@@ -10635,7 +10635,7 @@ namespace Chummer
                             {
                                 if (objArmor.InternalId == strImprovedSourceName)
                                 {
-                                    string strReturnArmor = await objArmor.DisplayNameShortAsync(strLanguage);
+                                    string strReturnArmor = await objArmor.DisplayNameShortAsync(strLanguage, token);
                                     if (blnWireless)
                                         strReturnArmor
                                             += strSpace + await LanguageManager.GetStringAsync("String_Wireless", strLanguage, token: token);
@@ -10653,8 +10653,8 @@ namespace Chummer
                                 {
                                     if (objMod.InternalId == strImprovedSourceName)
                                     {
-                                        string strReturnArmorMod = await objMod.DisplayNameShortAsync(strLanguage) + strSpace + '('
-                                                                   + await objArmor.DisplayNameShortAsync(strLanguage) + ')';
+                                        string strReturnArmorMod = await objMod.DisplayNameShortAsync(strLanguage, token) + strSpace + '('
+                                                                   + await objArmor.DisplayNameShortAsync(strLanguage, token) + ')';
                                         if (blnWireless)
                                             strReturnArmorMod
                                                 += strSpace + await LanguageManager.GetStringAsync("String_Wireless", strLanguage, token: token);
@@ -14141,6 +14141,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// CFP Limit.
+        /// </summary>
+        public async ValueTask<int> GetCFPLimitAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _intCFPLimit;
+        }
+
+        /// <summary>
         /// Total AI Program Limit.
         /// </summary>
         public int AINormalProgramLimit
@@ -14166,6 +14175,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Total AI Program Limit.
+        /// </summary>
+        public async ValueTask<int> GetAINormalProgramLimitAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _intAINormalProgramLimit;
+        }
+
+        /// <summary>
         /// AI Advanced Program Limit.
         /// </summary>
         public int AIAdvancedProgramLimit
@@ -14188,6 +14206,15 @@ namespace Chummer
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// AI Advanced Program Limit.
+        /// </summary>
+        public async ValueTask<int> GetAIAdvancedProgramLimitAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _intAIAdvancedProgramLimit;
         }
 
         /// <summary>
@@ -14765,6 +14792,38 @@ namespace Chummer
             }
         }
 
+        public async ValueTask<int> GetComplexFormKarmaCostAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+            {
+                decimal decReturn = await (await GetSettingsAsync(token)).GetKarmaNewComplexFormAsync(token);
+
+                decimal decMultiplier = 1.0m;
+                foreach (Improvement objLoopImprovement in Improvements)
+                {
+                    if ((string.IsNullOrEmpty(objLoopImprovement.Condition)
+                         || (objLoopImprovement.Condition == "career") == Created
+                         || (objLoopImprovement.Condition == "create") != Created) && objLoopImprovement.Enabled)
+                    {
+                        switch (objLoopImprovement.ImproveType)
+                        {
+                            case Improvement.ImprovementType.NewComplexFormKarmaCost:
+                                decReturn += objLoopImprovement.Value;
+                                break;
+                            case Improvement.ImprovementType.NewComplexFormKarmaCostMultiplier:
+                                decMultiplier *= objLoopImprovement.Value / 100.0m;
+                                break;
+                        }
+                    }
+                }
+
+                if (decMultiplier != 1.0m)
+                    decReturn *= decMultiplier;
+
+                return Math.Max(decReturn.StandardRound(), 0);
+            }
+        }
+
         public int AIProgramKarmaCost
         {
             get
@@ -14800,6 +14859,39 @@ namespace Chummer
             }
         }
 
+        public async ValueTask<int> GetAIProgramKarmaCostAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+            {
+                decimal decReturn = await (await GetSettingsAsync(token)).GetKarmaNewAIProgramAsync(token);
+
+                decimal decMultiplier = 1.0m;
+                await (await GetImprovementsAsync(token)).ForEachAsync(async objLoopImprovement =>
+                {
+                    if ((!string.IsNullOrEmpty(objLoopImprovement.Condition)
+                         && (objLoopImprovement.Condition == "career") != await GetCreatedAsync(token)
+                         && (objLoopImprovement.Condition == "create") == await GetCreatedAsync(token))
+                        || !objLoopImprovement.Enabled)
+                        return;
+
+                    switch (objLoopImprovement.ImproveType)
+                    {
+                        case Improvement.ImprovementType.NewAIProgramKarmaCost:
+                            decReturn += objLoopImprovement.Value;
+                            break;
+                        case Improvement.ImprovementType.NewAIProgramKarmaCostMultiplier:
+                            decMultiplier *= objLoopImprovement.Value / 100.0m;
+                            break;
+                    }
+                }, token);
+
+                if (decMultiplier != 1.0m)
+                    decReturn *= decMultiplier;
+
+                return Math.Max(decReturn.StandardRound(), 0);
+            }
+        }
+
         public int AIAdvancedProgramKarmaCost
         {
             get
@@ -14832,6 +14924,39 @@ namespace Chummer
 
                     return Math.Max(decReturn.StandardRound(), 0);
                 }
+            }
+        }
+
+        public async ValueTask<int> GetAIAdvancedProgramKarmaCostAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+            {
+                decimal decReturn = await (await GetSettingsAsync(token)).GetKarmaNewAIAdvancedProgramAsync(token);
+
+                decimal decMultiplier = 1.0m;
+                await (await GetImprovementsAsync(token)).ForEachAsync(async objLoopImprovement =>
+                {
+                    if ((!string.IsNullOrEmpty(objLoopImprovement.Condition)
+                         && (objLoopImprovement.Condition == "career") != await GetCreatedAsync(token)
+                         && (objLoopImprovement.Condition == "create") == await GetCreatedAsync(token))
+                        || !objLoopImprovement.Enabled)
+                        return;
+
+                    switch (objLoopImprovement.ImproveType)
+                    {
+                        case Improvement.ImprovementType.NewAIAdvancedProgramKarmaCost:
+                            decReturn += objLoopImprovement.Value;
+                            break;
+                        case Improvement.ImprovementType.NewAIAdvancedProgramKarmaCostMultiplier:
+                            decMultiplier *= objLoopImprovement.Value / 100.0m;
+                            break;
+                    }
+                }, token);
+
+                if (decMultiplier != 1.0m)
+                    decReturn *= decMultiplier;
+
+                return Math.Max(decReturn.StandardRound(), 0);
             }
         }
 
@@ -15361,6 +15486,15 @@ namespace Chummer
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Is the MAG CharacterAttribute enabled?
+        /// </summary>
+        public async ValueTask<bool> GetMAGEnabledAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _blnMAGEnabled;
         }
 
         /// <summary>
@@ -15966,6 +16100,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Is the RES CharacterAttribute enabled?
+        /// </summary>
+        public async ValueTask<bool> GetRESEnabledAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _blnRESEnabled;
+        }
+
+        /// <summary>
         /// Is the DEP CharacterAttribute enabled?
         /// </summary>
         [HubTag]
@@ -16180,6 +16323,15 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Is the DEP CharacterAttribute enabled?
+        /// </summary>
+        public async ValueTask<bool> GetDEPEnabledAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _blnDEPEnabled;
+        }
+
         [HubTag]
         public bool IsAI
         {
@@ -16325,6 +16477,15 @@ namespace Chummer
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Whether or not the character is a member of a Group or Network.
+        /// </summary>
+        public async ValueTask<bool> GetGroupMemberAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _blnGroupMember;
         }
 
         /// <summary>
@@ -18850,6 +19011,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Metamagics and Echoes.
+        /// </summary>
+        public async ValueTask<ThreadSafeObservableCollection<Metamagic>> GetMetamagicsAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _lstMetamagics;
+        }
+
+        /// <summary>
         /// Enhancements.
         /// </summary>
         public ThreadSafeObservableCollection<Enhancement> Enhancements
@@ -18862,6 +19032,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Enhancements.
+        /// </summary>
+        public async ValueTask<ThreadSafeObservableCollection<Enhancement>> GetEnhancementsAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _lstEnhancements;
+        }
+
+        /// <summary>
         /// Arts.
         /// </summary>
         public ThreadSafeObservableCollection<Art> Arts
@@ -18871,6 +19050,15 @@ namespace Chummer
                 using (EnterReadLock.Enter(LockObject))
                     return _lstArts;
             }
+        }
+
+        /// <summary>
+        /// Arts.
+        /// </summary>
+        public async ValueTask<ThreadSafeObservableCollection<Art>> GetArtsAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _lstArts;
         }
 
         /// <summary>
@@ -22396,6 +22584,18 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Character's Movement rate (Culture-dependent).
+        /// </summary>
+        public async ValueTask<string> GetMovementAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                // Don't attempt to do anything if the character's Movement is "Special" (typically for A.I.s).
+                return await GetMovementAsync(token) == "Special"
+                    ? await LanguageManager.GetStringAsync("String_ModeSpecial", strLanguage, token: token)
+                    : await CalculatedMovementAsync("Ground", true, objCulture, strLanguage, token);
+        }
+
+        /// <summary>
         /// Character's Movement rate data string.
         /// </summary>
         public string Movement
@@ -22430,6 +22630,36 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Character's Movement rate data string.
+        /// </summary>
+        public async ValueTask<string> GetMovementAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+            {
+                if (string.IsNullOrWhiteSpace(_strMovement))
+                {
+                    XPathNavigator xmlDataNode = await this.GetNodeXPathAsync(token: token);
+                    if (xmlDataNode != null)
+                        _strMovement
+                            = (await xmlDataNode.SelectSingleNodeAndCacheExpressionAsync("movement", token: token))?.Value
+                              ?? string.Empty;
+                    if (xmlDataNode == null || string.IsNullOrEmpty(_strMovement))
+                    {
+                        xmlDataNode = await GetNodeXPathAsync(true, token: token);
+                        if (xmlDataNode != null)
+                            _strMovement
+                                = (await xmlDataNode.SelectSingleNodeAndCacheExpressionAsync("movement", token: token))?.Value
+                                  ?? string.Empty;
+                        else
+                            _strMovement = string.Empty;
+                    }
+                }
+
+                return _strMovement;
+            }
+        }
+
+        /// <summary>
         /// Character's Run rate data string.
         /// </summary>
         public string RunString
@@ -22460,6 +22690,36 @@ namespace Chummer
                         OnPropertyChanged();
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Character's Run rate data string.
+        /// </summary>
+        public async ValueTask<string> GetRunStringAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+            {
+                if (string.IsNullOrWhiteSpace(_strRun))
+                {
+                    XPathNavigator xmlDataNode = await this.GetNodeXPathAsync(token: token);
+                    if (xmlDataNode != null)
+                        _strRun
+                            = (await xmlDataNode.SelectSingleNodeAndCacheExpressionAsync("run", token: token))?.Value
+                              ?? string.Empty;
+                    if (xmlDataNode == null || string.IsNullOrEmpty(_strRun))
+                    {
+                        xmlDataNode = await GetNodeXPathAsync(true, token: token);
+                        if (xmlDataNode != null)
+                            _strRun
+                                = (await xmlDataNode.SelectSingleNodeAndCacheExpressionAsync("run", token: token))?.Value
+                                  ?? string.Empty;
+                        else
+                            _strRun = string.Empty;
+                    }
+                }
+
+                return _strRun;
             }
         }
 
@@ -22500,6 +22760,36 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Character's Alternate Run rate data string.
+        /// </summary>
+        public async ValueTask<string> GetRunAltStringAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+            {
+                if (string.IsNullOrWhiteSpace(_strRunAlt))
+                {
+                    XPathNavigator xmlDataNode = await this.GetNodeXPathAsync(token: token);
+                    if (xmlDataNode != null)
+                        _strRunAlt
+                            = (await xmlDataNode.SelectSingleNodeAndCacheExpressionAsync("run", token: token))?.GetAttribute("alt", string.Empty)
+                              ?? string.Empty;
+                    if (xmlDataNode == null || string.IsNullOrEmpty(_strRunAlt))
+                    {
+                        xmlDataNode = await GetNodeXPathAsync(true, token: token);
+                        if (xmlDataNode != null)
+                            _strRunAlt
+                                = (await xmlDataNode.SelectSingleNodeAndCacheExpressionAsync("run", token: token))?.GetAttribute("alt", string.Empty)
+                                  ?? string.Empty;
+                        else
+                            _strRunAlt = string.Empty;
+                    }
+                }
+
+                return _strRunAlt;
+            }
+        }
+
+        /// <summary>
         /// Character's Walk rate data string.
         /// </summary>
         public string WalkString
@@ -22530,6 +22820,36 @@ namespace Chummer
                         OnPropertyChanged();
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Character's Walk rate data string.
+        /// </summary>
+        public async ValueTask<string> GetWalkStringAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+            {
+                if (string.IsNullOrWhiteSpace(_strWalk))
+                {
+                    XPathNavigator xmlDataNode = await this.GetNodeXPathAsync(token: token);
+                    if (xmlDataNode != null)
+                        _strWalk
+                            = (await xmlDataNode.SelectSingleNodeAndCacheExpressionAsync("walk", token: token))?.Value
+                              ?? string.Empty;
+                    if (xmlDataNode == null || string.IsNullOrEmpty(_strWalk))
+                    {
+                        xmlDataNode = await GetNodeXPathAsync(true, token: token);
+                        if (xmlDataNode != null)
+                            _strWalk
+                                = (await xmlDataNode.SelectSingleNodeAndCacheExpressionAsync("walk", token: token))?.Value
+                                  ?? string.Empty;
+                        else
+                            _strWalk = string.Empty;
+                    }
+                }
+
+                return _strWalk;
             }
         }
 
@@ -22570,6 +22890,36 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Character's Alternate Walk rate data string.
+        /// </summary>
+        public async ValueTask<string> GetWalkAltStringAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+            {
+                if (string.IsNullOrWhiteSpace(_strWalkAlt))
+                {
+                    XPathNavigator xmlDataNode = await this.GetNodeXPathAsync(token: token);
+                    if (xmlDataNode != null)
+                        _strWalkAlt
+                            = (await xmlDataNode.SelectSingleNodeAndCacheExpressionAsync("walk", token: token))?.GetAttribute("alt", string.Empty)
+                              ?? string.Empty;
+                    if (xmlDataNode == null || string.IsNullOrEmpty(_strWalkAlt))
+                    {
+                        xmlDataNode = await GetNodeXPathAsync(true, token: token);
+                        if (xmlDataNode != null)
+                            _strWalkAlt
+                                = (await xmlDataNode.SelectSingleNodeAndCacheExpressionAsync("walk", token: token))?.GetAttribute("alt", string.Empty)
+                                  ?? string.Empty;
+                        else
+                            _strWalkAlt = string.Empty;
+                    }
+                }
+
+                return _strWalkAlt;
+            }
+        }
+
+        /// <summary>
         /// Character's Sprint rate data string.
         /// </summary>
         public string SprintString
@@ -22600,6 +22950,36 @@ namespace Chummer
                         OnPropertyChanged();
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Character's Spring rate data string.
+        /// </summary>
+        public async ValueTask<string> GetSprintStringAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+            {
+                if (string.IsNullOrWhiteSpace(_strSprint))
+                {
+                    XPathNavigator xmlDataNode = await this.GetNodeXPathAsync(token: token);
+                    if (xmlDataNode != null)
+                        _strSprint
+                            = (await xmlDataNode.SelectSingleNodeAndCacheExpressionAsync("sprint", token: token))?.Value
+                              ?? string.Empty;
+                    if (xmlDataNode == null || string.IsNullOrEmpty(_strSprint))
+                    {
+                        xmlDataNode = await GetNodeXPathAsync(true, token: token);
+                        if (xmlDataNode != null)
+                            _strSprint
+                                = (await xmlDataNode.SelectSingleNodeAndCacheExpressionAsync("sprint", token: token))?.Value
+                                  ?? string.Empty;
+                        else
+                            _strSprint = string.Empty;
+                    }
+                }
+
+                return _strSprint;
             }
         }
 
@@ -22639,6 +23019,36 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Character's Alternate Sprint rate data string.
+        /// </summary>
+        public async ValueTask<string> GetSprintAltStringAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+            {
+                if (string.IsNullOrWhiteSpace(_strSprintAlt))
+                {
+                    XPathNavigator xmlDataNode = await this.GetNodeXPathAsync(token: token);
+                    if (xmlDataNode != null)
+                        _strSprintAlt
+                            = (await xmlDataNode.SelectSingleNodeAndCacheExpressionAsync("sprint", token: token))?.GetAttribute("alt", string.Empty)
+                              ?? string.Empty;
+                    if (xmlDataNode == null || string.IsNullOrEmpty(_strSprintAlt))
+                    {
+                        xmlDataNode = await GetNodeXPathAsync(true, token: token);
+                        if (xmlDataNode != null)
+                            _strSprintAlt
+                                = (await xmlDataNode.SelectSingleNodeAndCacheExpressionAsync("sprint", token: token))?.GetAttribute("alt", string.Empty)
+                                  ?? string.Empty;
+                        else
+                            _strSprintAlt = string.Empty;
+                    }
+                }
+
+                return _strSprintAlt;
+            }
+        }
+
         public string CurrentWalkingRateString
         {
             get
@@ -22672,6 +23082,39 @@ namespace Chummer
             }
         }
 
+        public async ValueTask<string> GetCurrentWalkingRateStringAsync(CancellationToken token = default)
+        {
+            {
+                using (await EnterReadLock.EnterAsync(LockObject, token))
+                    return await (await (await GetAttributeSectionAsync(token)).GetAttributeCategoryAsync(token)
+                                  == CharacterAttrib.AttributeCategory.Standard
+                        ? GetWalkStringAsync(token)
+                        : GetWalkAltStringAsync(token));
+            }
+        }
+
+        public async ValueTask<string> GetCurrentRunningRateStringAsync(CancellationToken token = default)
+        {
+            {
+                using (await EnterReadLock.EnterAsync(LockObject, token))
+                    return await (await (await GetAttributeSectionAsync(token)).GetAttributeCategoryAsync(token)
+                                  == CharacterAttrib.AttributeCategory.Standard
+                        ? GetRunStringAsync(token)
+                        : GetRunAltStringAsync(token));
+            }
+        }
+
+        public async ValueTask<string> GetCurrentSprintingRateStringAsync(CancellationToken token = default)
+        {
+            {
+                using (await EnterReadLock.EnterAsync(LockObject, token))
+                    return await (await (await GetAttributeSectionAsync(token)).GetAttributeCategoryAsync(token)
+                                  == CharacterAttrib.AttributeCategory.Standard
+                        ? GetSprintStringAsync(token)
+                        : GetSprintAltStringAsync(token));
+            }
+        }
+
         /// <summary>
         /// Character's running Movement rate.
         /// <param name="strType">Takes one of three parameters: Ground, 2 for Swim, 3 for Fly. Returns 0 if the requested type isn't found.</param>
@@ -22701,6 +23144,43 @@ namespace Chummer
 
                 string strReturn = CurrentWalkingRateString.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries)
                                                            .ElementAtOrDefault(intIndexToGet);
+                if (strReturn != null)
+                    decimal.TryParse(strReturn, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
+                                     out decTmp);
+                return decTmp;
+            }
+        }
+
+        /// <summary>
+        /// Character's running Movement rate.
+        /// <param name="strType">Takes one of three parameters: Ground, 2 for Swim, 3 for Fly. Returns 0 if the requested type isn't found.</param>
+        /// </summary>
+        public async ValueTask<decimal> WalkingRateAsync(string strType = "Ground", CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+            {
+                decimal decTmp = decimal.MinValue;
+                foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                             this, Improvement.ImprovementType.WalkSpeed, strType, token: token))
+                    decTmp = Math.Max(decTmp, objImprovement.Value);
+
+                if (decTmp != decimal.MinValue)
+                    return decTmp;
+
+                int intIndexToGet = 0;
+                switch (strType)
+                {
+                    case "Fly":
+                        intIndexToGet = 2;
+                        break;
+                    case "Swim":
+                        intIndexToGet = 1;
+                        break;
+                }
+
+                string strReturn = (await GetCurrentWalkingRateStringAsync(token))
+                                   .SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries)
+                                   .ElementAtOrDefault(intIndexToGet);
                 if (strReturn != null)
                     decimal.TryParse(strReturn, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
                                      out decTmp);
@@ -22745,6 +23225,43 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Character's running Movement rate.
+        /// <param name="strType">Takes one of three parameters: Ground, 2 for Swim, 3 for Fly. Returns 0 if the requested type isn't found.</param>
+        /// </summary>
+        public async ValueTask<decimal> RunningRateAsync(string strType = "Ground", CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+            {
+                decimal decTmp = decimal.MinValue;
+                foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                             this, Improvement.ImprovementType.RunSpeed, strType, token: token))
+                    decTmp = Math.Max(decTmp, objImprovement.Value);
+
+                if (decTmp != decimal.MinValue)
+                    return decTmp;
+
+                int intIndexToGet = 0;
+                switch (strType)
+                {
+                    case "Fly":
+                        intIndexToGet = 2;
+                        break;
+                    case "Swim":
+                        intIndexToGet = 1;
+                        break;
+                }
+
+                string strReturn = (await GetCurrentRunningRateStringAsync(token))
+                                   .SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries)
+                                   .ElementAtOrDefault(intIndexToGet);
+                if (strReturn != null)
+                    decimal.TryParse(strReturn, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
+                                     out decTmp);
+                return decTmp;
+            }
+        }
+
+        /// <summary>
         /// Character's sprinting Movement rate (meters per hit).
         /// <param name="strType">Takes one of three parameters: Ground, 2 for Swim, 3 for Fly. Returns 0 if the requested type isn't found.</param>
         /// </summary>
@@ -22773,6 +23290,43 @@ namespace Chummer
 
                 string strReturn = CurrentSprintingRateString.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries)
                                                              .ElementAtOrDefault(intIndexToGet);
+                if (strReturn != null)
+                    decimal.TryParse(strReturn, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
+                                     out decTmp);
+                return decTmp;
+            }
+        }
+
+        /// <summary>
+        /// Character's sprinting Movement rate (meters per hit).
+        /// <param name="strType">Takes one of three parameters: Ground, 2 for Swim, 3 for Fly. Returns 0 if the requested type isn't found.</param>
+        /// </summary>
+        public async ValueTask<decimal> SprintingRateAsync(string strType = "Ground", CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+            {
+                decimal decTmp = decimal.MinValue;
+                foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                             this, Improvement.ImprovementType.SprintSpeed, strType, token: token))
+                    decTmp = Math.Max(decTmp, objImprovement.Value / 100.0m);
+
+                if (decTmp != decimal.MinValue)
+                    return decTmp;
+
+                int intIndexToGet = 0;
+                switch (strType)
+                {
+                    case "Fly":
+                        intIndexToGet = 2;
+                        break;
+                    case "Swim":
+                        intIndexToGet = 1;
+                        break;
+                }
+
+                string strReturn = (await GetCurrentSprintingRateStringAsync(token))
+                                   .SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries)
+                                   .ElementAtOrDefault(intIndexToGet);
                 if (strReturn != null)
                     decimal.TryParse(strReturn, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
                                      out decTmp);
@@ -22866,6 +23420,99 @@ namespace Chummer
             }
         }
 
+        public async ValueTask<string> CalculatedMovementAsync(string strMovementType, bool blnUseCyberlegs = false,
+            CultureInfo objCulture = null, string strLanguage = "", CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+            {
+                decimal decSprint = await SprintingRateAsync(strMovementType, token)
+                                    + await ImprovementManager.ValueOfAsync(
+                                        this, Improvement.ImprovementType.SprintBonus, false, strMovementType,
+                                        token: token) / 100.0m;
+                decimal decRun = await RunningRateAsync(strMovementType, token)
+                                 + await ImprovementManager.ValueOfAsync(
+                                     this, Improvement.ImprovementType.RunMultiplier, false, strMovementType,
+                                     token: token);
+                decimal decWalk = await WalkingRateAsync(strMovementType, token)
+                                  + await ImprovementManager.ValueOfAsync(
+                                      this, Improvement.ImprovementType.WalkMultiplier, false, strMovementType,
+                                      token: token);
+                // Everything else after this just multiplies values, so zeroes can be checked for here
+                if (decWalk == 0 && decRun == 0 && decSprint == 0)
+                {
+                    return "0";
+                }
+
+                decSprint *= 1.0m + await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.SprintBonusPercent,
+                                                                          false,
+                                                                          strMovementType, token: token) / 100.0m;
+                decRun *= 1.0m + await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.RunMultiplierPercent,
+                                                                       false,
+                                                                       strMovementType, token: token) / 100.0m;
+                decWalk *= 1.0m + await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.WalkMultiplierPercent,
+                                                                        false,
+                                                                        strMovementType, token: token) / 100.0m;
+
+                int intAGI = await AGI.CalculatedTotalValueAsync(false, token);
+                int intSTR = await STR.CalculatedTotalValueAsync(false, token);
+                if (blnUseCyberlegs && await (await GetSettingsAsync(token)).GetCyberlegMovementAsync(token))
+                {
+                    int intTempAGI = int.MaxValue;
+                    int intTempSTR = int.MaxValue;
+                    int intLegs = 0;
+                    await Cyberware.ForEachAsync(async objCyber =>
+                    {
+                        if (objCyber.LimbSlot != "leg")
+                            return;
+                        intLegs += objCyber.LimbSlotCount;
+                        intTempAGI = Math.Min(intTempAGI, await objCyber.GetAttributeTotalValueAsync("AGI", token));
+                        intTempSTR = Math.Min(intTempSTR, await objCyber.GetAttributeTotalValueAsync("STR", token));
+                    }, token);
+
+                    if (intTempAGI != int.MaxValue && intTempSTR != int.MaxValue && intLegs >= 2)
+                    {
+                        intAGI = intTempAGI;
+                        intSTR = intTempSTR;
+                    }
+                }
+
+                if (strMovementType == "Swim")
+                {
+                    decWalk *= (intAGI + intSTR) * 0.5m;
+                    decRun *= (intAGI + intSTR) * 0.5m;
+                }
+                else
+                {
+                    decWalk *= intAGI;
+                    decRun *= intAGI;
+                }
+
+                if (objCulture == null)
+                    objCulture = GlobalSettings.CultureInfo;
+                string strReturn = string.Empty;
+                if (decWalk != 0)
+                {
+                    if (decRun != 0)
+                        strReturn = decWalk.ToString("#,0.##", objCulture) + '/'
+                                                                           + decRun.ToString("#,0.##", objCulture);
+                    else
+                        strReturn = decWalk.ToString("#,0.##", objCulture);
+                }
+                else if (decRun != 0 || decSprint != 0)
+                    strReturn = decRun.ToString("#,0.##", objCulture);
+
+                if (decSprint != 0)
+                {
+                    if (!string.IsNullOrEmpty(strReturn))
+                        strReturn += ';' + await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token);
+                    strReturn += decSprint.ToString("#,0.##", objCulture)
+                                 + await LanguageManager.GetStringAsync("String_MetersPerHit", strLanguage, token: token);
+                }
+
+                return strReturn;
+            }
+        }
+
         public string DisplaySwim
         {
             get
@@ -22885,6 +23532,18 @@ namespace Chummer
                 return Movement == "Special"
                     ? LanguageManager.GetString("String_ModeSpecial", strLanguage)
                     : CalculatedMovement("Swim", false, objCulture, strLanguage);
+        }
+
+        /// <summary>
+        /// Character's Swim rate.
+        /// </summary>
+        public async ValueTask<string> GetSwimAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                // Don't attempt to do anything if the character's Movement is "Special" (typically for A.I.s).
+                return await GetMovementAsync(token) == "Special"
+                    ? await LanguageManager.GetStringAsync("String_ModeSpecial", strLanguage, token: token)
+                    : await CalculatedMovementAsync("Swim", false, objCulture, strLanguage, token);
         }
 
         public string DisplayFly
@@ -22909,6 +23568,18 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Character's Fly rate.
+        /// </summary>
+        public async ValueTask<string> GetFlyAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                // Don't attempt to do anything if the character's Movement is "Special" (typically for A.I.s).
+                return await GetMovementAsync(token) == "Special"
+                    ? await LanguageManager.GetStringAsync("String_ModeSpecial", strLanguage, token: token)
+                    : await CalculatedMovementAsync("Fly", false, objCulture, strLanguage, token);
+        }
+
+        /// <summary>
         /// Full Movement (Movement, Swim, and Fly) for printouts.
         /// </summary>
         private string FullMovement(CultureInfo objCulture, string strLanguage)
@@ -22928,6 +23599,37 @@ namespace Chummer
                                  .Append(strSwimMovement).Append(',').Append(strSpace);
                     if (!string.IsNullOrEmpty(strFlyMovement) && strFlyMovement != "0")
                         sbdReturn.Append(LanguageManager.GetString("Label_OtherFly", strLanguage)).Append(strSpace)
+                                 .Append(strFlyMovement).Append(',').Append(strSpace);
+                }
+
+                // Remove the trailing ", ".
+                if (sbdReturn.Length > 0)
+                    sbdReturn.Length -= 2;
+
+                return sbdReturn.ToString();
+            }
+        }
+
+        /// <summary>
+        /// Full Movement (Movement, Swim, and Fly) for printouts.
+        /// </summary>
+        private async ValueTask<string> FullMovementAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
+        {
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token);
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+            {
+                using (await EnterReadLock.EnterAsync(LockObject, token))
+                {
+                    string strGroundMovement = await GetMovementAsync(objCulture, strLanguage, token);
+                    string strSwimMovement = await GetSwimAsync(objCulture, strLanguage, token);
+                    string strFlyMovement = await GetFlyAsync(objCulture, strLanguage, token);
+                    if (!string.IsNullOrEmpty(strGroundMovement) && strGroundMovement != "0")
+                        sbdReturn.Append(strGroundMovement).Append(',').Append(strSpace);
+                    if (!string.IsNullOrEmpty(strSwimMovement) && strSwimMovement != "0")
+                        sbdReturn.Append(await LanguageManager.GetStringAsync("Label_OtherSwim", strLanguage, token: token)).Append(strSpace)
+                                 .Append(strSwimMovement).Append(',').Append(strSpace);
+                    if (!string.IsNullOrEmpty(strFlyMovement) && strFlyMovement != "0")
+                        sbdReturn.Append(await LanguageManager.GetStringAsync("Label_OtherFly", strLanguage, token: token)).Append(strSpace)
                                  .Append(strFlyMovement).Append(',').Append(strSpace);
                 }
 

@@ -3138,6 +3138,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Whether or not characters can spend skill points on broken groups.
+        /// </summary>
+        public async ValueTask<bool> GetUsePointsOnBrokenGroupsAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _blnUsePointsOnBrokenGroups;
+        }
+
+        /// <summary>
         /// Whether or not characters in Career Mode should pay double for qualities.
         /// </summary>
         public bool DontDoubleQualityPurchases
@@ -3260,6 +3269,15 @@ namespace Chummer
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Whether or not to use stats from Cyberlegs when calculating movement rates
+        /// </summary>
+        public async ValueTask<bool> GetCyberlegMovementAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _blnCyberlegMovement;
         }
 
         /// <summary>
@@ -3661,6 +3679,15 @@ namespace Chummer
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Whether or not specializations in an active skill (permanently) break a skill group.
+        /// </summary>
+        public async ValueTask<bool> GetSpecializationsBreakSkillGroupsAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _blnSpecializationsBreakSkillGroups;
         }
 
         /// <summary>
@@ -5057,6 +5084,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Whether or not the user is allowed to break Skill Groups while in Create Mode.
+        /// </summary>
+        public async ValueTask<bool> GetStrictSkillGroupsInCreateModeAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _blnStrictSkillGroupsInCreateMode;
+        }
+
+        /// <summary>
         /// Whether or not the user is allowed to buy specializations with skill points for skills only bought with karma.
         /// </summary>
         public bool AllowPointBuySpecializationsOnKarmaSkills
@@ -5079,6 +5115,16 @@ namespace Chummer
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Whether or not the user is allowed to buy specializations with skill points for skills only bought with karma.
+        /// </summary>
+        public async ValueTask<bool> GetAllowPointBuySpecializationsOnKarmaSkillsAsync(
+            CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _blnAllowPointBuySpecializationsOnKarmaSkills;
         }
 
         /// <summary>
@@ -5179,6 +5225,15 @@ namespace Chummer
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// House rule: Whether to compensate for the karma cost difference between raising skill ratings and skill groups when increasing the rating of the last skill in the group
+        /// </summary>
+        public async ValueTask<bool> GetCompensateSkillGroupKarmaDifferenceAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _blnCompensateSkillGroupKarmaDifference;
         }
 
         /// <summary>
@@ -5391,6 +5446,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Maximum skill rating in character creation
+        /// </summary>
+        public async ValueTask<int> GetMaxSkillRatingCreateAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _intMaxSkillRatingCreate;
+        }
+
+        /// <summary>
         /// Maximum knowledge skill rating in character creation
         /// </summary>
         public int MaxKnowledgeSkillRatingCreate
@@ -5413,6 +5477,15 @@ namespace Chummer
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Maximum knowledge skill rating in character creation
+        /// </summary>
+        public async ValueTask<int> GetMaxKnowledgeSkillRatingCreateAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _intMaxKnowledgeSkillRatingCreate;
         }
 
         /// <summary>
@@ -5443,6 +5516,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Maximum skill rating
+        /// </summary>
+        public async ValueTask<int> GetMaxSkillRatingAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _intMaxSkillRating;
+        }
+
+        /// <summary>
         /// Maximum knowledge skill rating
         /// </summary>
         public int MaxKnowledgeSkillRating
@@ -5467,6 +5549,15 @@ namespace Chummer
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Maximum knowledge skill rating
+        /// </summary>
+        public async ValueTask<int> GetMaxKnowledgeSkillRatingAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _intMaxKnowledgeSkillRating;
         }
 
         /// <summary>
@@ -6047,6 +6138,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Karma cost to purchase a Specialization for an active skill = this value.
+        /// </summary>
+        public async ValueTask<int> GetKarmaSpecializationAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _intKarmaSpecialization;
+        }
+
+        /// <summary>
         /// Karma cost to purchase a Specialization for a knowledge skill = this value.
         /// </summary>
         public int KarmaKnowledgeSpecialization
@@ -6069,6 +6169,15 @@ namespace Chummer
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Karma cost to purchase a Specialization for a knowledge skill = this value.
+        /// </summary>
+        public async ValueTask<int> GetKarmaKnowledgeSpecializationAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _intKarmaKnoSpecialization;
         }
 
         /// <summary>
@@ -6097,6 +6206,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Karma cost to purchase a new Knowledge Skill = this value.
+        /// </summary>
+        public async ValueTask<int> GetKarmaNewKnowledgeSkillAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _intKarmaNewKnowledgeSkill;
+        }
+
+        /// <summary>
         /// Karma cost to purchase a new Active Skill = this value.
         /// </summary>
         public int KarmaNewActiveSkill
@@ -6119,6 +6237,15 @@ namespace Chummer
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Karma cost to purchase a new Active Skill = this value.
+        /// </summary>
+        public async ValueTask<int> GetKarmaNewActiveSkillAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _intKarmaNewActiveSkill;
         }
 
         /// <summary>
@@ -6147,6 +6274,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Karma cost to purchase a new Skill Group = this value.
+        /// </summary>
+        public async ValueTask<int> GetKarmaNewSkillGroupAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _intKarmaNewSkillGroup;
+        }
+
+        /// <summary>
         /// Karma cost to improve a Knowledge Skill = New Rating x this value.
         /// </summary>
         public int KarmaImproveKnowledgeSkill
@@ -6169,6 +6305,15 @@ namespace Chummer
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Karma cost to improve a Knowledge Skill = New Rating x this value.
+        /// </summary>
+        public async ValueTask<int> GetKarmaImproveKnowledgeSkillAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _intKarmaImproveKnowledgeSkill;
         }
 
         /// <summary>
@@ -6197,6 +6342,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Karma cost to improve an Active Skill = New Rating x this value.
+        /// </summary>
+        public async ValueTask<int> GetKarmaImproveActiveSkillAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _intKarmaImproveActiveSkill;
+        }
+
+        /// <summary>
         /// Karma cost to improve a Skill Group = New Rating x this value.
         /// </summary>
         public int KarmaImproveSkillGroup
@@ -6219,6 +6373,15 @@ namespace Chummer
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Karma cost to improve a Skill Group = New Rating x this value.
+        /// </summary>
+        public async ValueTask<int> GetKarmaImproveSkillGroupAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _intKarmaImproveSkillGroup;
         }
 
         /// <summary>
@@ -6306,6 +6469,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Karma cost for a new Complex Form = this value.
+        /// </summary>
+        public async ValueTask<int> GetKarmaNewComplexFormAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _intKarmaNewComplexForm;
+        }
+
+        /// <summary>
         /// Karma cost for a new AI Program
         /// </summary>
         public int KarmaNewAIProgram
@@ -6331,6 +6503,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Karma cost for a new AI Program
+        /// </summary>
+        public async ValueTask<int> GetKarmaNewAIProgramAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _intKarmaNewAIProgram;
+        }
+
+        /// <summary>
         /// Karma cost for a new AI Advanced Program
         /// </summary>
         public int KarmaNewAIAdvancedProgram
@@ -6353,6 +6534,15 @@ namespace Chummer
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Karma cost for a new AI Advanced Program
+        /// </summary>
+        public async ValueTask<int> GetKarmaNewAIAdvancedProgramAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _intKarmaNewAIAdvancedProgram;
         }
 
         /// <summary>
@@ -6449,6 +6639,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Maximum amount of remaining Karma that is carried over to the character once they are created.
+        /// </summary>
+        public async ValueTask<int> GetKarmaCarryoverAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _intKarmaCarryover;
+        }
+
+        /// <summary>
         /// Karma cost for a Spirit = this value.
         /// </summary>
         public int KarmaSpirit
@@ -6471,6 +6670,15 @@ namespace Chummer
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Karma cost for a Spirit = this value.
+        /// </summary>
+        public async ValueTask<int> GetKarmaSpiritAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _intKarmaSpirit;
         }
 
         /// <summary>
@@ -6499,6 +6707,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Karma cost for a Martial Arts Technique = this value.
+        /// </summary>
+        public async ValueTask<int> GetKarmaTechniqueAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _intKarmaTechnique;
+        }
+
+        /// <summary>
         /// Karma cost for an Initiation = KarmaInitiationFlat + (New Rating x this value).
         /// </summary>
         public int KarmaInitiation
@@ -6521,6 +6738,15 @@ namespace Chummer
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Karma cost for an Initiation = KarmaInitiationFlat + (New Rating x this value).
+        /// </summary>
+        public async ValueTask<int> GetKarmaInitiationAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _intKarmaInitiation;
         }
 
         /// <summary>
@@ -6549,6 +6775,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Karma cost for an Initiation = this value + (New Rating x KarmaInitiation).
+        /// </summary>
+        public async ValueTask<int> GetKarmaInitiationFlatAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _intKarmaInitiationFlat;
+        }
+
+        /// <summary>
         /// Karma cost for a Metamagic = this value.
         /// </summary>
         public int KarmaMetamagic
@@ -6571,6 +6806,15 @@ namespace Chummer
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Karma cost for a Metamagic = this value.
+        /// </summary>
+        public async ValueTask<int> GetKarmaMetamagicAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _intKarmaMetamagic;
         }
 
         /// <summary>
@@ -6599,6 +6843,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Karma cost to join a Group = this value.
+        /// </summary>
+        public async ValueTask<int> GetKarmaJoinGroupAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _intKarmaJoinGroup;
+        }
+
+        /// <summary>
         /// Karma cost to leave a Group = this value.
         /// </summary>
         public int KarmaLeaveGroup
@@ -6621,6 +6874,15 @@ namespace Chummer
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Karma cost to leave a Group = this value.
+        /// </summary>
+        public async ValueTask<int> GetKarmaLeaveGroupAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _intKarmaLeaveGroup;
         }
 
         /// <summary>
@@ -7193,6 +7455,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// How much Karma a single Power Point costs for a Mystic Adept.
+        /// </summary>
+        public async ValueTask<int> GetKarmaMysticAdeptPowerPointAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _intKarmaMysticAdeptPowerPoint;
+        }
+
+        /// <summary>
         /// Karma cost for fetting a spirit (gets multiplied by Force).
         /// </summary>
         public int KarmaSpiritFettering
@@ -7217,13 +7488,22 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Karma cost for fetting a spirit (gets multiplied by Force).
+        /// </summary>
+        public async ValueTask<int> GetKarmaSpiritFetteringAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _intKarmaSpiritFettering;
+        }
+
         #endregion Karma
 
-        #region Default Build
+            #region Default Build
 
-        /// <summary>
-        /// Percentage by which adding an Initiate Grade to an Awakened is discounted if a member of a Group.
-        /// </summary>
+            /// <summary>
+            /// Percentage by which adding an Initiate Grade to an Awakened is discounted if a member of a Group.
+            /// </summary>
         public decimal KarmaMAGInitiationGroupPercent
         {
             get

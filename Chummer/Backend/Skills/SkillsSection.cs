@@ -1474,7 +1474,7 @@ namespace Chummer.Backend.Skills
                         return 0;
                     }
 
-                    return SkillPointsMaximum - Skills.TotalCostSp() - SkillPointsSpentOnKnoskills;
+                    return SkillPointsMaximum - Skills.Sum(x => x.CurrentSpCost) - SkillPointsSpentOnKnoskills;
                 }
             }
         }
@@ -1494,6 +1494,15 @@ namespace Chummer.Backend.Skills
                 using (EnterReadLock.Enter(LockObject))
                     return SkillGroupPointsMaximum - SkillGroups.Sum(x => x.Base - x.FreeBase);
             }
+        }
+
+        /// <summary>
+        /// Number of free Skill Points the character has.
+        /// </summary>
+        public async ValueTask<int> GetSkillGroupPointsAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return SkillGroupPointsMaximum - await SkillGroups.SumAsync(x => x.Base - x.FreeBase, token: token);
         }
 
         /// <summary>

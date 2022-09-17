@@ -977,15 +977,15 @@ namespace Chummer
                 _setPermanentSourcebooks.Clear();
                 foreach (XPathNavigator objXmlBook in await (await XmlManager.LoadXPathAsync(
                                  "books.xml", _objCharacterSettings.EnabledCustomDataDirectoryPaths, token: token))
-                             .SelectAndCacheExpressionAsync("/chummer/books/book"))
+                             .SelectAndCacheExpressionAsync("/chummer/books/book", token: token))
                 {
-                    if (await objXmlBook.SelectSingleNodeAndCacheExpressionAsync("hide") != null)
+                    if (await objXmlBook.SelectSingleNodeAndCacheExpressionAsync("hide", token: token) != null)
                         continue;
-                    string strCode = (await objXmlBook.SelectSingleNodeAndCacheExpressionAsync("code"))?.Value;
+                    string strCode = (await objXmlBook.SelectSingleNodeAndCacheExpressionAsync("code", token: token))?.Value;
                     if (string.IsNullOrEmpty(strCode))
                         continue;
                     bool blnChecked = _objCharacterSettings.Books.Contains(strCode);
-                    if (await objXmlBook.SelectSingleNodeAndCacheExpressionAsync("permanent") != null)
+                    if (await objXmlBook.SelectSingleNodeAndCacheExpressionAsync("permanent", token: token) != null)
                     {
                         _setPermanentSourcebooks.Add(strCode);
                         if (_objCharacterSettings.BooksWritable.Add(strCode))
@@ -993,8 +993,8 @@ namespace Chummer
                         blnChecked = true;
                     }
 
-                    string strTranslate = (await objXmlBook.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value;
-                    string strName = (await objXmlBook.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value;
+                    string strTranslate = (await objXmlBook.SelectSingleNodeAndCacheExpressionAsync("translate", token: token))?.Value;
+                    string strName = (await objXmlBook.SelectSingleNodeAndCacheExpressionAsync("name", token: token))?.Value;
                     await treSourcebook.DoThreadSafeAsync(x =>
                     {
                         TreeNode objNode = new TreeNode
@@ -1196,14 +1196,14 @@ namespace Chummer
                                                      _objCharacterSettings.EnabledCustomDataDirectoryPaths,
                                                      token: token))
                                  .SelectAndCacheExpressionAsync(
-                                     "/chummer/prioritytables/prioritytable"))
+                                     "/chummer/prioritytables/prioritytable", token: token))
                     {
                         string strName = objXmlNode.Value;
                         if (!string.IsNullOrEmpty(strName))
                             lstPriorityTables.Add(new ListItem(objXmlNode.Value,
                                                                (await objXmlNode
                                                                    .SelectSingleNodeAndCacheExpressionAsync(
-                                                                       "@translate"))
+                                                                       "@translate", token: token))
                                                                ?.Value ?? strName));
                     }
 
@@ -1249,19 +1249,19 @@ namespace Chummer
                                      .LoadXPathAsync("options.xml",
                                                      _objCharacterSettings.EnabledCustomDataDirectoryPaths,
                                                      token: token))
-                                 .SelectAndCacheExpressionAsync("/chummer/limbcounts/limb"))
+                                 .SelectAndCacheExpressionAsync("/chummer/limbcounts/limb", token: token))
                     {
-                        string strExclude = (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("exclude"))?.Value
+                        string strExclude = (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("exclude", token: token))?.Value
                                             ??
                                             string.Empty;
                         if (!string.IsNullOrEmpty(strExclude))
                             strExclude = '<' + strExclude;
                         lstLimbCount.Add(new ListItem(
-                                             (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("limbcount"))
+                                             (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("limbcount", token: token))
                                              ?.Value + strExclude,
-                                             (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("translate"))
+                                             (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token))
                                              ?.Value
-                                             ?? (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("name"))
+                                             ?? (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("name", token: token))
                                              ?.Value
                                              ?? string.Empty));
                     }
@@ -1302,12 +1302,12 @@ namespace Chummer
                                      .LoadXPathAsync("bioware.xml",
                                                      _objCharacterSettings.EnabledCustomDataDirectoryPaths,
                                                      token: token))
-                                 .SelectAndCacheExpressionAsync("/chummer/grades/grade[not(hide)]"))
+                                 .SelectAndCacheExpressionAsync("/chummer/grades/grade[not(hide)]", token: token))
                     {
-                        string strName = (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value;
+                        string strName = (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("name", token: token))?.Value;
                         if (!string.IsNullOrEmpty(strName) && strName != "None")
                         {
-                            string strBook = (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("source"))
+                            string strBook = (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("source", token: token))
                                 ?.Value;
                             if (!string.IsNullOrEmpty(strBook)
                                 && treSourcebook.Nodes.Cast<TreeNode>().All(x => x.Tag.ToString() != strBook))
@@ -1320,7 +1320,7 @@ namespace Chummer
                                 lstGrades.Remove(objExistingCoveredGrade);
                             lstGrades.Add(new ListItem(
                                               strName,
-                                              (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("translate"))
+                                              (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token))
                                               ?.Value
                                               ?? strName));
                         }
@@ -1330,12 +1330,12 @@ namespace Chummer
                                      .LoadXPathAsync("cyberware.xml",
                                                      _objCharacterSettings.EnabledCustomDataDirectoryPaths,
                                                      token: token))
-                                 .SelectAndCacheExpressionAsync("/chummer/grades/grade[not(hide)]"))
+                                 .SelectAndCacheExpressionAsync("/chummer/grades/grade[not(hide)]", token: token))
                     {
-                        string strName = (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value;
+                        string strName = (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("name", token: token))?.Value;
                         if (!string.IsNullOrEmpty(strName) && strName != "None")
                         {
-                            string strBook = (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("source"))
+                            string strBook = (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("source", token: token))
                                 ?.Value;
                             if (!string.IsNullOrEmpty(strBook)
                                 && treSourcebook.Nodes.Cast<TreeNode>().All(x => x.Tag.ToString() != strBook))
@@ -1348,7 +1348,7 @@ namespace Chummer
                                 lstGrades.Remove(objExistingCoveredGrade);
                             lstGrades.Add(new ListItem(
                                               strName,
-                                              (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("translate"))
+                                              (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token))
                                               ?.Value
                                               ?? strName));
                         }

@@ -22,6 +22,8 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using Chummer.Backend.Equipment;
@@ -259,6 +261,133 @@ namespace Chummer
         }
 
         /// <summary>
+        /// The cost in Karma to bind this Stacked Focus.
+        /// </summary>
+        public async ValueTask<int> GetBindingCostAsync(CancellationToken token = default)
+        {
+            decimal decCost = 0;
+            foreach (Gear objFocus in Gear)
+            {
+                // Each Focus costs an amount of Karma equal to their Force x specific Karma cost.
+                string strFocusName = objFocus.Name;
+                string strFocusExtra = objFocus.Extra;
+                int intPosition = strFocusName.IndexOf('(');
+                if (intPosition > -1)
+                    strFocusName = strFocusName.Substring(0, intPosition - 1);
+                intPosition = strFocusName.IndexOf(',');
+                if (intPosition > -1)
+                    strFocusName = strFocusName.Substring(0, intPosition);
+                decimal decExtraKarmaCost = 0;
+                if (strFocusName.EndsWith(", Individualized, Complete", StringComparison.Ordinal))
+                {
+                    decExtraKarmaCost = -2;
+                    strFocusName = strFocusName.Replace(", Individualized, Complete", string.Empty);
+                }
+                else if (strFocusName.EndsWith(", Individualized, Partial", StringComparison.Ordinal))
+                {
+                    decExtraKarmaCost = -1;
+                    strFocusName = strFocusName.Replace(", Individualized, Partial", string.Empty);
+                }
+
+                decimal decKarmaMultiplier;
+                CharacterSettings objSettings = await _objCharacter.GetSettingsAsync(token);
+                switch (strFocusName)
+                {
+                    case "Qi Focus":
+                        decKarmaMultiplier = await objSettings.GetKarmaQiFocusAsync(token);
+                        break;
+
+                    case "Sustaining Focus":
+                        decKarmaMultiplier = await objSettings.GetKarmaSustainingFocusAsync(token);
+                        break;
+
+                    case "Counterspelling Focus":
+                        decKarmaMultiplier = await objSettings.GetKarmaCounterspellingFocusAsync(token);
+                        break;
+
+                    case "Banishing Focus":
+                        decKarmaMultiplier = await objSettings.GetKarmaBanishingFocusAsync(token);
+                        break;
+
+                    case "Binding Focus":
+                        decKarmaMultiplier = await objSettings.GetKarmaBindingFocusAsync(token);
+                        break;
+
+                    case "Weapon Focus":
+                        decKarmaMultiplier = await objSettings.GetKarmaWeaponFocusAsync(token);
+                        break;
+
+                    case "Spellcasting Focus":
+                        decKarmaMultiplier = await objSettings.GetKarmaSpellcastingFocusAsync(token);
+                        break;
+
+                    case "Summoning Focus":
+                        decKarmaMultiplier = await objSettings.GetKarmaSummoningFocusAsync(token);
+                        break;
+
+                    case "Alchemical Focus":
+                        decKarmaMultiplier = await objSettings.GetKarmaAlchemicalFocusAsync(token);
+                        break;
+
+                    case "Centering Focus":
+                        decKarmaMultiplier = await objSettings.GetKarmaCenteringFocusAsync(token);
+                        break;
+
+                    case "Masking Focus":
+                        decKarmaMultiplier = await objSettings.GetKarmaMaskingFocusAsync(token);
+                        break;
+
+                    case "Disenchanting Focus":
+                        decKarmaMultiplier = await objSettings.GetKarmaDisenchantingFocusAsync(token);
+                        break;
+
+                    case "Power Focus":
+                        decKarmaMultiplier = await objSettings.GetKarmaPowerFocusAsync(token);
+                        break;
+
+                    case "Flexible Signature Focus":
+                        decKarmaMultiplier = await objSettings.GetKarmaFlexibleSignatureFocusAsync(token);
+                        break;
+
+                    case "Ritual Spellcasting Focus":
+                        decKarmaMultiplier = await objSettings.GetKarmaRitualSpellcastingFocusAsync(token);
+                        break;
+
+                    case "Spell Shaping Focus":
+                        decKarmaMultiplier = await objSettings.GetKarmaSpellShapingFocusAsync(token);
+                        break;
+
+                    default:
+                        decKarmaMultiplier = 1;
+                        break;
+                }
+
+                await (await _objCharacter.GetImprovementsAsync(token)).ForEachAsync(objLoopImprovement =>
+                {
+                    if (objLoopImprovement.ImprovedName != strFocusName
+                        || (!string.IsNullOrEmpty(objLoopImprovement.Target)
+                            && !strFocusExtra.Contains(objLoopImprovement.Target)) || !objLoopImprovement.Enabled)
+                        return;
+
+                    switch (objLoopImprovement.ImproveType)
+                    {
+                        case Improvement.ImprovementType.FocusBindingKarmaCost:
+                            decExtraKarmaCost += objLoopImprovement.Value;
+                            break;
+
+                        case Improvement.ImprovementType.FocusBindingKarmaMultiplier:
+                            decKarmaMultiplier += objLoopImprovement.Value;
+                            break;
+                    }
+                }, token: token);
+
+                decCost += objFocus.Rating * decKarmaMultiplier + decExtraKarmaCost;
+            }
+
+            return decCost.StandardRound();
+        }
+
+        /// <summary>
         /// Stacked Focus Name.
         /// </summary>
         public string Name(CultureInfo objCulture, string strLanguage)
@@ -268,8 +397,28 @@ namespace Chummer
             {
                 foreach (Gear objGear in Gear)
                 {
-                    sbdReturn.Append(objGear.DisplayName(objCulture, strLanguage));
-                    sbdReturn.Append(", ");
+                    sbdReturn.Append(objGear.DisplayName(objCulture, strLanguage)).Append(", ");
+                }
+
+                // Remove the trailing comma.
+                if (sbdReturn.Length > 0)
+                    sbdReturn.Length -= 2;
+
+                return sbdReturn.ToString();
+            }
+        }
+
+        /// <summary>
+        /// Stacked Focus Name.
+        /// </summary>
+        public async ValueTask<string> NameAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
+        {
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                          out StringBuilder sbdReturn))
+            {
+                foreach (Gear objGear in Gear)
+                {
+                    sbdReturn.Append(await objGear.DisplayNameAsync(objCulture, strLanguage, token: token)).Append(", ");
                 }
 
                 // Remove the trailing comma.
@@ -281,6 +430,8 @@ namespace Chummer
         }
 
         public string CurrentDisplayName => Name(GlobalSettings.CultureInfo, GlobalSettings.Language);
+
+        public ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default) => NameAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
 
         /// <summary>
         /// List of Gear that make up the Stacked Focus.

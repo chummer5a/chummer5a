@@ -5038,7 +5038,7 @@ namespace Chummer
                                         continue;
                                     objNode.Text = await objNode.Text.CheapReplaceAsync(
                                         await LanguageManager.GetStringAsync("String_Rating", token: GenericToken),
-                                        () => LanguageManager.GetStringAsync(objGear.RatingLabel, token: GenericToken));
+                                        () => LanguageManager.GetStringAsync(objGear.RatingLabel, token: GenericToken), token: GenericToken);
                                     for (int i = CharacterObject.Foci.Count - 1; i >= 0; --i)
                                     {
                                         if (i < CharacterObject.Foci.Count)
@@ -5083,7 +5083,7 @@ namespace Chummer
                                                         Improvement.ImprovementSource.StackedFocus, objStack.InternalId,
                                                         objFociGear.Bonus, objFociGear.Rating,
                                                         await objFociGear.DisplayNameShortAsync(
-                                                            GlobalSettings.Language));
+                                                            GlobalSettings.Language, GenericToken));
                                                     if (objFociGear.WirelessOn)
                                                         await ImprovementManager.CreateImprovementsAsync(
                                                             CharacterObject,
@@ -5091,7 +5091,7 @@ namespace Chummer
                                                             objStack.InternalId,
                                                             objFociGear.WirelessBonus, objFociGear.Rating,
                                                             await objFociGear.DisplayNameShortAsync(
-                                                                GlobalSettings.Language));
+                                                                GlobalSettings.Language, GenericToken));
                                                 }
                                             }
 
@@ -5142,7 +5142,7 @@ namespace Chummer
                                             continue;
                                         objNode.Text = await objNode.Text.CheapReplaceAsync(
                                             await LanguageManager.GetStringAsync("String_Rating", token: GenericToken),
-                                            () => LanguageManager.GetStringAsync("String_Force", token: GenericToken));
+                                            () => LanguageManager.GetStringAsync("String_Force", token: GenericToken), token: GenericToken);
                                         for (int i = CharacterObject.Foci.Count - 1; i >= 0; --i)
                                         {
                                             if (i < CharacterObject.Foci.Count)
@@ -5200,7 +5200,7 @@ namespace Chummer
                                                             Improvement.ImprovementSource.StackedFocus,
                                                             objStack.InternalId, objFociGear.Bonus, objFociGear.Rating,
                                                             await objFociGear.DisplayNameShortAsync(
-                                                                GlobalSettings.Language));
+                                                                GlobalSettings.Language, GenericToken));
                                                         if (objFociGear.WirelessOn)
                                                             await ImprovementManager.CreateImprovementsAsync(
                                                                 CharacterObject,
@@ -5208,7 +5208,7 @@ namespace Chummer
                                                                 objStack.InternalId, objFociGear.WirelessBonus,
                                                                 objFociGear.Rating,
                                                                 await objFociGear.DisplayNameShortAsync(
-                                                                    GlobalSettings.Language));
+                                                                    GlobalSettings.Language, GenericToken));
                                                     }
                                                 }
 
@@ -5344,7 +5344,7 @@ namespace Chummer
                                             continue;
                                         objNode.Text = await objNode.Text.CheapReplaceAsync(
                                             await LanguageManager.GetStringAsync("String_Rating", token: GenericToken),
-                                            () => LanguageManager.GetString("String_Force", token: GenericToken));
+                                            () => LanguageManager.GetString("String_Force", token: GenericToken), token: GenericToken);
                                         for (int i = CharacterObject.Foci.Count - 1; i >= 0; --i)
                                         {
                                             if (i < CharacterObject.Foci.Count)
@@ -5402,7 +5402,7 @@ namespace Chummer
                                                             Improvement.ImprovementSource.StackedFocus,
                                                             objStack.InternalId, objFociGear.Bonus, objFociGear.Rating,
                                                             await objFociGear.DisplayNameShortAsync(
-                                                                GlobalSettings.Language));
+                                                                GlobalSettings.Language, GenericToken));
                                                         if (objFociGear.WirelessOn)
                                                             await ImprovementManager.CreateImprovementsAsync(
                                                                 CharacterObject,
@@ -5410,7 +5410,7 @@ namespace Chummer
                                                                 objStack.InternalId, objFociGear.WirelessBonus,
                                                                 objFociGear.Rating,
                                                                 await objFociGear.DisplayNameShortAsync(
-                                                                    GlobalSettings.Language));
+                                                                    GlobalSettings.Language, GenericToken));
                                                     }
                                                 }
 
@@ -7798,7 +7798,7 @@ namespace Chummer
 
                 foreach (XPathNavigator xmlContact in await xmlDoc.CreateNavigator()
                                                                   .SelectAndCacheExpressionAsync(
-                                                                      "/chummer/contacts/contact"))
+                                                                      "/chummer/contacts/contact", token: token))
                 {
                     Contact objContact = new Contact(CharacterObject);
                     objContact.Load(xmlContact);

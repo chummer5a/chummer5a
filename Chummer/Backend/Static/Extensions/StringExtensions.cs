@@ -40,14 +40,17 @@ namespace Chummer
             return strInput == EmptyGuid;
         }
 
-        public static async Task<string> JoinAsync(string strSeparator, IEnumerable<Task<string>> lstStringTasks)
+        public static async Task<string> JoinAsync(string strSeparator, IEnumerable<Task<string>> lstStringTasks, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             bool blnAddSeparator = false;
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
                 foreach (Task<string> tskString in lstStringTasks)
                 {
+                    token.ThrowIfCancellationRequested();
                     sbdReturn.Append(await tskString);
+                    token.ThrowIfCancellationRequested();
                     if (blnAddSeparator)
                         sbdReturn.Append(strSeparator);
                     else
@@ -952,25 +955,43 @@ namespace Chummer
         /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
         /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
         /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>The result of a string::Replace() method if a replacement is made, the original string otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async Task<string> CheapReplaceAsync(this string strInput, string strOldValue, Func<string> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal)
+        public static async Task<string> CheapReplaceAsync(this string strInput, string strOldValue, Func<string> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (!string.IsNullOrEmpty(strInput) && funcNewValueFactory != null)
             {
                 if (eStringComparison == StringComparison.Ordinal)
                 {
                     if (strInput.Contains(strOldValue))
                     {
+                        token.ThrowIfCancellationRequested();
                         string strFactoryResult = string.Empty;
-                        await Task.Factory.FromAsync(funcNewValueFactory.BeginInvoke, x => strFactoryResult = funcNewValueFactory.EndInvoke(x), null);
+                        using (CancellationTokenTaskSource<string> objCancelTaskSource = new CancellationTokenTaskSource<string>(token))
+                        {
+                            await Task.WhenAny(Task.Factory.FromAsync(funcNewValueFactory.BeginInvoke,
+                                                                      x => strFactoryResult
+                                                                          = funcNewValueFactory.EndInvoke(x), null),
+                                               objCancelTaskSource.Task);
+                        }
+                        token.ThrowIfCancellationRequested();
                         return strInput.Replace(strOldValue, strFactoryResult);
                     }
                 }
                 else if (strInput.IndexOf(strOldValue, eStringComparison) != -1)
                 {
+                    token.ThrowIfCancellationRequested();
                     string strFactoryResult = string.Empty;
-                    await Task.Factory.FromAsync(funcNewValueFactory.BeginInvoke, x => strFactoryResult = funcNewValueFactory.EndInvoke(x), null);
+                    using (CancellationTokenTaskSource<string> objCancelTaskSource = new CancellationTokenTaskSource<string>(token))
+                    {
+                        await Task.WhenAny(Task.Factory.FromAsync(funcNewValueFactory.BeginInvoke,
+                                                                  x => strFactoryResult
+                                                                      = funcNewValueFactory.EndInvoke(x), null),
+                                           objCancelTaskSource.Task);
+                    }
+                    token.ThrowIfCancellationRequested();
                     return strInput.Replace(strOldValue, strFactoryResult, eStringComparison);
                 }
             }
@@ -987,11 +1008,13 @@ namespace Chummer
         /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
         /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
         /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>The result of a string::Replace() method if a replacement is made, the original string otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async Task<string> CheapReplaceAsync(this ValueTask<string> strInputTask, string strOldValue, Func<string> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal)
+        public static async Task<string> CheapReplaceAsync(this ValueTask<string> strInputTask, string strOldValue, Func<string> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal, CancellationToken token = default)
         {
-            return await CheapReplaceAsync(await strInputTask, strOldValue, funcNewValueFactory, eStringComparison);
+            token.ThrowIfCancellationRequested();
+            return await CheapReplaceAsync(await strInputTask, strOldValue, funcNewValueFactory, eStringComparison, token);
         }
 
         /// <summary>
@@ -1003,11 +1026,13 @@ namespace Chummer
         /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
         /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
         /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>The result of a string::Replace() method if a replacement is made, the original string otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async Task<string> CheapReplaceAsync(this Task<string> strInputTask, string strOldValue, Func<string> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal)
+        public static async Task<string> CheapReplaceAsync(this Task<string> strInputTask, string strOldValue, Func<string> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal, CancellationToken token = default)
         {
-            return await CheapReplaceAsync(await strInputTask, strOldValue, funcNewValueFactory, eStringComparison);
+            token.ThrowIfCancellationRequested();
+            return await CheapReplaceAsync(await strInputTask, strOldValue, funcNewValueFactory, eStringComparison, token);
         }
 
         /// <summary>
@@ -1019,22 +1044,30 @@ namespace Chummer
         /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
         /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
         /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>The result of a string::Replace() method if a replacement is made, the original string otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async Task<string> CheapReplaceAsync(this string strInput, string strOldValue, Func<Task<string>> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal)
+        public static async Task<string> CheapReplaceAsync(this string strInput, string strOldValue, Func<Task<string>> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (!string.IsNullOrEmpty(strInput) && funcNewValueFactory != null)
             {
                 if (eStringComparison == StringComparison.Ordinal)
                 {
                     if (strInput.Contains(strOldValue))
                     {
-                        return strInput.Replace(strOldValue, await funcNewValueFactory.Invoke());
+                        token.ThrowIfCancellationRequested();
+                        string strNewValue = await funcNewValueFactory.Invoke();
+                        token.ThrowIfCancellationRequested();
+                        return strInput.Replace(strOldValue, strNewValue);
                     }
                 }
                 else if (strInput.IndexOf(strOldValue, eStringComparison) != -1)
                 {
-                    return strInput.Replace(strOldValue, await funcNewValueFactory.Invoke(), eStringComparison);
+                    token.ThrowIfCancellationRequested();
+                    string strNewValue = await funcNewValueFactory.Invoke();
+                    token.ThrowIfCancellationRequested();
+                    return strInput.Replace(strOldValue, strNewValue, eStringComparison);
                 }
             }
 
@@ -1050,11 +1083,13 @@ namespace Chummer
         /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
         /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
         /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>The result of a string::Replace() method if a replacement is made, the original string otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async Task<string> CheapReplaceAsync(this ValueTask<string> strInputTask, string strOldValue, Func<Task<string>> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal)
+        public static async Task<string> CheapReplaceAsync(this ValueTask<string> strInputTask, string strOldValue, Func<Task<string>> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal, CancellationToken token = default)
         {
-            return await CheapReplaceAsync(await strInputTask, strOldValue, funcNewValueFactory, eStringComparison);
+            token.ThrowIfCancellationRequested();
+            return await CheapReplaceAsync(await strInputTask, strOldValue, funcNewValueFactory, eStringComparison, token);
         }
 
         /// <summary>
@@ -1066,11 +1101,13 @@ namespace Chummer
         /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
         /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
         /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>The result of a string::Replace() method if a replacement is made, the original string otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async Task<string> CheapReplaceAsync(this Task<string> strInputTask, string strOldValue, Func<Task<string>> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal)
+        public static async Task<string> CheapReplaceAsync(this Task<string> strInputTask, string strOldValue, Func<Task<string>> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal, CancellationToken token = default)
         {
-            return await CheapReplaceAsync(await strInputTask, strOldValue, funcNewValueFactory, eStringComparison);
+            token.ThrowIfCancellationRequested();
+            return await CheapReplaceAsync(await strInputTask, strOldValue, funcNewValueFactory, eStringComparison, token);
         }
 
         /// <summary>

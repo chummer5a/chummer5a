@@ -125,7 +125,7 @@ namespace Chummer
             xmlStoryModuleDataNode.TryGetField("id", Guid.TryParse, out _guiSourceID);
             xmlStoryModuleDataNode.TryGetStringFieldQuickly("name", ref _strName);
 
-            XPathNavigator xmlTextsNode = await xmlStoryModuleDataNode.SelectSingleNodeAndCacheExpressionAsync("texts");
+            XPathNavigator xmlTextsNode = await xmlStoryModuleDataNode.SelectSingleNodeAndCacheExpressionAsync("texts", token: token);
             if (xmlTextsNode != null)
             {
                 foreach (XPathNavigator xmlText in xmlStoryModuleDataNode.SelectChildren(XPathNodeType.Element))
