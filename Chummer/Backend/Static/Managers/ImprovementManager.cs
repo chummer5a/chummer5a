@@ -231,7 +231,7 @@ namespace Chummer
             }
         }
 
-        public static async ValueTask ClearCachedValueAsync(Character objCharacter, Improvement.ImprovementType eImprovementType, string strImprovementName = "")
+        public static async ValueTask ClearCachedValueAsync(Character objCharacter, Improvement.ImprovementType eImprovementType, string strImprovementName = "", CancellationToken token = default)
         {
             if (!string.IsNullOrEmpty(strImprovementName))
             {
@@ -239,10 +239,10 @@ namespace Chummer
                     = new ImprovementDictionaryKey(objCharacter, eImprovementType, strImprovementName);
                 if (!await s_DictionaryCachedValues.TryAddAsync(objCheckKey,
                                                                 new Tuple<decimal, List<Improvement>>(
-                                                                    decimal.MinValue, new List<Improvement>())))
+                                                                    decimal.MinValue, new List<Improvement>()), token))
                 {
                     (bool blnSuccess, Tuple<decimal, List<Improvement>> tupTemp)
-                        = await s_DictionaryCachedValues.TryGetValueAsync(objCheckKey);
+                        = await s_DictionaryCachedValues.TryGetValueAsync(objCheckKey, token);
                     if (blnSuccess)
                     {
                         List<Improvement> lstTemp = tupTemp.Item2;
@@ -251,16 +251,16 @@ namespace Chummer
                                                                         x => new Tuple<decimal, List<Improvement>>(
                                                                             decimal.MinValue, lstTemp),
                                                                         (x, y) => new Tuple<decimal, List<Improvement>>(
-                                                                            decimal.MinValue, lstTemp));
+                                                                            decimal.MinValue, lstTemp), token);
                     }
                 }
 
                 if (!await s_DictionaryCachedAugmentedValues.TryAddAsync(objCheckKey,
                                                                          new Tuple<decimal, List<Improvement>>(
-                                                                             decimal.MinValue, new List<Improvement>())))
+                                                                             decimal.MinValue, new List<Improvement>()), token))
                 {
                     (bool blnSuccess, Tuple<decimal, List<Improvement>> tupTemp)
-                        = await s_DictionaryCachedAugmentedValues.TryGetValueAsync(objCheckKey);
+                        = await s_DictionaryCachedAugmentedValues.TryGetValueAsync(objCheckKey, token);
                     if (blnSuccess)
                     {
                         List<Improvement> lstTemp = tupTemp.Item2;
@@ -269,7 +269,7 @@ namespace Chummer
                             x => new Tuple<decimal, List<Improvement>>(
                                 decimal.MinValue, lstTemp),
                             (x, y) => new Tuple<decimal, List<Improvement>>(
-                                decimal.MinValue, lstTemp));
+                                decimal.MinValue, lstTemp), token);
                     }
                 }
             }
@@ -280,7 +280,7 @@ namespace Chummer
                              .ToList())
                 {
                     (bool blnSuccess, Tuple<decimal, List<Improvement>> tupTemp)
-                        = await s_DictionaryCachedValues.TryGetValueAsync(objCheckKey);
+                        = await s_DictionaryCachedValues.TryGetValueAsync(objCheckKey, token);
                     if (blnSuccess)
                     {
                         List<Improvement> lstTemp = tupTemp.Item2;
@@ -289,7 +289,7 @@ namespace Chummer
                                                                         x => new Tuple<decimal, List<Improvement>>(
                                                                             decimal.MinValue, lstTemp),
                                                                         (x, y) => new Tuple<decimal, List<Improvement>>(
-                                                                            decimal.MinValue, lstTemp));
+                                                                            decimal.MinValue, lstTemp), token);
                     }
                 }
 
@@ -298,7 +298,7 @@ namespace Chummer
                              .ToList())
                 {
                     (bool blnSuccess, Tuple<decimal, List<Improvement>> tupTemp)
-                        = await s_DictionaryCachedAugmentedValues.TryGetValueAsync(objCheckKey);
+                        = await s_DictionaryCachedAugmentedValues.TryGetValueAsync(objCheckKey, token);
                     if (blnSuccess)
                     {
                         List<Improvement> lstTemp = tupTemp.Item2;
@@ -307,7 +307,7 @@ namespace Chummer
                             x => new Tuple<decimal, List<Improvement>>(
                                 decimal.MinValue, lstTemp),
                             (x, y) => new Tuple<decimal, List<Improvement>>(
-                                decimal.MinValue, lstTemp));
+                                decimal.MinValue, lstTemp), token);
                     }
                 }
             }
@@ -330,12 +330,12 @@ namespace Chummer
             s_DictionaryTransactions.TryRemove(objCharacter, out List<Improvement> _);
         }
 
-        public static async ValueTask ClearCachedValuesAsync(Character objCharacter)
+        public static async ValueTask ClearCachedValuesAsync(Character objCharacter, CancellationToken token = default)
         {
             foreach (ImprovementDictionaryKey objKey in s_DictionaryCachedValues.Keys.Where(x => x.CharacterObject == objCharacter).ToList())
             {
                 (bool blnSuccess, Tuple<decimal, List<Improvement>> tupTemp)
-                    = await s_DictionaryCachedValues.TryRemoveAsync(objKey);
+                    = await s_DictionaryCachedValues.TryRemoveAsync(objKey, token);
                 if (blnSuccess)
                     tupTemp.Item2.Clear(); // Just in case this helps the GC
             }
@@ -343,12 +343,12 @@ namespace Chummer
             foreach (ImprovementDictionaryKey objKey in s_DictionaryCachedAugmentedValues.Keys.Where(x => x.CharacterObject == objCharacter).ToList())
             {
                 (bool blnSuccess, Tuple<decimal, List<Improvement>> tupTemp)
-                    = await s_DictionaryCachedAugmentedValues.TryRemoveAsync(objKey);
+                    = await s_DictionaryCachedAugmentedValues.TryRemoveAsync(objKey, token);
                 if (blnSuccess)
                     tupTemp.Item2.Clear(); // Just in case this helps the GC
             }
 
-            await s_DictionaryTransactions.TryRemoveAsync(objCharacter);
+            await s_DictionaryTransactions.TryRemoveAsync(objCharacter, token);
         }
 
         #endregion Properties
@@ -3195,9 +3195,10 @@ namespace Chummer
         /// <param name="objCharacter">Character from which improvements should be deleted.</param>
         /// <param name="objImprovementSource">Type of object that granted these Improvements.</param>
         /// <param name="strSourceName">Name of the item that granted these Improvements.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         public static async ValueTask<decimal> RemoveImprovementsAsync(Character objCharacter,
-                                                                      Improvement.ImprovementSource objImprovementSource,
-                                                                      string strSourceName = "")
+                                                                       Improvement.ImprovementSource objImprovementSource,
+                                                                       string strSourceName = "", CancellationToken token = default)
         {
             // If there is no character object, don't try to remove any Improvements.
             if (objCharacter == null)
@@ -3208,7 +3209,7 @@ namespace Chummer
             Log.Debug("RemoveImprovements called with:" + Environment.NewLine + "objImprovementSource = "
                      + objImprovementSource + Environment.NewLine + "strSourceName = " + strSourceName);
             List<Improvement> objImprovementList;
-            using (await EnterReadLock.EnterAsync(objCharacter.LockObject))
+            using (await EnterReadLock.EnterAsync(objCharacter.LockObject, token))
             {
                 // A List of Improvements to hold all of the items that will eventually be deleted.
                 objImprovementList = (string.IsNullOrEmpty(strSourceName)
@@ -3221,7 +3222,7 @@ namespace Chummer
                 // Compatibility fix for when blnConcatSelectedValue was around
                 if (strSourceName.IsGuid())
                 {
-                    string strSourceNameSpaced = strSourceName + await LanguageManager.GetStringAsync("String_Space");
+                    string strSourceNameSpaced = strSourceName + await LanguageManager.GetStringAsync("String_Space", token: token);
                     string strSourceNameSpacedInvariant = strSourceName + ' ';
                     objImprovementList.AddRange(objCharacter.Improvements.Where(
                                                     objImprovement =>
@@ -3233,7 +3234,7 @@ namespace Chummer
                 }
             }
 
-            return RemoveImprovements(objCharacter, objImprovementList);
+            return await RemoveImprovementsAsync(objCharacter, objImprovementList, token: token);
         }
 
         /// <summary>
@@ -3258,12 +3259,13 @@ namespace Chummer
         /// <param name="objImprovementList">List of improvements to delete.</param>
         /// <param name="blnReapplyImprovements">Whether we're reapplying Improvements.</param>
         /// <param name="blnAllowDuplicatesFromSameSource">If we ignore checking whether a potential duplicate improvement has the same SourceName</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         public static Task<decimal> RemoveImprovementsAsync(Character objCharacter, ICollection<Improvement> objImprovementList,
                                                       bool blnReapplyImprovements = false,
-                                                      bool blnAllowDuplicatesFromSameSource = false)
+                                                      bool blnAllowDuplicatesFromSameSource = false, CancellationToken token = default)
         {
             return RemoveImprovementsCoreAsync(false, objCharacter, objImprovementList, blnReapplyImprovements,
-                                               blnAllowDuplicatesFromSameSource);
+                                               blnAllowDuplicatesFromSameSource, token);
         }
 
         /// <summary>
@@ -3276,9 +3278,10 @@ namespace Chummer
         /// <param name="objImprovementList">List of improvements to delete.</param>
         /// <param name="blnReapplyImprovements">Whether we're reapplying Improvements.</param>
         /// <param name="blnAllowDuplicatesFromSameSource">If we ignore checking whether a potential duplicate improvement has the same SourceName</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         private static async Task<decimal> RemoveImprovementsCoreAsync(bool blnSync, Character objCharacter, ICollection<Improvement> objImprovementList,
                                                              bool blnReapplyImprovements,
-                                                             bool blnAllowDuplicatesFromSameSource)
+                                                             bool blnAllowDuplicatesFromSameSource, CancellationToken token = default)
         {
             Log.Debug("RemoveImprovements enter");
             //TODO: report a AI-operation (maybe with dependencies), so we get an idea how long this takes.
@@ -3295,7 +3298,7 @@ namespace Chummer
             if (blnSync)
                 objLocker = objCharacter.LockObject.EnterWriteLock();
             else
-                objLockerAsync = await objCharacter.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+                objLockerAsync = await objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
                 // Note: As attractive as it may be to replace objImprovementList with an IEnumerable, we need to iterate through it twice for performance reasons
@@ -3306,16 +3309,16 @@ namespace Chummer
                     // Remove the Improvement.
                     if (blnSync)
                     {
-                        // ReSharper disable once MethodHasAsyncOverload
+                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                         objCharacter.Improvements.Remove(objImprovement);
-                        // ReSharper disable once MethodHasAsyncOverload
+                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                         ClearCachedValue(objCharacter, objImprovement.ImproveType, objImprovement.ImprovedName);
                     }
                     else
                     {
-                        await objCharacter.Improvements.RemoveAsync(objImprovement).ConfigureAwait(false);
+                        await objCharacter.Improvements.RemoveAsync(objImprovement, token).ConfigureAwait(false);
                         await ClearCachedValueAsync(objCharacter, objImprovement.ImproveType,
-                                                    objImprovement.ImprovedName).ConfigureAwait(false);
+                                                    objImprovement.ImprovedName, token).ConfigureAwait(false);
                     }
                 }
 
@@ -3375,7 +3378,7 @@ namespace Chummer
                                 {
                                     foreach (KnowledgeSkill objKnowledgeSkill in objCharacter.SkillsSection.KnowsoftSkills)
                                     {
-                                        // ReSharper disable once MethodHasAsyncOverload
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         objCharacter.SkillsSection.KnowledgeSkills.Remove(objKnowledgeSkill);
                                     }
                                 }
@@ -3383,7 +3386,7 @@ namespace Chummer
                                 {
                                     foreach (KnowledgeSkill objKnowledgeSkill in objCharacter.SkillsSection.KnowsoftSkills)
                                     {
-                                        await objCharacter.SkillsSection.KnowledgeSkills.RemoveAsync(objKnowledgeSkill).ConfigureAwait(false);
+                                        await objCharacter.SkillsSection.KnowledgeSkills.RemoveAsync(objKnowledgeSkill, token).ConfigureAwait(false);
                                     }
                                 }
                             }
@@ -3402,9 +3405,9 @@ namespace Chummer
                                         KnowledgeSkill objSkill = objCharacter.SkillsSection.KnowsoftSkills[i];
                                         if (objSkill.InternalId == strImprovedName)
                                         {
-                                            // ReSharper disable once MethodHasAsyncOverload
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             objCharacter.SkillsSection.KnowledgeSkills.Remove(objSkill);
-                                            // ReSharper disable once MethodHasAsyncOverload
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             objCharacter.SkillsSection.KnowsoftSkills.RemoveAt(i);
                                         }
                                     }
@@ -3417,8 +3420,8 @@ namespace Chummer
                                         if (objSkill.InternalId == strImprovedName)
                                         {
                                             await Task.WhenAll(
-                                                objCharacter.SkillsSection.KnowledgeSkills.RemoveAsync(objSkill).AsTask(),
-                                                objCharacter.SkillsSection.KnowsoftSkills.RemoveAtAsync(i).AsTask()).ConfigureAwait(false);
+                                                objCharacter.SkillsSection.KnowledgeSkills.RemoveAsync(objSkill, token).AsTask(),
+                                                objCharacter.SkillsSection.KnowsoftSkills.RemoveAtAsync(i, token).AsTask()).ConfigureAwait(false);
                                         }
                                     }
                                 }
@@ -3537,10 +3540,10 @@ namespace Chummer
                             if (objNewContact != null)
                             {
                                 if (blnSync)
-                                    // ReSharper disable once MethodHasAsyncOverload
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     objCharacter.Contacts.Remove(objNewContact);
                                 else
-                                    await objCharacter.Contacts.RemoveAsync(objNewContact).ConfigureAwait(false);
+                                    await objCharacter.Contacts.RemoveAsync(objNewContact, token).ConfigureAwait(false);
                             }
                             break;
 
@@ -3549,14 +3552,14 @@ namespace Chummer
                             if (objArt != null)
                             {
                                 decReturn += blnSync
-                                    // ReSharper disable once MethodHasAsyncOverload
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     ? RemoveImprovements(objCharacter, objArt.SourceType, objArt.InternalId)
-                                    : await RemoveImprovementsAsync(objCharacter, objArt.SourceType, objArt.InternalId).ConfigureAwait(false);
+                                    : await RemoveImprovementsAsync(objCharacter, objArt.SourceType, objArt.InternalId, token).ConfigureAwait(false);
                                 if (blnSync)
-                                    // ReSharper disable once MethodHasAsyncOverload
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     objCharacter.Arts.Remove(objArt);
                                 else
-                                    await objCharacter.Arts.RemoveAsync(objArt).ConfigureAwait(false);
+                                    await objCharacter.Arts.RemoveAsync(objArt, token).ConfigureAwait(false);
                             }
 
                             break;
@@ -3568,7 +3571,7 @@ namespace Chummer
                             if (objMetamagic != null)
                             {
                                 decReturn += blnSync
-                                    // ReSharper disable once MethodHasAsyncOverload
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     ? RemoveImprovements(objCharacter,
                                                          objImprovement.ImproveType
                                                          == Improvement.ImprovementType.Metamagic
@@ -3580,12 +3583,12 @@ namespace Chummer
                                                                     == Improvement.ImprovementType.Metamagic
                                                                         ? Improvement.ImprovementSource.Metamagic
                                                                         : Improvement.ImprovementSource.Echo,
-                                                                    objMetamagic.InternalId).ConfigureAwait(false);
+                                                                    objMetamagic.InternalId, token).ConfigureAwait(false);
                                 if (blnSync)
-                                    // ReSharper disable once MethodHasAsyncOverload
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     objCharacter.Metamagics.Remove(objMetamagic);
                                 else
-                                    await objCharacter.Metamagics.RemoveAsync(objMetamagic).ConfigureAwait(false);
+                                    await objCharacter.Metamagics.RemoveAsync(objMetamagic, token).ConfigureAwait(false);
                             }
 
                             break;
@@ -3597,10 +3600,10 @@ namespace Chummer
                             if (limitMod != null)
                             {
                                 if (blnSync)
-                                    // ReSharper disable once MethodHasAsyncOverload
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     objCharacter.LimitModifiers.Remove(limitMod);
                                 else
-                                    await objCharacter.LimitModifiers.RemoveAsync(limitMod).ConfigureAwait(false);
+                                    await objCharacter.LimitModifiers.RemoveAsync(limitMod, token).ConfigureAwait(false);
                             }
 
                             break;
@@ -3612,14 +3615,14 @@ namespace Chummer
                             if (objCritterPower != null)
                             {
                                 decReturn += blnSync
-                                    // ReSharper disable once MethodHasAsyncOverload
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     ? RemoveImprovements(objCharacter, Improvement.ImprovementSource.CritterPower, objCritterPower.InternalId)
-                                    : await RemoveImprovementsAsync(objCharacter, Improvement.ImprovementSource.CritterPower, objCritterPower.InternalId).ConfigureAwait(false);
+                                    : await RemoveImprovementsAsync(objCharacter, Improvement.ImprovementSource.CritterPower, objCritterPower.InternalId, token).ConfigureAwait(false);
                                 if (blnSync)
-                                    // ReSharper disable once MethodHasAsyncOverload
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     objCharacter.CritterPowers.Remove(objCritterPower);
                                 else
-                                    await objCharacter.CritterPowers.RemoveAsync(objCritterPower).ConfigureAwait(false);
+                                    await objCharacter.CritterPowers.RemoveAsync(objCritterPower, token).ConfigureAwait(false);
                             }
 
                             break;
@@ -3632,14 +3635,14 @@ namespace Chummer
                             if (objMentor != null)
                             {
                                 decReturn += blnSync
-                                    // ReSharper disable once MethodHasAsyncOverload
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     ? RemoveImprovements(objCharacter, Improvement.ImprovementSource.MentorSpirit, objMentor.InternalId)
-                                    : await RemoveImprovementsAsync(objCharacter, Improvement.ImprovementSource.MentorSpirit, objMentor.InternalId).ConfigureAwait(false);
+                                    : await RemoveImprovementsAsync(objCharacter, Improvement.ImprovementSource.MentorSpirit, objMentor.InternalId, token).ConfigureAwait(false);
                                 if (blnSync)
-                                    // ReSharper disable once MethodHasAsyncOverload
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     objCharacter.MentorSpirits.Remove(objMentor);
                                 else
-                                    await objCharacter.MentorSpirits.RemoveAsync(objMentor).ConfigureAwait(false);
+                                    await objCharacter.MentorSpirits.RemoveAsync(objMentor, token).ConfigureAwait(false);
                             }
 
                             break;
@@ -3676,14 +3679,14 @@ namespace Chummer
                             if (objSpell != null)
                             {
                                 decReturn += blnSync
-                                    // ReSharper disable once MethodHasAsyncOverload
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     ? RemoveImprovements(objCharacter, Improvement.ImprovementSource.Spell, objSpell.InternalId)
-                                    : await RemoveImprovementsAsync(objCharacter, Improvement.ImprovementSource.Spell, objSpell.InternalId).ConfigureAwait(false);
+                                    : await RemoveImprovementsAsync(objCharacter, Improvement.ImprovementSource.Spell, objSpell.InternalId, token).ConfigureAwait(false);
                                 if (blnSync)
-                                    // ReSharper disable once MethodHasAsyncOverload
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     objCharacter.Spells.Remove(objSpell);
                                 else
-                                    await objCharacter.Spells.RemoveAsync(objSpell).ConfigureAwait(false);
+                                    await objCharacter.Spells.RemoveAsync(objSpell, token).ConfigureAwait(false);
                             }
 
                             break;
@@ -3695,14 +3698,14 @@ namespace Chummer
                             if (objComplexForm != null)
                             {
                                 decReturn += blnSync
-                                    // ReSharper disable once MethodHasAsyncOverload
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     ? RemoveImprovements(objCharacter, Improvement.ImprovementSource.ComplexForm, objComplexForm.InternalId)
-                                    : await RemoveImprovementsAsync(objCharacter, Improvement.ImprovementSource.ComplexForm, objComplexForm.InternalId).ConfigureAwait(false);
+                                    : await RemoveImprovementsAsync(objCharacter, Improvement.ImprovementSource.ComplexForm, objComplexForm.InternalId, token).ConfigureAwait(false);
                                 if (blnSync)
-                                    // ReSharper disable once MethodHasAsyncOverload
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     objCharacter.ComplexForms.Remove(objComplexForm);
                                 else
-                                    await objCharacter.ComplexForms.RemoveAsync(objComplexForm).ConfigureAwait(false);
+                                    await objCharacter.ComplexForms.RemoveAsync(objComplexForm, token).ConfigureAwait(false);
                             }
 
                             break;
@@ -3720,10 +3723,17 @@ namespace Chummer
                         case Improvement.ImprovementType.SpecialSkills:
                             if (!blnHasDuplicate)
                             {
-                                objCharacter.SkillsSection.RemoveSkills(
-                                    (SkillsSection.FilterOption) Enum.Parse(typeof(SkillsSection.FilterOption),
-                                                                            strImprovedName), objImprovement.Target,
-                                    !blnReapplyImprovements && objCharacter.Created);
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    objCharacter.SkillsSection.RemoveSkills(
+                                        (SkillsSection.FilterOption) Enum.Parse(typeof(SkillsSection.FilterOption),
+                                            strImprovedName), objImprovement.Target,
+                                        !blnReapplyImprovements && objCharacter.Created);
+                                else
+                                    await objCharacter.SkillsSection.RemoveSkillsAsync(
+                                        (SkillsSection.FilterOption) Enum.Parse(typeof(SkillsSection.FilterOption),
+                                            strImprovedName), objImprovement.Target,
+                                        !blnReapplyImprovements && objCharacter.Created, token);
                             }
 
                             break;
@@ -3743,9 +3753,9 @@ namespace Chummer
                         case Improvement.ImprovementType.SkillExpertise:
                         {
                             Skill objSkill = blnSync
-                                // ReSharper disable once MethodHasAsyncOverload
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 ? objCharacter.SkillsSection.GetActiveSkill(strImprovedName)
-                                : await objCharacter.SkillsSection.GetActiveSkillAsync(strImprovedName).ConfigureAwait(false);
+                                : await objCharacter.SkillsSection.GetActiveSkillAsync(strImprovedName, token).ConfigureAwait(false);
                             SkillSpecialization objSkillSpec = strUniqueName.IsGuid()
                                 ? objSkill?.Specializations.FirstOrDefault(x => x.InternalId == strUniqueName)
                                 // Kept for legacy reasons
@@ -3753,10 +3763,10 @@ namespace Chummer
                             if (objSkillSpec != null)
                             {
                                 if (blnSync)
-                                    // ReSharper disable once MethodHasAsyncOverload
-                                    objSkill.Specializations.Remove(objSkillSpec);
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                        objSkill.Specializations.Remove(objSkillSpec);
                                 else
-                                    await objSkill.Specializations.RemoveAsync(objSkillSpec).ConfigureAwait(false);
+                                    await objSkill.Specializations.RemoveAsync(objSkillSpec, token).ConfigureAwait(false);
                             }
                         }
                             break;
@@ -3767,14 +3777,14 @@ namespace Chummer
                             if (objProgram != null)
                             {
                                 decReturn += blnSync
-                                    // ReSharper disable once MethodHasAsyncOverload
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     ? RemoveImprovements(objCharacter, Improvement.ImprovementSource.AIProgram, objProgram.InternalId)
-                                    : await RemoveImprovementsAsync(objCharacter, Improvement.ImprovementSource.AIProgram, objProgram.InternalId).ConfigureAwait(false);
+                                    : await RemoveImprovementsAsync(objCharacter, Improvement.ImprovementSource.AIProgram, objProgram.InternalId, token).ConfigureAwait(false);
                                 if (blnSync)
-                                    // ReSharper disable once MethodHasAsyncOverload
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     objCharacter.AIPrograms.Remove(objProgram);
                                 else
-                                    await objCharacter.AIPrograms.RemoveAsync(objProgram).ConfigureAwait(false);
+                                    await objCharacter.AIPrograms.RemoveAsync(objProgram, token).ConfigureAwait(false);
                             }
 
                             break;
@@ -3948,15 +3958,16 @@ namespace Chummer
         /// <param name="blnAddToRating">Whether or not the bonus applies to a Skill's Rating instead of the dice pool in general.</param>
         /// <param name="strTarget">What target the Improvement has, if any (e.g. a target skill whose attribute to replace).</param>
         /// <param name="strCondition">Condition for when the bonus is applied.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         public static async ValueTask<Improvement> CreateImprovementAsync(Character objCharacter, string strImprovedName,
-                                                                         Improvement.ImprovementSource objImprovementSource,
-                                                                         string strSourceName, Improvement.ImprovementType objImprovementType,
-                                                                         string strUnique,
-                                                                         decimal decValue = 0, int intRating = 1, int intMinimum = 0,
-                                                                         int intMaximum = 0, decimal decAugmented = 0,
-                                                                         int intAugmentedMaximum = 0, string strExclude = "",
-                                                                         bool blnAddToRating = false, string strTarget = "",
-                                                                         string strCondition = "")
+                                                                          Improvement.ImprovementSource objImprovementSource,
+                                                                          string strSourceName, Improvement.ImprovementType objImprovementType,
+                                                                          string strUnique,
+                                                                          decimal decValue = 0, int intRating = 1, int intMinimum = 0,
+                                                                          int intMaximum = 0, decimal decAugmented = 0,
+                                                                          int intAugmentedMaximum = 0, string strExclude = "",
+                                                                          bool blnAddToRating = false, string strTarget = "",
+                                                                          string strCondition = "", CancellationToken token = default)
         {
             Log.Debug("CreateImprovement");
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdTrace))
@@ -3983,7 +3994,7 @@ namespace Chummer
             // Do not attempt to add the Improvements if the Character is null (as a result of Cyberware being added to a VehicleMod).
             if (objCharacter != null)
             {
-                IAsyncDisposable objLocker = await objCharacter.LockObject.EnterWriteLockAsync();
+                IAsyncDisposable objLocker = await objCharacter.LockObject.EnterWriteLockAsync(token);
                 try
                 {
                     // Record the improvement.
@@ -4009,8 +4020,8 @@ namespace Chummer
                     // This is initially set to false make sure no property changers are triggered by the setters in the section above
                     objImprovement.SetupComplete = true;
                     // Add the Improvement to the list.
-                    await objCharacter.Improvements.AddAsync(objImprovement);
-                    await ClearCachedValueAsync(objCharacter, objImprovementType, strImprovedName);
+                    await objCharacter.Improvements.AddAsync(objImprovement, token);
+                    await ClearCachedValueAsync(objCharacter, objImprovementType, strImprovedName, token);
 
                     // Add the Improvement to the Transaction List.
                     List<Improvement> lstTransactions;
@@ -4018,11 +4029,11 @@ namespace Chummer
                     do
                     {
                         bool blnSuccess;
-                        (blnSuccess, lstTransactions) = await s_DictionaryTransactions.TryGetValueAsync(objCharacter);
+                        (blnSuccess, lstTransactions) = await s_DictionaryTransactions.TryGetValueAsync(objCharacter, token);
                         if (blnSuccess)
                             break;
                         lstTransactions = lstTransactionsNew;
-                    } while (!await s_DictionaryTransactions.TryAddAsync(objCharacter, lstTransactions));
+                    } while (!await s_DictionaryTransactions.TryAddAsync(objCharacter, lstTransactions, token));
 
                     lstTransactions.Add(objImprovement);
                 }
@@ -4054,12 +4065,12 @@ namespace Chummer
         /// <summary>
         /// Clear all of the Improvements from the Transaction List.
         /// </summary>
-        public static async ValueTask CommitAsync(Character objCharacter)
+        public static async ValueTask CommitAsync(Character objCharacter, CancellationToken token = default)
         {
             Log.Debug("Commit");
             // Clear all of the Improvements from the Transaction List.
             (bool blnSuccess, List<Improvement> lstTransactions)
-                = await s_DictionaryTransactions.TryRemoveAsync(objCharacter);
+                = await s_DictionaryTransactions.TryRemoveAsync(objCharacter, token);
             if (blnSuccess)
             {
                 lstTransactions.ProcessRelevantEvents();

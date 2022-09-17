@@ -5735,14 +5735,14 @@ namespace Chummer
                                                 && objQuality.Bonus?.HasChildNodes == false)
                                             {
                                                 if (blnSync)
-                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                     ImprovementManager.RemoveImprovements(this,
                                                         Improvement.ImprovementSource.Quality,
                                                         objQuality.InternalId);
                                                 else
                                                     await ImprovementManager.RemoveImprovementsAsync(this,
                                                         Improvement.ImprovementSource.Quality,
-                                                        objQuality.InternalId).ConfigureAwait(false);
+                                                        objQuality.InternalId, token).ConfigureAwait(false);
                                                 XmlNode objNode = blnSync
                                                     // ReSharper disable once MethodHasAsyncOverload
                                                     ? objQuality.GetNode(token: token)
@@ -5914,7 +5914,7 @@ namespace Chummer
                                                 objQuality.Extra = string.Empty;
                                                 if (blnSync)
                                                 {
-                                                    // ReSharper disable MethodHasAsyncOverload
+                                                    // ReSharper disable MethodHasAsyncOverloadWithCancellation
                                                     ImprovementManager.RemoveImprovements(this,
                                                         Improvement.ImprovementSource.Quality,
                                                         objQuality.InternalId);
@@ -5939,38 +5939,38 @@ namespace Chummer
                                                         Improvement.ImprovementType.ContactMakeFree,
                                                         objQuality.CurrentDisplayNameShort);
                                                     ImprovementManager.Commit(this);
-                                                    // ReSharper restore MethodHasAsyncOverload
+                                                    // ReSharper restore MethodHasAsyncOverloadWithCancellation
                                                 }
                                                 else
                                                 {
                                                     await ImprovementManager.RemoveImprovementsAsync(this,
                                                         Improvement.ImprovementSource.Quality,
-                                                        objQuality.InternalId).ConfigureAwait(false);
+                                                        objQuality.InternalId, token).ConfigureAwait(false);
                                                     await ImprovementManager.CreateImprovementAsync(this, string.Empty,
                                                         Improvement.ImprovementSource.Quality, objQuality.InternalId,
                                                         Improvement.ImprovementType.MadeMan,
-                                                        objQuality.CurrentDisplayNameShort).ConfigureAwait(false);
+                                                        objQuality.CurrentDisplayNameShort, token: token).ConfigureAwait(false);
                                                     await ImprovementManager.CreateImprovementAsync(
                                                         this, selectedContactUniqueId,
                                                         Improvement.ImprovementSource.Quality, objQuality.InternalId,
                                                         Improvement.ImprovementType.AddContact,
-                                                        objQuality.CurrentDisplayNameShort).ConfigureAwait(false);
+                                                        objQuality.CurrentDisplayNameShort, token: token).ConfigureAwait(false);
                                                     await ImprovementManager.CreateImprovementAsync(
                                                         this, selectedContactUniqueId,
                                                         Improvement.ImprovementSource.Quality, objQuality.InternalId,
                                                         Improvement.ImprovementType.ContactForcedLoyalty,
-                                                        objQuality.CurrentDisplayNameShort).ConfigureAwait(false);
+                                                        objQuality.CurrentDisplayNameShort, token: token).ConfigureAwait(false);
                                                     await ImprovementManager.CreateImprovementAsync(
                                                         this, selectedContactUniqueId,
                                                         Improvement.ImprovementSource.Quality, objQuality.InternalId,
                                                         Improvement.ImprovementType.ContactForceGroup,
-                                                        objQuality.CurrentDisplayNameShort).ConfigureAwait(false);
+                                                        objQuality.CurrentDisplayNameShort, token: token).ConfigureAwait(false);
                                                     await ImprovementManager.CreateImprovementAsync(
                                                         this, selectedContactUniqueId,
                                                         Improvement.ImprovementSource.Quality, objQuality.InternalId,
                                                         Improvement.ImprovementType.ContactMakeFree,
-                                                        objQuality.CurrentDisplayNameShort).ConfigureAwait(false);
-                                                    await ImprovementManager.CommitAsync(this).ConfigureAwait(false);
+                                                        objQuality.CurrentDisplayNameShort, token: token).ConfigureAwait(false);
+                                                    await ImprovementManager.CommitAsync(this, token).ConfigureAwait(false);
                                                 }
                                             }
 
@@ -6010,7 +6010,7 @@ namespace Chummer
                                                         "quality[name=\"Resonant Stream: Cyberadept\"]/bonus");
                                                 if (blnSync)
                                                 {
-                                                    // ReSharper disable MethodHasAsyncOverload
+                                                    // ReSharper disable MethodHasAsyncOverloadWithCancellation
                                                     ImprovementManager.RemoveImprovements(this,
                                                         Improvement.ImprovementSource.Quality,
                                                         objQuality.InternalId);
@@ -6019,18 +6019,18 @@ namespace Chummer
                                                         Improvement.ImprovementType.CyberadeptDaemon,
                                                         objQuality.CurrentDisplayNameShort);
                                                     ImprovementManager.Commit(this);
-                                                    // ReSharper restore MethodHasAsyncOverload
+                                                    // ReSharper restore MethodHasAsyncOverloadWithCancellation
                                                 }
                                                 else
                                                 {
                                                     await ImprovementManager.RemoveImprovementsAsync(this,
                                                         Improvement.ImprovementSource.Quality,
-                                                        objQuality.InternalId).ConfigureAwait(false);
+                                                        objQuality.InternalId, token: token).ConfigureAwait(false);
                                                     await ImprovementManager.CreateImprovementAsync(this, string.Empty,
                                                         Improvement.ImprovementSource.Quality, objQuality.InternalId,
                                                         Improvement.ImprovementType.CyberadeptDaemon,
-                                                        objQuality.CurrentDisplayNameShort).ConfigureAwait(false);
-                                                    await ImprovementManager.CommitAsync(this).ConfigureAwait(false);
+                                                        objQuality.CurrentDisplayNameShort, token: token).ConfigureAwait(false);
+                                                    await ImprovementManager.CommitAsync(this, token).ConfigureAwait(false);
                                                 }
                                             }
                                         }
@@ -6484,19 +6484,19 @@ namespace Chummer
                                         {
                                             if (blnSync)
                                             {
-                                                // ReSharper disable once MethodHasAsyncOverload
+                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                 ImprovementManager.RemoveImprovements(this, objCyberware.SourceType,
                                                     objCyberware.InternalId);
-                                                // ReSharper disable once MethodHasAsyncOverload
+                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                 ImprovementManager.RemoveImprovements(this, objCyberware.SourceType,
                                                     objCyberware.InternalId + "Pair");
                                             }
                                             else
                                             {
                                                 await ImprovementManager.RemoveImprovementsAsync(this, objCyberware.SourceType,
-                                                    objCyberware.InternalId).ConfigureAwait(false);
+                                                    objCyberware.InternalId, token: token).ConfigureAwait(false);
                                                 await ImprovementManager.RemoveImprovementsAsync(this, objCyberware.SourceType,
-                                                    objCyberware.InternalId + "Pair").ConfigureAwait(false);
+                                                    objCyberware.InternalId + "Pair", token: token).ConfigureAwait(false);
                                             }
                                             objCyberware.Bonus = objNode["bonus"];
                                             objCyberware.WirelessBonus = objNode["wirelessbonus"];
@@ -6589,19 +6589,19 @@ namespace Chummer
                                             {
                                                 if (blnSync)
                                                 {
-                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                     ImprovementManager.RemoveImprovements(this, objCyberware.SourceType,
                                                         objCyberware.InternalId);
-                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                     ImprovementManager.RemoveImprovements(this, objCyberware.SourceType,
                                                         objCyberware.InternalId + "Pair");
                                                 }
                                                 else
                                                 {
                                                     await ImprovementManager.RemoveImprovementsAsync(this, objCyberware.SourceType,
-                                                        objCyberware.InternalId).ConfigureAwait(false);
+                                                        objCyberware.InternalId, token: token).ConfigureAwait(false);
                                                     await ImprovementManager.RemoveImprovementsAsync(this, objCyberware.SourceType,
-                                                        objCyberware.InternalId + "Pair").ConfigureAwait(false);
+                                                        objCyberware.InternalId + "Pair", token: token).ConfigureAwait(false);
                                                 }
                                                 objCyberware.Bonus = objNode["bonus"];
                                                 objCyberware.WirelessBonus = objNode["wirelessbonus"];
@@ -6892,12 +6892,12 @@ namespace Chummer
                                 {
                                     // If we don't have any Fettered spirits, make sure that we
                                     if (blnSync)
-                                        // ReSharper disable once MethodHasAsyncOverload
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         ImprovementManager.RemoveImprovements(
                                             this, Improvement.ImprovementSource.SpiritFettering);
                                     else
                                         await ImprovementManager.RemoveImprovementsAsync(this,
-                                            Improvement.ImprovementSource.SpiritFettering).ConfigureAwait(false);
+                                            Improvement.ImprovementSource.SpiritFettering, token: token).ConfigureAwait(false);
                                 }
 
                                 //Timekeeper.Finish("load_char_spirits");
@@ -7096,14 +7096,14 @@ namespace Chummer
                                 if (objLivingPersonaQuality != null && LastSavedVersion <= new Version(5, 195, 1))
                                 {
                                     if (blnSync)
-                                        // ReSharper disable once MethodHasAsyncOverload
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         ImprovementManager.RemoveImprovements(this,
                                                                               Improvement.ImprovementSource.Quality,
                                                                               objLivingPersonaQuality.InternalId);
                                     else
                                         await ImprovementManager.RemoveImprovementsAsync(this,
                                             Improvement.ImprovementSource.Quality,
-                                            objLivingPersonaQuality.InternalId).ConfigureAwait(false);
+                                            objLivingPersonaQuality.InternalId, token: token).ConfigureAwait(false);
 
                                     XmlNode objNode = blnSync
                                         // ReSharper disable once MethodHasAsyncOverload
@@ -8092,7 +8092,7 @@ namespace Chummer
                     }
 
                     // <handedness />
-                    if (Ambidextrous)
+                    if (await GetAmbidextrousAsync(token))
                     {
                         await objWriter.WriteElementStringAsync("primaryarm",
                                                                 await LanguageManager.GetStringAsync(
@@ -13910,14 +13910,14 @@ namespace Chummer
             {
                 if (_intCachedContactPoints == int.MinValue)
                 {
-                    string strExpression = await Settings.GetContactPointsExpressionAsync(token);
+                    string strExpression = await (await GetSettingsAsync(token)).GetContactPointsExpressionAsync(token);
                     if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
                     {
                         using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                       out StringBuilder sbdValue))
                         {
                             sbdValue.Append(strExpression);
-                            await AttributeSection.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token);
+                            await (await GetAttributeSectionAsync(token)).ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token);
 
                             // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
                             (bool blnIsSuccess, object objProcess)
@@ -14731,7 +14731,7 @@ namespace Chummer
                     decMultiplier *= objLoopImprovement.Value / 100.0m;
                 }
 
-                await Improvements.ForEachAsync(objLoopImprovement =>
+                await (await GetImprovementsAsync(token)).ForEachAsync(objLoopImprovement =>
                 {
                     if (objLoopImprovement.ImproveType != Improvement.ImprovementType.NewSpellKarmaCostMultiplier)
                         return;
@@ -14799,11 +14799,12 @@ namespace Chummer
                 decimal decReturn = await (await GetSettingsAsync(token)).GetKarmaNewComplexFormAsync(token);
 
                 decimal decMultiplier = 1.0m;
-                foreach (Improvement objLoopImprovement in Improvements)
+                await (await GetImprovementsAsync(token)).ForEachAsync(async objLoopImprovement =>
                 {
                     if ((string.IsNullOrEmpty(objLoopImprovement.Condition)
-                         || (objLoopImprovement.Condition == "career") == Created
-                         || (objLoopImprovement.Condition == "create") != Created) && objLoopImprovement.Enabled)
+                         || (objLoopImprovement.Condition == "career") == await GetCreatedAsync(token)
+                         || (objLoopImprovement.Condition == "create") != await GetCreatedAsync(token))
+                        && objLoopImprovement.Enabled)
                     {
                         switch (objLoopImprovement.ImproveType)
                         {
@@ -14815,7 +14816,7 @@ namespace Chummer
                                 break;
                         }
                     }
-                }
+                }, token);
 
                 if (decMultiplier != 1.0m)
                     decReturn *= decMultiplier;
@@ -14960,8 +14961,12 @@ namespace Chummer
             }
         }
 
-        public bool Ambidextrous => ImprovementManager
-            .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.Ambidextrous).Count > 0;
+        public bool Ambidextrous => ImprovementManager.GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.Ambidextrous).Count > 0;
+
+        public async ValueTask<bool> GetAmbidextrousAsync(CancellationToken token = default)
+        {
+            return (await ImprovementManager.GetCachedImprovementListForValueOfAsync(this, Improvement.ImprovementType.Ambidextrous, token: token)).Count > 0;
+        }
 
         #endregion
 
@@ -26271,12 +26276,12 @@ namespace Chummer
                             ? Improvement.ImprovementSource.EssenceLoss
                             : Improvement.ImprovementSource.EssenceLossChargen;
                         await ImprovementManager.RemoveImprovementsAsync(
-                            this, Improvement.ImprovementSource.EssenceLoss);
+                            this, Improvement.ImprovementSource.EssenceLoss, token: token);
                         await ImprovementManager.RemoveImprovementsAsync(
-                            this, Improvement.ImprovementSource.EssenceLossChargen);
+                            this, Improvement.ImprovementSource.EssenceLossChargen, token: token);
                         // With this house rule, Cyberadept Daemon just negates a penalty from Essence based on Grade instead of restoring Resonance, so delete all old improvements
                         await ImprovementManager.RemoveImprovementsAsync(
-                            this, Improvement.ImprovementSource.CyberadeptDaemon);
+                            this, Improvement.ImprovementSource.CyberadeptDaemon, token: token);
                         if (intMaxReduction != 0)
                         {
                             int intRESReduction = intMaxReduction;
@@ -26305,29 +26310,29 @@ namespace Chummer
                             if (intRESReduction != 0)
                                 await ImprovementManager.CreateImprovementAsync(
                                     this, "RES", eEssenceLossSource, string.Empty,
-                                    Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -intRESReduction);
+                                    Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -intRESReduction, token: token);
                             await ImprovementManager.CreateImprovementAsync(
                                 this, "DEP", eEssenceLossSource, string.Empty,
-                                Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -intMaxReduction);
+                                Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -intMaxReduction, token: token);
                         }
 
                         if (intMagMaxReduction != 0)
                         {
                             await ImprovementManager.CreateImprovementAsync(
                                 this, "MAG", eEssenceLossSource, string.Empty,
-                                Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -intMagMaxReduction);
+                                Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -intMagMaxReduction, token: token);
                             await ImprovementManager.CreateImprovementAsync(
                                 this, "MAGAdept", eEssenceLossSource, string.Empty,
-                                Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -intMagMaxReduction);
+                                Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -intMagMaxReduction, token: token);
                             // If this is a Mystic Adept using special Mystic Adept PP rules (i.e. no second MAG attribute), Mystic Adepts lose PPs even if they have fewer PPs than their MAG
                             if (UseMysticAdeptPPs)
                                 await ImprovementManager.CreateImprovementAsync(this, string.Empty, eEssenceLossSource,
                                     string.Empty,
-                                    Improvement.ImprovementType.AdeptPowerPoints, string.Empty, -intMagMaxReduction);
+                                    Improvement.ImprovementType.AdeptPowerPoints, string.Empty, -intMagMaxReduction, token: token);
                         }
 
                         if (intMaxReduction != 0 || intMagMaxReduction != 0)
-                            await ImprovementManager.CommitAsync(this);
+                            await ImprovementManager.CommitAsync(this, token);
                     }
                     // RAW Career mode: complicated. Similar to RAW Create mode, but with the extra possibility of burning current karma levels and/or PPs instead of pure minima reduction,
                     // plus the need to account for cases where a character will burn "past" 0 (i.e. to a current value that should be negative), but then upgrade to 1 afterwards.
@@ -26401,7 +26406,7 @@ namespace Chummer
 
                         // Remove any Improvements from MAG, RES, and DEP from Essence Loss that were added in career.
                         await ImprovementManager.RemoveImprovementsAsync(
-                            this, Improvement.ImprovementSource.EssenceLoss);
+                            this, Improvement.ImprovementSource.EssenceLoss, token: token);
 
                         // Career Minimum and Maximum reduction relies on whether there's any extra reduction since chargen.
                         // This is the step where create mode attribute loss regarding attribute maximum loss gets factored out.
@@ -26486,15 +26491,15 @@ namespace Chummer
                                 await ImprovementManager.CreateImprovementAsync(this, "RES",
                                     Improvement.ImprovementSource.EssenceLoss,
                                     string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1,
-                                    -intRESMinimumReduction, -intRESMaximumReduction);
+                                    -intRESMinimumReduction, -intRESMaximumReduction, token: token);
                             if (intDEPMinimumReduction != 0 || intDEPMaximumReduction != 0)
                                 await ImprovementManager.CreateImprovementAsync(this, "DEP",
                                     Improvement.ImprovementSource.EssenceLoss,
                                     string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1,
-                                    -intDEPMinimumReduction, -intDEPMaximumReduction);
+                                    -intDEPMinimumReduction, -intDEPMaximumReduction, token: token);
                             if (intRESMinimumReduction != 0 || intRESMaximumReduction != 0 ||
                                 intDEPMinimumReduction != 0 || intDEPMaximumReduction != 0)
-                                await ImprovementManager.CommitAsync(this);
+                                await ImprovementManager.CommitAsync(this, token);
                         }
 
                         if (intMagMaxReduction > 0
@@ -26556,8 +26561,8 @@ namespace Chummer
                                     {
                                         await ImprovementManager.CreateImprovementAsync(this, string.Empty,
                                             Improvement.ImprovementSource.EssenceLossChargen, string.Empty,
-                                            Improvement.ImprovementType.AdeptPowerPoints, string.Empty, -decPPBurn);
-                                        await ImprovementManager.CommitAsync(this);
+                                            Improvement.ImprovementType.AdeptPowerPoints, string.Empty, -decPPBurn, token: token);
+                                        await ImprovementManager.CommitAsync(this, token);
                                     }
                                 }
                             }
@@ -26603,16 +26608,16 @@ namespace Chummer
                                 await ImprovementManager.CreateImprovementAsync(this, "MAG",
                                     Improvement.ImprovementSource.EssenceLoss,
                                     string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1,
-                                    -intMAGMinimumReduction, -intMAGMaximumReduction);
+                                    -intMAGMinimumReduction, -intMAGMaximumReduction, token: token);
                             if (intMAGAdeptMinimumReduction != 0 || intMAGAdeptMaximumReduction != 0)
                                 await ImprovementManager.CreateImprovementAsync(this, "MAGAdept",
                                     Improvement.ImprovementSource.EssenceLoss, string.Empty,
                                     Improvement.ImprovementType.Attribute, string.Empty, 0, 1,
                                     -intMAGAdeptMinimumReduction,
-                                    -intMAGAdeptMaximumReduction);
+                                    -intMAGAdeptMaximumReduction, token: token);
                             if (intMAGMinimumReduction != 0 || intMAGMaximumReduction != 0 ||
                                 intMAGAdeptMinimumReduction != 0 || intMAGAdeptMaximumReduction != 0)
-                                await ImprovementManager.CommitAsync(this);
+                                await ImprovementManager.CommitAsync(this, token);
                         }
                     }
                     // RAW Create mode: Reduce maxima based on max ESS - current ESS, reduce minima based on their essence from the most optimal way in which they could have gotten access to special attributes
@@ -26636,9 +26641,9 @@ namespace Chummer
                         }
 
                         await ImprovementManager.RemoveImprovementsAsync(
-                            this, Improvement.ImprovementSource.EssenceLoss);
+                            this, Improvement.ImprovementSource.EssenceLoss, token: token);
                         await ImprovementManager.RemoveImprovementsAsync(
-                            this, Improvement.ImprovementSource.EssenceLossChargen);
+                            this, Improvement.ImprovementSource.EssenceLossChargen, token: token);
                         if (intMaxReduction != 0 || intRESMinimumReduction != 0 || intDEPMinimumReduction != 0)
                         {
                             await ImprovementManager.CreateImprovementAsync(this, "RES",
@@ -26646,13 +26651,13 @@ namespace Chummer
                                                                                 .EssenceLossChargen, string.Empty,
                                                                             Improvement.ImprovementType.Attribute,
                                                                             string.Empty, 0, 1, -intRESMinimumReduction,
-                                                                            -intMaxReduction);
+                                                                            -intMaxReduction, token: token);
                             await ImprovementManager.CreateImprovementAsync(this, "DEP",
                                                                             Improvement.ImprovementSource
                                                                                 .EssenceLossChargen, string.Empty,
                                                                             Improvement.ImprovementType.Attribute,
                                                                             string.Empty, 0, 1, -intDEPMinimumReduction,
-                                                                            -intMaxReduction);
+                                                                            -intMaxReduction, token: token);
                         }
 
                         if (intMagMaxReduction != 0 || intMAGMinimumReduction != 0 || intMAGAdeptMinimumReduction != 0)
@@ -26662,24 +26667,24 @@ namespace Chummer
                                                                                 .EssenceLossChargen, string.Empty,
                                                                             Improvement.ImprovementType.Attribute,
                                                                             string.Empty, 0, 1, -intMAGMinimumReduction,
-                                                                            -intMagMaxReduction);
+                                                                            -intMagMaxReduction, token: token);
                             await ImprovementManager.CreateImprovementAsync(this, "MAGAdept",
                                                                             Improvement.ImprovementSource
                                                                                 .EssenceLossChargen, string.Empty,
                                                                             Improvement.ImprovementType.Attribute,
                                                                             string.Empty, 0, 1,
                                                                             -intMAGAdeptMinimumReduction,
-                                                                            -intMagMaxReduction);
+                                                                            -intMagMaxReduction, token: token);
                         }
                     }
 
-                    await ImprovementManager.CommitAsync(this);
+                    await ImprovementManager.CommitAsync(this, token);
 
                     // If the character is in Career mode, it is possible for them to be forced to burn out.
-                    if (Created)
+                    if (await GetCreatedAsync(token))
                     {
                         // If the CharacterAttribute reaches 0, the character has burned out.
-                        if (MAGEnabled)
+                        if (await GetMAGEnabledAsync(token))
                         {
                             if (Settings.SpecialKarmaCostBasedOnShownValue)
                             {
@@ -26782,9 +26787,9 @@ namespace Chummer
                 else
                 {
                     await ImprovementManager.RemoveImprovementsAsync(
-                        this, Improvement.ImprovementSource.EssenceLossChargen);
-                    await ImprovementManager.RemoveImprovementsAsync(this, Improvement.ImprovementSource.EssenceLoss);
-                    await ImprovementManager.CommitAsync(this);
+                        this, Improvement.ImprovementSource.EssenceLossChargen, token: token);
+                    await ImprovementManager.RemoveImprovementsAsync(this, Improvement.ImprovementSource.EssenceLoss, token: token);
+                    await ImprovementManager.CommitAsync(this, token);
                 }
 
                 // If the character is Cyberzombie, adjust their Attributes based on their Essence.
@@ -26798,34 +26803,34 @@ namespace Chummer
                                                                                  .Cyberzombie &&
                                                                              x.ImproveType
                                                                              == Improvement.ImprovementType.Attribute)
-                                                                         .ToList());
+                                                                         .ToList(), token: token);
                     if (intESSModifier != 0)
                     {
                         await ImprovementManager.CreateImprovementAsync(
                             this, "BOD", Improvement.ImprovementSource.Cyberzombie,
-                            string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intESSModifier);
+                            string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intESSModifier, token: token);
                         await ImprovementManager.CreateImprovementAsync(
                             this, "AGI", Improvement.ImprovementSource.Cyberzombie,
-                            string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intESSModifier);
+                            string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intESSModifier, token: token);
                         await ImprovementManager.CreateImprovementAsync(
                             this, "REA", Improvement.ImprovementSource.Cyberzombie,
-                            string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intESSModifier);
+                            string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intESSModifier, token: token);
                         await ImprovementManager.CreateImprovementAsync(
                             this, "STR", Improvement.ImprovementSource.Cyberzombie,
-                            string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intESSModifier);
+                            string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intESSModifier, token: token);
                         await ImprovementManager.CreateImprovementAsync(
                             this, "CHA", Improvement.ImprovementSource.Cyberzombie,
-                            string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intESSModifier);
+                            string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intESSModifier, token: token);
                         await ImprovementManager.CreateImprovementAsync(
                             this, "INT", Improvement.ImprovementSource.Cyberzombie,
-                            string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intESSModifier);
+                            string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intESSModifier, token: token);
                         await ImprovementManager.CreateImprovementAsync(
                             this, "LOG", Improvement.ImprovementSource.Cyberzombie,
-                            string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intESSModifier);
+                            string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intESSModifier, token: token);
                         await ImprovementManager.CreateImprovementAsync(
                             this, "WIL", Improvement.ImprovementSource.Cyberzombie,
-                            string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intESSModifier);
-                        await ImprovementManager.CommitAsync(this);
+                            string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intESSModifier, token: token);
+                        await ImprovementManager.CommitAsync(this, token);
                     }
                 }
             }
@@ -32126,8 +32131,8 @@ namespace Chummer
                 await ImprovementManager.CreateImprovementAsync(this, string.Empty, Improvement.ImprovementSource.Cyberzombie,
                                                                 string.Empty,
                                                                 Improvement.ImprovementType.FreeNegativeQualities,
-                                                                string.Empty, intResult * -1);
-                await ImprovementManager.CommitAsync(this);
+                                                                string.Empty, intResult * -1, token: token);
+                await ImprovementManager.CommitAsync(this, token);
 
                 // Convert the character.
                 // Characters lose access to Resonance.

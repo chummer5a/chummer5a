@@ -2053,7 +2053,7 @@ namespace Chummer
                         using (new FetchSafelyFromPool<List<ListItem>>(
                                    Utils.ListItemListPool, out List<ListItem> lstPrimaryArm))
                         {
-                            if (CharacterObject.Ambidextrous)
+                            if (await CharacterObject.GetAmbidextrousAsync(GenericToken))
                             {
                                 lstPrimaryArm.Add(new ListItem("Ambidextrous",
                                                                await LanguageManager.GetStringAsync(
@@ -3195,7 +3195,7 @@ namespace Chummer
                                                                         x.ImproveSource
                                                                         == Improvement.ImprovementSource
                                                                             .StackedFocus)
-                                                                .ToList(), _blnReapplyImprovements);
+                                                                .ToList(), _blnReapplyImprovements, token: token);
                         else
                             await ImprovementManager.RemoveImprovementsAsync(
                                 CharacterObject, CharacterObject.Improvements.Where(
@@ -3240,7 +3240,7 @@ namespace Chummer
                                           x.ImproveSource
                                           == Improvement.ImprovementSource
                                                         .StackedFocus)).ToList(),
-                                _blnReapplyImprovements);
+                                _blnReapplyImprovements, token: token);
 
                         // Refresh Qualities.
                         // We cannot use foreach because qualities can add more qualities
@@ -6621,7 +6621,7 @@ namespace Chummer
                         if (objPower.Name != objXmlPower.Value || objPower.Extra != strExtra)
                             continue;
                         // Remove any Improvements created by the Critter Power.
-                        await ImprovementManager.RemoveImprovementsAsync(CharacterObject, Improvement.ImprovementSource.CritterPower, objPower.InternalId);
+                        await ImprovementManager.RemoveImprovementsAsync(CharacterObject, Improvement.ImprovementSource.CritterPower, objPower.InternalId, token);
 
                         // Remove the Critter Power from the character.
                         await CharacterObject.CritterPowers.RemoveAsync(objPower, token);
@@ -7222,7 +7222,7 @@ namespace Chummer
                 case Improvement objImprovement:
                     if (CommonFunctions.ConfirmDelete(await LanguageManager.GetStringAsync("Message_DeleteImprovement", token: token)))
                         await ImprovementManager.RemoveImprovementsAsync(CharacterObject, Improvement.ImprovementSource.Custom,
-                                                                         objImprovement.SourceName);
+                                                                         objImprovement.SourceName, token);
                     break;
                 case string strSelectedId:
                     if (strSelectedId == "Node_SelectedImprovements")
@@ -7682,7 +7682,7 @@ namespace Chummer
                     {
                         Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen", token: token), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen", token: token), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         // Remove the Improvements created by the Armor.
-                        await ImprovementManager.RemoveImprovementsAsync(CharacterObject, Improvement.ImprovementSource.Armor, objArmor.InternalId);
+                        await ImprovementManager.RemoveImprovementsAsync(CharacterObject, Improvement.ImprovementSource.Armor, objArmor.InternalId, token);
 
                         return frmPickArmor.MyForm.AddAgain;
                     }
@@ -17408,7 +17408,7 @@ namespace Chummer
                                                    MessageBoxButtons.OK, MessageBoxIcon.Information);
                             // Remove any Improvements created by the Gear.
                             await ImprovementManager.RemoveImprovementsAsync(
-                                CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId);
+                                CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId, token);
                             return frmPickGear.MyForm.AddAgain;
                         }
 
@@ -20435,7 +20435,7 @@ namespace Chummer
 
         private async void cboPrimaryArm_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (IsLoading || IsRefreshing || CharacterObject.Ambidextrous)
+            if (IsLoading || IsRefreshing || await CharacterObject.GetAmbidextrousAsync(GenericToken))
                 return;
             CharacterObject.PrimaryArm = await cboPrimaryArm.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), GenericToken);
 

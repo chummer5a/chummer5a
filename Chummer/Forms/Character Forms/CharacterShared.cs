@@ -2539,7 +2539,7 @@ namespace Chummer
                         objQuality.DeleteQuality();
                         await ImprovementManager.RemoveImprovementsAsync(
                             CharacterObject, Improvement.ImprovementSource.CritterPower,
-                            objQuality.InternalId);
+                            objQuality.InternalId, token);
                     }
                 }
             }
@@ -5071,7 +5071,7 @@ namespace Chummer
                                         if (objStack.GearId == objGear.InternalId)
                                         {
                                             await ImprovementManager.RemoveImprovementsAsync(CharacterObject,
-                                                Improvement.ImprovementSource.StackedFocus, objStack.InternalId);
+                                                Improvement.ImprovementSource.StackedFocus, objStack.InternalId, GenericToken);
 
                                             if (objStack.Bonded)
                                             {
@@ -5187,7 +5187,7 @@ namespace Chummer
                                             if (objStack.GearId == objGear.InternalId)
                                             {
                                                 await ImprovementManager.RemoveImprovementsAsync(CharacterObject,
-                                                    Improvement.ImprovementSource.StackedFocus, objStack.InternalId);
+                                                    Improvement.ImprovementSource.StackedFocus, objStack.InternalId, GenericToken);
 
                                                 if (objStack.Bonded)
                                                 {
@@ -5389,7 +5389,7 @@ namespace Chummer
                                             if (objStack.GearId == objGear.InternalId)
                                             {
                                                 await ImprovementManager.RemoveImprovementsAsync(CharacterObject,
-                                                    Improvement.ImprovementSource.StackedFocus, objStack.InternalId);
+                                                    Improvement.ImprovementSource.StackedFocus, objStack.InternalId, GenericToken);
 
                                                 if (objStack.Bonded)
                                                 {

@@ -1276,7 +1276,7 @@ namespace Chummer
                                                                                      || x.ImproveType
                                                                                      == Improvement.ImprovementType
                                                                                          .SkillGroupBase))
-                                                                             .ToList());
+                                                                             .ToList(), token: token);
                     // Add any created Weapons to the character.
                     foreach (Weapon objWeapon in lstWeapons)
                         await _objCharacter.Weapons.AddAsync(objWeapon, token: token);

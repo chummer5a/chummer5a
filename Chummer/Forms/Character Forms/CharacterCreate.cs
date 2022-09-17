@@ -1614,7 +1614,7 @@ namespace Chummer
                         using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                                        out List<ListItem> lstPrimaryArm))
                         {
-                            if (CharacterObject.Ambidextrous)
+                            if (await CharacterObject.GetAmbidextrousAsync(GenericToken))
                             {
                                 lstPrimaryArm.Add(new ListItem("Ambidextrous",
                                                                await LanguageManager.GetStringAsync(
@@ -2609,7 +2609,7 @@ namespace Chummer
                                         x.ImproveSource == Improvement
                                                            .ImprovementSource
                                                            .StackedFocus).ToList(),
-                                _blnReapplyImprovements);
+                                _blnReapplyImprovements, token: token);
                         else
                             await ImprovementManager.RemoveImprovementsAsync(
                                 CharacterObject, CharacterObject.Improvements.Where(
@@ -2662,7 +2662,7 @@ namespace Chummer
                                           x.ImproveSource == Improvement
                                                              .ImprovementSource
                                                              .StackedFocus)).ToList(),
-                                _blnReapplyImprovements);
+                                _blnReapplyImprovements, token: token);
 
                         // Refresh Qualities.
                         // We cannot use foreach because qualities can add more qualities
@@ -10858,39 +10858,41 @@ namespace Chummer
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdFociPointsTooltip))
             {
-                await (await CharacterObject.GetFociAsync(token).ConfigureAwait(false)).ForEachAsync(async objFocus =>
+                await (await CharacterObject.GetFociAsync(token).ConfigureAwait(false)).ForEachWithBreak(async objFocus =>
                 {
                     token.ThrowIfCancellationRequested();
                     int intBindingCost = await objFocus.BindingKarmaCostAsync(token).ConfigureAwait(false);
                     intFociPointsUsed += intBindingCost;
 
                     if (!blnDoUIUpdate)
-                        return;
+                        return true;
                     if (sbdFociPointsTooltip.Length > 0)
                         sbdFociPointsTooltip.AppendLine().Append(strSpace).Append('+').Append(strSpace);
                     sbdFociPointsTooltip.Append(await objFocus.GearObject.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)).Append(strSpace).Append('(')
                                         .Append(intBindingCost.ToString(GlobalSettings.CultureInfo))
                                         .Append(')');
+                    return true;
                 }, token).ConfigureAwait(false);
 
                 intKarmaPointsRemain -= intFociPointsUsed;
 
                 // Calculate the BP used by Stacked Foci.
-                await (await CharacterObject.GetStackedFociAsync(token).ConfigureAwait(false)).ForEachAsync(async objFocus =>
+                await (await CharacterObject.GetStackedFociAsync(token).ConfigureAwait(false)).ForEachWithBreak(async objFocus =>
                 {
                     token.ThrowIfCancellationRequested();
                     if (!objFocus.Bonded)
-                        return;
+                        return true;
                     int intBindingCost = await objFocus.GetBindingCostAsync(token).ConfigureAwait(false);
                     intKarmaPointsRemain -= intBindingCost;
                     intFociPointsUsed += intBindingCost;
 
                     if (!blnDoUIUpdate)
-                        return;
+                        return true;
                     if (sbdFociPointsTooltip.Length > 0)
                         sbdFociPointsTooltip.AppendLine().Append(strSpace).Append('+').Append(strSpace);
                     sbdFociPointsTooltip.Append(await objFocus.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)).Append(strSpace).Append('(')
                                         .Append(intBindingCost.ToString(GlobalSettings.CultureInfo)).Append(')');
+                    return true;
                 }, token).ConfigureAwait(false);
 
                 intFreestyleBP += intFociPointsUsed;
@@ -17989,7 +17991,7 @@ namespace Chummer
 
         private async void cboPrimaryArm_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (IsLoading || IsRefreshing || CharacterObject.Ambidextrous)
+            if (IsLoading || IsRefreshing || await CharacterObject.GetAmbidextrousAsync(GenericToken))
                 return;
             try
             {
