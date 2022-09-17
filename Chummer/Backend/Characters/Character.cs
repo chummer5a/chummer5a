@@ -13917,7 +13917,7 @@ namespace Chummer
                                                                       out StringBuilder sbdValue))
                         {
                             sbdValue.Append(strExpression);
-                            await AttributeSection.ProcessAttributesInXPathForTooltipAsync(sbdValue, strExpression, token: token);
+                            await AttributeSection.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token);
 
                             // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
                             (bool blnIsSuccess, object objProcess)
