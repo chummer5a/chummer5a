@@ -546,14 +546,14 @@ namespace Chummer
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
         /// </summary>
-        public async ValueTask<string> DisplayNameShortAsync(string strLanguage)
+        public async ValueTask<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
         {
             string strReturn = Name;
 
             if (!strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
             {
-                XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage);
-                strReturn = objNode != null ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value ?? Name : Name;
+                XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token);
+                strReturn = objNode != null ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token))?.Value ?? Name : Name;
             }
 
             return strReturn;
@@ -563,6 +563,9 @@ namespace Chummer
         /// The translated name of the Power (Name + any Extra text).
         /// </summary>
         public string CurrentDisplayName => DisplayName(GlobalSettings.Language);
+
+        public ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default) =>
+            DisplayNameAsync(GlobalSettings.Language, token);
 
         /// <summary>
         /// The translated name of the Power (Name + any Extra text).
@@ -583,14 +586,14 @@ namespace Chummer
         /// <summary>
         /// The translated name of the Power (Name + any Extra text).
         /// </summary>
-        public async ValueTask<string> DisplayNameAsync(string strLanguage)
+        public async ValueTask<string> DisplayNameAsync(string strLanguage, CancellationToken token = default)
         {
-            string strReturn = await DisplayNameShortAsync(strLanguage);
+            string strReturn = await DisplayNameShortAsync(strLanguage, token);
 
             if (!string.IsNullOrEmpty(Extra))
             {
                 // Attempt to retrieve the CharacterAttribute name.
-                strReturn += await LanguageManager.GetStringAsync("String_Space", strLanguage) + '(' + await CharacterObject.TranslateExtraAsync(Extra, strLanguage) + ')';
+                strReturn += await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token) + '(' + await CharacterObject.TranslateExtraAsync(Extra, strLanguage, token: token) + ')';
             }
 
             return strReturn;
@@ -689,12 +692,32 @@ namespace Chummer
         }
 
         /// <summary>
+        /// The current 'paid' Rating of the Power.
+        /// </summary>
+        public async ValueTask<int> GetRatingAsync(CancellationToken token = default)
+        {
+            //TODO: This isn't super safe, but it's more reliable than checking it at load as improvement effects like Essence Loss take effect after powers are loaded. Might need another solution.
+            int intTotalMax = await GetTotalMaximumLevelsAsync(token);
+            if (_intRating <= intTotalMax)
+                return _intRating;
+            return _intRating = intTotalMax;
+        }
+
+        /// <summary>
         /// The current Rating of the Power, including any Free Levels.
         /// </summary>
         public int TotalRating
         {
             get => Math.Min(Rating + FreeLevels, TotalMaximumLevels);
             set => Rating = Math.Max(value - FreeLevels, 0);
+        }
+
+        /// <summary>
+        /// The current Rating of the Power, including any Free Levels.
+        /// </summary>
+        public async ValueTask<int> GetTotalRatingAsync(CancellationToken token = default)
+        {
+            return Math.Min(await GetRatingAsync(token) + await GetFreeLevelsAsync(token), await GetTotalMaximumLevelsAsync(token));
         }
 
         public bool DoesNotHaveFreeLevels => FreeLevels == 0;
@@ -749,6 +772,53 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Free levels of the power.
+        /// </summary>
+        public async ValueTask<int> GetFreeLevelsAsync(CancellationToken token = default)
+        {
+            if (_intCachedFreeLevels != int.MinValue)
+                return _intCachedFreeLevels;
+
+            decimal decExtraCost = FreePoints;
+            // Rating does not include free levels from improvements, and those free levels can be used to buy the first level of a power so that Qi Foci, so need to check for those first
+            int intReturn = (await ImprovementManager
+                    .GetCachedImprovementListForValueOfAsync(CharacterObject,
+                                                             Improvement.ImprovementType.AdeptPowerFreeLevels,
+                                                             Name, token: token))
+                            .Sum(objImprovement => objImprovement.UniqueName == Extra,
+                                 objImprovement => objImprovement.Rating);
+            // The power has an extra cost, so free PP from things like Qi Foci have to be charged first.
+            if (Rating + intReturn == 0 && ExtraPointCost > 0)
+            {
+                decExtraCost -= (PointsPerLevel + ExtraPointCost);
+                if (decExtraCost >= 0)
+                {
+                    ++intReturn;
+                }
+
+                for (decimal i = decExtraCost; i >= 1; --i)
+                {
+                    ++intReturn;
+                }
+            }
+            else if (PointsPerLevel == 0)
+            {
+                Utils.BreakIfDebug();
+                // power costs no PP, just return free levels
+            }
+            //Either the first level of the power has been paid for with PP, or the power doesn't have an extra cost.
+            else
+            {
+                for (decimal i = decExtraCost; i >= PointsPerLevel; i -= PointsPerLevel)
+                {
+                    ++intReturn;
+                }
+            }
+
+            return _intCachedFreeLevels = Math.Min(intReturn, MAGAttributeObject != null ? await MAGAttributeObject.GetTotalValueAsync(token) : 0);
+        }
+
         private decimal _decCachedPowerPoints = decimal.MinValue;
 
         /// <summary>
@@ -780,6 +850,38 @@ namespace Chummer
                 decReturn -= Discount;
                 return _decCachedPowerPoints = Math.Max(decReturn, 0.0m);
             }
+        }
+
+        /// <summary>
+        /// Total number of Power Points the Power costs.
+        /// </summary>
+        public async ValueTask<decimal> GetPowerPointsAsync(CancellationToken token = default)
+        {
+            if (_decCachedPowerPoints != decimal.MinValue)
+                return _decCachedPowerPoints;
+
+            int intFreeLevels = await GetFreeLevelsAsync(token);
+            int intRating = await GetRatingAsync(token);
+            if (intRating == 0 || !LevelsEnabled && intFreeLevels > 0)
+            {
+                return _decCachedPowerPoints = 0;
+            }
+
+            decimal decReturn;
+            decimal decFreePoints = await GetFreePointsAsync(token);
+            if (intFreeLevels * PointsPerLevel >= decFreePoints)
+            {
+                decReturn = intRating * PointsPerLevel;
+                decReturn += ExtraPointCost;
+            }
+            else
+            {
+                decReturn = await GetTotalRatingAsync(token) * PointsPerLevel + ExtraPointCost;
+                decReturn -= decFreePoints;
+            }
+
+            decReturn -= Discount;
+            return _decCachedPowerPoints = Math.Max(decReturn, 0.0m);
         }
 
         public string DisplayPoints
@@ -817,6 +919,21 @@ namespace Chummer
                                      objImprovement => objImprovement.Rating);
                 return intRating * 0.25m;
             }
+        }
+
+        /// <summary>
+        /// Free Power Points that apply to the Power. Calculated as Improvement Rating * 0.25.
+        /// Typically used for Qi Foci.
+        /// </summary>
+        public async ValueTask<decimal> GetFreePointsAsync(CancellationToken token = default)
+        {
+            int intRating = (await ImprovementManager
+                    .GetCachedImprovementListForValueOfAsync(CharacterObject,
+                                                             Improvement.ImprovementType.AdeptPowerFreePoints,
+                                                             Name, token: token))
+                            .Sum(objImprovement => objImprovement.UniqueName == Extra,
+                                 objImprovement => objImprovement.Rating);
+            return intRating * 0.25m;
         }
 
         /// <summary>
@@ -1061,6 +1178,36 @@ namespace Chummer
                 }
                 return intReturn;
             }
+        }
+
+        public async ValueTask<int> GetTotalMaximumLevelsAsync(CancellationToken token = default)
+        {
+            if (!LevelsEnabled)
+                return 1;
+            int intReturn = MaxLevels;
+            if (intReturn == 0)
+            {
+                // if unspecified, max rating = MAG
+                intReturn = MAGAttributeObject != null ? await MAGAttributeObject.GetTotalValueAsync(token) : 0;
+            }
+
+            if (BoostedSkill != null)
+            {
+                int intBoostedSkillLearnedRating = await BoostedSkill.GetLearnedRatingAsync(token);
+                // +1 at the end so that division of 2 always rounds up, and integer division by 2 is significantly less expensive than decimal/double division
+                intReturn = Math.Min(intReturn, (intBoostedSkillLearnedRating + 1) / 2);
+                if (await (await CharacterObject.GetSettingsAsync(token)).GetIncreasedImprovedAbilityMultiplierAsync(token))
+                {
+                    intReturn += intBoostedSkillLearnedRating;
+                }
+            }
+
+            if (!await CharacterObject.GetIgnoreRulesAsync(token))
+            {
+                intReturn = Math.Min(intReturn, MAGAttributeObject != null ? await MAGAttributeObject.GetTotalValueAsync(token) : 0);
+            }
+
+            return intReturn;
         }
 
         /// <summary>

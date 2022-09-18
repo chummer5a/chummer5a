@@ -23,6 +23,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
@@ -77,7 +78,7 @@ namespace Chummer.UI.Powers
             }
         }
 
-        public async ValueTask RealLoad()
+        public async ValueTask RealLoad(CancellationToken token = default)
         {
             if (ParentForm is CharacterShared frmParent)
                 _objCharacter = frmParent.CharacterObject;
@@ -141,7 +142,7 @@ namespace Chummer.UI.Powers
                 {
                     x.ResumeLayout(true);
                 }
-            });
+            }, token: token);
 
             sw.Stop();
             Debug.WriteLine("RealLoad() in {0} ms", sw.Elapsed.TotalMilliseconds);
@@ -274,15 +275,15 @@ namespace Chummer.UI.Powers
         /// <summary>
         /// Calculate the number of Adept Power Points used.
         /// </summary>
-        public async ValueTask CalculatePowerPoints()
+        public async ValueTask CalculatePowerPoints(CancellationToken token = default)
         {
-            decimal decPowerPointsTotal = _objCharacter.PowerPointsTotal;
-            decimal decPowerPointsRemaining = decPowerPointsTotal - _objCharacter.PowerPointsUsed;
+            decimal decPowerPointsTotal = await _objCharacter.GetPowerPointsTotalAsync(token);
+            decimal decPowerPointsRemaining = decPowerPointsTotal - await _objCharacter.GetPowerPointsUsedAsync(token);
             string strText = string.Format(GlobalSettings.CultureInfo, "{1}{0}({2}{0}{3})",
-                                           await LanguageManager.GetStringAsync("String_Space"), decPowerPointsTotal,
+                                           await LanguageManager.GetStringAsync("String_Space", token: token), decPowerPointsTotal,
                                            decPowerPointsRemaining,
-                                           await LanguageManager.GetStringAsync("String_Remaining"));
-            await lblPowerPoints.DoThreadSafeAsync(x => x.Text = strText);
+                                           await LanguageManager.GetStringAsync("String_Remaining", token: token));
+            await lblPowerPoints.DoThreadSafeAsync(x => x.Text = strText, token: token);
         }
 
         private void InitializeTable()

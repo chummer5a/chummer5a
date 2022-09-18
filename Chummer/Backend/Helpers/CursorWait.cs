@@ -166,7 +166,8 @@ namespace Chummer
             return objReturn;
         }
 
-        public CursorWait(Control objControl = null, bool blnAppStarting = false)
+        // If you are about to make this not-private, STOP! Use CursorWait.New() or CursorWait.NewAsync() instead
+        private CursorWait(Control objControl = null, bool blnAppStarting = false)
         {
             _objControl = objControl;
             _blnAppStartingCursor = blnAppStarting;

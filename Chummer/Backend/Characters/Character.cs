@@ -15648,6 +15648,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Amount of Power Points for Mystic Adepts.
+        /// </summary>
+        public async ValueTask<int> GetMysticAdeptPowerPointsAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _intMAGAdept;
+        }
+
+        /// <summary>
         /// Total Amount of Power Points this character has.
         /// </summary>
         public decimal PowerPointsTotal
@@ -15666,6 +15675,24 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Total Amount of Power Points this character has.
+        /// </summary>
+        public async ValueTask<decimal> GetPowerPointsTotalAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+            {
+                decimal decMAG = await GetUseMysticAdeptPPsAsync(token)
+                    ? await GetMysticAdeptPowerPointsAsync(token)
+                    : await (await GetAttributeAsync("MAGAdept", token: token)).GetTotalValueAsync(token);
+
+                // Add any Power Point Improvements to MAG.
+                decMAG += await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.AdeptPowerPoints, token: token);
+
+                return Math.Max(decMAG, 0);
+            }
+        }
+
         private decimal _decCachedPowerPointsUsed = decimal.MinValue;
 
         public decimal PowerPointsUsed
@@ -15678,6 +15705,16 @@ namespace Chummer
                         return _decCachedPowerPointsUsed;
                     return _decCachedPowerPointsUsed = Powers.Sum(objPower => objPower.PowerPoints);
                 }
+            }
+        }
+
+        public async ValueTask<decimal> GetPowerPointsUsedAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+            {
+                if (_decCachedPowerPointsUsed != decimal.MinValue)
+                    return _decCachedPowerPointsUsed;
+                return _decCachedPowerPointsUsed = await (await GetPowersAsync(token)).SumAsync(objPower => objPower.GetPowerPointsAsync(token).AsTask(), token);
             }
         }
 
@@ -27809,6 +27846,15 @@ namespace Chummer
                 using (EnterReadLock.Enter(LockObject))
                     return IsMysticAdept && !Settings.MysAdeptSecondMAGAttribute;
             }
+        }
+
+        /// <summary>
+        /// Whether this character is using special Mystic Adept PP rules (true) or calculate PPs from Mystic Adept's Adept MAG (false)
+        /// </summary>
+        public async ValueTask<bool> GetUseMysticAdeptPPsAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return await GetIsMysticAdeptAsync(token) && !await (await GetSettingsAsync(token)).GetMysAdeptSecondMAGAttributeAsync(token);
         }
 
         /// <summary>

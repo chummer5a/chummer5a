@@ -38,6 +38,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
+using OperationCanceledException = System.OperationCanceledException;
 
 namespace Chummer
 {
@@ -15716,7 +15717,7 @@ namespace Chummer
                     }
 
                     // If the character has the Spells & Spirits Tab enabled, make sure a Tradition has been selected.
-                    if ((CharacterObject.MagicianEnabled || CharacterObject.AdeptEnabled)
+                    if ((await CharacterObject.GetMagicianEnabledAsync(token) || await CharacterObject.GetAdeptEnabledAsync(token))
                         && CharacterObject.MagicTradition.Type != TraditionType.MAG)
                     {
                         blnValid = false;
@@ -15725,16 +15726,19 @@ namespace Chummer
                     }
 
                     // If the character has the Spells & Spirits Tab enabled, make sure a Tradition has been selected.
-                    if (CharacterObject.AdeptEnabled
-                        && CharacterObject.PowerPointsUsed > CharacterObject.PowerPointsTotal)
+                    if (await CharacterObject.GetAdeptEnabledAsync(token))
                     {
-                        blnValid = false;
-                        sbdMessage.AppendLine().Append('\t').AppendFormat(GlobalSettings.CultureInfo,
-                                                                          await LanguageManager.GetStringAsync(
-                                                                              "Message_InvalidPowerPoints", token: token),
-                                                                          CharacterObject.PowerPointsUsed
-                                                                          - CharacterObject.PowerPointsTotal,
-                                                                          CharacterObject.PowerPointsTotal);
+                        decimal decPPUsed = await CharacterObject.GetPowerPointsUsedAsync(token);
+                        decimal decPPTotal = await CharacterObject.GetPowerPointsTotalAsync(token);
+                        if (decPPUsed > decPPTotal)
+                        {
+                            blnValid = false;
+                            sbdMessage.AppendLine().Append('\t').AppendFormat(GlobalSettings.CultureInfo,
+                                                                              await LanguageManager.GetStringAsync(
+                                                                                  "Message_InvalidPowerPoints",
+                                                                                  token: token),
+                                                                              decPPUsed - decPPTotal, decPPTotal);
+                        }
                     }
 
                     // If the character has the Technomancer Tab enabled, make sure a Stream has been selected.
@@ -18287,15 +18291,28 @@ namespace Chummer
 
         private async void mnuSpecialKarmaValue_Click(object sender, EventArgs e)
         {
-            string strReturn;
-            using (new CursorWait(this, true))
+            try
             {
-                strReturn = (await CharacterObject.CalculateKarmaValue(GlobalSettings.Language, GlobalSettings.CultureInfo)).Item1;
-            }
+                string strReturn;
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, true, GenericToken);
+                try
+                {
+                    strReturn = (await CharacterObject.CalculateKarmaValue(
+                        GlobalSettings.Language, GlobalSettings.CultureInfo, GenericToken)).Item1;
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync();
+                }
 
-            Program.ShowMessageBox(this, strReturn,
-                                   await LanguageManager.GetStringAsync("MessageTitle_KarmaValue"),
-                                   MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowMessageBox(this, strReturn,
+                                       await LanguageManager.GetStringAsync("MessageTitle_KarmaValue", token: GenericToken),
+                                       MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void cmdCyberwareChangeMount_Click(object sender, EventArgs e)

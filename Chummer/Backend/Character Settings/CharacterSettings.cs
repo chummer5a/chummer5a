@@ -5719,6 +5719,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Whether the Improved Ability power (SR5 309) should be capped at 0.5 of current Rating or 1.5 of current Rating.
+        /// </summary>
+        public async ValueTask<bool> GetIncreasedImprovedAbilityMultiplierAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _blnIncreasedImprovedAbilityMultiplier;
+        }
+
+        /// <summary>
         /// Whether lifestyles will automatically give free grid subscriptions found in (HT)
         /// </summary>
         public bool AllowFreeGrids
