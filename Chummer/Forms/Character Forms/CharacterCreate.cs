@@ -708,7 +708,7 @@ namespace Chummer
                                     }
 
                                     nudMysticAdeptMAGMagician.DoOneWayDataBinding("Maximum", CharacterObject.MAG,
-                                        nameof(CharacterAttrib.TotalValue));
+                                        nameof(CharacterAttrib.Value));
                                     nudMysticAdeptMAGMagician.DoDataBinding("Value", CharacterObject,
                                                                             nameof(Character.MysticAdeptPowerPoints));
 

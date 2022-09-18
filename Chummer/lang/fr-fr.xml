@@ -6860,7 +6860,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     </string>
     <string>
       <key>Checkbox_Options_SpecialKarmaCost</key>
-      <text>Coût en Karma de l'augmentation Attributs spéciaux est réduite avec la perte d'essence</text>
+      <text>Coûts en Karma de l'augmentation Attributs spéciaux (points de pouvoir d'adepte mystique aussi) est réduite avec la perte d'essence</text>
     </string>
     <string>
       <key>Checkbox_Options_IgnoreComplexFormLimit</key>

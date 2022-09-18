@@ -7752,7 +7752,7 @@
     </string>
     <string>
       <key>Checkbox_Options_SpecialKarmaCost</key>
-      <text>Karma cost for increasing Special Attributes is not reduced with Essence Loss</text>
+      <text>Karma costs for increasing Special Attributes (including Mystic Adept PPs) are not reduced with Essence Loss</text>
     </string>
     <string>
       <key>Checkbox_Options_IgnoreComplexFormLimit</key>

@@ -56,6 +56,7 @@ Application Changes:
 - Fixed minor formatting issues when printing movement speeds in non-English languages.
 - Loading a character with an unavailable settings file is now overwhelmingly more likely to pick a default setting whose build method matches the one that the character was made with. Fixes #4889.
 - Characters that leave character creation with negative karma (possible if ignoring character creation rules) will now have an entry in their karma logs showing their negative starting karma.
+- Mystic Adept PPs can now be bought up to a character's unaugmented MAG instead of their total MAG. This is only relevant when using the house rule where karma costs are not decreased from burning out special attributes.
 
 Data Changes:
 - One with the Matrix I, II, and III can no longer be taken multiple times.
@@ -109,6 +110,7 @@ Changed/New Strings:
 - Label_Loaded
 - Checkbox_HideAmmo
 - Menu_Main_CloseWindow
+- Checkbox_Options_SpecialKarmaCost
 
 Removed Strings:
 - Message_UnderLanguageLimit
