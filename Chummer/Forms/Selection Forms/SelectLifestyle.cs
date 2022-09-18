@@ -382,8 +382,8 @@ namespace Chummer
                 await _objLifestyle.LifestyleQualities.AddAsync(objQuality);
             }
 
-            foreach (LifestyleQuality objLifestyleQuality in _objLifestyle.LifestyleQualities.Where(x =>
-                         !setLifestyleQualityIds.Contains(x.SourceIDString)).ToList())
+            foreach (LifestyleQuality objLifestyleQuality in await _objLifestyle.LifestyleQualities.ToListAsync(
+                         x => !setLifestyleQualityIds.Contains(x.SourceIDString)))
                 objLifestyleQuality.Remove(false);
 
             DialogResult = DialogResult.OK;

@@ -218,9 +218,11 @@ namespace Chummer
                     = await SettingsManager.LoadedCharacterSettings.FirstOrDefaultAsync(
                         x => x.Value.BuiltInOption
                              && x.Value.BuildMethod == _objReferenceCharacterSettings.BuildMethod);
-                foreach (Character objCharacter in Program.OpenCharacters.Where(x =>
-                             x.SettingsKey == _objReferenceCharacterSettings.FileName))
-                    objCharacter.SettingsKey = kvpReplacementOption.Key;
+                await Program.OpenCharacters.ForEachAsync(objCharacter =>
+                {
+                    if (objCharacter.SettingsKey == _objReferenceCharacterSettings.FileName)
+                        objCharacter.SettingsKey = kvpReplacementOption.Key;
+                });
                 bool blnDoResumeLayout = !_blnIsLayoutSuspended;
                 if (blnDoResumeLayout)
                 {

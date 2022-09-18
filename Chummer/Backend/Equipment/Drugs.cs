@@ -586,7 +586,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 if (_intCachedAddictionThreshold != int.MinValue) return _intCachedAddictionThreshold;
-                _intCachedAddictionThreshold = Components.Where(d => d.ActiveDrugEffect != null).Sum(d => d.AddictionThreshold);
+                _intCachedAddictionThreshold = Components.Sum(d => d.ActiveDrugEffect != null, d => d.AddictionThreshold);
                 return _intCachedAddictionThreshold;
             }
         }
@@ -601,7 +601,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 if (_intCachedAddictionRating != int.MinValue) return _intCachedAddictionRating;
-                _intCachedAddictionRating = Components.Where(d => d.ActiveDrugEffect != null).Sum(d => d.AddictionRating);
+                _intCachedAddictionRating = Components.Sum(d => d.ActiveDrugEffect != null, d => d.AddictionRating);
                 return _intCachedAddictionRating;
             }
         }
@@ -672,7 +672,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 if (_intCachedInitiative != int.MinValue) return _intCachedInitiative;
-                _intCachedInitiative = Components.Where(d => d.ActiveDrugEffect != null).Sum(d => d.ActiveDrugEffect.Initiative);
+                _intCachedInitiative = Components.Sum(d => d.ActiveDrugEffect != null, d => d.ActiveDrugEffect.Initiative);
                 return _intCachedInitiative;
             }
         }
@@ -684,7 +684,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 if (_intCachedInitiativeDice != int.MinValue) return _intCachedInitiativeDice;
-                _intCachedInitiativeDice = Components.Where(d => d.ActiveDrugEffect != null).Sum(d => d.ActiveDrugEffect.InitiativeDice);
+                _intCachedInitiativeDice = Components.Sum(d => d.ActiveDrugEffect != null, d => d.ActiveDrugEffect.InitiativeDice);
                 return _intCachedInitiativeDice;
             }
         }
@@ -700,7 +700,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 if (_intCachedSpeed != int.MinValue) return _intCachedSpeed;
-                _intCachedSpeed = Components.Where(d => d.ActiveDrugEffect != null).Sum(d => d.ActiveDrugEffect.Speed) + _intSpeed;
+                _intCachedSpeed = Components.Sum(d => d.ActiveDrugEffect != null, d => d.ActiveDrugEffect.Speed) + _intSpeed;
                 return _intCachedSpeed;
             }
         }
@@ -732,7 +732,7 @@ namespace Chummer.Backend.Equipment
                         decDuration = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
                 }
 
-                decDuration += Components.Where(d => d.ActiveDrugEffect != null).Sum(d => d.ActiveDrugEffect.Duration) +
+                decDuration += Components.Sum(d => d.ActiveDrugEffect != null, d => d.ActiveDrugEffect.Duration) +
                                ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.DrugDuration);
                 if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.DrugDurationMultiplier) == 0)
                     return _intCachedDuration = decDuration.StandardRound();

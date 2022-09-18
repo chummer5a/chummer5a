@@ -6079,6 +6079,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Karma cost to improve an Attribute = New Rating X this value.
+        /// </summary>
+        public async ValueTask<int> GetKarmaAttributeAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _intKarmaAttribute;
+        }
+
+        /// <summary>
         /// Karma cost to purchase a Quality = BP Cost x this value.
         /// </summary>
         public int KarmaQuality

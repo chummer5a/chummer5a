@@ -5031,7 +5031,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 int intDicePool = 0;
-                decimal decDicePoolModifier = WeaponAccessories.Where(a => a.Equipped).Sum(a => a.DicePool);
+                decimal decDicePoolModifier = WeaponAccessories.Sum(a => a.Equipped, a => a.DicePool);
                 switch (FireMode)
                 {
                     case FiringMode.DogBrain:

@@ -365,7 +365,7 @@ namespace Chummer
             }
 
             List<VehicleMod> lstOldRemovedVehicleMods
-                = _objMount.Mods.Where(x => !x.IncludedInVehicle && !_lstMods.Contains(x)).ToList();
+                = await _objMount.Mods.ToListAsync(x => !x.IncludedInVehicle && !_lstMods.Contains(x));
             await _objMount.Mods.RemoveAllAsync(x => lstOldRemovedVehicleMods.Contains(x));
             List<VehicleMod> lstNewVehicleMods = new List<VehicleMod>(_lstMods.Count);
             foreach (VehicleMod objMod in _lstMods)

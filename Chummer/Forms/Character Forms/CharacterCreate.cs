@@ -2559,109 +2559,45 @@ namespace Chummer
                         // Wipe all improvements that we will reapply, this is mainly to eliminate orphaned improvements caused by certain bugs and also for a performance increase
                         if (lstInternalIdFilter == null)
                             await ImprovementManager.RemoveImprovementsAsync(
-                                CharacterObject, CharacterObject.Improvements.Where(
-                                    x =>
-                                        x.ImproveSource == Improvement
-                                                           .ImprovementSource
-                                                           .AIProgram ||
-                                        x.ImproveSource == Improvement
-                                                           .ImprovementSource
-                                                           .Armor ||
-                                        x.ImproveSource == Improvement
-                                                           .ImprovementSource
-                                                           .ArmorMod ||
-                                        x.ImproveSource == Improvement
-                                                           .ImprovementSource
-                                                           .Bioware ||
-                                        x.ImproveSource == Improvement
-                                                           .ImprovementSource
-                                                           .ComplexForm ||
-                                        x.ImproveSource == Improvement
-                                                           .ImprovementSource
-                                                           .CritterPower ||
-                                        x.ImproveSource == Improvement
-                                                           .ImprovementSource
-                                                           .Cyberware ||
-                                        x.ImproveSource == Improvement
-                                                           .ImprovementSource
-                                                           .Echo ||
-                                        x.ImproveSource == Improvement
-                                                           .ImprovementSource
-                                                           .Gear ||
-                                        x.ImproveSource == Improvement
-                                                           .ImprovementSource
-                                                           .MartialArt ||
-                                        x.ImproveSource == Improvement
-                                                           .ImprovementSource
-                                                           .MartialArtTechnique ||
-                                        x.ImproveSource == Improvement
-                                                           .ImprovementSource
-                                                           .Metamagic ||
-                                        x.ImproveSource == Improvement
-                                                           .ImprovementSource
-                                                           .Power ||
-                                        x.ImproveSource == Improvement
-                                                           .ImprovementSource
-                                                           .Quality ||
-                                        x.ImproveSource == Improvement
-                                                           .ImprovementSource
-                                                           .Spell ||
-                                        x.ImproveSource == Improvement
-                                                           .ImprovementSource
-                                                           .StackedFocus).ToList(),
+                                CharacterObject,
+                                await (await CharacterObject.GetImprovementsAsync(token)).ToListAsync(
+                                    x => x.ImproveSource == Improvement.ImprovementSource.AIProgram
+                                         || x.ImproveSource == Improvement.ImprovementSource.Armor
+                                         || x.ImproveSource == Improvement.ImprovementSource.ArmorMod
+                                         || x.ImproveSource == Improvement.ImprovementSource.Bioware
+                                         || x.ImproveSource == Improvement.ImprovementSource.ComplexForm
+                                         || x.ImproveSource == Improvement.ImprovementSource.CritterPower
+                                         || x.ImproveSource == Improvement.ImprovementSource.Cyberware
+                                         || x.ImproveSource == Improvement.ImprovementSource.Echo
+                                         || x.ImproveSource == Improvement.ImprovementSource.Gear
+                                         || x.ImproveSource == Improvement.ImprovementSource.MartialArt
+                                         || x.ImproveSource == Improvement.ImprovementSource.MartialArtTechnique
+                                         || x.ImproveSource == Improvement.ImprovementSource.Metamagic
+                                         || x.ImproveSource == Improvement.ImprovementSource.Power
+                                         || x.ImproveSource == Improvement.ImprovementSource.Quality
+                                         || x.ImproveSource == Improvement.ImprovementSource.Spell
+                                         || x.ImproveSource == Improvement.ImprovementSource.StackedFocus, token),
                                 _blnReapplyImprovements, token: token);
                         else
                             await ImprovementManager.RemoveImprovementsAsync(
-                                CharacterObject, CharacterObject.Improvements.Where(
+                                CharacterObject, await (await CharacterObject.GetImprovementsAsync(token)).ToListAsync(
                                     x => lstInternalIdFilter.Contains(x.SourceName) &&
-                                         (x.ImproveSource == Improvement
-                                                             .ImprovementSource
-                                                             .AIProgram ||
-                                          x.ImproveSource == Improvement
-                                                             .ImprovementSource
-                                                             .Armor ||
-                                          x.ImproveSource == Improvement
-                                                             .ImprovementSource
-                                                             .ArmorMod ||
-                                          x.ImproveSource == Improvement
-                                                             .ImprovementSource
-                                                             .Bioware ||
-                                          x.ImproveSource == Improvement
-                                                             .ImprovementSource
-                                                             .ComplexForm ||
-                                          x.ImproveSource == Improvement
-                                                             .ImprovementSource
-                                                             .CritterPower ||
-                                          x.ImproveSource == Improvement
-                                                             .ImprovementSource
-                                                             .Cyberware ||
-                                          x.ImproveSource == Improvement
-                                                             .ImprovementSource
-                                                             .Echo ||
-                                          x.ImproveSource == Improvement
-                                                             .ImprovementSource
-                                                             .Gear ||
-                                          x.ImproveSource == Improvement
-                                                             .ImprovementSource
-                                                             .MartialArt ||
-                                          x.ImproveSource == Improvement
-                                                             .ImprovementSource
-                                                             .MartialArtTechnique ||
-                                          x.ImproveSource == Improvement
-                                                             .ImprovementSource
-                                                             .Metamagic ||
-                                          x.ImproveSource == Improvement
-                                                             .ImprovementSource
-                                                             .Power ||
-                                          x.ImproveSource == Improvement
-                                                             .ImprovementSource
-                                                             .Quality ||
-                                          x.ImproveSource == Improvement
-                                                             .ImprovementSource
-                                                             .Spell ||
-                                          x.ImproveSource == Improvement
-                                                             .ImprovementSource
-                                                             .StackedFocus)).ToList(),
+                                         (x.ImproveSource == Improvement.ImprovementSource.AIProgram
+                                          || x.ImproveSource == Improvement.ImprovementSource.Armor
+                                          || x.ImproveSource == Improvement.ImprovementSource.ArmorMod
+                                          || x.ImproveSource == Improvement.ImprovementSource.Bioware
+                                          || x.ImproveSource == Improvement.ImprovementSource.ComplexForm
+                                          || x.ImproveSource == Improvement.ImprovementSource.CritterPower
+                                          || x.ImproveSource == Improvement.ImprovementSource.Cyberware
+                                          || x.ImproveSource == Improvement.ImprovementSource.Echo
+                                          || x.ImproveSource == Improvement.ImprovementSource.Gear
+                                          || x.ImproveSource == Improvement.ImprovementSource.MartialArt
+                                          || x.ImproveSource == Improvement.ImprovementSource.MartialArtTechnique
+                                          || x.ImproveSource == Improvement.ImprovementSource.Metamagic
+                                          || x.ImproveSource == Improvement.ImprovementSource.Power
+                                          || x.ImproveSource == Improvement.ImprovementSource.Quality
+                                          || x.ImproveSource == Improvement.ImprovementSource.Spell
+                                          || x.ImproveSource == Improvement.ImprovementSource.StackedFocus), token),
                                 _blnReapplyImprovements, token: token);
 
                         // Refresh Qualities.
@@ -18349,11 +18285,17 @@ namespace Chummer
             }, token);
         }
 
-        private void mnuSpecialKarmaValue_Click(object sender, EventArgs e)
+        private async void mnuSpecialKarmaValue_Click(object sender, EventArgs e)
         {
-            Program.ShowMessageBox(this, CharacterObject.CalculateKarmaValue(GlobalSettings.Language, out int _),
-                LanguageManager.GetString("MessageTitle_KarmaValue"),
-                MessageBoxButtons.OK, MessageBoxIcon.Information);
+            string strReturn;
+            using (new CursorWait(this, true))
+            {
+                strReturn = (await CharacterObject.CalculateKarmaValue(GlobalSettings.Language, GlobalSettings.CultureInfo)).Item1;
+            }
+
+            Program.ShowMessageBox(this, strReturn,
+                                   await LanguageManager.GetStringAsync("MessageTitle_KarmaValue"),
+                                   MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private async void cmdCyberwareChangeMount_Click(object sender, EventArgs e)

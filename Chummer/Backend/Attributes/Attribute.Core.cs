@@ -2140,8 +2140,7 @@ namespace Chummer.Backend.Attributes
                         int intBurnedEdge = -ImprovementManager
                                              .GetCachedImprovementListForValueOf(
                                                  _objCharacter, Improvement.ImprovementType.Attribute, "EDG")
-                                             .Where(x => x.ImproveSource == Improvement.ImprovementSource.BurnedEdge)
-                                             .Sum(x => x.Minimum * x.Rating);
+                                             .Sum(x => x.ImproveSource == Improvement.ImprovementSource.BurnedEdge, x => x.Minimum * x.Rating);
                         if (intBurnedEdge > 0)
                         {
                             ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.BurnedEdge);
@@ -2183,8 +2182,7 @@ namespace Chummer.Backend.Attributes
                     int intBurnedEdge = -ImprovementManager
                                         .GetCachedImprovementListForValueOf(
                                             _objCharacter, Improvement.ImprovementType.Attribute, "EDG")
-                                        .Where(x => x.ImproveSource == Improvement.ImprovementSource.BurnedEdge)
-                                        .Sum(x => x.Minimum * x.Rating) + 1;
+                                        .Sum(x => x.ImproveSource == Improvement.ImprovementSource.BurnedEdge, x => x.Minimum * x.Rating) + 1;
                     ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.BurnedEdge);
                     ImprovementManager.CreateImprovement(_objCharacter, "EDG", Improvement.ImprovementSource.BurnedEdge,
                                                          string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, -intBurnedEdge);

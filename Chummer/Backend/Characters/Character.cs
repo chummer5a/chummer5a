@@ -8641,10 +8641,13 @@ namespace Chummer
                     XmlElementWriteHelper objLimitModifiersPhysElement = await objWriter.StartElementAsync("limitmodifiersphys", token: token);
                     try
                     {
-                        foreach (LimitModifier objLimitModifier in LimitModifiers.Where(x => x.Limit == "Physical"))
+                        await (await GetLimitModifiersAsync(token)).ForEachAsync(async objLimitModifier =>
                         {
-                            await objLimitModifier.Print(objWriter, objCulture, strLanguageToPrint);
-                        }
+                            if (objLimitModifier.Limit == "Physical")
+                            {
+                                await objLimitModifier.Print(objWriter, objCulture, strLanguageToPrint);
+                            }
+                        }, token);
 
                         // Populate Limit Modifiers from Improvements
                         foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(this,
@@ -8688,10 +8691,13 @@ namespace Chummer
                     XmlElementWriteHelper objLimitModifiersMentElement = await objWriter.StartElementAsync("limitmodifiersment", token: token);
                     try
                     {
-                        foreach (LimitModifier objLimitModifier in LimitModifiers.Where(x => x.Limit == "Mental"))
+                        await (await GetLimitModifiersAsync(token)).ForEachAsync(async objLimitModifier =>
                         {
-                            await objLimitModifier.Print(objWriter, objCulture, strLanguageToPrint);
-                        }
+                            if (objLimitModifier.Limit == "Mental")
+                            {
+                                await objLimitModifier.Print(objWriter, objCulture, strLanguageToPrint);
+                            }
+                        }, token);
 
                         // Populate Limit Modifiers from Improvements
                         foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(this,
@@ -8735,10 +8741,13 @@ namespace Chummer
                     XmlElementWriteHelper objLimitModifiersSocElement = await objWriter.StartElementAsync("limitmodifierssoc", token: token);
                     try
                     {
-                        foreach (LimitModifier objLimitModifier in LimitModifiers.Where(x => x.Limit == "Social"))
+                        await (await GetLimitModifiersAsync(token)).ForEachAsync(async objLimitModifier =>
                         {
-                            await objLimitModifier.Print(objWriter, objCulture, strLanguageToPrint);
-                        }
+                            if (objLimitModifier.Limit == "Social")
+                            {
+                                await objLimitModifier.Print(objWriter, objCulture, strLanguageToPrint);
+                            }
+                        }, token);
 
                         // Populate Limit Modifiers from Improvements
                         foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(this,
@@ -11176,47 +11185,48 @@ namespace Chummer
             return true;
         }
 
-        public string CalculateKarmaValue(string strLanguage, out int intReturn)
+        public async Task<Tuple<string, int>> CalculateKarmaValue(string strLanguage, CultureInfo objCulture, CancellationToken token = default)
         {
-            string strColonCharacter = LanguageManager.GetString("String_Colon");
-            string strSpace = LanguageManager.GetString("String_Space");
-            string strKarmaString = LanguageManager.GetString("String_Karma", strLanguage);
+            string strColonCharacter = await LanguageManager.GetStringAsync("String_Colon", strLanguage, token: token).ConfigureAwait(false);
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false);
+            string strKarmaString = await LanguageManager.GetStringAsync("String_Karma", strLanguage, token: token).ConfigureAwait(false);
             int intExtraKarmaToRemoveForPointBuyComparison = 0;
-
-            using (EnterReadLock.Enter(LockObject))
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                intReturn = Settings.BuildKarma;
+                CharacterSettings objSettings = await GetSettingsAsync(token).ConfigureAwait(false);
+                int intReturn = await objSettings.GetBuildKarmaAsync(token).ConfigureAwait(false);
 
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdMessage))
                 {
-                    sbdMessage.AppendLine(LanguageManager.GetString("Message_KarmaValue", strLanguage)).AppendLine()
-                              .Append(LanguageManager.GetString("Label_Base", strLanguage))
+                    sbdMessage.AppendLine(await LanguageManager.GetStringAsync("Message_KarmaValue", strLanguage, token: token).ConfigureAwait(false)).AppendLine()
+                              .Append(await LanguageManager.GetStringAsync("Label_Base", strLanguage, token: token).ConfigureAwait(false))
                               .Append(strColonCharacter).Append(strSpace)
-                              .Append(intReturn.ToString(GlobalSettings.CultureInfo))
+                              .Append(intReturn.ToString(objCulture))
                               .Append(strSpace).Append(strKarmaString);
 
-                    if (EffectiveBuildMethodUsesPriorityTables)
+                    if (await GetEffectiveBuildMethodUsesPriorityTablesAsync(token).ConfigureAwait(false))
                     {
                         // Zeroed to -10 because that's Human's value at default settings
-                        int intMetatypeQualitiesValue = -2 * Settings.KarmaAttribute;
+                        int intMetatypeQualitiesValue = -2 * objSettings.KarmaAttribute;
                         // Karma value of all qualities (we're ignoring metatype cost because Point Buy karma costs don't line up with other methods' values)
-                        foreach (Quality objQuality in Qualities.Where(x =>
-                                                                           x.OriginSource == QualitySource.Metatype
-                                                                           || x.OriginSource
-                                                                           == QualitySource.MetatypeRemovable))
+                        await (await GetQualitiesAsync(token).ConfigureAwait(false)).ForEachAsync(async objQuality =>
                         {
-                            XPathNavigator xmlQualityNode = objQuality.GetNodeXPath();
-                            if (xmlQualityNode == null)
-                                continue;
-                            int intLoopKarma = 0;
-                            if (xmlQualityNode.TryGetInt32FieldQuickly("karma", ref intLoopKarma))
-                                intMetatypeQualitiesValue += intLoopKarma;
-                        }
+                            if (objQuality.OriginSource == QualitySource.Metatype
+                                || objQuality.OriginSource == QualitySource.MetatypeRemovable)
+                            {
+                                XPathNavigator xmlQualityNode = await objQuality.GetNodeXPathAsync(token: token).ConfigureAwait(false);
+                                if (xmlQualityNode == null)
+                                    return;
+                                int intLoopKarma = 0;
+                                if (xmlQualityNode.TryGetInt32FieldQuickly("karma", ref intLoopKarma))
+                                    intMetatypeQualitiesValue += intLoopKarma;
+                            }
+                        }, token).ConfigureAwait(false);
 
                         intReturn += intMetatypeQualitiesValue;
 
                         // Subtract extra karma cost of a metatype in priority
-                        int intTemp = -MetatypeBP;
+                        int intTemp = -await GetMetatypeBPAsync(token).ConfigureAwait(false);
                         int intAttributesValue = 0;
                         // Value from attribute points and raised attribute minimums
                         foreach (CharacterAttrib objLoopAttrib in AttributeSection.AttributeList.Concat(AttributeSection
@@ -11225,33 +11235,33 @@ namespace Chummer
                             string strAttributeName = objLoopAttrib.Abbrev;
                             if (strAttributeName != "ESS" &&
                                 (strAttributeName != "MAGAdept"
-                                 || (IsMysticAdept && Settings.MysAdeptSecondMAGAttribute))
+                                 || (await GetIsMysticAdeptAsync(token).ConfigureAwait(false) && await objSettings.GetMysAdeptSecondMAGAttributeAsync(token).ConfigureAwait(false)))
                                 &&
-                                objLoopAttrib.MetatypeMaximum > 0)
+                                await objLoopAttrib.GetMetatypeMaximumAsync(token).ConfigureAwait(false) > 0)
                             {
                                 int intLoopAttribValue =
-                                    Math.Max(objLoopAttrib.Base + objLoopAttrib.FreeBase + objLoopAttrib.RawMinimum,
-                                             objLoopAttrib.TotalMinimum) + objLoopAttrib.AttributeValueModifiers;
+                                    Math.Max(objLoopAttrib.Base + await objLoopAttrib.GetFreeBaseAsync(token).ConfigureAwait(false) + await objLoopAttrib.GetRawMinimumAsync(token).ConfigureAwait(false),
+                                             await objLoopAttrib.GetTotalMinimumAsync(token).ConfigureAwait(false)) + await objLoopAttrib.GetAttributeValueModifiersAsync(token).ConfigureAwait(false);
                                 if (intLoopAttribValue > 1)
                                 {
                                     intTemp += ((intLoopAttribValue + 1) * intLoopAttribValue / 2 - 1)
-                                               * Settings.KarmaAttribute;
+                                               * await objSettings.GetKarmaAttributeAsync(token).ConfigureAwait(false);
                                     if (strAttributeName != "MAG" && strAttributeName != "MAGAdept" &&
                                         strAttributeName != "RES" && strAttributeName != "DEP")
                                     {
                                         int intVanillaAttribValue =
                                             Math.Max(
-                                                objLoopAttrib.Base + objLoopAttrib.FreeBase + objLoopAttrib.RawMinimum -
-                                                objLoopAttrib.MetatypeMinimum + 1,
-                                                objLoopAttrib.TotalMinimum - objLoopAttrib.MetatypeMinimum + 1) +
-                                            objLoopAttrib.AttributeValueModifiers;
+                                                objLoopAttrib.Base + await objLoopAttrib.GetFreeBaseAsync(token).ConfigureAwait(false) + await objLoopAttrib.GetRawMinimumAsync(token).ConfigureAwait(false) -
+                                                await objLoopAttrib.GetMetatypeMinimumAsync(token).ConfigureAwait(false) + 1,
+                                                await objLoopAttrib.GetTotalMinimumAsync(token).ConfigureAwait(false) - await objLoopAttrib.GetMetatypeMinimumAsync(token).ConfigureAwait(false) + 1) +
+                                            await objLoopAttrib.GetAttributeValueModifiersAsync(token).ConfigureAwait(false);
                                         intAttributesValue
                                             += ((intVanillaAttribValue + 1) * intVanillaAttribValue / 2 - 1) *
-                                               Settings.KarmaAttribute;
+                                               await objSettings.GetKarmaAttributeAsync(token).ConfigureAwait(false);
                                     }
                                     else
                                         intAttributesValue += ((intLoopAttribValue + 1) * intLoopAttribValue / 2 - 1) *
-                                                              Settings.KarmaAttribute;
+                                                              await objSettings.GetKarmaAttributeAsync(token).ConfigureAwait(false);
                                 }
                             }
                         }
@@ -11263,17 +11273,17 @@ namespace Chummer
                         if (intTemp - intAttributesValue + intMetatypeQualitiesValue != 0)
                         {
                             sbdMessage.AppendLine()
-                                      .Append(LanguageManager.GetString("Label_SumtoTenHeritage", strLanguage))
+                                      .Append(await LanguageManager.GetStringAsync("Label_SumtoTenHeritage", strLanguage, token: token).ConfigureAwait(false))
                                       .Append(strSpace)
                                       .Append((intTemp - intAttributesValue + intMetatypeQualitiesValue).ToString(
-                                                  GlobalSettings.CultureInfo)).Append(strSpace).Append(strKarmaString);
+                                                  objCulture)).Append(strSpace).Append(strKarmaString);
                         }
 
                         if (intAttributesValue != 0)
                         {
                             sbdMessage.AppendLine()
-                                      .Append(LanguageManager.GetString("Label_SumtoTenAttributes", strLanguage))
-                                      .Append(strSpace).Append(intAttributesValue.ToString(GlobalSettings.CultureInfo))
+                                      .Append(await LanguageManager.GetStringAsync("Label_SumtoTenAttributes", strLanguage, token: token).ConfigureAwait(false))
+                                      .Append(strSpace).Append(intAttributesValue.ToString(objCulture))
                                       .Append(strSpace).Append(strKarmaString);
                         }
 
@@ -11282,48 +11292,51 @@ namespace Chummer
                         // Karma needs to be added based on the character's metatype/metavariant Point Buy karma cost because that is what is used in Point Buy,
                         // not the metatype/metavariant attribute/quality costs.
                         intTemp = 0;
-                        if (this.GetNodeXPath()?.TryGetInt32FieldQuickly("karma", ref intTemp) == true)
+                        if ((await this.GetNodeXPathAsync(token: token).ConfigureAwait(false))?.TryGetInt32FieldQuickly("karma", ref intTemp) == true)
                             intExtraKarmaToRemoveForPointBuyComparison -= intTemp;
 
                         intTemp = 0;
                         // This is where "Talent" qualities like Adept and Technomancer get added in
-                        foreach (Quality objQuality in Qualities.Where(x => x.OriginSource == QualitySource.Heritage))
+                        await (await GetQualitiesAsync(token).ConfigureAwait(false)).ForEachAsync(async objQuality =>
                         {
-                            XPathNavigator xmlQualityNode = objQuality.GetNodeXPath();
-                            if (xmlQualityNode == null)
-                                continue;
-                            int intLoopKarma = 0;
-                            if (xmlQualityNode?.TryGetInt32FieldQuickly("karma", ref intLoopKarma) == true)
-                                intTemp += intLoopKarma;
-                        }
+                            if (objQuality.OriginSource == QualitySource.Heritage)
+                            {
+                                XPathNavigator xmlQualityNode = await objQuality.GetNodeXPathAsync(token: token).ConfigureAwait(false);
+                                if (xmlQualityNode == null)
+                                    return;
+                                int intLoopKarma = 0;
+                                if (xmlQualityNode.TryGetInt32FieldQuickly("karma", ref intLoopKarma) == true)
+                                    intTemp += intLoopKarma;
+                            }
+                        }, token).ConfigureAwait(false);
 
                         if (intTemp != 0)
                         {
-                            sbdMessage.AppendLine().Append(LanguageManager.GetString("String_Qualities", strLanguage))
+                            sbdMessage.AppendLine().Append(await LanguageManager.GetStringAsync("String_Qualities", strLanguage, token: token).ConfigureAwait(false))
                                       .Append(strColonCharacter).Append(strSpace)
-                                      .Append(intTemp.ToString(GlobalSettings.CultureInfo)).Append(strSpace)
+                                      .Append(intTemp.ToString(objCulture)).Append(strSpace)
                                       .Append(strKarmaString);
                             intReturn += intTemp;
                         }
 
                         // Value from free spells
-                        intTemp = FreeSpells * SpellKarmaCost("Spells");
+                        intTemp = await GetFreeSpellsAsync(token).ConfigureAwait(false) * await SpellKarmaCostAsync("Spells", token).ConfigureAwait(false);
                         if (intTemp != 0)
                         {
-                            sbdMessage.AppendLine().Append(LanguageManager.GetString("String_FreeSpells", strLanguage))
+                            sbdMessage.AppendLine().Append(await LanguageManager.GetStringAsync("String_FreeSpells", strLanguage, token: token).ConfigureAwait(false))
                                       .Append(strColonCharacter).Append(strSpace)
-                                      .Append(intTemp.ToString(GlobalSettings.CultureInfo)).Append(strSpace)
+                                      .Append(intTemp.ToString(objCulture)).Append(strSpace)
                                       .Append(strKarmaString);
                             intReturn += intTemp;
                         }
 
                         // Value from free complex forms
-                        intTemp = CFPLimit * ComplexFormKarmaCost;
+                        intTemp = await GetCFPLimitAsync(token).ConfigureAwait(false) * await GetComplexFormKarmaCostAsync(token).ConfigureAwait(false);
                         if (intTemp != 0)
                         {
-                            sbdMessage.AppendLine().Append(LanguageManager.GetString("String_FreeCFs", strLanguage))
+                            sbdMessage.AppendLine().Append(await LanguageManager.GetStringAsync("String_FreeCFs", strLanguage, token: token).ConfigureAwait(false))
                                       .Append(strColonCharacter).Append(strSpace)
-                                      .Append(intTemp.ToString(GlobalSettings.CultureInfo)).Append(strSpace)
+                                      .Append(intTemp.ToString(objCulture)).Append(strSpace)
                                       .Append(strKarmaString);
                             intReturn += intTemp;
                         }
@@ -11334,27 +11347,27 @@ namespace Chummer
                         {
                             if (!(objLoopActiveSkill.SkillGroupObject?.Base > 0))
                             {
-                                int intLoopRating = objLoopActiveSkill.Base;
+                                int intLoopRating = await objLoopActiveSkill.GetBaseAsync(token).ConfigureAwait(false);
                                 if (intLoopRating > 0)
                                 {
-                                    intTemp += Settings.KarmaNewActiveSkill;
+                                    intTemp += await objSettings.GetKarmaNewActiveSkillAsync(token).ConfigureAwait(false);
                                     intTemp += ((intLoopRating + 1) * intLoopRating / 2 - 1)
-                                               * Settings.KarmaImproveActiveSkill;
-                                    if (EffectiveBuildMethodIsLifeModule)
-                                        intTemp += objLoopActiveSkill.Specializations.Count(x => x.Free) *
-                                                   Settings.KarmaSpecialization;
-                                    else if (!objLoopActiveSkill.BuyWithKarma)
+                                               * await objSettings.GetKarmaImproveActiveSkillAsync(token).ConfigureAwait(false);
+                                    if (await GetEffectiveBuildMethodIsLifeModuleAsync(token).ConfigureAwait(false))
+                                        intTemp += await objLoopActiveSkill.Specializations.CountAsync(x => x.Free, token: token).ConfigureAwait(false) *
+                                                   await objSettings.GetKarmaSpecializationAsync(token).ConfigureAwait(false);
+                                    else if (!await objLoopActiveSkill.GetBuyWithKarmaAsync(token).ConfigureAwait(false))
                                         intTemp += objLoopActiveSkill.Specializations.Count
-                                                   * Settings.KarmaSpecialization;
+                                                   * await objSettings.GetKarmaSpecializationAsync(token).ConfigureAwait(false);
                                 }
                             }
                         }
 
                         if (intTemp != 0)
                         {
-                            sbdMessage.AppendLine().Append(LanguageManager.GetString("String_SkillPoints", strLanguage))
+                            sbdMessage.AppendLine().Append(await LanguageManager.GetStringAsync("String_SkillPoints", strLanguage, token: token).ConfigureAwait(false))
                                       .Append(strColonCharacter).Append(strSpace)
-                                      .Append(intTemp.ToString(GlobalSettings.CultureInfo)).Append(strSpace)
+                                      .Append(intTemp.ToString(objCulture)).Append(strSpace)
                                       .Append(strKarmaString);
                             intReturn += intTemp;
                         }
@@ -11365,32 +11378,32 @@ namespace Chummer
                         {
                             if (intLoopRating <= 0)
                                 continue;
-                            intTemp += Settings.KarmaNewSkillGroup;
-                            intTemp += ((intLoopRating + 1) * intLoopRating / 2 - 1) * Settings.KarmaImproveSkillGroup;
+                            intTemp += await objSettings.GetKarmaNewSkillGroupAsync(token).ConfigureAwait(false);
+                            intTemp += ((intLoopRating + 1) * intLoopRating / 2 - 1) * await objSettings.GetKarmaImproveSkillGroupAsync(token).ConfigureAwait(false);
                         }
 
                         if (intTemp != 0)
                         {
                             sbdMessage.AppendLine()
-                                      .Append(LanguageManager.GetString("String_SkillGroupPoints", strLanguage))
+                                      .Append(await LanguageManager.GetStringAsync("String_SkillGroupPoints", strLanguage, token: token).ConfigureAwait(false))
                                       .Append(strColonCharacter).Append(strSpace)
-                                      .Append(intTemp.ToString(GlobalSettings.CultureInfo)).Append(strSpace)
+                                      .Append(intTemp.ToString(objCulture)).Append(strSpace)
                                       .Append(strKarmaString);
                             intReturn += intTemp;
                         }
 
                         // Starting Nuyen karma value
                         decimal decBaseStartingNuyen
-                            = CalculateStartingNuyenFromKarma(Math.Min(NuyenBP, TotalNuyenMaximumBP), StartingNuyen);
+                            = await CalculateStartingNuyenFromKarmaAsync(Math.Min(await GetNuyenBPAsync(token).ConfigureAwait(false), await GetTotalNuyenMaximumBPAsync(token).ConfigureAwait(false)), await GetStartingNuyenAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
                         if (decBaseStartingNuyen != 0)
                         {
                             // Start off with the negative value of the karma we put into nuyen to make this calculation work properly for weird, nonlinear scaling
-                            intTemp = -Math.Min(NuyenBP, TotalNuyenMaximumBP).ToInt32();
+                            intTemp = -Math.Min(await GetNuyenBPAsync(token).ConfigureAwait(false), await GetTotalNuyenMaximumBPAsync(token).ConfigureAwait(false)).ToInt32();
                             // This looks horrible, but we cannot use binary search or calculate karma value directly because XPath expressions are so free-form
                             // The only option is to loop through every possible Karma value until we find the lowest one that gives more nuyen than Priority gives
                             for (int i = 0; i < int.MaxValue; ++i)
                             {
-                                decimal decLoopNuyen = CalculateStartingNuyenFromKarma(i, 0);
+                                decimal decLoopNuyen = await CalculateStartingNuyenFromKarmaAsync(i, 0, token).ConfigureAwait(false);
                                 // This looks quite wonky when what we're actually looking for is the exact value, but effectively rounds karma requirements up in cases where Nuyen doesn't divide cleanly
                                 if (decLoopNuyen >= decBaseStartingNuyen)
                                 {
@@ -11402,21 +11415,21 @@ namespace Chummer
                             if (intTemp != 0)
                             {
                                 sbdMessage.AppendLine()
-                                          .Append(LanguageManager.GetString("Checkbox_CreatePACKSKit_StartingNuyen",
-                                                                            strLanguage)).Append(strColonCharacter)
-                                          .Append(strSpace).Append(intTemp.ToString(GlobalSettings.CultureInfo))
+                                          .Append(await LanguageManager.GetStringAsync("Checkbox_CreatePACKSKit_StartingNuyen",
+                                                      strLanguage, token: token).ConfigureAwait(false)).Append(strColonCharacter)
+                                          .Append(strSpace).Append(intTemp.ToString(objCulture))
                                           .Append(strSpace).Append(strKarmaString);
                                 intReturn += intTemp;
                             }
                         }
                     }
 
-                    int intContactPointsValue = ContactPoints * Settings.KarmaContact;
+                    int intContactPointsValue = await GetContactPointsAsync(token).ConfigureAwait(false) * await objSettings.GetKarmaContactAsync(token).ConfigureAwait(false);
                     if (intContactPointsValue != 0)
                     {
-                        sbdMessage.AppendLine().Append(LanguageManager.GetString("String_Contacts", strLanguage))
+                        sbdMessage.AppendLine().Append(await LanguageManager.GetStringAsync("String_Contacts", strLanguage, token: token).ConfigureAwait(false))
                                   .Append(strColonCharacter).Append(strSpace)
-                                  .Append(intContactPointsValue.ToString(GlobalSettings.CultureInfo)).Append(strSpace)
+                                  .Append(intContactPointsValue.ToString(objCulture)).Append(strSpace)
                                   .Append(strKarmaString);
                         intReturn += intContactPointsValue;
                         intExtraKarmaToRemoveForPointBuyComparison += intContactPointsValue;
@@ -11425,41 +11438,41 @@ namespace Chummer
                     int intKnowledgePointsValue = 0;
                     foreach (KnowledgeSkill objLoopKnowledgeSkill in SkillsSection.KnowledgeSkills)
                     {
-                        int intLoopRating = objLoopKnowledgeSkill.Base;
+                        int intLoopRating = await objLoopKnowledgeSkill.GetBaseAsync(token).ConfigureAwait(false);
                         if (intLoopRating > 0)
                         {
-                            intKnowledgePointsValue += Settings.KarmaNewKnowledgeSkill;
+                            intKnowledgePointsValue += await objSettings.GetKarmaNewKnowledgeSkillAsync(token).ConfigureAwait(false);
                             intKnowledgePointsValue += ((intLoopRating + 1) * intLoopRating / 2 - 1) *
-                                                       Settings.KarmaImproveKnowledgeSkill;
-                            if (EffectiveBuildMethodIsLifeModule)
-                                intKnowledgePointsValue += objLoopKnowledgeSkill.Specializations.Count(x => x.Free) *
-                                                           Settings.KarmaKnowledgeSpecialization;
-                            else if (!objLoopKnowledgeSkill.BuyWithKarma)
+                                                       await objSettings.GetKarmaImproveKnowledgeSkillAsync(token).ConfigureAwait(false);
+                            if (await GetEffectiveBuildMethodIsLifeModuleAsync(token).ConfigureAwait(false))
+                                intKnowledgePointsValue += await objLoopKnowledgeSkill.Specializations.CountAsync(x => x.Free, token).ConfigureAwait(false) *
+                                                           await objSettings.GetKarmaKnowledgeSpecializationAsync(token).ConfigureAwait(false);
+                            else if (!await objLoopKnowledgeSkill.GetBuyWithKarmaAsync(token).ConfigureAwait(false))
                                 intKnowledgePointsValue += objLoopKnowledgeSkill.Specializations.Count *
-                                                           Settings.KarmaKnowledgeSpecialization;
+                                                           await objSettings.GetKarmaKnowledgeSpecializationAsync(token).ConfigureAwait(false);
                         }
                     }
 
                     if (intKnowledgePointsValue != 0)
                     {
-                        sbdMessage.AppendLine().Append(LanguageManager.GetString("Label_KnowledgeSkills", strLanguage))
+                        sbdMessage.AppendLine().Append(await LanguageManager.GetStringAsync("Label_KnowledgeSkills", strLanguage, token: token).ConfigureAwait(false))
                                   .Append(strColonCharacter).Append(strSpace)
-                                  .Append(intKnowledgePointsValue.ToString(GlobalSettings.CultureInfo)).Append(strSpace)
+                                  .Append(intKnowledgePointsValue.ToString(objCulture)).Append(strSpace)
                                   .Append(strKarmaString);
                         intReturn += intKnowledgePointsValue;
                         intExtraKarmaToRemoveForPointBuyComparison += intKnowledgePointsValue;
                     }
 
-                    sbdMessage.AppendLine().AppendLine().Append(LanguageManager.GetString("String_Total", strLanguage))
+                    sbdMessage.AppendLine().AppendLine().Append(await LanguageManager.GetStringAsync("String_Total", strLanguage, token: token).ConfigureAwait(false))
                               .Append(strColonCharacter).Append(strSpace)
-                              .Append(intReturn.ToString(GlobalSettings.CultureInfo))
+                              .Append(intReturn.ToString(objCulture))
                               .Append(strSpace).AppendLine(strKarmaString).AppendLine()
-                              .Append(LanguageManager.GetString("String_TotalComparisonWithPointBuy", strLanguage))
+                              .Append(await LanguageManager.GetStringAsync("String_TotalComparisonWithPointBuy", strLanguage, token: token).ConfigureAwait(false))
                               .Append(strColonCharacter).Append(strSpace)
                               .Append((intReturn - intExtraKarmaToRemoveForPointBuyComparison).ToString(
-                                          GlobalSettings.CultureInfo)).Append(strSpace).Append(strKarmaString);
+                                          objCulture)).Append(strSpace).Append(strKarmaString);
 
-                    return sbdMessage.ToString();
+                    return new Tuple<string, int>(sbdMessage.ToString(), intReturn);
                 }
             }
         }
@@ -21575,6 +21588,11 @@ namespace Chummer
                     return EffectiveBuildMethod == CharacterBuildMethod.LifeModule;
             }
         }
+        public async ValueTask<bool> GetEffectiveBuildMethodIsLifeModuleAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return EffectiveBuildMethod == CharacterBuildMethod.LifeModule;
+        }
 
         public bool EnableAutomaticStoryButton
         {
@@ -26796,14 +26814,11 @@ namespace Chummer
                 if (MetatypeCategory == "Cyberzombie")
                 {
                     int intESSModifier = (-await EssenceAsync(token: token)).StandardRound();
-                    await ImprovementManager.RemoveImprovementsAsync(this,
-                                                                     Improvements.Where(x =>
-                                                                             x.ImproveSource
-                                                                             == Improvement.ImprovementSource
-                                                                                 .Cyberzombie &&
-                                                                             x.ImproveType
-                                                                             == Improvement.ImprovementType.Attribute)
-                                                                         .ToList(), token: token);
+                    await ImprovementManager.RemoveImprovementsAsync(
+                        this,
+                        await (await GetImprovementsAsync(token)).ToListAsync(
+                            x => x.ImproveSource == Improvement.ImprovementSource.Cyberzombie
+                                 && x.ImproveType == Improvement.ImprovementType.Attribute, token), token: token);
                     if (intESSModifier != 0)
                     {
                         await ImprovementManager.CreateImprovementAsync(
@@ -31786,9 +31801,10 @@ namespace Chummer
                     if (_intCachedMetagenicPositiveQualities == int.MinValue)
                     {
                         _intCachedMetagenicPositiveQualities = Qualities
-                            .Where(objQuality =>
-                                objQuality.Type == QualityType.Positive && objQuality.ContributeToMetagenicLimit)
-                            .Sum(objQuality => objQuality.BP);
+                            .Sum(
+                                objQuality =>
+                                    objQuality.Type == QualityType.Positive && objQuality.ContributeToMetagenicLimit,
+                                objQuality => objQuality.BP);
                     }
 
                     return _intCachedMetagenicPositiveQualities;
@@ -31822,9 +31838,10 @@ namespace Chummer
                     if (_intCachedMetagenicNegativeQualities == int.MinValue)
                     {
                         int intNewValue = Qualities
-                            .Where(objQuality =>
-                                objQuality.Type == QualityType.Negative && objQuality.ContributeToMetagenicLimit)
-                            .Sum(objQuality => objQuality.BP);
+                            .Sum(
+                                objQuality =>
+                                    objQuality.Type == QualityType.Negative && objQuality.ContributeToMetagenicLimit,
+                                objQuality => objQuality.BP);
 
                         // Deduct the amount for free Qualities.
                         intNewValue -=

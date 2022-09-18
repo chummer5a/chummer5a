@@ -1841,10 +1841,8 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                return Mods.Where(objMod => !objMod.IncludedInVehicle && objMod.Equipped)
-                           .Sum(objMod => objMod.CalculatedSlots)
-                       + WeaponMounts.Where(wm => !wm.IncludedInVehicle && wm.Equipped)
-                                     .Sum(wm => wm.CalculatedSlots);
+                return Mods.Sum(objMod => !objMod.IncludedInVehicle && objMod.Equipped, objMod => objMod.CalculatedSlots)
+                       + WeaponMounts.Sum(wm => !wm.IncludedInVehicle && wm.Equipped, wm => wm.CalculatedSlots);
             }
         }
 
@@ -1963,7 +1961,7 @@ namespace Chummer.Backend.Equipment
                         intModSlotsUsed += intActualSlots;
                     }
                 }
-                intModSlotsUsed += WeaponMounts.Where(wm => !wm.IncludedInVehicle && wm.Equipped).Sum(wm => wm.CalculatedSlots);
+                intModSlotsUsed += WeaponMounts.Sum(wm => !wm.IncludedInVehicle && wm.Equipped, wm => wm.CalculatedSlots);
                 return intModSlotsUsed;
             }
         }

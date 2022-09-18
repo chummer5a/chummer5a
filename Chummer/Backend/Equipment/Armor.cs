@@ -1505,7 +1505,7 @@ namespace Chummer.Backend.Equipment
             {
                 int.TryParse(ArmorValue.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo)), NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out int intTotalArmor);
                 // Go through all of the Mods for this piece of Armor and add the Armor value.
-                intTotalArmor += ArmorMods.Where(o => o.Equipped).Sum(o => o.Armor);
+                intTotalArmor += ArmorMods.Sum(o => o.Equipped, o => o.Armor);
                 intTotalArmor -= ArmorDamage;
 
                 return Math.Max(intTotalArmor, 0);
@@ -1521,7 +1521,7 @@ namespace Chummer.Backend.Equipment
             {
                 int.TryParse(ArmorOverrideValue.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo)), NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out int intTotalArmor);
                 // Go through all of the Mods for this piece of Armor and add the Armor value.
-                intTotalArmor += ArmorMods.Where(o => o.Equipped).Sum(o => o.Armor);
+                intTotalArmor += ArmorMods.Sum(o => o.Equipped, o => o.Armor);
                 intTotalArmor -= ArmorDamage;
 
                 return Math.Max(intTotalArmor, 0);
@@ -1932,7 +1932,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 int intReturn = BonusMatrixBoxes;
-                intReturn += Children.Where(g => g.Equipped).Sum(loopGear => loopGear.TotalBonusMatrixBoxes);
+                intReturn += Children.Sum(g => g.Equipped, loopGear => loopGear.TotalBonusMatrixBoxes);
                 return intReturn;
             }
         }

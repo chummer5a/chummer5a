@@ -1144,9 +1144,9 @@ namespace Chummer
                 if (strOldSpecialPriority != _objCharacter.SpecialPriority
                     || strOldTalentPriority != _objCharacter.SpecialPriority)
                 {
-                    List<Quality> lstOldPriorityQualities = _objCharacter.Qualities
-                                                                         .Where(x => x.OriginSource
-                                                                             == QualitySource.Heritage).ToList();
+                    List<Quality> lstOldPriorityQualities
+                        = await (await _objCharacter.GetQualitiesAsync(token)).ToListAsync(
+                            x => x.OriginSource == QualitySource.Heritage, token: token);
                     List<Weapon> lstWeapons = new List<Weapon>(1);
                     bool blnRemoveFreeSkills = true;
                     XPathNodeIterator xmlBaseTalentPriorityList = _xmlBasePriorityDataNode.Select(
@@ -1266,17 +1266,13 @@ namespace Chummer
                     }
 
                     if (blnRemoveFreeSkills)
-                        await ImprovementManager.RemoveImprovementsAsync(_objCharacter, _objCharacter.Improvements
-                                                                             .Where(x => x.ImproveSource
-                                                                                 == Improvement.ImprovementSource
-                                                                                     .Heritage
-                                                                                 && (x.ImproveType
-                                                                                     == Improvement.ImprovementType
-                                                                                         .SkillBase
-                                                                                     || x.ImproveType
-                                                                                     == Improvement.ImprovementType
-                                                                                         .SkillGroupBase))
-                                                                             .ToList(), token: token);
+                        await ImprovementManager.RemoveImprovementsAsync(
+                            _objCharacter,
+                            await (await _objCharacter.GetImprovementsAsync(token)).ToListAsync(
+                                x => x.ImproveSource == Improvement.ImprovementSource.Heritage
+                                     && (x.ImproveType == Improvement.ImprovementType.SkillBase
+                                         || x.ImproveType == Improvement.ImprovementType.SkillGroupBase), token),
+                            token: token);
                     // Add any created Weapons to the character.
                     foreach (Weapon objWeapon in lstWeapons)
                         await _objCharacter.Weapons.AddAsync(objWeapon, token: token);

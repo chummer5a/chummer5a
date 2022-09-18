@@ -717,8 +717,8 @@ namespace Chummer
                                 .GetCachedImprovementListForValueOf(CharacterObject,
                                                                     Improvement.ImprovementType.AdeptPowerFreeLevels,
                                                                     Name)
-                                .Where(objImprovement => objImprovement.UniqueName == Extra)
-                                .Sum(objImprovement => objImprovement.Rating);
+                                .Sum(objImprovement => objImprovement.UniqueName == Extra,
+                                     objImprovement => objImprovement.Rating);
                 // The power has an extra cost, so free PP from things like Qi Foci have to be charged first.
                 if (Rating + intReturn == 0 && ExtraPointCost > 0)
                 {
@@ -813,8 +813,8 @@ namespace Chummer
                                 .GetCachedImprovementListForValueOf(CharacterObject,
                                                                     Improvement.ImprovementType.AdeptPowerFreePoints,
                                                                     Name)
-                                .Where(objImprovement => objImprovement.UniqueName == Extra)
-                                .Sum(objImprovement => objImprovement.Rating);
+                                .Sum(objImprovement => objImprovement.UniqueName == Extra,
+                                     objImprovement => objImprovement.Rating);
                 return intRating * 0.25m;
             }
         }

@@ -1747,8 +1747,7 @@ namespace Chummer.Backend.Equipment
                                                   strMatrixAttribute) ?? "0");
                         if (Children.Count == 0 || !strExpression.Contains("{Children " + strMatrixAttribute + '}'))
                             continue;
-                        int intTotalChildrenValue = Children.Where(g => g.Equipped)
-                                                            .Sum(loopGear =>
+                        int intTotalChildrenValue = Children.Sum(g => g.Equipped, loopGear =>
                                                                      loopGear.GetBaseMatrixAttribute(
                                                                          strMatrixAttribute));
 
@@ -3526,8 +3525,7 @@ namespace Chummer.Backend.Equipment
                     intReturn += string.IsNullOrEmpty(strExpression) ? 0 : ProcessRatingString(strExpression);
                 }
 
-                intReturn += Children.Where(g => g.Equipped)
-                    .Sum(loopGear => loopGear.TotalBonusMatrixBoxes);
+                intReturn += Children.Sum(g => g.Equipped, loopGear => loopGear.TotalBonusMatrixBoxes);
                 return intReturn;
             }
         }

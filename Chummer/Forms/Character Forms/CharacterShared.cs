@@ -5127,8 +5127,7 @@ namespace Chummer
                             foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
                                 setNewGears.Add(objGear);
 
-                            int intFociTotal = CharacterObject.Foci.Where(x => !setNewGears.Contains(x.GearObject))
-                                                              .Sum(x => x.Rating);
+                            int intFociTotal = await CharacterObject.Foci.SumAsync(x => !setNewGears.Contains(x.GearObject), x => x.Rating, GenericToken);
 
                             foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
                             {
@@ -5329,8 +5328,7 @@ namespace Chummer
                             foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
                                 setNewGears.Add(objGear);
 
-                            int intFociTotal = CharacterObject.Foci.Where(x => !setNewGears.Contains(x.GearObject))
-                                                              .Sum(x => x.Rating);
+                            int intFociTotal = await CharacterObject.Foci.SumAsync(x => !setNewGears.Contains(x.GearObject), x => x.Rating, GenericToken);
 
                             foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
                             {
