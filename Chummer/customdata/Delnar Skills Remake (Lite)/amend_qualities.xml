@@ -75,31 +75,31 @@
           <condition>Acting</condition>
         </specificskill>
       </bonus>
-      <bonus xpathfilter="skillgroup/[name = 'Conjuring' and bonus = '1']">
+      <bonus xpathfilter="skillgroup[name = 'Conjuring' and bonus = '1']">
         <specificskill amendoperation="addnode">
           <name>Conjuring</name>
           <bonus>1</bonus>
         </specificskill>
       </bonus>
-      <bonus xpathfilter="skillgroup/[name = 'Influence' and bonus = '1']">
+      <bonus xpathfilter="skillgroup[name = 'Influence' and bonus = '1']">
         <specificskill amendoperation="addnode">
           <name>Influence</name>
           <bonus>1</bonus>
         </specificskill>
       </bonus>
-      <bonus xpathfilter="skillgroup/[name = 'Electronics' and bonus = '-4']">
+      <bonus xpathfilter="skillgroup[name = 'Electronics' and bonus = '-4']">
         <specificskill amendoperation="addnode">
           <name>Electronics</name>
           <bonus>-4</bonus>
         </specificskill>
       </bonus>
-      <bonus xpathfilter="skillgroup/[name = 'Close Combat' and bonus = '1']">
+      <bonus xpathfilter="skillgroup[name = 'Close Combat' and bonus = '1']">
         <specificskill amendoperation="addnode">
           <name>Close Combat</name>
           <bonus>1</bonus>
         </specificskill>
       </bonus>
-      <bonus xpathfilter="skillgroup/[name = 'Engineering' and bonus = '1']">
+      <bonus xpathfilter="skillgroup[name = 'Engineering' and bonus = '1']">
         <specificskill amendoperation="addnode">
           <name>Engineering</name>
           <bonus>1</bonus>
@@ -484,11 +484,7 @@
       </bonus>
     </quality>
     <quality>
-      <id>3f536570-2f0c-40b1-a056-d310e29e983d</id>
       <name>The Athlete's Way</name>
-      <karma>20</karma>
-      <category>Positive</category>
-      <doublecareer>False</doublecareer>
       <bonus>
         <focusbindingkarmacost xpathfilter="name = 'Qi Focus' and (extracontains = 'Improved Ability (skill) (Swimming)' or extracontains = 'Improved Ability (skill) (Running)' or extracontains = 'Improved Ability (skill) (Flight)')" amendoperation="remove" />
         <focusbindingkarmacost xpathfilter="name = 'Qi Focus' and extracontains = 'Improved Ability (skill) (Gymnastics)'">
