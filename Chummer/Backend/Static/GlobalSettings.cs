@@ -866,7 +866,7 @@ namespace Chummer
                         LockingDictionary<string, SourcebookInfo> dicSourcebookInfos = await GetSourcebookInfosAsync(token);
                         using (await EnterReadLock.EnterAsync(dicSourcebookInfos, token))
                         {
-                            foreach (SourcebookInfo objSource in dicSourcebookInfos.Values)
+                            foreach (SourcebookInfo objSource in await dicSourcebookInfos.GetValuesAsync(token))
                             {
                                 token.ThrowIfCancellationRequested();
                                 objSourceRegistry.SetValue(objSource.Code,

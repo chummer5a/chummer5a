@@ -724,7 +724,7 @@ namespace Chummer
                 XslCompiledTransform objXslTransform;
                 try
                 {
-                    objXslTransform = await XslManager.GetTransformForFileAsync(strXslPath);
+                    objXslTransform = await XslManager.GetTransformForFileAsync(strXslPath, token);
                 }
                 catch (ArgumentException)
                 {

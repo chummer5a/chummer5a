@@ -528,7 +528,7 @@ namespace Chummer
                     {
                         objXslTransform
                             = await XslManager
-                                .GetTransformForFileAsync(exportSheetPath); // Use the path for the export sheet.
+                                .GetTransformForFileAsync(exportSheetPath, token); // Use the path for the export sheet.
                     }
                     catch (ArgumentException)
                     {

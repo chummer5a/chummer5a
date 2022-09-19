@@ -318,7 +318,7 @@ namespace Chummer
             IAsyncDisposable objLocker = await s_objDataDirectoriesLock.EnterWriteLockAsync(token);
             try
             {
-                await s_DicXmlDocuments.ForEachAsync(async kvpDocument => await kvpDocument.Value.DisposeAsync(), token: token);
+                await s_DicXmlDocuments.ForEachAsync(kvpDocument => kvpDocument.Value.DisposeAsync().AsTask(), token: token);
                 await s_DicXmlDocuments.ClearAsync(token);
                 s_SetDataDirectories.Clear();
                 token.ThrowIfCancellationRequested();
