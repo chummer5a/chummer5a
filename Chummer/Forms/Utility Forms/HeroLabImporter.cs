@@ -603,7 +603,7 @@ namespace Chummer
                             x => x.Name == objCache.SettingsName && x.BuildMethod == objCache.BuildMethod);
                     if (objHeroLabSettings != null)
                     {
-                        objCharacter.SettingsKey = objHeroLabSettings.DictionaryKey;
+                        await objCharacter.SetSettingsKeyAsync(await objHeroLabSettings.GetDictionaryKeyAsync(token), token);
                     }
                     else
                     {
@@ -611,7 +611,7 @@ namespace Chummer
                             x => x.Name.Contains(objCache.SettingsName) && x.BuildMethod == objCache.BuildMethod);
                         if (objHeroLabSettings != null)
                         {
-                            objCharacter.SettingsKey = objHeroLabSettings.DictionaryKey;
+                            await objCharacter.SetSettingsKeyAsync(await objHeroLabSettings.GetDictionaryKeyAsync(token), token);
                         }
                         else
                         {
@@ -622,24 +622,25 @@ namespace Chummer
                             if (blnSuccess && blnCacheUsesPriorityTables
                                 == objDefaultCharacterSettings.BuildMethod.UsesPriorityTables())
                             {
-                                objCharacter.SettingsKey = objDefaultCharacterSettings.DictionaryKey;
+                                await objCharacter.SetSettingsKeyAsync(await objDefaultCharacterSettings.GetDictionaryKeyAsync(token), token);
                             }
                             else
                             {
-                                objCharacter.SettingsKey = dicCharacterSettings.Values
-                                                                          .FirstOrDefault(
-                                                                              x => x.BuiltInOption
-                                                                                  && x.BuildMethod
-                                                                                  == objCache.BuildMethod)
-                                                                          ?.DictionaryKey
-                                                           ?? dicCharacterSettings.Values
-                                                                             .FirstOrDefault(
-                                                                                 x => x.BuiltInOption
-                                                                                     && x.BuildMethod
-                                                                                         .UsesPriorityTables()
-                                                                                     == blnCacheUsesPriorityTables)
-                                                                             ?.DictionaryKey
-                                                           ?? GlobalSettings.DefaultCharacterSetting;
+                                CharacterSettings objTempSetting
+                                    = dicCharacterSettings.Values.FirstOrDefault(
+                                        x => x.BuiltInOption && x.BuildMethod == objCache.BuildMethod);
+                                if (objTempSetting != null)
+                                    await objCharacter.SetSettingsKeyAsync(await objTempSetting.GetDictionaryKeyAsync(token), token);
+                                else
+                                {
+                                    objTempSetting = dicCharacterSettings.Values.FirstOrDefault(
+                                        x => x.BuiltInOption && x.BuildMethod.UsesPriorityTables()
+                                            == blnCacheUsesPriorityTables);
+                                    if (objTempSetting != null)
+                                        await objCharacter.SetSettingsKeyAsync(await objTempSetting.GetDictionaryKeyAsync(token), token);
+                                    else
+                                        await objCharacter.SetSettingsKeyAsync(GlobalSettings.DefaultCharacterSetting, token);
+                                }
                             }
                         }
                     }
@@ -653,7 +654,7 @@ namespace Chummer
                     }
 
                     //Timekeeper.Start("load_file");
-                    if (!await objCharacter.LoadFromHeroLabFileAsync(strFile, strCharacterId, objCharacter.SettingsKey))
+                    if (!await objCharacter.LoadFromHeroLabFileAsync(strFile, strCharacterId, await objCharacter.GetSettingsKeyAsync(token)))
                         return;
                     blnLoaded = true;
                     //Timekeeper.Finish("load_file");

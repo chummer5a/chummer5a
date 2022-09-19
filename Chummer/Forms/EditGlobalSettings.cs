@@ -1276,14 +1276,15 @@ namespace Chummer
             foreach (CustomDataDirectoryInfo objInfo in _setCustomDataDirectoryInfos)
                 GlobalSettings.CustomDataDirectoryInfos.Add(objInfo);
             await XmlManager.RebuildDataDirectoryInfoAsync(GlobalSettings.CustomDataDirectoryInfos, token);
-            IAsyncDisposable objLocker = await GlobalSettings.SourcebookInfos.LockObject.EnterWriteLockAsync(token);
+            LockingDictionary<string, SourcebookInfo> dicSourcebookInfos = await GlobalSettings.GetSourcebookInfosAsync(token);
+            IAsyncDisposable objLocker = await dicSourcebookInfos.LockObject.EnterWriteLockAsync(token);
             try
             {
                 token.ThrowIfCancellationRequested();
-                await GlobalSettings.SourcebookInfos.ClearAsync(token);
+                await dicSourcebookInfos.ClearAsync(token);
                 token.ThrowIfCancellationRequested();
                 foreach (SourcebookInfo objInfo in _dicSourcebookInfos.Values)
-                    await GlobalSettings.SourcebookInfos.AddAsync(objInfo.Code, objInfo, token);
+                    await dicSourcebookInfos.AddAsync(objInfo.Code, objInfo, token);
             }
             finally
             {

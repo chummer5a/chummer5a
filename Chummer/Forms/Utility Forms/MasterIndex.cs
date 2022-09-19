@@ -547,7 +547,14 @@ namespace Chummer
 
         private async void lblSource_Click(object sender, EventArgs e)
         {
-            await CommonFunctions.OpenPdfFromControl(sender);
+            try
+            {
+                await CommonFunctions.OpenPdfFromControl(sender, _objGenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void RefreshList(object sender, EventArgs e)
@@ -660,10 +667,10 @@ namespace Chummer
                                 {
                                     string strReturn = await CommonFunctions.GetTextFromPdfAsync(
                                         objEntry.Source.ToString(),
-                                        objEntry.EnglishNameOnPage);
+                                        objEntry.EnglishNameOnPage, token: _objGenericToken);
                                     if (string.IsNullOrEmpty(strReturn))
                                         strReturn = await CommonFunctions.GetTextFromPdfAsync(
-                                            objEntry.DisplaySource.ToString(), objEntry.TranslatedNameOnPage);
+                                            objEntry.DisplaySource.ToString(), objEntry.TranslatedNameOnPage, token: _objGenericToken);
                                     return strReturn;
                                 }, _objGenericToken);
                             }
@@ -672,7 +679,7 @@ namespace Chummer
                                 tskNotes = Task.Run(() =>
                                                         CommonFunctions.GetTextFromPdfAsync(
                                                             objEntry.Source.ToString(),
-                                                            objEntry.EnglishNameOnPage), _objGenericToken);
+                                                            objEntry.EnglishNameOnPage, token: _objGenericToken), _objGenericToken);
                             }
 
                             await _dicCachedNotes.TryAddAsync(objEntry, tskNotes, _objGenericToken);

@@ -863,9 +863,10 @@ namespace Chummer
                 {
                     if (objSourceRegistry != null)
                     {
-                        using (await EnterReadLock.EnterAsync(SourcebookInfos, token))
+                        LockingDictionary<string, SourcebookInfo> dicSourcebookInfos = await GetSourcebookInfosAsync(token);
+                        using (await EnterReadLock.EnterAsync(dicSourcebookInfos, token))
                         {
-                            foreach (SourcebookInfo objSource in SourcebookInfos.Values)
+                            foreach (SourcebookInfo objSource in dicSourcebookInfos.Values)
                             {
                                 token.ThrowIfCancellationRequested();
                                 objSourceRegistry.SetValue(objSource.Code,
@@ -1440,19 +1441,55 @@ namespace Chummer
         {
             get
             {
-                // We need to generate s_DicSourcebookInfos outside of the constructor to avoid initialization cycles
-                if (s_intSourcebookInfosLoadingStatus < 0)
-                    LoadSourcebookInfos();
-                while (s_intSourcebookInfosLoadingStatus <= 0)
-                    Utils.SafeSleep();
+                do
+                {
+                    try
+                    {
+                        // We need to generate s_DicSourcebookInfos outside of the constructor to avoid initialization cycles
+                        if (Interlocked.CompareExchange(ref s_intSourcebookInfosLoadingStatus, 0, -1) < 0)
+                            LoadSourcebookInfos();
+                    }
+                    catch
+                    {
+                        s_intSourcebookInfosLoadingStatus = -1;
+                        throw;
+                    }
+
+                    while (s_intSourcebookInfosLoadingStatus <= 0)
+                        Utils.SafeSleep();
+                } while (s_intSourcebookInfosLoadingStatus < 0);
                 return s_DicSourcebookInfos;
             }
         }
 
+        /// <summary>
+        /// List of SourcebookInfo.
+        /// </summary>
+        public static async Task<LockingDictionary<string, SourcebookInfo>> GetSourcebookInfosAsync(CancellationToken token = default)
+        {
+            do
+            {
+                try
+                {
+                    // We need to generate s_DicSourcebookInfos outside of the constructor to avoid initialization cycles
+                    if (Interlocked.CompareExchange(ref s_intSourcebookInfosLoadingStatus, 0, -1) < 0)
+                        await LoadSourcebookInfosAsync(token);
+                }
+                catch
+                {
+                    s_intSourcebookInfosLoadingStatus = -1;
+                    throw;
+                }
+
+                while (s_intSourcebookInfosLoadingStatus <= 0)
+                    await Utils.SafeSleepAsync(token);
+            } while (s_intSourcebookInfosLoadingStatus < 0);
+            return s_DicSourcebookInfos;
+        }
+
         private static void LoadSourcebookInfos()
         {
-            if (Interlocked.CompareExchange(ref s_intSourcebookInfosLoadingStatus, 0, -1) >= 0)
-                return;
+            s_intSourcebookInfosLoadingStatus = 0;
             try
             {
                 if (s_DicSourcebookInfos == null)
@@ -1506,6 +1543,66 @@ namespace Chummer
                         await s_DicSourcebookInfos.AddAsync(strCode, objSource);
                     }
                 });
+            }
+            finally
+            {
+                Interlocked.Increment(ref s_intSourcebookInfosLoadingStatus);
+            }
+        }
+
+        private static async ValueTask LoadSourcebookInfosAsync(CancellationToken token = default)
+        {
+            s_intSourcebookInfosLoadingStatus = 0;
+            try
+            {
+                if (s_DicSourcebookInfos == null)
+                    s_DicSourcebookInfos = new LockingDictionary<string, SourcebookInfo>();
+                else
+                    await s_DicSourcebookInfos.ClearAsync(token);
+                foreach (XPathNavigator xmlBook in await (await XmlManager.LoadXPathAsync("books.xml", token: token))
+                                 .SelectAndCacheExpressionAsync("/chummer/books/book", token: token))
+                {
+                    string strCode = (await xmlBook.SelectSingleNodeAndCacheExpressionAsync("code", token: token))?.Value;
+                    if (string.IsNullOrEmpty(strCode))
+                        continue;
+                    SourcebookInfo objSource = new SourcebookInfo
+                    {
+                        Code = strCode
+                    };
+
+                    try
+                    {
+                        string strTemp = string.Empty;
+                        if (LoadStringFromRegistry(ref strTemp, strCode, "Sourcebook")
+                            && !string.IsNullOrEmpty(strTemp))
+                        {
+                            string[] strParts = strTemp.Split('|');
+                            objSource.Path = strParts[0];
+                            if (string.IsNullOrEmpty(objSource.Path))
+                            {
+                                objSource.Path = string.Empty;
+                                objSource.Offset = 0;
+                            }
+                            else
+                            {
+                                if (!File.Exists(objSource.Path))
+                                    objSource.Path = string.Empty;
+                                if (strParts.Length > 1 && int.TryParse(strParts[1], out int intTmp))
+                                    objSource.Offset = intTmp;
+                            }
+                        }
+                    }
+                    catch (System.Security.SecurityException)
+                    {
+                        //swallow this
+                    }
+                    catch (UnauthorizedAccessException)
+                    {
+                        //swallow this
+                    }
+
+                    await s_DicSourcebookInfos.AddAsync(strCode, objSource, token);
+                }
             }
             finally
             {

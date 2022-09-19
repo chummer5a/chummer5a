@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
@@ -538,72 +539,77 @@ namespace Chummer
         /// </summary>
         /// <param name="strCritterName">Name of the Critter's Metatype.</param>
         /// <param name="intForce">Critter's Force.</param>
-        private async ValueTask CreateCritter(string strCritterName, int intForce)
+        /// <param name="token">Cancellation token to listen to.</param>
+        private async ValueTask CreateCritter(string strCritterName, int intForce, CancellationToken token = default)
         {
             // Code from frmMetatype.
-            XmlDocument objXmlDocument = await _objSpirit.CharacterObject.LoadDataAsync("critters.xml");
+            XmlDocument objXmlDocument = await _objSpirit.CharacterObject.LoadDataAsync("critters.xml", token: token);
 
             XmlNode objXmlMetatype = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = " + strCritterName.CleanXPath() + ']');
 
             // If the Critter could not be found, show an error and get out of here.
             if (objXmlMetatype == null)
             {
-                Program.ShowMessageBox(string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_UnknownCritterType"), strCritterName), await LanguageManager.GetStringAsync("MessageTitle_SelectCritterType"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Program.ShowMessageBox(
+                    string.Format(GlobalSettings.CultureInfo,
+                                  await LanguageManager.GetStringAsync("Message_UnknownCritterType", token: token),
+                                  strCritterName),
+                    await LanguageManager.GetStringAsync("MessageTitle_SelectCritterType", token: token),
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            CursorWait objCursorWait = await CursorWait.NewAsync(ParentForm);
+            CursorWait objCursorWait = await CursorWait.NewAsync(ParentForm, token: token);
             try
             {
                 // The Critter should use the same settings file as the character.
-                Character objCharacter = new Character
-                {
-                    SettingsKey = _objSpirit.CharacterObject.SettingsKey,
-                    // Override the defaults for the setting.
-                    IgnoreRules = true,
-                    IsCritter = true,
-                    Alias = strCritterName,
-                    Created = true
-                };
+                Character objCharacter = new Character();
+                await objCharacter.SetSettingsKeyAsync(await _objSpirit.CharacterObject.GetSettingsKeyAsync(token),
+                                                       token);
+                // Override the defaults for the setting.
+                objCharacter.IgnoreRules = true;
+                objCharacter.IsCritter = true;
+                objCharacter.Alias = strCritterName;
+                objCharacter.Created = true;
                 try
                 {
-                    string strCritterCharacterName = await txtCritterName.DoThreadSafeFuncAsync(x => x.Text);
+                    string strCritterCharacterName = await txtCritterName.DoThreadSafeFuncAsync(x => x.Text, token: token);
                     if (!string.IsNullOrEmpty(strCritterCharacterName))
                         objCharacter.Name = strCritterCharacterName;
 
-                    string strSpace = await LanguageManager.GetStringAsync("String_Space");
-                    using (SaveFileDialog dlgSaveFile = await this.DoThreadSafeFuncAsync(() => new SaveFileDialog()))
+                    string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token);
+                    using (SaveFileDialog dlgSaveFile = await this.DoThreadSafeFuncAsync(() => new SaveFileDialog(), token: token))
                     {
-                        dlgSaveFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|'
-                            + await LanguageManager.GetStringAsync("DialogFilter_All");
+                        dlgSaveFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5", token: token) + '|'
+                            + await LanguageManager.GetStringAsync("DialogFilter_All", token: token);
                         dlgSaveFile.FileName = strCritterName + strSpace + '('
-                                               + await LanguageManager.GetStringAsync(_objSpirit.RatingLabel) + strSpace
+                                               + await LanguageManager.GetStringAsync(_objSpirit.RatingLabel, token: token) + strSpace
                                                + _objSpirit.Force.ToString(GlobalSettings.InvariantCultureInfo)
                                                + ").chum5";
-                        if (await this.DoThreadSafeFuncAsync(x => dlgSaveFile.ShowDialog(x)) != DialogResult.OK)
+                        if (await this.DoThreadSafeFuncAsync(x => dlgSaveFile.ShowDialog(x), token: token) != DialogResult.OK)
                             return;
                         string strFileName = dlgSaveFile.FileName;
                         objCharacter.FileName = strFileName;
                     }
 
                     objCharacter.Create(objXmlMetatype["category"]?.InnerText, objXmlMetatype["id"]?.InnerText,
-                                        string.Empty, objXmlMetatype, intForce);
+                                        string.Empty, objXmlMetatype, intForce, token: token);
                     objCharacter.MetatypeBP = 0;
-                    using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program.CreateAndShowProgressBarAsync())
+                    using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program.CreateAndShowProgressBarAsync(token: token))
                     {
                         await frmLoadingBar.MyForm.PerformStepAsync(objCharacter.CharacterName,
-                                                                    LoadingBar.ProgressBarTextPatterns.Saving);
-                        if (!await objCharacter.SaveAsync())
+                                                                    LoadingBar.ProgressBarTextPatterns.Saving, token);
+                        if (!await objCharacter.SaveAsync(token: token))
                             return;
                     }
 
                     // Link the newly-created Critter to the Spirit.
                     string strText = await LanguageManager.GetStringAsync(
-                        _objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_OpenFile" : "Tip_Sprite_OpenFile");
+                        _objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_OpenFile" : "Tip_Sprite_OpenFile", token: token);
                     await cmdLink.SetToolTipTextAsync(strText);
                     ContactDetailChanged?.Invoke(this, EventArgs.Empty);
 
-                    await Program.OpenCharacter(objCharacter);
+                    await Program.OpenCharacter(objCharacter, token: token);
                 }
                 finally
                 {

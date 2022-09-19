@@ -5155,7 +5155,10 @@ namespace Chummer
                                     }
                                 }
 
-                                Settings = objProspectiveSettings;
+                                if (blnSync)
+                                    Settings = objProspectiveSettings;
+                                else
+                                    await SetSettingsAsync(objProspectiveSettings, token);
 
                                 if (blnShowSelectBP)
                                 {
@@ -8040,7 +8043,7 @@ namespace Chummer
                 try
                 {
                     // <settings />
-                    await objWriter.WriteElementStringAsync("settings", SettingsKey, token: token);
+                    await objWriter.WriteElementStringAsync("settings", await GetSettingsKeyAsync(token), token: token);
                     // <buildmethod />
                     await objWriter.WriteElementStringAsync("buildmethod", Settings.BuildMethod.ToString(), token: token);
                     // <imageformat />
@@ -11264,25 +11267,31 @@ namespace Chummer
                 }
             }
 
-            using (LockObject.EnterWriteLock(token))
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
+            try
             {
                 if (eResult != DialogResult.OK)
                 {
-                    SettingsKey = strOldSettingsKey;
+                    await SetSettingsKeyAsync(strOldSettingsKey, token);
                     return false;
                 }
 
                 if (eOldBuildMethod == CharacterBuildMethod.LifeModule)
                 {
-                    for (int i = Qualities.Count - 1; i >= 0; --i)
+                    ThreadSafeObservableCollection<Quality> lstQualities = await GetQualitiesAsync(token);
+                    for (int i = await lstQualities.GetCountAsync(token) - 1; i >= 0; --i)
                     {
-                        if (i >= Qualities.Count)
+                        if (i >= await lstQualities.GetCountAsync(token))
                             continue;
-                        Quality objQuality = Qualities[i];
+                        Quality objQuality = await lstQualities.GetValueAtAsync(i, token);
                         if (objQuality.OriginSource == QualitySource.LifeModule)
                             objQuality.DeleteQuality();
                     }
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync();
             }
 
             return true;
@@ -12509,6 +12518,52 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Character Settings object.
+        /// </summary>
+        private async ValueTask SetSettingsAsync(CharacterSettings value, CancellationToken token = default) // Private to make sure this is always in sync with GameplayOption
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+            {
+                if (ReferenceEquals(_objSettings, value))
+                    return;
+                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
+                try
+                {
+                    CharacterSettings objOldSettings = _objSettings;
+                    bool blnActuallyDifferentSettings = false;
+                    if (_objSettings != null)
+                    {
+                        blnActuallyDifferentSettings = !await _objSettings.HasIdenticalSettingsAsync(value, token);
+                        _objSettings.PropertyChanged -= OptionsOnPropertyChanged;
+                    }
+                    else if (value != null)
+                        blnActuallyDifferentSettings = true;
+
+                    _objSettings = value;
+                    if (_objSettings != null)
+                        _objSettings.PropertyChanged += OptionsOnPropertyChanged;
+                    if (!blnActuallyDifferentSettings || IsLoading)
+                        return;
+                    OnPropertyChanged();
+                    if (_objSettings != null)
+                    {
+                        foreach (string strProperty in _objSettings.GetDifferingPropertyNames(objOldSettings))
+                            await DoOptionsOnPropertyChanged(this, new PropertyChangedEventArgs(strProperty));
+                    }
+                    else
+                    {
+                        foreach (string strProperty in objOldSettings.GetDifferingPropertyNames(_objSettings))
+                            await DoOptionsOnPropertyChanged(this, new PropertyChangedEventArgs(strProperty));
+                    }
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync();
+                }
+            }
+        }
+
+        /// <summary>
         /// Name of the file the Character is saved to.
         /// </summary>
         public string FileName
@@ -12910,6 +12965,39 @@ namespace Chummer
                         OnPropertyChanged();
                         Settings = objNewSettings;
                     }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Character's Gameplay Option.
+        /// </summary>
+        public async ValueTask<string> GetSettingsKeyAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _strSettingsKey;
+        }
+
+        public async Task SetSettingsKeyAsync(string value, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+            {
+                if (_strSettingsKey == value)
+                    return;
+                (bool blnSuccess, CharacterSettings objNewSettings)
+                    = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(value, token);
+                if (!blnSuccess)
+                    throw new InvalidOperationException(nameof(SettingsKey));
+                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
+                try
+                {
+                    _strSettingsKey = value;
+                    OnPropertyChanged(nameof(SettingsKey));
+                    await SetSettingsAsync(objNewSettings, token);
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync();
                 }
             }
         }
@@ -29420,7 +29508,10 @@ namespace Chummer
                                             : !await (await SettingsManager.GetLoadedCharacterSettingsAsync()).ContainsKeyAsync(strSettingsKey))
                                         return false;
 
-                                    SettingsKey = strSettingsKey;
+                                    if (blnSync)
+                                        SettingsKey = strSettingsKey;
+                                    else
+                                        await SetSettingsKeyAsync(strSettingsKey);
                                 }
 
                                 // Metatype information.
@@ -29609,7 +29700,11 @@ namespace Chummer
                                                         x => x.Name == strHeroLabSettingsName);
                                                 if (objHeroLabSettings != null)
                                                 {
-                                                    strSettingsKey = SettingsKey = objHeroLabSettings.DictionaryKey;
+                                                    strSettingsKey = objHeroLabSettings.DictionaryKey;
+                                                    if (blnSync)
+                                                        SettingsKey = strSettingsKey;
+                                                    else
+                                                        await SetSettingsKeyAsync(strSettingsKey);
                                                 }
                                             }
                                         }
@@ -29627,7 +29722,7 @@ namespace Chummer
                                                               : await LanguageManager
                                                                   .GetStringAsync(
                                                                       "Message_MissingGameplayOption"),
-                                                          SettingsKey),
+                                                          blnSync ? SettingsKey : await GetSettingsKeyAsync()),
                                             blnSync
                                                 // ReSharper disable once MethodHasAsyncOverload
                                                 ? LanguageManager.GetString(

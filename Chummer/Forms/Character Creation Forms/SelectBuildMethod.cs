@@ -58,9 +58,9 @@ namespace Chummer
                     await LanguageManager.GetStringAsync("MessageTitle_SelectBP_SwitchBuildMethods"), MessageBoxButtons.YesNo,
                     MessageBoxIcon.Warning) != DialogResult.Yes)
                     return;
-                string strOldCharacterSettingsKey = _objCharacter.SettingsKey;
-                _objCharacter.SettingsKey = (await (await SettingsManager.GetLoadedCharacterSettingsAsync())
-                    .FirstOrDefaultAsync(x => ReferenceEquals(x.Value, objSelectedGameplayOption))).Key;
+                string strOldCharacterSettingsKey = await _objCharacter.GetSettingsKeyAsync();
+                await _objCharacter.SetSettingsKeyAsync((await (await SettingsManager.GetLoadedCharacterSettingsAsync())
+                    .FirstOrDefaultAsync(x => ReferenceEquals(x.Value, objSelectedGameplayOption))).Key);
                 // If the character is loading, make sure we only switch build methods after we've loaded, otherwise we might cause all sorts of nastiness
                 if (_objCharacter.IsLoading)
                     await _objCharacter.PostLoadMethodsAsync.EnqueueAsync(() => _objCharacter.SwitchBuildMethods(_eStartingBuildMethod, eSelectedBuildMethod, strOldCharacterSettingsKey));
@@ -69,10 +69,10 @@ namespace Chummer
             }
             else
             {
-                _objCharacter.SettingsKey = (await (await SettingsManager.GetLoadedCharacterSettingsAsync())
-                                                                  .FirstOrDefaultAsync(
-                                                                      x => ReferenceEquals(
-                                                                          x.Value, objSelectedGameplayOption))).Key;
+                await _objCharacter.SetSettingsKeyAsync((await (await SettingsManager.GetLoadedCharacterSettingsAsync())
+                                                            .FirstOrDefaultAsync(
+                                                                x => ReferenceEquals(
+                                                                    x.Value, objSelectedGameplayOption))).Key);
             }
             _objCharacter.IgnoreRules = await chkIgnoreRules.DoThreadSafeFuncAsync(x => x.Checked);
             await this.DoThreadSafeAsync(x =>
@@ -168,7 +168,7 @@ namespace Chummer
                         {
                             (bool blnSuccess, CharacterSettings objSetting)
                                 = await dicCharacterSettings.TryGetValueAsync(
-                                    _objCharacter.SettingsKey);
+                                    await _objCharacter.GetSettingsKeyAsync());
                             if (blnSuccess)
                                 await cboCharacterSetting.DoThreadSafeAsync(x => x.SelectedValue = objSetting);
                             if (await cboCharacterSetting.DoThreadSafeFuncAsync(x => x.SelectedIndex) == -1)

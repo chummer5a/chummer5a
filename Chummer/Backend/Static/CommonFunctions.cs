@@ -1086,13 +1086,14 @@ namespace Chummer
         /// <param name="strAltCode">Book code to search for.</param>
         /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strLanguage">Language to load.</param>
-        public static async ValueTask<string> LanguageBookCodeFromAltCodeAsync(string strAltCode, string strLanguage = "", Character objCharacter = null)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async ValueTask<string> LanguageBookCodeFromAltCodeAsync(string strAltCode, string strLanguage = "", Character objCharacter = null, CancellationToken token = default)
         {
             if (string.IsNullOrWhiteSpace(strAltCode))
                 return string.Empty;
             XPathNavigator xmlOriginalCode = objCharacter != null
-                ? await objCharacter.LoadDataXPathAsync("books.xml", strLanguage)
-                : await XmlManager.LoadXPathAsync("books.xml", null, strLanguage);
+                ? await objCharacter.LoadDataXPathAsync("books.xml", strLanguage, token: token)
+                : await XmlManager.LoadXPathAsync("books.xml", null, strLanguage, token: token);
             xmlOriginalCode = xmlOriginalCode?.SelectSingleNode("/chummer/books/book[altcode = " + strAltCode.CleanXPath() + "]/code");
             return xmlOriginalCode?.Value ?? strAltCode;
         }
@@ -1120,13 +1121,14 @@ namespace Chummer
         /// <param name="strCode">Book code to search for.</param>
         /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strLanguage">Language to load.</param>
-        public static async ValueTask<string> LanguageBookShortAsync(string strCode, string strLanguage = "", Character objCharacter = null)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async ValueTask<string> LanguageBookShortAsync(string strCode, string strLanguage = "", Character objCharacter = null, CancellationToken token = default)
         {
             if (string.IsNullOrWhiteSpace(strCode))
                 return string.Empty;
             XPathNavigator xmlAltCode = objCharacter != null
-                ? await objCharacter.LoadDataXPathAsync("books.xml", strLanguage)
-                : await XmlManager.LoadXPathAsync("books.xml", null, strLanguage);
+                ? await objCharacter.LoadDataXPathAsync("books.xml", strLanguage, token: token)
+                : await XmlManager.LoadXPathAsync("books.xml", null, strLanguage, token: token);
             xmlAltCode = xmlAltCode?.SelectSingleNode("/chummer/books/book[code = " + strCode.CleanXPath() + "]/altcode");
             return xmlAltCode?.Value ?? strCode;
         }
@@ -1161,18 +1163,19 @@ namespace Chummer
         /// <param name="strCode">Book code to search for.</param>
         /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strLanguage">Language to load.</param>
-        public static async ValueTask<string> LanguageBookLongAsync(string strCode, string strLanguage = "", Character objCharacter = null)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async ValueTask<string> LanguageBookLongAsync(string strCode, string strLanguage = "", Character objCharacter = null, CancellationToken token = default)
         {
             if (string.IsNullOrWhiteSpace(strCode))
                 return string.Empty;
             XPathNavigator xmlBook = objCharacter != null
-                ? await objCharacter.LoadDataXPathAsync("books.xml", strLanguage)
-                : await XmlManager.LoadXPathAsync("books.xml", null, strLanguage);
+                ? await objCharacter.LoadDataXPathAsync("books.xml", strLanguage, token: token)
+                : await XmlManager.LoadXPathAsync("books.xml", null, strLanguage, token: token);
             xmlBook = xmlBook?.SelectSingleNode("/chummer/books/book[code = " + strCode.CleanXPath() + ']');
             if (xmlBook != null)
             {
-                string strReturn = (await xmlBook.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
-                                   ?? (await xmlBook.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value;
+                string strReturn = (await xmlBook.SelectSingleNodeAndCacheExpressionAsync("translate", token: token))?.Value
+                                   ?? (await xmlBook.SelectSingleNodeAndCacheExpressionAsync("name", token: token))?.Value;
                 if (!string.IsNullOrWhiteSpace(strReturn))
                     return strReturn;
             }
@@ -1465,7 +1468,8 @@ namespace Chummer
         /// Opens a PDF file using the provided source information.
         /// </summary>
         /// <param name="sender">Control from which this method was called.</param>
-        public static async ValueTask OpenPdfFromControl(object sender)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async ValueTask OpenPdfFromControl(object sender, CancellationToken token = default)
         {
             if (!(sender is Control objControl))
                 return;
@@ -1479,15 +1483,15 @@ namespace Chummer
                     break;
                 }
 
-                objLoopControl = await objLoopControl.DoThreadSafeFuncAsync(x => x.Parent);
+                objLoopControl = await objLoopControl.DoThreadSafeFuncAsync(x => x.Parent, token: token);
             }
 
             CursorWait objCursorWait
-                = await CursorWait.NewAsync(await objControl.DoThreadSafeFuncAsync(x => x.FindForm()) ?? objControl);
+                = await CursorWait.NewAsync(await objControl.DoThreadSafeFuncAsync(x => x.FindForm(), token: token) ?? objControl, token: token);
             try
             {
-                await OpenPdf(await objControl.DoThreadSafeFuncAsync(x => x.Text), objCharacter, string.Empty,
-                              string.Empty, true);
+                await OpenPdf(await objControl.DoThreadSafeFuncAsync(x => x.Text, token: token), objCharacter, string.Empty,
+                              string.Empty, true, token);
             }
             finally
             {
@@ -1503,7 +1507,8 @@ namespace Chummer
         /// <param name="strPdfParameters">PDF parameters to use. If empty, use GlobalSettings.PdfParameters.</param>
         /// <param name="strPdfAppPath">PDF parameters to use. If empty, use GlobalSettings.PdfAppPath.</param>
         /// <param name="blnOpenOptions">If set to True, the user will be prompted whether they wish to link a PDF if no PDF is found.</param>
-        public static async ValueTask OpenPdf(string strSource, Character objCharacter = null, string strPdfParameters = "", string strPdfAppPath = "", bool blnOpenOptions = false)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async ValueTask OpenPdf(string strSource, Character objCharacter = null, string strPdfParameters = "", string strPdfAppPath = "", bool blnOpenOptions = false, CancellationToken token = default)
         {
             if (string.IsNullOrEmpty(strSource))
                 return;
@@ -1514,19 +1519,19 @@ namespace Chummer
             // The user must have specified the arguments of their PDF application in order to use this functionality.
             while (string.IsNullOrWhiteSpace(strPdfParameters) || string.IsNullOrWhiteSpace(strPdfAppPath) || !File.Exists(strPdfAppPath))
             {
-                if (!blnOpenOptions || Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_NoPDFProgramSet"),
-                    await LanguageManager.GetStringAsync("MessageTitle_NoPDFProgramSet"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                if (!blnOpenOptions || Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_NoPDFProgramSet", token: token),
+                    await LanguageManager.GetStringAsync("MessageTitle_NoPDFProgramSet", token: token), MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                     return;
-                CursorWait objCursorWait = await CursorWait.NewAsync(Program.MainForm);
+                CursorWait objCursorWait = await CursorWait.NewAsync(Program.MainForm, token: token);
                 try
                 {
                     using (ThreadSafeForm<EditGlobalSettings> frmOptions
-                           = await ThreadSafeForm<EditGlobalSettings>.GetAsync(() => new EditGlobalSettings()))
+                           = await ThreadSafeForm<EditGlobalSettings>.GetAsync(() => new EditGlobalSettings(), token))
                     {
                         if (string.IsNullOrWhiteSpace(strPdfAppPath) || !File.Exists(strPdfAppPath))
                             // ReSharper disable once AccessToDisposedClosure
-                            await frmOptions.MyForm.DoLinkPdfReader();
-                        if (await frmOptions.ShowDialogSafeAsync(Program.MainForm) != DialogResult.OK)
+                            await frmOptions.MyForm.DoLinkPdfReader(token);
+                        if (await frmOptions.ShowDialogSafeAsync(Program.MainForm, token) != DialogResult.OK)
                             return;
                         strPdfParameters = GlobalSettings.PdfParameters;
                         strPdfAppPath = GlobalSettings.PdfAppPath;
@@ -1538,7 +1543,7 @@ namespace Chummer
                 }
             }
 
-            string strSpace = await LanguageManager.GetStringAsync("String_Space");
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token);
             string[] astrSourceParts;
             if (!string.IsNullOrEmpty(strSpace))
                 astrSourceParts = strSource.Split(strSpace, StringSplitOptions.RemoveEmptyEntries);
@@ -1570,10 +1575,10 @@ namespace Chummer
                 return;
 
             // Revert the sourcebook code to the one from the XML file if necessary.
-            string strBook = await LanguageBookCodeFromAltCodeAsync(astrSourceParts[0], string.Empty, objCharacter);
+            string strBook = await LanguageBookCodeFromAltCodeAsync(astrSourceParts[0], string.Empty, objCharacter, token);
 
             // Retrieve the sourcebook information including page offset and PDF application name.
-            (bool blnSuccess, SourcebookInfo objBookInfo) = await GlobalSettings.SourcebookInfos.TryGetValueAsync(strBook);
+            (bool blnSuccess, SourcebookInfo objBookInfo) = await (await GlobalSettings.GetSourcebookInfosAsync(token)).TryGetValueAsync(strBook, token);
             // If the sourcebook was not found, we can't open anything.
             if (!blnSuccess || objBookInfo == null)
                 return;
@@ -1593,18 +1598,18 @@ namespace Chummer
             {
                 if (!blnOpenOptions)
                     return;
-                if (Program.ShowMessageBox(string.Format(await LanguageManager.GetStringAsync("Message_NoLinkedPDF"), await LanguageBookLongAsync(strBook)),
-                        await LanguageManager.GetStringAsync("MessageTitle_NoLinkedPDF"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                if (Program.ShowMessageBox(string.Format(await LanguageManager.GetStringAsync("Message_NoLinkedPDF", token: token), await LanguageBookLongAsync(strBook, token: token)),
+                        await LanguageManager.GetStringAsync("MessageTitle_NoLinkedPDF", token: token), MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                     return;
-                CursorWait objCursorWait = await CursorWait.NewAsync(Program.MainForm);
+                CursorWait objCursorWait = await CursorWait.NewAsync(Program.MainForm, token: token);
                 try
                 {
                     using (ThreadSafeForm<EditGlobalSettings> frmOptions
-                           = await ThreadSafeForm<EditGlobalSettings>.GetAsync(() => new EditGlobalSettings()))
+                           = await ThreadSafeForm<EditGlobalSettings>.GetAsync(() => new EditGlobalSettings(), token))
                     {
                         // ReSharper disable once AccessToDisposedClosure
-                        await frmOptions.MyForm.DoLinkPdf(objBookInfo.Code);
-                        if (await frmOptions.ShowDialogSafeAsync(Program.MainForm) != DialogResult.OK)
+                        await frmOptions.MyForm.DoLinkPdf(objBookInfo.Code, token);
+                        if (await frmOptions.ShowDialogSafeAsync(Program.MainForm, token) != DialogResult.OK)
                             return;
                         uriPath = null;
                         try
@@ -1656,10 +1661,11 @@ namespace Chummer
         /// <param name="strSource">Formatted Source to search, ie SR5 70</param>
         /// <param name="strText">String to search for as an opener</param>
         /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns></returns>
-        public static Task<string> GetTextFromPdfAsync(string strSource, string strText, Character objCharacter = null)
+        public static Task<string> GetTextFromPdfAsync(string strSource, string strText, Character objCharacter = null, CancellationToken token = default)
         {
-            return GetTextFromPdfCoreAsync(false, strSource, strText, objCharacter);
+            return GetTextFromPdfCoreAsync(false, strSource, strText, objCharacter, token);
         }
 
         /// <summary>
@@ -1671,8 +1677,9 @@ namespace Chummer
         /// <param name="strSource">Formatted Source to search, ie SR5 70</param>
         /// <param name="strText">String to search for as an opener</param>
         /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns></returns>
-        private static async Task<string> GetTextFromPdfCoreAsync(bool blnSync, string strSource, string strText, Character objCharacter)
+        private static async Task<string> GetTextFromPdfCoreAsync(bool blnSync, string strSource, string strText, Character objCharacter, CancellationToken token = default)
         {
             if (string.IsNullOrEmpty(strText) || string.IsNullOrEmpty(strSource))
                 return strText;
@@ -1689,12 +1696,17 @@ namespace Chummer
 
             // Revert the sourcebook code to the one from the XML file if necessary.
             string strBook = blnSync
-                // ReSharper disable once MethodHasAsyncOverload
+                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                 ? LanguageBookCodeFromAltCode(strTemp[0], string.Empty, objCharacter)
-                : await LanguageBookCodeFromAltCodeAsync(strTemp[0], string.Empty, objCharacter).ConfigureAwait(false);
+                : await LanguageBookCodeFromAltCodeAsync(strTemp[0], string.Empty, objCharacter, token).ConfigureAwait(false);
 
             // Retrieve the sourcebook information including page offset and PDF application name.
-            (bool blnSuccess, SourcebookInfo objBookInfo) = await GlobalSettings.SourcebookInfos.TryGetValueAsync(strBook).ConfigureAwait(false);
+            bool blnSuccess;
+            SourcebookInfo objBookInfo;
+            if (blnSync)
+                blnSuccess = GlobalSettings.SourcebookInfos.TryGetValue(strBook, out objBookInfo);
+            else
+                (blnSuccess, objBookInfo) = await (await GlobalSettings.GetSourcebookInfosAsync(token)).TryGetValueAsync(strBook, token).ConfigureAwait(false);
             // If the sourcebook was not found, we can't open anything.
             if (!blnSuccess || objBookInfo == null)
                 return string.Empty;
@@ -1729,7 +1741,7 @@ namespace Chummer
             int intBlockEndIndex = -1;
             int intExtraAllCapsInfo = 0;
             bool blnTitleWithColon = false; // it is either an uppercase title or title in a paragraph with a colon
-            string strReturn = blnSync ? FetchTexts().ConfigureAwait(false).GetAwaiter().GetResult() : await Task.Run(FetchTexts).ConfigureAwait(false);
+            string strReturn = blnSync ? FetchTexts().ConfigureAwait(false).GetAwaiter().GetResult() : await Task.Run(FetchTexts, token).ConfigureAwait(false);
 
             async Task<string> FetchTexts()
             {
@@ -1763,7 +1775,7 @@ namespace Chummer
                         return blnSync
                             // ReSharper disable once MethodHasAsyncOverload
                             ? LanguageManager.GetString("Error_Message_PDF_IndexOutOfBounds", false)
-                            : await LanguageManager.GetStringAsync("Error_Message_PDF_IndexOutOfBounds", false).ConfigureAwait(false);
+                            : await LanguageManager.GetStringAsync("Error_Message_PDF_IndexOutOfBounds", false, token).ConfigureAwait(false);
                     }
 
                     // don't trust it to be correct, trim all whitespace and remove empty strings before we even start

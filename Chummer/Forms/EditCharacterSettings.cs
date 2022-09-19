@@ -225,10 +225,10 @@ namespace Chummer
                     = await dicCharacterSettings.FirstOrDefaultAsync(
                         x => x.Value.BuiltInOption
                              && x.Value.BuildMethod == _objReferenceCharacterSettings.BuildMethod);
-                await Program.OpenCharacters.ForEachAsync(objCharacter =>
+                await Program.OpenCharacters.ForEachAsync(async objCharacter =>
                 {
-                    if (objCharacter.SettingsKey == _objReferenceCharacterSettings.FileName)
-                        objCharacter.SettingsKey = kvpReplacementOption.Key;
+                    if (await objCharacter.GetSettingsKeyAsync() == _objReferenceCharacterSettings.FileName)
+                        await objCharacter.SetSettingsKeyAsync(kvpReplacementOption.Key);
                 });
                 bool blnDoResumeLayout = !_blnIsLayoutSuspended;
                 if (blnDoResumeLayout)
@@ -1741,7 +1741,7 @@ namespace Chummer
                     _blnLoading = true;
                     try
                     {
-                        await SetIsDirty(!_objCharacterSettings.HasIdenticalSettings(_objReferenceCharacterSettings));
+                        await SetIsDirty(!await _objCharacterSettings.HasIdenticalSettingsAsync(_objReferenceCharacterSettings));
                         switch (e.PropertyName)
                         {
                             case nameof(CharacterSettings.EnabledCustomDataDirectoryPaths):
