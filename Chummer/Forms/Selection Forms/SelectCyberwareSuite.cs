@@ -73,7 +73,7 @@ namespace Chummer
             AcceptForm();
         }
 
-        private void SelectCyberwareSuite_Load(object sender, EventArgs e)
+        private async void SelectCyberwareSuite_Load(object sender, EventArgs e)
         {
             if (_objCharacter.IsAI)
                 return;
@@ -85,7 +85,7 @@ namespace Chummer
             {
                 if (xmlSuiteList?.Count > 0)
                 {
-                    List<Grade> lstGrades = _objCharacter.GetGradesList(_eSource);
+                    List<Grade> lstGrades = await _objCharacter.GetGradesListAsync(_eSource);
 
                     using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                out List<ListItem> lstSuitesToAdd))
@@ -103,13 +103,13 @@ namespace Chummer
                                     // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
                                     switch (_eSource)
                                     {
-                                        case Improvement.ImprovementSource.Bioware when ImprovementManager
-                                            .GetCachedImprovementListForValueOf(_objCharacter,
-                                                Improvement.ImprovementType.DisableBiowareGrade)
+                                        case Improvement.ImprovementSource.Bioware when (await ImprovementManager
+                                                .GetCachedImprovementListForValueOfAsync(_objCharacter,
+                                                    Improvement.ImprovementType.DisableBiowareGrade))
                                             .Any(x => strGrade.Contains(x.ImprovedName)):
-                                        case Improvement.ImprovementSource.Cyberware when ImprovementManager
-                                            .GetCachedImprovementListForValueOf(_objCharacter,
-                                                Improvement.ImprovementType.DisableCyberwareGrade)
+                                        case Improvement.ImprovementSource.Cyberware when (await ImprovementManager
+                                                .GetCachedImprovementListForValueOfAsync(_objCharacter,
+                                                    Improvement.ImprovementType.DisableCyberwareGrade))
                                             .Any(x => strGrade.Contains(x.ImprovedName)):
                                             continue;
                                     }

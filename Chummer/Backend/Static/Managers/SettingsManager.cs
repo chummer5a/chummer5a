@@ -80,12 +80,51 @@ namespace Chummer
         {
             get
             {
-                if (_intDicLoadedCharacterSettingsLoadedStatus < 0) // Makes sure if we end up calling this from multiple threads, only one does loading at a time
-                    LoadCharacterSettings();
-                while (_intDicLoadedCharacterSettingsLoadedStatus <= 1)
-                    Utils.SafeSleep();
+                do
+                {
+                    try
+                    {
+                        if (Interlocked.CompareExchange(ref _intDicLoadedCharacterSettingsLoadedStatus, 0, -1)
+                            < 0) // Makes sure if we end up calling this from multiple threads, only one does loading at a time
+                            LoadCharacterSettings();
+                    }
+                    catch
+                    {
+                        _intDicLoadedCharacterSettingsLoadedStatus = -1;
+                        throw;
+                    }
+
+                    while (_intDicLoadedCharacterSettingsLoadedStatus <= 1)
+                        Utils.SafeSleep();
+                }
+                while (_intDicLoadedCharacterSettingsLoadedStatus < 0);
                 return s_DicLoadedCharacterSettings;
             }
+        }
+
+        // Looks awkward to have two different versions of the same property, but this allows for easier tracking of where character settings are being modified
+        public static async ValueTask<IAsyncReadOnlyDictionary<string, CharacterSettings>> GetLoadedCharacterSettingsAsync(CancellationToken token = default)
+        {
+            do
+            {
+                try
+                {
+                    if (Interlocked.CompareExchange(ref _intDicLoadedCharacterSettingsLoadedStatus, 0, -1)
+                        < 0) // Makes sure if we end up calling this from multiple threads, only one does loading at a time
+                        await LoadCharacterSettingsAsync(token);
+                }
+                catch
+                {
+                    _intDicLoadedCharacterSettingsLoadedStatus = -1;
+                    throw;
+                }
+
+                while (_intDicLoadedCharacterSettingsLoadedStatus <= 1
+                       && _intDicLoadedCharacterSettingsLoadedStatus > 0)
+                    await Utils.SafeSleepAsync(token);
+            } while (_intDicLoadedCharacterSettingsLoadedStatus < 0);
+
+            return s_DicLoadedCharacterSettings;
         }
 
         // Looks awkward to have two different versions of the same property, but this allows for easier tracking of where character settings are being modified
@@ -93,12 +132,51 @@ namespace Chummer
         {
             get
             {
-                if (_intDicLoadedCharacterSettingsLoadedStatus < 0) // Makes sure if we end up calling this from multiple threads, only one does loading at a time
-                    LoadCharacterSettings();
-                while (_intDicLoadedCharacterSettingsLoadedStatus <= 1)
-                    Utils.SafeSleep();
+                do
+                {
+                    try
+                    {
+                        if (Interlocked.CompareExchange(ref _intDicLoadedCharacterSettingsLoadedStatus, 0, -1)
+                            < 0) // Makes sure if we end up calling this from multiple threads, only one does loading at a time
+                            LoadCharacterSettings();
+                    }
+                    catch
+                    {
+                        _intDicLoadedCharacterSettingsLoadedStatus = -1;
+                        throw;
+                    }
+
+                    while (_intDicLoadedCharacterSettingsLoadedStatus <= 1)
+                        Utils.SafeSleep();
+                }
+                while (_intDicLoadedCharacterSettingsLoadedStatus < 0);
                 return s_DicLoadedCharacterSettings;
             }
+        }
+
+        // Looks awkward to have two different versions of the same property, but this allows for easier tracking of where character settings are being modified
+        public static async ValueTask<LockingDictionary<string, CharacterSettings>> GetLoadedCharacterSettingsAsModifiableAsync(CancellationToken token = default)
+        {
+            do
+            {
+                try
+                {
+                    if (Interlocked.CompareExchange(ref _intDicLoadedCharacterSettingsLoadedStatus, 0, -1)
+                        < 0) // Makes sure if we end up calling this from multiple threads, only one does loading at a time
+                        await LoadCharacterSettingsAsync(token);
+                }
+                catch
+                {
+                    _intDicLoadedCharacterSettingsLoadedStatus = -1;
+                    throw;
+                }
+
+                while (_intDicLoadedCharacterSettingsLoadedStatus <= 1
+                       && _intDicLoadedCharacterSettingsLoadedStatus > 0)
+                    await Utils.SafeSleepAsync(token);
+            } while (_intDicLoadedCharacterSettingsLoadedStatus < 0);
+
+            return s_DicLoadedCharacterSettings;
         }
 
         private static void LoadCharacterSettings()
@@ -158,6 +236,69 @@ namespace Chummer
                         });
                     }
                 });
+            }
+            finally
+            {
+                Interlocked.Increment(ref _intDicLoadedCharacterSettingsLoadedStatus);
+            }
+        }
+
+        private static async ValueTask LoadCharacterSettingsAsync(CancellationToken token = default)
+        {
+            _intDicLoadedCharacterSettingsLoadedStatus = 0;
+            try
+            {
+                await s_DicLoadedCharacterSettings.ClearAsync(token);
+                try
+                {
+                    if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
+                    {
+                        CharacterSettings objNewCharacterSettings = new CharacterSettings();
+                        if (!await s_DicLoadedCharacterSettings.TryAddAsync(GlobalSettings.DefaultCharacterSetting,
+                                                                            objNewCharacterSettings, token))
+                            await objNewCharacterSettings.DisposeAsync();
+                        return;
+                    }
+
+                    IEnumerable<XPathNavigator> xmlSettingsIterator
+                        = (await (await XmlManager.LoadXPathAsync("settings.xml", token: token))
+                            .SelectAndCacheExpressionAsync("/chummer/settings/setting", token: token)).Cast<XPathNavigator>();
+                    await Task.Run(() =>
+                                       Parallel.ForEach(xmlSettingsIterator, xmlBuiltInSetting =>
+                                       {
+                                           CharacterSettings objNewCharacterSettings = new CharacterSettings();
+                                           if (!objNewCharacterSettings.Load(xmlBuiltInSetting)
+                                               || (objNewCharacterSettings.BuildMethodIsLifeModule
+                                                   && !GlobalSettings.LifeModuleEnabled)
+                                               || !s_DicLoadedCharacterSettings.TryAdd(
+                                                   objNewCharacterSettings.DictionaryKey,
+                                                   objNewCharacterSettings))
+                                               objNewCharacterSettings.Dispose();
+                                       }), token);
+                }
+                finally
+                {
+                    Interlocked.Increment(ref _intDicLoadedCharacterSettingsLoadedStatus);
+                }
+
+                await Task.Run(() =>
+                {
+                    string strSettingsPath = Path.Combine(Utils.GetStartupPath, "settings");
+                    if (Directory.Exists(strSettingsPath))
+                    {
+                        Parallel.ForEach(Directory.EnumerateFiles(strSettingsPath, "*.xml"), strSettingsFilePath =>
+                        {
+                            string strSettingName = Path.GetFileName(strSettingsFilePath);
+                            CharacterSettings objNewCharacterSettings = new CharacterSettings();
+                            if (!objNewCharacterSettings.Load(strSettingName, false)
+                                || (objNewCharacterSettings.BuildMethodIsLifeModule
+                                    && !GlobalSettings.LifeModuleEnabled)
+                                || !s_DicLoadedCharacterSettings.TryAdd(objNewCharacterSettings.DictionaryKey,
+                                                                        objNewCharacterSettings))
+                                objNewCharacterSettings.Dispose();
+                        });
+                    }
+                }, token);
             }
             finally
             {

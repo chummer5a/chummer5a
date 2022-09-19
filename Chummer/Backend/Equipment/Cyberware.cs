@@ -2234,6 +2234,9 @@ namespace Chummer.Backend.Equipment
 
         public string CurrentDisplayNameShort => DisplayNameShort(GlobalSettings.Language);
 
+        public ValueTask<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default) =>
+            DisplayNameShortAsync(GlobalSettings.Language, token);
+
         public static Guid EssenceHoleGUID { get; } = new Guid("b57eadaa-7c3b-4b80-8d79-cbbd922c1196");
         public static Guid EssenceAntiHoleGUID { get; } = new Guid("961eac53-0c43-4b19-8741-2872177a3a4c");
 
@@ -2314,6 +2317,9 @@ namespace Chummer.Backend.Equipment
         }
 
         public string CurrentDisplayName => DisplayName(GlobalSettings.CultureInfo, GlobalSettings.Language);
+
+        public ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default) =>
+            DisplayNameAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
 
         /// <summary>
         /// Translated Category.
@@ -2972,6 +2978,139 @@ namespace Chummer.Backend.Equipment
 
             foreach (Cyberware objChild in Children)
                 objChild.ChangeModularEquip(blnEquip, true);
+
+            RefreshWirelessBonuses();
+
+            if (!blnSkipEncumbranceOnPropertyChanged && ParentVehicle == null)
+                _objCharacter?.OnPropertyChanged(nameof(Character.TotalCarriedWeight));
+        }
+
+        /// <summary>
+        /// Equips a piece of modular cyberware, activating the improvements of it and its children. Call after attaching onto objCharacter.Cyberware or a parent
+        /// </summary>
+        public async Task ChangeModularEquipAsync(bool blnEquip, bool blnSkipEncumbranceOnPropertyChanged = false, CancellationToken token = default)
+        {
+            if (blnEquip)
+            {
+                ImprovementManager.EnableImprovements(_objCharacter,
+                                                      await (await _objCharacter.GetImprovementsAsync(token))
+                                                          .ToListAsync(
+                                                              x => x.ImproveSource == SourceType
+                                                                   && x.SourceName == InternalId, token: token));
+
+                /*
+                // If the piece grants a bonus, pass the information to the Improvement Manager.
+                if (Bonus != null || WirelessBonus != null || PairBonus != null)
+                {
+                    if (!string.IsNullOrEmpty(_strForced) && _strForced != "Right" && _strForced != "Left")
+                        ImprovementManager.ForcedValue = _strForced;
+
+                    if (Bonus != null)
+                        ImprovementManager.CreateImprovements(_objCharacter, SourceType, InternalId, Bonus, false, Rating, CurrentDisplayNameShort);
+                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(_strExtra))
+                        _strExtra = ImprovementManager.SelectedValue;
+
+                    if (WirelessBonus != null && WirelessOn)
+                        ImprovementManager.CreateImprovements(_objCharacter, SourceType, InternalId, WirelessBonus, false, Rating, CurrentDisplayNameShort);
+                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(_strExtra))
+                        _strExtra = ImprovementManager.SelectedValue;
+                }
+                */
+
+                if (PairBonus != null)
+                {
+                    // This cyberware should not be included in the count to make things easier.
+                    List<Cyberware> lstPairableCyberwares = (await _objCharacter.GetCyberwareAsync(token)).DeepWhere(x => x.Children,
+                        x => x != this && IncludePair.Contains(x.Name) && x.Extra == Extra &&
+                             x.IsModularCurrentlyEquipped).ToList();
+                    int intCount = lstPairableCyberwares.Count;
+                    // Need to use slightly different logic if this cyberware has a location (Left or Right) and only pairs with itself because Lefts can only be paired with Rights and Rights only with Lefts
+                    if (!string.IsNullOrEmpty(Location) && IncludePair.All(x => x == Name))
+                    {
+                        intCount = 0;
+                        foreach (Cyberware objPairableCyberware in lstPairableCyberwares)
+                        {
+                            if (objPairableCyberware.Location != Location)
+                                // We have found a cyberware with which this one could be paired, so increase count by 1
+                                ++intCount;
+                            else
+                                // We have found a cyberware that would serve as a pair to another cyberware instead of this one, so decrease count by 1
+                                --intCount;
+                        }
+
+                        // If we have at least one cyberware with which we could pair, set count to 1 so that it passes the modulus to add the PairBonus. Otherwise, set to 0 so it doesn't pass.
+                        intCount = intCount > 0 ? 1 : 0;
+                    }
+
+                    if ((intCount & 1) == 1)
+                    {
+                        if (!string.IsNullOrEmpty(_strForced) && _strForced != "Left" && _strForced != "Right")
+                            ImprovementManager.ForcedValue = _strForced;
+                        else if (Bonus != null && !string.IsNullOrEmpty(_strExtra))
+                            ImprovementManager.ForcedValue = _strExtra;
+                        await ImprovementManager.CreateImprovementsAsync(_objCharacter, SourceType, InternalId + "Pair", PairBonus,
+                                                                         Rating, await GetCurrentDisplayNameShortAsync(token));
+                    }
+                }
+            }
+            else
+            {
+                ImprovementManager.DisableImprovements(_objCharacter,
+                                                       await (await _objCharacter.GetImprovementsAsync(token)).ToListAsync(
+                                                           x => x.ImproveSource == SourceType
+                                                                && x.SourceName == InternalId, token: token));
+
+                if (PairBonus != null)
+                {
+                    await ImprovementManager.RemoveImprovementsAsync(_objCharacter, SourceType, InternalId + "Pair", token);
+                    // This cyberware should not be included in the count to make things easier (we want to get the same number regardless of whether we call this before or after the actual equipping).
+                    List<Cyberware> lstPairableCyberwares = (await _objCharacter.GetCyberwareAsync(token)).DeepWhere(x => x.Children,
+                        x => x != this && IncludePair.Contains(x.Name) && x.Extra == Extra &&
+                             x.IsModularCurrentlyEquipped).ToList();
+                    int intCount = lstPairableCyberwares.Count;
+                    // Need to use slightly different logic if this cyberware has a location (Left or Right) and only pairs with itself because Lefts can only be paired with Rights and Rights only with Lefts
+                    if (!string.IsNullOrEmpty(Location) && IncludePair.All(x => x == Name))
+                    {
+                        int intMatchLocationCount = 0;
+                        int intNotMatchLocationCount = 0;
+                        foreach (Cyberware objPairableCyberware in lstPairableCyberwares)
+                        {
+                            if (objPairableCyberware.Location != Location)
+                                ++intNotMatchLocationCount;
+                            else
+                                ++intMatchLocationCount;
+                        }
+
+                        // Set the count to the total number of cyberwares in matching pairs, which would mean 2x the number of whichever location contains the fewest members (since every single one of theirs would have a pair)
+                        intCount = Math.Min(intMatchLocationCount, intNotMatchLocationCount) * 2;
+                    }
+
+                    foreach (Cyberware objLoopCyberware in lstPairableCyberwares)
+                    {
+                        await ImprovementManager.RemoveImprovementsAsync(_objCharacter, objLoopCyberware.SourceType,
+                                                                         objLoopCyberware.InternalId + "Pair", token);
+                        // Go down the list and create pair bonuses for every second item
+                        if (intCount > 0 && (intCount & 1) == 0)
+                        {
+                            if (!string.IsNullOrEmpty(_strForced) && _strForced != "Left" && _strForced != "Right")
+                                ImprovementManager.ForcedValue = _strForced;
+                            else if (Bonus != null && !string.IsNullOrEmpty(_strExtra))
+                                ImprovementManager.ForcedValue = _strExtra;
+                            await ImprovementManager.CreateImprovementsAsync(_objCharacter, objLoopCyberware.SourceType,
+                                                                             objLoopCyberware.InternalId + "Pair", objLoopCyberware.PairBonus, objLoopCyberware.Rating,
+                                                                             await objLoopCyberware.GetCurrentDisplayNameShortAsync(token));
+                        }
+
+                        --intCount;
+                    }
+                }
+            }
+
+            foreach (Gear objChildGear in GearChildren)
+                objChildGear.ChangeEquippedStatus(blnEquip, true);
+
+            foreach (Cyberware objChild in Children)
+                await objChild.ChangeModularEquipAsync(blnEquip, true, token);
 
             RefreshWirelessBonuses();
 

@@ -4753,7 +4753,7 @@ namespace Chummer
                                             GlobalSettings.DefaultCharacterSettingDefaultValue, out objSettings);
                                     else
                                         (blnSuccess, objSettings)
-                                            = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(
+                                            = await (await SettingsManager.GetLoadedCharacterSettingsAsync(token)).TryGetValueAsync(
                                                 GlobalSettings.DefaultCharacterSettingDefaultValue, token).ConfigureAwait(false);
                                     eSavedBuildMethod = blnSuccess
                                         ? objSettings.BuildMethod
@@ -4766,7 +4766,7 @@ namespace Chummer
                                         GlobalSettings.DefaultCharacterSetting, out objDefaultSettings);
                                 else
                                     (blnSuccess, objDefaultSettings)
-                                        = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(
+                                        = await (await SettingsManager.GetLoadedCharacterSettingsAsync(token)).TryGetValueAsync(
                                             GlobalSettings.DefaultCharacterSetting, token).ConfigureAwait(false);
                                 if (!blnSuccess)
                                 {
@@ -4775,11 +4775,13 @@ namespace Chummer
                                             GlobalSettings.DefaultCharacterSettingDefaultValue, out objDefaultSettings);
                                     else
                                         (blnSuccess, objDefaultSettings)
-                                            = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(
+                                            = await (await SettingsManager.GetLoadedCharacterSettingsAsync(token)).TryGetValueAsync(
                                                 GlobalSettings.DefaultCharacterSettingDefaultValue, token).ConfigureAwait(false);
                                     if (!blnSuccess)
                                     {
-                                        objDefaultSettings = SettingsManager.LoadedCharacterSettings.Values.First();
+                                        objDefaultSettings = blnSync
+                                            ? SettingsManager.LoadedCharacterSettings.Values.First()
+                                            : (await SettingsManager.GetLoadedCharacterSettingsAsync(token)).Values.First();
                                     }
                                 }
 
@@ -4922,7 +4924,7 @@ namespace Chummer
                                             _strSettingsKey, out objProspectiveSettings);
                                     else
                                         (blnSuccess, objProspectiveSettings)
-                                            = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(
+                                            = await (await SettingsManager.GetLoadedCharacterSettingsAsync(token)).TryGetValueAsync(
                                                 _strSettingsKey, token).ConfigureAwait(false);
 
                                     if (!blnSuccess)
@@ -4976,7 +4978,7 @@ namespace Chummer
                                                 strReplacementSettingsKey, out objProspectiveSettings);
                                         else
                                             (blnSuccess, objProspectiveSettings)
-                                                = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(
+                                                = await (await SettingsManager.GetLoadedCharacterSettingsAsync(token)).TryGetValueAsync(
                                                     strReplacementSettingsKey, token).ConfigureAwait(false);
 
                                         if (!blnSuccess)
@@ -4988,7 +4990,7 @@ namespace Chummer
                                                     strReplacementSettingsKey, out objProspectiveSettings);
                                             else
                                                 (blnSuccess, objProspectiveSettings)
-                                                    = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(
+                                                    = await (await SettingsManager.GetLoadedCharacterSettingsAsync(token)).TryGetValueAsync(
                                                         strReplacementSettingsKey, token).ConfigureAwait(false);
                                             if (!blnSuccess)
                                             {
@@ -5066,7 +5068,7 @@ namespace Chummer
                                                 strReplacementSettingsKey, out objProspectiveSettings);
                                         else
                                             (blnSuccess, objProspectiveSettings)
-                                                = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(
+                                                = await (await SettingsManager.GetLoadedCharacterSettingsAsync(token)).TryGetValueAsync(
                                                     strReplacementSettingsKey, token).ConfigureAwait(false);
 
                                         if (!blnSuccess)
@@ -5078,7 +5080,7 @@ namespace Chummer
                                                     strReplacementSettingsKey, out objProspectiveSettings);
                                             else
                                                 (blnSuccess, objProspectiveSettings)
-                                                    = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(
+                                                    = await (await SettingsManager.GetLoadedCharacterSettingsAsync(token)).TryGetValueAsync(
                                                         strReplacementSettingsKey, token).ConfigureAwait(false);
                                             if (!blnSuccess)
                                             {
@@ -6543,7 +6545,13 @@ namespace Chummer
                                             }
 
                                             if (!objCyberware.IsModularCurrentlyEquipped)
-                                                objCyberware.ChangeModularEquip(false);
+                                            {
+                                                if (blnSync)
+                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                    objCyberware.ChangeModularEquip(false);
+                                                else
+                                                    await objCyberware.ChangeModularEquipAsync(false, token: token);
+                                            }
                                             else if (objCyberware.PairBonus != null)
                                             {
                                                 Cyberware objMatchingCyberware =
@@ -6650,7 +6658,13 @@ namespace Chummer
                                                 }
 
                                                 if (!objCyberware.IsModularCurrentlyEquipped)
-                                                    objCyberware.ChangeModularEquip(false);
+                                                {
+                                                    if (blnSync)
+                                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                        objCyberware.ChangeModularEquip(false);
+                                                    else
+                                                        await objCyberware.ChangeModularEquipAsync(false, token: token);
+                                                }
                                                 else if (objCyberware.PairBonus != null)
                                                 {
                                                     Cyberware objMatchingCyberware =
@@ -9454,7 +9468,7 @@ namespace Chummer
                     await _setDoOnSaveCompletedAsync.DisposeAsync();
                     if (_stkPushText.IsValueCreated)
                         await _stkPushText.Value.DisposeAsync();
-                    if (!SettingsManager.LoadedCharacterSettings.ContainsKey(_objSettings.DictionaryKey))
+                    if (!await (await SettingsManager.GetLoadedCharacterSettingsAsync()).ContainsKeyAsync(_objSettings.DictionaryKey))
                         await _objSettings.DisposeAsync();
                     await _objCachedEssenceLock.DisposeAsync();
                 }
@@ -10581,7 +10595,7 @@ namespace Chummer
                         {
                             if (objPower.InternalId == strImprovedSourceName)
                             {
-                                return await objPower.DisplayNameShortAsync(strLanguage);
+                                return await objPower.DisplayNameShortAsync(strLanguage, token);
                             }
                         }
 
@@ -11141,6 +11155,95 @@ namespace Chummer
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Construct a list of possible places to put a piece of modular cyberware. Names are display names of the given items, values are internalIDs of the given items.
+        /// </summary>
+        /// <param name="objModularCyberware">Cyberware for which to construct the list.</param>
+        /// <param name="token">CancellationToken to listen to.</param>
+        public async Task<List<ListItem>> ConstructModularCyberlimbListAsync([NotNull] Cyberware objModularCyberware, CancellationToken token = default)
+        {
+            List<ListItem> lstReturn = new List<ListItem>
+                {new ListItem("None", await LanguageManager.GetStringAsync("String_None", token: token))};
+
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token);
+
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+            {
+                foreach (Cyberware objLoopCyberware in (await GetCyberwareAsync(token)).GetAllDescendants(x => x.Children))
+                {
+                    // Make sure this has an eligible mount location and it's not the selected piece modular cyberware
+                    if (objLoopCyberware.HasModularMount == objModularCyberware.PlugsIntoModularMount
+                        && (objLoopCyberware.Location == objModularCyberware.Location
+                            || string.IsNullOrEmpty(objModularCyberware.Location))
+                        && objLoopCyberware.Grade.Name == objModularCyberware.Grade.Name
+                        && objLoopCyberware != objModularCyberware
+                        // Make sure it's not the place where the mount is already occupied (either by us or something else)
+                        && objLoopCyberware.Children.All(
+                            x => x.PlugsIntoModularMount != objLoopCyberware.HasModularMount))
+                    {
+                        string strName = objLoopCyberware.Parent != null
+                            ? await objLoopCyberware.Parent.GetCurrentDisplayNameAsync(token)
+                            : await objLoopCyberware.GetCurrentDisplayNameAsync(token);
+                        lstReturn.Add(new ListItem(objLoopCyberware.InternalId, strName));
+                    }
+                }
+
+                foreach (Vehicle objLoopVehicle in await GetVehiclesAsync(token))
+                {
+                    foreach (VehicleMod objLoopVehicleMod in objLoopVehicle.Mods)
+                    {
+                        foreach (Cyberware objLoopCyberware in objLoopVehicleMod.Cyberware.GetAllDescendants(
+                                     x => x.Children))
+                        {
+                            // Make sure this has an eligible mount location and it's not the selected piece modular cyberware
+                            if (objLoopCyberware.HasModularMount == objModularCyberware.PlugsIntoModularMount
+                                && objLoopCyberware.Location == objModularCyberware.Location
+                                && objLoopCyberware.Grade.Name == objModularCyberware.Grade.Name
+                                && objLoopCyberware != objModularCyberware
+                                // Make sure it's not the place where the mount is already occupied (either by us or something else)
+                                && objLoopCyberware.Children.All(
+                                    x => x.PlugsIntoModularMount != objLoopCyberware.HasModularMount))
+                            {
+                                string strName = await objLoopVehicle.GetCurrentDisplayNameAsync(token)
+                                                 + strSpace + (objLoopCyberware.Parent != null
+                                                     ? await objLoopCyberware.Parent.GetCurrentDisplayNameAsync(token)
+                                                     : await objLoopVehicleMod.GetCurrentDisplayNameAsync(token));
+                                lstReturn.Add(new ListItem(objLoopCyberware.InternalId, strName));
+                            }
+                        }
+                    }
+
+                    foreach (WeaponMount objLoopWeaponMount in objLoopVehicle.WeaponMounts)
+                    {
+                        foreach (VehicleMod objLoopVehicleMod in objLoopWeaponMount.Mods)
+                        {
+                            foreach (Cyberware objLoopCyberware in objLoopVehicleMod.Cyberware.GetAllDescendants(
+                                         x => x.Children))
+                            {
+                                // Make sure this has an eligible mount location and it's not the selected piece modular cyberware
+                                if (objLoopCyberware.HasModularMount == objModularCyberware.PlugsIntoModularMount
+                                    && objLoopCyberware.Location == objModularCyberware.Location
+                                    && objLoopCyberware.Grade.Name == objModularCyberware.Grade.Name
+                                    && objLoopCyberware != objModularCyberware
+                                    // Make sure it's not the place where the mount is already occupied (either by us or something else)
+                                    && objLoopCyberware.Children.All(
+                                        x => x.PlugsIntoModularMount != objLoopCyberware.HasModularMount))
+                                {
+                                    string strName = await objLoopVehicle.GetCurrentDisplayNameAsync(token)
+                                                     + strSpace + (objLoopCyberware.Parent != null
+                                                         ? await objLoopCyberware.Parent.GetCurrentDisplayNameAsync(token)
+                                                         : await objLoopVehicleMod.GetCurrentDisplayNameAsync(token));
+                                    lstReturn.Add(new ListItem(objLoopCyberware.InternalId, strName));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            return lstReturn;
         }
 
         public async Task<bool> SwitchBuildMethods(CharacterBuildMethod eOldBuildMethod, CharacterBuildMethod eNewBuildMethod, string strOldSettingsKey, CancellationToken token = default)
@@ -29312,7 +29415,9 @@ namespace Chummer
                                 // Get the name of the settings file in use if possible.
                                 if (!string.IsNullOrEmpty(strSettingsKey))
                                 {
-                                    if (!SettingsManager.LoadedCharacterSettings.ContainsKey(strSettingsKey))
+                                    if (blnSync
+                                            ? !SettingsManager.LoadedCharacterSettings.ContainsKey(strSettingsKey)
+                                            : !await (await SettingsManager.GetLoadedCharacterSettingsAsync()).ContainsKeyAsync(strSettingsKey))
                                         return false;
 
                                     SettingsKey = strSettingsKey;

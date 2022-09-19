@@ -3478,6 +3478,37 @@ namespace Chummer
         }
 
         /// <summary>
+        /// The XPath expression to use to determine how much nuyen the character gets at character creation
+        /// </summary>
+        public async ValueTask SetChargenKarmaToNuyenExpressionAsync(string value, CancellationToken token = default)
+        {
+            string strNewValue = value.CleanXPath().Trim('\"');
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+            {
+                if (_strChargenKarmaToNuyenExpression == strNewValue)
+                    return;
+                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
+                try
+                {
+                    _strChargenKarmaToNuyenExpression = strNewValue;
+                    // A safety check to make sure that we always still account for Priority-given Nuyen
+                    if (await (await SettingsManager.GetLoadedCharacterSettingsAsync(token)).ContainsKeyAsync(DictionaryKey, token)
+                        && !_strChargenKarmaToNuyenExpression.Contains("{PriorityNuyen}"))
+                    {
+                        _strChargenKarmaToNuyenExpression
+                            = '(' + _strChargenKarmaToNuyenExpression + ") + {PriorityNuyen}";
+                    }
+
+                    OnPropertyChanged(nameof(ChargenKarmaToNuyenExpression));
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync();
+                }
+            }
+        }
+
+        /// <summary>
         /// The XPath expression to use to determine how many spirits a character can bind
         /// </summary>
         public string BoundSpiritExpression

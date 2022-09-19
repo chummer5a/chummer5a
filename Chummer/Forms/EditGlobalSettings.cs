@@ -1306,8 +1306,7 @@ namespace Chummer
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                            out List<ListItem> lstCharacterSettings))
             {
-                foreach (KeyValuePair<string, CharacterSettings> kvpLoopCharacterOptions in SettingsManager
-                             .LoadedCharacterSettings)
+                foreach (KeyValuePair<string, CharacterSettings> kvpLoopCharacterOptions in await SettingsManager.GetLoadedCharacterSettingsAsync(token))
                 {
                     string strId = kvpLoopCharacterOptions.Key;
                     if (!string.IsNullOrEmpty(strId))

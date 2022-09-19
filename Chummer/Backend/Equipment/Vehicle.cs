@@ -1047,7 +1047,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("sourceid", SourceIDString);
             objWriter.WriteElementString("name", await DisplayNameShortAsync(strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);
-            objWriter.WriteElementString("fullname", DisplayName(strLanguageToPrint));
+            objWriter.WriteElementString("fullname", await DisplayNameAsync(strLanguageToPrint));
             objWriter.WriteElementString("category", DisplayCategory(strLanguageToPrint));
             objWriter.WriteElementString("category_english", Category);
             objWriter.WriteElementString("isdrone", IsDrone.ToString(GlobalSettings.InvariantCultureInfo));
@@ -1704,6 +1704,11 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Display name.
         /// </summary>
+        public ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default) => DisplayNameAsync(GlobalSettings.Language, token);
+
+        /// <summary>
+        /// Display name.
+        /// </summary>
         public string DisplayName(string strLanguage)
         {
             string strReturn = DisplayNameShort(strLanguage);
@@ -1711,6 +1716,21 @@ namespace Chummer.Backend.Equipment
             if (!string.IsNullOrEmpty(CustomName))
             {
                 strReturn += LanguageManager.GetString("String_Space") + "(\"" + CustomName + "\")";
+            }
+
+            return strReturn;
+        }
+
+        /// <summary>
+        /// Display name.
+        /// </summary>
+        public async ValueTask<string> DisplayNameAsync(string strLanguage, CancellationToken token = default)
+        {
+            string strReturn = await DisplayNameShortAsync(strLanguage, token);
+
+            if (!string.IsNullOrEmpty(CustomName))
+            {
+                strReturn += await LanguageManager.GetStringAsync("String_Space", token: token) + "(\"" + CustomName + "\")";
             }
 
             return strReturn;

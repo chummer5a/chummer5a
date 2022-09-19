@@ -59,7 +59,7 @@ namespace Chummer
                     MessageBoxIcon.Warning) != DialogResult.Yes)
                     return;
                 string strOldCharacterSettingsKey = _objCharacter.SettingsKey;
-                _objCharacter.SettingsKey = (await SettingsManager.LoadedCharacterSettings
+                _objCharacter.SettingsKey = (await (await SettingsManager.GetLoadedCharacterSettingsAsync())
                     .FirstOrDefaultAsync(x => ReferenceEquals(x.Value, objSelectedGameplayOption))).Key;
                 // If the character is loading, make sure we only switch build methods after we've loaded, otherwise we might cause all sorts of nastiness
                 if (_objCharacter.IsLoading)
@@ -69,12 +69,12 @@ namespace Chummer
             }
             else
             {
-                _objCharacter.SettingsKey = (await SettingsManager.LoadedCharacterSettings
+                _objCharacter.SettingsKey = (await (await SettingsManager.GetLoadedCharacterSettingsAsync())
                                                                   .FirstOrDefaultAsync(
                                                                       x => ReferenceEquals(
                                                                           x.Value, objSelectedGameplayOption))).Key;
             }
-            _objCharacter.IgnoreRules = chkIgnoreRules.Checked;
+            _objCharacter.IgnoreRules = await chkIgnoreRules.DoThreadSafeFuncAsync(x => x.Checked);
             await this.DoThreadSafeAsync(x =>
             {
                 x.DialogResult = DialogResult.OK;
@@ -106,7 +106,8 @@ namespace Chummer
                     using (new FetchSafelyFromPool<List<ListItem>>(
                                Utils.ListItemListPool, out List<ListItem> lstGameplayOptions))
                     {
-                        lstGameplayOptions.AddRange(SettingsManager.LoadedCharacterSettings.Values
+                        IAsyncReadOnlyDictionary<string, CharacterSettings> dicCharacterSettings = await SettingsManager.GetLoadedCharacterSettingsAsync();
+                        lstGameplayOptions.AddRange(dicCharacterSettings.Values
                                                                    .Select(objLoopOptions =>
                                                                                new ListItem(
                                                                                    objLoopOptions,
@@ -118,7 +119,7 @@ namespace Chummer
                             && lstGameplayOptions.Count > 0)
                         {
                             (bool blnSuccess, CharacterSettings objSetting)
-                                = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(
+                                = await dicCharacterSettings.TryGetValueAsync(
                                     GlobalSettings.DefaultCharacterSetting);
                             await cboCharacterSetting.DoThreadSafeAsync(x =>
                             {
@@ -155,7 +156,8 @@ namespace Chummer
                     using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                                    out List<ListItem> lstCharacterSettings))
                     {
-                        foreach (CharacterSettings objLoopSetting in SettingsManager.LoadedCharacterSettings.Values)
+                        IAsyncReadOnlyDictionary<string, CharacterSettings> dicCharacterSettings = await SettingsManager.GetLoadedCharacterSettingsAsync();
+                        foreach (CharacterSettings objLoopSetting in dicCharacterSettings.Values)
                         {
                             lstCharacterSettings.Add(new ListItem(objLoopSetting, objLoopSetting.DisplayName));
                         }
@@ -165,7 +167,7 @@ namespace Chummer
                         if (_blnForExistingCharacter)
                         {
                             (bool blnSuccess, CharacterSettings objSetting)
-                                = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(
+                                = await dicCharacterSettings.TryGetValueAsync(
                                     _objCharacter.SettingsKey);
                             if (blnSuccess)
                                 await cboCharacterSetting.DoThreadSafeAsync(x => x.SelectedValue = objSetting);
@@ -173,7 +175,7 @@ namespace Chummer
                             {
                                 CharacterSettings objSetting2;
                                 (blnSuccess, objSetting2)
-                                    = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(
+                                    = await dicCharacterSettings.TryGetValueAsync(
                                         GlobalSettings.DefaultCharacterSetting);
                                 if (blnSuccess)
                                     await cboCharacterSetting.DoThreadSafeAsync(x => x.SelectedValue = objSetting2);
@@ -184,7 +186,7 @@ namespace Chummer
                         else
                         {
                             (bool blnSuccess, CharacterSettings objSetting)
-                                = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(
+                                = await dicCharacterSettings.TryGetValueAsync(
                                     GlobalSettings.DefaultCharacterSetting);
                             if (blnSuccess)
                                 await cboCharacterSetting.DoThreadSafeAsync(x => x.SelectedValue = objSetting);

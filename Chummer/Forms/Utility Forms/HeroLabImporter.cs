@@ -597,9 +597,9 @@ namespace Chummer
                 try
                 {
                     await Program.OpenCharacters.AddAsync(objCharacter, token: token);
-
+                    IAsyncReadOnlyDictionary<string, CharacterSettings> dicCharacterSettings = await SettingsManager.GetLoadedCharacterSettingsAsync(token);
                     CharacterSettings objHeroLabSettings =
-                        SettingsManager.LoadedCharacterSettings.Values.FirstOrDefault(
+                        dicCharacterSettings.Values.FirstOrDefault(
                             x => x.Name == objCache.SettingsName && x.BuildMethod == objCache.BuildMethod);
                     if (objHeroLabSettings != null)
                     {
@@ -607,7 +607,7 @@ namespace Chummer
                     }
                     else
                     {
-                        objHeroLabSettings = SettingsManager.LoadedCharacterSettings.Values.FirstOrDefault(
+                        objHeroLabSettings = dicCharacterSettings.Values.FirstOrDefault(
                             x => x.Name.Contains(objCache.SettingsName) && x.BuildMethod == objCache.BuildMethod);
                         if (objHeroLabSettings != null)
                         {
@@ -616,7 +616,7 @@ namespace Chummer
                         else
                         {
                             (bool blnSuccess, CharacterSettings objDefaultCharacterSettings)
-                                = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(
+                                = await dicCharacterSettings.TryGetValueAsync(
                                     GlobalSettings.DefaultCharacterSetting, token);
                             bool blnCacheUsesPriorityTables = objCache.BuildMethod.UsesPriorityTables();
                             if (blnSuccess && blnCacheUsesPriorityTables
@@ -626,13 +626,13 @@ namespace Chummer
                             }
                             else
                             {
-                                objCharacter.SettingsKey = SettingsManager.LoadedCharacterSettings.Values
+                                objCharacter.SettingsKey = dicCharacterSettings.Values
                                                                           .FirstOrDefault(
                                                                               x => x.BuiltInOption
                                                                                   && x.BuildMethod
                                                                                   == objCache.BuildMethod)
                                                                           ?.DictionaryKey
-                                                           ?? SettingsManager.LoadedCharacterSettings.Values
+                                                           ?? dicCharacterSettings.Values
                                                                              .FirstOrDefault(
                                                                                  x => x.BuiltInOption
                                                                                      && x.BuildMethod

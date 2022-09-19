@@ -198,8 +198,9 @@ namespace Chummer
             CursorWait objCursorWait = await CursorWait.NewAsync(this);
             try
             {
+                LockingDictionary<string, CharacterSettings> dicCharacterSettings = await SettingsManager.GetLoadedCharacterSettingsAsModifiableAsync();
                 (bool blnSuccess, CharacterSettings objDeletedSettings)
-                    = await SettingsManager.LoadedCharacterSettingsAsModifiable.TryRemoveAsync(
+                    = await dicCharacterSettings.TryRemoveAsync(
                         _objReferenceCharacterSettings.DictionaryKey);
                 if (!blnSuccess)
                     return;
@@ -207,7 +208,7 @@ namespace Chummer
                         Path.Combine(Utils.GetStartupPath, "settings", _objReferenceCharacterSettings.FileName), true))
                 {
                     // Revert removal of setting if we cannot delete the file
-                    await SettingsManager.LoadedCharacterSettingsAsModifiable.AddAsync(
+                    await dicCharacterSettings.AddAsync(
                         objDeletedSettings.DictionaryKey, objDeletedSettings);
                     return;
                 }
@@ -215,7 +216,7 @@ namespace Chummer
                 // Force repopulate character settings list in Master Index from here in lieu of event handling for concurrent dictionaries
                 _blnForceMasterIndexRepopulateOnClose = true;
                 KeyValuePair<string, CharacterSettings> kvpReplacementOption
-                    = await SettingsManager.LoadedCharacterSettings.FirstOrDefaultAsync(
+                    = await dicCharacterSettings.FirstOrDefaultAsync(
                         x => x.Value.BuiltInOption
                              && x.Value.BuildMethod == _objReferenceCharacterSettings.BuildMethod);
                 await Program.OpenCharacters.ForEachAsync(objCharacter =>
@@ -234,7 +235,7 @@ namespace Chummer
                 {
                     _objReferenceCharacterSettings = kvpReplacementOption.Value;
                     await _objCharacterSettings.CopyValuesAsync(_objReferenceCharacterSettings);
-                    RebuildCustomDataDirectoryInfos();
+                    await RebuildCustomDataDirectoryInfosAsync();
                     IsDirty = false;
                     await PopulateSettingsList();
                 }
@@ -259,6 +260,7 @@ namespace Chummer
             string strSelectedFullFileName;
             string strSelectSettingName
                 = await LanguageManager.GetStringAsync("Message_CharacterOptions_SelectSettingName");
+            LockingDictionary<string, CharacterSettings> dicCharacterSettings = await SettingsManager.GetLoadedCharacterSettingsAsModifiableAsync();
             do
             {
                 do
@@ -276,7 +278,7 @@ namespace Chummer
                         strSelectedName = frmSelectName.MyForm.SelectedValue;
                     }
 
-                    if (SettingsManager.LoadedCharacterSettings.Any(x => x.Value.Name == strSelectedName))
+                    if (dicCharacterSettings.Any(x => x.Value.Name == strSelectedName))
                     {
                         DialogResult eCreateDuplicateSetting = Program.ShowMessageBox(
                             string.Format(await LanguageManager.GetStringAsync("Message_CharacterOptions_DuplicateSettingName"),
@@ -305,7 +307,7 @@ namespace Chummer
                 int intMaxNameLength = char.MaxValue - Utils.GetStartupPath.Length - "settings".Length - 6;
                 uint uintAccumulator = 1;
                 string strSeparator = "_";
-                while (SettingsManager.LoadedCharacterSettings.Any(x => x.Value.FileName == strSelectedFullFileName))
+                while (dicCharacterSettings.Any(x => x.Value.FileName == strSelectedFullFileName))
                 {
                     strSelectedFullFileName = strBaseFileName + strSeparator + uintAccumulator.ToString(GlobalSettings.InvariantCultureInfo) + ".xml";
                     if (strSelectedFullFileName.Length > intMaxNameLength)
@@ -340,7 +342,7 @@ namespace Chummer
                 {
                     CharacterSettings objNewCharacterSettings
                         = new CharacterSettings(_objCharacterSettings, false, strSelectedFullFileName);
-                    if (!await SettingsManager.LoadedCharacterSettingsAsModifiable.TryAddAsync(
+                    if (!await dicCharacterSettings.TryAddAsync(
                             objNewCharacterSettings.DictionaryKey, objNewCharacterSettings))
                     {
                         await objNewCharacterSettings.DisposeAsync();
@@ -350,7 +352,7 @@ namespace Chummer
                     if (!_objCharacterSettings.Save(strSelectedFullFileName, true))
                     {
                         // Revert addition of settings if we cannot create a file
-                        await SettingsManager.LoadedCharacterSettingsAsModifiable.RemoveAsync(
+                        await dicCharacterSettings.RemoveAsync(
                             objNewCharacterSettings.DictionaryKey);
                         await objNewCharacterSettings.DisposeAsync();
                         return;
@@ -446,7 +448,7 @@ namespace Chummer
             if (string.IsNullOrEmpty(strSelectedFile))
                 return;
             (bool blnSuccess, CharacterSettings objNewOption)
-                = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(strSelectedFile);
+                = await (await SettingsManager.GetLoadedCharacterSettingsAsync()).TryGetValueAsync(strSelectedFile);
             if (!blnSuccess)
                 return;
 
@@ -493,7 +495,7 @@ namespace Chummer
 
                     _objReferenceCharacterSettings = objNewOption;
                     await _objCharacterSettings.CopyValuesAsync(objNewOption);
-                    RebuildCustomDataDirectoryInfos();
+                    await RebuildCustomDataDirectoryInfosAsync();
                     await PopulateOptions();
                     _blnLoading = false;
                     IsDirty = false;
@@ -549,7 +551,7 @@ namespace Chummer
                     }
 
                     await _objCharacterSettings.CopyValuesAsync(_objReferenceCharacterSettings);
-                    RebuildCustomDataDirectoryInfos();
+                    await RebuildCustomDataDirectoryInfosAsync();
                     await PopulateOptions();
                     _blnLoading = false;
                     IsDirty = false;
@@ -817,12 +819,16 @@ namespace Chummer
 
         private async void txtNuyenExpression_TextChanged(object sender, EventArgs e)
         {
+            if (_blnLoading)
+                return;
+            string strText = await txtNuyenExpression.DoThreadSafeFuncAsync(x => x.Text);
             Color objColor
-                = await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
-                    await txtNuyenExpression.DoThreadSafeFuncAsync(x => x.Text))
+                = await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(strText.Replace("{Karma}", "1")
+                    .Replace("{PriorityNuyen}", "1"))
                     ? await ColorManager.WindowTextAsync
                     : ColorManager.ErrorColor;
             await txtNuyenExpression.DoThreadSafeAsync(x => x.ForeColor = objColor);
+            await _objCharacterSettings.SetChargenKarmaToNuyenExpressionAsync(strText); // Not data-bound so that the setter can be asynchronous
         }
 
         private async void txtBoundSpiritLimit_TextChanged(object sender, EventArgs e)
@@ -1403,9 +1409,31 @@ namespace Chummer
                 }
                 else
                 {
-                    _dicCharacterCustomDataDirectoryInfos.Add(kvpCustomDataDirectory.Key, kvpCustomDataDirectory.Value);
+                    _dicCharacterCustomDataDirectoryInfos.Add(kvpCustomDataDirectory.Key,
+                                                              kvpCustomDataDirectory.Value);
                 }
             }
+        }
+
+        private async ValueTask RebuildCustomDataDirectoryInfosAsync(CancellationToken token = default)
+        {
+            _dicCharacterCustomDataDirectoryInfos.Clear();
+            await _objCharacterSettings.CustomDataDirectoryKeys.ForEachAsync(
+                kvpCustomDataDirectory =>
+                {
+                    CustomDataDirectoryInfo objLoopInfo
+                        = GlobalSettings.CustomDataDirectoryInfos.FirstOrDefault(
+                            x => x.CharacterSettingsSaveKey == kvpCustomDataDirectory.Key);
+                    if (objLoopInfo != default)
+                    {
+                        _dicCharacterCustomDataDirectoryInfos.Add(objLoopInfo, kvpCustomDataDirectory.Value);
+                    }
+                    else
+                    {
+                        _dicCharacterCustomDataDirectoryInfos.Add(kvpCustomDataDirectory.Key,
+                                                                  kvpCustomDataDirectory.Value);
+                    }
+                }, token: token);
         }
 
         private async ValueTask SetToolTips()
@@ -1446,7 +1474,6 @@ namespace Chummer
             nudMaxKnowledgeSkillRatingCreate.DoDataBinding("Maximum", _objCharacterSettings, nameof(CharacterSettings.MaxKnowledgeSkillRating));
             txtContactPoints.DoDataBinding("Text", _objCharacterSettings, nameof(CharacterSettings.ContactPointsExpression));
             txtKnowledgePoints.DoDataBinding("Text", _objCharacterSettings, nameof(CharacterSettings.KnowledgePointsExpression));
-            txtNuyenExpression.DoDataBinding("Text", _objCharacterSettings, nameof(CharacterSettings.ChargenKarmaToNuyenExpression));
             txtRegisteredSpriteLimit.DoDataBinding("Text", _objCharacterSettings, nameof(CharacterSettings.RegisteredSpriteExpression));
             txtBoundSpiritLimit.DoDataBinding("Text", _objCharacterSettings, nameof(CharacterSettings.BoundSpiritExpression));
             txtLiftLimit.DoDataBinding("Text", _objCharacterSettings, nameof(CharacterSettings.LiftLimitExpression));
@@ -1608,8 +1635,7 @@ namespace Chummer
                 if (!_blnLoading)
                     strSelect = await cboSetting.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token);
                 _lstSettings.Clear();
-                foreach (KeyValuePair<string, CharacterSettings> kvpCharacterSettingsEntry in SettingsManager
-                             .LoadedCharacterSettings)
+                foreach (KeyValuePair<string, CharacterSettings> kvpCharacterSettingsEntry in await SettingsManager.GetLoadedCharacterSettingsAsync(token))
                 {
                     _lstSettings.Add(new ListItem(kvpCharacterSettingsEntry.Key,
                                                   kvpCharacterSettingsEntry.Value.DisplayName));
@@ -1677,6 +1703,12 @@ namespace Chummer
                                                          && !_objCharacterSettings.BuiltInOption);
                             break;
                         }
+                        case nameof(CharacterSettings.ChargenKarmaToNuyenExpression): // Not data-bound so that the setter can be asynchronous
+                        {
+                            await txtNuyenExpression.DoThreadSafeAsync(
+                                x => x.Text = _objCharacterSettings.ChargenKarmaToNuyenExpression);
+                            break;
+                        }
                     }
                 }
             }
@@ -1710,28 +1742,28 @@ namespace Chummer
                        _objCharacterSettings.EncumbranceIntervalExpression);
         }
 
-        private async ValueTask<bool> IsAllTextBoxesLegalAsync()
+        private async ValueTask<bool> IsAllTextBoxesLegalAsync(CancellationToken token = default)
         {
             if (_objCharacterSettings.BuildMethod == CharacterBuildMethod.Priority && _objCharacterSettings.PriorityArray.Length != 5)
                 return false;
 
             return await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
-                       _objCharacterSettings.ContactPointsExpression) &&
+                       _objCharacterSettings.ContactPointsExpression, token: token) &&
                    await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
-                       _objCharacterSettings.KnowledgePointsExpression) &&
+                       _objCharacterSettings.KnowledgePointsExpression, token: token) &&
                    await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
-                       _objCharacterSettings.ChargenKarmaToNuyenExpression.Replace("{Karma}", "1")
-                                            .Replace("{PriorityNuyen}", "1")) &&
+                       (await _objCharacterSettings.GetChargenKarmaToNuyenExpressionAsync(token)).Replace("{Karma}", "1")
+                                            .Replace("{PriorityNuyen}", "1"), token: token) &&
                    await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
-                       _objCharacterSettings.RegisteredSpriteExpression) &&
+                       _objCharacterSettings.RegisteredSpriteExpression, token: token) &&
                    await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
-                       _objCharacterSettings.BoundSpiritExpression) &&
+                       _objCharacterSettings.BoundSpiritExpression, token: token) &&
                    await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
-                       _objCharacterSettings.LiftLimitExpression) &&
+                       _objCharacterSettings.LiftLimitExpression, token: token) &&
                    await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
-                       _objCharacterSettings.CarryLimitExpression) &&
+                       _objCharacterSettings.CarryLimitExpression, token: token) &&
                    await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
-                       _objCharacterSettings.EncumbranceIntervalExpression);
+                       _objCharacterSettings.EncumbranceIntervalExpression, token: token);
         }
 
         private bool IsDirty

@@ -397,8 +397,9 @@ namespace Chummer
         /// </summary>
         /// <param name="strXPathExpression" >XPath Expression to evaluate</param>
         /// <param name="blnIsNullSuccess"   >Should a null or empty result be treated as success?</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async ValueTask<bool> IsCharacterAttributeXPathValidOrNullAsync(string strXPathExpression, bool blnIsNullSuccess = true)
+        public static async ValueTask<bool> IsCharacterAttributeXPathValidOrNullAsync(string strXPathExpression, bool blnIsNullSuccess = true, CancellationToken token = default)
         {
             if (string.IsNullOrEmpty(strXPathExpression))
                 return blnIsNullSuccess;
@@ -413,7 +414,7 @@ namespace Chummer
 
             if (string.IsNullOrEmpty(strXPathExpression))
                 return true;
-            (bool blnSuccess, object _) = await EvaluateInvariantXPathAsync(strXPathExpression);
+            (bool blnSuccess, object _) = await EvaluateInvariantXPathAsync(strXPathExpression, token);
             return blnSuccess;
         }
 

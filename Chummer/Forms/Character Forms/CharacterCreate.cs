@@ -1825,7 +1825,7 @@ namespace Chummer
                                     if (objCyberware.Parent != null)
                                         await objCyberware.Parent.Children.RemoveAsync(objCyberware, GenericToken);
                                     await CharacterObject.Cyberware.AddAsync(objCyberware, GenericToken);
-                                    objCyberware.ChangeModularEquip(false);
+                                    await objCyberware.ChangeModularEquipAsync(false, token: GenericToken);
                                 }
                                 else
                                 {
@@ -1862,7 +1862,7 @@ namespace Chummer
                             {
                                 if (!string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount))
                                 {
-                                    objCyberware.ChangeModularEquip(false);
+                                    await objCyberware.ChangeModularEquipAsync(false, token: GenericToken);
                                     if (objCyberware.Parent != null)
                                         await objCyberware.Parent.Children.RemoveAsync(objCyberware);
                                     await CharacterObject.Cyberware.AddAsync(objCyberware);
@@ -1876,7 +1876,7 @@ namespace Chummer
 
                             if (blnDoRefresh)
                             {
-                                await RequestCharacterUpdate();
+                                await RequestCharacterUpdate(GenericToken);
                             }
                         }
                     }
@@ -1905,7 +1905,7 @@ namespace Chummer
                                     if (objCyberware.Parent != null)
                                         await objCyberware.Parent.Children.RemoveAsync(objCyberware);
                                     await CharacterObject.Cyberware.AddAsync(objCyberware);
-                                    objCyberware.ChangeModularEquip(false);
+                                    await objCyberware.ChangeModularEquipAsync(false, token: GenericToken);
                                 }
                                 else
                                 {
@@ -1916,7 +1916,7 @@ namespace Chummer
 
                             if (blnDoRefresh)
                             {
-                                await RequestCharacterUpdate();
+                                await RequestCharacterUpdate(GenericToken);
                             }
                         }
                     }
@@ -2961,7 +2961,7 @@ namespace Chummer
                                     }
 
                                     if (!objCyberware.IsModularCurrentlyEquipped)
-                                        objCyberware.ChangeModularEquip(false);
+                                        await objCyberware.ChangeModularEquipAsync(false, token: token);
                                     else
                                     {
                                         objCyberware.RefreshWirelessBonuses();
@@ -7966,7 +7966,7 @@ namespace Chummer
                             }
 
                             if (!objCyberware.IsModularCurrentlyEquipped)
-                                objCyberware.ChangeModularEquip(false);
+                                await objCyberware.ChangeModularEquipAsync(false, token: GenericToken);
                         }
 
                         await treCyberware.DoThreadSafeAsync(x => x.SelectedNode.Text = objCyberware.CurrentDisplayName, GenericToken);
@@ -17198,7 +17198,7 @@ namespace Chummer
             await lblAttributesAug.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_CommonAttributesAug", token: token), token);
             await lblAttributesMetatype.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_CommonAttributesMetatypeLimits", token: token), token);
             await lblNuyen.SetToolTipAsync(string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Tip_CommonNuyen", token: token),
-                                                         CharacterObjectSettings.ChargenKarmaToNuyenExpression
+                                                         (await CharacterObjectSettings.GetChargenKarmaToNuyenExpressionAsync(token))
                                                              .Replace("{Karma}", await LanguageManager.GetStringAsync("String_Karma", token: token))
                                                              .Replace("{PriorityNuyen}", await LanguageManager.GetStringAsync("Checkbox_CreatePACKSKit_StartingNuyen", token: token))), token);
             // Armor Tab.
@@ -17227,7 +17227,7 @@ namespace Chummer
             await lblBuildEnemies.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_CommonEnemies", token: token), token);
             await lblBuildNuyen.SetToolTipAsync(string.Format(GlobalSettings.CultureInfo,
                                                               await LanguageManager.GetStringAsync("Tip_CommonNuyen", token: token),
-                                                              CharacterObjectSettings.ChargenKarmaToNuyenExpression
+                                                              (await CharacterObjectSettings.GetChargenKarmaToNuyenExpressionAsync(token))
                                                                   .Replace("{Karma}", await LanguageManager.GetStringAsync("String_Karma", token: token))
                                                                   .Replace("{PriorityNuyen}", await LanguageManager.GetStringAsync("Checkbox_CreatePACKSKit_StartingNuyen", token: token))), token);
             await lblBuildSkillGroups.SetToolTipAsync(string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Tip_SkillsSkillGroups", token: token), CharacterObjectSettings.KarmaImproveSkillGroup.ToString(GlobalSettings.CultureInfo)), token);
@@ -18319,35 +18319,35 @@ namespace Chummer
         {
             try
             {
-                if (!(await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Cyberware objModularCyberware))
+                if (!(await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken).ConfigureAwait(false) is Cyberware objModularCyberware))
                     return;
                 string strSelectedParentID;
                 using (new FetchSafelyFromPool<List<ListItem>>(
                            Utils.ListItemListPool, out List<ListItem> lstModularMounts))
                 {
-                    lstModularMounts.AddRange(CharacterObject.ConstructModularCyberlimbList(objModularCyberware, GenericToken));
+                    lstModularMounts.AddRange(await CharacterObject.ConstructModularCyberlimbListAsync(objModularCyberware, GenericToken).ConfigureAwait(false));
                     //Mounted cyberware should always be allowed to be dismounted.
                     //Unmounted cyberware requires that a valid mount be present.
                     if (!objModularCyberware.IsModularCurrentlyEquipped
                         && lstModularMounts.All(x => !string.Equals(x.Value.ToString(), "None", StringComparison.Ordinal)))
                     {
                         Program.ShowMessageBox(this,
-                                                        await LanguageManager.GetStringAsync("Message_NoValidModularMount"),
-                                                        await LanguageManager.GetStringAsync("MessageTitle_NoValidModularMount"),
+                                                        await LanguageManager.GetStringAsync("Message_NoValidModularMount").ConfigureAwait(false),
+                                                        await LanguageManager.GetStringAsync("MessageTitle_NoValidModularMount").ConfigureAwait(false),
                                                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                         return;
                     }
 
-                    string strDescription = await LanguageManager.GetStringAsync("MessageTitle_SelectCyberware");
+                    string strDescription = await LanguageManager.GetStringAsync("MessageTitle_SelectCyberware", token: GenericToken).ConfigureAwait(false);
                     using (ThreadSafeForm<SelectItem> frmPickMount = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem
-                    {
-                        Description = strDescription
-                    }, GenericToken))
+                           {
+                               Description = strDescription
+                           }, GenericToken).ConfigureAwait(false))
                     {
                         frmPickMount.MyForm.SetGeneralItemsMode(lstModularMounts);
 
                         // Make sure the dialogue window was not canceled.
-                        if (await frmPickMount.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                        if (await frmPickMount.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false) == DialogResult.Cancel)
                         {
                             return;
                         }
@@ -18358,15 +18358,15 @@ namespace Chummer
 
                 Cyberware objOldParent = objModularCyberware.Parent;
                 if (objOldParent != null)
-                    objModularCyberware.ChangeModularEquip(false);
+                    await objModularCyberware.ChangeModularEquipAsync(false, token: GenericToken).ConfigureAwait(false);
 
                 if (strSelectedParentID == "None")
                 {
                     if (objOldParent != null)
                     {
-                        await objOldParent.Children.RemoveAsync(objModularCyberware);
+                        await objOldParent.Children.RemoveAsync(objModularCyberware, token: GenericToken).ConfigureAwait(false);
 
-                        await CharacterObject.Cyberware.AddAsync(objModularCyberware);
+                        await CharacterObject.Cyberware.AddAsync(objModularCyberware, token: GenericToken).ConfigureAwait(false);
                     }
                 }
                 else
@@ -18375,40 +18375,38 @@ namespace Chummer
                     if (objNewParent != null)
                     {
                         if (objOldParent != null)
-                            await objOldParent.Children.RemoveAsync(objModularCyberware);
+                            await objOldParent.Children.RemoveAsync(objModularCyberware, token: GenericToken).ConfigureAwait(false);
                         else
-                            await CharacterObject.Cyberware.RemoveAsync(objModularCyberware);
+                            await CharacterObject.Cyberware.RemoveAsync(objModularCyberware, token: GenericToken).ConfigureAwait(false);
 
-                        await objNewParent.Children.AddAsync(objModularCyberware);
+                        await objNewParent.Children.AddAsync(objModularCyberware, token: GenericToken).ConfigureAwait(false);
 
-                        objModularCyberware.ChangeModularEquip(true);
+                        await objModularCyberware.ChangeModularEquipAsync(true, token: GenericToken).ConfigureAwait(false);
                     }
                     else
                     {
-                        VehicleMod objNewVehicleModParent = CharacterObject.Vehicles.FindVehicleMod(x => x.InternalId == strSelectedParentID);
+                        ThreadSafeObservableCollection<Vehicle> lstVehicles = await CharacterObject.GetVehiclesAsync(GenericToken).ConfigureAwait(false);
+                        VehicleMod objNewVehicleModParent = lstVehicles.FindVehicleMod(x => x.InternalId == strSelectedParentID);
                         if (objNewVehicleModParent == null)
-                            objNewParent = CharacterObject.Vehicles.FindVehicleCyberware(x => x.InternalId == strSelectedParentID, out objNewVehicleModParent);
+                            objNewParent = lstVehicles.FindVehicleCyberware(x => x.InternalId == strSelectedParentID, out objNewVehicleModParent);
 
                         if (objNewVehicleModParent != null || objNewParent != null)
                         {
                             if (objOldParent != null)
-                                await objOldParent.Children.RemoveAsync(objModularCyberware);
+                                await objOldParent.Children.RemoveAsync(objModularCyberware, token: GenericToken).ConfigureAwait(false);
                             else
-                                await CharacterObject.Cyberware.RemoveAsync(objModularCyberware);
+                                await CharacterObject.Cyberware.RemoveAsync(objModularCyberware, token: GenericToken).ConfigureAwait(false);
 
                             if (objNewParent != null)
-                                await objNewParent.Children.AddAsync(objModularCyberware);
+                                await objNewParent.Children.AddAsync(objModularCyberware, token: GenericToken).ConfigureAwait(false);
                             else
-                                await objNewVehicleModParent.Cyberware.AddAsync(objModularCyberware);
+                                await objNewVehicleModParent.Cyberware.AddAsync(objModularCyberware, token: GenericToken).ConfigureAwait(false);
                         }
-                        else
+                        else if (objOldParent != null)
                         {
-                            if (objOldParent != null)
-                            {
-                                await objOldParent.Children.RemoveAsync(objModularCyberware);
+                            await objOldParent.Children.RemoveAsync(objModularCyberware, token: GenericToken).ConfigureAwait(false);
 
-                                await CharacterObject.Cyberware.AddAsync(objModularCyberware);
-                            }
+                            await CharacterObject.Cyberware.AddAsync(objModularCyberware, token: GenericToken).ConfigureAwait(false);
                         }
                     }
                 }
@@ -18423,13 +18421,13 @@ namespace Chummer
         {
             try
             {
-                if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Cyberware objModularCyberware))
+                if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken).ConfigureAwait(false) is Cyberware objModularCyberware))
                     return;
                 string strSelectedParentID;
                 using (new FetchSafelyFromPool<List<ListItem>>(
                            Utils.ListItemListPool, out List<ListItem> lstModularMounts))
                 {
-                    lstModularMounts.AddRange(CharacterObject.ConstructModularCyberlimbList(objModularCyberware, GenericToken));
+                    lstModularMounts.AddRange(await CharacterObject.ConstructModularCyberlimbListAsync(objModularCyberware, GenericToken).ConfigureAwait(false));
                     //Mounted cyberware should always be allowed to be dismounted.
                     //Unmounted cyberware requires that a valid mount be present.
                     if (!objModularCyberware.IsModularCurrentlyEquipped
@@ -18437,22 +18435,22 @@ namespace Chummer
                             x => !string.Equals(x.Value.ToString(), "None", StringComparison.OrdinalIgnoreCase)))
                     {
                         Program.ShowMessageBox(this,
-                                                        await LanguageManager.GetStringAsync("Message_NoValidModularMount"),
-                                                        await LanguageManager.GetStringAsync("MessageTitle_NoValidModularMount"),
+                                                        await LanguageManager.GetStringAsync("Message_NoValidModularMount").ConfigureAwait(false),
+                                                        await LanguageManager.GetStringAsync("MessageTitle_NoValidModularMount").ConfigureAwait(false),
                                                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                         return;
                     }
 
-                    string strDescription = await LanguageManager.GetStringAsync("MessageTitle_SelectCyberware");
+                    string strDescription = await LanguageManager.GetStringAsync("MessageTitle_SelectCyberware").ConfigureAwait(false);
                     using (ThreadSafeForm<SelectItem> frmPickMount = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem
-                    {
-                        Description = strDescription
-                    }, GenericToken))
+                           {
+                               Description = strDescription
+                           }, GenericToken).ConfigureAwait(false))
                     {
                         frmPickMount.MyForm.SetGeneralItemsMode(lstModularMounts);
 
                         // Make sure the dialogue window was not canceled.
-                        if (await frmPickMount.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                        if (await frmPickMount.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false) == DialogResult.Cancel)
                         {
                             return;
                         }
@@ -18465,15 +18463,15 @@ namespace Chummer
                                                           out VehicleMod objOldParentVehicleMod);
                 Cyberware objOldParent = objModularCyberware.Parent;
                 if (objOldParent != null)
-                    objModularCyberware.ChangeModularEquip(false);
+                    await objModularCyberware.ChangeModularEquipAsync(false).ConfigureAwait(false);
                 if (strSelectedParentID == "None")
                 {
                     if (objOldParent != null)
-                        await objOldParent.Children.RemoveAsync(objModularCyberware);
+                        await objOldParent.Children.RemoveAsync(objModularCyberware).ConfigureAwait(false);
                     else
-                        await objOldParentVehicleMod.Cyberware.RemoveAsync(objModularCyberware);
+                        await objOldParentVehicleMod.Cyberware.RemoveAsync(objModularCyberware).ConfigureAwait(false);
 
-                    await CharacterObject.Cyberware.AddAsync(objModularCyberware);
+                    await CharacterObject.Cyberware.AddAsync(objModularCyberware).ConfigureAwait(false);
                 }
                 else
                 {
@@ -18481,13 +18479,13 @@ namespace Chummer
                     if (objNewParent != null)
                     {
                         if (objOldParent != null)
-                            await objOldParent.Children.RemoveAsync(objModularCyberware);
+                            await objOldParent.Children.RemoveAsync(objModularCyberware).ConfigureAwait(false);
                         else
-                            await objOldParentVehicleMod.Cyberware.RemoveAsync(objModularCyberware);
+                            await objOldParentVehicleMod.Cyberware.RemoveAsync(objModularCyberware).ConfigureAwait(false);
 
-                        await objNewParent.Children.AddAsync(objModularCyberware);
+                        await objNewParent.Children.AddAsync(objModularCyberware).ConfigureAwait(false);
 
-                        objModularCyberware.ChangeModularEquip(true);
+                        await objModularCyberware.ChangeModularEquipAsync(true).ConfigureAwait(false);
                     }
                     else
                     {
@@ -18498,23 +18496,23 @@ namespace Chummer
                         if (objNewVehicleModParent != null || objNewParent != null)
                         {
                             if (objOldParent != null)
-                                await objOldParent.Children.RemoveAsync(objModularCyberware);
+                                await objOldParent.Children.RemoveAsync(objModularCyberware).ConfigureAwait(false);
                             else
-                                await objOldParentVehicleMod.Cyberware.RemoveAsync(objModularCyberware);
+                                await objOldParentVehicleMod.Cyberware.RemoveAsync(objModularCyberware).ConfigureAwait(false);
 
                             if (objNewParent != null)
-                                await objNewParent.Children.AddAsync(objModularCyberware);
+                                await objNewParent.Children.AddAsync(objModularCyberware).ConfigureAwait(false);
                             else
-                                await objNewVehicleModParent.Cyberware.AddAsync(objModularCyberware);
+                                await objNewVehicleModParent.Cyberware.AddAsync(objModularCyberware).ConfigureAwait(false);
                         }
                         else
                         {
                             if (objOldParent != null)
-                                await objOldParent.Children.RemoveAsync(objModularCyberware);
+                                await objOldParent.Children.RemoveAsync(objModularCyberware).ConfigureAwait(false);
                             else
-                                await objOldParentVehicleMod.Cyberware.RemoveAsync(objModularCyberware);
+                                await objOldParentVehicleMod.Cyberware.RemoveAsync(objModularCyberware).ConfigureAwait(false);
 
-                            await CharacterObject.Cyberware.AddAsync(objModularCyberware);
+                            await CharacterObject.Cyberware.AddAsync(objModularCyberware).ConfigureAwait(false);
                         }
                     }
                 }
