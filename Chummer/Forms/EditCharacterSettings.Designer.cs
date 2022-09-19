@@ -5832,6 +5832,7 @@ namespace Chummer
             // cmdRename
             // 
             this.cmdRename.AutoSize = true;
+            this.cmdRename.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdRename.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdRename.Location = new System.Drawing.Point(105, 3);
             this.cmdRename.Name = "cmdRename";
@@ -5845,6 +5846,7 @@ namespace Chummer
             // cmdDelete
             // 
             this.cmdDelete.AutoSize = true;
+            this.cmdDelete.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdDelete.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdDelete.Location = new System.Drawing.Point(207, 3);
             this.cmdDelete.Name = "cmdDelete";
@@ -5858,6 +5860,7 @@ namespace Chummer
             // cmdOK
             // 
             this.cmdOK.AutoSize = true;
+            this.cmdOK.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdOK.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.cmdOK.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdOK.Location = new System.Drawing.Point(513, 3);
@@ -5872,6 +5875,7 @@ namespace Chummer
             // cmdRestoreDefaults
             // 
             this.cmdRestoreDefaults.AutoSize = true;
+            this.cmdRestoreDefaults.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdRestoreDefaults.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdRestoreDefaults.Location = new System.Drawing.Point(3, 3);
             this.cmdRestoreDefaults.Name = "cmdRestoreDefaults";
@@ -5885,6 +5889,7 @@ namespace Chummer
             // cmdSave
             // 
             this.cmdSave.AutoSize = true;
+            this.cmdSave.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdSave.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdSave.Enabled = false;
             this.cmdSave.Location = new System.Drawing.Point(411, 3);
@@ -5899,6 +5904,7 @@ namespace Chummer
             // cmdSaveAs
             // 
             this.cmdSaveAs.AutoSize = true;
+            this.cmdSaveAs.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdSaveAs.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdSaveAs.Enabled = false;
             this.cmdSaveAs.Location = new System.Drawing.Point(309, 3);

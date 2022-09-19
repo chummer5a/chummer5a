@@ -454,7 +454,22 @@ namespace Chummer
                             objProperty.SetValue(this, objOtherValue);
                         }
 
-                        if (!_dicCustomDataDirectoryKeys.SequenceEqual(objOther.CustomDataDirectoryKeys))
+                        bool blnDoRebuildDirectoryKeys = _dicCustomDataDirectoryKeys.Count != objOther._dicCustomDataDirectoryKeys.Count;
+                        if (!blnDoRebuildDirectoryKeys)
+                        {
+                            for (int i = 0; i < _dicCustomDataDirectoryKeys.Count; ++i)
+                            {
+                                KeyValuePair<string, bool> kvpMine = _dicCustomDataDirectoryKeys[i];
+                                KeyValuePair<string, bool> kvpOther = objOther._dicCustomDataDirectoryKeys[i];
+                                if (!string.Equals(kvpMine.Key, kvpOther.Key, StringComparison.OrdinalIgnoreCase)
+                                    || kvpMine.Value != kvpOther.Value)
+                                {
+                                    blnDoRebuildDirectoryKeys = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if (blnDoRebuildDirectoryKeys)
                         {
                             lstPropertiesToUpdate.Add(nameof(CustomDataDirectoryKeys));
                             _dicCustomDataDirectoryKeys.Clear();
@@ -496,11 +511,11 @@ namespace Chummer
             }
         }
 
-        public async ValueTask CopyValuesAsync(CharacterSettings objOther, bool blnCopySourceId = true, string strOverrideFileName = "")
+        public async ValueTask CopyValuesAsync(CharacterSettings objOther, bool blnCopySourceId = true, string strOverrideFileName = "", CancellationToken token = default)
         {
             if (objOther == null || objOther == this)
                 return;
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
             try
             {
                 _blnDoingCopy = true;
@@ -509,7 +524,7 @@ namespace Chummer
                 {
                     PropertyInfo[] aobjProperties = typeof(CharacterSettings).GetProperties();
                     lstPropertiesToUpdate = new List<string>(aobjProperties.Length);
-                    using (await EnterReadLock.EnterAsync(objOther))
+                    using (await EnterReadLock.EnterAsync(objOther, token))
                     {
                         if (blnCopySourceId && !_guiSourceId.Equals(objOther._guiSourceId))
                         {
@@ -542,13 +557,29 @@ namespace Chummer
                             objProperty.SetValue(this, objOtherValue);
                         }
 
-                        if (!_dicCustomDataDirectoryKeys.SequenceEqual(objOther.CustomDataDirectoryKeys))
+                        int intMyCount = await _dicCustomDataDirectoryKeys.GetCountAsync(token);
+                        bool blnDoRebuildDirectoryKeys = intMyCount != await objOther._dicCustomDataDirectoryKeys.GetCountAsync(token);
+                        if (!blnDoRebuildDirectoryKeys)
+                        {
+                            for (int i = 0; i < intMyCount; ++i)
+                            {
+                                KeyValuePair<string, bool> kvpMine = await _dicCustomDataDirectoryKeys.GetValueAtAsync(i, token);
+                                KeyValuePair<string, bool> kvpOther = await objOther._dicCustomDataDirectoryKeys.GetValueAtAsync(i, token);
+                                if (!string.Equals(kvpMine.Key, kvpOther.Key, StringComparison.OrdinalIgnoreCase)
+                                    || kvpMine.Value != kvpOther.Value)
+                                {
+                                    blnDoRebuildDirectoryKeys = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if (blnDoRebuildDirectoryKeys)
                         {
                             lstPropertiesToUpdate.Add(nameof(CustomDataDirectoryKeys));
-                            await _dicCustomDataDirectoryKeys.ClearAsync();
-                            foreach (KeyValuePair<string, bool> kvpOther in objOther.CustomDataDirectoryKeys)
+                            await _dicCustomDataDirectoryKeys.ClearAsync(token);
+                            foreach (KeyValuePair<string, bool> kvpOther in objOther._dicCustomDataDirectoryKeys)
                             {
-                                await _dicCustomDataDirectoryKeys.AddAsync(kvpOther.Key, kvpOther.Value);
+                                await _dicCustomDataDirectoryKeys.AddAsync(kvpOther.Key, kvpOther.Value, token);
                             }
                         }
 
@@ -2935,6 +2966,12 @@ namespace Chummer
                 using (EnterReadLock.Enter(LockObject))
                     return _guiSourceId != Guid.Empty;
             }
+        }
+
+        public async ValueTask<bool> GetBuiltInOptionAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _guiSourceId != Guid.Empty;
         }
 
         /// <summary>
