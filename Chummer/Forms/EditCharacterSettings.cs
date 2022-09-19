@@ -1402,7 +1402,9 @@ namespace Chummer
             _dicCharacterCustomDataDirectoryInfos.Clear();
             foreach (KeyValuePair<string, bool> kvpCustomDataDirectory in _objCharacterSettings.CustomDataDirectoryKeys)
             {
-                CustomDataDirectoryInfo objLoopInfo = GlobalSettings.CustomDataDirectoryInfos.FirstOrDefault(x => x.CharacterSettingsSaveKey == kvpCustomDataDirectory.Key);
+                CustomDataDirectoryInfo objLoopInfo
+                    = GlobalSettings.CustomDataDirectoryInfos.FirstOrDefault(
+                        x => x.CharacterSettingsSaveKey == kvpCustomDataDirectory.Key);
                 if (objLoopInfo != default)
                 {
                     _dicCharacterCustomDataDirectoryInfos.Add(objLoopInfo, kvpCustomDataDirectory.Value);
