@@ -548,7 +548,7 @@
       <avail>Rating * 2</avail>
       <cost>Rating * 500</cost>
       <bonus>
-        <selecttext />
+        <selecttext xml="skills.xml" xpath="/chummer/skills/skill/name | /chummer/knowledgeskills/skill/name" allowedit="True" />
       </bonus>
       <source>R5</source>
       <page>127</page>

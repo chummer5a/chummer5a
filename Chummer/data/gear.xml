@@ -7249,7 +7249,7 @@
       <avail>0</avail>
       <armorcapacity>[6]</armorcapacity>
       <bonus>
-        <selectskill />
+        <selecttext xml="skills.xml" xpath="/chummer/skills/skill/name | /chummer/knowledgeskills/skill/name" allowedit="True" />
       </bonus>
       <cost>500</cost>
     </gear>
@@ -7262,7 +7262,7 @@
       <page>443</page>
       <avail>8</avail>
       <bonus>
-        <selectskill />
+        <selecttext xml="skills.xml" xpath="/chummer/skills/skill/name | /chummer/knowledgeskills/skill/name" allowedit="True" />
       </bonus>
       <cost>5000</cost>
     </gear>
@@ -7275,7 +7275,7 @@
       <page>443</page>
       <avail>12</avail>
       <bonus>
-        <selectskill />
+        <selecttext xml="skills.xml" xpath="/chummer/skills/skill/name | /chummer/knowledgeskills/skill/name" allowedit="True" />
       </bonus>
       <cost>50000</cost>
     </gear>
@@ -19468,7 +19468,7 @@
       <page>196</page>
       <avail>5</avail>
       <bonus>
-        <selectskill />
+        <selecttext xml="skills.xml" xpath="/chummer/skills/skill/name | /chummer/knowledgeskills/skill/name" allowedit="True" />
       </bonus>
       <cost>500</cost>
     </gear>
@@ -19481,7 +19481,7 @@
       <page>196</page>
       <avail>8</avail>
       <bonus>
-        <selectskill />
+        <selecttext xml="skills.xml" xpath="/chummer/skills/skill/name | /chummer/knowledgeskills/skill/name" allowedit="True" />
       </bonus>
       <cost>5000</cost>
     </gear>
@@ -19494,7 +19494,7 @@
       <page>196</page>
       <avail>14</avail>
       <bonus>
-        <selectskill />
+        <selecttext xml="skills.xml" xpath="/chummer/skills/skill/name | /chummer/knowledgeskills/skill/name" allowedit="True" />
       </bonus>
       <cost>100000</cost>
     </gear>

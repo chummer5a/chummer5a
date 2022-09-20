@@ -91,6 +91,7 @@ Data Changes:
 - Smart Tires are now properly recognized as tires.
 - Added missing Off-Road Suspension mod to the Yamaha Growler.
 - Added missing, German-specific vehicle mods to the Harley-Davidson Nightmare, the Evo Falcon-EX, and the Thundercloud Mustang. Fixes #4919.
+- Tool Kits, Tool Shops, Tool Facilities, and Workshops now work off of a flexible text field that suggests skills instead of only allowing characters to choose active skills. This should make it easier for users to pick versions of these items that aren't properly represented by skills (e.g. a forensics tool kit).
 
 Changed/New Strings:
 - Checkbox_Options_SpecializationsBreakSkillGroups

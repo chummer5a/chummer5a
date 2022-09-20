@@ -11747,7 +11747,7 @@
       <rating>0</rating>
       <slots>6</slots>
       <bonus>
-        <selectskill />
+        <selecttext xml="skills.xml" xpath="/chummer/skills/skill/name | /chummer/knowledgeskills/skill/name" allowedit="True" />
       </bonus>
     </mod>
     <!-- End Region -->
