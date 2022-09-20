@@ -1572,6 +1572,49 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Bind a control's property to a data property with an async getter in one direction. Similar to a one-way databinding, but the processing is done
+        /// with async tasks, thus bypassing potential synchronous locking issues.
+        /// </summary>
+        /// <typeparam name="T1">Source for the data property.</typeparam>
+        /// <typeparam name="T2">Type of the data property that will be bound to the control</typeparam>
+        /// <param name="objControl">Control to bind.</param>
+        /// <param name="funcControlSetter">Setter function to use to set the appropriate property of <paramref name="objControl"/>.</param>
+        /// <param name="objDataSource">Instance owner of <paramref name="strDataMember"/>.</param>
+        /// <param name="strDataMember">Name of the property of <paramref name="objDataSource"/> that is being bound to <paramref name="objControl"/> through the <paramref name="funcControlSetter"/> setter.</param>
+        /// <param name="funcAsyncDataGetter">Asynchronous getter function of <paramref name="strDataMember"/>.</param>
+        /// <param name="objGetterToken">Cancellation to use in any asynchronous getting or updating of </param>
+        /// <param name="token">Cancellation token to listen to for this assignment.</param>
+        public static async ValueTask RegisterOneWayAsyncDataBinding<T1, T2>(
+            this Control objControl, Action<Control, T2> funcControlSetter, T1 objDataSource, string strDataMember,
+            Func<T1, Task<T2>> funcAsyncDataGetter, CancellationToken objGetterToken = default,
+            CancellationToken token = default)
+            where T1 : INotifyPropertyChanged
+        {
+            if (objControl == null)
+                return;
+            await Utils.RunOnMainThreadAsync(() =>
+            {
+                if (!objControl.IsHandleCreated)
+                {
+                    IntPtr _ = objControl.Handle; // accessing Handle forces its creation
+                }
+            }, token);
+            objDataSource.PropertyChanged += OnPropertyChangedAsync;
+            await Utils.RunOnMainThreadAsync(() => objControl.Disposed += (o, args) => objDataSource.PropertyChanged -= OnPropertyChangedAsync, token);
+            async void OnPropertyChangedAsync(object sender, PropertyChangedEventArgs e)
+            {
+                if (e.PropertyName == strDataMember && !objGetterToken.IsCancellationRequested)
+                {
+                    await funcAsyncDataGetter.Invoke(objDataSource)
+                                             .ContinueWith(
+                                                 x => objControl.DoThreadSafeAsync(
+                                                     y => funcControlSetter.Invoke(y, x.Result), objGetterToken),
+                                                 objGetterToken).Unwrap();
+                }
+            }
+        }
+
+        /// <summary>
         /// Bind a control's property to a property via OnPropertyChanged
         /// </summary>
         /// <param name="objControl">Control to bind</param>
