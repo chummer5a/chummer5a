@@ -23,6 +23,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.XPath;
@@ -34,6 +35,7 @@ namespace Chummer
     {
         private readonly Contact _objContact;
         private bool _blnLoading = true;
+
         private bool _blnStatBlockIsLoaded;
         //private readonly int _intLowHeight = 25;
         //private readonly int _intFullHeight = 156;
@@ -138,9 +140,9 @@ namespace Chummer
                 ContactDetailChanged?.Invoke(this, new TextEventArgs("Group"));
         }
 
-        private void cmdExpand_Click(object sender, EventArgs e)
+        private async void cmdExpand_Click(object sender, EventArgs e)
         {
-            Expanded = !Expanded;
+            await SetExpandedAsync(!await GetExpandedAsync());
         }
 
         private void cboContactRole_TextChanged(object sender, EventArgs e)
@@ -164,115 +166,218 @@ namespace Chummer
             ContactDetailChanged?.Invoke(this, new TextEventArgs("Location"));
         }
 
-        private void UpdateMetatype(object sender, EventArgs e)
+        private async void UpdateMetatype(object sender, EventArgs e)
         {
-            if (_blnLoading || !_blnStatBlockIsLoaded || _objContact.DisplayMetatype == cboMetatype.Text)
+            if (_blnLoading || !_blnStatBlockIsLoaded)
                 return;
-            _objContact.DisplayMetatype = cboMetatype.Text;
-            if (_objContact.DisplayMetatype != cboMetatype.Text)
+            string strNew = await cboMetatype.DoThreadSafeFuncAsync(x => x.Text);
+            string strOld = await _objContact.GetDisplayMetatypeAsync();
+            if (strOld == strNew)
+                return;
+            await _objContact.SetDisplayMetatypeAsync(strNew);
+            strOld = await _objContact.GetDisplayMetatypeAsync();
+            if (strOld != strNew)
             {
                 _blnLoading = true;
-                cboMetatype.Text = _objContact.DisplayMetatype;
-                _blnLoading = false;
+                try
+                {
+                    await cboMetatype.DoThreadSafeAsync(x => x.Text = strOld);
+                }
+                finally
+                {
+                    _blnLoading = false;
+                }
             }
+
             ContactDetailChanged?.Invoke(this, new TextEventArgs("Metatype"));
         }
 
-        private void UpdateGender(object sender, EventArgs e)
+        private async void UpdateGender(object sender, EventArgs e)
         {
-            if (_blnLoading || !_blnStatBlockIsLoaded || _objContact.DisplayGender == cboGender.Text)
+            if (_blnLoading || !_blnStatBlockIsLoaded)
                 return;
-            _objContact.DisplayGender = cboGender.Text;
-            if (_objContact.DisplayGender != cboGender.Text)
+            string strNew = await cboGender.DoThreadSafeFuncAsync(x => x.Text);
+            string strOld = await _objContact.GetDisplayGenderAsync();
+            if (strOld == strNew)
+                return;
+            await _objContact.SetDisplayGenderAsync(strNew);
+            strOld = await _objContact.GetDisplayGenderAsync();
+            if (strOld != strNew)
             {
-                _blnLoading = true;
-                cboGender.Text = _objContact.DisplayGender;
-                _blnLoading = false;
+                bool blnOld = _blnLoading;
+                try
+                {
+                    _blnLoading = true;
+                    await cboGender.DoThreadSafeAsync(x => x.Text = strOld);
+                }
+                finally
+                {
+                    _blnLoading = blnOld;
+                }
             }
+
             ContactDetailChanged?.Invoke(this, new TextEventArgs("Gender"));
         }
 
-        private void UpdateAge(object sender, EventArgs e)
+        private async void UpdateAge(object sender, EventArgs e)
         {
-            if (_blnLoading || !_blnStatBlockIsLoaded || _objContact.DisplayAge == cboAge.Text)
+            if (_blnLoading || !_blnStatBlockIsLoaded)
                 return;
-            _objContact.DisplayAge = cboAge.Text;
-            if (_objContact.DisplayAge != cboAge.Text)
+            string strNew = await cboAge.DoThreadSafeFuncAsync(x => x.Text);
+            string strOld = await _objContact.GetDisplayAgeAsync();
+            if (strOld == strNew)
+                return;
+            await _objContact.SetDisplayAgeAsync(strNew);
+            strOld = await _objContact.GetDisplayAgeAsync();
+            if (strOld != strNew)
             {
-                _blnLoading = true;
-                cboAge.Text = _objContact.DisplayAge;
-                _blnLoading = false;
+                bool blnOld = _blnLoading;
+                try
+                {
+                    _blnLoading = true;
+                    await cboAge.DoThreadSafeAsync(x => x.Text = strOld);
+                }
+                finally
+                {
+                    _blnLoading = blnOld;
+                }
             }
+
             ContactDetailChanged?.Invoke(this, new TextEventArgs("Age"));
         }
 
-        private void UpdatePersonalLife(object sender, EventArgs e)
+        private async void UpdatePersonalLife(object sender, EventArgs e)
         {
-            if (_blnLoading || !_blnStatBlockIsLoaded || _objContact.DisplayPersonalLife == cboPersonalLife.Text)
+            if (_blnLoading || !_blnStatBlockIsLoaded)
                 return;
-            _objContact.DisplayPersonalLife = cboPersonalLife.Text;
-            if (_objContact.DisplayPersonalLife != cboPersonalLife.Text)
+            string strNew = await cboPersonalLife.DoThreadSafeFuncAsync(x => x.Text);
+            string strOld = await _objContact.GetDisplayPersonalLifeAsync();
+            if (strOld == strNew)
+                return;
+            await _objContact.SetDisplayPersonalLifeAsync(strNew);
+            strOld = await _objContact.GetDisplayPersonalLifeAsync();
+            if (strOld != strNew)
             {
-                _blnLoading = true;
-                cboPersonalLife.Text = _objContact.DisplayPersonalLife;
-                _blnLoading = false;
+                bool blnOld = _blnLoading;
+                try
+                {
+                    _blnLoading = true;
+                    await cboPersonalLife.DoThreadSafeAsync(x => x.Text = strOld);
+                }
+                finally
+                {
+                    _blnLoading = blnOld;
+                }
             }
+
             ContactDetailChanged?.Invoke(this, new TextEventArgs("PersonalLife"));
         }
 
-        private void UpdateType(object sender, EventArgs e)
+        private async void UpdateType(object sender, EventArgs e)
         {
-            if (_blnLoading || !_blnStatBlockIsLoaded || _objContact.DisplayType == cboType.Text)
+            if (_blnLoading || !_blnStatBlockIsLoaded)
                 return;
-            _objContact.DisplayType = cboType.Text;
-            if (_objContact.DisplayType != cboType.Text)
+            string strNew = await cboType.DoThreadSafeFuncAsync(x => x.Text);
+            string strOld = await _objContact.GetDisplayTypeAsync();
+            if (strOld == strNew)
+                return;
+            await _objContact.SetDisplayTypeAsync(strNew);
+            strOld = await _objContact.GetDisplayTypeAsync();
+            if (strOld != strNew)
             {
-                _blnLoading = true;
-                cboType.Text = _objContact.DisplayType;
-                _blnLoading = false;
+                bool blnOld = _blnLoading;
+                try
+                {
+                    _blnLoading = true;
+                    await cboType.DoThreadSafeAsync(x => x.Text = strOld);
+                }
+                finally
+                {
+                    _blnLoading = blnOld;
+                }
             }
+
             ContactDetailChanged?.Invoke(this, new TextEventArgs("Type"));
         }
 
-        private void UpdatePreferredPayment(object sender, EventArgs e)
+        private async void UpdatePreferredPayment(object sender, EventArgs e)
         {
-            if (_blnLoading || !_blnStatBlockIsLoaded || _objContact.DisplayPreferredPayment == cboPreferredPayment.Text)
+            if (_blnLoading || !_blnStatBlockIsLoaded)
                 return;
-            _objContact.DisplayPreferredPayment = cboPreferredPayment.Text;
-            if (_objContact.DisplayPreferredPayment != cboPreferredPayment.Text)
+            string strNew = await cboPreferredPayment.DoThreadSafeFuncAsync(x => x.Text);
+            string strOld = await _objContact.GetDisplayPreferredPaymentAsync();
+            if (strOld == strNew)
+                return;
+            await _objContact.SetDisplayPreferredPaymentAsync(strNew);
+            strOld = await _objContact.GetDisplayPreferredPaymentAsync();
+            if (strOld != strNew)
             {
-                _blnLoading = true;
-                cboPreferredPayment.Text = _objContact.DisplayPreferredPayment;
-                _blnLoading = false;
+                bool blnOld = _blnLoading;
+                try
+                {
+                    _blnLoading = true;
+                    await cboPreferredPayment.DoThreadSafeAsync(x => x.Text = strOld);
+                }
+                finally
+                {
+                    _blnLoading = blnOld;
+                }
             }
+
             ContactDetailChanged?.Invoke(this, new TextEventArgs("PreferredPayment"));
         }
 
-        private void UpdateHobbiesVice(object sender, EventArgs e)
+        private async void UpdateHobbiesVice(object sender, EventArgs e)
         {
-            if (_blnLoading || !_blnStatBlockIsLoaded || _objContact.DisplayHobbiesVice == cboHobbiesVice.Text)
+            if (_blnLoading || !_blnStatBlockIsLoaded)
                 return;
-            _objContact.DisplayHobbiesVice = cboHobbiesVice.Text;
-            if (_objContact.DisplayHobbiesVice != cboHobbiesVice.Text)
+            string strNew = await cboHobbiesVice.DoThreadSafeFuncAsync(x => x.Text);
+            string strOld = await _objContact.GetDisplayHobbiesViceAsync();
+            if (strOld == strNew)
+                return;
+            await _objContact.SetDisplayHobbiesViceAsync(strNew);
+            strOld = await _objContact.GetDisplayHobbiesViceAsync();
+            if (strOld != strNew)
             {
-                _blnLoading = true;
-                cboHobbiesVice.Text = _objContact.DisplayHobbiesVice;
-                _blnLoading = false;
+                bool blnOld = _blnLoading;
+                try
+                {
+                    _blnLoading = true;
+                    await cboHobbiesVice.DoThreadSafeAsync(x => x.Text = strOld);
+                }
+                finally
+                {
+                    _blnLoading = blnOld;
+                }
             }
+
             ContactDetailChanged?.Invoke(this, new TextEventArgs("HobbiesVice"));
         }
 
-        private void UpdateContactRole(object sender, EventArgs e)
+        private async void UpdateContactRole(object sender, EventArgs e)
         {
-            if (_blnLoading || _objContact.DisplayRole == cboContactRole.Text)
+            if (_blnLoading || !_blnStatBlockIsLoaded)
                 return;
-            _objContact.DisplayRole = cboContactRole.Text;
-            if (_objContact.DisplayRole != cboContactRole.Text)
+            string strNew = await cboContactRole.DoThreadSafeFuncAsync(x => x.Text);
+            string strOld = await _objContact.GetDisplayRoleAsync();
+            if (strOld == strNew)
+                return;
+            await _objContact.SetDisplayRoleAsync(strNew);
+            strOld = await _objContact.GetDisplayRoleAsync();
+            if (strOld != strNew)
             {
-                _blnLoading = true;
-                cboContactRole.Text = _objContact.DisplayRole;
-                _blnLoading = false;
+                bool blnOld = _blnLoading;
+                try
+                {
+                    _blnLoading = true;
+                    await cboContactRole.DoThreadSafeAsync(x => x.Text = strOld);
+                }
+                finally
+                {
+                    _blnLoading = blnOld;
+                }
             }
+
             ContactDetailChanged?.Invoke(this, new TextEventArgs("Role"));
         }
 
@@ -291,6 +396,7 @@ namespace Chummer
                 tsContactOpen.Visible = false;
                 tsRemoveCharacter.Visible = false;
             }
+
             cmsContact.Show(cmdLink, cmdLink.Left - cmsContact.PreferredSize.Width, cmdLink.Top);
         }
 
@@ -339,10 +445,16 @@ namespace Chummer
 
                     if (blnError)
                     {
-                        Program.ShowMessageBox(string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_FileNotFound"), _objContact.FileName), await LanguageManager.GetStringAsync("MessageTitle_FileNotFound"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        Program.ShowMessageBox(
+                            string.Format(GlobalSettings.CultureInfo,
+                                          await LanguageManager.GetStringAsync("Message_FileNotFound"),
+                                          _objContact.FileName),
+                            await LanguageManager.GetStringAsync("MessageTitle_FileNotFound"), MessageBoxButtons.OK,
+                            MessageBoxIcon.Error);
                         return;
                     }
                 }
+
                 string strFile = blnUseRelative ? Path.GetFullPath(_objContact.RelativeFileName) : _objContact.FileName;
                 Process.Start(strFile);
             }
@@ -385,7 +497,9 @@ namespace Chummer
         private async void tsRemoveCharacter_Click(object sender, EventArgs e)
         {
             // Remove the file association from the Contact.
-            if (Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_RemoveCharacterAssociation"), await LanguageManager.GetStringAsync("MessageTitle_RemoveCharacterAssociation"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            if (Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_RemoveCharacterAssociation"),
+                                       await LanguageManager.GetStringAsync("MessageTitle_RemoveCharacterAssociation"),
+                                       MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
                 _objContact.FileName = string.Empty;
                 _objContact.RelativeFileName = string.Empty;
@@ -396,20 +510,26 @@ namespace Chummer
                         : await LanguageManager.GetStringAsync("Tip_Contact_LinkFile");
                     await cmdLink.SetToolTipTextAsync(strText);
                 }
+
                 ContactDetailChanged?.Invoke(this, new TextEventArgs("File"));
             }
         }
 
         private async void cmdNotes_Click(object sender, EventArgs e)
         {
-            using (ThreadSafeForm<EditNotes> frmContactNotes = await ThreadSafeForm<EditNotes>.GetAsync(() => new EditNotes(_objContact.Notes, _objContact.NotesColor)))
+            using (ThreadSafeForm<EditNotes> frmContactNotes
+                   = await ThreadSafeForm<EditNotes>.GetAsync(
+                       () => new EditNotes(_objContact.Notes, _objContact.NotesColor)))
             {
                 if (await frmContactNotes.ShowDialogSafeAsync(this) != DialogResult.OK)
                     return;
                 _objContact.Notes = frmContactNotes.MyForm.Notes;
             }
 
-            string strTooltip = await LanguageManager.GetStringAsync(_objContact.IsEnemy ? "Tip_Enemy_EditNotes" : "Tip_Contact_EditNotes");
+            string strTooltip
+                = await LanguageManager.GetStringAsync(_objContact.IsEnemy
+                                                           ? "Tip_Enemy_EditNotes"
+                                                           : "Tip_Contact_EditNotes");
             if (!string.IsNullOrEmpty(_objContact.Notes))
                 strTooltip += Environment.NewLine + Environment.NewLine + _objContact.Notes;
             await cmdNotes.SetToolTipTextAsync(strTooltip.WordWrap());
@@ -460,6 +580,7 @@ namespace Chummer
                     CreateStatBlock();
                     _blnStatBlockIsLoaded = true;
                 }
+
                 using (CursorWait.New(this))
                 {
                     this.DoThreadSafe(x => x.SuspendLayout());
@@ -482,6 +603,62 @@ namespace Chummer
                     {
                         this.DoThreadSafe(x => x.ResumeLayout());
                     }
+                }
+            }
+        }
+
+        public async ValueTask<bool> GetExpandedAsync(CancellationToken token = default)
+        {
+            if (tlpStatBlock != null)
+                return await tlpStatBlock.DoThreadSafeFuncAsync(x => x.Visible, token);
+            return false;
+        }
+
+        public async ValueTask SetExpandedAsync(bool value, CancellationToken token = default)
+        {
+            await cmdExpand.DoThreadSafeAsync(x =>
+            {
+                x.ImageDpi96 = value ? Resources.toggle : Resources.toggle_expand;
+                x.ImageDpi192 = value ? Resources.toggle1 : Resources.toggle_expand1;
+            }, token);
+            if (value && (tlpStatBlock == null || !_blnStatBlockIsLoaded))
+            {
+                // Create second row and statblock only on the first expansion to save on handles and load times
+                await CreateSecondRowAsync(token);
+                await CreateStatBlockAsync(token);
+                _blnStatBlockIsLoaded = true;
+            }
+
+            using (await CursorWait.NewAsync(this, token: token))
+            {
+                await this.DoThreadSafeAsync(x => x.SuspendLayout(), token);
+                try
+                {
+                    await lblConnection.DoThreadSafeAsync(x => x.Visible = value, token);
+                    await lblLoyalty.DoThreadSafeAsync(x => x.Visible = value, token);
+                    await nudConnection.DoThreadSafeAsync(x => x.Visible = value, token);
+                    await nudLoyalty.DoThreadSafeAsync(x => x.Visible = value, token);
+                    await chkGroup.DoThreadSafeAsync(x => x.Visible = value, token);
+                    //We don't actually pay for contacts in play so everyone is free
+                    //Don't present a useless field
+                    if (value && _objContact != null)
+                    {
+                        await _objContact.CharacterObject.GetCreatedAsync(token).AsTask()
+                                         .ContinueWith(
+                                             x => chkFree.DoThreadSafeAsync(
+                                                 y => y.Visible = !x.Result, token: token), token)
+                                         .Unwrap();
+                    }
+                    else
+                        await chkFree.DoThreadSafeAsync(x => x.Visible = false, token);
+                    await chkBlackmail.DoThreadSafeAsync(x => x.Visible = value, token);
+                    await chkFamily.DoThreadSafeAsync(x => x.Visible = value, token);
+                    await cmdLink.DoThreadSafeAsync(x => x.Visible = value, token);
+                    await tlpStatBlock.DoThreadSafeAsync(x => x.Visible = value, token);
+                }
+                finally
+                {
+                    await this.DoThreadSafeAsync(x => x.ResumeLayout(), token);
                 }
             }
         }
@@ -709,6 +886,198 @@ namespace Chummer
                         x.ResumeLayout(true);
                     }
                 });
+            }
+        }
+
+        private async ValueTask CreateSecondRowAsync(CancellationToken token = default)
+        {
+            using (await CursorWait.NewAsync(this, token: token))
+            {
+                await this.DoThreadSafeAsync(x =>
+                {
+                    x.lblConnection = new Label
+                    {
+                        Anchor = AnchorStyles.Right,
+                        AutoSize = true,
+                        Name = "lblConnection",
+                        Tag = "Label_Contact_Connection",
+                        Text = "Connection:",
+                        TextAlign = ContentAlignment.MiddleRight
+                    };
+                    x.nudConnection = new NumericUpDownEx
+                    {
+                        Anchor = AnchorStyles.Left | AnchorStyles.Right,
+                        AutoSize = true,
+                        Maximum = new decimal(new[] {12, 0, 0, 0}),
+                        Minimum = new decimal(new[] {1, 0, 0, 0}),
+                        Name = "nudConnection",
+                        Value = new decimal(new[] {1, 0, 0, 0})
+                    };
+                    x.lblLoyalty = new Label
+                    {
+                        Anchor = AnchorStyles.Right,
+                        AutoSize = true,
+                        Name = "lblLoyalty",
+                        Tag = "Label_Contact_Loyalty",
+                        Text = "Loyalty:",
+                        TextAlign = ContentAlignment.MiddleRight
+                    };
+                    x.nudLoyalty = new NumericUpDownEx
+                    {
+                        Anchor = AnchorStyles.Left | AnchorStyles.Right,
+                        AutoSize = true,
+                        Maximum = new decimal(new[] {6, 0, 0, 0}),
+                        Minimum = new decimal(new[] {1, 0, 0, 0}),
+                        Name = "nudLoyalty",
+                        Value = new decimal(new[] {1, 0, 0, 0})
+                    };
+                    x.chkFree = new ColorableCheckBox(x.components)
+                    {
+                        Anchor = AnchorStyles.Left,
+                        AutoSize = true,
+                        DefaultColorScheme = true,
+                        Name = "chkFree",
+                        Tag = "Checkbox_Contact_Free",
+                        Text = "Free",
+                        UseVisualStyleBackColor = true
+                    };
+                    x.chkGroup = new ColorableCheckBox(x.components)
+                    {
+                        Anchor = AnchorStyles.Left,
+                        AutoSize = true,
+                        DefaultColorScheme = true,
+                        Name = "chkGroup",
+                        Tag = "Checkbox_Contact_Group",
+                        Text = "Group",
+                        UseVisualStyleBackColor = true
+                    };
+                    x.chkBlackmail = new ColorableCheckBox(x.components)
+                    {
+                        Anchor = AnchorStyles.Left,
+                        AutoSize = true,
+                        DefaultColorScheme = true,
+                        Name = "chkBlackmail",
+                        Tag = "Checkbox_Contact_Blackmail",
+                        Text = "Blackmail",
+                        UseVisualStyleBackColor = true
+                    };
+                    x.chkFamily = new ColorableCheckBox(x.components)
+                    {
+                        Anchor = AnchorStyles.Left,
+                        AutoSize = true,
+                        DefaultColorScheme = true,
+                        Name = "chkFamily",
+                        Tag = "Checkbox_Contact_Family",
+                        Text = "Family",
+                        UseVisualStyleBackColor = true
+                    };
+                    x.cmdLink = new ButtonWithToolTip(x.components)
+                    {
+                        Anchor = AnchorStyles.Right,
+                        AutoSize = true,
+                        AutoSizeMode = AutoSizeMode.GrowAndShrink,
+                        FlatAppearance = {BorderSize = 0},
+                        FlatStyle = FlatStyle.Flat,
+                        Padding = new Padding(1),
+                        MinimumSize = new Size(24, 24),
+                        ImageDpi96 = Resources.link,
+                        ImageDpi192 = Resources.link1,
+                        Name = "cmdLink",
+                        UseVisualStyleBackColor = true,
+                        TabStop = false
+                    };
+                    x.nudConnection.ValueChanged += nudConnection_ValueChanged;
+                    x.nudLoyalty.ValueChanged += nudLoyalty_ValueChanged;
+                    x.chkFree.CheckedChanged += chkFree_CheckedChanged;
+                    x.chkGroup.CheckedChanged += chkGroup_CheckedChanged;
+                    x.chkBlackmail.CheckedChanged += chkBlackmail_CheckedChanged;
+                    x.chkFamily.CheckedChanged += chkFamily_CheckedChanged;
+                    x.cmdLink.Click += cmdLink_Click;
+                }, token);
+                if (_objContact != null)
+                {
+                    //We don't actually pay for contacts in play so everyone is free
+                    //Don't present a useless field
+                    if (_objContact.CharacterObject != null)
+                        await chkFree.DoThreadSafeAsync(x => x.Visible = !_objContact.CharacterObject.Created, token);
+                    else
+                        await chkFree.DoThreadSafeAsync(x => x.Visible = false, token);
+                    await this.DoThreadSafeAsync(x =>
+                    {
+                        x.chkGroup.DoDataBinding("Checked", x._objContact, nameof(Contact.IsGroup));
+                        x.chkFree.DoDataBinding("Checked", x._objContact, nameof(Contact.Free));
+                        x.chkFamily.DoDataBinding("Checked", x._objContact, nameof(Contact.Family));
+                        x.chkFamily.DoOneWayNegatableDataBinding("Visible", _objContact, nameof(Contact.IsEnemy));
+                        x.chkBlackmail.DoDataBinding("Checked", x._objContact, nameof(Contact.Blackmail));
+                        x.chkBlackmail.DoOneWayNegatableDataBinding(
+                            "Visible", _objContact, nameof(Contact.IsEnemy));
+                        x.nudLoyalty.DoDataBinding("Value", x._objContact, nameof(Contact.Loyalty));
+                        x.nudConnection.DoDataBinding("Value", x._objContact, nameof(Contact.Connection));
+                        x.nudConnection.DoOneWayDataBinding("Enabled", x._objContact, nameof(Contact.NotReadOnly));
+                    }, token: token);
+                    await chkGroup.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = y, _objContact,
+                                                                  nameof(Contact.GroupEnabled),
+                                                                  // ReSharper disable once MethodSupportsCancellation
+                                                                  x => x.GetGroupEnabledAsync().AsTask(), token: token);
+                    await chkFree.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = y, _objContact,
+                                                                 nameof(Contact.FreeEnabled),
+                                                                 // ReSharper disable once MethodSupportsCancellation
+                                                                 x => x.GetFreeEnabledAsync().AsTask(), token: token);
+                    await nudLoyalty.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = y, _objContact,
+                                                                    nameof(Contact.LoyaltyEnabled),
+                                                                    // ReSharper disable once MethodSupportsCancellation
+                                                                    x => x.GetLoyaltyEnabledAsync().AsTask(), token: token);
+                    await nudConnection.RegisterOneWayAsyncDataBinding((x, y) => x.Maximum = y, _objContact,
+                                                                       nameof(Contact.ConnectionMaximum),
+                                                                       // ReSharper disable once MethodSupportsCancellation
+                                                                       x => x.GetConnectionMaximumAsync().AsTask(), token: token);
+                    string strToolTipText;
+                    if (_objContact.IsEnemy)
+                    {
+                        strToolTipText = !string.IsNullOrEmpty(_objContact.FileName)
+                            ? await LanguageManager.GetStringAsync("Tip_Enemy_OpenLinkedEnemy", token: token)
+                            : await LanguageManager.GetStringAsync("Tip_Enemy_LinkEnemy", token: token);
+                    }
+                    else
+                    {
+                        strToolTipText = !string.IsNullOrEmpty(_objContact.FileName)
+                            ? await LanguageManager.GetStringAsync("Tip_Contact_OpenLinkedContact", token: token)
+                            : await LanguageManager.GetStringAsync("Tip_Contact_LinkContact", token: token);
+                    }
+
+                    await cmdLink.DoThreadSafeAsync(x => x.ToolTipText = strToolTipText, token);
+                }
+
+                await this.DoThreadSafeAsync(x =>
+                {
+                    x.tlpMain.SetColumnSpan(x.lblConnection, 2);
+                    x.tlpMain.SetColumnSpan(x.chkFamily, 3);
+                    x.SuspendLayout();
+                    try
+                    {
+                        x.tlpMain.SuspendLayout();
+                        try
+                        {
+                            x.tlpMain.Controls.Add(x.lblConnection, 0, 2);
+                            x.tlpMain.Controls.Add(x.nudConnection, 2, 2);
+                            x.tlpMain.Controls.Add(x.lblLoyalty, 3, 2);
+                            x.tlpMain.Controls.Add(x.nudLoyalty, 4, 2);
+                            x.tlpMain.Controls.Add(x.chkFree, 6, 2);
+                            x.tlpMain.Controls.Add(x.chkGroup, 7, 2);
+                            x.tlpMain.Controls.Add(x.chkBlackmail, 8, 2);
+                            x.tlpMain.Controls.Add(x.chkFamily, 9, 2);
+                            x.tlpMain.Controls.Add(x.cmdLink, 12, 2);
+                        }
+                        finally
+                        {
+                            x.tlpMain.ResumeLayout();
+                        }
+                    }
+                    finally
+                    {
+                        x.ResumeLayout(true);
+                    }
+                }, token);
             }
         }
 
@@ -946,6 +1315,258 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Method to dynamically create stat block is separated out so that we only create it if the control is expanded
+        /// </summary>
+        private async ValueTask CreateStatBlockAsync(CancellationToken token = default)
+        {
+            using (await CursorWait.NewAsync(this, token: token))
+            {
+                await this.DoThreadSafeAsync(x =>
+                {
+                    x.cboMetatype = new ElasticComboBox
+                    {
+                        Anchor = AnchorStyles.Left | AnchorStyles.Right,
+                        FormattingEnabled = true,
+                        Name = "cboMetatype"
+                    };
+                    x.cboGender = new ElasticComboBox
+                        { Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboGender" };
+                    x.cboAge = new ElasticComboBox
+                        { Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboAge" };
+                    x.cboType = new ElasticComboBox
+                        { Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboType" };
+                    x.cboPersonalLife = new ElasticComboBox
+                    {
+                        Anchor = AnchorStyles.Left | AnchorStyles.Right,
+                        FormattingEnabled = true,
+                        Name = "cboPersonalLife"
+                    };
+                    x.cboPreferredPayment = new ElasticComboBox
+                    {
+                        Anchor = AnchorStyles.Left | AnchorStyles.Right,
+                        FormattingEnabled = true,
+                        Name = "cboPreferredPayment"
+                    };
+                    x.cboHobbiesVice = new ElasticComboBox
+                    {
+                        Anchor = AnchorStyles.Left | AnchorStyles.Right,
+                        FormattingEnabled = true,
+                        Name = "cboHobbiesVice"
+                    };
+                }, token);
+
+                await LoadStatBlockListsAsync(token);
+
+                await this.DoThreadSafeAsync(x =>
+                {
+                    if (x._objContact != null)
+                    {
+                        // Properties controllable by the character themselves
+                        x.cboMetatype.DoOneWayDataBinding("Enabled", x._objContact, nameof(Contact.NoLinkedCharacter));
+                        x.cboGender.DoOneWayDataBinding("Enabled", x._objContact, nameof(Contact.NoLinkedCharacter));
+                        x.cboAge.DoOneWayDataBinding("Enabled", x._objContact, nameof(Contact.NoLinkedCharacter));
+                    }
+
+                    x.lblType = new Label
+                    {
+                        Anchor = AnchorStyles.Right,
+                        AutoSize = true,
+                        Margin = new Padding(3, 6, 3, 6),
+                        Name = "lblType",
+                        Tag = "Label_Type",
+                        Text = "Type:",
+                        TextAlign = ContentAlignment.MiddleRight
+                    };
+                    x.lblMetatype = new Label
+                    {
+                        Anchor = AnchorStyles.Right,
+                        AutoSize = true,
+                        Margin = new Padding(3, 6, 3, 6),
+                        Name = "lblMetatype",
+                        Tag = "Label_Metatype",
+                        Text = "Metatype:",
+                        TextAlign = ContentAlignment.MiddleRight
+                    };
+                    x.lblGender = new Label
+                    {
+                        Anchor = AnchorStyles.Right,
+                        AutoSize = true,
+                        Margin = new Padding(3, 6, 3, 6),
+                        Name = "lblGender",
+                        Tag = "Label_Gender",
+                        Text = "Gender:",
+                        TextAlign = ContentAlignment.MiddleRight
+                    };
+                    x.lblAge = new Label
+                    {
+                        Anchor = AnchorStyles.Right,
+                        AutoSize = true,
+                        Margin = new Padding(3, 6, 3, 6),
+                        Name = "lblAge",
+                        Tag = "Label_Age",
+                        Text = "Age:",
+                        TextAlign = ContentAlignment.MiddleRight
+                    };
+                    x.lblPersonalLife = new Label
+                    {
+                        Anchor = AnchorStyles.Right,
+                        AutoSize = true,
+                        Margin = new Padding(3, 6, 3, 6),
+                        Name = "lblPersonalLife",
+                        Tag = "Label_Contact_PersonalLife",
+                        Text = "Personal Life:",
+                        TextAlign = ContentAlignment.MiddleRight
+                    };
+                    x.lblPreferredPayment = new Label
+                    {
+                        Anchor = AnchorStyles.Right,
+                        AutoSize = true,
+                        Margin = new Padding(3, 6, 3, 6),
+                        Name = "lblPreferredPayment",
+                        Tag = "Label_Contact_PreferredPayment",
+                        Text = "Preferred Payment:",
+                        TextAlign = ContentAlignment.MiddleRight
+                    };
+                    x.lblHobbiesVice = new Label
+                    {
+                        Anchor = AnchorStyles.Right,
+                        AutoSize = true,
+                        Margin = new Padding(3, 6, 3, 6),
+                        Name = "lblHobbiesVice",
+                        Tag = "Label_Contact_HobbiesVice",
+                        Text = "Hobbies/Vice:",
+                        TextAlign = ContentAlignment.MiddleRight
+                    };
+
+                    x.tlpStatBlock = new BufferedTableLayoutPanel(components)
+                    {
+                        AutoSize = true,
+                        AutoSizeMode = AutoSizeMode.GrowAndShrink,
+                        ColumnCount = 4,
+                        RowCount = 5,
+                        Dock = DockStyle.Fill,
+                        Name = "tlpStatBlock"
+                    };
+                    x.tlpStatBlock.ColumnStyles.Add(new ColumnStyle());
+                    x.tlpStatBlock.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+                    x.tlpStatBlock.ColumnStyles.Add(new ColumnStyle());
+                    x.tlpStatBlock.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+                    x.tlpStatBlock.RowStyles.Add(new RowStyle());
+                    x.tlpStatBlock.RowStyles.Add(new RowStyle());
+                    x.tlpStatBlock.RowStyles.Add(new RowStyle());
+                    x.tlpStatBlock.RowStyles.Add(new RowStyle());
+                    x.tlpStatBlock.Controls.Add(x.lblMetatype, 0, 0);
+                    x.tlpStatBlock.Controls.Add(x.cboMetatype, 1, 0);
+                    x.tlpStatBlock.Controls.Add(x.lblGender, 0, 1);
+                    x.tlpStatBlock.Controls.Add(x.cboGender, 1, 1);
+                    x.tlpStatBlock.Controls.Add(x.lblAge, 0, 2);
+                    x.tlpStatBlock.Controls.Add(x.cboAge, 1, 2);
+                    x.tlpStatBlock.Controls.Add(x.lblType, 0, 3);
+                    x.tlpStatBlock.Controls.Add(x.cboType, 1, 3);
+                    x.tlpStatBlock.Controls.Add(x.lblPersonalLife, 2, 0);
+                    x.tlpStatBlock.Controls.Add(x.cboPersonalLife, 3, 0);
+                    x.tlpStatBlock.Controls.Add(x.lblPreferredPayment, 2, 1);
+                    x.tlpStatBlock.Controls.Add(x.cboPreferredPayment, 3, 1);
+                    x.tlpStatBlock.Controls.Add(x.lblHobbiesVice, 2, 2);
+                    x.tlpStatBlock.Controls.Add(x.cboHobbiesVice, 3, 2);
+                }, token);
+                await tlpStatBlock.TranslateWinFormAsync(token: token);
+                await tlpStatBlock.UpdateLightDarkModeAsync(token: token);
+                await this.DoThreadSafeAsync(x =>
+                {
+                    x.SuspendLayout();
+                    try
+                    {
+                        x.tlpMain.SuspendLayout();
+                        try
+                        {
+                            x.tlpMain.SetColumnSpan(x.tlpStatBlock, 13);
+                            x.tlpMain.Controls.Add(x.tlpStatBlock, 0, 3);
+                        }
+                        finally
+                        {
+                            x.tlpMain.ResumeLayout();
+                        }
+                    }
+                    finally
+                    {
+                        x.ResumeLayout();
+                    }
+                }, token: token);
+
+                // Need these as separate instead of as simple data bindings so that we don't get annoying live partial translations
+                if (_objContact != null)
+                {
+                    string strMetatype = await _objContact.GetMetatypeAsync(token);
+                    string strGender = await _objContact.GetGenderAsync(token);
+                    string strAge = await _objContact.GetAgeAsync(token);
+                    string strPersonalLife = _objContact.PersonalLife;
+                    string strType = _objContact.Type;
+                    string strPreferredPayment = _objContact.PreferredPayment;
+                    string strHobbiesVice = _objContact.HobbiesVice;
+                    await this.DoThreadSafeAsync(x =>
+                    {
+                        x.cboMetatype.SelectedValue = strMetatype;
+                        x.cboGender.SelectedValue = strGender;
+                        x.cboAge.SelectedValue = strAge;
+                        x.cboPersonalLife.SelectedValue = strPersonalLife;
+                        x.cboType.SelectedValue = strType;
+                        x.cboPreferredPayment.SelectedValue = strPreferredPayment;
+                        x.cboHobbiesVice.SelectedValue = strHobbiesVice;
+                    }, token: token);
+                    if (await this.DoThreadSafeFuncAsync(x => x.cboMetatype.SelectedIndex, token: token) < 0)
+                        await _objContact.GetDisplayMetatypeAsync(token)
+                                         .ContinueWith(x => this.DoThreadSafeAsync(y => y.cboMetatype.Text = x.Result, token: token), token)
+                                         .Unwrap();
+                    if (await this.DoThreadSafeFuncAsync(x => x.cboGender.SelectedIndex, token: token) < 0)
+                        await _objContact.GetDisplayGenderAsync(token)
+                                         .ContinueWith(x => this.DoThreadSafeAsync(y => y.cboGender.Text = x.Result, token: token), token)
+                                         .Unwrap();
+                    if (await this.DoThreadSafeFuncAsync(x => x.cboAge.SelectedIndex, token: token) < 0)
+                        await _objContact.GetDisplayAgeAsync(token)
+                                         .ContinueWith(x => this.DoThreadSafeAsync(y => y.cboAge.Text = x.Result, token: token), token)
+                                         .Unwrap();
+                    if (await this.DoThreadSafeFuncAsync(x => x.cboPersonalLife.SelectedIndex, token: token) < 0)
+                        await _objContact.GetDisplayPersonalLifeAsync(token)
+                                         .ContinueWith(x => this.DoThreadSafeAsync(y => y.cboPersonalLife.Text = x.Result, token: token), token)
+                                         .Unwrap();
+                    if (await this.DoThreadSafeFuncAsync(x => x.cboType.SelectedIndex, token: token) < 0)
+                        await _objContact.GetDisplayTypeAsync(token)
+                                         .ContinueWith(x => this.DoThreadSafeAsync(y => y.cboType.Text = x.Result, token: token), token)
+                                         .Unwrap();
+                    if (await this.DoThreadSafeFuncAsync(x => x.cboPreferredPayment.SelectedIndex, token: token) < 0)
+                        await _objContact.GetDisplayPreferredPaymentAsync(token)
+                                         .ContinueWith(x => this.DoThreadSafeAsync(y => y.cboPreferredPayment.Text = x.Result, token: token), token)
+                                         .Unwrap();
+                    if (await this.DoThreadSafeFuncAsync(x => x.cboHobbiesVice.SelectedIndex, token: token) < 0)
+                        await _objContact.GetDisplayHobbiesViceAsync(token)
+                                         .ContinueWith(x => this.DoThreadSafeAsync(y => y.cboHobbiesVice.Text = x.Result, token: token), token)
+                                         .Unwrap();
+                }
+
+                // Need these as separate instead of as simple data bindings so that we don't get annoying live partial translations
+                await this.DoThreadSafeAsync(x =>
+                {
+
+                    x.cboMetatype.SelectedIndexChanged += UpdateMetatype;
+                    x.cboGender.SelectedIndexChanged += UpdateGender;
+                    x.cboAge.SelectedIndexChanged += UpdateAge;
+                    x.cboType.SelectedIndexChanged += UpdateType;
+                    x.cboPersonalLife.SelectedIndexChanged += UpdatePersonalLife;
+                    x.cboPreferredPayment.SelectedIndexChanged += UpdatePreferredPayment;
+                    x.cboHobbiesVice.SelectedIndexChanged += UpdateHobbiesVice;
+                    x.cboMetatype.Leave += UpdateMetatype;
+                    x.cboGender.Leave += UpdateGender;
+                    x.cboAge.Leave += UpdateAge;
+                    x.cboType.Leave += UpdateType;
+                    x.cboPersonalLife.Leave += UpdatePersonalLife;
+                    x.cboPreferredPayment.Leave += UpdatePreferredPayment;
+                    x.cboHobbiesVice.Leave += UpdateHobbiesVice;
+                }, token);
+            }
+        }
+
         private void LoadStatBlockLists()
         {
             // Read the list of Categories from the XML file.
@@ -1071,6 +1692,134 @@ namespace Chummer
                 cboType.PopulateWithListItems(lstTypes);
                 cboPreferredPayment.PopulateWithListItems(lstPreferredPayments);
                 cboHobbiesVice.PopulateWithListItems(lstHobbiesVices);
+            }
+        }
+
+        private async ValueTask LoadStatBlockListsAsync(CancellationToken token = default)
+        {
+            // Read the list of Categories from the XML file.
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstMetatypes))
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstGenders))
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstAges))
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstPersonalLives))
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstTypes))
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstPreferredPayments))
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstHobbiesVices))
+            {
+                lstMetatypes.Add(ListItem.Blank);
+                lstGenders.Add(ListItem.Blank);
+                lstAges.Add(ListItem.Blank);
+                lstPersonalLives.Add(ListItem.Blank);
+                lstTypes.Add(ListItem.Blank);
+                lstPreferredPayments.Add(ListItem.Blank);
+                lstHobbiesVices.Add(ListItem.Blank);
+
+                XPathNavigator xmlContactsBaseNode = await (await _objContact.CharacterObject.LoadDataXPathAsync("contacts.xml", token: token))
+                    .SelectSingleNodeAndCacheExpressionAsync("/chummer", token);
+                if (xmlContactsBaseNode != null)
+                {
+                    foreach (XPathNavigator xmlNode in await xmlContactsBaseNode.SelectAndCacheExpressionAsync("genders/gender", token))
+                    {
+                        string strName = xmlNode.Value;
+                        lstGenders.Add(new ListItem(
+                                           strName,
+                                           (await xmlNode.SelectSingleNodeAndCacheExpressionAsync("@translate", token))?.Value ?? strName));
+                    }
+
+                    foreach (XPathNavigator xmlNode in await xmlContactsBaseNode.SelectAndCacheExpressionAsync("ages/age", token))
+                    {
+                        string strName = xmlNode.Value;
+                        lstAges.Add(new ListItem(
+                                        strName,
+                                        (await xmlNode.SelectSingleNodeAndCacheExpressionAsync("@translate", token))?.Value ?? strName));
+                    }
+
+                    foreach (XPathNavigator xmlNode in await xmlContactsBaseNode.SelectAndCacheExpressionAsync(
+                                 "personallives/personallife", token))
+                    {
+                        string strName = xmlNode.Value;
+                        lstPersonalLives.Add(new ListItem(
+                                                 strName,
+                                                 (await xmlNode.SelectSingleNodeAndCacheExpressionAsync("@translate", token))?.Value
+                                                 ?? strName));
+                    }
+
+                    foreach (XPathNavigator xmlNode in await xmlContactsBaseNode.SelectAndCacheExpressionAsync("types/type", token))
+                    {
+                        string strName = xmlNode.Value;
+                        lstTypes.Add(new ListItem(
+                                         strName,
+                                         (await xmlNode.SelectSingleNodeAndCacheExpressionAsync("@translate", token))?.Value ?? strName));
+                    }
+
+                    foreach (XPathNavigator xmlNode in await xmlContactsBaseNode.SelectAndCacheExpressionAsync(
+                                 "preferredpayments/preferredpayment", token))
+                    {
+                        string strName = xmlNode.Value;
+                        lstPreferredPayments.Add(new ListItem(
+                                                     strName,
+                                                     (await xmlNode.SelectSingleNodeAndCacheExpressionAsync("@translate", token))?.Value
+                                                     ?? strName));
+                    }
+
+                    foreach (XPathNavigator xmlNode in await xmlContactsBaseNode.SelectAndCacheExpressionAsync(
+                                 "hobbiesvices/hobbyvice", token))
+                    {
+                        string strName = xmlNode.Value;
+                        lstHobbiesVices.Add(new ListItem(
+                                                strName,
+                                                (await xmlNode.SelectSingleNodeAndCacheExpressionAsync("@translate", token))?.Value
+                                                ?? strName));
+                    }
+                }
+
+                string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token);
+                foreach (XPathNavigator xmlMetatypeNode in await (await _objContact.CharacterObject.LoadDataXPathAsync("metatypes.xml", token: token))
+                             .SelectAndCacheExpressionAsync(
+                                 "/chummer/metatypes/metatype", token))
+                {
+                    string strName = (await xmlMetatypeNode.SelectSingleNodeAndCacheExpressionAsync("name", token))?.Value;
+                    string strMetatypeDisplay = (await xmlMetatypeNode.SelectSingleNodeAndCacheExpressionAsync("translate", token))?.Value
+                                                ?? strName;
+                    lstMetatypes.Add(new ListItem(strName, strMetatypeDisplay));
+                    XPathNodeIterator xmlMetavariantsList
+                        = await xmlMetatypeNode.SelectAndCacheExpressionAsync("metavariants/metavariant", token);
+                    if (xmlMetavariantsList.Count > 0)
+                    {
+                        string strMetavariantFormat = strMetatypeDisplay + strSpace + "({0})";
+                        foreach (XPathNavigator objXmlMetavariantNode in xmlMetavariantsList)
+                        {
+                            string strMetavariantName
+                                = (await objXmlMetavariantNode.SelectSingleNodeAndCacheExpressionAsync("name", token))?.Value
+                                  ?? string.Empty;
+                            if (lstMetatypes.All(
+                                    x => strMetavariantName.Equals(x.Value.ToString(),
+                                                                   StringComparison.OrdinalIgnoreCase)))
+                                lstMetatypes.Add(new ListItem(strMetavariantName,
+                                                              string.Format(
+                                                                  GlobalSettings.CultureInfo, strMetavariantFormat,
+                                                                  (await objXmlMetavariantNode
+                                                                      .SelectSingleNodeAndCacheExpressionAsync("translate", token))
+                                                                      ?.Value ?? strMetavariantName)));
+                        }
+                    }
+                }
+
+                lstMetatypes.Sort(CompareListItems.CompareNames);
+                lstGenders.Sort(CompareListItems.CompareNames);
+                lstAges.Sort(CompareListItems.CompareNames);
+                lstPersonalLives.Sort(CompareListItems.CompareNames);
+                lstTypes.Sort(CompareListItems.CompareNames);
+                lstHobbiesVices.Sort(CompareListItems.CompareNames);
+                lstPreferredPayments.Sort(CompareListItems.CompareNames);
+
+                await cboMetatype.PopulateWithListItemsAsync(lstMetatypes, token);
+                await cboGender.PopulateWithListItemsAsync(lstGenders, token);
+                await cboAge.PopulateWithListItemsAsync(lstAges, token);
+                await cboPersonalLife.PopulateWithListItemsAsync(lstPersonalLives, token);
+                await cboType.PopulateWithListItemsAsync(lstTypes, token);
+                await cboPreferredPayment.PopulateWithListItemsAsync(lstPreferredPayments, token);
+                await cboHobbiesVice.PopulateWithListItemsAsync(lstHobbiesVices, token);
             }
         }
 

@@ -1575,8 +1575,9 @@ namespace Chummer
         /// Bind a control's property to a data property with an async getter in one direction. Similar to a one-way databinding, but the processing is done
         /// with async tasks, thus bypassing potential synchronous locking issues.
         /// </summary>
-        /// <typeparam name="T1">Source for the data property.</typeparam>
-        /// <typeparam name="T2">Type of the data property that will be bound to the control</typeparam>
+        /// <typeparam name="T1">Control type of <paramref name="objControl"/>.</typeparam>
+        /// <typeparam name="T2">Source for the data property.</typeparam>
+        /// <typeparam name="T3">Type of the data property that will be bound to the control</typeparam>
         /// <param name="objControl">Control to bind.</param>
         /// <param name="funcControlSetter">Setter function to use to set the appropriate property of <paramref name="objControl"/>.</param>
         /// <param name="objDataSource">Instance owner of <paramref name="strDataMember"/>.</param>
@@ -1584,11 +1585,11 @@ namespace Chummer
         /// <param name="funcAsyncDataGetter">Asynchronous getter function of <paramref name="strDataMember"/>.</param>
         /// <param name="objGetterToken">Cancellation to use in any asynchronous getting or updating of </param>
         /// <param name="token">Cancellation token to listen to for this assignment.</param>
-        public static async ValueTask RegisterOneWayAsyncDataBinding<T1, T2>(
-            this Control objControl, Action<Control, T2> funcControlSetter, T1 objDataSource, string strDataMember,
-            Func<T1, Task<T2>> funcAsyncDataGetter, CancellationToken objGetterToken = default,
+        public static async ValueTask RegisterOneWayAsyncDataBinding<T1, T2, T3>(
+            this T1 objControl, Action<T1, T3> funcControlSetter, T2 objDataSource, string strDataMember,
+            Func<T2, Task<T3>> funcAsyncDataGetter, CancellationToken objGetterToken = default,
             CancellationToken token = default)
-            where T1 : INotifyPropertyChanged
+            where T1 : Control where T2 : INotifyPropertyChanged
         {
             if (objControl == null)
                 return;
@@ -1599,6 +1600,11 @@ namespace Chummer
                     IntPtr _ = objControl.Handle; // accessing Handle forces its creation
                 }
             }, token);
+            await funcAsyncDataGetter.Invoke(objDataSource)
+                                     .ContinueWith(
+                                         x => objControl.DoThreadSafeAsync(
+                                             y => funcControlSetter.Invoke(y, x.Result), objGetterToken),
+                                         objGetterToken).Unwrap();
             objDataSource.PropertyChanged += OnPropertyChangedAsync;
             await Utils.RunOnMainThreadAsync(() => objControl.Disposed += (o, args) => objDataSource.PropertyChanged -= OnPropertyChangedAsync, token);
             async void OnPropertyChangedAsync(object sender, PropertyChangedEventArgs e)

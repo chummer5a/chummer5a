@@ -13199,6 +13199,15 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Character's gender.
+        /// </summary>
+        public async ValueTask<string> GetGenderAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _strGender;
+        }
+
         private string _strCachedCharacterGrammaticGender = string.Empty;
 
         public string CharacterGrammaticGender
@@ -13257,6 +13266,15 @@ namespace Chummer
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Character's age.
+        /// </summary>
+        public async ValueTask<string> GetAgeAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _strAge;
         }
 
         /// <summary>
@@ -22849,6 +22867,15 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Character's Metavariant.
+        /// </summary>
+        public async ValueTask<string> GetMetavariantAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _strMetavariant;
+        }
+
         public Guid MetavariantGuid
         {
             get
@@ -22869,6 +22896,12 @@ namespace Chummer
                     }
                 }
             }
+        }
+
+        public async ValueTask<Guid> GetMetavariantGuidAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _guiMetavariant;
         }
 
         /// <summary>

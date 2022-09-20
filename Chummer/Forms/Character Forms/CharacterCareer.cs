@@ -20632,19 +20632,31 @@ namespace Chummer
             }
         }
 
-        private void cmdContactsExpansionToggle_Click(object sender, EventArgs e)
+        private async void cmdContactsExpansionToggle_Click(object sender, EventArgs e)
         {
-            if (panContacts.Controls.Count > 0)
+            try
             {
-                panContacts.SuspendLayout();
-                bool toggle = ((ContactControl)panContacts.Controls[0]).Expanded;
-
-                foreach (ContactControl c in panContacts.Controls)
+                Control.ControlCollection lstControls = await panContacts.DoThreadSafeFuncAsync(x => x.Controls, GenericToken);
+                if (lstControls.Count == 0)
+                    return;
+                await panContacts.DoThreadSafeAsync(x => x.SuspendLayout(), GenericToken);
+                try
                 {
-                    c.Expanded = !toggle;
-                }
+                    bool toggle = await ((ContactControl) lstControls[0]).GetExpandedAsync(GenericToken);
 
-                panContacts.ResumeLayout();
+                    foreach (ContactControl c in lstControls)
+                    {
+                        await c.SetExpandedAsync(!toggle, GenericToken);
+                    }
+                }
+                finally
+                {
+                    await panContacts.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
             }
         }
 
