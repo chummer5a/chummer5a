@@ -8314,22 +8314,26 @@ namespace Chummer
                         await objAttributesElement.DisposeAsync();
                     }
 
+                    int intArmor = await GetTotalArmorRatingAsync(token);
+                    int intFireArmor = await GetTotalFireArmorRatingAsync(token);
+                    int intColdArmor = await GetTotalColdArmorRatingAsync(token);
+                    int intElectricityArmor = await GetTotalElectricityArmorRatingAsync(token);
+                    int intAcidArmor = await GetTotalAcidArmorRatingAsync(token);
+                    int intFallingArmor = await GetTotalFallingArmorRatingAsync(token);
                     // <dodge />
                     await objWriter.WriteElementStringAsync("dodge", Dodge.ToString(objCulture), token: token);
                     // <armor />
-                    await objWriter.WriteElementStringAsync("armor", TotalArmorRating.ToString(objCulture), token: token);
+                    await objWriter.WriteElementStringAsync("armor", intArmor.ToString(objCulture), token: token);
                     // <firearmor />
-                    await objWriter.WriteElementStringAsync("firearmor", TotalFireArmorRating.ToString(objCulture), token: token);
+                    await objWriter.WriteElementStringAsync("firearmor", intFireArmor.ToString(objCulture), token: token);
                     // <coldarmor />
-                    await objWriter.WriteElementStringAsync("coldarmor", TotalColdArmorRating.ToString(objCulture), token: token);
+                    await objWriter.WriteElementStringAsync("coldarmor", intColdArmor.ToString(objCulture), token: token);
                     // <electricityarmor />
-                    await objWriter.WriteElementStringAsync("electricityarmor",
-                                                            TotalElectricityArmorRating.ToString(objCulture), token: token);
+                    await objWriter.WriteElementStringAsync("electricityarmor", intElectricityArmor.ToString(objCulture), token: token);
                     // <acidarmor />
-                    await objWriter.WriteElementStringAsync("acidarmor", TotalAcidArmorRating.ToString(objCulture), token: token);
+                    await objWriter.WriteElementStringAsync("acidarmor", intAcidArmor.ToString(objCulture), token: token);
                     // <fallingarmor />
-                    await objWriter.WriteElementStringAsync("fallingarmor",
-                                                            TotalFallingArmorRating.ToString(objCulture), token: token);
+                    await objWriter.WriteElementStringAsync("fallingarmor", intFallingArmor.ToString(objCulture), token: token);
 
                     int intDamageResistanceDice = (await ImprovementManager
                             .ValueOfAsync(this, Improvement.ImprovementType.DamageResistance, token: token))
@@ -8338,60 +8342,60 @@ namespace Chummer
                     // <armordicestun />
                     await objWriter.WriteElementStringAsync("armordicestun",
                                                             (intBodTotalValue + intDamageResistanceDice
-                                                                              + TotalArmorRating).ToString(objCulture), token: token);
+                                                                              + intArmor).ToString(objCulture), token: token);
                     // <firearmordicestun />
                     await objWriter.WriteElementStringAsync("firearmordicestun",
                                                             (intBodTotalValue + intDamageResistanceDice
-                                                                              + TotalFireArmorRating)
+                                                                              + intFireArmor)
                                                             .ToString(objCulture), token: token);
                     // <coldarmordicestun />
                     await objWriter.WriteElementStringAsync("coldarmordicestun",
                                                             (intBodTotalValue + intDamageResistanceDice
-                                                                              + TotalColdArmorRating)
+                                                                              + intColdArmor)
                                                             .ToString(objCulture), token: token);
                     // <electricityarmordicestun />
                     await objWriter.WriteElementStringAsync("electricityarmordicestun",
                                                             (intBodTotalValue + intDamageResistanceDice
-                                                                              + TotalElectricityArmorRating)
+                                                                              + intElectricityArmor)
                                                             .ToString(objCulture), token: token);
                     // <acidarmordicestun />
                     await objWriter.WriteElementStringAsync("acidarmordicestun",
                                                             (intBodTotalValue + intDamageResistanceDice
-                                                                              + TotalAcidArmorRating)
+                                                                              + intAcidArmor)
                                                             .ToString(objCulture), token: token);
                     // <fallingarmordicestun />
                     await objWriter.WriteElementStringAsync("fallingarmordicestun",
                                                             (intBodTotalValue + intDamageResistanceDice
-                                                                              + TotalFallingArmorRating)
+                                                                              + intFallingArmor)
                                                             .ToString(objCulture), token: token);
                     // <armordicephysical />
                     await objWriter.WriteElementStringAsync("armordicephysical",
                                                             (intBodTotalValue + intDamageResistanceDice
-                                                                              + TotalArmorRating).ToString(objCulture), token: token);
+                                                                              + intArmor).ToString(objCulture), token: token);
                     // <firearmordicephysical />
                     await objWriter.WriteElementStringAsync("firearmordicephysical",
                                                             (intBodTotalValue + intDamageResistanceDice
-                                                                              + TotalFireArmorRating)
+                                                                              + intFireArmor)
                                                             .ToString(objCulture), token: token);
                     // <coldarmordicephysical />
                     await objWriter.WriteElementStringAsync("coldarmordicephysical",
                                                             (intBodTotalValue + intDamageResistanceDice
-                                                                              + TotalColdArmorRating)
+                                                                              + intColdArmor)
                                                             .ToString(objCulture), token: token);
                     // <electricityarmordicephysical />
                     await objWriter.WriteElementStringAsync("electricityarmordicephysical",
                                                             (intBodTotalValue + intDamageResistanceDice
-                                                                              + TotalElectricityArmorRating)
+                                                                              + intElectricityArmor)
                                                             .ToString(objCulture), token: token);
                     // <acidarmordicephysical />
                     await objWriter.WriteElementStringAsync("acidarmordicephysical",
                                                             (intBodTotalValue + intDamageResistanceDice
-                                                                              + TotalAcidArmorRating)
+                                                                              + intAcidArmor)
                                                             .ToString(objCulture), token: token);
                     // <fallingarmordicephysical />
                     await objWriter.WriteElementStringAsync("fallingarmordicephysical",
                                                             (intBodTotalValue + intDamageResistanceDice
-                                                                              + TotalFallingArmorRating)
+                                                                              + intFallingArmor)
                                                             .ToString(objCulture), token: token);
 
                     bool blnIsAI = IsAI;
@@ -19567,7 +19571,9 @@ namespace Chummer
                     }
                 }
 
-                int intArmor = intHighestNoCustomStack;
+                int intArmor = objHighestArmor != null
+                    ? intHighestNoCustomStack
+                    : decGeneralArmorImprovementValue.StandardRound();
 
                 // Run through the list of Armor currently worn again and look at armors that start with '+' since they stack with the highest Armor.
                 int intStacking = 0;
@@ -19605,6 +19611,134 @@ namespace Chummer
                 }
 
                 return intArmor + intStacking;
+            }
+        }
+
+        public async ValueTask<int> GetArmorRatingAsync(Improvement.ImprovementType eDamageType = Improvement.ImprovementType.Armor, CancellationToken token = default)
+        {
+            return (await GetArmorRatingWithImprovementAsync(eDamageType, token)).Item1;
+        }
+
+        public async ValueTask<Tuple<int, int, List<Improvement>>> GetArmorRatingWithImprovementAsync(Improvement.ImprovementType eDamageType, CancellationToken token = default)
+        {
+            if (eDamageType == Improvement.ImprovementType.None)
+            {
+                return new Tuple<int, int, List<Improvement>>(0, 0, new List<Improvement>());
+            }
+
+            int intFromEquippedArmorImprovements = 0;
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+            {
+                List<Armor> lstArmorsToConsider = await (await GetArmorAsync(token)).ToListAsync(objArmor => objArmor.Equipped, token: token);
+                (decimal decBaseArmorImprovement, List<Improvement> lstUsedImprovements)
+                    = await ImprovementManager.ValueOfTupleAsync(this, eDamageType, token: token);
+                if (eDamageType != Improvement.ImprovementType.Armor)
+                {
+                    (decimal decExtra, List<Improvement> lstUsedImprovementsExtra)
+                        = await ImprovementManager.ValueOfTupleAsync(this, Improvement.ImprovementType.Armor, token: token);
+                    decBaseArmorImprovement += decExtra;
+                    lstUsedImprovements.AddRange(lstUsedImprovementsExtra);
+                }
+
+                if (lstArmorsToConsider.Count == 0)
+                    return new Tuple<int, int, List<Improvement>>(decBaseArmorImprovement.StandardRound(), intFromEquippedArmorImprovements, lstUsedImprovements);
+                decimal decGeneralArmorImprovementValue = decBaseArmorImprovement;
+                Dictionary<Armor, decimal> dicArmorImprovementValues
+                    = lstArmorsToConsider.ToDictionary(x => x, y => decBaseArmorImprovement);
+                foreach (Improvement objImprovement in lstUsedImprovements)
+                {
+                    if (objImprovement.ImproveSource != Improvement.ImprovementSource.Armor &&
+                        objImprovement.ImproveSource != Improvement.ImprovementSource.ArmorMod)
+                        continue;
+                    Armor objSourceArmor =
+                        lstArmorsToConsider.Find(x => x.InternalId == objImprovement.SourceName)
+                        ?? lstArmorsToConsider.FindArmorMod(objImprovement.SourceName)?.Parent;
+                    if (objSourceArmor == null)
+                        continue;
+                    decGeneralArmorImprovementValue -= objImprovement.Value;
+                    foreach (Armor objArmor in lstArmorsToConsider)
+                    {
+                        if (objArmor != objSourceArmor)
+                            dicArmorImprovementValues[objArmor] -= objImprovement.Value;
+                    }
+                }
+
+                Armor objHighestArmor = null;
+                int intHighest = 0;
+                int intHighestNoCustomStack = 0;
+                // Run through the list of Armor currently worn and retrieve the highest total Armor rating.
+                // This is used for Custom-Fit armour's stacking.
+                foreach (Armor objArmor in lstArmorsToConsider)
+                {
+                    if (objArmor.ArmorValue.StartsWith('+')
+                        || objArmor.ArmorValue.StartsWith('-'))
+                        continue;
+                    int intCustomStackBonus = 0;
+                    string strArmorName = objArmor.Name;
+                    foreach (Armor objInnerArmor in lstArmorsToConsider)
+                    {
+                        if (objInnerArmor == objArmor)
+                            continue;
+                        if (!objInnerArmor.ArmorOverrideValue.StartsWith('+')
+                            && !objInnerArmor.ArmorOverrideValue.StartsWith('-'))
+                            continue;
+                        if (objInnerArmor.ArmorMods.Any(objMod => objMod.Name == "Custom Fit (Stack)"
+                                                                  && objMod.Extra == strArmorName
+                                                                  && objMod.Equipped))
+                            intCustomStackBonus += objInnerArmor.TotalOverrideArmor;
+                    }
+
+                    int intArmorValue = objArmor.TotalArmor + dicArmorImprovementValues[objArmor].StandardRound();
+                    if (intArmorValue + intCustomStackBonus > intHighest)
+                    {
+                        intHighest = intArmorValue + intCustomStackBonus;
+                        intFromEquippedArmorImprovements
+                            = (dicArmorImprovementValues[objArmor] - decGeneralArmorImprovementValue).StandardRound();
+                        intHighestNoCustomStack = intArmorValue;
+                        objHighestArmor = objArmor;
+                    }
+                }
+
+                int intArmor = objHighestArmor != null
+                    ? intHighestNoCustomStack
+                    : decGeneralArmorImprovementValue.StandardRound();
+
+                // Run through the list of Armor currently worn again and look at armors that start with '+' since they stack with the highest Armor.
+                int intStacking = 0;
+                foreach (Armor objArmor in lstArmorsToConsider)
+                {
+                    if (!objArmor.ArmorValue.StartsWith('+')
+                        && !objArmor.ArmorValue.StartsWith('-')
+                        && !objArmor.ArmorOverrideValue.StartsWith('+')
+                        && !objArmor.ArmorOverrideValue.StartsWith('-')
+                        || objArmor == objHighestArmor)
+                        continue;
+                    bool blnDoAdd = true;
+                    bool blnCustomFit = false;
+                    if (objHighestArmor != null)
+                    {
+                        foreach (ArmorMod objMod in objArmor.ArmorMods)
+                        {
+                            if (objMod.Name == "Custom Fit (Stack)")
+                            {
+                                blnDoAdd = objMod.Extra == objHighestArmor.Name && objMod.Equipped;
+                                blnCustomFit = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (blnDoAdd)
+                    {
+                        if (!blnCustomFit
+                            && (objArmor.ArmorValue.StartsWith('+') || objArmor.ArmorValue.StartsWith('-')))
+                            intStacking += objArmor.TotalArmor;
+                        else
+                            intStacking += objArmor.TotalOverrideArmor;
+                    }
+                }
+
+                return new Tuple<int, int, List<Improvement>>(intArmor + intStacking, intFromEquippedArmorImprovements, lstUsedImprovements);
             }
         }
 
@@ -20836,6 +20970,19 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// The Character's total Armor Rating.
+        /// </summary>
+        public async ValueTask<int> GetTotalArmorRatingAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+            {
+                if (_intCachedTotalArmorRating == int.MinValue)
+                    _intCachedTotalArmorRating = await GetArmorRatingAsync(token: token);
+                return _intCachedTotalArmorRating;
+            }
+        }
+
         public string TotalArmorRatingToolTip
         {
             get
@@ -20890,6 +21037,19 @@ namespace Chummer
         }
 
         /// <summary>
+        /// The Character's total Armor Rating against Fire attacks.
+        /// </summary>
+        public async ValueTask<int> GetTotalFireArmorRatingAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+            {
+                if (_intCachedTotalFireArmorRating == int.MinValue)
+                    _intCachedTotalFireArmorRating = await GetArmorRatingAsync(Improvement.ImprovementType.FireArmor, token: token);
+                return _intCachedTotalFireArmorRating;
+            }
+        }
+
+        /// <summary>
         /// The Character's total Armor Rating against Cold attacks.
         /// </summary>
         public int TotalColdArmorRating
@@ -20902,6 +21062,19 @@ namespace Chummer
                         _intCachedTotalColdArmorRating = GetArmorRating(Improvement.ImprovementType.ColdArmor);
                     return _intCachedTotalColdArmorRating;
                 }
+            }
+        }
+
+        /// <summary>
+        /// The Character's total Armor Rating against Cold attacks.
+        /// </summary>
+        public async ValueTask<int> GetTotalColdArmorRatingAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+            {
+                if (_intCachedTotalColdArmorRating == int.MinValue)
+                    _intCachedTotalColdArmorRating = await GetArmorRatingAsync(Improvement.ImprovementType.ColdArmor, token: token);
+                return _intCachedTotalColdArmorRating;
             }
         }
 
@@ -20923,6 +21096,19 @@ namespace Chummer
         }
 
         /// <summary>
+        /// The Character's total Armor Rating against Electricity attacks.
+        /// </summary>
+        public async ValueTask<int> GetTotalElectricityArmorRatingAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+            {
+                if (_intCachedTotalElectricityArmorRating == int.MinValue)
+                    _intCachedTotalElectricityArmorRating = await GetArmorRatingAsync(Improvement.ImprovementType.ElectricityArmor, token: token);
+                return _intCachedTotalElectricityArmorRating;
+            }
+        }
+
+        /// <summary>
         /// The Character's total Armor Rating against Acid attacks.
         /// </summary>
         public int TotalAcidArmorRating
@@ -20939,6 +21125,19 @@ namespace Chummer
         }
 
         /// <summary>
+        /// The Character's total Armor Rating against Acid attacks.
+        /// </summary>
+        public async ValueTask<int> GetTotalAcidArmorRatingAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+            {
+                if (_intCachedTotalAcidArmorRating == int.MinValue)
+                    _intCachedTotalAcidArmorRating = await GetArmorRatingAsync(Improvement.ImprovementType.AcidArmor, token: token);
+                return _intCachedTotalAcidArmorRating;
+            }
+        }
+
+        /// <summary>
         /// The Character's total Armor Rating against falling damage (AP -4 not factored in).
         /// </summary>
         public int TotalFallingArmorRating
@@ -20951,6 +21150,19 @@ namespace Chummer
                         _intCachedTotalFallingArmorRating = GetArmorRating(Improvement.ImprovementType.FallingArmor);
                     return _intCachedTotalFallingArmorRating;
                 }
+            }
+        }
+
+        /// <summary>
+        /// The Character's total Armor Rating against falling damage (AP -4 not factored in).
+        /// </summary>
+        public async ValueTask<int> GetTotalFallingArmorRatingAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+            {
+                if (_intCachedTotalFallingArmorRating == int.MinValue)
+                    _intCachedTotalFallingArmorRating = await GetArmorRatingAsync(Improvement.ImprovementType.FallingArmor, token: token);
+                return _intCachedTotalFallingArmorRating;
             }
         }
 
