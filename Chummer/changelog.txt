@@ -1,6 +1,5 @@
 Future Build 223
 Application Changes:
-- Migrated Chummer to .NET Framework 4.8.1 to get receive various improvements and bugfixes to WinForms.
 - Characters can now be opened up directly for printing (including exporting to PDF) or for exporting without needing to fully open a character for editing.
 - Character sheet viewers and character export windows are now treated the same way as "normal" character windows, meaning they open in tabs now instead of a dialog and can be kept open in the background while editing characters.
 - Changing the rating of a knowsoft or linguasoft after it has been bought no longer causes Chummer to crash. Fixes #4708.
