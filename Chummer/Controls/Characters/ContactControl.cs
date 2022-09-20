@@ -66,7 +66,7 @@ namespace Chummer
                 return;
             await LoadContactList();
 
-            DoDataBindings();
+            await DoDataBindings();
 
             if (_objContact.IsEnemy)
             {
