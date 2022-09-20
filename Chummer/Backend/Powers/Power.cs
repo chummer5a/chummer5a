@@ -528,6 +528,9 @@ namespace Chummer
         /// </summary>
         public string CurrentDisplayNameShort => DisplayNameShort(GlobalSettings.Language);
 
+        public ValueTask<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default) =>
+            DisplayNameAsync(GlobalSettings.Language, token);
+
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
         /// </summary>

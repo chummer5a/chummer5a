@@ -1141,19 +1141,19 @@ namespace Chummer
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
         /// </summary>
-        public async Task<string> DisplayNameShortAsync(string strLanguage)
+        public async Task<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
         {
             string strReturn;
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 strReturn = Name;
             else
             {
-                XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage);
-                strReturn = objNode != null ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value ?? Name : Name;
+                XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token);
+                strReturn = objNode != null ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token))?.Value ?? Name : Name;
             }
 
             if (Extended && _blnCustomExtended)
-                strReturn += ',' + await LanguageManager.GetStringAsync("String_Space", strLanguage) + await LanguageManager.GetStringAsync("String_SpellExtended", strLanguage);
+                strReturn += ',' + await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token) + await LanguageManager.GetStringAsync("String_SpellExtended", strLanguage, token: token);
 
             return strReturn;
         }
@@ -1180,18 +1180,18 @@ namespace Chummer
         /// <summary>
         /// The name of the object as it should be displayed in lists.
         /// </summary>
-        public async Task<string> DisplayNameAsync(string strLanguage)
+        public async Task<string> DisplayNameAsync(string strLanguage, CancellationToken token = default)
         {
-            string strReturn = await DisplayNameShortAsync(strLanguage);
-
+            string strReturn = await DisplayNameShortAsync(strLanguage, token);
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token);
             if (Limited)
-                strReturn += await LanguageManager.GetStringAsync("String_Space", strLanguage) + '(' + await LanguageManager.GetStringAsync("String_SpellLimited", strLanguage) + ')';
+                strReturn += strSpace + '(' + await LanguageManager.GetStringAsync("String_SpellLimited", strLanguage, token: token) + ')';
             if (Alchemical)
-                strReturn += await LanguageManager.GetStringAsync("String_Space", strLanguage) + '(' + await LanguageManager.GetStringAsync("String_SpellAlchemical", strLanguage) + ')';
+                strReturn += strSpace + '(' + await LanguageManager.GetStringAsync("String_SpellAlchemical", strLanguage, token: token) + ')';
             if (!string.IsNullOrEmpty(Extra))
             {
                 // Attempt to retrieve the CharacterAttribute name.
-                strReturn += await LanguageManager.GetStringAsync("String_Space", strLanguage) + '(' + await _objCharacter.TranslateExtraAsync(Extra, strLanguage) + ')';
+                strReturn += strSpace + '(' + await _objCharacter.TranslateExtraAsync(Extra, strLanguage, token: token) + ')';
             }
             return strReturn;
         }
@@ -1199,6 +1199,12 @@ namespace Chummer
         public string CurrentDisplayName => DisplayName(GlobalSettings.Language);
 
         public string CurrentDisplayNameShort => DisplayNameShort(GlobalSettings.Language);
+
+        public Task<string> GetCurrentDisplayNameAsync(CancellationToken token = default) =>
+            DisplayNameAsync(GlobalSettings.Language, token);
+
+        public Task<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default) =>
+            DisplayNameShortAsync(GlobalSettings.Language, token);
 
         /// <summary>
         /// Does the spell cost Karma? Typically provided by improvements.

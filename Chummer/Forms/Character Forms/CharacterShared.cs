@@ -5083,7 +5083,7 @@ namespace Chummer
                                                         Improvement.ImprovementSource.StackedFocus, objStack.InternalId,
                                                         objFociGear.Bonus, objFociGear.Rating,
                                                         await objFociGear.DisplayNameShortAsync(
-                                                            GlobalSettings.Language, GenericToken));
+                                                            GlobalSettings.Language, GenericToken), token: GenericToken);
                                                     if (objFociGear.WirelessOn)
                                                         await ImprovementManager.CreateImprovementsAsync(
                                                             CharacterObject,
@@ -5091,7 +5091,7 @@ namespace Chummer
                                                             objStack.InternalId,
                                                             objFociGear.WirelessBonus, objFociGear.Rating,
                                                             await objFociGear.DisplayNameShortAsync(
-                                                                GlobalSettings.Language, GenericToken));
+                                                                GlobalSettings.Language, GenericToken), token: GenericToken);
                                                 }
                                             }
 
@@ -5199,7 +5199,7 @@ namespace Chummer
                                                             Improvement.ImprovementSource.StackedFocus,
                                                             objStack.InternalId, objFociGear.Bonus, objFociGear.Rating,
                                                             await objFociGear.DisplayNameShortAsync(
-                                                                GlobalSettings.Language, GenericToken));
+                                                                GlobalSettings.Language, GenericToken), token: GenericToken);
                                                         if (objFociGear.WirelessOn)
                                                             await ImprovementManager.CreateImprovementsAsync(
                                                                 CharacterObject,
@@ -5207,7 +5207,7 @@ namespace Chummer
                                                                 objStack.InternalId, objFociGear.WirelessBonus,
                                                                 objFociGear.Rating,
                                                                 await objFociGear.DisplayNameShortAsync(
-                                                                    GlobalSettings.Language, GenericToken));
+                                                                    GlobalSettings.Language, GenericToken), token: GenericToken);
                                                     }
                                                 }
 
@@ -5400,7 +5400,7 @@ namespace Chummer
                                                             Improvement.ImprovementSource.StackedFocus,
                                                             objStack.InternalId, objFociGear.Bonus, objFociGear.Rating,
                                                             await objFociGear.DisplayNameShortAsync(
-                                                                GlobalSettings.Language, GenericToken));
+                                                                GlobalSettings.Language, GenericToken), token: GenericToken);
                                                         if (objFociGear.WirelessOn)
                                                             await ImprovementManager.CreateImprovementsAsync(
                                                                 CharacterObject,
@@ -5408,7 +5408,7 @@ namespace Chummer
                                                                 objStack.InternalId, objFociGear.WirelessBonus,
                                                                 objFociGear.Rating,
                                                                 await objFociGear.DisplayNameShortAsync(
-                                                                    GlobalSettings.Language, GenericToken));
+                                                                    GlobalSettings.Language, GenericToken), token: GenericToken);
                                                     }
                                                 }
 

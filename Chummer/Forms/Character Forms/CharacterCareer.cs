@@ -3211,15 +3211,16 @@ namespace Chummer
                                     ImprovementManager.ForcedValue = strSelected;
                                     await ImprovementManager.CreateImprovementsAsync(
                                         CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId,
-                                        objQuality.Bonus, 1, objQuality.CurrentDisplayNameShort);
+                                        objQuality.Bonus, 1, await objQuality.GetCurrentDisplayNameShortAsync(token), token: token);
                                     if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                     {
                                         objQuality.Extra = ImprovementManager.SelectedValue;
+                                        string strName = await objQuality.GetCurrentDisplayNameAsync(token);
                                         await treQualities.DoThreadSafeAsync(x =>
                                         {
                                             TreeNode objTreeNode = x.FindNodeByTag(objQuality);
                                             if (objTreeNode != null)
-                                                objTreeNode.Text = objQuality.CurrentDisplayName;
+                                                objTreeNode.Text = strName;
                                         }, token);
                                     }
                                 }
@@ -3251,15 +3252,16 @@ namespace Chummer
                                         await ImprovementManager.CreateImprovementsAsync(
                                             CharacterObject, Improvement.ImprovementSource.Quality,
                                             objQuality.InternalId, objQuality.FirstLevelBonus, 1,
-                                            objQuality.CurrentDisplayNameShort);
+                                            await objQuality.GetCurrentDisplayNameShortAsync(token), token: token);
                                         if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                         {
                                             objQuality.Extra = ImprovementManager.SelectedValue;
+                                            string strName = await objQuality.GetCurrentDisplayNameAsync(token);
                                             await treQualities.DoThreadSafeAsync(x =>
                                             {
                                                 TreeNode objTreeNode = x.FindNodeByTag(objQuality);
                                                 if (objTreeNode != null)
-                                                    objTreeNode.Text = objQuality.CurrentDisplayName;
+                                                    objTreeNode.Text = strName;
                                             }, token);
                                         }
                                     }
@@ -3271,22 +3273,23 @@ namespace Chummer
                                     ImprovementManager.ForcedValue = strSelected;
                                     await ImprovementManager.CreateImprovementsAsync(
                                         CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId,
-                                        objQuality.NaturalWeaponsNode, 1, objQuality.CurrentDisplayNameShort);
+                                        objQuality.NaturalWeaponsNode, 1, await objQuality.GetCurrentDisplayNameShortAsync(token), token: token);
                                     if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                     {
                                         objQuality.Extra = ImprovementManager.SelectedValue;
+                                        string strName = await objQuality.GetCurrentDisplayNameAsync(token);
                                         await treQualities.DoThreadSafeAsync(x =>
                                         {
                                             TreeNode objTreeNode = x.FindNodeByTag(objQuality);
                                             if (objTreeNode != null)
-                                                objTreeNode.Text = objQuality.CurrentDisplayName;
+                                                objTreeNode.Text = strName;
                                         }, token);
                                     }
                                 }
                             }
                             else
                             {
-                                sbdOutdatedItems.AppendLine(objQuality.CurrentDisplayName);
+                                sbdOutdatedItems.AppendLine(await objQuality.GetCurrentDisplayNameAsync(token));
                             }
                         }
 
@@ -3303,12 +3306,12 @@ namespace Chummer
                                     await ImprovementManager.CreateImprovementsAsync(
                                         CharacterObject, Improvement.ImprovementSource.MartialArt,
                                         objMartialArt.InternalId, objMartialArtNode["bonus"], 1,
-                                        objMartialArt.CurrentDisplayName);
+                                        await objMartialArt.GetCurrentDisplayNameAsync(token), token: token);
                                 }
                             }
                             else
                             {
-                                sbdOutdatedItems.AppendLine(objMartialArt.CurrentDisplayName);
+                                sbdOutdatedItems.AppendLine(await objMartialArt.GetCurrentDisplayNameAsync(token));
                             }
 
                             foreach (MartialArtTechnique objTechnique in objMartialArt.Techniques.Where(
@@ -3321,11 +3324,11 @@ namespace Chummer
                                         await ImprovementManager.CreateImprovementsAsync(
                                             CharacterObject, Improvement.ImprovementSource.MartialArtTechnique,
                                             objTechnique.InternalId, objNode["bonus"], 1,
-                                            objTechnique.CurrentDisplayName);
+                                            await objTechnique.GetCurrentDisplayNameAsync(token), token: token);
                                 }
                                 else
                                 {
-                                    sbdOutdatedItems.AppendLine(objMartialArt.CurrentDisplayName);
+                                    sbdOutdatedItems.AppendLine(await objTechnique.GetCurrentDisplayNameAsync(token));
                                 }
                             }
                         }
@@ -3342,22 +3345,23 @@ namespace Chummer
                                     ImprovementManager.ForcedValue = objSpell.Extra;
                                     await ImprovementManager.CreateImprovementsAsync(
                                         CharacterObject, Improvement.ImprovementSource.Spell, objSpell.InternalId,
-                                        objNode["bonus"], 1, objSpell.CurrentDisplayNameShort);
+                                        objNode["bonus"], 1, await objSpell.GetCurrentDisplayNameShortAsync(token), token: token);
                                     if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                     {
                                         objSpell.Extra = ImprovementManager.SelectedValue;
+                                        string strName = await objSpell.GetCurrentDisplayNameAsync(token);
                                         await treSpells.DoThreadSafeAsync(x =>
                                         {
                                             TreeNode objSpellNode = x.FindNode(objSpell.InternalId);
                                             if (objSpellNode != null)
-                                                objSpellNode.Text = objSpell.CurrentDisplayName;
+                                                objSpellNode.Text = strName;
                                         }, token);
                                     }
                                 }
                             }
                             else
                             {
-                                sbdOutdatedItems.AppendLine(objSpell.CurrentDisplayName);
+                                sbdOutdatedItems.AppendLine(await objSpell.GetCurrentDisplayNameAsync(token));
                             }
                         }
 
@@ -3374,13 +3378,13 @@ namespace Chummer
                                     ImprovementManager.ForcedValue = objPower.Extra;
                                     await ImprovementManager.CreateImprovementsAsync(
                                         CharacterObject, Improvement.ImprovementSource.Power, objPower.InternalId,
-                                        objPower.Bonus, objPower.TotalRating,
-                                        objPower.CurrentDisplayNameShort);
+                                        objPower.Bonus, await objPower.GetTotalRatingAsync(token),
+                                        await objPower.GetCurrentDisplayNameShortAsync(token), token: token);
                                 }
                             }
                             else
                             {
-                                sbdOutdatedItems.AppendLine(objPower.CurrentDisplayName);
+                                sbdOutdatedItems.AppendLine(await objPower.GetCurrentDisplayNameAsync(token));
                             }
                         }
 
@@ -3397,22 +3401,23 @@ namespace Chummer
                                     await ImprovementManager.CreateImprovementsAsync(
                                         CharacterObject, Improvement.ImprovementSource.ComplexForm,
                                         objComplexForm.InternalId, objNode["bonus"], 1,
-                                        objComplexForm.CurrentDisplayNameShort);
+                                        await objComplexForm.GetCurrentDisplayNameShortAsync(token), token: token);
                                     if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                     {
                                         objComplexForm.Extra = ImprovementManager.SelectedValue;
+                                        string strName = await objComplexForm.GetCurrentDisplayNameAsync(token);
                                         await treComplexForms.DoThreadSafeAsync(x =>
                                         {
                                             TreeNode objCFNode = x.FindNode(objComplexForm.InternalId);
                                             if (objCFNode != null)
-                                                objCFNode.Text = objComplexForm.CurrentDisplayName;
+                                                objCFNode.Text = strName;
                                         }, token);
                                     }
                                 }
                             }
                             else
                             {
-                                sbdOutdatedItems.AppendLine(objComplexForm.CurrentDisplayName);
+                                sbdOutdatedItems.AppendLine(await objComplexForm.GetCurrentDisplayNameAsync(token));
                             }
                         }
 
@@ -3428,22 +3433,23 @@ namespace Chummer
                                     ImprovementManager.ForcedValue = objProgram.Extra;
                                     await ImprovementManager.CreateImprovementsAsync(
                                         CharacterObject, Improvement.ImprovementSource.AIProgram, objProgram.InternalId,
-                                        objNode["bonus"], 1, objProgram.CurrentDisplayNameShort);
+                                        objNode["bonus"], 1, await objProgram.GetCurrentDisplayNameShortAsync(token), token: token);
                                     if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                     {
                                         objProgram.Extra = ImprovementManager.SelectedValue;
+                                        string strName = await objProgram.GetCurrentDisplayNameShortAsync(token);
                                         await treAIPrograms.DoThreadSafeAsync(x =>
                                         {
                                             TreeNode objProgramNode = x.FindNode(objProgram.InternalId);
                                             if (objProgramNode != null)
-                                                objProgramNode.Text = objProgram.CurrentDisplayNameShort;
+                                                objProgramNode.Text = strName;
                                         }, token);
                                     }
                                 }
                             }
                             else
                             {
-                                sbdOutdatedItems.AppendLine(objProgram.CurrentDisplayNameShort);
+                                sbdOutdatedItems.AppendLine(await objProgram.GetCurrentDisplayNameShortAsync(token));
                             }
                         }
 
@@ -3467,22 +3473,23 @@ namespace Chummer
                                     await ImprovementManager.CreateImprovementsAsync(
                                         CharacterObject, Improvement.ImprovementSource.CritterPower,
                                         objPower.InternalId, objPower.Bonus, intRating,
-                                        objPower.CurrentDisplayNameShort);
+                                        await objPower.GetCurrentDisplayNameShortAsync(token), token: token);
                                     if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                     {
                                         objPower.Extra = ImprovementManager.SelectedValue;
+                                        string strName = await objPower.GetCurrentDisplayNameAsync(token);
                                         await treCritterPowers.DoThreadSafeAsync(x =>
                                         {
                                             TreeNode objPowerNode = x.FindNode(objPower.InternalId);
                                             if (objPowerNode != null)
-                                                objPowerNode.Text = objPower.CurrentDisplayName;
+                                                objPowerNode.Text = strName;
                                         }, token);
                                     }
                                 }
                             }
                             else
                             {
-                                sbdOutdatedItems.AppendLine(objPower.CurrentDisplayName);
+                                sbdOutdatedItems.AppendLine(await objPower.GetCurrentDisplayNameAsync(token));
                             }
                         }
 
@@ -3505,12 +3512,12 @@ namespace Chummer
                                 {
                                     await ImprovementManager.CreateImprovementsAsync(
                                         CharacterObject, objMetamagic.SourceType, objMetamagic.InternalId,
-                                        objMetamagic.Bonus, 1, objMetamagic.CurrentDisplayNameShort);
+                                        objMetamagic.Bonus, 1, await objMetamagic.GetCurrentDisplayNameShortAsync(token), token: token);
                                 }
                             }
                             else
                             {
-                                sbdOutdatedItems.AppendLine(objMetamagic.CurrentDisplayName);
+                                sbdOutdatedItems.AppendLine(await objMetamagic.GetCurrentDisplayNameAsync(token));
                             }
                         }
 
@@ -3535,8 +3542,8 @@ namespace Chummer
                                     {
                                         await ImprovementManager.CreateImprovementsAsync(
                                             CharacterObject, objCyberware.SourceType, objCyberware.InternalId,
-                                            objCyberware.Bonus, objCyberware.Rating,
-                                            objCyberware.CurrentDisplayNameShort);
+                                            objCyberware.Bonus, await objCyberware.GetRatingAsync(token),
+                                            await objCyberware.GetCurrentDisplayNameShortAsync(token), token: token);
                                         if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                             objCyberware.Extra = ImprovementManager.SelectedValue;
                                     }
@@ -3621,8 +3628,8 @@ namespace Chummer
                                         await ImprovementManager.CreateImprovementsAsync(
                                             CharacterObject, objLoopCyberware.SourceType,
                                             objLoopCyberware.InternalId + "Pair", objLoopCyberware.PairBonus,
-                                            objLoopCyberware.Rating,
-                                            objLoopCyberware.CurrentDisplayNameShort);
+                                            await objLoopCyberware.GetRatingAsync(token),
+                                            await objLoopCyberware.GetCurrentDisplayNameShortAsync(token), token: token);
                                         if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue)
                                             && string.IsNullOrEmpty(objCyberware.Extra))
                                             objCyberware.Extra = ImprovementManager.SelectedValue;
@@ -3633,8 +3640,10 @@ namespace Chummer
                                             : await treCyberware.DoThreadSafeFuncAsync(
                                                 x => x.FindNode(objLoopCyberware.InternalId), token);
                                         if (objNode != null)
-                                            await treCyberware.DoThreadSafeAsync(
-                                                () => objNode.Text = objLoopCyberware.CurrentDisplayName, token);
+                                        {
+                                            string strName = await objLoopCyberware.GetCurrentDisplayNameAsync(token);
+                                            await treCyberware.DoThreadSafeAsync(() => objNode.Text = strName, token);
+                                        }
                                     }
 
                                     --intCyberwaresCount;
@@ -3659,22 +3668,23 @@ namespace Chummer
                                         ImprovementManager.ForcedValue = objArmor.Extra;
                                         await ImprovementManager.CreateImprovementsAsync(
                                             CharacterObject, Improvement.ImprovementSource.Armor, objArmor.InternalId,
-                                            objArmor.Bonus, objArmor.Rating, objArmor.CurrentDisplayNameShort);
+                                            objArmor.Bonus, objArmor.Rating, await objArmor.GetCurrentDisplayNameShortAsync(token), token: token);
                                         if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                         {
                                             objArmor.Extra = ImprovementManager.SelectedValue;
+                                            string strName = await objArmor.GetCurrentDisplayNameAsync(token);
                                             await treArmor.DoThreadSafeAsync(x =>
                                             {
                                                 TreeNode objArmorNode = x.FindNode(objArmor.InternalId);
                                                 if (objArmorNode != null)
-                                                    objArmorNode.Text = objArmor.CurrentDisplayName;
+                                                    objArmorNode.Text = strName;
                                             }, token);
                                         }
                                     }
                                 }
                                 else
                                 {
-                                    sbdOutdatedItems.AppendLine(objArmor.CurrentDisplayName);
+                                    sbdOutdatedItems.AppendLine(await objArmor.GetCurrentDisplayNameAsync(token));
                                 }
                             }
 
@@ -3694,22 +3704,23 @@ namespace Chummer
                                             await ImprovementManager.CreateImprovementsAsync(
                                                 CharacterObject, Improvement.ImprovementSource.ArmorMod,
                                                 objMod.InternalId, objMod.Bonus, objMod.Rating,
-                                                objMod.CurrentDisplayNameShort);
+                                                await objMod.GetCurrentDisplayNameShortAsync(token), token: token);
                                             if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                             {
                                                 objMod.Extra = ImprovementManager.SelectedValue;
+                                                string strName = await objMod.GetCurrentDisplayNameAsync(token);
                                                 await treArmor.DoThreadSafeAsync(x =>
                                                 {
                                                     TreeNode objPluginNode = x.FindNode(objMod.InternalId);
                                                     if (objPluginNode != null)
-                                                        objPluginNode.Text = objMod.CurrentDisplayName;
+                                                        objPluginNode.Text = strName;
                                                 }, token);
                                             }
                                         }
                                     }
                                     else
                                     {
-                                        sbdOutdatedItems.AppendLine(objMod.CurrentDisplayName);
+                                        sbdOutdatedItems.AppendLine(await objMod.GetCurrentDisplayNameAsync(token));
                                     }
                                 }
 

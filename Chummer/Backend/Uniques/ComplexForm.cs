@@ -298,14 +298,14 @@ namespace Chummer
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
         /// </summary>
-        public async Task<string> DisplayNameShortAsync(string strLanguage)
+        public async Task<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
         {
             string strReturn = Name;
             // Get the translated name if applicable.
             if (!strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
             {
-                XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage);
-                strReturn = objNode != null ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value ?? Name : Name;
+                XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token);
+                strReturn = objNode != null ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token))?.Value ?? Name : Name;
             }
 
             return strReturn;
@@ -325,16 +325,16 @@ namespace Chummer
             return strReturn;
         }
 
-        public async Task<string> DisplayNameAsync(string strLanguage)
+        public async Task<string> DisplayNameAsync(string strLanguage, CancellationToken token = default)
         {
-            string strReturn = await DisplayNameShortAsync(strLanguage);
+            string strReturn = await DisplayNameShortAsync(strLanguage, token);
 
             if (!string.IsNullOrEmpty(Extra))
             {
                 string strExtra = Extra;
                 if (!strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
-                    strExtra = await _objCharacter.TranslateExtraAsync(Extra, strLanguage);
-                strReturn += await LanguageManager.GetStringAsync("String_Space", strLanguage) + '(' + strExtra + ')';
+                    strExtra = await _objCharacter.TranslateExtraAsync(Extra, strLanguage, token: token);
+                strReturn += await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token) + '(' + strExtra + ')';
             }
             return strReturn;
         }
@@ -344,7 +344,11 @@ namespace Chummer
         /// </summary>
         public string CurrentDisplayName => DisplayName(GlobalSettings.Language);
 
+        public Task<string> GetCurrentDisplayNameAsync(CancellationToken token = default) => DisplayNameAsync(GlobalSettings.Language, token);
+
         public string CurrentDisplayNameShort => DisplayNameShort(GlobalSettings.Language);
+
+        public Task<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default) => DisplayNameShortAsync(GlobalSettings.Language, token);
 
         /// <summary>
         /// Translated Duration.

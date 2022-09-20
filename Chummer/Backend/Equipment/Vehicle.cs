@@ -1240,6 +1240,27 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Pilot.
+        /// </summary>
+        public async ValueTask<int> GetPilotAsync(CancellationToken token = default)
+        {
+            int intReturn = _intPilot;
+            await Mods.ForEachAsync(async objMod =>
+            {
+                if (!objMod.IncludedInVehicle && objMod.Equipped)
+                {
+                    string strBonusPilot = objMod.WirelessOn
+                        ? objMod.WirelessBonus?["pilot"]?.InnerText ?? objMod.Bonus?["pilot"]?.InnerText
+                        : objMod.Bonus?["pilot"]?.InnerText;
+                    intReturn = Math.Max(
+                        await ParseBonusAsync(strBonusPilot, objMod.Rating, _intPilot, "Pilot", false, token),
+                        intReturn);
+                }
+            }, token);
+            return intReturn;
+        }
+
+        /// <summary>
         /// Body.
         /// </summary>
         public int Body
@@ -1632,6 +1653,44 @@ namespace Chummer.Backend.Equipment
                     object objProcess = CommonFunctions.EvaluateInvariantXPath(strBonus.TrimStart('+')
                         .Replace("Rating", intModRating.ToString(GlobalSettings.InvariantCultureInfo))
                         .Replace(strReplaceRating, intTotalRating.ToString(GlobalSettings.InvariantCultureInfo)), out bool blnIsSuccess);
+                    if (blnIsSuccess)
+                        return ((double)objProcess).StandardRound();
+                }
+            }
+            return 0;
+        }
+
+        /// <summary>
+        /// Parse a given string from a Mod's bonus node to calculate new bonus or base value. 
+        /// </summary>
+        /// <param name="strBonus">String that will be parsed, replacing values.</param>
+        /// <param name="intModRating">Current Rating of the relevant Mod.</param>
+        /// <param name="intTotalRating">Total current Rating of the value that is being improved.</param>
+        /// <param name="strReplaceRating">String value that will be replaced by intModRating.</param>
+        /// <param name="blnBonus">Whether the value must be prefixed with + or - to return a value.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns></returns>
+        private static async ValueTask<int> ParseBonusAsync(string strBonus, int intModRating, int intTotalRating, string strReplaceRating, bool blnBonus = true, CancellationToken token = default)
+        {
+            if (!string.IsNullOrEmpty(strBonus))
+            {
+                char chrFirstCharacter = strBonus[0];
+                //Value is a bonus 
+                if ((chrFirstCharacter == '+' || chrFirstCharacter == '-') && blnBonus)
+                {
+                    // If the bonus is determined by the existing number, evaluate the expression.
+                    (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strBonus.TrimStart('+')
+                        .Replace("Rating", intModRating.ToString(GlobalSettings.InvariantCultureInfo))
+                        .Replace(strReplaceRating, intTotalRating.ToString(GlobalSettings.InvariantCultureInfo)), token);
+                    if (blnIsSuccess)
+                        return ((double)objProcess).StandardRound();
+                }
+                if (chrFirstCharacter != '+' && chrFirstCharacter != '-' && !blnBonus)
+                {
+                    // If the bonus is determined by the existing number, evaluate the expression.
+                    (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strBonus.TrimStart('+')
+                        .Replace("Rating", intModRating.ToString(GlobalSettings.InvariantCultureInfo))
+                        .Replace(strReplaceRating, intTotalRating.ToString(GlobalSettings.InvariantCultureInfo)), token);
                     if (blnIsSuccess)
                         return ((double)objProcess).StandardRound();
                 }
@@ -2276,6 +2335,27 @@ namespace Chummer.Backend.Equipment
 
                 return intBody;
             }
+        }
+
+        /// <summary>
+        /// Total Body of the Vehicle including Modifications.
+        /// </summary>
+        public async ValueTask<int> GetTotalBodyAsync(CancellationToken token = default)
+        {
+            int intBody = Body;
+            await Mods.ForEachAsync(async objMod =>
+            {
+                if (!objMod.IncludedInVehicle && objMod.Equipped)
+                {
+                    // Add the Modification's Body to the Vehicle's base Body.
+                    intBody += await ParseBonusAsync(objMod.Bonus?["body"]?.InnerText, objMod.Rating, Body, "Body", token: token);
+                    if (objMod.WirelessOn && objMod.WirelessBonus != null)
+                    {
+                        intBody += await ParseBonusAsync(objMod.WirelessBonus?["body"]?.InnerText, objMod.Rating, Body, "Body", token: token);
+                    }
+                }
+            }, token);
+            return intBody;
         }
 
         /// <summary>

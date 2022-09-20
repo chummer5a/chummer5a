@@ -288,7 +288,7 @@ namespace Chummer.Backend.Equipment
                         if (objXmlWeapon != null)
                         {
                             int intAddWeaponRating = 0;
-                            string strLoopRating = objXmlAddWeapon.Attributes["rating"]?.InnerText;
+                            string strLoopRating = objXmlAddWeapon.Attributes?["rating"]?.InnerText;
                             if (!string.IsNullOrEmpty(strLoopRating))
                             {
                                 strLoopRating = strLoopRating.CheapReplace("{Rating}",
@@ -635,7 +635,11 @@ namespace Chummer.Backend.Equipment
 
         public string CurrentDisplayName => DisplayName(GlobalSettings.CultureInfo, GlobalSettings.Language);
 
+        public ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default) => DisplayNameAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
+
         public string CurrentDisplayNameShort => DisplayNameShort(GlobalSettings.Language);
+
+        public ValueTask<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default) => DisplayNameShortAsync(GlobalSettings.Language, token);
 
         /// <summary>
         /// Translated Category.

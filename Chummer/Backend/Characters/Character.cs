@@ -5759,7 +5759,7 @@ namespace Chummer
                                                     {
                                                         ImprovementManager.ForcedValue = objQuality.Extra;
                                                         if (blnSync)
-                                                            // ReSharper disable once MethodHasAsyncOverload
+                                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                             ImprovementManager.CreateImprovements(this,
                                                                 Improvement.ImprovementSource.Quality,
                                                                 objQuality.InternalId, objQuality.Bonus, 1,
@@ -5768,7 +5768,7 @@ namespace Chummer
                                                             await ImprovementManager.CreateImprovementsAsync(this,
                                                                 Improvement.ImprovementSource.Quality,
                                                                 objQuality.InternalId, objQuality.Bonus, 1,
-                                                                objQuality.CurrentDisplayNameShort).ConfigureAwait(false);
+                                                                await objQuality.GetCurrentDisplayNameShortAsync(token), token: token).ConfigureAwait(false);
                                                         if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                                         {
                                                             objQuality.Extra = ImprovementManager.SelectedValue;
@@ -5796,7 +5796,7 @@ namespace Chummer
                                                         {
                                                             ImprovementManager.ForcedValue = objQuality.Extra;
                                                             if (blnSync)
-                                                                // ReSharper disable once MethodHasAsyncOverload
+                                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                                 ImprovementManager.CreateImprovements(this,
                                                                     Improvement.ImprovementSource.Quality,
                                                                     objQuality.InternalId,
@@ -5807,7 +5807,7 @@ namespace Chummer
                                                                     Improvement.ImprovementSource.Quality,
                                                                     objQuality.InternalId,
                                                                     objQuality.FirstLevelBonus, 1,
-                                                                    objQuality.CurrentDisplayNameShort).ConfigureAwait(false);
+                                                                    await objQuality.GetCurrentDisplayNameShortAsync(token), token: token).ConfigureAwait(false);
                                                             if (!string.IsNullOrEmpty(ImprovementManager
                                                                     .SelectedValue))
                                                             {
@@ -5831,7 +5831,7 @@ namespace Chummer
                                                 {
                                                     ImprovementManager.ForcedValue = objQuality.Extra;
                                                     if (blnSync)
-                                                        // ReSharper disable once MethodHasAsyncOverload
+                                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                         ImprovementManager.CreateImprovements(this,
                                                             Improvement.ImprovementSource.Quality,
                                                             objQuality.InternalId, objQuality.NaturalWeaponsNode, 1,
@@ -5840,7 +5840,7 @@ namespace Chummer
                                                         await ImprovementManager.CreateImprovementsAsync(this,
                                                             Improvement.ImprovementSource.Quality,
                                                             objQuality.InternalId, objQuality.NaturalWeaponsNode, 1,
-                                                            objQuality.CurrentDisplayNameShort).ConfigureAwait(false);
+                                                            await objQuality.GetCurrentDisplayNameShortAsync(token), token: token).ConfigureAwait(false);
                                                     if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                                     {
                                                         objQuality.Extra = ImprovementManager.SelectedValue;
@@ -6513,7 +6513,7 @@ namespace Chummer
                                             if (objCyberware.Bonus != null)
                                             {
                                                 if (blnSync)
-                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                     ImprovementManager.CreateImprovements(this, objCyberware.SourceType,
                                                         objCyberware.InternalId, objCyberware.Bonus,
                                                         objCyberware.Rating,
@@ -6522,8 +6522,8 @@ namespace Chummer
                                                     await ImprovementManager.CreateImprovementsAsync(
                                                         this, objCyberware.SourceType,
                                                         objCyberware.InternalId, objCyberware.Bonus,
-                                                        objCyberware.Rating,
-                                                        objCyberware.CurrentDisplayNameShort).ConfigureAwait(false);
+                                                        await objCyberware.GetRatingAsync(token),
+                                                        await objCyberware.GetCurrentDisplayNameShortAsync(token), token: token).ConfigureAwait(false);
                                                 if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                                     objCyberware.Extra = ImprovementManager.SelectedValue;
                                             }
@@ -6531,7 +6531,7 @@ namespace Chummer
                                             if (objCyberware.WirelessOn && objCyberware.WirelessBonus != null)
                                             {
                                                 if (blnSync)
-                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                     ImprovementManager.CreateImprovements(this, objCyberware.SourceType,
                                                         objCyberware.InternalId, objCyberware.WirelessBonus,
                                                         objCyberware.Rating,
@@ -6540,8 +6540,8 @@ namespace Chummer
                                                     await ImprovementManager.CreateImprovementsAsync(
                                                         this, objCyberware.SourceType,
                                                         objCyberware.InternalId, objCyberware.WirelessBonus,
-                                                        objCyberware.Rating,
-                                                        objCyberware.CurrentDisplayNameShort).ConfigureAwait(false);
+                                                        await objCyberware.GetRatingAsync(token),
+                                                        await objCyberware.GetCurrentDisplayNameShortAsync(token), token: token).ConfigureAwait(false);
                                                 if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) &&
                                                     string.IsNullOrEmpty(objCyberware.Extra))
                                                     objCyberware.Extra = ImprovementManager.SelectedValue;
@@ -6624,7 +6624,7 @@ namespace Chummer
                                                 if (objCyberware.Bonus != null)
                                                 {
                                                     if (blnSync)
-                                                        // ReSharper disable once MethodHasAsyncOverload
+                                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                         ImprovementManager.CreateImprovements(this,
                                                             objCyberware.SourceType,
                                                             objCyberware.InternalId, objCyberware.Bonus,
@@ -6634,8 +6634,8 @@ namespace Chummer
                                                         await ImprovementManager.CreateImprovementsAsync(this,
                                                             objCyberware.SourceType,
                                                             objCyberware.InternalId, objCyberware.Bonus,
-                                                            objCyberware.Rating,
-                                                            objCyberware.CurrentDisplayNameShort).ConfigureAwait(false);
+                                                            await objCyberware.GetRatingAsync(token),
+                                                            await objCyberware.GetCurrentDisplayNameShortAsync(token), token: token).ConfigureAwait(false);
                                                     if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                                         objCyberware.Extra = ImprovementManager.SelectedValue;
                                                 }
@@ -6643,7 +6643,7 @@ namespace Chummer
                                                 if (objCyberware.WirelessOn && objCyberware.WirelessBonus != null)
                                                 {
                                                     if (blnSync)
-                                                        // ReSharper disable once MethodHasAsyncOverload
+                                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                         ImprovementManager.CreateImprovements(this,
                                                             objCyberware.SourceType,
                                                             objCyberware.InternalId, objCyberware.WirelessBonus,
@@ -6653,8 +6653,8 @@ namespace Chummer
                                                         await ImprovementManager.CreateImprovementsAsync(this,
                                                             objCyberware.SourceType,
                                                             objCyberware.InternalId, objCyberware.WirelessBonus,
-                                                            objCyberware.Rating,
-                                                            objCyberware.CurrentDisplayNameShort).ConfigureAwait(false);
+                                                            await objCyberware.GetRatingAsync(token),
+                                                            await objCyberware.GetCurrentDisplayNameShortAsync(token), token: token).ConfigureAwait(false);
                                                     if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) &&
                                                         string.IsNullOrEmpty(objCyberware.Extra))
                                                         objCyberware.Extra = ImprovementManager.SelectedValue;
@@ -6730,7 +6730,7 @@ namespace Chummer
                                                     objCyberware.Forced != "Left")
                                                     ImprovementManager.ForcedValue = objCyberware.Forced;
                                                 if (blnSync)
-                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                     ImprovementManager.CreateImprovements(this,
                                                         objLoopCyberware.SourceType,
                                                         objLoopCyberware.InternalId + "Pair",
@@ -6742,8 +6742,8 @@ namespace Chummer
                                                         objLoopCyberware.SourceType,
                                                         objLoopCyberware.InternalId + "Pair",
                                                         objLoopCyberware.PairBonus,
-                                                        objLoopCyberware.Rating,
-                                                        objLoopCyberware.CurrentDisplayNameShort).ConfigureAwait(false);
+                                                        await objLoopCyberware.GetRatingAsync(token),
+                                                        await objLoopCyberware.GetCurrentDisplayNameShortAsync(token), token: token).ConfigureAwait(false);
                                                 if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) &&
                                                     string.IsNullOrEmpty(objCyberware.Extra))
                                                     objCyberware.Extra = ImprovementManager.SelectedValue;
@@ -7133,7 +7133,7 @@ namespace Chummer
                                         {
                                             ImprovementManager.ForcedValue = objLivingPersonaQuality.Extra;
                                             if (blnSync)
-                                                // ReSharper disable once MethodHasAsyncOverload
+                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                 ImprovementManager.CreateImprovements(this,
                                                     Improvement.ImprovementSource.Quality,
                                                     objLivingPersonaQuality.InternalId,
@@ -7146,7 +7146,7 @@ namespace Chummer
                                                     objLivingPersonaQuality.InternalId,
                                                     objLivingPersonaQuality
                                                         .Bonus, 1,
-                                                    objLivingPersonaQuality.CurrentDisplayNameShort).ConfigureAwait(false);
+                                                    await objLivingPersonaQuality.GetCurrentDisplayNameShortAsync(token), token: token).ConfigureAwait(false);
                                             if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                             {
                                                 objLivingPersonaQuality.Extra = ImprovementManager.SelectedValue;
@@ -7175,7 +7175,7 @@ namespace Chummer
                                             {
                                                 ImprovementManager.ForcedValue = objLivingPersonaQuality.Extra;
                                                 if (blnSync)
-                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                     ImprovementManager.CreateImprovements(this,
                                                         Improvement.ImprovementSource.Quality,
                                                         objLivingPersonaQuality.InternalId,
@@ -7188,7 +7188,7 @@ namespace Chummer
                                                         objLivingPersonaQuality.InternalId,
                                                         objLivingPersonaQuality
                                                             .FirstLevelBonus, 1,
-                                                        objLivingPersonaQuality.CurrentDisplayNameShort).ConfigureAwait(false);
+                                                        await objLivingPersonaQuality.GetCurrentDisplayNameShortAsync(token), token: token).ConfigureAwait(false);
                                                 if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                                 {
                                                     objLivingPersonaQuality.Extra =
@@ -7212,7 +7212,7 @@ namespace Chummer
                                     {
                                         ImprovementManager.ForcedValue = objLivingPersonaQuality.Extra;
                                         if (blnSync)
-                                            // ReSharper disable once MethodHasAsyncOverload
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             ImprovementManager.CreateImprovements(this,
                                                 Improvement.ImprovementSource.Quality,
                                                 objLivingPersonaQuality.InternalId,
@@ -7225,7 +7225,7 @@ namespace Chummer
                                                 objLivingPersonaQuality.InternalId,
                                                 objLivingPersonaQuality
                                                     .NaturalWeaponsNode, 1,
-                                                objLivingPersonaQuality.CurrentDisplayNameShort).ConfigureAwait(false);
+                                                await objLivingPersonaQuality.GetCurrentDisplayNameShortAsync(token), token: token).ConfigureAwait(false);
                                         if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                         {
                                             objLivingPersonaQuality.Extra = ImprovementManager.SelectedValue;
@@ -10592,7 +10592,7 @@ namespace Chummer
                         {
                             if (objSpell.InternalId == strImprovedSourceName)
                             {
-                                return await objSpell.DisplayNameShortAsync(strLanguage);
+                                return await objSpell.DisplayNameShortAsync(strLanguage, token);
                             }
                         }
 
@@ -10612,7 +10612,7 @@ namespace Chummer
                         {
                             if (objPower.InternalId == strImprovedSourceName)
                             {
-                                return await objPower.DisplayNameShortAsync(strLanguage);
+                                return await objPower.DisplayNameShortAsync(strLanguage, token);
                             }
                         }
 
@@ -10623,7 +10623,7 @@ namespace Chummer
                             if (objMetamagic.InternalId == strImprovedSourceName
                                 && objMetamagic.SourceType == Improvement.ImprovementSource.Metamagic)
                             {
-                                return await objMetamagic.DisplayNameShortAsync(strLanguage);
+                                return await objMetamagic.DisplayNameShortAsync(strLanguage, token);
                             }
                         }
 
@@ -10634,7 +10634,7 @@ namespace Chummer
                             if (objMetamagic.InternalId == strImprovedSourceName
                                 && objMetamagic.SourceType == Improvement.ImprovementSource.Echo)
                             {
-                                return await objMetamagic.DisplayNameShortAsync(strLanguage);
+                                return await objMetamagic.DisplayNameShortAsync(strLanguage, token);
                             }
                         }
 
@@ -10644,7 +10644,7 @@ namespace Chummer
                         {
                             if (objArt.InternalId == strImprovedSourceName)
                             {
-                                return await objArt.DisplayNameShortAsync(strLanguage);
+                                return await objArt.DisplayNameShortAsync(strLanguage, token);
                             }
                         }
 
@@ -10654,7 +10654,7 @@ namespace Chummer
                         {
                             if (objEnhancement.InternalId == strImprovedSourceName)
                             {
-                                return await objEnhancement.DisplayNameShortAsync(strLanguage);
+                                return await objEnhancement.DisplayNameShortAsync(strLanguage, token);
                             }
                         }
 
@@ -10700,7 +10700,7 @@ namespace Chummer
                         {
                             if (objComplexForm.InternalId == strImprovedSourceName)
                             {
-                                return await objComplexForm.DisplayNameShortAsync(strLanguage);
+                                return await objComplexForm.DisplayNameShortAsync(strLanguage, token);
                             }
                         }
 
@@ -10710,7 +10710,7 @@ namespace Chummer
                         {
                             if (objProgram.InternalId == strImprovedSourceName)
                             {
-                                return await objProgram.DisplayNameShortAsync(strLanguage);
+                                return await objProgram.DisplayNameShortAsync(strLanguage, token);
                             }
                         }
 
@@ -10732,7 +10732,7 @@ namespace Chummer
                         {
                             if (objQuality.InternalId == strImprovedSourceName)
                             {
-                                return await objQuality.DisplayNameShortAsync(strLanguage);
+                                return await objQuality.DisplayNameShortAsync(strLanguage, token);
                             }
                         }
 
@@ -10742,7 +10742,7 @@ namespace Chummer
                         {
                             if (objTechnique.InternalId == strImprovedSourceName)
                             {
-                                return await objTechnique.DisplayNameAsync(strLanguage);
+                                return await objTechnique.DisplayNameAsync(strLanguage, token);
                             }
                         }
 
@@ -10752,7 +10752,7 @@ namespace Chummer
                         {
                             if (objMentorSpirit.InternalId == strImprovedSourceName)
                             {
-                                return await objMentorSpirit.DisplayNameShortAsync(strLanguage);
+                                return await objMentorSpirit.DisplayNameShortAsync(strLanguage, token);
                             }
                         }
 

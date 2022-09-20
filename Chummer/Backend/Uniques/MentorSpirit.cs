@@ -430,20 +430,20 @@ namespace Chummer
         /// <summary>
         /// Advantage of the mentor as it should be displayed in the UI. Advantage (Extra).
         /// </summary>
-        public async ValueTask<string> DisplayAdvantageAsync(string strLanguage)
+        public async ValueTask<string> DisplayAdvantageAsync(string strLanguage, CancellationToken token = default)
         {
             string strReturn = Advantage;
             if (strLanguage != GlobalSettings.DefaultLanguage)
             {
                 string strTemp = string.Empty;
-                if ((await this.GetNodeXPathAsync(strLanguage))?.TryGetMultiLineStringFieldQuickly("altadvantage", ref strTemp) == true)
+                if ((await this.GetNodeXPathAsync(strLanguage, token: token))?.TryGetMultiLineStringFieldQuickly("altadvantage", ref strTemp) == true)
                     strReturn = strTemp;
             }
 
             if (!string.IsNullOrEmpty(Extra))
             {
                 // Attempt to retrieve the CharacterAttribute name.
-                strReturn += await LanguageManager.GetStringAsync("String_Space", strLanguage) + '(' + await _objCharacter.TranslateExtraAsync(Extra, strLanguage) + ')';
+                strReturn += await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token) + '(' + await _objCharacter.TranslateExtraAsync(Extra, strLanguage, token: token) + ')';
             }
 
             return strReturn;
@@ -479,20 +479,20 @@ namespace Chummer
         /// <summary>
         /// Disadvantage of the mentor as it should be displayed in the UI. Disadvantage (Extra).
         /// </summary>
-        public async ValueTask<string> DisplayDisadvantageAsync(string strLanguage)
+        public async ValueTask<string> DisplayDisadvantageAsync(string strLanguage, CancellationToken token = default)
         {
             string strReturn = Disadvantage;
             if (strLanguage != GlobalSettings.DefaultLanguage)
             {
                 string strTemp = string.Empty;
-                if ((await this.GetNodeXPathAsync(strLanguage))?.TryGetMultiLineStringFieldQuickly("altdisadvantage", ref strTemp) == true)
+                if ((await this.GetNodeXPathAsync(strLanguage, token: token))?.TryGetMultiLineStringFieldQuickly("altdisadvantage", ref strTemp) == true)
                     strReturn = strTemp;
             }
 
             if (!string.IsNullOrEmpty(Extra))
             {
                 // Attempt to retrieve the CharacterAttribute name.
-                strReturn += await LanguageManager.GetStringAsync("String_Space", strLanguage) + '(' + await _objCharacter.TranslateExtraAsync(Extra, strLanguage) + ')';
+                strReturn += await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token) + '(' + await _objCharacter.TranslateExtraAsync(Extra, strLanguage, token: token) + ')';
             }
 
             return strReturn;
@@ -512,13 +512,13 @@ namespace Chummer
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
         /// </summary>
-        public async ValueTask<string> DisplayNameShortAsync(string strLanguage)
+        public async ValueTask<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
-            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage);
-            return objNode != null ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value ?? Name : Name;
+            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token);
+            return objNode != null ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token))?.Value ?? Name : Name;
         }
 
         public string CurrentDisplayNameShort => DisplayNameShort(GlobalSettings.Language);
@@ -560,14 +560,15 @@ namespace Chummer
         /// Returns Page if not found or the string is empty.
         /// </summary>
         /// <param name="strLanguage">Language file keyword to use.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns></returns>
-        public async ValueTask<string> DisplayPageAsync(string strLanguage)
+        public async ValueTask<string> DisplayPageAsync(string strLanguage, CancellationToken token = default)
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
-            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage);
+            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token);
             string s = objNode != null
-                ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage"))?.Value ?? Page
+                ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage", token: token))?.Value ?? Page
                 : Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }

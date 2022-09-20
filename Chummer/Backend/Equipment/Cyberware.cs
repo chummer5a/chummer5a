@@ -1970,9 +1970,9 @@ namespace Chummer.Backend.Equipment
                 await objWriter.WriteElementStringAsync("ownweight", OwnWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture));
                 await objWriter.WriteElementStringAsync("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint));
                 await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint));
-                await objWriter.WriteElementStringAsync("rating", Rating.ToString(objCulture));
-                await objWriter.WriteElementStringAsync("minrating", MinRating.ToString(objCulture));
-                await objWriter.WriteElementStringAsync("maxrating", MaxRating.ToString(objCulture));
+                await objWriter.WriteElementStringAsync("rating", (await GetRatingAsync()).ToString(objCulture));
+                await objWriter.WriteElementStringAsync("minrating", (await GetMinRatingAsync()).ToString(objCulture));
+                await objWriter.WriteElementStringAsync("maxrating", (await GetMaxRatingAsync()).ToString(objCulture));
                 await objWriter.WriteElementStringAsync("ratinglabel", RatingLabel);
                 await objWriter.WriteElementStringAsync("allowsubsystems", AllowedSubsystems);
                 await objWriter.WriteElementStringAsync("wirelesson", WirelessOn.ToString(GlobalSettings.InvariantCultureInfo));
@@ -3049,7 +3049,7 @@ namespace Chummer.Backend.Equipment
                         else if (Bonus != null && !string.IsNullOrEmpty(_strExtra))
                             ImprovementManager.ForcedValue = _strExtra;
                         await ImprovementManager.CreateImprovementsAsync(_objCharacter, SourceType, InternalId + "Pair", PairBonus,
-                                                                         Rating, await GetCurrentDisplayNameShortAsync(token));
+                                                                         Rating, await GetCurrentDisplayNameShortAsync(token), token: token);
                     }
                 }
             }
@@ -3098,7 +3098,7 @@ namespace Chummer.Backend.Equipment
                                 ImprovementManager.ForcedValue = _strExtra;
                             await ImprovementManager.CreateImprovementsAsync(_objCharacter, objLoopCyberware.SourceType,
                                                                              objLoopCyberware.InternalId + "Pair", objLoopCyberware.PairBonus, objLoopCyberware.Rating,
-                                                                             await objLoopCyberware.GetCurrentDisplayNameShortAsync(token));
+                                                                             await objLoopCyberware.GetCurrentDisplayNameShortAsync(token), token: token);
                         }
 
                         --intCount;
@@ -3167,6 +3167,14 @@ namespace Chummer.Backend.Equipment
                 }
                 DoPropertyChanges(true, false);
             }
+        }
+
+        /// <summary>
+        /// Rating.
+        /// </summary>
+        public async ValueTask<int> GetRatingAsync(CancellationToken token = default)
+        {
+            return Math.Max(Math.Min(_intRating, await GetMaxRatingAsync(token)), await GetMinRatingAsync(token));
         }
 
         private bool ProcessPropertyChanges { get; set; } = true;
@@ -3331,6 +3339,43 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Total Minimum Rating.
+        /// </summary>
+        public async ValueTask<int> GetMinRatingAsync(CancellationToken token = default)
+        {
+            int intReturn = 0;
+            string strRating = MinRatingString;
+
+            // Not a simple integer, so we need to start mucking around with strings
+            if (!string.IsNullOrEmpty(strRating)
+                && !int.TryParse(strRating, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out intReturn))
+            {
+                strRating = await strRating.CheapReplaceAsync("MaximumSTR",
+                                                         async () => (ParentVehicle != null
+                                                                 ? Math.Max(1, await ParentVehicle.GetTotalBodyAsync(token) * 2)
+                                                                 : await (await _objCharacter.GetAttributeAsync("STR", token: token)).GetTotalMaximumAsync(token))
+                                                             .ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                                           .CheapReplaceAsync("MaximumAGI",
+                                                         async () => (ParentVehicle != null
+                                                                 ? Math.Max(1, await ParentVehicle.GetPilotAsync(token) * 2)
+                                                                 : await (await _objCharacter.GetAttributeAsync("AGI", token: token)).GetTotalMaximumAsync(token))
+                                                             .ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                                           .CheapReplaceAsync("MinimumSTR",
+                                                         async () => (ParentVehicle != null ? await ParentVehicle.GetTotalBodyAsync(token) : 3).ToString(
+                                                             GlobalSettings.InvariantCultureInfo), token: token)
+                                           .CheapReplaceAsync("MinimumAGI",
+                                                         async () => (ParentVehicle != null ? await ParentVehicle.GetPilotAsync(token) : 3).ToString(
+                                                             GlobalSettings.InvariantCultureInfo), token: token);
+
+                (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strRating, token);
+                if (blnIsSuccess)
+                    intReturn = ((double)objProcess).StandardRound();
+            }
+
+            return intReturn;
+        }
+
+        /// <summary>
         /// String representing minimum rating before it would be computed.
         /// </summary>
         public string MinRatingString
@@ -3370,6 +3415,43 @@ namespace Chummer.Backend.Equipment
 
                 return intReturn;
             }
+        }
+
+        /// <summary>
+        /// Total Maximum Rating.
+        /// </summary>
+        public async ValueTask<int> GetMaxRatingAsync(CancellationToken token = default)
+        {
+            int intReturn = 0;
+            string strRating = MaxRatingString;
+
+            // Not a simple integer, so we need to start mucking around with strings
+            if (!string.IsNullOrEmpty(strRating)
+                && !int.TryParse(strRating, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out intReturn))
+            {
+                strRating = await strRating.CheapReplaceAsync("MaximumSTR",
+                                                         async () => (ParentVehicle != null
+                                                                 ? Math.Max(1, await ParentVehicle.GetTotalBodyAsync(token) * 2)
+                                                                 : await (await _objCharacter.GetAttributeAsync("STR", token: token)).GetTotalMaximumAsync(token))
+                                                             .ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                                           .CheapReplaceAsync("MaximumAGI",
+                                                         async () => (ParentVehicle != null
+                                                                 ? Math.Max(1, await ParentVehicle.GetPilotAsync(token) * 2)
+                                                                 : await (await _objCharacter.GetAttributeAsync("AGI", token: token)).GetTotalMaximumAsync(token))
+                                                             .ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                                           .CheapReplaceAsync("MinimumSTR",
+                                                         async () => (ParentVehicle != null ? await ParentVehicle.GetTotalBodyAsync(token) : 3).ToString(
+                                                             GlobalSettings.InvariantCultureInfo), token: token)
+                                           .CheapReplaceAsync("MinimumAGI",
+                                                         async () => (ParentVehicle != null ? await ParentVehicle.GetPilotAsync(token) : 3).ToString(
+                                                             GlobalSettings.InvariantCultureInfo), token: token);
+
+                (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strRating, token);
+                if (blnIsSuccess)
+                    intReturn = ((double) objProcess).StandardRound();
+            }
+
+            return intReturn;
         }
 
         /// <summary>
