@@ -12414,12 +12414,68 @@
       </outdoor>
       <flee>
         <random>
-          <feds>the feds</feds>
+          <feds>the Feds</feds>
           <god>the Grid Overwatch Division</god>
           <corp>$RMEGA corporate security forces</corp>
-          <riaa>RIAA Anti-Piracy Forces</riaa>
+          <riaa>RIAA Anti-Piracy forces</riaa>
+          <specops>$RSPECOPS forces</specops>
         </random>
       </flee>
+      <rspecops>
+        <random>
+          <tmt>AG Chemie TET</tmt>
+          <firewatch>Ares FireWatch</firewatch>
+          <blooddaggers>Aztechnology Blood Daggers</blooddaggers>
+          <bloodpanthers>Aztechnology Blood Panthers</bloodpanthers>
+          <leopardguard>Aztechnology Leopard Guard</leopardguard>
+          <jaguarguard>Aztechnology Jaguar Guard</jaguarguard>
+          <hanseiek>Hanse Security IEK</hanseiek>
+          <shadowriders>LoneStar Shadowriders</shadowriders>
+          <saer>Maersk Saer Marines</saer>
+          <redsamurai>Renraku Red Samurai</redsamurai>
+          <bluesamurai>Renraku Blue Samurai</bluesamurai>
+          <redninjas>Renraku Red Ninjas</redninjas>
+          <blackmarshals>Black Marshals</blackmarshals>
+          <agema>Saeder-Krupp Agema</agema>
+          <skprime>Saeder-Krupp Prime</skprime>
+          <kaminobushi>Shiawase Kami no Bushi</kaminobushi>
+          <mifd>Shiawase Market Information and Forecasting Department</mifd>
+          <aegiscognito>Spinrad Aegis Cognito</aegiscognito>
+          <argus>Trikon Argus</argus>
+          <fardengir>Tyr Fardrengir</fardengir>
+          <wuxingmsd>Wuxing Maritime Security Division</wuxingmsd>
+          <minutemen>Coca-Cola Minute Men</minutemen>
+          <casnavyseals>CAS Navy SEALs</casnavyseals>
+          <greenberets>CAS Green Berets</greenberets>
+          <dragondogs>Hong Kong Dragon Dogs</dragondogs>
+          <researchunit13>Mitsuhama Research Unit 13</researchunit13>
+          <spetsnaz>Russian Spetsnaz</spetsnaz>
+          <gsg9>German GSG-9</gsg9>
+          <barracudas>Swiss Barracuda Task Force</barracudas>
+          <wildcats>Sioux Wildcats</wildcats>
+          <salishrangers>Salish Rangers</salishrangers>
+          <reachfuileach>Tír Republican Corps Reach Fuileach</reachfuileach>
+          <ghosts>Tír Ghosts</ghosts>
+          <ucasrangers>UCAS Army Rangers</ucasrangers>
+          <ucasdeltaforce>UCAS Delta Force</ucasdeltaforce>
+          <ucasnavyseals>UCAS Navy SEALs</ucasnavyseals>
+          <uksas>UK Special Air Service</uksas>
+          <mysticcrusaders>Atlantean Mystic Crusaders</mysticcrusaders>
+          <songbirds>Alachia Songbirds</songbirds>
+          <newsocietyofjesus>New Society of Jesus</newsocietyofjesus>
+          <mi6>Her Majesty's Secret Service</mi6>
+          <mossad>Israeli Mossad</mossad>
+          <kokusaijoho>Japanese Kokusai Jōhō Tōkatsukan</kokusaijoho>
+          <erla>CAS Extraterritoriality Registry and Liaison Agency</erla>
+          <cia>UCAS Central Intelligence Agency</cia>
+          <nsa>UCAS National Security Agency</nsa>
+          <gru>Red Army Glavnoye Razvedovatel'noye Upravleniy</gru>
+          <unseen>The Unseen</unseen>
+          <godarm>Grid Overwatch Division Artificial Resources Management</godarm>
+          <wuxingsf>Wuxing Dà Dì Xiāo</wuxingsf>
+          <knightsofrage>Knights of Rage</knightsofrage>
+        </random>
+      </rspecops>
       <persistent>
         <random>
           <dad>father</dad>
