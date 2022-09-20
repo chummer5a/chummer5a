@@ -166,63 +166,75 @@ namespace Chummer
         private static readonly PropertyDependencyGraph<Contact> s_ContactDependencyGraph =
             new PropertyDependencyGraph<Contact>(
                 new DependencyGraphNode<string, Contact>(nameof(NoLinkedCharacter),
-                    new DependencyGraphNode<string, Contact>(nameof(LinkedCharacter))
+                                                         new DependencyGraphNode<string, Contact>(
+                                                             nameof(LinkedCharacter))
                 ),
                 new DependencyGraphNode<string, Contact>(nameof(Name),
-                    new DependencyGraphNode<string, Contact>(nameof(LinkedCharacter))
+                                                         new DependencyGraphNode<string, Contact>(
+                                                             nameof(LinkedCharacter))
                 ),
                 new DependencyGraphNode<string, Contact>(nameof(DisplayGender),
-                    new DependencyGraphNode<string, Contact>(nameof(Gender),
-                        new DependencyGraphNode<string, Contact>(nameof(LinkedCharacter))
-                    )
+                                                         new DependencyGraphNode<string, Contact>(nameof(Gender),
+                                                                 new DependencyGraphNode<string, Contact>(
+                                                                     nameof(LinkedCharacter))
+                                                         )
                 ),
                 new DependencyGraphNode<string, Contact>(nameof(DisplayMetatype),
-                    new DependencyGraphNode<string, Contact>(nameof(Metatype),
-                        new DependencyGraphNode<string, Contact>(nameof(LinkedCharacter))
-                    )
+                                                         new DependencyGraphNode<string, Contact>(nameof(Metatype),
+                                                                 new DependencyGraphNode<string, Contact>(
+                                                                     nameof(LinkedCharacter))
+                                                         )
                 ),
                 new DependencyGraphNode<string, Contact>(nameof(DisplayAge),
-                    new DependencyGraphNode<string, Contact>(nameof(Age),
-                        new DependencyGraphNode<string, Contact>(nameof(LinkedCharacter))
-                    )
+                                                         new DependencyGraphNode<string, Contact>(nameof(Age),
+                                                                 new DependencyGraphNode<string, Contact>(
+                                                                     nameof(LinkedCharacter))
+                                                         )
                 ),
                 new DependencyGraphNode<string, Contact>(nameof(MainMugshot),
-                    new DependencyGraphNode<string, Contact>(nameof(LinkedCharacter)),
-                    new DependencyGraphNode<string, Contact>(nameof(Mugshots),
-                        new DependencyGraphNode<string, Contact>(nameof(LinkedCharacter))
-                    ),
-                    new DependencyGraphNode<string, Contact>(nameof(MainMugshotIndex))
+                                                         new DependencyGraphNode<string, Contact>(
+                                                             nameof(LinkedCharacter)),
+                                                         new DependencyGraphNode<string, Contact>(nameof(Mugshots),
+                                                                 new DependencyGraphNode<string, Contact>(
+                                                                     nameof(LinkedCharacter))
+                                                         ),
+                                                         new DependencyGraphNode<string, Contact>(
+                                                             nameof(MainMugshotIndex))
                 ),
                 new DependencyGraphNode<string, Contact>(nameof(IsEnemy),
-                    new DependencyGraphNode<string, Contact>(nameof(EntityType))
+                                                         new DependencyGraphNode<string, Contact>(nameof(EntityType))
                 ),
                 new DependencyGraphNode<string, Contact>(nameof(NotReadOnly),
-                    new DependencyGraphNode<string, Contact>(nameof(ReadOnly))
+                                                         new DependencyGraphNode<string, Contact>(nameof(ReadOnly))
                 ),
                 new DependencyGraphNode<string, Contact>(nameof(GroupEnabled),
-                    new DependencyGraphNode<string, Contact>(nameof(ReadOnly))
+                                                         new DependencyGraphNode<string, Contact>(nameof(ReadOnly))
                 ),
                 new DependencyGraphNode<string, Contact>(nameof(LoyaltyEnabled),
-                    new DependencyGraphNode<string, Contact>(nameof(IsGroup)),
-                    new DependencyGraphNode<string, Contact>(nameof(ForcedLoyalty)),
-                    new DependencyGraphNode<string, Contact>(nameof(ReadOnly))
+                                                         new DependencyGraphNode<string, Contact>(nameof(IsGroup)),
+                                                         new DependencyGraphNode<string, Contact>(
+                                                             nameof(ForcedLoyalty)),
+                                                         new DependencyGraphNode<string, Contact>(nameof(ReadOnly))
                 ),
                 new DependencyGraphNode<string, Contact>(nameof(ContactPoints),
-                    new DependencyGraphNode<string, Contact>(nameof(Free)),
-                    new DependencyGraphNode<string, Contact>(nameof(Connection),
-                        new DependencyGraphNode<string, Contact>(nameof(ConnectionMaximum))
-                    ),
-                    new DependencyGraphNode<string, Contact>(nameof(Loyalty)),
-                    new DependencyGraphNode<string, Contact>(nameof(Family)),
-                    new DependencyGraphNode<string, Contact>(nameof(Blackmail))
+                                                         new DependencyGraphNode<string, Contact>(nameof(Free)),
+                                                         new DependencyGraphNode<string, Contact>(nameof(Connection),
+                                                                 new DependencyGraphNode<string, Contact>(
+                                                                     nameof(ConnectionMaximum))
+                                                         ),
+                                                         new DependencyGraphNode<string, Contact>(nameof(Loyalty)),
+                                                         new DependencyGraphNode<string, Contact>(nameof(Family)),
+                                                         new DependencyGraphNode<string, Contact>(nameof(Blackmail))
                 ),
                 new DependencyGraphNode<string, Contact>(nameof(QuickText),
-                    new DependencyGraphNode<string, Contact>(nameof(Connection)),
-                    new DependencyGraphNode<string, Contact>(nameof(IsGroup)),
-                    new DependencyGraphNode<string, Contact>(nameof(Loyalty),
-                        new DependencyGraphNode<string, Contact>(nameof(IsGroup)),
-                        new DependencyGraphNode<string, Contact>(nameof(ForcedLoyalty))
-                    )
+                                                         new DependencyGraphNode<string, Contact>(nameof(Connection)),
+                                                         new DependencyGraphNode<string, Contact>(nameof(IsGroup)),
+                                                         new DependencyGraphNode<string, Contact>(nameof(Loyalty),
+                                                                 new DependencyGraphNode<string, Contact>(
+                                                                     nameof(IsGroup)),
+                                                                 new DependencyGraphNode<string, Contact>(
+                                                                     nameof(ForcedLoyalty))
+                                                         )
                 )
             );
 
@@ -254,7 +266,8 @@ namespace Chummer
 
         public static List<ListItem> ContactArchetypes(Character objCharacter)
         {
-            if (_lstCachedContactArchetypes != null && _objCharacterForCachedContactArchetypes == objCharacter && !GlobalSettings.LiveCustomData)
+            if (_lstCachedContactArchetypes != null && _objCharacterForCachedContactArchetypes == objCharacter
+                                                    && !GlobalSettings.LiveCustomData)
                 return _lstCachedContactArchetypes;
             _objCharacterForCachedContactArchetypes = objCharacter;
             if (_lstCachedContactArchetypes == null)
@@ -262,13 +275,15 @@ namespace Chummer
             else
                 _lstCachedContactArchetypes.Clear();
             _lstCachedContactArchetypes.Add(ListItem.Blank);
-            XPathNavigator xmlContactsBaseNode = objCharacter.LoadDataXPath("contacts.xml").SelectSingleNodeAndCacheExpression("/chummer");
+            XPathNavigator xmlContactsBaseNode = objCharacter.LoadDataXPath("contacts.xml")
+                                                             .SelectSingleNodeAndCacheExpression("/chummer");
             if (xmlContactsBaseNode == null)
                 return _lstCachedContactArchetypes;
             foreach (XPathNavigator xmlNode in xmlContactsBaseNode.SelectAndCacheExpression("contacts/contact"))
             {
                 string strName = xmlNode.Value;
-                _lstCachedContactArchetypes.Add(new ListItem(strName, xmlNode.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strName));
+                _lstCachedContactArchetypes.Add(
+                    new ListItem(strName, xmlNode.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strName));
             }
 
             _lstCachedContactArchetypes.Sort(CompareListItems.CompareNames);
@@ -373,7 +388,8 @@ namespace Chummer
                     await objWriter.WriteElementStringAsync("role", _strRole);
                     await objWriter.WriteElementStringAsync("location", _strLocation);
                     await objWriter.WriteElementStringAsync("connection",
-                                                            _intConnection.ToString(GlobalSettings.InvariantCultureInfo));
+                                                            _intConnection.ToString(
+                                                                GlobalSettings.InvariantCultureInfo));
                     await objWriter.WriteElementStringAsync(
                         "loyalty", _intLoyalty.ToString(GlobalSettings.InvariantCultureInfo));
                     await objWriter.WriteElementStringAsync("metatype", _strMetatype);
@@ -396,10 +412,13 @@ namespace Chummer
                     await objWriter.WriteElementStringAsync(
                         "family", _blnFamily.ToString(GlobalSettings.InvariantCultureInfo));
                     await objWriter.WriteElementStringAsync("blackmail",
-                                                            _blnBlackmail.ToString(GlobalSettings.InvariantCultureInfo));
-                    await objWriter.WriteElementStringAsync("free", _blnFree.ToString(GlobalSettings.InvariantCultureInfo));
+                                                            _blnBlackmail.ToString(
+                                                                GlobalSettings.InvariantCultureInfo));
+                    await objWriter.WriteElementStringAsync(
+                        "free", _blnFree.ToString(GlobalSettings.InvariantCultureInfo));
                     await objWriter.WriteElementStringAsync("groupenabled",
-                                                            _blnGroupEnabled.ToString(GlobalSettings.InvariantCultureInfo));
+                                                            _blnGroupEnabled.ToString(
+                                                                GlobalSettings.InvariantCultureInfo));
 
                     if (_blnReadOnly)
                         await objWriter.WriteElementStringAsync("readonly", string.Empty);
@@ -481,7 +500,8 @@ namespace Chummer
         /// <param name="objCulture">Culture in which to print.</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
+        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint,
+                                     CancellationToken token = default)
         {
             if (objWriter == null)
                 return;
@@ -491,24 +511,45 @@ namespace Chummer
             {
                 await objWriter.WriteElementStringAsync("guid", InternalId, token: token);
                 await objWriter.WriteElementStringAsync("name", Name, token: token);
-                await objWriter.WriteElementStringAsync("role", DisplayRoleMethod(strLanguageToPrint), token: token);
+                await objWriter.WriteElementStringAsync("role", await DisplayRoleMethodAsync(strLanguageToPrint, token), token: token);
                 await objWriter.WriteElementStringAsync("location", Location, token: token);
                 if (!IsGroup)
-                    await objWriter.WriteElementStringAsync("connection", Connection.ToString(objCulture), token: token);
+                    await objWriter.WriteElementStringAsync("connection", (await GetConnectionAsync(token)).ToString(objCulture),
+                                                            token: token);
                 else
-                    await objWriter.WriteElementStringAsync("connection", await LanguageManager.GetStringAsync("String_Group", strLanguageToPrint, token: token) + '(' + Connection.ToString(objCulture) + ')', token: token);
-                await objWriter.WriteElementStringAsync("loyalty", Loyalty.ToString(objCulture), token: token);
-                await objWriter.WriteElementStringAsync("metatype", await DisplayMetatypeMethodAsync(strLanguageToPrint), token: token);
-                await objWriter.WriteElementStringAsync("gender", await DisplayGenderMethodAsync(strLanguageToPrint), token: token);
-                await objWriter.WriteElementStringAsync("age", await DisplayAgeMethodAsync(strLanguageToPrint), token: token);
-                await objWriter.WriteElementStringAsync("contacttype", await DisplayTypeMethodAsync(strLanguageToPrint), token: token);
-                await objWriter.WriteElementStringAsync("preferredpayment", await DisplayPreferredPaymentMethodAsync(strLanguageToPrint), token: token);
-                await objWriter.WriteElementStringAsync("hobbiesvice", await DisplayHobbiesViceMethodAsync(strLanguageToPrint), token: token);
-                await objWriter.WriteElementStringAsync("personallife", await DisplayPersonalLifeMethodAsync(strLanguageToPrint), token: token);
-                await objWriter.WriteElementStringAsync("type", await LanguageManager.GetStringAsync("String_" + EntityType, strLanguageToPrint, token: token), token: token);
-                await objWriter.WriteElementStringAsync("forcedloyalty", ForcedLoyalty.ToString(objCulture), token: token);
-                await objWriter.WriteElementStringAsync("blackmail", Blackmail.ToString(GlobalSettings.InvariantCultureInfo), token: token);
-                await objWriter.WriteElementStringAsync("family", Family.ToString(GlobalSettings.InvariantCultureInfo), token: token);
+                    await objWriter.WriteElementStringAsync("connection",
+                                                            await LanguageManager.GetStringAsync(
+                                                                "String_Group", strLanguageToPrint, token: token) + '('
+                                                            + (await GetConnectionAsync(token)).ToString(objCulture) + ')', token: token);
+                await objWriter.WriteElementStringAsync("loyalty", (await GetLoyaltyAsync(token)).ToString(objCulture), token: token);
+                await objWriter.WriteElementStringAsync(
+                    "metatype", await DisplayMetatypeMethodAsync(strLanguageToPrint, token), token: token);
+                await objWriter.WriteElementStringAsync("gender", await DisplayGenderMethodAsync(strLanguageToPrint, token),
+                                                        token: token);
+                await objWriter.WriteElementStringAsync("age", await DisplayAgeMethodAsync(strLanguageToPrint, token),
+                                                        token: token);
+                await objWriter.WriteElementStringAsync("contacttype", await DisplayTypeMethodAsync(strLanguageToPrint, token),
+                                                        token: token);
+                await objWriter.WriteElementStringAsync("preferredpayment",
+                                                        await DisplayPreferredPaymentMethodAsync(strLanguageToPrint, token),
+                                                        token: token);
+                await objWriter.WriteElementStringAsync("hobbiesvice",
+                                                        await DisplayHobbiesViceMethodAsync(strLanguageToPrint, token),
+                                                        token: token);
+                await objWriter.WriteElementStringAsync("personallife",
+                                                        await DisplayPersonalLifeMethodAsync(strLanguageToPrint, token),
+                                                        token: token);
+                await objWriter.WriteElementStringAsync(
+                    "type",
+                    await LanguageManager.GetStringAsync("String_" + EntityType, strLanguageToPrint, token: token),
+                    token: token);
+                await objWriter.WriteElementStringAsync("forcedloyalty", (await GetForcedLoyaltyAsync(token)).ToString(objCulture),
+                                                        token: token);
+                await objWriter.WriteElementStringAsync("blackmail",
+                                                        Blackmail.ToString(GlobalSettings.InvariantCultureInfo),
+                                                        token: token);
+                await objWriter.WriteElementStringAsync("family", Family.ToString(GlobalSettings.InvariantCultureInfo),
+                                                        token: token);
                 if (GlobalSettings.PrintNotes)
                     await objWriter.WriteElementStringAsync("notes", Notes, token: token);
 
@@ -545,7 +586,9 @@ namespace Chummer
                     decReturn += 2;
                 decReturn +=
                     ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ContactKarmaDiscount);
-                decReturn = Math.Max(decReturn, 2 + ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ContactKarmaMinimum));
+                decReturn = Math.Max(
+                    decReturn,
+                    2 + ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ContactKarmaMinimum));
                 return decReturn.StandardRound();
             }
         }
@@ -571,7 +614,19 @@ namespace Chummer
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Role;
 
-            return _objCharacter.LoadDataXPath("contacts.xml", strLanguage).SelectSingleNode("/chummer/contacts/contact[. = " + Role.CleanXPath() + "]/@translate")?.Value ?? Role;
+            return _objCharacter.LoadDataXPath("contacts.xml", strLanguage)
+                                .SelectSingleNode("/chummer/contacts/contact[. = " + Role.CleanXPath() + "]/@translate")
+                                ?.Value ?? Role;
+        }
+
+        public async ValueTask<string> DisplayRoleMethodAsync(string strLanguage, CancellationToken token = default)
+        {
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                return Role;
+
+            return (await _objCharacter.LoadDataXPathAsync("contacts.xml", strLanguage, token: token))
+                                .SelectSingleNode("/chummer/contacts/contact[. = " + Role.CleanXPath() + "]/@translate")
+                                ?.Value ?? Role;
         }
 
         public string DisplayRole
@@ -630,6 +685,14 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Contact's Connection Rating.
+        /// </summary>
+        public async ValueTask<int> GetConnectionAsync(CancellationToken token = default)
+        {
+            return Math.Min(_intConnection, await GetConnectionMaximumAsync(token));
+        }
+
+        /// <summary>
         /// Contact's Loyalty Rating (or Enemy's Incidence Rating).
         /// </summary>
         public int Loyalty
@@ -648,6 +711,17 @@ namespace Chummer
                     OnPropertyChanged();
                 }
             }
+        }
+
+        /// <summary>
+        /// Contact's Loyalty Rating (or Enemy's Incidence Rating).
+        /// </summary>
+        public async ValueTask<int> GetLoyaltyAsync(CancellationToken token = default)
+        {
+            int intForced = await GetForcedLoyaltyAsync(token);
+            if (intForced > 0)
+                return intForced;
+            return IsGroup ? 1 : _intLoyalty;
         }
 
         public string DisplayMetatypeMethod(string strLanguage)
@@ -678,31 +752,31 @@ namespace Chummer
             return strReturn;
         }
 
-        public async Task<string> DisplayMetatypeMethodAsync(string strLanguage)
+        public async Task<string> DisplayMetatypeMethodAsync(string strLanguage, CancellationToken token = default)
         {
             string strReturn = Metatype;
             if (LinkedCharacter != null)
             {
                 // Update character information fields.
-                XPathNavigator objMetatypeNode = await _objCharacter.GetNodeXPathAsync(true);
+                XPathNavigator objMetatypeNode = await _objCharacter.GetNodeXPathAsync(true, token: token);
 
-                strReturn = (await objMetatypeNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value ?? await _objCharacter.TranslateExtraAsync(LinkedCharacter.Metatype, strLanguage, "metatypes.xml");
+                strReturn = (await objMetatypeNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token))?.Value ?? await _objCharacter.TranslateExtraAsync(LinkedCharacter.Metatype, strLanguage, "metatypes.xml", token);
 
                 if (LinkedCharacter.MetavariantGuid == Guid.Empty)
                     return strReturn;
                 objMetatypeNode = objMetatypeNode
                     .SelectSingleNode("metavariants/metavariant[id = " + LinkedCharacter.MetavariantGuid.ToString("D", GlobalSettings.InvariantCultureInfo).CleanXPath() + ']');
 
-                string strMetatypeTranslate = objMetatypeNode != null ? (await objMetatypeNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value : null;
-                strReturn += await LanguageManager.GetStringAsync("String_Space", strLanguage)
+                string strMetatypeTranslate = objMetatypeNode != null ? (await objMetatypeNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token))?.Value : null;
+                strReturn += await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token)
                              + '('
                              + (!string.IsNullOrEmpty(strMetatypeTranslate)
                                  ? strMetatypeTranslate
-                                 : await _objCharacter.TranslateExtraAsync(LinkedCharacter.Metavariant, strLanguage, "metatypes.xml"))
+                                 : await _objCharacter.TranslateExtraAsync(LinkedCharacter.Metavariant, strLanguage, "metatypes.xml", token))
                              + ')';
             }
             else
-                strReturn = await _objCharacter.TranslateExtraAsync(strReturn, strLanguage, "metatypes.xml");
+                strReturn = await _objCharacter.TranslateExtraAsync(strReturn, strLanguage, "metatypes.xml", token);
             return strReturn;
         }
 
@@ -749,12 +823,12 @@ namespace Chummer
             return _objCharacter.LoadDataXPath("contacts.xml", strLanguage).SelectSingleNode("/chummer/genders/gender[. = " + Gender.CleanXPath() + "]/@translate")?.Value ?? Gender;
         }
 
-        public async Task<string> DisplayGenderMethodAsync(string strLanguage)
+        public async Task<string> DisplayGenderMethodAsync(string strLanguage, CancellationToken token = default)
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Gender;
 
-            return (await _objCharacter.LoadDataXPathAsync("contacts.xml", strLanguage)).SelectSingleNode("/chummer/genders/gender[. = " + Gender.CleanXPath() + "]/@translate")?.Value ?? Gender;
+            return (await _objCharacter.LoadDataXPathAsync("contacts.xml", strLanguage, token: token)).SelectSingleNode("/chummer/genders/gender[. = " + Gender.CleanXPath() + "]/@translate")?.Value ?? Gender;
         }
 
         public string DisplayGender
@@ -786,12 +860,12 @@ namespace Chummer
             return _objCharacter.LoadDataXPath("contacts.xml", strLanguage).SelectSingleNode("/chummer/ages/age[. = " + Age.CleanXPath() + "]/@translate")?.Value ?? Age;
         }
 
-        public async Task<string> DisplayAgeMethodAsync(string strLanguage)
+        public async Task<string> DisplayAgeMethodAsync(string strLanguage, CancellationToken token = default)
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Age;
 
-            return (await _objCharacter.LoadDataXPathAsync("contacts.xml", strLanguage)).SelectSingleNode("/chummer/ages/age[. = " + Age.CleanXPath() + "]/@translate")?.Value ?? Age;
+            return (await _objCharacter.LoadDataXPathAsync("contacts.xml", strLanguage, token: token)).SelectSingleNode("/chummer/ages/age[. = " + Age.CleanXPath() + "]/@translate")?.Value ?? Age;
         }
 
         public string DisplayAge
@@ -823,12 +897,12 @@ namespace Chummer
             return _objCharacter.LoadDataXPath("contacts.xml", strLanguage).SelectSingleNode("/chummer/types/type[. = " + Type.CleanXPath() + "]/@translate")?.Value ?? Type;
         }
 
-        public async Task<string> DisplayTypeMethodAsync(string strLanguage)
+        public async Task<string> DisplayTypeMethodAsync(string strLanguage, CancellationToken token = default)
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Type;
 
-            return (await _objCharacter.LoadDataXPathAsync("contacts.xml", strLanguage)).SelectSingleNode("/chummer/types/type[. = " + Type.CleanXPath() + "]/@translate")?.Value ?? Type;
+            return (await _objCharacter.LoadDataXPathAsync("contacts.xml", strLanguage, token: token)).SelectSingleNode("/chummer/types/type[. = " + Type.CleanXPath() + "]/@translate")?.Value ?? Type;
         }
 
         public string DisplayType
@@ -861,12 +935,12 @@ namespace Chummer
                 .SelectSingleNode("/chummer/preferredpayments/preferredpayment[. = " + PreferredPayment.CleanXPath() + "]/@translate")?.Value ?? PreferredPayment;
         }
 
-        public async Task<string> DisplayPreferredPaymentMethodAsync(string strLanguage)
+        public async Task<string> DisplayPreferredPaymentMethodAsync(string strLanguage, CancellationToken token = default)
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return PreferredPayment;
 
-            return (await _objCharacter.LoadDataXPathAsync("contacts.xml", strLanguage))
+            return (await _objCharacter.LoadDataXPathAsync("contacts.xml", strLanguage, token: token))
                                 .SelectSingleNode("/chummer/preferredpayments/preferredpayment[. = " + PreferredPayment.CleanXPath() + "]/@translate")?.Value ?? PreferredPayment;
         }
 
@@ -900,12 +974,12 @@ namespace Chummer
                    ?? HobbiesVice;
         }
 
-        public async Task<string> DisplayHobbiesViceMethodAsync(string strLanguage)
+        public async Task<string> DisplayHobbiesViceMethodAsync(string strLanguage, CancellationToken token = default)
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return HobbiesVice;
 
-            return (await _objCharacter.LoadDataXPathAsync("contacts.xml", strLanguage)).SelectSingleNode("/chummer/hobbiesvices/hobbyvice[. = " + HobbiesVice.CleanXPath() + "]/@translate")?.Value
+            return (await _objCharacter.LoadDataXPathAsync("contacts.xml", strLanguage, token: token)).SelectSingleNode("/chummer/hobbiesvices/hobbyvice[. = " + HobbiesVice.CleanXPath() + "]/@translate")?.Value
                    ?? HobbiesVice;
         }
 
@@ -939,12 +1013,12 @@ namespace Chummer
                    ?? PersonalLife;
         }
 
-        public async Task<string> DisplayPersonalLifeMethodAsync(string strLanguage)
+        public async Task<string> DisplayPersonalLifeMethodAsync(string strLanguage, CancellationToken token = default)
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return PersonalLife;
 
-            return (await _objCharacter.LoadDataXPathAsync("contacts.xml", strLanguage)).SelectSingleNode("/chummer/personallives/personallife[. = " + PersonalLife.CleanXPath() + "]/@translate")?.Value
+            return (await _objCharacter.LoadDataXPathAsync("contacts.xml", strLanguage, token: token)).SelectSingleNode("/chummer/personallives/personallife[. = " + PersonalLife.CleanXPath() + "]/@translate")?.Value
                    ?? PersonalLife;
         }
 
@@ -986,9 +1060,26 @@ namespace Chummer
 
         public bool LoyaltyEnabled => !ReadOnly && !IsGroup && ForcedLoyalty <= 0;
 
+        public async ValueTask<bool> GetLoyaltyEnabledAsync(CancellationToken token = default)
+        {
+            return !ReadOnly && !IsGroup && await GetForcedLoyaltyAsync(token) <= 0;
+        }
+
         public int ConnectionMaximum => CharacterObject.Created || CharacterObject.FriendsInHighPlaces ? 12 : 6;
 
+        public async ValueTask<int> GetConnectionMaximumAsync(CancellationToken token = default)
+        {
+            return await CharacterObject.GetCreatedAsync(token) || await CharacterObject.GetFriendsInHighPlacesAsync(token)
+                ? 12
+                : 6;
+        }
+
         public string QuickText => string.Format(GlobalSettings.CultureInfo, IsGroup ? "({0}/{1}G)" : "({0}/{1})", Connection, Loyalty);
+
+        public async ValueTask<string> GetQuickTextAsync(CancellationToken token = default)
+        {
+            return string.Format(GlobalSettings.CultureInfo, IsGroup ? "({0}/{1}G)" : "({0}/{1})", await GetConnectionAsync(token), await GetLoyaltyAsync(token));
+        }
 
         /// <summary>
         /// The Contact's type, either Contact or Enemy.
@@ -1124,6 +1215,27 @@ namespace Chummer
             set => _blnFree = value;
         }
 
+        /// <summary>
+        /// Whether or not this is a free contact.
+        /// </summary>
+        public async ValueTask<bool> GetFreeAsync(CancellationToken token = default)
+        {
+            if (_blnFree)
+                return _blnFree;
+
+            if (_intCachedFreeFromImprovement < 0)
+            {
+                _intCachedFreeFromImprovement = (await ImprovementManager
+                    .GetCachedImprovementListForValueOfAsync(
+                        CharacterObject, Improvement.ImprovementType.ContactMakeFree,
+                        UniqueId, token: token)).Count > 0
+                    ? 1
+                    : 0;
+            }
+
+            return _intCachedFreeFromImprovement > 0;
+        }
+
         public bool FreeEnabled => _intCachedFreeFromImprovement < 1;
 
         /// <summary>
@@ -1155,6 +1267,25 @@ namespace Chummer
 
                 return _intCachedGroupEnabled > 0;
             }
+        }
+
+        /// <summary>
+        /// Whether or not the contact's group status can be modified through the UI
+        /// </summary>
+        public async ValueTask<bool> GetGroupEnabledAsync(CancellationToken token = default)
+        {
+            if (_intCachedGroupEnabled < 0)
+            {
+                _intCachedGroupEnabled = !ReadOnly && (await ImprovementManager
+                        .GetCachedImprovementListForValueOfAsync(
+                            CharacterObject,
+                            Improvement.ImprovementType.ContactForceGroup, UniqueId, token: token))
+                                                      .Count == 0
+                    ? 1
+                    : 0;
+            }
+
+            return _intCachedGroupEnabled > 0;
         }
 
         public bool Blackmail
@@ -1200,6 +1331,21 @@ namespace Chummer
 
                 return _intCachedForcedLoyalty = intMaxForcedLoyalty;
             }
+        }
+
+        public async ValueTask<int> GetForcedLoyaltyAsync(CancellationToken token = default)
+        {
+            if (_intCachedForcedLoyalty != int.MinValue)
+                return _intCachedForcedLoyalty;
+
+            int intMaxForcedLoyalty = 0;
+            foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                         CharacterObject, Improvement.ImprovementType.ContactForcedLoyalty, UniqueId, token: token))
+            {
+                intMaxForcedLoyalty = Math.Max(intMaxForcedLoyalty, objImprovement.Value.StandardRound());
+            }
+
+            return _intCachedForcedLoyalty = intMaxForcedLoyalty;
         }
 
         public Character CharacterObject => _objCharacter;

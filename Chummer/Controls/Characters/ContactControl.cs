@@ -519,9 +519,11 @@ namespace Chummer
             });
         }
 
-        private void DoDataBindings()
+        private async ValueTask DoDataBindings()
         {
-            lblQuickStats.DoOneWayDataBinding("Text", _objContact, nameof(_objContact.QuickText));
+            await lblQuickStats.RegisterOneWayAsyncDataBinding((x, y) => x.Text = y, _objContact,
+                                                               nameof(Contact.QuickText),
+                                                               x => x.GetQuickTextAsync().AsTask());
             txtContactName.DoDataBinding("Text", _objContact, nameof(_objContact.Name));
             txtContactLocation.DoDataBinding("Text", _objContact, nameof(_objContact.Location));
             cmdDelete.DoOneWayDataBinding("Visible", _objContact, nameof(_objContact.NotReadOnly));
