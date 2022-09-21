@@ -19,7 +19,6 @@
 
 using System;
 using System.Collections;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -31,7 +30,7 @@ using Chummer.Annotations;
 
 namespace Chummer
 {
-    public class ThreadSafeObservableCollection<T> : IAsyncList<T>, IList, IAsyncReadOnlyList<T>, INotifyCollectionChanged, INotifyPropertyChanged, IProducerConsumerCollection<T>, IHasLockObject
+    public class ThreadSafeObservableCollection<T> : IAsyncList<T>, IList, IAsyncReadOnlyList<T>, INotifyCollectionChanged, INotifyPropertyChanged, IAsyncProducerConsumerCollection<T>, IHasLockObject
     {
         protected readonly EnhancedObservableCollection<T> _lstData;
         public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
@@ -325,6 +324,13 @@ namespace Chummer
         }
 
         /// <inheritdoc />
+        public async ValueTask<bool> TryAddAsync(T item, CancellationToken token = default)
+        {
+            await AddAsync(item, token);
+            return true;
+        }
+
+        /// <inheritdoc />
         public bool TryTake(out T item)
         {
             // Immediately enter a write lock to prevent attempted reads until we have either taken the item we want to take or failed to do so
@@ -341,6 +347,28 @@ namespace Chummer
 
             item = default;
             return false;
+        }
+
+        public async ValueTask<Tuple<bool, T>> TryTakeAsync(CancellationToken token = default)
+        {
+            // Immediately enter a write lock to prevent attempted reads until we have either taken the item we want to take or failed to do so
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
+            try
+            {
+                if (_lstData.Count > 0)
+                {
+                    // FIFO to be compliant with how the default for BlockingCollection<T> is ConcurrentQueue
+                    T objReturn = _lstData[0];
+                    _lstData.RemoveAt(0);
+                    return new Tuple<bool, T>(true, objReturn);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync();
+            }
+
+            return new Tuple<bool, T>(false, default);
         }
 
         /// <inheritdoc />

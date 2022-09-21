@@ -19,7 +19,6 @@
 
 using System;
 using System.Collections;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -28,7 +27,7 @@ using System.Threading.Tasks;
 
 namespace Chummer
 {
-    public class LockingOrderedSet<T> : IAsyncSet<T>, IAsyncList<T>, IAsyncReadOnlyList<T>, IProducerConsumerCollection<T>, ISerializable, IDeserializationCallback, IHasLockObject
+    public class LockingOrderedSet<T> : IAsyncSet<T>, IAsyncList<T>, IAsyncReadOnlyList<T>, IAsyncProducerConsumerCollection<T>, ISerializable, IDeserializationCallback, IHasLockObject
     {
         private readonly HashSet<T> _setData;
         private readonly List<T> _lstOrderedData;
@@ -371,6 +370,31 @@ namespace Chummer
         public ValueTask<bool> TryAddAsync(T item, CancellationToken token = default)
         {
             return AddAsync(item, token);
+        }
+
+        /// <inheritdoc />
+        public async ValueTask<Tuple<bool, T>> TryTakeAsync(CancellationToken token = default)
+        {
+            // Immediately enter a write lock to prevent attempted reads until we have either taken the item we want to take or failed to do so
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
+            try
+            {
+                if (_setData.Count > 0)
+                {
+                    // FIFO to be compliant with how the default for BlockingCollection<T> is ConcurrentQueue
+                    T objReturn = _lstOrderedData[0];
+                    if (_setData.Remove(objReturn))
+                    {
+                        _lstOrderedData.RemoveAt(0);
+                        return new Tuple<bool, T>(true, objReturn);
+                    }
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync();
+            }
+            return new Tuple<bool, T>(false, default);
         }
 
         /// <inheritdoc />

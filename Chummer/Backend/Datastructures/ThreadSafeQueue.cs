@@ -19,14 +19,13 @@
 
 using System;
 using System.Collections;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Chummer
 {
-    public class ThreadSafeQueue<T> : IHasLockObject, IProducerConsumerCollection<T>, IAsyncCollection<T>, IAsyncReadOnlyCollection<T>
+    public class ThreadSafeQueue<T> : IHasLockObject, IAsyncProducerConsumerCollection<T>, IAsyncCollection<T>, IAsyncReadOnlyCollection<T>
     {
         private readonly Queue<T> _queData;
 
@@ -234,9 +233,9 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="Queue{T}.ToArray" />
-        public async ValueTask<T[]> ToArrayAsync()
+        public async ValueTask<T[]> ToArrayAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject))
+            using (await EnterReadLock.EnterAsync(LockObject, token))
                 return _queData.ToArray();
         }
 
@@ -280,6 +279,26 @@ namespace Chummer
         {
             await EnqueueAsync(item, token);
             return true;
+        }
+
+        /// <inheritdoc />
+        public async ValueTask<Tuple<bool, T>> TryTakeAsync(CancellationToken token = default)
+        {
+            // Immediately enter a write lock to prevent attempted reads until we have either taken the item we want to take or failed to do so
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
+            try
+            {
+                if (_queData.Count > 0)
+                {
+                    return new Tuple<bool, T>(true, _queData.Dequeue());
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync();
+            }
+
+            return new Tuple<bool, T>(false, default);
         }
 
         /// <inheritdoc cref="Queue{T}.CopyTo" />

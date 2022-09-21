@@ -341,6 +341,7 @@
     <Compile Include="Backend\Interfaces\IAsyncDictionary.cs" />
     <Compile Include="Backend\Interfaces\IAsyncEnumerable.cs" />
     <Compile Include="Backend\Interfaces\IAsyncList.cs" />
+    <Compile Include="Backend\Interfaces\IAsyncProducerConsumerCollection.cs" />
     <Compile Include="Backend\Interfaces\IAsyncReadOnlyCollection.cs" />
     <Compile Include="Backend\Interfaces\IAsyncReadOnlyDictionary.cs" />
     <Compile Include="Backend\Interfaces\IAsyncReadOnlyList.cs" />

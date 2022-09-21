@@ -19,7 +19,6 @@
 
 using System;
 using System.Collections;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading;
@@ -27,7 +26,7 @@ using System.Threading.Tasks;
 
 namespace Chummer
 {
-    public sealed class ThreadSafeList<T> : IAsyncList<T>, IAsyncReadOnlyList<T>, IList, IProducerConsumerCollection<T>, IHasLockObject
+    public sealed class ThreadSafeList<T> : IAsyncList<T>, IAsyncReadOnlyList<T>, IList, IAsyncProducerConsumerCollection<T>, IHasLockObject
     {
         private readonly List<T> _lstData;
         public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
@@ -417,6 +416,29 @@ namespace Chummer
         {
             await AddAsync(item, token);
             return true;
+        }
+
+        /// <inheritdoc />
+        public async ValueTask<Tuple<bool, T>> TryTakeAsync(CancellationToken token = default)
+        {
+            // Immediately enter a write lock to prevent attempted reads until we have either taken the item we want to take or failed to do so
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
+            try
+            {
+                if (_lstData.Count > 0)
+                {
+                    // FIFO to be compliant with how the default for BlockingCollection<T> is ConcurrentQueue
+                    T objReturn = _lstData[0];
+                    _lstData.RemoveAt(0);
+                    return new Tuple<bool, T>(true, objReturn);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync();
+            }
+
+            return new Tuple<bool, T>(false, default);
         }
 
         /// <inheritdoc />

@@ -19,7 +19,6 @@
 
 using System;
 using System.Collections;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Threading;
@@ -41,7 +40,7 @@ namespace Chummer
         ISerializable,
         IDeserializationCallback,
         IHasLockObject,
-        IProducerConsumerCollection<KeyValuePair<TKey, TValue>>
+        IAsyncProducerConsumerCollection<KeyValuePair<TKey, TValue>>
     {
         private readonly Dictionary<TKey, TValue> _dicUnorderedData;
         private readonly List<TKey> _lstIndexes;
@@ -114,8 +113,7 @@ namespace Chummer
             using (await EnterReadLock.EnterAsync(LockObject, token))
                 return _dicUnorderedData.TryGetValue(item.Key, out TValue objValue) && objValue.Equals(item.Value);
         }
-
-        /// <inheritdoc />
+        
         public async ValueTask CopyToAsync(KeyValuePair<TKey, TValue>[] array, int index, CancellationToken token = default)
         {
             using (await EnterReadLock.EnterAsync(LockObject, token))
@@ -385,6 +383,54 @@ namespace Chummer
         public ValueTask<bool> TryAddAsync(KeyValuePair<TKey, TValue> item, CancellationToken token = default)
         {
             return TryAddAsync(item.Key, item.Value, token);
+        }
+
+        /// <inheritdoc />
+        public async ValueTask<Tuple<bool, KeyValuePair<TKey, TValue>>> TryTakeAsync(CancellationToken token = default)
+        {
+            bool blnTakeSuccessful = false;
+            TKey objKeyToTake = default;
+            TValue objValue = default;
+            // Immediately enter a write lock to prevent attempted reads until we have either taken the item we want to take or failed to do so
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
+            try
+            {
+                if (_lstIndexes.Count > 0)
+                {
+                    // FIFO to be compliant with how the default for BlockingCollection<T> is ConcurrentQueue
+                    objKeyToTake = _lstIndexes[0];
+                    if (_dicUnorderedData.TryGetValue(objKeyToTake, out objValue))
+                    {
+                        blnTakeSuccessful = _dicUnorderedData.Remove(objKeyToTake);
+                        if (blnTakeSuccessful)
+                            _lstIndexes.RemoveAt(0);
+                    }
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync();
+            }
+
+            return blnTakeSuccessful
+                ? new Tuple<bool, KeyValuePair<TKey, TValue>>(
+                    true, new KeyValuePair<TKey, TValue>(objKeyToTake, objValue))
+                : new Tuple<bool, KeyValuePair<TKey, TValue>>(false, default);
+        }
+
+        /// <inheritdoc />
+        public async ValueTask<KeyValuePair<TKey, TValue>[]> ToArrayAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+            {
+                KeyValuePair<TKey, TValue>[] akvpReturn = new KeyValuePair<TKey, TValue>[_dicUnorderedData.Count];
+                for (int i = 0; i < _dicUnorderedData.Count; ++i)
+                {
+                    TKey objLoopKey = _lstIndexes[i];
+                    akvpReturn[i] = new KeyValuePair<TKey, TValue>(objLoopKey, _dicUnorderedData[objLoopKey]);
+                }
+                return akvpReturn;
+            }
         }
 
         /// <inheritdoc />

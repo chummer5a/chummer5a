@@ -291,7 +291,7 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             using (CustomActivity opLoadMasterindex = await Timekeeper.StartSyncronAsync("op_load_frm_masterindex", null,
-                       CustomActivity.OperationType.RequestOperation, null))
+                       CustomActivity.OperationType.RequestOperation, null, token))
             {
                 bool blnOldIsFinishedLoading = IsFinishedLoading;
                 try
@@ -327,13 +327,13 @@ namespace Chummer
                     }
 
                     using (_ = await Timekeeper.StartSyncronAsync("load_frm_masterindex_load_andpopulate_entries",
-                                                                  opLoadMasterindex))
+                                                                  opLoadMasterindex, token))
                     {
                         if (_objSelectedSetting != null)
                         {
                             ConcurrentBag<ListItem> lstItemsForLoading = new ConcurrentBag<ListItem>();
                             using (_ = await Timekeeper.StartSyncronAsync(
-                                       "load_frm_masterindex_load_entries", opLoadMasterindex))
+                                       "load_frm_masterindex_load_entries", opLoadMasterindex, token))
                             {
                                 ConcurrentBag<ListItem> lstFileNamesWithItemsForLoading = new ConcurrentBag<ListItem>();
                                 // Prevents locking the UI thread while still benefiting from static scheduling of Parallel.ForEach
@@ -417,7 +417,7 @@ namespace Chummer
                             }
 
                             using (_ = await Timekeeper.StartSyncronAsync(
-                                       "load_frm_masterindex_populate_entries", opLoadMasterindex))
+                                       "load_frm_masterindex_populate_entries", opLoadMasterindex, token))
                             {
                                 string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token);
                                 string strFormat = "{0}" + strSpace + "[{1}]";
@@ -508,13 +508,13 @@ namespace Chummer
                         }
                     }
 
-                    using (_ = await Timekeeper.StartSyncronAsync("load_frm_masterindex_sort_entries", opLoadMasterindex))
+                    using (_ = await Timekeeper.StartSyncronAsync("load_frm_masterindex_sort_entries", opLoadMasterindex, token))
                     {
                         _lstItems.Sort(CompareListItems.CompareNames);
                         _lstFileNamesWithItems.Sort(CompareListItems.CompareNames);
                     }
 
-                    using (_ = await Timekeeper.StartSyncronAsync("load_frm_masterindex_populate_controls", opLoadMasterindex))
+                    using (_ = await Timekeeper.StartSyncronAsync("load_frm_masterindex_populate_controls", opLoadMasterindex, token))
                     {
                         _lstFileNamesWithItems.Insert(
                             0, new ListItem(string.Empty, await LanguageManager.GetStringAsync("String_All", token: token)));
