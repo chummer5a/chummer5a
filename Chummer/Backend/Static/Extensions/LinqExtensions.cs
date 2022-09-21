@@ -77,9 +77,15 @@ namespace Chummer
                 return setFirst.SetEquals(second);
             if (second is ISet<T> setSecond)
                 return setSecond.SetEquals(first);
-            return first.GetOrderInvariantEnsembleHashCode() == second.GetOrderInvariantEnsembleHashCode() && first
-                .Concat(second).Distinct()
-                .All(objItem => first.Count(x => x.Equals(objItem)) == second.Count(x => x.Equals(objItem)));
+            if (first.GetOrderInvariantEnsembleHashCode() != second.GetOrderInvariantEnsembleHashCode())
+                return false;
+            List<T> lstTemp = second.ToList();
+            foreach (T item in first)
+            {
+                if (!lstTemp.Remove(item))
+                    return false;
+            }
+            return lstTemp.Count == 0; // The list will only be empty if all elements in second are also in first
         }
 
         /// <summary>
@@ -92,11 +98,19 @@ namespace Chummer
         public static bool CollectionEqual<T>([NotNull] this IReadOnlyCollection<T> first, [NotNull] IReadOnlyCollection<T> second, IEqualityComparer<T> comparer)
         {
             // Sets do not have IEqualityComparer versions for SetEquals, so we always need to do this the slow way
-            return first.Count == second.Count
-                   && first.GetOrderInvariantEnsembleHashCode() == second.GetOrderInvariantEnsembleHashCode()
-                   && first.Concat(second).Distinct().All(objItem =>
-                                                              first.Count(x => comparer.Equals(x, objItem))
-                                                              == second.Count(x => comparer.Equals(x, objItem)));
+            if (first.Count != second.Count)
+                return false;
+            if (first.GetOrderInvariantEnsembleHashCode() != second.GetOrderInvariantEnsembleHashCode())
+                return false;
+            List<T> lstTemp = second.ToList();
+            foreach (T item in first)
+            {
+                int i = lstTemp.FindIndex(x => comparer.Equals(x, item));
+                if (i < 0)
+                    return false;
+                lstTemp.RemoveAt(i);
+            }
+            return lstTemp.Count == 0; // The list will only be empty if all elements in second are also in first
         }
 
         /// <summary>

@@ -1119,7 +1119,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
             }
 
-            foreach (string s in dicWatchNodes.Values.Distinct().OrderBy(x => x))
+            foreach (string s in new SortedSet<string>(dicWatchNodes.Values))
             {
                 token.ThrowIfCancellationRequested();
                 if (s == "Watch")
