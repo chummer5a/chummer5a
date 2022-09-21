@@ -127,7 +127,7 @@ namespace SamplePlugin
                 //here you can inject your own string in every chummer save file. Preferable as json, so you can
                 //a) distingish it from the main chummer elements in xml
                 //b) actually use it ;)
-                var savesetting = "This Char was saved with the SamplePlugin enabled!";
+                string savesetting = "This Char was saved with the SamplePlugin enabled!";
                 return JsonConvert.SerializeObject(savesetting, Formatting.Indented);
             }
             catch (Exception e)

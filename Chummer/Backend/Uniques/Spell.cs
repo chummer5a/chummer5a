@@ -1393,7 +1393,7 @@ namespace Chummer
 
                     case Improvement.ImprovementType.ReplaceSkillSpell:
                         if (objImprovement.ImprovedName == Name || objImprovement.ImprovedName == SourceID.ToString() ||
-                            objImprovement.ImprovedName == string.Empty)
+                            string.IsNullOrEmpty(objImprovement.ImprovedName))
                         {
                             yield return objImprovement;
                             if (blnExitAfterFirst)

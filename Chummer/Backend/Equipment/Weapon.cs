@@ -2614,7 +2614,7 @@ namespace Chummer.Backend.Equipment
                         decImprove += ImprovementManager.ValueOf(_objCharacter,
                                                                  Improvement.ImprovementType.WeaponCategoryDV,
                                                                  strImprovedName: strUseSkill);
-                    if (strCategory.StartsWith("Cyberware "))
+                    if (strCategory.StartsWith("Cyberware ", StringComparison.Ordinal))
                         decImprove += ImprovementManager.ValueOf(_objCharacter,
                                                                  Improvement.ImprovementType.WeaponCategoryDV,
                                                                  strImprovedName: strCategory.TrimStartOnce(
@@ -2649,7 +2649,7 @@ namespace Chummer.Backend.Equipment
                         decImprove += await ImprovementManager.ValueOfAsync(_objCharacter,
                                                                             Improvement.ImprovementType.WeaponCategoryDV,
                                                                             strImprovedName: strUseSkill);
-                    if (strCategory.StartsWith("Cyberware "))
+                    if (strCategory.StartsWith("Cyberware ", StringComparison.Ordinal))
                         decImprove += await ImprovementManager.ValueOfAsync(_objCharacter,
                                                                             Improvement.ImprovementType.WeaponCategoryDV,
                                                                             strImprovedName: strCategory.TrimStartOnce(

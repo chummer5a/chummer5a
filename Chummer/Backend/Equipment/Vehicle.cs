@@ -836,7 +836,7 @@ namespace Chummer.Backend.Equipment
                     {
                         // Compatibility sweep for malformed weapon mount on Proteus Krake
                         Guid guidDummy = Guid.Empty;
-                        if (Name.StartsWith("Proteus Krake")
+                        if (Name.StartsWith("Proteus Krake", StringComparison.Ordinal)
                             && !blnKrakePassDone
                             && _objCharacter.LastSavedVersion < new Version(5, 213, 28)
                             && (!nodChild.TryGetGuidFieldQuickly("sourceid", ref guidDummy) || guidDummy == Guid.Empty))
@@ -2180,12 +2180,9 @@ namespace Chummer.Backend.Equipment
                         continue;
                     intTotalBonusSeats += ParseBonus(objMod.Bonus?["seats"]?.InnerText, objMod.Rating, intTotalSeats, "Seats");
 
-                    if (objMod.WirelessOn)
+                    if (objMod.WirelessOn && objMod.WirelessBonus != null)
                     {
-                        if (objMod.WirelessBonus != null)
-                        {
-                            intTotalBonusSeats += ParseBonus(objMod.WirelessBonus?["seats"]?.InnerText, objMod.Rating, intTotalSeats, "Seats");
-                        }
+                        intTotalBonusSeats += ParseBonus(objMod.WirelessBonus?["seats"]?.InnerText, objMod.Rating, intTotalSeats, "Seats");
                     }
                 }
 

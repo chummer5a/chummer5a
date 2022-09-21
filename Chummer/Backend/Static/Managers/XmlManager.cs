@@ -1138,8 +1138,9 @@ namespace Chummer
                 {
                     token.ThrowIfCancellationRequested();
                     string strInnerFileName = Path.GetFileName(strLoopFile);
-                    if (strInnerFileName.StartsWith("override_") || strInnerFileName.StartsWith("custom_")
-                                                                 || strInnerFileName.StartsWith("amend_"))
+                    if (strInnerFileName.StartsWith("override_", StringComparison.OrdinalIgnoreCase)
+                        || strInnerFileName.StartsWith("custom_", StringComparison.OrdinalIgnoreCase)
+                        || strInnerFileName.StartsWith("amend_", StringComparison.OrdinalIgnoreCase))
                     {
                         yield return strLoopPath;
                         break;
@@ -1158,16 +1159,16 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 string strLoopFileName = Path.GetFileName(strFile);
-                if (!strLoopFileName.StartsWith("override_")
-                    && !strLoopFileName.StartsWith("custom_")
-                    && !strLoopFileName.StartsWith("amend_"))
+                if (!strLoopFileName.StartsWith("override_", StringComparison.OrdinalIgnoreCase)
+                    && !strLoopFileName.StartsWith("custom_", StringComparison.OrdinalIgnoreCase)
+                    && !strLoopFileName.StartsWith("amend_", StringComparison.OrdinalIgnoreCase))
                     continue;
                 lstPossibleCustomFiles.Add(strFile);
             }
             foreach (string strFile in lstPossibleCustomFiles)
             {
                 token.ThrowIfCancellationRequested();
-                if (!Path.GetFileName(strFile).StartsWith("override_"))
+                if (!Path.GetFileName(strFile).StartsWith("override_", StringComparison.OrdinalIgnoreCase))
                     continue;
                 try
                 {
@@ -1248,7 +1249,7 @@ namespace Chummer
             foreach (string strFile in lstPossibleCustomFiles)
             {
                 token.ThrowIfCancellationRequested();
-                if (!Path.GetFileName(strFile).StartsWith("custom_"))
+                if (!Path.GetFileName(strFile).StartsWith("custom_", StringComparison.OrdinalIgnoreCase))
                     continue;
                 try
                 {
@@ -1385,7 +1386,7 @@ namespace Chummer
             foreach (string strFile in lstPossibleCustomFiles)
             {
                 token.ThrowIfCancellationRequested();
-                if (!Path.GetFileName(strFile).StartsWith("amend_"))
+                if (!Path.GetFileName(strFile).StartsWith("amend_", StringComparison.OrdinalIgnoreCase))
                     continue;
                 try
                 {

@@ -689,16 +689,16 @@ namespace Chummer
                 {
                     try
                     {
-                        using (var zipToOpen = new FileStream(strBackupZipPath, FileMode.Create))
-                        using (var archive = new ZipArchive(zipToOpen, ZipArchiveMode.Create))
+                        using (FileStream zipToOpen = new FileStream(strBackupZipPath, FileMode.Create))
+                        using (ZipArchive archive = new ZipArchive(zipToOpen, ZipArchiveMode.Create))
                         {
-                            foreach (var file in Directory.GetFiles(_strAppPath))
+                            foreach (string file in Directory.GetFiles(_strAppPath))
                             {
-                                var entry = archive.CreateEntry(Path.GetFileName(file));
+                                ZipArchiveEntry entry = archive.CreateEntry(Path.GetFileName(file));
                                 entry.LastWriteTime = File.GetLastWriteTime(file);
-                                using (var fs = new FileStream(file, FileMode.Open, FileAccess.Read,
-                                           FileShare.ReadWrite))
-                                using (var stream = entry.Open())
+                                using (FileStream fs = new FileStream(file, FileMode.Open, FileAccess.Read,
+                                                                      FileShare.ReadWrite))
+                                using (Stream stream = entry.Open())
                                 {
                                     //magic number default buffer size, no overload that is only stream+token
                                     await fs.CopyToAsync(stream, 81920, token);

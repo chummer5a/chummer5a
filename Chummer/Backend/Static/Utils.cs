@@ -2195,7 +2195,7 @@ namespace Chummer
                 //Make sure we actually got something in our OS check
                 //We don't want to just return " Service Pack 2" or " 32-bit"
                 //That information is useless without the OS version.
-                if (strReturn.StartsWith("Windows") && !string.IsNullOrEmpty(objOSInfo.ServicePack))
+                if (strReturn.StartsWith("Windows", StringComparison.OrdinalIgnoreCase) && !string.IsNullOrEmpty(objOSInfo.ServicePack))
                 {
                     //Append service pack to the OS name.  i.e. "Windows XP Service Pack 3"
                     strReturn += ' ' + objOSInfo.ServicePack;

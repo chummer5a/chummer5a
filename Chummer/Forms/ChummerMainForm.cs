@@ -2808,7 +2808,7 @@ namespace Chummer
             {
                 foreach (string strArg in strArgs)
                 {
-                    if (strArg.EndsWith(Path.GetFileName(Application.ExecutablePath)))
+                    if (strArg.EndsWith(Path.GetFileName(Application.ExecutablePath), StringComparison.OrdinalIgnoreCase))
                         continue;
                     switch (strArg)
                     {
