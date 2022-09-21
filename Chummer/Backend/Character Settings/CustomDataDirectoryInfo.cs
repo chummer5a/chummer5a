@@ -639,19 +639,19 @@ namespace Chummer
                    Environment.NewLine + Environment.NewLine + description.NormalizeLineEndings(true);
         }
 
-        public async Task<string> GetDisplayDescriptionAsync(string strLanguage)
+        public async Task<string> GetDisplayDescriptionAsync(string strLanguage, CancellationToken token = default)
         {
             if (!File.Exists(Path.Combine(DirectoryPath, "manifest.xml")))
-                return await LanguageManager.GetStringAsync("Tooltip_CharacterOptions_ManifestMissing", strLanguage);
+                return await LanguageManager.GetStringAsync("Tooltip_CharacterOptions_ManifestMissing", strLanguage, token: token);
 
             if (DescriptionDictionary.TryGetValue(strLanguage, out string description))
                 return description.NormalizeLineEndings(true);
 
             if (!DescriptionDictionary.TryGetValue(GlobalSettings.DefaultLanguage, out description))
-                return await LanguageManager.GetStringAsync("Tooltip_CharacterOptions_ManifestDescriptionMissing", strLanguage);
+                return await LanguageManager.GetStringAsync("Tooltip_CharacterOptions_ManifestDescriptionMissing", strLanguage, token: token);
 
             return await LanguageManager.GetStringAsync("Tooltip_CharacterOptions_LanguageSpecificManifestMissing",
-                                                        strLanguage) +
+                                                        strLanguage, token: token) +
                    Environment.NewLine + Environment.NewLine + description.NormalizeLineEndings(true);
         }
 
@@ -704,7 +704,7 @@ namespace Chummer
             }
         }
 
-        public async Task<string> GetDisplayAuthorsAsync(string strLanguage, CultureInfo objCultureInfo)
+        public async Task<string> GetDisplayAuthorsAsync(string strLanguage, CultureInfo objCultureInfo, CancellationToken token = default)
         {
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdDisplayAuthors))
@@ -714,7 +714,7 @@ namespace Chummer
                     sbdDisplayAuthors.AppendLine(kvp.Value
                                                      ? string.Format(objCultureInfo, kvp.Key,
                                                                      await LanguageManager.GetStringAsync(
-                                                                         "String_IsMainAuthor", strLanguage))
+                                                                         "String_IsMainAuthor", strLanguage, token: token))
                                                      : kvp.Key);
                 }
 

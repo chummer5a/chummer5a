@@ -1831,7 +1831,7 @@ namespace Chummer
                     {
                         SourceString objSource = await SourceString.GetSourceStringAsync(
                             strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo,
-                            _objCharacter);
+                            _objCharacter, token);
                         await lblSource.DoThreadSafeAsync(x => x.Text = objSource.ToString(), token);
                         await lblSource.SetToolTipAsync(objSource.LanguageBookTooltip, token);
                     }
@@ -2088,7 +2088,7 @@ namespace Chummer
                     {
                         SourceString objSource = await SourceString.GetSourceStringAsync(
                             strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo,
-                            _objCharacter);
+                            _objCharacter, token);
                         await objSource.SetControlAsync(lblSource, token);
                     }
                     else

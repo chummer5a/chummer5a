@@ -3281,7 +3281,7 @@ namespace Chummer
                             async void FuncArmorGearToAdd(object x, NotifyCollectionChangedEventArgs y) =>
                                 await objArmor.RefreshChildrenGears(
                                     treArmor, cmsArmorGear, () => objArmor.ArmorMods.Count, y,
-                                    MakeDirtyWithCharacterUpdate);
+                                    MakeDirtyWithCharacterUpdate, token: GenericToken);
 
                             await objArmor.ArmorMods.AddTaggedCollectionChangedAsync(
                                 treArmor, MakeDirtyWithCharacterUpdate, GenericToken);
@@ -3298,7 +3298,7 @@ namespace Chummer
                             {
                                 async void FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y) =>
                                     await objArmorMod.RefreshChildrenGears(
-                                        treArmor, cmsArmorGear, null, y, MakeDirtyWithCharacterUpdate);
+                                        treArmor, cmsArmorGear, null, y, MakeDirtyWithCharacterUpdate, token: GenericToken);
 
                                 await objArmorMod.GearChildren.AddTaggedCollectionChangedAsync(
                                     treArmor, MakeDirtyWithCharacterUpdate, GenericToken);
@@ -3337,7 +3337,7 @@ namespace Chummer
                                 async void FuncArmorGearToAdd(object x, NotifyCollectionChangedEventArgs y) =>
                                     await objArmor.RefreshChildrenGears(
                                         treArmor, cmsArmorGear, () => objArmor.ArmorMods.Count, y,
-                                        MakeDirtyWithCharacterUpdate);
+                                        MakeDirtyWithCharacterUpdate, token: GenericToken);
 
                                 await objArmor.ArmorMods.AddTaggedCollectionChangedAsync(
                                     treArmor, MakeDirtyWithCharacterUpdate, GenericToken);
@@ -3354,7 +3354,7 @@ namespace Chummer
                                 {
                                     async void FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y) =>
                                         await objArmorMod.RefreshChildrenGears(
-                                            treArmor, cmsArmorGear, null, y, MakeDirtyWithCharacterUpdate);
+                                            treArmor, cmsArmorGear, null, y, MakeDirtyWithCharacterUpdate, token: GenericToken);
 
                                     await objArmorMod.GearChildren.AddTaggedCollectionChangedAsync(
                                         treArmor, MakeDirtyWithCharacterUpdate, GenericToken);
@@ -3429,7 +3429,7 @@ namespace Chummer
                                 async void FuncArmorGearToAdd(object x, NotifyCollectionChangedEventArgs y) =>
                                     await objArmor.RefreshChildrenGears(
                                         treArmor, cmsArmorGear, () => objArmor.ArmorMods.Count, y,
-                                        MakeDirtyWithCharacterUpdate);
+                                        MakeDirtyWithCharacterUpdate, token: GenericToken);
 
                                 await objArmor.ArmorMods.AddTaggedCollectionChangedAsync(
                                     treArmor, MakeDirtyWithCharacterUpdate, GenericToken);
@@ -3446,7 +3446,7 @@ namespace Chummer
                                 {
                                     async void FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y) =>
                                         await objArmorMod.RefreshChildrenGears(
-                                            treArmor, cmsArmorGear, null, y, MakeDirtyWithCharacterUpdate);
+                                            treArmor, cmsArmorGear, null, y, MakeDirtyWithCharacterUpdate, token: GenericToken);
 
                                     await objArmorMod.GearChildren.AddTaggedCollectionChangedAsync(
                                         treArmor, MakeDirtyWithCharacterUpdate, GenericToken);
@@ -3573,7 +3573,7 @@ namespace Chummer
 
                             async void FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y) =>
                                 await objArmorMod.RefreshChildrenGears(treArmor, cmsArmorGear, null, y,
-                                                                       MakeDirtyWithCharacterUpdate);
+                                                                       MakeDirtyWithCharacterUpdate, token: GenericToken);
 
                             await objArmorMod.GearChildren.AddTaggedCollectionChangedAsync(treArmor,
                                 FuncDelegateToAdd, GenericToken);
@@ -3622,7 +3622,7 @@ namespace Chummer
 
                             async void FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y) =>
                                 await objArmorMod.RefreshChildrenGears(treArmor, cmsArmorGear, null, y,
-                                                                       MakeDirtyWithCharacterUpdate);
+                                                                       MakeDirtyWithCharacterUpdate, token: GenericToken);
 
                             await objArmorMod.GearChildren.AddTaggedCollectionChangedAsync(treArmor,
                                 FuncDelegateToAdd, GenericToken);
@@ -3789,7 +3789,7 @@ namespace Chummer
 
                                 async void FuncGearToAdd(object x, NotifyCollectionChangedEventArgs y) =>
                                     await objGear.RefreshChildrenGears(treGear, cmsGear, null, y,
-                                                                       MakeDirtyWithCharacterUpdate);
+                                                                       MakeDirtyWithCharacterUpdate, token: GenericToken);
 
                                 await objGear.Children.AddTaggedCollectionChangedAsync(
                                     treGear, MakeDirtyWithCharacterUpdate, GenericToken);
@@ -4320,7 +4320,7 @@ namespace Chummer
                                 await objVehicle.RefreshVehicleMods(
                                     treVehicles, cmsVehicle, cmsCyberware, cmsCyberwareGear, cmsVehicleWeapon,
                                     cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, null, y,
-                                    MakeDirtyWithCharacterUpdate);
+                                    MakeDirtyWithCharacterUpdate, token: GenericToken);
 
                             async void
                                 FuncVehicleWeaponMountsToAdd(object x, NotifyCollectionChangedEventArgs y) =>
@@ -4328,14 +4328,14 @@ namespace Chummer
                                     treVehicles, cmsVehicleWeaponMount, cmsVehicleWeapon,
                                     cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsCyberware,
                                     cmsCyberwareGear, cmsVehicle, () => objVehicle.Mods.Count, y,
-                                    MakeDirtyWithCharacterUpdate);
+                                    MakeDirtyWithCharacterUpdate, token: GenericToken);
 
                             async void FuncVehicleWeaponsToAdd(object x, NotifyCollectionChangedEventArgs y) =>
                                 await objVehicle.RefreshChildrenWeapons(
                                     treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
                                     cmsVehicleWeaponAccessoryGear,
                                     () => objVehicle.Mods.Count + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0),
-                                    y, MakeDirtyWithCharacterUpdate);
+                                    y, MakeDirtyWithCharacterUpdate, token: GenericToken);
 
                             await objVehicle.Mods.AddTaggedCollectionChangedAsync(
                                 treVehicles, MakeDirtyWithCharacterUpdate, GenericToken);
@@ -4355,14 +4355,14 @@ namespace Chummer
                                     object x, NotifyCollectionChangedEventArgs y) =>
                                     await objMod.RefreshChildrenCyberware(
                                         treVehicles, cmsCyberware, cmsCyberwareGear, null, y,
-                                        MakeDirtyWithCharacterUpdate);
+                                        MakeDirtyWithCharacterUpdate, token: GenericToken);
 
                                 async void FuncVehicleModWeaponsToAdd(
                                     object x, NotifyCollectionChangedEventArgs y) =>
                                     await objMod.RefreshChildrenWeapons(
                                         treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
                                         cmsVehicleWeaponAccessoryGear, () => objMod.Cyberware.Count, y,
-                                        MakeDirtyWithCharacterUpdate);
+                                        MakeDirtyWithCharacterUpdate, token: GenericToken);
 
                                 await objMod.Cyberware.AddTaggedCollectionChangedAsync(
                                     treVehicles, MakeDirtyWithCharacterUpdate, GenericToken);
@@ -4389,14 +4389,14 @@ namespace Chummer
                                                                       cmsCyberwareGear, cmsVehicleWeapon,
                                                                       cmsVehicleWeaponAccessory,
                                                                       cmsVehicleWeaponAccessoryGear, null, y,
-                                                                      MakeDirtyWithCharacterUpdate);
+                                                                      MakeDirtyWithCharacterUpdate, token: GenericToken);
 
                                 async void FuncWeaponMountWeaponsToAdd(
                                     object x, NotifyCollectionChangedEventArgs y) =>
                                     await objMount.RefreshChildrenWeapons(
                                         treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
                                         cmsVehicleWeaponAccessoryGear, () => objMount.Mods.Count, y,
-                                        MakeDirtyWithCharacterUpdate);
+                                        MakeDirtyWithCharacterUpdate, token: GenericToken);
 
                                 await objMount.Mods.AddTaggedCollectionChangedAsync(
                                     treVehicles, MakeDirtyWithCharacterUpdate, GenericToken);
@@ -4416,14 +4416,14 @@ namespace Chummer
                                         object x, NotifyCollectionChangedEventArgs y) =>
                                         await objMod.RefreshChildrenCyberware(
                                             treVehicles, cmsCyberware, cmsCyberwareGear, null, y,
-                                            MakeDirtyWithCharacterUpdate);
+                                            MakeDirtyWithCharacterUpdate, token: GenericToken);
 
                                     async void FuncWeaponMountVehicleModWeaponsToAdd(
                                         object x, NotifyCollectionChangedEventArgs y) =>
                                         await objMod.RefreshChildrenWeapons(
                                             treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
                                             cmsVehicleWeaponAccessoryGear, () => objMod.Cyberware.Count, y,
-                                            MakeDirtyWithCharacterUpdate);
+                                            MakeDirtyWithCharacterUpdate, token: GenericToken);
 
                                     await objMod.Cyberware.AddTaggedCollectionChangedAsync(
                                         treVehicles, MakeDirtyWithCharacterUpdate, GenericToken);
@@ -4454,7 +4454,7 @@ namespace Chummer
                                     treVehicles, cmsVehicleGear,
                                     () => objVehicle.Mods.Count + objVehicle.Weapons.Count
                                                                 + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0),
-                                    y, MakeDirtyWithCharacterUpdate);
+                                    y, MakeDirtyWithCharacterUpdate, token: GenericToken);
 
                             async void FuncVehicleLocationsToAdd(object x, NotifyCollectionChangedEventArgs y) =>
                                 await RefreshLocationsInVehicle(treVehicles, objVehicle, cmsVehicleLocation,
@@ -4502,7 +4502,7 @@ namespace Chummer
                                     await objVehicle.RefreshVehicleMods(
                                         treVehicles, cmsVehicle, cmsCyberware, cmsCyberwareGear, cmsVehicleWeapon,
                                         cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, null, y,
-                                        MakeDirtyWithCharacterUpdate);
+                                        MakeDirtyWithCharacterUpdate, token: GenericToken);
 
                                 async void
                                     FuncVehicleWeaponMountsToAdd(object x, NotifyCollectionChangedEventArgs y) =>
@@ -4510,14 +4510,14 @@ namespace Chummer
                                         treVehicles, cmsVehicleWeaponMount, cmsVehicleWeapon,
                                         cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsCyberware,
                                         cmsCyberwareGear, cmsVehicle, () => objVehicle.Mods.Count, y,
-                                        MakeDirtyWithCharacterUpdate);
+                                        MakeDirtyWithCharacterUpdate, token: GenericToken);
 
                                 async void FuncVehicleWeaponsToAdd(object x, NotifyCollectionChangedEventArgs y) =>
                                     await objVehicle.RefreshChildrenWeapons(
                                         treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
                                         cmsVehicleWeaponAccessoryGear,
                                         () => objVehicle.Mods.Count + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0),
-                                        y, MakeDirtyWithCharacterUpdate);
+                                        y, MakeDirtyWithCharacterUpdate, token: GenericToken);
 
                                 await objVehicle.Mods.AddTaggedCollectionChangedAsync(
                                     treVehicles, MakeDirtyWithCharacterUpdate, GenericToken);
@@ -4537,14 +4537,14 @@ namespace Chummer
                                         object x, NotifyCollectionChangedEventArgs y) =>
                                         await objMod.RefreshChildrenCyberware(
                                             treVehicles, cmsCyberware, cmsCyberwareGear, null, y,
-                                            MakeDirtyWithCharacterUpdate);
+                                            MakeDirtyWithCharacterUpdate, token: GenericToken);
 
                                     async void FuncVehicleModWeaponsToAdd(
                                         object x, NotifyCollectionChangedEventArgs y) =>
                                         await objMod.RefreshChildrenWeapons(
                                             treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
                                             cmsVehicleWeaponAccessoryGear, () => objMod.Cyberware.Count, y,
-                                            MakeDirtyWithCharacterUpdate);
+                                            MakeDirtyWithCharacterUpdate, token: GenericToken);
 
                                     await objMod.Cyberware.AddTaggedCollectionChangedAsync(
                                         treVehicles, MakeDirtyWithCharacterUpdate, GenericToken);
@@ -4571,14 +4571,14 @@ namespace Chummer
                                                                           cmsCyberwareGear, cmsVehicleWeapon,
                                                                           cmsVehicleWeaponAccessory,
                                                                           cmsVehicleWeaponAccessoryGear, null, y,
-                                                                          MakeDirtyWithCharacterUpdate);
+                                                                          MakeDirtyWithCharacterUpdate, token: GenericToken);
 
                                     async void FuncWeaponMountWeaponsToAdd(
                                         object x, NotifyCollectionChangedEventArgs y) =>
                                         await objMount.RefreshChildrenWeapons(
                                             treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
                                             cmsVehicleWeaponAccessoryGear, () => objMount.Mods.Count, y,
-                                            MakeDirtyWithCharacterUpdate);
+                                            MakeDirtyWithCharacterUpdate, token: GenericToken);
 
                                     await objMount.Mods.AddTaggedCollectionChangedAsync(
                                         treVehicles, MakeDirtyWithCharacterUpdate, GenericToken);
@@ -4598,14 +4598,14 @@ namespace Chummer
                                             object x, NotifyCollectionChangedEventArgs y) =>
                                             await objMod.RefreshChildrenCyberware(
                                                 treVehicles, cmsCyberware, cmsCyberwareGear, null, y,
-                                                MakeDirtyWithCharacterUpdate);
+                                                MakeDirtyWithCharacterUpdate, token: GenericToken);
 
                                         async void FuncWeaponMountVehicleModWeaponsToAdd(
                                             object x, NotifyCollectionChangedEventArgs y) =>
                                             await objMod.RefreshChildrenWeapons(
                                                 treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
                                                 cmsVehicleWeaponAccessoryGear, () => objMod.Cyberware.Count, y,
-                                                MakeDirtyWithCharacterUpdate);
+                                                MakeDirtyWithCharacterUpdate, token: GenericToken);
 
                                         await objMod.Cyberware.AddTaggedCollectionChangedAsync(
                                             treVehicles, MakeDirtyWithCharacterUpdate, GenericToken);
@@ -4636,7 +4636,7 @@ namespace Chummer
                                         treVehicles, cmsVehicleGear,
                                         () => objVehicle.Mods.Count + objVehicle.Weapons.Count
                                                                     + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0),
-                                        y, MakeDirtyWithCharacterUpdate);
+                                        y, MakeDirtyWithCharacterUpdate, token: GenericToken);
 
                                 async void FuncVehicleLocationsToAdd(object x, NotifyCollectionChangedEventArgs y) =>
                                     await RefreshLocationsInVehicle(treVehicles, objVehicle, cmsVehicleLocation,
@@ -4762,7 +4762,7 @@ namespace Chummer
                                     await objVehicle.RefreshVehicleMods(
                                         treVehicles, cmsVehicle, cmsCyberware, cmsCyberwareGear, cmsVehicleWeapon,
                                         cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, null, y,
-                                        MakeDirtyWithCharacterUpdate);
+                                        MakeDirtyWithCharacterUpdate, token: GenericToken);
 
                                 async void
                                     FuncVehicleWeaponMountsToAdd(object x, NotifyCollectionChangedEventArgs y) =>
@@ -4770,14 +4770,14 @@ namespace Chummer
                                         treVehicles, cmsVehicleWeaponMount, cmsVehicleWeapon,
                                         cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsCyberware,
                                         cmsCyberwareGear, cmsVehicle, () => objVehicle.Mods.Count, y,
-                                        MakeDirtyWithCharacterUpdate);
+                                        MakeDirtyWithCharacterUpdate, token: GenericToken);
 
                                 async void FuncVehicleWeaponsToAdd(object x, NotifyCollectionChangedEventArgs y) =>
                                     await objVehicle.RefreshChildrenWeapons(
                                         treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
                                         cmsVehicleWeaponAccessoryGear,
                                         () => objVehicle.Mods.Count + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0),
-                                        y, MakeDirtyWithCharacterUpdate);
+                                        y, MakeDirtyWithCharacterUpdate, token: GenericToken);
 
                                 await objVehicle.Mods.AddTaggedCollectionChangedAsync(
                                     treVehicles, MakeDirtyWithCharacterUpdate, GenericToken);
@@ -4797,14 +4797,14 @@ namespace Chummer
                                         object x, NotifyCollectionChangedEventArgs y) =>
                                         await objMod.RefreshChildrenCyberware(
                                             treVehicles, cmsCyberware, cmsCyberwareGear, null, y,
-                                            MakeDirtyWithCharacterUpdate);
+                                            MakeDirtyWithCharacterUpdate, token: GenericToken);
 
                                     async void FuncVehicleModWeaponsToAdd(
                                         object x, NotifyCollectionChangedEventArgs y) =>
                                         await objMod.RefreshChildrenWeapons(
                                             treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
                                             cmsVehicleWeaponAccessoryGear, () => objMod.Cyberware.Count, y,
-                                            MakeDirtyWithCharacterUpdate);
+                                            MakeDirtyWithCharacterUpdate, token: GenericToken);
 
                                     await objMod.Cyberware.AddTaggedCollectionChangedAsync(
                                         treVehicles, MakeDirtyWithCharacterUpdate, GenericToken);
@@ -4831,14 +4831,14 @@ namespace Chummer
                                                                           cmsCyberwareGear, cmsVehicleWeapon,
                                                                           cmsVehicleWeaponAccessory,
                                                                           cmsVehicleWeaponAccessoryGear, null, y,
-                                                                          MakeDirtyWithCharacterUpdate);
+                                                                          MakeDirtyWithCharacterUpdate, token: GenericToken);
 
                                     async void FuncWeaponMountWeaponsToAdd(
                                         object x, NotifyCollectionChangedEventArgs y) =>
                                         await objMount.RefreshChildrenWeapons(
                                             treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
                                             cmsVehicleWeaponAccessoryGear, () => objMount.Mods.Count, y,
-                                            MakeDirtyWithCharacterUpdate);
+                                            MakeDirtyWithCharacterUpdate, token: GenericToken);
 
                                     await objMount.Mods.AddTaggedCollectionChangedAsync(
                                         treVehicles, MakeDirtyWithCharacterUpdate, GenericToken);
@@ -4858,14 +4858,14 @@ namespace Chummer
                                             object x, NotifyCollectionChangedEventArgs y) =>
                                             await objMod.RefreshChildrenCyberware(
                                                 treVehicles, cmsCyberware, cmsCyberwareGear, null, y,
-                                                MakeDirtyWithCharacterUpdate);
+                                                MakeDirtyWithCharacterUpdate, token: GenericToken);
 
                                         async void FuncWeaponMountVehicleModWeaponsToAdd(
                                             object x, NotifyCollectionChangedEventArgs y) =>
                                             await objMod.RefreshChildrenWeapons(
                                                 treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
                                                 cmsVehicleWeaponAccessoryGear, () => objMod.Cyberware.Count, y,
-                                                MakeDirtyWithCharacterUpdate);
+                                                MakeDirtyWithCharacterUpdate, token: GenericToken);
 
                                         await objMod.Cyberware.AddTaggedCollectionChangedAsync(
                                             treVehicles, MakeDirtyWithCharacterUpdate, GenericToken);
@@ -4896,7 +4896,7 @@ namespace Chummer
                                         treVehicles, cmsVehicleGear,
                                         () => objVehicle.Mods.Count + objVehicle.Weapons.Count
                                                                     + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0),
-                                        y, MakeDirtyWithCharacterUpdate);
+                                        y, MakeDirtyWithCharacterUpdate, token: GenericToken);
 
                                 async void FuncVehicleLocationsToAdd(object x, NotifyCollectionChangedEventArgs y) =>
                                     await RefreshLocationsInVehicle(treVehicles, objVehicle, cmsVehicleLocation,

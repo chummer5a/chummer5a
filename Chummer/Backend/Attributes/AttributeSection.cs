@@ -1170,17 +1170,17 @@ namespace Chummer.Backend.Attributes
                                                          (dicValueOverrides?.ContainsKey(strCharAttributeName) == true
                                                              ? dicValueOverrides[strCharAttributeName]
                                                              : await objAttribute.GetTotalValueAsync(token).ConfigureAwait(false))
-                                                         .ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
+                                                         .ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                     await sbdInput.CheapReplaceAsync(strOriginal, '{' + strCharAttributeName + "Unaug}", async () =>
                                                          (dicValueOverrides?.ContainsKey(strCharAttributeName + "Unaug") == true
                                                              ? dicValueOverrides[strCharAttributeName + "Unaug"]
                                                              : await objAttribute.GetValueAsync(token).ConfigureAwait(false))
-                                                         .ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
+                                                         .ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                     await sbdInput.CheapReplaceAsync(strOriginal, '{' + strCharAttributeName + "Base}", async () =>
                                                          (dicValueOverrides?.ContainsKey(strCharAttributeName + "Base") == true
                                                              ? dicValueOverrides[strCharAttributeName + "Base"]
                                                              : await objAttribute.GetTotalBaseAsync(token).ConfigureAwait(false))
-                                                         .ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
+                                                         .ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                 }
             }
         }
@@ -1436,7 +1436,7 @@ namespace Chummer.Backend.Attributes
                         }
 
                         return strInnerReturn;
-                    });
+                    }, token: token);
                     await sbdInput.CheapReplaceAsync(strOriginal, '{' + strCharAttributeName + "Unaug}", async () =>
                     {
                         string strInnerReturn = await (await _objCharacter.GetAttributeAsync(strCharAttributeName, token: token))
@@ -1453,7 +1453,7 @@ namespace Chummer.Backend.Attributes
                         return string.Format(objCultureInfo,
                                              await LanguageManager.GetStringAsync("String_NaturalAttribute", strLanguage, token: token),
                                              strInnerReturn);
-                    });
+                    }, token: token);
                     await sbdInput.CheapReplaceAsync(strOriginal, '{' + strCharAttributeName + "Base}", async () =>
                     {
                         string strInnerReturn = await (await _objCharacter.GetAttributeAsync(strCharAttributeName, token: token))
@@ -1470,7 +1470,7 @@ namespace Chummer.Backend.Attributes
                         return string.Format(objCultureInfo,
                                              await LanguageManager.GetStringAsync("String_BaseAttribute", strLanguage, token: token),
                                              strInnerReturn);
-                    });
+                    }, token: token);
                 }
             }
         }

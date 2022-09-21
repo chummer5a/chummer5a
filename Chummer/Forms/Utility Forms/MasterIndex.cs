@@ -398,10 +398,10 @@ namespace Chummer
                                             strFileName,
                                             await SourceString.GetSourceStringAsync(
                                                 strSource, strPage, GlobalSettings.DefaultLanguage,
-                                                GlobalSettings.InvariantCultureInfo),
+                                                GlobalSettings.InvariantCultureInfo, token: token),
                                             await SourceString.GetSourceStringAsync(
                                                 strSource, strDisplayPage, GlobalSettings.Language,
-                                                GlobalSettings.CultureInfo),
+                                                GlobalSettings.CultureInfo, token: token),
                                             strEnglishNameOnPage,
                                             strTranslatedNameOnPage);
                                         lstItemsForLoading.Add(new ListItem(objEntry, strDisplayName));

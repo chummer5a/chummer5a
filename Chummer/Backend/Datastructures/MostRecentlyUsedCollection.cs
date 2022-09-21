@@ -124,5 +124,18 @@ namespace Chummer
                 return true;
             }
         }
+
+        /// <inheritdoc />
+        public override async ValueTask<bool> TryAddAsync(T item, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+            {
+                int intExistingIndex = await IndexOfAsync(item, token);
+                if (intExistingIndex == -1)
+                    return await base.TryAddAsync(item, token);
+                await MoveAsync(intExistingIndex, await GetCountAsync(token) - 1, token);
+                return true;
+            }
+        }
     }
 }

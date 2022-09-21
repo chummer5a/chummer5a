@@ -737,8 +737,9 @@ namespace Chummer
         /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strLanguage">Language into which to translate the compound string.</param>
         /// <param name="blnUseTranslateExtra">Whether to use TranslateExtra() instead of GetString() for translating localized strings.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns></returns>
-        public static async ValueTask<string> ProcessCompoundString(string strInput, string strLanguage = "", Character objCharacter = null, bool blnUseTranslateExtra = false)
+        public static async ValueTask<string> ProcessCompoundString(string strInput, string strLanguage = "", Character objCharacter = null, bool blnUseTranslateExtra = false, CancellationToken token = default)
         {
             if (Utils.IsDesignerMode || string.IsNullOrEmpty(strInput))
                 return strInput;
@@ -820,13 +821,13 @@ namespace Chummer
                         if (strLoop.IndexOfAny('{', '}') != -1)
                         {
                             strLoop = await ProcessCompoundString(strLoop, strLanguage, objCharacter,
-                                                                  blnUseTranslateExtra);
+                                                                  blnUseTranslateExtra, token);
                         }
 
                         // Use more expensive TranslateExtra if flag is set to use that
                         sbdReturn.Append(blnUseTranslateExtra
-                                             ? await TranslateExtraAsync(strLoop, strLanguage, objCharacter)
-                                             : await GetStringAsync(strLoop, strLanguage, false));
+                                             ? await TranslateExtraAsync(strLoop, strLanguage, objCharacter, token: token)
+                                             : await GetStringAsync(strLoop, strLanguage, false, token));
                     }
                     // Items between curly bracket sets do not need processing, so just append them to the return value wholesale
                     else

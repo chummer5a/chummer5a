@@ -752,7 +752,7 @@ namespace Chummer
             await lblAvailability.DoThreadSafeAsync(x => x.Text = strAvailText, token);
             string strSource = xmlSelectedMount["source"]?.InnerText ?? await LanguageManager.GetStringAsync("String_Unknown", token: token);
             string strPage = xmlSelectedMount["altpage"]?.InnerText ?? xmlSelectedMount["page"]?.InnerText ?? await LanguageManager.GetStringAsync("String_Unknown", token: token);
-            SourceString objSourceString = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter);
+            SourceString objSourceString = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter, token);
             await objSourceString.SetControlAsync(lblSource, token);
             strLoop = await lblCost.DoThreadSafeFuncAsync(x => x.Text, token);
             await lblCostLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strLoop), token);

@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Chummer.Annotations;
 
@@ -110,30 +111,51 @@ namespace Chummer
         /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
         /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
         /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>The result of a StringBuilder::Replace() method if a replacement is made, the original string otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async ValueTask<StringBuilder> CheapReplaceAsync([NotNull] this StringBuilder sbdInput, string strOriginal, string strOldValue, Func<string> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal)
+        public static async ValueTask<StringBuilder> CheapReplaceAsync([NotNull] this StringBuilder sbdInput, string strOriginal, string strOldValue, Func<string> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (sbdInput.Length > 0 && !string.IsNullOrEmpty(strOriginal) && funcNewValueFactory != null)
             {
+                token.ThrowIfCancellationRequested();
                 if (eStringComparison == StringComparison.Ordinal)
                 {
                     if (strOriginal.Contains(strOldValue))
                     {
+                        token.ThrowIfCancellationRequested();
                         string strFactoryResult = string.Empty;
-                        await Task.Factory.FromAsync(funcNewValueFactory.BeginInvoke, x => strFactoryResult = funcNewValueFactory.EndInvoke(x), null);
+                        using (CancellationTokenTaskSource<string> objCancellationTokenTaskSource
+                               = new CancellationTokenTaskSource<string>(token))
+                        {
+                            await Task.WhenAny(Task.Factory.FromAsync(funcNewValueFactory.BeginInvoke,
+                                                                      x => strFactoryResult
+                                                                          = funcNewValueFactory.EndInvoke(x),
+                                                                      null), objCancellationTokenTaskSource.Task);
+                        }
+                        token.ThrowIfCancellationRequested();
                         sbdInput.Replace(strOldValue, strFactoryResult);
                     }
                 }
                 else if (strOriginal.IndexOf(strOldValue, eStringComparison) != -1)
                 {
+                    token.ThrowIfCancellationRequested();
                     string strFactoryResult = string.Empty;
-                    Task<string> tskGetValue = Task.Factory.FromAsync(funcNewValueFactory.BeginInvoke,
-                                                                      x => strFactoryResult = funcNewValueFactory.EndInvoke(x), null);
-                    string strOldStringBuilderValue = sbdInput.ToString();
-                    sbdInput.Clear();
-                    await tskGetValue;
-                    sbdInput.Append(strOldStringBuilderValue.Replace(strOldValue, strFactoryResult, eStringComparison));
+                    string strOldStringBuilderValue;
+                    using (CancellationTokenTaskSource<string> objCancellationTokenTaskSource
+                           = new CancellationTokenTaskSource<string>(token))
+                    {
+                        Task<string> tskGetValue = Task.Factory.FromAsync(funcNewValueFactory.BeginInvoke,
+                                                                          x => strFactoryResult
+                                                                              = funcNewValueFactory.EndInvoke(x), null);
+                        strOldStringBuilderValue = sbdInput.ToString();
+                        sbdInput.Clear();
+                        await Task.WhenAny(tskGetValue, objCancellationTokenTaskSource.Task);
+                    }
+                    token.ThrowIfCancellationRequested();
+                    sbdInput.Append(
+                            strOldStringBuilderValue.Replace(strOldValue, strFactoryResult, eStringComparison));
                 }
             }
 
@@ -149,22 +171,44 @@ namespace Chummer
         /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
         /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
         /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>The result of a StringBuilder::Replace() method if a replacement is made, the original string otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async ValueTask<StringBuilder> CheapReplaceAsync([NotNull] this StringBuilder sbdInput, string strOriginal, string strOldValue, Func<Task<string>> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal)
+        public static async ValueTask<StringBuilder> CheapReplaceAsync([NotNull] this StringBuilder sbdInput, string strOriginal, string strOldValue, Func<Task<string>> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (sbdInput.Length > 0 && !string.IsNullOrEmpty(strOriginal) && funcNewValueFactory != null)
             {
+                token.ThrowIfCancellationRequested();
                 if (eStringComparison == StringComparison.Ordinal)
                 {
                     if (strOriginal.Contains(strOldValue))
-                        sbdInput.Replace(strOldValue, await funcNewValueFactory.Invoke());
+                    {
+                        token.ThrowIfCancellationRequested();
+                        Task<string> tskReplaceTask = funcNewValueFactory.Invoke();
+                        using (CancellationTokenTaskSource<string> objCancellationTokenTaskSource
+                               = new CancellationTokenTaskSource<string>(token))
+                        {
+                            await Task.WhenAny(tskReplaceTask, objCancellationTokenTaskSource.Task);
+                        }
+                        token.ThrowIfCancellationRequested();
+                        sbdInput.Replace(strOldValue, await tskReplaceTask);
+                    }
                 }
                 else if (strOriginal.IndexOf(strOldValue, eStringComparison) != -1)
                 {
+                    token.ThrowIfCancellationRequested();
+                    Task<string> tskReplaceTask = funcNewValueFactory.Invoke();
                     string strOldStringBuilderValue = sbdInput.ToString();
                     sbdInput.Clear();
-                    sbdInput.Append(strOldStringBuilderValue.Replace(strOldValue, await funcNewValueFactory.Invoke(), eStringComparison));
+                    token.ThrowIfCancellationRequested();
+                    using (CancellationTokenTaskSource<string> objCancellationTokenTaskSource
+                           = new CancellationTokenTaskSource<string>(token))
+                    {
+                        await Task.WhenAny(tskReplaceTask, objCancellationTokenTaskSource.Task);
+                    }
+                    token.ThrowIfCancellationRequested();
+                    sbdInput.Append(strOldStringBuilderValue.Replace(strOldValue, await tskReplaceTask, eStringComparison));
                 }
             }
 

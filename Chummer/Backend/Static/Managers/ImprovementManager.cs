@@ -2208,7 +2208,7 @@ namespace Chummer
                                 (blnSuccess, strSourceName) = await ProcessBonusAsync(
                                     objCharacter, objImprovementSource, strSourceName, intRating,
                                     strFriendlyName,
-                                    bonusNode, strUnique, !blnAddImprovementsToCharacter).ConfigureAwait(false);
+                                    bonusNode, strUnique, !blnAddImprovementsToCharacter, token).ConfigureAwait(false);
                                 if (blnSuccess)
                                     continue;
                                 await RollbackAsync(objCharacter, token).ConfigureAwait(false);
@@ -2334,7 +2334,7 @@ namespace Chummer
         private static async ValueTask<Tuple<bool, string>> ProcessBonusAsync(Character objCharacter, Improvement.ImprovementSource objImprovementSource,
                                          string strSourceName,
                                          int intRating, string strFriendlyName, XmlNode bonusNode, string strUnique,
-                                         bool blnIgnoreMethodNotFound = false)
+                                         bool blnIgnoreMethodNotFound = false, CancellationToken token = default)
         {
             if (bonusNode == null)
                 return new Tuple<bool, string>(false, strSourceName);
@@ -2354,7 +2354,7 @@ namespace Chummer
             {
                 try
                 {
-                    IAsyncDisposable objLocker = await objCharacter.LockObject.EnterWriteLockAsync();
+                    IAsyncDisposable objLocker = await objCharacter.LockObject.EnterWriteLockAsync(token);
                     try
                     {
                         objImprovementMethod.Invoke(bonusNode);
@@ -2366,7 +2366,7 @@ namespace Chummer
                 }
                 catch (AbortedException)
                 {
-                    await RollbackAsync(objCharacter);
+                    await RollbackAsync(objCharacter, token);
                     return new Tuple<bool, string>(false, strSourceName);
                 }
 

@@ -324,7 +324,7 @@ namespace Chummer
         }
 
         /// <inheritdoc />
-        public async ValueTask<bool> TryAddAsync(T item, CancellationToken token = default)
+        public virtual async ValueTask<bool> TryAddAsync(T item, CancellationToken token = default)
         {
             await AddAsync(item, token);
             return true;
