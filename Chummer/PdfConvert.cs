@@ -222,15 +222,22 @@ namespace Codaxy.WkHtmlToPdf
                 if (document.ExtraParams != null)
                 {
                     foreach (KeyValuePair<string, string> extraParam in document.ExtraParams)
-                        sbdParams.Append("--").Append(extraParam.Key).Append(' ').Append(extraParam.Value)
-                                 .Append(' ');
+					{
+						if (string.IsNullOrEmpty(extraParam.Key))
+							continue;
+                        sbdParams.Append("--").Append(extraParam.Key).Append(' ');
+						if (!string.IsNullOrEmpty(extraParam.Value))
+							sbdParams.Append(extraParam.Value).Append(' ');
+					}
                 }
 
                 if (document.Cookies != null)
                 {
                     foreach (KeyValuePair<string, string> cookie in document.Cookies)
-                        sbdParams.Append("--cookie ").Append(cookie.Key).Append(' ').Append(cookie.Value)
-                                 .Append(' ');
+					{
+						if (!string.IsNullOrEmpty(cookie.Key) && !string.IsNullOrEmpty(cookie.Value))
+							sbdParams.Append("--cookie ").Append(cookie.Key).Append(' ').Append(cookie.Value).Append(' ');
+					}
                 }
 
                 sbdParams.Append('\"').Append(document.Url).Append("\" \"").Append(outputPdfFilePath).Append('\"');
