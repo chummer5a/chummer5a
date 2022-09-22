@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.XPath;
@@ -176,10 +177,10 @@ namespace Chummer
         /// <summary>
         /// Populate the Martial Arts Techniques list.
         /// </summary>
-        private async ValueTask RefreshTechniquesList()
+        private async ValueTask RefreshTechniquesList(CancellationToken token = default)
         {
             string strFilter = '(' + _objCharacter.Settings.BookXPath() + ')';
-            string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text);
+            string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token: token);
             if (!string.IsNullOrEmpty(strSearch))
                 strFilter += " and " + CommonFunctions.GenerateSearchXPath(strSearch);
             XPathNodeIterator objTechniquesList = _xmlBaseChummerNode.Select("techniques/technique[" + strFilter + ']');
@@ -188,11 +189,11 @@ namespace Chummer
             {
                 foreach (XPathNavigator xmlTechnique in objTechniquesList)
                 {
-                    string strId = (await xmlTechnique.SelectSingleNodeAndCacheExpressionAsync("id"))?.Value;
+                    string strId = (await xmlTechnique.SelectSingleNodeAndCacheExpressionAsync("id", token: token))?.Value;
                     if (!string.IsNullOrEmpty(strId))
                     {
-                        string strTechniqueName = (await xmlTechnique.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value
-                                                  ?? await LanguageManager.GetStringAsync("String_Unknown");
+                        string strTechniqueName = (await xmlTechnique.SelectSingleNodeAndCacheExpressionAsync("name", token: token))?.Value
+                                                  ?? await LanguageManager.GetStringAsync("String_Unknown", token: token);
 
                         if (_setAllowedTechniques?.Contains(strTechniqueName) == false)
                             continue;
@@ -201,16 +202,16 @@ namespace Chummer
                         {
                             lstTechniqueItems.Add(new ListItem(
                                                       strId,
-                                                      (await xmlTechnique.SelectSingleNodeAndCacheExpressionAsync("translate"))
+                                                      (await xmlTechnique.SelectSingleNodeAndCacheExpressionAsync("translate", token: token))
                                                                   ?.Value ?? strTechniqueName));
                         }
                     }
                 }
 
                 lstTechniqueItems.Sort(CompareListItems.CompareNames);
-                string strOldSelected = await lstTechniques.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
+                string strOldSelected = await lstTechniques.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token);
                 _blnLoading = true;
-                await lstTechniques.PopulateWithListItemsAsync(lstTechniqueItems);
+                await lstTechniques.PopulateWithListItemsAsync(lstTechniqueItems, token: token);
                 _blnLoading = false;
                 await lstTechniques.DoThreadSafeAsync(x =>
                 {
@@ -218,7 +219,7 @@ namespace Chummer
                         x.SelectedValue = strOldSelected;
                     else
                         x.SelectedIndex = -1;
-                });
+                }, token: token);
             }
         }
 

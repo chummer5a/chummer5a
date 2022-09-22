@@ -975,6 +975,37 @@ namespace Chummer.Backend.Skills
                 : 0;
         }
 
+        /// <summary>
+        /// The total, general purpose dice pool for this skill, using another
+        /// value for the attribute part of the test. This allows calculation of dice pools
+        /// while using cyberlimbs or while rigging
+        /// </summary>
+        /// <param name="intAttributeOverrideValue">The value to be used for the attribute if it's not the default value. int.MinValue is equivalent to not overriding.</param>
+        /// <param name="strAttribute">The English abbreviation of the used attribute.</param>
+        /// <param name="blnIncludeConditionals">Whether to include improvements that don't apply under all circumstances.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns></returns>
+        public async ValueTask<int> PoolOtherAttributeAsync(string strAttribute, bool blnIncludeConditionals = false, int intAttributeOverrideValue = int.MinValue, CancellationToken token = default)
+        {
+            if (!await GetEnabledAsync(token) && !IsNativeLanguage)
+                return 0;
+            int intValue = intAttributeOverrideValue > int.MinValue
+                ? intAttributeOverrideValue
+                : await (await CharacterObject.AttributeSection.GetAttributeByNameAsync(strAttribute, token)).GetTotalValueAsync(token);
+            if (intValue <= 0)
+                return 0;
+            if (IsNativeLanguage)
+                return int.MaxValue;
+            int intRating = await GetRatingAsync(token);
+            if (intRating > 0)
+                return Math.Max(0, intRating + intValue + await PoolModifiersAsync(strAttribute, blnIncludeConditionals, token) + CharacterObject.WoundModifier + CharacterObject.SustainingPenalty);
+            return Default
+                ? Math.Max(0,
+                           intValue + await PoolModifiersAsync(strAttribute, blnIncludeConditionals, token) + DefaultModifier +
+                           CharacterObject.WoundModifier + CharacterObject.SustainingPenalty)
+                : 0;
+        }
+
         private static readonly Guid s_GuiReflexRecorderId = new Guid("17a6ba49-c21c-461b-9830-3beae8a237fc");
 
         public int DefaultModifier
@@ -1515,6 +1546,9 @@ namespace Chummer.Backend.Skills
         /// The total, general purpose dice pool for this skill
         /// </summary>
         public int Pool => PoolOtherAttribute(Attribute);
+
+        public ValueTask<int> GetPoolAsync(CancellationToken token = default) =>
+            PoolOtherAttributeAsync(Attribute, token: token);
 
         public bool Leveled => Rating > 0;
 

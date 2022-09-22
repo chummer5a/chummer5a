@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.XPath;
@@ -56,7 +57,7 @@ namespace Chummer
         {
             await LoadContactList();
 
-            DoDataBindings();
+            await DoDataBindings();
 
             _blnLoading = false;
         }
@@ -239,29 +240,29 @@ namespace Chummer
 
         #region Methods
 
-        private async ValueTask LoadContactList()
+        private async ValueTask LoadContactList(CancellationToken token = default)
         {
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstMetatypes))
             {
                 lstMetatypes.Add(ListItem.Blank);
-                string strSpace = await LanguageManager.GetStringAsync("String_Space");
-                foreach (XPathNavigator xmlMetatypeNode in await (await _objContact.CharacterObject.LoadDataXPathAsync("critters.xml"))
+                string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token);
+                foreach (XPathNavigator xmlMetatypeNode in await (await _objContact.CharacterObject.LoadDataXPathAsync("critters.xml", token: token))
                              .SelectAndCacheExpressionAsync(
-                                 "/chummer/metatypes/metatype"))
+                                 "/chummer/metatypes/metatype", token: token))
                 {
-                    string strName = (await xmlMetatypeNode.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value;
-                    string strMetatypeDisplay = (await xmlMetatypeNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
+                    string strName = (await xmlMetatypeNode.SelectSingleNodeAndCacheExpressionAsync("name", token: token))?.Value;
+                    string strMetatypeDisplay = (await xmlMetatypeNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token))?.Value
                                                 ?? strName;
                     lstMetatypes.Add(new ListItem(strName, strMetatypeDisplay));
                     XPathNodeIterator xmlMetavariantsList
-                        = await xmlMetatypeNode.SelectAndCacheExpressionAsync("metavariants/metavariant");
+                        = await xmlMetatypeNode.SelectAndCacheExpressionAsync("metavariants/metavariant", token: token);
                     if (xmlMetavariantsList.Count > 0)
                     {
                         string strMetavariantFormat = strMetatypeDisplay + strSpace + "({0})";
                         foreach (XPathNavigator objXmlMetavariantNode in xmlMetavariantsList)
                         {
                             string strMetavariantName
-                                = (await objXmlMetavariantNode.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value
+                                = (await objXmlMetavariantNode.SelectSingleNodeAndCacheExpressionAsync("name", token: token))?.Value
                                   ?? string.Empty;
                             if (lstMetatypes.All(
                                     x => strMetavariantName.Equals(x.Value.ToString(),
@@ -270,25 +271,27 @@ namespace Chummer
                                                               string.Format(
                                                                   GlobalSettings.CultureInfo, strMetavariantFormat,
                                                                   (await objXmlMetavariantNode
-                                                                      .SelectSingleNodeAndCacheExpressionAsync("translate"))
+                                                                      .SelectSingleNodeAndCacheExpressionAsync("translate", token: token))
                                                                       ?.Value ?? strMetavariantName)));
                         }
                     }
                 }
 
                 lstMetatypes.Sort(CompareListItems.CompareNames);
-                await cboMetatype.PopulateWithListItemsAsync(lstMetatypes);
+                await cboMetatype.PopulateWithListItemsAsync(lstMetatypes, token: token);
             }
         }
 
-        private void DoDataBindings()
+        private async ValueTask DoDataBindings(CancellationToken token = default)
         {
-            cboMetatype.DoThreadSafe(x =>
+            string strMetatype = await _objContact.GetMetatypeAsync(token);
+            await cboMetatype.DoThreadSafeAsync(x => x.SelectedValue = strMetatype, token: token);
+            if (await cboMetatype.DoThreadSafeFuncAsync(x => x.SelectedIndex, token: token) < 0)
             {
-                x.SelectedValue = _objContact.Metatype;
-                if (x.SelectedIndex < 0)
-                    x.Text = _objContact.DisplayMetatype;
-            });
+                string strText = await _objContact.GetDisplayMetatypeAsync(token);
+                await cboMetatype.DoThreadSafeAsync(x => x.Text = strText, token);
+            }
+
             txtContactName.DoDataBinding("Text", _objContact, nameof(_objContact.Name));
             this.DoOneWayDataBinding("BackColor", _objContact, nameof(_objContact.PreferredColor));
 

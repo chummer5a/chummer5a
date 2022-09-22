@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.XPath;
@@ -93,7 +94,7 @@ namespace Chummer
         /// <summary>
         /// Build the list of available weapon accessories.
         /// </summary>
-        private async ValueTask RefreshList()
+        private async ValueTask RefreshList(CancellationToken token = default)
         {
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstAccessories))
             {
@@ -344,7 +345,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask UpdateGearInfo(bool blnUpdateMountComboBoxes = true)
+        private async ValueTask UpdateGearInfo(bool blnUpdateMountComboBoxes = true, CancellationToken token = default)
         {
             if (_blnLoading)
                 return;

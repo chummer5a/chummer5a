@@ -24,6 +24,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.XPath;
@@ -92,7 +93,7 @@ namespace Chummer.UI.Skills
             }
         }
 
-        public async ValueTask RealLoad()
+        public async ValueTask RealLoad(CancellationToken token = default)
         {
             if (ParentForm is CharacterShared frmParent)
                 _objCharacter = frmParent.CharacterObject;
@@ -118,7 +119,7 @@ namespace Chummer.UI.Skills
 
             //Visible = false;
 
-            bool blnExoticVisible = (await _objCharacter.LoadDataXPathAsync("skills.xml"))
+            bool blnExoticVisible = (await _objCharacter.LoadDataXPathAsync("skills.xml", token: token))
                 .SelectSingleNode(
                     "/chummer/skills/skill[exotic = "
                     + bool.TrueString.CleanXPath()
@@ -300,7 +301,7 @@ namespace Chummer.UI.Skills
                 {
                     ResumeLayout(true);
                 }
-            });
+            }, token: token);
             sw.Stop();
             Debug.WriteLine("RealLoad() in {0} ms", sw.Elapsed.TotalMilliseconds);
 

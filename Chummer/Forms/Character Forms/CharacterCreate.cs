@@ -3993,20 +3993,20 @@ namespace Chummer
             objSelectedGear.Remove();
         }
 
-        private async ValueTask<bool> AddVehicle(Location objLocation = null)
+        private async ValueTask<bool> AddVehicle(Location objLocation = null, CancellationToken token = default)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
             try
             {
                 using (ThreadSafeForm<SelectVehicle> frmPickVehicle
-                       = await ThreadSafeForm<SelectVehicle>.GetAsync(() => new SelectVehicle(CharacterObject)))
+                       = await ThreadSafeForm<SelectVehicle>.GetAsync(() => new SelectVehicle(CharacterObject), token))
                 {
                     // Make sure the dialogue window was not canceled.
-                    if (await frmPickVehicle.ShowDialogSafeAsync(this) == DialogResult.Cancel)
+                    if (await frmPickVehicle.ShowDialogSafeAsync(this, token) == DialogResult.Cancel)
                         return false;
 
                     // Open the Vehicles XML file and locate the selected piece.
-                    XmlNode objXmlVehicle = (await CharacterObject.LoadDataAsync("vehicles.xml")).SelectSingleNode(
+                    XmlNode objXmlVehicle = (await CharacterObject.LoadDataAsync("vehicles.xml", token: token)).SelectSingleNode(
                         "/chummer/vehicles/vehicle[id = " + frmPickVehicle.MyForm.SelectedVehicle.CleanXPath() + ']');
                     if (objXmlVehicle == null)
                         return frmPickVehicle.MyForm.AddAgain;
@@ -4027,9 +4027,9 @@ namespace Chummer
 
                     //objVehicle.Location = objLocation;
                     if (objLocation != null)
-                        await objLocation.Children.AddAsync(objVehicle);
+                        await objLocation.Children.AddAsync(objVehicle, token);
 
-                    await CharacterObject.Vehicles.AddAsync(objVehicle);
+                    await CharacterObject.Vehicles.AddAsync(objVehicle, token);
 
                     return frmPickVehicle.MyForm.AddAgain;
                 }
@@ -4985,17 +4985,17 @@ namespace Chummer
             }
         }
 
-        private async ValueTask<bool> AddArmor(Location objLocation = null)
+        private async ValueTask<bool> AddArmor(Location objLocation = null, CancellationToken token = default)
         {
-            using (ThreadSafeForm<SelectArmor> frmPickArmor = await ThreadSafeForm<SelectArmor>.GetAsync(() => new SelectArmor(CharacterObject)))
+            using (ThreadSafeForm<SelectArmor> frmPickArmor = await ThreadSafeForm<SelectArmor>.GetAsync(() => new SelectArmor(CharacterObject), token))
             {
                 // Make sure the dialogue window was not canceled.
-                if (await frmPickArmor.ShowDialogSafeAsync(this) == DialogResult.Cancel)
+                if (await frmPickArmor.ShowDialogSafeAsync(this, token) == DialogResult.Cancel)
                     return false;
 
                 // Open the Armor XML file and locate the selected piece.
                 XmlNode objXmlArmor
-                    = (await CharacterObject.LoadDataAsync("armor.xml")).SelectSingleNode(
+                    = (await CharacterObject.LoadDataAsync("armor.xml", token: token)).SelectSingleNode(
                         "/chummer/armors/armor[id = " + frmPickArmor.MyForm.SelectedArmor.CleanXPath() + ']');
 
                 List<Weapon> lstWeapons = new List<Weapon>(1);
@@ -5012,12 +5012,12 @@ namespace Chummer
 
                 //objArmor.Location = objLocation;
                 if (objLocation != null)
-                    await objLocation.Children.AddAsync(objArmor);
-                await CharacterObject.Armor.AddAsync(objArmor);
+                    await objLocation.Children.AddAsync(objArmor, token);
+                await CharacterObject.Armor.AddAsync(objArmor, token);
 
                 foreach (Weapon objWeapon in lstWeapons)
                 {
-                    await CharacterObject.Weapons.AddAsync(objWeapon);
+                    await CharacterObject.Weapons.AddAsync(objWeapon, token);
                 }
 
                 return frmPickArmor.MyForm.AddAgain;

@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.XPath;
@@ -439,9 +440,9 @@ namespace Chummer
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>
-        private async ValueTask AcceptForm()
+        private async ValueTask AcceptForm(CancellationToken token = default)
         {
-            string strSelectedItem = await lstSpells.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
+            string strSelectedItem = await lstSpells.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token);
             if (string.IsNullOrEmpty(strSelectedItem))
                 return;
 
@@ -468,16 +469,16 @@ namespace Chummer
                     intSpellCount++;
                 }
             }
-            if (!_objCharacter.IgnoreRules)
+            if (!await _objCharacter.GetIgnoreRulesAsync(token))
             {
-                if (!_objCharacter.Created)
+                if (!await _objCharacter.GetCreatedAsync(token))
                 {
-                    int intSpellLimit = await (await _objCharacter.GetAttributeAsync("MAG")).GetTotalValueAsync() * 2;
-                    if (await chkAlchemical.DoThreadSafeFuncAsync(x => x.Checked))
+                    int intSpellLimit = await (await _objCharacter.GetAttributeAsync("MAG", token: token)).GetTotalValueAsync(token) * 2;
+                    if (await chkAlchemical.DoThreadSafeFuncAsync(x => x.Checked, token: token))
                     {
                         if (intAlchPrepCount >= intSpellLimit)
                         {
-                            Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SpellLimit"), await LanguageManager.GetStringAsync("MessageTitle_SpellLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SpellLimit", token: token), await LanguageManager.GetStringAsync("MessageTitle_SpellLimit", token: token), MessageBoxButtons.OK, MessageBoxIcon.Information);
                             return;
                         }
                     }
@@ -485,33 +486,33 @@ namespace Chummer
                     {
                         if (intRitualCount >= intSpellLimit)
                         {
-                            Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SpellLimit"), await LanguageManager.GetStringAsync("MessageTitle_SpellLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SpellLimit", token: token), await LanguageManager.GetStringAsync("MessageTitle_SpellLimit", token: token), MessageBoxButtons.OK, MessageBoxIcon.Information);
                             return;
                         }
                     }
                     else if (intSpellCount >= intSpellLimit)
                     {
-                        Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SpellLimit"),
-                            await LanguageManager.GetStringAsync("MessageTitle_SpellLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SpellLimit", token: token),
+                            await LanguageManager.GetStringAsync("MessageTitle_SpellLimit", token: token), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         return;
                     }
                 }
-                if (!objXmlSpell.RequirementsMet(_objCharacter, null, await LanguageManager.GetStringAsync("String_DescSpell")))
+                if (!objXmlSpell.RequirementsMet(_objCharacter, null, await LanguageManager.GetStringAsync("String_DescSpell", token: token)))
                 {
                     return;
                 }
             }
 
             _strSelectedSpell = strSelectedItem;
-            _strSelectCategory = (GlobalSettings.SearchInCategoryOnly || await txtSearch.DoThreadSafeFuncAsync(x => x.TextLength) == 0)
-                ? await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString())
+            _strSelectCategory = (GlobalSettings.SearchInCategoryOnly || await txtSearch.DoThreadSafeFuncAsync(x => x.TextLength, token: token) == 0)
+                ? await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token)
                 : _xmlBaseSpellDataNode.SelectSingleNode("/chummer/spells/spell[id = " + _strSelectedSpell.CleanXPath() + "]/category")?.Value ?? string.Empty;
-            FreeBonus = await chkFreeBonus.DoThreadSafeFuncAsync(x => x.Checked);
+            FreeBonus = await chkFreeBonus.DoThreadSafeFuncAsync(x => x.Checked, token: token);
             await this.DoThreadSafeAsync(x =>
             {
                 x.DialogResult = DialogResult.OK;
                 x.Close();
-            });
+            }, token: token);
         }
 
         private async void OpenSourceFromLabel(object sender, EventArgs e)
@@ -519,7 +520,7 @@ namespace Chummer
             await CommonFunctions.OpenPdfFromControl(sender);
         }
 
-        private async ValueTask UpdateSpellInfo()
+        private async ValueTask UpdateSpellInfo(CancellationToken token = default)
         {
             if (_blnLoading)
                 return;

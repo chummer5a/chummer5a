@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
@@ -387,7 +388,7 @@ namespace Chummer
         /// <summary>
         /// Refreshes the displayed lists
         /// </summary>
-        private async ValueTask RefreshList()
+        private async ValueTask RefreshList(CancellationToken token = default)
         {
             if (_blnLoading)
                 return;
@@ -399,7 +400,7 @@ namespace Chummer
                 string strCategory = cboCategory.SelectedValue?.ToString();
                 if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All"
                                                        && (GlobalSettings.SearchInCategoryOnly
-                                                           || await txtSearch.DoThreadSafeFuncAsync(x => x.TextLength == 0)))
+                                                           || await txtSearch.DoThreadSafeFuncAsync(x => x.TextLength == 0, token: token)))
                     sbdFilter.Append(" and category = ").Append(strCategory.CleanXPath());
                 else
                 {
@@ -420,11 +421,11 @@ namespace Chummer
                     }
                 }
 
-                string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text);
+                string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token: token);
                 if (!string.IsNullOrEmpty(strSearch))
                     sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(strSearch));
 
-                await BuildArmorList(_objXmlDocument.SelectNodes("/chummer/armors/armor[" + sbdFilter + ']'));
+                await BuildArmorList(_objXmlDocument.SelectNodes("/chummer/armors/armor[" + sbdFilter + ']'), token);
             }
         }
 
@@ -432,13 +433,14 @@ namespace Chummer
         /// Builds the list of Armors to render in the active tab.
         /// </summary>
         /// <param name="objXmlArmorList">XmlNodeList of Armors to render.</param>
-        private async ValueTask BuildArmorList(XmlNodeList objXmlArmorList)
+        /// <param name="token">Cancellation token to listen to.</param>
+        private async ValueTask BuildArmorList(XmlNodeList objXmlArmorList, CancellationToken token = default)
         {
-            decimal decBaseMarkup = 1 + (await nudMarkup.DoThreadSafeFuncAsync(x => x.Value) / 100.0m);
-            bool blnHideOverAvailLimit = await chkHideOverAvailLimit.DoThreadSafeFuncAsync(x => x.Checked);
-            bool blnFreeItem = await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked);
-            bool blnShowOnlyAffordItems = await chkShowOnlyAffordItems.DoThreadSafeFuncAsync(x => x.Checked);
-            switch (await tabControl.DoThreadSafeFuncAsync(x => x.SelectedIndex))
+            decimal decBaseMarkup = 1 + (await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token) / 100.0m);
+            bool blnHideOverAvailLimit = await chkHideOverAvailLimit.DoThreadSafeFuncAsync(x => x.Checked, token: token);
+            bool blnFreeItem = await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked, token: token);
+            bool blnShowOnlyAffordItems = await chkShowOnlyAffordItems.DoThreadSafeFuncAsync(x => x.Checked, token: token);
+            switch (await tabControl.DoThreadSafeFuncAsync(x => x.SelectedIndex, token: token))
             {
                 case 1:
                     DataTable tabArmor = new DataTable("armor");
@@ -496,7 +498,7 @@ namespace Chummer
                                         sbdAccessories.Length -= Environment.NewLine.Length;
                                     SourceString strSource = await SourceString.GetSourceStringAsync(
                                         objArmor.Source, await objArmor.DisplayPageAsync(GlobalSettings.Language),
-                                        GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter);
+                                        GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter, token);
                                     NuyenString strCost = new NuyenString(objArmor.DisplayCost(out decimal _, false));
 
                                     tabArmor.Rows.Add(strArmorGuid, strArmorName, intArmor, decCapacity, objAvail,
@@ -519,7 +521,7 @@ namespace Chummer
                                                                    out List<ListItem> lstArmors))
                     {
                         int intOverLimit = 0;
-                        string strSpace = await LanguageManager.GetStringAsync("String_Space");
+                        string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token);
                         foreach (XmlNode objXmlArmor in objXmlArmorList)
                         {
                             decimal decCostMultiplier = decBaseMarkup;
@@ -561,18 +563,18 @@ namespace Chummer
                             lstArmors.Add(new ListItem(string.Empty,
                                                        string.Format(GlobalSettings.CultureInfo,
                                                                      await LanguageManager.GetStringAsync(
-                                                                         "String_RestrictedItemsHidden"),
+                                                                         "String_RestrictedItemsHidden", token: token),
                                                                      intOverLimit)));
                         }
 
                         _blnLoading = true;
-                        string strOldSelected = await lstArmor.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
-                        await lstArmor.PopulateWithListItemsAsync(lstArmors);
+                        string strOldSelected = await lstArmor.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token);
+                        await lstArmor.PopulateWithListItemsAsync(lstArmors, token: token);
                         _blnLoading = false;
                         if (!string.IsNullOrEmpty(strOldSelected))
-                            await lstArmor.DoThreadSafeAsync(x => x.SelectedValue = strOldSelected);
+                            await lstArmor.DoThreadSafeAsync(x => x.SelectedValue = strOldSelected, token: token);
                         else
-                            await lstArmor.DoThreadSafeAsync(x => x.SelectedIndex = -1);
+                            await lstArmor.DoThreadSafeAsync(x => x.SelectedIndex = -1, token: token);
                         break;
                     }
             }

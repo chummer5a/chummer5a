@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.XPath;
@@ -268,26 +269,26 @@ namespace Chummer
             await RefreshCategory();
         }
 
-        private async ValueTask RefreshCategory()
+        private async ValueTask RefreshCategory(CancellationToken token = default)
         {
-            await trePowers.DoThreadSafeAsync(x => x.Nodes.Clear());
+            await trePowers.DoThreadSafeAsync(x => x.Nodes.Clear(), token: token);
 
-            string strCategory = await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
+            string strCategory = await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token);
 
             List<string> lstPowerWhitelist = new List<string>(10);
 
             // If the Critter is only allowed certain Powers, display only those.
-            XPathNavigator xmlOptionalPowers = await _xmlMetatypeDataNode.SelectSingleNodeAndCacheExpressionAsync("optionalpowers");
+            XPathNavigator xmlOptionalPowers = await _xmlMetatypeDataNode.SelectSingleNodeAndCacheExpressionAsync("optionalpowers", token: token);
             if (xmlOptionalPowers != null)
             {
-                foreach (XPathNavigator xmlNode in await xmlOptionalPowers.SelectAndCacheExpressionAsync("power"))
+                foreach (XPathNavigator xmlNode in await xmlOptionalPowers.SelectAndCacheExpressionAsync("power", token: token))
                     lstPowerWhitelist.Add(xmlNode.Value);
 
                 // Determine if the Critter has a physical presence Power (Materialization, Possession, or Inhabitation).
                 bool blnPhysicalPresence = _objCharacter.CritterPowers.Any(x => x.Name == "Materialization" || x.Name == "Possession" || x.Name == "Inhabitation");
 
                 // Add any Critter Powers the Critter comes with that have been manually deleted so they can be re-added.
-                foreach (XPathNavigator objXmlCritterPower in await _xmlMetatypeDataNode.SelectAndCacheExpressionAsync("powers/power"))
+                foreach (XPathNavigator objXmlCritterPower in await _xmlMetatypeDataNode.SelectAndCacheExpressionAsync("powers/power", token: token))
                 {
                     bool blnAddPower = true;
                     // Make sure the Critter doesn't already have the Power.
@@ -382,7 +383,7 @@ namespace Chummer
                         sbdFilter.Append(" and (not(toxic) or toxic != ").Append(bool.TrueString.CleanXPath()).Append(')');
                 }
 
-                string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text);
+                string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token: token);
                 if (!string.IsNullOrEmpty(strSearch))
                     sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(strSearch));
 
@@ -392,18 +393,18 @@ namespace Chummer
 
             foreach (XPathNavigator objXmlPower in _xmlBaseCritterPowerDataNode.Select("powers/power" + strFilter))
             {
-                string strPowerName = (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
+                string strPowerName = (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("name", token: token))?.Value ?? await LanguageManager.GetStringAsync("String_Unknown", token: token);
                 if (!lstPowerWhitelist.Contains(strPowerName) && lstPowerWhitelist.Count != 0)
                     continue;
                 if (!objXmlPower.RequirementsMet(_objCharacter, string.Empty, string.Empty)) continue;
                 TreeNode objNode = new TreeNode
                 {
-                    Tag = (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("id"))?.Value ?? string.Empty,
-                    Text = (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value ?? strPowerName
+                    Tag = (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("id", token: token))?.Value ?? string.Empty,
+                    Text = (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("translate", token: token))?.Value ?? strPowerName
                 };
-                await trePowers.DoThreadSafeAsync(x => x.Nodes.Add(objNode));
+                await trePowers.DoThreadSafeAsync(x => x.Nodes.Add(objNode), token: token);
             }
-            await trePowers.DoThreadSafeAsync(x => x.Sort());
+            await trePowers.DoThreadSafeAsync(x => x.Sort(), token: token);
         }
 
         private void cmdOKAdd_Click(object sender, EventArgs e)

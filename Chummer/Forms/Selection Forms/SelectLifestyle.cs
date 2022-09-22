@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
@@ -332,9 +333,9 @@ namespace Chummer
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>
-        private async ValueTask AcceptForm()
+        private async ValueTask AcceptForm(CancellationToken token = default)
         {
-            string strSelectedId = await cboLifestyle.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
+            string strSelectedId = await cboLifestyle.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token);
             if (string.IsNullOrEmpty(strSelectedId))
                 return;
             XmlNode objXmlLifestyle = _objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[id = " + strSelectedId.CleanXPath() + ']');
@@ -343,19 +344,19 @@ namespace Chummer
 
             _objLifestyle.Source = objXmlLifestyle["source"]?.InnerText;
             _objLifestyle.Page = objXmlLifestyle["page"]?.InnerText;
-            _objLifestyle.Name = await txtLifestyleName.DoThreadSafeFuncAsync(x => x.Text);
+            _objLifestyle.Name = await txtLifestyleName.DoThreadSafeFuncAsync(x => x.Text, token: token);
             _objLifestyle.BaseLifestyle = objXmlLifestyle["name"]?.InnerText;
             _objLifestyle.Cost = Convert.ToDecimal(objXmlLifestyle["cost"]?.InnerText, GlobalSettings.InvariantCultureInfo);
-            _objLifestyle.Roommates = _objLifestyle.TrustFund ? 0 : await nudRoommates.DoThreadSafeFuncAsync(x => x.ValueAsInt);
-            _objLifestyle.Percentage = await nudPercentage.DoThreadSafeFuncAsync(x => x.Value);
+            _objLifestyle.Roommates = _objLifestyle.TrustFund ? 0 : await nudRoommates.DoThreadSafeFuncAsync(x => x.ValueAsInt, token: token);
+            _objLifestyle.Percentage = await nudPercentage.DoThreadSafeFuncAsync(x => x.Value, token: token);
             _objLifestyle.StyleType = StyleType;
             _objLifestyle.Dice = Convert.ToInt32(objXmlLifestyle["dice"]?.InnerText, GlobalSettings.InvariantCultureInfo);
             _objLifestyle.Multiplier = Convert.ToDecimal(objXmlLifestyle["multiplier"]?.InnerText, GlobalSettings.InvariantCultureInfo);
-            _objLifestyle.PrimaryTenant = await chkPrimaryTenant.DoThreadSafeFuncAsync(x => x.Checked);
-            _objLifestyle.TrustFund = await chkTrustFund.DoThreadSafeFuncAsync(x => x.Checked);
-            _objLifestyle.City = await cboCity.DoThreadSafeFuncAsync(x => x.Text);
-            _objLifestyle.District = await cboDistrict.DoThreadSafeFuncAsync(x => x.Text);
-            _objLifestyle.Borough = await cboBorough.DoThreadSafeFuncAsync(x => x.Text);
+            _objLifestyle.PrimaryTenant = await chkPrimaryTenant.DoThreadSafeFuncAsync(x => x.Checked, token: token);
+            _objLifestyle.TrustFund = await chkTrustFund.DoThreadSafeFuncAsync(x => x.Checked, token: token);
+            _objLifestyle.City = await cboCity.DoThreadSafeFuncAsync(x => x.Text, token: token);
+            _objLifestyle.District = await cboDistrict.DoThreadSafeFuncAsync(x => x.Text, token: token);
+            _objLifestyle.Borough = await cboBorough.DoThreadSafeFuncAsync(x => x.Text, token: token);
 
             if (objXmlLifestyle.TryGetField("id", Guid.TryParse, out Guid source))
             {
@@ -368,7 +369,7 @@ namespace Chummer
             }
 
             HashSet<string> setLifestyleQualityIds = new HashSet<string>();
-            foreach (TreeNode objNode in await treQualities.DoThreadSafeFuncAsync(x => x.Nodes))
+            foreach (TreeNode objNode in await treQualities.DoThreadSafeFuncAsync(x => x.Nodes, token: token))
             {
                 if (!objNode.Checked)
                     continue;
@@ -379,11 +380,11 @@ namespace Chummer
                 XmlNode objXmlLifestyleQuality = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = " + strLoopId.CleanXPath() + ']');
                 LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
                 objQuality.Create(objXmlLifestyleQuality, _objLifestyle, _objCharacter, QualitySource.Selected);
-                await _objLifestyle.LifestyleQualities.AddAsync(objQuality);
+                await _objLifestyle.LifestyleQualities.AddAsync(objQuality, token: token);
             }
 
             foreach (LifestyleQuality objLifestyleQuality in await _objLifestyle.LifestyleQualities.ToListAsync(
-                         x => !setLifestyleQualityIds.Contains(x.SourceIDString)))
+                         x => !setLifestyleQualityIds.Contains(x.SourceIDString), token: token))
                 objLifestyleQuality.Remove(false);
 
             DialogResult = DialogResult.OK;
@@ -393,18 +394,18 @@ namespace Chummer
         /// <summary>
         /// Calculate the LP value for the selected items.
         /// </summary>
-        private async ValueTask CalculateValues(bool blnIncludePercentage = true)
+        private async ValueTask CalculateValues(bool blnIncludePercentage = true, CancellationToken token = default)
         {
             if (_blnSkipRefresh)
                 return;
 
-            decimal decRoommates = await nudRoommates.DoThreadSafeFuncAsync(x => x.Value);
+            decimal decRoommates = await nudRoommates.DoThreadSafeFuncAsync(x => x.Value, token: token);
             decimal decBaseCost = 0;
             decimal decCost = 0;
             decimal decMod = 0;
             string strBaseLifestyle = string.Empty;
             // Get the base cost of the lifestyle
-            string strSelectedId = await cboLifestyle.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
+            string strSelectedId = await cboLifestyle.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token);
             if (!string.IsNullOrEmpty(strSelectedId))
             {
                 XmlNode objXmlAspect = _objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[id = " + strSelectedId.CleanXPath() + ']');
@@ -420,19 +421,19 @@ namespace Chummer
                     if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
                     {
                         SourceString objSource = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language,
-                            GlobalSettings.CultureInfo, _objCharacter);
-                        await objSource.SetControlAsync(lblSource);
-                        await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            GlobalSettings.CultureInfo, _objCharacter, token);
+                        await objSource.SetControlAsync(lblSource, token);
+                        await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = true, token: token);
                     }
                     else
                     {
                         lblSource.Text = string.Empty;
-                        await lblSource.SetToolTipAsync(string.Empty);
-                        await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblSource.SetToolTipAsync(string.Empty, token: token);
+                        await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = false, token: token);
                     }
 
                     // Add the flat costs from qualities
-                    foreach (TreeNode objNode in await treQualities.DoThreadSafeFuncAsync(x => x.Nodes))
+                    foreach (TreeNode objNode in await treQualities.DoThreadSafeFuncAsync(x => x.Nodes, token: token))
                     {
                         if (objNode.Checked)
                         {
@@ -450,7 +451,7 @@ namespace Chummer
                     if (blnIncludePercentage)
                     {
                         // Add the modifiers from qualities
-                        foreach (TreeNode objNode in await treQualities.DoThreadSafeFuncAsync(x => x.Nodes))
+                        foreach (TreeNode objNode in await treQualities.DoThreadSafeFuncAsync(x => x.Nodes, token: token))
                         {
                             if (!objNode.Checked)
                                 continue;
@@ -464,7 +465,7 @@ namespace Chummer
                         }
 
                         // Check for modifiers in the improvements
-                        decMod += await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.LifestyleCost) / 100.0m;
+                        decMod += await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.LifestyleCost, token: token) / 100.0m;
                     }
 
                     decBaseCost += decBaseCost * decBaseMultiplier;
@@ -474,16 +475,16 @@ namespace Chummer
                     }
                 }
                 else
-                    await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = false);
+                    await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = false, token: token);
             }
             else
-                await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = false);
+                await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = false, token: token);
 
             decimal decNuyen = decBaseCost + decBaseCost * decMod + decCost;
 
-            await lblCost.DoThreadSafeAsync(x => x.Text = decNuyen.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol"));
-            decimal decPercentage = await nudPercentage.DoThreadSafeFuncAsync(x => x.Value);
-            if (decPercentage != 100 || decRoommates != 0 && !await chkPrimaryTenant.DoThreadSafeFuncAsync(x => x.Checked))
+            await lblCost.DoThreadSafeAsync(x => x.Text = decNuyen.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol"), token: token);
+            decimal decPercentage = await nudPercentage.DoThreadSafeFuncAsync(x => x.Value, token: token);
+            if (decPercentage != 100 || decRoommates != 0 && !await chkPrimaryTenant.DoThreadSafeFuncAsync(x => x.Checked, token: token))
             {
                 decimal decDiscount = decNuyen;
                 decDiscount *= decPercentage / 100;
@@ -492,24 +493,24 @@ namespace Chummer
                     decDiscount /= decRoommates;
                 }
 
-                string strSpace = await LanguageManager.GetStringAsync("String_Space");
-                await lblCost.DoThreadSafeAsync(x => x.Text += strSpace + '(' + decDiscount.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol") + ')');
+                string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token);
+                await lblCost.DoThreadSafeAsync(x => x.Text += strSpace + '(' + decDiscount.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol") + ')', token: token);
             }
 
-            await lblCost.DoThreadSafeFuncAsync(x => x.Text)
+            await lblCost.DoThreadSafeFuncAsync(x => x.Text, token: token)
                          .ContinueWith(
-                             y => lblCostLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(y.Result)))
+                             y => lblCostLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(y.Result), token: token), token)
                          .Unwrap();
 
             // Characters with the Trust Fund Quality can have the lifestyle discounted.
             if (Lifestyle.StaticIsTrustFundEligible(_objCharacter, strBaseLifestyle))
             {
-                bool blnTrustFund = _objSourceLifestyle?.TrustFund ?? !await _objCharacter.Lifestyles.AnyAsync(x => x.TrustFund);
+                bool blnTrustFund = _objSourceLifestyle?.TrustFund ?? !await _objCharacter.Lifestyles.AnyAsync(x => x.TrustFund, token: token);
                 await chkTrustFund.DoThreadSafeAsync(x =>
                 {
                     x.Visible = true;
                     x.Checked = blnTrustFund;
-                });
+                }, token: token);
             }
             else
             {
@@ -517,7 +518,7 @@ namespace Chummer
                 {
                     x.Checked = false;
                     x.Visible = false;
-                });
+                }, token: token);
             }
         }
 
@@ -535,10 +536,11 @@ namespace Chummer
         /// Sort the contents of a TreeView alphabetically.
         /// </summary>
         /// <param name="treTree">TreeView to sort.</param>
-        private static async ValueTask SortTree(TreeView treTree)
+        /// <param name="token">Cancellation token to listen to.</param>
+        private static async ValueTask SortTree(TreeView treTree, CancellationToken token = default)
         {
-            TreeNode[] lstNodes = await treTree.DoThreadSafeFuncAsync(x => x.Nodes.Cast<TreeNode>().ToArray());
-            await treTree.DoThreadSafeAsync(x => x.Nodes.Clear());
+            TreeNode[] lstNodes = await treTree.DoThreadSafeFuncAsync(x => x.Nodes.Cast<TreeNode>().ToArray(), token: token);
+            await treTree.DoThreadSafeAsync(x => x.Nodes.Clear(), token: token);
             try
             {
                 Array.Sort(lstNodes, CompareTreeNodes.CompareText);
@@ -547,15 +549,15 @@ namespace Chummer
             {
                 // Swallow this
             }
-            await treTree.DoThreadSafeAsync(x => x.Nodes.AddRange(lstNodes));
+            await treTree.DoThreadSafeAsync(x => x.Nodes.AddRange(lstNodes), token: token);
         }
 
         /// <summary>
         /// Populates The District list after a City was selected
         /// </summary>
-        private async ValueTask RefreshDistrictList()
+        private async ValueTask RefreshDistrictList(CancellationToken token = default)
         {
-            string strSelectedCityRefresh = await cboCity.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()) ?? string.Empty;
+            string strSelectedCityRefresh = await cboCity.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token) ?? string.Empty;
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                            out List<ListItem> lstDistrict))
             {
@@ -568,23 +570,23 @@ namespace Chummer
                         foreach (XmlNode objXmlDistrict in xmlDistrictList)
                         {
                             string strName = objXmlDistrict["name"]?.InnerText
-                                             ?? await LanguageManager.GetStringAsync("String_Unknown");
+                                             ?? await LanguageManager.GetStringAsync("String_Unknown", token: token);
                             lstDistrict.Add(new ListItem(strName, objXmlDistrict["translate"]?.InnerText ?? strName));
                         }
                     }
                 }
                 
-                await cboDistrict.PopulateWithListItemsAsync(lstDistrict);
+                await cboDistrict.PopulateWithListItemsAsync(lstDistrict, token: token);
             }
         }
 
         /// <summary>
         /// Refreshes the BoroughList based on the selected District to generate a cascading dropdown menu
         /// </summary>
-        private async ValueTask RefreshBoroughList()
+        private async ValueTask RefreshBoroughList(CancellationToken token = default)
         {
-            string strSelectedCityRefresh = await cboCity.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()) ?? string.Empty;
-            string strSelectedDistrictRefresh = await cboDistrict.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()) ?? string.Empty;
+            string strSelectedCityRefresh = await cboCity.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token) ?? string.Empty;
+            string strSelectedDistrictRefresh = await cboDistrict.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token) ?? string.Empty;
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                            out List<ListItem> lstBorough))
             {
@@ -597,13 +599,13 @@ namespace Chummer
                         foreach (XmlNode objXmlDistrict in xmlBoroughList)
                         {
                             string strName = objXmlDistrict["name"]?.InnerText
-                                             ?? await LanguageManager.GetStringAsync("String_Unknown");
+                                             ?? await LanguageManager.GetStringAsync("String_Unknown", token: token);
                             lstBorough.Add(new ListItem(strName, objXmlDistrict["translate"]?.InnerText ?? strName));
                         }
                     }
                 }
                 
-                await cboBorough.PopulateWithListItemsAsync(lstBorough);
+                await cboBorough.PopulateWithListItemsAsync(lstBorough, token: token);
             }
         }
 

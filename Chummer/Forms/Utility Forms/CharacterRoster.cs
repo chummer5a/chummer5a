@@ -61,7 +61,7 @@ namespace Chummer
             }
         }
 
-        public async ValueTask SetMyEventHandlers(bool deleteThem = false)
+        public async ValueTask SetMyEventHandlers(bool deleteThem = false, CancellationToken token = default)
         {
             if (!deleteThem)
             {
@@ -79,7 +79,7 @@ namespace Chummer
                     x.DragDrop += treCharacterList_OnDefaultDragDrop;
                     x.DragOver += treCharacterList_OnDefaultDragOver;
                     x.NodeMouseDoubleClick += treCharacterList_OnDefaultDoubleClick;
-                }, _objGenericToken);
+                }, token);
                 OnMyMouseDown += OnDefaultMouseDown;
                 if (_watcherCharacterRosterFolder != null)
                 {
@@ -105,7 +105,7 @@ namespace Chummer
                     x.DragDrop -= treCharacterList_OnDefaultDragDrop;
                     x.DragOver -= treCharacterList_OnDefaultDragOver;
                     x.NodeMouseDoubleClick -= treCharacterList_OnDefaultDoubleClick;
-                }, _objGenericToken);
+                }, token);
                 OnMyMouseDown = null;
 
                 if (_watcherCharacterRosterFolder != null)
@@ -253,7 +253,7 @@ namespace Chummer
                         //swallow this
                     }
 
-                    await SetMyEventHandlers();
+                    await SetMyEventHandlers(token: _objGenericToken);
                     CancellationTokenSource objTemp = new CancellationTokenSource();
                     CancellationTokenSource objCurrent = Interlocked.CompareExchange(
                         ref _objMostRecentlyUsedsRefreshCancellationTokenSource,
@@ -332,7 +332,7 @@ namespace Chummer
                         objTemp.Dispose();
                     }
 
-                    await SetMyEventHandlers(true);
+                    await SetMyEventHandlers(true, _objGenericToken);
 
                     await DisposeTagNodes(await treCharacterList.DoThreadSafeFuncAsync(x => x.Nodes, _objGenericToken));
 

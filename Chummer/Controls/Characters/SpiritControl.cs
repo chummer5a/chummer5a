@@ -335,21 +335,21 @@ namespace Chummer
         }
 
         // Rebuild the list of Spirits/Sprites based on the character's selected Tradition/Stream.
-        public async ValueTask RebuildSpiritList(Tradition objTradition)
+        public async ValueTask RebuildSpiritList(Tradition objTradition, CancellationToken token = default)
         {
             if (objTradition == null)
                 return;
-            string strCurrentValue = await cboSpiritName.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()) ?? _objSpirit.Name;
+            string strCurrentValue = await cboSpiritName.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token) ?? _objSpirit.Name;
 
             XPathNavigator objXmlDocument = await _objSpirit.CharacterObject.LoadDataXPathAsync(_objSpirit.EntityType == SpiritType.Spirit
                 ? "traditions.xml"
-                : "streams.xml");
+                : "streams.xml", token: token);
 
             using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
                                                             out HashSet<string> setLimitCategories))
             {
                 foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(
-                             _objSpirit.CharacterObject, Improvement.ImprovementType.LimitSpiritCategory))
+                             _objSpirit.CharacterObject, Improvement.ImprovementType.LimitSpiritCategory, token: token))
                 {
                     setLimitCategories.Add(objImprovement.ImprovedName);
                 }
@@ -371,7 +371,7 @@ namespace Chummer
                                 = objXmlDocument.SelectSingleNode(
                                     "/chummer/spirits/spirit[name = " + strSpiritCombat.CleanXPath() + ']');
                             string strTranslatedName = objXmlCritterNode != null
-                                ? (await objXmlCritterNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
+                                ? (await objXmlCritterNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token))?.Value
                                   ?? strSpiritCombat
                                 : strSpiritCombat;
                             lstCritters.Add(new ListItem(strSpiritCombat, strTranslatedName));
@@ -384,7 +384,7 @@ namespace Chummer
                                 = objXmlDocument.SelectSingleNode(
                                     "/chummer/spirits/spirit[name = " + strSpiritDetection.CleanXPath() + ']');
                             string strTranslatedName = objXmlCritterNode != null
-                                ? (await objXmlCritterNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
+                                ? (await objXmlCritterNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token))?.Value
                                   ?? strSpiritDetection
                                 : strSpiritDetection;
                             lstCritters.Add(new ListItem(strSpiritDetection, strTranslatedName));
@@ -397,7 +397,7 @@ namespace Chummer
                                 = objXmlDocument.SelectSingleNode(
                                     "/chummer/spirits/spirit[name = " + strSpiritHealth.CleanXPath() + ']');
                             string strTranslatedName = objXmlCritterNode != null
-                                ? (await objXmlCritterNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
+                                ? (await objXmlCritterNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token))?.Value
                                   ?? strSpiritHealth
                                 : strSpiritHealth;
                             lstCritters.Add(new ListItem(strSpiritHealth, strTranslatedName));
@@ -410,7 +410,7 @@ namespace Chummer
                                 = objXmlDocument.SelectSingleNode(
                                     "/chummer/spirits/spirit[name = " + strSpiritIllusion.CleanXPath() + ']');
                             string strTranslatedName = objXmlCritterNode != null
-                                ? (await objXmlCritterNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
+                                ? (await objXmlCritterNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token))?.Value
                                   ?? strSpiritIllusion
                                 : strSpiritIllusion;
                             lstCritters.Add(new ListItem(strSpiritIllusion, strTranslatedName));
@@ -423,7 +423,7 @@ namespace Chummer
                                 = objXmlDocument.SelectSingleNode(
                                     "/chummer/spirits/spirit[name = " + strSpiritManipulation.CleanXPath() + ']');
                             string strTranslatedName = objXmlCritterNode != null
-                                ? (await objXmlCritterNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
+                                ? (await objXmlCritterNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token))?.Value
                                   ?? strSpiritManipulation
                                 : strSpiritManipulation;
                             lstCritters.Add(new ListItem(strSpiritManipulation, strTranslatedName));
@@ -431,18 +431,18 @@ namespace Chummer
                     }
                     else
                     {
-                        if ((await objTradition.GetNodeXPathAsync())?.SelectSingleNode("spirits/spirit[. = \"All\"]") != null)
+                        if ((await objTradition.GetNodeXPathAsync(token: token))?.SelectSingleNode("spirits/spirit[. = \"All\"]") != null)
                         {
                             if (setLimitCategories.Count == 0)
                             {
                                 foreach (XPathNavigator objXmlCritterNode in await objXmlDocument.SelectAndCacheExpressionAsync(
-                                             "/chummer/spirits/spirit"))
+                                             "/chummer/spirits/spirit", token: token))
                                 {
-                                    string strSpiritName = (await objXmlCritterNode.SelectSingleNodeAndCacheExpressionAsync("name"))
+                                    string strSpiritName = (await objXmlCritterNode.SelectSingleNodeAndCacheExpressionAsync("name", token: token))
                                                                             ?.Value;
                                     lstCritters.Add(new ListItem(strSpiritName,
                                                                  (await objXmlCritterNode
-                                                                     .SelectSingleNodeAndCacheExpressionAsync("translate"))
+                                                                     .SelectSingleNodeAndCacheExpressionAsync("translate", token: token))
                                                                      ?.Value
                                                                  ?? strSpiritName));
                                 }
@@ -455,7 +455,7 @@ namespace Chummer
                                         = objXmlDocument.SelectSingleNode(
                                             "/chummer/spirits/spirit[name = " + strSpiritName.CleanXPath() + ']');
                                     string strTranslatedName = objXmlCritterNode != null
-                                        ? (await objXmlCritterNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
+                                        ? (await objXmlCritterNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token))?.Value
                                           ?? strSpiritName
                                         : strSpiritName;
                                     lstCritters.Add(new ListItem(strSpiritName, strTranslatedName));
@@ -464,7 +464,7 @@ namespace Chummer
                         }
                         else
                         {
-                            XPathNodeIterator xmlSpiritList = (await objTradition.GetNodeXPathAsync())?.Select("spirits/*");
+                            XPathNodeIterator xmlSpiritList = (await objTradition.GetNodeXPathAsync(token: token))?.Select("spirits/*");
                             if (xmlSpiritList != null)
                             {
                                 foreach (XPathNavigator objXmlSpirit in xmlSpiritList)
@@ -477,7 +477,7 @@ namespace Chummer
                                                 "/chummer/spirits/spirit[name = " + strSpiritName.CleanXPath()
                                                 + ']');
                                         string strTranslatedName = objXmlCritterNode != null
-                                            ? (await objXmlCritterNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
+                                            ? (await objXmlCritterNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token))?.Value
                                               ?? strSpiritName
                                             : strSpiritName;
                                         lstCritters.Add(new ListItem(strSpiritName, strTranslatedName));
@@ -492,7 +492,7 @@ namespace Chummer
                     if (_objSpirit.CharacterObject.MAGEnabled)
                     {
                         foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(
-                                     _objSpirit.CharacterObject, Improvement.ImprovementType.AddSpirit))
+                                     _objSpirit.CharacterObject, Improvement.ImprovementType.AddSpirit, token: token))
                         {
                             string strImprovedName = objImprovement.ImprovedName;
                             if (!string.IsNullOrEmpty(strImprovedName))
@@ -511,7 +511,7 @@ namespace Chummer
                     if (_objSpirit.CharacterObject.RESEnabled)
                     {
                         foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(
-                                     _objSpirit.CharacterObject, Improvement.ImprovementType.AddSprite))
+                                     _objSpirit.CharacterObject, Improvement.ImprovementType.AddSprite, token: token))
                         {
                             string strImprovedName = objImprovement.ImprovedName;
                             if (!string.IsNullOrEmpty(strImprovedName))
@@ -527,9 +527,9 @@ namespace Chummer
                         }
                     }
                     
-                    await cboSpiritName.PopulateWithListItemsAsync(lstCritters);
+                    await cboSpiritName.PopulateWithListItemsAsync(lstCritters, token: token);
                     // Set the control back to its original value.
-                    await cboSpiritName.DoThreadSafeAsync(x => x.SelectedValue = strCurrentValue);
+                    await cboSpiritName.DoThreadSafeAsync(x => x.SelectedValue = strCurrentValue, token: token);
                 }
             }
         }

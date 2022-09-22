@@ -23,6 +23,7 @@ using System.Data;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
@@ -275,7 +276,7 @@ namespace Chummer
         /// <summary>
         /// Refresh the information for the selected Vehicle.
         /// </summary>
-        private async ValueTask UpdateSelectedVehicle()
+        private async ValueTask UpdateSelectedVehicle(CancellationToken token = default)
         {
             if (_blnLoading)
                 return;
@@ -366,7 +367,7 @@ namespace Chummer
         /// <summary>
         /// Refresh the cost information for the selected Vehicle.
         /// </summary>
-        private async ValueTask UpdateSelectedVehicleCost()
+        private async ValueTask UpdateSelectedVehicleCost(CancellationToken token = default)
         {
             string strSelectedId = await lstVehicle.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
             XPathNavigator objXmlVehicle = null;
@@ -709,7 +710,7 @@ namespace Chummer
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>
-        private async ValueTask AcceptForm()
+        private async ValueTask AcceptForm(CancellationToken token = default)
         {
             XPathNavigator xmlVehicle = null;
             switch (tabViews.SelectedIndex)

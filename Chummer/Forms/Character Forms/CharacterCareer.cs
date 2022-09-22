@@ -6992,23 +6992,30 @@ namespace Chummer
 
         private async void cmdAddImprovement_Click(object sender, EventArgs e)
         {
-            await DoAddImprovement();
+            try
+            {
+                await DoAddImprovement(GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
-        private async ValueTask DoAddImprovement()
+        private async ValueTask DoAddImprovement(CancellationToken token = default)
         {
             string location
-                = await treImprovements.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is string strSelectedId
+                = await treImprovements.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token) is string strSelectedId
                   && strSelectedId != "Node_SelectedImprovements"
                     ? strSelectedId
                     : string.Empty;
-            using (ThreadSafeForm<CreateImprovement> frmPickImprovement = await ThreadSafeForm<CreateImprovement>.GetAsync(() => new CreateImprovement(CharacterObject, location), GenericToken))
+            using (ThreadSafeForm<CreateImprovement> frmPickImprovement = await ThreadSafeForm<CreateImprovement>.GetAsync(() => new CreateImprovement(CharacterObject, location), token))
             {
-                if (await frmPickImprovement.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                if (await frmPickImprovement.ShowDialogSafeAsync(this, token) == DialogResult.Cancel)
                     return;
             }
 
-            await RefreshCustomImprovements(treImprovements, lmtControl.LimitTreeView, cmsImprovementLocation, cmsImprovement, lmtControl.LimitContextMenuStrip);
+            await RefreshCustomImprovements(treImprovements, lmtControl.LimitTreeView, cmsImprovementLocation, cmsImprovement, lmtControl.LimitContextMenuStrip, token: token);
         }
 
         private async void cmdCreateStackedFocus_Click(object sender, EventArgs e)
@@ -7160,7 +7167,7 @@ namespace Chummer
                 // Simplest way to fix this would be to make the customgroup a variable in the CreateImprovements method, but that's spooky.
                 if (!string.IsNullOrWhiteSpace(frmPickImprovement.MyForm.NewImprovement?.CustomGroup))
                 {
-                    await RefreshCustomImprovements(treImprovements, lmtControl.LimitTreeView, cmsImprovementLocation, cmsImprovement, lmtControl.LimitContextMenuStrip);
+                    await RefreshCustomImprovements(treImprovements, lmtControl.LimitTreeView, cmsImprovementLocation, cmsImprovement, lmtControl.LimitContextMenuStrip, token: token);
                 }
             }
 
@@ -8269,22 +8276,22 @@ namespace Chummer
             while (blnAddAgain);
         }
 
-        private async ValueTask<bool> AddUnderbarrelWeapon(Weapon objSelectedWeapon, string strExpenseString)
+        private async ValueTask<bool> AddUnderbarrelWeapon(Weapon objSelectedWeapon, string strExpenseString, CancellationToken token = default)
         {
             using (ThreadSafeForm<SelectWeapon> frmPickWeapon = await ThreadSafeForm<SelectWeapon>.GetAsync(() => new SelectWeapon(CharacterObject)
                    {
                        LimitToCategories = "Underbarrel Weapons",
                        ParentWeapon = objSelectedWeapon
-                   }, GenericToken))
+                   }, token))
             {
                 frmPickWeapon.MyForm.Mounts.UnionWith(objSelectedWeapon.AccessoryMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries));
 
                 // Make sure the dialogue window was not canceled.
-                if (await frmPickWeapon.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                if (await frmPickWeapon.ShowDialogSafeAsync(this, token) == DialogResult.Cancel)
                     return false;
 
                 // Open the Weapons XML file and locate the selected piece.
-                XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("weapons.xml", token: GenericToken);
+                XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("weapons.xml", token: token);
 
                 XmlNode objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = " + frmPickWeapon.MyForm.SelectedWeapon.CleanXPath() + ']');
 
@@ -8324,14 +8331,14 @@ namespace Chummer
 
                     if (decCost > CharacterObject.Nuyen)
                     {
-                        Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen", token: token), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen", token: token), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         return frmPickWeapon.MyForm.AddAgain;
                     }
 
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                    objExpense.Create(decCost * -1, strExpenseString + await LanguageManager.GetStringAsync("String_Space") + objWeapon.CurrentDisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
-                    await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense);
+                    objExpense.Create(decCost * -1, strExpenseString + await LanguageManager.GetStringAsync("String_Space", token: token) + await objWeapon.GetCurrentDisplayNameShortAsync(token), ExpenseType.Nuyen, DateTime.Now);
+                    await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token);
                     CharacterObject.Nuyen -= decCost;
 
                     ExpenseUndo objUndo = new ExpenseUndo();
@@ -8339,13 +8346,13 @@ namespace Chummer
                     objExpense.Undo = objUndo;
                 }
 
-                await objSelectedWeapon.UnderbarrelWeapons.AddAsync(objWeapon);
+                await objSelectedWeapon.UnderbarrelWeapons.AddAsync(objWeapon, token);
 
                 foreach (Weapon objLoopWeapon in lstWeapons)
                 {
                     if (!objSelectedWeapon.AllowAccessory)
                         objLoopWeapon.AllowAccessory = false;
-                    await objSelectedWeapon.UnderbarrelWeapons.AddAsync(objLoopWeapon);
+                    await objSelectedWeapon.UnderbarrelWeapons.AddAsync(objLoopWeapon, token);
                 }
 
                 return frmPickWeapon.MyForm.AddAgain;
@@ -8588,24 +8595,24 @@ namespace Chummer
             await DoSingleShot();
         }
 
-        private async ValueTask DoSingleShot()
+        private async ValueTask DoSingleShot(CancellationToken token = default)
         {
             // Locate the selected Weapon.
-            if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Weapon objWeapon))
+            if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token) is Weapon objWeapon))
                 return;
             if (objWeapon.AmmoRemaining < objWeapon.SingleShot)
             {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_OutOfAmmo"),
-                                       await LanguageManager.GetStringAsync("MessageTitle_OutOfAmmo"), MessageBoxButtons.OK,
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_OutOfAmmo", token: token),
+                                       await LanguageManager.GetStringAsync("MessageTitle_OutOfAmmo", token: token), MessageBoxButtons.OK,
                                        MessageBoxIcon.Exclamation);
                 return;
             }
 
             objWeapon.AmmoRemaining -= objWeapon.SingleShot;
 
-            await lblWeaponAmmoRemaining.DoThreadSafeAsync(x => x.Text = objWeapon.AmmoRemaining.ToString(GlobalSettings.CultureInfo), GenericToken);
+            await lblWeaponAmmoRemaining.DoThreadSafeAsync(x => x.Text = objWeapon.AmmoRemaining.ToString(GlobalSettings.CultureInfo), token);
 
-            await SetDirty(true);
+            await SetDirty(true, token);
         }
 
         private async void cmsAmmoShortBurst_Click(object sender, EventArgs e)
@@ -8613,14 +8620,14 @@ namespace Chummer
             await DoShortBurst();
         }
 
-        private async ValueTask DoShortBurst()
+        private async ValueTask DoShortBurst(CancellationToken token = default)
         {
             // Locate the selected Weapon.
-            if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Weapon objWeapon))
+            if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, CancellationToken.None) is Weapon objWeapon))
                 return;
             if (objWeapon.AmmoRemaining == 0)
             {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_OutOfAmmo"), await LanguageManager.GetStringAsync("MessageTitle_OutOfAmmo"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_OutOfAmmo", token: token), await LanguageManager.GetStringAsync("MessageTitle_OutOfAmmo", token: token), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
 
@@ -8632,19 +8639,19 @@ namespace Chummer
             {
                 if (objWeapon.AmmoRemaining == objWeapon.SingleShot)
                 {
-                    if (Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughAmmoSingleShot"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughAmmo"), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
+                    if (Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughAmmoSingleShot", token: token), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughAmmo", token: token), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
                         objWeapon.AmmoRemaining = 0;
                 }
                 else
                 {
-                    if (Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughAmmoShortBurstShort"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughAmmo"), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
+                    if (Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughAmmoShortBurstShort", token: token), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughAmmo", token: token), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
                         objWeapon.AmmoRemaining = 0;
                 }
             }
 
-            await lblWeaponAmmoRemaining.DoThreadSafeAsync(x => x.Text = objWeapon.AmmoRemaining.ToString(GlobalSettings.CultureInfo), GenericToken);
+            await lblWeaponAmmoRemaining.DoThreadSafeAsync(x => x.Text = objWeapon.AmmoRemaining.ToString(GlobalSettings.CultureInfo), token);
 
-            await SetDirty(true);
+            await SetDirty(true, token);
         }
 
         private async void cmsAmmoLongBurst_Click(object sender, EventArgs e)
@@ -8652,14 +8659,14 @@ namespace Chummer
             await DoLongBurst();
         }
 
-        private async ValueTask DoLongBurst()
+        private async ValueTask DoLongBurst(CancellationToken token = default)
         {
             // Locate the selected Weapon.
-            if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Weapon objWeapon))
+            if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token) is Weapon objWeapon))
                 return;
             if (objWeapon.AmmoRemaining == 0)
             {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_OutOfAmmo"), await LanguageManager.GetStringAsync("MessageTitle_OutOfAmmo"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_OutOfAmmo", token: token), await LanguageManager.GetStringAsync("MessageTitle_OutOfAmmo", token: token), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
 
@@ -8669,25 +8676,25 @@ namespace Chummer
             }
             else if (objWeapon.AmmoRemaining == objWeapon.SingleShot)
             {
-                if (Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughAmmoSingleShot"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughAmmo"), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
+                if (Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughAmmoSingleShot", token: token), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughAmmo", token: token), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
                     objWeapon.AmmoRemaining = 0;
             }
             else if (objWeapon.AmmoRemaining > objWeapon.ShortBurst)
             {
-                if (Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughAmmoLongBurstShort"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughAmmo"), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
+                if (Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughAmmoLongBurstShort", token: token), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughAmmo", token: token), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
                     objWeapon.AmmoRemaining = 0;
             }
             else if (objWeapon.AmmoRemaining == objWeapon.ShortBurst)
             {
-                if (Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughAmmoShortBurst"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughAmmo"), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
+                if (Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughAmmoShortBurst", token: token), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughAmmo", token: token), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
                     objWeapon.AmmoRemaining = 0;
             }
-            else if (Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughAmmoShortBurstShort"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughAmmo"), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
+            else if (Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughAmmoShortBurstShort", token: token), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughAmmo", token: token), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
                 objWeapon.AmmoRemaining = 0;
 
-            await lblWeaponAmmoRemaining.DoThreadSafeAsync(x => x.Text = objWeapon.AmmoRemaining.ToString(GlobalSettings.CultureInfo), GenericToken);
+            await lblWeaponAmmoRemaining.DoThreadSafeAsync(x => x.Text = objWeapon.AmmoRemaining.ToString(GlobalSettings.CultureInfo), token);
 
-            await SetDirty(true);
+            await SetDirty(true, token);
         }
 
         private async void cmsAmmoFullBurst_Click(object sender, EventArgs e)
@@ -8745,22 +8752,22 @@ namespace Chummer
             await DoVehicleAmmoSingleShot();
         }
 
-        private async ValueTask DoVehicleAmmoSingleShot()
+        private async ValueTask DoVehicleAmmoSingleShot(CancellationToken token = default)
         {
             // Locate the selected Vehicle Weapon.
-            if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Weapon objWeapon))
+            if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token) is Weapon objWeapon))
                 return;
             if (objWeapon.AmmoRemaining < objWeapon.SingleShot)
             {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_OutOfAmmo"), await LanguageManager.GetStringAsync("MessageTitle_OutOfAmmo"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_OutOfAmmo", token: token), await LanguageManager.GetStringAsync("MessageTitle_OutOfAmmo", token: token), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
 
             objWeapon.AmmoRemaining -= objWeapon.SingleShot;
 
-            await lblVehicleWeaponAmmoRemaining.DoThreadSafeAsync(x => x.Text = objWeapon.AmmoRemaining.ToString(GlobalSettings.CultureInfo), GenericToken);
+            await lblVehicleWeaponAmmoRemaining.DoThreadSafeAsync(x => x.Text = objWeapon.AmmoRemaining.ToString(GlobalSettings.CultureInfo), token);
 
-            await SetDirty(true);
+            await SetDirty(true, token);
         }
 
         private async void cmsVehicleAmmoShortBurst_Click(object sender, EventArgs e)
@@ -8768,14 +8775,14 @@ namespace Chummer
             await DoVehicleAmmoShortBurst();
         }
 
-        private async ValueTask DoVehicleAmmoShortBurst()
+        private async ValueTask DoVehicleAmmoShortBurst(CancellationToken token = default)
         {
             // Locate the selected Vehicle Weapon.
-            if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Weapon objWeapon))
+            if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token) is Weapon objWeapon))
                 return;
             if (objWeapon.AmmoRemaining == 0)
             {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_OutOfAmmo"), await LanguageManager.GetStringAsync("MessageTitle_OutOfAmmo"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_OutOfAmmo", token: token), await LanguageManager.GetStringAsync("MessageTitle_OutOfAmmo", token: token), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
 
@@ -8785,15 +8792,15 @@ namespace Chummer
             }
             else if (objWeapon.AmmoRemaining == objWeapon.SingleShot)
             {
-                if (Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughAmmoSingleShot"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughAmmo"), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
+                if (Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughAmmoSingleShot", token: token), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughAmmo", token: token), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
                     objWeapon.AmmoRemaining = 0;
             }
-            else if (Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughAmmoShortBurstShort"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughAmmo"), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
+            else if (Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughAmmoShortBurstShort", token: token), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughAmmo", token: token), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
                 objWeapon.AmmoRemaining = 0;
 
-            await lblVehicleWeaponAmmoRemaining.DoThreadSafeAsync(x => x.Text = objWeapon.AmmoRemaining.ToString(GlobalSettings.CultureInfo), GenericToken);
+            await lblVehicleWeaponAmmoRemaining.DoThreadSafeAsync(x => x.Text = objWeapon.AmmoRemaining.ToString(GlobalSettings.CultureInfo), token);
 
-            await SetDirty(true);
+            await SetDirty(true, token);
         }
 
         private async void cmsVehicleAmmoLongBurst_Click(object sender, EventArgs e)
@@ -8801,14 +8808,14 @@ namespace Chummer
             await DoVehicleAmmoLongBurst();
         }
 
-        private async ValueTask DoVehicleAmmoLongBurst()
+        private async ValueTask DoVehicleAmmoLongBurst(CancellationToken token = default)
         {
             // Locate the selected Vehicle Weapon.
-            if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Weapon objWeapon))
+            if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token) is Weapon objWeapon))
                 return;
             if (objWeapon.AmmoRemaining == 0)
             {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_OutOfAmmo"), await LanguageManager.GetStringAsync("MessageTitle_OutOfAmmo"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_OutOfAmmo", token: token), await LanguageManager.GetStringAsync("MessageTitle_OutOfAmmo", token: token), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
 
@@ -8818,25 +8825,25 @@ namespace Chummer
             }
             else if (objWeapon.AmmoRemaining == objWeapon.SingleShot)
             {
-                if (Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughAmmoSingleShot"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughAmmo"), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
+                if (Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughAmmoSingleShot", token: token), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughAmmo", token: token), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
                     objWeapon.AmmoRemaining = 0;
             }
             else if (objWeapon.AmmoRemaining > objWeapon.ShortBurst)
             {
-                if (Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughAmmoLongBurstShort"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughAmmo"), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
+                if (Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughAmmoLongBurstShort", token: token), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughAmmo", token: token), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
                     objWeapon.AmmoRemaining = 0;
             }
             else if (objWeapon.AmmoRemaining == objWeapon.ShortBurst)
             {
-                if (Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughAmmoShortBurst"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughAmmo"), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
+                if (Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughAmmoShortBurst", token: token), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughAmmo", token: token), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
                     objWeapon.AmmoRemaining = 0;
             }
-            else if (Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughAmmoShortBurstShort"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughAmmo"), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
+            else if (Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughAmmoShortBurstShort", token: token), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughAmmo", token: token), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
                 objWeapon.AmmoRemaining = 0;
 
-            await lblVehicleWeaponAmmoRemaining.DoThreadSafeAsync(x => x.Text = objWeapon.AmmoRemaining.ToString(GlobalSettings.CultureInfo), GenericToken);
+            await lblVehicleWeaponAmmoRemaining.DoThreadSafeAsync(x => x.Text = objWeapon.AmmoRemaining.ToString(GlobalSettings.CultureInfo), token);
 
-            await SetDirty(true);
+            await SetDirty(true, token);
         }
 
         private async void cmsVehicleAmmoFullBurst_Click(object sender, EventArgs e)
@@ -12313,13 +12320,13 @@ namespace Chummer
             await FilterCheckboxChanged();
         }
 
-        private async ValueTask FilterCheckboxChanged()
+        private async ValueTask FilterCheckboxChanged(CancellationToken token = default)
         {
             try
             {
-                bool commlinksOnly = await chkCommlinks.DoThreadSafeFuncAsync(x => x.Checked, GenericToken);
-                bool hideLoadedAmmo = await chkHideLoadedAmmo.DoThreadSafeFuncAsync(x => x.Checked, GenericToken);
-                await RefreshGears(treGear, cmsGearLocation, cmsGear, commlinksOnly, hideLoadedAmmo);
+                bool commlinksOnly = await chkCommlinks.DoThreadSafeFuncAsync(x => x.Checked, token);
+                bool hideLoadedAmmo = await chkHideLoadedAmmo.DoThreadSafeFuncAsync(x => x.Checked, token);
+                await RefreshGears(treGear, cmsGearLocation, cmsGear, commlinksOnly, hideLoadedAmmo, token: token);
             }
             catch (OperationCanceledException)
             {
@@ -14088,13 +14095,20 @@ namespace Chummer
 
         private async void treImprovements_DoubleClick(object sender, EventArgs e)
         {
-            if (await treImprovements.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Improvement)
+            try
             {
-                await DoEditImprovement();
+                if (await treImprovements.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Improvement)
+                {
+                    await DoEditImprovement(GenericToken);
+                }
+                else
+                {
+                    await DoAddImprovement(GenericToken);
+                }
             }
-            else
+            catch (OperationCanceledException)
             {
-                await DoAddImprovement();
+                //swallow this
             }
         }
 
@@ -18899,7 +18913,7 @@ namespace Chummer
             await DoExpenseEntriesCollectionChanged(e);
         }
 
-        private async ValueTask DoExpenseEntriesCollectionChanged(NotifyCollectionChangedEventArgs e)
+        private async ValueTask DoExpenseEntriesCollectionChanged(NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
             bool blnDoRepopulateKarmaExpenseList = false;
             bool blnDoRepopulateNuyenExpenseList = false;
@@ -18919,11 +18933,11 @@ namespace Chummer
                             switch (objEntry.Type)
                             {
                                 case ExpenseType.Karma:
-                                    blnDoRepopulateKarmaExpenseList = blnDoRepopulateKarmaExpenseList || objEntry.Amount != 0 || await chkShowFreeKarma.DoThreadSafeFuncAsync(x => x.Checked);
+                                    blnDoRepopulateKarmaExpenseList = blnDoRepopulateKarmaExpenseList || objEntry.Amount != 0 || await chkShowFreeKarma.DoThreadSafeFuncAsync(x => x.Checked, token: token);
                                     break;
 
                                 case ExpenseType.Nuyen:
-                                    blnDoRepopulateNuyenExpenseList = blnDoRepopulateNuyenExpenseList || objEntry.Amount != 0 || await chkShowFreeNuyen.DoThreadSafeFuncAsync(x => x.Checked);
+                                    blnDoRepopulateNuyenExpenseList = blnDoRepopulateNuyenExpenseList || objEntry.Amount != 0 || await chkShowFreeNuyen.DoThreadSafeFuncAsync(x => x.Checked, token: token);
                                     break;
                             }
                             if (blnDoRepopulateKarmaExpenseList && blnDoRepopulateNuyenExpenseList)
@@ -18937,11 +18951,11 @@ namespace Chummer
                             switch (objEntry.Type)
                             {
                                 case ExpenseType.Karma:
-                                    blnDoRepopulateKarmaExpenseList = blnDoRepopulateKarmaExpenseList || objEntry.Amount != 0 || await chkShowFreeKarma.DoThreadSafeFuncAsync(x => x.Checked);
+                                    blnDoRepopulateKarmaExpenseList = blnDoRepopulateKarmaExpenseList || objEntry.Amount != 0 || await chkShowFreeKarma.DoThreadSafeFuncAsync(x => x.Checked, token: token);
                                     break;
 
                                 case ExpenseType.Nuyen:
-                                    blnDoRepopulateNuyenExpenseList = blnDoRepopulateNuyenExpenseList || objEntry.Amount != 0 || await chkShowFreeNuyen.DoThreadSafeFuncAsync(x => x.Checked);
+                                    blnDoRepopulateNuyenExpenseList = blnDoRepopulateNuyenExpenseList || objEntry.Amount != 0 || await chkShowFreeNuyen.DoThreadSafeFuncAsync(x => x.Checked, token: token);
                                     break;
                             }
                             if (blnDoRepopulateKarmaExpenseList && blnDoRepopulateNuyenExpenseList)
@@ -18955,11 +18969,11 @@ namespace Chummer
                             switch (objEntry.Type)
                             {
                                 case ExpenseType.Karma:
-                                    blnDoRepopulateKarmaExpenseList = blnDoRepopulateKarmaExpenseList || objEntry.Amount != 0 || await chkShowFreeKarma.DoThreadSafeFuncAsync(x => x.Checked);
+                                    blnDoRepopulateKarmaExpenseList = blnDoRepopulateKarmaExpenseList || objEntry.Amount != 0 || await chkShowFreeKarma.DoThreadSafeFuncAsync(x => x.Checked, token: token);
                                     break;
 
                                 case ExpenseType.Nuyen:
-                                    blnDoRepopulateNuyenExpenseList = blnDoRepopulateNuyenExpenseList || objEntry.Amount != 0 || await chkShowFreeNuyen.DoThreadSafeFuncAsync(x => x.Checked);
+                                    blnDoRepopulateNuyenExpenseList = blnDoRepopulateNuyenExpenseList || objEntry.Amount != 0 || await chkShowFreeNuyen.DoThreadSafeFuncAsync(x => x.Checked, token: token);
                                     break;
                             }
                             if (blnDoRepopulateKarmaExpenseList && blnDoRepopulateNuyenExpenseList)
@@ -18973,11 +18987,11 @@ namespace Chummer
                                 switch (objEntry.Type)
                                 {
                                     case ExpenseType.Karma:
-                                        blnDoRepopulateKarmaExpenseList = blnDoRepopulateKarmaExpenseList || objEntry.Amount != 0 || await chkShowFreeKarma.DoThreadSafeFuncAsync(x => x.Checked);
+                                        blnDoRepopulateKarmaExpenseList = blnDoRepopulateKarmaExpenseList || objEntry.Amount != 0 || await chkShowFreeKarma.DoThreadSafeFuncAsync(x => x.Checked, token: token);
                                         break;
 
                                     case ExpenseType.Nuyen:
-                                        blnDoRepopulateNuyenExpenseList = blnDoRepopulateNuyenExpenseList || objEntry.Amount != 0 || await chkShowFreeNuyen.DoThreadSafeFuncAsync(x => x.Checked);
+                                        blnDoRepopulateNuyenExpenseList = blnDoRepopulateNuyenExpenseList || objEntry.Amount != 0 || await chkShowFreeNuyen.DoThreadSafeFuncAsync(x => x.Checked, token: token);
                                         break;
                                 }
                                 if (blnDoRepopulateKarmaExpenseList && blnDoRepopulateNuyenExpenseList)
@@ -18991,9 +19005,9 @@ namespace Chummer
                 }
             }
             if (blnDoRepopulateKarmaExpenseList)
-                await RepopulateKarmaExpenseList();
+                await RepopulateKarmaExpenseList(token);
             if (blnDoRepopulateNuyenExpenseList)
-                await RepopulateNuyenExpenseList();
+                await RepopulateNuyenExpenseList(token);
         }
 
         private async void chkShowFreeKarma_CheckedChanged(object sender, EventArgs e)

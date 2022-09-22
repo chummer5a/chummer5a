@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.XPath;
@@ -202,7 +203,7 @@ namespace Chummer
 
         #region Methods
 
-        private async ValueTask BuildPowerList()
+        private async ValueTask BuildPowerList(CancellationToken token = default)
         {
             if (_blnLoading)
                 return;
@@ -223,7 +224,7 @@ namespace Chummer
                 }
             }
 
-            string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text);
+            string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token: token);
             if (!string.IsNullOrEmpty(strSearch))
                 strFilter += " and " + CommonFunctions.GenerateSearchXPath(strSearch);
 
@@ -232,11 +233,11 @@ namespace Chummer
                 foreach (XPathNavigator objXmlPower in _xmlBasePowerDataNode.Select("powers/power[" + strFilter + ']'))
                 {
                     decimal decPoints
-                        = Convert.ToDecimal((await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("points"))?.Value,
+                        = Convert.ToDecimal((await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("points", token: token))?.Value,
                                             GlobalSettings.InvariantCultureInfo);
-                    string strExtraPointCost = (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("extrapointcost"))?.Value;
-                    string strName = (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value
-                                     ?? await LanguageManager.GetStringAsync("String_Unknown");
+                    string strExtraPointCost = (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("extrapointcost", token: token))?.Value;
+                    string strName = (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("name", token: token))?.Value
+                                     ?? await LanguageManager.GetStringAsync("String_Unknown", token: token);
                     if (!string.IsNullOrEmpty(strExtraPointCost)
                         && !_objCharacter.Powers.Any(power => power.Name == strName && power.TotalRating > 0))
                     {
@@ -254,14 +255,14 @@ namespace Chummer
                         continue;
 
                     lstPower.Add(new ListItem(
-                                     (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("id"))?.Value ?? string.Empty,
-                                     (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value ?? strName));
+                                     (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("id", token: token))?.Value ?? string.Empty,
+                                     (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("translate", token: token))?.Value ?? strName));
                 }
 
                 lstPower.Sort(CompareListItems.CompareNames);
                 _blnLoading = true;
-                string strOldSelected = await lstPowers.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
-                await lstPowers.PopulateWithListItemsAsync(lstPower);
+                string strOldSelected = await lstPowers.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token);
+                await lstPowers.PopulateWithListItemsAsync(lstPower, token: token);
                 _blnLoading = false;
                 await lstPowers.DoThreadSafeAsync(x =>
                 {
@@ -269,29 +270,29 @@ namespace Chummer
                         x.SelectedValue = strOldSelected;
                     else
                         x.SelectedIndex = -1;
-                });
+                }, token: token);
             }
         }
 
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>
-        private async ValueTask AcceptForm()
+        private async ValueTask AcceptForm(CancellationToken token = default)
         {
-            string strSelectedId = await lstPowers.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
+            string strSelectedId = await lstPowers.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token);
             if (!string.IsNullOrEmpty(strSelectedId))
             {
                 // Check to see if the user needs to select anything for the Power.
                 XPathNavigator objXmlPower = _xmlBasePowerDataNode.SelectSingleNode("powers/power[id = " + strSelectedId.CleanXPath() + ']');
 
-                if (objXmlPower.RequirementsMet(_objCharacter, null, await LanguageManager.GetStringAsync("String_Power"), string.Empty, string.Empty, string.Empty, IgnoreLimits))
+                if (objXmlPower.RequirementsMet(_objCharacter, null, await LanguageManager.GetStringAsync("String_Power", token: token), string.Empty, string.Empty, string.Empty, IgnoreLimits))
                 {
                     SelectedPower = strSelectedId;
                     await this.DoThreadSafeAsync(x =>
                     {
                         x.DialogResult = DialogResult.OK;
                         x.Close();
-                    });
+                    }, token: token);
                 }
             }
         }

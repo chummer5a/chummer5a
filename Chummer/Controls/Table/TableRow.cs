@@ -19,6 +19,7 @@
 
 using System;
 using System.Drawing;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -56,16 +57,16 @@ namespace Chummer.UI.Table
             }
         }
 
-        protected virtual async ValueTask UpdateAsync(int intIndex, bool blnSelected)
+        protected virtual async ValueTask UpdateAsync(int intIndex, bool blnSelected, CancellationToken token = default)
         {
             if (blnSelected)
             {
-                await ColorManager.HighlightAsync.ContinueWith(y => this.DoThreadSafeAsync(x => x.BackColor = y.Result)).Unwrap();
+                await ColorManager.HighlightAsync.ContinueWith(y => this.DoThreadSafeAsync(x => x.BackColor = y.Result, token: token), token).Unwrap();
             }
             else
             {
                 Color objColor = (intIndex & 1) == 0 ? await ColorManager.ControlLightestAsync : await ColorManager.ControlAsync;
-                await this.DoThreadSafeAsync(x => x.BackColor = objColor);
+                await this.DoThreadSafeAsync(x => x.BackColor = objColor, token: token);
             }
         }
 

@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
@@ -109,12 +110,12 @@ namespace Chummer
             await RefreshCategories();
         }
 
-        private async ValueTask RefreshCategories()
+        private async ValueTask RefreshCategories(CancellationToken token = default)
         {
             // Update the list of Kits based on the selected Category.
 
             string strFilter = "not(hide)";
-            string strCategory = await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
+            string strCategory = await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token);
             if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All")
                 strFilter += " and category = " + strCategory.CleanXPath();
             else
@@ -140,20 +141,20 @@ namespace Chummer
             {
                 foreach (XPathNavigator objXmlPack in xmlPacksKits)
                 {
-                    string strName = (await objXmlPack.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value;
+                    string strName = (await objXmlPack.SelectSingleNodeAndCacheExpressionAsync("name", token: token))?.Value;
                     // Separator "<" is a hack because XML does not like it when the '<' character is used in element contents, so we can safely assume that it will never show up.
                     lstKit.Add(new ListItem(
-                                   strName + '<' + (await objXmlPack.SelectSingleNodeAndCacheExpressionAsync("category"))?.Value,
-                                   (await objXmlPack.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value ?? strName));
+                                   strName + '<' + (await objXmlPack.SelectSingleNodeAndCacheExpressionAsync("category", token: token))?.Value,
+                                   (await objXmlPack.SelectSingleNodeAndCacheExpressionAsync("translate", token: token))?.Value ?? strName));
                 }
 
                 lstKit.Sort(CompareListItems.CompareNames);
-                await lstKits.PopulateWithListItemsAsync(lstKit);
+                await lstKits.PopulateWithListItemsAsync(lstKit, token: token);
                 if (lstKit.Count == 0)
-                    await treContents.DoThreadSafeAsync(x => x.Nodes.Clear());
+                    await treContents.DoThreadSafeAsync(x => x.Nodes.Clear(), token: token);
             }
 
-            await cmdDelete.DoThreadSafeAsync(x => x.Visible = false);
+            await cmdDelete.DoThreadSafeAsync(x => x.Visible = false, token: token);
         }
 
         private async void lstKits_SelectedIndexChanged(object sender, EventArgs e)

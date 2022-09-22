@@ -667,13 +667,13 @@ namespace Chummer
 
         #region Methods
 
-        private async ValueTask LoadContactList()
+        private async ValueTask LoadContactList(CancellationToken token = default)
         {
             if (_objContact.IsEnemy)
             {
                 string strContactRole = _objContact.DisplayRole;
                 if (!string.IsNullOrEmpty(strContactRole))
-                    await cboContactRole.DoThreadSafeAsync(x => x.Text = strContactRole);
+                    await cboContactRole.DoThreadSafeAsync(x => x.Text = strContactRole, token: token);
                 return;
             }
 
@@ -687,20 +687,21 @@ namespace Chummer
             //            ContactProfession.Add(new ListItem(strName, xmlNode.Attributes?["translate"]?.InnerText ?? strName));
             //        }
             
-            await cboContactRole.PopulateWithListItemsAsync(Contact.ContactArchetypes(_objContact.CharacterObject));
+            await cboContactRole.PopulateWithListItemsAsync(Contact.ContactArchetypes(_objContact.CharacterObject), token: token);
             await cboContactRole.DoThreadSafeAsync(x =>
             {
                 x.SelectedValue = _objContact.Role;
                 if (x.SelectedIndex < 0)
                     x.Text = _objContact.DisplayRole;
-            });
+            }, token: token);
         }
 
-        private async ValueTask DoDataBindings()
+        private async ValueTask DoDataBindings(CancellationToken token = default)
         {
             await lblQuickStats.RegisterOneWayAsyncDataBinding((x, y) => x.Text = y, _objContact,
                                                                nameof(Contact.QuickText),
-                                                               x => x.GetQuickTextAsync().AsTask());
+                                                               // ReSharper disable once MethodSupportsCancellation
+                                                               x => x.GetQuickTextAsync().AsTask(), token: token);
             txtContactName.DoDataBinding("Text", _objContact, nameof(_objContact.Name));
             txtContactLocation.DoDataBinding("Text", _objContact, nameof(_objContact.Location));
             cmdDelete.DoOneWayDataBinding("Visible", _objContact, nameof(_objContact.NotReadOnly));

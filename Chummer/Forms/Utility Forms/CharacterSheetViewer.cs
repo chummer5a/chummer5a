@@ -370,7 +370,7 @@ namespace Chummer
                         switch (ePdfPrinterDialogResult)
                         {
                             case DialogResult.Cancel:
-                            case DialogResult.Yes when await DoPdfPrinterShortcut(strPdfPrinter):
+                            case DialogResult.Yes when await DoPdfPrinterShortcut(strPdfPrinter, _objGenericToken):
                                 return;
 
                             case DialogResult.Yes:
@@ -858,7 +858,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask<bool> DoPdfPrinterShortcut(string strPdfPrinterName)
+        private async ValueTask<bool> DoPdfPrinterShortcut(string strPdfPrinterName, CancellationToken token = default)
         {
             // We've got a proper, built-in PDF printer, so let's use that instead of wkhtmltopdf
             string strOldHeader = null;
@@ -906,7 +906,7 @@ namespace Chummer
                 {
                     // There is also no way to silently have it print to a PDF, so we have to show the print dialog
                     // and have the user click through, though the PDF printer will be temporarily set as their default
-                    await webViewer.DoThreadSafeAsync(x => x.ShowPrintDialog(), _objGenericToken);
+                    await webViewer.DoThreadSafeAsync(x => x.ShowPrintDialog(), token);
                 }
             }
             catch

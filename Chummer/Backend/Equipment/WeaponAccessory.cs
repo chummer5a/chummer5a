@@ -853,6 +853,9 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string CurrentDisplayName => DisplayName(GlobalSettings.Language);
 
+        public ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default) =>
+            DisplayNameAsync(GlobalSettings.Language, token);
+
         /// <summary>
         /// Mount Used.
         /// </summary>

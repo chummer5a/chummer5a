@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.XPath;
@@ -275,7 +276,7 @@ namespace Chummer
         /// <summary>
         /// Build the list of Mods.
         /// </summary>
-        private async ValueTask RefreshList()
+        private async ValueTask RefreshList(CancellationToken token = default)
         {
             string strCategory = await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
             string strFilter = '(' + _objCharacter.Settings.BookXPath() + ')';
@@ -485,7 +486,7 @@ namespace Chummer
         /// <summary>
         /// Update the Mod's information based on the Mod selected and current Rating.
         /// </summary>
-        private async ValueTask UpdateGearInfo()
+        private async ValueTask UpdateGearInfo(CancellationToken token = default)
         {
             if (_blnLoading || _blnSkipUpdate)
                 return;

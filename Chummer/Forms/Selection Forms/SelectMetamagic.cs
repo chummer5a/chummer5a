@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.XPath;
@@ -163,14 +164,14 @@ namespace Chummer
         /// <summary>
         /// Build the list of Metamagics.
         /// </summary>
-        private async ValueTask BuildMetamagicList()
+        private async ValueTask BuildMetamagicList(CancellationToken token = default)
         {
             string strFilter = '(' + _objCharacter.Settings.BookXPath() + ')';
             // If the character has MAG enabled, filter the list based on Adept/Magician availability.
             if (_objCharacter.MAGEnabled)
             {
-                bool blnIsMagician = _objCharacter.MagicianEnabled;
-                if (blnIsMagician != _objCharacter.AdeptEnabled)
+                bool blnIsMagician = await _objCharacter.GetMagicianEnabledAsync(token);
+                if (blnIsMagician != await _objCharacter.GetAdeptEnabledAsync(token))
                 {
                     if (blnIsMagician)
                         strFilter += "and magician = " + bool.TrueString.CleanXPath();
@@ -191,7 +192,7 @@ namespace Chummer
                 }
             }
 
-            string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text);
+            string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token: token);
             if (!string.IsNullOrEmpty(strSearch))
                 strFilter += " and " + CommonFunctions.GenerateSearchXPath(strSearch);
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstMetamagics))
@@ -199,23 +200,23 @@ namespace Chummer
                 foreach (XPathNavigator objXmlMetamagic in
                          _objXmlDocument.Select(_strRootXPath + '[' + strFilter + ']'))
                 {
-                    string strId = (await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("id"))?.Value;
+                    string strId = (await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("id", token: token))?.Value;
                     if (string.IsNullOrEmpty(strId))
                         continue;
                     if (!chkLimitList.Checked || objXmlMetamagic.CreateNavigator().RequirementsMet(_objCharacter))
                     {
                         lstMetamagics.Add(new ListItem(strId,
-                                                       (await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("translate"))
+                                                       (await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("translate", token: token))
                                                                       ?.Value ?? (await objXmlMetamagic
-                                                           .SelectSingleNodeAndCacheExpressionAsync("name"))?.Value ??
-                                                       await LanguageManager.GetStringAsync("String_Unknown")));
+                                                           .SelectSingleNodeAndCacheExpressionAsync("name", token: token))?.Value ??
+                                                       await LanguageManager.GetStringAsync("String_Unknown", token: token)));
                     }
                 }
 
                 lstMetamagics.Sort(CompareListItems.CompareNames);
-                string strOldSelected = await lstMetamagic.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
+                string strOldSelected = await lstMetamagic.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token);
                 _blnLoading = true;
-                await lstMetamagic.PopulateWithListItemsAsync(lstMetamagics);
+                await lstMetamagic.PopulateWithListItemsAsync(lstMetamagics, token: token);
                 _blnLoading = false;
                 await lstMetamagic.DoThreadSafeAsync(x =>
                 {
@@ -223,7 +224,7 @@ namespace Chummer
                         x.SelectedValue = strOldSelected;
                     else
                         x.SelectedIndex = -1;
-                });
+                }, token: token);
             }
         }
 

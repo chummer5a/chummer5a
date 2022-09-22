@@ -1592,11 +1592,11 @@ namespace Chummer
             }
         }
 
-        private async Task UpdateCharacterTabTitle(Character objCharacter, string strCharacterName)
+        private async Task UpdateCharacterTabTitle(Character objCharacter, string strCharacterName, CancellationToken token = default)
         {
-            string strSpace = await LanguageManager.GetStringAsync("String_Space");
-            string strSheet = await LanguageManager.GetStringAsync("String_Sheet_Blank");
-            string strExport = await LanguageManager.GetStringAsync("String_Export_Blank");
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token);
+            string strSheet = await LanguageManager.GetStringAsync("String_Sheet_Blank", token: token);
+            string strExport = await LanguageManager.GetStringAsync("String_Export_Blank", token: token);
             await tabForms.DoThreadSafeAsync(x =>
             {
                 foreach (TabPage objTabPage in x.TabPages)
@@ -1619,7 +1619,7 @@ namespace Chummer
                             break;
                     }
                 }
-            });
+            }, token: token);
         }
 
         public void RefreshAllTabTitles()

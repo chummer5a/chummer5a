@@ -25084,6 +25084,57 @@ namespace Chummer
             return LanguageManager.GetString("String_None");
         }
 
+        /// <summary>
+        /// Extended Availability Test information for an item based on the character's Negotiate Skill.
+        /// </summary>
+        /// <param name="decCost">Item's cost.</param>
+        /// <param name="strAvail">Item's Availability.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async Task<string> AvailTestAsync(decimal decCost, string strAvail, CancellationToken token = default)
+        {
+            if (string.IsNullOrEmpty(strAvail))
+                return await LanguageManager.GetStringAsync("String_None", token: token);
+            bool blnShowTest = false;
+            string strTestSuffix = await LanguageManager.GetStringAsync("String_AvailRestricted", token: token);
+            if (strAvail.EndsWith(strTestSuffix, StringComparison.Ordinal))
+            {
+                blnShowTest = true;
+                strAvail = strAvail.TrimEndOnce(strTestSuffix, true);
+            }
+            else
+            {
+                strTestSuffix = await LanguageManager.GetStringAsync("String_AvailForbidden", token: token);
+                if (strAvail.EndsWith(strTestSuffix, StringComparison.Ordinal))
+                {
+                    blnShowTest = true;
+                    strAvail = strAvail.TrimEndOnce(strTestSuffix, true);
+                }
+            }
+
+            if (int.TryParse(strAvail, out int intAvail) && (intAvail != 0 || blnShowTest))
+            {
+                return await GetAvailTestStringAsync(decCost, intAvail, token);
+            }
+
+            return await LanguageManager.GetStringAsync("String_None", token: token);
+        }
+
+        /// <summary>
+        /// Extended Availability Test information for an item based on the character's Negotiate Skill.
+        /// </summary>
+        /// <param name="decCost">Item's cost.</param>
+        /// <param name="objAvailability">Item's Availability.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public Task<string> AvailTestAsync(decimal decCost, AvailabilityValue objAvailability, CancellationToken token = default)
+        {
+            if (objAvailability.Value != 0 || objAvailability.Suffix == 'R' || objAvailability.Suffix == 'F')
+            {
+                return GetAvailTestStringAsync(decCost, objAvailability.Value, token);
+            }
+
+            return LanguageManager.GetStringAsync("String_None", token: token);
+        }
+
         private string GetAvailTestString(decimal decCost, int intAvailValue)
         {
             string strSpace = LanguageManager.GetString("String_Space");
@@ -25127,6 +25178,64 @@ namespace Chummer
                              < x.Key); //Assumes that the keys are sorted lowest to highest. Maybe not safe for custom content?
                 // Determine the interval based on the item's price.
                 string strInterval = item.Value.Item1 + strSpace + LanguageManager.GetString(item.Value.Item2);
+
+                return intPool.ToString(GlobalSettings.CultureInfo) + strSpace + '('
+                       + intAvailValue.ToString(GlobalSettings.CultureInfo) + ',' + strSpace + strInterval + ')';
+            }
+        }
+
+        private async Task<string> GetAvailTestStringAsync(decimal decCost, int intAvailValue, CancellationToken token = default)
+        {
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token);
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+            {
+                // Find the character's Negotiation total.
+                Skill objSkill = await (await GetSkillsSectionAsync(token)).GetActiveSkillAsync("Negotiation", token);
+                int intPool = objSkill != null ? await objSkill.GetPoolAsync(token) : 0;
+                if (_dicAvailabilityMap == null || GlobalSettings.LiveCustomData)
+                {
+                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
+                    try
+                    {
+                        if (_dicAvailabilityMap == null || GlobalSettings.LiveCustomData)
+                        {
+                            SortedDictionary<decimal, Tuple<string, string>> dicAvailabilityMap
+                                = Interlocked.Exchange(ref _dicAvailabilityMap, null)
+                                  ?? new SortedDictionary<decimal, Tuple<string, string>>();
+                            dicAvailabilityMap.Clear();
+                            foreach (XPathNavigator objNode in await (await LoadDataXPathAsync(
+                                             "options.xml", token: token))
+                                         .SelectAndCacheExpressionAsync("/chummer/availmap/avail", token))
+                            {
+                                decimal decValue = 0;
+                                if (objNode.TryGetDecFieldQuickly("value", ref decValue)
+                                    && !dicAvailabilityMap.ContainsKey(decValue))
+                                {
+                                    dicAvailabilityMap.Add(
+                                        decValue,
+                                        new Tuple<string, string>(
+                                            (await objNode.SelectSingleNodeAndCacheExpressionAsync("duration", token))
+                                            .Value,
+                                            (await objNode.SelectSingleNodeAndCacheExpressionAsync("interval", token))
+                                            .Value));
+                                }
+                            }
+
+                            Interlocked.CompareExchange(ref _dicAvailabilityMap, dicAvailabilityMap, null);
+                        }
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync();
+                    }
+                }
+
+                KeyValuePair<decimal, Tuple<string, string>>
+                    item = _dicAvailabilityMap.FirstOrDefault(
+                        x => decCost
+                             < x.Key); //Assumes that the keys are sorted lowest to highest. Maybe not safe for custom content?
+                // Determine the interval based on the item's price.
+                string strInterval = item.Value.Item1 + strSpace + await LanguageManager.GetStringAsync(item.Value.Item2, token: token);
 
                 return intPool.ToString(GlobalSettings.CultureInfo) + strSpace + '('
                        + intAvailValue.ToString(GlobalSettings.CultureInfo) + ',' + strSpace + strInterval + ')';

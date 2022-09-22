@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.XPath;
@@ -214,18 +215,18 @@ namespace Chummer
         /// <summary>
         /// Update the information for the selected Armor Mod.
         /// </summary>
-        private async ValueTask UpdateSelectedArmor()
+        private async ValueTask UpdateSelectedArmor(CancellationToken token = default)
         {
             if (_blnLoading)
                 return;
 
-            string strSelectedId = await lstMod.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
+            string strSelectedId = await lstMod.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token);
             XPathNavigator objXmlMod = null;
             if (!string.IsNullOrEmpty(strSelectedId))
                 objXmlMod = _xmlBaseDataNode.SelectSingleNode("/chummer/mods/mod[id = " + strSelectedId.CleanXPath() + ']');
             if (objXmlMod == null)
             {
-                await tlpRight.DoThreadSafeAsync(x => x.Visible = false);
+                await tlpRight.DoThreadSafeAsync(x => x.Visible = false, token: token);
                 return;
             }
             await this.DoThreadSafeAsync(x => x.SuspendLayout());
@@ -462,7 +463,7 @@ namespace Chummer
             await RefreshList();
         }
         
-        private async ValueTask RefreshList()
+        private async ValueTask RefreshList(CancellationToken token = default)
         {
             string strFilter = string.Empty;
             // Populate the Mods list.
@@ -502,8 +503,8 @@ namespace Chummer
                 XPathNodeIterator objXmlModList = _xmlBaseDataNode.Select("/chummer/mods/mod" + strFilter);
                 if (objXmlModList.Count > 0)
                 {
-                    bool blnHideOverAvailLimit = await chkHideOverAvailLimit.DoThreadSafeFuncAsync(x => x.Checked);
-                    bool blnFreeItem = await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked);
+                    bool blnHideOverAvailLimit = await chkHideOverAvailLimit.DoThreadSafeFuncAsync(x => x.Checked, token: token);
+                    bool blnFreeItem = await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked, token: token);
                     bool blnShowOnlyAffordItems = await chkShowOnlyAffordItems.DoThreadSafeFuncAsync(x => x.Checked);
                     foreach (XPathNavigator objXmlMod in objXmlModList)
                     {

@@ -1295,10 +1295,10 @@ namespace Chummer
         /// <summary>
         /// Save the global settings to the registry.
         /// </summary>
-        private async ValueTask SaveRegistrySettings()
+        private async ValueTask SaveRegistrySettings(CancellationToken token = default)
         {
-            await SaveGlobalOptions();
-            await GlobalSettings.SaveOptionsToRegistry();
+            await SaveGlobalOptions(token);
+            await GlobalSettings.SaveOptionsToRegistry(token);
         }
 
         private async ValueTask PopulateDefaultCharacterSettingLists(CancellationToken token = default)

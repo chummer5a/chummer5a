@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -432,7 +433,8 @@ namespace Chummer
         /// Adds the token to the initiative chain
         /// </summary>
         /// <param name="character"></param>
-        public async ValueTask AddToken(Character character)
+        /// <param name="token"></param>
+        public async ValueTask AddToken(Character character, CancellationToken token = default)
         {
             if (character == null)
                 return;
@@ -441,9 +443,9 @@ namespace Chummer
                 using (ThreadSafeForm<InitiativeRoller> frmHits = await ThreadSafeForm<InitiativeRoller>.GetAsync(() => new InitiativeRoller
                 {
                     Dice = character.InitPasses
-                }))
+                }, token))
                 {
-                    if (await frmHits.ShowDialogSafeAsync(this) != DialogResult.OK)
+                    if (await frmHits.ShowDialogSafeAsync(this, token) != DialogResult.OK)
                     {
                         Program.ShowMessageBox("ERROR"); // TODO edward show error
                         return;
@@ -454,7 +456,7 @@ namespace Chummer
             }
 
             _lstCharacters.Add(character);
-            await chkBoxChummer.DoThreadSafeAsync(x => x.Items.Add(character));
+            await chkBoxChummer.DoThreadSafeAsync(x => x.Items.Add(character), token: token);
         }
 
         /*

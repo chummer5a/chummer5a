@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
@@ -771,28 +772,29 @@ namespace Chummer
         /// </summary>
         /// <param name="objWriter">XmlWriter to use.</param>
         /// <param name="lstGear">List of Gear to write.</param>
-        private static async ValueTask WriteGear(XmlWriter objWriter, IEnumerable<Gear> lstGear)
+        /// <param name="token">Cancellation token to listen to.</param>
+        private static async ValueTask WriteGear(XmlWriter objWriter, IEnumerable<Gear> lstGear, CancellationToken token = default)
         {
             // <gears>
-            await objWriter.WriteStartElementAsync("gears");
+            await objWriter.WriteStartElementAsync("gears", token: token);
             foreach (Gear objGear in lstGear)
             {
                 if (objGear.IncludedInParent)
                     continue;
                 // <gear>
-                await objWriter.WriteStartElementAsync("gear");
-                await objWriter.WriteStartElementAsync("name");
+                await objWriter.WriteStartElementAsync("gear", token: token);
+                await objWriter.WriteStartElementAsync("name", token: token);
                 if (!string.IsNullOrEmpty(objGear.Extra))
-                    await objWriter.WriteAttributeStringAsync("select", objGear.Extra);
+                    await objWriter.WriteAttributeStringAsync("select", objGear.Extra, token: token);
                 objWriter.WriteValue(objGear.Name);
                 await objWriter.WriteEndElementAsync();
-                await objWriter.WriteElementStringAsync("category", objGear.Category);
+                await objWriter.WriteElementStringAsync("category", objGear.Category, token: token);
                 if (objGear.Rating > 0)
-                    await objWriter.WriteElementStringAsync("rating", objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                    await objWriter.WriteElementStringAsync("rating", objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo), token: token);
                 if (objGear.Quantity != 1)
-                    await objWriter.WriteElementStringAsync("qty", objGear.Quantity.ToString(GlobalSettings.InvariantCultureInfo));
+                    await objWriter.WriteElementStringAsync("qty", objGear.Quantity.ToString(GlobalSettings.InvariantCultureInfo), token: token);
                 if (objGear.Children.Count > 0)
-                    await WriteGear(objWriter, objGear.Children);
+                    await WriteGear(objWriter, objGear.Children, token);
                 // </gear>
                 await objWriter.WriteEndElementAsync();
             }

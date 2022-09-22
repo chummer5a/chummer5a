@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.XPath;
@@ -502,9 +503,9 @@ namespace Chummer
         /// <summary>
         /// Re-calculate the Drain modifiers based on the currently-selected options.
         /// </summary>
-        private async ValueTask ChangeModifiers()
+        private async ValueTask ChangeModifiers(CancellationToken token = default)
         {
-            foreach (Control objControl in await flpModifiers.DoThreadSafeFuncAsync(x => x.Controls))
+            foreach (Control objControl in await flpModifiers.DoThreadSafeFuncAsync(x => x.Controls, token: token))
             {
                 switch (objControl)
                 {
@@ -517,7 +518,7 @@ namespace Chummer
                             x.Text = string.Empty;
                             x.Tag = string.Empty;
                             x.Visible = false;
-                        });
+                        }, token: token);
                         break;
                     }
                     case Panel panChild:
@@ -841,7 +842,7 @@ namespace Chummer
         /// <summary>
         /// Calculate the Spell's Drain Value based on the currently-selected options.
         /// </summary>
-        private async ValueTask<string> CalculateDrain()
+        private async ValueTask<string> CalculateDrain(CancellationToken token = default)
         {
             if (_blnLoading)
                 return string.Empty;
@@ -849,31 +850,31 @@ namespace Chummer
             int intDV = 0;
 
             // Type DV.
-            if (await cboType.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString()) != "M")
+            if (await cboType.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token: token) != "M")
                 ++intDV;
 
             // Range DV.
-            if (await cboRange.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString()) == "T")
+            if (await cboRange.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token: token) == "T")
                 intDV -= 2;
 
             if (chkArea.Checked)
                 intDV += 2;
 
             // Restriction DV.
-            if (await chkRestricted.DoThreadSafeFuncAsync(x => x.Checked))
+            if (await chkRestricted.DoThreadSafeFuncAsync(x => x.Checked, token: token))
                 --intDV;
-            if (await chkVeryRestricted.DoThreadSafeFuncAsync(x => x.Checked))
+            if (await chkVeryRestricted.DoThreadSafeFuncAsync(x => x.Checked, token: token))
                 intDV -= 2;
 
-            string strCategory = await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString());
+            string strCategory = await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token: token);
 
             // Duration DV.
             // Curative Health Spells do not have a modifier for Permanent duration.
-            if (await cboDuration.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString()) == "P" && (strCategory != "Health" || !await chkModifier1.DoThreadSafeFuncAsync(x => x.Checked)))
+            if (await cboDuration.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token: token) == "P" && (strCategory != "Health" || !await chkModifier1.DoThreadSafeFuncAsync(x => x.Checked, token: token)))
                 intDV += 2;
 
             // Include any checked modifiers.
-            foreach (CheckBox chkModifier in await flpModifiers.DoThreadSafeFuncAsync(x => x.Controls.OfType<CheckBox>()))
+            foreach (CheckBox chkModifier in await flpModifiers.DoThreadSafeFuncAsync(x => x.Controls.OfType<CheckBox>(), token: token))
             {
                 await chkModifier.DoThreadSafeAsync(x =>
                 {
@@ -888,7 +889,7 @@ namespace Chummer
                         else
                             intDV += Convert.ToInt32(x.Tag.ToString(), GlobalSettings.InvariantCultureInfo);
                     }
-                });
+                }, token: token);
             }
             foreach (Panel panChild in await flpModifiers.DoThreadSafeFuncAsync(x => x.Controls.OfType<Panel>()))
             {
@@ -942,23 +943,23 @@ namespace Chummer
         /// <summary>
         /// Accept the values of the form.
         /// </summary>
-        private async ValueTask AcceptForm()
+        private async ValueTask AcceptForm(CancellationToken token = default)
         {
             string strMessage = string.Empty;
             // Make sure a name has been provided.
-            if (string.IsNullOrWhiteSpace(await txtName.DoThreadSafeFuncAsync(x => x.Text)))
+            if (string.IsNullOrWhiteSpace(await txtName.DoThreadSafeFuncAsync(x => x.Text, token: token)))
             {
                 if (!string.IsNullOrEmpty(strMessage))
                     strMessage += Environment.NewLine;
-                strMessage += await LanguageManager.GetStringAsync("Message_SpellName");
+                strMessage += await LanguageManager.GetStringAsync("Message_SpellName", token: token);
             }
 
             // Make sure a Restricted value if the field is enabled.
-            if (txtRestriction.Enabled && string.IsNullOrWhiteSpace(await txtRestriction.DoThreadSafeFuncAsync(x => x.Text)))
+            if (txtRestriction.Enabled && string.IsNullOrWhiteSpace(await txtRestriction.DoThreadSafeFuncAsync(x => x.Text, token: token)))
             {
                 if (!string.IsNullOrEmpty(strMessage))
                     strMessage += Environment.NewLine;
-                strMessage += await LanguageManager.GetStringAsync("Message_SpellRestricted");
+                strMessage += await LanguageManager.GetStringAsync("Message_SpellRestricted", token: token);
             }
 
             switch (await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString()))
