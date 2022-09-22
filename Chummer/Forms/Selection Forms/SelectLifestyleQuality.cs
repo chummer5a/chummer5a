@@ -940,7 +940,7 @@ namespace Chummer
                                                 {
                                                     if (await _objCharacter.Cyberware.AnyAsync(
                                                             objCyberware =>
-                                                                objCyberware.Name == objXmlBioware.InnerText), token: token)
+                                                                objCyberware.Name == objXmlBioware.InnerText, token: token))
                                                     {
                                                         intTotal++;
                                                     }
@@ -1306,7 +1306,7 @@ namespace Chummer
                                                     foreach (XmlNode objXmlCyberware in objXmlRequired.SelectNodes(
                                                                  "cyberwarecontains"))
                                                     {
-                                                        foreach (Cyberware objCyberware in _objCharacter.GetCyberwareAsync(token))
+                                                        foreach (Cyberware objCyberware in await _objCharacter.GetCyberwareAsync(token))
                                                         {
                                                             if (objCyberware.Name.Contains(objXmlCyberware.InnerText))
                                                             {
