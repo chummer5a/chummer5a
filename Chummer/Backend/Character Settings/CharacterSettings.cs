@@ -3607,6 +3607,17 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Determine whether or not a given book is in use.
+        /// </summary>
+        /// <param name="strCode">Book code to search for.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async ValueTask<bool> BookEnabledAsync(string strCode, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _setBooks.Contains(strCode);
+        }
+
+        /// <summary>
         /// XPath query used to filter items based on the user's selected source books and optional rules.
         /// </summary>
         public string BookXPath(bool excludeHidden = true)
@@ -3636,6 +3647,53 @@ namespace Chummer
                     }
 
                     if (!DroneMods)
+                    {
+                        if (sbdPath.Length != 0)
+                            sbdPath.Append(" and ");
+                        sbdPath.Append("not(optionaldrone)");
+                    }
+                }
+
+                if (sbdPath.Length > 1)
+                    return '(' + sbdPath.ToString() + ')';
+            }
+
+            // We have only the opening parentheses; return an empty string
+            // The above should not happen, so break if we're debugging, as there's something weird going on with the character's setup
+            Utils.BreakIfDebug();
+            return string.Empty;
+        }
+
+        /// <summary>
+        /// XPath query used to filter items based on the user's selected source books and optional rules.
+        /// </summary>
+        public async ValueTask<string> BookXPathAsync(bool excludeHidden = true, CancellationToken token = default)
+        {
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                          out StringBuilder sbdPath))
+            {
+                if (excludeHidden)
+                    sbdPath.Append("not(hide)");
+                using (await EnterReadLock.EnterAsync(LockObject, token))
+                {
+                    if (string.IsNullOrWhiteSpace(_strBookXPath) && _setBooks.Count > 0)
+                    {
+                        await RecalculateBookXPathAsync(token);
+                    }
+
+                    if (!string.IsNullOrEmpty(_strBookXPath))
+                    {
+                        if (sbdPath.Length != 0)
+                            sbdPath.Append(" and ");
+                        sbdPath.Append("(ignoresourcedisabled or ").Append(_strBookXPath).Append(')');
+                    }
+                    else
+                    {
+                        // Should not ever have a situation where BookXPath remains empty after recalculation, but it's here just in case
+                        Utils.BreakIfDebug();
+                    }
+
+                    if (!await GetDroneModsAsync(token))
                     {
                         if (sbdPath.Length != 0)
                             sbdPath.Append(" and ");
@@ -6386,6 +6444,15 @@ namespace Chummer
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Use Rigger 5.0 drone modding rules
+        /// </summary>
+        public async ValueTask<bool> GetDroneModsAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _blnDroneMods;
         }
 
         /// <summary>

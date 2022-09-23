@@ -105,7 +105,7 @@ namespace Chummer
             XmlNodeList objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category");
             if (objXmlCategoryList != null)
             {
-                string strFilterPrefix = "/chummer/armors/armor[(" + _objCharacter.Settings.BookXPath() + ") and category = ";
+                string strFilterPrefix = "/chummer/armors/armor[(" + await _objCharacter.Settings.BookXPathAsync() + ") and category = ";
                 foreach (XmlNode objXmlCategory in objXmlCategoryList)
                 {
                     string strInnerText = objXmlCategory.InnerText;
@@ -176,15 +176,12 @@ namespace Chummer
                     await nudRating.DoThreadSafeAsync(x => x.Maximum = intRating);
                     if (await chkHideOverAvailLimit.DoThreadSafeFuncAsync(x => x.Checked))
                     {
-                        await nudRating.DoThreadSafeAsync(x =>
+                        int intMaximum = await nudRating.DoThreadSafeFuncAsync(x => x.MaximumAsInt);
+                        while (intMaximum > 1 && !await SelectionShared.CheckAvailRestrictionAsync(xmlArmor, _objCharacter, intMaximum))
                         {
-                            while (x.Maximum > 1
-                                   && !SelectionShared.CheckAvailRestriction(
-                                       xmlArmor, _objCharacter, x.MaximumAsInt))
-                            {
-                                --x.Maximum;
-                            }
-                        });
+                            --intMaximum;
+                        }
+                        await nudRating.DoThreadSafeAsync(x => x.Maximum = intMaximum);
                     }
 
                     if (await chkShowOnlyAffordItems.DoThreadSafeFuncAsync(x => x.Checked) && !await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked))
@@ -192,22 +189,19 @@ namespace Chummer
                         decimal decCostMultiplier = 1 + (await nudMarkup.DoThreadSafeFuncAsync(x => x.Value) / 100.0m);
                         if (_setBlackMarketMaps.Contains(xmlArmor.SelectSingleNode("category")?.Value))
                             decCostMultiplier *= 0.9m;
-                        await nudRating.DoThreadSafeAsync(x =>
+                        int intMaximum = await nudRating.DoThreadSafeFuncAsync(x => x.MaximumAsInt);
+                        while (intMaximum > 1 && !await SelectionShared.CheckNuyenRestrictionAsync(xmlArmor, _objCharacter.Nuyen, decCostMultiplier, intMaximum))
                         {
-                            while (x.Maximum > 1
-                                   && !SelectionShared.CheckNuyenRestriction(
-                                       xmlArmor, _objCharacter.Nuyen, decCostMultiplier, x.MaximumAsInt))
-                            {
-                                --x.Maximum;
-                            }
-                        });
+                            --intMaximum;
+                        }
+                        await nudRating.DoThreadSafeAsync(x => x.Maximum = intMaximum);
                     }
                     await lblRatingLabel.DoThreadSafeAsync(x => x.Visible = true);
                     await nudRating.DoThreadSafeAsync(x =>
                     {
                         x.Minimum = 1;
                         x.Value = 1;
-                        x.Enabled = nudRating.Minimum != nudRating.Maximum;
+                        x.Enabled = x.Minimum != x.Maximum;
                         x.Visible = true;
                     });
                     await lblRatingNALabel.DoThreadSafeAsync(x => x.Visible = false);
@@ -395,7 +389,7 @@ namespace Chummer
 
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
             {
-                sbdFilter.Append('(').Append(_objCharacter.Settings.BookXPath()).Append(')');
+                sbdFilter.Append('(').Append(await _objCharacter.Settings.BookXPathAsync(token: token)).Append(')');
 
                 string strCategory = cboCategory.SelectedValue?.ToString();
                 if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All"
@@ -465,10 +459,10 @@ namespace Chummer
                         if (_setBlackMarketMaps.Contains(objXmlArmor["category"]?.InnerText))
                             decCostMultiplier *= 0.9m;
                         if (!blnHideOverAvailLimit
-                            || SelectionShared.CheckAvailRestriction(objXmlArmor, _objCharacter) && (blnFreeItem
+                            || await SelectionShared.CheckAvailRestrictionAsync(objXmlArmor, _objCharacter, token: token) && (blnFreeItem
                                 || !blnShowOnlyAffordItems
-                                || SelectionShared.CheckNuyenRestriction(
-                                    objXmlArmor, _objCharacter.Nuyen, decCostMultiplier)))
+                                || await SelectionShared.CheckNuyenRestrictionAsync(
+                                    objXmlArmor, _objCharacter.Nuyen, decCostMultiplier, token: token)))
                         {
                             using (Armor objArmor = new Armor(_objCharacter))
                             {
@@ -528,11 +522,11 @@ namespace Chummer
                             if (_setBlackMarketMaps.Contains(objXmlArmor["category"]?.InnerText))
                                 decCostMultiplier *= 0.9m;
                             if ((!blnHideOverAvailLimit
-                                 || SelectionShared.CheckAvailRestriction(objXmlArmor, _objCharacter))
+                                 || await SelectionShared.CheckAvailRestrictionAsync(objXmlArmor, _objCharacter, token: token))
                                 && (blnFreeItem
                                     || !blnShowOnlyAffordItems
-                                    || (SelectionShared.CheckNuyenRestriction(
-                                        objXmlArmor, _objCharacter.Nuyen, decCostMultiplier))))
+                                    || (await SelectionShared.CheckNuyenRestrictionAsync(
+                                        objXmlArmor, _objCharacter.Nuyen, decCostMultiplier, token: token))))
                             {
                                 string strDisplayName = objXmlArmor["translate"]?.InnerText
                                                         ?? objXmlArmor["name"]?.InnerText;

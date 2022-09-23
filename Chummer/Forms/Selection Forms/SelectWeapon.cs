@@ -96,7 +96,7 @@ namespace Chummer
 
             // Populate the Weapon Category list.
             // Populate the Category list.
-            string strFilterPrefix = "/chummer/weapons/weapon[(" + _objCharacter.Settings.BookXPath() + ") and category = ";
+            string strFilterPrefix = "/chummer/weapons/weapon[(" + await _objCharacter.Settings.BookXPathAsync() + ") and category = ";
             using (XmlNodeList xmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category"))
             {
                 if (xmlCategoryList != null)
@@ -349,15 +349,15 @@ namespace Chummer
                         if (!string.IsNullOrEmpty(strTest) && !Mounts.Contains(strTest))
                             continue;
                         if (blnHideOverAvailLimit
-                            && !SelectionShared.CheckAvailRestriction(objXmlWeapon, _objCharacter))
+                            && !await SelectionShared.CheckAvailRestrictionAsync(objXmlWeapon, _objCharacter, token: token))
                             continue;
                         if (!blnFreeItem && blnShowOnlyAffordItems)
                         {
                             decimal decCostMultiplier = decBaseCostMultiplier;
                             if (_setBlackMarketMaps.Contains(objXmlWeapon["category"]?.InnerText))
                                 decCostMultiplier *= 0.9m;
-                            if (!SelectionShared.CheckNuyenRestriction(objXmlWeapon, _objCharacter.Nuyen,
-                                                                       decCostMultiplier))
+                            if (!await SelectionShared.CheckNuyenRestrictionAsync(objXmlWeapon, _objCharacter.Nuyen,
+                                    decCostMultiplier, token: token))
                                 continue;
                         }
 
@@ -488,7 +488,7 @@ namespace Chummer
                             if (blnForCategories)
                                 return true;
                             if (blnHideOverAvailLimit
-                                && !SelectionShared.CheckAvailRestriction(objXmlWeapon, _objCharacter))
+                                && !await SelectionShared.CheckAvailRestrictionAsync(objXmlWeapon, _objCharacter, token: token))
                             {
                                 ++intOverLimit;
                                 continue;
@@ -512,8 +512,8 @@ namespace Chummer
                                     }
                                 }
 
-                                if (!SelectionShared.CheckNuyenRestriction(
-                                        objXmlWeapon, _objCharacter.Nuyen, decCostMultiplier))
+                                if (!await SelectionShared.CheckNuyenRestrictionAsync(
+                                        objXmlWeapon, _objCharacter.Nuyen, decCostMultiplier, token: token))
                                 {
                                     ++intOverLimit;
                                     continue;

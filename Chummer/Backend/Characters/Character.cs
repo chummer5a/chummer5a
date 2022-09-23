@@ -10943,10 +10943,10 @@ namespace Chummer
                 {
                     if (Settings != null)
                     {
-                        sbdFilter.Append('(').Append(Settings.BookXPath()).Append(") and ");
+                        sbdFilter.Append('(').Append(await (await GetSettingsAsync(token)).BookXPathAsync(token: token)).Append(") and ");
                         if (!IgnoreRules && !Created && !blnIgnoreBannedGrades)
                         {
-                            foreach (string strBannedGrade in Settings.BannedWareGrades)
+                            foreach (string strBannedGrade in (await GetSettingsAsync(token)).BannedWareGrades)
                             {
                                 sbdFilter.Append("not(contains(name, ").Append(strBannedGrade.CleanXPath())
                                          .Append(")) and ");
@@ -24997,6 +24997,27 @@ namespace Chummer
 
                     return _intCachedRestrictedGear;
                 }
+            }
+        }
+
+        /// <summary>
+        /// The maximum availability for Restricted Gear if this character has it. If they do not, this is 0.
+        /// </summary>
+        public async ValueTask<int> GetRestrictedGearAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+            {
+                if (_intCachedRestrictedGear < 0)
+                {
+                    foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                                 this, Improvement.ImprovementType.RestrictedGear, token: token))
+                    {
+                        _intCachedRestrictedGear
+                            = Math.Max(_intCachedRestrictedGear, objImprovement.Value.StandardRound());
+                    }
+                }
+
+                return _intCachedRestrictedGear;
             }
         }
 

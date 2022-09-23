@@ -491,6 +491,7 @@ namespace Chummer
         /// </summary>
         /// <param name="objXmlQuality">XmlNode of the Quality.</param>
         /// <param name="blnShowMessage">Whether or not a message should be shown if the requirements are not met.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         private async ValueTask<bool> RequirementMet(XmlNode objXmlQuality, bool blnShowMessage, CancellationToken token = default)
         {
             // Ignore the rules.

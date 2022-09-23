@@ -526,7 +526,7 @@ namespace Chummer
                 return;
 
             XPathNavigator xmlSpell = null;
-            string strSelectedSpellId = await lstSpells.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
+            string strSelectedSpellId = await lstSpells.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token);
             _blnRefresh = true;
             await chkExtended.DoThreadSafeAsync(x =>
             {
@@ -534,18 +534,18 @@ namespace Chummer
                 {
                     x.Checked = false;
                 }
-            });
+            }, token: token);
             if (!string.IsNullOrEmpty(strSelectedSpellId))
             {
                 xmlSpell = _xmlBaseSpellDataNode.SelectSingleNode("/chummer/spells/spell[id = " + strSelectedSpellId.CleanXPath() + ']');
             }
             if (xmlSpell == null)
             {
-                await tlpRight.DoThreadSafeAsync(x => x.Visible = false);
+                await tlpRight.DoThreadSafeAsync(x => x.Visible = false, token: token);
                 return;
             }
 
-            string strSpace = await LanguageManager.GetStringAsync("String_Space");
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token);
 
             bool blnExtendedFound = false;
             bool blnAlchemicalFound = false;
@@ -561,32 +561,32 @@ namespace Chummer
                         {
                             case "Alchemical Preparation":
                                 blnAlchemicalFound = true;
-                                sbdDescriptors.Append(await LanguageManager.GetStringAsync("String_DescAlchemicalPreparation"));
+                                sbdDescriptors.Append(await LanguageManager.GetStringAsync("String_DescAlchemicalPreparation", token: token));
                                 break;
 
                             case "Extended Area":
                                 blnExtendedFound = true;
-                                sbdDescriptors.Append(await LanguageManager.GetStringAsync("String_DescExtendedArea"));
+                                sbdDescriptors.Append(await LanguageManager.GetStringAsync("String_DescExtendedArea", token: token));
                                 break;
 
                             case "Material Link":
-                                sbdDescriptors.Append(await LanguageManager.GetStringAsync("String_DescMaterialLink"));
+                                sbdDescriptors.Append(await LanguageManager.GetStringAsync("String_DescMaterialLink", token: token));
                                 break;
 
                             case "Multi-Sense":
-                                sbdDescriptors.Append(await LanguageManager.GetStringAsync("String_DescMultiSense"));
+                                sbdDescriptors.Append(await LanguageManager.GetStringAsync("String_DescMultiSense", token: token));
                                 break;
 
                             case "Organic Link":
-                                sbdDescriptors.Append(await LanguageManager.GetStringAsync("String_DescOrganicLink"));
+                                sbdDescriptors.Append(await LanguageManager.GetStringAsync("String_DescOrganicLink", token: token));
                                 break;
 
                             case "Single-Sense":
-                                sbdDescriptors.Append(await LanguageManager.GetStringAsync("String_DescSingleSense"));
+                                sbdDescriptors.Append(await LanguageManager.GetStringAsync("String_DescSingleSense", token: token));
                                 break;
 
                             default:
-                                sbdDescriptors.Append(await LanguageManager.GetStringAsync("String_Desc" + strDescriptor.Trim()));
+                                sbdDescriptors.Append(await LanguageManager.GetStringAsync("String_Desc" + strDescriptor.Trim(), token: token));
                                 break;
                         }
 
@@ -601,7 +601,7 @@ namespace Chummer
                         x.Visible = true;
                         x.Enabled = false;
                         x.Checked = true;
-                    });
+                    }, token: token);
                 }
                 else if (xmlSpell.SelectSingleNode("category")?.Value == "Rituals")
                 {
@@ -609,7 +609,7 @@ namespace Chummer
                     {
                         x.Visible = false;
                         x.Checked = false;
-                    });
+                    }, token: token);
                 }
                 else
                 {
@@ -617,19 +617,19 @@ namespace Chummer
                     {
                         x.Visible = true;
                         x.Enabled = true;
-                    });
+                    }, token: token);
                 }
 
                 // If Extended Area was not found and the Extended checkbox is checked, add Extended Area to the list of Descriptors.
-                if (await chkExtended.DoThreadSafeFuncAsync(x => x.Checked) && !blnExtendedFound)
+                if (await chkExtended.DoThreadSafeFuncAsync(x => x.Checked, token: token) && !blnExtendedFound)
                 {
-                    sbdDescriptors.Append(await LanguageManager.GetStringAsync("String_DescExtendedArea")).Append(',')
+                    sbdDescriptors.Append(await LanguageManager.GetStringAsync("String_DescExtendedArea", token: token)).Append(',')
                                   .Append(strSpace);
                 }
 
-                if (await chkAlchemical.DoThreadSafeFuncAsync(x => x.Checked) && !blnAlchemicalFound)
+                if (await chkAlchemical.DoThreadSafeFuncAsync(x => x.Checked, token: token) && !blnAlchemicalFound)
                 {
-                    sbdDescriptors.Append(await LanguageManager.GetStringAsync("String_DescAlchemicalPreparation")).Append(',')
+                    sbdDescriptors.Append(await LanguageManager.GetStringAsync("String_DescAlchemicalPreparation", token: token)).Append(',')
                                   .Append(strSpace);
                 }
 
@@ -640,42 +640,42 @@ namespace Chummer
             }
 
             if (string.IsNullOrEmpty(strDescriptors))
-                strDescriptors = await LanguageManager.GetStringAsync("String_None");
-            await lblDescriptors.DoThreadSafeAsync(x => x.Text = strDescriptors);
-            await lblDescriptorsLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strDescriptors));
+                strDescriptors = await LanguageManager.GetStringAsync("String_None", token: token);
+            await lblDescriptors.DoThreadSafeAsync(x => x.Text = strDescriptors, token: token);
+            await lblDescriptorsLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strDescriptors), token: token);
 
             string strType;
             switch (xmlSpell.SelectSingleNode("type")?.Value)
             {
                 case "M":
-                    strType = await LanguageManager.GetStringAsync("String_SpellTypeMana");
+                    strType = await LanguageManager.GetStringAsync("String_SpellTypeMana", token: token);
                     break;
 
                 default:
-                    strType = await LanguageManager.GetStringAsync("String_SpellTypePhysical");
+                    strType = await LanguageManager.GetStringAsync("String_SpellTypePhysical", token: token);
                     break;
             }
-            await lblType.DoThreadSafeAsync(x => x.Text = strType);
-            await lblTypeLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strType));
+            await lblType.DoThreadSafeAsync(x => x.Text = strType, token: token);
+            await lblTypeLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strType), token: token);
 
             string strDuration;
             switch (xmlSpell.SelectSingleNode("duration")?.Value)
             {
                 case "P":
-                    strDuration = await LanguageManager.GetStringAsync("String_SpellDurationPermanent");
+                    strDuration = await LanguageManager.GetStringAsync("String_SpellDurationPermanent", token: token);
                     break;
 
                 case "S":
-                    strDuration = await LanguageManager.GetStringAsync("String_SpellDurationSustained");
+                    strDuration = await LanguageManager.GetStringAsync("String_SpellDurationSustained", token: token);
                     break;
 
                 default:
-                    strDuration = await LanguageManager.GetStringAsync("String_SpellDurationInstant");
+                    strDuration = await LanguageManager.GetStringAsync("String_SpellDurationInstant", token: token);
                     break;
             }
 
-            await lblDuration.DoThreadSafeAsync(x => x.Text = strDuration);
-            await lblDurationLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strDuration));
+            await lblDuration.DoThreadSafeAsync(x => x.Text = strDuration, token: token);
+            await lblDurationLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strDuration), token: token);
 
             if (blnExtendedFound)
             {
@@ -684,7 +684,7 @@ namespace Chummer
                     x.Visible = true;
                     x.Checked = true;
                     x.Enabled = false;
-                });
+                }, token: token);
             }
             else if (_objCharacter.Settings.ExtendAnyDetectionSpell && xmlSpell.SelectSingleNode("category")?.Value == "Detection")
             {
@@ -694,7 +694,7 @@ namespace Chummer
                     if (!x.Enabled) // Resets this checkbox if we just selected an Extended Area spell
                         x.Checked = false;
                     x.Enabled = true;
-                });
+                }, token: token);
             }
             else
             {
@@ -702,56 +702,56 @@ namespace Chummer
                 {
                     x.Checked = false;
                     x.Visible = false;
-                });
+                }, token: token);
             }
 
             string strRange = xmlSpell.SelectSingleNode("range")?.Value ?? string.Empty;
             if (!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
             {
                 strRange = await strRange
-                    .CheapReplaceAsync("Self", () => LanguageManager.GetStringAsync("String_SpellRangeSelf"))
-                    .CheapReplaceAsync("LOS", () => LanguageManager.GetStringAsync("String_SpellRangeLineOfSight"))
-                    .CheapReplaceAsync("LOI", () => LanguageManager.GetStringAsync("String_SpellRangeLineOfInfluence"))
-                    .CheapReplaceAsync("Touch", () => LanguageManager.GetStringAsync("String_SpellRangeTouchLong"))
-                    .CheapReplaceAsync("T", () => LanguageManager.GetStringAsync("String_SpellRangeTouch"))
-                    .CheapReplaceAsync("(A)", async () => '(' + await LanguageManager.GetStringAsync("String_SpellRangeArea") + ')')
-                    .CheapReplaceAsync("MAG", () => LanguageManager.GetStringAsync("String_AttributeMAGShort"));
+                    .CheapReplaceAsync("Self", () => LanguageManager.GetStringAsync("String_SpellRangeSelf", token: token), token: token)
+                    .CheapReplaceAsync("LOS", () => LanguageManager.GetStringAsync("String_SpellRangeLineOfSight", token: token), token: token)
+                    .CheapReplaceAsync("LOI", () => LanguageManager.GetStringAsync("String_SpellRangeLineOfInfluence", token: token), token: token)
+                    .CheapReplaceAsync("Touch", () => LanguageManager.GetStringAsync("String_SpellRangeTouchLong", token: token), token: token)
+                    .CheapReplaceAsync("T", () => LanguageManager.GetStringAsync("String_SpellRangeTouch", token: token), token: token)
+                    .CheapReplaceAsync("(A)", async () => '(' + await LanguageManager.GetStringAsync("String_SpellRangeArea", token: token) + ')', token: token)
+                    .CheapReplaceAsync("MAG", () => LanguageManager.GetStringAsync("String_AttributeMAGShort", token: token), token: token);
             }
-            await lblRange.DoThreadSafeAsync(x => x.Text = strRange);
-            await lblRangeLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strRange));
+            await lblRange.DoThreadSafeAsync(x => x.Text = strRange, token: token);
+            await lblRangeLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strRange), token: token);
 
             switch (xmlSpell.SelectSingleNode("damage")?.Value)
             {
                 case "P":
-                    await lblDamageLabel.DoThreadSafeAsync(x => x.Visible = true);
-                    await LanguageManager.GetStringAsync("String_DamagePhysical")
-                                         .ContinueWith(y => lblDamage.DoThreadSafeAsync(x => x.Text = y.Result))
+                    await lblDamageLabel.DoThreadSafeAsync(x => x.Visible = true, token: token);
+                    await LanguageManager.GetStringAsync("String_DamagePhysical", token: token)
+                                         .ContinueWith(y => lblDamage.DoThreadSafeAsync(x => x.Text = y.Result, token: token), token)
                                          .Unwrap();
                     break;
 
                 case "S":
-                    await lblDamageLabel.DoThreadSafeAsync(x => x.Visible = true);
-                    await LanguageManager.GetStringAsync("String_DamageStun")
-                                         .ContinueWith(y => lblDamage.DoThreadSafeAsync(x => x.Text = y.Result))
+                    await lblDamageLabel.DoThreadSafeAsync(x => x.Visible = true, token: token);
+                    await LanguageManager.GetStringAsync("String_DamageStun", token: token)
+                                         .ContinueWith(y => lblDamage.DoThreadSafeAsync(x => x.Text = y.Result, token: token), token)
                                          .Unwrap();
                     break;
 
                 default:
-                    await lblDamageLabel.DoThreadSafeAsync(x => x.Visible = false);
-                    await lblDamage.DoThreadSafeAsync(x => x.Text = string.Empty);
+                    await lblDamageLabel.DoThreadSafeAsync(x => x.Visible = false, token: token);
+                    await lblDamage.DoThreadSafeAsync(x => x.Text = string.Empty, token: token);
                     break;
             }
 
             string strDV = xmlSpell.SelectSingleNode("dv")?.Value.Replace('/', '÷').Replace('*', '×') ?? string.Empty;
             if (!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
             {
-                strDV = await strDV.CheapReplaceAsync("F", () => LanguageManager.GetStringAsync("String_SpellForce"))
-                    .CheapReplaceAsync("Overflow damage", () => LanguageManager.GetStringAsync("String_SpellOverflowDamage"))
-                    .CheapReplaceAsync("Damage Value", () => LanguageManager.GetStringAsync("String_SpellDamageValue"))
-                    .CheapReplaceAsync("Toxin DV", () => LanguageManager.GetStringAsync("String_SpellToxinDV"))
-                    .CheapReplaceAsync("Disease DV", () => LanguageManager.GetStringAsync("String_SpellDiseaseDV"))
+                strDV = await strDV.CheapReplaceAsync("F", () => LanguageManager.GetStringAsync("String_SpellForce", token: token), token: token)
+                    .CheapReplaceAsync("Overflow damage", () => LanguageManager.GetStringAsync("String_SpellOverflowDamage", token: token), token: token)
+                    .CheapReplaceAsync("Damage Value", () => LanguageManager.GetStringAsync("String_SpellDamageValue", token: token), token: token)
+                    .CheapReplaceAsync("Toxin DV", () => LanguageManager.GetStringAsync("String_SpellToxinDV", token: token), token: token)
+                    .CheapReplaceAsync("Disease DV", () => LanguageManager.GetStringAsync("String_SpellDiseaseDV", token: token), token: token)
                     .CheapReplaceAsync("Radiation Power",
-                        () => LanguageManager.GetStringAsync("String_SpellRadiationPower"));
+                        () => LanguageManager.GetStringAsync("String_SpellRadiationPower", token: token), token: token);
             }
 
             bool force = strDV.StartsWith('F');
@@ -799,8 +799,8 @@ namespace Chummer
                 }
             }
 
-            await lblDV.DoThreadSafeAsync(x => x.Text = strDV);
-            await lblDVLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strDV));
+            await lblDV.DoThreadSafeAsync(x => x.Text = strDV, token: token);
+            await lblDVLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strDV), token: token);
 
             if (_objCharacter.AdeptEnabled && !_objCharacter.MagicianEnabled && _blnCanTouchOnlySpellBeFree && xmlSpell.SelectSingleNode("range")?.Value == "T")
             {
@@ -809,7 +809,7 @@ namespace Chummer
                     x.Checked = true;
                     x.Visible = true;
                     x.Enabled = false;
-                });
+                }, token: token);
             }
             else
             {
@@ -819,16 +819,16 @@ namespace Chummer
                     x.Visible = _blnCanGenericSpellBeFree
                                 || (_blnCanTouchOnlySpellBeFree && xmlSpell.SelectSingleNode("range")?.Value == "T");
                     x.Enabled = FreeOnly;
-                });
+                }, token: token);
             }
 
-            string strSource = xmlSpell.SelectSingleNode("source")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
-            string strPage = (await xmlSpell.SelectSingleNodeAndCacheExpressionAsync("altpage"))?.Value ?? xmlSpell.SelectSingleNode("page")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
+            string strSource = xmlSpell.SelectSingleNode("source")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown", token: token);
+            string strPage = (await xmlSpell.SelectSingleNodeAndCacheExpressionAsync("altpage", token: token))?.Value ?? xmlSpell.SelectSingleNode("page")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown", token: token);
             SourceString objSource = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language,
-                                                                             GlobalSettings.CultureInfo, _objCharacter);
-            await objSource.SetControlAsync(lblSource);
-            await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(objSource.ToString()));
-            await tlpRight.DoThreadSafeAsync(x => x.Visible = true);
+                                                                             GlobalSettings.CultureInfo, _objCharacter, token: token);
+            await objSource.SetControlAsync(lblSource, token: token);
+            await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(objSource.ToString()), token: token);
+            await tlpRight.DoThreadSafeAsync(x => x.Visible = true, token: token);
             _blnRefresh = false;
         }
 
