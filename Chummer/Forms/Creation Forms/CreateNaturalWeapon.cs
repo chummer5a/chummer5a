@@ -156,7 +156,7 @@ namespace Chummer
                     Name = txtName.Text,
                     Category = await LanguageManager.GetStringAsync("Tab_Critter", token: token),
                     RangeType = "Melee",
-                    Reach = nudReach.ValueAsInt,
+                    Reach = await nudReach.DoThreadSafeFuncAsync(x => x.ValueAsInt, token: token),
                     Damage = strDamage,
                     AP = strAP,
                     Mode = "0",
@@ -164,10 +164,12 @@ namespace Chummer
                     Concealability = 0,
                     Avail = "0",
                     Cost = "0",
+                    Ammo = "0",
                     UseSkill = await cboSkill.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token: token),
                     Source = (await objPower.SelectSingleNodeAndCacheExpressionAsync("source", token: token))?.Value,
                     Page = (await objPower.SelectSingleNodeAndCacheExpressionAsync("page", token: token))?.Value
                 };
+                _objWeapon.CreateClips();
 
                 await this.DoThreadSafeAsync(x =>
                 {

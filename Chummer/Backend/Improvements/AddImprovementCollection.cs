@@ -1925,6 +1925,7 @@ namespace Chummer
                 Concealability = 0,
                 Avail = "0",
                 Cost = "0",
+                Ammo = "0",
                 UseSkill = bonusNode["useskill"]?.InnerText ?? string.Empty,
                 Source = bonusNode["source"]?.InnerText ?? "SR5",
                 Page = bonusNode["page"]?.InnerText ?? "0",
