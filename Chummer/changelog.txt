@@ -57,6 +57,7 @@ Application Changes:
 - Characters that leave character creation with negative karma (possible if ignoring character creation rules) will now have an entry in their karma logs showing their negative starting karma.
 - Mystic Adept PPs can now be bought up to a character's unaugmented MAG instead of their total MAG. This is only relevant when using the house rule where karma costs are not decreased from burning out special attributes.
 - Having armor accessories but no armor equipped no longer causes the program to ignore non-armor-based armor bonuses and penalties.
+- Metatype karma costs are now properly shown and updated in the sidebar during character creation.
 
 Data Changes:
 - One with the Matrix I, II, and III can no longer be taken multiple times.

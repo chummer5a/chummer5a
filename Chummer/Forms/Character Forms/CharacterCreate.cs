@@ -10311,17 +10311,19 @@ namespace Chummer
 
             // ------------------------------------------------------------------------------
             // Metatype/Metavariant only cost points when working with BP (or when the Metatype Costs Karma option is enabled when working with Karma).
+            int intMetatypeBP = 0;
             if (!await CharacterObject.GetEffectiveBuildMethodUsesPriorityTablesAsync(token).ConfigureAwait(false))
             {
                 // Subtract the BP used for Metatype.
-                intKarmaPointsRemain -= await CharacterObject.GetMetatypeBPAsync(token).ConfigureAwait(false)
-                                        * await CharacterObjectSettings.GetMetatypeCostsKarmaMultiplierAsync(token)
-                                                                       .ConfigureAwait(false);
+                intMetatypeBP = await CharacterObject.GetMetatypeBPAsync(token).ConfigureAwait(false)
+                                 * await CharacterObjectSettings.GetMetatypeCostsKarmaMultiplierAsync(token)
+                                                                .ConfigureAwait(false);
             }
             else
             {
-                intKarmaPointsRemain -= await CharacterObject.GetMetatypeBPAsync(token).ConfigureAwait(false);
+                intMetatypeBP = await CharacterObject.GetMetatypeBPAsync(token).ConfigureAwait(false);
             }
+            intKarmaPointsRemain -= intMetatypeBP;
 
             token.ThrowIfCancellationRequested();
 
@@ -10973,6 +10975,8 @@ namespace Chummer
             if (!blnDoUIUpdate)
                 return intKarmaPointsRemain;
             token.ThrowIfCancellationRequested();
+            await lblKarmaMetatypeBP.DoThreadSafeAsync(
+                x => x.Text = intMetatypeBP.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints, token: token);
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdContactPoints))
             {
