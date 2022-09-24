@@ -279,5 +279,11 @@ namespace Chummer
             base.OnTextChanged(e);
             RefreshImage();
         }
+
+        protected override void OnBoundsChanged()
+        {
+            base.OnBoundsChanged();
+            RefreshImage();
+        }
     }
 }
