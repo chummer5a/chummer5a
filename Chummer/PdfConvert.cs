@@ -392,22 +392,27 @@ namespace Codaxy.WkHtmlToPdf
                     using (FileStream fs = new FileStream(outputPdfFilePath, FileMode.Open))
                     {
                         byte[] buffer = ArrayPool<byte>.Shared.Rent(32 * 1024);
-                        int read;
-
-                        if (blnSync)
+                        try
                         {
-                            // ReSharper disable once MethodHasAsyncOverload
-                            while ((read = fs.Read(buffer, 0, buffer.Length)) > 0)
+                            int read;
+
+                            if (blnSync)
+                            {
                                 // ReSharper disable once MethodHasAsyncOverload
-                                woutput.OutputStream.Write(buffer, 0, read);
+                                while ((read = fs.Read(buffer, 0, buffer.Length)) > 0)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    woutput.OutputStream.Write(buffer, 0, read);
+                            }
+                            else
+                            {
+                                while ((read = await fs.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false)) > 0)
+                                    await woutput.OutputStream.WriteAsync(buffer, 0, read).ConfigureAwait(false);
+                            }
                         }
-                        else
+                        finally
                         {
-                            while ((read = await fs.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false)) > 0)
-                                await woutput.OutputStream.WriteAsync(buffer, 0, read).ConfigureAwait(false);
+                            ArrayPool<byte>.Shared.Return(buffer, true);
                         }
-
-                        ArrayPool<byte>.Shared.Return(buffer);
                     }
                 }
 
