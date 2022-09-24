@@ -11673,9 +11673,10 @@ namespace Chummer
         /// </summary>
         /// <param name="strCode">Book code to search for.</param>
         /// <param name="strLanguage">Language to load.</param>
-        public ValueTask<string> LanguageBookShortAsync(string strCode, string strLanguage = "")
+        /// <param name="token">Cancellation token to listen to.</param>
+        public ValueTask<string> LanguageBookShortAsync(string strCode, string strLanguage = "", CancellationToken token = default)
         {
-            return CommonFunctions.LanguageBookShortAsync(strCode, strLanguage, this);
+            return CommonFunctions.LanguageBookShortAsync(strCode, strLanguage, this, token);
         }
 
         /// <summary>
@@ -11693,9 +11694,10 @@ namespace Chummer
         /// </summary>
         /// <param name="strCode">Book code to search for.</param>
         /// <param name="strLanguage">Language to load.</param>
-        public ValueTask<string> LanguageBookLongAsync(string strCode, string strLanguage = "")
+        /// <param name="token">Cancellation token to listen to.</param>
+        public ValueTask<string> LanguageBookLongAsync(string strCode, string strLanguage = "", CancellationToken token = default)
         {
-            return CommonFunctions.LanguageBookLongAsync(strCode, strLanguage, this);
+            return CommonFunctions.LanguageBookLongAsync(strCode, strLanguage, this, token);
         }
 
         /// <summary>

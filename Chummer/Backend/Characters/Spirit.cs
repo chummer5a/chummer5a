@@ -406,7 +406,7 @@ namespace Chummer
                     string strPage = string.Empty;
 
                     if (objXmlCritterNode.TryGetStringFieldQuickly("source", ref strSource))
-                        await objWriter.WriteElementStringAsync("source", await CharacterObject.LanguageBookShortAsync(strSource, strLanguageToPrint), token: token);
+                        await objWriter.WriteElementStringAsync("source", await CharacterObject.LanguageBookShortAsync(strSource, strLanguageToPrint, token), token: token);
                     if (objXmlCritterNode.TryGetStringFieldQuickly("altpage", ref strPage) || objXmlCritterNode.TryGetStringFieldQuickly("page", ref strPage))
                         await objWriter.WriteElementStringAsync("page", strPage, token: token);
                 }

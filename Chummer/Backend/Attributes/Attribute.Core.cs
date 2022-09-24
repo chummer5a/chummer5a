@@ -184,7 +184,7 @@ namespace Chummer.Backend.Attributes
             try
             {
                 await objWriter.WriteElementStringAsync("name_english", Abbrev, token: token);
-                await objWriter.WriteElementStringAsync("name", await GetDisplayAbbrevAsync(strLanguageToPrint), token: token);
+                await objWriter.WriteElementStringAsync("name", await GetDisplayAbbrevAsync(strLanguageToPrint, token), token: token);
                 await objWriter.WriteElementStringAsync("base", (await GetValueAsync(token)).ToString(objCulture), token: token);
                 await objWriter.WriteElementStringAsync("total", (await GetTotalValueAsync(token)).ToString(objCulture), token: token);
                 await objWriter.WriteElementStringAsync("min", (await GetTotalMinimumAsync(token)).ToString(objCulture), token: token);
@@ -1259,9 +1259,9 @@ namespace Chummer.Backend.Attributes
             return GetDisplayAbbrev(strLanguage);
         }
 
-        public Task<string> DisplayNameShortAsync(string strLanguage)
+        public Task<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
         {
-            return GetDisplayAbbrevAsync(strLanguage);
+            return GetDisplayAbbrevAsync(strLanguage, token);
         }
 
         public string DisplayNameLong(string strLanguage)
@@ -1271,11 +1271,11 @@ namespace Chummer.Backend.Attributes
                 : LanguageManager.GetString("String_Attribute" + Abbrev + "Long", strLanguage);
         }
 
-        public Task<string> DisplayNameLongAsync(string strLanguage)
+        public Task<string> DisplayNameLongAsync(string strLanguage, CancellationToken token = default)
         {
             return Abbrev == "MAGAdept"
-                ? LanguageManager.MAGAdeptStringAsync(strLanguage, true)
-                : LanguageManager.GetStringAsync("String_Attribute" + Abbrev + "Long", strLanguage);
+                ? LanguageManager.MAGAdeptStringAsync(strLanguage, true, token)
+                : LanguageManager.GetStringAsync("String_Attribute" + Abbrev + "Long", strLanguage, token: token);
         }
 
         public string DisplayNameFormatted => GetDisplayNameFormatted(GlobalSettings.Language);
@@ -1292,14 +1292,14 @@ namespace Chummer.Backend.Attributes
             return DisplayNameLong(strLanguage) + strSpace + '(' + DisplayNameShort(strLanguage) + ')';
         }
 
-        public async Task<string> GetDisplayNameFormattedAsync(string strLanguage)
+        public async Task<string> GetDisplayNameFormattedAsync(string strLanguage, CancellationToken token = default)
         {
-            string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage);
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token);
             if (Abbrev == "MAGAdept")
-                return await LanguageManager.GetStringAsync("String_AttributeMAGLong", strLanguage) + strSpace + '(' + await LanguageManager.GetStringAsync("String_AttributeMAGShort", strLanguage) + ')'
-                       + strSpace + '(' + await LanguageManager.GetStringAsync("String_DescAdept", strLanguage) + ')';
+                return await LanguageManager.GetStringAsync("String_AttributeMAGLong", strLanguage, token: token) + strSpace + '(' + await LanguageManager.GetStringAsync("String_AttributeMAGShort", strLanguage, token: token) + ')'
+                       + strSpace + '(' + await LanguageManager.GetStringAsync("String_DescAdept", strLanguage, token: token) + ')';
 
-            return await DisplayNameLongAsync(strLanguage) + strSpace + '(' + await DisplayNameShortAsync(strLanguage) + ')';
+            return await DisplayNameLongAsync(strLanguage, token) + strSpace + '(' + await DisplayNameShortAsync(strLanguage, token) + ')';
         }
 
         /// <summary>
@@ -2104,11 +2104,11 @@ namespace Chummer.Backend.Attributes
                 : LanguageManager.GetString("String_Attribute" + Abbrev + "Short", strLanguage);
         }
 
-        public Task<string> GetDisplayAbbrevAsync(string strLanguage)
+        public Task<string> GetDisplayAbbrevAsync(string strLanguage, CancellationToken token = default)
         {
             return Abbrev == "MAGAdept"
-                ? LanguageManager.MAGAdeptStringAsync(strLanguage)
-                : LanguageManager.GetStringAsync("String_Attribute" + Abbrev + "Short", strLanguage);
+                ? LanguageManager.MAGAdeptStringAsync(strLanguage, token: token)
+                : LanguageManager.GetStringAsync("String_Attribute" + Abbrev + "Short", strLanguage, token: token);
         }
 
         public void Upgrade(int intAmount = 1)

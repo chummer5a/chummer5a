@@ -1345,7 +1345,7 @@ namespace Chummer.Backend.Attributes
                                       .CheapReplaceAsync('{' + strCharAttributeName + '}', async () =>
                                       {
                                           string strInnerReturn = await (await _objCharacter.GetAttributeAsync(strCharAttributeName, token: token))
-                                              .DisplayNameShortAsync(strLanguage);
+                                              .DisplayNameShortAsync(strLanguage, token);
                                           if (blnShowValues)
                                           {
                                               if (dicValueOverrides == null
@@ -1363,7 +1363,7 @@ namespace Chummer.Backend.Attributes
                                       .CheapReplaceAsync('{' + strCharAttributeName + "Unaug}", async () =>
                                       {
                                           string strInnerReturn = await (await _objCharacter.GetAttributeAsync(strCharAttributeName, token: token))
-                                              .DisplayNameShortAsync(strLanguage);
+                                              .DisplayNameShortAsync(strLanguage, token);
                                           if (blnShowValues)
                                           {
                                               if (dicValueOverrides == null
@@ -1384,7 +1384,7 @@ namespace Chummer.Backend.Attributes
                                       .CheapReplaceAsync('{' + strCharAttributeName + "Base}", async () =>
                                       {
                                           string strInnerReturn = await (await _objCharacter.GetAttributeAsync(strCharAttributeName, token: token))
-                                              .DisplayNameShortAsync(strLanguage);
+                                              .DisplayNameShortAsync(strLanguage, token);
                                           if (blnShowValues)
                                           {
                                               if (dicValueOverrides == null
@@ -1426,7 +1426,7 @@ namespace Chummer.Backend.Attributes
                     await sbdInput.CheapReplaceAsync(strOriginal, '{' + strCharAttributeName + '}', async () =>
                     {
                         string strInnerReturn = await (await _objCharacter.GetAttributeAsync(strCharAttributeName, token: token))
-                                                                   .DisplayNameShortAsync(strLanguage);
+                                                                   .DisplayNameShortAsync(strLanguage, token);
                         if (blnShowValues)
                         {
                             if (dicValueOverrides == null
@@ -1440,7 +1440,7 @@ namespace Chummer.Backend.Attributes
                     await sbdInput.CheapReplaceAsync(strOriginal, '{' + strCharAttributeName + "Unaug}", async () =>
                     {
                         string strInnerReturn = await (await _objCharacter.GetAttributeAsync(strCharAttributeName, token: token))
-                                                                   .DisplayNameShortAsync(strLanguage);
+                                                                   .DisplayNameShortAsync(strLanguage, token);
                         if (blnShowValues)
                         {
                             if (dicValueOverrides == null
@@ -1457,7 +1457,7 @@ namespace Chummer.Backend.Attributes
                     await sbdInput.CheapReplaceAsync(strOriginal, '{' + strCharAttributeName + "Base}", async () =>
                     {
                         string strInnerReturn = await (await _objCharacter.GetAttributeAsync(strCharAttributeName, token: token))
-                                                                   .DisplayNameShortAsync(strLanguage);
+                                                                   .DisplayNameShortAsync(strLanguage, token);
                         if (blnShowValues)
                         {
                             if (dicValueOverrides == null

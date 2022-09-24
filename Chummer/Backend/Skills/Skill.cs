@@ -138,13 +138,13 @@ namespace Chummer.Backend.Skills
             try
             {
                 int intPool = Pool;
-                int intSpecPool = intPool + GetSpecializationBonus();
+                int intSpecPool = intPool + await GetSpecializationBonusAsync(token: token);
 
                 int intRatingModifiers = await RatingModifiersAsync(Attribute, token: token);
                 int intDicePoolModifiers = await PoolModifiersAsync(Attribute, token: token);
                 await objWriter.WriteElementStringAsync("guid", InternalId, token: token);
                 await objWriter.WriteElementStringAsync("suid", SkillId.ToString("D", GlobalSettings.InvariantCultureInfo), token: token);
-                await objWriter.WriteElementStringAsync("name", await DisplayNameAsync(strLanguageToPrint), token: token);
+                await objWriter.WriteElementStringAsync("name", await DisplayNameAsync(strLanguageToPrint, token), token: token);
                 await objWriter.WriteElementStringAsync("name_english", Name, token: token);
                 await objWriter.WriteElementStringAsync("skillgroup",
                                                         SkillGroupObject != null
@@ -152,7 +152,7 @@ namespace Chummer.Backend.Skills
                                                             : await LanguageManager.GetStringAsync(
                                                                 "String_None", strLanguageToPrint, token: token), token: token);
                 await objWriter.WriteElementStringAsync("skillgroup_english", SkillGroupObject?.Name ?? await LanguageManager.GetStringAsync("String_None", strLanguageToPrint, token: token), token: token);
-                await objWriter.WriteElementStringAsync("skillcategory", await DisplayCategoryAsync(strLanguageToPrint), token: token);
+                await objWriter.WriteElementStringAsync("skillcategory", await DisplayCategoryAsync(strLanguageToPrint, token), token: token);
                 await objWriter.WriteElementStringAsync("skillcategory_english", SkillCategory, token: token);  //Might exist legacy but not existing atm, will see if stuff breaks
                 await objWriter.WriteElementStringAsync(
                     "grouped",
@@ -179,7 +179,7 @@ namespace Chummer.Backend.Skills
                 await objWriter.WriteElementStringAsync("displayattribute", await DisplayAttributeMethodAsync(strLanguageToPrint), token: token);
                 if (GlobalSettings.PrintNotes)
                     await objWriter.WriteElementStringAsync("notes", Notes, token: token);
-                await objWriter.WriteElementStringAsync("source", await CharacterObject.LanguageBookShortAsync(Source, strLanguageToPrint), token: token);
+                await objWriter.WriteElementStringAsync("source", await CharacterObject.LanguageBookShortAsync(Source, strLanguageToPrint, token), token: token);
                 await objWriter.WriteElementStringAsync("page", DisplayPage(strLanguageToPrint), token: token);
                 await objWriter.WriteElementStringAsync("attributemod",
                                                         (await (await CharacterObject.GetAttributeAsync(Attribute,
@@ -1039,6 +1039,40 @@ namespace Chummer.Backend.Skills
             }
         }
 
+        public async ValueTask<int> GetDefaultModifierAsync(CancellationToken token = default)
+        {
+            if ((await ImprovementManager
+                    .GetCachedImprovementListForValueOfAsync(CharacterObject,
+                                                             Improvement.ImprovementType.ReflexRecorderOptimization, token: token)).Count > 0)
+            {
+                List<Cyberware> lstReflexRecorders = await CharacterObject.Cyberware.ToListAsync(x => x.SourceID == s_GuiReflexRecorderId, token: token);
+                if (lstReflexRecorders.Count > 0)
+                {
+                    using (new FetchSafelyFromPool<HashSet<string>>(
+                               Utils.StringHashSetPool, out HashSet<string> setSkillNames))
+                    {
+                        if (SkillGroupObject != null)
+                        {
+                            foreach (Skill objSkill in SkillGroupObject.SkillList)
+                                setSkillNames.Add(await objSkill.GetDictionaryKeyAsync(token));
+                            if (lstReflexRecorders.Any(x => setSkillNames.Contains(x.Extra)))
+                            {
+                                return 0;
+                            }
+                        }
+                        else
+                        {
+                            string strKey = await GetDictionaryKeyAsync(token);
+                            if (lstReflexRecorders.Any(x => x.Extra == strKey))
+                                return 0;
+                        }
+                    }
+                }
+            }
+
+            return -1;
+        }
+
         /// <summary>
         /// Things that modify the dicepool of the skill
         /// </summary>
@@ -1552,6 +1586,9 @@ namespace Chummer.Backend.Skills
 
         public bool Leveled => Rating > 0;
 
+        public async ValueTask<bool> GetLeveledAsync(CancellationToken token = default) =>
+            await GetRatingAsync(token) > 0;
+
         public Color PreferredControlColor => Leveled && Enabled ? ColorManager.Control : ColorManager.ControlLighter;
 
         private int _intCachedCanHaveSpecs = -1;
@@ -1891,6 +1928,30 @@ namespace Chummer.Backend.Skills
             }
         }
 
+        public async ValueTask<bool> GetDefaultAsync(CancellationToken token = default)
+        {
+            string strKey = await GetDictionaryKeyAsync(token);
+            // SR5 400 : Critters that don't have the Sapience Power are unable to default in skills they don't possess.
+            List<Improvement> lstAllowSkillDefaultImprovements = await ImprovementManager
+                .GetCachedImprovementListForValueOfAsync(
+                    CharacterObject,
+                    Improvement.ImprovementType.AllowSkillDefault,
+                    strKey, true, token);
+            if (CharacterObject.IsCritter && lstAllowSkillDefaultImprovements.Count == 0 && await GetRatingAsync(token) == 0)
+            {
+                return false;
+            }
+
+            if (!_blnDefault && lstAllowSkillDefaultImprovements.Count == 0)
+                return false;
+
+            return (await ImprovementManager
+                .GetCachedImprovementListForValueOfAsync(
+                    CharacterObject,
+                    Improvement.ImprovementType.BlockSkillDefault,
+                    strKey, true, token)).All(x => SkillGroup != x.ImprovedName);
+        }
+
         public virtual bool IsExoticSkill => false;
 
         public virtual bool IsKnowledgeSkill => false;
@@ -2047,7 +2108,7 @@ namespace Chummer.Backend.Skills
         {
             if (_dicCachedStringSpec.TryGetValue(strLanguage, out string strReturn))
                 return strReturn;
-            strReturn = await StringExtensions.JoinAsync(", ", Specializations.Select(x => x.DisplayNameAsync(strLanguage)), token);
+            strReturn = await StringExtensions.JoinAsync(", ", Specializations.Select(x => x.DisplayNameAsync(strLanguage, token)), token);
 
             _dicCachedStringSpec.Add(strLanguage, strReturn);
 
@@ -2126,6 +2187,20 @@ namespace Chummer.Backend.Skills
                    && ImprovementManager.GetCachedImprovementListForValueOf(CharacterObject, Improvement.ImprovementType.DisableSpecializationEffects, DictionaryKey).Count == 0;
         }
 
+        public async ValueTask<bool> HasSpecializationAsync(string strSpecialization, CancellationToken token = default)
+        {
+            if (IsExoticSkill)
+            {
+                return ((ExoticSkill)this).Specific == strSpecialization;
+            }
+
+            return await Specializations.AnyAsync(
+                       x => x.Name == strSpecialization || x.CurrentDisplayName == strSpecialization, token: token)
+                   && (await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                       CharacterObject, Improvement.ImprovementType.DisableSpecializationEffects,
+                       await GetDictionaryKeyAsync(token), token: token)).Count == 0;
+        }
+
         public SkillSpecialization GetSpecialization(string strSpecialization)
         {
             if (IsExoticSkill && ((ExoticSkill)this).Specific == strSpecialization)
@@ -2134,6 +2209,17 @@ namespace Chummer.Backend.Skills
             }
             return HasSpecialization(strSpecialization)
                 ? Specializations.FirstOrDefault(x => x.Name == strSpecialization || x.CurrentDisplayName == strSpecialization)
+                : null;
+        }
+
+        public async ValueTask<SkillSpecialization> GetSpecializationAsync(string strSpecialization, CancellationToken token = default)
+        {
+            if (IsExoticSkill && ((ExoticSkill)this).Specific == strSpecialization)
+            {
+                return await Specializations.GetValueAtAsync(0, token);
+            }
+            return await HasSpecializationAsync(strSpecialization, token)
+                ? await Specializations.FirstOrDefaultAsync(x => x.Name == strSpecialization || x.CurrentDisplayName == strSpecialization, token: token)
                 : null;
         }
 
@@ -2411,6 +2497,283 @@ namespace Chummer.Backend.Skills
             }
         }
 
+        public async ValueTask<string> CompileDicepoolTooltipAsync(string abbrev = "", string strExtraStart = "", string strExtra = "", bool blnListAllLimbs = true, Cyberware objShowOnlyCyberware = null, CancellationToken token = default)
+        {
+            if (!await GetDefaultAsync(token) && !await GetLeveledAsync(token) && !IsNativeLanguage)
+            {
+                return strExtraStart + await LanguageManager.GetStringAsync("Tip_Skill_Cannot_Default", token: token);
+            }
+
+            bool blnShowSwapSkillAttribute = false;
+            if (string.IsNullOrEmpty(abbrev))
+            {
+                abbrev = Attribute;
+                blnShowSwapSkillAttribute = Attribute == DefaultAttribute;
+            }
+
+            CharacterAttrib att = await CharacterObject.AttributeSection.GetAttributeByNameAsync(abbrev, token);
+            int intAttTotalValue = await att.GetTotalValueAsync(token);
+            if (intAttTotalValue <= 0)
+            {
+                return strExtraStart + string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Tip_Skill_Zero_Attribute", token: token), await att.DisplayNameShortAsync(GlobalSettings.Language, token));
+            }
+
+            if (IsNativeLanguage)
+            {
+                return strExtraStart + await LanguageManager.GetStringAsync("Tip_Skill_NativeLanguage", token: token);
+            }
+
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token);
+            List<Improvement> lstRelevantImprovements = await RelevantImprovementsAsync(null, abbrev, true, token: token);
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                          out StringBuilder sbdReturn))
+            {
+                int intCyberwareRating = await GetCyberwareRatingAsync(token);
+                if (intCyberwareRating > await GetTotalBaseRatingAsync(token))
+                {
+                    sbdReturn.Append(strExtraStart).Append(await LanguageManager.GetStringAsync("Tip_Skill_SkillsoftRating", token: token))
+                             .Append(strSpace).Append('(').Append(intCyberwareRating.ToString(GlobalSettings.CultureInfo))
+                             .Append(')');
+                }
+                else
+                {
+                    sbdReturn.Append(strExtraStart).Append(await LanguageManager.GetStringAsync("Tip_Skill_SkillRating", token: token))
+                             .Append(strSpace).Append('(').Append((await GetRatingAsync(token)).ToString(GlobalSettings.CultureInfo));
+                    bool first = true;
+                    foreach (Improvement objImprovement in lstRelevantImprovements)
+                    {
+                        if (!objImprovement.AddToRating)
+                            continue;
+                        if (first)
+                        {
+                            first = false;
+                            sbdReturn.Append(strSpace).Append("(Base").Append(strSpace).Append('(')
+                                     .Append((await GetLearnedRatingAsync(token)).ToString(GlobalSettings.CultureInfo)).Append(')');
+                        }
+
+                        sbdReturn.Append(strSpace).Append('+').Append(strSpace)
+                                 .Append(await CharacterObject.GetObjectNameAsync(objImprovement, token: token)).Append(strSpace).Append('(')
+                                 .Append(objImprovement.Value.ToString(GlobalSettings.CultureInfo)).Append(')');
+                    }
+
+                    if (first)
+                        sbdReturn.Append(')');
+                    else
+                        sbdReturn.Append("))");
+                }
+
+                if (blnListAllLimbs || !Cyberware.CyberlimbAttributeAbbrevs.Contains(att.Abbrev) || objShowOnlyCyberware == null)
+                    sbdReturn.Append(strSpace).Append('+').Append(strSpace).Append(await att.GetDisplayAbbrevAsync(GlobalSettings.Language, token)).Append(strSpace)
+                             .Append('(')
+                             .Append(intAttTotalValue.ToString(GlobalSettings.CultureInfo)).Append(')');
+                else
+                {
+                    sbdReturn.Append(strSpace).Append('+').Append(strSpace)
+                             .Append(await objShowOnlyCyberware.GetCurrentDisplayNameAsync(token))
+                             .Append(strSpace).Append(await att.GetDisplayAbbrevAsync(GlobalSettings.Language, token)).Append(strSpace).Append('(')
+                             .Append((await objShowOnlyCyberware.GetAttributeTotalValueAsync(att.Abbrev, token))
+                                                         .ToString(GlobalSettings.CultureInfo)).Append(')');
+                    if ((objShowOnlyCyberware.LimbSlot == "arm"
+                         || objShowOnlyCyberware.Name.Contains(" Arm")
+                         || objShowOnlyCyberware.Name.Contains(" Hand"))
+                        && objShowOnlyCyberware.Location != CharacterObject.PrimaryArm
+                        && !CharacterObject.Ambidextrous
+                        && objShowOnlyCyberware.LimbSlotCount <= 1)
+                    {
+                        sbdReturn.Append(strSpace).Append('-').Append(strSpace).Append(2.ToString(GlobalSettings.CultureInfo))
+                                 .Append(strSpace).Append('(').Append(await LanguageManager.GetStringAsync("Tip_Skill_OffHand", token: token))
+                                 .Append(')');
+                    }
+                }
+
+                if (blnShowSwapSkillAttribute)
+                {
+                    Improvement objAttributeSwapImprovement =
+                        lstRelevantImprovements.Find(
+                            x => x.ImproveType == Improvement.ImprovementType.SwapSkillAttribute);
+                    if (objAttributeSwapImprovement != null)
+                        sbdReturn.Append(strSpace)
+                                 .Append(await CharacterObject.GetObjectNameAsync(
+                                             objAttributeSwapImprovement, token: token));
+                }
+
+                if (await GetDefaultAsync(token) && !await GetLeveledAsync(token))
+                {
+                    int intDefaultModifier = await GetDefaultModifierAsync(token);
+                    if (intDefaultModifier == 0)
+                    {
+                        Improvement objReflexRecorder
+                            = (await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                                CharacterObject, Improvement.ImprovementType.ReflexRecorderOptimization, token: token)).FirstOrDefault();
+                        sbdReturn.Append(strSpace).Append(await CharacterObject.GetObjectNameAsync(objReflexRecorder, token: token));
+                    }
+                    else
+                        sbdReturn.Append(strSpace).Append(intDefaultModifier > 0 ? '+' : '-').Append(strSpace)
+                                 .Append(await LanguageManager.GetStringAsync("Tip_Skill_Defaulting", token: token)).Append(strSpace).Append('(')
+                                 .Append(Math.Abs(intDefaultModifier).ToString(GlobalSettings.CultureInfo)).Append(')');
+                }
+
+                foreach (Improvement source in lstRelevantImprovements)
+                {
+                    if (source.AddToRating
+                        || source.ImproveType == Improvement.ImprovementType.SwapSkillAttribute
+                        || source.ImproveType == Improvement.ImprovementType.SwapSkillSpecAttribute)
+                        continue;
+                    sbdReturn.Append(strSpace).Append('+').Append(strSpace).Append(await CharacterObject.GetObjectNameAsync(source, token: token));
+                    if (!string.IsNullOrEmpty(source.Condition))
+                    {
+                        sbdReturn.Append(strSpace).Append('(').Append(source.Condition).Append(')');
+                    }
+
+                    sbdReturn.Append(strSpace).Append('(').Append(source.Value.ToString(GlobalSettings.CultureInfo))
+                             .Append(')');
+                }
+
+                int wound = CharacterObject.WoundModifier;
+                if (wound != 0)
+                {
+                    sbdReturn.Append(strSpace).Append('-').Append(strSpace)
+                             .Append(await LanguageManager.GetStringAsync("Tip_Skill_Wounds", token: token))
+                             .Append(strSpace).Append('(').Append(wound.ToString(GlobalSettings.CultureInfo)).Append(')');
+                }
+
+                int sustains = CharacterObject.SustainingPenalty;
+                if (sustains != 0)
+                {
+                    sbdReturn.Append(strSpace).Append('-').Append(strSpace)
+                             .Append(await LanguageManager.GetStringAsync("Tip_Skill_Sustain", token: token))
+                             .Append(strSpace).Append('(').Append(sustains.ToString(GlobalSettings.CultureInfo)).Append(')');
+                }
+
+                if (!string.IsNullOrEmpty(strExtra))
+                    sbdReturn.Append(strExtra);
+
+                if (blnListAllLimbs && Cyberware.CyberlimbAttributeAbbrevs.Contains(att.Abbrev))
+                {
+                    bool blnAmbi = await CharacterObject.GetAmbidextrousAsync(token);
+                    foreach (Cyberware cyberware in CharacterObject.Cyberware)
+                    {
+                        if (cyberware.Category != "Cyberlimb" || !cyberware.IsModularCurrentlyEquipped)
+                            continue;
+                        sbdReturn.AppendLine().AppendLine().Append(strExtraStart).Append(await cyberware.GetCurrentDisplayNameAsync(token));
+                        if (cyberware.Grade.Name != "Standard")
+                        {
+                            sbdReturn.Append(strSpace).Append('(').Append(cyberware.Grade.CurrentDisplayName).Append(')');
+                        }
+
+                        int pool = await PoolOtherAttributeAsync(att.Abbrev, false, await cyberware.GetAttributeTotalValueAsync(att.Abbrev, token), token);
+                        if ((cyberware.LimbSlot != "arm"
+                             && !cyberware.Name.Contains(" Arm")
+                             && !cyberware.Name.Contains(" Hand"))
+                            || cyberware.Location == CharacterObject.PrimaryArm
+                            || blnAmbi
+                            || cyberware.LimbSlotCount > 1)
+                        {
+                            sbdReturn.Append(strSpace).Append(pool.ToString(GlobalSettings.CultureInfo));
+                        }
+                        else
+                        {
+                            sbdReturn.AppendFormat(GlobalSettings.CultureInfo, "{1}{0}{1}({2}{1}{3})", pool - 2, strSpace, -2,
+                                                   await LanguageManager.GetStringAsync("Tip_Skill_OffHand", token: token));
+                        }
+
+                        if (!string.IsNullOrEmpty(strExtra))
+                            sbdReturn.Append(strExtra);
+                    }
+                }
+
+                if (att.Abbrev != Attribute)
+                    return sbdReturn.ToString();
+
+                foreach (Improvement objSwapSkillAttribute in lstRelevantImprovements)
+                {
+                    if (objSwapSkillAttribute.ImproveType != Improvement.ImprovementType.SwapSkillSpecAttribute)
+                        continue;
+                    string strExclude = objSwapSkillAttribute.Exclude;
+                    sbdReturn.AppendLine().AppendLine().Append(strExtraStart).Append(strExclude).Append(
+                        await LanguageManager.GetStringAsync("String_Colon", token: token)).Append(strSpace).Append(
+                        await CharacterObject.GetObjectNameAsync(objSwapSkillAttribute, token: token)).Append(strSpace);
+                    int intBasePool = await PoolOtherAttributeAsync(objSwapSkillAttribute.ImprovedName, false,
+                                                                    (await CharacterObject
+                                                                        .GetAttributeAsync(objSwapSkillAttribute.ImprovedName, token: token)).Value, token);
+                    SkillSpecialization objSpecialization = null;
+                    if (await Specializations.GetCountAsync(token) > 0 && (await ImprovementManager
+                            .GetCachedImprovementListForValueOfAsync(
+                                CharacterObject,
+                                Improvement.ImprovementType.DisableSpecializationEffects,
+                                await GetDictionaryKeyAsync(token), token: token)).Count == 0)
+                    {
+                        int intMaxBonus = 0;
+                        foreach (SkillSpecialization objLoopSpecialization in Specializations)
+                        {
+                            if (objLoopSpecialization.Name == strExclude)
+                            {
+                                int intLoopBonus = await objLoopSpecialization.GetSpecializationBonusAsync(token);
+                                if (intLoopBonus > intMaxBonus)
+                                {
+                                    objSpecialization = objLoopSpecialization;
+                                    intMaxBonus = intLoopBonus;
+                                }
+                            }
+                        }
+                    }
+                    if (objSpecialization != null)
+                    {
+                        intBasePool += await objSpecialization.GetSpecializationBonusAsync(token);
+                    }
+
+                    sbdReturn.Append(intBasePool.ToString(GlobalSettings.CultureInfo));
+                    if (!string.IsNullOrEmpty(strExtra))
+                        sbdReturn.Append(strExtra);
+                    if (!blnListAllLimbs || !Cyberware.CyberlimbAttributeAbbrevs.Contains(objSwapSkillAttribute.ImprovedName))
+                        continue;
+                    bool blnAmbi = await CharacterObject.GetAmbidextrousAsync(token);
+                    foreach (Cyberware cyberware in CharacterObject.Cyberware)
+                    {
+                        if (cyberware.Category != "Cyberlimb" || !cyberware.IsModularCurrentlyEquipped)
+                            continue;
+                        sbdReturn.AppendLine().AppendLine().Append(strExtraStart).Append(strExclude)
+                                 .Append(await LanguageManager.GetStringAsync("String_Colon", token: token)).Append(strSpace)
+                                 .Append(await CharacterObject.GetObjectNameAsync(objSwapSkillAttribute, token: token)).Append(strSpace)
+                                 .Append(cyberware.CurrentDisplayName);
+                        if (cyberware.Grade.Name != "Standard")
+                        {
+                            sbdReturn.Append(strSpace).Append('(').Append(cyberware.Grade.CurrentDisplayName).Append(')');
+                        }
+
+                        int intLoopPool =
+                            await PoolOtherAttributeAsync(objSwapSkillAttribute.ImprovedName, false,
+                                                          await cyberware.GetAttributeTotalValueAsync(objSwapSkillAttribute.ImprovedName, token), token);
+                        if (objSpecialization != null)
+                        {
+                            intLoopPool += await objSpecialization.GetSpecializationBonusAsync(token);
+                        }
+
+                        if ((cyberware.LimbSlot != "arm"
+                             && !cyberware.Name.Contains(" Arm")
+                             && !cyberware.Name.Contains(" Hand"))
+                            || cyberware.Location == CharacterObject.PrimaryArm
+                            || blnAmbi
+                            || cyberware.LimbSlotCount > 1)
+                        {
+                            sbdReturn.Append(strSpace).Append(intLoopPool.ToString(GlobalSettings.CultureInfo));
+                        }
+                        else
+                        {
+                            sbdReturn.AppendFormat(GlobalSettings.CultureInfo, "{1}{0}{1}({2}{1}{3})",
+                                                   intLoopPool - 2, strSpace, -2,
+                                                   await LanguageManager.GetStringAsync("Tip_Skill_OffHand", token: token));
+                        }
+
+                        if (!string.IsNullOrEmpty(strExtra))
+                            sbdReturn.Append(strExtra);
+                    }
+                }
+
+                return sbdReturn.ToString();
+            }
+        }
+
         public string UpgradeToolTip => UpgradeKarmaCost < 0
             ? LanguageManager.GetString("Tip_ImproveItemAtMaximum")
             : string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Tip_ImproveItem"), Rating + 1, UpgradeKarmaCost);
@@ -2535,13 +2898,13 @@ namespace Chummer.Backend.Skills
             return this.GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? Name;
         }
 
-        public async ValueTask<string> DisplayNameAsync(string strLanguage)
+        public async ValueTask<string> DisplayNameAsync(string strLanguage, CancellationToken token = default)
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
-            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage);
-            return objNode != null ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value ?? Name : Name;
+            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token);
+            return objNode != null ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token))?.Value ?? Name : Name;
         }
 
         public string CurrentDisplayName => DisplayName(GlobalSettings.Language);
@@ -2561,12 +2924,12 @@ namespace Chummer.Backend.Skills
             return strReturn ?? SkillCategory;
         }
 
-        public async ValueTask<string> DisplayCategoryAsync(string strLanguage)
+        public async ValueTask<string> DisplayCategoryAsync(string strLanguage, CancellationToken token = default)
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return SkillCategory;
 
-            string strReturn = (await CharacterObject.LoadDataXPathAsync("skills.xml", strLanguage))
+            string strReturn = (await CharacterObject.LoadDataXPathAsync("skills.xml", strLanguage, token: token))
                                               .SelectSingleNode(
                                                   "/chummer/categories/category[. = " + SkillCategory.CleanXPath()
                                                   + "]/@translate")?.Value;
@@ -2599,6 +2962,29 @@ namespace Chummer.Backend.Skills
                 intPool, LanguageManager.GetString("String_Space"), Math.Max(intPool + intSpecBonus, intConditionalBonus)); // Have to do it this way because some conditional bonuses apply specifically to specializations
         }
 
+        public async ValueTask<string> DisplayOtherAttributeAsync(string strAttribute, CancellationToken token = default)
+        {
+            int intPool = await PoolOtherAttributeAsync(strAttribute, token: token);
+            if ((IsExoticSkill || await Specializations.GetCountAsync(token) == 0 || (await ImprovementManager
+                    .GetCachedImprovementListForValueOfAsync(
+                        CharacterObject,
+                        Improvement.ImprovementType
+                                   .DisableSpecializationEffects,
+                        await GetDictionaryKeyAsync(token), token: token)).Count > 0)
+                && !await CharacterObject.Improvements.AnyAsync(i => i.ImproveType == Improvement.ImprovementType.Skill
+                                                          && !string.IsNullOrEmpty(i.Condition), token: token))
+            {
+                return intPool.ToString(GlobalSettings.CultureInfo);
+            }
+
+            int intConditionalBonus = await PoolOtherAttributeAsync(strAttribute, true, token: token);
+            int intSpecBonus = await GetSpecializationBonusAsync(token: token);
+            if (intSpecBonus == 0 && intPool == intConditionalBonus)
+                return intPool.ToString(GlobalSettings.CultureInfo);
+            return string.Format(GlobalSettings.CultureInfo, "{0}{1}({2})",
+                                 intPool, await LanguageManager.GetStringAsync("String_Space", token: token), Math.Max(intPool + intSpecBonus, intConditionalBonus)); // Have to do it this way because some conditional bonuses apply specifically to specializations
+        }
+
         public int GetSpecializationBonus(string strSpecialization = "")
         {
             if (IsExoticSkill || TotalBaseRating == 0 || Specializations.Count == 0)
@@ -2626,6 +3012,35 @@ namespace Chummer.Backend.Skills
             else
                 objTargetSpecialization = GetSpecialization(strSpecialization);
             return objTargetSpecialization?.SpecializationBonus ?? 0;
+        }
+
+        public async ValueTask<int> GetSpecializationBonusAsync(string strSpecialization = "", CancellationToken token = default)
+        {
+            if (IsExoticSkill || await GetTotalBaseRatingAsync(token) == 0 || await Specializations.GetCountAsync(token) == 0)
+                return 0;
+            SkillSpecialization objTargetSpecialization = default;
+            if (string.IsNullOrEmpty(strSpecialization))
+            {
+                if ((await ImprovementManager
+                        .GetCachedImprovementListForValueOfAsync(CharacterObject,
+                                                                 Improvement.ImprovementType.DisableSpecializationEffects,
+                                                                 await GetDictionaryKeyAsync(token), token: token)).Count == 0)
+                {
+                    int intHighestSpecBonus = 0;
+                    foreach (SkillSpecialization objSpec in Specializations)
+                    {
+                        int intLoopSpecBonus = await objSpec.GetSpecializationBonusAsync(token);
+                        if (intHighestSpecBonus < intLoopSpecBonus)
+                        {
+                            intHighestSpecBonus = intLoopSpecBonus;
+                            objTargetSpecialization = objSpec;
+                        }
+                    }
+                }
+            }
+            else
+                objTargetSpecialization = await GetSpecializationAsync(strSpecialization, token);
+            return objTargetSpecialization != null ? await objTargetSpecialization.GetSpecializationBonusAsync(token) : 0;
         }
 
         private XmlNode _objCachedMyXmlNode;

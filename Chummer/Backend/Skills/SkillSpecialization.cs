@@ -101,10 +101,10 @@ namespace Chummer.Backend.Skills
             try
             {
                 await objWriter.WriteElementStringAsync("guid", InternalId, token: token);
-                await objWriter.WriteElementStringAsync("name", await DisplayNameAsync(strLanguageToPrint), token: token);
+                await objWriter.WriteElementStringAsync("name", await DisplayNameAsync(strLanguageToPrint, token), token: token);
                 await objWriter.WriteElementStringAsync("free", Free.ToString(GlobalSettings.InvariantCultureInfo), token: token);
                 await objWriter.WriteElementStringAsync("expertise", Expertise.ToString(GlobalSettings.InvariantCultureInfo), token: token);
-                await objWriter.WriteElementStringAsync("specbonus", SpecializationBonus.ToString(objCulture), token: token);
+                await objWriter.WriteElementStringAsync("specbonus", (await GetSpecializationBonusAsync(token)).ToString(objCulture), token: token);
             }
             finally
             {
@@ -136,12 +136,12 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// Skill Specialization's name.
         /// </summary>
-        public async Task<string> DisplayNameAsync(string strLanguage)
+        public async Task<string> DisplayNameAsync(string strLanguage, CancellationToken token = default)
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
-            return (await this.GetNodeXPathAsync(strLanguage))?.SelectSingleNode("@translate")?.Value ?? Name;
+            return (await this.GetNodeXPathAsync(strLanguage, token: token))?.SelectSingleNode("@translate")?.Value ?? Name;
         }
 
         /// <summary>
@@ -271,6 +271,43 @@ namespace Chummer.Backend.Skills
                 }
                 return intReturn + decBonus.StandardRound();
             }
+        }
+
+        /// <summary>
+        /// The bonus this specialization gives to relevant dicepools
+        /// </summary>
+        public async ValueTask<int> GetSpecializationBonusAsync(CancellationToken token = default)
+        {
+            int intReturn = 0;
+            if ((await ImprovementManager
+                    .GetCachedImprovementListForValueOfAsync(_objCharacter,
+                                                             Improvement.ImprovementType.DisableSpecializationEffects,
+                                                             await Parent.GetDictionaryKeyAsync(token), token: token))
+                .Count == 0)
+            {
+                if (Expertise)
+                    intReturn += _objCharacter.Settings.ExpertiseBonus;
+                else
+                    intReturn += _objCharacter.Settings.SpecializationBonus;
+            }
+
+            decimal decBonus = 0;
+            foreach (Improvement objImprovement in await Parent.RelevantImprovementsAsync(
+                         x => x.Condition == Name && !x.AddToRating, blnIncludeConditionals: true, token: token))
+            {
+                switch (objImprovement.ImproveType)
+                {
+                    case Improvement.ImprovementType.Skill:
+                    case Improvement.ImprovementType.SkillBase:
+                    case Improvement.ImprovementType.SkillCategory:
+                    case Improvement.ImprovementType.SkillGroup:
+                    case Improvement.ImprovementType.SkillGroupBase:
+                        decBonus += objImprovement.Rating;
+                        break;
+                }
+            }
+
+            return intReturn + decBonus.StandardRound();
         }
 
         #endregion Properties

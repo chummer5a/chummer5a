@@ -432,7 +432,8 @@ namespace Chummer.Backend.Equipment
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="objCulture">Culture in which to print.</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
-        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
         {
             if (objWriter == null)
                 return;
@@ -440,34 +441,34 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("guid", InternalId);
             // Because of the weird way in which weapon mounts work with and without Rigger 5.0, instead of hiding built-in mounts from disabled sourcebooks,
             // we instead display them as if they were one of the CRB mounts, but give them a different name
-            if (IncludedInVehicle && !string.IsNullOrEmpty(Source) && !_objCharacter.Settings.BookEnabled(Source))
+            if (IncludedInVehicle && !string.IsNullOrEmpty(Source) && !await _objCharacter.Settings.BookEnabledAsync(Source, token))
             {
-                XPathNavigator xmlOverrideNode = await this.GetNodeXPathAsync(strLanguageToPrint);
+                XPathNavigator xmlOverrideNode = await this.GetNodeXPathAsync(strLanguageToPrint, token: token);
                 if (xmlOverrideNode != null)
                 {
                     objWriter.WriteElementString(
                         "sourceid",
-                        (await xmlOverrideNode.SelectSingleNodeAndCacheExpressionAsync("id"))?.Value ?? SourceIDString);
+                        (await xmlOverrideNode.SelectSingleNodeAndCacheExpressionAsync("id", token: token))?.Value ?? SourceIDString);
                     objWriter.WriteElementString(
                         "source",
                         await _objCharacter.LanguageBookShortAsync(
-                            (await xmlOverrideNode.SelectSingleNodeAndCacheExpressionAsync("source"))?.Value ?? Source,
-                            strLanguageToPrint));
+                            (await xmlOverrideNode.SelectSingleNodeAndCacheExpressionAsync("source", token: token))?.Value ?? Source,
+                            strLanguageToPrint, token));
                 }
                 else
                 {
                     objWriter.WriteElementString("sourceid", SourceIDString);
-                    objWriter.WriteElementString("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint));
+                    objWriter.WriteElementString("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint, token));
                 }
             }
             else
             {
                 objWriter.WriteElementString("sourceid", SourceIDString);
-                objWriter.WriteElementString("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint));
+                objWriter.WriteElementString("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint, token));
             }
-            objWriter.WriteElementString("name", await DisplayNameShortAsync(strLanguageToPrint));
+            objWriter.WriteElementString("name", await DisplayNameShortAsync(strLanguageToPrint, token));
             objWriter.WriteElementString("name_english", Name);
-            objWriter.WriteElementString("fullname", await DisplayNameAsync(strLanguageToPrint));
+            objWriter.WriteElementString("fullname", await DisplayNameAsync(strLanguageToPrint, token));
             objWriter.WriteElementString("category", DisplayCategory(strLanguageToPrint));
             objWriter.WriteElementString("category_english", Category);
             objWriter.WriteElementString("limit", Limit);
@@ -1100,7 +1101,7 @@ namespace Chummer.Backend.Equipment
             {
                 // Because of the weird way in which weapon mounts work with and without Rigger 5.0, instead of hiding built-in mounts from disabled sourcebooks,
                 // we instead display them as if they were one of the CRB mounts, but give them a different name
-                if (IncludedInVehicle && !string.IsNullOrEmpty(Source) && !_objCharacter.Settings.BookEnabled(Source))
+                if (IncludedInVehicle && !string.IsNullOrEmpty(Source) && !await _objCharacter.Settings.BookEnabledAsync(Source, token))
                     return (await xmlDataNode.SelectSingleNodeAndCacheExpressionAsync("name", token))?.Value ?? Name;
                 return Name;
             }
@@ -1186,7 +1187,7 @@ namespace Chummer.Backend.Equipment
         {
             // Because of the weird way in which weapon mounts work with and without Rigger 5.0, instead of hiding built-in mounts from disabled sourcebooks,
             // we instead display them as if they were one of the CRB mounts, but give them a different name
-            if (IncludedInVehicle && !string.IsNullOrEmpty(Source) && !_objCharacter.Settings.BookEnabled(Source))
+            if (IncludedInVehicle && !string.IsNullOrEmpty(Source) && !await _objCharacter.Settings.BookEnabledAsync(Source, token))
             {
                 string strOverrideId = AllowedWeaponCategories.Contains("Machine Guns") ||
                                        AllowedWeaponCategories.Contains("Launchers") ||
@@ -1235,7 +1236,7 @@ namespace Chummer.Backend.Equipment
         {
             // Because of the weird way in which weapon mounts work with and without Rigger 5.0, instead of hiding built-in mounts from disabled sourcebooks,
             // we instead display them as if they were one of the CRB mounts, but give them a different name
-            if (IncludedInVehicle && !string.IsNullOrEmpty(Source) && !_objCharacter.Settings.BookEnabled(Source))
+            if (IncludedInVehicle && !string.IsNullOrEmpty(Source) && !await _objCharacter.Settings.BookEnabledAsync(Source, token))
             {
                 string strOverrideId = AllowedWeaponCategories.Contains("Machine Guns") ||
                                        AllowedWeaponCategories.Contains("Launchers") ||

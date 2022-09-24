@@ -23,12 +23,14 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Chummer.Annotations;
 using Chummer.Backend.Attributes;
 using Chummer.Backend.Skills;
 using Chummer.Properties;
+using Timer = System.Windows.Forms.Timer;
 
 namespace Chummer.UI.Skills
 {
@@ -354,12 +356,12 @@ namespace Chummer.UI.Skills
                 case nameof(Skill.DefaultAttribute):
                     if (cboSelectAttribute != null)
                     {
-                        cboSelectAttribute.SelectedValue = _objSkill.AttributeObject.Abbrev;
-                        cboSelectAttribute_Closed(this, EventArgs.Empty);
+                        await cboSelectAttribute.DoThreadSafeAsync(x => x.SelectedValue = _objSkill.AttributeObject.Abbrev);
+                        await DoSelectAttributeClosed();
                     }
                     else
                     {
-                        AttributeActive = _objSkill.AttributeObject;
+                        await SetAttributeActiveAsync(_objSkill.AttributeObject);
                     }
                     if (blnUpdateAll)
                         goto case nameof(Skill.TopMostDisplaySpecialization);
@@ -504,12 +506,21 @@ namespace Chummer.UI.Skills
             }
         }
 
-        private void cboSelectAttribute_Closed(object sender, EventArgs e)
+        private async void cboSelectAttribute_Closed(object sender, EventArgs e)
         {
-            btnAttribute.Visible = true;
-            cboSelectAttribute.Visible = false;
-            AttributeActive = _objSkill.CharacterObject.GetAttribute((string)cboSelectAttribute.SelectedValue);
-            btnAttribute.Text = cboSelectAttribute.Text;
+            await DoSelectAttributeClosed();
+        }
+
+        private async ValueTask DoSelectAttributeClosed(CancellationToken token = default)
+        {
+            await btnAttribute.DoThreadSafeAsync(x => x.Visible = true, token: token);
+            await cboSelectAttribute.DoThreadSafeAsync(x => x.Visible = false, token: token);
+            await SetAttributeActiveAsync(
+                await _objSkill.CharacterObject.GetAttributeAsync(
+                    (string) await cboSelectAttribute.DoThreadSafeFuncAsync(x => x.SelectedValue, token: token),
+                    token: token), token);
+            string strText = await cboSelectAttribute.DoThreadSafeFuncAsync(x => x.Text, token: token);
+            await btnAttribute.DoThreadSafeAsync(x => x.Text = strText, token: token);
         }
 
         private CharacterAttrib AttributeActive
@@ -532,6 +543,22 @@ namespace Chummer.UI.Skills
             }
         }
 
+        private async ValueTask SetAttributeActiveAsync(CharacterAttrib value, CancellationToken token = default)
+        {
+            if (_objAttributeActive == value)
+                return;
+            if (_objAttributeActive != null)
+                _objAttributeActive.PropertyChanged -= Attribute_PropertyChanged;
+            _objAttributeActive = value;
+            if (_objAttributeActive != null)
+                _objAttributeActive.PropertyChanged += Attribute_PropertyChanged;
+            await btnAttribute.DoThreadSafeAsync(x => x.Font = _objAttributeActive == _objSkill.AttributeObject
+                                                     ? _fntNormal
+                                                     : _fntItalic, token);
+            await RefreshPoolTooltipAndDisplayAsync(token);
+            CustomAttributeChanged?.Invoke(this, EventArgs.Empty);
+        }
+
         public event EventHandler CustomAttributeChanged;
 
         public bool CustomAttributeSet => AttributeActive != _objSkill.AttributeObject;
@@ -543,23 +570,26 @@ namespace Chummer.UI.Skills
         public int NudSkillWidth => nudSkill?.DoThreadSafeFunc(x => x.Visible) == true ? nudSkill.DoThreadSafeFunc(x => x.Width) : 0;
 
         [UsedImplicitly]
-        public void ResetSelectAttribute(object sender, EventArgs e)
+        public async ValueTask ResetSelectAttribute(CancellationToken token = default)
         {
             if (!CustomAttributeSet)
                 return;
             if (cboSelectAttribute == null)
                 return;
-            cboSelectAttribute.DoThreadSafe(x =>
+            await cboSelectAttribute.DoThreadSafeAsync(x =>
             {
                 x.SelectedValue = _objSkill.AttributeObject.Abbrev;
                 x.Visible = false;
-                AttributeActive = _objSkill.CharacterObject.GetAttribute((string)x.SelectedValue);
-            });
-            btnAttribute.DoThreadSafe(x =>
+            }, token: token);
+            await SetAttributeActiveAsync(
+                await _objSkill.CharacterObject.GetAttributeAsync(
+                    (string) await cboSelectAttribute.DoThreadSafeFuncAsync(x => x.SelectedValue, token: token), token: token), token);
+            string strText = await cboSelectAttribute.DoThreadSafeFuncAsync(x => x.Text, token: token);
+            await btnAttribute.DoThreadSafeAsync(x =>
             {
                 x.Visible = true;
-                x.Text = cboSelectAttribute.DoThreadSafeFunc(y => y.Text);
-            });
+                x.Text = strText;
+            }, token: token);
         }
 
         private async void cmdDelete_Click(object sender, EventArgs e)
@@ -688,15 +718,15 @@ namespace Chummer.UI.Skills
         /// <summary>
         /// Refreshes the Tooltip and Displayed Dice Pool. Can be used in another Thread
         /// </summary>
-        private Task RefreshPoolTooltipAndDisplayAsync()
+        private async Task RefreshPoolTooltipAndDisplayAsync(CancellationToken token = default)
         {
-            string backgroundCalcPool = _objSkill.DisplayOtherAttribute(AttributeActive.Abbrev);
-            string backgroundCalcTooltip = _objSkill.CompileDicepoolTooltip(AttributeActive.Abbrev);
-            return lblModifiedRating.DoThreadSafeAsync(x =>
+            string backgroundCalcPool = await _objSkill.DisplayOtherAttributeAsync(AttributeActive.Abbrev, token);
+            string backgroundCalcTooltip = await _objSkill.CompileDicepoolTooltipAsync(AttributeActive.Abbrev, token: token);
+            await lblModifiedRating.DoThreadSafeAsync(x =>
             {
                 x.Text = backgroundCalcPool;
                 x.ToolTipText = backgroundCalcTooltip;
-            });
+            }, token: token);
         }
 
         // Hacky solutions to data binding causing cursor to reset whenever the user is typing something in: have text changes start a timer, and have a 1s delay in the timer update fire the text update
