@@ -2146,8 +2146,12 @@ namespace Chummer.Backend.Skills
                 return strExtraStart + LanguageManager.GetString("Tip_Skill_Cannot_Default");
             }
 
+            bool blnShowSwapSkillAttribute = false;
             if (string.IsNullOrEmpty(abbrev))
+            {
                 abbrev = Attribute;
+                blnShowSwapSkillAttribute = Attribute == DefaultAttribute;
+            }
 
             CharacterAttrib att = CharacterObject.AttributeSection.GetAttributeByName(abbrev);
 
@@ -2223,10 +2227,14 @@ namespace Chummer.Backend.Skills
                     }
                 }
 
-                Improvement objAttributeSwapImprovement =
-                    lstRelevantImprovements.Find(x => x.ImproveType != Improvement.ImprovementType.SwapSkillAttribute);
-                if (objAttributeSwapImprovement != null)
-                    sbdReturn.Append(strSpace).Append(CharacterObject.GetObjectName(objAttributeSwapImprovement));
+                if (blnShowSwapSkillAttribute)
+                {
+                    Improvement objAttributeSwapImprovement =
+                        lstRelevantImprovements.Find(
+                            x => x.ImproveType == Improvement.ImprovementType.SwapSkillAttribute);
+                    if (objAttributeSwapImprovement != null)
+                        sbdReturn.Append(strSpace).Append(CharacterObject.GetObjectName(objAttributeSwapImprovement));
+                }
 
                 if (Default && !Leveled)
                 {
