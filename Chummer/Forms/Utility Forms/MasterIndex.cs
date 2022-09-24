@@ -303,7 +303,7 @@ namespace Chummer
                     _lstItems.Clear();
                     _lstFileNamesWithItems.Clear();
                     if (_objSelectedSetting == null)
-                        _objSelectedSetting = await GetInitialSetting(_objGenericToken);
+                        _objSelectedSetting = await GetInitialSetting(token);
                     string strSourceFilter;
                     using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                     out HashSet<string> setValidCodes))

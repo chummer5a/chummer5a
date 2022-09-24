@@ -282,7 +282,7 @@ namespace Chummer
                     {
                         await Task.WhenAll(_tskMostRecentlyUsedsRefresh, _tskWatchFolderRefresh,
                                            Task.WhenAll(
-                                               Program.PluginLoader.MyActivePlugins.Select(RefreshPluginNodesAsync)));
+                                               Program.PluginLoader.MyActivePlugins.Select(x => RefreshPluginNodesAsync(x, _objGenericToken))));
                     }
                     catch (OperationCanceledException)
                     {
@@ -1196,11 +1196,11 @@ namespace Chummer
             }, token);
         }
 
-        public Task RefreshPluginNodesAsync(IPlugin objPluginToRefresh)
+        public Task RefreshPluginNodesAsync(IPlugin objPluginToRefresh, CancellationToken objToken = default)
         {
             if (objPluginToRefresh == null)
                 throw new ArgumentNullException(nameof(objPluginToRefresh));
-            return RefreshPluginNodesInner(_objGenericToken); // Split up this way so that the parameter check happens synchronously
+            return RefreshPluginNodesInner(objToken); // Split up this way so that the parameter check happens synchronously
 
             async Task RefreshPluginNodesInner(CancellationToken token = default)
             {

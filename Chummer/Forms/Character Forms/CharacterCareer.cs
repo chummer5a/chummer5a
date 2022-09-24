@@ -2820,7 +2820,7 @@ namespace Chummer
                         }
                         case nameof(CharacterSettings.AllowFreeGrids):
                         {
-                            if (!CharacterObjectSettings.BookEnabled("HT"))
+                            if (!await CharacterObjectSettings.BookEnabledAsync("HT"))
                             {
                                 CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
                                 try
@@ -4351,17 +4351,25 @@ namespace Chummer
 
         private async void mnuSpecialConvertToFreeSprite_Click(object sender, EventArgs e)
         {
-            XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("critterpowers.xml", token: GenericToken);
-            XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"Denial\"]");
-            CritterPower objPower = new CritterPower(CharacterObject);
-            objPower.Create(objXmlPower);
-            objPower.CountTowardsLimit = false;
-            if (objPower.InternalId.IsEmptyGuid())
-                return;
+            try
+            {
+                XmlDocument objXmlDocument
+                    = await CharacterObject.LoadDataAsync("critterpowers.xml", token: GenericToken);
+                XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"Denial\"]");
+                CritterPower objPower = new CritterPower(CharacterObject);
+                objPower.Create(objXmlPower);
+                objPower.CountTowardsLimit = false;
+                if (objPower.InternalId.IsEmptyGuid())
+                    return;
 
-            await CharacterObject.CritterPowers.AddAsync(objPower);
+                await CharacterObject.CritterPowers.AddAsync(objPower, GenericToken);
 
-            CharacterObject.MetatypeCategory = "Free Sprite";
+                CharacterObject.MetatypeCategory = "Free Sprite";
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void mnuSpecialAddCyberwareSuite_Click(object sender, EventArgs e)
@@ -4498,92 +4506,114 @@ namespace Chummer
 
         private async void cmdAddSpell_Click(object sender, EventArgs e)
         {
-            // Open the Spells XML file and locate the selected piece.
-            XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("spells.xml", token: GenericToken);
-            bool blnAddAgain;
-
-            do
+            try
             {
-                (bool blnCanTouchOnlySpellBeFree, bool blnCanGenericSpellBeFree) = await CharacterObject.AllowFreeSpellsAsync(GenericToken);
-                int intSpellKarmaCost = await CharacterObject.SpellKarmaCostAsync("Spells", GenericToken);
-                // Make sure the character has enough Karma before letting them select a Spell.
-                if (CharacterObject.Karma < intSpellKarmaCost && !(blnCanTouchOnlySpellBeFree || blnCanGenericSpellBeFree))
-                {
-                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma"),
-                        await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK,
-                        MessageBoxIcon.Information);
-                    break;
-                }
+                // Open the Spells XML file and locate the selected piece.
+                XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("spells.xml", token: GenericToken);
+                bool blnAddAgain;
 
-                using (ThreadSafeForm<SelectSpell> frmPickSpell = await ThreadSafeForm<SelectSpell>.GetAsync(() => new SelectSpell(CharacterObject)
-                       {
-                           FreeOnly = CharacterObject.Karma < intSpellKarmaCost &&
-                                      (blnCanTouchOnlySpellBeFree || blnCanGenericSpellBeFree)
-                       }, GenericToken))
+                do
                 {
-                    // Make sure the dialogue window was not canceled.
-                    if (await frmPickSpell.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                    (bool blnCanTouchOnlySpellBeFree, bool blnCanGenericSpellBeFree)
+                        = await CharacterObject.AllowFreeSpellsAsync(GenericToken);
+                    int intSpellKarmaCost = await CharacterObject.SpellKarmaCostAsync("Spells", GenericToken);
+                    // Make sure the character has enough Karma before letting them select a Spell.
+                    if (CharacterObject.Karma < intSpellKarmaCost
+                        && !(blnCanTouchOnlySpellBeFree || blnCanGenericSpellBeFree))
+                    {
+                        Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma"),
+                                               await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"),
+                                               MessageBoxButtons.OK,
+                                               MessageBoxIcon.Information);
                         break;
-                    blnAddAgain = frmPickSpell.MyForm.AddAgain;
-
-                    XmlNode objXmlSpell = objXmlDocument.SelectSingleNode("/chummer/spells/spell[id = " + frmPickSpell.MyForm.SelectedSpell.CleanXPath() + ']');
-
-                    Spell objSpell = new Spell(CharacterObject);
-                    objSpell.Create(objXmlSpell, string.Empty, frmPickSpell.MyForm.Limited, frmPickSpell.MyForm.Extended, frmPickSpell.MyForm.Alchemical);
-                    if (objSpell.Alchemical)
-                    {
-                        intSpellKarmaCost = await CharacterObject.SpellKarmaCostAsync("Preparations", GenericToken);
-                    }
-                    else if (objSpell.Category == "Rituals")
-                    {
-                        intSpellKarmaCost = await CharacterObject.SpellKarmaCostAsync("Rituals", GenericToken);
                     }
 
-                    if (objSpell.InternalId.IsEmptyGuid())
+                    using (ThreadSafeForm<SelectSpell> frmPickSpell = await ThreadSafeForm<SelectSpell>.GetAsync(
+                               () => new SelectSpell(CharacterObject)
+                               {
+                                   FreeOnly = CharacterObject.Karma < intSpellKarmaCost &&
+                                              (blnCanTouchOnlySpellBeFree || blnCanGenericSpellBeFree)
+                               }, GenericToken))
                     {
-                        objSpell.Dispose();
-                        continue;
-                    }
-
-                    objSpell.FreeBonus = frmPickSpell.MyForm.FreeBonus;
-                    if (!objSpell.FreeBonus)
-                    {
-                        if (CharacterObject.Karma < intSpellKarmaCost)
-                        {
-                            objSpell.Dispose();
-                            Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        // Make sure the dialogue window was not canceled.
+                        if (await frmPickSpell.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
                             break;
+                        blnAddAgain = frmPickSpell.MyForm.AddAgain;
+
+                        XmlNode objXmlSpell = objXmlDocument.SelectSingleNode(
+                            "/chummer/spells/spell[id = " + frmPickSpell.MyForm.SelectedSpell.CleanXPath() + ']');
+
+                        Spell objSpell = new Spell(CharacterObject);
+                        objSpell.Create(objXmlSpell, string.Empty, frmPickSpell.MyForm.Limited,
+                                        frmPickSpell.MyForm.Extended, frmPickSpell.MyForm.Alchemical);
+                        if (objSpell.Alchemical)
+                        {
+                            intSpellKarmaCost = await CharacterObject.SpellKarmaCostAsync("Preparations", GenericToken);
                         }
-                        if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpenseSpend")
-                            , objSpell.CurrentDisplayName
-                            , intSpellKarmaCost.ToString(GlobalSettings.CultureInfo))))
+                        else if (objSpell.Category == "Rituals")
+                        {
+                            intSpellKarmaCost = await CharacterObject.SpellKarmaCostAsync("Rituals", GenericToken);
+                        }
+
+                        if (objSpell.InternalId.IsEmptyGuid())
                         {
                             objSpell.Dispose();
                             continue;
                         }
-                    }
-                    // Barehanded Adept
-                    else if (CharacterObject.AdeptEnabled && !CharacterObject.MagicianEnabled && (objSpell.Range == "T" || objSpell.Range == "T (A)"))
-                    {
-                        objSpell.BarehandedAdept = true;
-                    }
 
-                    await CharacterObject.Spells.AddAsync(objSpell);
-                    if (!objSpell.FreeBonus)
-                    {
-                        // Create the Expense Log Entry.
-                        ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                        objExpense.Create(-intSpellKarmaCost, await LanguageManager.GetStringAsync("String_ExpenseLearnSpell") + await LanguageManager.GetStringAsync("String_Space") + objSpell.Name, ExpenseType.Karma, DateTime.Now);
-                        await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken);
-                        CharacterObject.Karma -= intSpellKarmaCost;
+                        objSpell.FreeBonus = frmPickSpell.MyForm.FreeBonus;
+                        if (!objSpell.FreeBonus)
+                        {
+                            if (CharacterObject.Karma < intSpellKarmaCost)
+                            {
+                                objSpell.Dispose();
+                                Program.ShowMessageBox(
+                                    this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma"),
+                                    await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"),
+                                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                break;
+                            }
 
-                        ExpenseUndo objUndo = new ExpenseUndo();
-                        objUndo.CreateKarma(KarmaExpenseType.AddSpell, objSpell.InternalId);
-                        objExpense.Undo = objUndo;
+                            if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalSettings.CultureInfo,
+                                                                         await LanguageManager.GetStringAsync(
+                                                                             "Message_ConfirmKarmaExpenseSpend")
+                                                                         , objSpell.CurrentDisplayName
+                                                                         , intSpellKarmaCost.ToString(GlobalSettings.CultureInfo))))
+                            {
+                                objSpell.Dispose();
+                                continue;
+                            }
+                        }
+                        // Barehanded Adept
+                        else if (CharacterObject.AdeptEnabled && !CharacterObject.MagicianEnabled
+                                                              && (objSpell.Range == "T" || objSpell.Range == "T (A)"))
+                        {
+                            objSpell.BarehandedAdept = true;
+                        }
+
+                        await CharacterObject.Spells.AddAsync(objSpell);
+                        if (!objSpell.FreeBonus)
+                        {
+                            // Create the Expense Log Entry.
+                            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                            objExpense.Create(-intSpellKarmaCost,
+                                              await LanguageManager.GetStringAsync("String_ExpenseLearnSpell")
+                                              + await LanguageManager.GetStringAsync("String_Space") + objSpell.Name,
+                                              ExpenseType.Karma, DateTime.Now);
+                            await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken);
+                            CharacterObject.Karma -= intSpellKarmaCost;
+
+                            ExpenseUndo objUndo = new ExpenseUndo();
+                            objUndo.CreateKarma(KarmaExpenseType.AddSpell, objSpell.InternalId);
+                            objExpense.Undo = objUndo;
+                        }
                     }
-                }
+                } while (blnAddAgain);
             }
-            while (blnAddAgain);
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private void cmdDeleteSpell_Click(object sender, EventArgs e)
@@ -4656,76 +4686,109 @@ namespace Chummer
 
         private async void cmdAddComplexForm_Click(object sender, EventArgs e)
         {
-            XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("complexforms.xml", token: GenericToken);
-            bool blnAddAgain;
-
-            do
+            try
             {
-                // The number of Complex Forms cannot exceed twice the character's RES.
-                if (CharacterObject.ComplexForms.Count >= CharacterObject.RES.Value * 2 + await ImprovementManager.ValueOfAsync(CharacterObject, Improvement.ImprovementType.ComplexFormLimit) && !CharacterObjectSettings.IgnoreComplexFormLimit)
-                {
-                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ComplexFormLimit"), await LanguageManager.GetStringAsync("MessageTitle_ComplexFormLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    break;
-                }
-                int intComplexFormKarmaCost = CharacterObject.ComplexFormKarmaCost;
+                XmlDocument objXmlDocument
+                    = await CharacterObject.LoadDataAsync("complexforms.xml", token: GenericToken);
+                bool blnAddAgain;
 
-                // Make sure the character has enough Karma before letting them select a Complex Form.
-                if (CharacterObject.Karma < intComplexFormKarmaCost)
+                do
                 {
-                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    break;
-                }
-
-                XmlNode objXmlComplexForm;
-                // Let the user select a Program.
-                using (ThreadSafeForm<SelectComplexForm> frmPickComplexForm
-                       = await ThreadSafeForm<SelectComplexForm>.GetAsync(() => new SelectComplexForm(CharacterObject), GenericToken))
-                {
-                    // Make sure the dialogue window was not canceled.
-                    if (await frmPickComplexForm.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                    // The number of Complex Forms cannot exceed twice the character's RES.
+                    if (CharacterObject.ComplexForms.Count >= CharacterObject.RES.Value * 2
+                        + await ImprovementManager.ValueOfAsync(CharacterObject,
+                                                                Improvement.ImprovementType.ComplexFormLimit)
+                        && !CharacterObjectSettings.IgnoreComplexFormLimit)
+                    {
+                        Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ComplexFormLimit"),
+                                               await LanguageManager.GetStringAsync("MessageTitle_ComplexFormLimit"),
+                                               MessageBoxButtons.OK, MessageBoxIcon.Information);
                         break;
-                    blnAddAgain = frmPickComplexForm.MyForm.AddAgain;
+                    }
 
-                    objXmlComplexForm = objXmlDocument.SelectSingleNode("/chummer/complexforms/complexform[id = " + frmPickComplexForm.MyForm.SelectedComplexForm.CleanXPath() + ']');
-                }
+                    int intComplexFormKarmaCost = CharacterObject.ComplexFormKarmaCost;
 
-                if (objXmlComplexForm == null)
-                    continue;
-                ComplexForm objComplexForm = new ComplexForm(CharacterObject);
-                objComplexForm.Create(objXmlComplexForm);
-                if (objComplexForm.InternalId.IsEmptyGuid())
-                    continue;
+                    // Make sure the character has enough Karma before letting them select a Complex Form.
+                    if (CharacterObject.Karma < intComplexFormKarmaCost)
+                    {
+                        Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma"),
+                                               await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"),
+                                               MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        break;
+                    }
 
-                await CharacterObject.ComplexForms.AddAsync(objComplexForm);
+                    XmlNode objXmlComplexForm;
+                    // Let the user select a Program.
+                    using (ThreadSafeForm<SelectComplexForm> frmPickComplexForm
+                           = await ThreadSafeForm<SelectComplexForm>.GetAsync(
+                               () => new SelectComplexForm(CharacterObject), GenericToken))
+                    {
+                        // Make sure the dialogue window was not canceled.
+                        if (await frmPickComplexForm.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                            break;
+                        blnAddAgain = frmPickComplexForm.MyForm.AddAgain;
 
-                if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpenseSpend"), objComplexForm.CurrentDisplayNameShort, intComplexFormKarmaCost.ToString(GlobalSettings.CultureInfo))))
-                {
-                    // Remove the Improvements created by the Complex Form.
-                    await ImprovementManager.RemoveImprovementsAsync(CharacterObject, Improvement.ImprovementSource.ComplexForm, objComplexForm.InternalId);
-                    continue;
-                }
+                        objXmlComplexForm = objXmlDocument.SelectSingleNode(
+                            "/chummer/complexforms/complexform[id = "
+                            + frmPickComplexForm.MyForm.SelectedComplexForm.CleanXPath() + ']');
+                    }
 
-                // Create the Expense Log Entry.
-                ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                objExpense.Create(intComplexFormKarmaCost * -1, await LanguageManager.GetStringAsync("String_ExpenseLearnComplexForm") + await LanguageManager.GetStringAsync("String_Space") + objComplexForm.CurrentDisplayNameShort, ExpenseType.Karma, DateTime.Now);
-                await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken);
-                CharacterObject.Karma -= intComplexFormKarmaCost;
+                    if (objXmlComplexForm == null)
+                        continue;
+                    ComplexForm objComplexForm = new ComplexForm(CharacterObject);
+                    objComplexForm.Create(objXmlComplexForm);
+                    if (objComplexForm.InternalId.IsEmptyGuid())
+                        continue;
 
-                ExpenseUndo objUndo = new ExpenseUndo();
-                objUndo.CreateKarma(KarmaExpenseType.AddComplexForm, objComplexForm.InternalId);
-                objExpense.Undo = objUndo;
+                    await CharacterObject.ComplexForms.AddAsync(objComplexForm);
+
+                    if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalSettings.CultureInfo,
+                                                                           await LanguageManager.GetStringAsync(
+                                                                               "Message_ConfirmKarmaExpenseSpend"),
+                                                                           objComplexForm.CurrentDisplayNameShort,
+                                                                           intComplexFormKarmaCost.ToString(
+                                                                               GlobalSettings.CultureInfo))))
+                    {
+                        // Remove the Improvements created by the Complex Form.
+                        await ImprovementManager.RemoveImprovementsAsync(
+                            CharacterObject, Improvement.ImprovementSource.ComplexForm, objComplexForm.InternalId);
+                        continue;
+                    }
+
+                    // Create the Expense Log Entry.
+                    ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                    objExpense.Create(intComplexFormKarmaCost * -1,
+                                      await LanguageManager.GetStringAsync("String_ExpenseLearnComplexForm")
+                                      + await LanguageManager.GetStringAsync("String_Space")
+                                      + objComplexForm.CurrentDisplayNameShort, ExpenseType.Karma, DateTime.Now);
+                    await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken);
+                    CharacterObject.Karma -= intComplexFormKarmaCost;
+
+                    ExpenseUndo objUndo = new ExpenseUndo();
+                    objUndo.CreateKarma(KarmaExpenseType.AddComplexForm, objComplexForm.InternalId);
+                    objExpense.Undo = objUndo;
+                } while (blnAddAgain);
             }
-            while (blnAddAgain);
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void cmdAddArmor_Click(object sender, EventArgs e)
         {
-            bool blnAddAgain;
-            do
+            try
             {
-                blnAddAgain = await PickArmor();
+                bool blnAddAgain;
+                do
+                {
+                    blnAddAgain = await PickArmor(token: GenericToken);
+                } while (blnAddAgain);
             }
-            while (blnAddAgain);
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private void cmdDeleteArmor_Click(object sender, EventArgs e)
@@ -4740,12 +4803,18 @@ namespace Chummer
 
         private async void cmdAddBioware_Click(object sender, EventArgs e)
         {
-            bool blnAddAgain;
-            do
+            try
             {
-                blnAddAgain = await PickCyberware(null, Improvement.ImprovementSource.Bioware);
+                bool blnAddAgain;
+                do
+                {
+                    blnAddAgain = await PickCyberware(null, Improvement.ImprovementSource.Bioware, GenericToken);
+                } while (blnAddAgain);
             }
-            while (blnAddAgain);
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async ValueTask<bool> PickWeapon(object destObject, CancellationToken token = default)
@@ -4859,26 +4928,34 @@ namespace Chummer
 
         private async void cmdAddLifestyle_Click(object sender, EventArgs e)
         {
-            bool blnAddAgain;
-
-            do
+            try
             {
-                using (ThreadSafeForm<SelectLifestyle> frmPickLifestyle = await ThreadSafeForm<SelectLifestyle>.GetAsync(() => new SelectLifestyle(CharacterObject), GenericToken))
-                {
-                    // Make sure the dialogue window was not canceled.
-                    if (await frmPickLifestyle.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
-                    {
-                        frmPickLifestyle.MyForm.SelectedLifestyle.Dispose();
-                        return;
-                    }
+                bool blnAddAgain;
 
-                    blnAddAgain = frmPickLifestyle.MyForm.AddAgain;
-                    Lifestyle objLifestyle = frmPickLifestyle.MyForm.SelectedLifestyle;
-                    objLifestyle.Increments = 0;
-                    await CharacterObject.Lifestyles.AddAsync(objLifestyle);
-                }
+                do
+                {
+                    using (ThreadSafeForm<SelectLifestyle> frmPickLifestyle
+                           = await ThreadSafeForm<SelectLifestyle>.GetAsync(
+                               () => new SelectLifestyle(CharacterObject), GenericToken))
+                    {
+                        // Make sure the dialogue window was not canceled.
+                        if (await frmPickLifestyle.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                        {
+                            frmPickLifestyle.MyForm.SelectedLifestyle.Dispose();
+                            return;
+                        }
+
+                        blnAddAgain = frmPickLifestyle.MyForm.AddAgain;
+                        Lifestyle objLifestyle = frmPickLifestyle.MyForm.SelectedLifestyle;
+                        objLifestyle.Increments = 0;
+                        await CharacterObject.Lifestyles.AddAsync(objLifestyle);
+                    }
+                } while (blnAddAgain);
             }
-            while (blnAddAgain);
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private void cmdDeleteLifestyle_Click(object sender, EventArgs e)
@@ -4888,12 +4965,19 @@ namespace Chummer
 
         private async void cmdAddGear_Click(object sender, EventArgs e)
         {
-            bool blnAddAgain;
-            do
+            try
             {
-                blnAddAgain = await PickGear(null, await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag as Location, GenericToken));
+                bool blnAddAgain;
+                do
+                {
+                    blnAddAgain = await PickGear(
+                        null, await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag as Location, GenericToken));
+                } while (blnAddAgain);
             }
-            while (blnAddAgain);
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private void cmdDeleteGear_Click(object sender, EventArgs e)
@@ -4978,17 +5062,32 @@ namespace Chummer
 
         private async void cmdAddVehicle_Click(object sender, EventArgs e)
         {
-            bool blnAddAgain;
-            do
+            try
             {
-                blnAddAgain = await AddVehicle(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as Location, GenericToken);
+                bool blnAddAgain;
+                do
+                {
+                    blnAddAgain = await AddVehicle(
+                        await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as Location,
+                        GenericToken);
+                } while (blnAddAgain);
             }
-            while (blnAddAgain);
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void cmdDeleteVehicle_Click(object sender, EventArgs e)
         {
-            await DoDeleteVehicle(GenericToken);
+            try
+            {
+                await DoDeleteVehicle(GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async ValueTask DoDeleteVehicle(CancellationToken token = default)
@@ -5149,189 +5248,248 @@ namespace Chummer
         private async void chkIsMainMugshot_CheckedChanged(object sender, EventArgs e)
         {
             bool blnStatusChanged = false;
-            int intSelectedIndex = await nudMugshotIndex.DoThreadSafeFuncAsync(x => x.ValueAsInt, GenericToken);
-            switch (await chkIsMainMugshot.DoThreadSafeFuncAsync(x => x.Checked, GenericToken))
+            try
             {
-                case true when CharacterObject.MainMugshotIndex != intSelectedIndex - 1:
-                    CharacterObject.MainMugshotIndex = intSelectedIndex - 1;
-                    blnStatusChanged = true;
-                    break;
+                int intSelectedIndex = await nudMugshotIndex.DoThreadSafeFuncAsync(x => x.ValueAsInt, GenericToken);
+                switch (await chkIsMainMugshot.DoThreadSafeFuncAsync(x => x.Checked, GenericToken))
+                {
+                    case true when CharacterObject.MainMugshotIndex != intSelectedIndex - 1:
+                        CharacterObject.MainMugshotIndex = intSelectedIndex - 1;
+                        blnStatusChanged = true;
+                        break;
 
-                case false when intSelectedIndex - 1 == CharacterObject.MainMugshotIndex:
-                    CharacterObject.MainMugshotIndex = -1;
-                    blnStatusChanged = true;
-                    break;
+                    case false when intSelectedIndex - 1 == CharacterObject.MainMugshotIndex:
+                        CharacterObject.MainMugshotIndex = -1;
+                        blnStatusChanged = true;
+                        break;
+                }
+
+                if (blnStatusChanged)
+                {
+                    await SetDirty(true, GenericToken);
+                }
             }
-
-            if (blnStatusChanged)
+            catch (OperationCanceledException)
             {
-                await SetDirty(true);
+                //swallow this
             }
         }
 
         private async void cmdAddMetamagic_Click(object sender, EventArgs e)
         {
-            if (CharacterObject.MAGEnabled)
+            try
             {
-                // Make sure that the Initiate Grade is not attempting to go above the character's MAG CharacterAttribute.
-                if (CharacterObject.InitiateGrade + 1
-                    > (await (await CharacterObject.GetAttributeAsync("MAG", token: GenericToken)).GetTotalValueAsync(
-                        GenericToken)) ||
-                    await CharacterObjectSettings.GetMysAdeptSecondMAGAttributeAsync(GenericToken)
-                    && await CharacterObject.GetIsMysticAdeptAsync(GenericToken) && CharacterObject.InitiateGrade + 1
-                    > (await (await CharacterObject.GetAttributeAsync("MAGAdept", token: GenericToken))
-                        .GetTotalValueAsync(GenericToken)))
+                if (CharacterObject.MAGEnabled)
                 {
-                    Program.ShowMessageBox(
-                        this, await LanguageManager.GetStringAsync("Message_CannotIncreaseInitiateGrade"),
-                        await LanguageManager.GetStringAsync("MessageTitle_CannotIncreaseInitiateGrade"),
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-                }
-
-                // Make sure the character has enough Karma.
-                decimal decMultiplier = 1.0m;
-                if (await chkInitiationGroup.DoThreadSafeFuncAsync(x => x.Checked, GenericToken))
-                    decMultiplier -= CharacterObjectSettings.KarmaMAGInitiationGroupPercent;
-                if (await chkInitiationOrdeal.DoThreadSafeFuncAsync(x => x.Checked, GenericToken))
-                    decMultiplier -= CharacterObjectSettings.KarmaMAGInitiationOrdealPercent;
-                if (await chkInitiationSchooling.DoThreadSafeFuncAsync(x => x.Checked, GenericToken))
-                    decMultiplier -= CharacterObjectSettings.KarmaMAGInitiationSchoolingPercent;
-
-                int intKarmaExpense = ((CharacterObjectSettings.KarmaInitiationFlat + (CharacterObject.InitiateGrade + 1) * CharacterObjectSettings.KarmaInitiation) * decMultiplier).StandardRound();
-
-                if (intKarmaExpense > CharacterObject.Karma)
-                {
-                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-                }
-
-                if (await chkInitiationSchooling.DoThreadSafeFuncAsync(x => x.Checked, GenericToken))
-                {
-                    if (10000 > await CharacterObject.GetNuyenAsync(GenericToken))
+                    // Make sure that the Initiate Grade is not attempting to go above the character's MAG CharacterAttribute.
+                    if (CharacterObject.InitiateGrade + 1
+                        > (await (await CharacterObject.GetAttributeAsync("MAG", token: GenericToken))
+                            .GetTotalValueAsync(
+                                GenericToken)) ||
+                        await CharacterObjectSettings.GetMysAdeptSecondMAGAttributeAsync(GenericToken)
+                        && await CharacterObject.GetIsMysticAdeptAsync(GenericToken)
+                        && CharacterObject.InitiateGrade + 1
+                        > (await (await CharacterObject.GetAttributeAsync("MAGAdept", token: GenericToken))
+                            .GetTotalValueAsync(GenericToken)))
                     {
-                        Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        Program.ShowMessageBox(
+                            this, await LanguageManager.GetStringAsync("Message_CannotIncreaseInitiateGrade"),
+                            await LanguageManager.GetStringAsync("MessageTitle_CannotIncreaseInitiateGrade"),
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
                         return;
                     }
-                    if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_ConfirmKarmaandNuyenExpense")
-                        , await LanguageManager.GetStringAsync("String_InitiateGrade")
-                        , (CharacterObject.InitiateGrade + 1).ToString(GlobalSettings.CultureInfo)
-                        , intKarmaExpense.ToString(GlobalSettings.CultureInfo)
-                        , 10000.ToString(CharacterObjectSettings.NuyenFormat, GlobalSettings.CultureInfo) + await LanguageManager.GetStringAsync("String_NuyenSymbol"))))
+
+                    // Make sure the character has enough Karma.
+                    decimal decMultiplier = 1.0m;
+                    if (await chkInitiationGroup.DoThreadSafeFuncAsync(x => x.Checked, GenericToken))
+                        decMultiplier -= CharacterObjectSettings.KarmaMAGInitiationGroupPercent;
+                    if (await chkInitiationOrdeal.DoThreadSafeFuncAsync(x => x.Checked, GenericToken))
+                        decMultiplier -= CharacterObjectSettings.KarmaMAGInitiationOrdealPercent;
+                    if (await chkInitiationSchooling.DoThreadSafeFuncAsync(x => x.Checked, GenericToken))
+                        decMultiplier -= CharacterObjectSettings.KarmaMAGInitiationSchoolingPercent;
+
+                    int intKarmaExpense
+                        = ((CharacterObjectSettings.KarmaInitiationFlat + (CharacterObject.InitiateGrade + 1)
+                            * CharacterObjectSettings.KarmaInitiation) * decMultiplier).StandardRound();
+
+                    if (intKarmaExpense > CharacterObject.Karma)
+                    {
+                        Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma"),
+                                               await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"),
+                                               MessageBoxButtons.OK, MessageBoxIcon.Information);
                         return;
+                    }
+
+                    if (await chkInitiationSchooling.DoThreadSafeFuncAsync(x => x.Checked, GenericToken))
+                    {
+                        if (10000 > await CharacterObject.GetNuyenAsync(GenericToken))
+                        {
+                            Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen"),
+                                                   await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen"),
+                                                   MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            return;
+                        }
+
+                        if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalSettings.CultureInfo,
+                                                                               await LanguageManager.GetStringAsync(
+                                                                                   "Message_ConfirmKarmaandNuyenExpense")
+                                                                               , await LanguageManager.GetStringAsync(
+                                                                                   "String_InitiateGrade")
+                                                                               , (CharacterObject.InitiateGrade + 1)
+                                                                               .ToString(GlobalSettings.CultureInfo)
+                                                                               , intKarmaExpense.ToString(
+                                                                                   GlobalSettings.CultureInfo)
+                                                                               , 10000.ToString(CharacterObjectSettings.NuyenFormat, GlobalSettings.CultureInfo) + await LanguageManager.GetStringAsync("String_NuyenSymbol"))))
+                            return;
+                    }
+                    else if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalSettings.CultureInfo,
+                                                                      await LanguageManager.GetStringAsync(
+                                                                          "Message_ConfirmKarmaExpense")
+                                                                      , await LanguageManager.GetStringAsync(
+                                                                          "String_InitiateGrade")
+                                                                      , (CharacterObject.InitiateGrade + 1).ToString(
+                                                                          GlobalSettings.CultureInfo)
+                                                                      , intKarmaExpense.ToString(GlobalSettings.CultureInfo))))
+                        return;
+
+                    string strSpace = await LanguageManager.GetStringAsync("String_Space");
+
+                    // Create the Expense Log Entry.
+                    ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                    objExpense.Create(intKarmaExpense * -1,
+                                      await LanguageManager.GetStringAsync("String_ExpenseInitiateGrade")
+                                      + strSpace + CharacterObject.InitiateGrade.ToString(GlobalSettings.CultureInfo)
+                                      + strSpace + "->" + strSpace
+                                      + (CharacterObject.InitiateGrade + 1).ToString(GlobalSettings.CultureInfo),
+                                      ExpenseType.Karma, DateTime.Now);
+                    await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense);
+                    CharacterObject.Karma -= intKarmaExpense;
+
+                    // Create the Initiate Grade object.
+                    InitiationGrade objGrade = new InitiationGrade(CharacterObject);
+                    objGrade.Create(CharacterObject.InitiateGrade + 1, false,
+                                    await chkInitiationGroup.DoThreadSafeFuncAsync(x => x.Checked, GenericToken),
+                                    await chkInitiationOrdeal.DoThreadSafeFuncAsync(x => x.Checked, GenericToken),
+                                    await chkInitiationSchooling.DoThreadSafeFuncAsync(x => x.Checked, GenericToken));
+                    await CharacterObject.InitiationGrades.AddWithSortAsync(objGrade);
+
+                    ExpenseUndo objUndo = new ExpenseUndo();
+                    objUndo.CreateKarma(KarmaExpenseType.ImproveInitiateGrade, objGrade.InternalId);
+                    objExpense.Undo = objUndo;
+
+                    if (await chkInitiationSchooling.DoThreadSafeFuncAsync(x => x.Checked, GenericToken))
+                    {
+                        ExpenseLogEntry objNuyenExpense = new ExpenseLogEntry(CharacterObject);
+                        objNuyenExpense.Create(
+                            -10000, await LanguageManager.GetStringAsync("String_ExpenseInitiateGrade")
+                                    + strSpace + CharacterObject.InitiateGrade.ToString(GlobalSettings.CultureInfo)
+                                    + strSpace + "->" + strSpace
+                                    + (CharacterObject.InitiateGrade + 1).ToString(GlobalSettings.CultureInfo),
+                            ExpenseType.Nuyen, DateTime.Now);
+                        await CharacterObject.ExpenseEntries.AddWithSortAsync(objNuyenExpense);
+                        CharacterObject.Nuyen -= 10000;
+
+                        ExpenseUndo objNuyenUndo = new ExpenseUndo();
+                        objNuyenUndo.CreateNuyen(NuyenExpenseType.ImproveInitiateGrade, objGrade.InternalId, 10000);
+                        objNuyenExpense.Undo = objNuyenUndo;
+                    }
+
+                    int intAmount
+                        = ((CharacterObjectSettings.KarmaInitiationFlat + (CharacterObject.InitiateGrade + 1)
+                            * CharacterObjectSettings.KarmaInitiation) * decMultiplier).StandardRound();
+
+                    string strInitTip = string.Format(GlobalSettings.CultureInfo,
+                                                      await LanguageManager.GetStringAsync("Tip_ImproveInitiateGrade")
+                                                      , (CharacterObject.InitiateGrade + 1).ToString(
+                                                          GlobalSettings.CultureInfo)
+                                                      , intAmount.ToString(GlobalSettings.CultureInfo));
+                    await cmdAddMetamagic.SetToolTipAsync(strInitTip, GenericToken);
                 }
-                else if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpense")
-                    , await LanguageManager.GetStringAsync("String_InitiateGrade")
-                    , (CharacterObject.InitiateGrade + 1).ToString(GlobalSettings.CultureInfo)
-                    , intKarmaExpense.ToString(GlobalSettings.CultureInfo))))
-                    return;
-
-                string strSpace = await LanguageManager.GetStringAsync("String_Space");
-
-                // Create the Expense Log Entry.
-                ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                objExpense.Create(intKarmaExpense * -1, await LanguageManager.GetStringAsync("String_ExpenseInitiateGrade")
-                                                        + strSpace + CharacterObject.InitiateGrade.ToString(GlobalSettings.CultureInfo)
-                                                        + strSpace + "->" + strSpace
-                                                        + (CharacterObject.InitiateGrade + 1).ToString(GlobalSettings.CultureInfo), ExpenseType.Karma, DateTime.Now);
-                await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense);
-                CharacterObject.Karma -= intKarmaExpense;
-
-                // Create the Initiate Grade object.
-                InitiationGrade objGrade = new InitiationGrade(CharacterObject);
-                objGrade.Create(CharacterObject.InitiateGrade + 1, false,
-                                await chkInitiationGroup.DoThreadSafeFuncAsync(x => x.Checked, GenericToken),
-                                await chkInitiationOrdeal.DoThreadSafeFuncAsync(x => x.Checked, GenericToken),
-                                await chkInitiationSchooling.DoThreadSafeFuncAsync(x => x.Checked, GenericToken));
-                await CharacterObject.InitiationGrades.AddWithSortAsync(objGrade);
-
-                ExpenseUndo objUndo = new ExpenseUndo();
-                objUndo.CreateKarma(KarmaExpenseType.ImproveInitiateGrade, objGrade.InternalId);
-                objExpense.Undo = objUndo;
-
-                if (await chkInitiationSchooling.DoThreadSafeFuncAsync(x => x.Checked, GenericToken))
+                else if (CharacterObject.RESEnabled)
                 {
-                    ExpenseLogEntry objNuyenExpense = new ExpenseLogEntry(CharacterObject);
-                    objNuyenExpense.Create(-10000, await LanguageManager.GetStringAsync("String_ExpenseInitiateGrade")
-                                                   + strSpace + CharacterObject.InitiateGrade.ToString(GlobalSettings.CultureInfo)
-                                                   + strSpace + "->" + strSpace
-                                                   + (CharacterObject.InitiateGrade + 1).ToString(GlobalSettings.CultureInfo), ExpenseType.Nuyen, DateTime.Now);
-                    await CharacterObject.ExpenseEntries.AddWithSortAsync(objNuyenExpense);
-                    CharacterObject.Nuyen -= 10000;
+                    // Make sure that the Initiate Grade is not attempting to go above the character's RES CharacterAttribute.
+                    if (CharacterObject.SubmersionGrade + 1
+                        > (await (await CharacterObject.GetAttributeAsync("RES", token: GenericToken))
+                            .GetTotalValueAsync(GenericToken)))
+                    {
+                        Program.ShowMessageBox(
+                            this, await LanguageManager.GetStringAsync("Message_CannotIncreaseSubmersionGrade"),
+                            await LanguageManager.GetStringAsync("MessageTitle_CannotIncreaseSubmersionGrade"),
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        return;
+                    }
 
-                    ExpenseUndo objNuyenUndo = new ExpenseUndo();
-                    objNuyenUndo.CreateNuyen(NuyenExpenseType.ImproveInitiateGrade, objGrade.InternalId, 10000);
-                    objNuyenExpense.Undo = objNuyenUndo;
+                    // Make sure the character has enough Karma.
+                    decimal decMultiplier = 1.0m;
+                    if (await chkInitiationGroup.DoThreadSafeFuncAsync(x => x.Checked, GenericToken))
+                        decMultiplier -= CharacterObjectSettings.KarmaRESInitiationGroupPercent;
+                    if (await chkInitiationOrdeal.DoThreadSafeFuncAsync(x => x.Checked, GenericToken))
+                        decMultiplier -= CharacterObjectSettings.KarmaRESInitiationOrdealPercent;
+                    if (await chkInitiationSchooling.DoThreadSafeFuncAsync(x => x.Checked, GenericToken))
+                        decMultiplier -= CharacterObjectSettings.KarmaRESInitiationSchoolingPercent;
+
+                    int intKarmaExpense
+                        = ((CharacterObjectSettings.KarmaInitiationFlat + (CharacterObject.SubmersionGrade + 1)
+                            * CharacterObjectSettings.KarmaInitiation) * decMultiplier).StandardRound();
+
+                    if (intKarmaExpense > CharacterObject.Karma)
+                    {
+                        Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma"),
+                                               await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"),
+                                               MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        return;
+                    }
+
+                    if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalSettings.CultureInfo,
+                                                                           await LanguageManager.GetStringAsync(
+                                                                               "Message_ConfirmKarmaExpense")
+                                                                           , await LanguageManager.GetStringAsync(
+                                                                               "String_SubmersionGrade")
+                                                                           , (CharacterObject.SubmersionGrade + 1)
+                                                                           .ToString(GlobalSettings.CultureInfo)
+                                                                           , intKarmaExpense.ToString(GlobalSettings.CultureInfo))))
+                        return;
+
+                    string strSpace = await LanguageManager.GetStringAsync("String_Space");
+
+                    // Create the Expense Log Entry.
+                    ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                    objExpense.Create(intKarmaExpense * -1,
+                                      await LanguageManager.GetStringAsync("String_ExpenseSubmersionGrade")
+                                      + strSpace + CharacterObject.SubmersionGrade.ToString(GlobalSettings.CultureInfo)
+                                      + strSpace + "->" + strSpace
+                                      + (CharacterObject.SubmersionGrade + 1).ToString(GlobalSettings.CultureInfo),
+                                      ExpenseType.Karma, DateTime.Now);
+                    await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense);
+                    CharacterObject.Karma -= intKarmaExpense;
+
+                    // Create the Initiate Grade object.
+                    InitiationGrade objGrade = new InitiationGrade(CharacterObject);
+                    objGrade.Create(CharacterObject.SubmersionGrade + 1, true,
+                                    await chkInitiationGroup.DoThreadSafeFuncAsync(x => x.Checked, GenericToken),
+                                    await chkInitiationOrdeal.DoThreadSafeFuncAsync(x => x.Checked, GenericToken),
+                                    await chkInitiationSchooling.DoThreadSafeFuncAsync(x => x.Checked, GenericToken));
+                    await CharacterObject.InitiationGrades.AddWithSortAsync(objGrade);
+
+                    ExpenseUndo objUndo = new ExpenseUndo();
+                    objUndo.CreateKarma(KarmaExpenseType.ImproveInitiateGrade, objGrade.InternalId);
+                    objExpense.Undo = objUndo;
+
+                    int intAmount
+                        = ((CharacterObjectSettings.KarmaInitiationFlat + (CharacterObject.SubmersionGrade + 1)
+                            * CharacterObjectSettings.KarmaInitiation) * decMultiplier).StandardRound();
+
+                    string strInitTip = string.Format(GlobalSettings.CultureInfo,
+                                                      await LanguageManager.GetStringAsync("Tip_ImproveSubmersionGrade")
+                                                      , (CharacterObject.SubmersionGrade + 1).ToString(
+                                                          GlobalSettings.CultureInfo)
+                                                      , intAmount.ToString(GlobalSettings.CultureInfo));
+                    await cmdAddMetamagic.SetToolTipAsync(strInitTip, GenericToken);
                 }
-
-                int intAmount = ((CharacterObjectSettings.KarmaInitiationFlat + (CharacterObject.InitiateGrade + 1) * CharacterObjectSettings.KarmaInitiation) * decMultiplier).StandardRound();
-
-                string strInitTip = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Tip_ImproveInitiateGrade")
-                    , (CharacterObject.InitiateGrade + 1).ToString(GlobalSettings.CultureInfo)
-                    , intAmount.ToString(GlobalSettings.CultureInfo));
-                await cmdAddMetamagic.SetToolTipAsync(strInitTip, GenericToken);
             }
-            else if (CharacterObject.RESEnabled)
+            catch (OperationCanceledException)
             {
-                // Make sure that the Initiate Grade is not attempting to go above the character's RES CharacterAttribute.
-                if (CharacterObject.SubmersionGrade + 1 > (await (await CharacterObject.GetAttributeAsync("RES", token: GenericToken)).GetTotalValueAsync(GenericToken)))
-                {
-                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CannotIncreaseSubmersionGrade"), await LanguageManager.GetStringAsync("MessageTitle_CannotIncreaseSubmersionGrade"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-                }
-
-                // Make sure the character has enough Karma.
-                decimal decMultiplier = 1.0m;
-                if (await chkInitiationGroup.DoThreadSafeFuncAsync(x => x.Checked, GenericToken))
-                    decMultiplier -= CharacterObjectSettings.KarmaRESInitiationGroupPercent;
-                if (await chkInitiationOrdeal.DoThreadSafeFuncAsync(x => x.Checked, GenericToken))
-                    decMultiplier -= CharacterObjectSettings.KarmaRESInitiationOrdealPercent;
-                if (await chkInitiationSchooling.DoThreadSafeFuncAsync(x => x.Checked, GenericToken))
-                    decMultiplier -= CharacterObjectSettings.KarmaRESInitiationSchoolingPercent;
-
-                int intKarmaExpense = ((CharacterObjectSettings.KarmaInitiationFlat + (CharacterObject.SubmersionGrade + 1) * CharacterObjectSettings.KarmaInitiation) * decMultiplier).StandardRound();
-
-                if (intKarmaExpense > CharacterObject.Karma)
-                {
-                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-                }
-
-                if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpense")
-                    , await LanguageManager.GetStringAsync("String_SubmersionGrade")
-                    , (CharacterObject.SubmersionGrade + 1).ToString(GlobalSettings.CultureInfo)
-                    , intKarmaExpense.ToString(GlobalSettings.CultureInfo))))
-                    return;
-
-                string strSpace = await LanguageManager.GetStringAsync("String_Space");
-
-                // Create the Expense Log Entry.
-                ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                objExpense.Create(intKarmaExpense * -1, await LanguageManager.GetStringAsync("String_ExpenseSubmersionGrade")
-                                                        + strSpace + CharacterObject.SubmersionGrade.ToString(GlobalSettings.CultureInfo)
-                                                        + strSpace + "->" + strSpace
-                                                        + (CharacterObject.SubmersionGrade + 1).ToString(GlobalSettings.CultureInfo), ExpenseType.Karma, DateTime.Now);
-                await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense);
-                CharacterObject.Karma -= intKarmaExpense;
-
-                // Create the Initiate Grade object.
-                InitiationGrade objGrade = new InitiationGrade(CharacterObject);
-                objGrade.Create(CharacterObject.SubmersionGrade + 1, true,
-                                await chkInitiationGroup.DoThreadSafeFuncAsync(x => x.Checked, GenericToken),
-                                await chkInitiationOrdeal.DoThreadSafeFuncAsync(x => x.Checked, GenericToken),
-                                await chkInitiationSchooling.DoThreadSafeFuncAsync(x => x.Checked, GenericToken));
-                await CharacterObject.InitiationGrades.AddWithSortAsync(objGrade);
-
-                ExpenseUndo objUndo = new ExpenseUndo();
-                objUndo.CreateKarma(KarmaExpenseType.ImproveInitiateGrade, objGrade.InternalId);
-                objExpense.Undo = objUndo;
-
-                int intAmount = ((CharacterObjectSettings.KarmaInitiationFlat + (CharacterObject.SubmersionGrade + 1) * CharacterObjectSettings.KarmaInitiation) * decMultiplier).StandardRound();
-
-                string strInitTip = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Tip_ImproveSubmersionGrade")
-                    , (CharacterObject.SubmersionGrade + 1).ToString(GlobalSettings.CultureInfo)
-                    , intAmount.ToString(GlobalSettings.CultureInfo));
-                await cmdAddMetamagic.SetToolTipAsync(strInitTip, GenericToken);
+                //swallow this
             }
         }
 
@@ -5342,135 +5500,170 @@ namespace Chummer
 
         private async void cmdKarmaGained_Click(object sender, EventArgs e)
         {
-            string strText = await LanguageManager.GetStringAsync("String_WorkingForThePeople");
-            using (ThreadSafeForm<CreateExpense> frmNewExpense = await ThreadSafeForm<CreateExpense>.GetAsync(() => new CreateExpense(CharacterObjectSettings)
-                   {
-                       KarmaNuyenExchangeString = strText
-                   }, GenericToken))
+            try
             {
-                if (await frmNewExpense.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
-                    return;
-
-                // Create the Expense Log Entry.
-                ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                objExpense.Create(frmNewExpense.MyForm.Amount, frmNewExpense.MyForm.Reason, ExpenseType.Karma, frmNewExpense.MyForm.SelectedDate, frmNewExpense.MyForm.Refund);
-                await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense);
-
-                ExpenseUndo objUndo = new ExpenseUndo();
-                objUndo.CreateKarma(KarmaExpenseType.ManualAdd, string.Empty);
-                objExpense.Undo = objUndo;
-
-                // Adjust the character's Karma total.
-                CharacterObject.Karma += frmNewExpense.MyForm.Amount.ToInt32();
-
-                if (frmNewExpense.MyForm.KarmaNuyenExchange)
+                string strText = await LanguageManager.GetStringAsync("String_WorkingForThePeople");
+                using (ThreadSafeForm<CreateExpense> frmNewExpense = await ThreadSafeForm<CreateExpense>.GetAsync(
+                           () => new CreateExpense(CharacterObjectSettings)
+                           {
+                               KarmaNuyenExchangeString = strText
+                           }, GenericToken))
                 {
+                    if (await frmNewExpense.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                        return;
+
                     // Create the Expense Log Entry.
-                    objExpense = new ExpenseLogEntry(CharacterObject);
-                    objExpense.Create(frmNewExpense.MyForm.Amount * -CharacterObjectSettings.NuyenPerBPWftP, frmNewExpense.MyForm.Reason, ExpenseType.Nuyen, frmNewExpense.MyForm.SelectedDate);
-                    objExpense.ForceCareerVisible = frmNewExpense.MyForm.ForceCareerVisible;
+                    ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                    objExpense.Create(frmNewExpense.MyForm.Amount, frmNewExpense.MyForm.Reason, ExpenseType.Karma,
+                                      frmNewExpense.MyForm.SelectedDate, frmNewExpense.MyForm.Refund);
                     await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense);
 
-                    objUndo = new ExpenseUndo();
-                    objUndo.CreateNuyen(NuyenExpenseType.ManualSubtract, string.Empty);
+                    ExpenseUndo objUndo = new ExpenseUndo();
+                    objUndo.CreateKarma(KarmaExpenseType.ManualAdd, string.Empty);
                     objExpense.Undo = objUndo;
 
-                    // Adjust the character's Nuyen total.
-                    CharacterObject.Nuyen += frmNewExpense.MyForm.Amount * -CharacterObjectSettings.NuyenPerBPWftP;
+                    // Adjust the character's Karma total.
+                    CharacterObject.Karma += frmNewExpense.MyForm.Amount.ToInt32();
+
+                    if (frmNewExpense.MyForm.KarmaNuyenExchange)
+                    {
+                        // Create the Expense Log Entry.
+                        objExpense = new ExpenseLogEntry(CharacterObject);
+                        objExpense.Create(frmNewExpense.MyForm.Amount * -CharacterObjectSettings.NuyenPerBPWftP,
+                                          frmNewExpense.MyForm.Reason, ExpenseType.Nuyen,
+                                          frmNewExpense.MyForm.SelectedDate);
+                        objExpense.ForceCareerVisible = frmNewExpense.MyForm.ForceCareerVisible;
+                        await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense);
+
+                        objUndo = new ExpenseUndo();
+                        objUndo.CreateNuyen(NuyenExpenseType.ManualSubtract, string.Empty);
+                        objExpense.Undo = objUndo;
+
+                        // Adjust the character's Nuyen total.
+                        CharacterObject.Nuyen += frmNewExpense.MyForm.Amount * -CharacterObjectSettings.NuyenPerBPWftP;
+                    }
                 }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
             }
         }
 
         private async void cmdKarmaSpent_Click(object sender, EventArgs e)
         {
-            string strText = await LanguageManager.GetStringAsync("String_WorkingForTheMan");
-            using (ThreadSafeForm<CreateExpense> frmNewExpense = await ThreadSafeForm<CreateExpense>.GetAsync(() => new CreateExpense(CharacterObjectSettings)
-                   {
-                       KarmaNuyenExchangeString = strText
-                   }, GenericToken))
+            try
             {
-                if (await frmNewExpense.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
-                    return;
-
-                // Make sure the Karma expense would not put the character's remaining Karma amount below 0.
-                if (CharacterObject.Karma - frmNewExpense.MyForm.Amount < 0)
+                string strText = await LanguageManager.GetStringAsync("String_WorkingForTheMan");
+                using (ThreadSafeForm<CreateExpense> frmNewExpense = await ThreadSafeForm<CreateExpense>.GetAsync(
+                           () => new CreateExpense(CharacterObjectSettings)
+                           {
+                               KarmaNuyenExchangeString = strText
+                           }, GenericToken))
                 {
-                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-                }
+                    if (await frmNewExpense.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                        return;
 
-                // Create the Expense Log Entry.
-                ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                objExpense.Create(frmNewExpense.MyForm.Amount * -1, frmNewExpense.MyForm.Reason, ExpenseType.Karma, frmNewExpense.MyForm.SelectedDate, frmNewExpense.MyForm.Refund);
-                objExpense.ForceCareerVisible = frmNewExpense.MyForm.ForceCareerVisible;
-                await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense);
+                    // Make sure the Karma expense would not put the character's remaining Karma amount below 0.
+                    if (CharacterObject.Karma - frmNewExpense.MyForm.Amount < 0)
+                    {
+                        Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma"),
+                                               await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"),
+                                               MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        return;
+                    }
 
-                ExpenseUndo objUndo = new ExpenseUndo();
-                objUndo.CreateKarma(KarmaExpenseType.ManualSubtract, string.Empty);
-                objExpense.Undo = objUndo;
-
-                // Adjust the character's Karma total.
-                CharacterObject.Karma -= frmNewExpense.MyForm.Amount.ToInt32();
-
-                if (frmNewExpense.MyForm.KarmaNuyenExchange)
-                {
                     // Create the Expense Log Entry.
-                    objExpense = new ExpenseLogEntry(CharacterObject);
-                    objExpense.Create(frmNewExpense.MyForm.Amount * CharacterObjectSettings.NuyenPerBPWftM, frmNewExpense.MyForm.Reason, ExpenseType.Nuyen, frmNewExpense.MyForm.SelectedDate);
+                    ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                    objExpense.Create(frmNewExpense.MyForm.Amount * -1, frmNewExpense.MyForm.Reason, ExpenseType.Karma,
+                                      frmNewExpense.MyForm.SelectedDate, frmNewExpense.MyForm.Refund);
                     objExpense.ForceCareerVisible = frmNewExpense.MyForm.ForceCareerVisible;
                     await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense);
 
-                    objUndo = new ExpenseUndo();
-                    objUndo.CreateNuyen(NuyenExpenseType.ManualSubtract, string.Empty);
+                    ExpenseUndo objUndo = new ExpenseUndo();
+                    objUndo.CreateKarma(KarmaExpenseType.ManualSubtract, string.Empty);
                     objExpense.Undo = objUndo;
 
-                    // Adjust the character's Nuyen total.
-                    CharacterObject.Nuyen += frmNewExpense.MyForm.Amount * CharacterObjectSettings.NuyenPerBPWftM;
+                    // Adjust the character's Karma total.
+                    CharacterObject.Karma -= frmNewExpense.MyForm.Amount.ToInt32();
+
+                    if (frmNewExpense.MyForm.KarmaNuyenExchange)
+                    {
+                        // Create the Expense Log Entry.
+                        objExpense = new ExpenseLogEntry(CharacterObject);
+                        objExpense.Create(frmNewExpense.MyForm.Amount * CharacterObjectSettings.NuyenPerBPWftM,
+                                          frmNewExpense.MyForm.Reason, ExpenseType.Nuyen,
+                                          frmNewExpense.MyForm.SelectedDate);
+                        objExpense.ForceCareerVisible = frmNewExpense.MyForm.ForceCareerVisible;
+                        await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense);
+
+                        objUndo = new ExpenseUndo();
+                        objUndo.CreateNuyen(NuyenExpenseType.ManualSubtract, string.Empty);
+                        objExpense.Undo = objUndo;
+
+                        // Adjust the character's Nuyen total.
+                        CharacterObject.Nuyen += frmNewExpense.MyForm.Amount * CharacterObjectSettings.NuyenPerBPWftM;
+                    }
                 }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
             }
         }
 
         private async void cmdNuyenGained_Click(object sender, EventArgs e)
         {
-            string strText = await LanguageManager.GetStringAsync("String_WorkingForTheMan");
-            using (ThreadSafeForm<CreateExpense> frmNewExpense = await ThreadSafeForm<CreateExpense>.GetAsync(() => new CreateExpense(CharacterObjectSettings)
-                   {
-                       Mode = ExpenseType.Nuyen,
-                       KarmaNuyenExchangeString = strText
-                   }, GenericToken))
+            try
             {
-                if (await frmNewExpense.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
-                    return;
-
-                // Create the Expense Log Entry.
-                ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                objExpense.Create(frmNewExpense.MyForm.Amount, frmNewExpense.MyForm.Reason, ExpenseType.Nuyen, frmNewExpense.MyForm.SelectedDate);
-                objExpense.Refund = frmNewExpense.MyForm.Refund;
-                await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense);
-
-                ExpenseUndo objUndo = new ExpenseUndo();
-                objUndo.CreateNuyen(NuyenExpenseType.ManualAdd, string.Empty);
-                objExpense.Undo = objUndo;
-
-                // Adjust the character's Nuyen total.
-                CharacterObject.Nuyen += frmNewExpense.MyForm.Amount;
-
-                if (frmNewExpense.MyForm.KarmaNuyenExchange)
+                string strText = await LanguageManager.GetStringAsync("String_WorkingForTheMan");
+                using (ThreadSafeForm<CreateExpense> frmNewExpense = await ThreadSafeForm<CreateExpense>.GetAsync(
+                           () => new CreateExpense(CharacterObjectSettings)
+                           {
+                               Mode = ExpenseType.Nuyen,
+                               KarmaNuyenExchangeString = strText
+                           }, GenericToken))
                 {
+                    if (await frmNewExpense.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                        return;
+
                     // Create the Expense Log Entry.
-                    objExpense = new ExpenseLogEntry(CharacterObject);
-                    int intAmount = (frmNewExpense.MyForm.Amount / CharacterObjectSettings.NuyenPerBPWftM).ToInt32();
-                    objExpense.Create(-intAmount, frmNewExpense.MyForm.Reason, ExpenseType.Karma, frmNewExpense.MyForm.SelectedDate, frmNewExpense.MyForm.Refund);
-                    objExpense.ForceCareerVisible = frmNewExpense.MyForm.ForceCareerVisible;
+                    ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                    objExpense.Create(frmNewExpense.MyForm.Amount, frmNewExpense.MyForm.Reason, ExpenseType.Nuyen,
+                                      frmNewExpense.MyForm.SelectedDate);
+                    objExpense.Refund = frmNewExpense.MyForm.Refund;
                     await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense);
 
-                    objUndo = new ExpenseUndo();
-                    objUndo.CreateKarma(KarmaExpenseType.ManualSubtract, string.Empty);
+                    ExpenseUndo objUndo = new ExpenseUndo();
+                    objUndo.CreateNuyen(NuyenExpenseType.ManualAdd, string.Empty);
                     objExpense.Undo = objUndo;
 
-                    // Adjust the character's Karma total.
-                    CharacterObject.Karma -= intAmount;
+                    // Adjust the character's Nuyen total.
+                    CharacterObject.Nuyen += frmNewExpense.MyForm.Amount;
+
+                    if (frmNewExpense.MyForm.KarmaNuyenExchange)
+                    {
+                        // Create the Expense Log Entry.
+                        objExpense = new ExpenseLogEntry(CharacterObject);
+                        int intAmount = (frmNewExpense.MyForm.Amount / CharacterObjectSettings.NuyenPerBPWftM)
+                            .ToInt32();
+                        objExpense.Create(-intAmount, frmNewExpense.MyForm.Reason, ExpenseType.Karma,
+                                          frmNewExpense.MyForm.SelectedDate, frmNewExpense.MyForm.Refund);
+                        objExpense.ForceCareerVisible = frmNewExpense.MyForm.ForceCareerVisible;
+                        await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense);
+
+                        objUndo = new ExpenseUndo();
+                        objUndo.CreateKarma(KarmaExpenseType.ManualSubtract, string.Empty);
+                        objExpense.Undo = objUndo;
+
+                        // Adjust the character's Karma total.
+                        CharacterObject.Karma -= intAmount;
+                    }
                 }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
             }
         }
 
@@ -6874,120 +7067,157 @@ namespace Chummer
 
         private async void cmdAddWeek_Click(object sender, EventArgs e)
         {
-            CalendarWeek objWeek = new CalendarWeek();
-            CalendarWeek objLastWeek = CharacterObject.Calendar?.FirstOrDefault();
-            if (objLastWeek != null)
+            try
             {
-                objWeek.Year = objLastWeek.Year;
-                objWeek.Week = objLastWeek.Week + 1;
-                if (objWeek.Week > 52)
+                CalendarWeek objWeek = new CalendarWeek();
+                CalendarWeek objLastWeek = CharacterObject.Calendar?.FirstOrDefault();
+                if (objLastWeek != null)
                 {
-                    objWeek.Week = 1;
-                    ++objWeek.Year;
+                    objWeek.Year = objLastWeek.Year;
+                    objWeek.Week = objLastWeek.Week + 1;
+                    if (objWeek.Week > 52)
+                    {
+                        objWeek.Week = 1;
+                        ++objWeek.Year;
+                    }
                 }
+                else
+                {
+                    using (ThreadSafeForm<SelectCalendarStart> frmPickStart
+                           = await ThreadSafeForm<SelectCalendarStart>.GetAsync(
+                               () => new SelectCalendarStart(), GenericToken))
+                    {
+                        if (await frmPickStart.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                            return;
+
+                        objWeek.Year = frmPickStart.MyForm.SelectedYear;
+                        objWeek.Week = frmPickStart.MyForm.SelectedWeek;
+                    }
+                }
+
+                await CharacterObject.Calendar.AddWithSortAsync(objWeek, (x, y) => y.CompareTo(x));
             }
-            else
+            catch (OperationCanceledException)
             {
-                using (ThreadSafeForm<SelectCalendarStart> frmPickStart
-                       = await ThreadSafeForm<SelectCalendarStart>.GetAsync(() => new SelectCalendarStart(), GenericToken))
-                {
-                    if (await frmPickStart.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
-                        return;
-
-                    objWeek.Year = frmPickStart.MyForm.SelectedYear;
-                    objWeek.Week = frmPickStart.MyForm.SelectedWeek;
-                }
+                //swallow this
             }
-
-            await CharacterObject.Calendar.AddWithSortAsync(objWeek, (x, y) => y.CompareTo(x));
         }
 
         private async void cmdDeleteWeek_Click(object sender, EventArgs e)
         {
-            if (lstCalendar == null || await lstCalendar.DoThreadSafeFuncAsync(x => x.SelectedItems.Count == 0, GenericToken))
+            try
             {
-                return;
+                if (lstCalendar == null
+                    || await lstCalendar.DoThreadSafeFuncAsync(x => x.SelectedItems.Count == 0, GenericToken))
+                {
+                    return;
+                }
+
+                string strWeekId
+                    = await lstCalendar.DoThreadSafeFuncAsync(x => x.SelectedItems[0].SubItems[2].Text, GenericToken);
+
+                CalendarWeek objCharacterWeek = CharacterObject.Calendar.FirstOrDefault(x => x.InternalId == strWeekId);
+
+                if (objCharacterWeek == null)
+                    return;
+                if (!CommonFunctions.ConfirmDelete(await LanguageManager.GetStringAsync("Message_DeleteCalendarWeek")))
+                    return;
+
+                await CharacterObject.Calendar.RemoveAsync(objCharacterWeek);
             }
-
-            string strWeekId = await lstCalendar.DoThreadSafeFuncAsync(x => x.SelectedItems[0].SubItems[2].Text, GenericToken);
-
-            CalendarWeek objCharacterWeek = CharacterObject.Calendar.FirstOrDefault(x => x.InternalId == strWeekId);
-
-            if (objCharacterWeek == null)
-                return;
-            if (!CommonFunctions.ConfirmDelete(await LanguageManager.GetStringAsync("Message_DeleteCalendarWeek")))
-                return;
-
-            await CharacterObject.Calendar.RemoveAsync(objCharacterWeek);
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void cmdEditWeek_Click(object sender, EventArgs e)
         {
-            if (lstCalendar == null || await lstCalendar.DoThreadSafeFuncAsync(x => x.SelectedItems.Count == 0, GenericToken))
+            try
             {
-                return;
-            }
-
-            string strWeekId = await lstCalendar.DoThreadSafeFuncAsync(x => x.SelectedItems[0].SubItems[2].Text, GenericToken);
-
-            CalendarWeek objWeek = CharacterObject.Calendar.FirstOrDefault(x => x.InternalId == strWeekId);
-
-            if (objWeek == null)
-                return;
-            using (ThreadSafeForm<EditNotes> frmItemNotes = await ThreadSafeForm<EditNotes>.GetAsync(() => new EditNotes(objWeek.Notes, objWeek.NotesColor), GenericToken))
-            {
-                if (await frmItemNotes.ShowDialogSafeAsync(this, GenericToken) != DialogResult.OK)
+                if (lstCalendar == null
+                    || await lstCalendar.DoThreadSafeFuncAsync(x => x.SelectedItems.Count == 0, GenericToken))
+                {
                     return;
-                objWeek.Notes = frmItemNotes.MyForm.Notes;
-                objWeek.NotesColor = frmItemNotes.MyForm.NotesColor;
-                await SetDirty(true);
+                }
+
+                string strWeekId
+                    = await lstCalendar.DoThreadSafeFuncAsync(x => x.SelectedItems[0].SubItems[2].Text, GenericToken);
+
+                CalendarWeek objWeek = CharacterObject.Calendar.FirstOrDefault(x => x.InternalId == strWeekId);
+
+                if (objWeek == null)
+                    return;
+                using (ThreadSafeForm<EditNotes> frmItemNotes
+                       = await ThreadSafeForm<EditNotes>.GetAsync(
+                           () => new EditNotes(objWeek.Notes, objWeek.NotesColor), GenericToken))
+                {
+                    if (await frmItemNotes.ShowDialogSafeAsync(this, GenericToken) != DialogResult.OK)
+                        return;
+                    objWeek.Notes = frmItemNotes.MyForm.Notes;
+                    objWeek.NotesColor = frmItemNotes.MyForm.NotesColor;
+                    await SetDirty(true);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
             }
         }
 
         private async void cmdChangeStartWeek_Click(object sender, EventArgs e)
         {
-            // Find the first date.
-            CalendarWeek objStart = CharacterObject.Calendar?.LastOrDefault();
-            if (objStart == null)
+            try
             {
-                return;
-            }
-
-            int intYear;
-            int intWeek;
-            using (ThreadSafeForm<SelectCalendarStart> frmPickStart = await ThreadSafeForm<SelectCalendarStart>.GetAsync(() => new SelectCalendarStart(objStart), GenericToken))
-            {
-                if (await frmPickStart.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                // Find the first date.
+                CalendarWeek objStart = CharacterObject.Calendar?.LastOrDefault();
+                if (objStart == null)
+                {
                     return;
+                }
 
-                intYear = frmPickStart.MyForm.SelectedYear;
-                intWeek = frmPickStart.MyForm.SelectedWeek;
+                int intYear;
+                int intWeek;
+                using (ThreadSafeForm<SelectCalendarStart> frmPickStart
+                       = await ThreadSafeForm<SelectCalendarStart>.GetAsync(
+                           () => new SelectCalendarStart(objStart), GenericToken))
+                {
+                    if (await frmPickStart.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                        return;
+
+                    intYear = frmPickStart.MyForm.SelectedYear;
+                    intWeek = frmPickStart.MyForm.SelectedWeek;
+                }
+
+                // Determine the difference between the starting value and selected values for year and week.
+                int intYearDiff = intYear - objStart.Year;
+                int intWeekDiff = intWeek - objStart.Week;
+
+                // Update each of the CalendarWeek entries for the character.
+                foreach (CalendarWeek objWeek in CharacterObject.Calendar)
+                {
+                    objWeek.Week += intWeekDiff;
+                    objWeek.Year += intYearDiff;
+
+                    // If the date range goes outside of 52 weeks, increase or decrease the year as necessary.
+                    if (objWeek.Week < 1)
+                    {
+                        --objWeek.Year;
+                        objWeek.Week += 52;
+                    }
+                    else if (objWeek.Week > 52)
+                    {
+                        ++objWeek.Year;
+                        objWeek.Week -= 52;
+                    }
+                }
+
+                await SetDirty(true);
             }
-
-            // Determine the difference between the starting value and selected values for year and week.
-            int intYearDiff = intYear - objStart.Year;
-            int intWeekDiff = intWeek - objStart.Week;
-
-            // Update each of the CalendarWeek entries for the character.
-            foreach (CalendarWeek objWeek in CharacterObject.Calendar)
+            catch (OperationCanceledException)
             {
-                objWeek.Week += intWeekDiff;
-                objWeek.Year += intYearDiff;
-
-                // If the date range goes outside of 52 weeks, increase or decrease the year as necessary.
-                if (objWeek.Week < 1)
-                {
-                    --objWeek.Year;
-                    objWeek.Week += 52;
-                }
-                else if (objWeek.Week > 52)
-                {
-                    ++objWeek.Year;
-                    objWeek.Week -= 52;
-                }
+                //swallow this
             }
-
-            await SetDirty(true);
         }
 
         private async void cmdAddImprovement_Click(object sender, EventArgs e)
@@ -7020,115 +7250,145 @@ namespace Chummer
 
         private async void cmdCreateStackedFocus_Click(object sender, EventArgs e)
         {
-            int intFree = 0;
-            List<Gear> lstGear = new List<Gear>(CharacterObject.Gear.Count);
-
-            // Run through all of the Foci the character has and count the un-Bonded ones.
-            foreach (Gear objGear in CharacterObject.Gear)
+            try
             {
-                if ((objGear.Category == "Foci" || objGear.Category == "Metamagic Foci") && !objGear.Bonded)
+                int intFree = 0;
+                List<Gear> lstGear = new List<Gear>(await CharacterObject.Gear.GetCountAsync(GenericToken));
+
+                // Run through all of the Foci the character has and count the un-Bonded ones.
+                foreach (Gear objGear in CharacterObject.Gear)
                 {
-                    ++intFree;
-                    lstGear.Add(objGear);
-                }
-            }
-
-            // If the character does not have at least 2 un-Bonded Foci, display an error and leave.
-            if (intFree < 2)
-            {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CannotStackFoci"), await LanguageManager.GetStringAsync("MessageTitle_CannotStackFoci"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            List<Gear> lstStack = new List<Gear>(lstGear.Count);
-            string strDescription = await LanguageManager.GetStringAsync("String_SelectItemFocus");
-            using (ThreadSafeForm<SelectItem> frmPickItem = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem
-                   {
-                       Description = strDescription,
-                       AllowAutoSelect = false
-                   }, GenericToken))
-            {
-                // Let the character select the Foci they'd like to stack, stopping when they either click Cancel or there are no more items left in the list.
-                DialogResult eResult;
-                do
-                {
-                    frmPickItem.MyForm.SetGearMode(lstGear);
-                    eResult = await frmPickItem.ShowDialogSafeAsync(this, GenericToken);
-                    if (eResult != DialogResult.OK)
-                        continue;
-                    // Move the item from the Gear list to the Stack list.
-                    foreach (Gear objGear in lstGear)
+                    if ((objGear.Category == "Foci" || objGear.Category == "Metamagic Foci") && !objGear.Bonded)
                     {
-                        if (objGear.InternalId != frmPickItem.MyForm.SelectedItem)
-                            continue;
-                        objGear.Bonded = true;
-                        lstStack.Add(objGear);
-                        lstGear.Remove(objGear);
-                        break;
+                        ++intFree;
+                        lstGear.Add(objGear);
                     }
-                } while (lstGear.Count > 0 && eResult != DialogResult.Cancel);
-            }
+                }
 
-            // Make sure at least 2 Foci were selected.
-            if (lstStack.Count < 2)
-            {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_StackedFocusMinimum"), await LanguageManager.GetStringAsync("MessageTitle_CannotStackFoci"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            // Make sure the combined Force of the Foci do not exceed 6.
-            if (!CharacterObjectSettings.AllowHigherStackedFoci)
-            {
-                int intCombined = lstStack.Sum(objGear => objGear.Rating);
-                if (intCombined > 6)
+                // If the character does not have at least 2 un-Bonded Foci, display an error and leave.
+                if (intFree < 2)
                 {
-                    foreach (Gear objGear in lstStack)
-                        objGear.Bonded = false;
-                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_StackedFocusForce"), await LanguageManager.GetStringAsync("MessageTitle_CannotStackFoci"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CannotStackFoci"),
+                                           await LanguageManager.GetStringAsync("MessageTitle_CannotStackFoci"),
+                                           MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
+
+                List<Gear> lstStack = new List<Gear>(lstGear.Count);
+                string strDescription = await LanguageManager.GetStringAsync("String_SelectItemFocus");
+                using (ThreadSafeForm<SelectItem> frmPickItem = await ThreadSafeForm<SelectItem>.GetAsync(
+                           () => new SelectItem
+                           {
+                               Description = strDescription,
+                               AllowAutoSelect = false
+                           }, GenericToken))
+                {
+                    // Let the character select the Foci they'd like to stack, stopping when they either click Cancel or there are no more items left in the list.
+                    DialogResult eResult;
+                    do
+                    {
+                        frmPickItem.MyForm.SetGearMode(lstGear);
+                        eResult = await frmPickItem.ShowDialogSafeAsync(this, GenericToken);
+                        if (eResult != DialogResult.OK)
+                            continue;
+                        // Move the item from the Gear list to the Stack list.
+                        foreach (Gear objGear in lstGear)
+                        {
+                            if (objGear.InternalId != frmPickItem.MyForm.SelectedItem)
+                                continue;
+                            objGear.Bonded = true;
+                            lstStack.Add(objGear);
+                            lstGear.Remove(objGear);
+                            break;
+                        }
+                    } while (lstGear.Count > 0 && eResult != DialogResult.Cancel);
+                }
+
+                // Make sure at least 2 Foci were selected.
+                if (lstStack.Count < 2)
+                {
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_StackedFocusMinimum"),
+                                           await LanguageManager.GetStringAsync("MessageTitle_CannotStackFoci"),
+                                           MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                // Make sure the combined Force of the Foci do not exceed 6.
+                if (!CharacterObjectSettings.AllowHigherStackedFoci)
+                {
+                    int intCombined = lstStack.Sum(objGear => objGear.Rating);
+                    if (intCombined > 6)
+                    {
+                        foreach (Gear objGear in lstStack)
+                            objGear.Bonded = false;
+                        Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_StackedFocusForce"),
+                                               await LanguageManager.GetStringAsync("MessageTitle_CannotStackFoci"),
+                                               MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        return;
+                    }
+                }
+
+                // Create the Stacked Focus.
+                StackedFocus objStack = new StackedFocus(CharacterObject);
+                foreach (Gear objGear in lstStack)
+                    await objStack.Gear.AddAsync(objGear);
+                await CharacterObject.StackedFoci.AddAsync(objStack);
+
+                // Remove the Gear from the character and replace it with a Stacked Focus item.
+                decimal decCost = 0.0m;
+                foreach (Gear objGear in lstStack)
+                {
+                    decCost += objGear.TotalCost;
+                    await CharacterObject.Gear.RemoveAsync(objGear);
+                }
+
+                Gear objStackItem = new Gear(CharacterObject)
+                {
+                    Category = "Stacked Focus",
+                    Name = "Stacked Focus: " + objStack.CurrentDisplayName,
+                    Source = "SR5",
+                    Page = "1",
+                    Cost = decCost.ToString(GlobalSettings.CultureInfo),
+                    Avail = "0"
+                };
+
+                await CharacterObject.Gear.AddAsync(objStackItem);
+
+                objStack.GearId = objStackItem.InternalId;
             }
-
-            // Create the Stacked Focus.
-            StackedFocus objStack = new StackedFocus(CharacterObject);
-            foreach (Gear objGear in lstStack)
-                await objStack.Gear.AddAsync(objGear);
-            await CharacterObject.StackedFoci.AddAsync(objStack);
-
-            // Remove the Gear from the character and replace it with a Stacked Focus item.
-            decimal decCost = 0.0m;
-            foreach (Gear objGear in lstStack)
+            catch (OperationCanceledException)
             {
-                decCost += objGear.TotalCost;
-                await CharacterObject.Gear.RemoveAsync(objGear);
+                //swallow this
             }
-
-            Gear objStackItem = new Gear(CharacterObject)
-            {
-                Category = "Stacked Focus",
-                Name = "Stacked Focus: " + objStack.CurrentDisplayName,
-                Source = "SR5",
-                Page = "1",
-                Cost = decCost.ToString(GlobalSettings.CultureInfo),
-                Avail = "0"
-            };
-
-            await CharacterObject.Gear.AddAsync(objStackItem);
-
-            objStack.GearId = objStackItem.InternalId;
         }
 
         private async void cmdBurnStreetCred_Click(object sender, EventArgs e)
         {
-            if (Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_BurnStreetCred"), await LanguageManager.GetStringAsync("MessageTitle_BurnStreetCred"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
-                return;
+            try
+            {
+                if (Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_BurnStreetCred", token: GenericToken),
+                                           await LanguageManager.GetStringAsync("MessageTitle_BurnStreetCred", token: GenericToken),
+                                           MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                    return;
 
-            CharacterObject.BurntStreetCred += 2;
+                CharacterObject.BurntStreetCred += 2;
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void cmdEditImprovement_Click(object sender, EventArgs e)
         {
-            await DoEditImprovement();
+            try
+            {
+                await DoEditImprovement(GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async ValueTask DoEditImprovement(CancellationToken token = default)
@@ -7177,7 +7437,14 @@ namespace Chummer
 
         private async void cmdDeleteImprovement_Click(object sender, EventArgs e)
         {
-            await DoDeleteImprovement();
+            try
+            {
+                await DoDeleteImprovement(GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async ValueTask DoDeleteImprovement(CancellationToken token = default)
@@ -7210,217 +7477,290 @@ namespace Chummer
 
         private async void cmdAddArmorBundle_Click(object sender, EventArgs e)
         {
-            string strDescription = await LanguageManager.GetStringAsync("String_AddLocation");
-            // Add a new location to the Armor Tree.
-            using (ThreadSafeForm<SelectText> frmPickText = await ThreadSafeForm<SelectText>.GetAsync(
-                       () => new SelectText
-                       {
-                           Description = strDescription
-                       }, GenericToken))
+            try
             {
-                if (await frmPickText.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel || string.IsNullOrEmpty(frmPickText.MyForm.SelectedValue))
-                    return;
+                string strDescription = await LanguageManager.GetStringAsync("String_AddLocation");
+                // Add a new location to the Armor Tree.
+                using (ThreadSafeForm<SelectText> frmPickText = await ThreadSafeForm<SelectText>.GetAsync(
+                           () => new SelectText
+                           {
+                               Description = strDescription
+                           }, GenericToken))
+                {
+                    if (await frmPickText.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel
+                        || string.IsNullOrEmpty(frmPickText.MyForm.SelectedValue))
+                        return;
 
-                Location objLocation = new Location(CharacterObject, CharacterObject.ArmorLocations, frmPickText.MyForm.SelectedValue);
-                await CharacterObject.ArmorLocations.AddAsync(objLocation);
+                    Location objLocation = new Location(CharacterObject, CharacterObject.ArmorLocations,
+                                                        frmPickText.MyForm.SelectedValue);
+                    await CharacterObject.ArmorLocations.AddAsync(objLocation);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
             }
         }
 
         private async void cmdArmorEquipAll_Click(object sender, EventArgs e)
         {
-            object objSelected = await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken);
-            if (objSelected is Location selectedLocation)
+            try
             {
-                // Equip all of the Armor in the Armor Bundle.
-                foreach (Armor objArmor in selectedLocation.Children.OfType<Armor>())
+                object objSelected = await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken);
+                if (objSelected is Location selectedLocation)
                 {
-                    if (objArmor.Location == selectedLocation)
+                    // Equip all of the Armor in the Armor Bundle.
+                    foreach (Armor objArmor in selectedLocation.Children.OfType<Armor>())
+                    {
+                        if (objArmor.Location == selectedLocation)
+                        {
+                            objArmor.Equipped = true;
+                        }
+                    }
+                }
+                else if (objSelected?.ToString() == "Node_SelectedArmor")
+                {
+                    foreach (Armor objArmor in CharacterObject.Armor.Where(objArmor =>
+                                                                               !objArmor.Equipped
+                                                                               && objArmor.Location == null))
                     {
                         objArmor.Equipped = true;
                     }
                 }
-            }
-            else if (objSelected?.ToString() == "Node_SelectedArmor")
-            {
-                foreach (Armor objArmor in CharacterObject.Armor.Where(objArmor =>
-                    !objArmor.Equipped && objArmor.Location == null))
+                else
                 {
-                    objArmor.Equipped = true;
+                    return;
                 }
-            }
-            else
-            {
-                return;
-            }
 
-            await RequestCharacterUpdate();
-            await SetDirty(true);
+                await RequestCharacterUpdate();
+                await SetDirty(true);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void cmdArmorUnEquipAll_Click(object sender, EventArgs e)
         {
-            object objSelected = await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken);
-            if (objSelected is Location selectedLocation)
+            try
             {
-                // Equip all of the Armor in the Armor Bundle.
-                foreach (Armor objArmor in selectedLocation.Children.OfType<Armor>())
+                object objSelected = await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken);
+                if (objSelected is Location selectedLocation)
                 {
-                    if (objArmor.Location == selectedLocation)
+                    // Equip all of the Armor in the Armor Bundle.
+                    foreach (Armor objArmor in selectedLocation.Children.OfType<Armor>())
+                    {
+                        if (objArmor.Location == selectedLocation)
+                        {
+                            objArmor.Equipped = false;
+                        }
+                    }
+                }
+                else if (objSelected?.ToString() == "Node_SelectedArmor")
+                {
+                    foreach (Armor objArmor in CharacterObject.Armor.Where(objArmor =>
+                                                                               objArmor.Equipped
+                                                                               && objArmor.Location == null))
                     {
                         objArmor.Equipped = false;
                     }
                 }
-            }
-            else if (objSelected?.ToString() == "Node_SelectedArmor")
-            {
-                foreach (Armor objArmor in CharacterObject.Armor.Where(objArmor =>
-                    objArmor.Equipped && objArmor.Location == null))
+                else
                 {
-                    objArmor.Equipped = false;
+                    return;
                 }
-            }
-            else
-            {
-                return;
-            }
 
-            await RequestCharacterUpdate();
-            await SetDirty(true);
+                await RequestCharacterUpdate();
+                await SetDirty(true);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void cmdImprovementsEnableAll_Click(object sender, EventArgs e)
         {
-            // Enable all of the Improvements in the Improvement Group.
-            if (!(await treImprovements.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is string strSelectedId))
-                return;
-            List<Improvement> lstImprovementsEnabled;
-            if (strSelectedId == "Node_SelectedImprovements")
+            try
             {
-                lstImprovementsEnabled = await (await CharacterObject.GetImprovementsAsync(GenericToken))
-                                                        .ToListAsync(objImprovement =>
-                                                                   objImprovement.Custom && !objImprovement.Enabled
-                                                                   && string.IsNullOrEmpty(objImprovement.CustomGroup), GenericToken);
+                // Enable all of the Improvements in the Improvement Group.
+                if (!(await treImprovements.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is string
+                        strSelectedId))
+                    return;
+                List<Improvement> lstImprovementsEnabled;
+                if (strSelectedId == "Node_SelectedImprovements")
+                {
+                    lstImprovementsEnabled = await (await CharacterObject.GetImprovementsAsync(GenericToken))
+                        .ToListAsync(objImprovement =>
+                                         objImprovement.Custom && !objImprovement.Enabled
+                                                               && string.IsNullOrEmpty(objImprovement.CustomGroup),
+                                     GenericToken);
+                }
+                else
+                {
+                    lstImprovementsEnabled = await (await CharacterObject.GetImprovementsAsync(GenericToken))
+                        .ToListAsync(objImprovement =>
+                                         objImprovement.Custom && !objImprovement.Enabled
+                                                               && objImprovement.CustomGroup == strSelectedId,
+                                     GenericToken);
+                }
+
+                if (lstImprovementsEnabled.Count == 0)
+                    return;
+                ImprovementManager.EnableImprovements(CharacterObject, lstImprovementsEnabled);
+                await RequestCharacterUpdate();
+                await SetDirty(true);
             }
-            else
+            catch (OperationCanceledException)
             {
-                lstImprovementsEnabled = await (await CharacterObject.GetImprovementsAsync(GenericToken))
-                                                        .ToListAsync(objImprovement =>
-                                                                         objImprovement.Custom && !objImprovement.Enabled
-                                                                         && objImprovement.CustomGroup == strSelectedId, GenericToken);
+                //swallow this
             }
-            if (lstImprovementsEnabled.Count == 0)
-                return;
-            ImprovementManager.EnableImprovements(CharacterObject, lstImprovementsEnabled);
-            await RequestCharacterUpdate();
-            await SetDirty(true);
         }
 
         private async void cmdImprovementsDisableAll_Click(object sender, EventArgs e)
         {
-            if (!(await treImprovements.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is string strSelectedId))
-                return;
-            // Disable all of the Improvements in the Improvement Group.
-            List<Improvement> lstImprovementsDisabled;
-            if (strSelectedId == "Node_SelectedImprovements")
+            try
             {
-                lstImprovementsDisabled = await (await CharacterObject.GetImprovementsAsync(GenericToken))
-                                                         .ToListAsync(objImprovement =>
-                                                                          objImprovement.Custom && objImprovement.Enabled
-                                                                          && string.IsNullOrEmpty(objImprovement.CustomGroup), GenericToken);
+                if (!(await treImprovements.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is string
+                        strSelectedId))
+                    return;
+                // Disable all of the Improvements in the Improvement Group.
+                List<Improvement> lstImprovementsDisabled;
+                if (strSelectedId == "Node_SelectedImprovements")
+                {
+                    lstImprovementsDisabled = await (await CharacterObject.GetImprovementsAsync(GenericToken))
+                        .ToListAsync(objImprovement =>
+                                         objImprovement.Custom && objImprovement.Enabled
+                                                               && string.IsNullOrEmpty(objImprovement.CustomGroup),
+                                     GenericToken);
+                }
+                else
+                {
+                    lstImprovementsDisabled = await (await CharacterObject.GetImprovementsAsync(GenericToken))
+                        .ToListAsync(objImprovement =>
+                                         objImprovement.Custom && objImprovement.Enabled
+                                                               && objImprovement.CustomGroup == strSelectedId,
+                                     GenericToken);
+                }
+
+                if (lstImprovementsDisabled.Count == 0)
+                    return;
+                ImprovementManager.DisableImprovements(CharacterObject, lstImprovementsDisabled);
+                await RequestCharacterUpdate();
+                await SetDirty(true);
             }
-            else
+            catch (OperationCanceledException)
             {
-                lstImprovementsDisabled = await (await CharacterObject.GetImprovementsAsync(GenericToken))
-                                                         .ToListAsync(objImprovement =>
-                                                                          objImprovement.Custom && objImprovement.Enabled
-                                                                          && objImprovement.CustomGroup == strSelectedId, GenericToken);
+                //swallow this
             }
-            if (lstImprovementsDisabled.Count == 0)
-                return;
-            ImprovementManager.DisableImprovements(CharacterObject, lstImprovementsDisabled);
-            await RequestCharacterUpdate();
-            await SetDirty(true);
         }
 
         private async void cmdAddVehicleLocation_Click(object sender, EventArgs e)
         {
-            ICollection<Location> destCollection;
-            object objSelected = await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken);
-            // Make sure a Vehicle is selected.
-            if (objSelected is Vehicle objVehicle)
+            try
             {
-                destCollection = objVehicle.Locations;
-            }
-            else if (objSelected == null || objSelected.ToString() == "Node_SelectedVehicles")
-            {
-                destCollection = CharacterObject.VehicleLocations;
-            }
-            else
-            {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectVehicleLocation"), await LanguageManager.GetStringAsync("MessageTitle_SelectVehicle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            string strDescription = await LanguageManager.GetStringAsync("String_AddLocation");
-            // Add a new location to the Armor Tree.
-            using (ThreadSafeForm<SelectText> frmPickText = await ThreadSafeForm<SelectText>.GetAsync(
-                       () => new SelectText
-                       {
-                           Description = strDescription
-                       }, GenericToken))
-            {
-                if (await frmPickText.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel || string.IsNullOrEmpty(frmPickText.MyForm.SelectedValue))
+                ICollection<Location> destCollection;
+                object objSelected = await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken);
+                // Make sure a Vehicle is selected.
+                if (objSelected is Vehicle objVehicle)
+                {
+                    destCollection = objVehicle.Locations;
+                }
+                else if (objSelected == null || objSelected.ToString() == "Node_SelectedVehicles")
+                {
+                    destCollection = CharacterObject.VehicleLocations;
+                }
+                else
+                {
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectVehicleLocation"),
+                                           await LanguageManager.GetStringAsync("MessageTitle_SelectVehicle"),
+                                           MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
-                Location objLocation = new Location(CharacterObject, destCollection, frmPickText.MyForm.SelectedValue);
-                destCollection.Add(objLocation);
+                }
+
+                string strDescription = await LanguageManager.GetStringAsync("String_AddLocation");
+                // Add a new location to the Armor Tree.
+                using (ThreadSafeForm<SelectText> frmPickText = await ThreadSafeForm<SelectText>.GetAsync(
+                           () => new SelectText
+                           {
+                               Description = strDescription
+                           }, GenericToken))
+                {
+                    if (await frmPickText.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel
+                        || string.IsNullOrEmpty(frmPickText.MyForm.SelectedValue))
+                        return;
+                    Location objLocation
+                        = new Location(CharacterObject, destCollection, frmPickText.MyForm.SelectedValue);
+                    destCollection.Add(objLocation);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
             }
         }
 
         private async void cmdQuickenSpell_Click(object sender, EventArgs e)
         {
-            TreeNode objSelectedNode = await treSpells.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken);
-            if (objSelectedNode == null || objSelectedNode.Level != 1)
-                return;
-
-            string strSelectedSpell = objSelectedNode.Text;
-            int intKarmaCost;
-            string strDescription = string.Format(GlobalSettings.CultureInfo,
-                                                  await LanguageManager.GetStringAsync("String_QuickeningKarma"),
-                                                  strSelectedSpell);
-            using (ThreadSafeForm<SelectNumber> frmPickNumber = await ThreadSafeForm<SelectNumber>.GetAsync(
-                       () => new SelectNumber(0)
-                       {
-                           Description = strDescription,
-                           Minimum = 1
-                       }, GenericToken))
+            try
             {
-                if (await frmPickNumber.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                TreeNode objSelectedNode = await treSpells.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken);
+                if (objSelectedNode == null || objSelectedNode.Level != 1)
                     return;
 
-                intKarmaCost = frmPickNumber.MyForm.SelectedValue.ToInt32();
-            }
+                string strSelectedSpell = objSelectedNode.Text;
+                int intKarmaCost;
+                string strDescription = string.Format(GlobalSettings.CultureInfo,
+                                                      await LanguageManager.GetStringAsync("String_QuickeningKarma"),
+                                                      strSelectedSpell);
+                using (ThreadSafeForm<SelectNumber> frmPickNumber = await ThreadSafeForm<SelectNumber>.GetAsync(
+                           () => new SelectNumber(0)
+                           {
+                               Description = strDescription,
+                               Minimum = 1
+                           }, GenericToken))
+                {
+                    if (await frmPickNumber.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                        return;
 
-            // Make sure the character has enough Karma to improve the CharacterAttribute.
-            if (intKarmaCost > CharacterObject.Karma)
+                    intKarmaCost = frmPickNumber.MyForm.SelectedValue.ToInt32();
+                }
+
+                // Make sure the character has enough Karma to improve the CharacterAttribute.
+                if (intKarmaCost > CharacterObject.Karma)
+                {
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma"),
+                                           await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"),
+                                           MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalSettings.CultureInfo,
+                                                                       await LanguageManager.GetStringAsync(
+                                                                           "Message_ConfirmKarmaExpenseQuickeningMetamagic")
+                                                                       , intKarmaCost.ToString(
+                                                                           GlobalSettings.CultureInfo)
+                                                                       , strSelectedSpell)))
+                    return;
+
+                // Create the Karma expense.
+                ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                objExpense.Create(intKarmaCost * -1,
+                                  await LanguageManager.GetStringAsync("String_ExpenseQuickenMetamagic")
+                                  + await LanguageManager.GetStringAsync("String_Space") + strSelectedSpell,
+                                  ExpenseType.Karma, DateTime.Now);
+                await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense);
+                CharacterObject.Karma -= intKarmaCost;
+
+                ExpenseUndo objUndo = new ExpenseUndo();
+                objUndo.CreateKarma(KarmaExpenseType.QuickeningMetamagic, string.Empty);
+                objExpense.Undo = objUndo;
+            }
+            catch (OperationCanceledException)
             {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
+                //swallow this
             }
-
-            if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpenseQuickeningMetamagic")
-                , intKarmaCost.ToString(GlobalSettings.CultureInfo)
-                , strSelectedSpell)))
-                return;
-
-            // Create the Karma expense.
-            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-            objExpense.Create(intKarmaCost * -1, await LanguageManager.GetStringAsync("String_ExpenseQuickenMetamagic") + await LanguageManager.GetStringAsync("String_Space") + strSelectedSpell, ExpenseType.Karma, DateTime.Now);
-            await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense);
-            CharacterObject.Karma -= intKarmaCost;
-
-            ExpenseUndo objUndo = new ExpenseUndo();
-            objUndo.CreateKarma(KarmaExpenseType.QuickeningMetamagic, string.Empty);
-            objExpense.Undo = objUndo;
         }
 
         private void cmdAddSustainedSpell_Click(object sender, EventArgs e)
@@ -7444,155 +7784,208 @@ namespace Chummer
 
         private async void InitiationContextMenu_Opening(object sender, CancelEventArgs e)
         {
-            // Enable and disable menu items
-            if (!(await treMetamagic.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is InitiationGrade objGrade))
-                return;
-            int intGrade = objGrade.Grade;
-            bool blnHasArt = await CharacterObject.Arts.AnyAsync(art => art.Grade == intGrade);
-            bool blnHasBonus = await CharacterObject.Metamagics.AnyAsync(bonus => bonus.Grade == intGrade) || await CharacterObject.Spells.AnyAsync(spell => spell.Grade == intGrade);
-            await this.DoThreadSafeAsync(() =>
+            try
             {
-                tsMetamagicAddArt.Enabled = !blnHasArt;
-                tsMetamagicAddMetamagic.Enabled = !blnHasBonus;
-            });
+                // Enable and disable menu items
+                if (!(await treMetamagic.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is InitiationGrade objGrade))
+                    return;
+                int intGrade = objGrade.Grade;
+                bool blnHasArt = await CharacterObject.Arts.AnyAsync(art => art.Grade == intGrade, GenericToken);
+                bool blnHasBonus = await CharacterObject.Metamagics.AnyAsync(bonus => bonus.Grade == intGrade, GenericToken)
+                                   || await CharacterObject.Spells.AnyAsync(spell => spell.Grade == intGrade, GenericToken);
+                await this.DoThreadSafeAsync(() =>
+                {
+                    tsMetamagicAddArt.Enabled = !blnHasArt;
+                    tsMetamagicAddMetamagic.Enabled = !blnHasBonus;
+                }, GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void tsCyberwareAddAsPlugin_Click(object sender, EventArgs e)
         {
-            // Make sure a parent items is selected, then open the Select Cyberware window.
-            if (!(await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Cyberware objCyberware && !string.IsNullOrWhiteSpace(objCyberware.AllowedSubsystems)))
+            try
             {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectCyberware"), await LanguageManager.GetStringAsync("MessageTitle_SelectCyberware"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
+                // Make sure a parent items is selected, then open the Select Cyberware window.
+                if (!(await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Cyberware
+                        objCyberware && !string.IsNullOrWhiteSpace(objCyberware.AllowedSubsystems)))
+                {
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectCyberware"),
+                                           await LanguageManager.GetStringAsync("MessageTitle_SelectCyberware"),
+                                           MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                bool blnAddAgain;
+                do
+                {
+                    blnAddAgain = await PickCyberware(objCyberware, objCyberware.SourceType);
+                } while (blnAddAgain);
             }
-            bool blnAddAgain;
-            do
+            catch (OperationCanceledException)
             {
-                blnAddAgain = await PickCyberware(objCyberware, objCyberware.SourceType);
+                //swallow this
             }
-            while (blnAddAgain);
         }
 
         private async void tsVehicleCyberwareAddAsPlugin_Click(object sender, EventArgs e)
         {
-            // Make sure a parent items is selected, then open the Select Cyberware window.
-            if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Cyberware objCyberware && !string.IsNullOrWhiteSpace(objCyberware.AllowedSubsystems)))
+            try
             {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectCyberware"), await LanguageManager.GetStringAsync("MessageTitle_SelectCyberware"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
+                // Make sure a parent items is selected, then open the Select Cyberware window.
+                if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Cyberware
+                        objCyberware && !string.IsNullOrWhiteSpace(objCyberware.AllowedSubsystems)))
+                {
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectCyberware"),
+                                           await LanguageManager.GetStringAsync("MessageTitle_SelectCyberware"),
+                                           MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
 
-            bool blnAddAgain;
-            do
-            {
-                blnAddAgain = await PickCyberware(objCyberware, objCyberware.SourceType);
+                bool blnAddAgain;
+                do
+                {
+                    blnAddAgain = await PickCyberware(objCyberware, objCyberware.SourceType);
+                } while (blnAddAgain);
             }
-            while (blnAddAgain);
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void tsWeaponAddAccessory_Click(object sender, EventArgs e)
         {
-            // Make sure a parent item is selected, then open the Select Accessory window.
-            if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Weapon objWeapon))
+            try
             {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectWeaponAccessory"), await LanguageManager.GetStringAsync("MessageTitle_SelectWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            // Accessories cannot be added to Cyberweapons.
-            if (objWeapon.Cyberware)
-            {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CyberweaponNoAccessory"), await LanguageManager.GetStringAsync("MessageTitle_CyberweaponNoAccessory"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            // Open the Weapons XML file and locate the selected Weapon.
-            XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("weapons.xml", token: GenericToken);
-
-            XmlNode objXmlWeapon = await objWeapon.GetNodeAsync(GenericToken);
-            if (objXmlWeapon == null)
-            {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CannotFindWeapon"), await LanguageManager.GetStringAsync("MessageTitle_CannotModifyWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            bool blnAddAgain;
-
-            do
-            {
-                // Make sure the Weapon allows Accessories to be added to it.
-                if (!objWeapon.AllowAccessory)
+                // Make sure a parent item is selected, then open the Select Accessory window.
+                if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag,
+                                                             GenericToken) is Weapon objWeapon))
                 {
-                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CannotModifyWeapon"), await LanguageManager.GetStringAsync("MessageTitle_CannotModifyWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    break;
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectWeaponAccessory"),
+                                           await LanguageManager.GetStringAsync("MessageTitle_SelectWeapon"),
+                                           MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
                 }
 
-                using (ThreadSafeForm<SelectWeaponAccessory> frmPickWeaponAccessory
-                       = await ThreadSafeForm<SelectWeaponAccessory>.GetAsync(() => new SelectWeaponAccessory(CharacterObject)
-                       {
-                           ParentWeapon = objWeapon
-                       }, GenericToken))
+                // Accessories cannot be added to Cyberweapons.
+                if (objWeapon.Cyberware)
                 {
-                    if (await frmPickWeaponAccessory.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
-                        break;
-                    blnAddAgain = frmPickWeaponAccessory.MyForm.AddAgain;
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CyberweaponNoAccessory"),
+                                           await LanguageManager.GetStringAsync("MessageTitle_CyberweaponNoAccessory"),
+                                           MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
 
-                    // Locate the selected piece.
-                    objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/accessories/accessory[id = " + frmPickWeaponAccessory.MyForm.SelectedAccessory.CleanXPath() + ']');
+                // Open the Weapons XML file and locate the selected Weapon.
+                XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("weapons.xml", token: GenericToken);
 
-                    WeaponAccessory objAccessory = new WeaponAccessory(CharacterObject);
-                    objAccessory.Create(objXmlWeapon, frmPickWeaponAccessory.MyForm.SelectedMount, frmPickWeaponAccessory.MyForm.SelectedRating);
-                    objAccessory.Parent = objWeapon;
-                    objAccessory.DiscountCost = frmPickWeaponAccessory.MyForm.BlackMarketDiscount;
+                XmlNode objXmlWeapon = await objWeapon.GetNodeAsync(GenericToken);
+                if (objXmlWeapon == null)
+                {
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CannotFindWeapon"),
+                                           await LanguageManager.GetStringAsync("MessageTitle_CannotModifyWeapon"),
+                                           MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
 
-                    // Check the item's Cost and make sure the character can afford it.
-                    decimal decOriginalCost = objWeapon.TotalCost;
+                bool blnAddAgain;
 
-                    await objWeapon.WeaponAccessories.AddAsync(objAccessory);
-
-                    if (!frmPickWeaponAccessory.MyForm.FreeCost)
+                do
+                {
+                    // Make sure the Weapon allows Accessories to be added to it.
+                    if (!objWeapon.AllowAccessory)
                     {
-                        decimal decCost = objWeapon.TotalCost - decOriginalCost;
-                        // Apply a markup if applicable.
-                        if (frmPickWeaponAccessory.MyForm.Markup != 0)
-                        {
-                            decCost *= 1 + frmPickWeaponAccessory.MyForm.Markup / 100.0m;
-                        }
-
-                        // Multiply the cost if applicable.
-                        char chrAvail = objAccessory.TotalAvailTuple().Suffix;
-                        switch (chrAvail)
-                        {
-                            case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
-                                decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
-                                break;
-
-                            case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
-                                decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
-                                break;
-                        }
-
-                        if (decCost > CharacterObject.Nuyen)
-                        {
-                            await objWeapon.WeaponAccessories.RemoveAsync(objAccessory);
-                            Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            continue;
-                        }
-
-                        // Create the Expense Log Entry.
-                        ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                        objExpense.Create(decCost * -1, await LanguageManager.GetStringAsync("String_ExpensePurchaseWeaponAccessory") + await LanguageManager.GetStringAsync("String_Space") + objAccessory.CurrentDisplayNameShort,
-                            ExpenseType.Nuyen, DateTime.Now);
-                        await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense);
-                        CharacterObject.Nuyen -= decCost;
-
-                        ExpenseUndo objUndo = new ExpenseUndo();
-                        objUndo.CreateNuyen(NuyenExpenseType.AddWeaponAccessory, objAccessory.InternalId);
-                        objExpense.Undo = objUndo;
+                        Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CannotModifyWeapon"),
+                                               await LanguageManager.GetStringAsync("MessageTitle_CannotModifyWeapon"),
+                                               MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        break;
                     }
-                }
+
+                    using (ThreadSafeForm<SelectWeaponAccessory> frmPickWeaponAccessory
+                           = await ThreadSafeForm<SelectWeaponAccessory>.GetAsync(
+                               () => new SelectWeaponAccessory(CharacterObject)
+                               {
+                                   ParentWeapon = objWeapon
+                               }, GenericToken))
+                    {
+                        if (await frmPickWeaponAccessory.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                            break;
+                        blnAddAgain = frmPickWeaponAccessory.MyForm.AddAgain;
+
+                        // Locate the selected piece.
+                        objXmlWeapon = objXmlDocument.SelectSingleNode(
+                            "/chummer/accessories/accessory[id = "
+                            + frmPickWeaponAccessory.MyForm.SelectedAccessory.CleanXPath() + ']');
+
+                        WeaponAccessory objAccessory = new WeaponAccessory(CharacterObject);
+                        objAccessory.Create(objXmlWeapon, frmPickWeaponAccessory.MyForm.SelectedMount,
+                                            frmPickWeaponAccessory.MyForm.SelectedRating);
+                        objAccessory.Parent = objWeapon;
+                        objAccessory.DiscountCost = frmPickWeaponAccessory.MyForm.BlackMarketDiscount;
+
+                        // Check the item's Cost and make sure the character can afford it.
+                        decimal decOriginalCost = objWeapon.TotalCost;
+
+                        await objWeapon.WeaponAccessories.AddAsync(objAccessory);
+
+                        if (!frmPickWeaponAccessory.MyForm.FreeCost)
+                        {
+                            decimal decCost = objWeapon.TotalCost - decOriginalCost;
+                            // Apply a markup if applicable.
+                            if (frmPickWeaponAccessory.MyForm.Markup != 0)
+                            {
+                                decCost *= 1 + frmPickWeaponAccessory.MyForm.Markup / 100.0m;
+                            }
+
+                            // Multiply the cost if applicable.
+                            char chrAvail = objAccessory.TotalAvailTuple().Suffix;
+                            switch (chrAvail)
+                            {
+                                case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
+                                    decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
+                                    break;
+
+                                case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
+                                    decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
+                                    break;
+                            }
+
+                            if (decCost > CharacterObject.Nuyen)
+                            {
+                                await objWeapon.WeaponAccessories.RemoveAsync(objAccessory);
+                                Program.ShowMessageBox(
+                                    this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen"),
+                                    await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen"),
+                                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                continue;
+                            }
+
+                            // Create the Expense Log Entry.
+                            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                            objExpense.Create(decCost * -1,
+                                              await LanguageManager.GetStringAsync(
+                                                  "String_ExpensePurchaseWeaponAccessory")
+                                              + await LanguageManager.GetStringAsync("String_Space")
+                                              + objAccessory.CurrentDisplayNameShort,
+                                              ExpenseType.Nuyen, DateTime.Now);
+                            await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense);
+                            CharacterObject.Nuyen -= decCost;
+
+                            ExpenseUndo objUndo = new ExpenseUndo();
+                            objUndo.CreateNuyen(NuyenExpenseType.AddWeaponAccessory, objAccessory.InternalId);
+                            objExpense.Undo = objUndo;
+                        }
+                    }
+                } while (blnAddAgain);
             }
-            while (blnAddAgain);
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async ValueTask<bool> PickArmor(Location objLocation = null, CancellationToken token = default)
@@ -7675,213 +8068,260 @@ namespace Chummer
 
         private async void tsArmorLocationAddArmor_Click(object sender, EventArgs e)
         {
-            if (!(await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Location objSelectedLocation))
-                return;
-            bool blnAddAgain;
-            do
+            try
             {
-                blnAddAgain = await PickArmor(objSelectedLocation, GenericToken);
+                if (!(await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Location
+                        objSelectedLocation))
+                    return;
+                bool blnAddAgain;
+                do
+                {
+                    blnAddAgain = await PickArmor(objSelectedLocation, GenericToken);
+                } while (blnAddAgain);
             }
-            while (blnAddAgain);
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void tsAddArmorMod_Click(object sender, EventArgs e)
         {
-            // Make sure a parent item is selected, then open the Select Accessory window.
-            if (!(await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Armor objArmor))
+            try
             {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectArmor"), await LanguageManager.GetStringAsync("MessageTitle_SelectArmor"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
+                // Make sure a parent item is selected, then open the Select Accessory window.
+                if (!(await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Armor objArmor))
+                {
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectArmor"),
+                                           await LanguageManager.GetStringAsync("MessageTitle_SelectArmor"),
+                                           MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
 
-            // Open the Armor XML file and locate the selected Armor.
-            XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("armor.xml", token: GenericToken);
+                // Open the Armor XML file and locate the selected Armor.
+                XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("armor.xml", token: GenericToken);
 
-            XmlNode objXmlArmor = await objArmor.GetNodeAsync(GenericToken);
+                XmlNode objXmlArmor = await objArmor.GetNodeAsync(GenericToken);
 
-            string strAllowedCategories = objArmor.Category + ',' + objArmor.Name;
-            bool blnExcludeGeneralCategory = false;
-            XmlNode xmlAddModCategory = objXmlArmor["forcemodcategory"];
-            if (xmlAddModCategory != null)
-            {
-                strAllowedCategories = xmlAddModCategory.InnerText;
-                blnExcludeGeneralCategory = true;
-            }
-            else
-            {
-                xmlAddModCategory = objXmlArmor["addmodcategory"];
+                string strAllowedCategories = objArmor.Category + ',' + objArmor.Name;
+                bool blnExcludeGeneralCategory = false;
+                XmlNode xmlAddModCategory = objXmlArmor["forcemodcategory"];
                 if (xmlAddModCategory != null)
                 {
-                    strAllowedCategories += ',' + xmlAddModCategory.InnerText;
+                    strAllowedCategories = xmlAddModCategory.InnerText;
+                    blnExcludeGeneralCategory = true;
                 }
-            }
-
-            bool blnAddAgain;
-            do
-            {
-                using (ThreadSafeForm<SelectArmorMod> frmPickArmorMod = await ThreadSafeForm<SelectArmorMod>.GetAsync(
-                           () => new SelectArmorMod(CharacterObject, objArmor)
-                           {
-                               ArmorCost = objArmor.OwnCost,
-                               ArmorCapacity
-                                   = Convert.ToDecimal(objArmor.CalculatedCapacity(GlobalSettings.InvariantCultureInfo),
-                                                       GlobalSettings.InvariantCultureInfo),
-                               AllowedCategories = strAllowedCategories,
-                               ExcludeGeneralCategory = blnExcludeGeneralCategory,
-                               CapacityDisplayStyle = objArmor.CapacityDisplayStyle
-                           }, GenericToken))
+                else
                 {
-                    if (await frmPickArmorMod.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
-                        break;
-                    blnAddAgain = frmPickArmorMod.MyForm.AddAgain;
-
-                    // Locate the selected piece.
-                    objXmlArmor = objXmlDocument.SelectSingleNode("/chummer/mods/mod[id = " + frmPickArmorMod.MyForm.SelectedArmorMod.CleanXPath() + ']');
-
-                    if (objXmlArmor == null)
-                        continue;
-
-                    ArmorMod objMod = new ArmorMod(CharacterObject);
-                    List<Weapon> lstWeapons = new List<Weapon>(1);
-                    int intRating = Convert.ToInt32(objXmlArmor["maxrating"]?.InnerText, GlobalSettings.InvariantCultureInfo) > 1 ? frmPickArmorMod.MyForm.SelectedRating : 0;
-
-                    objMod.Create(objXmlArmor, intRating, lstWeapons);
-                    if (objMod.InternalId.IsEmptyGuid())
-                        continue;
-
-                    // Check the item's Cost and make sure the character can afford it.
-                    decimal decOriginalCost = objArmor.TotalCost;
-                    await objArmor.ArmorMods.AddAsync(objMod);
-
-                    // Do not allow the user to add a new piece of Armor if its Capacity has been reached.
-                    if (CharacterObjectSettings.EnforceCapacity && objArmor.CapacityRemaining < 0)
+                    xmlAddModCategory = objXmlArmor["addmodcategory"];
+                    if (xmlAddModCategory != null)
                     {
-                        Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CapacityReached"), await LanguageManager.GetStringAsync("MessageTitle_CapacityReached"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        await objArmor.ArmorMods.RemoveAsync(objMod);
-                        continue;
+                        strAllowedCategories += ',' + xmlAddModCategory.InnerText;
                     }
+                }
 
-                    if (!frmPickArmorMod.MyForm.FreeCost)
+                bool blnAddAgain;
+                do
+                {
+                    using (ThreadSafeForm<SelectArmorMod> frmPickArmorMod
+                           = await ThreadSafeForm<SelectArmorMod>.GetAsync(
+                               () => new SelectArmorMod(CharacterObject, objArmor)
+                               {
+                                   ArmorCost = objArmor.OwnCost,
+                                   ArmorCapacity
+                                       = Convert.ToDecimal(
+                                           objArmor.CalculatedCapacity(GlobalSettings.InvariantCultureInfo),
+                                           GlobalSettings.InvariantCultureInfo),
+                                   AllowedCategories = strAllowedCategories,
+                                   ExcludeGeneralCategory = blnExcludeGeneralCategory,
+                                   CapacityDisplayStyle = objArmor.CapacityDisplayStyle
+                               }, GenericToken))
                     {
-                        decimal decCost = objArmor.TotalCost - decOriginalCost;
-                        // Apply a markup if applicable.
-                        if (frmPickArmorMod.MyForm.Markup != 0)
-                        {
-                            decCost *= 1 + frmPickArmorMod.MyForm.Markup / 100.0m;
-                        }
+                        if (await frmPickArmorMod.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                            break;
+                        blnAddAgain = frmPickArmorMod.MyForm.AddAgain;
 
-                        // Multiply the cost if applicable.
-                        char chrAvail = objMod.TotalAvailTuple().Suffix;
-                        switch (chrAvail)
-                        {
-                            case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
-                                decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
-                                break;
+                        // Locate the selected piece.
+                        objXmlArmor = objXmlDocument.SelectSingleNode(
+                            "/chummer/mods/mod[id = " + frmPickArmorMod.MyForm.SelectedArmorMod.CleanXPath() + ']');
 
-                            case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
-                                decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
-                                break;
-                        }
+                        if (objXmlArmor == null)
+                            continue;
 
-                        if (decCost > CharacterObject.Nuyen)
+                        ArmorMod objMod = new ArmorMod(CharacterObject);
+                        List<Weapon> lstWeapons = new List<Weapon>(1);
+                        int intRating
+                            = Convert.ToInt32(objXmlArmor["maxrating"]?.InnerText, GlobalSettings.InvariantCultureInfo)
+                              > 1
+                                ? frmPickArmorMod.MyForm.SelectedRating
+                                : 0;
+
+                        objMod.Create(objXmlArmor, intRating, lstWeapons);
+                        if (objMod.InternalId.IsEmptyGuid())
+                            continue;
+
+                        // Check the item's Cost and make sure the character can afford it.
+                        decimal decOriginalCost = objArmor.TotalCost;
+                        await objArmor.ArmorMods.AddAsync(objMod);
+
+                        // Do not allow the user to add a new piece of Armor if its Capacity has been reached.
+                        if (CharacterObjectSettings.EnforceCapacity && objArmor.CapacityRemaining < 0)
                         {
+                            Program.ShowMessageBox(
+                                this, await LanguageManager.GetStringAsync("Message_CapacityReached"),
+                                await LanguageManager.GetStringAsync("MessageTitle_CapacityReached"),
+                                MessageBoxButtons.OK, MessageBoxIcon.Information);
                             await objArmor.ArmorMods.RemoveAsync(objMod);
-                            Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            // Remove the Improvements created by the Armor Mod.
-                            await ImprovementManager.RemoveImprovementsAsync(CharacterObject, Improvement.ImprovementSource.ArmorMod, objMod.InternalId);
                             continue;
                         }
 
-                        // Create the Expense Log Entry.
-                        ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                        objExpense.Create(decCost * -1, await LanguageManager.GetStringAsync("String_ExpensePurchaseArmorMod") + await LanguageManager.GetStringAsync("String_Space") + objMod.CurrentDisplayNameShort, ExpenseType.Nuyen,
-                            DateTime.Now);
-                        await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense);
-                        CharacterObject.Nuyen -= decCost;
+                        if (!frmPickArmorMod.MyForm.FreeCost)
+                        {
+                            decimal decCost = objArmor.TotalCost - decOriginalCost;
+                            // Apply a markup if applicable.
+                            if (frmPickArmorMod.MyForm.Markup != 0)
+                            {
+                                decCost *= 1 + frmPickArmorMod.MyForm.Markup / 100.0m;
+                            }
 
-                        ExpenseUndo objUndo = new ExpenseUndo();
-                        objUndo.CreateNuyen(NuyenExpenseType.AddArmorMod, objMod.InternalId);
-                        objExpense.Undo = objUndo;
-                    }
+                            // Multiply the cost if applicable.
+                            char chrAvail = objMod.TotalAvailTuple().Suffix;
+                            switch (chrAvail)
+                            {
+                                case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
+                                    decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
+                                    break;
 
-                    // Add any Weapons created by the Mod.
-                    foreach (Weapon objWeapon in lstWeapons)
-                    {
-                        await CharacterObject.Weapons.AddAsync(objWeapon);
+                                case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
+                                    decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
+                                    break;
+                            }
+
+                            if (decCost > CharacterObject.Nuyen)
+                            {
+                                await objArmor.ArmorMods.RemoveAsync(objMod);
+                                Program.ShowMessageBox(
+                                    this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen"),
+                                    await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen"),
+                                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                // Remove the Improvements created by the Armor Mod.
+                                await ImprovementManager.RemoveImprovementsAsync(
+                                    CharacterObject, Improvement.ImprovementSource.ArmorMod, objMod.InternalId);
+                                continue;
+                            }
+
+                            // Create the Expense Log Entry.
+                            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                            objExpense.Create(decCost * -1,
+                                              await LanguageManager.GetStringAsync("String_ExpensePurchaseArmorMod")
+                                              + await LanguageManager.GetStringAsync("String_Space")
+                                              + objMod.CurrentDisplayNameShort, ExpenseType.Nuyen,
+                                              DateTime.Now);
+                            await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense);
+                            CharacterObject.Nuyen -= decCost;
+
+                            ExpenseUndo objUndo = new ExpenseUndo();
+                            objUndo.CreateNuyen(NuyenExpenseType.AddArmorMod, objMod.InternalId);
+                            objExpense.Undo = objUndo;
+                        }
+
+                        // Add any Weapons created by the Mod.
+                        foreach (Weapon objWeapon in lstWeapons)
+                        {
+                            await CharacterObject.Weapons.AddAsync(objWeapon);
+                        }
                     }
-                }
+                } while (blnAddAgain);
             }
-            while (blnAddAgain);
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void tsGearAddAsPlugin_Click(object sender, EventArgs e)
         {
-            // Make sure a parent items is selected, then open the Select Gear window.
-            if (!(await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is IHasChildren<Gear> iParent))
+            try
             {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectGear"), await LanguageManager.GetStringAsync("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
+                // Make sure a parent items is selected, then open the Select Gear window.
+                if (!(await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is IHasChildren<Gear>
+                        iParent))
+                {
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectGear"),
+                                           await LanguageManager.GetStringAsync("MessageTitle_SelectGear"),
+                                           MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
 
-            bool blnAddAgain;
-            do
-            {
-                blnAddAgain = await PickGear(iParent);
+                bool blnAddAgain;
+                do
+                {
+                    blnAddAgain = await PickGear(iParent, token: GenericToken);
+                } while (blnAddAgain);
             }
-            while (blnAddAgain);
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void tsVehicleAddMod_Click(object sender, EventArgs e)
         {
-            TreeNode objSelectedNode = await treVehicles.DoThreadSafeFuncAsync(x =>
+            try
             {
-                while (x.SelectedNode?.Level > 1)
-                    x.SelectedNode = x.SelectedNode.Parent;
-                return x.SelectedNode;
-            }, GenericToken);
-            // Make sure a parent items is selected, then open the Select Vehicle Mod window.
-            if (!(objSelectedNode?.Tag is Vehicle objVehicle))
-            {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectVehicle"), await LanguageManager.GetStringAsync("MessageTitle_SelectVehicle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            // Open the Vehicles XML file and locate the selected piece.
-            XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("vehicles.xml", token: GenericToken);
-
-            bool blnAddAgain;
-
-            do
-            {
-                using (ThreadSafeForm<SelectVehicleMod> frmPickVehicleMod
-                       = await ThreadSafeForm<SelectVehicleMod>.GetAsync(
-                           () => new SelectVehicleMod(CharacterObject, objVehicle, objVehicle.Mods), GenericToken))
+                TreeNode objSelectedNode = await treVehicles.DoThreadSafeFuncAsync(x =>
                 {
-                    // Make sure the dialogue window was not canceled.
-                    if (await frmPickVehicleMod.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
-                        break;
-                    blnAddAgain = frmPickVehicleMod.MyForm.AddAgain;
+                    while (x.SelectedNode?.Level > 1)
+                        x.SelectedNode = x.SelectedNode.Parent;
+                    return x.SelectedNode;
+                }, GenericToken);
+                // Make sure a parent items is selected, then open the Select Vehicle Mod window.
+                if (!(objSelectedNode?.Tag is Vehicle objVehicle))
+                {
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectVehicle"),
+                                           await LanguageManager.GetStringAsync("MessageTitle_SelectVehicle"),
+                                           MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
 
-                    XmlNode objXmlMod = objXmlDocument.SelectSingleNode("/chummer/mods/mod[id = " + frmPickVehicleMod.MyForm.SelectedMod.CleanXPath() + ']');
+                // Open the Vehicles XML file and locate the selected piece.
+                XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("vehicles.xml", token: GenericToken);
 
-                    VehicleMod objMod = new VehicleMod(CharacterObject)
+                bool blnAddAgain;
+
+                do
+                {
+                    using (ThreadSafeForm<SelectVehicleMod> frmPickVehicleMod
+                           = await ThreadSafeForm<SelectVehicleMod>.GetAsync(
+                               () => new SelectVehicleMod(CharacterObject, objVehicle, objVehicle.Mods), GenericToken))
                     {
-                        DiscountCost = frmPickVehicleMod.MyForm.BlackMarketDiscount
-                    };
-                    objMod.Create(objXmlMod, frmPickVehicleMod.MyForm.SelectedRating, objVehicle, frmPickVehicleMod.MyForm.Markup);
-                    // Make sure that the Armor Rating does not exceed the maximum allowed by the Vehicle.
-                    if (objMod.Name.StartsWith("Armor", StringComparison.Ordinal))
-                    {
-                        if (objMod.Rating > objVehicle.MaxArmor)
+                        // Make sure the dialogue window was not canceled.
+                        if (await frmPickVehicleMod.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                            break;
+                        blnAddAgain = frmPickVehicleMod.MyForm.AddAgain;
+
+                        XmlNode objXmlMod = objXmlDocument.SelectSingleNode(
+                            "/chummer/mods/mod[id = " + frmPickVehicleMod.MyForm.SelectedMod.CleanXPath() + ']');
+
+                        VehicleMod objMod = new VehicleMod(CharacterObject)
                         {
-                            objMod.Rating = objVehicle.MaxArmor;
+                            DiscountCost = frmPickVehicleMod.MyForm.BlackMarketDiscount
+                        };
+                        objMod.Create(objXmlMod, frmPickVehicleMod.MyForm.SelectedRating, objVehicle,
+                                      frmPickVehicleMod.MyForm.Markup);
+                        // Make sure that the Armor Rating does not exceed the maximum allowed by the Vehicle.
+                        if (objMod.Name.StartsWith("Armor", StringComparison.Ordinal))
+                        {
+                            if (objMod.Rating > objVehicle.MaxArmor)
+                            {
+                                objMod.Rating = objVehicle.MaxArmor;
+                            }
                         }
-                    }
-                    else
-                    {
-                        switch (objMod.Category)
+                        else
                         {
-                            case "Handling":
+                            switch (objMod.Category)
+                            {
+                                case "Handling":
                                 {
                                     if (objMod.Rating > objVehicle.MaxHandling)
                                     {
@@ -7890,7 +8330,7 @@ namespace Chummer
 
                                     break;
                                 }
-                            case "Speed":
+                                case "Speed":
                                 {
                                     if (objMod.Rating > objVehicle.MaxSpeed)
                                     {
@@ -7899,7 +8339,7 @@ namespace Chummer
 
                                     break;
                                 }
-                            case "Acceleration":
+                                case "Acceleration":
                                 {
                                     if (objMod.Rating > objVehicle.MaxAcceleration)
                                     {
@@ -7908,7 +8348,7 @@ namespace Chummer
 
                                     break;
                                 }
-                            case "Sensor":
+                                case "Sensor":
                                 {
                                     if (objMod.Rating > objVehicle.MaxSensor)
                                     {
@@ -7917,135 +8357,155 @@ namespace Chummer
 
                                     break;
                                 }
-                            default:
+                                default:
                                 {
-                                    if (objMod.Name.StartsWith("Pilot Program", StringComparison.Ordinal) && objMod.Rating > objVehicle.MaxPilot)
+                                    if (objMod.Name.StartsWith("Pilot Program", StringComparison.Ordinal)
+                                        && objMod.Rating > objVehicle.MaxPilot)
                                     {
                                         objMod.Rating = objVehicle.MaxPilot;
                                     }
 
                                     break;
                                 }
+                            }
                         }
-                    }
 
-                    // Check the item's Cost and make sure the character can afford it.
-                    decimal decOriginalCost = objVehicle.TotalCost;
+                        // Check the item's Cost and make sure the character can afford it.
+                        decimal decOriginalCost = objVehicle.TotalCost;
 
-                    await objVehicle.Mods.AddAsync(objMod);
+                        await objVehicle.Mods.AddAsync(objMod);
 
-                    // Do not allow the user to add a new Vehicle Mod if the Vehicle's Capacity has been reached.
-                    if (CharacterObjectSettings.EnforceCapacity)
-                    {
-                        bool blnOverCapacity;
-                        if (CharacterObjectSettings.BookEnabled("R5"))
+                        // Do not allow the user to add a new Vehicle Mod if the Vehicle's Capacity has been reached.
+                        if (CharacterObjectSettings.EnforceCapacity)
                         {
-                            if (objVehicle.IsDrone && CharacterObjectSettings.DroneMods)
-                                blnOverCapacity = objVehicle.DroneModSlotsUsed > objVehicle.DroneModSlots;
+                            bool blnOverCapacity;
+                            if (CharacterObjectSettings.BookEnabled("R5"))
+                            {
+                                if (objVehicle.IsDrone && CharacterObjectSettings.DroneMods)
+                                    blnOverCapacity = objVehicle.DroneModSlotsUsed > objVehicle.DroneModSlots;
+                                else
+                                    blnOverCapacity = objVehicle.OverR5Capacity("Weapons");
+                            }
                             else
-                                blnOverCapacity = objVehicle.OverR5Capacity("Weapons");
-                        }
-                        else
-                            blnOverCapacity = objVehicle.Slots < objVehicle.SlotsUsed;
+                                blnOverCapacity = objVehicle.Slots < objVehicle.SlotsUsed;
 
-                        if (blnOverCapacity)
+                            if (blnOverCapacity)
+                            {
+                                Program.ShowMessageBox(
+                                    this, await LanguageManager.GetStringAsync("Message_CapacityReached"),
+                                    await LanguageManager.GetStringAsync("MessageTitle_CapacityReached"),
+                                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                await objVehicle.Mods.RemoveAsync(objMod);
+                                continue;
+                            }
+                        }
+
+                        if (!frmPickVehicleMod.MyForm.FreeCost)
                         {
-                            Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CapacityReached"), await LanguageManager.GetStringAsync("MessageTitle_CapacityReached"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            await objVehicle.Mods.RemoveAsync(objMod);
-                            continue;
+                            decimal decCost = objVehicle.TotalCost - decOriginalCost;
+
+                            // Multiply the cost if applicable.
+                            char chrAvail = objMod.TotalAvailTuple().Suffix;
+                            switch (chrAvail)
+                            {
+                                case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
+                                    decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
+                                    break;
+
+                                case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
+                                    decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
+                                    break;
+                            }
+
+                            if (decCost > CharacterObject.Nuyen)
+                            {
+                                await objVehicle.Mods.RemoveAsync(objMod);
+                                Program.ShowMessageBox(
+                                    this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen"),
+                                    await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen"),
+                                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                continue;
+                            }
+
+                            // Create the Expense Log Entry.
+                            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                            objExpense.Create(decCost * -1,
+                                              await LanguageManager.GetStringAsync("String_ExpensePurchaseVehicleMod")
+                                              + await LanguageManager.GetStringAsync("String_Space")
+                                              + objMod.CurrentDisplayNameShort, ExpenseType.Nuyen,
+                                              DateTime.Now);
+                            await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense);
+                            CharacterObject.Nuyen -= decCost;
+
+                            ExpenseUndo objUndo = new ExpenseUndo();
+                            objUndo.CreateNuyen(NuyenExpenseType.AddVehicleMod, objMod.InternalId);
+                            objExpense.Undo = objUndo;
                         }
                     }
-
-                    if (!frmPickVehicleMod.MyForm.FreeCost)
-                    {
-                        decimal decCost = objVehicle.TotalCost - decOriginalCost;
-
-                        // Multiply the cost if applicable.
-                        char chrAvail = objMod.TotalAvailTuple().Suffix;
-                        switch (chrAvail)
-                        {
-                            case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
-                                decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
-                                break;
-
-                            case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
-                                decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
-                                break;
-                        }
-
-                        if (decCost > CharacterObject.Nuyen)
-                        {
-                            await objVehicle.Mods.RemoveAsync(objMod);
-                            Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen"),
-                                                   await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen"),
-                                                   MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            continue;
-                        }
-
-                        // Create the Expense Log Entry.
-                        ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                        objExpense.Create(decCost * -1,
-                                          await LanguageManager.GetStringAsync("String_ExpensePurchaseVehicleMod")
-                                          + await LanguageManager.GetStringAsync("String_Space")
-                                          + objMod.CurrentDisplayNameShort, ExpenseType.Nuyen,
-                                          DateTime.Now);
-                        await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense);
-                        CharacterObject.Nuyen -= decCost;
-
-                        ExpenseUndo objUndo = new ExpenseUndo();
-                        objUndo.CreateNuyen(NuyenExpenseType.AddVehicleMod, objMod.InternalId);
-                        objExpense.Undo = objUndo;
-                    }
-                }
+                } while (blnAddAgain);
             }
-            while (blnAddAgain);
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void tsVehicleAddWeaponWeapon_Click(object sender, EventArgs e)
         {
-            if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is IHasInternalId selectedObject))
-                return;
-            string strSelectedId = selectedObject.InternalId;
-            // Make sure that a Weapon Mount has been selected.
-            // Attempt to locate the selected VehicleMod.
-            VehicleMod objMod = null;
-            WeaponMount objWeaponMount = null;
-            Vehicle objVehicle = null;
-            if (!string.IsNullOrEmpty(strSelectedId))
+            try
             {
-                objWeaponMount = CharacterObject.Vehicles.FindVehicleWeaponMount(strSelectedId, out objVehicle);
-                if (objWeaponMount == null)
+                if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is IHasInternalId
+                        selectedObject))
+                    return;
+                string strSelectedId = selectedObject.InternalId;
+                // Make sure that a Weapon Mount has been selected.
+                // Attempt to locate the selected VehicleMod.
+                VehicleMod objMod = null;
+                WeaponMount objWeaponMount = null;
+                Vehicle objVehicle = null;
+                if (!string.IsNullOrEmpty(strSelectedId))
                 {
-                    objMod = CharacterObject.Vehicles.FindVehicleMod(x => x.InternalId == strSelectedId, out objVehicle, out objWeaponMount);
-                    if (objMod?.Name.StartsWith("Mechanical Arm", StringComparison.Ordinal) == false && !objMod.Name.Contains("Drone Arm"))
+                    objWeaponMount = CharacterObject.Vehicles.FindVehicleWeaponMount(strSelectedId, out objVehicle);
+                    if (objWeaponMount == null)
                     {
-                        objMod = null;
+                        objMod = CharacterObject.Vehicles.FindVehicleMod(
+                            x => x.InternalId == strSelectedId, out objVehicle, out objWeaponMount);
+                        if (objMod?.Name.StartsWith("Mechanical Arm", StringComparison.Ordinal) == false
+                            && !objMod.Name.Contains("Drone Arm"))
+                        {
+                            objMod = null;
+                        }
                     }
                 }
-            }
 
-            if (objWeaponMount == null && objMod == null)
-            {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CannotAddWeapon"),
-                    await LanguageManager.GetStringAsync("MessageTitle_CannotAddWeapon"), MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
-                return;
-            }
+                if (objWeaponMount == null && objMod == null)
+                {
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CannotAddWeapon"),
+                                           await LanguageManager.GetStringAsync("MessageTitle_CannotAddWeapon"),
+                                           MessageBoxButtons.OK,
+                                           MessageBoxIcon.Information);
+                    return;
+                }
 
-            if (objWeaponMount?.IsWeaponsFull == true)
-            {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_WeaponMountFull"),
-                    await LanguageManager.GetStringAsync("MessageTitle_CannotAddWeapon"), MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
-                return;
-            }
+                if (objWeaponMount?.IsWeaponsFull == true)
+                {
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_WeaponMountFull"),
+                                           await LanguageManager.GetStringAsync("MessageTitle_CannotAddWeapon"),
+                                           MessageBoxButtons.OK,
+                                           MessageBoxIcon.Information);
+                    return;
+                }
 
-            bool blnAddAgain;
-            do
-            {
-                blnAddAgain = await AddWeaponToWeaponMount(objWeaponMount, objMod, objVehicle);
+                bool blnAddAgain;
+                do
+                {
+                    blnAddAgain = await AddWeaponToWeaponMount(objWeaponMount, objMod, objVehicle, GenericToken);
+                } while (blnAddAgain);
             }
-            while (blnAddAgain);
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async ValueTask<bool> AddWeaponToWeaponMount(WeaponMount objWeaponMount, VehicleMod objMod, Vehicle objVehicle, CancellationToken token = default)
@@ -8136,144 +8596,180 @@ namespace Chummer
 
         private async void tsVehicleAddWeaponMount_Click(object sender, EventArgs e)
         {
-            if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Vehicle objVehicle))
-                return;
-            WeaponMount objNewWeaponMount;
-            using (ThreadSafeForm<CreateWeaponMount> frmPickVehicleMod = await ThreadSafeForm<CreateWeaponMount>.GetAsync(
-                       () => new CreateWeaponMount(objVehicle, CharacterObject)
-                       {
-                           AllowDiscounts = true
-                       }, GenericToken))
+            try
             {
-                if (await frmPickVehicleMod.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Vehicle
+                        objVehicle))
                     return;
+                WeaponMount objNewWeaponMount;
+                using (ThreadSafeForm<CreateWeaponMount> frmPickVehicleMod
+                       = await ThreadSafeForm<CreateWeaponMount>.GetAsync(
+                           () => new CreateWeaponMount(objVehicle, CharacterObject)
+                           {
+                               AllowDiscounts = true
+                           }, GenericToken))
+                {
+                    if (await frmPickVehicleMod.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                        return;
 
-                objNewWeaponMount = frmPickVehicleMod.MyForm.WeaponMount;
+                    objNewWeaponMount = frmPickVehicleMod.MyForm.WeaponMount;
+                }
+
+                // Calculate cost based on total vehicle cost change to make sure we capture everything
+                decimal decCost = -objVehicle.TotalCost;
+                await objVehicle.WeaponMounts.AddAsync(objNewWeaponMount);
+                decCost += objVehicle.TotalCost;
+
+                // Multiply the cost if applicable.
+                char chrAvail = objNewWeaponMount.TotalAvailTuple().Suffix;
+                switch (chrAvail)
+                {
+                    case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
+                        decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
+                        break;
+
+                    case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
+                        decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
+                        break;
+                }
+
+                // Create the Expense Log Entry.
+                ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                objExpense.Create(decCost * -1,
+                                  await LanguageManager.GetStringAsync("String_ExpensePurchaseVehicleWeaponAccessory")
+                                  + await LanguageManager.GetStringAsync("String_Space")
+                                  + objNewWeaponMount.CurrentDisplayNameShort, ExpenseType.Nuyen,
+                                  DateTime.Now);
+                await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense);
+                CharacterObject.Nuyen -= decCost;
+
+                ExpenseUndo objUndo = new ExpenseUndo();
+                objUndo.CreateNuyen(NuyenExpenseType.AddVehicleWeaponMount, objNewWeaponMount.InternalId);
+                objExpense.Undo = objUndo;
             }
-
-            // Calculate cost based on total vehicle cost change to make sure we capture everything
-            decimal decCost = -objVehicle.TotalCost;
-            await objVehicle.WeaponMounts.AddAsync(objNewWeaponMount);
-            decCost += objVehicle.TotalCost;
-
-            // Multiply the cost if applicable.
-            char chrAvail = objNewWeaponMount.TotalAvailTuple().Suffix;
-            switch (chrAvail)
+            catch (OperationCanceledException)
             {
-                case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
-                    decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
-                    break;
-
-                case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
-                    decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
-                    break;
+                //swallow this
             }
-
-            // Create the Expense Log Entry.
-            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-            objExpense.Create(decCost * -1,
-                              await LanguageManager.GetStringAsync("String_ExpensePurchaseVehicleWeaponAccessory") + await LanguageManager.GetStringAsync("String_Space") + objNewWeaponMount.CurrentDisplayNameShort, ExpenseType.Nuyen,
-                              DateTime.Now);
-            await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense);
-            CharacterObject.Nuyen -= decCost;
-
-            ExpenseUndo objUndo = new ExpenseUndo();
-            objUndo.CreateNuyen(NuyenExpenseType.AddVehicleWeaponMount, objNewWeaponMount.InternalId);
-            objExpense.Undo = objUndo;
         }
 
         private async void tsVehicleAddWeaponAccessory_Click(object sender, EventArgs e)
         {
-            if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Weapon objWeapon))
+            try
             {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_VehicleWeaponAccessories"), await LanguageManager.GetStringAsync("MessageTitle_VehicleWeaponAccessories"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            // Open the Weapons XML file and locate the selected Weapon.
-            XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("weapons.xml", token: GenericToken);
-            XmlNode objXmlWeapon = await objWeapon.GetNodeAsync(GenericToken);
-            if (objXmlWeapon == null)
-            {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CannotFindWeapon"), await LanguageManager.GetStringAsync("MessageTitle_CannotModifyWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            bool blnAddAgain;
-
-            do
-            {
-                // Make sure the Weapon allows Accessories to be added to it.
-                if (!objWeapon.AllowAccessory)
+                if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Weapon
+                        objWeapon))
                 {
-                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CannotModifyWeapon"), await LanguageManager.GetStringAsync("MessageTitle_CannotModifyWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    Program.ShowMessageBox(
+                        this, await LanguageManager.GetStringAsync("Message_VehicleWeaponAccessories"),
+                        await LanguageManager.GetStringAsync("MessageTitle_VehicleWeaponAccessories"),
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
 
-                using (ThreadSafeForm<SelectWeaponAccessory> frmPickWeaponAccessory
-                       = await ThreadSafeForm<SelectWeaponAccessory>.GetAsync(() => new SelectWeaponAccessory(CharacterObject)
-                       {
-                           ParentWeapon = objWeapon
-                       }, GenericToken))
+                // Open the Weapons XML file and locate the selected Weapon.
+                XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("weapons.xml", token: GenericToken);
+                XmlNode objXmlWeapon = await objWeapon.GetNodeAsync(GenericToken);
+                if (objXmlWeapon == null)
                 {
-                    if (await frmPickWeaponAccessory.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
-                        break;
-                    blnAddAgain = frmPickWeaponAccessory.MyForm.AddAgain;
-
-                    // Locate the selected piece.
-                    objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/accessories/accessory[id = " + frmPickWeaponAccessory.MyForm.SelectedAccessory.CleanXPath() + ']');
-
-                    WeaponAccessory objAccessory = new WeaponAccessory(CharacterObject);
-                    objAccessory.Create(objXmlWeapon, frmPickWeaponAccessory.MyForm.SelectedMount, frmPickWeaponAccessory.MyForm.SelectedRating);
-                    objAccessory.Parent = objWeapon;
-
-                    // Check the item's Cost and make sure the character can afford it.
-                    decimal intOriginalCost = objWeapon.TotalCost;
-                    await objWeapon.WeaponAccessories.AddAsync(objAccessory);
-
-                    if (!frmPickWeaponAccessory.MyForm.FreeCost)
-                    {
-                        decimal decCost = objWeapon.TotalCost - intOriginalCost;
-                        // Apply a markup if applicable.
-                        if (frmPickWeaponAccessory.MyForm.Markup != 0)
-                        {
-                            decCost *= 1 + frmPickWeaponAccessory.MyForm.Markup / 100.0m;
-                        }
-
-                        // Multiply the cost if applicable.
-                        char chrAvail = objAccessory.TotalAvailTuple().Suffix;
-                        switch (chrAvail)
-                        {
-                            case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
-                                decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
-                                break;
-
-                            case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
-                                decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
-                                break;
-                        }
-
-                        if (decCost > CharacterObject.Nuyen)
-                        {
-                            await objWeapon.WeaponAccessories.RemoveAsync(objAccessory);
-                            Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            continue;
-                        }
-
-                        // Create the Expense Log Entry.
-                        ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                        objExpense.Create(decCost * -1, await LanguageManager.GetStringAsync("String_ExpensePurchaseVehicleWeaponAccessory") + await LanguageManager.GetStringAsync("String_Space") + objAccessory.CurrentDisplayNameShort,
-                            ExpenseType.Nuyen, DateTime.Now);
-                        await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense);
-                        CharacterObject.Nuyen -= decCost;
-
-                        ExpenseUndo objUndo = new ExpenseUndo();
-                        objUndo.CreateNuyen(NuyenExpenseType.AddVehicleWeaponAccessory, objAccessory.InternalId);
-                        objExpense.Undo = objUndo;
-                    }
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CannotFindWeapon"),
+                                           await LanguageManager.GetStringAsync("MessageTitle_CannotModifyWeapon"),
+                                           MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
                 }
+
+                bool blnAddAgain;
+
+                do
+                {
+                    // Make sure the Weapon allows Accessories to be added to it.
+                    if (!objWeapon.AllowAccessory)
+                    {
+                        Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CannotModifyWeapon"),
+                                               await LanguageManager.GetStringAsync("MessageTitle_CannotModifyWeapon"),
+                                               MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        return;
+                    }
+
+                    using (ThreadSafeForm<SelectWeaponAccessory> frmPickWeaponAccessory
+                           = await ThreadSafeForm<SelectWeaponAccessory>.GetAsync(
+                               () => new SelectWeaponAccessory(CharacterObject)
+                               {
+                                   ParentWeapon = objWeapon
+                               }, GenericToken))
+                    {
+                        if (await frmPickWeaponAccessory.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                            break;
+                        blnAddAgain = frmPickWeaponAccessory.MyForm.AddAgain;
+
+                        // Locate the selected piece.
+                        objXmlWeapon = objXmlDocument.SelectSingleNode(
+                            "/chummer/accessories/accessory[id = "
+                            + frmPickWeaponAccessory.MyForm.SelectedAccessory.CleanXPath() + ']');
+
+                        WeaponAccessory objAccessory = new WeaponAccessory(CharacterObject);
+                        objAccessory.Create(objXmlWeapon, frmPickWeaponAccessory.MyForm.SelectedMount,
+                                            frmPickWeaponAccessory.MyForm.SelectedRating);
+                        objAccessory.Parent = objWeapon;
+
+                        // Check the item's Cost and make sure the character can afford it.
+                        decimal intOriginalCost = objWeapon.TotalCost;
+                        await objWeapon.WeaponAccessories.AddAsync(objAccessory);
+
+                        if (!frmPickWeaponAccessory.MyForm.FreeCost)
+                        {
+                            decimal decCost = objWeapon.TotalCost - intOriginalCost;
+                            // Apply a markup if applicable.
+                            if (frmPickWeaponAccessory.MyForm.Markup != 0)
+                            {
+                                decCost *= 1 + frmPickWeaponAccessory.MyForm.Markup / 100.0m;
+                            }
+
+                            // Multiply the cost if applicable.
+                            char chrAvail = objAccessory.TotalAvailTuple().Suffix;
+                            switch (chrAvail)
+                            {
+                                case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
+                                    decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
+                                    break;
+
+                                case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
+                                    decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
+                                    break;
+                            }
+
+                            if (decCost > CharacterObject.Nuyen)
+                            {
+                                await objWeapon.WeaponAccessories.RemoveAsync(objAccessory);
+                                Program.ShowMessageBox(
+                                    this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen"),
+                                    await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen"),
+                                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                continue;
+                            }
+
+                            // Create the Expense Log Entry.
+                            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                            objExpense.Create(decCost * -1,
+                                              await LanguageManager.GetStringAsync(
+                                                  "String_ExpensePurchaseVehicleWeaponAccessory")
+                                              + await LanguageManager.GetStringAsync("String_Space")
+                                              + objAccessory.CurrentDisplayNameShort,
+                                              ExpenseType.Nuyen, DateTime.Now);
+                            await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense);
+                            CharacterObject.Nuyen -= decCost;
+
+                            ExpenseUndo objUndo = new ExpenseUndo();
+                            objUndo.CreateNuyen(NuyenExpenseType.AddVehicleWeaponAccessory, objAccessory.InternalId);
+                            objExpense.Undo = objUndo;
+                        }
+                    }
+                } while (blnAddAgain);
             }
-            while (blnAddAgain);
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async ValueTask<bool> AddUnderbarrelWeapon(Weapon objSelectedWeapon, string strExpenseString, CancellationToken token = default)
@@ -8361,101 +8857,138 @@ namespace Chummer
 
         private async void tsVehicleAddUnderbarrelWeapon_Click(object sender, EventArgs e)
         {
-            // Attempt to locate the selected VehicleWeapon.
-            if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Weapon objWeapon))
+            try
             {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_VehicleWeaponUnderbarrel"), await LanguageManager.GetStringAsync("MessageTitle_VehicleWeaponUnderbarrel"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
+                // Attempt to locate the selected VehicleWeapon.
+                if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Weapon
+                        objWeapon))
+                {
+                    Program.ShowMessageBox(
+                        this, await LanguageManager.GetStringAsync("Message_VehicleWeaponUnderbarrel"),
+                        await LanguageManager.GetStringAsync("MessageTitle_VehicleWeaponUnderbarrel"),
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
 
-            bool blnAddAgain;
-            do
-            {
-                blnAddAgain = await AddUnderbarrelWeapon(objWeapon, await LanguageManager.GetStringAsync("String_ExpensePurchaseVehicleWeapon"));
+                bool blnAddAgain;
+                do
+                {
+                    blnAddAgain = await AddUnderbarrelWeapon(
+                        objWeapon, await LanguageManager.GetStringAsync("String_ExpensePurchaseVehicleWeapon"), GenericToken);
+                } while (blnAddAgain);
             }
-            while (blnAddAgain);
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void tsMartialArtsAddTechnique_Click(object sender, EventArgs e)
         {
-            if (await treMartialArts.DoThreadSafeFuncAsync(x => x.SelectedNode != null, GenericToken))
+            try
             {
-                // Select the Martial Arts node if we're currently on a child.
-                await treMartialArts.DoThreadSafeAsync(x =>
+                if (await treMartialArts.DoThreadSafeFuncAsync(x => x.SelectedNode != null, GenericToken))
                 {
-                    if (x.SelectedNode.Level > 1)
-                        x.SelectedNode = x.SelectedNode.Parent;
-                }, GenericToken);
-
-                if (!(await treMartialArts.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is MartialArt objMartialArt))
-                    return;
-
-                bool blnAddAgain = false;
-                do
-                {
-                    using (ThreadSafeForm<SelectMartialArtTechnique> frmPickMartialArtTechnique = await ThreadSafeForm<SelectMartialArtTechnique>.GetAsync(() => new SelectMartialArtTechnique(CharacterObject, objMartialArt), GenericToken))
+                    // Select the Martial Arts node if we're currently on a child.
+                    await treMartialArts.DoThreadSafeAsync(x =>
                     {
-                        if (await frmPickMartialArtTechnique.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
-                            return;
+                        if (x.SelectedNode.Level > 1)
+                            x.SelectedNode = x.SelectedNode.Parent;
+                    }, GenericToken);
 
-                        // Open the Martial Arts XML file and locate the selected piece.
-                        XmlNode xmlTechnique = (await CharacterObject.LoadDataAsync("martialarts.xml", token: GenericToken)).SelectSingleNode("/chummer/techniques/technique[id = " + frmPickMartialArtTechnique.MyForm.SelectedTechnique.CleanXPath() + ']');
+                    if (!(await treMartialArts.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is
+                            MartialArt objMartialArt))
+                        return;
 
-                        if (xmlTechnique == null)
-                            continue;
-                        // Create the Improvements for the Technique if there are any.
-                        MartialArtTechnique objTechnique = new MartialArtTechnique(CharacterObject);
-                        objTechnique.Create(xmlTechnique);
-                        if (objTechnique.InternalId.IsEmptyGuid())
-                            return;
+                    bool blnAddAgain = false;
+                    do
+                    {
+                        using (ThreadSafeForm<SelectMartialArtTechnique> frmPickMartialArtTechnique
+                               = await ThreadSafeForm<SelectMartialArtTechnique>.GetAsync(
+                                   () => new SelectMartialArtTechnique(CharacterObject, objMartialArt), GenericToken))
+                        {
+                            if (await frmPickMartialArtTechnique.ShowDialogSafeAsync(this, GenericToken)
+                                == DialogResult.Cancel)
+                                return;
 
-                        blnAddAgain = frmPickMartialArtTechnique.MyForm.AddAgain;
+                            // Open the Martial Arts XML file and locate the selected piece.
+                            XmlNode xmlTechnique
+                                = (await CharacterObject.LoadDataAsync("martialarts.xml", token: GenericToken))
+                                .SelectSingleNode("/chummer/techniques/technique[id = "
+                                                  + frmPickMartialArtTechnique.MyForm.SelectedTechnique.CleanXPath()
+                                                  + ']');
 
-                        int karmaCost = objMartialArt.Techniques.Count > 0 ? CharacterObjectSettings.KarmaTechnique : 0;
-                        await objMartialArt.Techniques.AddAsync(objTechnique);
+                            if (xmlTechnique == null)
+                                continue;
+                            // Create the Improvements for the Technique if there are any.
+                            MartialArtTechnique objTechnique = new MartialArtTechnique(CharacterObject);
+                            objTechnique.Create(xmlTechnique);
+                            if (objTechnique.InternalId.IsEmptyGuid())
+                                return;
 
-                        // Create the Expense Log Entry.
-                        ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                        objExpense.Create(karmaCost * -1,
-                            await LanguageManager.GetStringAsync("String_ExpenseLearnTechnique") + await LanguageManager.GetStringAsync("String_Space") + objTechnique.CurrentDisplayName,
-                            ExpenseType.Karma, DateTime.Now);
-                        await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense);
-                        CharacterObject.Karma -= karmaCost;
+                            blnAddAgain = frmPickMartialArtTechnique.MyForm.AddAgain;
 
-                        ExpenseUndo objUndo = new ExpenseUndo();
-                        objUndo.CreateKarma(KarmaExpenseType.AddMartialArtTechnique, objTechnique.InternalId);
-                        objExpense.Undo = objUndo;
-                    }
-                } while (blnAddAgain);
+                            int karmaCost = objMartialArt.Techniques.Count > 0
+                                ? CharacterObjectSettings.KarmaTechnique
+                                : 0;
+                            await objMartialArt.Techniques.AddAsync(objTechnique);
+
+                            // Create the Expense Log Entry.
+                            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                            objExpense.Create(karmaCost * -1,
+                                              await LanguageManager.GetStringAsync("String_ExpenseLearnTechnique")
+                                              + await LanguageManager.GetStringAsync("String_Space")
+                                              + objTechnique.CurrentDisplayName,
+                                              ExpenseType.Karma, DateTime.Now);
+                            await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense);
+                            CharacterObject.Karma -= karmaCost;
+
+                            ExpenseUndo objUndo = new ExpenseUndo();
+                            objUndo.CreateKarma(KarmaExpenseType.AddMartialArtTechnique, objTechnique.InternalId);
+                            objExpense.Undo = objUndo;
+                        }
+                    } while (blnAddAgain);
+                }
+                else
+                {
+                    Program.ShowMessageBox(
+                        this, await LanguageManager.GetStringAsync("Message_SelectMartialArtTechnique"),
+                        await LanguageManager.GetStringAsync("MessageTitle_SelectMartialArtTechnique"),
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
             }
-            else
+            catch (OperationCanceledException)
             {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectMartialArtTechnique"), await LanguageManager.GetStringAsync("MessageTitle_SelectMartialArtTechnique"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                //swallow this
             }
         }
 
         private async void tsVehicleAddGear_Click(object sender, EventArgs e)
         {
-            Vehicle objSelectedVehicle;
-            Location objLocation = null;
-            switch (treVehicles.SelectedNode?.Tag)
-            {
-                case Vehicle vehicle:
-                    objSelectedVehicle = vehicle;
-                    break;
-
-                case Location location:
-                    objLocation = location;
-                    objSelectedVehicle = await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode.Parent.Tag, GenericToken) as Vehicle;
-                    break;
-
-                default:
-                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectGearVehicle"), await LanguageManager.GetStringAsync("MessageTitle_SelectGearVehicle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-            }
-
             try
             {
+                Vehicle objSelectedVehicle;
+                Location objLocation = null;
+                switch (treVehicles.SelectedNode?.Tag)
+                {
+                    case Vehicle vehicle:
+                        objSelectedVehicle = vehicle;
+                        break;
+
+                    case Location location:
+                        objLocation = location;
+                        objSelectedVehicle
+                            = await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode.Parent.Tag, GenericToken) as
+                                Vehicle;
+                        break;
+
+                    default:
+                        Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectGearVehicle"),
+                                               await LanguageManager.GetStringAsync("MessageTitle_SelectGearVehicle"),
+                                               MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        return;
+                }
+
                 await PurchaseVehicleGear(objSelectedVehicle, objLocation, GenericToken);
             }
             catch (OperationCanceledException)
@@ -8466,133 +8999,154 @@ namespace Chummer
 
         private async void tsVehicleSensorAddAsPlugin_Click(object sender, EventArgs e)
         {
-            // Make sure a parent items is selected, then open the Select Gear window.
-            if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Gear objSensor))
-            {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ModifyVehicleGear"), await LanguageManager.GetStringAsync("MessageTitle_ModifyVehicleGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            string strCategories = string.Empty;
-            XPathNodeIterator xmlAddonCategoryList = (await objSensor.GetNodeXPathAsync(GenericToken))?.Select("addoncategory");
-            if (xmlAddonCategoryList?.Count > 0)
-            {
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCategories))
-                {
-                    foreach (XPathNavigator objXmlCategory in xmlAddonCategoryList)
-                        sbdCategories.Append(objXmlCategory.Value).Append(',');
-                    // Remove the trailing comma.
-                    --sbdCategories.Length;
-                    strCategories = sbdCategories.ToString();
-                }
-            }
-
-            XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml", token: GenericToken);
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
             try
             {
-                bool blnAddAgain;
-                do
+                // Make sure a parent items is selected, then open the Select Gear window.
+                if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag,
+                                                              GenericToken) is Gear objSensor))
                 {
-                    using (ThreadSafeForm<SelectGear> frmPickGear
-                           = await ThreadSafeForm<SelectGear>.GetAsync(
-                               () => new SelectGear(CharacterObject, 0, 1, objSensor, strCategories), GenericToken))
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ModifyVehicleGear"),
+                                           await LanguageManager.GetStringAsync("MessageTitle_ModifyVehicleGear"),
+                                           MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                string strCategories = string.Empty;
+                XPathNodeIterator xmlAddonCategoryList
+                    = (await objSensor.GetNodeXPathAsync(GenericToken))?.Select("addoncategory");
+                if (xmlAddonCategoryList?.Count > 0)
+                {
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                  out StringBuilder sbdCategories))
                     {
-                        if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity)
-                                                                 && (!objSensor.Capacity.Contains('[')
-                                                                     || objSensor.Capacity.Contains("/[")))
-                            frmPickGear.MyForm.ShowNegativeCapacityOnly = true;
-
-                        if (await frmPickGear.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
-                            break;
-                        blnAddAgain = frmPickGear.MyForm.AddAgain;
-
-                        // Open the Gear XML file and locate the selected piece.
-                        XmlNode objXmlGear
-                            = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = "
-                                                              + frmPickGear.MyForm.SelectedGear.CleanXPath() + ']');
-
-                        // Create the new piece of Gear.
-                        List<Weapon> lstWeapons = new List<Weapon>(1);
-
-                        Gear objGear = new Gear(CharacterObject);
-                        objGear.Create(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons, string.Empty, false);
-
-                        if (objGear.InternalId.IsEmptyGuid())
-                            continue;
-
-                        objGear.Quantity = frmPickGear.MyForm.SelectedQty;
-
-                        // Reduce the cost for Do It Yourself components.
-                        if (frmPickGear.MyForm.DoItYourself)
-                            objGear.Cost = '(' + objGear.Cost + ") * 0.5";
-
-                        // Check the item's Cost and make sure the character can afford it.
-                        if (!frmPickGear.MyForm.FreeCost)
-                        {
-                            decimal decCost = objGear.TotalCost;
-
-                            // Multiply the cost if applicable.
-                            char chrAvail = (await objGear.TotalAvailTupleAsync()).Suffix;
-                            switch (chrAvail)
-                            {
-                                case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
-                                    decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
-                                    break;
-
-                                case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
-                                    decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
-                                    break;
-                            }
-
-                            if (decCost > CharacterObject.Nuyen)
-                            {
-                                Program.ShowMessageBox(
-                                    this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen"),
-                                    await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen"),
-                                    MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                continue;
-                            }
-
-                            // Create the Expense Log Entry.
-                            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                            objExpense.Create(decCost * -1,
-                                              await LanguageManager.GetStringAsync("String_ExpensePurchaseVehicleGear")
-                                              + await LanguageManager.GetStringAsync("String_Space")
-                                              + objGear.CurrentDisplayNameShort, ExpenseType.Nuyen,
-                                              DateTime.Now);
-                            await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense);
-                            CharacterObject.Nuyen -= decCost;
-
-                            ExpenseUndo objUndo = new ExpenseUndo();
-                            objUndo.CreateNuyen(NuyenExpenseType.AddVehicleGear, objGear.InternalId,
-                                                frmPickGear.MyForm.SelectedQty);
-                            objExpense.Undo = objUndo;
-                        }
-
-                        await objSensor.Children.AddAsync(objGear, GenericToken);
-
-                        if (lstWeapons.Count > 0)
-                        {
-                            CharacterObject.Vehicles.FindVehicleGear(objSensor.InternalId, out Vehicle objVehicle,
-                                                                     out WeaponAccessory _, out Cyberware _);
-                            foreach (Weapon objWeapon in lstWeapons)
-                            {
-                                await objVehicle.Weapons.AddAsync(objWeapon, GenericToken);
-                            }
-                        }
+                        foreach (XPathNavigator objXmlCategory in xmlAddonCategoryList)
+                            sbdCategories.Append(objXmlCategory.Value).Append(',');
+                        // Remove the trailing comma.
+                        --sbdCategories.Length;
+                        strCategories = sbdCategories.ToString();
                     }
-                } while (blnAddAgain);
+                }
+
+                XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml", token: GenericToken);
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+                try
+                {
+                    bool blnAddAgain;
+                    do
+                    {
+                        using (ThreadSafeForm<SelectGear> frmPickGear
+                               = await ThreadSafeForm<SelectGear>.GetAsync(
+                                   () => new SelectGear(CharacterObject, 0, 1, objSensor, strCategories), GenericToken))
+                        {
+                            if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity)
+                                                                     && (!objSensor.Capacity.Contains('[')
+                                                                         || objSensor.Capacity.Contains("/[")))
+                                frmPickGear.MyForm.ShowNegativeCapacityOnly = true;
+
+                            if (await frmPickGear.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                                break;
+                            blnAddAgain = frmPickGear.MyForm.AddAgain;
+
+                            // Open the Gear XML file and locate the selected piece.
+                            XmlNode objXmlGear
+                                = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = "
+                                                                  + frmPickGear.MyForm.SelectedGear.CleanXPath() + ']');
+
+                            // Create the new piece of Gear.
+                            List<Weapon> lstWeapons = new List<Weapon>(1);
+
+                            Gear objGear = new Gear(CharacterObject);
+                            objGear.Create(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons, string.Empty,
+                                           false);
+
+                            if (objGear.InternalId.IsEmptyGuid())
+                                continue;
+
+                            objGear.Quantity = frmPickGear.MyForm.SelectedQty;
+
+                            // Reduce the cost for Do It Yourself components.
+                            if (frmPickGear.MyForm.DoItYourself)
+                                objGear.Cost = '(' + objGear.Cost + ") * 0.5";
+
+                            // Check the item's Cost and make sure the character can afford it.
+                            if (!frmPickGear.MyForm.FreeCost)
+                            {
+                                decimal decCost = objGear.TotalCost;
+
+                                // Multiply the cost if applicable.
+                                char chrAvail = (await objGear.TotalAvailTupleAsync()).Suffix;
+                                switch (chrAvail)
+                                {
+                                    case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
+                                        decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
+                                        break;
+
+                                    case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
+                                        decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
+                                        break;
+                                }
+
+                                if (decCost > CharacterObject.Nuyen)
+                                {
+                                    Program.ShowMessageBox(
+                                        this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen"),
+                                        await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen"),
+                                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                    continue;
+                                }
+
+                                // Create the Expense Log Entry.
+                                ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                                objExpense.Create(decCost * -1,
+                                                  await LanguageManager.GetStringAsync(
+                                                      "String_ExpensePurchaseVehicleGear")
+                                                  + await LanguageManager.GetStringAsync("String_Space")
+                                                  + objGear.CurrentDisplayNameShort, ExpenseType.Nuyen,
+                                                  DateTime.Now);
+                                await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense);
+                                CharacterObject.Nuyen -= decCost;
+
+                                ExpenseUndo objUndo = new ExpenseUndo();
+                                objUndo.CreateNuyen(NuyenExpenseType.AddVehicleGear, objGear.InternalId,
+                                                    frmPickGear.MyForm.SelectedQty);
+                                objExpense.Undo = objUndo;
+                            }
+
+                            await objSensor.Children.AddAsync(objGear, GenericToken);
+
+                            if (lstWeapons.Count > 0)
+                            {
+                                CharacterObject.Vehicles.FindVehicleGear(objSensor.InternalId, out Vehicle objVehicle,
+                                                                         out WeaponAccessory _, out Cyberware _);
+                                foreach (Weapon objWeapon in lstWeapons)
+                                {
+                                    await objVehicle.Weapons.AddAsync(objWeapon, GenericToken);
+                                }
+                            }
+                        }
+                    } while (blnAddAgain);
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync();
+                }
             }
-            finally
+            catch (OperationCanceledException)
             {
-                await objCursorWait.DisposeAsync();
+                //swallow this
             }
         }
 
         private async void cmsAmmoSingleShot_Click(object sender, EventArgs e)
         {
-            await DoSingleShot();
+            try
+            {
+                await DoSingleShot(GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async ValueTask DoSingleShot(CancellationToken token = default)
@@ -8617,7 +9171,14 @@ namespace Chummer
 
         private async void cmsAmmoShortBurst_Click(object sender, EventArgs e)
         {
-            await DoShortBurst();
+            try
+            {
+                await DoShortBurst(GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async ValueTask DoShortBurst(CancellationToken token = default)
@@ -8656,7 +9217,14 @@ namespace Chummer
 
         private async void cmsAmmoLongBurst_Click(object sender, EventArgs e)
         {
-            await DoLongBurst();
+            try
+            {
+                await DoLongBurst(GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async ValueTask DoLongBurst(CancellationToken token = default)
@@ -8699,57 +9267,91 @@ namespace Chummer
 
         private async void cmsAmmoFullBurst_Click(object sender, EventArgs e)
         {
-            // Locate the selected Weapon.
-            if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Weapon objWeapon))
-                return;
-            if (objWeapon.AmmoRemaining == 0)
+            try
             {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_OutOfAmmo"), await LanguageManager.GetStringAsync("MessageTitle_OutOfAmmo"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                return;
-            }
+                // Locate the selected Weapon.
+                if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag,
+                                                             GenericToken) is Weapon objWeapon))
+                    return;
+                if (objWeapon.AmmoRemaining == 0)
+                {
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_OutOfAmmo"),
+                                           await LanguageManager.GetStringAsync("MessageTitle_OutOfAmmo"),
+                                           MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    return;
+                }
 
-            if (objWeapon.AmmoRemaining >= objWeapon.FullBurst)
+                if (objWeapon.AmmoRemaining >= objWeapon.FullBurst)
+                {
+                    objWeapon.AmmoRemaining -= objWeapon.FullBurst;
+                }
+                else
+                {
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughAmmoFullBurst"),
+                                           await LanguageManager.GetStringAsync("MessageTitle_NotEnoughAmmo"),
+                                           MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                }
+
+                await lblWeaponAmmoRemaining.DoThreadSafeAsync(
+                    x => x.Text = objWeapon.AmmoRemaining.ToString(GlobalSettings.CultureInfo), GenericToken);
+
+                await SetDirty(true);
+            }
+            catch (OperationCanceledException)
             {
-                objWeapon.AmmoRemaining -= objWeapon.FullBurst;
+                //swallow this
             }
-            else
-            {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughAmmoFullBurst"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughAmmo"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-            }
-
-            await lblWeaponAmmoRemaining.DoThreadSafeAsync(x => x.Text = objWeapon.AmmoRemaining.ToString(GlobalSettings.CultureInfo), GenericToken);
-
-            await SetDirty(true);
         }
 
         private async void cmsAmmoSuppressiveFire_Click(object sender, EventArgs e)
         {
-            // Locate the selected Weapon.
-            if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Weapon objWeapon))
-                return;
-            if (objWeapon.AmmoRemaining == 0)
+            try
             {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_OutOfAmmo"), await LanguageManager.GetStringAsync("MessageTitle_OutOfAmmo"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                return;
-            }
+                // Locate the selected Weapon.
+                if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag,
+                                                             GenericToken) is Weapon objWeapon))
+                    return;
+                if (objWeapon.AmmoRemaining == 0)
+                {
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_OutOfAmmo"),
+                                           await LanguageManager.GetStringAsync("MessageTitle_OutOfAmmo"),
+                                           MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    return;
+                }
 
-            if (objWeapon.AmmoRemaining >= objWeapon.Suppressive)
+                if (objWeapon.AmmoRemaining >= objWeapon.Suppressive)
+                {
+                    objWeapon.AmmoRemaining -= objWeapon.Suppressive;
+                }
+                else
+                {
+                    Program.ShowMessageBox(
+                        this, await LanguageManager.GetStringAsync("Message_NotEnoughAmmoSuppressiveFire"),
+                        await LanguageManager.GetStringAsync("MessageTitle_NotEnoughAmmo"), MessageBoxButtons.OK,
+                        MessageBoxIcon.Exclamation);
+                }
+
+                await lblWeaponAmmoRemaining.DoThreadSafeAsync(
+                    x => x.Text = objWeapon.AmmoRemaining.ToString(GlobalSettings.CultureInfo), GenericToken);
+
+                await SetDirty(true);
+            }
+            catch (OperationCanceledException)
             {
-                objWeapon.AmmoRemaining -= objWeapon.Suppressive;
+                //swallow this
             }
-            else
-            {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughAmmoSuppressiveFire"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughAmmo"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-            }
-
-            await lblWeaponAmmoRemaining.DoThreadSafeAsync(x => x.Text = objWeapon.AmmoRemaining.ToString(GlobalSettings.CultureInfo), GenericToken);
-
-            await SetDirty(true);
         }
 
         private async void cmsVehicleAmmoSingleShot_Click(object sender, EventArgs e)
         {
-            await DoVehicleAmmoSingleShot();
+            try
+            {
+                await DoVehicleAmmoSingleShot(GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async ValueTask DoVehicleAmmoSingleShot(CancellationToken token = default)
@@ -8772,7 +9374,14 @@ namespace Chummer
 
         private async void cmsVehicleAmmoShortBurst_Click(object sender, EventArgs e)
         {
-            await DoVehicleAmmoShortBurst();
+            try
+            {
+                await DoVehicleAmmoShortBurst(GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async ValueTask DoVehicleAmmoShortBurst(CancellationToken token = default)
@@ -8805,7 +9414,14 @@ namespace Chummer
 
         private async void cmsVehicleAmmoLongBurst_Click(object sender, EventArgs e)
         {
-            await DoVehicleAmmoLongBurst();
+            try
+            {
+                await DoVehicleAmmoLongBurst(GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async ValueTask DoVehicleAmmoLongBurst(CancellationToken token = default)
@@ -8848,65 +9464,98 @@ namespace Chummer
 
         private async void cmsVehicleAmmoFullBurst_Click(object sender, EventArgs e)
         {
-            // Locate the selected Vehicle Weapon.
-            if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Weapon objWeapon))
-                return;
-            if (objWeapon.AmmoRemaining == 0)
+            try
             {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_OutOfAmmo"), await LanguageManager.GetStringAsync("MessageTitle_OutOfAmmo"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                return;
-            }
+                // Locate the selected Vehicle Weapon.
+                if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Weapon
+                        objWeapon))
+                    return;
+                if (objWeapon.AmmoRemaining == 0)
+                {
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_OutOfAmmo"),
+                                           await LanguageManager.GetStringAsync("MessageTitle_OutOfAmmo"),
+                                           MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    return;
+                }
 
-            if (objWeapon.AmmoRemaining >= objWeapon.FullBurst)
+                if (objWeapon.AmmoRemaining >= objWeapon.FullBurst)
+                {
+                    objWeapon.AmmoRemaining -= objWeapon.FullBurst;
+                }
+                else
+                {
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughAmmoFullBurst"),
+                                           await LanguageManager.GetStringAsync("MessageTitle_NotEnoughAmmo"),
+                                           MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                }
+
+                await lblVehicleWeaponAmmoRemaining.DoThreadSafeAsync(
+                    x => x.Text = objWeapon.AmmoRemaining.ToString(GlobalSettings.CultureInfo), GenericToken);
+
+                await SetDirty(true);
+            }
+            catch (OperationCanceledException)
             {
-                objWeapon.AmmoRemaining -= objWeapon.FullBurst;
+                //swallow this
             }
-            else
-            {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughAmmoFullBurst"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughAmmo"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-            }
-
-            await lblVehicleWeaponAmmoRemaining.DoThreadSafeAsync(x => x.Text = objWeapon.AmmoRemaining.ToString(GlobalSettings.CultureInfo), GenericToken);
-
-            await SetDirty(true);
         }
 
         private async void cmsVehicleAmmoSuppressiveFire_Click(object sender, EventArgs e)
         {
-            // Locate the selected Vehicle Weapon.
-            if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Weapon objWeapon))
-                return;
-            if (objWeapon.AmmoRemaining == 0)
+            try
             {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_OutOfAmmo"), await LanguageManager.GetStringAsync("MessageTitle_OutOfAmmo"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                return;
-            }
+                // Locate the selected Vehicle Weapon.
+                if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Weapon
+                        objWeapon))
+                    return;
+                if (objWeapon.AmmoRemaining == 0)
+                {
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_OutOfAmmo"),
+                                           await LanguageManager.GetStringAsync("MessageTitle_OutOfAmmo"),
+                                           MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    return;
+                }
 
-            if (objWeapon.AmmoRemaining >= objWeapon.Suppressive)
+                if (objWeapon.AmmoRemaining >= objWeapon.Suppressive)
+                {
+                    objWeapon.AmmoRemaining -= objWeapon.Suppressive;
+                }
+                else
+                {
+                    Program.ShowMessageBox(
+                        this, await LanguageManager.GetStringAsync("Message_NotEnoughAmmoSuppressiveFire"),
+                        await LanguageManager.GetStringAsync("MessageTitle_NotEnoughAmmo"), MessageBoxButtons.OK,
+                        MessageBoxIcon.Exclamation);
+                }
+
+                await lblVehicleWeaponAmmoRemaining.DoThreadSafeAsync(
+                    x => x.Text = objWeapon.AmmoRemaining.ToString(GlobalSettings.CultureInfo), GenericToken);
+
+                await SetDirty(true, GenericToken);
+            }
+            catch (OperationCanceledException)
             {
-                objWeapon.AmmoRemaining -= objWeapon.Suppressive;
+                //swallow this
             }
-            else
-            {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughAmmoSuppressiveFire"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughAmmo"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-            }
-
-            await lblVehicleWeaponAmmoRemaining.DoThreadSafeAsync(x => x.Text = objWeapon.AmmoRemaining.ToString(GlobalSettings.CultureInfo), GenericToken);
-
-            await SetDirty(true);
         }
 
         private async void tsCyberwareSell_Click(object sender, EventArgs e)
         {
-            switch (await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken))
+            try
             {
-                case Cyberware objCyberware when objCyberware.Capacity == "[*]" && objCyberware.Parent != null:
-                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CannotRemoveCyberware"), await LanguageManager.GetStringAsync("MessageTitle_CannotRemoveCyberware"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
+                switch (await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken))
+                {
+                    case Cyberware objCyberware when objCyberware.Capacity == "[*]" && objCyberware.Parent != null:
+                        Program.ShowMessageBox(
+                            this, await LanguageManager.GetStringAsync("Message_CannotRemoveCyberware"),
+                            await LanguageManager.GetStringAsync("MessageTitle_CannotRemoveCyberware"),
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        return;
 
-                case ICanSell vendorTrash:
+                    case ICanSell vendorTrash:
                     {
-                        using (ThreadSafeForm<SellItem> frmSell = await ThreadSafeForm<SellItem>.GetAsync(() => new SellItem(), GenericToken))
+                        using (ThreadSafeForm<SellItem> frmSell
+                               = await ThreadSafeForm<SellItem>.GetAsync(() => new SellItem(), GenericToken))
                         {
                             if (await frmSell.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
                                 return;
@@ -8915,251 +9564,353 @@ namespace Chummer
 
                         break;
                     }
-                default:
-                    Utils.BreakIfDebug();
-                    break;
+                    default:
+                        Utils.BreakIfDebug();
+                        break;
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
             }
         }
 
         private async void tsArmorSell_Click(object sender, EventArgs e)
         {
-            if (await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is ICanSell vendorTrash)
+            try
             {
-                using (ThreadSafeForm<SellItem> frmSell = await ThreadSafeForm<SellItem>.GetAsync(() => new SellItem(), GenericToken))
+                if (await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag,
+                                                         GenericToken) is ICanSell vendorTrash)
                 {
-                    if (await frmSell.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
-                        return;
-                    vendorTrash.Sell(frmSell.MyForm.SellPercent, GlobalSettings.ConfirmDelete);
+                    using (ThreadSafeForm<SellItem> frmSell
+                           = await ThreadSafeForm<SellItem>.GetAsync(() => new SellItem(), GenericToken))
+                    {
+                        if (await frmSell.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                            return;
+                        vendorTrash.Sell(frmSell.MyForm.SellPercent, GlobalSettings.ConfirmDelete);
+                    }
+                }
+                else
+                {
+                    Utils.BreakIfDebug();
                 }
             }
-            else
+            catch (OperationCanceledException)
             {
-                Utils.BreakIfDebug();
+                //swallow this
             }
         }
 
         private async void tsWeaponSell_Click(object sender, EventArgs e)
         {
-            // Delete the selected Weapon.
-            if (await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is ICanSell vendorTrash)
+            try
             {
-                using (ThreadSafeForm<SellItem> frmSell = await ThreadSafeForm<SellItem>.GetAsync(() => new SellItem(), GenericToken))
+                // Delete the selected Weapon.
+                if (await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is ICanSell
+                    vendorTrash)
                 {
-                    if (await frmSell.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
-                        return;
-                    vendorTrash.Sell(frmSell.MyForm.SellPercent, GlobalSettings.ConfirmDelete);
+                    using (ThreadSafeForm<SellItem> frmSell
+                           = await ThreadSafeForm<SellItem>.GetAsync(() => new SellItem(), GenericToken))
+                    {
+                        if (await frmSell.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                            return;
+                        vendorTrash.Sell(frmSell.MyForm.SellPercent, GlobalSettings.ConfirmDelete);
+                    }
+                }
+                else
+                {
+                    Utils.BreakIfDebug();
                 }
             }
-            else
+            catch (OperationCanceledException)
             {
-                Utils.BreakIfDebug();
+                //swallow this
             }
         }
 
         private async void sellItemToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            // Delete the selected Weapon.
-            if (await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is ICanSell vendorTrash)
+            try
             {
-                using (ThreadSafeForm<SellItem> frmSell = await ThreadSafeForm<SellItem>.GetAsync(() => new SellItem(), GenericToken))
+                // Delete the selected Weapon.
+                if (await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is ICanSell vendorTrash)
                 {
-                    if (await frmSell.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
-                        return;
-                    vendorTrash.Sell(frmSell.MyForm.SellPercent, GlobalSettings.ConfirmDelete);
+                    using (ThreadSafeForm<SellItem> frmSell
+                           = await ThreadSafeForm<SellItem>.GetAsync(() => new SellItem(), GenericToken))
+                    {
+                        if (await frmSell.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                            return;
+                        vendorTrash.Sell(frmSell.MyForm.SellPercent, GlobalSettings.ConfirmDelete);
+                    }
+                }
+                else
+                {
+                    Utils.BreakIfDebug();
                 }
             }
-            else
+            catch (OperationCanceledException)
             {
-                Utils.BreakIfDebug();
+                //swallow this
             }
         }
 
         private async void tsVehicleSell_Click(object sender, EventArgs e)
         {
-            // Delete the selected Weapon.
-            if (await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is ICanSell vendorTrash)
+            try
             {
-                using (ThreadSafeForm<SellItem> frmSell = await ThreadSafeForm<SellItem>.GetAsync(() => new SellItem(), GenericToken))
+                // Delete the selected Weapon.
+                if (await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is ICanSell
+                    vendorTrash)
                 {
-                    if (await frmSell.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
-                        return;
-                    vendorTrash.Sell(frmSell.MyForm.SellPercent, GlobalSettings.ConfirmDelete);
+                    using (ThreadSafeForm<SellItem> frmSell
+                           = await ThreadSafeForm<SellItem>.GetAsync(() => new SellItem(), GenericToken))
+                    {
+                        if (await frmSell.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                            return;
+                        vendorTrash.Sell(frmSell.MyForm.SellPercent, GlobalSettings.ConfirmDelete);
+                    }
+                }
+                else
+                {
+                    Utils.BreakIfDebug();
                 }
             }
-            else
+            catch (OperationCanceledException)
             {
-                Utils.BreakIfDebug();
+                //swallow this
             }
         }
 
         private async void tsAdvancedLifestyle_Click(object sender, EventArgs e)
         {
-            bool blnAddAgain;
-            do
+            try
             {
-                Lifestyle objLifeStyle = new Lifestyle(CharacterObject);
-                using (ThreadSafeForm<SelectLifestyleAdvanced> frmPickLifestyle = await ThreadSafeForm<SelectLifestyleAdvanced>.GetAsync(() => new SelectLifestyleAdvanced(CharacterObject, objLifeStyle), GenericToken))
+                bool blnAddAgain;
+                do
                 {
-                    // Make sure the dialogue window was not canceled.
-                    if (await frmPickLifestyle.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                    Lifestyle objLifeStyle = new Lifestyle(CharacterObject);
+                    using (ThreadSafeForm<SelectLifestyleAdvanced> frmPickLifestyle
+                           = await ThreadSafeForm<SelectLifestyleAdvanced>.GetAsync(
+                               () => new SelectLifestyleAdvanced(CharacterObject, objLifeStyle), GenericToken))
                     {
-                        //And if it was, remove Improvements that was already added based on the lifestyle
-                        foreach (LifestyleQuality lifestyleQuality in objLifeStyle.LifestyleQualities)
-                            await ImprovementManager.RemoveImprovementsAsync(CharacterObject, Improvement.ImprovementSource.Quality, lifestyleQuality.InternalId);
+                        // Make sure the dialogue window was not canceled.
+                        if (await frmPickLifestyle.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                        {
+                            //And if it was, remove Improvements that was already added based on the lifestyle
+                            foreach (LifestyleQuality lifestyleQuality in objLifeStyle.LifestyleQualities)
+                                await ImprovementManager.RemoveImprovementsAsync(
+                                    CharacterObject, Improvement.ImprovementSource.Quality,
+                                    lifestyleQuality.InternalId);
 
-                        return;
+                            return;
+                        }
+
+                        blnAddAgain = frmPickLifestyle.MyForm.AddAgain;
+
+                        Lifestyle objNewLifestyle = frmPickLifestyle.MyForm.SelectedLifestyle;
+                        objNewLifestyle.StyleType = LifestyleType.Advanced;
+
+                        await CharacterObject.Lifestyles.AddAsync(objNewLifestyle, GenericToken);
                     }
-
-                    blnAddAgain = frmPickLifestyle.MyForm.AddAgain;
-
-                    Lifestyle objNewLifestyle = frmPickLifestyle.MyForm.SelectedLifestyle;
-                    objNewLifestyle.StyleType = LifestyleType.Advanced;
-
-                    await CharacterObject.Lifestyles.AddAsync(objNewLifestyle);
-                }
+                } while (blnAddAgain);
             }
-            while (blnAddAgain);
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void tsWeaponName_Click(object sender, EventArgs e)
         {
-            // Make sure a parent item is selected, then open the Select Accessory window.
-            if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Weapon objWeapon))
+            try
             {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectWeaponName"), await LanguageManager.GetStringAsync("MessageTitle_SelectWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            string strDescription = await LanguageManager.GetStringAsync("String_WeaponName");
-            using (ThreadSafeForm<SelectText> frmPickText = await ThreadSafeForm<SelectText>.GetAsync(() => new SelectText
-                   {
-                       Description = strDescription,
-                       DefaultString = objWeapon.CustomName,
-                       AllowEmptyString = true
-                   }, GenericToken))
-            {
-                if (await frmPickText.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                // Make sure a parent item is selected, then open the Select Accessory window.
+                if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag,
+                                                             GenericToken) is Weapon objWeapon))
+                {
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectWeaponName"),
+                                           await LanguageManager.GetStringAsync("MessageTitle_SelectWeapon"),
+                                           MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
+                }
 
-                objWeapon.CustomName = frmPickText.MyForm.SelectedValue;
+                string strDescription = await LanguageManager.GetStringAsync("String_WeaponName");
+                using (ThreadSafeForm<SelectText> frmPickText = await ThreadSafeForm<SelectText>.GetAsync(
+                           () => new SelectText
+                           {
+                               Description = strDescription,
+                               DefaultString = objWeapon.CustomName,
+                               AllowEmptyString = true
+                           }, GenericToken))
+                {
+                    if (await frmPickText.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                        return;
+
+                    objWeapon.CustomName = frmPickText.MyForm.SelectedValue;
+                }
+
+                await treWeapons.DoThreadSafeAsync(x => x.SelectedNode.Text = objWeapon.CurrentDisplayName,
+                                                   GenericToken);
+
+                await SetDirty(true);
             }
-
-            await treWeapons.DoThreadSafeAsync(x => x.SelectedNode.Text = objWeapon.CurrentDisplayName, GenericToken);
-
-            await SetDirty(true);
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void tsGearName_Click(object sender, EventArgs e)
         {
-            if (!(await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Gear objGear))
+            try
             {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectGearName"), await LanguageManager.GetStringAsync("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            string strDescription = await LanguageManager.GetStringAsync("String_GearName");
-            using (ThreadSafeForm<SelectText> frmPickText = await ThreadSafeForm<SelectText>.GetAsync(() => new SelectText
-                   {
-                       Description = strDescription,
-                       DefaultString = objGear.GearName,
-                       AllowEmptyString = true
-                   }, GenericToken))
-            {
-                if (await frmPickText.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                if (!(await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Gear objGear))
+                {
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectGearName"),
+                                           await LanguageManager.GetStringAsync("MessageTitle_SelectGear"),
+                                           MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
+                }
 
-                objGear.GearName = frmPickText.MyForm.SelectedValue;
+                string strDescription = await LanguageManager.GetStringAsync("String_GearName");
+                using (ThreadSafeForm<SelectText> frmPickText = await ThreadSafeForm<SelectText>.GetAsync(
+                           () => new SelectText
+                           {
+                               Description = strDescription,
+                               DefaultString = objGear.GearName,
+                               AllowEmptyString = true
+                           }, GenericToken))
+                {
+                    if (await frmPickText.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                        return;
+
+                    objGear.GearName = frmPickText.MyForm.SelectedValue;
+                }
+
+                await treGear.DoThreadSafeAsync(x => x.SelectedNode.Text = objGear.CurrentDisplayName, GenericToken);
+
+                await SetDirty(true);
             }
-
-            await treGear.DoThreadSafeAsync(x => x.SelectedNode.Text = objGear.CurrentDisplayName, GenericToken);
-
-            await SetDirty(true);
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void tsWeaponAddUnderbarrel_Click(object sender, EventArgs e)
         {
-            // Make sure a parent item is selected, then open the Select Accessory window.
-            if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Weapon objSelectedWeapon))
+            try
             {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectWeaponAccessory"), await LanguageManager.GetStringAsync("MessageTitle_SelectWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
+                // Make sure a parent item is selected, then open the Select Accessory window.
+                if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Weapon
+                        objSelectedWeapon))
+                {
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectWeaponAccessory"),
+                                           await LanguageManager.GetStringAsync("MessageTitle_SelectWeapon"),
+                                           MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
 
-            if (objSelectedWeapon.Cyberware)
-            {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CyberwareUnderbarrel"), await LanguageManager.GetStringAsync("MessageTitle_WeaponUnderbarrel"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
+                if (objSelectedWeapon.Cyberware)
+                {
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CyberwareUnderbarrel"),
+                                           await LanguageManager.GetStringAsync("MessageTitle_WeaponUnderbarrel"),
+                                           MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
 
-            bool blnAddAgain;
-            do
-            {
-                blnAddAgain = await AddUnderbarrelWeapon(objSelectedWeapon, await LanguageManager.GetStringAsync("String_ExpensePurchaseWeapon"));
+                bool blnAddAgain;
+                do
+                {
+                    blnAddAgain = await AddUnderbarrelWeapon(objSelectedWeapon,
+                                                             await LanguageManager.GetStringAsync(
+                                                                 "String_ExpensePurchaseWeapon"), GenericToken);
+                } while (blnAddAgain);
             }
-            while (blnAddAgain);
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void tsUndoKarmaExpense_Click(object sender, EventArgs e)
         {
-            ListViewItem objItem = await lstKarma.DoThreadSafeFuncAsync(x => x.SelectedItems.Count > 0 ? lstKarma.SelectedItems[0] : null, GenericToken);
-
-            if (objItem == null)
+            try
             {
-                return;
-            }
+                ListViewItem objItem
+                    = await lstKarma.DoThreadSafeFuncAsync(
+                        x => x.SelectedItems.Count > 0 ? lstKarma.SelectedItems[0] : null, GenericToken);
 
-            // Find the selected Karma Expense.
-            ExpenseLogEntry objExpense = (objItem.SubItems[3] as ListViewItemWithValue.ListViewSubItemWithValue)?.Value as ExpenseLogEntry;
-
-            if (objExpense?.Undo == null)
-            {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_UndoNoHistory"), await LanguageManager.GetStringAsync("MessageTitle_NoUndoHistory"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            string strUndoId = objExpense.Undo.ObjectId;
-
-            if (objExpense.Undo.KarmaType == KarmaExpenseType.ImproveInitiateGrade)
-            {
-                // Get the grade of the item we're undoing and make sure it's the highest grade
-                int intMaxGrade = 0;
-                foreach (InitiationGrade objGrade in CharacterObject.InitiationGrades)
+                if (objItem == null)
                 {
-                    intMaxGrade = Math.Max(intMaxGrade, objGrade.Grade);
+                    return;
                 }
-                foreach (InitiationGrade objGrade in CharacterObject.InitiationGrades)
+
+                // Find the selected Karma Expense.
+                ExpenseLogEntry objExpense
+                    = (objItem.SubItems[3] as ListViewItemWithValue.ListViewSubItemWithValue)?.Value as ExpenseLogEntry;
+
+                if (objExpense?.Undo == null)
                 {
-                    if (objGrade.InternalId != strUndoId)
-                        continue;
-                    if (objGrade.Grade < intMaxGrade)
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_UndoNoHistory"),
+                                           await LanguageManager.GetStringAsync("MessageTitle_NoUndoHistory"),
+                                           MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                string strUndoId = objExpense.Undo.ObjectId;
+
+                if (objExpense.Undo.KarmaType == KarmaExpenseType.ImproveInitiateGrade)
+                {
+                    // Get the grade of the item we're undoing and make sure it's the highest grade
+                    int intMaxGrade = 0;
+                    foreach (InitiationGrade objGrade in CharacterObject.InitiationGrades)
                     {
-                        Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_UndoNotHighestGrade"), await LanguageManager.GetStringAsync("MessageTitle_NotHighestGrade"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        return;
+                        intMaxGrade = Math.Max(intMaxGrade, objGrade.Grade);
                     }
-                    break;
-                }
-                if (Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_UndoExpense"), await LanguageManager.GetStringAsync("MessageTitle_UndoExpense"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
-                    return;
-            }
-            else
-            {
-                if (Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_UndoExpense"), await LanguageManager.GetStringAsync("MessageTitle_UndoExpense"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
-                    return;
-            }
 
-            switch (objExpense.Undo.KarmaType)
-            {
-                case KarmaExpenseType.ImproveAttribute:
+                    foreach (InitiationGrade objGrade in CharacterObject.InitiationGrades)
+                    {
+                        if (objGrade.InternalId != strUndoId)
+                            continue;
+                        if (objGrade.Grade < intMaxGrade)
+                        {
+                            Program.ShowMessageBox(
+                                this, await LanguageManager.GetStringAsync("Message_UndoNotHighestGrade"),
+                                await LanguageManager.GetStringAsync("MessageTitle_NotHighestGrade"),
+                                MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            return;
+                        }
+
+                        break;
+                    }
+
+                    if (Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_UndoExpense"),
+                                               await LanguageManager.GetStringAsync("MessageTitle_UndoExpense"),
+                                               MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                        return;
+                }
+                else
+                {
+                    if (Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_UndoExpense"),
+                                               await LanguageManager.GetStringAsync("MessageTitle_UndoExpense"),
+                                               MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                        return;
+                }
+
+                switch (objExpense.Undo.KarmaType)
+                {
+                    case KarmaExpenseType.ImproveAttribute:
                     {
                         (await CharacterObject.GetAttributeAsync(strUndoId, token: GenericToken)).Degrade(1);
                         break;
                     }
-                case KarmaExpenseType.AddPowerPoint:
+                    case KarmaExpenseType.AddPowerPoint:
                     {
                         --CharacterObject.MysticAdeptPowerPoints;
                         break;
                     }
-                case KarmaExpenseType.AddQuality:
+                    case KarmaExpenseType.AddQuality:
                     {
                         // Locate the Quality that was added.
                         for (int i = CharacterObject.Qualities.Count - 1; i >= 0; --i)
@@ -9171,9 +9922,9 @@ namespace Chummer
                                 objQuality.DeleteQuality();
                         }
                     }
-                    break;
+                        break;
 
-                case KarmaExpenseType.AddSpell:
+                    case KarmaExpenseType.AddSpell:
                     {
                         // Locate the Spell that was added.
                         for (int i = CharacterObject.Spells.Count - 1; i >= 0; --i)
@@ -9184,28 +9935,32 @@ namespace Chummer
                             if (objSpell.InternalId == strUndoId)
                                 objSpell.Remove(false); // Remove the Spell from the character.
                         }
+
                         break;
                     }
-                case KarmaExpenseType.SkillSpec:  //I am reasonably sure those 2 are the same. Was written looking at old AddSpecialization code
-                case KarmaExpenseType.AddSpecialization:
-                {
-                    SkillSpecialization objSpec = CharacterObject.SkillsSection.KnowledgeSkills
-                                                                 .SelectMany(x => x.Specializations)
-                                                                 .FirstOrDefault(
-                                                                     x => x.InternalId == strUndoId)
-                                                  ?? CharacterObject.SkillsSection.Skills
-                                                                    .SelectMany(x => x.Specializations)
-                                                                    .FirstOrDefault(
-                                                                        x => x.InternalId == strUndoId);
-                    if (objSpec != null)
-                        await objSpec.Parent.Specializations.RemoveAsync(objSpec);
+                    case KarmaExpenseType.SkillSpec
+                        : //I am reasonably sure those 2 are the same. Was written looking at old AddSpecialization code
+                    case KarmaExpenseType.AddSpecialization:
+                    {
+                        SkillSpecialization objSpec = CharacterObject.SkillsSection.KnowledgeSkills
+                                                                     .SelectMany(x => x.Specializations)
+                                                                     .FirstOrDefault(
+                                                                         x => x.InternalId == strUndoId)
+                                                      ?? CharacterObject.SkillsSection.Skills
+                                                                        .SelectMany(x => x.Specializations)
+                                                                        .FirstOrDefault(
+                                                                            x => x.InternalId == strUndoId);
+                        if (objSpec != null)
+                            await objSpec.Parent.Specializations.RemoveAsync(objSpec);
 
-                    break;
-                }
-                case KarmaExpenseType.ImproveSkillGroup:
+                        break;
+                    }
+                    case KarmaExpenseType.ImproveSkillGroup:
                     {
                         // Locate the Skill Group that was affected. Old characters may have had the expense added as the Name instead of guid.
-                        SkillGroup group = CharacterObject.SkillsSection.SkillGroups.FirstOrDefault(g => g.InternalId == strUndoId || g.Name == strUndoId);
+                        SkillGroup group
+                            = CharacterObject.SkillsSection.SkillGroups.FirstOrDefault(
+                                g => g.InternalId == strUndoId || g.Name == strUndoId);
 
                         if (group != null)
                         {
@@ -9214,19 +9969,22 @@ namespace Chummer
                             else
                             {
                                 Program.ShowMessageBox(this,
-                                    await LanguageManager.GetStringAsync("Message_UndoBrokenSkillGroup"),
-                                    await LanguageManager.GetStringAsync("MessageTitle_UndoBrokenSkillGroup"),
-                                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                                       await LanguageManager.GetStringAsync(
+                                                           "Message_UndoBrokenSkillGroup"),
+                                                       await LanguageManager.GetStringAsync(
+                                                           "MessageTitle_UndoBrokenSkillGroup"),
+                                                       MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                 return;
                             }
                         }
 
                         break;
                     }
-                case KarmaExpenseType.AddSkill:
+                    case KarmaExpenseType.AddSkill:
                     {
                         // Locate the Skill that was affected.
-                        Skill objSkill = CharacterObject.SkillsSection.Skills.FirstOrDefault(s => s.InternalId == strUndoId);
+                        Skill objSkill
+                            = CharacterObject.SkillsSection.Skills.FirstOrDefault(s => s.InternalId == strUndoId);
                         if (objSkill != null)
                         {
                             if (objSkill.AllowDelete)
@@ -9239,7 +9997,9 @@ namespace Chummer
                         }
                         else
                         {
-                            KnowledgeSkill objKnowledgeSkill = CharacterObject.SkillsSection.KnowledgeSkills.FirstOrDefault(s => s.InternalId == strUndoId);
+                            KnowledgeSkill objKnowledgeSkill
+                                = CharacterObject.SkillsSection.KnowledgeSkills.FirstOrDefault(
+                                    s => s.InternalId == strUndoId);
                             if (objKnowledgeSkill != null)
                             {
                                 if (objKnowledgeSkill.AllowDelete)
@@ -9255,7 +10015,9 @@ namespace Chummer
                                 // Old characters may have incorrectly had their ExpenseType set to AddSkill rather than ImproveSkillGroup.
                                 // Since skill groups can never be deleted, we don't have/need an AddSkillGroup expense type.
                                 // Locate the Skill Group that was affected.
-                                SkillGroup group = CharacterObject.SkillsSection.SkillGroups.FirstOrDefault(g => g.InternalId == strUndoId);
+                                SkillGroup group
+                                    = CharacterObject.SkillsSection.SkillGroups.FirstOrDefault(
+                                        g => g.InternalId == strUndoId);
 
                                 if (group != null)
                                 {
@@ -9264,28 +10026,33 @@ namespace Chummer
                                     else
                                     {
                                         Program.ShowMessageBox(this,
-                                            await LanguageManager.GetStringAsync("Message_UndoBrokenSkillGroup"),
-                                            await LanguageManager.GetStringAsync("MessageTitle_UndoBrokenSkillGroup"),
-                                            MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                                               await LanguageManager.GetStringAsync(
+                                                                   "Message_UndoBrokenSkillGroup"),
+                                                               await LanguageManager.GetStringAsync(
+                                                                   "MessageTitle_UndoBrokenSkillGroup"),
+                                                               MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                         return;
                                     }
                                 }
                             }
                         }
+
                         break;
                     }
-                case KarmaExpenseType.ImproveSkill:
+                    case KarmaExpenseType.ImproveSkill:
                     {
                         // Locate the Skill that was affected.
-                        Skill objSkill = CharacterObject.SkillsSection.Skills.FirstOrDefault(s => s.InternalId == strUndoId) ??
-                                         CharacterObject.SkillsSection.KnowledgeSkills.FirstOrDefault(s => s.InternalId == strUndoId);
+                        Skill objSkill
+                            = CharacterObject.SkillsSection.Skills.FirstOrDefault(s => s.InternalId == strUndoId) ??
+                              CharacterObject.SkillsSection.KnowledgeSkills.FirstOrDefault(
+                                  s => s.InternalId == strUndoId);
 
                         if (objSkill != null)
                             --objSkill.Karma;
 
                         break;
                     }
-                case KarmaExpenseType.AddMetamagic:
+                    case KarmaExpenseType.AddMetamagic:
                     {
                         // Locate the Metamagic that was affected.
                         for (int i = CharacterObject.Metamagics.Count - 1; i >= 0; --i)
@@ -9296,9 +10063,10 @@ namespace Chummer
                             if (objMetamagic.InternalId == strUndoId)
                                 objMetamagic.Remove(false); // Remove the Metamagic from the character.
                         }
+
                         break;
                     }
-                case KarmaExpenseType.ImproveInitiateGrade:
+                    case KarmaExpenseType.ImproveInitiateGrade:
                     {
                         // Locate the Initiate Grade that was affected.
                         for (int i = CharacterObject.InitiationGrades.Count - 1; i >= 0; --i)
@@ -9309,9 +10077,10 @@ namespace Chummer
                             if (objGrade.InternalId == strUndoId)
                                 objGrade.Remove(false); // Remove the Grade from the character.
                         }
+
                         break;
                     }
-                case KarmaExpenseType.AddMartialArt:
+                    case KarmaExpenseType.AddMartialArt:
                     {
                         // Locate the Martial Art that was affected.
                         for (int i = CharacterObject.MartialArts.Count - 1; i >= 0; --i)
@@ -9322,9 +10091,10 @@ namespace Chummer
                             if (objMartialArt.InternalId == strUndoId)
                                 objMartialArt.Remove(false); // Remove the Martial Art from the character.
                         }
+
                         break;
                     }
-                case KarmaExpenseType.AddMartialArtTechnique:
+                    case KarmaExpenseType.AddMartialArtTechnique:
                     {
                         // Locate the Martial Art Technique that was affected.
                         for (int i = CharacterObject.MartialArts.Count - 1; i >= 0; --i)
@@ -9341,10 +10111,11 @@ namespace Chummer
                                     objTechnique.Remove(false); // Remove the Technique from the character.
                             }
                         }
+
                         break;
                     }
 
-                case KarmaExpenseType.AddComplexForm:
+                    case KarmaExpenseType.AddComplexForm:
                     {
                         // Locate the Complex Form that was affected.
                         for (int i = CharacterObject.ComplexForms.Count - 1; i >= 0; --i)
@@ -9355,9 +10126,10 @@ namespace Chummer
                             if (objComplexForm.InternalId == strUndoId)
                                 objComplexForm.Remove(false); // Remove the Complex Form from the character.
                         }
+
                         break;
                     }
-                case KarmaExpenseType.BindFocus:
+                    case KarmaExpenseType.BindFocus:
                     {
                         // Locate the Focus that was bound.
                         for (int i = CharacterObject.Foci.Count - 1; i >= 0; --i)
@@ -9385,6 +10157,7 @@ namespace Chummer
                             }, GenericToken);
                             await CharacterObject.Foci.RemoveAsync(objFocus);
                         }
+
                         // Locate the Stacked Focus that was bound.
                         for (int i = CharacterObject.StackedFoci.Count - 1; i >= 0; --i)
                         {
@@ -9393,7 +10166,9 @@ namespace Chummer
                             StackedFocus objStack = CharacterObject.StackedFoci[i];
                             if (objStack.InternalId != strUndoId)
                                 continue;
-                            TreeNode objNode = await treFoci.DoThreadSafeFuncAsync(x => x.FindNode(objStack.InternalId), GenericToken);
+                            TreeNode objNode
+                                = await treFoci.DoThreadSafeFuncAsync(x => x.FindNode(objStack.InternalId),
+                                                                      GenericToken);
                             if (objNode == null)
                                 continue;
 
@@ -9411,9 +10186,10 @@ namespace Chummer
                                 IsRefreshing = false;
                             }
                         }
+
                         break;
                     }
-                case KarmaExpenseType.JoinGroup:
+                    case KarmaExpenseType.JoinGroup:
                     {
                         // Remove the character from their Group.
                         IsRefreshing = true;
@@ -9425,9 +10201,10 @@ namespace Chummer
                         {
                             IsRefreshing = false;
                         }
+
                         break;
                     }
-                case KarmaExpenseType.LeaveGroup:
+                    case KarmaExpenseType.LeaveGroup:
                     {
                         // Put the character back in their Group.
                         IsRefreshing = true;
@@ -9439,18 +10216,24 @@ namespace Chummer
                         {
                             IsRefreshing = false;
                         }
+
                         break;
                     }
-                case KarmaExpenseType.RemoveQuality:
+                    case KarmaExpenseType.RemoveQuality:
                     {
                         // Add the Quality back to the character.
                         List<Weapon> lstWeapons = new List<Weapon>(1);
 
                         Quality objAddQuality = new Quality(CharacterObject);
-                        XmlDocument objXmlQualityDocument = await CharacterObject.LoadDataAsync("qualities.xml", token: GenericToken);
-                        XmlNode objXmlQualityNode = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[id = " + strUndoId.CleanXPath() + ']')
-                                                    ?? objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = " + strUndoId.CleanXPath() + ']');
-                        objAddQuality.Create(objXmlQualityNode, QualitySource.Selected, lstWeapons, objExpense.Undo.Extra);
+                        XmlDocument objXmlQualityDocument
+                            = await CharacterObject.LoadDataAsync("qualities.xml", token: GenericToken);
+                        XmlNode objXmlQualityNode
+                            = objXmlQualityDocument.SelectSingleNode(
+                                  "/chummer/qualities/quality[id = " + strUndoId.CleanXPath() + ']')
+                              ?? objXmlQualityDocument.SelectSingleNode(
+                                  "/chummer/qualities/quality[name = " + strUndoId.CleanXPath() + ']');
+                        objAddQuality.Create(objXmlQualityNode, QualitySource.Selected, lstWeapons,
+                                             objExpense.Undo.Extra);
 
                         await CharacterObject.Qualities.AddAsync(objAddQuality);
 
@@ -9459,14 +10242,15 @@ namespace Chummer
                         {
                             await CharacterObject.Weapons.AddAsync(objWeapon);
                         }
+
                         break;
                     }
-                case KarmaExpenseType.ManualAdd:
-                case KarmaExpenseType.ManualSubtract:
-                case KarmaExpenseType.QuickeningMetamagic:
-                    break;
+                    case KarmaExpenseType.ManualAdd:
+                    case KarmaExpenseType.ManualSubtract:
+                    case KarmaExpenseType.QuickeningMetamagic:
+                        break;
 
-                case KarmaExpenseType.AddCritterPower:
+                    case KarmaExpenseType.AddCritterPower:
                     {
                         // Locate the Critter Power that was affected.
                         for (int i = CharacterObject.CritterPowers.Count - 1; i >= 0; --i)
@@ -9478,93 +10262,117 @@ namespace Chummer
                                 objPower.Remove(false); // Remove the Critter Power from the character.
                         }
                     }
-                    break;
+                        break;
+                }
+
+                // Refund the Karma amount and remove the Expense Entry.
+                CharacterObject.Karma -= objExpense.Amount.ToInt32();
+                await CharacterObject.ExpenseEntries.RemoveAsync(objExpense);
+
+                await cboTradition.DoThreadSafeAsync(x =>
+                {
+                    // Select the Magician's Tradition.
+                    if (CharacterObject.MagicTradition.Type == TraditionType.MAG)
+                        x.SelectedValue = CharacterObject.MagicTradition.SourceID;
+                    else if (x.SelectedIndex == -1 && x.Items.Count > 0)
+                        x.SelectedIndex = 0;
+                }, GenericToken);
+
+                await cboStream.DoThreadSafeAsync(x =>
+                {
+                    // Select the Technomancer's Stream.
+                    if (CharacterObject.MagicTradition.Type == TraditionType.RES)
+                        x.SelectedValue = CharacterObject.MagicTradition.SourceID;
+                    else if (x.SelectedIndex == -1 && x.Items.Count > 0)
+                        x.SelectedIndex = 0;
+                }, GenericToken);
             }
-            // Refund the Karma amount and remove the Expense Entry.
-            CharacterObject.Karma -= objExpense.Amount.ToInt32();
-            await CharacterObject.ExpenseEntries.RemoveAsync(objExpense);
-
-            await cboTradition.DoThreadSafeAsync(x =>
+            catch (OperationCanceledException)
             {
-                // Select the Magician's Tradition.
-                if (CharacterObject.MagicTradition.Type == TraditionType.MAG)
-                    x.SelectedValue = CharacterObject.MagicTradition.SourceID;
-                else if (x.SelectedIndex == -1 && x.Items.Count > 0)
-                    x.SelectedIndex = 0;
-            }, GenericToken);
-
-            await cboStream.DoThreadSafeAsync(x =>
-            {
-                // Select the Technomancer's Stream.
-                if (CharacterObject.MagicTradition.Type == TraditionType.RES)
-                    x.SelectedValue = CharacterObject.MagicTradition.SourceID;
-                else if (x.SelectedIndex == -1 && x.Items.Count > 0)
-                    x.SelectedIndex = 0;
-            }, GenericToken);
+                //swallow this
+            }
         }
 
         private async void tsUndoNuyenExpense_Click(object sender, EventArgs e)
         {
-            ListViewItem objItem = await lstNuyen.DoThreadSafeFuncAsync(x => x.SelectedItems.Count > 0 ? lstNuyen.SelectedItems[0] : null, GenericToken);
-
-            if (objItem == null)
+            try
             {
-                return;
-            }
+                ListViewItem objItem
+                    = await lstNuyen.DoThreadSafeFuncAsync(
+                        x => x.SelectedItems.Count > 0 ? lstNuyen.SelectedItems[0] : null, GenericToken);
 
-            // Find the selected Nuyen Expense.
-            ExpenseLogEntry objExpense = (objItem.SubItems[3] as ListViewItemWithValue.ListViewSubItemWithValue)?.Value as ExpenseLogEntry;
-
-            if (objExpense?.Undo == null)
-            {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_UndoNoHistory"), await LanguageManager.GetStringAsync("MessageTitle_NoUndoHistory"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            string strUndoId = objExpense.Undo.ObjectId;
-
-            if (objExpense.Undo.KarmaType == KarmaExpenseType.ImproveInitiateGrade)
-            {
-                // Get the grade of the item we're undoing and make sure it's the highest grade
-                int intMaxGrade = 0;
-                foreach (InitiationGrade objGrade in CharacterObject.InitiationGrades)
+                if (objItem == null)
                 {
-                    intMaxGrade = Math.Max(intMaxGrade, objGrade.Grade);
+                    return;
                 }
-                foreach (InitiationGrade objGrade in CharacterObject.InitiationGrades)
+
+                // Find the selected Nuyen Expense.
+                ExpenseLogEntry objExpense
+                    = (objItem.SubItems[3] as ListViewItemWithValue.ListViewSubItemWithValue)?.Value as ExpenseLogEntry;
+
+                if (objExpense?.Undo == null)
                 {
-                    if (objGrade.InternalId != strUndoId)
-                        continue;
-                    if (objGrade.Grade < intMaxGrade)
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_UndoNoHistory"),
+                                           await LanguageManager.GetStringAsync("MessageTitle_NoUndoHistory"),
+                                           MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                string strUndoId = objExpense.Undo.ObjectId;
+
+                if (objExpense.Undo.KarmaType == KarmaExpenseType.ImproveInitiateGrade)
+                {
+                    // Get the grade of the item we're undoing and make sure it's the highest grade
+                    int intMaxGrade = 0;
+                    foreach (InitiationGrade objGrade in CharacterObject.InitiationGrades)
                     {
-                        Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_UndoNotHighestGrade"), await LanguageManager.GetStringAsync("MessageTitle_NotHighestGrade"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        return;
+                        intMaxGrade = Math.Max(intMaxGrade, objGrade.Grade);
                     }
-                    break;
-                }
-                if (Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_UndoExpense"), await LanguageManager.GetStringAsync("MessageTitle_UndoExpense"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
-                    return;
-            }
-            else
-            {
-                if (Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_UndoExpense"), await LanguageManager.GetStringAsync("MessageTitle_UndoExpense"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
-                    return;
-            }
 
-            if (!string.IsNullOrEmpty(strUndoId))
-            {
-                switch (objExpense.Undo.NuyenType)
+                    foreach (InitiationGrade objGrade in CharacterObject.InitiationGrades)
+                    {
+                        if (objGrade.InternalId != strUndoId)
+                            continue;
+                        if (objGrade.Grade < intMaxGrade)
+                        {
+                            Program.ShowMessageBox(
+                                this, await LanguageManager.GetStringAsync("Message_UndoNotHighestGrade"),
+                                await LanguageManager.GetStringAsync("MessageTitle_NotHighestGrade"),
+                                MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            return;
+                        }
+
+                        break;
+                    }
+
+                    if (Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_UndoExpense"),
+                                               await LanguageManager.GetStringAsync("MessageTitle_UndoExpense"),
+                                               MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                        return;
+                }
+                else
                 {
-                    case NuyenExpenseType.AddCyberware:
+                    if (Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_UndoExpense"),
+                                               await LanguageManager.GetStringAsync("MessageTitle_UndoExpense"),
+                                               MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                        return;
+                }
+
+                if (!string.IsNullOrEmpty(strUndoId))
+                {
+                    switch (objExpense.Undo.NuyenType)
+                    {
+                        case NuyenExpenseType.AddCyberware:
                         {
                             // Locate the Cyberware that was added.
                             Cyberware objCyberware = CharacterObject.Cyberware.DeepFindById(strUndoId) ??
-                                                     CharacterObject.Vehicles.FindVehicleCyberware(x => x.InternalId == strUndoId);
+                                                     CharacterObject.Vehicles.FindVehicleCyberware(
+                                                         x => x.InternalId == strUndoId);
                             objCyberware?.DeleteCyberware(blnIncreaseEssenceHole: false);
                         }
-                        break;
+                            break;
 
-                    case NuyenExpenseType.AddGear:
+                        case NuyenExpenseType.AddGear:
                         {
                             // Locate the Gear that was added.
                             //If the gear was already deleted manually we will not be able to locate it here
@@ -9572,13 +10380,15 @@ namespace Chummer
                             TreeNode objNode;
                             if (objGear != null)
                             {
-                                objNode = await treGear.DoThreadSafeFuncAsync(x => x.FindNode(objGear.InternalId), GenericToken);
+                                objNode = await treGear.DoThreadSafeFuncAsync(
+                                    x => x.FindNode(objGear.InternalId), GenericToken);
                             }
                             else
                             {
                                 objGear = CharacterObject.Vehicles.FindVehicleGear(strUndoId);
                                 if (objGear != null)
-                                    objNode = await treVehicles.DoThreadSafeFuncAsync(x => x.FindNode(objGear.InternalId), GenericToken);
+                                    objNode = await treVehicles.DoThreadSafeFuncAsync(
+                                        x => x.FindNode(objGear.InternalId), GenericToken);
                                 else
                                     break;
                             }
@@ -9591,28 +10401,30 @@ namespace Chummer
                             }
                             else if (objNode != null)
                             {
-                                await objNode.TreeView.DoThreadSafeAsync(() => objNode.Text = objGear.CurrentDisplayName, GenericToken);
+                                await objNode.TreeView.DoThreadSafeAsync(
+                                    () => objNode.Text = objGear.CurrentDisplayName, GenericToken);
                             }
                         }
-                        break;
+                            break;
 
-                    case NuyenExpenseType.AddVehicle:
+                        case NuyenExpenseType.AddVehicle:
                         {
                             // Locate the Vehicle that was added.
                             Vehicle objVehicle = CharacterObject.Vehicles.FindById(strUndoId);
                             objVehicle?.DeleteVehicle();
                         }
-                        break;
+                            break;
 
-                    case NuyenExpenseType.AddVehicleMod:
+                        case NuyenExpenseType.AddVehicleMod:
                         {
                             // Locate the Vehicle Mod that was added.
-                            VehicleMod objVehicleMod = CharacterObject.Vehicles.FindVehicleMod(x => x.InternalId == strUndoId);
+                            VehicleMod objVehicleMod
+                                = CharacterObject.Vehicles.FindVehicleMod(x => x.InternalId == strUndoId);
                             objVehicleMod?.DeleteVehicleMod();
                         }
-                        break;
+                            break;
 
-                    case NuyenExpenseType.AddVehicleGear:
+                        case NuyenExpenseType.AddVehicleGear:
                         {
                             // Locate the Gear that was added.
                             TreeNode objNode = null;
@@ -9627,16 +10439,20 @@ namespace Chummer
                                     {
                                         objGear = CharacterObject.Weapons.FindWeaponGear(strUndoId);
                                         if (objGear != null)
-                                            objNode = await treWeapons.DoThreadSafeFuncAsync(x => x.FindNode(strUndoId), GenericToken);
+                                            objNode = await treWeapons.DoThreadSafeFuncAsync(
+                                                x => x.FindNode(strUndoId), GenericToken);
                                     }
                                     else
-                                        objNode = await treCyberware.DoThreadSafeFuncAsync(x => x.FindNode(strUndoId), GenericToken);
+                                        objNode = await treCyberware.DoThreadSafeFuncAsync(
+                                            x => x.FindNode(strUndoId), GenericToken);
                                 }
                                 else
-                                    objNode = await treGear.DoThreadSafeFuncAsync(x => x.FindNode(strUndoId), GenericToken);
+                                    objNode = await treGear.DoThreadSafeFuncAsync(
+                                        x => x.FindNode(strUndoId), GenericToken);
                             }
                             else
-                                objNode = await treVehicles.DoThreadSafeFuncAsync(x => x.FindNode(strUndoId), GenericToken);
+                                objNode = await treVehicles.DoThreadSafeFuncAsync(
+                                    x => x.FindNode(strUndoId), GenericToken);
 
                             if (objGear != null)
                             {
@@ -9650,88 +10466,92 @@ namespace Chummer
                                 }
                                 else if (objNode != null)
                                 {
-                                    await objNode.TreeView.DoThreadSafeAsync(() => objNode.Text = objGear.CurrentDisplayName, GenericToken);
+                                    await objNode.TreeView.DoThreadSafeAsync(
+                                        () => objNode.Text = objGear.CurrentDisplayName, GenericToken);
                                 }
                             }
                         }
-                        break;
+                            break;
 
-                    case NuyenExpenseType.AddVehicleWeapon:
+                        case NuyenExpenseType.AddVehicleWeapon:
                         {
                             // Locate the Weapon that was added.
                             Weapon objWeapon = CharacterObject.Vehicles.FindVehicleWeapon(strUndoId) ??
                                                CharacterObject.Weapons.DeepFindById(strUndoId);
                             objWeapon?.DeleteWeapon();
                         }
-                        break;
+                            break;
 
-                    case NuyenExpenseType.AddVehicleWeaponAccessory:
+                        case NuyenExpenseType.AddVehicleWeaponAccessory:
                         {
                             // Locate the Weapon Accessory that was added.
-                            WeaponAccessory objWeaponAccessory = CharacterObject.Vehicles.FindVehicleWeaponAccessory(strUndoId) ??
-                                                                 CharacterObject.Weapons.FindWeaponAccessory(strUndoId);
+                            WeaponAccessory objWeaponAccessory
+                                = CharacterObject.Vehicles.FindVehicleWeaponAccessory(strUndoId) ??
+                                  CharacterObject.Weapons.FindWeaponAccessory(strUndoId);
                             objWeaponAccessory?.DeleteWeaponAccessory();
                         }
-                        break;
+                            break;
 
-                    case NuyenExpenseType.AddVehicleWeaponMount:
+                        case NuyenExpenseType.AddVehicleWeaponMount:
                         {
                             WeaponMount objWeaponMount = CharacterObject.Vehicles.FindVehicleWeaponMount(strUndoId);
                             objWeaponMount?.DeleteWeaponMount();
                         }
-                        break;
+                            break;
 
-                    case NuyenExpenseType.AddVehicleWeaponMountMod:
+                        case NuyenExpenseType.AddVehicleWeaponMountMod:
                         {
                             VehicleMod objVehicleMod = CharacterObject.Vehicles.FindVehicleWeaponMountMod(strUndoId);
                             objVehicleMod?.DeleteVehicleMod();
                         }
-                        break;
+                            break;
 
-                    case NuyenExpenseType.AddArmor:
+                        case NuyenExpenseType.AddArmor:
                         {
                             // Locate the Armor that was added.
                             Armor objArmor = CharacterObject.Armor.FindById(strUndoId);
                             objArmor?.DeleteArmor();
                         }
-                        break;
+                            break;
 
-                    case NuyenExpenseType.AddArmorMod:
+                        case NuyenExpenseType.AddArmorMod:
                         {
                             // Locate the Armor Mod that was added.
                             ArmorMod objArmorMod = CharacterObject.Armor.FindArmorMod(strUndoId);
                             objArmorMod?.DeleteArmorMod();
                         }
-                        break;
+                            break;
 
-                    case NuyenExpenseType.AddWeapon:
+                        case NuyenExpenseType.AddWeapon:
                         {
                             // Locate the Weapon that was added.
                             Weapon objWeapon = CharacterObject.Weapons.DeepFindById(strUndoId) ??
                                                CharacterObject.Vehicles.FindVehicleWeapon(strUndoId);
                             objWeapon?.DeleteWeapon();
                         }
-                        break;
+                            break;
 
-                    case NuyenExpenseType.AddWeaponAccessory:
+                        case NuyenExpenseType.AddWeaponAccessory:
                         {
                             // Locate the Weapon Accessory that was added.
-                            WeaponAccessory objWeaponAccessory = CharacterObject.Weapons.FindWeaponAccessory(strUndoId) ??
-                                                                 CharacterObject.Vehicles.FindVehicleWeaponAccessory(strUndoId);
+                            WeaponAccessory objWeaponAccessory
+                                = CharacterObject.Weapons.FindWeaponAccessory(strUndoId) ??
+                                  CharacterObject.Vehicles.FindVehicleWeaponAccessory(strUndoId);
                             objWeaponAccessory?.DeleteWeaponAccessory();
                         }
-                        break;
+                            break;
 
-                    case NuyenExpenseType.IncreaseLifestyle:
+                        case NuyenExpenseType.IncreaseLifestyle:
                         {
                             // Locate the Lifestyle that was increased.
-                            Lifestyle objLifestyle = CharacterObject.Lifestyles.FirstOrDefault(x => x.InternalId == strUndoId);
+                            Lifestyle objLifestyle
+                                = CharacterObject.Lifestyles.FirstOrDefault(x => x.InternalId == strUndoId);
                             if (objLifestyle != null)
                                 --objLifestyle.Increments;
                         }
-                        break;
+                            break;
 
-                    case NuyenExpenseType.AddArmorGear:
+                        case NuyenExpenseType.AddArmorGear:
                         {
                             // Locate the Armor Gear that was added.
                             Gear objGear = CharacterObject.Armor.FindArmorGear(strUndoId);
@@ -9756,18 +10576,19 @@ namespace Chummer
                                 }
                             }
                         }
-                        break;
+                            break;
 
-                    case NuyenExpenseType.AddVehicleModCyberware:
+                        case NuyenExpenseType.AddVehicleModCyberware:
                         {
                             // Locate the Cyberware that was added.
-                            Cyberware objCyberware = CharacterObject.Vehicles.FindVehicleCyberware(x => x.InternalId == strUndoId) ??
-                                                     CharacterObject.Cyberware.DeepFindById(strUndoId);
+                            Cyberware objCyberware
+                                = CharacterObject.Vehicles.FindVehicleCyberware(x => x.InternalId == strUndoId) ??
+                                  CharacterObject.Cyberware.DeepFindById(strUndoId);
                             objCyberware?.DeleteCyberware(blnIncreaseEssenceHole: false);
                         }
-                        break;
+                            break;
 
-                    case NuyenExpenseType.AddCyberwareGear:
+                        case NuyenExpenseType.AddCyberwareGear:
                         {
                             // Locate the Gear that was added.
                             Gear objGear = CharacterObject.Cyberware.FindCyberwareGear(strUndoId) ??
@@ -9775,9 +10596,9 @@ namespace Chummer
                                            CharacterObject.Gear.DeepFindById(strUndoId);
                             objGear?.DeleteGear();
                         }
-                        break;
+                            break;
 
-                    case NuyenExpenseType.AddWeaponGear:
+                        case NuyenExpenseType.AddWeaponGear:
                         {
                             // Locate the Gear that was added.
                             Gear objGear = CharacterObject.Weapons.FindWeaponGear(strUndoId) ??
@@ -9785,73 +10606,97 @@ namespace Chummer
                                            CharacterObject.Gear.DeepFindById(strUndoId);
                             objGear?.DeleteGear();
                         }
-                        break;
+                            break;
 
-                    case NuyenExpenseType.ManualAdd:
-                    case NuyenExpenseType.ManualSubtract:
-                        break;
+                        case NuyenExpenseType.ManualAdd:
+                        case NuyenExpenseType.ManualSubtract:
+                            break;
+                    }
                 }
-            }
 
-            // Refund the Nuyen amount and remove the Expense Entry.
-            CharacterObject.Nuyen -= objExpense.Amount;
-            await CharacterObject.ExpenseEntries.RemoveAsync(objExpense);
+                // Refund the Nuyen amount and remove the Expense Entry.
+                CharacterObject.Nuyen -= objExpense.Amount;
+                await CharacterObject.ExpenseEntries.RemoveAsync(objExpense);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void tsAddArmorGear_Click(object sender, EventArgs e)
         {
-            // Make sure a parent items is selected, then open the Select Gear window.
-            if (!(await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Armor objArmor))
+            try
             {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectArmor"), await LanguageManager.GetStringAsync("MessageTitle_SelectArmor"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
+                // Make sure a parent items is selected, then open the Select Gear window.
+                if (!(await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Armor objArmor))
+                {
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectArmor"),
+                                           await LanguageManager.GetStringAsync("MessageTitle_SelectArmor"),
+                                           MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
 
-            // Select the root Gear node then open the Select Gear window.
-            bool blnAddAgain;
-            do
-            {
-                blnAddAgain = await PickArmorGear(objArmor.InternalId, true);
+                // Select the root Gear node then open the Select Gear window.
+                bool blnAddAgain;
+                do
+                {
+                    blnAddAgain = await PickArmorGear(objArmor.InternalId, true, GenericToken);
+                } while (blnAddAgain);
             }
-            while (blnAddAgain);
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void tsArmorGearAddAsPlugin_Click(object sender, EventArgs e)
         {
-            object objSelectedNodeTag = await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken);
-            // Make sure a parent items is selected, then open the Select Gear window.
-            string strSelectedId;
-            switch (objSelectedNodeTag)
+            try
             {
-                case Gear objGear:
-                    strSelectedId = objGear.InternalId;
-                    break;
+                object objSelectedNodeTag
+                    = await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken);
+                // Make sure a parent items is selected, then open the Select Gear window.
+                string strSelectedId;
+                switch (objSelectedNodeTag)
+                {
+                    case Gear objGear:
+                        strSelectedId = objGear.InternalId;
+                        break;
 
-                case ArmorMod objMod:
+                    case ArmorMod objMod:
                     {
                         strSelectedId = objMod.InternalId;
                         if (string.IsNullOrEmpty(objMod.GearCapacity))
                         {
-                            Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectArmor"), await LanguageManager.GetStringAsync("MessageTitle_SelectArmor"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectArmor"),
+                                                   await LanguageManager.GetStringAsync("MessageTitle_SelectArmor"),
+                                                   MessageBoxButtons.OK, MessageBoxIcon.Information);
                             return;
                         }
 
                         break;
                     }
-                default:
-                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectArmor"), await LanguageManager.GetStringAsync("MessageTitle_SelectArmor"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    default:
+                        Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectArmor"),
+                                               await LanguageManager.GetStringAsync("MessageTitle_SelectArmor"),
+                                               MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        return;
+                }
+
+                if (string.IsNullOrEmpty(strSelectedId))
                     return;
+
+                bool blnAddAgain;
+                do
+                {
+                    blnAddAgain = await PickArmorGear(strSelectedId, token: GenericToken);
+                } while (blnAddAgain);
             }
-
-            if (string.IsNullOrEmpty(strSelectedId))
-                return;
-
-            bool blnAddAgain;
-            do
+            catch (OperationCanceledException)
             {
-                blnAddAgain = await PickArmorGear(strSelectedId);
+                //swallow this
             }
-            while (blnAddAgain);
         }
 
         private async void tsArmorNotes_Click(object sender, EventArgs e)
@@ -10000,389 +10845,486 @@ namespace Chummer
 
         private async void tsVehicleName_Click(object sender, EventArgs e)
         {
-            // Make sure a parent item is selected.
-            if (await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode == null || x.SelectedNode.Level == 0, GenericToken))
+            try
             {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectVehicleName"), await LanguageManager.GetStringAsync("MessageTitle_SelectVehicle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            await treVehicles.DoThreadSafeAsync(x =>
-            {
-                while (x.SelectedNode.Level > 1)
+                // Make sure a parent item is selected.
+                if (await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode == null || x.SelectedNode.Level == 0,
+                                                            GenericToken))
                 {
-                    x.SelectedNode = x.SelectedNode.Parent;
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectVehicleName"),
+                                           await LanguageManager.GetStringAsync("MessageTitle_SelectVehicle"),
+                                           MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
                 }
-            }, GenericToken);
 
-            if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is IHasCustomName objRename))
-                return;
+                await treVehicles.DoThreadSafeAsync(x =>
+                {
+                    while (x.SelectedNode.Level > 1)
+                    {
+                        x.SelectedNode = x.SelectedNode.Parent;
+                    }
+                }, GenericToken);
 
-            string strDescription = await LanguageManager.GetStringAsync("String_VehicleName");
-            using (ThreadSafeForm<SelectText> frmPickText = await ThreadSafeForm<SelectText>.GetAsync(() => new SelectText
-                   {
-                       Description = strDescription,
-                       DefaultString = objRename.CustomName,
-                       AllowEmptyString = true
-                   }, GenericToken))
-            {
-                if (await frmPickText.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is IHasCustomName
+                        objRename))
                     return;
 
-                objRename.CustomName = frmPickText.MyForm.SelectedValue;
+                string strDescription = await LanguageManager.GetStringAsync("String_VehicleName");
+                using (ThreadSafeForm<SelectText> frmPickText = await ThreadSafeForm<SelectText>.GetAsync(
+                           () => new SelectText
+                           {
+                               Description = strDescription,
+                               DefaultString = objRename.CustomName,
+                               AllowEmptyString = true
+                           }, GenericToken))
+                {
+                    if (await frmPickText.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                        return;
+
+                    objRename.CustomName = frmPickText.MyForm.SelectedValue;
+                }
+
+                await treVehicles.DoThreadSafeAsync(x => x.SelectedNode.Text = objRename.CurrentDisplayName,
+                                                    GenericToken);
+
+                await SetDirty(true);
             }
-
-            await treVehicles.DoThreadSafeAsync(x => x.SelectedNode.Text = objRename.CurrentDisplayName, GenericToken);
-
-            await SetDirty(true);
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void tsVehicleAddCyberware_Click(object sender, EventArgs e)
         {
-            if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is IHasInternalId strSelectedId))
+            try
             {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_VehicleCyberwarePlugin"), await LanguageManager.GetStringAsync("MessageTitle_NoCyberware"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            Cyberware objCyberwareParent = null;
-            VehicleMod objMod = CharacterObject.Vehicles.FindVehicleMod(x => x.InternalId == strSelectedId.InternalId, out Vehicle objVehicle, out WeaponMount _);
-            if (objMod == null)
-                objCyberwareParent = CharacterObject.Vehicles.FindVehicleCyberware(x => x.InternalId == strSelectedId.InternalId, out objMod);
-
-            if (objCyberwareParent == null && objMod?.AllowCyberware != true)
-            {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_VehicleCyberwarePlugin"), await LanguageManager.GetStringAsync("MessageTitle_NoCyberware"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            // Open the Cyberware XML file and locate the selected piece.
-            XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("cyberware.xml", token: GenericToken);
-            bool blnAddAgain;
-
-            do
-            {
-                using (ThreadSafeForm<SelectCyberware> frmPickCyberware = await ThreadSafeForm<SelectCyberware>.GetAsync(() => new SelectCyberware(CharacterObject, Improvement.ImprovementSource.Cyberware, objCyberwareParent ?? (object)objMod), GenericToken))
+                if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is IHasInternalId
+                        strSelectedId))
                 {
-                    if (objCyberwareParent == null)
-                    {
-                        //frmPickCyberware.SetGrade = "Standard";
-                        frmPickCyberware.MyForm.MaximumCapacity = objMod.CapacityRemaining;
-                        frmPickCyberware.MyForm.Subsystems = objMod.Subsystems;
-                        using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
-                                                                        out HashSet<string> setDisallowedMounts))
-                        using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
-                                                                        out HashSet<string> setHasMounts))
-                        {
-                            foreach (Cyberware objLoopCyberware in objMod.Cyberware.DeepWhere(
-                                         x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount)))
-                            {
-                                foreach (string strLoop in objLoopCyberware.BlocksMounts.SplitNoAlloc(
-                                             ',', StringSplitOptions.RemoveEmptyEntries))
-                                {
-                                    if (!setDisallowedMounts.Contains(strLoop + objLoopCyberware.Location))
-                                        setDisallowedMounts.Add(strLoop + objLoopCyberware.Location);
-                                }
-
-                                string strLoopHasModularMount = objLoopCyberware.HasModularMount;
-                                if (!string.IsNullOrEmpty(strLoopHasModularMount)
-                                    && !setHasMounts.Contains(strLoopHasModularMount))
-                                    setHasMounts.Add(strLoopHasModularMount);
-                            }
-
-                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                          out StringBuilder sbdDisallowedMounts))
-                            {
-                                foreach (string strLoop in setDisallowedMounts)
-                                {
-                                    if (!strLoop.EndsWith("Right", StringComparison.Ordinal)
-                                        && (!strLoop.EndsWith("Left", StringComparison.Ordinal)
-                                            || setDisallowedMounts.Contains(
-                                                strLoop.Substring(0, strLoop.Length - 4) + "Right")))
-                                        sbdDisallowedMounts.Append(strLoop.TrimEndOnce("Left")).Append(',');
-                                }
-
-                                // Remove trailing ","
-                                if (sbdDisallowedMounts.Length > 0)
-                                    --sbdDisallowedMounts.Length;
-                                frmPickCyberware.MyForm.DisallowedMounts = sbdDisallowedMounts.ToString();
-                            }
-
-                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                          out StringBuilder sbdHasMounts))
-                            {
-                                foreach (string strLoop in setHasMounts)
-                                    sbdHasMounts.Append(strLoop).Append(',');
-                                // Remove trailing ","
-                                if (sbdHasMounts.Length > 0)
-                                    --sbdHasMounts.Length;
-                                frmPickCyberware.MyForm.HasModularMounts = sbdHasMounts.ToString();
-                            }
-                        }
-                    }
-                    else
-                    {
-                        frmPickCyberware.MyForm.ForcedGrade = objCyberwareParent.Grade;
-                        // If the Cyberware has a Capacity with no brackets (meaning it grants Capacity), show only Subsystems (those that consume Capacity).
-                        if (!objCyberwareParent.Capacity.Contains('['))
-                        {
-                            frmPickCyberware.MyForm.MaximumCapacity = objCyberwareParent.CapacityRemaining;
-
-                            // Do not allow the user to add a new piece of Cyberware if its Capacity has been reached.
-                            if (CharacterObjectSettings.EnforceCapacity && objCyberwareParent.CapacityRemaining < 0)
-                            {
-                                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CapacityReached"), await LanguageManager.GetStringAsync("MessageTitle_CapacityReached"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                break;
-                            }
-                        }
-
-                        frmPickCyberware.MyForm.CyberwareParent = objCyberwareParent;
-                        frmPickCyberware.MyForm.Subsystems = objCyberwareParent.AllowedSubsystems;
-
-                        using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
-                                                                        out HashSet<string> setDisallowedMounts))
-                        using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
-                                                                        out HashSet<string> setHasMounts))
-                        {
-                            string strLoopHasModularMount = objCyberwareParent.HasModularMount;
-                            if (!string.IsNullOrEmpty(strLoopHasModularMount))
-                                setHasMounts.Add(strLoopHasModularMount);
-                            foreach (Cyberware objLoopCyberware in objCyberwareParent.Children.DeepWhere(
-                                         x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount)))
-                            {
-                                foreach (string strLoop in objLoopCyberware.BlocksMounts.SplitNoAlloc(
-                                             ',', StringSplitOptions.RemoveEmptyEntries))
-                                {
-                                    if (!setDisallowedMounts.Contains(strLoop + objLoopCyberware.Location))
-                                        setDisallowedMounts.Add(strLoop + objLoopCyberware.Location);
-                                }
-
-                                strLoopHasModularMount = objLoopCyberware.HasModularMount;
-                                if (!string.IsNullOrEmpty(strLoopHasModularMount)
-                                    && !setHasMounts.Contains(strLoopHasModularMount))
-                                    setHasMounts.Add(strLoopHasModularMount);
-                            }
-
-                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                          out StringBuilder sbdDisallowedMounts))
-                            {
-                                foreach (string strLoop in setDisallowedMounts)
-                                {
-                                    if (!strLoop.EndsWith("Right", StringComparison.Ordinal)
-                                        && (!strLoop.EndsWith("Left", StringComparison.Ordinal)
-                                            || setDisallowedMounts.Contains(
-                                                strLoop.Substring(0, strLoop.Length - 4) + "Right")))
-                                        sbdDisallowedMounts.Append(strLoop.TrimEndOnce("Left")).Append(',');
-                                }
-
-                                // Remove trailing ","
-                                if (sbdDisallowedMounts.Length > 0)
-                                    --sbdDisallowedMounts.Length;
-                                frmPickCyberware.MyForm.DisallowedMounts = sbdDisallowedMounts.ToString();
-                            }
-
-                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                          out StringBuilder sbdHasMounts))
-                            {
-                                foreach (string strLoop in setHasMounts)
-                                    sbdHasMounts.Append(strLoop).Append(',');
-                                // Remove trailing ","
-                                if (sbdHasMounts.Length > 0)
-                                    --sbdHasMounts.Length;
-                                frmPickCyberware.MyForm.HasModularMounts = sbdHasMounts.ToString();
-                            }
-                        }
-                    }
-
-                    frmPickCyberware.MyForm.LockGrade();
-                    frmPickCyberware.MyForm.ParentVehicle = objVehicle ?? objMod.Parent;
-
-                    if (await frmPickCyberware.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
-                        break;
-                    blnAddAgain = frmPickCyberware.MyForm.AddAgain;
-
-                    XmlNode objXmlCyberware = objXmlDocument.SelectSingleNode("/chummer/cyberwares/cyberware[id = " + frmPickCyberware.MyForm.SelectedCyberware.CleanXPath() + ']');
-                    Cyberware objCyberware = new Cyberware(CharacterObject);
-                    if (!objCyberware.Purchase(objXmlCyberware, Improvement.ImprovementSource.Cyberware,
-                                               frmPickCyberware.MyForm.SelectedGrade, frmPickCyberware.MyForm.SelectedRating,
-                                               objVehicle, objMod.Cyberware, CharacterObject.Vehicles, objMod.Weapons,
-                                               frmPickCyberware.MyForm.Markup, frmPickCyberware.MyForm.FreeCost,
-                                               frmPickCyberware.MyForm.BlackMarketDiscount, true,
-                                               "String_ExpensePurchaseVehicleCyberware", objCyberwareParent))
-                        objCyberware.DeleteCyberware();
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_VehicleCyberwarePlugin"),
+                                           await LanguageManager.GetStringAsync("MessageTitle_NoCyberware"),
+                                           MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
                 }
+
+                Cyberware objCyberwareParent = null;
+                VehicleMod objMod = CharacterObject.Vehicles.FindVehicleMod(
+                    x => x.InternalId == strSelectedId.InternalId, out Vehicle objVehicle, out WeaponMount _);
+                if (objMod == null)
+                    objCyberwareParent
+                        = CharacterObject.Vehicles.FindVehicleCyberware(x => x.InternalId == strSelectedId.InternalId,
+                                                                        out objMod);
+
+                if (objCyberwareParent == null && objMod?.AllowCyberware != true)
+                {
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_VehicleCyberwarePlugin"),
+                                           await LanguageManager.GetStringAsync("MessageTitle_NoCyberware"),
+                                           MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                // Open the Cyberware XML file and locate the selected piece.
+                XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("cyberware.xml", token: GenericToken);
+                bool blnAddAgain;
+
+                do
+                {
+                    using (ThreadSafeForm<SelectCyberware> frmPickCyberware
+                           = await ThreadSafeForm<SelectCyberware>.GetAsync(
+                               () => new SelectCyberware(CharacterObject, Improvement.ImprovementSource.Cyberware,
+                                                         objCyberwareParent ?? (object) objMod), GenericToken))
+                    {
+                        if (objCyberwareParent == null)
+                        {
+                            //frmPickCyberware.SetGrade = "Standard";
+                            frmPickCyberware.MyForm.MaximumCapacity = objMod.CapacityRemaining;
+                            frmPickCyberware.MyForm.Subsystems = objMod.Subsystems;
+                            using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                            out HashSet<string> setDisallowedMounts))
+                            using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                            out HashSet<string> setHasMounts))
+                            {
+                                foreach (Cyberware objLoopCyberware in objMod.Cyberware.DeepWhere(
+                                             x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount)))
+                                {
+                                    foreach (string strLoop in objLoopCyberware.BlocksMounts.SplitNoAlloc(
+                                                 ',', StringSplitOptions.RemoveEmptyEntries))
+                                    {
+                                        if (!setDisallowedMounts.Contains(strLoop + objLoopCyberware.Location))
+                                            setDisallowedMounts.Add(strLoop + objLoopCyberware.Location);
+                                    }
+
+                                    string strLoopHasModularMount = objLoopCyberware.HasModularMount;
+                                    if (!string.IsNullOrEmpty(strLoopHasModularMount)
+                                        && !setHasMounts.Contains(strLoopHasModularMount))
+                                        setHasMounts.Add(strLoopHasModularMount);
+                                }
+
+                                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                              out StringBuilder sbdDisallowedMounts))
+                                {
+                                    foreach (string strLoop in setDisallowedMounts)
+                                    {
+                                        if (!strLoop.EndsWith("Right", StringComparison.Ordinal)
+                                            && (!strLoop.EndsWith("Left", StringComparison.Ordinal)
+                                                || setDisallowedMounts.Contains(
+                                                    strLoop.Substring(0, strLoop.Length - 4) + "Right")))
+                                            sbdDisallowedMounts.Append(strLoop.TrimEndOnce("Left")).Append(',');
+                                    }
+
+                                    // Remove trailing ","
+                                    if (sbdDisallowedMounts.Length > 0)
+                                        --sbdDisallowedMounts.Length;
+                                    frmPickCyberware.MyForm.DisallowedMounts = sbdDisallowedMounts.ToString();
+                                }
+
+                                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                              out StringBuilder sbdHasMounts))
+                                {
+                                    foreach (string strLoop in setHasMounts)
+                                        sbdHasMounts.Append(strLoop).Append(',');
+                                    // Remove trailing ","
+                                    if (sbdHasMounts.Length > 0)
+                                        --sbdHasMounts.Length;
+                                    frmPickCyberware.MyForm.HasModularMounts = sbdHasMounts.ToString();
+                                }
+                            }
+                        }
+                        else
+                        {
+                            frmPickCyberware.MyForm.ForcedGrade = objCyberwareParent.Grade;
+                            // If the Cyberware has a Capacity with no brackets (meaning it grants Capacity), show only Subsystems (those that consume Capacity).
+                            if (!objCyberwareParent.Capacity.Contains('['))
+                            {
+                                frmPickCyberware.MyForm.MaximumCapacity = objCyberwareParent.CapacityRemaining;
+
+                                // Do not allow the user to add a new piece of Cyberware if its Capacity has been reached.
+                                if (CharacterObjectSettings.EnforceCapacity && objCyberwareParent.CapacityRemaining < 0)
+                                {
+                                    Program.ShowMessageBox(
+                                        this, await LanguageManager.GetStringAsync("Message_CapacityReached"),
+                                        await LanguageManager.GetStringAsync("MessageTitle_CapacityReached"),
+                                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                    break;
+                                }
+                            }
+
+                            frmPickCyberware.MyForm.CyberwareParent = objCyberwareParent;
+                            frmPickCyberware.MyForm.Subsystems = objCyberwareParent.AllowedSubsystems;
+
+                            using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                            out HashSet<string> setDisallowedMounts))
+                            using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                            out HashSet<string> setHasMounts))
+                            {
+                                string strLoopHasModularMount = objCyberwareParent.HasModularMount;
+                                if (!string.IsNullOrEmpty(strLoopHasModularMount))
+                                    setHasMounts.Add(strLoopHasModularMount);
+                                foreach (Cyberware objLoopCyberware in objCyberwareParent.Children.DeepWhere(
+                                             x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount)))
+                                {
+                                    foreach (string strLoop in objLoopCyberware.BlocksMounts.SplitNoAlloc(
+                                                 ',', StringSplitOptions.RemoveEmptyEntries))
+                                    {
+                                        if (!setDisallowedMounts.Contains(strLoop + objLoopCyberware.Location))
+                                            setDisallowedMounts.Add(strLoop + objLoopCyberware.Location);
+                                    }
+
+                                    strLoopHasModularMount = objLoopCyberware.HasModularMount;
+                                    if (!string.IsNullOrEmpty(strLoopHasModularMount)
+                                        && !setHasMounts.Contains(strLoopHasModularMount))
+                                        setHasMounts.Add(strLoopHasModularMount);
+                                }
+
+                                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                              out StringBuilder sbdDisallowedMounts))
+                                {
+                                    foreach (string strLoop in setDisallowedMounts)
+                                    {
+                                        if (!strLoop.EndsWith("Right", StringComparison.Ordinal)
+                                            && (!strLoop.EndsWith("Left", StringComparison.Ordinal)
+                                                || setDisallowedMounts.Contains(
+                                                    strLoop.Substring(0, strLoop.Length - 4) + "Right")))
+                                            sbdDisallowedMounts.Append(strLoop.TrimEndOnce("Left")).Append(',');
+                                    }
+
+                                    // Remove trailing ","
+                                    if (sbdDisallowedMounts.Length > 0)
+                                        --sbdDisallowedMounts.Length;
+                                    frmPickCyberware.MyForm.DisallowedMounts = sbdDisallowedMounts.ToString();
+                                }
+
+                                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                              out StringBuilder sbdHasMounts))
+                                {
+                                    foreach (string strLoop in setHasMounts)
+                                        sbdHasMounts.Append(strLoop).Append(',');
+                                    // Remove trailing ","
+                                    if (sbdHasMounts.Length > 0)
+                                        --sbdHasMounts.Length;
+                                    frmPickCyberware.MyForm.HasModularMounts = sbdHasMounts.ToString();
+                                }
+                            }
+                        }
+
+                        frmPickCyberware.MyForm.LockGrade();
+                        frmPickCyberware.MyForm.ParentVehicle = objVehicle ?? objMod.Parent;
+
+                        if (await frmPickCyberware.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                            break;
+                        blnAddAgain = frmPickCyberware.MyForm.AddAgain;
+
+                        XmlNode objXmlCyberware = objXmlDocument.SelectSingleNode(
+                            "/chummer/cyberwares/cyberware[id = "
+                            + frmPickCyberware.MyForm.SelectedCyberware.CleanXPath() + ']');
+                        Cyberware objCyberware = new Cyberware(CharacterObject);
+                        if (!objCyberware.Purchase(objXmlCyberware, Improvement.ImprovementSource.Cyberware,
+                                                   frmPickCyberware.MyForm.SelectedGrade,
+                                                   frmPickCyberware.MyForm.SelectedRating,
+                                                   objVehicle, objMod.Cyberware, CharacterObject.Vehicles,
+                                                   objMod.Weapons,
+                                                   frmPickCyberware.MyForm.Markup, frmPickCyberware.MyForm.FreeCost,
+                                                   frmPickCyberware.MyForm.BlackMarketDiscount, true,
+                                                   "String_ExpensePurchaseVehicleCyberware", objCyberwareParent))
+                            objCyberware.DeleteCyberware();
+                    }
+                } while (blnAddAgain);
             }
-            while (blnAddAgain);
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void tsArmorName_Click(object sender, EventArgs e)
         {
-            // Make sure a parent item is selected.
-            if (await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode == null || x.SelectedNode.Level == 0, GenericToken))
+            try
             {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectArmorName"), await LanguageManager.GetStringAsync("MessageTitle_SelectArmor"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            await treArmor.DoThreadSafeAsync(x =>
-            {
-                while (x.SelectedNode.Level > 1)
+                // Make sure a parent item is selected.
+                if (await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode == null || x.SelectedNode.Level == 0,
+                                                         GenericToken))
                 {
-                    x.SelectedNode = x.SelectedNode.Parent;
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectArmorName"),
+                                           await LanguageManager.GetStringAsync("MessageTitle_SelectArmor"),
+                                           MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
                 }
-            }, GenericToken);
 
-            if (!(await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is IHasCustomName objRename))
-                return;
+                await treArmor.DoThreadSafeAsync(x =>
+                {
+                    while (x.SelectedNode.Level > 1)
+                    {
+                        x.SelectedNode = x.SelectedNode.Parent;
+                    }
+                }, GenericToken);
 
-            string strDescription = await LanguageManager.GetStringAsync("String_ArmorName");
-            using (ThreadSafeForm<SelectText> frmPickText = await ThreadSafeForm<SelectText>.GetAsync(() => new SelectText
-                   {
-                       Description = strDescription,
-                       DefaultString = objRename.CustomName,
-                       AllowEmptyString = true
-                   }, GenericToken))
-            {
-                if (await frmPickText.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                if (!(await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is IHasCustomName
+                        objRename))
                     return;
 
-                objRename.CustomName = frmPickText.MyForm.SelectedValue;
+                string strDescription = await LanguageManager.GetStringAsync("String_ArmorName");
+                using (ThreadSafeForm<SelectText> frmPickText = await ThreadSafeForm<SelectText>.GetAsync(
+                           () => new SelectText
+                           {
+                               Description = strDescription,
+                               DefaultString = objRename.CustomName,
+                               AllowEmptyString = true
+                           }, GenericToken))
+                {
+                    if (await frmPickText.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                        return;
+
+                    objRename.CustomName = frmPickText.MyForm.SelectedValue;
+                }
+
+                await treArmor.DoThreadSafeAsync(x => x.SelectedNode.Text = objRename.CurrentDisplayName, GenericToken);
+
+                await SetDirty(true);
             }
-
-            await treArmor.DoThreadSafeAsync(x => x.SelectedNode.Text = objRename.CurrentDisplayName, GenericToken);
-
-            await SetDirty(true);
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void tsLifestyleName_Click(object sender, EventArgs e)
         {
-            // Get the information for the currently selected Lifestyle.
-            if (!(await treLifestyles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is IHasCustomName objCustomName))
+            try
             {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectLifestyleName"), await LanguageManager.GetStringAsync("MessageTitle_SelectLifestyle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
+                // Get the information for the currently selected Lifestyle.
+                if (!(await treLifestyles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is
+                        IHasCustomName objCustomName))
+                {
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectLifestyleName"),
+                                           await LanguageManager.GetStringAsync("MessageTitle_SelectLifestyle"),
+                                           MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                string strDescription = await LanguageManager.GetStringAsync("String_LifestyleName");
+                using (ThreadSafeForm<SelectText> frmPickText = await ThreadSafeForm<SelectText>.GetAsync(
+                           () => new SelectText
+                           {
+                               Description = strDescription,
+                               DefaultString = objCustomName.CustomName,
+                               AllowEmptyString = true
+                           }, GenericToken))
+                {
+                    if (await frmPickText.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                        return;
+
+                    if (objCustomName.CustomName == frmPickText.MyForm.SelectedValue)
+                        return;
+                    objCustomName.CustomName = frmPickText.MyForm.SelectedValue;
+
+                    await treLifestyles.DoThreadSafeAsync(x => x.SelectedNode.Text = objCustomName.CurrentDisplayName,
+                                                          GenericToken);
+
+                    await SetDirty(true);
+                }
             }
-
-            string strDescription = await LanguageManager.GetStringAsync("String_LifestyleName");
-            using (ThreadSafeForm<SelectText> frmPickText = await ThreadSafeForm<SelectText>.GetAsync(() => new SelectText
-                   {
-                       Description = strDescription,
-                       DefaultString = objCustomName.CustomName,
-                       AllowEmptyString = true
-                   }, GenericToken))
+            catch (OperationCanceledException)
             {
-                if (await frmPickText.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
-                    return;
-
-                if (objCustomName.CustomName == frmPickText.MyForm.SelectedValue)
-                    return;
-                objCustomName.CustomName = frmPickText.MyForm.SelectedValue;
-
-                await treLifestyles.DoThreadSafeAsync(x => x.SelectedNode.Text = objCustomName.CurrentDisplayName, GenericToken);
-
-                await SetDirty(true);
+                //swallow this
             }
         }
 
         private async void tsGearRenameLocation_Click(object sender, EventArgs e)
         {
-            if (!(await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Location objLocation))
-                return;
-            string strDescription = await LanguageManager.GetStringAsync("String_AddLocation");
-            using (ThreadSafeForm<SelectText> frmPickText = await ThreadSafeForm<SelectText>.GetAsync(() => new SelectText
-                   {
-                       Description = strDescription,
-                       DefaultString = objLocation.Name
-                   }, GenericToken))
+            try
             {
-                if (await frmPickText.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                if (!(await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Location
+                        objLocation))
                     return;
+                string strDescription = await LanguageManager.GetStringAsync("String_AddLocation");
+                using (ThreadSafeForm<SelectText> frmPickText = await ThreadSafeForm<SelectText>.GetAsync(
+                           () => new SelectText
+                           {
+                               Description = strDescription,
+                               DefaultString = objLocation.Name
+                           }, GenericToken))
+                {
+                    if (await frmPickText.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                        return;
 
-                objLocation.Name = frmPickText.MyForm.SelectedValue;
+                    objLocation.Name = frmPickText.MyForm.SelectedValue;
+                }
+
+                await treGear.DoThreadSafeAsync(x => x.SelectedNode.Text = objLocation.DisplayName(), GenericToken);
+
+                await SetDirty(true);
             }
-
-            await treGear.DoThreadSafeAsync(x => x.SelectedNode.Text = objLocation.DisplayName(), GenericToken);
-
-            await SetDirty(true);
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void tsWeaponRenameLocation_Click(object sender, EventArgs e)
         {
-            if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Location objLocation))
-                return;
-            string strDescription = await LanguageManager.GetStringAsync("String_AddLocation");
-            using (ThreadSafeForm<SelectText> frmPickText = await ThreadSafeForm<SelectText>.GetAsync(() => new SelectText
-                   {
-                       Description = strDescription,
-                       DefaultString = objLocation.Name
-                   }, GenericToken))
+            try
             {
-                if (await frmPickText.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Location
+                        objLocation))
                     return;
+                string strDescription = await LanguageManager.GetStringAsync("String_AddLocation");
+                using (ThreadSafeForm<SelectText> frmPickText = await ThreadSafeForm<SelectText>.GetAsync(
+                           () => new SelectText
+                           {
+                               Description = strDescription,
+                               DefaultString = objLocation.Name
+                           }, GenericToken))
+                {
+                    if (await frmPickText.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                        return;
 
-                objLocation.Name = frmPickText.MyForm.SelectedValue;
+                    objLocation.Name = frmPickText.MyForm.SelectedValue;
+                }
+
+                await treWeapons.DoThreadSafeAsync(x => x.SelectedNode.Text = objLocation.DisplayName(), GenericToken);
+
+                await SetDirty(true);
             }
-
-            await treWeapons.DoThreadSafeAsync(x => x.SelectedNode.Text = objLocation.DisplayName(), GenericToken);
-
-            await SetDirty(true);
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void tsCreateSpell_Click(object sender, EventArgs e)
         {
-            int intSpellKarmaCost = await CharacterObject.SpellKarmaCostAsync("Spells");
-            // Make sure the character has enough Karma before letting them select a Spell.
-            if (CharacterObject.Karma < intSpellKarmaCost)
+            try
             {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            // The character is still allowed to add Spells, so show the Create Spell window.
-            using (ThreadSafeForm<CreateSpell> frmSpell = await ThreadSafeForm<CreateSpell>.GetAsync(() => new CreateSpell(CharacterObject), GenericToken))
-            {
-                if (await frmSpell.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
-                {
-                    frmSpell.MyForm.SelectedSpell.Dispose();
-                    return;
-                }
-
-                Spell objSpell = frmSpell.MyForm.SelectedSpell;
-                if (objSpell.Alchemical)
-                {
-                    intSpellKarmaCost = await CharacterObject.SpellKarmaCostAsync("Preparations");
-                }
-                else if (objSpell.Category == "Rituals")
-                {
-                    intSpellKarmaCost = await CharacterObject.SpellKarmaCostAsync("Rituals");
-                }
-
+                int intSpellKarmaCost = await CharacterObject.SpellKarmaCostAsync("Spells");
+                // Make sure the character has enough Karma before letting them select a Spell.
                 if (CharacterObject.Karma < intSpellKarmaCost)
                 {
-                    objSpell.Dispose();
-                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma"),
+                                           await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"),
+                                           MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
 
-                if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpenseSpend")
-                    , objSpell.CurrentDisplayName
-                    , intSpellKarmaCost.ToString(GlobalSettings.CultureInfo))))
+                // The character is still allowed to add Spells, so show the Create Spell window.
+                using (ThreadSafeForm<CreateSpell> frmSpell
+                       = await ThreadSafeForm<CreateSpell>.GetAsync(() => new CreateSpell(CharacterObject),
+                                                                    GenericToken))
                 {
-                    objSpell.Dispose();
-                    return;
+                    if (await frmSpell.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                    {
+                        frmSpell.MyForm.SelectedSpell.Dispose();
+                        return;
+                    }
+
+                    Spell objSpell = frmSpell.MyForm.SelectedSpell;
+                    if (objSpell.Alchemical)
+                    {
+                        intSpellKarmaCost = await CharacterObject.SpellKarmaCostAsync("Preparations");
+                    }
+                    else if (objSpell.Category == "Rituals")
+                    {
+                        intSpellKarmaCost = await CharacterObject.SpellKarmaCostAsync("Rituals");
+                    }
+
+                    if (CharacterObject.Karma < intSpellKarmaCost)
+                    {
+                        objSpell.Dispose();
+                        Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma"),
+                                               await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"),
+                                               MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        return;
+                    }
+
+                    if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalSettings.CultureInfo,
+                                                                           await LanguageManager.GetStringAsync(
+                                                                               "Message_ConfirmKarmaExpenseSpend")
+                                                                           , objSpell.CurrentDisplayName
+                                                                           , intSpellKarmaCost.ToString(GlobalSettings.CultureInfo))))
+                    {
+                        objSpell.Dispose();
+                        return;
+                    }
+
+                    await CharacterObject.Spells.AddAsync(objSpell);
+
+                    // Create the Expense Log Entry.
+                    ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                    objExpense.Create(intSpellKarmaCost * -1,
+                                      await LanguageManager.GetStringAsync("String_ExpenseLearnSpell")
+                                      + await LanguageManager.GetStringAsync("String_Space") + objSpell.Name,
+                                      ExpenseType.Karma, DateTime.Now);
+                    await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense);
+                    CharacterObject.Karma -= intSpellKarmaCost;
+
+                    ExpenseUndo objUndo = new ExpenseUndo();
+                    objUndo.CreateKarma(KarmaExpenseType.AddSpell, objSpell.InternalId);
+                    objExpense.Undo = objUndo;
                 }
-
-                await CharacterObject.Spells.AddAsync(objSpell);
-
-                // Create the Expense Log Entry.
-                ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                objExpense.Create(intSpellKarmaCost * -1, await LanguageManager.GetStringAsync("String_ExpenseLearnSpell") + await LanguageManager.GetStringAsync("String_Space") + objSpell.Name, ExpenseType.Karma, DateTime.Now);
-                await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense);
-                CharacterObject.Karma -= intSpellKarmaCost;
-
-                ExpenseUndo objUndo = new ExpenseUndo();
-                objUndo.CreateKarma(KarmaExpenseType.AddSpell, objSpell.InternalId);
-                objExpense.Undo = objUndo;
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
             }
         }
 
@@ -10400,1106 +11342,1244 @@ namespace Chummer
 
         private async void tsArmorRenameLocation_Click(object sender, EventArgs e)
         {
-            if (!(await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Location objLocation))
-                return;
-            string strDescription = await LanguageManager.GetStringAsync("String_AddLocation");
-            using (ThreadSafeForm<SelectText> frmPickText = await ThreadSafeForm<SelectText>.GetAsync(() => new SelectText
-                   {
-                       Description = strDescription,
-                       DefaultString = objLocation.Name
-                   }, GenericToken))
+            try
             {
-                if (await frmPickText.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                if (!(await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Location objLocation))
                     return;
+                string strDescription = await LanguageManager.GetStringAsync("String_AddLocation");
+                using (ThreadSafeForm<SelectText> frmPickText = await ThreadSafeForm<SelectText>.GetAsync(
+                           () => new SelectText
+                           {
+                               Description = strDescription,
+                               DefaultString = objLocation.Name
+                           }, GenericToken))
+                {
+                    if (await frmPickText.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                        return;
 
-                objLocation.Name = frmPickText.MyForm.SelectedValue;
+                    objLocation.Name = frmPickText.MyForm.SelectedValue;
+                }
+
+                await treArmor.DoThreadSafeAsync(x => x.SelectedNode.Text = objLocation.DisplayName(), GenericToken);
+
+                await SetDirty(true);
             }
-
-            await treArmor.DoThreadSafeAsync(x => x.SelectedNode.Text = objLocation.DisplayName(), GenericToken);
-
-            await SetDirty(true);
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void tsImprovementRenameLocation_Click(object sender, EventArgs e)
         {
-            string strDescription = await LanguageManager.GetStringAsync("String_AddLocation");
-            using (ThreadSafeForm<SelectText> frmPickText = await ThreadSafeForm<SelectText>.GetAsync(() => new SelectText
-                   {
-                       Description = strDescription
-                   }, GenericToken))
+            try
             {
-                if (await frmPickText.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
-                    return;
-
-                string strNewLocation = frmPickText.MyForm.SelectedValue;
-
-                int i = -1;
-                foreach (string strLocation in CharacterObject.ImprovementGroups)
+                string strDescription = await LanguageManager.GetStringAsync("String_AddLocation");
+                using (ThreadSafeForm<SelectText> frmPickText = await ThreadSafeForm<SelectText>.GetAsync(
+                           () => new SelectText
+                           {
+                               Description = strDescription
+                           }, GenericToken))
                 {
-                    ++i;
-                    if (strLocation != treImprovements.SelectedNode.Text)
-                        continue;
-                    foreach (Improvement objImprovement in CharacterObject.Improvements)
+                    if (await frmPickText.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                        return;
+
+                    string strNewLocation = frmPickText.MyForm.SelectedValue;
+
+                    int i = -1;
+                    foreach (string strLocation in CharacterObject.ImprovementGroups)
                     {
-                        if (objImprovement.CustomGroup == strLocation)
-                            objImprovement.CustomGroup = strNewLocation;
+                        ++i;
+                        if (strLocation != treImprovements.SelectedNode.Text)
+                            continue;
+                        foreach (Improvement objImprovement in CharacterObject.Improvements)
+                        {
+                            if (objImprovement.CustomGroup == strLocation)
+                                objImprovement.CustomGroup = strNewLocation;
+                        }
+
+                        CharacterObject.ImprovementGroups[i] = strNewLocation;
+                        break;
                     }
-
-                    CharacterObject.ImprovementGroups[i] = strNewLocation;
-                    break;
                 }
-            }
 
-            await SetDirty(true);
+                await SetDirty(true);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void tsCyberwareAddGear_Click(object sender, EventArgs e)
         {
-            // Make sure a parent items is selected, then open the Select Gear window.
-            if (!(await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Cyberware objCyberware))
-            {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectCyberware"), await LanguageManager.GetStringAsync("MessageTitle_SelectCyberware"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            // Make sure the Cyberware is allowed to accept Gear.
-            if (objCyberware.AllowGear == null)
-            {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CyberwareGear"), await LanguageManager.GetStringAsync("MessageTitle_CyberwareGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
             try
             {
-                bool blnAddAgain;
-                do
+                // Make sure a parent items is selected, then open the Select Gear window.
+                if (!(await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Cyberware
+                        objCyberware))
                 {
-                    string strCategories = string.Empty;
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                  out StringBuilder sbdCategories))
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectCyberware"),
+                                           await LanguageManager.GetStringAsync("MessageTitle_SelectCyberware"),
+                                           MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                // Make sure the Cyberware is allowed to accept Gear.
+                if (objCyberware.AllowGear == null)
+                {
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CyberwareGear"),
+                                           await LanguageManager.GetStringAsync("MessageTitle_CyberwareGear"),
+                                           MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+                try
+                {
+                    bool blnAddAgain;
+                    do
                     {
-                        foreach (XmlNode objXmlCategory in objCyberware.AllowGear)
-                            sbdCategories.Append(objXmlCategory.InnerText).Append(',');
-                        if (sbdCategories.Length > 0)
+                        string strCategories = string.Empty;
+                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                      out StringBuilder sbdCategories))
                         {
-                            --sbdCategories.Length;
-                            strCategories = sbdCategories.ToString();
-                        }
-                    }
-
-                    using (ThreadSafeForm<SelectGear> frmPickGear
-                           = await ThreadSafeForm<SelectGear>.GetAsync(
-                               () => new SelectGear(CharacterObject, 0, 1, objCyberware, strCategories), GenericToken))
-                    {
-                        if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objCyberware.Capacity) &&
-                            objCyberware.Capacity != "0" && (!objCyberware.Capacity.Contains('[') ||
-                                                             objCyberware.Capacity.Contains("/[")))
-                            frmPickGear.MyForm.ShowNegativeCapacityOnly = true;
-
-                        if (await frmPickGear.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
-                            break;
-                        blnAddAgain = frmPickGear.MyForm.AddAgain;
-
-                        // Open the Gear XML file and locate the selected piece.
-                        XmlDocument objXmlDocument
-                            = await CharacterObject.LoadDataAsync("gear.xml", token: GenericToken);
-                        XmlNode objXmlGear
-                            = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = "
-                                                              + frmPickGear.MyForm.SelectedGear.CleanXPath() + ']');
-
-                        // Create the new piece of Gear.
-                        List<Weapon> lstWeapons = new List<Weapon>(1);
-
-                        Gear objGear = new Gear(CharacterObject);
-                        objGear.Create(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons, string.Empty,
-                                       objCyberware.IsModularCurrentlyEquipped);
-
-                        if (objGear.InternalId.IsEmptyGuid())
-                            continue;
-
-                        objGear.Quantity = frmPickGear.MyForm.SelectedQty;
-
-                        // Reduce the cost for Do It Yourself components.
-                        if (frmPickGear.MyForm.DoItYourself)
-                            objGear.Cost = '(' + objGear.Cost + ") * 0.5";
-
-                        // Check the item's Cost and make sure the character can afford it.
-                        if (!frmPickGear.MyForm.FreeCost)
-                        {
-                            decimal decCost = objGear.TotalCost;
-
-                            // Multiply the cost if applicable.
-                            char chrAvail = (await objGear.TotalAvailTupleAsync()).Suffix;
-                            switch (chrAvail)
+                            foreach (XmlNode objXmlCategory in objCyberware.AllowGear)
+                                sbdCategories.Append(objXmlCategory.InnerText).Append(',');
+                            if (sbdCategories.Length > 0)
                             {
-                                case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
-                                    decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
-                                    break;
-
-                                case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
-                                    decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
-                                    break;
+                                --sbdCategories.Length;
+                                strCategories = sbdCategories.ToString();
                             }
+                        }
 
-                            if (decCost > CharacterObject.Nuyen)
-                            {
-                                objGear.DeleteGear();
-                                Program.ShowMessageBox(
-                                    this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen"),
-                                    await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen"),
-                                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        using (ThreadSafeForm<SelectGear> frmPickGear
+                               = await ThreadSafeForm<SelectGear>.GetAsync(
+                                   () => new SelectGear(CharacterObject, 0, 1, objCyberware, strCategories),
+                                   GenericToken))
+                        {
+                            if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objCyberware.Capacity) &&
+                                objCyberware.Capacity != "0" && (!objCyberware.Capacity.Contains('[') ||
+                                                                 objCyberware.Capacity.Contains("/[")))
+                                frmPickGear.MyForm.ShowNegativeCapacityOnly = true;
+
+                            if (await frmPickGear.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                                break;
+                            blnAddAgain = frmPickGear.MyForm.AddAgain;
+
+                            // Open the Gear XML file and locate the selected piece.
+                            XmlDocument objXmlDocument
+                                = await CharacterObject.LoadDataAsync("gear.xml", token: GenericToken);
+                            XmlNode objXmlGear
+                                = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = "
+                                                                  + frmPickGear.MyForm.SelectedGear.CleanXPath() + ']');
+
+                            // Create the new piece of Gear.
+                            List<Weapon> lstWeapons = new List<Weapon>(1);
+
+                            Gear objGear = new Gear(CharacterObject);
+                            objGear.Create(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons, string.Empty,
+                                           objCyberware.IsModularCurrentlyEquipped);
+
+                            if (objGear.InternalId.IsEmptyGuid())
                                 continue;
+
+                            objGear.Quantity = frmPickGear.MyForm.SelectedQty;
+
+                            // Reduce the cost for Do It Yourself components.
+                            if (frmPickGear.MyForm.DoItYourself)
+                                objGear.Cost = '(' + objGear.Cost + ") * 0.5";
+
+                            // Check the item's Cost and make sure the character can afford it.
+                            if (!frmPickGear.MyForm.FreeCost)
+                            {
+                                decimal decCost = objGear.TotalCost;
+
+                                // Multiply the cost if applicable.
+                                char chrAvail = (await objGear.TotalAvailTupleAsync()).Suffix;
+                                switch (chrAvail)
+                                {
+                                    case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
+                                        decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
+                                        break;
+
+                                    case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
+                                        decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
+                                        break;
+                                }
+
+                                if (decCost > CharacterObject.Nuyen)
+                                {
+                                    objGear.DeleteGear();
+                                    Program.ShowMessageBox(
+                                        this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen"),
+                                        await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen"),
+                                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                    continue;
+                                }
+
+                                // Create the Expense Log Entry.
+                                ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                                objExpense.Create(decCost * -1,
+                                                  await LanguageManager.GetStringAsync(
+                                                      "String_ExpensePurchaseCyberwareGear")
+                                                  + await LanguageManager.GetStringAsync("String_Space")
+                                                  + objGear.CurrentDisplayNameShort, ExpenseType.Nuyen,
+                                                  DateTime.Now);
+                                await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense);
+                                CharacterObject.Nuyen -= decCost;
+
+                                ExpenseUndo objUndo = new ExpenseUndo();
+                                objUndo.CreateNuyen(NuyenExpenseType.AddCyberwareGear, objGear.InternalId, 1);
+                                objExpense.Undo = objUndo;
                             }
 
-                            // Create the Expense Log Entry.
-                            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                            objExpense.Create(decCost * -1,
-                                              await LanguageManager.GetStringAsync(
-                                                  "String_ExpensePurchaseCyberwareGear")
-                                              + await LanguageManager.GetStringAsync("String_Space")
-                                              + objGear.CurrentDisplayNameShort, ExpenseType.Nuyen,
-                                              DateTime.Now);
-                            await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense);
-                            CharacterObject.Nuyen -= decCost;
+                            // Create any Weapons that came with this Gear.
+                            foreach (Weapon objWeapon in lstWeapons)
+                            {
+                                await CharacterObject.Weapons.AddAsync(objWeapon, GenericToken);
+                            }
 
-                            ExpenseUndo objUndo = new ExpenseUndo();
-                            objUndo.CreateNuyen(NuyenExpenseType.AddCyberwareGear, objGear.InternalId, 1);
-                            objExpense.Undo = objUndo;
+                            await objCyberware.GearChildren.AddAsync(objGear, GenericToken);
                         }
-
-                        // Create any Weapons that came with this Gear.
-                        foreach (Weapon objWeapon in lstWeapons)
-                        {
-                            await CharacterObject.Weapons.AddAsync(objWeapon, GenericToken);
-                        }
-
-                        await objCyberware.GearChildren.AddAsync(objGear, GenericToken);
-                    }
-                } while (blnAddAgain);
+                    } while (blnAddAgain);
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync();
+                }
             }
-            finally
+            catch (OperationCanceledException)
             {
-                await objCursorWait.DisposeAsync();
+                //swallow this
             }
         }
 
         private async void tsVehicleCyberwareAddGear_Click(object sender, EventArgs e)
         {
-            // Make sure a parent items is selected, then open the Select Gear window.
-            if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Cyberware objCyberware))
-            {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectCyberware"), await LanguageManager.GetStringAsync("MessageTitle_SelectCyberware"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            // Make sure the Cyberware is allowed to accept Gear.
-            if (objCyberware.AllowGear == null)
-            {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CyberwareGear"), await LanguageManager.GetStringAsync("MessageTitle_CyberwareGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
             try
             {
-                bool blnAddAgain;
-                do
+                // Make sure a parent items is selected, then open the Select Gear window.
+                if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Cyberware
+                        objCyberware))
                 {
-                    string strCategories = string.Empty;
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                  out StringBuilder sbdCategories))
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectCyberware"),
+                                           await LanguageManager.GetStringAsync("MessageTitle_SelectCyberware"),
+                                           MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                // Make sure the Cyberware is allowed to accept Gear.
+                if (objCyberware.AllowGear == null)
+                {
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CyberwareGear"),
+                                           await LanguageManager.GetStringAsync("MessageTitle_CyberwareGear"),
+                                           MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+                try
+                {
+                    bool blnAddAgain;
+                    do
                     {
-                        foreach (XmlNode objXmlCategory in objCyberware.AllowGear)
-                            sbdCategories.Append(objXmlCategory.InnerText).Append(',');
-                        if (sbdCategories.Length > 0)
+                        string strCategories = string.Empty;
+                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                      out StringBuilder sbdCategories))
                         {
-                            --sbdCategories.Length;
-                            strCategories = sbdCategories.ToString();
-                        }
-                    }
-
-                    using (ThreadSafeForm<SelectGear> frmPickGear
-                           = await ThreadSafeForm<SelectGear>.GetAsync(
-                               () => new SelectGear(CharacterObject, 0, 1, objCyberware, strCategories), GenericToken))
-                    {
-                        if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objCyberware.Capacity) &&
-                            objCyberware.Capacity != "0" && (!objCyberware.Capacity.Contains('[') ||
-                                                             objCyberware.Capacity.Contains("/[")))
-                            frmPickGear.MyForm.ShowNegativeCapacityOnly = true;
-
-                        if (await frmPickGear.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
-                            break;
-                        blnAddAgain = frmPickGear.MyForm.AddAgain;
-
-                        // Open the Gear XML file and locate the selected piece.
-                        XmlDocument objXmlDocument
-                            = await CharacterObject.LoadDataAsync("gear.xml", token: GenericToken);
-                        XmlNode objXmlGear
-                            = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = "
-                                                              + frmPickGear.MyForm.SelectedGear.CleanXPath() + ']');
-
-                        // Create the new piece of Gear.
-                        List<Weapon> lstWeapons = new List<Weapon>(1);
-
-                        Gear objGear = new Gear(CharacterObject);
-                        objGear.Create(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons, string.Empty, false);
-
-                        if (objGear.InternalId.IsEmptyGuid())
-                            continue;
-
-                        objGear.Quantity = frmPickGear.MyForm.SelectedQty;
-
-                        // Reduce the cost for Do It Yourself components.
-                        if (frmPickGear.MyForm.DoItYourself)
-                            objGear.Cost = '(' + objGear.Cost + ") * 0.5";
-
-                        // Check the item's Cost and make sure the character can afford it.
-                        if (!frmPickGear.MyForm.FreeCost)
-                        {
-                            decimal decCost = objGear.TotalCost;
-
-                            // Multiply the cost if applicable.
-                            char chrAvail = (await objGear.TotalAvailTupleAsync()).Suffix;
-                            switch (chrAvail)
+                            foreach (XmlNode objXmlCategory in objCyberware.AllowGear)
+                                sbdCategories.Append(objXmlCategory.InnerText).Append(',');
+                            if (sbdCategories.Length > 0)
                             {
-                                case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
-                                    decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
-                                    break;
-
-                                case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
-                                    decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
-                                    break;
+                                --sbdCategories.Length;
+                                strCategories = sbdCategories.ToString();
                             }
+                        }
 
-                            if (decCost > CharacterObject.Nuyen)
-                            {
-                                objGear.DeleteGear();
-                                Program.ShowMessageBox(
-                                    this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen"),
-                                    await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen"),
-                                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        using (ThreadSafeForm<SelectGear> frmPickGear
+                               = await ThreadSafeForm<SelectGear>.GetAsync(
+                                   () => new SelectGear(CharacterObject, 0, 1, objCyberware, strCategories),
+                                   GenericToken))
+                        {
+                            if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objCyberware.Capacity) &&
+                                objCyberware.Capacity != "0" && (!objCyberware.Capacity.Contains('[') ||
+                                                                 objCyberware.Capacity.Contains("/[")))
+                                frmPickGear.MyForm.ShowNegativeCapacityOnly = true;
+
+                            if (await frmPickGear.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                                break;
+                            blnAddAgain = frmPickGear.MyForm.AddAgain;
+
+                            // Open the Gear XML file and locate the selected piece.
+                            XmlDocument objXmlDocument
+                                = await CharacterObject.LoadDataAsync("gear.xml", token: GenericToken);
+                            XmlNode objXmlGear
+                                = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = "
+                                                                  + frmPickGear.MyForm.SelectedGear.CleanXPath() + ']');
+
+                            // Create the new piece of Gear.
+                            List<Weapon> lstWeapons = new List<Weapon>(1);
+
+                            Gear objGear = new Gear(CharacterObject);
+                            objGear.Create(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons, string.Empty,
+                                           false);
+
+                            if (objGear.InternalId.IsEmptyGuid())
                                 continue;
+
+                            objGear.Quantity = frmPickGear.MyForm.SelectedQty;
+
+                            // Reduce the cost for Do It Yourself components.
+                            if (frmPickGear.MyForm.DoItYourself)
+                                objGear.Cost = '(' + objGear.Cost + ") * 0.5";
+
+                            // Check the item's Cost and make sure the character can afford it.
+                            if (!frmPickGear.MyForm.FreeCost)
+                            {
+                                decimal decCost = objGear.TotalCost;
+
+                                // Multiply the cost if applicable.
+                                char chrAvail = (await objGear.TotalAvailTupleAsync()).Suffix;
+                                switch (chrAvail)
+                                {
+                                    case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
+                                        decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
+                                        break;
+
+                                    case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
+                                        decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
+                                        break;
+                                }
+
+                                if (decCost > CharacterObject.Nuyen)
+                                {
+                                    objGear.DeleteGear();
+                                    Program.ShowMessageBox(
+                                        this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen"),
+                                        await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen"),
+                                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                    continue;
+                                }
+
+                                // Create the Expense Log Entry.
+                                ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                                objExpense.Create(decCost * -1,
+                                                  await LanguageManager.GetStringAsync(
+                                                      "String_ExpensePurchaseCyberwareGear")
+                                                  + await LanguageManager.GetStringAsync("String_Space")
+                                                  + objGear.CurrentDisplayNameShort, ExpenseType.Nuyen,
+                                                  DateTime.Now);
+                                await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense);
+                                CharacterObject.Nuyen -= decCost;
+
+                                ExpenseUndo objUndo = new ExpenseUndo();
+                                objUndo.CreateNuyen(NuyenExpenseType.AddCyberwareGear, objGear.InternalId, 1);
+                                objExpense.Undo = objUndo;
                             }
 
-                            // Create the Expense Log Entry.
-                            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                            objExpense.Create(decCost * -1,
-                                              await LanguageManager.GetStringAsync(
-                                                  "String_ExpensePurchaseCyberwareGear")
-                                              + await LanguageManager.GetStringAsync("String_Space")
-                                              + objGear.CurrentDisplayNameShort, ExpenseType.Nuyen,
-                                              DateTime.Now);
-                            await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense);
-                            CharacterObject.Nuyen -= decCost;
+                            // Create any Weapons that came with this Gear.
+                            foreach (Weapon objWeapon in lstWeapons)
+                            {
+                                await CharacterObject.Weapons.AddAsync(objWeapon, GenericToken);
+                            }
 
-                            ExpenseUndo objUndo = new ExpenseUndo();
-                            objUndo.CreateNuyen(NuyenExpenseType.AddCyberwareGear, objGear.InternalId, 1);
-                            objExpense.Undo = objUndo;
+                            await objCyberware.GearChildren.AddAsync(objGear, GenericToken);
                         }
-
-                        // Create any Weapons that came with this Gear.
-                        foreach (Weapon objWeapon in lstWeapons)
-                        {
-                            await CharacterObject.Weapons.AddAsync(objWeapon, GenericToken);
-                        }
-
-                        await objCyberware.GearChildren.AddAsync(objGear, GenericToken);
-                    }
-                } while (blnAddAgain);
+                    } while (blnAddAgain);
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync();
+                }
             }
-            finally
+            catch (OperationCanceledException)
             {
-                await objCursorWait.DisposeAsync();
+                //swallow this
             }
         }
 
         private async void tsCyberwareGearMenuAddAsPlugin_Click(object sender, EventArgs e)
         {
-            TreeNode objSelectedNode = await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken);
-            // Make sure a parent items is selected, then open the Select Gear window.
-            if (objSelectedNode == null || objSelectedNode.Level < 2)
-            {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ModifyVehicleGear"), await LanguageManager.GetStringAsync("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            // Locate the Vehicle Sensor Gear.
-            if (!(objSelectedNode.Tag is Gear objSensor))
-            // Make sure the Gear was found.
-            {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ModifyVehicleGear"), await LanguageManager.GetStringAsync("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            CharacterObject.Cyberware.FindCyberwareGear(objSensor.InternalId, out Cyberware objCyberware);
-
-            string strCategories = string.Empty;
-            XPathNodeIterator xmlAddonCategoryList = (await objSensor.GetNodeXPathAsync(GenericToken))?.Select("addoncategory");
-            if (xmlAddonCategoryList?.Count > 0)
-            {
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCategories))
-                {
-                    foreach (XPathNavigator objXmlCategory in xmlAddonCategoryList)
-                        sbdCategories.Append(objXmlCategory.Value).Append(',');
-                    // Remove the trailing comma.
-                    --sbdCategories.Length;
-                    strCategories = sbdCategories.ToString();
-                }
-            }
-
-            XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml", token: GenericToken);
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
             try
             {
-                bool blnAddAgain;
-                do
+                TreeNode objSelectedNode = await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken);
+                // Make sure a parent items is selected, then open the Select Gear window.
+                if (objSelectedNode == null || objSelectedNode.Level < 2)
                 {
-                    using (ThreadSafeForm<SelectGear> frmPickGear
-                           = await ThreadSafeForm<SelectGear>.GetAsync(
-                               () => new SelectGear(CharacterObject, 0, 1, objSensor, strCategories), GenericToken))
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ModifyVehicleGear"),
+                                           await LanguageManager.GetStringAsync("MessageTitle_SelectGear"),
+                                           MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                // Locate the Vehicle Sensor Gear.
+                if (!(objSelectedNode.Tag is Gear objSensor))
+                    // Make sure the Gear was found.
+                {
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ModifyVehicleGear"),
+                                           await LanguageManager.GetStringAsync("MessageTitle_SelectGear"),
+                                           MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                CharacterObject.Cyberware.FindCyberwareGear(objSensor.InternalId, out Cyberware objCyberware);
+
+                string strCategories = string.Empty;
+                XPathNodeIterator xmlAddonCategoryList
+                    = (await objSensor.GetNodeXPathAsync(GenericToken))?.Select("addoncategory");
+                if (xmlAddonCategoryList?.Count > 0)
+                {
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                  out StringBuilder sbdCategories))
                     {
-                        if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity)
-                                                                 && (!objSensor.Capacity.Contains('[')
-                                                                     || objSensor.Capacity.Contains("/[")))
-                            frmPickGear.MyForm.ShowNegativeCapacityOnly = true;
-
-                        if (await frmPickGear.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
-                            break;
-                        blnAddAgain = frmPickGear.MyForm.AddAgain;
-
-                        // Open the Gear XML file and locate the selected piece.
-                        XmlNode objXmlGear
-                            = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = "
-                                                              + frmPickGear.MyForm.SelectedGear.CleanXPath() + ']');
-
-                        // Create the new piece of Gear.
-                        List<Weapon> lstWeapons = new List<Weapon>(1);
-
-                        Gear objGear = new Gear(CharacterObject);
-                        objGear.Create(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons, string.Empty,
-                                       (objSensor.Parent as Gear)?.Equipped
-                                       ?? objCyberware?.IsModularCurrentlyEquipped == true);
-
-                        if (objGear.InternalId.IsEmptyGuid())
-                            continue;
-
-                        objGear.Quantity = frmPickGear.MyForm.SelectedQty;
-
-                        // Reduce the cost for Do It Yourself components.
-                        if (frmPickGear.MyForm.DoItYourself)
-                            objGear.Cost = '(' + objGear.Cost + ") * 0.5";
-
-                        // Check the item's Cost and make sure the character can afford it.
-                        if (!frmPickGear.MyForm.FreeCost)
-                        {
-                            decimal decCost = objGear.TotalCost;
-
-                            // Multiply the cost if applicable.
-                            char chrAvail = (await objGear.TotalAvailTupleAsync()).Suffix;
-                            switch (chrAvail)
-                            {
-                                case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
-                                    decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
-                                    break;
-
-                                case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
-                                    decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
-                                    break;
-                            }
-
-                            if (decCost > CharacterObject.Nuyen)
-                            {
-                                objGear.DeleteGear();
-                                Program.ShowMessageBox(
-                                    this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen"),
-                                    await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen"),
-                                    MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                continue;
-                            }
-
-                            // Create the Expense Log Entry.
-                            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                            objExpense.Create(decCost * -1,
-                                              await LanguageManager.GetStringAsync(
-                                                  "String_ExpensePurchaseCyberwareGear")
-                                              + await LanguageManager.GetStringAsync("String_Space")
-                                              + objGear.CurrentDisplayNameShort, ExpenseType.Nuyen,
-                                              DateTime.Now);
-                            await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken);
-                            CharacterObject.Nuyen -= decCost;
-
-                            ExpenseUndo objUndo = new ExpenseUndo();
-                            objUndo.CreateNuyen(NuyenExpenseType.AddCyberwareGear, objGear.InternalId,
-                                                frmPickGear.MyForm.SelectedQty);
-                            objExpense.Undo = objUndo;
-                        }
-
-                        await objSensor.Children.AddAsync(objGear, GenericToken);
-
-                        foreach (Weapon objWeapon in lstWeapons)
-                        {
-                            await CharacterObject.Weapons.AddAsync(objWeapon, GenericToken);
-                        }
+                        foreach (XPathNavigator objXmlCategory in xmlAddonCategoryList)
+                            sbdCategories.Append(objXmlCategory.Value).Append(',');
+                        // Remove the trailing comma.
+                        --sbdCategories.Length;
+                        strCategories = sbdCategories.ToString();
                     }
-                } while (blnAddAgain);
+                }
+
+                XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml", token: GenericToken);
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+                try
+                {
+                    bool blnAddAgain;
+                    do
+                    {
+                        using (ThreadSafeForm<SelectGear> frmPickGear
+                               = await ThreadSafeForm<SelectGear>.GetAsync(
+                                   () => new SelectGear(CharacterObject, 0, 1, objSensor, strCategories), GenericToken))
+                        {
+                            if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity)
+                                                                     && (!objSensor.Capacity.Contains('[')
+                                                                         || objSensor.Capacity.Contains("/[")))
+                                frmPickGear.MyForm.ShowNegativeCapacityOnly = true;
+
+                            if (await frmPickGear.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                                break;
+                            blnAddAgain = frmPickGear.MyForm.AddAgain;
+
+                            // Open the Gear XML file and locate the selected piece.
+                            XmlNode objXmlGear
+                                = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = "
+                                                                  + frmPickGear.MyForm.SelectedGear.CleanXPath() + ']');
+
+                            // Create the new piece of Gear.
+                            List<Weapon> lstWeapons = new List<Weapon>(1);
+
+                            Gear objGear = new Gear(CharacterObject);
+                            objGear.Create(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons, string.Empty,
+                                           (objSensor.Parent as Gear)?.Equipped
+                                           ?? objCyberware?.IsModularCurrentlyEquipped == true);
+
+                            if (objGear.InternalId.IsEmptyGuid())
+                                continue;
+
+                            objGear.Quantity = frmPickGear.MyForm.SelectedQty;
+
+                            // Reduce the cost for Do It Yourself components.
+                            if (frmPickGear.MyForm.DoItYourself)
+                                objGear.Cost = '(' + objGear.Cost + ") * 0.5";
+
+                            // Check the item's Cost and make sure the character can afford it.
+                            if (!frmPickGear.MyForm.FreeCost)
+                            {
+                                decimal decCost = objGear.TotalCost;
+
+                                // Multiply the cost if applicable.
+                                char chrAvail = (await objGear.TotalAvailTupleAsync()).Suffix;
+                                switch (chrAvail)
+                                {
+                                    case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
+                                        decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
+                                        break;
+
+                                    case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
+                                        decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
+                                        break;
+                                }
+
+                                if (decCost > CharacterObject.Nuyen)
+                                {
+                                    objGear.DeleteGear();
+                                    Program.ShowMessageBox(
+                                        this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen"),
+                                        await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen"),
+                                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                    continue;
+                                }
+
+                                // Create the Expense Log Entry.
+                                ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                                objExpense.Create(decCost * -1,
+                                                  await LanguageManager.GetStringAsync(
+                                                      "String_ExpensePurchaseCyberwareGear")
+                                                  + await LanguageManager.GetStringAsync("String_Space")
+                                                  + objGear.CurrentDisplayNameShort, ExpenseType.Nuyen,
+                                                  DateTime.Now);
+                                await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken);
+                                CharacterObject.Nuyen -= decCost;
+
+                                ExpenseUndo objUndo = new ExpenseUndo();
+                                objUndo.CreateNuyen(NuyenExpenseType.AddCyberwareGear, objGear.InternalId,
+                                                    frmPickGear.MyForm.SelectedQty);
+                                objExpense.Undo = objUndo;
+                            }
+
+                            await objSensor.Children.AddAsync(objGear, GenericToken);
+
+                            foreach (Weapon objWeapon in lstWeapons)
+                            {
+                                await CharacterObject.Weapons.AddAsync(objWeapon, GenericToken);
+                            }
+                        }
+                    } while (blnAddAgain);
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync();
+                }
             }
-            finally
+            catch (OperationCanceledException)
             {
-                await objCursorWait.DisposeAsync();
+                //swallow this
             }
         }
 
         private async void tsVehicleCyberwareGearMenuAddAsPlugin_Click(object sender, EventArgs e)
         {
-            // Make sure a parent items is selected, then open the Select Gear window.
-            if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Gear objSensor))
-            {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ModifyVehicleGear"), await LanguageManager.GetStringAsync("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            string strCategories = string.Empty;
-            XPathNodeIterator xmlAddonCategoryList = (await objSensor.GetNodeXPathAsync(GenericToken))?.Select("addoncategory");
-            if (xmlAddonCategoryList?.Count > 0)
-            {
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCategories))
-                {
-                    foreach (XPathNavigator objXmlCategory in xmlAddonCategoryList)
-                        sbdCategories.Append(objXmlCategory.Value).Append(',');
-                    // Remove the trailing comma.
-                    --sbdCategories.Length;
-                    strCategories = sbdCategories.ToString();
-                }
-            }
-
-            XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml", token: GenericToken);
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
             try
             {
-                bool blnAddAgain;
-                do
+                // Make sure a parent items is selected, then open the Select Gear window.
+                if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag,
+                                                              GenericToken) is Gear objSensor))
                 {
-                    using (ThreadSafeForm<SelectGear> frmPickGear
-                           = await ThreadSafeForm<SelectGear>.GetAsync(
-                               () => new SelectGear(CharacterObject, 0, 1, objSensor, strCategories), GenericToken))
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ModifyVehicleGear"),
+                                           await LanguageManager.GetStringAsync("MessageTitle_SelectGear"),
+                                           MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                string strCategories = string.Empty;
+                XPathNodeIterator xmlAddonCategoryList
+                    = (await objSensor.GetNodeXPathAsync(GenericToken))?.Select("addoncategory");
+                if (xmlAddonCategoryList?.Count > 0)
+                {
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                  out StringBuilder sbdCategories))
                     {
-                        if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity)
-                                                                 && (!objSensor.Capacity.Contains('[')
-                                                                     || objSensor.Capacity.Contains("/[")))
-                            frmPickGear.MyForm.ShowNegativeCapacityOnly = true;
-
-                        if (await frmPickGear.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
-                            break;
-                        blnAddAgain = frmPickGear.MyForm.AddAgain;
-
-                        // Open the Gear XML file and locate the selected piece.
-                        XmlNode objXmlGear
-                            = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = "
-                                                              + frmPickGear.MyForm.SelectedGear.CleanXPath() + ']');
-
-                        // Create the new piece of Gear.
-                        List<Weapon> lstWeapons = new List<Weapon>(1);
-
-                        Gear objGear = new Gear(CharacterObject);
-                        objGear.Create(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons, string.Empty, false);
-
-                        if (objGear.InternalId.IsEmptyGuid())
-                            continue;
-
-                        objGear.Quantity = frmPickGear.MyForm.SelectedQty;
-
-                        // Reduce the cost for Do It Yourself components.
-                        if (frmPickGear.MyForm.DoItYourself)
-                            objGear.Cost = '(' + objGear.Cost + ") * 0.5";
-
-                        // Check the item's Cost and make sure the character can afford it.
-                        if (!frmPickGear.MyForm.FreeCost)
-                        {
-                            decimal decCost = objGear.TotalCost;
-
-                            // Multiply the cost if applicable.
-                            char chrAvail = (await objGear.TotalAvailTupleAsync()).Suffix;
-                            switch (chrAvail)
-                            {
-                                case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
-                                    decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
-                                    break;
-
-                                case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
-                                    decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
-                                    break;
-                            }
-
-                            if (decCost > CharacterObject.Nuyen)
-                            {
-                                objGear.DeleteGear();
-                                Program.ShowMessageBox(
-                                    this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen"),
-                                    await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen"),
-                                    MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                continue;
-                            }
-
-                            // Create the Expense Log Entry.
-                            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                            objExpense.Create(decCost * -1,
-                                              await LanguageManager.GetStringAsync(
-                                                  "String_ExpensePurchaseCyberwareGear")
-                                              + await LanguageManager.GetStringAsync("String_Space")
-                                              + objGear.CurrentDisplayNameShort, ExpenseType.Nuyen,
-                                              DateTime.Now);
-                            await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken);
-                            CharacterObject.Nuyen -= decCost;
-
-                            ExpenseUndo objUndo = new ExpenseUndo();
-                            objUndo.CreateNuyen(NuyenExpenseType.AddCyberwareGear, objGear.InternalId,
-                                                frmPickGear.MyForm.SelectedQty);
-                            objExpense.Undo = objUndo;
-                        }
-
-                        await objSensor.Children.AddAsync(objGear, GenericToken);
-
-                        foreach (Weapon objWeapon in lstWeapons)
-                        {
-                            await CharacterObject.Weapons.AddAsync(objWeapon, GenericToken);
-                        }
+                        foreach (XPathNavigator objXmlCategory in xmlAddonCategoryList)
+                            sbdCategories.Append(objXmlCategory.Value).Append(',');
+                        // Remove the trailing comma.
+                        --sbdCategories.Length;
+                        strCategories = sbdCategories.ToString();
                     }
-                } while (blnAddAgain);
+                }
+
+                XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml", token: GenericToken);
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+                try
+                {
+                    bool blnAddAgain;
+                    do
+                    {
+                        using (ThreadSafeForm<SelectGear> frmPickGear
+                               = await ThreadSafeForm<SelectGear>.GetAsync(
+                                   () => new SelectGear(CharacterObject, 0, 1, objSensor, strCategories), GenericToken))
+                        {
+                            if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity)
+                                                                     && (!objSensor.Capacity.Contains('[')
+                                                                         || objSensor.Capacity.Contains("/[")))
+                                frmPickGear.MyForm.ShowNegativeCapacityOnly = true;
+
+                            if (await frmPickGear.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                                break;
+                            blnAddAgain = frmPickGear.MyForm.AddAgain;
+
+                            // Open the Gear XML file and locate the selected piece.
+                            XmlNode objXmlGear
+                                = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = "
+                                                                  + frmPickGear.MyForm.SelectedGear.CleanXPath() + ']');
+
+                            // Create the new piece of Gear.
+                            List<Weapon> lstWeapons = new List<Weapon>(1);
+
+                            Gear objGear = new Gear(CharacterObject);
+                            objGear.Create(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons, string.Empty,
+                                           false);
+
+                            if (objGear.InternalId.IsEmptyGuid())
+                                continue;
+
+                            objGear.Quantity = frmPickGear.MyForm.SelectedQty;
+
+                            // Reduce the cost for Do It Yourself components.
+                            if (frmPickGear.MyForm.DoItYourself)
+                                objGear.Cost = '(' + objGear.Cost + ") * 0.5";
+
+                            // Check the item's Cost and make sure the character can afford it.
+                            if (!frmPickGear.MyForm.FreeCost)
+                            {
+                                decimal decCost = objGear.TotalCost;
+
+                                // Multiply the cost if applicable.
+                                char chrAvail = (await objGear.TotalAvailTupleAsync()).Suffix;
+                                switch (chrAvail)
+                                {
+                                    case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
+                                        decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
+                                        break;
+
+                                    case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
+                                        decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
+                                        break;
+                                }
+
+                                if (decCost > CharacterObject.Nuyen)
+                                {
+                                    objGear.DeleteGear();
+                                    Program.ShowMessageBox(
+                                        this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen"),
+                                        await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen"),
+                                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                    continue;
+                                }
+
+                                // Create the Expense Log Entry.
+                                ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                                objExpense.Create(decCost * -1,
+                                                  await LanguageManager.GetStringAsync(
+                                                      "String_ExpensePurchaseCyberwareGear")
+                                                  + await LanguageManager.GetStringAsync("String_Space")
+                                                  + objGear.CurrentDisplayNameShort, ExpenseType.Nuyen,
+                                                  DateTime.Now);
+                                await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken);
+                                CharacterObject.Nuyen -= decCost;
+
+                                ExpenseUndo objUndo = new ExpenseUndo();
+                                objUndo.CreateNuyen(NuyenExpenseType.AddCyberwareGear, objGear.InternalId,
+                                                    frmPickGear.MyForm.SelectedQty);
+                                objExpense.Undo = objUndo;
+                            }
+
+                            await objSensor.Children.AddAsync(objGear, GenericToken);
+
+                            foreach (Weapon objWeapon in lstWeapons)
+                            {
+                                await CharacterObject.Weapons.AddAsync(objWeapon, GenericToken);
+                            }
+                        }
+                    } while (blnAddAgain);
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync();
+                }
             }
-            finally
+            catch (OperationCanceledException)
             {
-                await objCursorWait.DisposeAsync();
+                //swallow this
             }
         }
 
         private async void tsWeaponAccessoryAddGear_Click(object sender, EventArgs e)
         {
-            if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is WeaponAccessory objAccessory))
-                return;
-            // Make sure the Weapon Accessory is allowed to accept Gear.
-            if (objAccessory.AllowGear == null)
-            {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_WeaponGear"), await LanguageManager.GetStringAsync("MessageTitle_CyberwareGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
             try
             {
-                bool blnAddAgain;
-                do
+                if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is WeaponAccessory
+                        objAccessory))
+                    return;
+                // Make sure the Weapon Accessory is allowed to accept Gear.
+                if (objAccessory.AllowGear == null)
                 {
-                    string strCategories = string.Empty;
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                  out StringBuilder sbdCategories))
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_WeaponGear"),
+                                           await LanguageManager.GetStringAsync("MessageTitle_CyberwareGear"),
+                                           MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+                try
+                {
+                    bool blnAddAgain;
+                    do
                     {
-                        foreach (XmlNode objXmlCategory in objAccessory.AllowGear)
-                            sbdCategories.Append(objXmlCategory.InnerText).Append(',');
-                        if (sbdCategories.Length > 0)
+                        string strCategories = string.Empty;
+                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                      out StringBuilder sbdCategories))
                         {
-                            --sbdCategories.Length;
-                            strCategories = sbdCategories.ToString();
-                        }
-                    }
-
-                    using (ThreadSafeForm<SelectGear> frmPickGear
-                           = await ThreadSafeForm<SelectGear>.GetAsync(
-                               () => new SelectGear(CharacterObject, 0, 1, objAccessory, strCategories), GenericToken))
-                    {
-                        if (!string.IsNullOrEmpty(strCategories))
-                            frmPickGear.MyForm.ShowNegativeCapacityOnly = true;
-
-                        if (await frmPickGear.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
-                            break;
-                        blnAddAgain = frmPickGear.MyForm.AddAgain;
-
-                        // Open the Gear XML file and locate the selected piece.
-                        XmlDocument objXmlDocument
-                            = await CharacterObject.LoadDataAsync("gear.xml", token: GenericToken);
-                        XmlNode objXmlGear
-                            = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = "
-                                                              + frmPickGear.MyForm.SelectedGear.CleanXPath() + ']');
-
-                        // Create the new piece of Gear.
-                        List<Weapon> lstWeapons = new List<Weapon>(1);
-
-                        Gear objGear = new Gear(CharacterObject);
-                        objGear.Create(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons, string.Empty,
-                                       objAccessory.Equipped);
-
-                        if (objGear.InternalId.IsEmptyGuid())
-                            continue;
-
-                        objGear.Quantity = frmPickGear.MyForm.SelectedQty;
-
-                        // Reduce the cost for Do It Yourself components.
-                        if (frmPickGear.MyForm.DoItYourself)
-                            objGear.Cost = '(' + objGear.Cost + ") * 0.5";
-
-                        // Check the item's Cost and make sure the character can afford it.
-                        if (!frmPickGear.MyForm.FreeCost)
-                        {
-                            decimal decCost = objGear.TotalCost;
-
-                            // Multiply the cost if applicable.
-                            char chrAvail = (await objGear.TotalAvailTupleAsync()).Suffix;
-                            switch (chrAvail)
+                            foreach (XmlNode objXmlCategory in objAccessory.AllowGear)
+                                sbdCategories.Append(objXmlCategory.InnerText).Append(',');
+                            if (sbdCategories.Length > 0)
                             {
-                                case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
-                                    decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
-                                    break;
-
-                                case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
-                                    decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
-                                    break;
+                                --sbdCategories.Length;
+                                strCategories = sbdCategories.ToString();
                             }
+                        }
 
-                            if (decCost > CharacterObject.Nuyen)
-                            {
-                                objGear.DeleteGear();
-                                Program.ShowMessageBox(
-                                    this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen"),
-                                    await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen"),
-                                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        using (ThreadSafeForm<SelectGear> frmPickGear
+                               = await ThreadSafeForm<SelectGear>.GetAsync(
+                                   () => new SelectGear(CharacterObject, 0, 1, objAccessory, strCategories),
+                                   GenericToken))
+                        {
+                            if (!string.IsNullOrEmpty(strCategories))
+                                frmPickGear.MyForm.ShowNegativeCapacityOnly = true;
+
+                            if (await frmPickGear.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                                break;
+                            blnAddAgain = frmPickGear.MyForm.AddAgain;
+
+                            // Open the Gear XML file and locate the selected piece.
+                            XmlDocument objXmlDocument
+                                = await CharacterObject.LoadDataAsync("gear.xml", token: GenericToken);
+                            XmlNode objXmlGear
+                                = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = "
+                                                                  + frmPickGear.MyForm.SelectedGear.CleanXPath() + ']');
+
+                            // Create the new piece of Gear.
+                            List<Weapon> lstWeapons = new List<Weapon>(1);
+
+                            Gear objGear = new Gear(CharacterObject);
+                            objGear.Create(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons, string.Empty,
+                                           objAccessory.Equipped);
+
+                            if (objGear.InternalId.IsEmptyGuid())
                                 continue;
+
+                            objGear.Quantity = frmPickGear.MyForm.SelectedQty;
+
+                            // Reduce the cost for Do It Yourself components.
+                            if (frmPickGear.MyForm.DoItYourself)
+                                objGear.Cost = '(' + objGear.Cost + ") * 0.5";
+
+                            // Check the item's Cost and make sure the character can afford it.
+                            if (!frmPickGear.MyForm.FreeCost)
+                            {
+                                decimal decCost = objGear.TotalCost;
+
+                                // Multiply the cost if applicable.
+                                char chrAvail = (await objGear.TotalAvailTupleAsync()).Suffix;
+                                switch (chrAvail)
+                                {
+                                    case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
+                                        decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
+                                        break;
+
+                                    case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
+                                        decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
+                                        break;
+                                }
+
+                                if (decCost > CharacterObject.Nuyen)
+                                {
+                                    objGear.DeleteGear();
+                                    Program.ShowMessageBox(
+                                        this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen"),
+                                        await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen"),
+                                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                    continue;
+                                }
+
+                                // Create the Expense Log Entry.
+                                ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                                objExpense.Create(decCost * -1,
+                                                  await LanguageManager.GetStringAsync(
+                                                      "String_ExpensePurchaseWeaponGear")
+                                                  + await LanguageManager.GetStringAsync("String_Space")
+                                                  + objGear.CurrentDisplayNameShort, ExpenseType.Nuyen,
+                                                  DateTime.Now);
+                                await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken);
+                                CharacterObject.Nuyen -= decCost;
+
+                                ExpenseUndo objUndo = new ExpenseUndo();
+                                objUndo.CreateNuyen(NuyenExpenseType.AddWeaponGear, objGear.InternalId, 1);
+                                objExpense.Undo = objUndo;
                             }
 
-                            // Create the Expense Log Entry.
-                            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                            objExpense.Create(decCost * -1,
-                                              await LanguageManager.GetStringAsync("String_ExpensePurchaseWeaponGear")
-                                              + await LanguageManager.GetStringAsync("String_Space")
-                                              + objGear.CurrentDisplayNameShort, ExpenseType.Nuyen,
-                                              DateTime.Now);
-                            await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken);
-                            CharacterObject.Nuyen -= decCost;
+                            // Create any Weapons that came with this Gear.
+                            foreach (Weapon objWeapon in lstWeapons)
+                            {
+                                await CharacterObject.Weapons.AddAsync(objWeapon, GenericToken);
+                            }
 
-                            ExpenseUndo objUndo = new ExpenseUndo();
-                            objUndo.CreateNuyen(NuyenExpenseType.AddWeaponGear, objGear.InternalId, 1);
-                            objExpense.Undo = objUndo;
+                            await objAccessory.GearChildren.AddAsync(objGear, GenericToken);
                         }
-
-                        // Create any Weapons that came with this Gear.
-                        foreach (Weapon objWeapon in lstWeapons)
-                        {
-                            await CharacterObject.Weapons.AddAsync(objWeapon, GenericToken);
-                        }
-
-                        await objAccessory.GearChildren.AddAsync(objGear, GenericToken);
-                    }
-                } while (blnAddAgain);
+                    } while (blnAddAgain);
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync();
+                }
             }
-            finally
+            catch (OperationCanceledException)
             {
-                await objCursorWait.DisposeAsync();
+                //swallow this
             }
         }
 
         private async void tsWeaponAccessoryGearMenuAddAsPlugin_Click(object sender, EventArgs e)
         {
-            if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Gear objSensor))
-            // Make sure the Gear was found.
-            {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ModifyVehicleGear"), await LanguageManager.GetStringAsync("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            CharacterObject.Weapons.FindWeaponGear(objSensor.InternalId, out WeaponAccessory objAccessory);
-
-            // Open the Gear XML file and locate the selected piece.
-            XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml", token: GenericToken);
-            string strCategories = string.Empty;
-            XPathNodeIterator xmlAddonCategoryList = (await objSensor.GetNodeXPathAsync(GenericToken))?.Select("addoncategory");
-            if (xmlAddonCategoryList?.Count > 0)
-            {
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCategories))
-                {
-                    foreach (XPathNavigator objXmlCategory in xmlAddonCategoryList)
-                        sbdCategories.Append(objXmlCategory.Value).Append(',');
-                    // Remove the trailing comma.
-                    --sbdCategories.Length;
-                    strCategories = sbdCategories.ToString();
-                }
-            }
-
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
             try
             {
-                bool blnAddAgain;
-                do
+                if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag,
+                                                              GenericToken) is Gear objSensor))
+                    // Make sure the Gear was found.
                 {
-                    using (ThreadSafeForm<SelectGear> frmPickGear
-                           = await ThreadSafeForm<SelectGear>.GetAsync(
-                               () => new SelectGear(CharacterObject, 0, 1, objSensor, strCategories), GenericToken))
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ModifyVehicleGear"),
+                                           await LanguageManager.GetStringAsync("MessageTitle_SelectGear"),
+                                           MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                CharacterObject.Weapons.FindWeaponGear(objSensor.InternalId, out WeaponAccessory objAccessory);
+
+                // Open the Gear XML file and locate the selected piece.
+                XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml", token: GenericToken);
+                string strCategories = string.Empty;
+                XPathNodeIterator xmlAddonCategoryList
+                    = (await objSensor.GetNodeXPathAsync(GenericToken))?.Select("addoncategory");
+                if (xmlAddonCategoryList?.Count > 0)
+                {
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                  out StringBuilder sbdCategories))
                     {
-                        if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity)
-                                                                 && (!objSensor.Capacity.Contains('[')
-                                                                     || objSensor.Capacity.Contains("/[")))
-                            frmPickGear.MyForm.ShowNegativeCapacityOnly = true;
-
-                        if (await frmPickGear.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
-                            break;
-                        blnAddAgain = frmPickGear.MyForm.AddAgain;
-
-                        XmlNode objXmlGear
-                            = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = "
-                                                              + frmPickGear.MyForm.SelectedGear.CleanXPath() + ']');
-
-                        // Create the new piece of Gear.
-                        List<Weapon> lstWeapons = new List<Weapon>(1);
-
-                        Gear objGear = new Gear(CharacterObject);
-                        objGear.Create(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons, string.Empty,
-                                       (objSensor.Parent as Gear)?.Equipped ?? objAccessory?.Equipped == true);
-
-                        if (objGear.InternalId.IsEmptyGuid())
-                            continue;
-
-                        objGear.Quantity = frmPickGear.MyForm.SelectedQty;
-
-                        // Reduce the cost for Do It Yourself components.
-                        if (frmPickGear.MyForm.DoItYourself)
-                            objGear.Cost = '(' + objGear.Cost + ") * 0.5";
-
-                        // Check the item's Cost and make sure the character can afford it.
-                        if (!frmPickGear.MyForm.FreeCost)
-                        {
-                            decimal decCost = objGear.TotalCost;
-
-                            // Multiply the cost if applicable.
-                            char chrAvail = (await objGear.TotalAvailTupleAsync()).Suffix;
-                            switch (chrAvail)
-                            {
-                                case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
-                                    decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
-                                    break;
-
-                                case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
-                                    decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
-                                    break;
-                            }
-
-                            if (decCost > CharacterObject.Nuyen)
-                            {
-                                objGear.DeleteGear();
-                                Program.ShowMessageBox(
-                                    this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen"),
-                                    await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen"),
-                                    MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                continue;
-                            }
-
-                            // Create the Expense Log Entry.
-                            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                            objExpense.Create(decCost * -1,
-                                              await LanguageManager.GetStringAsync("String_ExpensePurchaseWeaponGear")
-                                              + await LanguageManager.GetStringAsync("String_Space")
-                                              + objGear.CurrentDisplayNameShort, ExpenseType.Nuyen,
-                                              DateTime.Now);
-                            await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken);
-                            CharacterObject.Nuyen -= decCost;
-
-                            ExpenseUndo objUndo = new ExpenseUndo();
-                            objUndo.CreateNuyen(NuyenExpenseType.AddWeaponGear, objGear.InternalId,
-                                                frmPickGear.MyForm.SelectedQty);
-                            objExpense.Undo = objUndo;
-                        }
-
-                        await objSensor.Children.AddAsync(objGear, GenericToken);
-
-                        foreach (Weapon objWeapon in lstWeapons)
-                        {
-                            await CharacterObject.Weapons.AddAsync(objWeapon, GenericToken);
-                        }
+                        foreach (XPathNavigator objXmlCategory in xmlAddonCategoryList)
+                            sbdCategories.Append(objXmlCategory.Value).Append(',');
+                        // Remove the trailing comma.
+                        --sbdCategories.Length;
+                        strCategories = sbdCategories.ToString();
                     }
-                } while (blnAddAgain);
+                }
+
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+                try
+                {
+                    bool blnAddAgain;
+                    do
+                    {
+                        using (ThreadSafeForm<SelectGear> frmPickGear
+                               = await ThreadSafeForm<SelectGear>.GetAsync(
+                                   () => new SelectGear(CharacterObject, 0, 1, objSensor, strCategories), GenericToken))
+                        {
+                            if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity)
+                                                                     && (!objSensor.Capacity.Contains('[')
+                                                                         || objSensor.Capacity.Contains("/[")))
+                                frmPickGear.MyForm.ShowNegativeCapacityOnly = true;
+
+                            if (await frmPickGear.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                                break;
+                            blnAddAgain = frmPickGear.MyForm.AddAgain;
+
+                            XmlNode objXmlGear
+                                = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = "
+                                                                  + frmPickGear.MyForm.SelectedGear.CleanXPath() + ']');
+
+                            // Create the new piece of Gear.
+                            List<Weapon> lstWeapons = new List<Weapon>(1);
+
+                            Gear objGear = new Gear(CharacterObject);
+                            objGear.Create(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons, string.Empty,
+                                           (objSensor.Parent as Gear)?.Equipped ?? objAccessory?.Equipped == true);
+
+                            if (objGear.InternalId.IsEmptyGuid())
+                                continue;
+
+                            objGear.Quantity = frmPickGear.MyForm.SelectedQty;
+
+                            // Reduce the cost for Do It Yourself components.
+                            if (frmPickGear.MyForm.DoItYourself)
+                                objGear.Cost = '(' + objGear.Cost + ") * 0.5";
+
+                            // Check the item's Cost and make sure the character can afford it.
+                            if (!frmPickGear.MyForm.FreeCost)
+                            {
+                                decimal decCost = objGear.TotalCost;
+
+                                // Multiply the cost if applicable.
+                                char chrAvail = (await objGear.TotalAvailTupleAsync()).Suffix;
+                                switch (chrAvail)
+                                {
+                                    case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
+                                        decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
+                                        break;
+
+                                    case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
+                                        decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
+                                        break;
+                                }
+
+                                if (decCost > CharacterObject.Nuyen)
+                                {
+                                    objGear.DeleteGear();
+                                    Program.ShowMessageBox(
+                                        this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen"),
+                                        await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen"),
+                                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                    continue;
+                                }
+
+                                // Create the Expense Log Entry.
+                                ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                                objExpense.Create(decCost * -1,
+                                                  await LanguageManager.GetStringAsync(
+                                                      "String_ExpensePurchaseWeaponGear")
+                                                  + await LanguageManager.GetStringAsync("String_Space")
+                                                  + objGear.CurrentDisplayNameShort, ExpenseType.Nuyen,
+                                                  DateTime.Now);
+                                await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken);
+                                CharacterObject.Nuyen -= decCost;
+
+                                ExpenseUndo objUndo = new ExpenseUndo();
+                                objUndo.CreateNuyen(NuyenExpenseType.AddWeaponGear, objGear.InternalId,
+                                                    frmPickGear.MyForm.SelectedQty);
+                                objExpense.Undo = objUndo;
+                            }
+
+                            await objSensor.Children.AddAsync(objGear, GenericToken);
+
+                            foreach (Weapon objWeapon in lstWeapons)
+                            {
+                                await CharacterObject.Weapons.AddAsync(objWeapon, GenericToken);
+                            }
+                        }
+                    } while (blnAddAgain);
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync();
+                }
             }
-            finally
+            catch (OperationCanceledException)
             {
-                await objCursorWait.DisposeAsync();
+                //swallow this
             }
         }
 
         private async void tsVehicleRenameLocation_Click(object sender, EventArgs e)
         {
-            if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Location objLocation))
-                return;
-            string strDescription = await LanguageManager.GetStringAsync("String_AddLocation");
-            using (ThreadSafeForm<SelectText> frmPickText = await ThreadSafeForm<SelectText>.GetAsync(() => new SelectText
-                   {
-                       Description = strDescription,
-                       DefaultString = objLocation.Name
-                   }, GenericToken))
+            try
             {
-                if (await frmPickText.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Location
+                        objLocation))
                     return;
+                string strDescription = await LanguageManager.GetStringAsync("String_AddLocation");
+                using (ThreadSafeForm<SelectText> frmPickText = await ThreadSafeForm<SelectText>.GetAsync(
+                           () => new SelectText
+                           {
+                               Description = strDescription,
+                               DefaultString = objLocation.Name
+                           }, GenericToken))
+                {
+                    if (await frmPickText.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                        return;
 
-                objLocation.Name = frmPickText.MyForm.SelectedValue;
+                    objLocation.Name = frmPickText.MyForm.SelectedValue;
+                }
+
+                await treVehicles.DoThreadSafeAsync(x => x.SelectedNode.Text = objLocation.DisplayName(), GenericToken);
+
+                await SetDirty(true);
             }
-
-            await treVehicles.DoThreadSafeAsync(x => x.SelectedNode.Text = objLocation.DisplayName(), GenericToken);
-
-            await SetDirty(true);
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void tsCreateNaturalWeapon_Click(object sender, EventArgs e)
         {
-            using (ThreadSafeForm<CreateNaturalWeapon> frmCreateNaturalWeapon = await ThreadSafeForm<CreateNaturalWeapon>.GetAsync(() => new CreateNaturalWeapon(CharacterObject), GenericToken))
+            try
             {
-                if (await frmCreateNaturalWeapon.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
-                    return;
+                using (ThreadSafeForm<CreateNaturalWeapon> frmCreateNaturalWeapon
+                       = await ThreadSafeForm<CreateNaturalWeapon>.GetAsync(
+                           () => new CreateNaturalWeapon(CharacterObject), GenericToken))
+                {
+                    if (await frmCreateNaturalWeapon.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                        return;
 
-                Weapon objWeapon = frmCreateNaturalWeapon.MyForm.SelectedWeapon;
-                await CharacterObject.Weapons.AddAsync(objWeapon, GenericToken);
+                    Weapon objWeapon = frmCreateNaturalWeapon.MyForm.SelectedWeapon;
+                    await CharacterObject.Weapons.AddAsync(objWeapon, GenericToken);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
             }
         }
 
         private async void tsVehicleWeaponAccessoryGearMenuAddAsPlugin_Click(object sender, EventArgs e)
         {
-            // Locate the Vehicle Sensor Gear.
-            if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Gear objSensor))
-            // Make sure the Gear was found.
-            {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ModifyVehicleGear"), await LanguageManager.GetStringAsync("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            // Open the Gear XML file and locate the selected piece.
-            XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml", token: GenericToken);
-            string strCategories = string.Empty;
-            XPathNodeIterator xmlAddonCategoryList = (await objSensor.GetNodeXPathAsync(GenericToken))?.Select("addoncategory");
-            if (xmlAddonCategoryList?.Count > 0)
-            {
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCategories))
-                {
-                    foreach (XPathNavigator objXmlCategory in xmlAddonCategoryList)
-                        sbdCategories.Append(objXmlCategory.Value).Append(',');
-                    // Remove the trailing comma.
-                    --sbdCategories.Length;
-                    strCategories = sbdCategories.ToString();
-                }
-            }
-
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
             try
             {
-                bool blnAddAgain;
-                do
+                // Locate the Vehicle Sensor Gear.
+                if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag,
+                                                              GenericToken) is Gear objSensor))
+                    // Make sure the Gear was found.
                 {
-                    using (ThreadSafeForm<SelectGear> frmPickGear
-                           = await ThreadSafeForm<SelectGear>.GetAsync(
-                               () => new SelectGear(CharacterObject, 0, 1, objSensor, strCategories), GenericToken))
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ModifyVehicleGear"),
+                                           await LanguageManager.GetStringAsync("MessageTitle_SelectGear"),
+                                           MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                // Open the Gear XML file and locate the selected piece.
+                XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml", token: GenericToken);
+                string strCategories = string.Empty;
+                XPathNodeIterator xmlAddonCategoryList
+                    = (await objSensor.GetNodeXPathAsync(GenericToken))?.Select("addoncategory");
+                if (xmlAddonCategoryList?.Count > 0)
+                {
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                  out StringBuilder sbdCategories))
                     {
-                        if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity)
-                                                                 && (!objSensor.Capacity.Contains('[')
-                                                                     || objSensor.Capacity.Contains("/[")))
-                            frmPickGear.MyForm.ShowNegativeCapacityOnly = true;
-
-                        if (await frmPickGear.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
-                            break;
-                        blnAddAgain = frmPickGear.MyForm.AddAgain;
-
-                        XmlNode objXmlGear
-                            = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = "
-                                                              + frmPickGear.MyForm.SelectedGear.CleanXPath() + ']');
-
-                        // Create the new piece of Gear.
-                        List<Weapon> lstWeapons = new List<Weapon>(1);
-
-                        Gear objGear = new Gear(CharacterObject);
-                        objGear.Create(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons, string.Empty, false);
-
-                        if (objGear.InternalId.IsEmptyGuid())
-                            continue;
-
-                        objGear.Quantity = frmPickGear.MyForm.SelectedQty;
-
-                        // Reduce the cost for Do It Yourself components.
-                        if (frmPickGear.MyForm.DoItYourself)
-                            objGear.Cost = '(' + objGear.Cost + ") * 0.5";
-
-                        // Check the item's Cost and make sure the character can afford it.
-                        if (!frmPickGear.MyForm.FreeCost)
-                        {
-                            decimal decCost = objGear.TotalCost;
-
-                            // Multiply the cost if applicable.
-                            char chrAvail = (await objGear.TotalAvailTupleAsync()).Suffix;
-                            switch (chrAvail)
-                            {
-                                case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
-                                    decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
-                                    break;
-
-                                case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
-                                    decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
-                                    break;
-                            }
-
-                            if (decCost > CharacterObject.Nuyen)
-                            {
-                                objGear.DeleteGear();
-                                Program.ShowMessageBox(
-                                    this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen"),
-                                    await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen"),
-                                    MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                continue;
-                            }
-
-                            // Create the Expense Log Entry.
-                            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                            objExpense.Create(decCost * -1,
-                                              await LanguageManager.GetStringAsync("String_ExpensePurchaseWeaponGear")
-                                              + await LanguageManager.GetStringAsync("String_Space")
-                                              + objGear.CurrentDisplayNameShort, ExpenseType.Nuyen,
-                                              DateTime.Now);
-                            await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken);
-                            CharacterObject.Nuyen -= decCost;
-
-                            ExpenseUndo objUndo = new ExpenseUndo();
-                            objUndo.CreateNuyen(NuyenExpenseType.AddWeaponGear, objGear.InternalId,
-                                                frmPickGear.MyForm.SelectedQty);
-                            objExpense.Undo = objUndo;
-                        }
-
-                        await objSensor.Children.AddAsync(objGear, GenericToken);
-                        CharacterObject.Vehicles.FindVehicleGear(objGear.InternalId, out Vehicle objVehicle, out _,
-                                                                 out _);
-                        foreach (Weapon objWeapon in lstWeapons)
-                        {
-                            objWeapon.ParentVehicle = objVehicle;
-                            await objVehicle.Weapons.AddAsync(objWeapon, GenericToken);
-                        }
+                        foreach (XPathNavigator objXmlCategory in xmlAddonCategoryList)
+                            sbdCategories.Append(objXmlCategory.Value).Append(',');
+                        // Remove the trailing comma.
+                        --sbdCategories.Length;
+                        strCategories = sbdCategories.ToString();
                     }
-                } while (blnAddAgain);
+                }
+
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+                try
+                {
+                    bool blnAddAgain;
+                    do
+                    {
+                        using (ThreadSafeForm<SelectGear> frmPickGear
+                               = await ThreadSafeForm<SelectGear>.GetAsync(
+                                   () => new SelectGear(CharacterObject, 0, 1, objSensor, strCategories), GenericToken))
+                        {
+                            if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity)
+                                                                     && (!objSensor.Capacity.Contains('[')
+                                                                         || objSensor.Capacity.Contains("/[")))
+                                frmPickGear.MyForm.ShowNegativeCapacityOnly = true;
+
+                            if (await frmPickGear.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                                break;
+                            blnAddAgain = frmPickGear.MyForm.AddAgain;
+
+                            XmlNode objXmlGear
+                                = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = "
+                                                                  + frmPickGear.MyForm.SelectedGear.CleanXPath() + ']');
+
+                            // Create the new piece of Gear.
+                            List<Weapon> lstWeapons = new List<Weapon>(1);
+
+                            Gear objGear = new Gear(CharacterObject);
+                            objGear.Create(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons, string.Empty,
+                                           false);
+
+                            if (objGear.InternalId.IsEmptyGuid())
+                                continue;
+
+                            objGear.Quantity = frmPickGear.MyForm.SelectedQty;
+
+                            // Reduce the cost for Do It Yourself components.
+                            if (frmPickGear.MyForm.DoItYourself)
+                                objGear.Cost = '(' + objGear.Cost + ") * 0.5";
+
+                            // Check the item's Cost and make sure the character can afford it.
+                            if (!frmPickGear.MyForm.FreeCost)
+                            {
+                                decimal decCost = objGear.TotalCost;
+
+                                // Multiply the cost if applicable.
+                                char chrAvail = (await objGear.TotalAvailTupleAsync()).Suffix;
+                                switch (chrAvail)
+                                {
+                                    case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
+                                        decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
+                                        break;
+
+                                    case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
+                                        decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
+                                        break;
+                                }
+
+                                if (decCost > CharacterObject.Nuyen)
+                                {
+                                    objGear.DeleteGear();
+                                    Program.ShowMessageBox(
+                                        this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen"),
+                                        await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen"),
+                                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                    continue;
+                                }
+
+                                // Create the Expense Log Entry.
+                                ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                                objExpense.Create(decCost * -1,
+                                                  await LanguageManager.GetStringAsync(
+                                                      "String_ExpensePurchaseWeaponGear")
+                                                  + await LanguageManager.GetStringAsync("String_Space")
+                                                  + objGear.CurrentDisplayNameShort, ExpenseType.Nuyen,
+                                                  DateTime.Now);
+                                await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken);
+                                CharacterObject.Nuyen -= decCost;
+
+                                ExpenseUndo objUndo = new ExpenseUndo();
+                                objUndo.CreateNuyen(NuyenExpenseType.AddWeaponGear, objGear.InternalId,
+                                                    frmPickGear.MyForm.SelectedQty);
+                                objExpense.Undo = objUndo;
+                            }
+
+                            await objSensor.Children.AddAsync(objGear, GenericToken);
+                            CharacterObject.Vehicles.FindVehicleGear(objGear.InternalId, out Vehicle objVehicle, out _,
+                                                                     out _);
+                            foreach (Weapon objWeapon in lstWeapons)
+                            {
+                                objWeapon.ParentVehicle = objVehicle;
+                                await objVehicle.Weapons.AddAsync(objWeapon, GenericToken);
+                            }
+                        }
+                    } while (blnAddAgain);
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync();
+                }
             }
-            finally
+            catch (OperationCanceledException)
             {
-                await objCursorWait.DisposeAsync();
+                //swallow this
             }
         }
 
         private async void tsVehicleWeaponAccessoryAddGear_Click(object sender, EventArgs e)
         {
-            if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is WeaponAccessory objAccessory))
-                return;
-            // Make sure the Weapon Accessory is allowed to accept Gear.
-            if (objAccessory.AllowGear == null)
-            {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_WeaponGear"), await LanguageManager.GetStringAsync("MessageTitle_CyberwareGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            // Open the Gear XML file and locate the selected piece.
-            XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml", token: GenericToken);
-
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
             try
             {
-                bool blnAddAgain;
-                do
+                if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is WeaponAccessory
+                        objAccessory))
+                    return;
+                // Make sure the Weapon Accessory is allowed to accept Gear.
+                if (objAccessory.AllowGear == null)
                 {
-                    string strCategories = string.Empty;
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                  out StringBuilder sbdCategories))
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_WeaponGear"),
+                                           await LanguageManager.GetStringAsync("MessageTitle_CyberwareGear"),
+                                           MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                // Open the Gear XML file and locate the selected piece.
+                XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml", token: GenericToken);
+
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+                try
+                {
+                    bool blnAddAgain;
+                    do
                     {
-                        foreach (XmlNode objXmlCategory in objAccessory.AllowGear)
-                            sbdCategories.Append(objXmlCategory.InnerText).Append(',');
-                        if (sbdCategories.Length > 0)
+                        string strCategories = string.Empty;
+                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                      out StringBuilder sbdCategories))
                         {
-                            --sbdCategories.Length;
-                            strCategories = sbdCategories.ToString();
-                        }
-                    }
-
-                    using (ThreadSafeForm<SelectGear> frmPickGear
-                           = await ThreadSafeForm<SelectGear>.GetAsync(
-                               () => new SelectGear(CharacterObject, 0, 1, objAccessory, strCategories),
-                               token: GenericToken))
-                    {
-                        if (!string.IsNullOrEmpty(strCategories))
-                            frmPickGear.MyForm.ShowNegativeCapacityOnly = true;
-
-                        if (await frmPickGear.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
-                            break;
-                        blnAddAgain = frmPickGear.MyForm.AddAgain;
-
-                        XmlNode objXmlGear
-                            = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = "
-                                                              + frmPickGear.MyForm.SelectedGear.CleanXPath() + ']');
-
-                        // Create the new piece of Gear.
-                        List<Weapon> lstWeapons = new List<Weapon>(1);
-
-                        Gear objGear = new Gear(CharacterObject);
-                        objGear.Create(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons, string.Empty, false);
-
-                        if (objGear.InternalId.IsEmptyGuid())
-                            continue;
-
-                        objGear.Quantity = frmPickGear.MyForm.SelectedQty;
-
-                        // Reduce the cost for Do It Yourself components.
-                        if (frmPickGear.MyForm.DoItYourself)
-                            objGear.Cost = '(' + objGear.Cost + ") * 0.5";
-
-                        // Check the item's Cost and make sure the character can afford it.
-                        if (!frmPickGear.MyForm.FreeCost)
-                        {
-                            decimal decCost = objGear.TotalCost;
-
-                            // Multiply the cost if applicable.
-                            char chrAvail = (await objGear.TotalAvailTupleAsync()).Suffix;
-                            switch (chrAvail)
+                            foreach (XmlNode objXmlCategory in objAccessory.AllowGear)
+                                sbdCategories.Append(objXmlCategory.InnerText).Append(',');
+                            if (sbdCategories.Length > 0)
                             {
-                                case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
-                                    decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
-                                    break;
-
-                                case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
-                                    decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
-                                    break;
+                                --sbdCategories.Length;
+                                strCategories = sbdCategories.ToString();
                             }
+                        }
 
-                            if (decCost > CharacterObject.Nuyen)
-                            {
-                                objGear.DeleteGear();
-                                Program.ShowMessageBox(
-                                    this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen"),
-                                    await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen"),
-                                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        using (ThreadSafeForm<SelectGear> frmPickGear
+                               = await ThreadSafeForm<SelectGear>.GetAsync(
+                                   () => new SelectGear(CharacterObject, 0, 1, objAccessory, strCategories),
+                                   token: GenericToken))
+                        {
+                            if (!string.IsNullOrEmpty(strCategories))
+                                frmPickGear.MyForm.ShowNegativeCapacityOnly = true;
+
+                            if (await frmPickGear.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                                break;
+                            blnAddAgain = frmPickGear.MyForm.AddAgain;
+
+                            XmlNode objXmlGear
+                                = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = "
+                                                                  + frmPickGear.MyForm.SelectedGear.CleanXPath() + ']');
+
+                            // Create the new piece of Gear.
+                            List<Weapon> lstWeapons = new List<Weapon>(1);
+
+                            Gear objGear = new Gear(CharacterObject);
+                            objGear.Create(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons, string.Empty,
+                                           false);
+
+                            if (objGear.InternalId.IsEmptyGuid())
                                 continue;
+
+                            objGear.Quantity = frmPickGear.MyForm.SelectedQty;
+
+                            // Reduce the cost for Do It Yourself components.
+                            if (frmPickGear.MyForm.DoItYourself)
+                                objGear.Cost = '(' + objGear.Cost + ") * 0.5";
+
+                            // Check the item's Cost and make sure the character can afford it.
+                            if (!frmPickGear.MyForm.FreeCost)
+                            {
+                                decimal decCost = objGear.TotalCost;
+
+                                // Multiply the cost if applicable.
+                                char chrAvail = (await objGear.TotalAvailTupleAsync()).Suffix;
+                                switch (chrAvail)
+                                {
+                                    case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
+                                        decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
+                                        break;
+
+                                    case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
+                                        decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
+                                        break;
+                                }
+
+                                if (decCost > CharacterObject.Nuyen)
+                                {
+                                    objGear.DeleteGear();
+                                    Program.ShowMessageBox(
+                                        this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen"),
+                                        await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen"),
+                                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                    continue;
+                                }
+
+                                // Create the Expense Log Entry.
+                                ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                                objExpense.Create(decCost * -1,
+                                                  await LanguageManager.GetStringAsync(
+                                                      "String_ExpensePurchaseWeaponGear")
+                                                  + await LanguageManager.GetStringAsync("String_Space")
+                                                  + objGear.CurrentDisplayNameShort, ExpenseType.Nuyen,
+                                                  DateTime.Now);
+                                await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken);
+                                CharacterObject.Nuyen -= decCost;
+
+                                ExpenseUndo objUndo = new ExpenseUndo();
+                                objUndo.CreateNuyen(NuyenExpenseType.AddWeaponGear, objGear.InternalId, 1);
+                                objExpense.Undo = objUndo;
                             }
 
-                            // Create the Expense Log Entry.
-                            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                            objExpense.Create(decCost * -1,
-                                              await LanguageManager.GetStringAsync("String_ExpensePurchaseWeaponGear")
-                                              + await LanguageManager.GetStringAsync("String_Space")
-                                              + objGear.CurrentDisplayNameShort, ExpenseType.Nuyen,
-                                              DateTime.Now);
-                            await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken);
-                            CharacterObject.Nuyen -= decCost;
+                            await objAccessory.GearChildren.AddAsync(objGear, GenericToken);
 
-                            ExpenseUndo objUndo = new ExpenseUndo();
-                            objUndo.CreateNuyen(NuyenExpenseType.AddWeaponGear, objGear.InternalId, 1);
-                            objExpense.Undo = objUndo;
+                            foreach (Weapon objWeapon in lstWeapons)
+                            {
+                                objWeapon.Parent = objAccessory.Parent;
+                                await objAccessory.Parent.Children.AddAsync(objWeapon, GenericToken);
+                            }
                         }
-
-                        await objAccessory.GearChildren.AddAsync(objGear, GenericToken);
-
-                        foreach (Weapon objWeapon in lstWeapons)
-                        {
-                            objWeapon.Parent = objAccessory.Parent;
-                            await objAccessory.Parent.Children.AddAsync(objWeapon, GenericToken);
-                        }
-                    }
-                } while (blnAddAgain);
+                    } while (blnAddAgain);
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync();
+                }
             }
-            finally
+            catch (OperationCanceledException)
             {
-                await objCursorWait.DisposeAsync();
+                //swallow this
             }
         }
 
@@ -11511,7 +12591,14 @@ namespace Chummer
         {
             if (IsRefreshing)
                 return;
-            await RefreshSelectedQuality(GenericToken);
+            try
+            {
+                await RefreshSelectedQuality(GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async Task RefreshSelectedQuality(CancellationToken token = default)
@@ -11710,71 +12797,91 @@ namespace Chummer
 
         private async void treLifestyles_DoubleClick(object sender, EventArgs e)
         {
-            if (!(await treLifestyles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Lifestyle objLifestyle))
-                return;
-
-            string strGuid = objLifestyle.InternalId;
-            int intMonths = objLifestyle.Increments;
-            int intPosition = await CharacterObject.Lifestyles.IndexOfAsync(CharacterObject.Lifestyles.FirstOrDefault(p => p.InternalId == objLifestyle.InternalId));
-            string strOldLifestyleName = objLifestyle.CurrentDisplayName;
-            decimal decOldLifestyleTotalCost = objLifestyle.TotalCost;
-
-            if (objLifestyle.StyleType != LifestyleType.Standard)
+            try
             {
-                Lifestyle newLifestyle = objLifestyle;
-                // Edit Advanced Lifestyle.
-                using (ThreadSafeForm<SelectLifestyleAdvanced> frmPickLifestyle = await ThreadSafeForm<SelectLifestyleAdvanced>.GetAsync(() => new SelectLifestyleAdvanced(CharacterObject, newLifestyle), GenericToken))
+                if (!(await treLifestyles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Lifestyle
+                        objLifestyle))
+                    return;
+
+                string strGuid = objLifestyle.InternalId;
+                int intMonths = objLifestyle.Increments;
+                int intPosition = await CharacterObject.Lifestyles.IndexOfAsync(
+                    CharacterObject.Lifestyles.FirstOrDefault(p => p.InternalId == objLifestyle.InternalId));
+                string strOldLifestyleName = objLifestyle.CurrentDisplayName;
+                decimal decOldLifestyleTotalCost = objLifestyle.TotalCost;
+
+                if (objLifestyle.StyleType != LifestyleType.Standard)
                 {
-                    if (await frmPickLifestyle.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                    Lifestyle newLifestyle = objLifestyle;
+                    // Edit Advanced Lifestyle.
+                    using (ThreadSafeForm<SelectLifestyleAdvanced> frmPickLifestyle
+                           = await ThreadSafeForm<SelectLifestyleAdvanced>.GetAsync(
+                               () => new SelectLifestyleAdvanced(CharacterObject, newLifestyle), GenericToken))
                     {
-                        if (!ReferenceEquals(objLifestyle, frmPickLifestyle.MyForm.SelectedLifestyle))
+                        if (await frmPickLifestyle.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                        {
+                            if (!ReferenceEquals(objLifestyle, frmPickLifestyle.MyForm.SelectedLifestyle))
+                                frmPickLifestyle.MyForm.SelectedLifestyle.Dispose();
+                            return;
+                        }
+
+                        // Update the selected Lifestyle and refresh the list.
+                        objLifestyle = frmPickLifestyle.MyForm.SelectedLifestyle;
+                    }
+                }
+                else
+                {
+                    // Edit Basic Lifestyle.
+                    using (ThreadSafeForm<SelectLifestyle> frmPickLifestyle
+                           = await ThreadSafeForm<SelectLifestyle>.GetAsync(
+                               () => new SelectLifestyle(CharacterObject), GenericToken))
+                    {
+                        frmPickLifestyle.MyForm.SetLifestyle(objLifestyle);
+
+                        if (await frmPickLifestyle.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                        {
                             frmPickLifestyle.MyForm.SelectedLifestyle.Dispose();
-                        return;
-                    }
+                            return;
+                        }
 
-                    // Update the selected Lifestyle and refresh the list.
-                    objLifestyle = frmPickLifestyle.MyForm.SelectedLifestyle;
+                        // Update the selected Lifestyle and refresh the list.
+                        objLifestyle = frmPickLifestyle.MyForm.SelectedLifestyle;
+                    }
                 }
-            }
-            else
-            {
-                // Edit Basic Lifestyle.
-                using (ThreadSafeForm<SelectLifestyle> frmPickLifestyle = await ThreadSafeForm<SelectLifestyle>.GetAsync(() => new SelectLifestyle(CharacterObject), GenericToken))
+
+                objLifestyle.Increments = intMonths;
+
+                decimal decAmount = Math.Max(objLifestyle.TotalCost - decOldLifestyleTotalCost, 0);
+                if (decAmount > CharacterObject.Nuyen)
                 {
-                    frmPickLifestyle.MyForm.SetLifestyle(objLifestyle);
-
-                    if (await frmPickLifestyle.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
-                    {
-                        frmPickLifestyle.MyForm.SelectedLifestyle.Dispose();
-                        return;
-                    }
-
-                    // Update the selected Lifestyle and refresh the list.
-                    objLifestyle = frmPickLifestyle.MyForm.SelectedLifestyle;
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen"),
+                                           await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen"),
+                                           MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
                 }
-            }
-            objLifestyle.Increments = intMonths;
 
-            decimal decAmount = Math.Max(objLifestyle.TotalCost - decOldLifestyleTotalCost, 0);
-            if (decAmount > CharacterObject.Nuyen)
+                objLifestyle.SetInternalId(strGuid);
+                CharacterObject.Lifestyles[intPosition] = objLifestyle;
+
+                string strSpace = await LanguageManager.GetStringAsync("String_Space");
+
+                // Create the Expense Log Entry.
+                ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                objExpense.Create(
+                    -decAmount,
+                    await LanguageManager.GetStringAsync("String_ExpenseModifiedLifestyle")
+                    + await LanguageManager.GetStringAsync("String_Space") + strOldLifestyleName + strSpace + "->"
+                    + strSpace + objLifestyle.CurrentDisplayName, ExpenseType.Nuyen, DateTime.Now);
+                await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken);
+
+                await RequestCharacterUpdate(GenericToken);
+
+                await SetDirty(true, GenericToken);
+            }
+            catch (OperationCanceledException)
             {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
+                //swallow this
             }
-
-            objLifestyle.SetInternalId(strGuid);
-            CharacterObject.Lifestyles[intPosition] = objLifestyle;
-
-            string strSpace = await LanguageManager.GetStringAsync("String_Space");
-
-            // Create the Expense Log Entry.
-            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-            objExpense.Create(-decAmount, await LanguageManager.GetStringAsync("String_ExpenseModifiedLifestyle") + await LanguageManager.GetStringAsync("String_Space") + strOldLifestyleName + strSpace + "->" + strSpace + objLifestyle.CurrentDisplayName, ExpenseType.Nuyen, DateTime.Now);
-            await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken);
-
-            await RequestCharacterUpdate(GenericToken);
-
-            await SetDirty(true, GenericToken);
         }
 
         /*
@@ -11854,78 +12961,109 @@ namespace Chummer
             if (IsRefreshing)
                 return;
 
-            object objSelected = await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken);
-            if (objSelected == null)
-                return;
-
-            bool blnChecked = await chkArmorEquipped.DoThreadSafeFuncAsync(x => x.Checked, GenericToken);
-
-            // Locate the selected Armor or Armor Mod.
-            switch (objSelected)
+            try
             {
-                case Armor objArmor:
-                    objArmor.Equipped = blnChecked;
-                    break;
-
-                case ArmorMod objMod:
-                    objMod.Equipped = blnChecked;
-                    break;
-
-                case Gear objGear:
-                    objGear.Equipped = blnChecked;
-                    if (blnChecked)
-                    {
-                        CharacterObject.Armor.FindArmorGear(objGear.InternalId, out Armor objParentArmor, out ArmorMod objParentMod);
-                        // Add the Gear's Improvements to the character.
-                        if (objParentArmor.Equipped && objParentMod?.Equipped != false)
-                        {
-                            objGear.ChangeEquippedStatus(true);
-                        }
-                    }
-                    else
-                    {
-                        objGear.ChangeEquippedStatus(false);
-                    }
-
-                    break;
-
-                default:
+                object objSelected = await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken);
+                if (objSelected == null)
                     return;
-            }
 
-            await RequestCharacterUpdate();
-            await SetDirty(true);
+                bool blnChecked = await chkArmorEquipped.DoThreadSafeFuncAsync(x => x.Checked, GenericToken);
+
+                // Locate the selected Armor or Armor Mod.
+                switch (objSelected)
+                {
+                    case Armor objArmor:
+                        objArmor.Equipped = blnChecked;
+                        break;
+
+                    case ArmorMod objMod:
+                        objMod.Equipped = blnChecked;
+                        break;
+
+                    case Gear objGear:
+                        objGear.Equipped = blnChecked;
+                        if (blnChecked)
+                        {
+                            CharacterObject.Armor.FindArmorGear(objGear.InternalId, out Armor objParentArmor,
+                                                                out ArmorMod objParentMod);
+                            // Add the Gear's Improvements to the character.
+                            if (objParentArmor.Equipped && objParentMod?.Equipped != false)
+                            {
+                                objGear.ChangeEquippedStatus(true);
+                            }
+                        }
+                        else
+                        {
+                            objGear.ChangeEquippedStatus(false);
+                        }
+
+                        break;
+
+                    default:
+                        return;
+                }
+
+                await RequestCharacterUpdate(GenericToken);
+                await SetDirty(true, GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void cmdFireWeapon_Click(object sender, EventArgs e)
         {
-            // "Click" the first menu item available.
-            if (await cmsAmmoExpense.DoThreadSafeFuncAsync(() => cmsAmmoSingleShot.Enabled, GenericToken))
-                await DoSingleShot();
-            else if (await cmsAmmoExpense.DoThreadSafeFuncAsync(() => cmsAmmoShortBurst.Enabled, GenericToken))
-                await DoShortBurst();
-            else
-                await DoLongBurst();
+            try
+            {
+                // "Click" the first menu item available.
+                if (await cmsAmmoExpense.DoThreadSafeFuncAsync(() => cmsAmmoSingleShot.Enabled, GenericToken))
+                    await DoSingleShot(GenericToken);
+                else if (await cmsAmmoExpense.DoThreadSafeFuncAsync(() => cmsAmmoShortBurst.Enabled, GenericToken))
+                    await DoShortBurst(GenericToken);
+                else
+                    await DoLongBurst(GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void cmdReloadWeapon_Click(object sender, EventArgs e)
         {
-            if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Weapon objWeapon))
-                return;
-            await objWeapon.Reload(CharacterObject.Gear, treGear);
+            try
+            {
+                if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag,
+                                                             GenericToken) is Weapon objWeapon))
+                    return;
+                await objWeapon.Reload(CharacterObject.Gear, treGear, GenericToken);
 
-            await RequestCharacterUpdate();
-            await SetDirty(true);
+                await RequestCharacterUpdate(GenericToken);
+                await SetDirty(true, GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void cmdUnloadWeapon_Click(object sender, EventArgs e)
         {
-            if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Weapon objWeapon))
-                return;
-            await objWeapon.Unload(CharacterObject.Gear, treGear);
+            try
+            {
+                if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag,
+                                                             GenericToken) is Weapon objWeapon))
+                    return;
+                await objWeapon.Unload(CharacterObject.Gear, treGear, GenericToken);
 
-            await RequestCharacterUpdate();
-            await SetDirty(true);
+                await RequestCharacterUpdate(GenericToken);
+                await SetDirty(true, GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void chkWeaponEquipped_CheckedChanged(object sender, EventArgs e)
@@ -11933,47 +13071,63 @@ namespace Chummer
             if (IsRefreshing)
                 return;
 
-            object objSelected = await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken);
-            if (objSelected == null)
-                return;
-
-            bool blnChecked = await chkWeaponEquipped.DoThreadSafeFuncAsync(x => x.Checked, GenericToken);
-            // Determine if this is a Weapon.
-            switch (objSelected)
+            try
             {
-                case Weapon objWeapon:
-                    objWeapon.Equipped = blnChecked;
-                    break;
-
-                case Gear objGear:
-                    // Find the selected Gear.
-                    objGear.Equipped = blnChecked;
-                    objGear.ChangeEquippedStatus(blnChecked);
-                    break;
-
-                case WeaponAccessory objAccessory:
-                    objAccessory.Equipped = blnChecked;
-                    break;
-
-                default:
+                object objSelected = await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken);
+                if (objSelected == null)
                     return;
-            }
 
-            await RequestCharacterUpdate();
-            await SetDirty(true);
+                bool blnChecked = await chkWeaponEquipped.DoThreadSafeFuncAsync(x => x.Checked, GenericToken);
+                // Determine if this is a Weapon.
+                switch (objSelected)
+                {
+                    case Weapon objWeapon:
+                        objWeapon.Equipped = blnChecked;
+                        break;
+
+                    case Gear objGear:
+                        // Find the selected Gear.
+                        objGear.Equipped = blnChecked;
+                        objGear.ChangeEquippedStatus(blnChecked);
+                        break;
+
+                    case WeaponAccessory objAccessory:
+                        objAccessory.Equipped = blnChecked;
+                        break;
+
+                    default:
+                        return;
+                }
+
+                await RequestCharacterUpdate(GenericToken);
+                await SetDirty(true, GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void chkIncludedInWeapon_CheckedChanged(object sender, EventArgs e)
         {
             if (IsRefreshing)
                 return;
-            // Locate the selected Weapon Accessory or Modification.
-            if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is WeaponAccessory objAccessory))
-                return;
-            objAccessory.IncludedInWeapon = await chkIncludedInWeapon.DoThreadSafeFuncAsync(x => x.Checked, GenericToken);
+            try
+            {
+                // Locate the selected Weapon Accessory or Modification.
+                if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is WeaponAccessory
+                        objAccessory))
+                    return;
+                objAccessory.IncludedInWeapon
+                    = await chkIncludedInWeapon.DoThreadSafeFuncAsync(x => x.Checked, GenericToken);
 
-            await RequestCharacterUpdate();
-            await SetDirty(true);
+                await RequestCharacterUpdate(GenericToken);
+                await SetDirty(true, GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private void treGear_ItemDrag(object sender, ItemDragEventArgs e)
@@ -12041,15 +13195,23 @@ namespace Chummer
             if (IsRefreshing)
                 return;
 
-            // Attempt to locate the selected piece of Gear.
-            if (!(await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Gear objSelectedGear))
-                return;
-            bool blnChecked = await chkGearEquipped.DoThreadSafeFuncAsync(x => x.Checked, GenericToken);
-            objSelectedGear.Equipped = blnChecked;
-            objSelectedGear.ChangeEquippedStatus(blnChecked);
+            try
+            {
+                // Attempt to locate the selected piece of Gear.
+                if (!(await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Gear
+                        objSelectedGear))
+                    return;
+                bool blnChecked = await chkGearEquipped.DoThreadSafeFuncAsync(x => x.Checked, GenericToken);
+                objSelectedGear.Equipped = blnChecked;
+                objSelectedGear.ChangeEquippedStatus(blnChecked);
 
-            await RequestCharacterUpdate();
-            await SetDirty(true);
+                await RequestCharacterUpdate(GenericToken);
+                await SetDirty(true, GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void cboWeaponAmmo_SelectedIndexChanged(object sender, EventArgs e)
@@ -12057,12 +13219,23 @@ namespace Chummer
             if (IsRefreshing)
                 return;
 
-            if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Weapon objWeapon))
-                return;
+            try
+            {
+                if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag,
+                                                             GenericToken) is Weapon objWeapon))
+                    return;
 
-            objWeapon.ActiveAmmoSlot = Convert.ToInt32(await cboWeaponAmmo.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), GenericToken), GlobalSettings.InvariantCultureInfo);
-            await RequestCharacterUpdate();
-            await SetDirty(true);
+                objWeapon.ActiveAmmoSlot
+                    = Convert.ToInt32(
+                        await cboWeaponAmmo.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), GenericToken),
+                        GlobalSettings.InvariantCultureInfo);
+                await RequestCharacterUpdate(GenericToken);
+                await SetDirty(true, GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private void chkGearHomeNode_CheckedChanged(object sender, EventArgs e)
@@ -12107,231 +13280,281 @@ namespace Chummer
 
         private async void cmdWeaponBuyAmmo_Click(object sender, EventArgs e)
         {
-            if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Weapon objWeapon))
-                return;
-            bool blnAddAgain;
-            do
-            {
-                blnAddAgain = await PickGear(null, null, null, string.Empty, objWeapon);
-            }
-            while (blnAddAgain);
-        }
-
-        private async void cmdWeaponMoveToVehicle_Click(object sender, EventArgs e)
-        {
-            // Locate the selected Weapon.
-            if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Weapon objWeapon))
-                return;
-
-            List<Vehicle> lstVehicles = new List<Vehicle>(CharacterObject.Vehicles.Count);
-            foreach (Vehicle objCharacterVehicle in CharacterObject.Vehicles)
-            {
-                if (objCharacterVehicle.WeaponMounts.Count > 0
-                    || await objCharacterVehicle.Mods.AnyAsync(objVehicleMod => objVehicleMod.Name.Contains("Drone Arm")
-                                                                     || objVehicleMod.Name.StartsWith("Mechanical Arm", StringComparison.Ordinal), GenericToken))
-                {
-                    lstVehicles.Add(objCharacterVehicle);
-                }
-            }
-
-            // Cannot continue if there are no Vehicles with a Weapon Mount or Mechanical Arm.
-            if (lstVehicles.Count == 0)
-            {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CannotMoveWeapons"), await LanguageManager.GetStringAsync("MessageTitle_CannotMoveWeapons"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            WeaponMount objWeaponMount;
-            VehicleMod objMod = null;
-
-            using (ThreadSafeForm<SelectItem> frmPickItem = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem(), GenericToken))
-            {
-                frmPickItem.MyForm.SetVehiclesMode(lstVehicles);
-
-                if (await frmPickItem.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
-                    return;
-
-                // Locate the selected Vehicle.
-                Vehicle objVehicle = await CharacterObject.Vehicles.FirstOrDefaultAsync(x => x.InternalId == frmPickItem.MyForm.SelectedItem, GenericToken);
-                if (objVehicle == null)
-                    return;
-
-                // Now display a list of the acceptable mounting points for the Weapon.
-                using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstItems))
-                {
-                    foreach (WeaponMount objVehicleWeaponMount in objVehicle.WeaponMounts)
-                    {
-                        //TODO: RAW, some mounts can have multiple weapons attached. Needs support in the Weapon Mount class itself, ideally a 'CanMountThisWeapon' bool or something.
-                        if ((objVehicleWeaponMount.AllowedWeaponCategories.Contains(objWeapon.SizeCategory) ||
-                             objVehicleWeaponMount.AllowedWeapons.Contains(objWeapon.Name)) &&
-                            !objVehicleWeaponMount.IsWeaponsFull)
-                            lstItems.Add(new ListItem(objVehicleWeaponMount.InternalId,
-                                                      objVehicleWeaponMount.CurrentDisplayName));
-                        else
-                            foreach (VehicleMod objVehicleMod in objVehicleWeaponMount.Mods)
-                            {
-                                if ((objVehicleMod.Name.Contains("Drone Arm") ||
-                                     objVehicleMod.Name.StartsWith("Mechanical Arm", StringComparison.Ordinal)) &&
-                                    objVehicleMod.Weapons.Count == 0)
-                                    lstItems.Add(new ListItem(objVehicleMod.InternalId,
-                                                              objVehicleMod.CurrentDisplayName));
-                            }
-                    }
-
-                    foreach (VehicleMod objVehicleMod in objVehicle.Mods)
-                    {
-                        if ((objVehicleMod.Name.Contains("Drone Arm") ||
-                             objVehicleMod.Name.StartsWith("Mechanical Arm", StringComparison.Ordinal))
-                            && objVehicleMod.Weapons.Count == 0)
-                            lstItems.Add(new ListItem(objVehicleMod.InternalId, objVehicleMod.CurrentDisplayName));
-                    }
-
-                    if (lstItems.Count == 0)
-                    {
-                        Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NoValidWeaponMount"),
-                                                        await LanguageManager.GetStringAsync("MessageTitle_NoValidWeaponMount"),
-                                                        MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return;
-                    }
-
-                    frmPickItem.MyForm.SetGeneralItemsMode(lstItems);
-
-                    if (await frmPickItem.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
-                        return;
-
-                    string strId = frmPickItem.MyForm.SelectedItem;
-                    // Locate the selected Vehicle Mod.
-                    objWeaponMount = await objVehicle.WeaponMounts.FirstOrDefaultAsync(x => x.InternalId == strId, GenericToken);
-                    // Locate the selected Vehicle Mod.
-                    if (objWeaponMount == null)
-                    {
-                        objMod = objVehicle.FindVehicleMod(x => x.InternalId == strId, out objWeaponMount);
-                        if (objMod == null)
-                            return;
-                    }
-                }
-            }
-
-            objWeapon.Location = null;
-            // Remove the Weapon from the character and add it to the Vehicle Mod.
-            await CharacterObject.Weapons.RemoveAsync(objWeapon);
-
-            // Remove any Improvements from the Character.
-            foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
-            {
-                foreach (Gear objGear in objAccessory.GearChildren)
-                    objGear.ChangeEquippedStatus(false);
-            }
-            if (objWeapon.UnderbarrelWeapons.Count > 0)
-            {
-                foreach (Weapon objUnderbarrelWeapon in objWeapon.UnderbarrelWeapons)
-                {
-                    foreach (WeaponAccessory objAccessory in objUnderbarrelWeapon.WeaponAccessories)
-                    {
-                        foreach (Gear objGear in objAccessory.GearChildren)
-                            objGear.ChangeEquippedStatus(false);
-                    }
-                }
-            }
-
-            if (objWeaponMount != null)
-            {
-                objWeapon.ParentMount = objWeaponMount;
-                await objWeaponMount.Weapons.AddAsync(objWeapon);
-            }
-            else
-            {
-                objWeapon.ParentVehicleMod = objMod;
-                await objMod.Weapons.AddAsync(objWeapon);
-            }
-
-            List<Gear> lstGearToMove = new List<Gear>(objWeapon.Clips.Count);
-            foreach (Clip objClip in objWeapon.Clips)
-            {
-                if (objClip.AmmoGear != null)
-                {
-                    lstGearToMove.Add(objClip.AmmoGear);
-                }
-            }
-            foreach (Clip objClip in objWeapon.Children.GetAllDescendants(x => x.Children).SelectMany(x => x.Clips))
-            {
-                if (objClip.AmmoGear != null)
-                {
-                    lstGearToMove.Add(objClip.AmmoGear);
-                }
-            }
-            foreach (Gear objGear in lstGearToMove)
-            {
-                switch (objGear.Parent)
-                {
-                    case IHasGear objHasChildren:
-                        await objHasChildren.GearChildren.RemoveAsync(objGear);
-                        break;
-
-                    case IHasChildren<Gear> objHasChildren:
-                        await objHasChildren.Children.RemoveAsync(objGear);
-                        break;
-
-                    default:
-                        await CharacterObject.Gear.RemoveAsync(objGear);
-                        break;
-                }
-
-                if (objWeaponMount != null)
-                {
-                    await objWeaponMount.Parent.GearChildren.AddAsync(objGear);
-                }
-                else
-                {
-                    await objMod.Parent.GearChildren.AddAsync(objGear);
-                }
-            }
-        }
-
-        private async void cmdArmorIncrease_Click(object sender, EventArgs e)
-        {
-            if (!(await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Armor objArmor))
-                return;
-
-            --objArmor.ArmorDamage;
-
-            await RequestCharacterUpdate();
-            await SetDirty(true);
-        }
-
-        private async void cmdArmorDecrease_Click(object sender, EventArgs e)
-        {
-            if (!(await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Armor objArmor))
-                return;
-
-            ++objArmor.ArmorDamage;
-
-            await RequestCharacterUpdate();
-            await SetDirty(true);
-        }
-
-        private async void chkCommlinks_CheckedChanged(object sender, EventArgs e)
-        {
-            await FilterCheckboxChanged();
-        }
-
-        private async void chkHideLoadedAmmo_CheckedChanged(object sender, EventArgs e)
-        {
-            await FilterCheckboxChanged();
-        }
-
-        private async ValueTask FilterCheckboxChanged(CancellationToken token = default)
-        {
             try
             {
-                bool commlinksOnly = await chkCommlinks.DoThreadSafeFuncAsync(x => x.Checked, token);
-                bool hideLoadedAmmo = await chkHideLoadedAmmo.DoThreadSafeFuncAsync(x => x.Checked, token);
-                await RefreshGears(treGear, cmsGearLocation, cmsGear, commlinksOnly, hideLoadedAmmo, token: token);
+                if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag,
+                                                             GenericToken) is Weapon objWeapon))
+                    return;
+                bool blnAddAgain;
+                do
+                {
+                    blnAddAgain = await PickGear(null, null, null, string.Empty, objWeapon, GenericToken);
+                } while (blnAddAgain);
             }
             catch (OperationCanceledException)
             {
                 //swallow this
             }
+        }
+
+        private async void cmdWeaponMoveToVehicle_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                // Locate the selected Weapon.
+                if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag,
+                                                             GenericToken) is Weapon objWeapon))
+                    return;
+
+                List<Vehicle> lstVehicles = new List<Vehicle>(CharacterObject.Vehicles.Count);
+                foreach (Vehicle objCharacterVehicle in CharacterObject.Vehicles)
+                {
+                    if (objCharacterVehicle.WeaponMounts.Count > 0
+                        || await objCharacterVehicle.Mods.AnyAsync(objVehicleMod =>
+                                                                       objVehicleMod.Name.Contains("Drone Arm")
+                                                                       || objVehicleMod.Name.StartsWith(
+                                                                           "Mechanical Arm", StringComparison.Ordinal),
+                                                                   GenericToken))
+                    {
+                        lstVehicles.Add(objCharacterVehicle);
+                    }
+                }
+
+                // Cannot continue if there are no Vehicles with a Weapon Mount or Mechanical Arm.
+                if (lstVehicles.Count == 0)
+                {
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CannotMoveWeapons"),
+                                           await LanguageManager.GetStringAsync("MessageTitle_CannotMoveWeapons"),
+                                           MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                WeaponMount objWeaponMount;
+                VehicleMod objMod = null;
+
+                using (ThreadSafeForm<SelectItem> frmPickItem
+                       = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem(), GenericToken))
+                {
+                    frmPickItem.MyForm.SetVehiclesMode(lstVehicles);
+
+                    if (await frmPickItem.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                        return;
+
+                    // Locate the selected Vehicle.
+                    Vehicle objVehicle
+                        = await CharacterObject.Vehicles.FirstOrDefaultAsync(
+                            x => x.InternalId == frmPickItem.MyForm.SelectedItem, GenericToken);
+                    if (objVehicle == null)
+                        return;
+
+                    // Now display a list of the acceptable mounting points for the Weapon.
+                    using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstItems))
+                    {
+                        foreach (WeaponMount objVehicleWeaponMount in objVehicle.WeaponMounts)
+                        {
+                            //TODO: RAW, some mounts can have multiple weapons attached. Needs support in the Weapon Mount class itself, ideally a 'CanMountThisWeapon' bool or something.
+                            if ((objVehicleWeaponMount.AllowedWeaponCategories.Contains(objWeapon.SizeCategory) ||
+                                 objVehicleWeaponMount.AllowedWeapons.Contains(objWeapon.Name)) &&
+                                !objVehicleWeaponMount.IsWeaponsFull)
+                                lstItems.Add(new ListItem(objVehicleWeaponMount.InternalId,
+                                                          objVehicleWeaponMount.CurrentDisplayName));
+                            else
+                                foreach (VehicleMod objVehicleMod in objVehicleWeaponMount.Mods)
+                                {
+                                    if ((objVehicleMod.Name.Contains("Drone Arm") ||
+                                         objVehicleMod.Name.StartsWith("Mechanical Arm", StringComparison.Ordinal)) &&
+                                        objVehicleMod.Weapons.Count == 0)
+                                        lstItems.Add(new ListItem(objVehicleMod.InternalId,
+                                                                  objVehicleMod.CurrentDisplayName));
+                                }
+                        }
+
+                        foreach (VehicleMod objVehicleMod in objVehicle.Mods)
+                        {
+                            if ((objVehicleMod.Name.Contains("Drone Arm") ||
+                                 objVehicleMod.Name.StartsWith("Mechanical Arm", StringComparison.Ordinal))
+                                && objVehicleMod.Weapons.Count == 0)
+                                lstItems.Add(new ListItem(objVehicleMod.InternalId, objVehicleMod.CurrentDisplayName));
+                        }
+
+                        if (lstItems.Count == 0)
+                        {
+                            Program.ShowMessageBox(
+                                this, await LanguageManager.GetStringAsync("Message_NoValidWeaponMount"),
+                                await LanguageManager.GetStringAsync("MessageTitle_NoValidWeaponMount"),
+                                MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
+
+                        frmPickItem.MyForm.SetGeneralItemsMode(lstItems);
+
+                        if (await frmPickItem.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                            return;
+
+                        string strId = frmPickItem.MyForm.SelectedItem;
+                        // Locate the selected Vehicle Mod.
+                        objWeaponMount
+                            = await objVehicle.WeaponMounts.FirstOrDefaultAsync(
+                                x => x.InternalId == strId, GenericToken);
+                        // Locate the selected Vehicle Mod.
+                        if (objWeaponMount == null)
+                        {
+                            objMod = objVehicle.FindVehicleMod(x => x.InternalId == strId, out objWeaponMount);
+                            if (objMod == null)
+                                return;
+                        }
+                    }
+                }
+
+                objWeapon.Location = null;
+                // Remove the Weapon from the character and add it to the Vehicle Mod.
+                await CharacterObject.Weapons.RemoveAsync(objWeapon, GenericToken);
+
+                // Remove any Improvements from the Character.
+                foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
+                {
+                    foreach (Gear objGear in objAccessory.GearChildren)
+                        objGear.ChangeEquippedStatus(false);
+                }
+
+                if (objWeapon.UnderbarrelWeapons.Count > 0)
+                {
+                    foreach (Weapon objUnderbarrelWeapon in objWeapon.UnderbarrelWeapons)
+                    {
+                        foreach (WeaponAccessory objAccessory in objUnderbarrelWeapon.WeaponAccessories)
+                        {
+                            foreach (Gear objGear in objAccessory.GearChildren)
+                                objGear.ChangeEquippedStatus(false);
+                        }
+                    }
+                }
+
+                if (objWeaponMount != null)
+                {
+                    objWeapon.ParentMount = objWeaponMount;
+                    await objWeaponMount.Weapons.AddAsync(objWeapon, GenericToken);
+                }
+                else
+                {
+                    objWeapon.ParentVehicleMod = objMod;
+                    await objMod.Weapons.AddAsync(objWeapon, GenericToken);
+                }
+
+                List<Gear> lstGearToMove = new List<Gear>(objWeapon.Clips.Count);
+                foreach (Clip objClip in objWeapon.Clips)
+                {
+                    if (objClip.AmmoGear != null)
+                    {
+                        lstGearToMove.Add(objClip.AmmoGear);
+                    }
+                }
+
+                foreach (Clip objClip in objWeapon.Children.GetAllDescendants(x => x.Children).SelectMany(x => x.Clips))
+                {
+                    if (objClip.AmmoGear != null)
+                    {
+                        lstGearToMove.Add(objClip.AmmoGear);
+                    }
+                }
+
+                foreach (Gear objGear in lstGearToMove)
+                {
+                    switch (objGear.Parent)
+                    {
+                        case IHasGear objHasChildren:
+                            await objHasChildren.GearChildren.RemoveAsync(objGear, GenericToken);
+                            break;
+
+                        case IHasChildren<Gear> objHasChildren:
+                            await objHasChildren.Children.RemoveAsync(objGear, GenericToken);
+                            break;
+
+                        default:
+                            await CharacterObject.Gear.RemoveAsync(objGear, GenericToken);
+                            break;
+                    }
+
+                    if (objWeaponMount != null)
+                    {
+                        await objWeaponMount.Parent.GearChildren.AddAsync(objGear, GenericToken);
+                    }
+                    else
+                    {
+                        await objMod.Parent.GearChildren.AddAsync(objGear, GenericToken);
+                    }
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void cmdArmorIncrease_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!(await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Armor objArmor))
+                    return;
+
+                --objArmor.ArmorDamage;
+
+                await RequestCharacterUpdate(GenericToken);
+                await SetDirty(true, GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void cmdArmorDecrease_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!(await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Armor objArmor))
+                    return;
+
+                ++objArmor.ArmorDamage;
+
+                await RequestCharacterUpdate(GenericToken);
+                await SetDirty(true, GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void chkCommlinks_CheckedChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                await FilterCheckboxChanged(GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void chkHideLoadedAmmo_CheckedChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                await FilterCheckboxChanged(GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async ValueTask FilterCheckboxChanged(CancellationToken token = default)
+        {
+            bool commlinksOnly = await chkCommlinks.DoThreadSafeFuncAsync(x => x.Checked, token);
+            bool hideLoadedAmmo = await chkHideLoadedAmmo.DoThreadSafeFuncAsync(x => x.Checked, token);
+            await RefreshGears(treGear, cmsGearLocation, cmsGear, commlinksOnly, hideLoadedAmmo, token: token);
         }
 
         private void chkGearActiveCommlink_CheckedChanged(object sender, EventArgs e)
@@ -12381,501 +13604,664 @@ namespace Chummer
 
         private async void cboGearAttack_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing || !await cboGearAttack.DoThreadSafeFuncAsync(x => x.Enabled, GenericToken))
-                return;
-
-            if (!(await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is IHasMatrixAttributes objTarget))
-                return;
-
-            IsRefreshing = true;
             try
             {
-                if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
-                        CharacterObject, cboGearAttack, cboGearAttack,
-                        cboGearSleaze, cboGearDataProcessing, cboGearFirewall))
+                if (IsRefreshing || !await cboGearAttack.DoThreadSafeFuncAsync(x => x.Enabled, GenericToken))
+                    return;
+
+                if (!(await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is
+                        IHasMatrixAttributes objTarget))
+                    return;
+
+                IsRefreshing = true;
+                try
                 {
-                    await RequestCharacterUpdate();
-                    await SetDirty(true);
+                    if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
+                            CharacterObject, cboGearAttack, cboGearAttack,
+                            cboGearSleaze, cboGearDataProcessing, cboGearFirewall, GenericToken))
+                    {
+                        await RequestCharacterUpdate(GenericToken);
+                        await SetDirty(true, GenericToken);
+                    }
+                }
+                finally
+                {
+                    IsRefreshing = false;
                 }
             }
-            finally
+            catch (OperationCanceledException)
             {
-                IsRefreshing = false;
+                //swallow this
             }
         }
 
         private async void cboGearSleaze_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing || !await cboGearSleaze.DoThreadSafeFuncAsync(x => x.Enabled, GenericToken))
-                return;
-
-            if (!(await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is IHasMatrixAttributes objTarget))
-                return;
-
-            IsRefreshing = true;
             try
             {
-                if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
-                        CharacterObject, cboGearSleaze, cboGearAttack,
-                        cboGearSleaze, cboGearDataProcessing, cboGearFirewall))
+                if (IsRefreshing || !await cboGearSleaze.DoThreadSafeFuncAsync(x => x.Enabled, GenericToken))
+                    return;
+
+                if (!(await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is
+                        IHasMatrixAttributes objTarget))
+                    return;
+
+                IsRefreshing = true;
+                try
                 {
-                    await RequestCharacterUpdate();
-                    await SetDirty(true);
+                    if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
+                            CharacterObject, cboGearSleaze, cboGearAttack,
+                            cboGearSleaze, cboGearDataProcessing, cboGearFirewall, GenericToken))
+                    {
+                        await RequestCharacterUpdate(GenericToken);
+                        await SetDirty(true, GenericToken);
+                    }
+                }
+                finally
+                {
+                    IsRefreshing = false;
                 }
             }
-            finally
+            catch (OperationCanceledException)
             {
-                IsRefreshing = false;
+                //swallow this
             }
         }
 
         private async void cboGearDataProcessing_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing || !await cboGearDataProcessing.DoThreadSafeFuncAsync(x => x.Enabled, GenericToken))
-                return;
-
-            if (!(await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is IHasMatrixAttributes objTarget))
-                return;
-
-            IsRefreshing = true;
             try
             {
-                if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
-                        CharacterObject, cboGearDataProcessing, cboGearAttack,
-                        cboGearSleaze, cboGearDataProcessing, cboGearFirewall))
+                if (IsRefreshing || !await cboGearDataProcessing.DoThreadSafeFuncAsync(x => x.Enabled, GenericToken))
+                    return;
+
+                if (!(await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is
+                        IHasMatrixAttributes objTarget))
+                    return;
+
+                IsRefreshing = true;
+                try
                 {
-                    await RequestCharacterUpdate();
-                    await SetDirty(true);
+                    if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
+                            CharacterObject, cboGearDataProcessing, cboGearAttack,
+                            cboGearSleaze, cboGearDataProcessing, cboGearFirewall, GenericToken))
+                    {
+                        await RequestCharacterUpdate(GenericToken);
+                        await SetDirty(true, GenericToken);
+                    }
+                }
+                finally
+                {
+                    IsRefreshing = false;
                 }
             }
-            finally
+            catch (OperationCanceledException)
             {
-                IsRefreshing = false;
+                //swallow this
             }
         }
 
         private async void cboGearFirewall_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing || !await cboGearFirewall.DoThreadSafeFuncAsync(x => x.Enabled, GenericToken))
-                return;
-
-            if (!(await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is IHasMatrixAttributes objTarget))
-                return;
-
-            IsRefreshing = true;
             try
             {
-                if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
-                        CharacterObject, cboGearFirewall, cboGearAttack,
-                        cboGearSleaze, cboGearDataProcessing, cboGearFirewall))
+                if (IsRefreshing || !await cboGearFirewall.DoThreadSafeFuncAsync(x => x.Enabled, GenericToken))
+                    return;
+
+                if (!(await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is
+                        IHasMatrixAttributes objTarget))
+                    return;
+
+                IsRefreshing = true;
+                try
                 {
-                    await RequestCharacterUpdate();
-                    await SetDirty(true);
+                    if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
+                            CharacterObject, cboGearFirewall, cboGearAttack,
+                            cboGearSleaze, cboGearDataProcessing, cboGearFirewall, GenericToken))
+                    {
+                        await RequestCharacterUpdate(GenericToken);
+                        await SetDirty(true, GenericToken);
+                    }
+                }
+                finally
+                {
+                    IsRefreshing = false;
                 }
             }
-            finally
+            catch (OperationCanceledException)
             {
-                IsRefreshing = false;
+                //swallow this
             }
         }
 
         private async void cboVehicleAttack_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing || !await cboVehicleAttack.DoThreadSafeFuncAsync(x => x.Enabled, GenericToken))
-                return;
-
-            if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is IHasMatrixAttributes objTarget))
-                return;
-
-            IsRefreshing = true;
             try
             {
-                if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
-                        CharacterObject, cboVehicleAttack, cboVehicleAttack,
-                        cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall))
+                if (IsRefreshing || !await cboVehicleAttack.DoThreadSafeFuncAsync(x => x.Enabled, GenericToken))
+                    return;
+
+                if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is
+                        IHasMatrixAttributes objTarget))
+                    return;
+
+                IsRefreshing = true;
+                try
                 {
-                    await RequestCharacterUpdate();
-                    await SetDirty(true);
+                    if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
+                            CharacterObject, cboVehicleAttack, cboVehicleAttack,
+                            cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall))
+                    {
+                        await RequestCharacterUpdate(GenericToken);
+                        await SetDirty(true, GenericToken);
+                    }
+                }
+                finally
+                {
+                    IsRefreshing = false;
                 }
             }
-            finally
+            catch (OperationCanceledException)
             {
-                IsRefreshing = false;
+                //swallow this
             }
         }
 
         private async void cboVehicleSleaze_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing || !await cboVehicleSleaze.DoThreadSafeFuncAsync(x => x.Enabled, GenericToken))
-                return;
-
-            if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is IHasMatrixAttributes objTarget))
-                return;
-
-            IsRefreshing = true;
             try
             {
-                if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
-                        CharacterObject, cboVehicleSleaze, cboVehicleAttack,
-                        cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall))
+                if (IsRefreshing || !await cboVehicleSleaze.DoThreadSafeFuncAsync(x => x.Enabled, GenericToken))
+                    return;
+
+                if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is
+                        IHasMatrixAttributes objTarget))
+                    return;
+
+                IsRefreshing = true;
+                try
                 {
-                    await RequestCharacterUpdate();
-                    await SetDirty(true);
+                    if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
+                            CharacterObject, cboVehicleSleaze, cboVehicleAttack,
+                            cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall))
+                    {
+                        await RequestCharacterUpdate();
+                        await SetDirty(true);
+                    }
+                }
+                finally
+                {
+                    IsRefreshing = false;
                 }
             }
-            finally
+            catch (OperationCanceledException)
             {
-                IsRefreshing = false;
+                //swallow this
             }
         }
 
         private async void cboVehicleFirewall_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing || !await cboVehicleFirewall.DoThreadSafeFuncAsync(x => x.Enabled, GenericToken))
-                return;
-
-            if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is IHasMatrixAttributes objTarget))
-                return;
-
-            IsRefreshing = true;
             try
             {
-                if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
-                        CharacterObject, cboVehicleFirewall, cboVehicleAttack,
-                        cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall))
+                if (IsRefreshing || !await cboVehicleFirewall.DoThreadSafeFuncAsync(x => x.Enabled, GenericToken))
+                    return;
+
+                if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is
+                        IHasMatrixAttributes objTarget))
+                    return;
+
+                IsRefreshing = true;
+                try
                 {
-                    await RequestCharacterUpdate();
-                    await SetDirty(true);
+                    if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
+                            CharacterObject, cboVehicleFirewall, cboVehicleAttack,
+                            cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall))
+                    {
+                        await RequestCharacterUpdate();
+                        await SetDirty(true);
+                    }
+                }
+                finally
+                {
+                    IsRefreshing = false;
                 }
             }
-            finally
+            catch (OperationCanceledException)
             {
-                IsRefreshing = false;
+                //swallow this
             }
         }
 
         private async void cboVehicleDataProcessing_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing || !await cboVehicleDataProcessing.DoThreadSafeFuncAsync(x => x.Enabled, GenericToken))
-                return;
-
-            if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is IHasMatrixAttributes objTarget))
-                return;
-
-            IsRefreshing = true;
             try
             {
-                if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
-                        CharacterObject, cboVehicleDataProcessing, cboVehicleAttack,
-                        cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall))
+                if (IsRefreshing || !await cboVehicleDataProcessing.DoThreadSafeFuncAsync(x => x.Enabled, GenericToken))
+                    return;
+
+                if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is
+                        IHasMatrixAttributes objTarget))
+                    return;
+
+                IsRefreshing = true;
+                try
                 {
-                    await RequestCharacterUpdate();
-                    await SetDirty(true);
+                    if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
+                            CharacterObject, cboVehicleDataProcessing, cboVehicleAttack,
+                            cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall))
+                    {
+                        await RequestCharacterUpdate();
+                        await SetDirty(true);
+                    }
+                }
+                finally
+                {
+                    IsRefreshing = false;
                 }
             }
-            finally
+            catch (OperationCanceledException)
             {
-                IsRefreshing = false;
+                //swallow this
             }
         }
 
         private async void cboCyberwareAttack_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing || !await cboCyberwareAttack.DoThreadSafeFuncAsync(x => x.Enabled, GenericToken))
-                return;
-
-            if (!(await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is IHasMatrixAttributes objTarget))
-                return;
-
-            IsRefreshing = true;
             try
             {
-                if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
-                        CharacterObject, cboCyberwareAttack, cboCyberwareAttack,
-                        cboCyberwareSleaze, cboCyberwareDataProcessing, cboCyberwareFirewall))
+                if (IsRefreshing || !await cboCyberwareAttack.DoThreadSafeFuncAsync(x => x.Enabled, GenericToken))
+                    return;
+
+                if (!(await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is
+                        IHasMatrixAttributes objTarget))
+                    return;
+
+                IsRefreshing = true;
+                try
                 {
-                    await RequestCharacterUpdate();
-                    await SetDirty(true);
+                    if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
+                            CharacterObject, cboCyberwareAttack, cboCyberwareAttack,
+                            cboCyberwareSleaze, cboCyberwareDataProcessing, cboCyberwareFirewall))
+                    {
+                        await RequestCharacterUpdate();
+                        await SetDirty(true);
+                    }
+                }
+                finally
+                {
+                    IsRefreshing = false;
                 }
             }
-            finally
+            catch (OperationCanceledException)
             {
-                IsRefreshing = false;
+                //swallow this
             }
         }
 
         private async void cboCyberwareSleaze_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing || !await cboCyberwareSleaze.DoThreadSafeFuncAsync(x => x.Enabled, GenericToken))
-                return;
-
-            if (!(await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is IHasMatrixAttributes objTarget))
-                return;
-
-            IsRefreshing = true;
             try
             {
-                if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
-                        CharacterObject, cboCyberwareSleaze, cboCyberwareAttack,
-                        cboCyberwareSleaze, cboCyberwareDataProcessing, cboCyberwareFirewall))
+                if (IsRefreshing || !await cboCyberwareSleaze.DoThreadSafeFuncAsync(x => x.Enabled, GenericToken))
+                    return;
+
+                if (!(await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is
+                        IHasMatrixAttributes objTarget))
+                    return;
+
+                IsRefreshing = true;
+                try
                 {
-                    await RequestCharacterUpdate();
-                    await SetDirty(true);
+                    if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
+                            CharacterObject, cboCyberwareSleaze, cboCyberwareAttack,
+                            cboCyberwareSleaze, cboCyberwareDataProcessing, cboCyberwareFirewall))
+                    {
+                        await RequestCharacterUpdate();
+                        await SetDirty(true);
+                    }
+                }
+                finally
+                {
+                    IsRefreshing = false;
                 }
             }
-            finally
+            catch (OperationCanceledException)
             {
-                IsRefreshing = false;
+                //swallow this
             }
         }
 
         private async void cboCyberwareDataProcessing_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing || !await cboCyberwareDataProcessing.DoThreadSafeFuncAsync(x => x.Enabled, GenericToken))
-                return;
-
-            if (!(await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is IHasMatrixAttributes objTarget))
-                return;
-
-            IsRefreshing = true;
             try
             {
-                if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
-                        CharacterObject, cboCyberwareDataProcessing, cboCyberwareAttack,
-                        cboCyberwareSleaze, cboCyberwareDataProcessing, cboCyberwareFirewall))
+                if (IsRefreshing
+                    || !await cboCyberwareDataProcessing.DoThreadSafeFuncAsync(x => x.Enabled, GenericToken))
+                    return;
+
+                if (!(await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is
+                        IHasMatrixAttributes objTarget))
+                    return;
+
+                IsRefreshing = true;
+                try
                 {
-                    await RequestCharacterUpdate();
-                    await SetDirty(true);
+                    if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
+                            CharacterObject, cboCyberwareDataProcessing, cboCyberwareAttack,
+                            cboCyberwareSleaze, cboCyberwareDataProcessing, cboCyberwareFirewall))
+                    {
+                        await RequestCharacterUpdate();
+                        await SetDirty(true);
+                    }
+                }
+                finally
+                {
+                    IsRefreshing = false;
                 }
             }
-            finally
+            catch (OperationCanceledException)
             {
-                IsRefreshing = false;
+                //swallow this
             }
         }
 
         private async void cboCyberwareFirewall_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing || !await cboCyberwareFirewall.DoThreadSafeFuncAsync(x => x.Enabled, GenericToken))
-                return;
-
-            if (!(await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is IHasMatrixAttributes objTarget))
-                return;
-
-            IsRefreshing = true;
             try
             {
-                if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
-                        CharacterObject, cboCyberwareFirewall, cboCyberwareAttack,
-                        cboCyberwareSleaze, cboCyberwareDataProcessing, cboCyberwareFirewall))
+                if (IsRefreshing || !await cboCyberwareFirewall.DoThreadSafeFuncAsync(x => x.Enabled, GenericToken))
+                    return;
+
+                if (!(await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is
+                        IHasMatrixAttributes objTarget))
+                    return;
+
+                IsRefreshing = true;
+                try
                 {
-                    await RequestCharacterUpdate();
-                    await SetDirty(true);
+                    if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
+                            CharacterObject, cboCyberwareFirewall, cboCyberwareAttack,
+                            cboCyberwareSleaze, cboCyberwareDataProcessing, cboCyberwareFirewall))
+                    {
+                        await RequestCharacterUpdate();
+                        await SetDirty(true);
+                    }
+                }
+                finally
+                {
+                    IsRefreshing = false;
                 }
             }
-            finally
+            catch (OperationCanceledException)
             {
-                IsRefreshing = false;
+                //swallow this
             }
         }
 
         private async void cboArmorAttack_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing || !await cboArmorAttack.DoThreadSafeFuncAsync(x => x.Enabled, GenericToken))
-                return;
-
-            if (!(await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is IHasMatrixAttributes objTarget))
-                return;
-
-            IsRefreshing = true;
             try
             {
-                if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
-                        CharacterObject, cboArmorAttack, cboArmorAttack, cboArmorSleaze, cboArmorDataProcessing,
-                        cboArmorFirewall))
+                if (IsRefreshing || !await cboArmorAttack.DoThreadSafeFuncAsync(x => x.Enabled, GenericToken))
+                    return;
+
+                if (!(await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is
+                        IHasMatrixAttributes objTarget))
+                    return;
+
+                IsRefreshing = true;
+                try
                 {
-                    await RequestCharacterUpdate();
-                    await SetDirty(true);
+                    if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
+                            CharacterObject, cboArmorAttack, cboArmorAttack, cboArmorSleaze, cboArmorDataProcessing,
+                            cboArmorFirewall))
+                    {
+                        await RequestCharacterUpdate();
+                        await SetDirty(true);
+                    }
+                }
+                finally
+                {
+                    IsRefreshing = false;
                 }
             }
-            finally
+            catch (OperationCanceledException)
             {
-                IsRefreshing = false;
+                //swallow this
             }
         }
 
         private async void cboArmorSleaze_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing || !await cboArmorSleaze.DoThreadSafeFuncAsync(x => x.Enabled, GenericToken))
-                return;
-
-            if (!(await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is IHasMatrixAttributes objTarget))
-                return;
-
-            IsRefreshing = true;
             try
             {
-                if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
-                        CharacterObject, cboArmorSleaze, cboArmorAttack, cboArmorSleaze, cboArmorDataProcessing,
-                        cboArmorFirewall))
+                if (IsRefreshing || !await cboArmorSleaze.DoThreadSafeFuncAsync(x => x.Enabled, GenericToken))
+                    return;
+
+                if (!(await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is
+                        IHasMatrixAttributes objTarget))
+                    return;
+
+                IsRefreshing = true;
+                try
                 {
-                    await RequestCharacterUpdate();
-                    await SetDirty(true);
+                    if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
+                            CharacterObject, cboArmorSleaze, cboArmorAttack, cboArmorSleaze, cboArmorDataProcessing,
+                            cboArmorFirewall))
+                    {
+                        await RequestCharacterUpdate();
+                        await SetDirty(true);
+                    }
+                }
+                finally
+                {
+                    IsRefreshing = false;
                 }
             }
-            finally
+            catch (OperationCanceledException)
             {
-                IsRefreshing = false;
+                //swallow this
             }
         }
 
         private async void cboArmorDataProcessing_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing || !await cboArmorDataProcessing.DoThreadSafeFuncAsync(x => x.Enabled, GenericToken))
-                return;
-
-            if (!(await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is IHasMatrixAttributes objTarget))
-                return;
-
-            IsRefreshing = true;
             try
             {
-                if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
-                        CharacterObject, cboArmorDataProcessing, cboArmorAttack, cboArmorSleaze, cboArmorDataProcessing,
-                        cboArmorFirewall))
+                if (IsRefreshing || !await cboArmorDataProcessing.DoThreadSafeFuncAsync(x => x.Enabled, GenericToken))
+                    return;
+
+                if (!(await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is
+                        IHasMatrixAttributes objTarget))
+                    return;
+
+                IsRefreshing = true;
+                try
                 {
-                    await RequestCharacterUpdate();
-                    await SetDirty(true);
+                    if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
+                            CharacterObject, cboArmorDataProcessing, cboArmorAttack, cboArmorSleaze,
+                            cboArmorDataProcessing,
+                            cboArmorFirewall))
+                    {
+                        await RequestCharacterUpdate();
+                        await SetDirty(true);
+                    }
+                }
+                finally
+                {
+                    IsRefreshing = false;
                 }
             }
-            finally
+            catch (OperationCanceledException)
             {
-                IsRefreshing = false;
+                //swallow this
             }
         }
 
         private async void cboArmorFirewall_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing || !await cboArmorFirewall.DoThreadSafeFuncAsync(x => x.Enabled, GenericToken))
-                return;
-
-            if (!(await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is IHasMatrixAttributes objTarget))
-                return;
-
-            IsRefreshing = true;
             try
             {
-                if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
-                        CharacterObject, cboArmorFirewall, cboArmorAttack, cboArmorSleaze, cboArmorDataProcessing,
-                        cboArmorFirewall))
+                if (IsRefreshing || !await cboArmorFirewall.DoThreadSafeFuncAsync(x => x.Enabled, GenericToken))
+                    return;
+
+                if (!(await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is
+                        IHasMatrixAttributes objTarget))
+                    return;
+
+                IsRefreshing = true;
+                try
                 {
-                    await RequestCharacterUpdate();
-                    await SetDirty(true);
+                    if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
+                            CharacterObject, cboArmorFirewall, cboArmorAttack, cboArmorSleaze, cboArmorDataProcessing,
+                            cboArmorFirewall))
+                    {
+                        await RequestCharacterUpdate();
+                        await SetDirty(true);
+                    }
+                }
+                finally
+                {
+                    IsRefreshing = false;
                 }
             }
-            finally
+            catch (OperationCanceledException)
             {
-                IsRefreshing = false;
+                //swallow this
             }
         }
 
         private async void cboWeaponGearAttack_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing || !await cboWeaponGearAttack.DoThreadSafeFuncAsync(x => x.Enabled, GenericToken))
-                return;
-
-            if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is IHasMatrixAttributes objTarget))
-                return;
-
-            IsRefreshing = true;
             try
             {
-                if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
-                        CharacterObject, cboWeaponGearAttack, cboWeaponGearAttack, cboWeaponGearSleaze,
-                        cboWeaponGearDataProcessing, cboWeaponGearFirewall))
+                if (IsRefreshing || !await cboWeaponGearAttack.DoThreadSafeFuncAsync(x => x.Enabled, GenericToken))
+                    return;
+
+                if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is
+                        IHasMatrixAttributes objTarget))
+                    return;
+
+                IsRefreshing = true;
+                try
                 {
-                    await RequestCharacterUpdate();
-                    await SetDirty(true);
+                    if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
+                            CharacterObject, cboWeaponGearAttack, cboWeaponGearAttack, cboWeaponGearSleaze,
+                            cboWeaponGearDataProcessing, cboWeaponGearFirewall))
+                    {
+                        await RequestCharacterUpdate();
+                        await SetDirty(true);
+                    }
+                }
+                finally
+                {
+                    IsRefreshing = false;
                 }
             }
-            finally
+            catch (OperationCanceledException)
             {
-                IsRefreshing = false;
+                //swallow this
             }
         }
 
         private async void cboWeaponGearSleaze_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing || !await cboWeaponGearSleaze.DoThreadSafeFuncAsync(x => x.Enabled, GenericToken))
-                return;
-
-            if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is IHasMatrixAttributes objTarget))
-                return;
-
-            IsRefreshing = true;
             try
             {
-                if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
-                        CharacterObject, cboWeaponGearSleaze, cboWeaponGearAttack, cboWeaponGearSleaze,
-                        cboWeaponGearDataProcessing, cboWeaponGearFirewall))
+                if (IsRefreshing || !await cboWeaponGearSleaze.DoThreadSafeFuncAsync(x => x.Enabled, GenericToken))
+                    return;
+
+                if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is
+                        IHasMatrixAttributes objTarget))
+                    return;
+
+                IsRefreshing = true;
+                try
                 {
-                    await RequestCharacterUpdate();
-                    await SetDirty(true);
+                    if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
+                            CharacterObject, cboWeaponGearSleaze, cboWeaponGearAttack, cboWeaponGearSleaze,
+                            cboWeaponGearDataProcessing, cboWeaponGearFirewall))
+                    {
+                        await RequestCharacterUpdate();
+                        await SetDirty(true);
+                    }
+                }
+                finally
+                {
+                    IsRefreshing = false;
                 }
             }
-            finally
+            catch (OperationCanceledException)
             {
-                IsRefreshing = false;
+                //swallow this
             }
         }
 
         private async void cboWeaponGearDataProcessing_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing || !await cboWeaponGearDataProcessing.DoThreadSafeFuncAsync(x => x.Enabled, GenericToken))
-                return;
-
-            if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is IHasMatrixAttributes objTarget))
-                return;
-
-            IsRefreshing = true;
             try
             {
-                if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
-                        CharacterObject, cboWeaponGearDataProcessing, cboWeaponGearAttack, cboWeaponGearSleaze,
-                        cboWeaponGearDataProcessing, cboWeaponGearFirewall))
+                if (IsRefreshing
+                    || !await cboWeaponGearDataProcessing.DoThreadSafeFuncAsync(x => x.Enabled, GenericToken))
+                    return;
+
+                if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is
+                        IHasMatrixAttributes objTarget))
+                    return;
+
+                IsRefreshing = true;
+                try
                 {
-                    await RequestCharacterUpdate();
-                    await SetDirty(true);
+                    if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
+                            CharacterObject, cboWeaponGearDataProcessing, cboWeaponGearAttack, cboWeaponGearSleaze,
+                            cboWeaponGearDataProcessing, cboWeaponGearFirewall))
+                    {
+                        await RequestCharacterUpdate();
+                        await SetDirty(true);
+                    }
+                }
+                finally
+                {
+                    IsRefreshing = false;
                 }
             }
-            finally
+            catch (OperationCanceledException)
             {
-                IsRefreshing = false;
+                //swallow this
             }
         }
 
         private async void cboWeaponGearFirewall_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing || !await cboWeaponGearFirewall.DoThreadSafeFuncAsync(x => x.Enabled, GenericToken))
-                return;
-
-            if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is IHasMatrixAttributes objTarget))
-                return;
-
-            IsRefreshing = true;
             try
             {
-                if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
-                        CharacterObject, cboWeaponGearFirewall, cboWeaponGearAttack, cboWeaponGearSleaze,
-                        cboWeaponGearDataProcessing, cboWeaponGearFirewall))
+                if (IsRefreshing || !await cboWeaponGearFirewall.DoThreadSafeFuncAsync(x => x.Enabled, GenericToken))
+                    return;
+
+                if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is
+                        IHasMatrixAttributes objTarget))
+                    return;
+
+                IsRefreshing = true;
+                try
                 {
-                    await RequestCharacterUpdate();
-                    await SetDirty(true);
+                    if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
+                            CharacterObject, cboWeaponGearFirewall, cboWeaponGearAttack, cboWeaponGearSleaze,
+                            cboWeaponGearDataProcessing, cboWeaponGearFirewall))
+                    {
+                        await RequestCharacterUpdate();
+                        await SetDirty(true);
+                    }
+                }
+                finally
+                {
+                    IsRefreshing = false;
                 }
             }
-            finally
+            catch (OperationCanceledException)
             {
-                IsRefreshing = false;
+                //swallow this
             }
         }
 
@@ -12959,53 +14345,99 @@ namespace Chummer
 
         private async void cmdFireVehicleWeapon_Click(object sender, EventArgs e)
         {
-            // "Click" the first menu item available.
-            if (await cmdVehicleAmmoExpense.DoThreadSafeFuncAsync(() => cmsVehicleAmmoSingleShot.Enabled, GenericToken))
-                await DoVehicleAmmoSingleShot();
-            else if (await cmdVehicleAmmoExpense.DoThreadSafeFuncAsync(() => cmsVehicleAmmoShortBurst.Enabled, GenericToken))
-                await DoVehicleAmmoShortBurst();
-            else
-                await DoVehicleAmmoLongBurst();
+            try
+            {
+                // "Click" the first menu item available.
+                if (await cmdVehicleAmmoExpense.DoThreadSafeFuncAsync(() => cmsVehicleAmmoSingleShot.Enabled,
+                                                                      GenericToken))
+                    await DoVehicleAmmoSingleShot(GenericToken);
+                else if (await cmdVehicleAmmoExpense.DoThreadSafeFuncAsync(
+                             () => cmsVehicleAmmoShortBurst.Enabled, GenericToken))
+                    await DoVehicleAmmoShortBurst(GenericToken);
+                else
+                    await DoVehicleAmmoLongBurst(GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void cmdReloadVehicleWeapon_Click(object sender, EventArgs e)
         {
-            if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Weapon objWeapon))
-                return;
-            await objWeapon.Reload(objWeapon.ParentVehicle.GearChildren, treVehicles);
+            try
+            {
+                if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Weapon
+                        objWeapon))
+                    return;
+                await objWeapon.Reload(objWeapon.ParentVehicle.GearChildren, treVehicles, GenericToken);
 
-            await RequestCharacterUpdate();
-            await SetDirty(true);
+                await RequestCharacterUpdate(GenericToken);
+                await SetDirty(true, GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void cmdUnloadVehicleWeapon_Click(object sender, EventArgs e)
         {
-            if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Weapon objWeapon))
-                return;
-            await objWeapon.Unload(objWeapon.ParentVehicle.GearChildren, treGear);
+            try
+            {
+                if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Weapon
+                        objWeapon))
+                    return;
+                await objWeapon.Unload(objWeapon.ParentVehicle.GearChildren, treGear, GenericToken);
 
-            await RequestCharacterUpdate();
-            await SetDirty(true);
+                await RequestCharacterUpdate(GenericToken);
+                await SetDirty(true, GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void chkVehicleWeaponAccessoryInstalled_CheckedChanged(object sender, EventArgs e)
         {
             if (IsRefreshing)
                 return;
-            if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is ICanEquip objEquippable))
-                return;
-            objEquippable.Equipped = await chkVehicleWeaponAccessoryInstalled.DoThreadSafeFuncAsync(x => x.Checked, GenericToken);
+            try
+            {
+                if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is ICanEquip
+                        objEquippable))
+                    return;
+                objEquippable.Equipped
+                    = await chkVehicleWeaponAccessoryInstalled.DoThreadSafeFuncAsync(x => x.Checked, GenericToken);
 
-            await SetDirty(true);
+                await SetDirty(true, GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void cboVehicleWeaponAmmo_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing || !(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Weapon objWeapon))
-                return;
-            objWeapon.ActiveAmmoSlot = Convert.ToInt32(await cboVehicleWeaponAmmo.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), GenericToken), GlobalSettings.InvariantCultureInfo);
-            await RequestCharacterUpdate();
-            await SetDirty(true);
+            try
+            {
+                if (IsRefreshing
+                    || !(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Weapon
+                        objWeapon))
+                    return;
+                objWeapon.ActiveAmmoSlot
+                    = Convert.ToInt32(
+                        await cboVehicleWeaponAmmo.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), GenericToken),
+                        GlobalSettings.InvariantCultureInfo);
+                await RequestCharacterUpdate(GenericToken);
+                await SetDirty(true, GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private void chkVehicleHomeNode_CheckedChanged(object sender, EventArgs e)
@@ -13023,7 +14455,14 @@ namespace Chummer
         {
             if (IsRefreshing)
                 return;
-            await RefreshSelectedSpell(GenericToken);
+            try
+            {
+                await RefreshSelectedSpell(GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private void treFoci_AfterCheck(object sender, TreeViewEventArgs e)
@@ -13062,92 +14501,126 @@ namespace Chummer
                 return;
 
             TreeView treViewToUse = e.Node.TreeView;
-
-            // If the item is being unchecked, confirm that the user wants to un-bind the Focus.
-            if (await treViewToUse.DoThreadSafeFuncAsync(() => e.Node.Checked, GenericToken))
+            try
             {
-                if (Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_UnbindFocus"), await LanguageManager.GetStringAsync("MessageTitle_UnbindFocus"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
-                    e.Cancel = true;
-                return;
-            }
-
-            // Set the Focus count to 1 and get its current Rating (Force). This number isn't used in the following loops because it isn't yet checked or unchecked.
-            int intFociCount = 1;
-            int intFociTotal = 0;
-
-            Gear objSelectedFocus = null;
-
-            switch (await treViewToUse.DoThreadSafeFuncAsync(() => e.Node.Tag, GenericToken))
-            {
-                case Gear objGear:
-                    {
-                        objSelectedFocus = objGear;
-                        intFociTotal = objGear.Rating;
-                        break;
-                    }
-                case StackedFocus objStackedFocus:
-                    {
-                        intFociTotal = objStackedFocus.TotalForce;
-                        break;
-                    }
-            }
-
-            await treViewToUse.DoThreadSafeAsync(y =>
-            {
-                // Run through the list of items. Count the number of Foci the character would have bonded including this one, plus the total Force of all checked Foci.
-                foreach (TreeNode objNode in y.Nodes)
+                // If the item is being unchecked, confirm that the user wants to un-bind the Focus.
+                if (await treViewToUse.DoThreadSafeFuncAsync(() => e.Node.Checked, GenericToken))
                 {
-                    if (objNode.Checked)
-                    {
-                        string strNodeId = objNode.Tag.ToString();
-                        ++intFociCount;
-                        intFociTotal += CharacterObject.Gear.FirstOrDefault(x => x.InternalId == strNodeId && x.Bonded)
-                                                       ?.Rating ?? 0;
-                        intFociTotal += CharacterObject.StackedFoci.Find(x => x.InternalId == strNodeId && x.Bonded)
-                                                       ?.TotalForce ?? 0;
-                    }
-                }
-            }, GenericToken);
-
-            if (!CharacterObject.IgnoreRules)
-            {
-                if (intFociTotal > (await (await CharacterObject.GetAttributeAsync("MAG", token: GenericToken))
-                        .GetTotalValueAsync(GenericToken)) * 5 ||
-                    await CharacterObjectSettings.GetMysAdeptSecondMAGAttributeAsync(GenericToken) && await CharacterObject.GetIsMysticAdeptAsync(GenericToken) && intFociTotal > (await (await CharacterObject.GetAttributeAsync("MAGAdept", token: GenericToken))
-                        .GetTotalValueAsync(GenericToken)) * 5)
-                {
-                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_FocusMaximumForce"), await LanguageManager.GetStringAsync("MessageTitle_FocusMaximum"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    e.Cancel = true;
+                    if (Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_UnbindFocus"),
+                                               await LanguageManager.GetStringAsync("MessageTitle_UnbindFocus"),
+                                               MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                        e.Cancel = true;
                     return;
                 }
 
-                if (intFociCount > (await (await CharacterObject.GetAttributeAsync("MAG", token: GenericToken))
-                        .GetTotalValueAsync(GenericToken)) ||
-                    await CharacterObjectSettings.GetMysAdeptSecondMAGAttributeAsync(GenericToken) && await CharacterObject.GetIsMysticAdeptAsync(GenericToken) && intFociCount > (await (await CharacterObject.GetAttributeAsync("MAGAdept", token: GenericToken))
-                        .GetTotalValueAsync(GenericToken)))
+                // Set the Focus count to 1 and get its current Rating (Force). This number isn't used in the following loops because it isn't yet checked or unchecked.
+                int intFociCount = 1;
+                int intFociTotal = 0;
+
+                Gear objSelectedFocus = null;
+
+                switch (await treViewToUse.DoThreadSafeFuncAsync(() => e.Node.Tag, GenericToken))
                 {
-                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_FocusMaximumNumber"), await LanguageManager.GetStringAsync("MessageTitle_FocusMaximum"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    e.Cancel = true;
-                    return;
+                    case Gear objGear:
+                        {
+                            objSelectedFocus = objGear;
+                            intFociTotal = objGear.Rating;
+                            break;
+                        }
+                    case StackedFocus objStackedFocus:
+                        {
+                            intFociTotal = objStackedFocus.TotalForce;
+                            break;
+                        }
                 }
-            }
 
-            // If we've made it this far, everything is okay, so create a Karma Expense for the newly-bound Focus.
-
-            if (objSelectedFocus != null)
-            {
-                bool blnOldEquipped = objSelectedFocus.Equipped;
-                Focus objFocus = new Focus(CharacterObject)
+                await treViewToUse.DoThreadSafeAsync(y =>
                 {
-                    GearObject = objSelectedFocus
-                };
-                if (objSelectedFocus.Bonus != null || objSelectedFocus.WirelessOn && objSelectedFocus.WirelessBonus != null)
-                {
-                    if (!string.IsNullOrEmpty(objSelectedFocus.Extra))
-                        ImprovementManager.ForcedValue = objSelectedFocus.Extra;
-                    if (objSelectedFocus.Bonus != null)
+                    // Run through the list of items. Count the number of Foci the character would have bonded including this one, plus the total Force of all checked Foci.
+                    foreach (TreeNode objNode in y.Nodes)
                     {
-                        if (!await ImprovementManager.CreateImprovementsAsync(CharacterObject, Improvement.ImprovementSource.Gear, objSelectedFocus.InternalId, objSelectedFocus.Bonus, objSelectedFocus.Rating, objSelectedFocus.CurrentDisplayNameShort))
+                        if (objNode.Checked)
+                        {
+                            string strNodeId = objNode.Tag.ToString();
+                            ++intFociCount;
+                            intFociTotal += CharacterObject
+                                            .Gear.FirstOrDefault(x => x.InternalId == strNodeId && x.Bonded)
+                                            ?.Rating ?? 0;
+                            intFociTotal += CharacterObject.StackedFoci.Find(x => x.InternalId == strNodeId && x.Bonded)
+                                                           ?.TotalForce ?? 0;
+                        }
+                    }
+                }, GenericToken);
+
+                if (!CharacterObject.IgnoreRules)
+                {
+                    if (intFociTotal > (await (await CharacterObject.GetAttributeAsync("MAG", token: GenericToken))
+                            .GetTotalValueAsync(GenericToken)) * 5 ||
+                        await CharacterObjectSettings.GetMysAdeptSecondMAGAttributeAsync(GenericToken)
+                        && await CharacterObject.GetIsMysticAdeptAsync(GenericToken) && intFociTotal
+                        > (await (await CharacterObject.GetAttributeAsync("MAGAdept", token: GenericToken))
+                            .GetTotalValueAsync(GenericToken)) * 5)
+                    {
+                        Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_FocusMaximumForce"),
+                                               await LanguageManager.GetStringAsync("MessageTitle_FocusMaximum"),
+                                               MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        e.Cancel = true;
+                        return;
+                    }
+
+                    if (intFociCount > (await (await CharacterObject.GetAttributeAsync("MAG", token: GenericToken))
+                            .GetTotalValueAsync(GenericToken)) ||
+                        await CharacterObjectSettings.GetMysAdeptSecondMAGAttributeAsync(GenericToken)
+                        && await CharacterObject.GetIsMysticAdeptAsync(GenericToken) && intFociCount
+                        > (await (await CharacterObject.GetAttributeAsync("MAGAdept", token: GenericToken))
+                            .GetTotalValueAsync(GenericToken)))
+                    {
+                        Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_FocusMaximumNumber"),
+                                               await LanguageManager.GetStringAsync("MessageTitle_FocusMaximum"),
+                                               MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        e.Cancel = true;
+                        return;
+                    }
+                }
+
+                // If we've made it this far, everything is okay, so create a Karma Expense for the newly-bound Focus.
+
+                if (objSelectedFocus != null)
+                {
+                    bool blnOldEquipped = objSelectedFocus.Equipped;
+                    Focus objFocus = new Focus(CharacterObject)
+                    {
+                        GearObject = objSelectedFocus
+                    };
+                    if (objSelectedFocus.Bonus != null
+                        || objSelectedFocus.WirelessOn && objSelectedFocus.WirelessBonus != null)
+                    {
+                        if (!string.IsNullOrEmpty(objSelectedFocus.Extra))
+                            ImprovementManager.ForcedValue = objSelectedFocus.Extra;
+                        if (objSelectedFocus.Bonus != null)
+                        {
+                            if (!await ImprovementManager.CreateImprovementsAsync(
+                                    CharacterObject, Improvement.ImprovementSource.Gear, objSelectedFocus.InternalId,
+                                    objSelectedFocus.Bonus, objSelectedFocus.Rating,
+                                    objSelectedFocus.CurrentDisplayNameShort))
+                            {
+                                // Clear created improvements
+                                objSelectedFocus.ChangeEquippedStatus(false);
+                                if (blnOldEquipped)
+                                    objSelectedFocus.ChangeEquippedStatus(true);
+                                e.Cancel = true;
+                                return;
+                            }
+
+                            objSelectedFocus.Extra = ImprovementManager.SelectedValue;
+                        }
+
+                        if (objSelectedFocus.WirelessOn && objSelectedFocus.WirelessBonus != null
+                                                        && !await ImprovementManager.CreateImprovementsAsync(
+                                                            CharacterObject, Improvement.ImprovementSource.Gear,
+                                                            objSelectedFocus.InternalId, objSelectedFocus.WirelessBonus,
+                                                            objSelectedFocus.Rating,
+                                                            objSelectedFocus.CurrentDisplayNameShort))
                         {
                             // Clear created improvements
                             objSelectedFocus.ChangeEquippedStatus(false);
@@ -13156,9 +14629,28 @@ namespace Chummer
                             e.Cancel = true;
                             return;
                         }
-                        objSelectedFocus.Extra = ImprovementManager.SelectedValue;
                     }
-                    if (objSelectedFocus.WirelessOn && objSelectedFocus.WirelessBonus != null && !await ImprovementManager.CreateImprovementsAsync(CharacterObject, Improvement.ImprovementSource.Gear, objSelectedFocus.InternalId, objSelectedFocus.WirelessBonus, objSelectedFocus.Rating, objSelectedFocus.CurrentDisplayNameShort))
+
+                    int intKarmaExpense = await objFocus.BindingKarmaCostAsync(GenericToken);
+                    if (intKarmaExpense > CharacterObject.Karma)
+                    {
+                        Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma"),
+                                               await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"),
+                                               MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        // Clear created improvements
+                        objSelectedFocus.ChangeEquippedStatus(false);
+                        if (blnOldEquipped)
+                            objSelectedFocus.ChangeEquippedStatus(true);
+                        e.Cancel = true;
+                        return;
+                    }
+
+                    if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalSettings.CultureInfo,
+                                                                           await LanguageManager.GetStringAsync(
+                                                                               "Message_ConfirmKarmaExpenseFocus")
+                                                                           , intKarmaExpense.ToString(
+                                                                               GlobalSettings.CultureInfo)
+                                                                           , objSelectedFocus.CurrentDisplayNameShort)))
                     {
                         // Clear created improvements
                         objSelectedFocus.ChangeEquippedStatus(false);
@@ -13167,142 +14659,148 @@ namespace Chummer
                         e.Cancel = true;
                         return;
                     }
-                }
 
-                int intKarmaExpense = await objFocus.BindingKarmaCostAsync(GenericToken);
-                if (intKarmaExpense > CharacterObject.Karma)
-                {
-                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    // Clear created improvements
-                    objSelectedFocus.ChangeEquippedStatus(false);
-                    if (blnOldEquipped)
-                        objSelectedFocus.ChangeEquippedStatus(true);
-                    e.Cancel = true;
-                    return;
-                }
+                    // Create the Expense Log Entry.
+                    ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                    objExpense.Create(intKarmaExpense * -1,
+                                      await LanguageManager.GetStringAsync("String_ExpenseBound")
+                                      + await LanguageManager.GetStringAsync("String_Space")
+                                      + objSelectedFocus.CurrentDisplayNameShort, ExpenseType.Karma, DateTime.Now);
+                    await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken);
+                    CharacterObject.Karma -= intKarmaExpense;
 
-                if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpenseFocus")
-                    , intKarmaExpense.ToString(GlobalSettings.CultureInfo)
-                    , objSelectedFocus.CurrentDisplayNameShort)))
-                {
-                    // Clear created improvements
-                    objSelectedFocus.ChangeEquippedStatus(false);
-                    if (blnOldEquipped)
-                        objSelectedFocus.ChangeEquippedStatus(true);
-                    e.Cancel = true;
-                    return;
-                }
+                    ExpenseUndo objUndo = new ExpenseUndo();
+                    objUndo.CreateKarma(KarmaExpenseType.BindFocus, objSelectedFocus.InternalId);
+                    objExpense.Undo = objUndo;
 
-                // Create the Expense Log Entry.
-                ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                objExpense.Create(intKarmaExpense * -1, await LanguageManager.GetStringAsync("String_ExpenseBound") + await LanguageManager.GetStringAsync("String_Space") + objSelectedFocus.CurrentDisplayNameShort, ExpenseType.Karma, DateTime.Now);
-                await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken);
-                CharacterObject.Karma -= intKarmaExpense;
-
-                ExpenseUndo objUndo = new ExpenseUndo();
-                objUndo.CreateKarma(KarmaExpenseType.BindFocus, objSelectedFocus.InternalId);
-                objExpense.Undo = objUndo;
-
-                await CharacterObject.Foci.AddAsync(objFocus);
-                objSelectedFocus.Bonded = true;
-                if (!blnOldEquipped)
-                {
-                    objSelectedFocus.ChangeEquippedStatus(false);
-                }
-
-                await treViewToUse.DoThreadSafeFuncAsync(() => e.Node.Text = objSelectedFocus.CurrentDisplayName, GenericToken);
-            }
-            else
-            {
-                // The Focus was not found in Gear, so this is a Stacked Focus.
-                if (!(await treViewToUse.DoThreadSafeFuncAsync(() => e.Node.Tag, GenericToken) is StackedFocus objStackedFocus))
-                {
-                    e.Cancel = true;
-                    return;
-                }
-
-                Gear objStackGear = CharacterObject.Gear.DeepFindById(objStackedFocus.GearId);
-                if (objStackGear == null)
-                {
-                    e.Cancel = true;
-                    return;
-                }
-                bool blnOldEquipped = objStackGear.Equipped;
-                foreach (Gear objGear in objStackedFocus.Gear)
-                {
-                    if (objGear.Bonus != null || objGear.WirelessOn && objGear.WirelessBonus != null)
+                    await CharacterObject.Foci.AddAsync(objFocus);
+                    objSelectedFocus.Bonded = true;
+                    if (!blnOldEquipped)
                     {
-                        if (!string.IsNullOrEmpty(objGear.Extra))
-                            ImprovementManager.ForcedValue = objGear.Extra;
-                        if (objGear.Bonus != null)
+                        objSelectedFocus.ChangeEquippedStatus(false);
+                    }
+
+                    await treViewToUse.DoThreadSafeFuncAsync(() => e.Node.Text = objSelectedFocus.CurrentDisplayName,
+                                                             GenericToken);
+                }
+                else
+                {
+                    // The Focus was not found in Gear, so this is a Stacked Focus.
+                    if (!(await treViewToUse.DoThreadSafeFuncAsync(() => e.Node.Tag, GenericToken) is StackedFocus
+                            objStackedFocus))
+                    {
+                        e.Cancel = true;
+                        return;
+                    }
+
+                    Gear objStackGear = CharacterObject.Gear.DeepFindById(objStackedFocus.GearId);
+                    if (objStackGear == null)
+                    {
+                        e.Cancel = true;
+                        return;
+                    }
+
+                    bool blnOldEquipped = objStackGear.Equipped;
+                    foreach (Gear objGear in objStackedFocus.Gear)
+                    {
+                        if (objGear.Bonus != null || objGear.WirelessOn && objGear.WirelessBonus != null)
                         {
-                            if (!await ImprovementManager.CreateImprovementsAsync(CharacterObject, Improvement.ImprovementSource.StackedFocus, objStackedFocus.InternalId, objGear.Bonus, objGear.Rating, objGear.CurrentDisplayNameShort))
+                            if (!string.IsNullOrEmpty(objGear.Extra))
+                                ImprovementManager.ForcedValue = objGear.Extra;
+                            if (objGear.Bonus != null)
+                            {
+                                if (!await ImprovementManager.CreateImprovementsAsync(
+                                        CharacterObject, Improvement.ImprovementSource.StackedFocus,
+                                        objStackedFocus.InternalId, objGear.Bonus, objGear.Rating,
+                                        objGear.CurrentDisplayNameShort))
+                                {
+                                    e.Cancel = true;
+                                    break;
+                                }
+
+                                objGear.Extra = ImprovementManager.SelectedValue;
+                            }
+
+                            if (objGear.WirelessOn && objGear.WirelessBonus != null
+                                                   && !await ImprovementManager.CreateImprovementsAsync(
+                                                       CharacterObject, Improvement.ImprovementSource.StackedFocus,
+                                                       objStackedFocus.InternalId, objGear.WirelessBonus,
+                                                       objGear.Rating, objGear.CurrentDisplayNameShort))
                             {
                                 e.Cancel = true;
                                 break;
                             }
-                            objGear.Extra = ImprovementManager.SelectedValue;
-                        }
-                        if (objGear.WirelessOn && objGear.WirelessBonus != null && !await ImprovementManager.CreateImprovementsAsync(CharacterObject, Improvement.ImprovementSource.StackedFocus, objStackedFocus.InternalId, objGear.WirelessBonus, objGear.Rating, objGear.CurrentDisplayNameShort))
-                        {
-                            e.Cancel = true;
-                            break;
                         }
                     }
-                }
 
-                if (e.Cancel)
-                {
-                    // Clear created improvements
-                    foreach (Gear objGear in objStackedFocus.Gear)
-                        objGear.ChangeEquippedStatus(false);
-                    if (blnOldEquipped)
+                    if (e.Cancel)
+                    {
+                        // Clear created improvements
                         foreach (Gear objGear in objStackedFocus.Gear)
-                            objGear.ChangeEquippedStatus(true);
-                    return;
+                            objGear.ChangeEquippedStatus(false);
+                        if (blnOldEquipped)
+                            foreach (Gear objGear in objStackedFocus.Gear)
+                                objGear.ChangeEquippedStatus(true);
+                        return;
+                    }
+
+                    int intKarmaExpense = objStackedFocus.BindingCost;
+                    if (intKarmaExpense > CharacterObject.Karma)
+                    {
+                        Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma"),
+                                               await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"),
+                                               MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        // Clear created improvements
+                        objStackGear.ChangeEquippedStatus(false);
+                        if (blnOldEquipped)
+                            objStackGear.ChangeEquippedStatus(true);
+                        e.Cancel = true;
+                        return;
+                    }
+
+                    if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalSettings.CultureInfo,
+                                                                           await LanguageManager.GetStringAsync(
+                                                                               "Message_ConfirmKarmaExpenseFocus")
+                                                                           , intKarmaExpense.ToString(
+                                                                               GlobalSettings.CultureInfo)
+                                                                           , await LanguageManager.GetStringAsync("String_StackedFocus") + await LanguageManager.GetStringAsync("String_Space") + objStackedFocus.CurrentDisplayName)))
+                    {
+                        // Clear created improvements
+                        objStackGear.ChangeEquippedStatus(false);
+                        if (blnOldEquipped)
+                            objStackGear.ChangeEquippedStatus(true);
+                        e.Cancel = true;
+                        return;
+                    }
+
+                    // Create the Expense Log Entry.
+                    ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                    objExpense.Create(intKarmaExpense * -1,
+                                      await LanguageManager.GetStringAsync("String_ExpenseBound")
+                                      + await LanguageManager.GetStringAsync("String_Space")
+                                      + await LanguageManager.GetStringAsync("String_StackedFocus")
+                                      + await LanguageManager.GetStringAsync("String_Space")
+                                      + objStackedFocus.CurrentDisplayName, ExpenseType.Karma, DateTime.Now);
+                    await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken);
+                    CharacterObject.Karma -= intKarmaExpense;
+
+                    ExpenseUndo objUndo = new ExpenseUndo();
+                    objUndo.CreateKarma(KarmaExpenseType.BindFocus, objStackedFocus.InternalId);
+                    objExpense.Undo = objUndo;
+
+                    objStackedFocus.Bonded = true;
+                    await treViewToUse.DoThreadSafeAsync(x => x.SelectedNode.Text = objStackGear.CurrentDisplayName,
+                                                         GenericToken);
                 }
 
-                int intKarmaExpense = objStackedFocus.BindingCost;
-                if (intKarmaExpense > CharacterObject.Karma)
-                {
-                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    // Clear created improvements
-                    objStackGear.ChangeEquippedStatus(false);
-                    if (blnOldEquipped)
-                        objStackGear.ChangeEquippedStatus(true);
-                    e.Cancel = true;
-                    return;
-                }
+                await RequestCharacterUpdate();
 
-                if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpenseFocus")
-                    , intKarmaExpense.ToString(GlobalSettings.CultureInfo)
-                    , await LanguageManager.GetStringAsync("String_StackedFocus") + await LanguageManager.GetStringAsync("String_Space") + objStackedFocus.CurrentDisplayName)))
-                {
-                    // Clear created improvements
-                    objStackGear.ChangeEquippedStatus(false);
-                    if (blnOldEquipped)
-                        objStackGear.ChangeEquippedStatus(true);
-                    e.Cancel = true;
-                    return;
-                }
-
-                // Create the Expense Log Entry.
-                ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                objExpense.Create(intKarmaExpense * -1, await LanguageManager.GetStringAsync("String_ExpenseBound") + await LanguageManager.GetStringAsync("String_Space") + await LanguageManager.GetStringAsync("String_StackedFocus") + await LanguageManager.GetStringAsync("String_Space") + objStackedFocus.CurrentDisplayName, ExpenseType.Karma, DateTime.Now);
-                await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken);
-                CharacterObject.Karma -= intKarmaExpense;
-
-                ExpenseUndo objUndo = new ExpenseUndo();
-                objUndo.CreateKarma(KarmaExpenseType.BindFocus, objStackedFocus.InternalId);
-                objExpense.Undo = objUndo;
-
-                objStackedFocus.Bonded = true;
-                await treViewToUse.DoThreadSafeAsync(x => x.SelectedNode.Text = objStackGear.CurrentDisplayName, GenericToken);
+                await SetDirty(true);
             }
-
-            await RequestCharacterUpdate();
-
-            await SetDirty(true);
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void cboTradition_SelectedIndexChanged(object sender, EventArgs e)
@@ -13471,32 +14969,52 @@ namespace Chummer
         {
             if (IsRefreshing)
                 return;
-            await RefreshSelectedComplexForm(GenericToken);
+            try
+            {
+                await RefreshSelectedComplexForm(GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void cboStream_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (IsLoading || IsRefreshing || CharacterObject.MagicTradition.Type != TraditionType.MAG)
                 return;
-            string strSelectedId = await cboStream.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), GenericToken);
-            if (string.IsNullOrEmpty(strSelectedId) || strSelectedId == CharacterObject.MagicTradition.SourceIDString)
-                return;
+            try
+            {
+                string strSelectedId
+                    = await cboStream.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), GenericToken);
+                if (string.IsNullOrEmpty(strSelectedId)
+                    || strSelectedId == CharacterObject.MagicTradition.SourceIDString)
+                    return;
 
-            XmlNode xmlNewStreamNode = (await CharacterObject.LoadDataAsync("streams.xml", token: GenericToken)).SelectSingleNode("/chummer/traditions/tradition[id = " + strSelectedId.CleanXPath() + ']');
-            if (xmlNewStreamNode != null && CharacterObject.MagicTradition.Create(xmlNewStreamNode, true))
-            {
-                await RequestCharacterUpdate();
-                await SetDirty(true);
-            }
-            else
-            {
-                if (CharacterObject.MagicTradition.Type == TraditionType.RES)
+                XmlNode xmlNewStreamNode
+                    = (await CharacterObject.LoadDataAsync("streams.xml", token: GenericToken)).SelectSingleNode(
+                        "/chummer/traditions/tradition[id = " + strSelectedId.CleanXPath() + ']');
+                if (xmlNewStreamNode != null && CharacterObject.MagicTradition.Create(xmlNewStreamNode, true))
                 {
-                    CharacterObject.MagicTradition.ResetTradition();
                     await RequestCharacterUpdate();
                     await SetDirty(true);
                 }
-                await cboStream.DoThreadSafeAsync(x => x.SelectedValue = CharacterObject.MagicTradition.SourceID, GenericToken);
+                else
+                {
+                    if (CharacterObject.MagicTradition.Type == TraditionType.RES)
+                    {
+                        CharacterObject.MagicTradition.ResetTradition();
+                        await RequestCharacterUpdate();
+                        await SetDirty(true);
+                    }
+
+                    await cboStream.DoThreadSafeAsync(x => x.SelectedValue = CharacterObject.MagicTradition.SourceID,
+                                                      GenericToken);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
             }
         }
 
@@ -13634,132 +15152,153 @@ namespace Chummer
 
         private async void chkJoinGroup_CheckedChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing || IsLoading || await chkJoinGroup.DoThreadSafeFuncAsync(x => x.Checked) == CharacterObject.GroupMember)
-                return;
-
-            // Joining a Network does not cost Karma for Technomancers, so this only applies to Magicians/Adepts.
-            if (CharacterObject.MAGEnabled)
+            try
             {
-                if (await chkJoinGroup.DoThreadSafeFuncAsync(x => x.Checked))
+                if (IsRefreshing || IsLoading || await chkJoinGroup.DoThreadSafeFuncAsync(x => x.Checked)
+                    == CharacterObject.GroupMember)
+                    return;
+
+                // Joining a Network does not cost Karma for Technomancers, so this only applies to Magicians/Adepts.
+                if (CharacterObject.MAGEnabled)
                 {
-                    int intKarmaExpense = CharacterObjectSettings.KarmaJoinGroup;
-
-                    if (intKarmaExpense > CharacterObject.Karma)
+                    if (await chkJoinGroup.DoThreadSafeFuncAsync(x => x.Checked))
                     {
-                        Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        IsRefreshing = true;
-                        try
-                        {
-                            await chkJoinGroup.DoThreadSafeAsync(x => x.Checked = false);
-                        }
-                        finally
-                        {
-                            IsRefreshing = false;
-                        }
-                        return;
-                    }
+                        int intKarmaExpense = CharacterObjectSettings.KarmaJoinGroup;
 
-                    string strMessage;
-                    string strExpense;
-                    if (CharacterObject.MAGEnabled)
-                    {
-                        strMessage = await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpenseJoinGroup");
-                        strExpense = await LanguageManager.GetStringAsync("String_ExpenseJoinGroup");
+                        if (intKarmaExpense > CharacterObject.Karma)
+                        {
+                            Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma"),
+                                                   await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"),
+                                                   MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            IsRefreshing = true;
+                            try
+                            {
+                                await chkJoinGroup.DoThreadSafeAsync(x => x.Checked = false);
+                            }
+                            finally
+                            {
+                                IsRefreshing = false;
+                            }
+
+                            return;
+                        }
+
+                        string strMessage;
+                        string strExpense;
+                        if (CharacterObject.MAGEnabled)
+                        {
+                            strMessage = await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpenseJoinGroup");
+                            strExpense = await LanguageManager.GetStringAsync("String_ExpenseJoinGroup");
+                        }
+                        else
+                        {
+                            strMessage = await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpenseJoinNetwork");
+                            strExpense = await LanguageManager.GetStringAsync("String_ExpenseJoinNetwork");
+                        }
+
+                        if (!CommonFunctions.ConfirmKarmaExpense(
+                                string.Format(GlobalSettings.CultureInfo, strMessage,
+                                              intKarmaExpense.ToString(GlobalSettings.CultureInfo))))
+                        {
+                            IsRefreshing = true;
+                            try
+                            {
+                                await chkJoinGroup.DoThreadSafeAsync(x => x.Checked = false);
+                            }
+                            finally
+                            {
+                                IsRefreshing = false;
+                            }
+
+                            return;
+                        }
+
+                        // Create the Expense Log Entry.
+                        ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                        objExpense.Create(intKarmaExpense * -1, strExpense, ExpenseType.Karma, DateTime.Now);
+                        await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken);
+                        CharacterObject.Karma -= intKarmaExpense;
+
+                        ExpenseUndo objUndo = new ExpenseUndo();
+                        objUndo.CreateKarma(KarmaExpenseType.JoinGroup, string.Empty);
+                        objExpense.Undo = objUndo;
                     }
                     else
                     {
-                        strMessage = await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpenseJoinNetwork");
-                        strExpense = await LanguageManager.GetStringAsync("String_ExpenseJoinNetwork");
-                    }
+                        int intKarmaExpense = CharacterObjectSettings.KarmaLeaveGroup;
 
-                    if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalSettings.CultureInfo, strMessage, intKarmaExpense.ToString(GlobalSettings.CultureInfo))))
-                    {
-                        IsRefreshing = true;
-                        try
+                        if (intKarmaExpense > CharacterObject.Karma)
                         {
-                            await chkJoinGroup.DoThreadSafeAsync(x => x.Checked = false);
+                            Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma"),
+                                                   await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"),
+                                                   MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            IsRefreshing = true;
+                            try
+                            {
+                                await chkJoinGroup.DoThreadSafeAsync(x => x.Checked = true);
+                            }
+                            finally
+                            {
+                                IsRefreshing = false;
+                            }
+
+                            return;
                         }
-                        finally
+
+                        string strMessage;
+                        string strExpense;
+                        if (CharacterObject.MAGEnabled)
                         {
-                            IsRefreshing = false;
+                            strMessage = await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpenseLeaveGroup");
+                            strExpense = await LanguageManager.GetStringAsync("String_ExpenseLeaveGroup");
                         }
-                        return;
+                        else
+                        {
+                            strMessage = await LanguageManager.GetStringAsync(
+                                "Message_ConfirmKarmaExpenseLeaveNetwork");
+                            strExpense = await LanguageManager.GetStringAsync("String_ExpenseLeaveNetwork");
+                        }
+
+                        if (!CommonFunctions.ConfirmKarmaExpense(
+                                string.Format(GlobalSettings.CultureInfo, strMessage,
+                                              intKarmaExpense.ToString(GlobalSettings.CultureInfo))))
+                        {
+                            IsRefreshing = true;
+                            try
+                            {
+                                await chkJoinGroup.DoThreadSafeAsync(x => x.Checked = true);
+                            }
+                            finally
+                            {
+                                IsRefreshing = false;
+                            }
+
+                            return;
+                        }
+
+                        // Create the Expense Log Entry.
+                        ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                        objExpense.Create(intKarmaExpense * -1, strExpense, ExpenseType.Karma, DateTime.Now);
+                        await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken);
+                        CharacterObject.Karma -= intKarmaExpense;
+
+                        ExpenseUndo objUndo = new ExpenseUndo();
+                        objUndo.CreateKarma(KarmaExpenseType.LeaveGroup, string.Empty);
+                        objExpense.Undo = objUndo;
                     }
-
-                    // Create the Expense Log Entry.
-                    ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                    objExpense.Create(intKarmaExpense * -1, strExpense, ExpenseType.Karma, DateTime.Now);
-                    await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken);
-                    CharacterObject.Karma -= intKarmaExpense;
-
-                    ExpenseUndo objUndo = new ExpenseUndo();
-                    objUndo.CreateKarma(KarmaExpenseType.JoinGroup, string.Empty);
-                    objExpense.Undo = objUndo;
                 }
-                else
+
+                //TODO: If using a databinding for GroupMember, changing Karma here causes chkJoinGroup to revert to false. Unclear why, lazy fix to resolve it for now.
+                CharacterObject.GroupMember = await chkJoinGroup.DoThreadSafeFuncAsync(x => x.Checked);
+
+                if (!await chkJoinGroup.DoThreadSafeFuncAsync(x => x.Enabled))
                 {
-                    int intKarmaExpense = CharacterObjectSettings.KarmaLeaveGroup;
-
-                    if (intKarmaExpense > CharacterObject.Karma)
-                    {
-                        Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        IsRefreshing = true;
-                        try
-                        {
-                            await chkJoinGroup.DoThreadSafeAsync(x => x.Checked = true);
-                        }
-                        finally
-                        {
-                            IsRefreshing = false;
-                        }
-                        return;
-                    }
-
-                    string strMessage;
-                    string strExpense;
-                    if (CharacterObject.MAGEnabled)
-                    {
-                        strMessage = await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpenseLeaveGroup");
-                        strExpense = await LanguageManager.GetStringAsync("String_ExpenseLeaveGroup");
-                    }
-                    else
-                    {
-                        strMessage = await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpenseLeaveNetwork");
-                        strExpense = await LanguageManager.GetStringAsync("String_ExpenseLeaveNetwork");
-                    }
-
-                    if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalSettings.CultureInfo, strMessage, intKarmaExpense.ToString(GlobalSettings.CultureInfo))))
-                    {
-                        IsRefreshing = true;
-                        try
-                        {
-                            await chkJoinGroup.DoThreadSafeAsync(x => x.Checked = true);
-                        }
-                        finally
-                        {
-                            IsRefreshing = false;
-                        }
-                        return;
-                    }
-
-                    // Create the Expense Log Entry.
-                    ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                    objExpense.Create(intKarmaExpense * -1, strExpense, ExpenseType.Karma, DateTime.Now);
-                    await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken);
-                    CharacterObject.Karma -= intKarmaExpense;
-
-                    ExpenseUndo objUndo = new ExpenseUndo();
-                    objUndo.CreateKarma(KarmaExpenseType.LeaveGroup, string.Empty);
-                    objExpense.Undo = objUndo;
+                    await chkInitiationGroup.DoThreadSafeAsync(x => x.Checked = false);
                 }
             }
-
-            //TODO: If using a databinding for GroupMember, changing Karma here causes chkJoinGroup to revert to false. Unclear why, lazy fix to resolve it for now.
-            CharacterObject.GroupMember = chkJoinGroup.Checked;
-
-            if (!await chkJoinGroup.DoThreadSafeFuncAsync(x => x.Enabled))
+            catch (OperationCanceledException)
             {
-                await chkInitiationGroup.DoThreadSafeAsync(x => x.Checked = false);
+                //swallow this
             }
         }
 
@@ -14330,17 +15869,27 @@ namespace Chummer
 
         private async void cmdEdgeSpent_Click(object sender, EventArgs e)
         {
-            if (CharacterObject.EdgeUsed >= (await (await CharacterObject.GetAttributeAsync("EDG", token: GenericToken)).GetTotalValueAsync(GenericToken)))
+            try
             {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CannotSpendEdge"),
-                    await LanguageManager.GetStringAsync("MessageTitle_CannotSpendEdge"), MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
-                return;
+                if (CharacterObject.EdgeUsed
+                    >= (await (await CharacterObject.GetAttributeAsync("EDG", token: GenericToken)).GetTotalValueAsync(
+                        GenericToken)))
+                {
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CannotSpendEdge", token: GenericToken),
+                                           await LanguageManager.GetStringAsync("MessageTitle_CannotSpendEdge", token: GenericToken),
+                                           MessageBoxButtons.OK,
+                                           MessageBoxIcon.Information);
+                    return;
+                }
+
+                ++CharacterObject.EdgeUsed;
+
+                await SetDirty(true, GenericToken);
             }
-
-            ++CharacterObject.EdgeUsed;
-
-            await SetDirty(true);
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void cmdEdgeGained_Click(object sender, EventArgs e)
@@ -14969,22 +16518,27 @@ namespace Chummer
                     return;
 
                 // Character is not dirty and their save file was updated outside of Chummer5 while it is open, so reload them
-                CursorWait objCursorWaitOuter = await CursorWait.NewAsync(this, true, GenericToken).ConfigureAwait(false);
+                CursorWait objCursorWaitOuter
+                    = await CursorWait.NewAsync(this, true, GenericToken).ConfigureAwait(false);
                 try
                 {
-                    CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
+                    CursorWait objCursorWait
+                        = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
                     try
                     {
                         using (ThreadSafeForm<LoadingBar> frmLoadingBar
                                = await Program.CreateAndShowProgressBarAsync(Path.GetFileName(CharacterObject.FileName),
-                                                                             Character.NumLoadingSections + 1, GenericToken).ConfigureAwait(false))
+                                                                             Character.NumLoadingSections + 1,
+                                                                             GenericToken).ConfigureAwait(false))
                         {
                             SkipUpdate = true;
                             try
                             {
-                                await CharacterObject.LoadAsync(frmLoadingBar.MyForm, token: GenericToken).ConfigureAwait(false);
+                                await CharacterObject.LoadAsync(frmLoadingBar.MyForm, token: GenericToken)
+                                                     .ConfigureAwait(false);
                                 await frmLoadingBar.MyForm.PerformStepAsync(
-                                    await LanguageManager.GetStringAsync("String_UI").ConfigureAwait(false), token: GenericToken).ConfigureAwait(false);
+                                    await LanguageManager.GetStringAsync("String_UI").ConfigureAwait(false),
+                                    token: GenericToken).ConfigureAwait(false);
                             }
                             finally
                             {
@@ -15012,19 +16566,28 @@ namespace Chummer
 
                     if (CharacterObject.InternalIdsNeedingReapplyImprovements.Count > 0 && !Utils.IsUnitTest
                         && Program.ShowMessageBox(
-                            this, await LanguageManager.GetStringAsync("Message_ImprovementLoadError", token: GenericToken).ConfigureAwait(false),
-                            await LanguageManager.GetStringAsync("MessageTitle_ImprovementLoadError", token: GenericToken).ConfigureAwait(false),
+                            this,
+                            await LanguageManager.GetStringAsync("Message_ImprovementLoadError", token: GenericToken)
+                                                 .ConfigureAwait(false),
+                            await LanguageManager
+                                  .GetStringAsync("MessageTitle_ImprovementLoadError", token: GenericToken)
+                                  .ConfigureAwait(false),
                             MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
                     {
                         await DoReapplyImprovements(CharacterObject.InternalIdsNeedingReapplyImprovements,
                                                     GenericToken).ConfigureAwait(false);
-                        await CharacterObject.InternalIdsNeedingReapplyImprovements.ClearAsync(GenericToken).ConfigureAwait(false);
+                        await CharacterObject.InternalIdsNeedingReapplyImprovements.ClearAsync(GenericToken)
+                                             .ConfigureAwait(false);
                     }
                 }
                 finally
                 {
                     await objCursorWaitOuter.DisposeAsync().ConfigureAwait(false);
                 }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
             }
             finally
             {
@@ -19721,321 +21284,412 @@ namespace Chummer
 
         private async void cmdIncreasePowerPoints_Click(object sender, EventArgs e)
         {
-            // Make sure the character has enough Karma to improve the CharacterAttribute.
-            int intKarmaCost = CharacterObjectSettings.KarmaMysticAdeptPowerPoint;
-            if (intKarmaCost > CharacterObject.Karma)
+            try
             {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
+                // Make sure the character has enough Karma to improve the CharacterAttribute.
+                int intKarmaCost = CharacterObjectSettings.KarmaMysticAdeptPowerPoint;
+                if (intKarmaCost > CharacterObject.Karma)
+                {
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma"),
+                                           await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"),
+                                           MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
 
-            if (CharacterObject.MysticAdeptPowerPoints + 1 > (await (await CharacterObject.GetAttributeAsync("MAG", token: GenericToken)).GetTotalValueAsync(GenericToken)))
+                if (CharacterObject.MysticAdeptPowerPoints + 1
+                    > (await (await CharacterObject.GetAttributeAsync("MAG", token: GenericToken)).GetTotalValueAsync(
+                        GenericToken)))
+                {
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughMagic"),
+                                           await LanguageManager.GetStringAsync("MessageTitle_NotEnoughMagic"),
+                                           MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalSettings.CultureInfo,
+                                                                       await LanguageManager.GetStringAsync(
+                                                                           "Message_ConfirmKarmaExpenseSpend")
+                                                                       , await LanguageManager.GetStringAsync(
+                                                                           "String_PowerPoint")
+                                                                       , intKarmaCost.ToString(GlobalSettings.CultureInfo))))
+                    return;
+
+                // Create the Karma expense.
+                ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                objExpense.Create(intKarmaCost * -1, await LanguageManager.GetStringAsync("String_PowerPoint"),
+                                  ExpenseType.Karma, DateTime.Now);
+                await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken);
+                CharacterObject.Karma -= intKarmaCost;
+
+                ExpenseUndo objUndo = new ExpenseUndo();
+                objUndo.CreateKarma(KarmaExpenseType.AddPowerPoint, string.Empty);
+                objExpense.Undo = objUndo;
+
+                ++CharacterObject.MysticAdeptPowerPoints;
+            }
+            catch (OperationCanceledException)
             {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughMagic"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughMagic"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
+                //swallow this
             }
-
-            if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpenseSpend")
-                , await LanguageManager.GetStringAsync("String_PowerPoint")
-                , intKarmaCost.ToString(GlobalSettings.CultureInfo))))
-                return;
-
-            // Create the Karma expense.
-            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-            objExpense.Create(intKarmaCost * -1, await LanguageManager.GetStringAsync("String_PowerPoint"), ExpenseType.Karma, DateTime.Now);
-            await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken);
-            CharacterObject.Karma -= intKarmaCost;
-
-            ExpenseUndo objUndo = new ExpenseUndo();
-            objUndo.CreateKarma(KarmaExpenseType.AddPowerPoint, string.Empty);
-            objExpense.Undo = objUndo;
-
-            ++CharacterObject.MysticAdeptPowerPoints;
         }
 
         private async void tsMetamagicAddMetamagic_Click(object sender, EventArgs e)
         {
-            // Character can only have a number of Metamagics/Echoes equal to their Initiate Grade. Additional ones cost Karma.
-
-            if (!(await treMetamagic.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is InitiationGrade objGrade))
-                return;
-
-            // Evaluate each object
-            bool blnPayWithKarma = await CharacterObject.Metamagics.AnyAsync(objMetamagic => objMetamagic.Grade == objGrade.Grade, GenericToken) ||
-                                   await CharacterObject.Spells.AnyAsync(objSpell => objSpell.Grade == objGrade.Grade, GenericToken);
-
-            // Additional Metamagics beyond the standard 1 per Grade cost additional Karma, so ask if the user wants to spend the additional Karma.
-            if (blnPayWithKarma && CharacterObject.Karma < CharacterObjectSettings.KarmaMetamagic)
+            try
             {
-                // Make sure the Karma expense would not put them over the limit.
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
+                // Character can only have a number of Metamagics/Echoes equal to their Initiate Grade. Additional ones cost Karma.
+                if (!(await treMetamagic.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is
+                        InitiationGrade objGrade))
+                    return;
+
+                // Evaluate each object
+                bool blnPayWithKarma
+                    = await CharacterObject.Metamagics.AnyAsync(objMetamagic => objMetamagic.Grade == objGrade.Grade,
+                                                                GenericToken) ||
+                      await CharacterObject.Spells.AnyAsync(objSpell => objSpell.Grade == objGrade.Grade, GenericToken);
+
+                // Additional Metamagics beyond the standard 1 per Grade cost additional Karma, so ask if the user wants to spend the additional Karma.
+                if (blnPayWithKarma && CharacterObject.Karma < CharacterObjectSettings.KarmaMetamagic)
+                {
+                    // Make sure the Karma expense would not put them over the limit.
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma"),
+                                           await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"),
+                                           MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                if (CharacterObject.MAGEnabled && blnPayWithKarma)
+                {
+                    if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalSettings.CultureInfo,
+                                                                           await LanguageManager.GetStringAsync(
+                                                                               "Message_ConfirmKarmaExpenseSpend")
+                                                                           , await LanguageManager.GetStringAsync(
+                                                                               "String_Metamagic")
+                                                                           , CharacterObjectSettings.KarmaMetamagic.ToString(GlobalSettings.CultureInfo))))
+                        return;
+                }
+                else if (blnPayWithKarma && !CommonFunctions.ConfirmKarmaExpense(
+                             string.Format(GlobalSettings.CultureInfo,
+                                           await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpenseSpend")
+                                           , await LanguageManager.GetStringAsync("String_Echo")
+                                           , CharacterObjectSettings.KarmaMetamagic.ToString(GlobalSettings.CultureInfo))))
+                    return;
+
+                using (ThreadSafeForm<SelectMetamagic> frmPickMetamagic
+                       = await ThreadSafeForm<SelectMetamagic>.GetAsync(
+                           () => new SelectMetamagic(CharacterObject, objGrade), GenericToken))
+                {
+                    // Make sure a value was selected.
+                    if (await frmPickMetamagic.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                        return;
+
+                    Metamagic objNewMetamagic = new Metamagic(CharacterObject);
+
+                    XmlNode objXmlMetamagic;
+                    Improvement.ImprovementSource objSource;
+                    if (CharacterObject.RESEnabled)
+                    {
+                        objXmlMetamagic
+                            = (await CharacterObject.LoadDataAsync("echoes.xml", token: GenericToken)).SelectSingleNode(
+                                "/chummer/echoes/echo[id = " + frmPickMetamagic.MyForm.SelectedMetamagic.CleanXPath()
+                                                             + ']');
+                        objSource = Improvement.ImprovementSource.Echo;
+                    }
+                    else
+                    {
+                        objXmlMetamagic
+                            = (await CharacterObject.LoadDataAsync("metamagic.xml", token: GenericToken))
+                            .SelectSingleNode("/chummer/metamagics/metamagic[id = "
+                                              + frmPickMetamagic.MyForm.SelectedMetamagic.CleanXPath() + ']');
+                        objSource = Improvement.ImprovementSource.Metamagic;
+                    }
+
+                    objNewMetamagic.Create(objXmlMetamagic, objSource);
+                    objNewMetamagic.Grade = objGrade.Grade;
+                    if (objNewMetamagic.InternalId.IsEmptyGuid())
+                        return;
+
+                    await CharacterObject.Metamagics.AddAsync(objNewMetamagic);
+
+                    if (blnPayWithKarma)
+                    {
+                        string strType = await LanguageManager.GetStringAsync(
+                            objNewMetamagic.SourceType == Improvement.ImprovementSource.Echo
+                                ? "String_Echo"
+                                : "String_Metamagic");
+                        // Create the Expense Log Entry.
+                        ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                        objExpense.Create(CharacterObjectSettings.KarmaMetamagic * -1,
+                                          strType + await LanguageManager.GetStringAsync("String_Space")
+                                                  + objNewMetamagic.CurrentDisplayNameShort, ExpenseType.Karma,
+                                          DateTime.Now);
+                        await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken);
+
+                        ExpenseUndo objUndo = new ExpenseUndo();
+                        objUndo.CreateKarma(KarmaExpenseType.AddMetamagic, objNewMetamagic.InternalId);
+                        objExpense.Undo = objUndo;
+
+                        // Adjust the character's Karma total.
+                        CharacterObject.Karma -= CharacterObjectSettings.KarmaMetamagic;
+                    }
+                }
             }
-
-            if (CharacterObject.MAGEnabled && blnPayWithKarma)
+            catch (OperationCanceledException)
             {
-                if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpenseSpend")
-                    , await LanguageManager.GetStringAsync("String_Metamagic")
-                    , CharacterObjectSettings.KarmaMetamagic.ToString(GlobalSettings.CultureInfo))))
-                    return;
-            }
-            else if (blnPayWithKarma && !CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpenseSpend")
-                , await LanguageManager.GetStringAsync("String_Echo")
-                , CharacterObjectSettings.KarmaMetamagic.ToString(GlobalSettings.CultureInfo))))
-                return;
-
-            using (ThreadSafeForm<SelectMetamagic> frmPickMetamagic = await ThreadSafeForm<SelectMetamagic>.GetAsync(() => new SelectMetamagic(CharacterObject, objGrade), GenericToken))
-            {
-                // Make sure a value was selected.
-                if (await frmPickMetamagic.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
-                    return;
-
-                Metamagic objNewMetamagic = new Metamagic(CharacterObject);
-
-                XmlNode objXmlMetamagic;
-                Improvement.ImprovementSource objSource;
-                if (CharacterObject.RESEnabled)
-                {
-                    objXmlMetamagic = (await CharacterObject.LoadDataAsync("echoes.xml", token: GenericToken)).SelectSingleNode("/chummer/echoes/echo[id = " + frmPickMetamagic.MyForm.SelectedMetamagic.CleanXPath() + ']');
-                    objSource = Improvement.ImprovementSource.Echo;
-                }
-                else
-                {
-                    objXmlMetamagic = (await CharacterObject.LoadDataAsync("metamagic.xml", token: GenericToken)).SelectSingleNode("/chummer/metamagics/metamagic[id = " + frmPickMetamagic.MyForm.SelectedMetamagic.CleanXPath() + ']');
-                    objSource = Improvement.ImprovementSource.Metamagic;
-                }
-
-                objNewMetamagic.Create(objXmlMetamagic, objSource);
-                objNewMetamagic.Grade = objGrade.Grade;
-                if (objNewMetamagic.InternalId.IsEmptyGuid())
-                    return;
-
-                await CharacterObject.Metamagics.AddAsync(objNewMetamagic);
-
-                if (blnPayWithKarma)
-                {
-                    string strType = await LanguageManager.GetStringAsync(objNewMetamagic.SourceType == Improvement.ImprovementSource.Echo ? "String_Echo" : "String_Metamagic");
-                    // Create the Expense Log Entry.
-                    ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                    objExpense.Create(CharacterObjectSettings.KarmaMetamagic * -1, strType + await LanguageManager.GetStringAsync("String_Space") + objNewMetamagic.CurrentDisplayNameShort, ExpenseType.Karma, DateTime.Now);
-                    await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken);
-
-                    ExpenseUndo objUndo = new ExpenseUndo();
-                    objUndo.CreateKarma(KarmaExpenseType.AddMetamagic, objNewMetamagic.InternalId);
-                    objExpense.Undo = objUndo;
-
-                    // Adjust the character's Karma total.
-                    CharacterObject.Karma -= CharacterObjectSettings.KarmaMetamagic;
-                }
+                //swallow this
             }
         }
 
         private async void tsMetamagicAddArt_Click(object sender, EventArgs e)
         {
-            if (!(await treMetamagic.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is InitiationGrade objGrade))
-                return;
-
-            int intGrade = objGrade.Grade;
-
-            /*
-            // Character can only have a number of Metamagics/Echoes equal to their Initiate Grade. Additional ones cost Karma.
-            bool blnPayWithKarma = false;
-            if (blnPayWithKarma && CharacterObject.Karma < CharacterObjectSettings.KarmaMetamagic)
+            try
             {
-                // Make sure the Karma expense would not put them over the limit.
-                Program.ShowMessageBox(this, LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-            */
-
-            using (ThreadSafeForm<SelectArt> frmPickArt
-                   = await ThreadSafeForm<SelectArt>.GetAsync(() => new SelectArt(CharacterObject, SelectArt.Mode.Art), GenericToken))
-            {
-                // Make sure a value was selected.
-                if (await frmPickArt.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                if (!(await treMetamagic.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is InitiationGrade objGrade))
                     return;
 
-                XmlNode objXmlArt = (await CharacterObject.LoadDataAsync("metamagic.xml", token: GenericToken)).SelectSingleNode("/chummer/arts/art[id = " + frmPickArt.MyForm.SelectedItem.CleanXPath() + ']');
-
-                Art objArt = new Art(CharacterObject);
-                objArt.Create(objXmlArt, Improvement.ImprovementSource.Metamagic);
-                objArt.Grade = intGrade;
-                if (objArt.InternalId.IsEmptyGuid())
-                    return;
-
-                await CharacterObject.Arts.AddAsync(objArt);
+                int intGrade = objGrade.Grade;
 
                 /*
-                if (blnPayWithKarma)
+                // Character can only have a number of Metamagics/Echoes equal to their Initiate Grade. Additional ones cost Karma.
+                bool blnPayWithKarma = false;
+                if (blnPayWithKarma && CharacterObject.Karma < CharacterObjectSettings.KarmaMetamagic)
                 {
-                    string strType = LanguageManager.GetString("String_Art");
-                    // Create the Expense Log Entry.
-                    ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                    objExpense.Create(CharacterObjectSettings.KarmaMetamagic * -1, strType + LanguageManager.GetString("String_Space") + objArt.CurrentDisplayNameShort, ExpenseType.Karma, DateTime.Now);
-                    CharacterObject.ExpenseEntries.AddWithSort(objExpense);
-
-                    ExpenseUndo objUndo = new ExpenseUndo();
-                    objUndo.CreateKarma(KarmaExpenseType.AddMetamagic, objArt.InternalId);
-                    objExpense.Undo = objUndo;
-
-                    // Adjust the character's Karma total.
-                    CharacterObject.Karma -= CharacterObjectSettings.KarmaMetamagic;
+                    // Make sure the Karma expense would not put them over the limit.
+                    Program.ShowMessageBox(this, LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
                 }
                 */
+
+                using (ThreadSafeForm<SelectArt> frmPickArt
+                       = await ThreadSafeForm<SelectArt>.GetAsync(
+                           () => new SelectArt(CharacterObject, SelectArt.Mode.Art), GenericToken))
+                {
+                    // Make sure a value was selected.
+                    if (await frmPickArt.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                        return;
+
+                    XmlNode objXmlArt
+                        = (await CharacterObject.LoadDataAsync("metamagic.xml", token: GenericToken)).SelectSingleNode(
+                            "/chummer/arts/art[id = " + frmPickArt.MyForm.SelectedItem.CleanXPath() + ']');
+
+                    Art objArt = new Art(CharacterObject);
+                    objArt.Create(objXmlArt, Improvement.ImprovementSource.Metamagic);
+                    objArt.Grade = intGrade;
+                    if (objArt.InternalId.IsEmptyGuid())
+                        return;
+
+                    await CharacterObject.Arts.AddAsync(objArt);
+
+                    /*
+                    if (blnPayWithKarma)
+                    {
+                        string strType = LanguageManager.GetString("String_Art");
+                        // Create the Expense Log Entry.
+                        ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                        objExpense.Create(CharacterObjectSettings.KarmaMetamagic * -1, strType + LanguageManager.GetString("String_Space") + objArt.CurrentDisplayNameShort, ExpenseType.Karma, DateTime.Now);
+                        CharacterObject.ExpenseEntries.AddWithSort(objExpense);
+    
+                        ExpenseUndo objUndo = new ExpenseUndo();
+                        objUndo.CreateKarma(KarmaExpenseType.AddMetamagic, objArt.InternalId);
+                        objExpense.Undo = objUndo;
+    
+                        // Adjust the character's Karma total.
+                        CharacterObject.Karma -= CharacterObjectSettings.KarmaMetamagic;
+                    }
+                    */
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
             }
         }
 
         private async void tsMetamagicAddEnchantment_Click(object sender, EventArgs e)
         {
-            if (!(await treMetamagic.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is InitiationGrade objGrade))
-                return;
-
-            int intGrade = objGrade.Grade;
-
-            // Character can only have a number of Metamagics/Echoes equal to their Initiate Grade. Additional ones cost Karma.
-            bool blnPayWithKarma = false;
-
-            // Evaluate each object
-            foreach (Metamagic objMetamagic in CharacterObject.Metamagics)
+            try
             {
-                if (objMetamagic.Grade == intGrade)
-                    blnPayWithKarma = true;
-            }
+                if (!(await treMetamagic.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is
+                        InitiationGrade objGrade))
+                    return;
 
-            foreach (Spell objSpell in CharacterObject.Spells)
-            {
-                if (objSpell.Grade == intGrade)
-                    blnPayWithKarma = true;
-            }
+                int intGrade = objGrade.Grade;
 
-            int intSpellKarmaCost = await CharacterObject.SpellKarmaCostAsync("Enchantments");
+                // Character can only have a number of Metamagics/Echoes equal to their Initiate Grade. Additional ones cost Karma.
+                bool blnPayWithKarma = false;
 
-            if (blnPayWithKarma)
-            {
-                if (CharacterObject.Karma < intSpellKarmaCost)
+                // Evaluate each object
+                foreach (Metamagic objMetamagic in CharacterObject.Metamagics)
                 {
-                    // Make sure the Karma expense would not put them over the limit.
-                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma"),
-                        await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK,
-                        MessageBoxIcon.Information);
+                    if (objMetamagic.Grade == intGrade)
+                        blnPayWithKarma = true;
+                }
+
+                foreach (Spell objSpell in CharacterObject.Spells)
+                {
+                    if (objSpell.Grade == intGrade)
+                        blnPayWithKarma = true;
+                }
+
+                int intSpellKarmaCost = await CharacterObject.SpellKarmaCostAsync("Enchantments");
+
+                if (blnPayWithKarma)
+                {
+                    if (CharacterObject.Karma < intSpellKarmaCost)
+                    {
+                        // Make sure the Karma expense would not put them over the limit.
+                        Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma"),
+                                               await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"),
+                                               MessageBoxButtons.OK,
+                                               MessageBoxIcon.Information);
+                        return;
+                    }
+
+                    if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalSettings.CultureInfo,
+                                                                           await LanguageManager.GetStringAsync(
+                                                                               "Message_ConfirmKarmaExpenseSpend")
+                                                                           , await LanguageManager.GetStringAsync(
+                                                                               "String_Enchantment")
+                                                                           , intSpellKarmaCost.ToString(GlobalSettings.CultureInfo))))
+                        return;
+                }
+
+                XmlNode objXmlArt;
+                using (ThreadSafeForm<SelectArt> frmPickArt
+                       = await ThreadSafeForm<SelectArt>.GetAsync(
+                           () => new SelectArt(CharacterObject, SelectArt.Mode.Enchantment), GenericToken))
+                {
+                    // Make sure a value was selected.
+                    if (await frmPickArt.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                        return;
+
+                    objXmlArt = (await CharacterObject.LoadDataAsync("spells.xml", token: GenericToken))
+                        .SelectSingleNode("/chummer/spells/spell[id = " + frmPickArt.MyForm.SelectedItem.CleanXPath()
+                                                                        + ']');
+                }
+
+                Spell objNewSpell = new Spell(CharacterObject);
+                objNewSpell.Create(objXmlArt, string.Empty, false, false, false,
+                                   Improvement.ImprovementSource.Initiation);
+                objNewSpell.Grade = intGrade;
+                if (objNewSpell.InternalId.IsEmptyGuid())
+                {
+                    objNewSpell.Dispose();
                     return;
                 }
 
-                if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalSettings.CultureInfo,
-                    await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpenseSpend")
-                    , await LanguageManager.GetStringAsync("String_Enchantment")
-                    , intSpellKarmaCost.ToString(GlobalSettings.CultureInfo))))
-                    return;
+                await CharacterObject.Spells.AddAsync(objNewSpell);
+
+                if (blnPayWithKarma)
+                {
+                    string strType = await LanguageManager.GetStringAsync("String_Enhancement");
+                    // Create the Expense Log Entry.
+                    ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                    objExpense.Create(-intSpellKarmaCost,
+                                      strType + await LanguageManager.GetStringAsync("String_Space")
+                                              + objNewSpell.CurrentDisplayNameShort, ExpenseType.Karma, DateTime.Now);
+                    await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken);
+
+                    ExpenseUndo objUndo = new ExpenseUndo();
+                    objUndo.CreateKarma(KarmaExpenseType.AddSpell, objNewSpell.InternalId);
+                    objExpense.Undo = objUndo;
+
+                    // Adjust the character's Karma total.
+                    CharacterObject.Karma -= intSpellKarmaCost;
+                }
             }
-
-            XmlNode objXmlArt;
-            using (ThreadSafeForm<SelectArt> frmPickArt
-                   = await ThreadSafeForm<SelectArt>.GetAsync(
-                       () => new SelectArt(CharacterObject, SelectArt.Mode.Enchantment), GenericToken))
+            catch (OperationCanceledException)
             {
-                // Make sure a value was selected.
-                if (await frmPickArt.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
-                    return;
-
-                objXmlArt = (await CharacterObject.LoadDataAsync("spells.xml", token: GenericToken)).SelectSingleNode("/chummer/spells/spell[id = " + frmPickArt.MyForm.SelectedItem.CleanXPath() + ']');
-            }
-
-            Spell objNewSpell = new Spell(CharacterObject);
-            objNewSpell.Create(objXmlArt, string.Empty, false, false, false, Improvement.ImprovementSource.Initiation);
-            objNewSpell.Grade = intGrade;
-            if (objNewSpell.InternalId.IsEmptyGuid())
-            {
-                objNewSpell.Dispose();
-                return;
-            }
-
-            await CharacterObject.Spells.AddAsync(objNewSpell);
-
-            if (blnPayWithKarma)
-            {
-                string strType = await LanguageManager.GetStringAsync("String_Enhancement");
-                // Create the Expense Log Entry.
-                ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                objExpense.Create(-intSpellKarmaCost, strType + await LanguageManager.GetStringAsync("String_Space") + objNewSpell.CurrentDisplayNameShort, ExpenseType.Karma, DateTime.Now);
-                await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken);
-
-                ExpenseUndo objUndo = new ExpenseUndo();
-                objUndo.CreateKarma(KarmaExpenseType.AddSpell, objNewSpell.InternalId);
-                objExpense.Undo = objUndo;
-
-                // Adjust the character's Karma total.
-                CharacterObject.Karma -= intSpellKarmaCost;
+                //swallow this
             }
         }
 
         private async void tsMetamagicAddRitual_Click(object sender, EventArgs e)
         {
-            if (!(await treMetamagic.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is InitiationGrade objGrade))
-                return;
-
-            int intGrade = objGrade.Grade;
-
-            // Character can only have a number of Metamagics/Echoes equal to their Initiate Grade. Additional ones cost Karma.
-            // Evaluate each object
-            bool blnPayWithKarma = await CharacterObject.Metamagics.AnyAsync(objMetamagic => objMetamagic.Grade == intGrade, GenericToken)
-                || await CharacterObject.Spells.AnyAsync(objSpell => objSpell.Grade == intGrade, GenericToken);
-
-            int intSpellKarmaCost = await CharacterObject.SpellKarmaCostAsync("Rituals", GenericToken);
-            if (blnPayWithKarma)
+            try
             {
-                if (CharacterObject.Karma < intSpellKarmaCost)
+                if (!(await treMetamagic.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is
+                        InitiationGrade objGrade))
+                    return;
+
+                int intGrade = objGrade.Grade;
+
+                // Character can only have a number of Metamagics/Echoes equal to their Initiate Grade. Additional ones cost Karma.
+                // Evaluate each object
+                bool blnPayWithKarma
+                    = await CharacterObject.Metamagics.AnyAsync(objMetamagic => objMetamagic.Grade == intGrade,
+                                                                GenericToken)
+                      || await CharacterObject.Spells.AnyAsync(objSpell => objSpell.Grade == intGrade, GenericToken);
+
+                int intSpellKarmaCost = await CharacterObject.SpellKarmaCostAsync("Rituals", GenericToken);
+                if (blnPayWithKarma)
                 {
-                    // Make sure the Karma expense would not put them over the limit.
-                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma"),
-                        await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK,
-                        MessageBoxIcon.Information);
+                    if (CharacterObject.Karma < intSpellKarmaCost)
+                    {
+                        // Make sure the Karma expense would not put them over the limit.
+                        Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma"),
+                                               await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"),
+                                               MessageBoxButtons.OK,
+                                               MessageBoxIcon.Information);
+                        return;
+                    }
+
+                    if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalSettings.CultureInfo,
+                                                                           await LanguageManager.GetStringAsync(
+                                                                               "Message_ConfirmKarmaExpenseSpend")
+                                                                           , await LanguageManager.GetStringAsync(
+                                                                               "String_Ritual")
+                                                                           , intSpellKarmaCost.ToString(GlobalSettings.CultureInfo))))
+                        return;
+                }
+
+                XmlNode objXmlArt;
+                using (ThreadSafeForm<SelectArt> frmPickArt
+                       = await ThreadSafeForm<SelectArt>.GetAsync(
+                           () => new SelectArt(CharacterObject, SelectArt.Mode.Ritual), GenericToken))
+                {
+                    // Make sure a value was selected.
+                    if (await frmPickArt.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                        return;
+
+                    objXmlArt = (await CharacterObject.LoadDataAsync("spells.xml", token: GenericToken))
+                        .SelectSingleNode("/chummer/spells/spell[id = " + frmPickArt.MyForm.SelectedItem.CleanXPath()
+                                                                        + ']');
+                }
+
+                Spell objNewSpell = new Spell(CharacterObject);
+                objNewSpell.Create(objXmlArt, string.Empty, false, false, false,
+                                   Improvement.ImprovementSource.Initiation);
+                objNewSpell.Grade = intGrade;
+                if (objNewSpell.InternalId.IsEmptyGuid())
+                {
+                    objNewSpell.Dispose();
                     return;
                 }
 
-                if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalSettings.CultureInfo,
-                    await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpenseSpend")
-                    , await LanguageManager.GetStringAsync("String_Ritual")
-                    , intSpellKarmaCost.ToString(GlobalSettings.CultureInfo))))
-                    return;
+                await CharacterObject.Spells.AddAsync(objNewSpell);
+
+                if (blnPayWithKarma)
+                {
+                    string strType = await LanguageManager.GetStringAsync("String_Ritual");
+                    // Create the Expense Log Entry.
+                    ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                    objExpense.Create(-intSpellKarmaCost,
+                                      strType + await LanguageManager.GetStringAsync("String_Space")
+                                              + objNewSpell.CurrentDisplayNameShort, ExpenseType.Karma, DateTime.Now);
+                    await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken);
+
+                    ExpenseUndo objUndo = new ExpenseUndo();
+                    objUndo.CreateKarma(KarmaExpenseType.AddSpell, objNewSpell.InternalId);
+                    objExpense.Undo = objUndo;
+
+                    // Adjust the character's Karma total.
+                    CharacterObject.Karma -= intSpellKarmaCost;
+                }
             }
-
-            XmlNode objXmlArt;
-            using (ThreadSafeForm<SelectArt> frmPickArt
-                   = await ThreadSafeForm<SelectArt>.GetAsync(
-                       () => new SelectArt(CharacterObject, SelectArt.Mode.Ritual), GenericToken))
+            catch (OperationCanceledException)
             {
-                // Make sure a value was selected.
-                if (await frmPickArt.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
-                    return;
-
-                objXmlArt = (await CharacterObject.LoadDataAsync("spells.xml", token: GenericToken)).SelectSingleNode("/chummer/spells/spell[id = " + frmPickArt.MyForm.SelectedItem.CleanXPath() + ']');
-            }
-
-            Spell objNewSpell = new Spell(CharacterObject);
-            objNewSpell.Create(objXmlArt, string.Empty, false, false, false, Improvement.ImprovementSource.Initiation);
-            objNewSpell.Grade = intGrade;
-            if (objNewSpell.InternalId.IsEmptyGuid())
-            {
-                objNewSpell.Dispose();
-                return;
-            }
-
-            await CharacterObject.Spells.AddAsync(objNewSpell);
-
-            if (blnPayWithKarma)
-            {
-                string strType = await LanguageManager.GetStringAsync("String_Ritual");
-                // Create the Expense Log Entry.
-                ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                objExpense.Create(-intSpellKarmaCost, strType + await LanguageManager.GetStringAsync("String_Space") + objNewSpell.CurrentDisplayNameShort, ExpenseType.Karma, DateTime.Now);
-                await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken);
-
-                ExpenseUndo objUndo = new ExpenseUndo();
-                objUndo.CreateKarma(KarmaExpenseType.AddSpell, objNewSpell.InternalId);
-                objExpense.Undo = objUndo;
-
-                // Adjust the character's Karma total.
-                CharacterObject.Karma -= intSpellKarmaCost;
+                //swallow this
             }
         }
 
@@ -20053,75 +21707,93 @@ namespace Chummer
 
         private async void tsMetamagicAddEnhancement_Click(object sender, EventArgs e)
         {
-            if (!(await treMetamagic.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is InitiationGrade objGrade))
-                return;
-
-            int intGrade = objGrade.Grade;
-
-            if (CharacterObject.Karma < CharacterObjectSettings.KarmaEnhancement)
+            try
             {
-                // Make sure the Karma expense would not put them over the limit.
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpenseSpend")
-                , await LanguageManager.GetStringAsync("String_Enhancement")
-                , CharacterObjectSettings.KarmaEnhancement.ToString(GlobalSettings.CultureInfo))))
-                return;
-
-            XmlNode objXmlArt;
-            using (ThreadSafeForm<SelectArt> frmPickArt
-                   = await ThreadSafeForm<SelectArt>.GetAsync(
-                       () => new SelectArt(CharacterObject, SelectArt.Mode.Enhancement), GenericToken))
-            {
-                // Make sure a value was selected.
-                if (await frmPickArt.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                if (!(await treMetamagic.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is
+                        InitiationGrade objGrade))
                     return;
 
-                objXmlArt = (await CharacterObject.LoadDataAsync("powers.xml", token: GenericToken)).SelectSingleNode("/chummer/enhancements/enhancement[id = " + frmPickArt.MyForm.SelectedItem.CleanXPath() + ']');
-            }
+                int intGrade = objGrade.Grade;
 
-            if (objXmlArt == null)
-                return;
-
-            Enhancement objEnhancement = new Enhancement(CharacterObject);
-            objEnhancement.Create(objXmlArt, Improvement.ImprovementSource.Initiation);
-            objEnhancement.Grade = intGrade;
-            if (objEnhancement.InternalId.IsEmptyGuid())
-                return;
-
-            // Find the associated Power
-            string strPower = objXmlArt["power"]?.InnerText;
-            bool blnPowerFound = false;
-            foreach (Power objPower in CharacterObject.Powers)
-            {
-                if (objPower.Name == strPower)
+                if (CharacterObject.Karma < CharacterObjectSettings.KarmaEnhancement)
                 {
-                    await objPower.Enhancements.AddAsync(objEnhancement);
-                    blnPowerFound = true;
-                    break;
+                    // Make sure the Karma expense would not put them over the limit.
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma"),
+                                           await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"),
+                                           MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
                 }
-            }
 
-            if (!blnPowerFound)
+                if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalSettings.CultureInfo,
+                                                                       await LanguageManager.GetStringAsync(
+                                                                           "Message_ConfirmKarmaExpenseSpend")
+                                                                       , await LanguageManager.GetStringAsync(
+                                                                           "String_Enhancement")
+                                                                       , CharacterObjectSettings.KarmaEnhancement.ToString(GlobalSettings.CultureInfo))))
+                    return;
+
+                XmlNode objXmlArt;
+                using (ThreadSafeForm<SelectArt> frmPickArt
+                       = await ThreadSafeForm<SelectArt>.GetAsync(
+                           () => new SelectArt(CharacterObject, SelectArt.Mode.Enhancement), GenericToken))
+                {
+                    // Make sure a value was selected.
+                    if (await frmPickArt.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                        return;
+
+                    objXmlArt
+                        = (await CharacterObject.LoadDataAsync("powers.xml", token: GenericToken)).SelectSingleNode(
+                            "/chummer/enhancements/enhancement[id = " + frmPickArt.MyForm.SelectedItem.CleanXPath()
+                                                                      + ']');
+                }
+
+                if (objXmlArt == null)
+                    return;
+
+                Enhancement objEnhancement = new Enhancement(CharacterObject);
+                objEnhancement.Create(objXmlArt, Improvement.ImprovementSource.Initiation);
+                objEnhancement.Grade = intGrade;
+                if (objEnhancement.InternalId.IsEmptyGuid())
+                    return;
+
+                // Find the associated Power
+                string strPower = objXmlArt["power"]?.InnerText;
+                bool blnPowerFound = false;
+                foreach (Power objPower in CharacterObject.Powers)
+                {
+                    if (objPower.Name == strPower)
+                    {
+                        await objPower.Enhancements.AddAsync(objEnhancement);
+                        blnPowerFound = true;
+                        break;
+                    }
+                }
+
+                if (!blnPowerFound)
+                {
+                    // Add it to the character instead
+                    await CharacterObject.Enhancements.AddAsync(objEnhancement);
+                }
+
+                string strType = await LanguageManager.GetStringAsync("String_Enhancement");
+                // Create the Expense Log Entry.
+                ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                objExpense.Create(CharacterObjectSettings.KarmaEnhancement * -1,
+                                  strType + await LanguageManager.GetStringAsync("String_Space")
+                                          + objEnhancement.CurrentDisplayNameShort, ExpenseType.Karma, DateTime.Now);
+                await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken);
+
+                ExpenseUndo objUndo = new ExpenseUndo();
+                objUndo.CreateKarma(KarmaExpenseType.AddSpell, objEnhancement.InternalId);
+                objExpense.Undo = objUndo;
+
+                // Adjust the character's Karma total.
+                CharacterObject.Karma -= CharacterObjectSettings.KarmaEnhancement;
+            }
+            catch (OperationCanceledException)
             {
-                // Add it to the character instead
-                await CharacterObject.Enhancements.AddAsync(objEnhancement);
+                //swallow this
             }
-
-            string strType = await LanguageManager.GetStringAsync("String_Enhancement");
-            // Create the Expense Log Entry.
-            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-            objExpense.Create(CharacterObjectSettings.KarmaEnhancement * -1, strType + await LanguageManager.GetStringAsync("String_Space") + objEnhancement.CurrentDisplayNameShort, ExpenseType.Karma, DateTime.Now);
-            await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken);
-
-            ExpenseUndo objUndo = new ExpenseUndo();
-            objUndo.CreateKarma(KarmaExpenseType.AddSpell, objEnhancement.InternalId);
-            objExpense.Undo = objUndo;
-
-            // Adjust the character's Karma total.
-            CharacterObject.Karma -= CharacterObjectSettings.KarmaEnhancement;
         }
 
         private void panContacts_Click(object sender, EventArgs e)
@@ -20138,30 +21810,41 @@ namespace Chummer
         {
             if (IsLoading || IsRefreshing || !CharacterObject.Overclocker)
                 return;
-            if (!(await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Gear objCommlink))
-                return;
-            string strOldOverClocked = objCommlink.Overclocked;
-            objCommlink.Overclocked = await cboGearOverclocker.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), GenericToken);
-            await objCommlink.RefreshMatrixAttributeComboBoxesAsync(cboGearAttack, cboGearSleaze, cboGearDataProcessing, cboGearFirewall, GenericToken);
-            if (objCommlink.IsActiveCommlink(CharacterObject) || objCommlink.IsHomeNode(CharacterObject))
+            try
             {
-                if (strOldOverClocked == "Data Processing" || objCommlink.Overclocked == "Data Processing")
+                if (!(await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Gear objCommlink))
+                    return;
+                string strOldOverClocked = objCommlink.Overclocked;
+                objCommlink.Overclocked
+                    = await cboGearOverclocker.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), GenericToken);
+                await objCommlink.RefreshMatrixAttributeComboBoxesAsync(cboGearAttack, cboGearSleaze,
+                                                                        cboGearDataProcessing, cboGearFirewall,
+                                                                        GenericToken);
+                if (objCommlink.IsActiveCommlink(CharacterObject) || objCommlink.IsHomeNode(CharacterObject))
                 {
-                    if (objCommlink.IsActiveCommlink(CharacterObject))
+                    if (strOldOverClocked == "Data Processing" || objCommlink.Overclocked == "Data Processing")
                     {
-                        if (objCommlink.IsHomeNode(CharacterObject))
-                            CharacterObject.OnMultiplePropertyChanged(nameof(Character.MatrixInitiativeValue),
-                                                                      nameof(Character.MatrixInitiativeColdValue),
-                                                                      nameof(Character.MatrixInitiativeHotValue));
+                        if (objCommlink.IsActiveCommlink(CharacterObject))
+                        {
+                            if (objCommlink.IsHomeNode(CharacterObject))
+                                CharacterObject.OnMultiplePropertyChanged(nameof(Character.MatrixInitiativeValue),
+                                                                          nameof(Character.MatrixInitiativeColdValue),
+                                                                          nameof(Character.MatrixInitiativeHotValue));
+                            else
+                                CharacterObject.OnMultiplePropertyChanged(nameof(Character.MatrixInitiativeColdValue),
+                                                                          nameof(Character.MatrixInitiativeHotValue));
+                        }
                         else
-                            CharacterObject.OnMultiplePropertyChanged(nameof(Character.MatrixInitiativeColdValue),
-                                                                      nameof(Character.MatrixInitiativeHotValue));
+                            CharacterObject.OnPropertyChanged(nameof(Character.MatrixInitiativeValue));
                     }
-                    else
-                        CharacterObject.OnPropertyChanged(nameof(Character.MatrixInitiativeValue));
+
+                    await RequestCharacterUpdate();
+                    await SetDirty(true);
                 }
-                await RequestCharacterUpdate();
-                await SetDirty(true);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
             }
         }
 
@@ -20169,30 +21852,42 @@ namespace Chummer
         {
             if (IsLoading || IsRefreshing || !CharacterObject.Overclocker)
                 return;
-            if (!(await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is IHasMatrixAttributes objCommlink))
-                return;
-            string strOldOverClocked = objCommlink.Overclocked;
-            objCommlink.Overclocked = await cboArmorOverclocker.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), GenericToken);
-            await objCommlink.RefreshMatrixAttributeComboBoxesAsync(cboArmorAttack, cboArmorSleaze, cboArmorDataProcessing, cboArmorFirewall, GenericToken);
-            if (objCommlink.IsActiveCommlink(CharacterObject) || objCommlink.IsHomeNode(CharacterObject))
+            try
             {
-                if (strOldOverClocked == "Data Processing" || objCommlink.Overclocked == "Data Processing")
+                if (!(await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is
+                        IHasMatrixAttributes objCommlink))
+                    return;
+                string strOldOverClocked = objCommlink.Overclocked;
+                objCommlink.Overclocked
+                    = await cboArmorOverclocker.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), GenericToken);
+                await objCommlink.RefreshMatrixAttributeComboBoxesAsync(cboArmorAttack, cboArmorSleaze,
+                                                                        cboArmorDataProcessing, cboArmorFirewall,
+                                                                        GenericToken);
+                if (objCommlink.IsActiveCommlink(CharacterObject) || objCommlink.IsHomeNode(CharacterObject))
                 {
-                    if (objCommlink.IsActiveCommlink(CharacterObject))
+                    if (strOldOverClocked == "Data Processing" || objCommlink.Overclocked == "Data Processing")
                     {
-                        if (objCommlink.IsHomeNode(CharacterObject))
-                            CharacterObject.OnMultiplePropertyChanged(nameof(Character.MatrixInitiativeValue),
-                                                                      nameof(Character.MatrixInitiativeColdValue),
-                                                                      nameof(Character.MatrixInitiativeHotValue));
+                        if (objCommlink.IsActiveCommlink(CharacterObject))
+                        {
+                            if (objCommlink.IsHomeNode(CharacterObject))
+                                CharacterObject.OnMultiplePropertyChanged(nameof(Character.MatrixInitiativeValue),
+                                                                          nameof(Character.MatrixInitiativeColdValue),
+                                                                          nameof(Character.MatrixInitiativeHotValue));
+                            else
+                                CharacterObject.OnMultiplePropertyChanged(nameof(Character.MatrixInitiativeColdValue),
+                                                                          nameof(Character.MatrixInitiativeHotValue));
+                        }
                         else
-                            CharacterObject.OnMultiplePropertyChanged(nameof(Character.MatrixInitiativeColdValue),
-                                                                      nameof(Character.MatrixInitiativeHotValue));
+                            CharacterObject.OnPropertyChanged(nameof(Character.MatrixInitiativeValue));
                     }
-                    else
-                        CharacterObject.OnPropertyChanged(nameof(Character.MatrixInitiativeValue));
+
+                    await RequestCharacterUpdate();
+                    await SetDirty(true);
                 }
-                await RequestCharacterUpdate();
-                await SetDirty(true);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
             }
         }
 
@@ -20200,30 +21895,42 @@ namespace Chummer
         {
             if (IsLoading || IsRefreshing || !CharacterObject.Overclocker)
                 return;
-            if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is IHasMatrixAttributes objCommlink))
-                return;
-            string strOldOverClocked = objCommlink.Overclocked;
-            objCommlink.Overclocked = await cboWeaponOverclocker.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), GenericToken);
-            await objCommlink.RefreshMatrixAttributeComboBoxesAsync(cboWeaponGearAttack, cboWeaponGearSleaze, cboWeaponGearDataProcessing, cboWeaponGearFirewall, GenericToken);
-            if (objCommlink.IsActiveCommlink(CharacterObject) || objCommlink.IsHomeNode(CharacterObject))
+            try
             {
-                if (strOldOverClocked == "Data Processing" || objCommlink.Overclocked == "Data Processing")
+                if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is
+                        IHasMatrixAttributes objCommlink))
+                    return;
+                string strOldOverClocked = objCommlink.Overclocked;
+                objCommlink.Overclocked
+                    = await cboWeaponOverclocker.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), GenericToken);
+                await objCommlink.RefreshMatrixAttributeComboBoxesAsync(cboWeaponGearAttack, cboWeaponGearSleaze,
+                                                                        cboWeaponGearDataProcessing,
+                                                                        cboWeaponGearFirewall, GenericToken);
+                if (objCommlink.IsActiveCommlink(CharacterObject) || objCommlink.IsHomeNode(CharacterObject))
                 {
-                    if (objCommlink.IsActiveCommlink(CharacterObject))
+                    if (strOldOverClocked == "Data Processing" || objCommlink.Overclocked == "Data Processing")
                     {
-                        if (objCommlink.IsHomeNode(CharacterObject))
-                            CharacterObject.OnMultiplePropertyChanged(nameof(Character.MatrixInitiativeValue),
-                                                                      nameof(Character.MatrixInitiativeColdValue),
-                                                                      nameof(Character.MatrixInitiativeHotValue));
+                        if (objCommlink.IsActiveCommlink(CharacterObject))
+                        {
+                            if (objCommlink.IsHomeNode(CharacterObject))
+                                CharacterObject.OnMultiplePropertyChanged(nameof(Character.MatrixInitiativeValue),
+                                                                          nameof(Character.MatrixInitiativeColdValue),
+                                                                          nameof(Character.MatrixInitiativeHotValue));
+                            else
+                                CharacterObject.OnMultiplePropertyChanged(nameof(Character.MatrixInitiativeColdValue),
+                                                                          nameof(Character.MatrixInitiativeHotValue));
+                        }
                         else
-                            CharacterObject.OnMultiplePropertyChanged(nameof(Character.MatrixInitiativeColdValue),
-                                                                      nameof(Character.MatrixInitiativeHotValue));
+                            CharacterObject.OnPropertyChanged(nameof(Character.MatrixInitiativeValue));
                     }
-                    else
-                        CharacterObject.OnPropertyChanged(nameof(Character.MatrixInitiativeValue));
+
+                    await RequestCharacterUpdate();
+                    await SetDirty(true);
                 }
-                await RequestCharacterUpdate();
-                await SetDirty(true);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
             }
         }
 
@@ -20231,107 +21938,145 @@ namespace Chummer
         {
             if (IsLoading || IsRefreshing || !CharacterObject.Overclocker)
                 return;
-            if (!(await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is IHasMatrixAttributes objCommlink))
-                return;
-            string strOldOverClocked = objCommlink.Overclocked;
-            objCommlink.Overclocked = await cboCyberwareOverclocker.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), GenericToken);
-            await objCommlink.RefreshMatrixAttributeComboBoxesAsync(cboCyberwareAttack, cboCyberwareSleaze, cboCyberwareDataProcessing, cboCyberwareFirewall, GenericToken);
-            if (objCommlink.IsActiveCommlink(CharacterObject) || objCommlink.IsHomeNode(CharacterObject))
+            try
             {
-                if (strOldOverClocked == "Data Processing" || objCommlink.Overclocked == "Data Processing")
+                if (!(await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is
+                        IHasMatrixAttributes objCommlink))
+                    return;
+                string strOldOverClocked = objCommlink.Overclocked;
+                objCommlink.Overclocked
+                    = await cboCyberwareOverclocker.DoThreadSafeFuncAsync(
+                        x => x.SelectedValue.ToString(), GenericToken);
+                await objCommlink.RefreshMatrixAttributeComboBoxesAsync(cboCyberwareAttack, cboCyberwareSleaze,
+                                                                        cboCyberwareDataProcessing,
+                                                                        cboCyberwareFirewall, GenericToken);
+                if (objCommlink.IsActiveCommlink(CharacterObject) || objCommlink.IsHomeNode(CharacterObject))
                 {
-                    if (objCommlink.IsActiveCommlink(CharacterObject))
+                    if (strOldOverClocked == "Data Processing" || objCommlink.Overclocked == "Data Processing")
                     {
-                        if (objCommlink.IsHomeNode(CharacterObject))
-                            CharacterObject.OnMultiplePropertyChanged(nameof(Character.MatrixInitiativeValue),
-                                                                      nameof(Character.MatrixInitiativeColdValue),
-                                                                      nameof(Character.MatrixInitiativeHotValue));
+                        if (objCommlink.IsActiveCommlink(CharacterObject))
+                        {
+                            if (objCommlink.IsHomeNode(CharacterObject))
+                                CharacterObject.OnMultiplePropertyChanged(nameof(Character.MatrixInitiativeValue),
+                                                                          nameof(Character.MatrixInitiativeColdValue),
+                                                                          nameof(Character.MatrixInitiativeHotValue));
+                            else
+                                CharacterObject.OnMultiplePropertyChanged(nameof(Character.MatrixInitiativeColdValue),
+                                                                          nameof(Character.MatrixInitiativeHotValue));
+                        }
                         else
-                            CharacterObject.OnMultiplePropertyChanged(nameof(Character.MatrixInitiativeColdValue),
-                                                                      nameof(Character.MatrixInitiativeHotValue));
+                            CharacterObject.OnPropertyChanged(nameof(Character.MatrixInitiativeValue));
                     }
-                    else
-                        CharacterObject.OnPropertyChanged(nameof(Character.MatrixInitiativeValue));
+
+                    await RequestCharacterUpdate();
+                    await SetDirty(true);
                 }
-                await RequestCharacterUpdate();
-                await SetDirty(true);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
             }
         }
 
         private async void cmdAddAIProgram_Click(object sender, EventArgs e)
         {
-            int intNewAIProgramCost = CharacterObject.AIProgramKarmaCost;
-            int intNewAIAdvancedProgramCost = CharacterObject.AIAdvancedProgramKarmaCost;
-            XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("programs.xml", token: GenericToken);
-
-            bool blnAddAgain;
-            do
+            try
             {
-                // Make sure the character has enough Karma before letting them select a Spell.
-                if (CharacterObject.Karma < intNewAIProgramCost && CharacterObject.Karma < intNewAIAdvancedProgramCost)
+                int intNewAIProgramCost = CharacterObject.AIProgramKarmaCost;
+                int intNewAIAdvancedProgramCost = CharacterObject.AIAdvancedProgramKarmaCost;
+                XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("programs.xml", token: GenericToken);
+                bool blnAddAgain;
+                do
                 {
-                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    break;
-                }
-                // Let the user select a Program.
-                using (ThreadSafeForm<SelectAIProgram> frmPickProgram = await ThreadSafeForm<SelectAIProgram>.GetAsync(() => new SelectAIProgram(CharacterObject, CharacterObject.Karma >= intNewAIAdvancedProgramCost), GenericToken))
-                {
-                    // Make sure the dialogue window was not canceled.
-                    if (await frmPickProgram.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
-                        break;
-
-                    blnAddAgain = frmPickProgram.MyForm.AddAgain;
-
-                    XmlNode objXmlProgram = objXmlDocument.SelectSingleNode("/chummer/programs/program[id = " + frmPickProgram.MyForm.SelectedProgram.CleanXPath() + ']');
-                    if (objXmlProgram == null)
-                        continue;
-
-                    // Check for SelectText.
-                    string strExtra = string.Empty;
-                    XmlNode xmlSelectText = objXmlProgram.SelectSingleNode("bonus/selecttext");
-                    if (xmlSelectText != null)
+                    // Make sure the character has enough Karma before letting them select a Spell.
+                    if (CharacterObject.Karma < intNewAIProgramCost
+                        && CharacterObject.Karma < intNewAIAdvancedProgramCost)
                     {
-                        string strDescription = string.Format(GlobalSettings.CultureInfo,
-                                                              await LanguageManager.GetStringAsync(
-                                                                  "String_Improvement_SelectText")
-                                                              , objXmlProgram["translate"]?.InnerText ?? objXmlProgram["name"]?.InnerText ?? await LanguageManager.GetStringAsync("String_Unknown"));
-                        using (ThreadSafeForm<SelectText> frmPickText = await ThreadSafeForm<SelectText>.GetAsync(() => new SelectText
-                               {
-                                   Description = strDescription
-                               }, GenericToken))
-                        {
-                            if (await frmPickText.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
-                                continue;
-                            strExtra = frmPickText.MyForm.SelectedValue;
-                        }
+                        Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma"),
+                                               await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"),
+                                               MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        break;
                     }
 
-                    AIProgram objProgram = new AIProgram(CharacterObject);
-                    objProgram.Create(objXmlProgram, strExtra);
-                    if (objProgram.InternalId.IsEmptyGuid())
-                        continue;
+                    // Let the user select a Program.
+                    using (ThreadSafeForm<SelectAIProgram> frmPickProgram
+                           = await ThreadSafeForm<SelectAIProgram>.GetAsync(
+                               () => new SelectAIProgram(CharacterObject,
+                                                         CharacterObject.Karma >= intNewAIAdvancedProgramCost),
+                               GenericToken))
+                    {
+                        // Make sure the dialogue window was not canceled.
+                        if (await frmPickProgram.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                            break;
 
-                    bool boolIsAdvancedProgram = objProgram.IsAdvancedProgram;
-                    if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpenseSpend")
-                        , objProgram.CurrentDisplayNameShort
-                        , (boolIsAdvancedProgram ? intNewAIAdvancedProgramCost : intNewAIProgramCost).ToString(GlobalSettings.CultureInfo))))
-                        continue;
+                        blnAddAgain = frmPickProgram.MyForm.AddAgain;
 
-                    await CharacterObject.AIPrograms.AddAsync(objProgram);
+                        XmlNode objXmlProgram = objXmlDocument.SelectSingleNode(
+                            "/chummer/programs/program[id = " + frmPickProgram.MyForm.SelectedProgram.CleanXPath()
+                                                              + ']');
+                        if (objXmlProgram == null)
+                            continue;
 
-                    // Create the Expense Log Entry.
-                    ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                    objExpense.Create((boolIsAdvancedProgram ? intNewAIAdvancedProgramCost : intNewAIProgramCost) * -1, await LanguageManager.GetStringAsync("String_ExpenseLearnProgram") + await LanguageManager.GetStringAsync("String_Space") + objProgram.Name,
-                        ExpenseType.Karma, DateTime.Now);
-                    await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken);
-                    CharacterObject.Karma -= boolIsAdvancedProgram ? intNewAIAdvancedProgramCost : intNewAIProgramCost;
+                        // Check for SelectText.
+                        string strExtra = string.Empty;
+                        XmlNode xmlSelectText = objXmlProgram.SelectSingleNode("bonus/selecttext");
+                        if (xmlSelectText != null)
+                        {
+                            string strDescription = string.Format(GlobalSettings.CultureInfo,
+                                                                  await LanguageManager.GetStringAsync(
+                                                                      "String_Improvement_SelectText")
+                                                                  , objXmlProgram["translate"]?.InnerText ?? objXmlProgram["name"]?.InnerText ?? await LanguageManager.GetStringAsync("String_Unknown"));
+                            using (ThreadSafeForm<SelectText> frmPickText = await ThreadSafeForm<SelectText>.GetAsync(
+                                       () => new SelectText
+                                       {
+                                           Description = strDescription
+                                       }, GenericToken))
+                            {
+                                if (await frmPickText.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                                    continue;
+                                strExtra = frmPickText.MyForm.SelectedValue;
+                            }
+                        }
 
-                    ExpenseUndo objUndo = new ExpenseUndo();
-                    objUndo.CreateKarma(boolIsAdvancedProgram ? KarmaExpenseType.AddAIAdvancedProgram : KarmaExpenseType.AddAIProgram, objProgram.InternalId);
-                    objExpense.Undo = objUndo;
-                }
+                        AIProgram objProgram = new AIProgram(CharacterObject);
+                        objProgram.Create(objXmlProgram, strExtra);
+                        if (objProgram.InternalId.IsEmptyGuid())
+                            continue;
+
+                        bool boolIsAdvancedProgram = objProgram.IsAdvancedProgram;
+                        if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalSettings.CultureInfo,
+                                                                               await LanguageManager.GetStringAsync(
+                                                                                   "Message_ConfirmKarmaExpenseSpend")
+                                                                               , objProgram.CurrentDisplayNameShort
+                                                                               , (boolIsAdvancedProgram ? intNewAIAdvancedProgramCost : intNewAIProgramCost).ToString(GlobalSettings.CultureInfo))))
+                            continue;
+
+                        await CharacterObject.AIPrograms.AddAsync(objProgram);
+
+                        // Create the Expense Log Entry.
+                        ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                        objExpense.Create(
+                            (boolIsAdvancedProgram ? intNewAIAdvancedProgramCost : intNewAIProgramCost) * -1,
+                            await LanguageManager.GetStringAsync("String_ExpenseLearnProgram")
+                            + await LanguageManager.GetStringAsync("String_Space") + objProgram.Name,
+                            ExpenseType.Karma, DateTime.Now);
+                        await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken);
+                        CharacterObject.Karma
+                            -= boolIsAdvancedProgram ? intNewAIAdvancedProgramCost : intNewAIProgramCost;
+
+                        ExpenseUndo objUndo = new ExpenseUndo();
+                        objUndo.CreateKarma(
+                            boolIsAdvancedProgram
+                                ? KarmaExpenseType.AddAIAdvancedProgram
+                                : KarmaExpenseType.AddAIProgram, objProgram.InternalId);
+                        objExpense.Undo = objUndo;
+                    }
+                } while (blnAddAgain);
             }
-            while (blnAddAgain);
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private void cmdDeleteAIProgram_Click(object sender, EventArgs e)
@@ -20403,11 +22148,19 @@ namespace Chummer
 
         private async void cboPrimaryArm_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (IsLoading || IsRefreshing || await CharacterObject.GetAmbidextrousAsync(GenericToken))
-                return;
-            CharacterObject.PrimaryArm = await cboPrimaryArm.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), GenericToken);
+            try
+            {
+                if (IsLoading || IsRefreshing || await CharacterObject.GetAmbidextrousAsync(GenericToken))
+                    return;
+                CharacterObject.PrimaryArm
+                    = await cboPrimaryArm.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), GenericToken);
 
-            await SetDirty(true);
+                await SetDirty(true, GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void picMugshot_SizeChanged(object sender, EventArgs e)
@@ -20445,193 +22198,234 @@ namespace Chummer
 
         private async void cmdCyberwareChangeMount_Click(object sender, EventArgs e)
         {
-            if (!(await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken).ConfigureAwait(false) is Cyberware objModularCyberware))
-                return;
-            string strSelectedParentID;
-            using (new FetchSafelyFromPool<List<ListItem>>(
-                       Utils.ListItemListPool, out List<ListItem> lstModularMounts))
+            try
             {
-                lstModularMounts.AddRange(await CharacterObject.ConstructModularCyberlimbListAsync(objModularCyberware, GenericToken).ConfigureAwait(false));
-                //Mounted cyberware should always be allowed to be dismounted.
-                //Unmounted cyberware requires that a valid mount be present.
-                if (!objModularCyberware.IsModularCurrentlyEquipped
-                    && lstModularMounts.All(
-                        x => !string.Equals(x.Value.ToString(), "None", StringComparison.OrdinalIgnoreCase)))
-                {
-                    Program.ShowMessageBox(this,
-                                           await LanguageManager.GetStringAsync("Message_NoValidModularMount")
-                                                                .ConfigureAwait(false),
-                                           await LanguageManager.GetStringAsync("MessageTitle_NoValidModularMount")
-                                                                .ConfigureAwait(false),
-                                           MessageBoxButtons.OK, MessageBoxIcon.Information);
+                if (!(await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken)
+                                        .ConfigureAwait(false) is Cyberware objModularCyberware))
                     return;
-                }
-
-                string strDescription = await LanguageManager.GetStringAsync("MessageTitle_SelectCyberware").ConfigureAwait(false);
-                using (ThreadSafeForm<SelectItem> frmPickMount = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem
-                       {
-                           Description = strDescription
-                       }, GenericToken).ConfigureAwait(false))
+                string strSelectedParentID;
+                using (new FetchSafelyFromPool<List<ListItem>>(
+                           Utils.ListItemListPool, out List<ListItem> lstModularMounts))
                 {
-                    frmPickMount.MyForm.SetGeneralItemsMode(lstModularMounts);
-
-                    // Make sure the dialogue window was not canceled.
-                    if (await frmPickMount.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false) == DialogResult.Cancel)
+                    lstModularMounts.AddRange(await CharacterObject
+                                                    .ConstructModularCyberlimbListAsync(
+                                                        objModularCyberware, GenericToken).ConfigureAwait(false));
+                    //Mounted cyberware should always be allowed to be dismounted.
+                    //Unmounted cyberware requires that a valid mount be present.
+                    if (!objModularCyberware.IsModularCurrentlyEquipped
+                        && lstModularMounts.All(
+                            x => !string.Equals(x.Value.ToString(), "None", StringComparison.OrdinalIgnoreCase)))
                     {
+                        Program.ShowMessageBox(this,
+                                               await LanguageManager.GetStringAsync("Message_NoValidModularMount")
+                                                                    .ConfigureAwait(false),
+                                               await LanguageManager.GetStringAsync("MessageTitle_NoValidModularMount")
+                                                                    .ConfigureAwait(false),
+                                               MessageBoxButtons.OK, MessageBoxIcon.Information);
                         return;
                     }
 
-                    strSelectedParentID = frmPickMount.MyForm.SelectedItem;
-                }
-            }
+                    string strDescription = await LanguageManager.GetStringAsync("MessageTitle_SelectCyberware")
+                                                                 .ConfigureAwait(false);
+                    using (ThreadSafeForm<SelectItem> frmPickMount = await ThreadSafeForm<SelectItem>.GetAsync(
+                               () => new SelectItem
+                               {
+                                   Description = strDescription
+                               }, GenericToken).ConfigureAwait(false))
+                    {
+                        frmPickMount.MyForm.SetGeneralItemsMode(lstModularMounts);
 
-            Cyberware objOldParent = objModularCyberware.Parent;
-            if (objOldParent != null)
-                await objModularCyberware.ChangeModularEquipAsync(false).ConfigureAwait(false);
-            if (strSelectedParentID == "None")
-            {
+                        // Make sure the dialogue window was not canceled.
+                        if (await frmPickMount.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
+                            == DialogResult.Cancel)
+                        {
+                            return;
+                        }
+
+                        strSelectedParentID = frmPickMount.MyForm.SelectedItem;
+                    }
+                }
+
+                Cyberware objOldParent = objModularCyberware.Parent;
                 if (objOldParent != null)
-                {
-                    await objOldParent.Children.RemoveAsync(objModularCyberware).ConfigureAwait(false);
-
-                    await CharacterObject.Cyberware.AddAsync(objModularCyberware).ConfigureAwait(false);
-                }
-            }
-            else
-            {
-                Cyberware objNewParent = CharacterObject.Cyberware.DeepFindById(strSelectedParentID);
-                if (objNewParent != null)
+                    await objModularCyberware.ChangeModularEquipAsync(false).ConfigureAwait(false);
+                if (strSelectedParentID == "None")
                 {
                     if (objOldParent != null)
+                    {
                         await objOldParent.Children.RemoveAsync(objModularCyberware).ConfigureAwait(false);
-                    else
-                        await CharacterObject.Cyberware.RemoveAsync(objModularCyberware).ConfigureAwait(false);
 
-                    await objNewParent.Children.AddAsync(objModularCyberware).ConfigureAwait(false);
-
-                    await objModularCyberware.ChangeModularEquipAsync(true).ConfigureAwait(false);
+                        await CharacterObject.Cyberware.AddAsync(objModularCyberware).ConfigureAwait(false);
+                    }
                 }
                 else
                 {
-                    VehicleMod objNewVehicleModParent = CharacterObject.Vehicles.FindVehicleMod(x => x.InternalId == strSelectedParentID);
-                    if (objNewVehicleModParent == null)
-                        objNewParent = CharacterObject.Vehicles.FindVehicleCyberware(x => x.InternalId == strSelectedParentID, out objNewVehicleModParent);
-                    if (objNewVehicleModParent != null || objNewParent != null)
+                    Cyberware objNewParent = CharacterObject.Cyberware.DeepFindById(strSelectedParentID);
+                    if (objNewParent != null)
                     {
                         if (objOldParent != null)
                             await objOldParent.Children.RemoveAsync(objModularCyberware).ConfigureAwait(false);
                         else
                             await CharacterObject.Cyberware.RemoveAsync(objModularCyberware).ConfigureAwait(false);
 
-                        if (objNewParent != null)
-                            await objNewParent.Children.AddAsync(objModularCyberware).ConfigureAwait(false);
-                        else
-                            await objNewVehicleModParent.Cyberware.AddAsync(objModularCyberware).ConfigureAwait(false);
-                    }
-                    else if (objOldParent != null)
-                    {
-                        await objOldParent.Children.RemoveAsync(objModularCyberware).ConfigureAwait(false);
+                        await objNewParent.Children.AddAsync(objModularCyberware).ConfigureAwait(false);
 
-                        await CharacterObject.Cyberware.AddAsync(objModularCyberware).ConfigureAwait(false);
+                        await objModularCyberware.ChangeModularEquipAsync(true).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        VehicleMod objNewVehicleModParent
+                            = CharacterObject.Vehicles.FindVehicleMod(x => x.InternalId == strSelectedParentID);
+                        if (objNewVehicleModParent == null)
+                            objNewParent
+                                = CharacterObject.Vehicles.FindVehicleCyberware(
+                                    x => x.InternalId == strSelectedParentID, out objNewVehicleModParent);
+                        if (objNewVehicleModParent != null || objNewParent != null)
+                        {
+                            if (objOldParent != null)
+                                await objOldParent.Children.RemoveAsync(objModularCyberware).ConfigureAwait(false);
+                            else
+                                await CharacterObject.Cyberware.RemoveAsync(objModularCyberware).ConfigureAwait(false);
+
+                            if (objNewParent != null)
+                                await objNewParent.Children.AddAsync(objModularCyberware).ConfigureAwait(false);
+                            else
+                                await objNewVehicleModParent.Cyberware.AddAsync(objModularCyberware)
+                                                            .ConfigureAwait(false);
+                        }
+                        else if (objOldParent != null)
+                        {
+                            await objOldParent.Children.RemoveAsync(objModularCyberware).ConfigureAwait(false);
+
+                            await CharacterObject.Cyberware.AddAsync(objModularCyberware).ConfigureAwait(false);
+                        }
                     }
                 }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
             }
         }
 
         private async void cmdVehicleCyberwareChangeMount_Click(object sender, EventArgs e)
         {
-            if (!(await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken).ConfigureAwait(false) is Cyberware objModularCyberware))
-                return;
-            string strSelectedParentID;
-            using (new FetchSafelyFromPool<List<ListItem>>(
-                       Utils.ListItemListPool, out List<ListItem> lstModularMounts))
+            try
             {
-                lstModularMounts.AddRange(await CharacterObject.ConstructModularCyberlimbListAsync(objModularCyberware, GenericToken).ConfigureAwait(false));
-                //Mounted cyberware should always be allowed to be dismounted.
-                //Unmounted cyberware requires that a valid mount be present.
-                if (!objModularCyberware.IsModularCurrentlyEquipped
-                    && lstModularMounts.All(
-                        x => !string.Equals(x.Value.ToString(), "None", StringComparison.OrdinalIgnoreCase)))
-                {
-                    Program.ShowMessageBox(this,
-                                           await LanguageManager.GetStringAsync("Message_NoValidModularMount").ConfigureAwait(false),
-                                           await LanguageManager.GetStringAsync("MessageTitle_NoValidModularMount").ConfigureAwait(false),
-                                           MessageBoxButtons.OK, MessageBoxIcon.Information);
+                if (!(await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken)
+                                        .ConfigureAwait(false) is Cyberware objModularCyberware))
                     return;
-                }
-
-                string strDescription = await LanguageManager.GetStringAsync("MessageTitle_SelectCyberware").ConfigureAwait(false);
-                using (ThreadSafeForm<SelectItem> frmPickMount = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem
-                       {
-                           Description = strDescription
-                       }, GenericToken).ConfigureAwait(false))
+                string strSelectedParentID;
+                using (new FetchSafelyFromPool<List<ListItem>>(
+                           Utils.ListItemListPool, out List<ListItem> lstModularMounts))
                 {
-                    frmPickMount.MyForm.SetGeneralItemsMode(lstModularMounts);
-
-                    // Make sure the dialogue window was not canceled.
-                    if (await frmPickMount.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false) == DialogResult.Cancel)
+                    lstModularMounts.AddRange(await CharacterObject
+                                                    .ConstructModularCyberlimbListAsync(
+                                                        objModularCyberware, GenericToken).ConfigureAwait(false));
+                    //Mounted cyberware should always be allowed to be dismounted.
+                    //Unmounted cyberware requires that a valid mount be present.
+                    if (!objModularCyberware.IsModularCurrentlyEquipped
+                        && lstModularMounts.All(
+                            x => !string.Equals(x.Value.ToString(), "None", StringComparison.OrdinalIgnoreCase)))
                     {
+                        Program.ShowMessageBox(this,
+                                               await LanguageManager.GetStringAsync("Message_NoValidModularMount")
+                                                                    .ConfigureAwait(false),
+                                               await LanguageManager.GetStringAsync("MessageTitle_NoValidModularMount")
+                                                                    .ConfigureAwait(false),
+                                               MessageBoxButtons.OK, MessageBoxIcon.Information);
                         return;
                     }
 
-                    strSelectedParentID = frmPickMount.MyForm.SelectedItem;
+                    string strDescription = await LanguageManager.GetStringAsync("MessageTitle_SelectCyberware")
+                                                                 .ConfigureAwait(false);
+                    using (ThreadSafeForm<SelectItem> frmPickMount = await ThreadSafeForm<SelectItem>.GetAsync(
+                               () => new SelectItem
+                               {
+                                   Description = strDescription
+                               }, GenericToken).ConfigureAwait(false))
+                    {
+                        frmPickMount.MyForm.SetGeneralItemsMode(lstModularMounts);
+
+                        // Make sure the dialogue window was not canceled.
+                        if (await frmPickMount.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
+                            == DialogResult.Cancel)
+                        {
+                            return;
+                        }
+
+                        strSelectedParentID = frmPickMount.MyForm.SelectedItem;
+                    }
                 }
-            }
-            CharacterObject.Vehicles.FindVehicleCyberware(x => x.InternalId == objModularCyberware.InternalId, out VehicleMod objOldParentVehicleMod);
 
-            Cyberware objOldParent = objModularCyberware.Parent;
-            if (objOldParent != null)
-                await objModularCyberware.ChangeModularEquipAsync(false).ConfigureAwait(false);
-            if (strSelectedParentID == "None")
-            {
+                CharacterObject.Vehicles.FindVehicleCyberware(x => x.InternalId == objModularCyberware.InternalId,
+                                                              out VehicleMod objOldParentVehicleMod);
+
+                Cyberware objOldParent = objModularCyberware.Parent;
                 if (objOldParent != null)
-                    await objOldParent.Children.RemoveAsync(objModularCyberware).ConfigureAwait(false);
-                else
-                    await objOldParentVehicleMod.Cyberware.RemoveAsync(objModularCyberware).ConfigureAwait(false);
-
-                await CharacterObject.Cyberware.AddAsync(objModularCyberware).ConfigureAwait(false);
-            }
-            else
-            {
-                Cyberware objNewParent = CharacterObject.Cyberware.DeepFindById(strSelectedParentID);
-                if (objNewParent != null)
+                    await objModularCyberware.ChangeModularEquipAsync(false).ConfigureAwait(false);
+                if (strSelectedParentID == "None")
                 {
                     if (objOldParent != null)
                         await objOldParent.Children.RemoveAsync(objModularCyberware).ConfigureAwait(false);
                     else
                         await objOldParentVehicleMod.Cyberware.RemoveAsync(objModularCyberware).ConfigureAwait(false);
 
-                    await objNewParent.Children.AddAsync(objModularCyberware).ConfigureAwait(false);
-
-                    await objModularCyberware.ChangeModularEquipAsync(true).ConfigureAwait(false);
+                    await CharacterObject.Cyberware.AddAsync(objModularCyberware).ConfigureAwait(false);
                 }
                 else
                 {
-                    VehicleMod objNewVehicleModParent = CharacterObject.Vehicles.FindVehicleMod(x => x.InternalId == strSelectedParentID);
-                    if (objNewVehicleModParent == null)
-                        objNewParent = CharacterObject.Vehicles.FindVehicleCyberware(x => x.InternalId == strSelectedParentID, out objNewVehicleModParent);
-                    if (objNewVehicleModParent != null || objNewParent != null)
+                    Cyberware objNewParent = CharacterObject.Cyberware.DeepFindById(strSelectedParentID);
+                    if (objNewParent != null)
                     {
                         if (objOldParent != null)
                             await objOldParent.Children.RemoveAsync(objModularCyberware).ConfigureAwait(false);
                         else
-                            await objOldParentVehicleMod.Cyberware.RemoveAsync(objModularCyberware).ConfigureAwait(false);
+                            await objOldParentVehicleMod.Cyberware.RemoveAsync(objModularCyberware)
+                                                        .ConfigureAwait(false);
 
-                        if (objNewParent != null)
-                            await objNewParent.Children.AddAsync(objModularCyberware).ConfigureAwait(false);
-                        else
-                            await objNewVehicleModParent.Cyberware.AddAsync(objModularCyberware).ConfigureAwait(false);
+                        await objNewParent.Children.AddAsync(objModularCyberware).ConfigureAwait(false);
+
+                        await objModularCyberware.ChangeModularEquipAsync(true).ConfigureAwait(false);
                     }
                     else
                     {
-                        if (objOldParent != null)
-                            await objOldParent.Children.RemoveAsync(objModularCyberware).ConfigureAwait(false);
-                        else
-                            await objOldParentVehicleMod.Cyberware.RemoveAsync(objModularCyberware).ConfigureAwait(false);
+                        VehicleMod objNewVehicleModParent
+                            = CharacterObject.Vehicles.FindVehicleMod(x => x.InternalId == strSelectedParentID);
+                        if (objNewVehicleModParent == null)
+                            objNewParent
+                                = CharacterObject.Vehicles.FindVehicleCyberware(
+                                    x => x.InternalId == strSelectedParentID, out objNewVehicleModParent);
+                        if (objNewVehicleModParent != null || objNewParent != null)
+                        {
+                            if (objOldParent != null)
+                                await objOldParent.Children.RemoveAsync(objModularCyberware).ConfigureAwait(false);
+                            else
+                                await objOldParentVehicleMod.Cyberware.RemoveAsync(objModularCyberware)
+                                                            .ConfigureAwait(false);
 
-                        await CharacterObject.Cyberware.AddAsync(objModularCyberware).ConfigureAwait(false);
+                            if (objNewParent != null)
+                                await objNewParent.Children.AddAsync(objModularCyberware).ConfigureAwait(false);
+                            else
+                                await objNewVehicleModParent.Cyberware.AddAsync(objModularCyberware)
+                                                            .ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            if (objOldParent != null)
+                                await objOldParent.Children.RemoveAsync(objModularCyberware).ConfigureAwait(false);
+                            else
+                                await objOldParentVehicleMod.Cyberware.RemoveAsync(objModularCyberware)
+                                                            .ConfigureAwait(false);
+
+                            await CharacterObject.Cyberware.AddAsync(objModularCyberware).ConfigureAwait(false);
+                        }
                     }
                 }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
             }
         }
 
@@ -20694,34 +22488,57 @@ namespace Chummer
 
         private async void tsGearLocationAddGear_Click(object sender, EventArgs e)
         {
-            if (!(await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Location objLocation))
-                return;
-            bool blnAddAgain;
-            do
+            try
             {
-                blnAddAgain = await PickGear(null, objLocation);
+                if (!(await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Location
+                        objLocation))
+                    return;
+                bool blnAddAgain;
+                do
+                {
+                    blnAddAgain = await PickGear(null, objLocation, token: GenericToken);
+                } while (blnAddAgain);
             }
-            while (blnAddAgain);
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void tsVehicleLocationAddVehicle_Click(object sender, EventArgs e)
         {
-            bool blnAddAgain;
-            do
+            try
             {
-                blnAddAgain = await AddVehicle(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as Location, GenericToken);
+                bool blnAddAgain;
+                do
+                {
+                    blnAddAgain = await AddVehicle(
+                        await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as Location,
+                        GenericToken);
+                } while (blnAddAgain);
             }
-            while (blnAddAgain);
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void tsWeaponLocationAddWeapon_Click(object sender, EventArgs e)
         {
-            bool blnAddAgain;
-            do
+            try
             {
-                blnAddAgain = await PickWeapon(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as Location, GenericToken);
+                bool blnAddAgain;
+                do
+                {
+                    blnAddAgain = await PickWeapon(
+                        await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as Location,
+                        GenericToken);
+                } while (blnAddAgain);
             }
-            while (blnAddAgain);
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private void tsVehicleLocationAddWeapon_Click(object sender, EventArgs e)
@@ -20735,14 +22552,22 @@ namespace Chummer
             if (IsRefreshing)
                 return;
 
-            if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Weapon objWeapon))
-                return;
-            objWeapon.FireMode = await cboVehicleWeaponFiringMode.DoThreadSafeFuncAsync(x => x.SelectedIndex >= 0
-                ? (Weapon.FiringMode) x.SelectedValue
-                : Weapon.FiringMode.DogBrain, GenericToken);
-            await RefreshSelectedVehicle(GenericToken);
+            try
+            {
+                if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Weapon
+                        objWeapon))
+                    return;
+                objWeapon.FireMode = await cboVehicleWeaponFiringMode.DoThreadSafeFuncAsync(x => x.SelectedIndex >= 0
+                    ? (Weapon.FiringMode) x.SelectedValue
+                    : Weapon.FiringMode.DogBrain, GenericToken);
+                await RefreshSelectedVehicle(GenericToken);
 
-            await SetDirty(true);
+                await SetDirty(true, GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void OpenSourceFromLabel(object sender, EventArgs e)
@@ -20752,104 +22577,139 @@ namespace Chummer
 
         private async void btnCreateCustomDrug_Click(object sender, EventArgs e)
         {
-            using (ThreadSafeForm<CreateCustomDrug> form = await ThreadSafeForm<CreateCustomDrug>.GetAsync(() => new CreateCustomDrug(CharacterObject), GenericToken))
+            try
             {
-                if (await form.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
-                    return;
+                using (ThreadSafeForm<CreateCustomDrug> form
+                       = await ThreadSafeForm<CreateCustomDrug>.GetAsync(
+                           () => new CreateCustomDrug(CharacterObject), GenericToken))
+                {
+                    if (await form.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                        return;
 
-                Drug objCustomDrug = form.MyForm.CustomDrug;
-                objCustomDrug.Quantity = 0;
-                await CharacterObject.Drugs.AddAsync(objCustomDrug);
-                objCustomDrug.GenerateImprovement();
+                    Drug objCustomDrug = form.MyForm.CustomDrug;
+                    objCustomDrug.Quantity = 0;
+                    await CharacterObject.Drugs.AddAsync(objCustomDrug);
+                    objCustomDrug.GenerateImprovement();
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
             }
         }
 
         private async void btnIncreaseDrugQty_Click(object sender, EventArgs e)
         {
-            TreeNode objSelectedNode = await treCustomDrugs.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken);
-            if (!(objSelectedNode?.Tag is Drug selectedDrug))
-                return;
-
-            decimal decCost = selectedDrug.Cost;
-            /* Apply a markup if applicable.
-            if (frmPickArmor.Markup != 0)
+            try
             {
-                decCost *= 1 + (frmPickArmor.Markup / 100.0m);
-            }*/
+                TreeNode objSelectedNode
+                    = await treCustomDrugs.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken);
+                if (!(objSelectedNode?.Tag is Drug selectedDrug))
+                    return;
 
-            // Multiply the cost if applicable.
-            char chrAvail = selectedDrug.TotalAvailTuple().Suffix;
-            switch (chrAvail)
-            {
-                case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
-                    decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
-                    break;
+                decimal decCost = selectedDrug.Cost;
+                /* Apply a markup if applicable.
+                if (frmPickArmor.Markup != 0)
+                {
+                    decCost *= 1 + (frmPickArmor.Markup / 100.0m);
+                }*/
 
-                case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
-                    decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
-                    break;
+                // Multiply the cost if applicable.
+                char chrAvail = selectedDrug.TotalAvailTuple().Suffix;
+                switch (chrAvail)
+                {
+                    case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
+                        decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
+                        break;
+
+                    case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
+                        decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
+                        break;
+                }
+
+                // Check the item's Cost and make sure the character can afford it.
+                if (decCost > CharacterObject.Nuyen)
+                {
+                    Program.ShowMessageBox(
+                        this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen", token: GenericToken),
+                        await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen", token: GenericToken),
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+
+                if (!await CharacterObject.Improvements.AnyAsync(imp =>
+                                                                     imp.ImproveSource == Improvement.ImprovementSource
+                                                                         .Drug && imp.SourceName
+                                                                     == selectedDrug.InternalId, GenericToken))
+                {
+                    selectedDrug.GenerateImprovement();
+                }
+
+                // Create the Expense Log Entry.
+                ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                objExpense.Create(decCost * -1,
+                                  await LanguageManager.GetStringAsync("String_ExpensePurchaseDrug") +
+                                  await LanguageManager.GetStringAsync("String_Space") +
+                                  selectedDrug.CurrentDisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
+                await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken);
+                CharacterObject.Nuyen -= decCost;
+                selectedDrug.Quantity++;
+                await treCustomDrugs.DoThreadSafeAsync(() => objSelectedNode.Text = selectedDrug.CurrentDisplayName,
+                                                       GenericToken);
+                ExpenseUndo objUndo = new ExpenseUndo();
+                objUndo.CreateNuyen(NuyenExpenseType.AddGear, selectedDrug.InternalId);
+                objExpense.Undo = objUndo;
+
+                await RequestCharacterUpdate();
+                await SetDirty(true);
             }
-
-            // Check the item's Cost and make sure the character can afford it.
-            if (decCost > CharacterObject.Nuyen)
+            catch (OperationCanceledException)
             {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen", token: GenericToken),
-                    await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen", token: GenericToken),
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                //swallow this
             }
-
-            if (!await CharacterObject.Improvements.AnyAsync(imp =>
-                imp.ImproveSource == Improvement.ImprovementSource.Drug && imp.SourceName == selectedDrug.InternalId, GenericToken))
-            {
-                selectedDrug.GenerateImprovement();
-            }
-
-            // Create the Expense Log Entry.
-            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-            objExpense.Create(decCost * -1,
-                await LanguageManager.GetStringAsync("String_ExpensePurchaseDrug") +
-                await LanguageManager.GetStringAsync("String_Space") +
-                selectedDrug.CurrentDisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
-            await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken);
-            CharacterObject.Nuyen -= decCost;
-            selectedDrug.Quantity++;
-            await treCustomDrugs.DoThreadSafeAsync(() => objSelectedNode.Text = selectedDrug.CurrentDisplayName, GenericToken);
-            ExpenseUndo objUndo = new ExpenseUndo();
-            objUndo.CreateNuyen(NuyenExpenseType.AddGear, selectedDrug.InternalId);
-            objExpense.Undo = objUndo;
-
-            await RequestCharacterUpdate();
-            await SetDirty(true);
         }
 
         private async void btnDecreaseDrugQty_Click(object sender, EventArgs e)
         {
-            TreeNode objSelectedNode = await treCustomDrugs.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken);
-            if (!(objSelectedNode?.Tag is Drug objDrug))
-                return;
-
-            string strDescription = await LanguageManager.GetStringAsync("String_ReduceGear");
-            using (ThreadSafeForm<SelectNumber> frmPickNumber = await ThreadSafeForm<SelectNumber>.GetAsync(() => new SelectNumber
-                   {
-                       Minimum = 0,
-                       Maximum = objDrug.Quantity,
-                       Description = strDescription
-                   }, GenericToken))
+            try
             {
-                if (await frmPickNumber.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                TreeNode objSelectedNode
+                    = await treCustomDrugs.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken);
+                if (!(objSelectedNode?.Tag is Drug objDrug))
                     return;
 
-                decimal decSelectedValue = frmPickNumber.MyForm.SelectedValue;
+                string strDescription = await LanguageManager.GetStringAsync("String_ReduceGear");
+                using (ThreadSafeForm<SelectNumber> frmPickNumber = await ThreadSafeForm<SelectNumber>.GetAsync(
+                           () => new SelectNumber
+                           {
+                               Minimum = 0,
+                               Maximum = objDrug.Quantity,
+                               Description = strDescription
+                           }, GenericToken))
+                {
+                    if (await frmPickNumber.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                        return;
 
-                if (!CommonFunctions.ConfirmDelete(string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_ReduceQty"), decSelectedValue.ToString(GlobalSettings.CultureInfo))))
-                    return;
+                    decimal decSelectedValue = frmPickNumber.MyForm.SelectedValue;
 
-                objDrug.Quantity -= decSelectedValue;
-                await treCustomDrugs.DoThreadSafeAsync(() => objSelectedNode.Text = objDrug.CurrentDisplayName, GenericToken);
+                    if (!CommonFunctions.ConfirmDelete(string.Format(GlobalSettings.CultureInfo,
+                                                                     await LanguageManager.GetStringAsync(
+                                                                         "Message_ReduceQty"),
+                                                                     decSelectedValue.ToString(
+                                                                         GlobalSettings.CultureInfo))))
+                        return;
+
+                    objDrug.Quantity -= decSelectedValue;
+                    await treCustomDrugs.DoThreadSafeAsync(() => objSelectedNode.Text = objDrug.CurrentDisplayName,
+                                                           GenericToken);
+                }
+
+                await RequestCharacterUpdate();
+                await SetDirty(true);
             }
-
-            await RequestCharacterUpdate();
-            await SetDirty(true);
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         #region Wireless Toggles
@@ -20913,52 +22773,67 @@ namespace Chummer
 
         private async void tsCyberwareUpgrade_Click(object sender, EventArgs e)
         {
-            if (await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Cyberware objCyberware)
+            try
             {
-                if (objCyberware.Capacity == "[*]" && objCyberware.Parent != null)
+                if (await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Cyberware
+                    objCyberware)
                 {
-                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CannotRemoveCyberware"), await LanguageManager.GetStringAsync("MessageTitle_CannotRemoveCyberware"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-                }
-
-                using (ThreadSafeForm<SellItem> frmSell = await ThreadSafeForm<SellItem>.GetAsync(() => new SellItem(), GenericToken))
-                {
-                    if (await frmSell.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                    if (objCyberware.Capacity == "[*]" && objCyberware.Parent != null)
+                    {
+                        Program.ShowMessageBox(
+                            this, await LanguageManager.GetStringAsync("Message_CannotRemoveCyberware"),
+                            await LanguageManager.GetStringAsync("MessageTitle_CannotRemoveCyberware"),
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
                         return;
+                    }
 
-                    using (ThreadSafeForm<SelectCyberware> frmCyberware = await ThreadSafeForm<SelectCyberware>.GetAsync(() => new SelectCyberware(CharacterObject, objCyberware.SourceType)
+                    using (ThreadSafeForm<SellItem> frmSell
+                           = await ThreadSafeForm<SellItem>.GetAsync(() => new SellItem(), GenericToken))
                     {
-                        DefaultSearchText = objCyberware.CurrentDisplayNameShort,
-                        Upgrading = true
-                    }, GenericToken))
-                    {
-                        if (await frmCyberware.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                        if (await frmSell.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
                             return;
 
-                        objCyberware.Upgrade(frmCyberware.MyForm.SelectedGrade, frmCyberware.MyForm.SelectedRating, frmSell.MyForm.SellPercent, frmCyberware.MyForm.FreeCost);
+                        using (ThreadSafeForm<SelectCyberware> frmCyberware
+                               = await ThreadSafeForm<SelectCyberware>.GetAsync(
+                                   () => new SelectCyberware(CharacterObject, objCyberware.SourceType)
+                                   {
+                                       DefaultSearchText = objCyberware.CurrentDisplayNameShort,
+                                       Upgrading = true
+                                   }, GenericToken))
+                        {
+                            if (await frmCyberware.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                                return;
+
+                            objCyberware.Upgrade(frmCyberware.MyForm.SelectedGrade, frmCyberware.MyForm.SelectedRating,
+                                                 frmSell.MyForm.SellPercent, frmCyberware.MyForm.FreeCost);
+                        }
                     }
+
+                    //TODO: Bind displayname to selectednode text properly.
+                    await treCyberware.DoThreadSafeAsync(x =>
+                    {
+                        if (x.SelectedNode.Tag != objCyberware)
+                        {
+                            x.FindNodeByTag(objCyberware).Text = objCyberware.CurrentDisplayName;
+                        }
+                        else
+                        {
+                            x.SelectedNode.Text = objCyberware.CurrentDisplayName;
+                        }
+                    }, GenericToken);
+                }
+                else
+                {
+                    Utils.BreakIfDebug();
                 }
 
-                //TODO: Bind displayname to selectednode text properly.
-                await treCyberware.DoThreadSafeAsync(x =>
-                {
-                    if (x.SelectedNode.Tag != objCyberware)
-                    {
-                        x.FindNodeByTag(objCyberware).Text = objCyberware.CurrentDisplayName;
-                    }
-                    else
-                    {
-                        x.SelectedNode.Text = objCyberware.CurrentDisplayName;
-                    }
-                }, GenericToken);
+                await RequestCharacterUpdate(GenericToken);
+                await SetDirty(true, GenericToken);
             }
-            else
+            catch (OperationCanceledException)
             {
-                Utils.BreakIfDebug();
+                //swallow this
             }
-
-            await RequestCharacterUpdate();
-            await SetDirty(true);
         }
 
         // Data binding doesn't work for some reason, so handle visibility toggles through events

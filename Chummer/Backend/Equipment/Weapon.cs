@@ -3157,15 +3157,15 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Calculated Ammo capacity.
         /// </summary>
-        public Task<string> CalculatedAmmoAsync(CultureInfo objCulture, string strLanguage)
+        public Task<string> CalculatedAmmoAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
-            return CalculatedAmmoCoreAsync(false, objCulture, strLanguage);
+            return CalculatedAmmoCoreAsync(false, objCulture, strLanguage, token);
         }
 
         /// <summary>
         /// Calculated Ammo capacity.
         /// </summary>
-        private async Task<string> CalculatedAmmoCoreAsync(bool blnSync, CultureInfo objCulture, string strLanguage)
+        private async Task<string> CalculatedAmmoCoreAsync(bool blnSync, CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
             IEnumerable<string> lstAmmos = Ammo.SplitNoAlloc(' ', StringSplitOptions.RemoveEmptyEntries);
             int intAmmoBonus = 0;
@@ -3208,7 +3208,7 @@ namespace Chummer.Backend.Equipment
             string strSpace = blnSync
                 // ReSharper disable once MethodHasAsyncOverload
                 ? LanguageManager.GetString("String_Space", strLanguage)
-                : await LanguageManager.GetStringAsync("String_Space", strLanguage);
+                : await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token);
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
                 foreach (string strAmmo in lstAmmos)
@@ -3254,12 +3254,15 @@ namespace Chummer.Backend.Equipment
                         }
 
                         strThisAmmo = blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
+                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                             ? strThisAmmo.CheapReplace("Weapon", () => AmmoCapacity(Ammo))
-                            : await strThisAmmo.CheapReplaceAsync("Weapon", () => AmmoCapacity(Ammo));
+                            : await strThisAmmo.CheapReplaceAsync("Weapon", () => AmmoCapacity(Ammo), token: token);
                         // Replace the division sign with "div" since we're using XPath.
                         strThisAmmo = strThisAmmo.Replace("/", " div ");
-                        object objProcess = CommonFunctions.EvaluateInvariantXPath(strThisAmmo, out bool blnIsSuccess);
+                        (bool blnIsSuccess, object objProcess ) = blnSync
+                            // ReSharper disable once MethodHasAsyncOverload
+                            ? CommonFunctions.EvaluateInvariantXPath(strThisAmmo)
+                            : await CommonFunctions.EvaluateInvariantXPathAsync(strThisAmmo, token);
                         if (blnIsSuccess)
                         {
                             int intAmmo = ((double) objProcess).StandardRound() + intAmmoBonusFlat;
@@ -3290,7 +3293,7 @@ namespace Chummer.Backend.Equipment
                     // Translate the Ammo string.
                     if (blnSync)
                     {
-                        // ReSharper disable MethodHasAsyncOverload
+                        // ReSharper disable MethodHasAsyncOverloadWithCancellation
                         strReturn = strReturn
                                     .CheapReplace(
                                         " or ",
@@ -3335,72 +3338,72 @@ namespace Chummer.Backend.Equipment
                                         "(ml)",
                                         () => '(' + LanguageManager.GetString("String_AmmoMuzzleLoad", strLanguage)
                                                   + ')');
-                        // ReSharper restore MethodHasAsyncOverload
+                        // ReSharper restore MethodHasAsyncOverloadWithCancellation
                     }
                     else
                     {
                         strReturn = await strReturn
                                           .CheapReplaceAsync(
                                               " or ",
-                                              async () => strSpace + await LanguageManager.GetStringAsync("String_Or", strLanguage)
+                                              async () => strSpace + await LanguageManager.GetStringAsync("String_Or", strLanguage, token: token)
                                                              + strSpace,
-                                              StringComparison.OrdinalIgnoreCase)
+                                              StringComparison.OrdinalIgnoreCase, token: token)
                                           .CheapReplaceAsync(
                                               " Belt",
-                                              () => LanguageManager.GetStringAsync("String_AmmoBelt", strLanguage),
-                                              StringComparison.OrdinalIgnoreCase)
+                                              () => LanguageManager.GetStringAsync("String_AmmoBelt", strLanguage, token: token),
+                                              StringComparison.OrdinalIgnoreCase, token: token)
                                           .CheapReplaceAsync(
                                               " Energy",
-                                              () => LanguageManager.GetStringAsync("String_AmmoEnergy", strLanguage),
-                                              StringComparison.OrdinalIgnoreCase)
+                                              () => LanguageManager.GetStringAsync("String_AmmoEnergy", strLanguage, token: token),
+                                              StringComparison.OrdinalIgnoreCase, token: token)
                                           .CheapReplaceAsync(" External Source",
                                                              () => LanguageManager.GetStringAsync(
-                                                                 "String_AmmoExternalSource", strLanguage),
-                                                             StringComparison.OrdinalIgnoreCase)
+                                                                 "String_AmmoExternalSource", strLanguage, token: token),
+                                                             StringComparison.OrdinalIgnoreCase, token: token)
                                           .CheapReplaceAsync(
                                               " Special",
-                                              () => LanguageManager.GetStringAsync("String_AmmoSpecial", strLanguage),
-                                              StringComparison.OrdinalIgnoreCase)
+                                              () => LanguageManager.GetStringAsync("String_AmmoSpecial", strLanguage, token: token),
+                                              StringComparison.OrdinalIgnoreCase, token: token)
                                           .CheapReplaceAsync(
                                               "(b)",
                                               async () => '('
                                                           + await LanguageManager.GetStringAsync(
-                                                              "String_AmmoBreakAction", strLanguage) + ')')
+                                                              "String_AmmoBreakAction", strLanguage, token: token) + ')', token: token)
                                           .CheapReplaceAsync(
                                               "(belt)",
                                               async () => '('
                                                           + await LanguageManager.GetStringAsync(
-                                                              "String_AmmoBelt", strLanguage) + ')')
+                                                              "String_AmmoBelt", strLanguage, token: token) + ')', token: token)
                                           .CheapReplaceAsync(
                                               "(box)",
                                               async () => '('
                                                           + await LanguageManager.GetStringAsync(
-                                                              "String_AmmoBox", strLanguage) + ')')
+                                                              "String_AmmoBox", strLanguage, token: token) + ')', token: token)
                                           .CheapReplaceAsync(
                                               "(c)",
                                               async () => '('
                                                           + await LanguageManager.GetStringAsync(
-                                                              "String_AmmoClip", strLanguage) + ')')
+                                                              "String_AmmoClip", strLanguage, token: token) + ')', token: token)
                                           .CheapReplaceAsync(
                                               "(cy)",
                                               async () => '('
                                                           + await LanguageManager.GetStringAsync(
-                                                              "String_AmmoCylinder", strLanguage) + ')')
+                                                              "String_AmmoCylinder", strLanguage, token: token) + ')', token: token)
                                           .CheapReplaceAsync(
                                               "(d)",
                                               async () => '('
                                                           + await LanguageManager.GetStringAsync(
-                                                              "String_AmmoDrum", strLanguage) + ')')
+                                                              "String_AmmoDrum", strLanguage, token: token) + ')', token: token)
                                           .CheapReplaceAsync(
                                               "(m)",
                                               async () => '('
                                                           + await LanguageManager.GetStringAsync(
-                                                              "String_AmmoMagazine", strLanguage) + ')')
+                                                              "String_AmmoMagazine", strLanguage, token: token) + ')', token: token)
                                           .CheapReplaceAsync(
                                               "(ml)",
                                               async () => '('
                                                           + await LanguageManager.GetStringAsync(
-                                                              "String_AmmoMuzzleLoad", strLanguage) + ')');
+                                                              "String_AmmoMuzzleLoad", strLanguage, token: token) + ')', token: token);
                     }
                 }
 
@@ -6347,10 +6350,10 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public async ValueTask Reload(ICollection<Gear> lstGears, TreeView treGearView)
+        public async ValueTask Reload(ICollection<Gear> lstGears, TreeView treGearView, CancellationToken token = default)
         {
             List<string> lstCount = new List<string>(1);
-            string ammoString = await CalculatedAmmoAsync(GlobalSettings.CultureInfo, GlobalSettings.DefaultLanguage);
+            string ammoString = await CalculatedAmmoAsync(GlobalSettings.CultureInfo, GlobalSettings.DefaultLanguage, token);
             if (!RequireAmmo)
             {
                 // For weapons that have ammo capacities but no requirement for ammo, these are charges
@@ -6414,9 +6417,9 @@ namespace Chummer.Backend.Equipment
                            Maximum = intMaxAmmoCount,
                            Minimum = intCurrentAmmoCount,
                            Description = string.Format(LanguageManager.GetString("Message_SelectNumberOfCharges"), CurrentDisplayName)
-                       }))
+                       }, token))
                 {
-                    if (await frmNewAmmoCount.ShowDialogSafeAsync(_objCharacter) != DialogResult.OK)
+                    if (await frmNewAmmoCount.ShowDialogSafeAsync(_objCharacter, token) != DialogResult.OK)
                         return;
 
                     objInternalClip.Ammo = frmNewAmmoCount.MyForm.SelectedValue.ToInt32();
@@ -6463,10 +6466,10 @@ namespace Chummer.Backend.Equipment
             Gear objExternalSource = null;
             if (blnExternalSource)
             {
-                lstCount.Add(await LanguageManager.GetStringAsync("String_ExternalSource"));
+                lstCount.Add(await LanguageManager.GetStringAsync("String_ExternalSource", token: token));
                 objExternalSource = new Gear(_objCharacter)
                 {
-                    Name = await LanguageManager.GetStringAsync("String_ExternalSource"),
+                    Name = await LanguageManager.GetStringAsync("String_ExternalSource", token: token),
                     SourceID = Guid.Empty
                 };
             }
@@ -6478,9 +6481,9 @@ namespace Chummer.Backend.Equipment
                 if (lstAmmo.Count == 0)
                 {
                     Program.ShowMessageBox(string.Format(GlobalSettings.CultureInfo,
-                                                                  await LanguageManager.GetStringAsync("Message_OutOfAmmoType"),
+                                                                  await LanguageManager.GetStringAsync("Message_OutOfAmmoType", token: token),
                                                                   CurrentDisplayName),
-                                                    await LanguageManager.GetStringAsync("Message_OutOfAmmo"),
+                                                    await LanguageManager.GetStringAsync("Message_OutOfAmmo", token: token),
                                                     icon: MessageBoxIcon.Warning);
                     return;
                 }
@@ -6493,9 +6496,9 @@ namespace Chummer.Backend.Equipment
                    {
                        Ammo = lstAmmo,
                        Count = lstCount
-                   }))
+                   }, token))
             {
-                if (await frmReloadWeapon.ShowDialogSafeAsync(_objCharacter) != DialogResult.OK)
+                if (await frmReloadWeapon.ShowDialogSafeAsync(_objCharacter, token) != DialogResult.OK)
                     return;
 
                 Gear objCurrentlyLoadedAmmo = AmmoLoaded;
@@ -6523,7 +6526,7 @@ namespace Chummer.Backend.Equipment
                             {
                                 objNewSelectedAmmo = new Gear(_objCharacter);
                                 objNewSelectedAmmo.Copy(objSelectedAmmo);
-                                await objDuplicatedParent.Children.AddAsync(objNewSelectedAmmo);
+                                await objDuplicatedParent.Children.AddAsync(objNewSelectedAmmo, token);
                             }
                             objSelectedAmmo = objNewSelectedAmmo;
                         }
@@ -6531,7 +6534,7 @@ namespace Chummer.Backend.Equipment
                         {
                             TreeNode objNode = x.FindNode(objParent.InternalId);
                             objNode.Text = objParent.CurrentDisplayName;
-                        });
+                        }, token: token);
                     }
 
                     if (objSelectedAmmo.IsIdenticalToOtherGear(objCurrentlyLoadedAmmo))
@@ -6558,7 +6561,7 @@ namespace Chummer.Backend.Equipment
                                 objSelectedNode = x.FindNode(objSelectedAmmo.InternalId);
                                 if (objSelectedNode != null)
                                     objSelectedNode.Text = objSelectedAmmo.CurrentDisplayName;
-                            });
+                            }, token: token);
                             GetClip(_intActiveAmmoSlot).Ammo = decQty.ToInt32(); // Bypass AmmoRemaining so as not to alter the gear quantity
                         }
 
@@ -6579,7 +6582,7 @@ namespace Chummer.Backend.Equipment
                             TreeNode objSelectedNode = x.FindNode(objSelectedAmmo.InternalId);
                             if (objSelectedNode != null)
                                 objSelectedNode.Text = objSelectedAmmo.CurrentDisplayName;
-                        });
+                        }, token: token);
                         objSelectedAmmo = objNewSelectedAmmo;
                     }
                     else if (decQty > objSelectedAmmo.Quantity)
@@ -6593,7 +6596,7 @@ namespace Chummer.Backend.Equipment
                         TreeNode objSelectedNode = x.FindNode(objSelectedAmmo.InternalId);
                         if (objSelectedNode != null)
                             objSelectedNode.Text = objSelectedAmmo.CurrentDisplayName;
-                    });
+                    }, token: token);
                 }
                 else
                 {
@@ -6609,13 +6612,13 @@ namespace Chummer.Backend.Equipment
                         TreeNode objSelectedNode = x.FindNode(objCurrentlyLoadedAmmo.InternalId);
                         if (objSelectedNode != null)
                             objSelectedNode.Text = objCurrentlyLoadedAmmo.CurrentDisplayName;
-                    });
+                    }, token: token);
                 }
                 GetClip(_intActiveAmmoSlot).Ammo = decQty.ToInt32(); // Bypass AmmoRemaining so as not to alter the gear quantity
             }
         }
 
-        public async ValueTask Unload(ICollection<Gear> lstGears, TreeView treGearView)
+        public async ValueTask Unload(ICollection<Gear> lstGears, TreeView treGearView, CancellationToken token = default)
         {
             Clip objClip = GetClip(ActiveAmmoSlot);
             Gear objAmmo = Unload(lstGears, objClip);
@@ -6626,7 +6629,7 @@ namespace Chummer.Backend.Equipment
                 // Refresh the Gear tree.
                 TreeNode objSelectedNode = x.FindNode(objAmmo.InternalId);
                 if (objSelectedNode != null) objSelectedNode.Text = objAmmo.CurrentDisplayName;
-            });
+            }, token: token);
         }
 
         /// <returns>Returns the gear with the unloaded ammo</returns>

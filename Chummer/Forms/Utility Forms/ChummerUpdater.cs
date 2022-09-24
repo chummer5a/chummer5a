@@ -177,7 +177,14 @@ namespace Chummer
             if (e.CloseReason == CloseReason.UserClosing && GlobalSettings.AutomaticUpdate)
             {
                 e.Cancel = true;
-                await this.DoThreadSafeAsync(x => x.Hide(), _objGenericToken);
+                try
+                {
+                    await this.DoThreadSafeAsync(x => x.Hide(), _objGenericToken);
+                }
+                catch (OperationCanceledException)
+                {
+                    //swallow this
+                }
                 SilentMode = true;
                 return;
             }
@@ -1106,7 +1113,7 @@ namespace Chummer
 
                     await pgbOverallProgress.DoThreadSafeAsync(x => x.Value = intTmp, _objGenericToken);
             }
-            catch (TaskCanceledException)
+            catch (OperationCanceledException)
             {
                 //Swallow this. Closing the form cancels the download which is a change of download progress so token is already cancelled. 
             }
