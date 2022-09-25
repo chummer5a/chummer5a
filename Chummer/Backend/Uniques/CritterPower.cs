@@ -452,14 +452,15 @@ namespace Chummer
         /// Returns Page if not found or the string is empty.
         /// </summary>
         /// <param name="strLanguage">Language file keyword to use.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns></returns>
-        public async ValueTask<string> DisplayPageAsync(string strLanguage)
+        public async ValueTask<string> DisplayPageAsync(string strLanguage, CancellationToken token = default)
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
-            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage);
+            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token);
             string s = objNode != null
-                ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage"))?.Value ?? Page
+                ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage", token: token))?.Value ?? Page
                 : Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
@@ -488,13 +489,13 @@ namespace Chummer
         /// <summary>
         /// Translated Category.
         /// </summary>
-        public async ValueTask<string> DisplayCategoryAsync(string strLanguage)
+        public async ValueTask<string> DisplayCategoryAsync(string strLanguage, CancellationToken token = default)
         {
             // Get the translated name if applicable.
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Category;
 
-            return (await _objCharacter.LoadDataXPathAsync("critterpowers.xml", strLanguage)).SelectSingleNode("/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate")?.Value ?? Category;
+            return (await _objCharacter.LoadDataXPathAsync("critterpowers.xml", strLanguage, token: token)).SelectSingleNode("/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate")?.Value ?? Category;
         }
 
         /// <summary>
@@ -535,18 +536,18 @@ namespace Chummer
         /// <summary>
         /// Translated Type.
         /// </summary>
-        public Task<string> DisplayTypeAsync(string strLanguage)
+        public Task<string> DisplayTypeAsync(string strLanguage, CancellationToken token = default)
         {
             switch (Type)
             {
                 case "M":
-                    return LanguageManager.GetStringAsync("String_SpellTypeMana", strLanguage);
+                    return LanguageManager.GetStringAsync("String_SpellTypeMana", strLanguage, token: token);
 
                 case "P":
-                    return LanguageManager.GetStringAsync("String_SpellTypePhysical", strLanguage);
+                    return LanguageManager.GetStringAsync("String_SpellTypePhysical", strLanguage, token: token);
             }
 
-            return LanguageManager.GetStringAsync("String_None", strLanguage);
+            return LanguageManager.GetStringAsync("String_None", strLanguage, token: token);
         }
 
         /// <summary>
@@ -587,27 +588,27 @@ namespace Chummer
         /// <summary>
         /// Translated Action.
         /// </summary>
-        public Task<string> DisplayActionAsync(string strLanguage)
+        public Task<string> DisplayActionAsync(string strLanguage, CancellationToken token = default)
         {
             switch (Action)
             {
                 case "Auto":
-                    return LanguageManager.GetStringAsync("String_ActionAutomatic", strLanguage);
+                    return LanguageManager.GetStringAsync("String_ActionAutomatic", strLanguage, token: token);
 
                 case "Free":
-                    return LanguageManager.GetStringAsync("String_ActionFree", strLanguage);
+                    return LanguageManager.GetStringAsync("String_ActionFree", strLanguage, token: token);
 
                 case "Simple":
-                    return LanguageManager.GetStringAsync("String_ActionSimple", strLanguage);
+                    return LanguageManager.GetStringAsync("String_ActionSimple", strLanguage, token: token);
 
                 case "Complex":
-                    return LanguageManager.GetStringAsync("String_ActionComplex", strLanguage);
+                    return LanguageManager.GetStringAsync("String_ActionComplex", strLanguage, token: token);
 
                 case "Special":
-                    return LanguageManager.GetStringAsync("String_SpellDurationSpecial", strLanguage);
+                    return LanguageManager.GetStringAsync("String_SpellDurationSpecial", strLanguage, token: token);
             }
 
-            return LanguageManager.GetStringAsync("String_None", strLanguage);
+            return LanguageManager.GetStringAsync("String_None", strLanguage, token: token);
         }
 
         /// <summary>
@@ -637,26 +638,26 @@ namespace Chummer
         /// <summary>
         /// Translated Range.
         /// </summary>
-        public Task<string> DisplayRangeAsync(string strLanguage)
+        public Task<string> DisplayRangeAsync(string strLanguage, CancellationToken token = default)
         {
             return Range
                    .CheapReplaceAsync(
-                       "Self", () => LanguageManager.GetStringAsync("String_SpellRangeSelf", strLanguage))
+                       "Self", () => LanguageManager.GetStringAsync("String_SpellRangeSelf", strLanguage, token: token), token: token)
                    .CheapReplaceAsync(
-                       "Special", () => LanguageManager.GetStringAsync("String_SpellDurationSpecial", strLanguage))
+                       "Special", () => LanguageManager.GetStringAsync("String_SpellDurationSpecial", strLanguage, token: token), token: token)
                    .CheapReplaceAsync(
-                       "LOS", () => LanguageManager.GetStringAsync("String_SpellRangeLineOfSight", strLanguage))
+                       "LOS", () => LanguageManager.GetStringAsync("String_SpellRangeLineOfSight", strLanguage, token: token), token: token)
                    .CheapReplaceAsync(
-                       "LOI", () => LanguageManager.GetStringAsync("String_SpellRangeLineOfInfluence", strLanguage))
+                       "LOI", () => LanguageManager.GetStringAsync("String_SpellRangeLineOfInfluence", strLanguage, token: token), token: token)
                    .CheapReplaceAsync(
                        "Touch",
                        () => LanguageManager.GetStringAsync("String_SpellRangeTouch",
-                                                            strLanguage)) // Short form to remain export-friendly
-                   .CheapReplaceAsync("T", () => LanguageManager.GetStringAsync("String_SpellRangeTouch", strLanguage))
+                                                            strLanguage, token: token), token: token) // Short form to remain export-friendly
+                   .CheapReplaceAsync("T", () => LanguageManager.GetStringAsync("String_SpellRangeTouch", strLanguage, token: token), token: token)
                    .CheapReplaceAsync(
-                       "(A)", async () => '(' + await LanguageManager.GetStringAsync("String_SpellRangeArea", strLanguage) + ')')
+                       "(A)", async () => '(' + await LanguageManager.GetStringAsync("String_SpellRangeArea", strLanguage, token: token) + ')', token: token)
                    .CheapReplaceAsync(
-                       "MAG", () => LanguageManager.GetStringAsync("String_AttributeMAGShort", strLanguage));
+                       "MAG", () => LanguageManager.GetStringAsync("String_AttributeMAGShort", strLanguage, token: token), token: token);
         }
 
         /// <summary>
@@ -696,23 +697,23 @@ namespace Chummer
         /// <summary>
         /// Translated Duration.
         /// </summary>
-        public Task<string> DisplayDurationAsync(string strLanguage)
+        public Task<string> DisplayDurationAsync(string strLanguage, CancellationToken token = default)
         {
             string strReturn = Duration;
 
             switch (strReturn)
             {
                 case "Instant":
-                    return LanguageManager.GetStringAsync("String_SpellDurationInstantLong", strLanguage);
+                    return LanguageManager.GetStringAsync("String_SpellDurationInstantLong", strLanguage, token: token);
 
                 case "Sustained":
-                    return LanguageManager.GetStringAsync("String_SpellDurationSustained", strLanguage);
+                    return LanguageManager.GetStringAsync("String_SpellDurationSustained", strLanguage, token: token);
 
                 case "Always":
-                    return LanguageManager.GetStringAsync("String_SpellDurationAlways", strLanguage);
+                    return LanguageManager.GetStringAsync("String_SpellDurationAlways", strLanguage, token: token);
 
                 case "Special":
-                    return LanguageManager.GetStringAsync("String_SpellDurationSpecial", strLanguage);
+                    return LanguageManager.GetStringAsync("String_SpellDurationSpecial", strLanguage, token: token);
             }
 
             return Task.FromResult(strReturn);

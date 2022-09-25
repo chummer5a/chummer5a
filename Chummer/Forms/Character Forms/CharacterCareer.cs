@@ -6673,7 +6673,7 @@ namespace Chummer
                     return false;
 
                 case QualitySource.Improvement:
-                    Program.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_ImprovementQuality", token: token), await objSelectedQuality.GetSourceNameAsync(GlobalSettings.Language)), await LanguageManager.GetStringAsync("MessageTitle_MetavariantQuality", token: token), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    Program.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_ImprovementQuality", token: token), await objSelectedQuality.GetSourceNameAsync(GlobalSettings.Language, token)), await LanguageManager.GetStringAsync("MessageTitle_MetavariantQuality", token: token), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return false;
 
                 case QualitySource.MetatypeRemovable:
@@ -15339,15 +15339,15 @@ namespace Chummer
                 {
                     await cmdDeleteCritterPower.DoThreadSafeAsync(x => x.Enabled = objPower.Grade == 0, token);
                     await lblCritterPowerName.DoThreadSafeAsync(x => x.Text = objPower.CurrentDisplayName, token);
-                    string strText = await objPower.DisplayCategoryAsync(GlobalSettings.Language);
+                    string strText = await objPower.DisplayCategoryAsync(GlobalSettings.Language, token);
                     await lblCritterPowerCategory.DoThreadSafeAsync(x => x.Text = strText, token);
-                    strText = await objPower.DisplayTypeAsync(GlobalSettings.Language);
+                    strText = await objPower.DisplayTypeAsync(GlobalSettings.Language, token);
                     await lblCritterPowerType.DoThreadSafeAsync(x => x.Text = strText, token);
-                    strText = await objPower.DisplayActionAsync(GlobalSettings.Language);
+                    strText = await objPower.DisplayActionAsync(GlobalSettings.Language, token);
                     await lblCritterPowerAction.DoThreadSafeAsync(x => x.Text = strText, token);
-                    strText = await objPower.DisplayRangeAsync(GlobalSettings.Language);
+                    strText = await objPower.DisplayRangeAsync(GlobalSettings.Language, token);
                     await lblCritterPowerRange.DoThreadSafeAsync(x => x.Text = strText, token);
-                    strText = await objPower.DisplayDurationAsync(GlobalSettings.Language);
+                    strText = await objPower.DisplayDurationAsync(GlobalSettings.Language, token);
                     await lblCritterPowerDuration.DoThreadSafeAsync(x => x.Text = strText, token);
                     await chkCritterPowerCount.DoThreadSafeAsync(x => x.Checked = objPower.CountTowardsLimit, token);
                     await objPower.SetSourceDetailAsync(lblCritterPowerSource, token);
@@ -16482,7 +16482,7 @@ namespace Chummer
                     await lblDrugCategory.DoThreadSafeAsync(x => x.Text = objDrug.Category, token);
                     await lblDrugAddictionRating.DoThreadSafeAsync(x => x.Text = objDrug.AddictionRating.ToString(GlobalSettings.CultureInfo), token);
                     await lblDrugAddictionThreshold.DoThreadSafeAsync(x => x.Text = objDrug.AddictionThreshold.ToString(GlobalSettings.CultureInfo), token);
-                    string strText = await objDrug.GetEffectDescriptionAsync();
+                    string strText = await objDrug.GetEffectDescriptionAsync(token: token);
                     await lblDrugEffect.DoThreadSafeAsync(x => x.Text = strText, token);
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                   out StringBuilder sbdComponents))
@@ -16743,7 +16743,7 @@ namespace Chummer
                             x => x.Enabled = string.IsNullOrEmpty(objCyberware.ParentID), token);
                         // gpbCyberwareCommon
                         await lblCyberwareName.DoThreadSafeAsync(x => x.Text = objCyberware.CurrentDisplayNameShort, token);
-                        string strText = await objCyberware.DisplayCategoryAsync(GlobalSettings.Language);
+                        string strText = await objCyberware.DisplayCategoryAsync(GlobalSettings.Language, token);
                         await lblCyberwareCategory.DoThreadSafeAsync(x => x.Text = strText, token);
                         await lblCyberwareGradeLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                         await lblCyberwareGrade.DoThreadSafeAsync(x => x.Visible = true, token);
@@ -17026,7 +17026,7 @@ namespace Chummer
                         token.ThrowIfCancellationRequested();
                         // gpbWeaponsCommon
                         await lblWeaponName.DoThreadSafeAsync(x => x.Text = objWeapon.CurrentDisplayName, token);
-                        string strText = await objWeapon.DisplayCategoryAsync(GlobalSettings.Language);
+                        string strText = await objWeapon.DisplayCategoryAsync(GlobalSettings.Language, token);
                         await lblWeaponCategory.DoThreadSafeAsync(x => x.Text = strText, token);
                         await lblWeaponRatingLabel.DoThreadSafeAsync(x => x.Visible = false, token);
                         await lblWeaponRating.DoThreadSafeAsync(x => x.Visible = false, token);
@@ -18904,7 +18904,7 @@ namespace Chummer
                     }
 
                     // Multiply the cost if applicable.
-                    char chrAvail = (await objGear.TotalAvailTupleAsync()).Suffix;
+                    char chrAvail = (await objGear.TotalAvailTupleAsync(token: token)).Suffix;
                     switch (chrAvail)
                     {
                         case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
@@ -19130,7 +19130,7 @@ namespace Chummer
                     }
 
                     // Multiply the cost if applicable.
-                    char chrAvail = (await objGear.TotalAvailTupleAsync()).Suffix;
+                    char chrAvail = (await objGear.TotalAvailTupleAsync(token: token)).Suffix;
                     switch (chrAvail)
                     {
                         case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
@@ -19755,12 +19755,12 @@ namespace Chummer
                         token.ThrowIfCancellationRequested();
                         // gpbVehiclesCommon
                         await lblVehicleName.DoThreadSafeAsync(x => x.Text = objWeapon.CurrentDisplayName, token);
-                        string strText = await objWeapon.DisplayCategoryAsync(GlobalSettings.Language);
-                        await lblVehicleCategory.DoThreadSafeAsync(x => x.Text = strText, token);
+                        string strText = await objWeapon.DisplayCategoryAsync(GlobalSettings.Language, token);
+                        await lblVehicleCategory.DoThreadSafeAsync(x => x.Text = strText, token, token);
                         await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = false, token);
-                        await lblVehicleRating.DoThreadSafeAsync(x => x.Visible = false, token);
+                        await lblVehicleRating.DoThreadSafeAsync(x => x.Visible = false, token, token);
                         await lblVehicleGearQtyLabel.DoThreadSafeAsync(x => x.Visible = false, token);
-                        await lblVehicleGearQty.DoThreadSafeAsync(x => x.Visible = false, token);
+                        await lblVehicleGearQty.DoThreadSafeAsync(x => x.Visible = false, token, token);
                         await cmdVehicleGearReduceQty.DoThreadSafeAsync(x => x.Visible = false, token);
                         await lblVehicleAvail.DoThreadSafeAsync(x => x.Text = objWeapon.DisplayTotalAvail, token);
                         await lblVehicleCost.DoThreadSafeAsync(x => x.Text
@@ -20313,7 +20313,7 @@ namespace Chummer
                         await cmdDeleteVehicle.DoThreadSafeAsync(x => x.Enabled = string.IsNullOrEmpty(objCyberware.ParentID), token);
                         // gpbVehiclesCommon
                         await lblVehicleName.DoThreadSafeAsync(x => x.Text = objCyberware.CurrentDisplayNameShort, token);
-                        string strText = await objCyberware.DisplayCategoryAsync(GlobalSettings.Language);
+                        string strText = await objCyberware.DisplayCategoryAsync(GlobalSettings.Language, token);
                         await lblVehicleCategory.DoThreadSafeAsync(x => x.Text = strText, token);
                         if (objCyberware.MaxRating == 0)
                         {
@@ -20626,7 +20626,7 @@ namespace Chummer
                             new ListViewItemWithValue.ListViewSubItemWithValue
                             {
                                 Value = objExpense.Reason,
-                                Text = await objExpense.DisplayReasonAsync(GlobalSettings.Language)
+                                Text = await objExpense.DisplayReasonAsync(GlobalSettings.Language, token)
                             };
                         ListViewItemWithValue.ListViewSubItemWithValue objInternalIdItem =
                             new ListViewItemWithValue.ListViewSubItemWithValue
@@ -20734,7 +20734,7 @@ namespace Chummer
                             new ListViewItemWithValue.ListViewSubItemWithValue
                             {
                                 Value = objExpense.Reason,
-                                Text = await objExpense.DisplayReasonAsync(GlobalSettings.Language)
+                                Text = await objExpense.DisplayReasonAsync(GlobalSettings.Language, token)
                             };
                         ListViewItemWithValue.ListViewSubItemWithValue objInternalIdItem =
                             new ListViewItemWithValue.ListViewSubItemWithValue
@@ -20920,21 +20920,21 @@ namespace Chummer
                 {
                     await gpbMagicianSpell.DoThreadSafeAsync(x => x.Visible = true, token);
                     await cmdDeleteSpell.DoThreadSafeAsync(x => x.Enabled = objSpell.Grade == 0, token);
-                    string strText = await objSpell.DisplayDescriptorsAsync(GlobalSettings.Language);
+                    string strText = await objSpell.DisplayDescriptorsAsync(GlobalSettings.Language, token);
                     if (string.IsNullOrEmpty(strText))
                         strText = await LanguageManager.GetStringAsync("String_None", token: token);
                     await lblSpellDescriptors.DoThreadSafeAsync(x => x.Text = strText, token);
-                    strText = await objSpell.DisplayCategoryAsync(GlobalSettings.Language);
+                    strText = await objSpell.DisplayCategoryAsync(GlobalSettings.Language, token);
                     await lblSpellCategory.DoThreadSafeAsync(x => x.Text = strText, token);
-                    strText = await objSpell.DisplayTypeAsync(GlobalSettings.Language);
+                    strText = await objSpell.DisplayTypeAsync(GlobalSettings.Language, token);
                     await lblSpellType.DoThreadSafeAsync(x => x.Text = strText, token);
-                    strText = await objSpell.DisplayRangeAsync(GlobalSettings.Language);
+                    strText = await objSpell.DisplayRangeAsync(GlobalSettings.Language, token);
                     await lblSpellRange.DoThreadSafeAsync(x => x.Text = strText, token);
-                    strText = await objSpell.DisplayDamageAsync(GlobalSettings.Language);
+                    strText = await objSpell.DisplayDamageAsync(GlobalSettings.Language, token);
                     await lblSpellDamage.DoThreadSafeAsync(x => x.Text = strText, token);
-                    strText = await objSpell.DisplayDurationAsync(GlobalSettings.Language);
+                    strText = await objSpell.DisplayDurationAsync(GlobalSettings.Language, token);
                     await lblSpellDuration.DoThreadSafeAsync(x => x.Text = strText, token);
-                    strText = await objSpell.DisplayDvAsync(GlobalSettings.Language);
+                    strText = await objSpell.DisplayDvAsync(GlobalSettings.Language, token);
                     await lblSpellDV.DoThreadSafeAsync(x => x.Text = strText, token);
                     await lblSpellDV.SetToolTipAsync(objSpell.DvTooltip, token);
                     await objSpell.SetSourceDetailAsync(lblSpellSource, token);
@@ -21116,11 +21116,11 @@ namespace Chummer
                 {
                     await gpbTechnomancerComplexForm.DoThreadSafeAsync(x => x.Visible = true, token);
                     await cmdDeleteComplexForm.DoThreadSafeAsync(x => x.Enabled = objComplexForm.Grade == 0, token);
-                    string strText = await objComplexForm.DisplayTargetAsync(GlobalSettings.Language);
+                    string strText = await objComplexForm.DisplayTargetAsync(GlobalSettings.Language, token);
                     await lblTarget.DoThreadSafeAsync(x => x.Text = strText, token);
-                    strText = await objComplexForm.DisplayDurationAsync(GlobalSettings.Language);
+                    strText = await objComplexForm.DisplayDurationAsync(GlobalSettings.Language, token);
                     await lblDuration.DoThreadSafeAsync(x => x.Text = strText, token);
-                    strText = await objComplexForm.DisplayFvAsync(GlobalSettings.Language);
+                    strText = await objComplexForm.DisplayFvAsync(GlobalSettings.Language, token);
                     await lblFV.DoThreadSafeAsync(x => x.Text = strText, token);
                     await lblFV.SetToolTipAsync(objComplexForm.FvTooltip, token);
                     await objComplexForm.SetSourceDetailAsync(lblComplexFormSource, token);
@@ -22116,7 +22116,7 @@ namespace Chummer
                 // Locate the Program that is selected in the tree.
                 if (await treAIPrograms.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token) is AIProgram objProgram)
                 {
-                    string strText = await objProgram.DisplayRequiresProgramAsync(GlobalSettings.Language);
+                    string strText = await objProgram.DisplayRequiresProgramAsync(GlobalSettings.Language, token);
                     await lblAIProgramsRequires.DoThreadSafeAsync(x => x.Text = strText, token);
                     await objProgram.SetSourceDetailAsync(lblAIProgramsSource, token);
                 }

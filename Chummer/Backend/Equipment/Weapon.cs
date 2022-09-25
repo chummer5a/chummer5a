@@ -1801,25 +1801,25 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Translated Category.
         /// </summary>
-        public async ValueTask<string> DisplayCategoryAsync(string strLanguage)
+        public async ValueTask<string> DisplayCategoryAsync(string strLanguage, CancellationToken token = default)
         {
             switch (Category)
             {
                 // If Categories are actually the name of object types, so pull them from the language file.
                 case "Gear":
-                    return await LanguageManager.GetStringAsync("String_SelectPACKSKit_Gear", strLanguage);
+                    return await LanguageManager.GetStringAsync("String_SelectPACKSKit_Gear", strLanguage, token: token);
 
                 case "Cyberware":
-                    return await LanguageManager.GetStringAsync("String_SelectPACKSKit_Cyberware", strLanguage);
+                    return await LanguageManager.GetStringAsync("String_SelectPACKSKit_Cyberware", strLanguage, token: token);
 
                 case "Bioware":
-                    return await LanguageManager.GetStringAsync("String_SelectPACKSKit_Bioware", strLanguage);
+                    return await LanguageManager.GetStringAsync("String_SelectPACKSKit_Bioware", strLanguage, token: token);
             }
 
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Category;
 
-            return (await _objCharacter.LoadDataXPathAsync("weapons.xml", strLanguage)).SelectSingleNode("/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate")?.Value ?? Category;
+            return (await _objCharacter.LoadDataXPathAsync("weapons.xml", strLanguage, token: token)).SelectSingleNode("/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate")?.Value ?? Category;
         }
 
         /// <summary>
@@ -2515,15 +2515,15 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Weapon's Damage including all Accessories, Modifications, Attributes, and Ammunition.
         /// </summary>
-        public Task<string> CalculatedDamageAsync(CultureInfo objCulture, string strLanguage)
+        public Task<string> CalculatedDamageAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
-            return CalculatedDamageCoreAsync(false, objCulture, strLanguage);
+            return CalculatedDamageCoreAsync(false, objCulture, strLanguage, token);
         }
 
         /// <summary>
         /// Weapon's Damage including all Accessories, Modifications, Attributes, and Ammunition.
         /// </summary>
-        private async Task<string> CalculatedDamageCoreAsync(bool blnSync, CultureInfo objCulture, string strLanguage)
+        private async Task<string> CalculatedDamageCoreAsync(bool blnSync, CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
             // If the cost is determined by the Rating, evaluate the expression.
             string strDamageType = string.Empty;
@@ -2532,12 +2532,20 @@ namespace Chummer.Backend.Equipment
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdDamage))
             {
                 sbdDamage.Append(Damage);
-                ProcessAttributesInXPath(sbdDamage, Damage);
                 if (blnSync)
-                    // ReSharper disable once MethodHasAsyncOverload
+                {
+                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                    ProcessAttributesInXPath(sbdDamage, Damage);
+                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                     sbdDamage.CheapReplace("{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                }
                 else
-                    await sbdDamage.CheapReplaceAsync("{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                {
+                    await ProcessAttributesInXPathAsync(sbdDamage, Damage, token: token);
+                    await sbdDamage.CheapReplaceAsync(
+                        "{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo), token: token);
+                }
+
                 strDamage = sbdDamage.ToString();
             }
 
@@ -2650,16 +2658,16 @@ namespace Chummer.Backend.Equipment
                 {
                     decImprove += await ImprovementManager.ValueOfAsync(_objCharacter,
                                                                         Improvement.ImprovementType.WeaponCategoryDV,
-                                                                        strImprovedName: strCategory);
+                                                                        strImprovedName: strCategory, token: token);
                     if (!string.IsNullOrEmpty(strUseSkill) && strCategory != strUseSkill)
                         decImprove += await ImprovementManager.ValueOfAsync(_objCharacter,
                                                                             Improvement.ImprovementType.WeaponCategoryDV,
-                                                                            strImprovedName: strUseSkill);
+                                                                            strImprovedName: strUseSkill, token: token);
                     if (strCategory.StartsWith("Cyberware ", StringComparison.Ordinal))
                         decImprove += await ImprovementManager.ValueOfAsync(_objCharacter,
                                                                             Improvement.ImprovementType.WeaponCategoryDV,
                                                                             strImprovedName: strCategory.TrimStartOnce(
-                                                                                "Cyberware ", true));
+                                                                                "Cyberware ", true), token: token);
 
                     // If this is the Unarmed Attack Weapon and the character has the UnarmedDVPhysical Improvement, change the type to Physical.
                     // This should also add any UnarmedDV bonus which only applies to Unarmed Combat, not Unarmed Weapons.
@@ -2667,17 +2675,17 @@ namespace Chummer.Backend.Equipment
                     {
                         if (strDamageType == "S" && (await ImprovementManager
                                 .GetCachedImprovementListForValueOfAsync(
-                                    _objCharacter, Improvement.ImprovementType.UnarmedDVPhysical))
+                                    _objCharacter, Improvement.ImprovementType.UnarmedDVPhysical, token: token))
                                                     .Count > 0)
                             strDamageType = "P";
-                        decImprove += await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.UnarmedDV);
+                        decImprove += await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.UnarmedDV, token: token);
                     }
 
                     // This should also add any UnarmedDV bonus to Unarmed physical weapons if the option is enabled.
                     else if (strUseSkill == "Unarmed Combat"
                              && _objCharacter.Settings.UnarmedImprovementsApplyToWeapons)
                     {
-                        decImprove += await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.UnarmedDV);
+                        decImprove += await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.UnarmedDV, token: token);
                     }
                 }
 
@@ -2889,7 +2897,10 @@ namespace Chummer.Backend.Equipment
                     strDamage = strDamage.Replace("/", " div ");
                     try
                     {
-                        object objProcess = CommonFunctions.EvaluateInvariantXPath(strDamage, out bool blnIsSuccess);
+                        (bool blnIsSuccess, object objProcess) = blnSync
+                            // ReSharper disable once MethodHasAsyncOverload
+                            ? CommonFunctions.EvaluateInvariantXPath(strDamage)
+                            : await CommonFunctions.EvaluateInvariantXPathAsync(strDamage, token);
                         if (blnIsSuccess)
                         {
                             int intDamage = (Convert.ToDecimal((double)objProcess) + decImprove).StandardRound();
@@ -2923,7 +2934,7 @@ namespace Chummer.Backend.Equipment
             {
                 if (blnSync)
                 {
-                    // ReSharper disable MethodHasAsyncOverload
+                    // ReSharper disable MethodHasAsyncOverloadWithCancellation
                     strReturn = strReturn
                                 .CheapReplace(
                                     "Special", () => LanguageManager.GetString("String_DamageSpecial", strLanguage))
@@ -2994,147 +3005,147 @@ namespace Chummer.Backend.Equipment
                                     "8P", () => '8' + LanguageManager.GetString("String_DamagePhysical", strLanguage))
                                 .CheapReplace(
                                     "9P", () => '9' + LanguageManager.GetString("String_DamagePhysical", strLanguage));
-                    // ReSharper restore MethodHasAsyncOverload
+                    // ReSharper restore MethodHasAsyncOverloadWithCancellation
                 }
                 else
                 {
                     strReturn = await strReturn
                                       .CheapReplaceAsync(
                                           "Special",
-                                          () => LanguageManager.GetStringAsync("String_DamageSpecial", strLanguage))
+                                          () => LanguageManager.GetStringAsync("String_DamageSpecial", strLanguage, token: token), token: token)
                                       .CheapReplaceAsync(
-                                          "P or S", () => LanguageManager.GetStringAsync("String_DamagePOrS", strLanguage))
+                                          "P or S", () => LanguageManager.GetStringAsync("String_DamagePOrS", strLanguage, token: token), token: token)
                                       .CheapReplaceAsync(
                                           "Chemical",
-                                          () => LanguageManager.GetStringAsync("String_DamageChemical", strLanguage))
+                                          () => LanguageManager.GetStringAsync("String_DamageChemical", strLanguage, token: token), token: token)
                                       .CheapReplaceAsync(
-                                          "(e)", () => LanguageManager.GetStringAsync("String_DamageElectric", strLanguage))
+                                          "(e)", () => LanguageManager.GetStringAsync("String_DamageElectric", strLanguage, token: token), token: token)
                                       .CheapReplaceAsync(
-                                          "(f)", () => LanguageManager.GetStringAsync("String_DamageFlechette", strLanguage))
+                                          "(f)", () => LanguageManager.GetStringAsync("String_DamageFlechette", strLanguage, token: token), token: token)
                                       .CheapReplaceAsync(
                                           "Grenade",
-                                          () => LanguageManager.GetStringAsync("String_DamageGrenade", strLanguage))
+                                          () => LanguageManager.GetStringAsync("String_DamageGrenade", strLanguage, token: token), token: token)
                                       .CheapReplaceAsync(
                                           "Missile",
-                                          () => LanguageManager.GetStringAsync("String_DamageMissile", strLanguage))
+                                          () => LanguageManager.GetStringAsync("String_DamageMissile", strLanguage, token: token), token: token)
                                       .CheapReplaceAsync(
-                                          "Mortar", () => LanguageManager.GetStringAsync("String_DamageMortar", strLanguage))
+                                          "Mortar", () => LanguageManager.GetStringAsync("String_DamageMortar", strLanguage, token: token), token: token)
                                       .CheapReplaceAsync(
-                                          "Rocket", () => LanguageManager.GetStringAsync("String_DamageRocket", strLanguage))
+                                          "Rocket", () => LanguageManager.GetStringAsync("String_DamageRocket", strLanguage, token: token), token: token)
                                       .CheapReplaceAsync(
-                                          "Radius", () => LanguageManager.GetStringAsync("String_DamageRadius", strLanguage))
+                                          "Radius", () => LanguageManager.GetStringAsync("String_DamageRadius", strLanguage, token: token), token: token)
                                       .CheapReplaceAsync("As Drug/Toxin",
                                                          () => LanguageManager.GetStringAsync(
-                                                             "String_DamageAsDrugToxin", strLanguage))
+                                                             "String_DamageAsDrugToxin", strLanguage, token: token), token: token)
                                       .CheapReplaceAsync(
                                           "as round",
-                                          () => LanguageManager.GetStringAsync("String_DamageAsRound", strLanguage))
+                                          () => LanguageManager.GetStringAsync("String_DamageAsRound", strLanguage, token: token), token: token)
                                       .CheapReplaceAsync(
                                           "/m",
-                                          async () => '/' + await LanguageManager.GetStringAsync("String_DamageMeter", strLanguage))
+                                          async () => '/' + await LanguageManager.GetStringAsync("String_DamageMeter", strLanguage, token: token), token: token)
                                       .CheapReplaceAsync(
-                                          "(M)", () => LanguageManager.GetStringAsync("String_DamageMatrix", strLanguage));
+                                          "(M)", () => LanguageManager.GetStringAsync("String_DamageMatrix", strLanguage, token: token), token: token);
                     strReturn = await strReturn
                                       .CheapReplaceAsync(
                                           "0S",
                                           async () => '0'
                                                       + await LanguageManager.GetStringAsync(
-                                                          "String_DamageStun", strLanguage))
+                                                          "String_DamageStun", strLanguage, token: token), token: token)
                                       .CheapReplaceAsync(
                                           "1S",
                                           async () => '1'
                                                       + await LanguageManager.GetStringAsync(
-                                                          "String_DamageStun", strLanguage))
+                                                          "String_DamageStun", strLanguage, token: token), token: token)
                                       .CheapReplaceAsync(
                                           "2S",
                                           async () => '2'
                                                       + await LanguageManager.GetStringAsync(
-                                                          "String_DamageStun", strLanguage))
+                                                          "String_DamageStun", strLanguage, token: token), token: token)
                                       .CheapReplaceAsync(
                                           "3S",
                                           async () => '3'
                                                       + await LanguageManager.GetStringAsync(
-                                                          "String_DamageStun", strLanguage))
+                                                          "String_DamageStun", strLanguage, token: token), token: token)
                                       .CheapReplaceAsync(
                                           "4S",
                                           async () => '4'
                                                       + await LanguageManager.GetStringAsync(
-                                                          "String_DamageStun", strLanguage))
+                                                          "String_DamageStun", strLanguage, token: token), token: token)
                                       .CheapReplaceAsync(
                                           "5S",
                                           async () => '5'
                                                       + await LanguageManager.GetStringAsync(
-                                                          "String_DamageStun", strLanguage))
+                                                          "String_DamageStun", strLanguage, token: token), token: token)
                                       .CheapReplaceAsync(
                                           "6S",
                                           async () => '6'
                                                       + await LanguageManager.GetStringAsync(
-                                                          "String_DamageStun", strLanguage))
+                                                          "String_DamageStun", strLanguage, token: token), token: token)
                                       .CheapReplaceAsync(
                                           "7S",
                                           async () => '7'
                                                       + await LanguageManager.GetStringAsync(
-                                                          "String_DamageStun", strLanguage))
+                                                          "String_DamageStun", strLanguage, token: token), token: token)
                                       .CheapReplaceAsync(
                                           "8S",
                                           async () => '8'
                                                       + await LanguageManager.GetStringAsync(
-                                                          "String_DamageStun", strLanguage))
+                                                          "String_DamageStun", strLanguage, token: token), token: token)
                                       .CheapReplaceAsync(
                                           "9S",
                                           async () => '9'
                                                       + await LanguageManager.GetStringAsync(
-                                                          "String_DamageStun", strLanguage))
+                                                          "String_DamageStun", strLanguage, token: token), token: token)
                                       .CheapReplaceAsync(
                                           "0P",
                                           async () => '0'
                                                       + await LanguageManager.GetStringAsync(
-                                                          "String_DamagePhysical", strLanguage))
+                                                          "String_DamagePhysical", strLanguage, token: token), token: token)
                                       .CheapReplaceAsync(
                                           "1P",
                                           async () => '1'
                                                       + await LanguageManager.GetStringAsync(
-                                                          "String_DamagePhysical", strLanguage))
+                                                          "String_DamagePhysical", strLanguage, token: token), token: token)
                                       .CheapReplaceAsync(
                                           "2P",
                                           async () => '2'
                                                       + await LanguageManager.GetStringAsync(
-                                                          "String_DamagePhysical", strLanguage))
+                                                          "String_DamagePhysical", strLanguage, token: token), token: token)
                                       .CheapReplaceAsync(
                                           "3P",
                                           async () => '3'
                                                       + await LanguageManager.GetStringAsync(
-                                                          "String_DamagePhysical", strLanguage))
+                                                          "String_DamagePhysical", strLanguage, token: token), token: token)
                                       .CheapReplaceAsync(
                                           "4P",
                                           async () => '4'
                                                       + await LanguageManager.GetStringAsync(
-                                                          "String_DamagePhysical", strLanguage))
+                                                          "String_DamagePhysical", strLanguage, token: token), token: token)
                                       .CheapReplaceAsync(
                                           "5P",
                                           async () => '5'
                                                       + await LanguageManager.GetStringAsync(
-                                                          "String_DamagePhysical", strLanguage))
+                                                          "String_DamagePhysical", strLanguage, token: token), token: token)
                                       .CheapReplaceAsync(
                                           "6P",
                                           async () => '6'
                                                       + await LanguageManager.GetStringAsync(
-                                                          "String_DamagePhysical", strLanguage))
+                                                          "String_DamagePhysical", strLanguage, token: token), token: token)
                                       .CheapReplaceAsync(
                                           "7P",
                                           async () => '7'
                                                       + await LanguageManager.GetStringAsync(
-                                                          "String_DamagePhysical", strLanguage))
+                                                          "String_DamagePhysical", strLanguage, token: token), token: token)
                                       .CheapReplaceAsync(
                                           "8P",
                                           async () => '8'
                                                       + await LanguageManager.GetStringAsync(
-                                                          "String_DamagePhysical", strLanguage))
+                                                          "String_DamagePhysical", strLanguage, token: token), token: token)
                                       .CheapReplaceAsync(
                                           "9P",
                                           async () => '9'
                                                       + await LanguageManager.GetStringAsync(
-                                                          "String_DamagePhysical", strLanguage));
+                                                          "String_DamagePhysical", strLanguage, token: token), token: token);
                 }
             }
 
@@ -3448,15 +3459,15 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The Weapon's Firing Mode including Modifications.
         /// </summary>
-        public Task<string> CalculatedModeAsync(string strLanguage)
+        public Task<string> CalculatedModeAsync(string strLanguage, CancellationToken token = default)
         {
-            return CalculatedModeCoreAsync(false, strLanguage);
+            return CalculatedModeCoreAsync(false, strLanguage, token);
         }
 
         /// <summary>
         /// The Weapon's Firing Mode including Modifications.
         /// </summary>
-        private async Task<string> CalculatedModeCoreAsync(bool blnSync, string strLanguage)
+        private async Task<string> CalculatedModeCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
             // Move the contents of the array to a list so it's easier to work with.
             using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
@@ -3685,19 +3696,19 @@ namespace Chummer.Backend.Equipment
                     else
                     {
                         if (setModes.Contains("SS"))
-                            sbdReturn.Append(await LanguageManager.GetStringAsync("String_ModeSingleShot", strLanguage))
+                            sbdReturn.Append(await LanguageManager.GetStringAsync("String_ModeSingleShot", strLanguage, token: token))
                                      .Append('/');
                         if (setModes.Contains("SA"))
-                            sbdReturn.Append(await LanguageManager.GetStringAsync("String_ModeSemiAutomatic", strLanguage))
+                            sbdReturn.Append(await LanguageManager.GetStringAsync("String_ModeSemiAutomatic", strLanguage, token: token))
                                      .Append('/');
                         if (setModes.Contains("BF"))
-                            sbdReturn.Append(await LanguageManager.GetStringAsync("String_ModeBurstFire", strLanguage))
+                            sbdReturn.Append(await LanguageManager.GetStringAsync("String_ModeBurstFire", strLanguage, token: token))
                                      .Append('/');
                         if (setModes.Contains("FA"))
-                            sbdReturn.Append(await LanguageManager.GetStringAsync("String_ModeFullAutomatic", strLanguage))
+                            sbdReturn.Append(await LanguageManager.GetStringAsync("String_ModeFullAutomatic", strLanguage, token: token))
                                      .Append('/');
                         if (setModes.Contains("Special"))
-                            sbdReturn.Append(await LanguageManager.GetStringAsync("String_ModeSpecial", strLanguage)).Append('/');
+                            sbdReturn.Append(await LanguageManager.GetStringAsync("String_ModeSpecial", strLanguage, token: token)).Append('/');
                     }
 
                     // Remove the trailing "/".
@@ -3928,15 +3939,15 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The Weapon's total AP including Ammunition.
         /// </summary>
-        public Task<string> TotalAPAsync(CultureInfo objCulture, string strLanguage)
+        public Task<string> TotalAPAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
-            return TotalAPCoreAsync(false, objCulture, strLanguage);
+            return TotalAPCoreAsync(false, objCulture, strLanguage, token);
         }
 
         /// <summary>
         /// The Weapon's total AP including Ammunition.
         /// </summary>
-        private async Task<string> TotalAPCoreAsync(bool blnSync, CultureInfo objCulture, string strLanguage)
+        private async Task<string> TotalAPCoreAsync(bool blnSync, CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
             string strAP = AP;
 
@@ -3977,7 +3988,7 @@ namespace Chummer.Backend.Equipment
                             // ReSharper disable once MethodHasAsyncOverload
                             ? ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.UnarmedAP)
                             : await ImprovementManager.ValueOfAsync(
-                                _objCharacter, Improvement.ImprovementType.UnarmedAP))
+                                _objCharacter, Improvement.ImprovementType.UnarmedAP, token: token))
                         .StandardRound();
                 }
 
@@ -4007,10 +4018,10 @@ namespace Chummer.Backend.Equipment
                     return strAP.Replace("//", "/");
                 if (blnSync)
                     return strAP.Replace("//", "/")
-                                // ReSharper disable once MethodHasAsyncOverload
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 .CheapReplace("-half", () => LanguageManager.GetString("String_APHalf", strLanguage));
                 return await strAP.Replace("//", "/")
-                                  .CheapReplaceAsync("-half", () => LanguageManager.GetStringAsync("String_APHalf", strLanguage));
+                                  .CheapReplaceAsync("-half", () => LanguageManager.GetStringAsync("String_APHalf", strLanguage, token: token), token: token);
             }
 
             int intAP;
@@ -4018,25 +4029,36 @@ namespace Chummer.Backend.Equipment
             {
                 sbdAP.Append(strAP);
                 if (blnSync)
-                    // ReSharper disable once MethodHasAsyncOverload
+                {
+                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                     sbdAP.CheapReplace("{Rating}", strAP, () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                    ProcessAttributesInXPath(sbdAP, strAP);
+                }
                 else
-                    await sbdAP.CheapReplaceAsync("{Rating}", strAP, () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                ProcessAttributesInXPath(sbdAP, strAP);
+                {
+                    await sbdAP.CheapReplaceAsync("{Rating}", strAP,
+                                                  () => Rating.ToString(GlobalSettings.InvariantCultureInfo), token: token);
+                    await ProcessAttributesInXPathAsync(sbdAP, strAP, token: token);
+                }
+
                 try
                 {
                     // Replace the division sign with "div" since we're using XPath.
                     sbdAP.Replace("/", " div ");
-                    object objProcess = CommonFunctions.EvaluateInvariantXPath(sbdAP.ToString(), out bool blnIsSuccess);
+                    (bool blnIsSuccess, object objProcess) = blnSync
+                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                        ? CommonFunctions.EvaluateInvariantXPath(sbdAP.ToString())
+                        : await CommonFunctions.EvaluateInvariantXPathAsync(sbdAP.ToString(), token);
                     if (blnIsSuccess)
                         intAP = ((double) objProcess).StandardRound();
                     else if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                         return strAP;
                     else if (blnSync)
-                        // ReSharper disable once MethodHasAsyncOverload
+                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                         return strAP.CheapReplace("-half", () => LanguageManager.GetString("String_APHalf", strLanguage));
                     else
-                        return await strAP.CheapReplaceAsync("-half", () => LanguageManager.GetStringAsync("String_APHalf", strLanguage));
+                        return await strAP.CheapReplaceAsync("-half", () => LanguageManager.GetStringAsync("String_APHalf", strLanguage, token: token), token: token);
                 }
                 catch (FormatException)
                 {
@@ -4044,9 +4066,9 @@ namespace Chummer.Backend.Equipment
                     if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                         return strAP;
                     if (blnSync)
-                        // ReSharper disable once MethodHasAsyncOverload
+                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                         return strAP.CheapReplace("-half", () => LanguageManager.GetString("String_APHalf", strLanguage));
-                    return await strAP.CheapReplaceAsync("-half", () => LanguageManager.GetStringAsync("String_APHalf", strLanguage));
+                    return await strAP.CheapReplaceAsync("-half", () => LanguageManager.GetStringAsync("String_APHalf", strLanguage, token: token), token: token);
                 }
                 catch (OverflowException)
                 {
@@ -4054,9 +4076,9 @@ namespace Chummer.Backend.Equipment
                     if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                         return strAP;
                     if (blnSync)
-                        // ReSharper disable once MethodHasAsyncOverload
+                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                         return strAP.CheapReplace("-half", () => LanguageManager.GetString("String_APHalf", strLanguage));
-                    return await strAP.CheapReplaceAsync("-half", () => LanguageManager.GetStringAsync("String_APHalf", strLanguage));
+                    return await strAP.CheapReplaceAsync("-half", () => LanguageManager.GetStringAsync("String_APHalf", strLanguage, token: token), token: token);
                 }
                 catch (InvalidCastException)
                 {
@@ -4064,9 +4086,9 @@ namespace Chummer.Backend.Equipment
                     if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                         return strAP;
                     if (blnSync)
-                        // ReSharper disable once MethodHasAsyncOverload
+                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                         return strAP.CheapReplace("-half", () => LanguageManager.GetString("String_APHalf", strLanguage));
-                    return await strAP.CheapReplaceAsync("-half", () => LanguageManager.GetStringAsync("String_APHalf", strLanguage));
+                    return await strAP.CheapReplaceAsync("-half", () => LanguageManager.GetStringAsync("String_APHalf", strLanguage, token: token), token: token);
                 }
             }
 
@@ -4091,20 +4113,20 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The Weapon's total RC including Accessories and Modifications.
         /// </summary>
-        public Task<string> TotalRCAsync(CultureInfo objCulture, string strLanguage, bool blnRefreshRCToolTip = false)
+        public Task<string> TotalRCAsync(CultureInfo objCulture, string strLanguage, bool blnRefreshRCToolTip = false, CancellationToken token = default)
         {
-            return TotalRCCoreAsync(false, objCulture, strLanguage, blnRefreshRCToolTip);
+            return TotalRCCoreAsync(false, objCulture, strLanguage, blnRefreshRCToolTip, token);
         }
 
         /// <summary>
         /// The Weapon's total RC including Accessories and Modifications.
         /// </summary>
-        private async Task<string> TotalRCCoreAsync(bool blnSync, CultureInfo objCulture, string strLanguage, bool blnRefreshRCToolTip)
+        private async Task<string> TotalRCCoreAsync(bool blnSync, CultureInfo objCulture, string strLanguage, bool blnRefreshRCToolTip, CancellationToken token = default)
         {
             string strSpace = blnSync
                 // ReSharper disable once MethodHasAsyncOverload
                 ? LanguageManager.GetString("String_Space", strLanguage)
-                : await LanguageManager.GetStringAsync("String_Space", strLanguage);
+                : await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token);
             string strRCBase = "0";
             string strRCFull;
             string strRC = RC;
@@ -4112,9 +4134,9 @@ namespace Chummer.Backend.Equipment
             List<Tuple<string, int>> lstRCGroups = new List<Tuple<string, int>>(5);
             List<Tuple<string, int>> lstRCDeployGroups = new List<Tuple<string, int>>(5);
             strRC = blnSync
-                // ReSharper disable once MethodHasAsyncOverload
+                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                 ? strRC.CheapReplace("{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo))
-                : await strRC.CheapReplaceAsync("{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                : await strRC.CheapReplaceAsync("{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo), token: token);
             int intPos = strRC.IndexOf('(');
             if (intPos != -1)
             {
@@ -4146,7 +4168,7 @@ namespace Chummer.Backend.Equipment
                             .Append(blnSync
                                         // ReSharper disable once MethodHasAsyncOverload
                                         ? LanguageManager.GetString("Label_Base", strLanguage)
-                                        : await LanguageManager.GetStringAsync("Label_Base", strLanguage))
+                                        : await LanguageManager.GetStringAsync("Label_Base", strLanguage, token: token))
                             .Append('(').Append(strRCBase).Append(')');
                 }
 
@@ -4170,9 +4192,9 @@ namespace Chummer.Backend.Equipment
                             if (blnRefreshRCToolTip)
                                 sbdRCTip.Append(strSpace).Append('+').Append(strSpace)
                                         .Append(blnSync
-                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                     ? objGear.DisplayName(objCulture, strLanguage)
-                                                    : await objGear.DisplayNameAsync(objCulture, strLanguage))
+                                                    : await objGear.DisplayNameAsync(objCulture, strLanguage, token: token))
                                         .Append(strSpace)
                                         .Append('(').Append(strRCBonus).Append(')');
                         }
@@ -4188,9 +4210,9 @@ namespace Chummer.Backend.Equipment
                             if (blnRefreshRCToolTip)
                                 sbdRCTip.Append(strSpace).Append('+').Append(strSpace)
                                         .Append(blnSync
-                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                     ? objGear.DisplayName(objCulture, strLanguage)
-                                                    : await objGear.DisplayNameAsync(objCulture, strLanguage))
+                                                    : await objGear.DisplayNameAsync(objCulture, strLanguage, token: token))
                                         .Append(strSpace)
                                         .Append('(').Append(strRCBonus).Append(')');
                         }
@@ -4221,9 +4243,9 @@ namespace Chummer.Backend.Equipment
                             lstLoopRCGroup[objAccessory.RCGroup - 1]
                                 = new Tuple<string, int>(
                                     blnSync
-                                        // ReSharper disable once MethodHasAsyncOverload
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         ? objAccessory.DisplayName(strLanguage)
-                                        : await objAccessory.DisplayNameAsync(strLanguage), intItemRC);
+                                        : await objAccessory.DisplayNameAsync(strLanguage, token), intItemRC);
                         }
 
                         if (objAccessory.RCDeployable)
@@ -4247,9 +4269,9 @@ namespace Chummer.Backend.Equipment
                         if (blnRefreshRCToolTip)
                             sbdRCTip.Append(strSpace).Append('+').Append(strSpace)
                                 .Append(blnSync
-                                    // ReSharper disable once MethodHasAsyncOverload
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     ? objAccessory.DisplayName(strLanguage)
-                                    : await objAccessory.DisplayNameAsync(strLanguage)).Append(strSpace).Append('(')
+                                    : await objAccessory.DisplayNameAsync(strLanguage, token)).Append(strSpace).Append('(')
                                 .Append(objAccessory.RC).Append(')');
                     }
                 }
@@ -4279,7 +4301,7 @@ namespace Chummer.Backend.Equipment
                                 blnSync
                                     // ReSharper disable once MethodHasAsyncOverload
                                     ? LanguageManager.GetString("Tip_RecoilAccessories", strLanguage)
-                                    : await LanguageManager.GetStringAsync("Tip_RecoilAccessories", strLanguage),
+                                    : await LanguageManager.GetStringAsync("Tip_RecoilAccessories", strLanguage, token: token),
                                 strGroup,
                                 intRecoil);
                     }
@@ -4290,7 +4312,7 @@ namespace Chummer.Backend.Equipment
                 {
                     if (ParentVehicle != null)
                     {
-                        intUseSTR = ParentVehicle.TotalBody;
+                        intUseSTR = blnSync ? ParentVehicle.TotalBody : await ParentVehicle.GetTotalBodyAsync(token);
                         if (!string.IsNullOrEmpty(ParentID))
                         {
                             // Look to see if this is attached to a Cyberlimb and use its STR instead.
@@ -4300,26 +4322,26 @@ namespace Chummer.Backend.Equipment
                             if (objWeaponParent != null)
                             {
                                 Cyberware objAttributeSource = objWeaponParent;
-                                // ReSharper disable once MethodHasAsyncOverload
-                                int intSTR = blnSync ? objAttributeSource.GetAttributeTotalValue("STR") : await objAttributeSource.GetAttributeTotalValueAsync("STR");
-                                // ReSharper disable once MethodHasAsyncOverload
-                                int intAGI = blnSync ? objAttributeSource.GetAttributeTotalValue("AGI") : await objAttributeSource.GetAttributeTotalValueAsync("AGI");
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                int intSTR = blnSync ? objAttributeSource.GetAttributeTotalValue("STR") : await objAttributeSource.GetAttributeTotalValueAsync("STR", token);
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                int intAGI = blnSync ? objAttributeSource.GetAttributeTotalValue("AGI") : await objAttributeSource.GetAttributeTotalValueAsync("AGI", token);
                                 while (objAttributeSource != null)
                                 {
                                     if (intSTR != 0 || intAGI != 0)
                                         break;
                                     objAttributeSource = objAttributeSource.Parent;
                                     if (objAttributeSource == null) continue;
-                                    // ReSharper disable once MethodHasAsyncOverload
-                                    intSTR = blnSync ? objAttributeSource.GetAttributeTotalValue("STR") : await objAttributeSource.GetAttributeTotalValueAsync("STR");
-                                    // ReSharper disable once MethodHasAsyncOverload
-                                    intAGI = blnSync ? objAttributeSource.GetAttributeTotalValue("AGI") : await objAttributeSource.GetAttributeTotalValueAsync("AGI");
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    intSTR = blnSync ? objAttributeSource.GetAttributeTotalValue("STR") : await objAttributeSource.GetAttributeTotalValueAsync("STR", token);
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    intAGI = blnSync ? objAttributeSource.GetAttributeTotalValue("AGI") : await objAttributeSource.GetAttributeTotalValueAsync("AGI", token);
                                 }
 
                                 intUseSTR = intSTR;
 
                                 if (intUseSTR == 0)
-                                    intUseSTR = objVehicleMod.TotalStrength;
+                                    intUseSTR = blnSync ? objVehicleMod.TotalStrength : await objVehicleMod.GetTotalStrengthAsync(token);
                             }
                         }
                     }
@@ -4332,10 +4354,10 @@ namespace Chummer.Backend.Equipment
                         if (objWeaponParent != null)
                         {
                             Cyberware objAttributeSource = objWeaponParent;
-                            // ReSharper disable once MethodHasAsyncOverload
-                            int intSTR = blnSync ? objAttributeSource.GetAttributeTotalValue("STR") : await objAttributeSource.GetAttributeTotalValueAsync("STR");
-                            // ReSharper disable once MethodHasAsyncOverload
-                            int intAGI = blnSync ? objAttributeSource.GetAttributeTotalValue("AGI") : await objAttributeSource.GetAttributeTotalValueAsync("AGI");
+                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                            int intSTR = blnSync ? objAttributeSource.GetAttributeTotalValue("STR") : await objAttributeSource.GetAttributeTotalValueAsync("STR", token);
+                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                            int intAGI = blnSync ? objAttributeSource.GetAttributeTotalValue("AGI") : await objAttributeSource.GetAttributeTotalValueAsync("AGI", token);
                             while (objAttributeSource != null)
                             {
                                 if (intSTR != 0 || intAGI != 0)
@@ -4343,8 +4365,8 @@ namespace Chummer.Backend.Equipment
                                 objAttributeSource = objAttributeSource.Parent;
                                 if (objAttributeSource == null)
                                     continue;
-                                // ReSharper disable once MethodHasAsyncOverload
-                                intSTR = blnSync ? objAttributeSource.GetAttributeTotalValue("STR") : await objAttributeSource.GetAttributeTotalValueAsync("STR");
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                intSTR = blnSync ? objAttributeSource.GetAttributeTotalValue("STR") : await objAttributeSource.GetAttributeTotalValueAsync("STR", token);
                             }
 
                             intUseSTR = intSTR;
@@ -4353,14 +4375,14 @@ namespace Chummer.Backend.Equipment
                         if (intUseSTR == 0)
                             intUseSTR = blnSync
                                 ? _objCharacter.STR.TotalValue
-                                : await (await _objCharacter.GetAttributeAsync("STR")).GetTotalValueAsync();
+                                : await (await _objCharacter.GetAttributeAsync("STR", token: token)).GetTotalValueAsync(token);
                     }
                 }
                 else if (ParentVehicle == null)
                 {
                     intUseSTR = blnSync
                         ? _objCharacter.STR.TotalValue
-                        : await (await _objCharacter.GetAttributeAsync("STR")).GetTotalValueAsync();
+                        : await (await _objCharacter.GetAttributeAsync("STR", token: token)).GetTotalValueAsync(token);
                 }
 
                 if (Category == "Throwing Weapons" || Skill?.DictionaryKey == "Throwing Weapons")
@@ -4368,7 +4390,7 @@ namespace Chummer.Backend.Equipment
                             // ReSharper disable once MethodHasAsyncOverload
                             ? ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowSTR)
                             : await ImprovementManager.ValueOfAsync(_objCharacter,
-                                                                    Improvement.ImprovementType.ThrowSTR))
+                                                                    Improvement.ImprovementType.ThrowSTR, token: token))
                         .StandardRound();
 
                 int intStrRC = (intUseSTR + 2) / 3;
@@ -4378,9 +4400,9 @@ namespace Chummer.Backend.Equipment
                 if (blnRefreshRCToolTip)
                     sbdRCTip.Append(strSpace).Append('+').Append(strSpace)
                             .Append(blnSync
-                                        // ReSharper disable once MethodHasAsyncOverload
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         ? _objCharacter.STR.GetDisplayAbbrev(strLanguage)
-                                        : await _objCharacter.STR.GetDisplayAbbrevAsync(strLanguage)).Append(strSpace)
+                                        : await _objCharacter.STR.GetDisplayAbbrevAsync(strLanguage, token)).Append(strSpace)
                             .Append('[')
                             .Append(intUseSTR.ToString(objCulture)).Append(strSpace).Append('/').Append(strSpace)
                             .Append(3.ToString(objCulture)).Append(strSpace).Append('=').Append(strSpace)
@@ -4525,6 +4547,106 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// The full Accuracy of the Weapon including modifiers from accessories.
+        /// </summary>
+        public async ValueTask<int> GetTotalAccuracyAsync(CancellationToken token = default)
+        {
+            int intAccuracy = 0;
+            string strAccuracy = Accuracy;
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAccuracy))
+            {
+                sbdAccuracy.Append(strAccuracy);
+                await sbdAccuracy.CheapReplaceAsync("{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo), token: token);
+                await ProcessAttributesInXPathAsync(sbdAccuracy, strAccuracy, token: token);
+                Func<string> funcPhysicalLimitString = () =>
+                    _objCharacter.LimitPhysical.ToString(GlobalSettings.InvariantCultureInfo);
+                if (ParentVehicle != null)
+                {
+                    funcPhysicalLimitString = () =>
+                    {
+                        string strHandling = ParentVehicle.TotalHandling;
+                        int intSlashIndex = strHandling.IndexOf('/');
+                        if (intSlashIndex != -1)
+                            strHandling = strHandling.Substring(0, intSlashIndex);
+                        return strHandling;
+                    };
+                }
+
+                await (await sbdAccuracy.CheapReplaceAsync(strAccuracy, "Physical", funcPhysicalLimitString,
+                                                           token: token))
+                    .CheapReplaceAsync(strAccuracy, "Missile", funcPhysicalLimitString, token: token);
+
+                // Replace the division sign with "div" since we're using XPath.
+                sbdAccuracy.Replace("/", " div ");
+                (bool blnIsSuccess, object objProcess)
+                    = await CommonFunctions.EvaluateInvariantXPathAsync(sbdAccuracy.ToString(), token);
+                if (blnIsSuccess)
+                    intAccuracy = ((double) objProcess).StandardRound();
+            }
+
+            int intBonusAccuracyFromAccessories = 0;
+            int intBonusAccuracyFromNonStackingAccessories = 0;
+            foreach (WeaponAccessory objWeaponAccessory in WeaponAccessories)
+            {
+                if (objWeaponAccessory.Equipped)
+                {
+                    int intLoopAccuracy = objWeaponAccessory.Accuracy;
+                    if (intLoopAccuracy != 0)
+                    {
+                        if (!objWeaponAccessory.Name.StartsWith("Smartgun", StringComparison.Ordinal)
+                            && !objWeaponAccessory.Name.Contains("Sight"))
+                            intBonusAccuracyFromAccessories += intLoopAccuracy;
+                        else if (intLoopAccuracy > intBonusAccuracyFromNonStackingAccessories)
+                            intBonusAccuracyFromNonStackingAccessories = intLoopAccuracy;
+                    }
+                }
+            }
+
+            // Underbarrel weapons that come with their parent weapon (and are of the same type) should inherit the parent weapon's built-in smartgun features
+            if (IncludedInWeapon && Parent != null && RangeType == Parent.RangeType)
+            {
+                foreach (WeaponAccessory objWeaponAccessory in Parent.WeaponAccessories)
+                {
+                    if (objWeaponAccessory.Name.StartsWith("Smartgun", StringComparison.Ordinal)
+                        && objWeaponAccessory.IncludedInWeapon && objWeaponAccessory.Equipped)
+                    {
+                        int intLoopAccuracy = objWeaponAccessory.Accuracy;
+                        if (intLoopAccuracy > intBonusAccuracyFromNonStackingAccessories)
+                            intBonusAccuracyFromNonStackingAccessories = intLoopAccuracy;
+                    }
+                }
+            }
+
+            intAccuracy += intBonusAccuracyFromAccessories + intBonusAccuracyFromNonStackingAccessories;
+
+            string strNameUpper = Name.ToUpperInvariant();
+
+            decimal decImproveAccuracy = await ImprovementManager.ValueOfAsync(
+                _objCharacter, Improvement.ImprovementType.WeaponSkillAccuracy, strImprovedName: Name,
+                blnIncludeNonImproved: true, token: token);
+            string strSkill = Skill?.DictionaryKey ?? string.Empty;
+            if (!string.IsNullOrEmpty(strSkill))
+                decImproveAccuracy += await ImprovementManager.ValueOfAsync(_objCharacter,
+                                                                            Improvement.ImprovementType.WeaponSkillAccuracy,
+                                                                            strImprovedName: strSkill, token: token);
+            foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                         _objCharacter, Improvement.ImprovementType.WeaponAccuracy, token: token))
+            {
+                string strImprovedName = objImprovement.ImprovedName;
+                if (strImprovedName.StartsWith("[contains]", StringComparison.Ordinal)
+                    && strNameUpper.Contains(strImprovedName.TrimStartOnce("[contains]", true),
+                                             StringComparison.InvariantCultureIgnoreCase))
+                {
+                    decImproveAccuracy += objImprovement.Value;
+                }
+            }
+
+            intAccuracy += decImproveAccuracy.StandardRound();
+
+            return intAccuracy;
+        }
+
+        /// <summary>
         /// Displays the base and Total Accuracy of the weapon in the same format as it appears in rulebooks in the program's current language.
         /// </summary>
         public string DisplayAccuracy => GetAccuracy(GlobalSettings.CultureInfo, GlobalSettings.Language);
@@ -4544,12 +4666,12 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Displays the base and Total Accuracy of the weapon in the same format as it appears in rulebooks.
         /// </summary>
-        public async ValueTask<string> GetAccuracyAsync(CultureInfo objCulture, string strLanguage)
+        public async ValueTask<string> GetAccuracyAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
-            int intTotalAccuracy = TotalAccuracy;
+            int intTotalAccuracy = await GetTotalAccuracyAsync(token);
             if (int.TryParse(Accuracy, out int intAccuracy) && intAccuracy != intTotalAccuracy)
                 return string.Format(objCulture, "{0}{1}({2})",
-                                     intAccuracy, await LanguageManager.GetStringAsync("String_Space", strLanguage), intTotalAccuracy);
+                                     intAccuracy, await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token), intTotalAccuracy);
             return intTotalAccuracy.ToString(objCulture);
         }
 
@@ -4609,17 +4731,17 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The string for the Weapon's Range category
         /// </summary>
-        public async ValueTask<string> DisplayRangeAsync(string strLanguage)
+        public async ValueTask<string> DisplayRangeAsync(string strLanguage, CancellationToken token = default)
         {
             string strRange = Range;
             if (string.IsNullOrWhiteSpace(strRange))
                 strRange = Category;
             if (!string.IsNullOrWhiteSpace(strRange) && !strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
             {
-                XPathNavigator objXmlDocument = await _objCharacter.LoadDataXPathAsync("ranges.xml", strLanguage);
+                XPathNavigator objXmlDocument = await _objCharacter.LoadDataXPathAsync("ranges.xml", strLanguage, token: token);
                 XPathNavigator objXmlCategoryNode = objXmlDocument.SelectSingleNode("/chummer/ranges/range[name = " + strRange.CleanXPath() + ']');
                 XPathNavigator xmlTranslateNode = objXmlCategoryNode != null
-                    ? await objXmlCategoryNode.SelectSingleNodeAndCacheExpressionAsync("translate")
+                    ? await objXmlCategoryNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token)
                     : null;
                 if (xmlTranslateNode != null)
                 {
@@ -4627,12 +4749,12 @@ namespace Chummer.Backend.Equipment
                 }
                 else
                 {
-                    objXmlDocument = await _objCharacter.LoadDataXPathAsync("weapons.xml", strLanguage);
+                    objXmlDocument = await _objCharacter.LoadDataXPathAsync("weapons.xml", strLanguage, token: token);
                     objXmlCategoryNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = " + strRange.CleanXPath() + ']');
                     if (objXmlCategoryNode != null)
                     {
                         xmlTranslateNode
-                            = await objXmlCategoryNode.SelectSingleNodeAndCacheExpressionAsync("@translate");
+                            = await objXmlCategoryNode.SelectSingleNodeAndCacheExpressionAsync("@translate", token: token);
                         if (xmlTranslateNode != null)
                             strRange = xmlTranslateNode.Value;
                     }
@@ -4673,15 +4795,15 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The string for the Weapon's Range category (setter is English-only).
         /// </summary>
-        public async ValueTask<string> DisplayAlternateRangeAsync(string strLanguage)
+        public async ValueTask<string> DisplayAlternateRangeAsync(string strLanguage, CancellationToken token = default)
         {
             string strRange = AlternateRange.Trim();
             if (!string.IsNullOrEmpty(strRange) && !strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
             {
-                XPathNavigator objXmlDocument = await _objCharacter.LoadDataXPathAsync("ranges.xml", strLanguage);
+                XPathNavigator objXmlDocument = await _objCharacter.LoadDataXPathAsync("ranges.xml", strLanguage, token: token);
                 XPathNavigator objXmlCategoryNode = objXmlDocument.SelectSingleNode("/chummer/ranges/range[name = " + strRange.CleanXPath() + ']');
                 XPathNavigator xmlTranslateNode = objXmlCategoryNode != null
-                    ? await objXmlCategoryNode.SelectSingleNodeAndCacheExpressionAsync("translate")
+                    ? await objXmlCategoryNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token)
                     : null;
                 if (xmlTranslateNode != null)
                 {
@@ -4689,12 +4811,12 @@ namespace Chummer.Backend.Equipment
                 }
                 else
                 {
-                    objXmlDocument = await _objCharacter.LoadDataXPathAsync("weapons.xml", strLanguage);
+                    objXmlDocument = await _objCharacter.LoadDataXPathAsync("weapons.xml", strLanguage, token: token);
                     objXmlCategoryNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = " + strRange.CleanXPath() + ']');
                     if (objXmlCategoryNode != null)
                     {
                         xmlTranslateNode
-                            = await objXmlCategoryNode.SelectSingleNodeAndCacheExpressionAsync("@translate");
+                            = await objXmlCategoryNode.SelectSingleNodeAndCacheExpressionAsync("@translate", token: token);
                         if (xmlTranslateNode != null)
                             strRange = xmlTranslateNode.Value;
                     }
@@ -7602,6 +7724,159 @@ namespace Chummer.Backend.Equipment
                 };
             }
             _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdInput, strOriginal, dicAttributeOverrides);
+        }
+
+        public async ValueTask ProcessAttributesInXPathAsync(StringBuilder sbdInput, string strOriginal = "", bool blnForRange = false, CancellationToken token = default)
+        {
+            if (sbdInput == null || sbdInput.Length <= 0)
+                return;
+            if (string.IsNullOrEmpty(strOriginal))
+                strOriginal = sbdInput.ToString();
+            Dictionary<string, int> dicAttributeOverrides = null;
+            if (strOriginal.Contains("{STR") || strOriginal.Contains("{AGI"))
+            {
+                int intUseSTR = 0;
+                int intUseAGI = 0;
+                int intUseSTRUnaug = 0;
+                int intUseAGIUnaug = 0;
+                int intUseSTRBase = 0;
+                int intUseAGIBase = 0;
+                if (Cyberware)
+                {
+                    if (ParentVehicle != null)
+                    {
+                        intUseSTR = await ParentVehicle.GetTotalBodyAsync(token);
+                        intUseSTRUnaug = intUseSTR;
+                        intUseSTRBase = intUseSTR;
+                        intUseAGI = await ParentVehicle.GetPilotAsync(token);
+                        intUseAGIUnaug = intUseAGI;
+                        intUseAGIBase = intUseAGI;
+                        if (!string.IsNullOrEmpty(ParentID))
+                        {
+                            // Look to see if this is attached to a Cyberlimb and use its STR instead.
+                            Cyberware objWeaponParent = _objCharacter.Vehicles.FindVehicleCyberware(x => x.InternalId == ParentID, out VehicleMod objVehicleMod);
+                            if (objWeaponParent != null)
+                            {
+                                Cyberware objAttributeSource = objWeaponParent;
+                                int intSTR = await objAttributeSource.GetAttributeTotalValueAsync("STR", token);
+                                int intSTRValue = await objAttributeSource.GetAttributeValueAsync("STR", token);
+                                int intSTRBase = await objAttributeSource.GetAttributeBaseValueAsync("STR", token);
+                                int intAGI = await objAttributeSource.GetAttributeTotalValueAsync("AGI", token);
+                                int intAGIValue = await objAttributeSource.GetAttributeValueAsync("AGI", token);
+                                int intAGIBase = await objAttributeSource.GetAttributeBaseValueAsync("AGI", token);
+                                while (objAttributeSource != null && intSTR == 0 && intAGI == 0 && intSTRValue == 0 && intAGIValue == 0 && intSTRBase == 0 && intAGIBase == 0)
+                                {
+                                    objAttributeSource = objAttributeSource.Parent;
+                                    if (objAttributeSource == null)
+                                        continue;
+                                    intSTR = await objAttributeSource.GetAttributeTotalValueAsync("STR", token);
+                                    intSTRValue = await objAttributeSource.GetAttributeValueAsync("STR", token);
+                                    intSTRBase = await objAttributeSource.GetAttributeBaseValueAsync("STR", token);
+                                    intAGI = await objAttributeSource.GetAttributeTotalValueAsync("AGI", token);
+                                    intAGIValue = await objAttributeSource.GetAttributeValueAsync("AGI", token);
+                                    intAGIBase = await objAttributeSource.GetAttributeBaseValueAsync("AGI", token);
+                                }
+
+                                intUseSTR = intSTR;
+                                intUseAGI = intAGI;
+                                intUseSTRUnaug = intSTRValue;
+                                intUseAGIUnaug = intAGIValue;
+                                intUseSTRBase = intSTRBase;
+                                intUseAGIBase = intAGIBase;
+
+                                if (intUseSTR == 0)
+                                    intUseSTR = await objVehicleMod.GetTotalStrengthAsync(token);
+                                if (intUseAGI == 0)
+                                    intUseAGI = await objVehicleMod.GetTotalAgilityAsync(token);
+                                if (intUseSTRUnaug == 0)
+                                    intUseSTRUnaug = await objVehicleMod.GetTotalStrengthAsync(token);
+                                if (intUseAGIUnaug == 0)
+                                    intUseAGIUnaug = await objVehicleMod.GetTotalAgilityAsync(token);
+                                if (intUseSTRBase == 0)
+                                    intUseSTRBase = await ParentVehicle.GetTotalBodyAsync(token);
+                                if (intUseAGIBase == 0)
+                                    intUseAGIBase = await ParentVehicle.GetPilotAsync(token);
+                            }
+                        }
+                    }
+                    else if (!string.IsNullOrEmpty(ParentID))
+                    {
+                        // Look to see if this is attached to a Cyberlimb and use its STR instead.
+                        Cyberware objWeaponParent = _objCharacter.Cyberware.DeepFirstOrDefault(x => x.Children, x => x.InternalId == ParentID);
+                        if (objWeaponParent != null)
+                        {
+                            Cyberware objAttributeSource = objWeaponParent;
+                            int intSTR = await objAttributeSource.GetAttributeTotalValueAsync("STR", token);
+                            int intSTRValue = await objAttributeSource.GetAttributeValueAsync("STR", token);
+                            int intSTRBase = await objAttributeSource.GetAttributeBaseValueAsync("STR", token);
+                            int intAGI = await objAttributeSource.GetAttributeTotalValueAsync("AGI", token);
+                            int intAGIValue = await objAttributeSource.GetAttributeValueAsync("AGI", token);
+                            int intAGIBase = await objAttributeSource.GetAttributeBaseValueAsync("AGI", token);
+                            while (objAttributeSource != null && intSTR == 0 && intAGI == 0 && intSTRValue == 0 && intAGIValue == 0 && intSTRBase == 0 && intAGIBase == 0)
+                            {
+                                objAttributeSource = objAttributeSource.Parent;
+                                if (objAttributeSource == null)
+                                    continue;
+                                intSTR = await objAttributeSource.GetAttributeTotalValueAsync("STR", token);
+                                intSTRValue = await objAttributeSource.GetAttributeValueAsync("STR", token);
+                                intSTRBase = await objAttributeSource.GetAttributeBaseValueAsync("STR", token);
+                                intAGI = await objAttributeSource.GetAttributeTotalValueAsync("AGI", token);
+                                intAGIValue = await objAttributeSource.GetAttributeValueAsync("AGI", token);
+                                intAGIBase = await objAttributeSource.GetAttributeBaseValueAsync("AGI", token);
+                            }
+
+                            intUseSTR = intSTR;
+                            intUseAGI = intAGI;
+                            intUseSTRUnaug = intSTRValue;
+                            intUseAGIUnaug = intAGIValue;
+                            intUseSTRBase = intSTRBase;
+                            intUseAGIBase = intAGIBase;
+                        }
+                        CharacterAttrib objStrength = await _objCharacter.GetAttributeAsync("STR", token: token);
+                        CharacterAttrib objAgility = await _objCharacter.GetAttributeAsync("AGI", token: token);
+                        if (intUseSTR == 0)
+                            intUseSTR = await objStrength.GetTotalValueAsync(token);
+                        if (intUseAGI == 0)
+                            intUseAGI = await objAgility.GetTotalValueAsync(token);
+                        if (intUseSTRUnaug == 0)
+                            intUseSTRUnaug = await objStrength.GetValueAsync(token);
+                        if (intUseAGIUnaug == 0)
+                            intUseAGIUnaug = await objAgility.GetValueAsync(token);
+                        if (intUseSTRBase == 0)
+                            intUseSTRBase = await objStrength.GetTotalBaseAsync(token);
+                        if (intUseAGIBase == 0)
+                            intUseAGIBase = await objAgility.GetTotalBaseAsync(token);
+                    }
+                }
+                else if (ParentVehicle == null)
+                {
+                    CharacterAttrib objStrength = await _objCharacter.GetAttributeAsync("STR", token: token);
+                    CharacterAttrib objAgility = await _objCharacter.GetAttributeAsync("AGI", token: token);
+                    intUseSTR = await objStrength.GetTotalValueAsync(token);
+                    intUseAGI = await objAgility.GetTotalValueAsync(token);
+                    intUseSTRUnaug = await objStrength.GetValueAsync(token);
+                    intUseAGIUnaug = await objAgility.GetValueAsync(token);
+                    intUseSTRBase = await objStrength.GetTotalBaseAsync(token);
+                    intUseAGIBase = await objAgility.GetTotalBaseAsync(token);
+                }
+
+                if (Category == "Throwing Weapons" || Skill?.DictionaryKey == "Throwing Weapons")
+                    intUseSTR += (blnForRange
+                            ? await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.ThrowSTR, token: token) +
+                              await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.ThrowRangeSTR, token: token)
+                            : await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.ThrowSTR, token: token))
+                        .StandardRound();
+                dicAttributeOverrides = new Dictionary<string, int>(6)
+                {
+                    {"STR", intUseSTR},
+                    {"STRUnaug", intUseSTRUnaug},
+                    {"STRBase", intUseSTRBase},
+                    {"AGI", intUseAGI},
+                    {"AGIUnaug", intUseAGIUnaug},
+                    {"AGIBase", intUseAGIBase}
+                };
+            }
+            await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdInput, strOriginal, dicAttributeOverrides, token);
         }
 
         /// <inheritdoc />

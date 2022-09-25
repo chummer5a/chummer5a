@@ -491,7 +491,7 @@ namespace Chummer
                                     if (sbdAccessories.Length > 0)
                                         sbdAccessories.Length -= Environment.NewLine.Length;
                                     SourceString strSource = await SourceString.GetSourceStringAsync(
-                                        objArmor.Source, await objArmor.DisplayPageAsync(GlobalSettings.Language),
+                                        objArmor.Source, await objArmor.DisplayPageAsync(GlobalSettings.Language, token),
                                         GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter, token);
                                     NuyenString strCost = new NuyenString(objArmor.DisplayCost(out decimal _, false));
 

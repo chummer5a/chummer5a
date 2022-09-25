@@ -488,11 +488,10 @@ namespace Chummer
         /// <summary>
         /// Syntactic sugar to call LoadFromFile() asynchronously immediately after the constructor.
         /// </summary>
-        /// <param name="strFile"></param>
-        public static Task<CharacterCache> CreateFromFileAsync(string strFile)
+        public static Task<CharacterCache> CreateFromFileAsync(string strFile, CancellationToken token = default)
         {
             CharacterCache objReturn = new CharacterCache();
-            return objReturn.LoadFromFileAsync(strFile).ContinueWith(x => objReturn);
+            return objReturn.LoadFromFileAsync(strFile, token).ContinueWith(x => objReturn, token);
         }
 
         public void CopyFrom(CharacterCache objExistingCache)

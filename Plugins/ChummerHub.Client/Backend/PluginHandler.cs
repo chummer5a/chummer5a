@@ -387,21 +387,21 @@ namespace Chummer.Plugins
             return true;
         }
 
-        public Task<ICollection<TabPage>> GetTabPages(CharacterCareer input)
+        public Task<ICollection<TabPage>> GetTabPages(CharacterCareer input, CancellationToken token = default)
         {
             return !Settings.Default.UserModeRegistered
                 ? Task.FromResult<ICollection<TabPage>>(null)
-                : GetTabPagesCommon(input).ContinueWith(x => (ICollection<TabPage>) x.Result.Yield().ToArray());
+                : GetTabPagesCommon(input, token).ContinueWith(x => (ICollection<TabPage>) x.Result.Yield().ToArray(), token);
         }
 
-        public Task<ICollection<TabPage>> GetTabPages(CharacterCreate input)
+        public Task<ICollection<TabPage>> GetTabPages(CharacterCreate input, CancellationToken token = default)
         {
             return !Settings.Default.UserModeRegistered
                 ? Task.FromResult<ICollection<TabPage>>(null)
-                : GetTabPagesCommon(input).ContinueWith(x => (ICollection<TabPage>)x.Result.Yield().ToArray());
+                : GetTabPagesCommon(input, token).ContinueWith(x => (ICollection<TabPage>)x.Result.Yield().ToArray(), token);
         }
 
-        private static async Task<TabPage> GetTabPagesCommon(CharacterShared input)
+        private static async Task<TabPage> GetTabPagesCommon(CharacterShared input, CancellationToken token = default)
         {
             ucSINnersUserControl uc = new ucSINnersUserControl();
             try
@@ -455,7 +455,7 @@ namespace Chummer.Plugins
             return returnme;
         }
 
-        public static async Task<bool> MyOnSaveUpload(Character input)
+        public static async Task<bool> MyOnSaveUpload(Character input, CancellationToken token = default)
         {
             if (input == null)
                 throw new ArgumentNullException(nameof(input));
@@ -465,13 +465,13 @@ namespace Chummer.Plugins
                 msg += "If you want to use SINners as online store, please register!";
                 Log.Warn(msg);
             }
-            else if (await input.DoOnSaveCompletedAsync.RemoveAsync(MyOnSaveUpload)) // Makes we only run this if we haven't already triggered the callback
+            else if (await input.DoOnSaveCompletedAsync.RemoveAsync(MyOnSaveUpload, token)) // Makes we only run this if we haven't already triggered the callback
             {
                 try
                 {
-                    using (await CursorWait.NewAsync(MainForm, true))
+                    using (await CursorWait.NewAsync(MainForm, true, token))
                     {
-                        using (CharacterExtended ce = await GetMyCeAsync(input))
+                        using (CharacterExtended ce = await GetMyCeAsync(input, token))
                         {
                             //ce = new CharacterExtended(input, null);
                             if (ce.MySINnerFile.SiNnerMetaData.Tags.All(a => a?.TagName != "Reflection"))
@@ -479,7 +479,7 @@ namespace Chummer.Plugins
                                 ce.MySINnerFile.SiNnerMetaData.Tags = ce.PopulateTags();
                             }
 
-                            await ce.Upload();
+                            await ce.Upload(token: token);
                         }
 
                         TabPage tabPage = null;
@@ -518,7 +518,7 @@ namespace Chummer.Plugins
                 }
                 finally
                 {
-                    await input.DoOnSaveCompletedAsync.AddAsync(MyOnSaveUpload);
+                    await input.DoOnSaveCompletedAsync.AddAsync(MyOnSaveUpload, token);
                 }
             }
             return true;
@@ -529,12 +529,12 @@ namespace Chummer.Plugins
             return GetMyCeCoreAsync(true, input).GetAwaiter().GetResult();
         }
 
-        private static Task<CharacterExtended> GetMyCeAsync(Character input)
+        private static Task<CharacterExtended> GetMyCeAsync(Character input, CancellationToken token = default)
         {
-            return GetMyCeCoreAsync(false, input);
+            return GetMyCeCoreAsync(false, input, token);
         }
 
-        private static async Task<CharacterExtended> GetMyCeCoreAsync(bool blnSync, Character input)
+        private static async Task<CharacterExtended> GetMyCeCoreAsync(bool blnSync, Character input, CancellationToken token = default)
         {
             CharacterShared found = null;
             if (MainForm?.OpenCharacterEditorForms != null)
@@ -573,7 +573,7 @@ namespace Chummer.Plugins
                 // ReSharper disable once MethodHasAsyncOverload
                 myCharacterCache = new CharacterCache(input?.FileName);
             else
-                myCharacterCache = await CharacterCache.CreateFromFileAsync(input?.FileName);
+                myCharacterCache = await CharacterCache.CreateFromFileAsync(input?.FileName, token);
             if (sinnertab == null)
                 return new CharacterExtended(input, null, myCharacterCache);
             ucSINnersUserControl myUcSIN = sinnertab.Controls.OfType<ucSINnersUserControl>().FirstOrDefault();
@@ -595,7 +595,7 @@ namespace Chummer.Plugins
             }
         }
 
-        public Task<ICollection<ToolStripMenuItem>> GetMenuItems(ToolStripMenuItem menu)
+        public Task<ICollection<ToolStripMenuItem>> GetMenuItems(ToolStripMenuItem menu, CancellationToken token = default)
         {
             List<ToolStripMenuItem> lstReturn = new List<ToolStripMenuItem>(3);
 #if DEBUG
@@ -612,8 +612,8 @@ namespace Chummer.Plugins
                     ImageDpi192 = Resources.group1,
                 };
                 mnuSINnerSearchs.Click += mnuSINnerSearchs_Click;
-                mnuSINnerSearchs.UpdateLightDarkMode();
-                mnuSINnerSearchs.TranslateToolStripItemsRecursively();
+                mnuSINnerSearchs.UpdateLightDarkMode(token: token);
+                mnuSINnerSearchs.TranslateToolStripItemsRecursively(token: token);
                 lstReturn.Add(mnuSINnerSearchs);
             }
 
@@ -628,8 +628,8 @@ namespace Chummer.Plugins
                 ImageDpi192 = Resources.group1,
             };
             mnuSINnersArchetypes.Click += mnuSINnersArchetypes_Click;
-            mnuSINnersArchetypes.UpdateLightDarkMode();
-            mnuSINnersArchetypes.TranslateToolStripItemsRecursively();
+            mnuSINnersArchetypes.UpdateLightDarkMode(token: token);
+            mnuSINnersArchetypes.TranslateToolStripItemsRecursively(token: token);
             lstReturn.Add(mnuSINnersArchetypes);
 #endif
             if (Settings.Default.UserModeRegistered)
@@ -645,8 +645,8 @@ namespace Chummer.Plugins
                     ImageDpi192 = Resources.group1,
                 };
                 mnuSINners.Click += mnuSINners_Click;
-                mnuSINners.UpdateLightDarkMode();
-                mnuSINners.TranslateToolStripItemsRecursively();
+                mnuSINners.UpdateLightDarkMode(token: token);
+                mnuSINners.TranslateToolStripItemsRecursively(token: token);
                 lstReturn.Add(mnuSINners);
             }
 
@@ -783,11 +783,11 @@ namespace Chummer.Plugins
             return new ucSINnersOptions();
         }
 
-        public async Task<ICollection<TreeNode>> GetCharacterRosterTreeNode(CharacterRoster frmCharRoster, bool forceUpdate)
+        public async Task<ICollection<TreeNode>> GetCharacterRosterTreeNode(CharacterRoster frmCharRoster, bool forceUpdate, CancellationToken token = default)
         {
             try
             {
-                using (await CursorWait.NewAsync(frmCharRoster, true))
+                using (await CursorWait.NewAsync(frmCharRoster, true, token))
                 {
                     IEnumerable<TreeNode> res = null;
                     if (Settings.Default.UserModeRegistered)
@@ -803,12 +803,12 @@ namespace Chummer.Plugins
                                 client = StaticUtils.GetClient();
                                 if (String.IsNullOrEmpty(Settings.Default.BearerToken))
                                 {
-                                    ret = await client.GetSINnersByTokenAsync(Settings.Default.IdentityToken);
+                                    ret = await client.GetSINnersByTokenAsync(Settings.Default.IdentityToken, token);
                                     Settings.Default.BearerToken = ret.BearerToken;
                                     Settings.Default.Save();
                                 }
                                 else
-                                    ret = await client.GetSINnersByAuthorizationAsync();
+                                    ret = await client.GetSINnersByAuthorizationAsync(token);
                                 return ret;
                             }
                             catch (Exception)
@@ -817,7 +817,7 @@ namespace Chummer.Plugins
                                     client.ReadResponseAsString = !client.ReadResponseAsString;
                                 try
                                 {
-                                    ret = client != null ? await client.GetSINnersByAuthorizationAsync() : null;
+                                    ret = client != null ? await client.GetSINnersByAuthorizationAsync(token) : null;
                                 }
                                 catch(ApiException e1)
                                 {
@@ -1364,7 +1364,7 @@ namespace Chummer.Plugins
             }
         }
 
-        public async Task<bool> DoCharacterList_DragDrop(object sender, DragEventArgs dragEventArgs, TreeView treCharacterList)
+        public async Task<bool> DoCharacterList_DragDrop(object sender, DragEventArgs dragEventArgs, TreeView treCharacterList, CancellationToken token = default)
         {
             if (dragEventArgs == null)
                 throw new ArgumentNullException(nameof(dragEventArgs));
@@ -1396,14 +1396,14 @@ namespace Chummer.Plugins
                         {
                             case SINnerSearchGroup sinGroup when nodDestinationNode.Tag == MyPluginHandlerInstance:
                             {
-                                ResultGroupPutGroupInGroup res = await client.PutGroupInGroupAsync(sinGroup.Id, sinGroup.Groupname, null, null, null);
-                                await ChummerHub.Client.Backend.Utils.ShowErrorResponseFormAsync(res);
+                                ResultGroupPutGroupInGroup res = await client.PutGroupInGroupAsync(sinGroup.Id, sinGroup.Groupname, null, null, null, token);
+                                await ChummerHub.Client.Backend.Utils.ShowErrorResponseFormAsync(res, token: token);
                                 return true;
                             }
                             case SINnerSearchGroup sinGroup when nodDestinationNode.Tag is SINnerSearchGroup destGroup:
                             {
-                                ResultGroupPutGroupInGroup res = await client.PutGroupInGroupAsync(sinGroup.Id, sinGroup.Groupname, destGroup.Id, sinGroup.MyAdminIdentityRole, sinGroup.IsPublic);
-                                await ChummerHub.Client.Backend.Utils.ShowErrorResponseFormAsync(res);
+                                ResultGroupPutGroupInGroup res = await client.PutGroupInGroupAsync(sinGroup.Id, sinGroup.Groupname, destGroup.Id, sinGroup.MyAdminIdentityRole, sinGroup.IsPublic, token);
+                                await ChummerHub.Client.Backend.Utils.ShowErrorResponseFormAsync(res, token: token);
                                 return true;
                             }
                             case CharacterCache objCache:
@@ -1429,8 +1429,8 @@ namespace Chummer.Plugins
                         {
                             if (nodDestinationNode.Tag == MyPluginHandlerInstance)
                             {
-                                SINner res = await client.PutSINerInGroupAsync(null, mySiNnerId, null);
-                                await ChummerHub.Client.Backend.Utils.ShowErrorResponseFormAsync(res);
+                                SINner res = await client.PutSINerInGroupAsync(null, mySiNnerId, null, token);
+                                await ChummerHub.Client.Backend.Utils.ShowErrorResponseFormAsync(res, token: token);
                                 return true;
                             }
                             else if (nodDestinationNode.Tag is SINnerSearchGroup destGroup)
@@ -1440,13 +1440,13 @@ namespace Chummer.Plugins
                                 {
                                     using (frmSINnerPassword getPWD = new frmSINnerPassword())
                                     {
-                                        string pwdquestion = await LanguageManager.GetStringAsync("String_SINners_EnterGroupPassword", true);
-                                        string pwdcaption = await LanguageManager.GetStringAsync("String_SINners_EnterGroupPasswordTitle", true);
+                                        string pwdquestion = await LanguageManager.GetStringAsync("String_SINners_EnterGroupPassword", true, token);
+                                        string pwdcaption = await LanguageManager.GetStringAsync("String_SINners_EnterGroupPasswordTitle", true, token);
                                         passwd = getPWD.ShowDialog(Program.MainForm, pwdquestion, pwdcaption);
                                     }
                                 }
-                                SINner res = await client.PutSINerInGroupAsync(destGroup.Id, mySiNnerId, passwd);
-                                await ChummerHub.Client.Backend.Utils.ShowErrorResponseFormAsync(res);
+                                SINner res = await client.PutSINerInGroupAsync(destGroup.Id, mySiNnerId, passwd, token);
+                                await ChummerHub.Client.Backend.Utils.ShowErrorResponseFormAsync(res, token: token);
                                 return true;
                             }
                         }
@@ -1459,7 +1459,7 @@ namespace Chummer.Plugins
             }
             finally
             {
-                await MainForm.CharacterRoster.RefreshPluginNodesAsync(this);
+                await MainForm.CharacterRoster.RefreshPluginNodesAsync(this, token);
             }
             return true;
         }

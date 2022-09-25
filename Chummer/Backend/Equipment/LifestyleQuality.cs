@@ -575,14 +575,15 @@ namespace Chummer.Backend.Equipment
         /// Returns Page if not found or the string is empty.
         /// </summary>
         /// <param name="strLanguage">Language file keyword to use.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns></returns>
-        public async ValueTask<string> DisplayPageAsync(string strLanguage)
+        public async ValueTask<string> DisplayPageAsync(string strLanguage, CancellationToken token = default)
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
-            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage);
+            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token);
             string s = objNode != null
-                ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage"))?.Value ?? Page
+                ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage", token: token))?.Value ?? Page
                 : Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
@@ -632,13 +633,13 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         ///     The name of the object as it should be displayed on printouts (translated name only).
         /// </summary>
-        public async ValueTask<string> DisplayNameShortAsync(string strLanguage)
+        public async ValueTask<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
-            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage);
-            return objNode != null ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value ?? Name : Name;
+            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token);
+            return objNode != null ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token))?.Value ?? Name : Name;
         }
 
         public string CurrentDisplayNameShort => DisplayNameShort(GlobalSettings.Language);
@@ -660,14 +661,14 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         ///     The name of the object as it should be displayed in lists. Name (Extra).
         /// </summary>
-        public async ValueTask<string> DisplayNameAsync(string strLanguage)
+        public async ValueTask<string> DisplayNameAsync(string strLanguage, CancellationToken token = default)
         {
-            string strReturn = await DisplayNameShortAsync(strLanguage);
+            string strReturn = await DisplayNameShortAsync(strLanguage, token);
 
             if (!string.IsNullOrEmpty(Extra))
                 // Attempt to retrieve the CharacterAttribute name.
-                strReturn += await LanguageManager.GetStringAsync("String_Space", strLanguage) + '(' +
-                             await _objCharacter.TranslateExtraAsync(Extra, strLanguage) + ')';
+                strReturn += await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token) + '(' +
+                             await _objCharacter.TranslateExtraAsync(Extra, strLanguage, token: token) + ')';
             return strReturn;
         }
 
@@ -690,10 +691,10 @@ namespace Chummer.Backend.Equipment
             return strReturn;
         }
 
-        public async ValueTask<string> FormattedDisplayNameAsync(CultureInfo objCulture, string strLanguage)
+        public async ValueTask<string> FormattedDisplayNameAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
-            string strReturn = await DisplayNameAsync(strLanguage);
-            string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage);
+            string strReturn = await DisplayNameAsync(strLanguage, token);
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token);
 
             if (Multiplier > 0)
                 strReturn += strSpace + "[+" + Multiplier.ToString(objCulture) + "%]";
@@ -701,9 +702,9 @@ namespace Chummer.Backend.Equipment
                 strReturn += strSpace + '[' + Multiplier.ToString(objCulture) + "%]";
 
             if (Cost > 0)
-                strReturn += strSpace + "[+" + Cost.ToString(_objCharacter.Settings.NuyenFormat, objCulture) + await LanguageManager.GetStringAsync("String_NuyenSymbol") + ']';
+                strReturn += strSpace + "[+" + Cost.ToString(_objCharacter.Settings.NuyenFormat, objCulture) + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token) + ']';
             else if (Cost < 0)
-                strReturn += strSpace + '[' + Cost.ToString(_objCharacter.Settings.NuyenFormat, objCulture) + await LanguageManager.GetStringAsync("String_NuyenSymbol") + ']';
+                strReturn += strSpace + '[' + Cost.ToString(_objCharacter.Settings.NuyenFormat, objCulture) + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token) + ']';
             return strReturn;
         }
 

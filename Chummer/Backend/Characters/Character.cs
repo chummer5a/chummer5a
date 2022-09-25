@@ -258,7 +258,7 @@ namespace Chummer
         public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
 
         private readonly LockingOrderedSet<Func<Character, bool>> _setDoOnSaveCompleted = new LockingOrderedSet<Func<Character, bool>>();
-        private readonly LockingOrderedSet<Func<Character, Task<bool>>> _setDoOnSaveCompletedAsync = new LockingOrderedSet<Func<Character, Task<bool>>>();
+        private readonly LockingOrderedSet<Func<Character, CancellationToken, Task<bool>>> _setDoOnSaveCompletedAsync = new LockingOrderedSet<Func<Character, CancellationToken, Task<bool>>>();
 
         /// <summary>
         /// Set of unique methods to run after the character's Save() method is otherwise finished.
@@ -283,7 +283,7 @@ namespace Chummer
         [JsonIgnore]
         [XmlIgnore]
         [IgnoreDataMember]
-        public LockingOrderedSet<Func<Character, Task<bool>>> DoOnSaveCompletedAsync
+        public LockingOrderedSet<Func<Character, CancellationToken, Task<bool>>> DoOnSaveCompletedAsync
         {
             get
             {
@@ -4204,8 +4204,8 @@ namespace Chummer
                         // ReSharper disable once ForCanBeConvertedToForeach
                         for (int i = 0; i < DoOnSaveCompletedAsync.Count; ++i)
                         {
-                            Func<Character, Task<bool>> funcLoopToRun = DoOnSaveCompletedAsync[i];
-                            Task<bool> tskLoopTask = funcLoopToRun?.Invoke(this) ?? Task.FromResult(true);
+                            Func<Character, CancellationToken, Task<bool>> funcLoopToRun = DoOnSaveCompletedAsync[i];
+                            Task<bool> tskLoopTask = funcLoopToRun?.Invoke(this, token) ?? Task.FromResult(true);
                             if (tskLoopTask.Status == TaskStatus.Created)
                                 tskLoopTask.RunSynchronously();
                             if (tskLoopTask.Exception != null)
@@ -4269,11 +4269,12 @@ namespace Chummer
                                 // ReSharper disable once ForCanBeConvertedToForeach
                                 for (; j < DoOnSaveCompletedAsync.Count; ++j)
                                 {
-                                    Func<Character, Task<bool>> funcLoopToRun = DoOnSaveCompletedAsync[j];
+                                    Func<Character, CancellationToken, Task<bool>> funcLoopToRun
+                                        = await DoOnSaveCompletedAsync.GetValueAtAsync(j, token);
                                     if (funcLoopToRun != null)
                                     {
                                         lstDoOnSaveCompletedAsync.Add(
-                                            Task.Run(() => funcLoopToRun.Invoke(this), token));
+                                            Task.Run(() => funcLoopToRun.Invoke(this, token), token));
                                         if (++intCounter != Utils.MaxParallelBatchSize)
                                             continue;
                                         token.ThrowIfCancellationRequested();
@@ -8049,7 +8050,7 @@ namespace Chummer
                     await objWriter.WriteElementStringAsync("imageformat",
                                                             "jpeg", token: token); // Here for legacy/compatibility purposes, we always export as JPEG now
                     // <metatype />
-                    await objWriter.WriteElementStringAsync("metatype", await DisplayMetatypeAsync(strLanguageToPrint), token: token);
+                    await objWriter.WriteElementStringAsync("metatype", await DisplayMetatypeAsync(strLanguageToPrint, token), token: token);
                     // <metatype_english />
                     await objWriter.WriteElementStringAsync("metatype_english", Metatype, token: token);
                     // <metatype_guid />
@@ -8058,7 +8059,7 @@ namespace Chummer
                                                                 "D", GlobalSettings.InvariantCultureInfo), token: token);
                     // <metavariant />
                     await objWriter.WriteElementStringAsync("metavariant",
-                                                            await DisplayMetavariantAsync(strLanguageToPrint), token: token);
+                                                            await DisplayMetavariantAsync(strLanguageToPrint, token), token: token);
                     // <metavariant_english />
                     await objWriter.WriteElementStringAsync("metavariant_english", Metavariant, token: token);
                     // <metavariant_guid />
@@ -11653,9 +11654,10 @@ namespace Chummer
         /// </summary>
         /// <param name="strAltCode">Book code to search for.</param>
         /// <param name="strLanguage">Language to load.</param>
-        public ValueTask<string> LanguageBookCodeFromAltCodeAsync(string strAltCode, string strLanguage = "")
+        /// <param name="token">Cancellation token to listen to.</param>
+        public ValueTask<string> LanguageBookCodeFromAltCodeAsync(string strAltCode, string strLanguage = "", CancellationToken token = default)
         {
-            return CommonFunctions.LanguageBookCodeFromAltCodeAsync(strAltCode, strLanguage, this);
+            return CommonFunctions.LanguageBookCodeFromAltCodeAsync(strAltCode, strLanguage, this, token);
         }
 
         /// <summary>
@@ -22828,16 +22830,16 @@ namespace Chummer
         /// <summary>
         /// The name of the metatype as it should appear on printouts (translated name only).
         /// </summary>
-        public async ValueTask<string> DisplayMetatypeAsync(string strLanguage)
+        public async ValueTask<string> DisplayMetatypeAsync(string strLanguage, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject))
+            using (await EnterReadLock.EnterAsync(LockObject, token))
             {
                 if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                     return Metatype;
 
-                XPathNavigator objNode = await GetNodeXPathAsync(true, strLanguage);
+                XPathNavigator objNode = await GetNodeXPathAsync(true, strLanguage, token);
                 return objNode != null
-                    ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate"))
+                    ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token))
                     ?.Value ?? Metatype
                     : Metatype;
             }
@@ -22923,16 +22925,16 @@ namespace Chummer
         /// <summary>
         /// The name of the metatype as it should appear on printouts (translated name only).
         /// </summary>
-        public async ValueTask<string> DisplayMetavariantAsync(string strLanguage)
+        public async ValueTask<string> DisplayMetavariantAsync(string strLanguage, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject))
+            using (await EnterReadLock.EnterAsync(LockObject, token))
             {
                 if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                     return Metavariant;
 
-                XPathNavigator objNode = await GetNodeXPathAsync(false, strLanguage);
+                XPathNavigator objNode = await GetNodeXPathAsync(false, strLanguage, token);
                 return objNode != null
-                    ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate"))
+                    ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token))
                              ?.Value ?? Metavariant
                     : Metavariant;
             }
@@ -22966,18 +22968,19 @@ namespace Chummer
         /// The metatype, including metavariant if any, in an appropriate language.
         /// </summary>
         /// <param name="strLanguage">Language to be used. Defaults to GlobalSettings.Language</param>
-        public async ValueTask<string> FormattedMetatypeMethodAsync(string strLanguage = "")
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async ValueTask<string> FormattedMetatypeMethodAsync(string strLanguage = "", CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject))
+            using (await EnterReadLock.EnterAsync(LockObject, token))
             {
                 if (string.IsNullOrEmpty(strLanguage))
                     strLanguage = GlobalSettings.Language;
-                string strMetatype = await DisplayMetatypeAsync(strLanguage);
+                string strMetatype = await DisplayMetatypeAsync(strLanguage, token);
 
                 if (MetavariantGuid != Guid.Empty)
                 {
-                    strMetatype += await LanguageManager.GetStringAsync("String_Space") + '('
-                        + await DisplayMetavariantAsync(strLanguage) + ')';
+                    strMetatype += await LanguageManager.GetStringAsync("String_Space", token: token) + '('
+                        + await DisplayMetavariantAsync(strLanguage, token) + ')';
                 }
 
                 return strMetatype;
@@ -29584,7 +29587,7 @@ namespace Chummer
         /// <summary>
         /// Load the Character from an XML file.
         /// </summary>
-        public async Task<bool> LoadFromHeroLabFileCoreAsync(bool blnSync, string strPorFile, string strCharacterId, string strSettingsKey = "")
+        public async Task<bool> LoadFromHeroLabFileCoreAsync(bool blnSync, string strPorFile, string strCharacterId, string strSettingsKey = "", CancellationToken token = default)
         {
             if(!File.Exists(strPorFile))
                 return false;
@@ -29595,7 +29598,7 @@ namespace Chummer
                 // ReSharper disable once MethodHasAsyncOverload
                 objLocker = LockObject.EnterWriteLock();
             else
-                objLockerAsync = await LockObject.EnterWriteLockAsync();
+                objLockerAsync = await LockObject.EnterWriteLockAsync(token);
             try
             {
                 Dictionary<string, Bitmap> dicImages = new Dictionary<string, Bitmap>(1);
@@ -29603,7 +29606,7 @@ namespace Chummer
                 XPathNavigator xmlLeadsDocument = null;
                 List<string> lstTextStatBlockLines = null;
                 using (CustomActivity op_load = blnSync
-                           // ReSharper disable once MethodHasAsyncOverload
+                           // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                            ? Timekeeper.StartSyncron("LoadFromHeroLabFile", null,
                                                      CustomActivity.OperationType
                                                                    .DependencyOperation, strPorFile)
@@ -29777,7 +29780,7 @@ namespace Chummer
                                 blnSync
                                     // ReSharper disable once MethodHasAsyncOverload
                                     ? LanguageManager.GetString("MessageTitle_FailedLoad")
-                                    : await LanguageManager.GetStringAsync("MessageTitle_FailedLoad"),
+                                    : await LanguageManager.GetStringAsync("MessageTitle_FailedLoad", token: token),
                                 MessageBoxButtons.OK, MessageBoxIcon.Error);
                             return false;
                         }
@@ -29795,12 +29798,12 @@ namespace Chummer
                                               blnSync
                                                   // ReSharper disable once MethodHasAsyncOverload
                                                   ? LanguageManager.GetString("Message_FailedLoad")
-                                                  : await LanguageManager.GetStringAsync("Message_FailedLoad"),
+                                                  : await LanguageManager.GetStringAsync("Message_FailedLoad", token: token),
                                               ex.Message),
                                 blnSync
                                     // ReSharper disable once MethodHasAsyncOverload
                                     ? LanguageManager.GetString("MessageTitle_FailedLoad")
-                                    : await LanguageManager.GetStringAsync("MessageTitle_FailedLoad"),
+                                    : await LanguageManager.GetStringAsync("MessageTitle_FailedLoad", token: token),
                                 MessageBoxButtons.OK, MessageBoxIcon.Error);
                             return false;
                         }
@@ -29840,9 +29843,9 @@ namespace Chummer
                             XPathNavigator xmlLeadsBaseNode;
 
                             using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverload
+                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                        ? Timekeeper.StartSyncron("load_char_misc", op_load)
-                                       : await Timekeeper.StartSyncronAsync("load_char_misc", op_load))
+                                       : await Timekeeper.StartSyncronAsync("load_char_misc", op_load, token: token))
                             {
                                 _dateFileLastWriteTime = File.GetLastWriteTimeUtc(strPorFile);
 
@@ -29860,7 +29863,7 @@ namespace Chummer
                                 if (!_blnCreated)
                                 {
                                     XPathNodeIterator xmlJournalEntries = blnSync
-                                        // ReSharper disable once MethodHasAsyncOverload
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         ? xmlStatBlockBaseNode.SelectAndCacheExpression("journals/journal")
                                         : await xmlStatBlockBaseNode.SelectAndCacheExpressionAsync("journals/journal");
                                     if (xmlJournalEntries.Count > 1)
@@ -29897,12 +29900,12 @@ namespace Chummer
                                     if (strRaceString == "Metasapient")
                                         strRaceString = "A.I.";
                                     foreach (XPathNavigator xmlMetatype in (blnSync
-                                                 // ReSharper disable once MethodHasAsyncOverload
+                                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                  ? LoadDataXPath("metatypes.xml")
-                                                     // ReSharper disable once MethodHasAsyncOverload
+                                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                      .SelectAndCacheExpression("/chummer/metatypes/metatype")
-                                                 : await (await LoadDataXPathAsync("metatypes.xml"))
-                                                     .SelectAndCacheExpressionAsync("/chummer/metatypes/metatype")))
+                                                 : await (await LoadDataXPathAsync("metatypes.xml", token: token))
+                                                     .SelectAndCacheExpressionAsync("/chummer/metatypes/metatype", token: token)))
                                     {
                                         string strMetatypeName = xmlMetatype.SelectSingleNode("name").Value;
                                         if (strMetatypeName == strRaceString)
@@ -30008,7 +30011,7 @@ namespace Chummer
                                     if (dicImages.TryGetValue(xmlImageFileNameNode.Value, out Bitmap objOutput))
                                     {
                                         if (blnSync)
-                                            // ReSharper disable once MethodHasAsyncOverload
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             _lstMugshots.Add(objOutput);
                                         else
                                             await _lstMugshots.AddAsync(objOutput);
@@ -30080,7 +30083,7 @@ namespace Chummer
                                                     if (blnSync)
                                                         SettingsKey = strSettingsKey;
                                                     else
-                                                        await SetSettingsKeyAsync(strSettingsKey);
+                                                        await SetSettingsKeyAsync(strSettingsKey, token: token);
                                                 }
                                             }
                                         }
@@ -30097,28 +30100,28 @@ namespace Chummer
                                                                   "Message_MissingGameplayOption")
                                                               : await LanguageManager
                                                                   .GetStringAsync(
-                                                                      "Message_MissingGameplayOption"),
-                                                          blnSync ? SettingsKey : await GetSettingsKeyAsync()),
+                                                                      "Message_MissingGameplayOption", token: token),
+                                                          blnSync ? SettingsKey : await GetSettingsKeyAsync(token)),
                                             blnSync
                                                 // ReSharper disable once MethodHasAsyncOverload
                                                 ? LanguageManager.GetString(
                                                     "Message_MissingGameplayOption_Title")
                                                 : await LanguageManager.GetStringAsync(
-                                                    "Message_MissingGameplayOption_Title"),
+                                                    "Message_MissingGameplayOption_Title", token: token),
                                             MessageBoxButtons.OKCancel, MessageBoxIcon.Error)
                                         == DialogResult.OK)
                                     {
                                         if (blnSync)
                                         {
                                             using (ThreadSafeForm<SelectBuildMethod> frmPickBP
-                                                   // ReSharper disable MethodHasAsyncOverload
+                                                   // ReSharper disable MethodHasAsyncOverloadWithCancellation
                                                    = ThreadSafeForm<SelectBuildMethod>.Get(
                                                        () => new SelectBuildMethod(this, true)))
                                             {
                                                 if (frmPickBP.ShowDialogSafe(this) != DialogResult.OK)
                                                     return false;
                                             }
-                                            // ReSharper restore MethodHasAsyncOverload
+                                            // ReSharper restore MethodHasAsyncOverloadWithCancellation
                                         }
                                         else
                                         {
@@ -30176,12 +30179,12 @@ namespace Chummer
                                         }
 
                                         if (blnSync)
-                                            // ReSharper disable once MethodHasAsyncOverload
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             _lstPrioritySkills.Clear();
                                         else
                                             await _lstPrioritySkills.ClearAsync();
                                         foreach (XPathNavigator xmlField in (blnSync
-                                                     // ReSharper disable once MethodHasAsyncOverload
+                                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                      ? xmlPriorityTalentPick.SelectAndCacheExpression("field")
                                                      : await xmlPriorityTalentPick.SelectAndCacheExpressionAsync(
                                                          "field")))
@@ -30190,7 +30193,7 @@ namespace Chummer
                                             if (!string.IsNullOrEmpty(strInnerText))
                                             {
                                                 if (blnSync)
-                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                     _lstPrioritySkills.Add(strInnerText);
                                                 else
                                                     await _lstPrioritySkills.AddAsync(strInnerText);
@@ -30200,7 +30203,7 @@ namespace Chummer
 
                                     if (blnSync)
                                     {
-                                        // ReSharper disable MethodHasAsyncOverload
+                                        // ReSharper disable MethodHasAsyncOverloadWithCancellation
                                         using (ThreadSafeForm<SelectMetatypePriority> frmSelectMetatype =
                                                ThreadSafeForm<SelectMetatypePriority>.Get(
                                                    () => new SelectMetatypePriority(this)))
@@ -30208,7 +30211,7 @@ namespace Chummer
                                             if (frmSelectMetatype.ShowDialogSafe(this) != DialogResult.OK)
                                                 return false;
                                         }
-                                        // ReSharper restore MethodHasAsyncOverload
+                                        // ReSharper restore MethodHasAsyncOverloadWithCancellation
                                     }
                                     else
                                     {
@@ -30225,7 +30228,7 @@ namespace Chummer
                                 {
                                     if (blnSync)
                                     {
-                                        // ReSharper disable MethodHasAsyncOverload
+                                        // ReSharper disable MethodHasAsyncOverloadWithCancellation
                                         using (ThreadSafeForm<SelectMetatypeKarma> frmSelectMetatype =
                                                ThreadSafeForm<SelectMetatypeKarma>.Get(
                                                    () => new SelectMetatypeKarma(this)))
@@ -30233,7 +30236,7 @@ namespace Chummer
                                             if (frmSelectMetatype.ShowDialogSafe(this) != DialogResult.OK)
                                                 return false;
                                         }
-                                        // ReSharper restore MethodHasAsyncOverload
+                                        // ReSharper restore MethodHasAsyncOverloadWithCancellation
                                     }
                                     else
                                     {
@@ -30297,7 +30300,7 @@ namespace Chummer
                             List<Vehicle> lstVehicles = new List<Vehicle>(1);
 
                             using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverload
+                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                        ? Timekeeper.StartSyncron("load_char_quality", op_load)
                                        : await Timekeeper.StartSyncronAsync("load_char_quality", op_load))
                             {
@@ -30404,7 +30407,7 @@ namespace Chummer
                                                     xmlQualityToImport.SelectSingleNode("description")?.Value ??
                                                     string.Empty;
                                                 if (blnSync)
-                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                     _lstQualities.Add(objQuality);
                                                 else
                                                     await _lstQualities.AddAsync(objQuality);
@@ -30511,7 +30514,7 @@ namespace Chummer
                                                     xmlQualityToImport.SelectSingleNode("description")?.Value ??
                                                     string.Empty;
                                                 if (blnSync)
-                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                     _lstQualities.Add(objQuality);
                                                 else
                                                     await _lstQualities.AddAsync(objQuality);
@@ -30525,7 +30528,7 @@ namespace Chummer
 
                             AttributeSection.LoadFromHeroLab(xmlStatBlockBaseNode, op_load);
                             using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverload
+                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                        ? Timekeeper.StartSyncron("load_char_misc2", op_load)
                                        : await Timekeeper.StartSyncronAsync("load_char_misc2", op_load))
                             {
@@ -30562,7 +30565,7 @@ namespace Chummer
                             }
 
                             using (CustomActivity op_load_char_skills = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverload
+                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                        ? Timekeeper.StartSyncron("load_char_skills", op_load)
                                        : await Timekeeper.StartSyncronAsync("load_char_skills", op_load)) //slightly messy
                             {
@@ -30661,7 +30664,7 @@ namespace Chummer
                             Timekeeper.Finish("load_char_wloc");
                             */
                             using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverload
+                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                        ? Timekeeper.StartSyncron("load_char_contacts", op_load)
                                        : await Timekeeper.StartSyncronAsync("load_char_contacts", op_load))
                             {
@@ -30723,7 +30726,7 @@ namespace Chummer
                                     }
 
                                     if (blnSync)
-                                        // ReSharper disable once MethodHasAsyncOverload
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         _lstContacts.Add(objContact);
                                     else
                                         await _lstContacts.AddAsync(objContact);
@@ -30734,7 +30737,7 @@ namespace Chummer
 
                             XmlDocument xmlGearDocument;
                             using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverload
+                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                        ? Timekeeper.StartSyncron("load_char_armor", op_load)
                                        : await Timekeeper.StartSyncronAsync("load_char_armor", op_load))
                             {
@@ -30794,7 +30797,7 @@ namespace Chummer
                                             objArmor.Notes = xmlArmorToImport.SelectSingleNode("description")
                                                                              ?.Value;
                                             if (blnSync)
-                                                // ReSharper disable once MethodHasAsyncOverload
+                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                 _lstArmor.Add(objArmor);
                                             else
                                                 await _lstArmor.AddAsync(objArmor);
@@ -30825,7 +30828,7 @@ namespace Chummer
                                                                 .SelectSingleNode("description")?.Value;
                                                             objArmorMod.Parent = objArmor;
                                                             if (blnSync)
-                                                                // ReSharper disable once MethodHasAsyncOverload
+                                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                                 objArmor.ArmorMods.Add(objArmorMod);
                                                             else
                                                                 await objArmor.ArmorMods.AddAsync(objArmorMod);
@@ -30844,7 +30847,7 @@ namespace Chummer
                                                                             lstWeapons))
                                                                     {
                                                                         if (blnSync)
-                                                                            // ReSharper disable once MethodHasAsyncOverload
+                                                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                                             objArmorMod.GearChildren.Add(objPlugin);
                                                                         else
                                                                             await objArmorMod.GearChildren.AddAsync(objPlugin);
@@ -30893,7 +30896,7 @@ namespace Chummer
                                                                     lstWeapons))
                                                             {
                                                                 if (blnSync)
-                                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                                     objArmor.GearChildren.Add(objPlugin);
                                                                 else
                                                                     await objArmor.GearChildren.AddAsync(objPlugin);
@@ -30938,7 +30941,7 @@ namespace Chummer
                                                                             lstWeapons))
                                                                     {
                                                                         if (blnSync)
-                                                                            // ReSharper disable once MethodHasAsyncOverload
+                                                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                                             objArmorMod.GearChildren.Add(objPlugin);
                                                                         else
                                                                             await objArmorMod.GearChildren.AddAsync(objPlugin);
@@ -31008,7 +31011,7 @@ namespace Chummer
                             }
 
                             using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverload
+                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                        ? Timekeeper.StartSyncron("load_char_weapons", op_load)
                                        : await Timekeeper.StartSyncronAsync("load_char_weapons", op_load))
                             {
@@ -31020,7 +31023,7 @@ namespace Chummer
                                     if (objWeapon.ImportHeroLabWeapon(xmlWeaponToImport, lstWeapons))
                                     {
                                         if (blnSync)
-                                            // ReSharper disable once MethodHasAsyncOverload
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             _lstWeapons.Add(objWeapon);
                                         else
                                             await _lstWeapons.AddAsync(objWeapon);
@@ -31050,7 +31053,7 @@ namespace Chummer
                             }
 
                             using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverload
+                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                        ? Timekeeper.StartSyncron("load_char_ware", op_load)
                                        : await Timekeeper.StartSyncronAsync("load_char_ware", op_load))
                             {
@@ -31063,7 +31066,7 @@ namespace Chummer
                                                                             lstVehicles))
                                     {
                                         if (blnSync)
-                                            // ReSharper disable once MethodHasAsyncOverload
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             _lstCyberware.Add(objCyberware);
                                         else
                                             await _lstCyberware.AddAsync(objCyberware);
@@ -31100,7 +31103,7 @@ namespace Chummer
                                                                             lstVehicles))
                                     {
                                         if (blnSync)
-                                            // ReSharper disable once MethodHasAsyncOverload
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             _lstCyberware.Add(objCyberware);
                                         else
                                             await _lstCyberware.AddAsync(objCyberware);
@@ -31134,13 +31137,13 @@ namespace Chummer
 
                             XPathNodeIterator xmlNodeList;
                             using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverload
+                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                        ? Timekeeper.StartSyncron("load_char_spells", op_load)
                                        : await Timekeeper.StartSyncronAsync("load_char_spells", op_load))
                             {
                                 // Spells.
                                 xmlNodeList = blnSync
-                                    // ReSharper disable once MethodHasAsyncOverload
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     ? xmlStatBlockBaseNode.SelectAndCacheExpression("magic/spells/spell")
                                     : await xmlStatBlockBaseNode.SelectAndCacheExpressionAsync("magic/spells/spell");
                                 XmlDocument xmlSpellDocument = blnSync
@@ -31421,17 +31424,17 @@ namespace Chummer
                             }
 
                             using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverload
+                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                        ? Timekeeper.StartSyncron("load_char_powers", op_load)
                                        : await Timekeeper.StartSyncronAsync("load_char_powers", op_load))
                             {
                                 // Powers.
                                 xmlNodeList = blnSync
-                                    // ReSharper disable once MethodHasAsyncOverload
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     ? xmlStatBlockBaseNode.SelectAndCacheExpression("magic/adeptpowers/adeptpower")
                                     : await xmlStatBlockBaseNode.SelectAndCacheExpressionAsync("magic/adeptpowers/adeptpower");
                                 XmlDocument xmlPowersDocument = blnSync
-                                    // ReSharper disable once MethodHasAsyncOverload
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     ? LoadData("powers.xml")
                                     : await LoadDataAsync("powers.xml");
                                 foreach (XPathNavigator xmlHeroLabPower in xmlNodeList)
@@ -31508,7 +31511,7 @@ namespace Chummer
                                             objPower.Create(xmlPowerData, intRating);
                                             objPower.Notes = xmlHeroLabPower.SelectSingleNode("description")?.Value;
                                             if (blnSync)
-                                                // ReSharper disable once MethodHasAsyncOverload
+                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                 _lstPowers.Add(objPower);
                                             else
                                                 await _lstPowers.AddAsync(objPower);
@@ -31533,7 +31536,7 @@ namespace Chummer
                             Timekeeper.Finish("load_char_spirits");
                             */
                             using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverload
+                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                        ? Timekeeper.StartSyncron("load_char_complex", op_load)
                                        : await Timekeeper.StartSyncronAsync("load_char_complex", op_load))
                             {
@@ -31632,7 +31635,7 @@ namespace Chummer
                                             ComplexForm objComplexForm = new ComplexForm(this);
                                             objComplexForm.Create(xmlComplexFormData, strForcedValue);
                                             if (blnSync)
-                                                // ReSharper disable once MethodHasAsyncOverload
+                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                 _lstComplexForms.Add(objComplexForm);
                                             else
                                                 await _lstComplexForms.AddAsync(objComplexForm);
@@ -31672,7 +31675,7 @@ namespace Chummer
                             Timekeeper.Finish("load_char_marts");
                             */
                             using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverload
+                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                        ? Timekeeper.StartSyncron("load_char_lifestyle", op_load)
                                        : await Timekeeper.StartSyncronAsync("load_char_lifestyle", op_load))
                             {
@@ -31682,7 +31685,7 @@ namespace Chummer
                                 XmlNode xmlFakeLicenseDataNode =
                                     xmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = 'Fake License']");
                                 xmlNodeList = blnSync
-                                    // ReSharper disable once MethodHasAsyncOverload
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     ? xmlStatBlockBaseNode.SelectAndCacheExpression("identities/identity")
                                     : await xmlStatBlockBaseNode.SelectAndCacheExpressionAsync("identities/identity");
                                 foreach (XPathNavigator xmlHeroLabIdentity in xmlNodeList)
@@ -31716,14 +31719,14 @@ namespace Chummer
                                                                       ?.Value);
                                             objFakeLicense.Parent = objFakeSIN;
                                             if (blnSync)
-                                                // ReSharper disable once MethodHasAsyncOverload
+                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                 objFakeSIN.Children.Add(objFakeLicense);
                                             else
                                                 await objFakeSIN.Children.AddAsync(objFakeLicense);
                                         }
 
                                         if (blnSync)
-                                            // ReSharper disable once MethodHasAsyncOverload
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             _lstGear.Add(objFakeSIN);
                                         else
                                             await _lstGear.AddAsync(objFakeSIN);
@@ -31757,7 +31760,7 @@ namespace Chummer
                                             }
 
                                             if (blnSync)
-                                                // ReSharper disable once MethodHasAsyncOverload
+                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                 _lstLifestyles.Add(objLifestyle);
                                             else
                                                 await _lstLifestyles.AddAsync(objLifestyle);
@@ -31769,7 +31772,7 @@ namespace Chummer
                             }
 
                             using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverload
+                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                        ? Timekeeper.StartSyncron("load_char_gear", op_load)
                                        : await Timekeeper.StartSyncronAsync("load_char_gear", op_load))
                             {
@@ -31781,7 +31784,7 @@ namespace Chummer
                                     if (objGear.ImportHeroLabGear(xmlGearToImport, null, lstWeapons))
                                     {
                                         if (blnSync)
-                                            // ReSharper disable once MethodHasAsyncOverload
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             _lstGear.Add(objGear);
                                         else
                                             await _lstGear.AddAsync(objGear);
@@ -31813,14 +31816,14 @@ namespace Chummer
                             }
 
                             using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverload
+                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                        ? Timekeeper.StartSyncron("load_char_car", op_load)
                                        : await Timekeeper.StartSyncronAsync("load_char_car", op_load))
                             {
                                 foreach (Vehicle objVehicle in lstVehicles)
                                 {
                                     if (blnSync)
-                                        // ReSharper disable once MethodHasAsyncOverload
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         _lstVehicles.Add(objVehicle);
                                     else
                                         await _lstVehicles.AddAsync(objVehicle);
@@ -31929,7 +31932,7 @@ namespace Chummer
                             _lstWeapons.AddRange(lstWeapons);
 
                             using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverload
+                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                        ? Timekeeper.StartSyncron("load_char_unarmed", op_load)
                                        : await Timekeeper.StartSyncronAsync("load_char_unarmed", op_load))
                             {
@@ -31960,7 +31963,7 @@ namespace Chummer
                                         objWeapon.Create(objXmlWeapon, _lstWeapons);
                                         objWeapon.IncludedInWeapon = true; // Unarmed attack can never be removed
                                         if (blnSync)
-                                            // ReSharper disable once MethodHasAsyncOverload
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             _lstWeapons.Add(objWeapon);
                                         else
                                             await _lstWeapons.AddAsync(objWeapon);
@@ -31977,7 +31980,7 @@ namespace Chummer
 
                         // Refresh certain improvements
                         using (_ = blnSync
-                                   // ReSharper disable once MethodHasAsyncOverload
+                                   // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                    ? Timekeeper.StartSyncron("load_char_improvementrefreshers2", op_load)
                                    : await Timekeeper.StartSyncronAsync("load_char_improvementrefreshers2", op_load))
                         {
@@ -31987,7 +31990,7 @@ namespace Chummer
                             RefreshDealerConnectionDiscounts();
                             // Refresh permanent attribute changes due to essence loss
                             if (blnSync)
-                                // ReSharper disable once MethodHasAsyncOverload
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 RefreshEssenceLossImprovements();
                             else
                                 await RefreshEssenceLossImprovementsAsync();

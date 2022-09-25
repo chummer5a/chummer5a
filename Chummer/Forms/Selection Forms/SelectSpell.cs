@@ -257,17 +257,17 @@ namespace Chummer
 
         #region Methods
 
-        private ValueTask<bool> AnyItemInList(string strCategory = "")
+        private ValueTask<bool> AnyItemInList(string strCategory = "", CancellationToken token = default)
         {
-            return RefreshList(strCategory, false);
+            return RefreshList(strCategory, false, token);
         }
 
-        private ValueTask<bool> BuildSpellList(string strCategory = "")
+        private ValueTask<bool> BuildSpellList(string strCategory = "", CancellationToken token = default)
         {
-            return RefreshList(strCategory, true);
+            return RefreshList(strCategory, true, token);
         }
 
-        private async ValueTask<bool> RefreshList(string strCategory, bool blnDoUIUpdate)
+        private async ValueTask<bool> RefreshList(string strCategory, bool blnDoUIUpdate, CancellationToken token = default)
         {
             if (_blnLoading && blnDoUIUpdate)
                 return false;
@@ -275,15 +275,15 @@ namespace Chummer
             {
                 if (blnDoUIUpdate)
                 {
-                    await lstSpells.PopulateWithListItemsAsync(ListItem.Blank.Yield());
+                    await lstSpells.PopulateWithListItemsAsync(ListItem.Blank.Yield(), token: token);
                 }
                 return false;
             }
 
-            string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text);
-            bool blnHasSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.TextLength != 0);
+            string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token: token);
+            bool blnHasSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.TextLength != 0, token: token);
 
-            string strSpace = await LanguageManager.GetStringAsync("String_Space");
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token);
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSpellItems))
             {
                 using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool, out HashSet<string> limitDescriptors))
@@ -293,7 +293,7 @@ namespace Chummer
                     string strFilter = string.Empty;
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
                     {
-                        sbdFilter.Append('(').Append(_objCharacter.Settings.BookXPath()).Append(')');
+                        sbdFilter.Append('(').Append(await _objCharacter.Settings.BookXPathAsync(token: token)).Append(')');
                         if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All"
                                                                && (GlobalSettings.SearchInCategoryOnly
                                                                    || !blnHasSearch))
@@ -327,13 +327,13 @@ namespace Chummer
                         if (!_blnIgnoreRequirements)
                         {
                             foreach (Improvement improvement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(
-                                         _objCharacter, Improvement.ImprovementType.LimitSpellDescriptor))
+                                         _objCharacter, Improvement.ImprovementType.LimitSpellDescriptor, token: token))
                             {
                                 limitDescriptors.Add(improvement.ImprovedName);
                             }
 
                             foreach (Improvement improvement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(
-                                         _objCharacter, Improvement.ImprovementType.BlockSpellDescriptor))
+                                         _objCharacter, Improvement.ImprovementType.BlockSpellDescriptor, token: token))
                             {
                                 blockDescriptors.Add(improvement.ImprovedName);
                             }
@@ -353,7 +353,7 @@ namespace Chummer
                             
                             if ((await ImprovementManager.GetCachedImprovementListForValueOfAsync(
                                     _objCharacter, Improvement.ImprovementType.AllowSpellCategory,
-                                    strSpellCategory)).Count != 0)
+                                    strSpellCategory, token: token)).Count != 0)
                             {
                                 if (!blnDoUIUpdate)
                                     return true;
@@ -364,7 +364,7 @@ namespace Chummer
                             string strRange = objXmlSpell.SelectSingleNode("range")?.Value ?? string.Empty;
                             if ((await ImprovementManager.GetCachedImprovementListForValueOfAsync(
                                     _objCharacter, Improvement.ImprovementType.AllowSpellRange,
-                                    strRange)).Count != 0)
+                                    strRange, token: token)).Count != 0)
                             {
                                 if (!blnDoUIUpdate)
                                     return true;
@@ -384,7 +384,7 @@ namespace Chummer
 
                             if ((await ImprovementManager
                                     .GetCachedImprovementListForValueOfAsync(_objCharacter,
-                                                                             Improvement.ImprovementType.LimitSpellCategory))
+                                                                             Improvement.ImprovementType.LimitSpellCategory, token: token))
                                 .Any(x => x.ImprovedName != strSpellCategory))
                             {
                                 continue;
@@ -400,9 +400,9 @@ namespace Chummer
                 if (blnDoUIUpdate)
                 {
                     lstSpellItems.Sort(CompareListItems.CompareNames);
-                    string strOldSelected = await lstSpells.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
+                    string strOldSelected = await lstSpells.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token);
                     _blnLoading = true;
-                    await lstSpells.PopulateWithListItemsAsync(lstSpellItems);
+                    await lstSpells.PopulateWithListItemsAsync(lstSpellItems, token: token);
                     _blnLoading = false;
                     await lstSpells.DoThreadSafeAsync(x =>
                     {
@@ -410,14 +410,14 @@ namespace Chummer
                             x.SelectedValue = strOldSelected;
                         else
                             x.SelectedIndex = -1;
-                    });
+                    }, token: token);
                 }
 
                 async ValueTask AddSpell(XPathNavigator objXmlSpell, string strSpellCategory)
                 {
-                    string strDisplayName = (await objXmlSpell.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value ??
+                    string strDisplayName = (await objXmlSpell.SelectSingleNodeAndCacheExpressionAsync("translate", token: token))?.Value ??
                                             objXmlSpell.SelectSingleNode("name")?.Value ??
-                                            await LanguageManager.GetStringAsync("String_Unknown");
+                                            await LanguageManager.GetStringAsync("String_Unknown", token: token);
                     if (!GlobalSettings.SearchInCategoryOnly && blnHasSearch
                                                              && !string.IsNullOrEmpty(strSpellCategory))
                     {

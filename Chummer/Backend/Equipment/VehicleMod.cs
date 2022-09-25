@@ -607,12 +607,12 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Translated Category.
         /// </summary>
-        public async Task<string> DisplayCategoryAsync(string strLanguage)
+        public async Task<string> DisplayCategoryAsync(string strLanguage, CancellationToken token = default)
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Category;
 
-            return (await _objCharacter.LoadDataXPathAsync("vehicles.xml", strLanguage)).SelectSingleNode("/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate")?.Value ?? Category;
+            return (await _objCharacter.LoadDataXPathAsync("vehicles.xml", strLanguage, token: token)).SelectSingleNode("/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate")?.Value ?? Category;
         }
 
         /// <summary>
@@ -757,14 +757,15 @@ namespace Chummer.Backend.Equipment
         /// Returns Page if not found or the string is empty.
         /// </summary>
         /// <param name="strLanguage">Language file keyword to use.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns></returns>
-        public async Task<string> DisplayPageAsync(string strLanguage)
+        public async Task<string> DisplayPageAsync(string strLanguage, CancellationToken token = default)
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
-            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage);
+            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token);
             string s = objNode != null
-                ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage"))?.Value ?? Page
+                ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage", token: token))?.Value ?? Page
                 : Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
@@ -1623,6 +1624,79 @@ namespace Chummer.Backend.Equipment
 
                 return Math.Min(intAttribute + intBonus, Math.Max(pilot, 1));
             }
+        }
+
+        /// <summary>
+        /// Vehicle arm/leg Strength.
+        /// </summary>
+        public async ValueTask<int> GetTotalStrengthAsync(CancellationToken token = default)
+        {
+            string strName = Name.ToUpperInvariant();
+            if (!strName.Contains("ARM") && !strName.Contains("LEG"))
+                return 0;
+            int intAttribute = 0;
+            int bod = 1;
+            if (Parent != null)
+            {
+                bod = await Parent.GetTotalBodyAsync(token) * 2;
+                intAttribute = Math.Max(await Parent.GetTotalBodyAsync(token), 0);
+            }
+
+            int intBonus = 0;
+
+            await Cyberware.ForEachAsync(async objChild =>
+            {
+                switch (objChild.Name)
+                {
+                    // If the limb has Customized Strength, this is its new base value.
+                    case "Customized Strength":
+                        intAttribute = await objChild.GetRatingAsync(token);
+                        break;
+                    // If the limb has Enhanced Strength, this adds to the limb's value.
+                    case "Enhanced Strength":
+                        intBonus = await objChild.GetRatingAsync(token);
+                        break;
+                }
+            }, token: token);
+
+            return Math.Min(intAttribute + intBonus, Math.Max(bod, 1));
+        }
+
+        /// <summary>
+        /// Vehicle arm/leg Agility.
+        /// </summary>
+        public async ValueTask<int> GetTotalAgilityAsync(CancellationToken token = default)
+        {
+            string strName = Name.ToUpperInvariant();
+            if (!strName.Contains("ARM") && !strName.Contains("LEG"))
+                return 0;
+
+            int intAttribute = 0;
+            int pilot = 1;
+            if (Parent != null)
+            {
+                pilot = await Parent.GetTotalBodyAsync(token) * 2;
+                intAttribute = Math.Max(await Parent.GetPilotAsync(token), 0);
+            }
+
+            int intBonus = 0;
+
+            await Cyberware.ForEachAsync(async objChild =>
+            {
+                switch (objChild.Name)
+                {
+                    // If the limb has Customized Strength, this is its new base value.
+                    case "Customized Agility":
+                        intAttribute = await objChild.GetRatingAsync(token);
+                        break;
+                    // If the limb has Enhanced Strength, this adds to the limb's value.
+                    case "Enhanced Agility":
+                        intBonus = await objChild.GetRatingAsync(token);
+                        break;
+                }
+            }, token: token);
+
+            return Math.Min(intAttribute + intBonus, Math.Max(pilot, 1));
         }
 
         /// <summary>

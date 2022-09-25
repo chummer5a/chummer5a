@@ -509,7 +509,7 @@ namespace Chummer.Backend.Uniques
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
         /// </summary>
-        public async Task<string> DisplayNameShortAsync(string strLanguage)
+        public async Task<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
         {
             if (IsCustomTradition)
             {
@@ -526,19 +526,24 @@ namespace Chummer.Backend.Uniques
                             strFile = "streams.xml";
                             break;
                     }
-                    string strReturnEnglish = strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase) ? Name : await _objCharacter.ReverseTranslateExtraAsync(Name, GlobalSettings.DefaultLanguage, strFile);
-                    return await _objCharacter.TranslateExtraAsync(strReturnEnglish, strLanguage);
+
+                    string strReturnEnglish
+                        = strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
+                            ? Name
+                            : await _objCharacter.ReverseTranslateExtraAsync(
+                                Name, GlobalSettings.DefaultLanguage, strFile, token);
+                    return await _objCharacter.TranslateExtraAsync(strReturnEnglish, strLanguage, token: token);
                 }
 
-                return await _objCharacter.TranslateExtraAsync(Name, strLanguage);
+                return await _objCharacter.TranslateExtraAsync(Name, strLanguage, token: token);
             }
 
             // Get the translated name if applicable.
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
-            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage);
-            return objNode != null ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value ?? Name : Name;
+            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token);
+            return objNode != null ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token))?.Value ?? Name : Name;
         }
 
         /// <summary>
@@ -557,12 +562,12 @@ namespace Chummer.Backend.Uniques
         /// <summary>
         /// The name of the object as it should be displayed in lists. Name (Extra).
         /// </summary>
-        public async Task<string> DisplayNameAsync(string strLanguage)
+        public async Task<string> DisplayNameAsync(string strLanguage, CancellationToken token = default)
         {
-            string strReturn = await DisplayNameShortAsync(strLanguage);
+            string strReturn = await DisplayNameShortAsync(strLanguage, token);
 
             if (!string.IsNullOrEmpty(Extra))
-                strReturn += await LanguageManager.GetStringAsync("String_Space", strLanguage) + '(' + await _objCharacter.TranslateExtraAsync(Extra, strLanguage) + ')';
+                strReturn += await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token) + '(' + await _objCharacter.TranslateExtraAsync(Extra, strLanguage, token: token) + ')';
 
             return strReturn;
         }
@@ -589,9 +594,9 @@ namespace Chummer.Backend.Uniques
         /// <summary>
         /// The spirit form of the tradition as it should be displayed in printouts and the UI.
         /// </summary>
-        public Task<string> DisplaySpiritFormAsync(string strLanguage)
+        public Task<string> DisplaySpiritFormAsync(string strLanguage, CancellationToken token = default)
         {
-            return _objCharacter.TranslateExtraAsync(SpiritForm, strLanguage, "critterpowers.xml");
+            return _objCharacter.TranslateExtraAsync(SpiritForm, strLanguage, "critterpowers.xml", token);
         }
 
         /// <summary>
@@ -654,9 +659,9 @@ namespace Chummer.Backend.Uniques
         /// <summary>
         /// Magician's Tradition Drain Attributes for display purposes.
         /// </summary>
-        public ValueTask<string> DisplayDrainExpressionMethodAsync(CultureInfo objCultureInfo, string strLanguage)
+        public ValueTask<string> DisplayDrainExpressionMethodAsync(CultureInfo objCultureInfo, string strLanguage, CancellationToken token = default)
         {
-            return _objCharacter.AttributeSection.ProcessAttributesInXPathForTooltipAsync(DrainExpression, objCultureInfo, strLanguage, false);
+            return _objCharacter.AttributeSection.ProcessAttributesInXPathForTooltipAsync(DrainExpression, objCultureInfo, strLanguage, false, token: token);
         }
 
         /// <summary>
@@ -772,11 +777,11 @@ namespace Chummer.Backend.Uniques
         /// <summary>
         /// Method to get Magician's Combat Spirit (for Custom Traditions) in a language.
         /// </summary>
-        public Task<string> DisplaySpiritCombatMethodAsync(string strLanguage)
+        public Task<string> DisplaySpiritCombatMethodAsync(string strLanguage, CancellationToken token = default)
         {
             return string.IsNullOrEmpty(SpiritCombat)
-                ? LanguageManager.GetStringAsync("String_None", strLanguage)
-                : _objCharacter.TranslateExtraAsync(SpiritCombat, strLanguage, "critters.xml");
+                ? LanguageManager.GetStringAsync("String_None", strLanguage, token: token)
+                : _objCharacter.TranslateExtraAsync(SpiritCombat, strLanguage, "critters.xml", token);
         }
 
         /// <summary>
@@ -821,11 +826,11 @@ namespace Chummer.Backend.Uniques
         /// <summary>
         /// Method to get Magician's Detection Spirit (for Custom Traditions) in a language.
         /// </summary>
-        public Task<string> DisplaySpiritDetectionMethodAsync(string strLanguage)
+        public Task<string> DisplaySpiritDetectionMethodAsync(string strLanguage, CancellationToken token = default)
         {
             return string.IsNullOrEmpty(SpiritDetection)
-                ? LanguageManager.GetStringAsync("String_None", strLanguage)
-                : _objCharacter.TranslateExtraAsync(SpiritDetection, strLanguage, "critters.xml");
+                ? LanguageManager.GetStringAsync("String_None", strLanguage, token: token)
+                : _objCharacter.TranslateExtraAsync(SpiritDetection, strLanguage, "critters.xml", token);
         }
 
         /// <summary>
@@ -870,11 +875,11 @@ namespace Chummer.Backend.Uniques
         /// <summary>
         /// Method to get Magician's Health Spirit (for Custom Traditions) in a language.
         /// </summary>
-        public Task<string> DisplaySpiritHealthMethodAsync(string strLanguage)
+        public Task<string> DisplaySpiritHealthMethodAsync(string strLanguage, CancellationToken token = default)
         {
             return string.IsNullOrEmpty(SpiritHealth)
-                ? LanguageManager.GetStringAsync("String_None", strLanguage)
-                : _objCharacter.TranslateExtraAsync(SpiritHealth, strLanguage, "critters.xml");
+                ? LanguageManager.GetStringAsync("String_None", strLanguage, token: token)
+                : _objCharacter.TranslateExtraAsync(SpiritHealth, strLanguage, "critters.xml", token);
         }
 
         /// <summary>
@@ -919,11 +924,11 @@ namespace Chummer.Backend.Uniques
         /// <summary>
         /// Method to get Magician's Illusion Spirit (for Custom Traditions) in a language.
         /// </summary>
-        public Task<string> DisplaySpiritIllusionMethodAsync(string strLanguage)
+        public Task<string> DisplaySpiritIllusionMethodAsync(string strLanguage, CancellationToken token = default)
         {
             return string.IsNullOrEmpty(SpiritIllusion)
-                ? LanguageManager.GetStringAsync("String_None", strLanguage)
-                : _objCharacter.TranslateExtraAsync(SpiritIllusion, strLanguage, "critters.xml");
+                ? LanguageManager.GetStringAsync("String_None", strLanguage, token: token)
+                : _objCharacter.TranslateExtraAsync(SpiritIllusion, strLanguage, "critters.xml", token);
         }
 
         /// <summary>
@@ -968,11 +973,11 @@ namespace Chummer.Backend.Uniques
         /// <summary>
         /// Method to get Magician's Manipulation Spirit (for Custom Traditions) in a language.
         /// </summary>
-        public Task<string> DisplaySpiritManipulationMethodAsync(string strLanguage)
+        public Task<string> DisplaySpiritManipulationMethodAsync(string strLanguage, CancellationToken token = default)
         {
             return string.IsNullOrEmpty(SpiritManipulation)
-                ? LanguageManager.GetStringAsync("String_None", strLanguage)
-                : _objCharacter.TranslateExtraAsync(SpiritManipulation, strLanguage, "critters.xml");
+                ? LanguageManager.GetStringAsync("String_None", strLanguage, token: token)
+                : _objCharacter.TranslateExtraAsync(SpiritManipulation, strLanguage, "critters.xml", token);
         }
 
         /// <summary>
@@ -1034,14 +1039,15 @@ namespace Chummer.Backend.Uniques
         /// Returns Page if not found or the string is empty.
         /// </summary>
         /// <param name="strLanguage">Language file keyword to use.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns></returns>
-        public async Task<string> DisplayPageAsync(string strLanguage)
+        public async Task<string> DisplayPageAsync(string strLanguage, CancellationToken token = default)
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
-            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage);
+            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token);
             string s = objNode != null
-                ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage"))?.Value ?? Page
+                ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage", token: token))?.Value ?? Page
                 : Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }

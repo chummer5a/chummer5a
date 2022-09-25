@@ -654,14 +654,15 @@ namespace Chummer
         /// Returns Page if not found or the string is empty.
         /// </summary>
         /// <param name="strLanguage">Language file keyword to use.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns></returns>
-        public async ValueTask<string> DisplayPageAsync(string strLanguage)
+        public async ValueTask<string> DisplayPageAsync(string strLanguage, CancellationToken token = default)
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
-            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage);
+            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token);
             string s = objNode != null
-                ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage"))?.Value ?? Page
+                ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage", token: token))?.Value ?? Page
                 : Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
@@ -692,9 +693,9 @@ namespace Chummer
         /// <summary>
         /// Name of the Improvement that added this quality.
         /// </summary>
-        public Task<string> GetSourceNameAsync(string strLanguage)
+        public Task<string> GetSourceNameAsync(string strLanguage, CancellationToken token = default)
         {
-            return _objCharacter.TranslateExtraAsync(_strSourceName, strLanguage);
+            return _objCharacter.TranslateExtraAsync(_strSourceName, strLanguage, token: token);
         }
 
         /// <summary>

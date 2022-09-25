@@ -2239,7 +2239,7 @@ namespace Chummer
                         foreach (Quality objQuality in CharacterObject.Qualities)
                         {
                             setQualitiesToPrint.Add(objQuality.SourceIDString + '|' +
-                                                    await objQuality.GetSourceNameAsync(GlobalSettings.Language) + '|' +
+                                                    await objQuality.GetSourceNameAsync(GlobalSettings.Language, token) + '|' +
                                                     objQuality.Extra);
                         }
 
@@ -2247,7 +2247,7 @@ namespace Chummer
                         foreach (Quality objQuality in CharacterObject.Qualities)
                         {
                             if (!setQualitiesToPrint.Remove(objQuality.SourceIDString + '|' +
-                                                            await objQuality.GetSourceNameAsync(GlobalSettings.Language)
+                                                            await objQuality.GetSourceNameAsync(GlobalSettings.Language, token)
                                                             + '|' +
                                                             objQuality.Extra))
                                 continue;
@@ -8991,7 +8991,7 @@ namespace Chummer
                             decimal decCost = objGear.TotalCost;
 
                             // Multiply the cost if applicable.
-                            char chrAvail = (await objGear.TotalAvailTupleAsync()).Suffix;
+                            char chrAvail = (await objGear.TotalAvailTupleAsync(token: token)).Suffix;
                             switch (chrAvail)
                             {
                                 case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:

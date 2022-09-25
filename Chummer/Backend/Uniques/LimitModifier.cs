@@ -22,6 +22,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
@@ -244,7 +245,7 @@ namespace Chummer
             return _strCachedDisplayCondition;
         }
 
-        public async ValueTask<string> DisplayConditionAsync(string strLanguage)
+        public async ValueTask<string> DisplayConditionAsync(string strLanguage, CancellationToken token = default)
         {
             // If we've already cached a value for this, just return it.
             // (Ghetto fix cache culture tag and compare to current?)
@@ -258,7 +259,7 @@ namespace Chummer
             // valid language key. Spare checking it against the dictionary.
             _strCachedDisplayCondition = _strCondition.Contains(' ')
                 ? _strCondition
-                : await LanguageManager.GetStringAsync(_strCondition, strLanguage, false);
+                : await LanguageManager.GetStringAsync(_strCondition, strLanguage, false, token);
             if (string.IsNullOrWhiteSpace(_strCachedDisplayCondition))
             {
                 _strCachedDisplayCondition = _strCondition;
@@ -314,7 +315,7 @@ namespace Chummer
             return strReturn;
         }
 
-        public async ValueTask<string> DisplayNameAsync(CultureInfo objCulture, string strLanguage)
+        public async ValueTask<string> DisplayNameAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
             string strBonus;
             if (_intBonus > 0)
@@ -322,9 +323,9 @@ namespace Chummer
             else
                 strBonus = _intBonus.ToString(objCulture);
 
-            string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage);
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token);
             string strReturn = DisplayNameShort + strSpace + '[' + strBonus + ']';
-            string strCondition = await DisplayConditionAsync(strLanguage);
+            string strCondition = await DisplayConditionAsync(strLanguage, token);
             if (!string.IsNullOrEmpty(strCondition))
                 strReturn += strSpace + '(' + strCondition + ')';
             return strReturn;

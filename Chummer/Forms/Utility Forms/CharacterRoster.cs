@@ -1210,7 +1210,7 @@ namespace Chummer
                 {
                     Log.Info("Starting new Task to get CharacterRosterTreeNodes for plugin:" + objPluginToRefresh);
                     List<TreeNode> lstNodes =
-                        (await objPluginToRefresh.GetCharacterRosterTreeNode(this, true))?.ToList();
+                        (await objPluginToRefresh.GetCharacterRosterTreeNode(this, true, token))?.ToList();
                     if (lstNodes != null)
                     {
                         lstNodes.Sort((x, y) => string.CompareOrdinal(x.Text, y.Text));
@@ -1339,7 +1339,7 @@ namespace Chummer
                             if (blnSuccess)
                                 break;
                         }
-                        objCache = await CharacterCache.CreateFromFileAsync(strFile).ConfigureAwait(false);
+                        objCache = await CharacterCache.CreateFromFileAsync(strFile, token).ConfigureAwait(false);
                         if (await _dicSavedCharacterCaches.TryAddAsync(strFile, objCache, token).ConfigureAwait(false))
                             break;
                         await objCache.DisposeAsync().ConfigureAwait(false);
@@ -1351,11 +1351,11 @@ namespace Chummer
                     // something went wrong (but not fatally so, which is why the exception is handled)
                     Utils.BreakIfDebug();
                     if (objCache == null)
-                        objCache = await CharacterCache.CreateFromFileAsync(strFile).ConfigureAwait(false);
+                        objCache = await CharacterCache.CreateFromFileAsync(strFile, token).ConfigureAwait(false);
                 }
             }
             else
-                objCache = await CharacterCache.CreateFromFileAsync(strFile).ConfigureAwait(false);
+                objCache = await CharacterCache.CreateFromFileAsync(strFile, token).ConfigureAwait(false);
             token.ThrowIfCancellationRequested();
             if (objCache == null)
                 return new TreeNode
@@ -1710,8 +1710,18 @@ namespace Chummer
                     plugintag = temp;
                 nodDestinationNode = nodDestinationNode.Parent;
             }
+
             if (plugintag != null)
-                await plugintag.DoCharacterList_DragDrop(sender, e, treCharacterList);
+            {
+                try
+                {
+                    await plugintag.DoCharacterList_DragDrop(sender, e, treCharacterList, _objGenericToken);
+                }
+                catch (OperationCanceledException)
+                {
+                    //swallow this
+                }
+            }
         }
 
         private void treCharacterList_OnDefaultItemDrag(object sender, ItemDragEventArgs e)

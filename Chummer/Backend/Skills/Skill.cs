@@ -1659,9 +1659,9 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// The translated abbreviation of the linked attribute.
         /// </summary>
-        public Task<string> DisplayAttributeMethodAsync(string strLanguage)
+        public Task<string> DisplayAttributeMethodAsync(string strLanguage, CancellationToken token = default)
         {
-            return LanguageManager.GetStringAsync("String_Attribute" + Attribute + "Short", strLanguage);
+            return LanguageManager.GetStringAsync("String_Attribute" + Attribute + "Short", strLanguage, token: token);
         }
 
         public string DisplayAttribute => DisplayAttributeMethod(GlobalSettings.Language);

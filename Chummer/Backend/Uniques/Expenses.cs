@@ -20,6 +20,7 @@
 using System;
 using System.Diagnostics;
 using System.Globalization;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 
@@ -424,10 +425,10 @@ namespace Chummer
         /// <summary>
         /// The Reason for the Entry expense.
         /// </summary>
-        public async ValueTask<string> DisplayReasonAsync(string strLanguage)
+        public async ValueTask<string> DisplayReasonAsync(string strLanguage, CancellationToken token = default)
         {
             if (Refund)
-                return Reason + await LanguageManager.GetStringAsync("String_Space", strLanguage) + '(' + await LanguageManager.GetStringAsync("String_Expense_Refund", strLanguage) + ')';
+                return Reason + await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token) + '(' + await LanguageManager.GetStringAsync("String_Expense_Refund", strLanguage, token: token) + ')';
             return Reason;
         }
 

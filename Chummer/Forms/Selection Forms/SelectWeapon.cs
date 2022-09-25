@@ -712,13 +712,13 @@ namespace Chummer
 
         #region Methods
 
-        private ValueTask<bool> RefreshList()
+        private async ValueTask<bool> RefreshList(CancellationToken token = default)
         {
-            string strCategory = cboCategory.SelectedValue?.ToString();
+            string strCategory = await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token);
             string strFilter = string.Empty;
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
             {
-                sbdFilter.Append('(').Append(_objCharacter.Settings.BookXPath()).Append(')');
+                sbdFilter.Append('(').Append(await _objCharacter.Settings.BookXPathAsync(token: token)).Append(')');
                 if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All"
                                                        && (GlobalSettings.SearchInCategoryOnly
                                                            || txtSearch.TextLength == 0))
@@ -758,7 +758,7 @@ namespace Chummer
             }
 
             XmlNodeList objXmlWeaponList = _objXmlDocument.SelectNodes("/chummer/weapons/weapon" + strFilter);
-            return BuildWeaponList(objXmlWeaponList);
+            return await BuildWeaponList(objXmlWeaponList, token: token);
         }
 
         /// <summary>

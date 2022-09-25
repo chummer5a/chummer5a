@@ -22,6 +22,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Chummer;
@@ -192,24 +193,24 @@ namespace ChummerHub.Client.Sinners
             return MySINnerFile.SiNnerMetaData.Tags.ToList();
         }
 
-        public async Task<bool> Upload(ucSINnerShare.MyUserState myState = null, CustomActivity parentActivity = null)
+        public async Task<bool> Upload(ucSINnerShare.MyUserState myState = null, CustomActivity parentActivity = null, CancellationToken token = default)
         {
             if (MyCharacter == null)
                 return true;
             using (CustomActivity op_uploadChummer = await Timekeeper.StartSyncronAsync(
                        "Uploading Chummer", parentActivity,
-                       CustomActivity.OperationType.DependencyOperation, MyCharacter.FileName))
+                       CustomActivity.OperationType.DependencyOperation, MyCharacter.FileName, token))
             {
                 try
                 {
-                    using (await CursorWait.NewAsync(PluginHandler.MainForm, true))
+                    using (await CursorWait.NewAsync(PluginHandler.MainForm, true, token))
                     {
                         try
                         {
                             ResultSinnerGetSINById found = null;
                             using (_ = await Timekeeper.StartSyncronAsync(
                                        "Checking if already online Chummer", op_uploadChummer,
-                                       CustomActivity.OperationType.DependencyOperation, MyCharacter.FileName))
+                                       CustomActivity.OperationType.DependencyOperation, MyCharacter.FileName, token))
                             {
                                 if (myState != null)
                                 {
@@ -236,8 +237,8 @@ namespace ChummerHub.Client.Sinners
                                 {
 
 
-                                    found = await client.GetSINByIdAsync(MySINnerFile.Id.GetValueOrDefault());
-                                    await Utils.ShowErrorResponseFormAsync(found);
+                                    found = await client.GetSINByIdAsync(MySINnerFile.Id.GetValueOrDefault(), token);
+                                    await Utils.ShowErrorResponseFormAsync(found, token: token);
                                 }
                                 catch (ApiException ae)
                                 {
@@ -257,7 +258,7 @@ namespace ChummerHub.Client.Sinners
                                 myState.CurrentProgress += myState.ProgressSteps;
                             using (_ = await Timekeeper.StartSyncronAsync(
                                        "Setting Visibility for Chummer", op_uploadChummer,
-                                       CustomActivity.OperationType.DependencyOperation, MyCharacter.FileName))
+                                       CustomActivity.OperationType.DependencyOperation, MyCharacter.FileName, token))
                             {
                                 if (found?.CallSuccess == true)
                                 {
@@ -294,16 +295,16 @@ namespace ChummerHub.Client.Sinners
 
                         using (_ = await Timekeeper.StartSyncronAsync(
                                    "Populating Reflection Tags", op_uploadChummer,
-                                   CustomActivity.OperationType.DependencyOperation, MyCharacter?.FileName))
+                                   CustomActivity.OperationType.DependencyOperation, MyCharacter?.FileName, token))
                         {
                             MySINnerFile.SiNnerMetaData.Tags = PopulateTags();
                         }
 
                         using (_ = await Timekeeper.StartSyncronAsync(
                                    "Preparing Model", op_uploadChummer,
-                                   CustomActivity.OperationType.DependencyOperation, MyCharacter?.FileName))
+                                   CustomActivity.OperationType.DependencyOperation, MyCharacter?.FileName, token))
                         {
-                            await PrepareModelAsync();
+                            await PrepareModelAsync(token);
                         }
 
                         if (myState != null)
@@ -319,13 +320,13 @@ namespace ChummerHub.Client.Sinners
                         {
                             using (_ = await Timekeeper.StartSyncronAsync(
                                        "Posting SINner", op_uploadChummer,
-                                       CustomActivity.OperationType.DependencyOperation, MyCharacter?.FileName))
+                                       CustomActivity.OperationType.DependencyOperation, MyCharacter?.FileName, token))
                             {
                                 res = null;
                                 try
                                 {
-                                    res = await Utils.PostSINnerAsync(this);
-                                    await Utils.ShowErrorResponseFormAsync(res);
+                                    res = await Utils.PostSINnerAsync(this, token);
+                                    await Utils.ShowErrorResponseFormAsync(res, token: token);
                                 }
                                 catch (ApiException ae)
                                 {
@@ -356,9 +357,9 @@ namespace ChummerHub.Client.Sinners
                             {
                                 using (_ = await Timekeeper.StartSyncronAsync(
                                            "Uploading File", op_uploadChummer,
-                                           CustomActivity.OperationType.DependencyOperation, MyCharacter?.FileName))
+                                           CustomActivity.OperationType.DependencyOperation, MyCharacter?.FileName, token))
                                 {
-                                    ResultSINnerPut uploadres = await Utils.UploadChummerFileAsync(this);
+                                    ResultSINnerPut uploadres = await Utils.UploadChummerFileAsync(this, token);
                                     if (uploadres.CallSuccess)
                                     {
                                         if (myState != null)
@@ -466,25 +467,25 @@ namespace ChummerHub.Client.Sinners
             return PrepareModelCoreAsync(true).GetAwaiter().GetResult();
         }
 
-        public Task<string> PrepareModelAsync()
+        public Task<string> PrepareModelAsync(CancellationToken token = default)
         {
-            return PrepareModelCoreAsync(false);
+            return PrepareModelCoreAsync(false, token);
         }
 
-        private async Task<string> PrepareModelCoreAsync(bool blnSync)
+        private async Task<string> PrepareModelCoreAsync(bool blnSync, CancellationToken token = default)
         {
             string zipPath = Path.Combine(Settings.Default.TempDownloadPath, "SINner", MySINnerFile.Id + ".chum5z");
             if (PluginHandler.MySINnerLoading != null)
             {
                 if (blnSync)
                 {
-                    // ReSharper disable once MethodHasAsyncOverload
+                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                     if (MySINnerIds.ContainsKey(MyCharacter.FileName))
                     {
                         MySINnerIds.TryRemove(MyCharacter.FileName, out Guid _);
                     }
                 }
-                else if (await MySINnerIds.ContainsKeyAsync(MyCharacter.FileName))
+                else if (await MySINnerIds.ContainsKeyAsync(MyCharacter.FileName, token))
                 {
                     MySINnerIds.TryRemove(MyCharacter.FileName, out Guid _);
                 }
@@ -502,10 +503,10 @@ namespace ChummerHub.Client.Sinners
                 {
                     MySINnerFile = PluginHandler.MySINnerLoading;
                     if (blnSync)
-                        // ReSharper disable once MethodHasAsyncOverload
+                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                         MySINnerIds.TryAdd(MyCharacter.FileName, PluginHandler.MySINnerLoading.Id.Value);
                     else
-                        await MySINnerIds.TryAddAsync(MyCharacter.FileName, PluginHandler.MySINnerLoading.Id.Value);
+                        await MySINnerIds.TryAddAsync(MyCharacter.FileName, PluginHandler.MySINnerLoading.Id.Value, token);
                     if (File.Exists(zipPath))
                         return zipPath;
                 }
@@ -525,13 +526,13 @@ namespace ChummerHub.Client.Sinners
                         {
                             if (blnSync)
                             {
-                                Task<ResultSinnerGetOwnedSINByAlias> objSearchTask = client.SinnerGetOwnedSINByAliasAsync(MySINnerFile.Alias);
+                                Task<ResultSinnerGetOwnedSINByAlias> objSearchTask = client.SinnerGetOwnedSINByAliasAsync(MySINnerFile.Alias, token);
                                 if (objSearchTask.Status == TaskStatus.Created)
                                     objSearchTask.RunSynchronously();
                                 res = objSearchTask.ConfigureAwait(false).GetAwaiter().GetResult();
                             }
                             else
-                                res = await client.SinnerGetOwnedSINByAliasAsync(MySINnerFile.Alias);
+                                res = await client.SinnerGetOwnedSINByAliasAsync(MySINnerFile.Alias, token);
                         }
                         catch (SerializationException e)
                         {
@@ -614,23 +615,23 @@ namespace ChummerHub.Client.Sinners
 
                 if (blnSync)
                 {
-                    // ReSharper disable once MethodHasAsyncOverload
+                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                     while (MySINnerIds.ContainsKey(MyCharacter.FileName))
                         MySINnerIds.TryRemove(MyCharacter.FileName, out Guid _);
                 }
                 else
                 {
-                    while (await MySINnerIds.ContainsKeyAsync(MyCharacter.FileName))
-                        await MySINnerIds.TryRemoveAsync(MyCharacter.FileName);
+                    while (await MySINnerIds.ContainsKeyAsync(MyCharacter.FileName, token))
+                        await MySINnerIds.TryRemoveAsync(MyCharacter.FileName, token);
                 }
 
                 if (MySINnerFile.Id != null)
                 {
                     if (blnSync)
-                        // ReSharper disable once MethodHasAsyncOverload
+                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                         MySINnerIds.TryAdd(MyCharacter.FileName, MySINnerFile.Id.Value);
                     else
-                        await MySINnerIds.TryAddAsync(MyCharacter.FileName, MySINnerFile.Id.Value);
+                        await MySINnerIds.TryAddAsync(MyCharacter.FileName, MySINnerFile.Id.Value, token);
                 }
 
                 SaveSINnerIds(); //Save it!
@@ -722,9 +723,9 @@ namespace ChummerHub.Client.Sinners
                 File.Delete(tempfile);
 
             bool readCallback = blnSync
-                // ReSharper disable once MethodHasAsyncOverload
+                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                 ? MyCharacter.DoOnSaveCompletedAsync.Remove(PluginHandler.MyOnSaveUpload)
-                : await MyCharacter.DoOnSaveCompletedAsync.RemoveAsync(PluginHandler.MyOnSaveUpload);
+                : await MyCharacter.DoOnSaveCompletedAsync.RemoveAsync(PluginHandler.MyOnSaveUpload, token);
 
             if (!File.Exists(MyCharacter.FileName))
             {
@@ -735,7 +736,7 @@ namespace ChummerHub.Client.Sinners
                     // ReSharper disable once MethodHasAsyncOverload
                     MyCharacter.Save(MyCharacter.FileName, false, false);
                 else
-                    await MyCharacter.SaveAsync(MyCharacter.FileName, false, false);
+                    await MyCharacter.SaveAsync(MyCharacter.FileName, false, false, token);
             }
             else
             {
@@ -743,17 +744,17 @@ namespace ChummerHub.Client.Sinners
                     // ReSharper disable once MethodHasAsyncOverload
                     MyCharacter.Save(tempfile, false, false);
                 else
-                    await MyCharacter.SaveAsync(tempfile, false, false);
+                    await MyCharacter.SaveAsync(tempfile, false, false, token);
             }
 
             MySINnerFile.LastChange = MyCharacter.FileLastWriteTime;
             if (readCallback)
             {
                 if (blnSync)
-                    // ReSharper disable once MethodHasAsyncOverload
+                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                     MyCharacter.DoOnSaveCompletedAsync.Add(PluginHandler.MyOnSaveUpload);
                 else
-                    await MyCharacter.DoOnSaveCompletedAsync.AddAsync(PluginHandler.MyOnSaveUpload);
+                    await MyCharacter.DoOnSaveCompletedAsync.AddAsync(PluginHandler.MyOnSaveUpload, token);
             }
 
             if (File.Exists(zipPath))

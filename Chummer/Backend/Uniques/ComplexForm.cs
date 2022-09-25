@@ -377,24 +377,24 @@ namespace Chummer
         /// <summary>
         /// Translated Duration.
         /// </summary>
-        public Task<string> DisplayDurationAsync(string strLanguage)
+        public Task<string> DisplayDurationAsync(string strLanguage, CancellationToken token = default)
         {
             switch (Duration)
             {
                 case "P":
-                    return LanguageManager.GetStringAsync("String_SpellDurationPermanent", strLanguage);
+                    return LanguageManager.GetStringAsync("String_SpellDurationPermanent", strLanguage, token: token);
 
                 case "S":
-                    return LanguageManager.GetStringAsync("String_SpellDurationSustained", strLanguage);
+                    return LanguageManager.GetStringAsync("String_SpellDurationSustained", strLanguage, token: token);
 
                 case "I":
-                    return LanguageManager.GetStringAsync("String_SpellDurationInstant", strLanguage);
+                    return LanguageManager.GetStringAsync("String_SpellDurationInstant", strLanguage, token: token);
 
                 case "Special":
-                    return LanguageManager.GetStringAsync("String_SpellDurationSpecial", strLanguage);
+                    return LanguageManager.GetStringAsync("String_SpellDurationSpecial", strLanguage, token: token);
 
                 default:
-                    return LanguageManager.GetStringAsync("String_None", strLanguage);
+                    return LanguageManager.GetStringAsync("String_None", strLanguage, token: token);
             }
         }
 
@@ -429,30 +429,30 @@ namespace Chummer
         /// <summary>
         /// Translated Fading Value.
         /// </summary>
-        public async ValueTask<string> DisplayFvAsync(string strLanguage)
+        public async ValueTask<string> DisplayFvAsync(string strLanguage, CancellationToken token = default)
         {
             string strReturn = CalculatedFv.Replace('/', '÷').Replace('*', '×');
             if (!strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
             {
                 strReturn = await strReturn
                                   .CheapReplaceAsync(
-                                      "L", () => LanguageManager.GetStringAsync("String_ComplexFormLevel", strLanguage))
+                                      "L", () => LanguageManager.GetStringAsync("String_ComplexFormLevel", strLanguage, token: token), token: token)
                                   .CheapReplaceAsync("Overflow damage",
                                                      () => LanguageManager.GetStringAsync(
-                                                         "String_SpellOverflowDamage", strLanguage))
+                                                         "String_SpellOverflowDamage", strLanguage, token: token), token: token)
                                   .CheapReplaceAsync("Damage Value",
                                                      () => LanguageManager.GetStringAsync(
-                                                         "String_SpellDamageValue", strLanguage))
+                                                         "String_SpellDamageValue", strLanguage, token: token), token: token)
                                   .CheapReplaceAsync(
-                                      "Toxin DV", () => LanguageManager.GetStringAsync("String_SpellToxinDV", strLanguage))
+                                      "Toxin DV", () => LanguageManager.GetStringAsync("String_SpellToxinDV", strLanguage, token: token), token: token)
                                   .CheapReplaceAsync("Disease DV",
                                                      () => LanguageManager.GetStringAsync(
-                                                         "String_SpellDiseaseDV", strLanguage))
+                                                         "String_SpellDiseaseDV", strLanguage, token: token), token: token)
                                   .CheapReplaceAsync("Radiation Power",
                                                      () => LanguageManager.GetStringAsync(
-                                                         "String_SpellRadiationPower", strLanguage))
+                                                         "String_SpellRadiationPower", strLanguage, token: token), token: token)
                                   .CheapReplaceAsync(
-                                      "Special", () => LanguageManager.GetStringAsync("String_Special", strLanguage));
+                                      "Special", () => LanguageManager.GetStringAsync("String_Special", strLanguage, token: token), token: token);
             }
             return strReturn;
         }
@@ -625,36 +625,36 @@ namespace Chummer
         /// <summary>
         /// Translated Duration.
         /// </summary>
-        public Task<string> DisplayTargetAsync(string strLanguage)
+        public Task<string> DisplayTargetAsync(string strLanguage, CancellationToken token = default)
         {
             switch (Target)
             {
                 case "Persona":
-                    return LanguageManager.GetStringAsync("String_ComplexFormTargetPersona", strLanguage);
+                    return LanguageManager.GetStringAsync("String_ComplexFormTargetPersona", strLanguage, token: token);
 
                 case "Device":
-                    return LanguageManager.GetStringAsync("String_ComplexFormTargetDevice", strLanguage);
+                    return LanguageManager.GetStringAsync("String_ComplexFormTargetDevice", strLanguage, token: token);
 
                 case "File":
-                    return LanguageManager.GetStringAsync("String_ComplexFormTargetFile", strLanguage);
+                    return LanguageManager.GetStringAsync("String_ComplexFormTargetFile", strLanguage, token: token);
 
                 case "Self":
-                    return LanguageManager.GetStringAsync("String_SpellRangeSelf", strLanguage);
+                    return LanguageManager.GetStringAsync("String_SpellRangeSelf", strLanguage, token: token);
 
                 case "Sprite":
-                    return LanguageManager.GetStringAsync("String_ComplexFormTargetSprite", strLanguage);
+                    return LanguageManager.GetStringAsync("String_ComplexFormTargetSprite", strLanguage, token: token);
 
                 case "Host":
-                    return LanguageManager.GetStringAsync("String_ComplexFormTargetHost", strLanguage);
+                    return LanguageManager.GetStringAsync("String_ComplexFormTargetHost", strLanguage, token: token);
 
                 case "IC":
-                    return LanguageManager.GetStringAsync("String_ComplexFormTargetIC", strLanguage);
+                    return LanguageManager.GetStringAsync("String_ComplexFormTargetIC", strLanguage, token: token);
 
                 case "Special":
-                    return LanguageManager.GetStringAsync("String_Special", strLanguage);
+                    return LanguageManager.GetStringAsync("String_Special", strLanguage, token: token);
 
                 default:
-                    return LanguageManager.GetStringAsync("String_None", strLanguage);
+                    return LanguageManager.GetStringAsync("String_None", strLanguage, token: token);
             }
         }
 
@@ -704,14 +704,15 @@ namespace Chummer
         /// Returns Page if not found or the string is empty.
         /// </summary>
         /// <param name="strLanguage">Language file keyword to use.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns></returns>
-        public async ValueTask<string> DisplayPageAsync(string strLanguage)
+        public async ValueTask<string> DisplayPageAsync(string strLanguage, CancellationToken token = default)
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
-            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage);
+            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token);
             string s = objNode != null
-                ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage"))?.Value ?? Page
+                ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage", token: token))?.Value ?? Page
                 : Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
