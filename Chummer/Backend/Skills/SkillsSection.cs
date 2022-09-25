@@ -1263,7 +1263,27 @@ namespace Chummer.Backend.Skills
                 _blnSkillsInitialized = false;
             }
         }
-        
+
+        internal async ValueTask ResetAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
+            try
+            {
+                await _dicSkills.ClearAsync(token);
+                await _lstSkills.ClearAsync(token);
+                await KnowledgeSkills.ClearAsync(token);
+                await KnowsoftSkills.ClearAsync(token);
+                await SkillGroups.ClearAsync(token);
+                SkillPointsMaximum = 0;
+                SkillGroupPointsMaximum = 0;
+                _blnSkillsInitialized = false;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync();
+            }
+        }
+
         private bool _blnSkillsInitialized;
         private readonly ReaderWriterLockSlim _objSkillsInitializerLock = new ReaderWriterLockSlim();
         private readonly ThreadSafeBindingList<Skill> _lstSkills = new ThreadSafeBindingList<Skill>();

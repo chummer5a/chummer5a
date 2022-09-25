@@ -249,7 +249,7 @@ namespace Chummer
             }, token);
             _lstSelectedDrugComponents.Add(objNodeData);
             await UpdateCustomDrugStats(token);
-            string strDescription = await _objDrug.GenerateDescriptionAsync(0);
+            string strDescription = await _objDrug.GenerateDescriptionAsync(0, token: token);
             await lblDrugDescription.DoThreadSafeAsync(x => x.Text = strDescription, token);
         }
 

@@ -19756,11 +19756,11 @@ namespace Chummer
                         // gpbVehiclesCommon
                         await lblVehicleName.DoThreadSafeAsync(x => x.Text = objWeapon.CurrentDisplayName, token);
                         string strText = await objWeapon.DisplayCategoryAsync(GlobalSettings.Language, token);
-                        await lblVehicleCategory.DoThreadSafeAsync(x => x.Text = strText, token, token);
+                        await lblVehicleCategory.DoThreadSafeAsync(x => x.Text = strText, token: token);
                         await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = false, token);
-                        await lblVehicleRating.DoThreadSafeAsync(x => x.Visible = false, token, token);
+                        await lblVehicleRating.DoThreadSafeAsync(x => x.Visible = false, token: token);
                         await lblVehicleGearQtyLabel.DoThreadSafeAsync(x => x.Visible = false, token);
-                        await lblVehicleGearQty.DoThreadSafeAsync(x => x.Visible = false, token, token);
+                        await lblVehicleGearQty.DoThreadSafeAsync(x => x.Visible = false, token: token);
                         await cmdVehicleGearReduceQty.DoThreadSafeAsync(x => x.Visible = false, token);
                         await lblVehicleAvail.DoThreadSafeAsync(x => x.Text = objWeapon.DisplayTotalAvail, token);
                         await lblVehicleCost.DoThreadSafeAsync(x => x.Text

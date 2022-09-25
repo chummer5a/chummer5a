@@ -148,7 +148,7 @@ namespace Chummer.Backend.Skills
                 await objWriter.WriteElementStringAsync("name_english", Name, token: token);
                 await objWriter.WriteElementStringAsync("skillgroup",
                                                         SkillGroupObject != null
-                                                            ? await SkillGroupObject.DisplayNameAsync(strLanguageToPrint)
+                                                            ? await SkillGroupObject.DisplayNameAsync(strLanguageToPrint, token)
                                                             : await LanguageManager.GetStringAsync(
                                                                 "String_None", strLanguageToPrint, token: token), token: token);
                 await objWriter.WriteElementStringAsync("skillgroup_english", SkillGroupObject?.Name ?? await LanguageManager.GetStringAsync("String_None", strLanguageToPrint, token: token), token: token);
@@ -176,11 +176,11 @@ namespace Chummer.Backend.Skills
                 await objWriter.WriteElementStringAsync("karma", (await GetKarmaAsync(token)).ToString(objCulture), token: token);
                 await objWriter.WriteElementStringAsync("spec", await DisplaySpecializationAsync(strLanguageToPrint, token), token: token);
                 await objWriter.WriteElementStringAsync("attribute", Attribute, token: token);
-                await objWriter.WriteElementStringAsync("displayattribute", await DisplayAttributeMethodAsync(strLanguageToPrint), token: token);
+                await objWriter.WriteElementStringAsync("displayattribute", await DisplayAttributeMethodAsync(strLanguageToPrint, token), token: token);
                 if (GlobalSettings.PrintNotes)
                     await objWriter.WriteElementStringAsync("notes", Notes, token: token);
                 await objWriter.WriteElementStringAsync("source", await CharacterObject.LanguageBookShortAsync(Source, strLanguageToPrint, token), token: token);
-                await objWriter.WriteElementStringAsync("page", DisplayPage(strLanguageToPrint), token: token);
+                await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint, token), token: token);
                 await objWriter.WriteElementStringAsync("attributemod",
                                                         (await (await CharacterObject.GetAttributeAsync(Attribute,
                                                             token: token)).GetTotalValueAsync(token)).ToString(objCulture), token: token);
@@ -2878,6 +2878,23 @@ namespace Chummer.Backend.Skills
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
             string s = this.GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? Page;
+            return !string.IsNullOrWhiteSpace(s) ? s : Page;
+        }
+
+        /// <summary>
+        /// Sourcebook Page Number using a given language file.
+        /// Returns Page if not found or the string is empty.
+        /// </summary>
+        /// <param name="strLanguage">Language file keyword to use.</param>
+        /// <returns></returns>
+        public async ValueTask<string> DisplayPageAsync(string strLanguage, CancellationToken token = default)
+        {
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                return Page;
+            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token);
+            string s = objNode != null
+                ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage", token))?.Value ?? Page
+                : Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 

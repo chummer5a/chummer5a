@@ -1524,6 +1524,60 @@ namespace Chummer.Backend.Attributes
             }
         }
 
+        internal async ValueTask ResetAsync(bool blnFirstTime = false, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
+            try
+            {
+                bool blnOldLoading = !blnFirstTime && _blnLoading;
+                try
+                {
+                    _blnLoading = true;
+                    await AttributeList.ClearAsync(token);
+                    await SpecialAttributeList.ClearAsync(token);
+                    foreach (string strAttribute in AttributeStrings)
+                    {
+                        CharacterAttrib objAttribute;
+                        switch (CharacterAttrib.ConvertToAttributeCategory(strAttribute))
+                        {
+                            case CharacterAttrib.AttributeCategory.Special:
+                                objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
+                                                                   CharacterAttrib.AttributeCategory.Special);
+                                await SpecialAttributeList.AddAsync(objAttribute, token);
+                                break;
+
+                            case CharacterAttrib.AttributeCategory.Standard:
+                                objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
+                                                                   CharacterAttrib.AttributeCategory.Standard);
+                                await AttributeList.AddAsync(objAttribute, token);
+                                break;
+                        }
+                    }
+
+                    if (blnFirstTime)
+                    {
+                        foreach (BindingSource objSource in _dicBindings.Values)
+                            objSource.Dispose();
+                        await _dicBindings.ClearAsync(token);
+                        foreach (string strAttributeString in AttributeStrings)
+                        {
+                            await _dicBindings.AddAsync(strAttributeString, new BindingSource(), token);
+                        }
+                    }
+
+                    ResetBindings(token);
+                }
+                finally
+                {
+                    _blnLoading = blnOldLoading;
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync();
+            }
+        }
+
         public static CharacterAttrib.AttributeCategory ConvertAttributeCategory(string s)
         {
             switch (s)

@@ -4047,7 +4047,7 @@ namespace Chummer.Backend.Equipment
                     // Replace the division sign with "div" since we're using XPath.
                     sbdAP.Replace("/", " div ");
                     (bool blnIsSuccess, object objProcess) = blnSync
-                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                        // ReSharper disable once MethodHasAsyncOverload
                         ? CommonFunctions.EvaluateInvariantXPath(sbdAP.ToString())
                         : await CommonFunctions.EvaluateInvariantXPathAsync(sbdAP.ToString(), token);
                     if (blnIsSuccess)
