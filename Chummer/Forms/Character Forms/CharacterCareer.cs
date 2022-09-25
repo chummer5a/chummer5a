@@ -1750,7 +1750,7 @@ namespace Chummer
                         break;
 
                     case nameof(Character.Encumbrance):
-                        Color objControlTextColor = await ColorManager.ControlTextAsync;
+                        Color objControlTextColor = await ColorManager.GetControlTextAsync(GenericToken);
                         await StatusStrip.DoThreadSafeAsync(() => tslCarriedWeight.ForeColor
                                                                 = CharacterObject.Encumbrance > 0
                                                                     ? ColorManager.ErrorColor
@@ -16752,7 +16752,7 @@ namespace Chummer
                         await lblCyberwareEssence.DoThreadSafeAsync(x => x.Visible = true, token);
                         if (objCyberware.Parent == null || objCyberware.AddToParentESS)
                         {
-                            decimal decCalculatedEss = await objCyberware.CalculatedESSAsync;
+                            decimal decCalculatedEss = await objCyberware.GetCalculatedESSAsync(token);
                             await lblCyberwareEssence.DoThreadSafeAsync(x => x.Text = objCyberware.Parent == null
                                                                             ? decCalculatedEss.ToString(
                                                                                 strESSFormat,

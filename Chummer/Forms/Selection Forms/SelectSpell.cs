@@ -786,7 +786,7 @@ namespace Chummer
             {
                 strDV += " + 2";
             }
-            object xprResult = CommonFunctions.EvaluateInvariantXPath(strDV.TrimStart('+'), out bool blnIsSuccess);
+            (bool blnIsSuccess, object xprResult) = await CommonFunctions.EvaluateInvariantXPathAsync(strDV.TrimStart('+'), token);
             if (blnIsSuccess)
             {
                 if (force)

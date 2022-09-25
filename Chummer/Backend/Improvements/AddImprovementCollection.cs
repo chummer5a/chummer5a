@@ -5765,7 +5765,7 @@ namespace Chummer
                 string strCount = bonusNode.Attributes?["count"]?.InnerText;
                 strCount = _objCharacter.AttributeSection.ProcessAttributesInXPath(strCount);
 
-                object objProcess = CommonFunctions.EvaluateInvariantXPath(strCount, out bool blnIsSuccess);
+                (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strCount);
                 powerCount = blnIsSuccess ? ((double)objProcess).StandardRound() : 1;
             }
 

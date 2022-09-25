@@ -61,11 +61,11 @@ namespace Chummer.UI.Table
         {
             if (blnSelected)
             {
-                await ColorManager.HighlightAsync.ContinueWith(y => this.DoThreadSafeAsync(x => x.BackColor = y.Result, token: token), token).Unwrap();
+                await ColorManager.GetHighlightAsync(token).ContinueWith(y => this.DoThreadSafeAsync(x => x.BackColor = y.Result, token: token), token).Unwrap();
             }
             else
             {
-                Color objColor = (intIndex & 1) == 0 ? await ColorManager.ControlLightestAsync : await ColorManager.ControlAsync;
+                Color objColor = (intIndex & 1) == 0 ? await ColorManager.GetControlLightestAsync(token) : await ColorManager.GetControlAsync(token);
                 await this.DoThreadSafeAsync(x => x.BackColor = objColor, token: token);
             }
         }

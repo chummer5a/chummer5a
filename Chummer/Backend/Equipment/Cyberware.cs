@@ -1908,31 +1908,32 @@ namespace Chummer.Backend.Equipment
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="objCulture">Culture in which to print.</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
-        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
         {
             if (objWriter == null)
                 return;
             // <cyberware>
-            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("cyberware");
+            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("cyberware", token: token);
             try
             {
                 if ((string.IsNullOrWhiteSpace(LimbSlot) && _strCategory != "Cyberlimb") || CyberlimbAttributeAbbrevs.Count == 0)
                 {
-                    await objWriter.WriteElementStringAsync("name", await DisplayNameShortAsync(strLanguageToPrint));
-                    await objWriter.WriteElementStringAsync("name_english", Name);
+                    await objWriter.WriteElementStringAsync("name", await DisplayNameShortAsync(strLanguageToPrint, token), token: token);
+                    await objWriter.WriteElementStringAsync("name_english", Name, token: token);
                 }
                 else
                 {
-                    string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguageToPrint);
+                    string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguageToPrint, token: token);
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdName))
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdNameEnglish))
                     {
-                        sbdName.Append(await DisplayNameShortAsync(strLanguageToPrint)).Append(strSpace).Append('(');
+                        sbdName.Append(await DisplayNameShortAsync(strLanguageToPrint, token)).Append(strSpace).Append('(');
                         sbdNameEnglish.Append(Name).Append(strSpace).Append('(');
                         bool blnFirst = true;
                         foreach (string strAbbrev in CyberlimbAttributeAbbrevs)
                         {
-                            int intTotalValue = await GetAttributeTotalValueAsync(strAbbrev);
+                            int intTotalValue = await GetAttributeTotalValueAsync(strAbbrev, token);
                             if (!blnFirst)
                             {
                                 sbdName.Append(',').Append(strSpace);
@@ -1941,9 +1942,9 @@ namespace Chummer.Backend.Equipment
                             else
                                 blnFirst = false;
 
-                            CharacterAttrib objLoopAttribute = await _objCharacter.GetAttributeAsync(strAbbrev);
+                            CharacterAttrib objLoopAttribute = await _objCharacter.GetAttributeAsync(strAbbrev, token: token);
                             if (objLoopAttribute != null)
-                                sbdName.Append(await objLoopAttribute.GetDisplayAbbrevAsync(strLanguageToPrint));
+                                sbdName.Append(await objLoopAttribute.GetDisplayAbbrevAsync(strLanguageToPrint, token));
                             else
                                 sbdName.Append(strAbbrev);
                             sbdName.Append(strSpace).Append(intTotalValue.ToString(objCulture));
@@ -1952,53 +1953,53 @@ namespace Chummer.Backend.Equipment
                         }
                         sbdName.Append(')');
                         sbdNameEnglish.Append(')');
-                        await objWriter.WriteElementStringAsync("name", sbdName.ToString());
-                        await objWriter.WriteElementStringAsync("name_english", sbdNameEnglish.ToString());
+                        await objWriter.WriteElementStringAsync("name", sbdName.ToString(), token: token);
+                        await objWriter.WriteElementStringAsync("name_english", sbdNameEnglish.ToString(), token: token);
                     }
                 }
 
-                await objWriter.WriteElementStringAsync("category", await DisplayCategoryAsync(strLanguageToPrint));
-                await objWriter.WriteElementStringAsync("category_english", Category);
+                await objWriter.WriteElementStringAsync("category", await DisplayCategoryAsync(strLanguageToPrint, token), token: token);
+                await objWriter.WriteElementStringAsync("category_english", Category, token: token);
 
                 await objWriter.WriteElementStringAsync("ess",
-                    (await CalculatedESSAsync).ToString(_objCharacter.Settings.EssenceFormat, objCulture));
-                await objWriter.WriteElementStringAsync("capacity", Capacity);
-                await objWriter.WriteElementStringAsync("avail", TotalAvail(objCulture, strLanguageToPrint));
-                await objWriter.WriteElementStringAsync("cost", TotalCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
-                await objWriter.WriteElementStringAsync("owncost", OwnCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
-                await objWriter.WriteElementStringAsync("weight", TotalWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture));
-                await objWriter.WriteElementStringAsync("ownweight", OwnWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture));
-                await objWriter.WriteElementStringAsync("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint));
-                await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint));
-                await objWriter.WriteElementStringAsync("rating", (await GetRatingAsync()).ToString(objCulture));
-                await objWriter.WriteElementStringAsync("minrating", (await GetMinRatingAsync()).ToString(objCulture));
-                await objWriter.WriteElementStringAsync("maxrating", (await GetMaxRatingAsync()).ToString(objCulture));
-                await objWriter.WriteElementStringAsync("ratinglabel", RatingLabel);
-                await objWriter.WriteElementStringAsync("allowsubsystems", AllowedSubsystems);
-                await objWriter.WriteElementStringAsync("wirelesson", WirelessOn.ToString(GlobalSettings.InvariantCultureInfo));
-                await objWriter.WriteElementStringAsync("grade", await Grade.DisplayNameAsync(strLanguageToPrint));
-                await objWriter.WriteElementStringAsync("location", Location);
-                await objWriter.WriteElementStringAsync("extra", await _objCharacter.TranslateExtraAsync(Extra, strLanguageToPrint));
-                await objWriter.WriteElementStringAsync("improvementsource", SourceType.ToString());
-                await objWriter.WriteElementStringAsync("isgeneware", IsGeneware.ToString(GlobalSettings.InvariantCultureInfo));
+                    (await GetCalculatedESSAsync(token)).ToString(_objCharacter.Settings.EssenceFormat, objCulture), token: token);
+                await objWriter.WriteElementStringAsync("capacity", Capacity, token: token);
+                await objWriter.WriteElementStringAsync("avail", TotalAvail(objCulture, strLanguageToPrint), token: token);
+                await objWriter.WriteElementStringAsync("cost", TotalCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture), token: token);
+                await objWriter.WriteElementStringAsync("owncost", OwnCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture), token: token);
+                await objWriter.WriteElementStringAsync("weight", TotalWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture), token: token);
+                await objWriter.WriteElementStringAsync("ownweight", OwnWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture), token: token);
+                await objWriter.WriteElementStringAsync("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint, token), token: token);
+                await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint, token), token: token);
+                await objWriter.WriteElementStringAsync("rating", (await GetRatingAsync(token)).ToString(objCulture), token: token);
+                await objWriter.WriteElementStringAsync("minrating", (await GetMinRatingAsync(token)).ToString(objCulture), token: token);
+                await objWriter.WriteElementStringAsync("maxrating", (await GetMaxRatingAsync(token)).ToString(objCulture), token: token);
+                await objWriter.WriteElementStringAsync("ratinglabel", RatingLabel, token: token);
+                await objWriter.WriteElementStringAsync("allowsubsystems", AllowedSubsystems, token: token);
+                await objWriter.WriteElementStringAsync("wirelesson", WirelessOn.ToString(GlobalSettings.InvariantCultureInfo), token: token);
+                await objWriter.WriteElementStringAsync("grade", await Grade.DisplayNameAsync(strLanguageToPrint, token), token: token);
+                await objWriter.WriteElementStringAsync("location", Location, token: token);
+                await objWriter.WriteElementStringAsync("extra", await _objCharacter.TranslateExtraAsync(Extra, strLanguageToPrint, token: token), token: token);
+                await objWriter.WriteElementStringAsync("improvementsource", SourceType.ToString(), token: token);
+                await objWriter.WriteElementStringAsync("isgeneware", IsGeneware.ToString(GlobalSettings.InvariantCultureInfo), token: token);
 
-                await objWriter.WriteElementStringAsync("attack", this.GetTotalMatrixAttribute("Attack").ToString(objCulture));
-                await objWriter.WriteElementStringAsync("sleaze", this.GetTotalMatrixAttribute("Sleaze").ToString(objCulture));
-                await objWriter.WriteElementStringAsync("dataprocessing", this.GetTotalMatrixAttribute("Data Processing").ToString(objCulture));
-                await objWriter.WriteElementStringAsync("firewall", this.GetTotalMatrixAttribute("Firewall").ToString(objCulture));
-                await objWriter.WriteElementStringAsync("devicerating", this.GetTotalMatrixAttribute("Device Rating").ToString(objCulture));
-                await objWriter.WriteElementStringAsync("programlimit", this.GetTotalMatrixAttribute("Program Limit").ToString(objCulture));
-                await objWriter.WriteElementStringAsync("iscommlink", IsCommlink.ToString(GlobalSettings.InvariantCultureInfo));
-                await objWriter.WriteElementStringAsync("isprogram", IsProgram.ToString(GlobalSettings.InvariantCultureInfo));
-                await objWriter.WriteElementStringAsync("active", this.IsActiveCommlink(_objCharacter).ToString(GlobalSettings.InvariantCultureInfo));
-                await objWriter.WriteElementStringAsync("homenode", this.IsHomeNode(_objCharacter).ToString(GlobalSettings.InvariantCultureInfo));
-                await objWriter.WriteElementStringAsync("conditionmonitor", MatrixCM.ToString(objCulture));
-                await objWriter.WriteElementStringAsync("matrixcmfilled", MatrixCMFilled.ToString(objCulture));
+                await objWriter.WriteElementStringAsync("attack", this.GetTotalMatrixAttribute("Attack").ToString(objCulture), token: token);
+                await objWriter.WriteElementStringAsync("sleaze", this.GetTotalMatrixAttribute("Sleaze").ToString(objCulture), token: token);
+                await objWriter.WriteElementStringAsync("dataprocessing", this.GetTotalMatrixAttribute("Data Processing").ToString(objCulture), token: token);
+                await objWriter.WriteElementStringAsync("firewall", this.GetTotalMatrixAttribute("Firewall").ToString(objCulture), token: token);
+                await objWriter.WriteElementStringAsync("devicerating", this.GetTotalMatrixAttribute("Device Rating").ToString(objCulture), token: token);
+                await objWriter.WriteElementStringAsync("programlimit", this.GetTotalMatrixAttribute("Program Limit").ToString(objCulture), token: token);
+                await objWriter.WriteElementStringAsync("iscommlink", IsCommlink.ToString(GlobalSettings.InvariantCultureInfo), token: token);
+                await objWriter.WriteElementStringAsync("isprogram", IsProgram.ToString(GlobalSettings.InvariantCultureInfo), token: token);
+                await objWriter.WriteElementStringAsync("active", this.IsActiveCommlink(_objCharacter).ToString(GlobalSettings.InvariantCultureInfo), token: token);
+                await objWriter.WriteElementStringAsync("homenode", this.IsHomeNode(_objCharacter).ToString(GlobalSettings.InvariantCultureInfo), token: token);
+                await objWriter.WriteElementStringAsync("conditionmonitor", MatrixCM.ToString(objCulture), token: token);
+                await objWriter.WriteElementStringAsync("matrixcmfilled", MatrixCMFilled.ToString(objCulture), token: token);
 
                 if (GearChildren.Count > 0)
                 {
                     // <gears>
-                    XmlElementWriteHelper objGearsElement = await objWriter.StartElementAsync("gears");
+                    XmlElementWriteHelper objGearsElement = await objWriter.StartElementAsync("gears", token: token);
                     try
                     {
                         foreach (Gear objGear in GearChildren)
@@ -2014,12 +2015,12 @@ namespace Chummer.Backend.Equipment
                 }
 
                 // <children>
-                XmlElementWriteHelper objChildrenElement = await objWriter.StartElementAsync("children");
+                XmlElementWriteHelper objChildrenElement = await objWriter.StartElementAsync("children", token: token);
                 try
                 {
                     foreach (Cyberware objChild in Children)
                     {
-                        await objChild.Print(objWriter, objCulture, strLanguageToPrint);
+                        await objChild.Print(objWriter, objCulture, strLanguageToPrint, token);
                     }
                 }
                 finally
@@ -2029,7 +2030,7 @@ namespace Chummer.Backend.Equipment
                 }
                 
                 if (GlobalSettings.PrintNotes)
-                    await objWriter.WriteElementStringAsync("notes", Notes);
+                    await objWriter.WriteElementStringAsync("notes", Notes, token: token);
             }
             finally
             {
@@ -3330,7 +3331,7 @@ namespace Chummer.Backend.Equipment
                         .CheapReplace("MinimumSTR", () => (ParentVehicle?.TotalBody ?? 3).ToString(GlobalSettings.InvariantCultureInfo))
                         .CheapReplace("MinimumAGI", () => (ParentVehicle?.Pilot ?? 3).ToString(GlobalSettings.InvariantCultureInfo));
 
-                    object objProcess = CommonFunctions.EvaluateInvariantXPath(strRating, out bool blnIsSuccess);
+                    (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strRating);
                     if (blnIsSuccess)
                         intReturn = ((double)objProcess).StandardRound();
                 }
@@ -3409,7 +3410,7 @@ namespace Chummer.Backend.Equipment
                         .CheapReplace("MinimumSTR", () => (ParentVehicle?.TotalBody ?? 3).ToString(GlobalSettings.InvariantCultureInfo))
                         .CheapReplace("MinimumAGI", () => (ParentVehicle?.Pilot ?? 3).ToString(GlobalSettings.InvariantCultureInfo));
 
-                    object objProcess = CommonFunctions.EvaluateInvariantXPath(strRating, out bool blnIsSuccess);
+                    (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strRating);
                     if (blnIsSuccess)
                         intReturn = ((double)objProcess).StandardRound();
                 }
@@ -3960,8 +3961,8 @@ namespace Chummer.Backend.Equipment
                                                   GlobalSettings.InvariantCultureInfo));
                     }
 
-                    object objProcess
-                        = CommonFunctions.EvaluateInvariantXPath(sbdAvail.ToString(), out bool blnIsSuccess);
+                    (bool blnIsSuccess, object objProcess)
+                        = CommonFunctions.EvaluateInvariantXPath(sbdAvail.ToString());
                     if (blnIsSuccess)
                         intAvail += ((double) objProcess).StandardRound();
                 }
@@ -4055,9 +4056,8 @@ namespace Chummer.Backend.Equipment
 
                     try
                     {
-                        object objProcess =
-                            CommonFunctions.EvaluateInvariantXPath(strFirstHalf.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo)),
-                                out bool blnIsSuccess);
+                        (bool blnIsSuccess, object objProcess) =
+                            CommonFunctions.EvaluateInvariantXPath(strFirstHalf.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo)));
                         strReturn = blnIsSuccess
                             ? ((double)objProcess).ToString("#,0.##", GlobalSettings.CultureInfo)
                             : strFirstHalf;
@@ -4107,9 +4107,8 @@ namespace Chummer.Backend.Equipment
 
                     try
                     {
-                        object objProcess =
-                            CommonFunctions.EvaluateInvariantXPath(strSecondHalf.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo)),
-                                out bool blnIsSuccess);
+                        (bool blnIsSuccess, object objProcess) =
+                            CommonFunctions.EvaluateInvariantXPath(strSecondHalf.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo)));
                         strSecondHalf =
                             '[' + (blnIsSuccess
                                 ? ((double)objProcess).ToString("#,0.##", GlobalSettings.CultureInfo)
@@ -4166,9 +4165,8 @@ namespace Chummer.Backend.Equipment
                         }
                     }
 
-                    object objProcess =
-                        CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo)),
-                            out bool blnIsSuccess);
+                    (bool blnIsSuccess, object objProcess) =
+                        CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo)));
                     strReturn = blnIsSuccess
                         ? ((double)objProcess).ToString("#,0.##", GlobalSettings.CultureInfo)
                         : strCapacity;
@@ -4196,7 +4194,12 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Calculated Essence cost of the Cyberware.
         /// </summary>
-        public Task<decimal> CalculatedESSAsync => _objCharacter.IsPrototypeTranshuman && PrototypeTranshuman ? Task.FromResult(0.0m) : CalculatedESSPrototypeInvariantAsync;
+        public async Task<decimal> GetCalculatedESSAsync(CancellationToken token = default)
+        {
+            return await _objCharacter.GetIsPrototypeTranshumanAsync(token) && PrototypeTranshuman
+                ? 0
+                : await GetCalculatedESSPrototypeInvariantAsync(token);
+        }
 
         /// <summary>
         /// Calculated Essence cost of the Cyberware if Prototype Transhuman is ignored.
@@ -4206,7 +4209,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Calculated Essence cost of the Cyberware if Prototype Transhuman is ignored.
         /// </summary>
-        public Task<decimal> CalculatedESSPrototypeInvariantAsync => GetCalculatedESSPrototypeInvariantAsync(Rating, Grade);
+        public Task<decimal> GetCalculatedESSPrototypeInvariantAsync(CancellationToken token = default) => GetCalculatedESSPrototypeInvariantAsync(Rating, Grade, token);
 
         public decimal GetCalculatedESSPrototypeInvariant(int intRating, Grade objGrade)
         {
@@ -4503,8 +4506,8 @@ namespace Chummer.Backend.Equipment
                     _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdValue, strExpression);
 
                     // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                    object objProcess
-                        = CommonFunctions.EvaluateInvariantXPath(sbdValue.ToString(), out bool blnIsSuccess);
+                    (bool blnIsSuccess, object objProcess)
+                        = CommonFunctions.EvaluateInvariantXPath(sbdValue.ToString());
                     return blnIsSuccess ? ((double) objProcess).StandardRound() : 0;
                 }
             }
@@ -4613,7 +4616,7 @@ namespace Chummer.Backend.Equipment
                                          () => objLoopAttribute.TotalBase.ToString(GlobalSettings.InvariantCultureInfo));
                 }
 
-                object objProcess = CommonFunctions.EvaluateInvariantXPath(sbdCost.ToString(), out bool blnIsSuccess);
+                (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(sbdCost.ToString());
                 if (blnIsSuccess)
                     decReturn = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
             }
@@ -4830,7 +4833,7 @@ namespace Chummer.Backend.Equipment
                                            () => objLoopAttribute.TotalBase.ToString(GlobalSettings.InvariantCultureInfo));
                 }
 
-                object objProcess = CommonFunctions.EvaluateInvariantXPath(sbdWeight.ToString(), out bool blnIsSuccess);
+                (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(sbdWeight.ToString());
                 if (blnIsSuccess)
                     decReturn = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
             }

@@ -386,8 +386,8 @@ namespace Chummer
                     if (strMinRating?.Length > 0)
                     {
                         strMinRating = await ReplaceStrings(strMinRating, token: token);
-                        object objTempProcess
-                            = CommonFunctions.EvaluateInvariantXPath(strMinRating, out bool blnTempIsSuccess);
+                        (bool blnTempIsSuccess, object objTempProcess)
+                            = await CommonFunctions.EvaluateInvariantXPathAsync(strMinRating, token);
                         if (blnTempIsSuccess)
                             intMinRating = ((double) objTempProcess).StandardRound();
                     }
@@ -528,7 +528,7 @@ namespace Chummer
                 if (strMinRating?.Length > 0)
                 {
                     strMinRating = await ReplaceStrings(strMinRating, token: token);
-                    object objTempProcess = CommonFunctions.EvaluateInvariantXPath(strMinRating, out bool blnTempIsSuccess);
+                    (bool blnTempIsSuccess, object objTempProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strMinRating, token);
                     if (blnTempIsSuccess)
                         intMinRating = ((double)objTempProcess).StandardRound();
                 }
@@ -654,7 +654,7 @@ namespace Chummer
                 }
                 int.TryParse(strSlots, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out int intExtraSlots);
                 strSlots = await ReplaceStrings(strSlots, intExtraSlots, token);
-                object objProcess = CommonFunctions.EvaluateInvariantXPath(strSlots, out bool blnIsSuccess);
+                (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strSlots, token);
                 if (blnIsSuccess)
                     strSlots = ((double) objProcess).StandardRound().ToString(GlobalSettings.CultureInfo);
                 await lblSlots.DoThreadSafeAsync(x => x.Text = strSlots, token: token);
@@ -718,7 +718,7 @@ namespace Chummer
                     }
                     strCost = await ReplaceStrings(strCost, intExtraSlots, token);
 
-                    objProcess = CommonFunctions.EvaluateInvariantXPath(strCost, out blnIsSuccess);
+                    (blnIsSuccess, objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strCost, token);
                     if (blnIsSuccess)
                         decItemCost = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
 

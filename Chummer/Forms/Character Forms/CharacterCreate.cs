@@ -1350,7 +1350,7 @@ namespace Chummer
                         break;
 
                     case nameof(Character.Encumbrance):
-                        Color objControlTextColor = await ColorManager.ControlTextAsync;
+                        Color objControlTextColor = await ColorManager.GetControlTextAsync(GenericToken);
                         await StatusStrip.DoThreadSafeAsync(() => tslCarriedWeight.ForeColor
                                                                 = CharacterObject.Encumbrance > 0
                                                                     ? ColorManager.ErrorColor
@@ -11018,7 +11018,9 @@ namespace Chummer
         /// <summary>
         /// Calculate the BP used by Primary Attributes.
         /// </summary>
-        private static async ValueTask<int> CalculateAttributeBP(IAsyncEnumerable<CharacterAttrib> attribs, IAsyncEnumerable<CharacterAttrib> extraAttribs = null, CancellationToken token = default)
+        private static async ValueTask<int> CalculateAttributeBP(IAsyncEnumerable<CharacterAttrib> attribs,
+                                                                 IAsyncEnumerable<CharacterAttrib> extraAttribs = null,
+                                                                 CancellationToken token = default)
         {
             // Primary and Special Attributes are calculated separately since you can only spend a maximum of 1/2 your BP allotment on Primary Attributes.
             // Special Attributes are not subject to the 1/2 of max BP rule.
@@ -11027,43 +11029,57 @@ namespace Chummer
             {
                 intBP += await extraAttribs.SumAsync(att => att.GetTotalKarmaCostAsync(token), token);
             }
+
             return intBP;
         }
 
-        private async ValueTask<int> CalculateAttributePriorityPoints(IAsyncEnumerable<CharacterAttrib> attribs, IAsyncEnumerable<CharacterAttrib> extraAttribs = null, CancellationToken token = default)
+        private async ValueTask<int> CalculateAttributePriorityPoints(IAsyncEnumerable<CharacterAttrib> attribs,
+                                                                      IAsyncEnumerable<CharacterAttrib> extraAttribs
+                                                                          = null, CancellationToken token = default)
         {
             int intAtt = 0;
             if (await CharacterObject.GetEffectiveBuildMethodUsesPriorityTablesAsync(token).ConfigureAwait(false))
             {
                 // Get the total of "free points" spent
-                intAtt += await attribs.SumAsync(att => att.SpentPriorityPoints, token: token).ConfigureAwait(false);
+                intAtt += await attribs.SumAsync(att => att.GetSpentPriorityPointsAsync(token), token: token)
+                                       .ConfigureAwait(false);
                 if (extraAttribs != null)
                 {
                     // Get the total of "free points" spent
-                    intAtt += await extraAttribs.SumAsync(att => att.SpentPriorityPoints, token: token).ConfigureAwait(false);
+                    intAtt += await extraAttribs.SumAsync(att => att.GetSpentPriorityPointsAsync(token), token: token)
+                                                .ConfigureAwait(false);
                 }
             }
+
             return intAtt;
         }
 
-        private async ValueTask<string> BuildAttributes(IAsyncReadOnlyCollection<CharacterAttrib> attribs, IAsyncReadOnlyCollection<CharacterAttrib> extraAttribs = null, bool special = false, CancellationToken token = default)
+        private async ValueTask<string> BuildAttributes(IAsyncReadOnlyCollection<CharacterAttrib> attribs,
+                                                        IAsyncReadOnlyCollection<CharacterAttrib> extraAttribs = null,
+                                                        bool special = false, CancellationToken token = default)
         {
             int bp = await CalculateAttributeBP(attribs, extraAttribs, token);
-            string s = bp.ToString(GlobalSettings.CultureInfo) + await LanguageManager.GetStringAsync("String_Space", token: token) + await LanguageManager.GetStringAsync("String_Karma", token: token);
+            string s = bp.ToString(GlobalSettings.CultureInfo)
+                       + await LanguageManager.GetStringAsync("String_Space", token: token)
+                       + await LanguageManager.GetStringAsync("String_Karma", token: token);
             if (CharacterObject.EffectiveBuildMethodUsesPriorityTables)
             {
                 int att = await CalculateAttributePriorityPoints(attribs, extraAttribs, token);
                 int total = special ? CharacterObject.TotalSpecial : CharacterObject.TotalAttributes;
                 if (bp > 0)
                 {
-                    s = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_OverPriorityPoints", token: token),
-                        total - att, total, bp);
+                    s = string.Format(GlobalSettings.CultureInfo,
+                                      await LanguageManager.GetStringAsync("String_OverPriorityPoints", token: token),
+                                      total - att, total, bp);
                 }
                 else
                 {
-                    s = (total - att).ToString(GlobalSettings.CultureInfo) + await LanguageManager.GetStringAsync("String_Of", token: token) + total.ToString(GlobalSettings.CultureInfo);
+                    s = (total - att).ToString(GlobalSettings.CultureInfo)
+                        + await LanguageManager.GetStringAsync("String_Of", token: token)
+                        + total.ToString(GlobalSettings.CultureInfo);
                 }
             }
+
             return s;
         }
 
@@ -11078,7 +11094,9 @@ namespace Chummer
             const int intFreestyleBPMin = 0;
             int intFreestyleBP = 0;
             string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
-            string strPoints = blnDoUIUpdate ? await LanguageManager.GetStringAsync("String_Karma", token: token).ConfigureAwait(false) : string.Empty;
+            string strPoints = blnDoUIUpdate
+                ? await LanguageManager.GetStringAsync("String_Karma", token: token).ConfigureAwait(false)
+                : string.Empty;
 
             // ------------------------------------------------------------------------------
             // Metatype/Metavariant only cost points when working with BP (or when the Metatype Costs Karma option is enabled when working with Karma).
@@ -11087,13 +11105,14 @@ namespace Chummer
             {
                 // Subtract the BP used for Metatype.
                 intMetatypeBP = await CharacterObject.GetMetatypeBPAsync(token).ConfigureAwait(false)
-                                 * await CharacterObjectSettings.GetMetatypeCostsKarmaMultiplierAsync(token)
-                                                                .ConfigureAwait(false);
+                                * await CharacterObjectSettings.GetMetatypeCostsKarmaMultiplierAsync(token)
+                                                               .ConfigureAwait(false);
             }
             else
             {
                 intMetatypeBP = await CharacterObject.GetMetatypeBPAsync(token).ConfigureAwait(false);
             }
+
             intKarmaPointsRemain -= intMetatypeBP;
 
             token.ThrowIfCancellationRequested();
@@ -11102,11 +11121,13 @@ namespace Chummer
             // Calculate the points used by Contacts.
             int intPointsInContacts = 0;
 
-            bool blnFriendsInHighPlaces = await CharacterObject.GetFriendsInHighPlacesAsync(token).ConfigureAwait(false);
+            bool blnFriendsInHighPlaces
+                = await CharacterObject.GetFriendsInHighPlacesAsync(token).ConfigureAwait(false);
             int intContactPoints = await CharacterObject.GetContactPointsAsync(token).ConfigureAwait(false);
             int intContactPointsLeft = intContactPoints;
             int intHighPlacesFriends = 0;
-            ThreadSafeObservableCollection<Contact> lstContacts = await CharacterObject.GetContactsAsync(token).ConfigureAwait(false);
+            ThreadSafeObservableCollection<Contact> lstContacts
+                = await CharacterObject.GetContactsAsync(token).ConfigureAwait(false);
             await lstContacts.ForEachAsync(objContact =>
             {
                 // Don't care about free contacts
@@ -11138,7 +11159,8 @@ namespace Chummer
             }, token).ConfigureAwait(false);
 
             await CharacterObject.SetContactPointsUsedAsync(intContactPointsLeft, token).ConfigureAwait(false);
-            int intChaValue = await (await CharacterObject.GetAttributeAsync("CHA", token: token).ConfigureAwait(false)).GetValueAsync(token).ConfigureAwait(false);
+            int intChaValue = await (await CharacterObject.GetAttributeAsync("CHA", token: token).ConfigureAwait(false))
+                                    .GetValueAsync(token).ConfigureAwait(false);
 
             if (intPointsInContacts > 0 || intChaValue * 4 < intHighPlacesFriends)
             {
@@ -11152,7 +11174,8 @@ namespace Chummer
             // Calculate the BP used by Qualities.
             int intLifeModuleQualities = 0;
             int intKarmaQuality = await CharacterObjectSettings.GetKarmaQualityAsync(token).ConfigureAwait(false);
-            ThreadSafeObservableCollection<Quality> lstQualities = await CharacterObject.GetQualitiesAsync(token).ConfigureAwait(false);
+            ThreadSafeObservableCollection<Quality> lstQualities
+                = await CharacterObject.GetQualitiesAsync(token).ConfigureAwait(false);
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdPositiveQualityTooltip))
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
@@ -11194,9 +11217,13 @@ namespace Chummer
                 if (blnDoUIUpdate)
                 {
                     token.ThrowIfCancellationRequested();
-                    if (await lstContacts.AnyAsync(x => x.EntityType == ContactType.Contact && x.IsGroup && !x.Free, token).ConfigureAwait(false))
+                    if (await lstContacts
+                              .AnyAsync(x => x.EntityType == ContactType.Contact && x.IsGroup && !x.Free, token)
+                              .ConfigureAwait(false))
                     {
-                        sbdPositiveQualityTooltip.AppendLine(await LanguageManager.GetStringAsync("Label_GroupContacts", token: token).ConfigureAwait(false));
+                        sbdPositiveQualityTooltip.AppendLine(
+                            await LanguageManager.GetStringAsync("Label_GroupContacts", token: token)
+                                                 .ConfigureAwait(false));
                         await lstContacts.ForEachAsync(async objGroupContact =>
                         {
                             if (objGroupContact.EntityType != ContactType.Contact || !objGroupContact.IsGroup
@@ -11207,10 +11234,12 @@ namespace Chummer
                             {
                                 strNameToUse = objGroupContact.Name;
                                 if (string.IsNullOrEmpty(strNameToUse))
-                                    strNameToUse = await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
+                                    strNameToUse = await LanguageManager.GetStringAsync("String_Unknown", token: token)
+                                                                        .ConfigureAwait(false);
                             }
                             else if (!string.IsNullOrWhiteSpace(objGroupContact.Name))
                                 strNameToUse += '/' + objGroupContact.Name;
+
                             sbdPositiveQualityTooltip.AppendFormat(GlobalSettings.CultureInfo, "{0}{1}({2})",
                                                                    strNameToUse,
                                                                    strSpace,
@@ -11219,12 +11248,17 @@ namespace Chummer
                         }, token).ConfigureAwait(false);
                     }
 
-                    await lblPositiveQualitiesBP.SetToolTipAsync(sbdPositiveQualityTooltip.ToString(), token).ConfigureAwait(false);
-                    await lblNegativeQualitiesBP.SetToolTipAsync(sbdNegativeQualityTooltip.ToString(), token).ConfigureAwait(false);
+                    await lblPositiveQualitiesBP.SetToolTipAsync(sbdPositiveQualityTooltip.ToString(), token)
+                                                .ConfigureAwait(false);
+                    await lblNegativeQualitiesBP.SetToolTipAsync(sbdNegativeQualityTooltip.ToString(), token)
+                                                .ConfigureAwait(false);
                 }
             }
 
-            int intQualityPointsUsed = intLifeModuleQualities - await CharacterObject.GetNegativeQualityKarmaAsync(token).ConfigureAwait(false) + await CharacterObject.GetPositiveQualityKarmaAsync(token).ConfigureAwait(false);
+            int intQualityPointsUsed = intLifeModuleQualities
+                                       - await CharacterObject.GetNegativeQualityKarmaAsync(token).ConfigureAwait(false)
+                                       + await CharacterObject.GetPositiveQualityKarmaAsync(token)
+                                                              .ConfigureAwait(false);
 
             intKarmaPointsRemain -= intQualityPointsUsed;
             intFreestyleBP += intQualityPointsUsed;
@@ -11238,8 +11272,15 @@ namespace Chummer
 
             // ------------------------------------------------------------------------------
             // Update Primary Attributes and Special Attributes values.
-            int intAttributePointsUsed = await CalculateAttributeBP(await (await CharacterObject.GetAttributeSectionAsync(token).ConfigureAwait(false)).GetAttributeListAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
-            intAttributePointsUsed += await CalculateAttributeBP(await (await CharacterObject.GetAttributeSectionAsync(token).ConfigureAwait(false)).GetSpecialAttributeListAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+            int intAttributePointsUsed
+                = await CalculateAttributeBP(
+                    await (await CharacterObject.GetAttributeSectionAsync(token).ConfigureAwait(false))
+                          .GetAttributeListAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+            intAttributePointsUsed
+                += await CalculateAttributeBP(
+                        await (await CharacterObject.GetAttributeSectionAsync(token).ConfigureAwait(false))
+                              .GetSpecialAttributeListAsync(token).ConfigureAwait(false), token: token)
+                    .ConfigureAwait(false);
             intKarmaPointsRemain -= intAttributePointsUsed;
 
             token.ThrowIfCancellationRequested();
@@ -11252,52 +11293,56 @@ namespace Chummer
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdMartialArtsBPToolTip))
             {
-                int intKarmaTechnique = await CharacterObjectSettings.GetKarmaTechniqueAsync(token).ConfigureAwait(false);
-                await (await CharacterObject.GetMartialArtsAsync(token).ConfigureAwait(false)).ForEachAsync(objMartialArt =>
-                {
-                    token.ThrowIfCancellationRequested();
-                    if (objMartialArt.IsQuality)
-                        return;
-                    int intLoopCost = objMartialArt.Cost;
-                    intMartialArtsPoints += intLoopCost;
-
-                    if (blnDoUIUpdate)
+                int intKarmaTechnique
+                    = await CharacterObjectSettings.GetKarmaTechniqueAsync(token).ConfigureAwait(false);
+                await (await CharacterObject.GetMartialArtsAsync(token).ConfigureAwait(false)).ForEachAsync(
+                    objMartialArt =>
                     {
-                        if (sbdMartialArtsBPToolTip.Length > 0)
-                            sbdMartialArtsBPToolTip.AppendLine().Append(strSpace).Append('+').Append(strSpace);
-                        sbdMartialArtsBPToolTip.Append(objMartialArt.CurrentDisplayName).Append(strSpace).Append('(')
-                                               .Append(intLoopCost.ToString(GlobalSettings.CultureInfo)).Append(')');
+                        token.ThrowIfCancellationRequested();
+                        if (objMartialArt.IsQuality)
+                            return;
+                        int intLoopCost = objMartialArt.Cost;
+                        intMartialArtsPoints += intLoopCost;
 
-                        bool blnIsFirst = true;
-                        foreach (MartialArtTechnique objTechnique in objMartialArt.Techniques)
+                        if (blnDoUIUpdate)
                         {
-                            token.ThrowIfCancellationRequested();
-                            if (blnIsFirst)
+                            if (sbdMartialArtsBPToolTip.Length > 0)
+                                sbdMartialArtsBPToolTip.AppendLine().Append(strSpace).Append('+').Append(strSpace);
+                            sbdMartialArtsBPToolTip
+                                .Append(objMartialArt.CurrentDisplayName).Append(strSpace).Append('(')
+                                .Append(intLoopCost.ToString(GlobalSettings.CultureInfo)).Append(')');
+
+                            bool blnIsFirst = true;
+                            foreach (MartialArtTechnique objTechnique in objMartialArt.Techniques)
                             {
-                                blnIsFirst = false;
-                                continue;
+                                token.ThrowIfCancellationRequested();
+                                if (blnIsFirst)
+                                {
+                                    blnIsFirst = false;
+                                    continue;
+                                }
+
+                                intLoopCost = intKarmaTechnique;
+                                intMartialArtsPoints += intLoopCost;
+
+                                sbdMartialArtsBPToolTip.AppendLine().Append(strSpace).Append('+').Append(strSpace)
+                                                       .Append(objTechnique.CurrentDisplayName).Append(strSpace)
+                                                       .Append('(')
+                                                       .Append(intLoopCost.ToString(GlobalSettings.CultureInfo))
+                                                       .Append(')');
                             }
-
-                            intLoopCost = intKarmaTechnique;
-                            intMartialArtsPoints += intLoopCost;
-
-                            sbdMartialArtsBPToolTip.AppendLine().Append(strSpace).Append('+').Append(strSpace)
-                                                   .Append(objTechnique.CurrentDisplayName).Append(strSpace)
-                                                   .Append('(')
-                                                   .Append(intLoopCost.ToString(GlobalSettings.CultureInfo))
-                                                   .Append(')');
                         }
-                    }
-                    else
-                        // Add in the Techniques
-                        intMartialArtsPoints += Math.Max(objMartialArt.Techniques.Count - 1, 0)
-                                                * intKarmaTechnique;
-                }, token).ConfigureAwait(false);
+                        else
+                            // Add in the Techniques
+                            intMartialArtsPoints += Math.Max(objMartialArt.Techniques.Count - 1, 0)
+                                                    * intKarmaTechnique;
+                    }, token).ConfigureAwait(false);
 
                 token.ThrowIfCancellationRequested();
 
                 if (blnDoUIUpdate)
-                    await lblBuildMartialArts.SetToolTipAsync(sbdMartialArtsBPToolTip.ToString(), token).ConfigureAwait(false);
+                    await lblBuildMartialArts.SetToolTipAsync(sbdMartialArtsBPToolTip.ToString(), token)
+                                             .ConfigureAwait(false);
             }
 
             intKarmaPointsRemain -= intMartialArtsPoints;
@@ -11307,19 +11352,25 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             // ------------------------------------------------------------------------------
             // Calculate the BP used by Skill Groups.
-            int intSkillGroupsPoints = await objSkillSection.SkillGroups.SumAsync(x => x.GetCurrentKarmaCostAsync(token).AsTask(), token: token).ConfigureAwait(false);
+            int intSkillGroupsPoints = await objSkillSection.SkillGroups
+                                                            .SumAsync(x => x.GetCurrentKarmaCostAsync(token).AsTask(),
+                                                                      token: token).ConfigureAwait(false);
             intKarmaPointsRemain -= intSkillGroupsPoints;
 
             token.ThrowIfCancellationRequested();
             // ------------------------------------------------------------------------------
             // Calculate the BP used by Active Skills.
-            int skillPointsKarma = await objSkillSection.Skills.SumAsync(x => x.GetCurrentKarmaCostAsync(token).AsTask(), token: token).ConfigureAwait(false);
+            int skillPointsKarma = await objSkillSection.Skills
+                                                        .SumAsync(x => x.GetCurrentKarmaCostAsync(token).AsTask(),
+                                                                  token: token).ConfigureAwait(false);
             intKarmaPointsRemain -= skillPointsKarma;
 
             token.ThrowIfCancellationRequested();
             // ------------------------------------------------------------------------------
             // Calculate the points used by Knowledge Skills.
-            int knowledgeKarmaUsed = await objSkillSection.KnowledgeSkills.SumAsync(x => x.GetCurrentKarmaCostAsync(token).AsTask(), token: token).ConfigureAwait(false);
+            int knowledgeKarmaUsed = await objSkillSection.KnowledgeSkills
+                                                          .SumAsync(x => x.GetCurrentKarmaCostAsync(token).AsTask(),
+                                                                    token: token).ConfigureAwait(false);
 
             token.ThrowIfCancellationRequested();
             //TODO: Remaining is named USED?
@@ -11344,16 +11395,41 @@ namespace Chummer
             int intPrepPointsUsed = 0;
             if (await CharacterObject.GetMagicianEnabledAsync(token).ConfigureAwait(false)
                 || await CharacterObject.GetAdeptEnabledAsync(token).ConfigureAwait(false)
-                || (await ImprovementManager.GetCachedImprovementListForValueOfAsync(CharacterObject, Improvement.ImprovementType.FreeSpells, token: token).ConfigureAwait(false)).Count > 0
-                || (await ImprovementManager.GetCachedImprovementListForValueOfAsync(CharacterObject, Improvement.ImprovementType.FreeSpellsATT, token: token).ConfigureAwait(false)).Count > 0
-                || (await ImprovementManager.GetCachedImprovementListForValueOfAsync(CharacterObject, Improvement.ImprovementType.FreeSpellsSkill, token: token).ConfigureAwait(false)).Count > 0)
+                || (await ImprovementManager
+                          .GetCachedImprovementListForValueOfAsync(CharacterObject,
+                                                                   Improvement.ImprovementType.FreeSpells, token: token)
+                          .ConfigureAwait(false)).Count > 0
+                || (await ImprovementManager
+                          .GetCachedImprovementListForValueOfAsync(CharacterObject,
+                                                                   Improvement.ImprovementType.FreeSpellsATT,
+                                                                   token: token).ConfigureAwait(false)).Count > 0
+                || (await ImprovementManager
+                          .GetCachedImprovementListForValueOfAsync(CharacterObject,
+                                                                   Improvement.ImprovementType.FreeSpellsSkill,
+                                                                   token: token).ConfigureAwait(false)).Count > 0)
             {
-                ThreadSafeObservableCollection<Spell> lstSpells = await CharacterObject.GetSpellsAsync(token).ConfigureAwait(false);
+                ThreadSafeObservableCollection<Spell> lstSpells
+                    = await CharacterObject.GetSpellsAsync(token).ConfigureAwait(false);
                 // Count the number of Spells the character currently has and make sure they do not try to select more Spells than they are allowed.
-                int spells = await lstSpells.CountAsync(spell => spell.Grade == 0 && !spell.Alchemical && spell.Category != "Rituals" && !spell.FreeBonus, token: token).ConfigureAwait(false);
-                int intTouchOnlySpells = await lstSpells.CountAsync(spell => spell.Grade == 0 && !spell.Alchemical && spell.Category != "Rituals" && (spell.Range == "T (A)" || spell.Range == "T") && !spell.FreeBonus, token: token).ConfigureAwait(false);
-                int rituals = await lstSpells.CountAsync(spell => spell.Grade == 0 && !spell.Alchemical && spell.Category == "Rituals" && !spell.FreeBonus, token: token).ConfigureAwait(false);
-                int preps = await lstSpells.CountAsync(spell => spell.Grade == 0 && spell.Alchemical && !spell.FreeBonus, token: token).ConfigureAwait(false);
+                int spells = await lstSpells
+                                   .CountAsync(
+                                       spell => spell.Grade == 0 && !spell.Alchemical && spell.Category != "Rituals"
+                                                && !spell.FreeBonus, token: token).ConfigureAwait(false);
+                int intTouchOnlySpells = await lstSpells
+                                               .CountAsync(
+                                                   spell => spell.Grade == 0 && !spell.Alchemical
+                                                                             && spell.Category != "Rituals"
+                                                                             && (spell.Range == "T (A)"
+                                                                                 || spell.Range == "T")
+                                                                             && !spell.FreeBonus, token: token)
+                                               .ConfigureAwait(false);
+                int rituals = await lstSpells
+                                    .CountAsync(
+                                        spell => spell.Grade == 0 && !spell.Alchemical && spell.Category == "Rituals"
+                                                 && !spell.FreeBonus, token: token).ConfigureAwait(false);
+                int preps = await lstSpells
+                                  .CountAsync(spell => spell.Grade == 0 && spell.Alchemical && !spell.FreeBonus,
+                                              token: token).ConfigureAwait(false);
 
                 token.ThrowIfCancellationRequested();
 
@@ -11376,7 +11452,10 @@ namespace Chummer
                     {
                         // Assume that every [spell cost] karma spent on a Mastery quality is paid for with a priority-given spell point instead, as that is the most karma-efficient.
                         int intMasteryQualityKarmaUsed = await lstQualities.SumAsync(
-                            objQuality => objQuality.CanBuyWithSpellPoints, objQuality => objQuality.BP, token).ConfigureAwait(false);
+                                                                               objQuality =>
+                                                                                   objQuality.CanBuyWithSpellPoints,
+                                                                               objQuality => objQuality.BP, token)
+                                                                           .ConfigureAwait(false);
                         if (intMasteryQualityKarmaUsed != 0)
                         {
                             intQualityKarmaToSpellPoints
@@ -11391,13 +11470,23 @@ namespace Chummer
 
                 token.ThrowIfCancellationRequested();
 
-                int intLimitMod = (await ImprovementManager.ValueOfAsync(CharacterObject, Improvement.ImprovementType.SpellLimit, token: token).ConfigureAwait(false)
-                                   + await ImprovementManager.ValueOfAsync(CharacterObject, Improvement.ImprovementType.FreeSpells, token: token).ConfigureAwait(false)).StandardRound();
+                int intLimitMod = (await ImprovementManager
+                                         .ValueOfAsync(CharacterObject, Improvement.ImprovementType.SpellLimit,
+                                                       token: token).ConfigureAwait(false)
+                                   + await ImprovementManager
+                                           .ValueOfAsync(CharacterObject, Improvement.ImprovementType.FreeSpells,
+                                                         token: token).ConfigureAwait(false)).StandardRound();
                 int intLimitModTouchOnly = 0;
-                foreach (Improvement imp in await ImprovementManager.GetCachedImprovementListForValueOfAsync(CharacterObject, Improvement.ImprovementType.FreeSpellsATT, token: token).ConfigureAwait(false))
+                foreach (Improvement imp in await ImprovementManager
+                                                  .GetCachedImprovementListForValueOfAsync(
+                                                      CharacterObject, Improvement.ImprovementType.FreeSpellsATT,
+                                                      token: token).ConfigureAwait(false))
                 {
                     token.ThrowIfCancellationRequested();
-                    int intAttValue = await (await CharacterObject.GetAttributeAsync(imp.ImprovedName, token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false);
+                    int intAttValue
+                        = await (await CharacterObject.GetAttributeAsync(imp.ImprovedName, token: token)
+                                                      .ConfigureAwait(false)).GetTotalValueAsync(token)
+                                                                             .ConfigureAwait(false);
                     if (imp.UniqueName.Contains("half"))
                         intAttValue = (intAttValue + 1) / 2;
                     if (imp.UniqueName.Contains("touchonly"))
@@ -11406,10 +11495,14 @@ namespace Chummer
                         intLimitMod += intAttValue;
                 }
 
-                foreach (Improvement imp in await ImprovementManager.GetCachedImprovementListForValueOfAsync(CharacterObject, Improvement.ImprovementType.FreeSpellsSkill, token: token).ConfigureAwait(false))
+                foreach (Improvement imp in await ImprovementManager
+                                                  .GetCachedImprovementListForValueOfAsync(
+                                                      CharacterObject, Improvement.ImprovementType.FreeSpellsSkill,
+                                                      token: token).ConfigureAwait(false))
                 {
                     token.ThrowIfCancellationRequested();
-                    Skill skill = await objSkillSection.GetActiveSkillAsync(imp.ImprovedName, token).ConfigureAwait(false);
+                    Skill skill = await objSkillSection.GetActiveSkillAsync(imp.ImprovedName, token)
+                                                       .ConfigureAwait(false);
                     if (skill == null)
                         continue;
                     int intSkillValue = await skill.GetTotalBaseRatingAsync(token).ConfigureAwait(false);
@@ -11432,7 +11525,8 @@ namespace Chummer
 
                 token.ThrowIfCancellationRequested();
 
-                int intPPBought = await nudMysticAdeptMAGMagician.DoThreadSafeFuncAsync(x => x.ValueAsInt, token).ConfigureAwait(false);
+                int intPPBought = await nudMysticAdeptMAGMagician.DoThreadSafeFuncAsync(x => x.ValueAsInt, token)
+                                                                 .ConfigureAwait(false);
                 if (intPPBought > 0)
                 {
                     if (await CharacterObjectSettings.GetPrioritySpellsAsAdeptPowersAsync(token).ConfigureAwait(false))
@@ -11440,9 +11534,13 @@ namespace Chummer
                         spells += Math.Min(limit, intPPBought);
                         intPPBought = Math.Max(0, intPPBought - limit);
                     }
-                    intAttributePointsUsed = intPPBought * await CharacterObjectSettings.GetKarmaMysticAdeptPowerPointAsync(token).ConfigureAwait(false);
+
+                    intAttributePointsUsed = intPPBought * await CharacterObjectSettings
+                                                                 .GetKarmaMysticAdeptPowerPointAsync(token)
+                                                                 .ConfigureAwait(false);
                     intKarmaPointsRemain -= intAttributePointsUsed;
                 }
+
                 spells -= intTouchOnlySpells - Math.Max(0, intTouchOnlySpells - intLimitModTouchOnly);
 
                 int spellPoints = limit + intLimitMod;
@@ -11485,36 +11583,63 @@ namespace Chummer
                         || lblBuildRitualsBP != null))
                 {
                     token.ThrowIfCancellationRequested();
-                    string strFormat = "{0}" + strSpace + '×' + strSpace + "{1}" + strSpace + await LanguageManager.GetStringAsync("String_Karma", token: token).ConfigureAwait(false)
-                                       + strSpace + '=' + strSpace + "{2}" + strSpace + await LanguageManager.GetStringAsync("String_Karma", token: token).ConfigureAwait(false);
+                    string strFormat = "{0}" + strSpace + '×' + strSpace + "{1}" + strSpace
+                                       + await LanguageManager.GetStringAsync("String_Karma", token: token)
+                                                              .ConfigureAwait(false)
+                                       + strSpace + '=' + strSpace + "{2}" + strSpace + await LanguageManager
+                                           .GetStringAsync("String_Karma", token: token).ConfigureAwait(false);
                     if (lblSpellsBP != null)
-                        await lblSpellsBP.SetToolTipAsync(string.Format(GlobalSettings.CultureInfo, strFormat, spells, spellCost, intSpellPointsUsed), token).ConfigureAwait(false);
+                        await lblSpellsBP
+                              .SetToolTipAsync(
+                                  string.Format(GlobalSettings.CultureInfo, strFormat, spells, spellCost,
+                                                intSpellPointsUsed), token).ConfigureAwait(false);
                     if (lblBuildRitualsBP != null)
-                        await lblBuildRitualsBP.SetToolTipAsync(string.Format(GlobalSettings.CultureInfo, strFormat, rituals, spellCost, intRitualPointsUsed), token).ConfigureAwait(false);
+                        await lblBuildRitualsBP
+                              .SetToolTipAsync(
+                                  string.Format(GlobalSettings.CultureInfo, strFormat, rituals, spellCost,
+                                                intRitualPointsUsed), token).ConfigureAwait(false);
                     if (lblBuildPrepsBP != null)
-                        await lblBuildPrepsBP.SetToolTipAsync(string.Format(GlobalSettings.CultureInfo, strFormat, preps, spellCost, intPrepPointsUsed), token).ConfigureAwait(false);
+                        await lblBuildPrepsBP
+                              .SetToolTipAsync(
+                                  string.Format(GlobalSettings.CultureInfo, strFormat, preps, spellCost,
+                                                intPrepPointsUsed), token).ConfigureAwait(false);
                     if (limit + intLimitMod > 0)
                     {
                         if (lblBuildPrepsBP != null)
                         {
-                            string strText = string.Format(GlobalSettings.CultureInfo, "{0}{1}{2}", prepPoints + spellPoints + ritualPoints - 2 * (limit + intLimitMod), strOf, spellPoints + ritualPoints - (limit + intLimitMod));
+                            string strText = string.Format(GlobalSettings.CultureInfo, "{0}{1}{2}",
+                                                           prepPoints + spellPoints + ritualPoints
+                                                           - 2 * (limit + intLimitMod), strOf,
+                                                           spellPoints + ritualPoints - (limit + intLimitMod));
                             if (intPrepPointsUsed > 0)
-                                strText += string.Format(GlobalSettings.CultureInfo, "{0}{1}{2}{1}{3}", strColon, strSpace, intPrepPointsUsed, strPoints);
+                                strText += string.Format(GlobalSettings.CultureInfo, "{0}{1}{2}{1}{3}", strColon,
+                                                         strSpace, intPrepPointsUsed, strPoints);
                             await lblBuildPrepsBP.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
                         }
+
                         if (lblSpellsBP != null)
                         {
-                            string strText = string.Format(GlobalSettings.CultureInfo, "{0}{1}{2}", prepPoints + spellPoints + ritualPoints - 2 * (limit + intLimitMod), strOf, prepPoints + ritualPoints - (limit + intLimitMod));
+                            string strText = string.Format(GlobalSettings.CultureInfo, "{0}{1}{2}",
+                                                           prepPoints + spellPoints + ritualPoints
+                                                           - 2 * (limit + intLimitMod), strOf,
+                                                           prepPoints + ritualPoints - (limit + intLimitMod));
                             if (intSpellPointsUsed > 0)
-                                strText += string.Format(GlobalSettings.CultureInfo, "{0}{1}{2}{1}{3}", strColon, strSpace, intSpellPointsUsed, strPoints);
+                                strText += string.Format(GlobalSettings.CultureInfo, "{0}{1}{2}{1}{3}", strColon,
+                                                         strSpace, intSpellPointsUsed, strPoints);
                             await lblSpellsBP.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
                         }
+
                         if (lblBuildRitualsBP != null)
                         {
-                            string strText = string.Format(GlobalSettings.CultureInfo, "{0}{1}{2}", prepPoints + spellPoints + ritualPoints - 2 * (limit + intLimitMod), strOf, prepPoints + spellPoints - (limit + intLimitMod));
+                            string strText = string.Format(GlobalSettings.CultureInfo, "{0}{1}{2}",
+                                                           prepPoints + spellPoints + ritualPoints
+                                                           - 2 * (limit + intLimitMod), strOf,
+                                                           prepPoints + spellPoints - (limit + intLimitMod));
                             if (intRitualPointsUsed > 0)
-                                strText += string.Format(GlobalSettings.CultureInfo, "{0}{1}{2}{1}{3}", strColon, strSpace, intRitualPointsUsed, strPoints);
-                            await lblBuildRitualsBP.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
+                                strText += string.Format(GlobalSettings.CultureInfo, "{0}{1}{2}{1}{3}", strColon,
+                                                         strSpace, intRitualPointsUsed, strPoints);
+                            await lblBuildRitualsBP.DoThreadSafeAsync(x => x.Text = strText, token)
+                                                   .ConfigureAwait(false);
                         }
                     }
                     else if (intLimitMod == 0)
@@ -11522,19 +11647,25 @@ namespace Chummer
                         if (lblBuildPrepsBP != null)
                         {
                             await lblBuildPrepsBP.DoThreadSafeAsync(x => x.Text =
-                                                                        intPrepPointsUsed.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints, token).ConfigureAwait(false);
+                                                                        intPrepPointsUsed.ToString(
+                                                                            GlobalSettings.CultureInfo) + strSpace
+                                                                        + strPoints, token).ConfigureAwait(false);
                         }
 
                         if (lblSpellsBP != null)
                         {
                             await lblSpellsBP.DoThreadSafeAsync(x => x.Text =
-                                                                    intSpellPointsUsed.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints, token).ConfigureAwait(false);
+                                                                    intSpellPointsUsed.ToString(
+                                                                        GlobalSettings.CultureInfo) + strSpace
+                                                                    + strPoints, token).ConfigureAwait(false);
                         }
 
                         if (lblBuildRitualsBP != null)
                         {
                             await lblBuildRitualsBP.DoThreadSafeAsync(x => x.Text =
-                                                                          intRitualPointsUsed.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints, token).ConfigureAwait(false);
+                                                                          intRitualPointsUsed.ToString(
+                                                                              GlobalSettings.CultureInfo) + strSpace
+                                                                          + strPoints, token).ConfigureAwait(false);
                         }
                     }
                     else
@@ -11549,7 +11680,8 @@ namespace Chummer
                                                                             prepPoints + spellPoints + ritualPoints
                                                                             - 2 * intLimitMod,
                                                                             spellPoints + ritualPoints - intLimitMod,
-                                                                            intPrepPointsUsed), token).ConfigureAwait(false);
+                                                                            intPrepPointsUsed), token)
+                                                 .ConfigureAwait(false);
                         }
 
                         if (lblSpellsBP != null)
@@ -11559,7 +11691,8 @@ namespace Chummer
                                                                         prepPoints + spellPoints + ritualPoints
                                                                         - 2 * intLimitMod,
                                                                         prepPoints + ritualPoints - intLimitMod,
-                                                                        intSpellPointsUsed), token).ConfigureAwait(false);
+                                                                        intSpellPointsUsed), token)
+                                             .ConfigureAwait(false);
                         }
 
                         if (lblBuildRitualsBP != null)
@@ -11570,7 +11703,8 @@ namespace Chummer
                                                                               prepPoints + spellPoints + ritualPoints
                                                                               - 2 * intLimitMod,
                                                                               prepPoints + spellPoints - intLimitMod,
-                                                                              intRitualPointsUsed), token).ConfigureAwait(false);
+                                                                              intRitualPointsUsed), token)
+                                                   .ConfigureAwait(false);
                         }
                     }
                 }
@@ -11585,42 +11719,48 @@ namespace Chummer
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdFociPointsTooltip))
             {
-                await (await CharacterObject.GetFociAsync(token).ConfigureAwait(false)).ForEachWithBreak(async objFocus =>
-                {
-                    token.ThrowIfCancellationRequested();
-                    int intBindingCost = await objFocus.BindingKarmaCostAsync(token).ConfigureAwait(false);
-                    intFociPointsUsed += intBindingCost;
+                await (await CharacterObject.GetFociAsync(token).ConfigureAwait(false)).ForEachWithBreak(
+                    async objFocus =>
+                    {
+                        token.ThrowIfCancellationRequested();
+                        int intBindingCost = await objFocus.BindingKarmaCostAsync(token).ConfigureAwait(false);
+                        intFociPointsUsed += intBindingCost;
 
-                    if (!blnDoUIUpdate)
+                        if (!blnDoUIUpdate)
+                            return true;
+                        if (sbdFociPointsTooltip.Length > 0)
+                            sbdFociPointsTooltip.AppendLine().Append(strSpace).Append('+').Append(strSpace);
+                        sbdFociPointsTooltip
+                            .Append(await objFocus.GearObject.GetCurrentDisplayNameAsync(token).ConfigureAwait(false))
+                            .Append(strSpace).Append('(')
+                            .Append(intBindingCost.ToString(GlobalSettings.CultureInfo))
+                            .Append(')');
                         return true;
-                    if (sbdFociPointsTooltip.Length > 0)
-                        sbdFociPointsTooltip.AppendLine().Append(strSpace).Append('+').Append(strSpace);
-                    sbdFociPointsTooltip.Append(await objFocus.GearObject.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)).Append(strSpace).Append('(')
-                                        .Append(intBindingCost.ToString(GlobalSettings.CultureInfo))
-                                        .Append(')');
-                    return true;
-                }, token).ConfigureAwait(false);
+                    }, token).ConfigureAwait(false);
 
                 intKarmaPointsRemain -= intFociPointsUsed;
 
                 // Calculate the BP used by Stacked Foci.
-                await (await CharacterObject.GetStackedFociAsync(token).ConfigureAwait(false)).ForEachWithBreak(async objFocus =>
-                {
-                    token.ThrowIfCancellationRequested();
-                    if (!objFocus.Bonded)
-                        return true;
-                    int intBindingCost = await objFocus.GetBindingCostAsync(token).ConfigureAwait(false);
-                    intKarmaPointsRemain -= intBindingCost;
-                    intFociPointsUsed += intBindingCost;
+                await (await CharacterObject.GetStackedFociAsync(token).ConfigureAwait(false)).ForEachWithBreak(
+                    async objFocus =>
+                    {
+                        token.ThrowIfCancellationRequested();
+                        if (!objFocus.Bonded)
+                            return true;
+                        int intBindingCost = await objFocus.GetBindingCostAsync(token).ConfigureAwait(false);
+                        intKarmaPointsRemain -= intBindingCost;
+                        intFociPointsUsed += intBindingCost;
 
-                    if (!blnDoUIUpdate)
+                        if (!blnDoUIUpdate)
+                            return true;
+                        if (sbdFociPointsTooltip.Length > 0)
+                            sbdFociPointsTooltip.AppendLine().Append(strSpace).Append('+').Append(strSpace);
+                        sbdFociPointsTooltip
+                            .Append(await objFocus.GetCurrentDisplayNameAsync(token).ConfigureAwait(false))
+                            .Append(strSpace).Append('(')
+                            .Append(intBindingCost.ToString(GlobalSettings.CultureInfo)).Append(')');
                         return true;
-                    if (sbdFociPointsTooltip.Length > 0)
-                        sbdFociPointsTooltip.AppendLine().Append(strSpace).Append('+').Append(strSpace);
-                    sbdFociPointsTooltip.Append(await objFocus.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)).Append(strSpace).Append('(')
-                                        .Append(intBindingCost.ToString(GlobalSettings.CultureInfo)).Append(')');
-                    return true;
-                }, token).ConfigureAwait(false);
+                    }, token).ConfigureAwait(false);
 
                 intFreestyleBP += intFociPointsUsed;
 
@@ -11638,7 +11778,8 @@ namespace Chummer
             await (await CharacterObject.GetSpiritsAsync(token).ConfigureAwait(false)).ForEachAsync(async objSpirit =>
             {
                 token.ThrowIfCancellationRequested();
-                int intLoopKarma = objSpirit.ServicesOwed * await CharacterObjectSettings.GetKarmaSpiritAsync(token).ConfigureAwait(false);
+                int intLoopKarma = objSpirit.ServicesOwed
+                                   * await CharacterObjectSettings.GetKarmaSpiritAsync(token).ConfigureAwait(false);
                 // Each Sprite costs KarmaSpirit x Services Owed.
                 intKarmaPointsRemain -= intLoopKarma;
                 if (objSpirit.EntityType == SpiritType.Spirit)
@@ -11648,7 +11789,8 @@ namespace Chummer
                     if (objSpirit.Fettered)
                     {
                         int intTemp = objSpirit.Force
-                                      * await CharacterObjectSettings.GetKarmaSpiritFetteringAsync(token).ConfigureAwait(false);
+                                      * await CharacterObjectSettings.GetKarmaSpiritFetteringAsync(token)
+                                                                     .ConfigureAwait(false);
                         intKarmaPointsRemain -= intTemp;
                         intSpiritPointsUsed += intTemp;
                     }
@@ -11663,10 +11805,13 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             // ------------------------------------------------------------------------------
             // Calculate the BP used by Complex Forms.
-            int intFormsPointsUsed = await (await CharacterObject.GetComplexFormsAsync(token).ConfigureAwait(false)).CountAsync(x => x.Grade == 0, token).ConfigureAwait(false);
+            int intFormsPointsUsed = await (await CharacterObject.GetComplexFormsAsync(token).ConfigureAwait(false))
+                                           .CountAsync(x => x.Grade == 0, token).ConfigureAwait(false);
             int intCfpLimit = await CharacterObject.GetCFPLimitAsync(token).ConfigureAwait(false);
             if (intFormsPointsUsed > intCfpLimit)
-                intKarmaPointsRemain -= (intFormsPointsUsed - intCfpLimit) * await CharacterObject.GetComplexFormKarmaCostAsync(token).ConfigureAwait(false);
+                intKarmaPointsRemain -= (intFormsPointsUsed - intCfpLimit)
+                                        * await CharacterObject.GetComplexFormKarmaCostAsync(token)
+                                                               .ConfigureAwait(false);
             intFreestyleBP += intFormsPointsUsed;
 
             token.ThrowIfCancellationRequested();
@@ -11686,10 +11831,14 @@ namespace Chummer
             }, token).ConfigureAwait(false);
             int intKarmaCost = 0;
             int intNumAdvancedProgramPointsAsNormalPrograms = 0;
-            int intAiNormalProgramLimit = await CharacterObject.GetAINormalProgramLimitAsync(token).ConfigureAwait(false);
-            int intAiAdvancedProgramLimit = await CharacterObject.GetAIAdvancedProgramLimitAsync(token).ConfigureAwait(false);
-            int intAiNormalProgramKarmaCost = await CharacterObject.GetAIProgramKarmaCostAsync(token).ConfigureAwait(false);
-            int intAiAdvancedProgramKarmaCost = await CharacterObject.GetAIAdvancedProgramKarmaCostAsync(token).ConfigureAwait(false);
+            int intAiNormalProgramLimit
+                = await CharacterObject.GetAINormalProgramLimitAsync(token).ConfigureAwait(false);
+            int intAiAdvancedProgramLimit
+                = await CharacterObject.GetAIAdvancedProgramLimitAsync(token).ConfigureAwait(false);
+            int intAiNormalProgramKarmaCost
+                = await CharacterObject.GetAIProgramKarmaCostAsync(token).ConfigureAwait(false);
+            int intAiAdvancedProgramKarmaCost
+                = await CharacterObject.GetAIAdvancedProgramKarmaCostAsync(token).ConfigureAwait(false);
             if (intAINormalProgramPointsUsed > intAiNormalProgramLimit)
             {
                 if (intAIAdvancedProgramPointsUsed < intAiAdvancedProgramLimit)
@@ -11699,47 +11848,62 @@ namespace Chummer
                         intAiAdvancedProgramLimit - intAIAdvancedProgramPointsUsed);
                     intAINormalProgramPointsUsed -= intNumAdvancedProgramPointsAsNormalPrograms;
                 }
+
                 if (intAINormalProgramPointsUsed > intAiNormalProgramLimit)
-                    intKarmaCost += (intAINormalProgramPointsUsed - intAiNormalProgramLimit) * intAiNormalProgramKarmaCost;
+                    intKarmaCost += (intAINormalProgramPointsUsed - intAiNormalProgramLimit)
+                                    * intAiNormalProgramKarmaCost;
             }
+
             if (intAIAdvancedProgramPointsUsed > intAiAdvancedProgramLimit)
             {
-                intKarmaCost += (intAIAdvancedProgramPointsUsed - intAiAdvancedProgramLimit) * intAiAdvancedProgramKarmaCost;
+                intKarmaCost += (intAIAdvancedProgramPointsUsed - intAiAdvancedProgramLimit)
+                                * intAiAdvancedProgramKarmaCost;
             }
+
             intKarmaPointsRemain -= intKarmaCost;
-            intFreestyleBP += intAIAdvancedProgramPointsUsed + intAINormalProgramPointsUsed + intNumAdvancedProgramPointsAsNormalPrograms;
+            intFreestyleBP += intAIAdvancedProgramPointsUsed + intAINormalProgramPointsUsed
+                                                             + intNumAdvancedProgramPointsAsNormalPrograms;
 
             token.ThrowIfCancellationRequested();
             // ------------------------------------------------------------------------------
             // Calculate the BP used by Initiation.
             int intInitiationPoints = 0;
-            await (await CharacterObject.GetInitiationGradesAsync(token).ConfigureAwait(false)).ForEachAsync(async objGrade =>
-            {
-                intInitiationPoints += objGrade.KarmaCost;
-                // Add the Karma cost of extra Metamagic/Echoes to the Initiation cost.
-                int metamagicKarma = Math.Max(await (await CharacterObject.GetMetamagicsAsync(token).ConfigureAwait(false)).CountAsync(x => x.Grade == objGrade.Grade, token: token).ConfigureAwait(false) - 1, 0);
-                intInitiationPoints += await CharacterObjectSettings.GetKarmaMetamagicAsync(token).ConfigureAwait(false) * metamagicKarma;
-            }, token).ConfigureAwait(false);
+            await (await CharacterObject.GetInitiationGradesAsync(token).ConfigureAwait(false)).ForEachAsync(
+                async objGrade =>
+                {
+                    intInitiationPoints += objGrade.KarmaCost;
+                    // Add the Karma cost of extra Metamagic/Echoes to the Initiation cost.
+                    int metamagicKarma
+                        = Math.Max(
+                            await (await CharacterObject.GetMetamagicsAsync(token).ConfigureAwait(false))
+                                  .CountAsync(x => x.Grade == objGrade.Grade, token: token).ConfigureAwait(false) - 1,
+                            0);
+                    intInitiationPoints
+                        += await CharacterObjectSettings.GetKarmaMetamagicAsync(token).ConfigureAwait(false)
+                           * metamagicKarma;
+                }, token).ConfigureAwait(false);
 
             // Add the Karma cost of extra Metamagic/Echoes to the Initiation cost.
-            intInitiationPoints += (await CharacterObject.GetEnhancementsAsync(token).ConfigureAwait(false)).Count * 2;
+            intInitiationPoints += await (await CharacterObject.GetEnhancementsAsync(token).ConfigureAwait(false))
+                                         .GetCountAsync(token).ConfigureAwait(false) * 2;
             await (await CharacterObject.GetPowersAsync(token).ConfigureAwait(false)).ForEachAsync(
-                objPower => intInitiationPoints += objPower.Enhancements.Count * 2, token).ConfigureAwait(false);
+                    async objPower => intInitiationPoints
+                        += await objPower.Enhancements.GetCountAsync(token).ConfigureAwait(false) * 2, token)
+                .ConfigureAwait(false);
 
             // Joining a Network does not cost Karma for Technomancers, so this only applies to Magicians/Adepts.
             // Check to see if the character is a member of a Group.
-            if (await CharacterObject.GetGroupMemberAsync(token).ConfigureAwait(false) && await CharacterObject.GetMAGEnabledAsync(token).ConfigureAwait(false))
-                intInitiationPoints += await CharacterObjectSettings.GetKarmaJoinGroupAsync(token).ConfigureAwait(false);
+            if (await CharacterObject.GetGroupMemberAsync(token).ConfigureAwait(false)
+                && await CharacterObject.GetMAGEnabledAsync(token).ConfigureAwait(false))
+                intInitiationPoints
+                    += await CharacterObjectSettings.GetKarmaJoinGroupAsync(token).ConfigureAwait(false);
 
             intKarmaPointsRemain -= intInitiationPoints;
             intFreestyleBP += intInitiationPoints;
 
             // Add the Karma cost of any Critter Powers.
-            foreach (CritterPower objPower in await CharacterObject.GetCritterPowersAsync(token).ConfigureAwait(false))
-            {
-                token.ThrowIfCancellationRequested();
-                intKarmaPointsRemain -= objPower.Karma;
-            }
+            await (await CharacterObject.GetCritterPowersAsync(token).ConfigureAwait(false)).ForEachAsync(
+                objPower => intKarmaPointsRemain -= objPower.Karma, token).ConfigureAwait(false);
 
             await CharacterObject.SetKarmaAsync(intKarmaPointsRemain, token).ConfigureAwait(false);
 
@@ -11778,17 +11942,39 @@ namespace Chummer
                 await lblContactPoints.DoThreadSafeAsync(x => x.Text = strContactPoints, token).ConfigureAwait(false);
             }
 
-            string strTemp = await BuildAttributes(await (await CharacterObject.GetAttributeSectionAsync(token).ConfigureAwait(false)).GetAttributeListAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+            string strTemp
+                = await BuildAttributes(
+                    await (await CharacterObject.GetAttributeSectionAsync(token).ConfigureAwait(false))
+                          .GetAttributeListAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
             token.ThrowIfCancellationRequested();
             await lblAttributesBP.DoThreadSafeAsync(x => x.Text = strTemp, token).ConfigureAwait(false);
-            string strTemp2 = await BuildAttributes(await (await CharacterObject.GetAttributeSectionAsync(token).ConfigureAwait(false)).GetSpecialAttributeListAsync(token).ConfigureAwait(false), null, true, token).ConfigureAwait(false);
+            string strTemp2
+                = await BuildAttributes(
+                        await (await CharacterObject.GetAttributeSectionAsync(token).ConfigureAwait(false))
+                              .GetSpecialAttributeListAsync(token).ConfigureAwait(false), null, true, token)
+                    .ConfigureAwait(false);
             token.ThrowIfCancellationRequested();
             await lblPBuildSpecial.DoThreadSafeAsync(x => x.Text = strTemp2, token).ConfigureAwait(false);
-            await lblMartialArtsBP.DoThreadSafeAsync(x => x.Text = intMartialArtsPoints.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints, token).ConfigureAwait(false);
-            await lblNuyenBP.DoThreadSafeAsync(x => x.Text = intNuyenBP.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints, token).ConfigureAwait(false);
-            await lblFociBP.DoThreadSafeAsync(x => x.Text = intFociPointsUsed.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints, token).ConfigureAwait(false);
-            await lblSpiritsBP.DoThreadSafeAsync(x => x.Text = intSpiritPointsUsed.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints, token).ConfigureAwait(false);
-            await lblSpritesBP.DoThreadSafeAsync(x => x.Text = intSpritePointsUsed.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints, token).ConfigureAwait(false);
+            await lblMartialArtsBP
+                  .DoThreadSafeAsync(
+                      x => x.Text = intMartialArtsPoints.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints,
+                      token).ConfigureAwait(false);
+            await lblNuyenBP
+                  .DoThreadSafeAsync(
+                      x => x.Text = intNuyenBP.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints, token)
+                  .ConfigureAwait(false);
+            await lblFociBP
+                  .DoThreadSafeAsync(
+                      x => x.Text = intFociPointsUsed.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints,
+                      token).ConfigureAwait(false);
+            await lblSpiritsBP
+                  .DoThreadSafeAsync(
+                      x => x.Text = intSpiritPointsUsed.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints,
+                      token).ConfigureAwait(false);
+            await lblSpritesBP
+                  .DoThreadSafeAsync(
+                      x => x.Text = intSpritePointsUsed.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints,
+                      token).ConfigureAwait(false);
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdComplexFormsBP))
             {
@@ -11800,7 +11986,8 @@ namespace Chummer
                     {
                         sbdComplexFormsBP.Append(strColon).Append(strSpace)
                                          .Append(((intFormsPointsUsed - intCfpLimit)
-                                                  * await CharacterObject.GetComplexFormKarmaCostAsync(token).ConfigureAwait(false))
+                                                  * await CharacterObject.GetComplexFormKarmaCostAsync(token)
+                                                                         .ConfigureAwait(false))
                                                  .ToString(GlobalSettings.CultureInfo)).Append(strSpace)
                                          .Append(strPoints);
                     }
@@ -11808,11 +11995,15 @@ namespace Chummer
                 else
                 {
                     sbdComplexFormsBP
-                        .Append(((intFormsPointsUsed - intCfpLimit) * await CharacterObject.GetComplexFormKarmaCostAsync(token).ConfigureAwait(false))
+                        .Append(((intFormsPointsUsed - intCfpLimit)
+                                 * await CharacterObject.GetComplexFormKarmaCostAsync(token).ConfigureAwait(false))
                                 .ToString(GlobalSettings.CultureInfo)).Append(strSpace).Append(strPoints);
                 }
-                await lblComplexFormsBP.DoThreadSafeAsync(x => x.Text = sbdComplexFormsBP.ToString(), token).ConfigureAwait(false);
+
+                await lblComplexFormsBP.DoThreadSafeAsync(x => x.Text = sbdComplexFormsBP.ToString(), token)
+                                       .ConfigureAwait(false);
             }
+
             await lblAINormalProgramsBP.DoThreadSafeAsync(
                 x => x.Text = ((intAINormalProgramPointsUsed - intAiNormalProgramLimit)
                                * intAiNormalProgramKarmaCost).ToString(GlobalSettings.CultureInfo) + strSpace
@@ -11821,12 +12012,15 @@ namespace Chummer
                 x => x.Text = ((intAIAdvancedProgramPointsUsed - intAiAdvancedProgramLimit)
                                * intAiAdvancedProgramKarmaCost).ToString(GlobalSettings.CultureInfo)
                               + strSpace + strPoints, token).ConfigureAwait(false);
-            await lblInitiationBP.DoThreadSafeAsync(x => x.Text = intInitiationPoints.ToString(GlobalSettings.CultureInfo)
-                                                                  + strSpace + strPoints, token).ConfigureAwait(false);
+            await lblInitiationBP.DoThreadSafeAsync(
+                x => x.Text = intInitiationPoints.ToString(GlobalSettings.CultureInfo)
+                              + strSpace + strPoints, token).ConfigureAwait(false);
             // ------------------------------------------------------------------------------
             // Update the number of BP remaining in the StatusBar.
-            Color objControlTextColor = await ColorManager.ControlTextAsync.ConfigureAwait(false);
-            int intBuildKarma = _blnFreestyle ? 0 : await CharacterObjectSettings.GetBuildKarmaAsync(token).ConfigureAwait(false);
+            Color objControlTextColor = await ColorManager.GetControlTextAsync(token).ConfigureAwait(false);
+            int intBuildKarma = _blnFreestyle
+                ? 0
+                : await CharacterObjectSettings.GetBuildKarmaAsync(token).ConfigureAwait(false);
             await tsMain.DoThreadSafeAsync(() =>
             {
                 tslKarmaRemaining.Text = intKarmaPointsRemain.ToString(GlobalSettings.CultureInfo);
@@ -12256,7 +12450,7 @@ namespace Chummer
                         await lblCyberwareEssence.DoThreadSafeAsync(x => x.Visible = true, token);
                         if (objCyberware.Parent == null || objCyberware.AddToParentESS)
                         {
-                            decimal decCalculatedEss = await objCyberware.CalculatedESSAsync;
+                            decimal decCalculatedEss = await objCyberware.GetCalculatedESSAsync(token);
                             if (objCyberware.Parent == null)
                                 await lblCyberwareEssence.DoThreadSafeAsync(x => x.Text = decCalculatedEss.ToString(strESSFormat, GlobalSettings.CultureInfo), token);
                             else

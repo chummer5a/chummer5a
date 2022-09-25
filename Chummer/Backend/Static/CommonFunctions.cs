@@ -61,20 +61,7 @@ namespace Chummer
         /// </summary>
         /// <param name="strXPath">String as XPath Expression to evaluate.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        /// <returns>System.Boolean, System.Double, System.String, or System.Xml.XPath.XPathNodeIterator depending on the result type.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Tuple<bool, object> EvaluateInvariantXPath(string strXPath, CancellationToken token = default)
-        {
-            object objReturn = EvaluateInvariantXPath(strXPath, out bool blnIsSuccess, token);
-            return new Tuple<bool, object>(blnIsSuccess, objReturn);
-        }
-
-        /// <summary>
-        /// Evaluate a string consisting of an XPath Expression that could be evaluated on an empty document.
-        /// </summary>
-        /// <param name="strXPath">String as XPath Expression to evaluate.</param>
-        /// <param name="token">Cancellation token to listen to.</param>
-        /// <returns>System.Boolean, System.Double, System.String, or System.Xml.XPath.XPathNodeIterator depending on the result type.</returns>
+        /// <returns>A tuple where the first element is if the calculation was successful and the second element is a System.Boolean, System.Double, System.String, or System.Xml.XPath.XPathNodeIterator depending on the result type.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static async ValueTask<Tuple<bool, object>> EvaluateInvariantXPathAsync(string strXPath, CancellationToken token = default)
         {
@@ -84,16 +71,19 @@ namespace Chummer
                 return objCachedEvaluation;
             }
 
+            Tuple<bool, object> tupReturn;
             if (string.IsNullOrWhiteSpace(strXPath))
             {
-                await s_DicCompiledEvaluations.TryAddAsync(strXPath, null, token);
-                return null;
+                tupReturn = new Tuple<bool, object>(false, null);
+                await s_DicCompiledEvaluations.TryAddAsync(strXPath, tupReturn, token);
+                return tupReturn;
             }
 
             if (!strXPath.IsLegalCharsOnly(true, s_LstInvariantXPathLegalChars))
             {
-                await s_DicCompiledEvaluations.TryAddAsync(strXPath, new Tuple<bool, object>(false, strXPath), token);
-                return new Tuple<bool, object>(false, strXPath);
+                tupReturn = new Tuple<bool, object>(false, strXPath);
+                await s_DicCompiledEvaluations.TryAddAsync(strXPath, tupReturn, token);
+                return tupReturn;
             }
 
             object objReturn;
@@ -146,7 +136,7 @@ namespace Chummer
                 }
             }
 
-            Tuple<bool, object> tupReturn = new Tuple<bool, object>(blnIsSuccess, objReturn);
+            tupReturn = new Tuple<bool, object>(blnIsSuccess, objReturn);
             await s_DicCompiledEvaluations.TryAddAsync(strXPath, tupReturn, token); // don't want to store managed objects, only primitives
             return tupReturn;
         }
@@ -155,33 +145,33 @@ namespace Chummer
         /// Evaluate a string consisting of an XPath Expression that could be evaluated on an empty document.
         /// </summary>
         /// <param name="strXPath">String as XPath Expression to evaluate.</param>
-        /// <param name="blnIsSuccess">Whether we successfully processed the XPath (true) or encountered an error (false).</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        /// <returns>System.Boolean, System.Double, System.String, or System.Xml.XPath.XPathNodeIterator depending on the result type.</returns>
+        /// <returns>A tuple where the first element is if the calculation was successful and the second element is a System.Boolean, System.Double, System.String, or System.Xml.XPath.XPathNodeIterator depending on the result type.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static object EvaluateInvariantXPath(string strXPath, out bool blnIsSuccess, CancellationToken token = default)
+        public static Tuple<bool, object> EvaluateInvariantXPath(string strXPath, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (s_DicCompiledEvaluations.TryGetValue(strXPath, out Tuple<bool, object> objCachedEvaluation))
             {
-                blnIsSuccess = objCachedEvaluation.Item1;
-                return objCachedEvaluation.Item2;
+                return objCachedEvaluation;
             }
 
+            Tuple<bool, object> tupReturn;
             if (string.IsNullOrWhiteSpace(strXPath))
             {
-                s_DicCompiledEvaluations.TryAdd(strXPath, new Tuple<bool, object>(false, null));
-                blnIsSuccess = false;
-                return null;
+                tupReturn = new Tuple<bool, object>(false, null);
+                s_DicCompiledEvaluations.TryAdd(strXPath, tupReturn);
+                return tupReturn;
             }
 
             if (!strXPath.IsLegalCharsOnly(true, s_LstInvariantXPathLegalChars))
             {
-                s_DicCompiledEvaluations.TryAdd(strXPath, new Tuple<bool, object>(false, strXPath));
-                blnIsSuccess = false;
-                return strXPath;
+                tupReturn = new Tuple<bool, object>(false, strXPath);
+                s_DicCompiledEvaluations.TryAdd(strXPath, tupReturn);
+                return tupReturn;
             }
 
+            bool blnIsSuccess;
             object objReturn;
             if (strXPath == "-")
             {
@@ -229,21 +219,10 @@ namespace Chummer
                     blnIsSuccess = false;
                 }
             }
-            s_DicCompiledEvaluations.TryAdd(strXPath, new Tuple<bool, object>(blnIsSuccess, objReturn)); // don't want to store managed objects, only primitives
-            return objReturn;
-        }
 
-        /// <summary>
-        /// Evaluate an XPath Expression that could be evaluated on an empty document.
-        /// </summary>
-        /// <param name="objXPath">XPath Expression to evaluate</param>
-        /// <param name="token">Cancellation token to listen to.</param>
-        /// <returns>System.Boolean, System.Double, System.String, or System.Xml.XPath.XPathNodeIterator depending on the result type.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Tuple<bool, object> EvaluateInvariantXPath(XPathExpression objXPath, CancellationToken token = default)
-        {
-            object objReturn = EvaluateInvariantXPath(objXPath, out bool blnIsSuccess, token);
-            return new Tuple<bool, object>(blnIsSuccess, objReturn);
+            tupReturn = new Tuple<bool, object>(blnIsSuccess, objReturn);
+            s_DicCompiledEvaluations.TryAdd(strXPath, tupReturn); // don't want to store managed objects, only primitives
+            return tupReturn;
         }
 
         /// <summary>
@@ -251,7 +230,7 @@ namespace Chummer
         /// </summary>
         /// <param name="objXPath">XPath Expression to evaluate</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        /// <returns>System.Boolean, System.Double, System.String, or System.Xml.XPath.XPathNodeIterator depending on the result type.</returns>
+        /// <returns>A tuple where the first element is if the calculation was successful and the second element is a System.Boolean, System.Double, System.String, or System.Xml.XPath.XPathNodeIterator depending on the result type.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static async ValueTask<Tuple<bool, object>> EvaluateInvariantXPathAsync(XPathExpression objXPath, CancellationToken token = default)
         {
@@ -313,19 +292,18 @@ namespace Chummer
         /// Evaluate an XPath Expression that could be evaluated on an empty document.
         /// </summary>
         /// <param name="objXPath">XPath Expression to evaluate</param>
-        /// <param name="blnIsSuccess">Whether we successfully processed the XPath (true) or encountered an error (false).</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        /// <returns>System.Boolean, System.Double, System.String, or System.Xml.XPath.XPathNodeIterator depending on the result type.</returns>
+        /// <returns>A tuple where the first element is if the calculation was successful and the second element is a System.Boolean, System.Double, System.String, or System.Xml.XPath.XPathNodeIterator depending on the result type.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static object EvaluateInvariantXPath(XPathExpression objXPath, out bool blnIsSuccess, CancellationToken token = default)
+        public static Tuple<bool, object> EvaluateInvariantXPath(XPathExpression objXPath, CancellationToken token = default)
         {
             string strExpression = objXPath.Expression;
             if (s_DicCompiledEvaluations.TryGetValue(strExpression, out Tuple<bool, object> objCachedEvaluation))
             {
-                blnIsSuccess = objCachedEvaluation.Item1;
-                return objCachedEvaluation.Item2;
+                return objCachedEvaluation;
             }
 
+            bool blnIsSuccess;
             object objReturn;
             try
             {
@@ -363,8 +341,10 @@ namespace Chummer
                 objReturn = strExpression;
                 blnIsSuccess = false;
             }
-            s_DicCompiledEvaluations.TryAdd(strExpression, new Tuple<bool, object>(blnIsSuccess, objReturn)); // don't want to store managed objects, only primitives
-            return objReturn;
+
+            Tuple<bool, object> tupReturn = new Tuple<bool, object>(blnIsSuccess, objReturn);
+            s_DicCompiledEvaluations.TryAdd(strExpression, tupReturn); // don't want to store managed objects, only primitives
+            return tupReturn;
         }
 
         /// <summary>
@@ -388,8 +368,8 @@ namespace Chummer
 
             if (string.IsNullOrEmpty(strXPathExpression))
                 return true;
-            EvaluateInvariantXPath(strXPathExpression, out bool blnSuccess);
-            return blnSuccess;
+            (bool blnIsSuccess, _) = EvaluateInvariantXPath(strXPathExpression);
+            return blnIsSuccess;
         }
 
         /// <summary>
@@ -1318,9 +1298,9 @@ namespace Chummer
             // This statement is wrapped in a try/catch since trying 1 div 2 results in an error with XSLT.
             try
             {
-                object objProcess = EvaluateInvariantXPath(
+                (bool blnIsSuccess, object objProcess) = EvaluateInvariantXPath(
                     strIn.Replace("/", " div ").Replace("F", strForce).Replace("1D6", strForce)
-                         .Replace("2D6", strForce), out bool blnIsSuccess);
+                         .Replace("2D6", strForce));
                 if (blnIsSuccess)
                     intValue = ((double)objProcess).StandardRound();
             }
@@ -1362,9 +1342,9 @@ namespace Chummer
             // This statement is wrapped in a try/catch since trying 1 div 2 results in an error with XSLT.
             try
             {
-                object objProcess = EvaluateInvariantXPath(
+                (bool blnIsSuccess, object objProcess) = EvaluateInvariantXPath(
                     strIn.Replace("/", " div ").Replace("F", strForce).Replace("1D6", strForce)
-                         .Replace("2D6", strForce), out bool blnIsSuccess);
+                         .Replace("2D6", strForce));
                 if (blnIsSuccess)
                     decValue = Convert.ToDecimal((double)objProcess);
             }

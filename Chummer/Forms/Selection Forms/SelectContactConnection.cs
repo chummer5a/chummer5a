@@ -160,7 +160,7 @@ namespace Chummer
                     return;
                 if (dlgColor.Color.Name == "White" || dlgColor.Color.Name == "Black")
                 {
-                    Color objColor = await ColorManager.ControlAsync;
+                    Color objColor = await ColorManager.GetControlAsync();
                     await cmdChangeColour.DoThreadSafeAsync(x => x.BackColor = objColor);
                     _objColour = objColor;
                 }

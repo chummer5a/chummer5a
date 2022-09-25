@@ -1280,7 +1280,7 @@ namespace Chummer.Backend.Attributes
 
         public string DisplayNameFormatted => GetDisplayNameFormatted(GlobalSettings.Language);
 
-        public Task<string> DisplayNameFormattedAsync => GetDisplayNameFormattedAsync(GlobalSettings.Language);
+        public Task<string> GetDisplayNameFormattedAsync(CancellationToken token = default) => GetDisplayNameFormattedAsync(GlobalSettings.Language, token);
 
         public string GetDisplayNameFormatted(string strLanguage)
         {
@@ -1565,14 +1565,22 @@ namespace Chummer.Backend.Attributes
                 decimal decMultiplier = 1.0m;
                 foreach (Improvement objLoopImprovement in _objCharacter.Improvements)
                 {
-                    if ((objLoopImprovement.ImprovedName == Abbrev || string.IsNullOrEmpty(objLoopImprovement.ImprovedName)) &&
-                        (string.IsNullOrEmpty(objLoopImprovement.Condition) || (objLoopImprovement.Condition == "career") == _objCharacter.Created || (objLoopImprovement.Condition == "create") != _objCharacter.Created) &&
+                    if ((objLoopImprovement.ImprovedName == Abbrev
+                         || string.IsNullOrEmpty(objLoopImprovement.ImprovedName)) &&
+                        (string.IsNullOrEmpty(objLoopImprovement.Condition)
+                         || (objLoopImprovement.Condition == "career") == _objCharacter.Created
+                         || (objLoopImprovement.Condition == "create") != _objCharacter.Created) &&
                         objLoopImprovement.Minimum <= intBase && objLoopImprovement.Enabled)
                     {
                         switch (objLoopImprovement.ImproveType)
                         {
                             case Improvement.ImprovementType.AttributePointCost:
-                                decExtra += objLoopImprovement.Value * (Math.Min(intBase, objLoopImprovement.Maximum == 0 ? int.MaxValue : objLoopImprovement.Maximum) - objLoopImprovement.Minimum);
+                                decExtra += objLoopImprovement.Value
+                                            * (Math.Min(
+                                                intBase,
+                                                objLoopImprovement.Maximum == 0
+                                                    ? int.MaxValue
+                                                    : objLoopImprovement.Maximum) - objLoopImprovement.Minimum);
                                 break;
 
                             case Improvement.ImprovementType.AttributePointCostMultiplier:
@@ -1581,6 +1589,7 @@ namespace Chummer.Backend.Attributes
                         }
                     }
                 }
+
                 if (decMultiplier != 1.0m)
                     intReturn = (intReturn * decMultiplier + decExtra).StandardRound();
                 else
@@ -1588,6 +1597,48 @@ namespace Chummer.Backend.Attributes
 
                 return Math.Max(intReturn, 0);
             }
+        }
+
+        public async Task<int> GetSpentPriorityPointsAsync(CancellationToken token = default)
+        {
+            int intBase = Base;
+            int intReturn = intBase;
+
+            decimal decExtra = 0;
+            decimal decMultiplier = 1.0m;
+            await _objCharacter.Improvements.ForEachAsync(async objLoopImprovement =>
+            {
+                if ((objLoopImprovement.ImprovedName == Abbrev
+                     || string.IsNullOrEmpty(objLoopImprovement.ImprovedName)) &&
+                    (string.IsNullOrEmpty(objLoopImprovement.Condition)
+                     || (objLoopImprovement.Condition == "career") == await _objCharacter.GetCreatedAsync(token)
+                     || (objLoopImprovement.Condition == "create") != await _objCharacter.GetCreatedAsync(token)) &&
+                    objLoopImprovement.Minimum <= intBase && objLoopImprovement.Enabled)
+                {
+                    switch (objLoopImprovement.ImproveType)
+                    {
+                        case Improvement.ImprovementType.AttributePointCost:
+                            decExtra += objLoopImprovement.Value
+                                        * (Math.Min(
+                                            intBase,
+                                            objLoopImprovement.Maximum == 0
+                                                ? int.MaxValue
+                                                : objLoopImprovement.Maximum) - objLoopImprovement.Minimum);
+                            break;
+
+                        case Improvement.ImprovementType.AttributePointCostMultiplier:
+                            decMultiplier *= objLoopImprovement.Value / 100.0m;
+                            break;
+                    }
+                }
+            }, token: token);
+
+            if (decMultiplier != 1.0m)
+                intReturn = (intReturn * decMultiplier + decExtra).StandardRound();
+            else
+                intReturn += decExtra.StandardRound();
+
+            return Math.Max(intReturn, 0);
         }
 
         public bool AtMetatypeMaximum => Value == TotalMaximum && TotalMaximum > 0;
@@ -1686,6 +1737,69 @@ namespace Chummer.Backend.Attributes
 
                 return _intCachedUpgradeKarmaCost = Math.Max(intUpgradeCost, Math.Min(1, intOptionsCost));
             }
+        }
+
+        /// <summary>
+        /// Karma price to upgrade. Returns negative if impossible
+        /// </summary>
+        /// <returns>Price in karma</returns>
+        public async ValueTask<int> GetUpgradeKarmaCostAsync(CancellationToken token = default)
+        {
+            if (_intCachedUpgradeKarmaCost != int.MinValue)
+                return _intCachedUpgradeKarmaCost;
+
+            int intValue = await GetValueAsync(token);
+            if (intValue >= await GetTotalMaximumAsync(token))
+            {
+                return -1;
+            }
+
+            int intUpgradeCost;
+            int intOptionsCost = _objCharacter.Settings.KarmaAttribute;
+            if (intValue == 0)
+            {
+                intUpgradeCost = intOptionsCost;
+            }
+            else
+            {
+                intUpgradeCost = (intValue + 1) * intOptionsCost;
+            }
+
+            if (_objCharacter.Settings.AlternateMetatypeAttributeKarma
+                && !s_SetAlternateMetatypeAttributeKarmaExceptions.Contains(Abbrev))
+                intUpgradeCost -= (await GetMetatypeMinimumAsync(token) - 1) * intOptionsCost;
+
+            decimal decExtra = 0;
+            decimal decMultiplier = 1.0m;
+            await (await _objCharacter.GetImprovementsAsync(token)).ForEachAsync(async objLoopImprovement =>
+            {
+                if ((objLoopImprovement.ImprovedName == Abbrev || string.IsNullOrEmpty(objLoopImprovement.ImprovedName))
+                    &&
+                    (string.IsNullOrEmpty(objLoopImprovement.Condition)
+                     || (objLoopImprovement.Condition == "career") == await _objCharacter.GetCreatedAsync(token)
+                     || (objLoopImprovement.Condition == "create") != await _objCharacter.GetCreatedAsync(token)) &&
+                    (objLoopImprovement.Maximum == 0 || intValue + 1 <= objLoopImprovement.Maximum)
+                    && objLoopImprovement.Minimum <= intValue + 1 && objLoopImprovement.Enabled)
+                {
+                    switch (objLoopImprovement.ImproveType)
+                    {
+                        case Improvement.ImprovementType.AttributeKarmaCost:
+                            decExtra += objLoopImprovement.Value;
+                            break;
+
+                        case Improvement.ImprovementType.AttributeKarmaCostMultiplier:
+                            decMultiplier *= objLoopImprovement.Value / 100.0m;
+                            break;
+                    }
+                }
+            }, token: token);
+
+            if (decMultiplier != 1.0m)
+                intUpgradeCost = (intUpgradeCost * decMultiplier + decExtra).StandardRound();
+            else
+                intUpgradeCost += decExtra.StandardRound();
+
+            return _intCachedUpgradeKarmaCost = Math.Max(intUpgradeCost, Math.Min(1, intOptionsCost));
         }
 
         public int TotalKarmaCost
@@ -1815,6 +1929,17 @@ namespace Chummer.Backend.Attributes
 
                 return _intCachedCanUpgradeCareer > 0;
             }
+        }
+
+        public async ValueTask<bool> GetCanUpgradeCareerAsync(CancellationToken token = default)
+        {
+            if (_intCachedCanUpgradeCareer < 0)
+                _intCachedCanUpgradeCareer = _objCharacter.Karma >= await GetUpgradeKarmaCostAsync(token)
+                                             && await GetTotalMaximumAsync(token) > await GetValueAsync(token)
+                    ? 1
+                    : 0;
+
+            return _intCachedCanUpgradeCareer > 0;
         }
 
         private void OnCharacterChanged(object sender, PropertyChangedEventArgs e)
@@ -2111,48 +2236,57 @@ namespace Chummer.Backend.Attributes
                 : LanguageManager.GetStringAsync("String_Attribute" + Abbrev + "Short", strLanguage, token: token);
         }
 
-        public void Upgrade(int intAmount = 1)
+        public async ValueTask Upgrade(int intAmount = 1, CancellationToken token = default)
         {
+            if (intAmount <= 0)
+                return;
+            bool blnCreated = await _objCharacter.GetCreatedAsync(token);
             for (int i = 0; i < intAmount; ++i)
             {
-                if (_objCharacter.Created)
+                if (blnCreated)
                 {
-                    if (!CanUpgradeCareer)
+                    if (!await GetCanUpgradeCareerAsync(token))
                         return;
 
-                    int intPrice = UpgradeKarmaCost;
-                    int intValue = Value;
+                    int intPrice = await GetUpgradeKarmaCostAsync(token);
+                    int intValue = await GetValueAsync(token);
 
                     string strUpgradetext = string.Format(GlobalSettings.CultureInfo, "{1}{0}{2}{0}{3}{0}->{0}{4}",
-                        LanguageManager.GetString("String_Space"), LanguageManager.GetString("String_ExpenseAttribute"), Abbrev, intValue, intValue + 1);
+                                                          await LanguageManager.GetStringAsync(
+                                                              "String_Space", token: token),
+                                                          await LanguageManager.GetStringAsync(
+                                                              "String_ExpenseAttribute", token: token), Abbrev,
+                                                          intValue, intValue + 1);
 
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                     objExpense.Create(intPrice * -1, strUpgradetext, ExpenseType.Karma, DateTime.Now);
                     objExpense.Undo = new ExpenseUndo().CreateKarma(KarmaExpenseType.ImproveAttribute, Abbrev);
 
-                    _objCharacter.ExpenseEntries.AddWithSort(objExpense);
+                    await _objCharacter.ExpenseEntries.AddWithSortAsync(objExpense, token: token);
 
                     _objCharacter.Karma -= intPrice;
 
                     // Undo burned Edge if possible first
                     if (Abbrev == "EDG")
                     {
-                        int intBurnedEdge = -ImprovementManager
-                                             .GetCachedImprovementListForValueOf(
-                                                 _objCharacter, Improvement.ImprovementType.Attribute, "EDG")
-                                             .Sum(x => x.ImproveSource == Improvement.ImprovementSource.BurnedEdge, x => x.Minimum * x.Rating);
+                        int intBurnedEdge = -(await ImprovementManager
+                                .GetCachedImprovementListForValueOfAsync(
+                                    _objCharacter, Improvement.ImprovementType.Attribute, "EDG", token: token))
+                            .Sum(x => x.ImproveSource == Improvement.ImprovementSource.BurnedEdge,
+                                 x => x.Minimum * x.Rating);
                         if (intBurnedEdge > 0)
                         {
-                            ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.BurnedEdge);
+                            await ImprovementManager.RemoveImprovementsAsync(
+                                _objCharacter, Improvement.ImprovementSource.BurnedEdge, token: token);
                             --intBurnedEdge;
                             if (intBurnedEdge > 0)
                             {
-                                ImprovementManager.CreateImprovement(_objCharacter, "EDG",
-                                                                     Improvement.ImprovementSource.BurnedEdge,
-                                                                     string.Empty,
-                                                                     Improvement.ImprovementType.Attribute,
-                                                                     string.Empty, 0, 1, -intBurnedEdge);
-                                ImprovementManager.Commit(_objCharacter);
+                                await ImprovementManager.CreateImprovementAsync(_objCharacter, "EDG",
+                                    Improvement.ImprovementSource.BurnedEdge,
+                                    string.Empty,
+                                    Improvement.ImprovementType.Attribute,
+                                    string.Empty, 0, 1, -intBurnedEdge, token: token);
+                                await ImprovementManager.CommitAsync(_objCharacter, token);
                             }
 
                             continue; // Skip increasing Karma

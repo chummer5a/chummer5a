@@ -197,7 +197,7 @@ namespace Chummer
                     else
                     {
                         strCost = objXmlQuality["cost"]?.InnerText;
-                        object objProcess = CommonFunctions.EvaluateInvariantXPath(strCost, out bool blnIsSuccess);
+                        (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strCost);
                         decimal decCost = blnIsSuccess ? Convert.ToDecimal((double) objProcess) : 0;
                         strCost = decCost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo)
                                   + await LanguageManager.GetStringAsync("String_NuyenSymbol");

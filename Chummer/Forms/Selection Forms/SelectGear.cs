@@ -696,10 +696,9 @@ namespace Chummer
                     {
                         try
                         {
-                            objProcess = CommonFunctions.EvaluateInvariantXPath(
+                            (blnIsSuccess, objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(
                                 objCostNode.Value.Replace(
-                                    "Rating", intRatingValue.ToString(GlobalSettings.InvariantCultureInfo)),
-                                out blnIsSuccess);
+                                    "Rating", intRatingValue.ToString(GlobalSettings.InvariantCultureInfo)), token);
                             decimal decCost = blnIsSuccess
                                 ? Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo) * decMultiplier
                                 : 0;
@@ -973,7 +972,7 @@ namespace Chummer
                             await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token);
 
                             // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                            objProcess = CommonFunctions.EvaluateInvariantXPath(sbdValue.ToString(), out blnIsSuccess);
+                            (blnIsSuccess, objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(sbdValue.ToString(), token);
                             intRating = blnIsSuccess ? ((double) objProcess).StandardRound() : 0;
                         }
                     }
@@ -1018,8 +1017,8 @@ namespace Chummer
                                     await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token);
 
                                     // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                                    objProcess = CommonFunctions.EvaluateInvariantXPath(
-                                        sbdValue.ToString(), out blnIsSuccess);
+                                    (blnIsSuccess, objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(
+                                        sbdValue.ToString(), token);
                                     intMinimumRating = blnIsSuccess ? ((double) objProcess).StandardRound() : 0;
                                 }
                             }

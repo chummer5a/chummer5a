@@ -815,7 +815,7 @@ namespace Chummer
 
             string strErrorPrefix = await LanguageManager.GetStringAsync("String_Error", token: token)
                                     + await LanguageManager.GetStringAsync("String_Colon", token: token) + Environment.NewLine;
-            Color objWindowTextColor = await ColorManager.WindowTextAsync;
+            Color objWindowTextColor = await ColorManager.GetWindowTextAsync(token);
             await treCharacterList.DoThreadSafeAsync(x =>
             {
                 foreach (TreeNode objCharacterNode in x.Nodes.Cast<TreeNode>().GetAllDescendants(y => y.Nodes.Cast<TreeNode>()))
@@ -1521,7 +1521,7 @@ namespace Chummer
                             }, token).ConfigureAwait(false);
                         }
                         else
-                            await ColorManager.WindowTextAsync
+                            await ColorManager.GetWindowTextAsync(token)
                                               .ContinueWith(
                                                   y => txtCharacterBio.DoThreadSafeAsync(
                                                       x => x.ForeColor = y.Result, token), token).Unwrap().ConfigureAwait(false);

@@ -849,8 +849,8 @@ namespace Chummer
                                                                    () => nudRating.Value.ToString(
                                                                        GlobalSettings.InvariantCultureInfo), token: token);
 
-                                object objProcess
-                                    = CommonFunctions.EvaluateInvariantXPath(strCost, out bool blnIsSuccess);
+                                (bool blnIsSuccess, object objProcess)
+                                    = await CommonFunctions.EvaluateInvariantXPathAsync(strCost, token);
                                 if (blnIsSuccess)
                                 {
                                     decItemCost = (Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo)
@@ -939,9 +939,8 @@ namespace Chummer
                                 strEss += strSuffix;
                             }
 
-                            object objProcess = CommonFunctions.EvaluateInvariantXPath(
-                                strEss.Replace("Rating", nudRating.Value.ToString(GlobalSettings.InvariantCultureInfo)),
-                                out bool blnIsSuccess);
+                            (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(
+                                strEss.Replace("Rating", nudRating.Value.ToString(GlobalSettings.InvariantCultureInfo)), token);
                             if (blnIsSuccess)
                             {
                                 decESS = decCharacterESSModifier
@@ -1004,10 +1003,9 @@ namespace Chummer
                                 if (blnSquareBrackets && strFirstHalf.Length > 1)
                                     strFirstHalf = strFirstHalf.Substring(1, strCapacity.Length - 2);
 
-                                object objProcess = CommonFunctions.EvaluateInvariantXPath(
+                                (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(
                                     strFirstHalf.Replace(
-                                        "Rating", nudRating.Value.ToString(GlobalSettings.InvariantCultureInfo)),
-                                    out bool blnIsSuccess);
+                                        "Rating", nudRating.Value.ToString(GlobalSettings.InvariantCultureInfo)), token);
 
                                 await lblCapacity.DoThreadSafeAsync(x =>
                                 {
@@ -1019,10 +1017,9 @@ namespace Chummer
                                 }, token: token);
 
                                 strSecondHalf = strSecondHalf.Trim('[', ']');
-                                objProcess = CommonFunctions.EvaluateInvariantXPath(
+                                (blnIsSuccess, objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(
                                     strSecondHalf.Replace(
-                                        "Rating", nudRating.Value.ToString(GlobalSettings.InvariantCultureInfo)),
-                                    out blnIsSuccess);
+                                        "Rating", nudRating.Value.ToString(GlobalSettings.InvariantCultureInfo)), token);
                                 strSecondHalf = (blnAddToParentCapacity ? "+[" : "[")
                                                 + (blnIsSuccess ? objProcess.ToString() : strSecondHalf) + ']';
 
@@ -1030,10 +1027,9 @@ namespace Chummer
                             }
                             else
                             {
-                                object objProcess = CommonFunctions.EvaluateInvariantXPath(
+                                (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(
                                     strCapacity.Replace(
-                                        "Rating", nudRating.Value.ToString(GlobalSettings.InvariantCultureInfo)),
-                                    out bool blnIsSuccess);
+                                        "Rating", nudRating.Value.ToString(GlobalSettings.InvariantCultureInfo)), token);
                                 await lblCapacity.DoThreadSafeAsync(x =>
                                 {
                                     x.Text = blnIsSuccess

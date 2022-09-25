@@ -1385,7 +1385,7 @@ namespace Chummer
                 //Log.Info("strReturn = " + strReturn);
 
                 // Treat this as a decimal value so any fractions can be rounded down. This is currently only used by the Boosted Reflexes Cyberware from SR2050.
-                object objProcess = CommonFunctions.EvaluateInvariantXPath(strReturn, out bool blnIsSuccess);
+                (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strReturn);
                 int intValue = blnIsSuccess ? ((double) objProcess).StandardRound() : 0;
 
                 //Log.Exit("ValueToInt");
@@ -1428,7 +1428,7 @@ namespace Chummer
                 //Log.Info("strReturn = " + strReturn);
 
                 // Treat this as a decimal value so any fractions can be rounded down. This is currently only used by the Boosted Reflexes Cyberware from SR2050.
-                object objProcess = CommonFunctions.EvaluateInvariantXPath(strReturn, out bool blnIsSuccess);
+                (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strReturn);
                 decimal decValue = blnIsSuccess ? Convert.ToDecimal((double) objProcess) : 0;
 
                 //Log.Exit("ValueToInt");

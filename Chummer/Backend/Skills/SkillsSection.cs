@@ -1582,9 +1582,9 @@ namespace Chummer.Backend.Skills
                                 _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdValue, strExpression);
 
                                 // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                                object objProcess
+                                (bool blnIsSuccess, object objProcess)
                                     = CommonFunctions.EvaluateInvariantXPath(
-                                        sbdValue.ToString(), out bool blnIsSuccess);
+                                        sbdValue.ToString());
                                 _intCachedKnowledgePoints = blnIsSuccess ? ((double) objProcess).StandardRound() : 0;
                             }
                         }

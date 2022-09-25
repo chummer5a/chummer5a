@@ -626,7 +626,7 @@ namespace Chummer
                                                      "Rating",
                                                      () => intRating.ToString(GlobalSettings.InvariantCultureInfo), token: token);
 
-                object objProcess = CommonFunctions.EvaluateInvariantXPath(strAvailExpr, out bool blnIsSuccess);
+                (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strAvailExpr, token);
                 if (blnIsSuccess)
                 {
                     int intAvail = ((double)objProcess).StandardRound() + _intAvailModifier;
@@ -694,7 +694,7 @@ namespace Chummer
                         strCost = await (await strCost.CheapReplaceAsync("MinRating", () => nudRating.Minimum.ToString(GlobalSettings.InvariantCultureInfo), token: token))
                             .CheapReplaceAsync("Rating", () => nudRating.Value.ToString(GlobalSettings.InvariantCultureInfo), token: token);
 
-                        object objProcess = CommonFunctions.EvaluateInvariantXPath(strCost, out bool blnIsSuccess);
+                        (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strCost, token);
                         if (blnIsSuccess)
                         {
                             decItemCost = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo) * _decCostMultiplier;
@@ -796,9 +796,9 @@ namespace Chummer
                     if (!string.IsNullOrEmpty(strMaxRating) && !int.TryParse(strMaxRating, out int intMaxRating)
                         || !string.IsNullOrEmpty(strMinRating) && !int.TryParse(strMinRating, out intMinRating))
                     {
-                        object objProcess = CommonFunctions.EvaluateInvariantXPath(strMinRating, out bool blnIsSuccess);
+                        (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strMinRating, token);
                         intMinRating = blnIsSuccess ? ((double) objProcess).StandardRound() : 1;
-                        objProcess = CommonFunctions.EvaluateInvariantXPath(strMaxRating, out blnIsSuccess);
+                        (blnIsSuccess, objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strMaxRating, token);
                         intMaxRating = blnIsSuccess ? ((double) objProcess).StandardRound() : 1;
                         if (intMaxRating < intMinRating)
                             continue;

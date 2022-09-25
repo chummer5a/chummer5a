@@ -275,7 +275,7 @@ namespace Chummer
                             string strInner = string.Empty;
                             if (objXmlCritterNode.TryGetStringFieldQuickly(strAttribute, ref strInner))
                             {
-                                object objProcess = CommonFunctions.EvaluateInvariantXPath(strInner.Replace("F", _intForce.ToString(GlobalSettings.InvariantCultureInfo)), out bool blnIsSuccess, token);
+                                (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strInner.Replace("F", _intForce.ToString(GlobalSettings.InvariantCultureInfo)), token);
                                 int intValue = Math.Max(blnIsSuccess ? ((double)objProcess).StandardRound() : _intForce, 1);
                                 await objWriter.WriteElementStringAsync(strAttribute, intValue.ToString(objCulture), token: token);
 

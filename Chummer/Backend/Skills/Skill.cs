@@ -2886,6 +2886,7 @@ namespace Chummer.Backend.Skills
         /// Returns Page if not found or the string is empty.
         /// </summary>
         /// <param name="strLanguage">Language file keyword to use.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns></returns>
         public async ValueTask<string> DisplayPageAsync(string strLanguage, CancellationToken token = default)
         {

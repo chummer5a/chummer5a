@@ -63,7 +63,7 @@ namespace Chummer
             {
                 using (XmlNodeList xmlLifestyleList
                        = _objXmlDocument.SelectNodes("/chummer/lifestyles/lifestyle["
-                                                     + _objCharacter.Settings.BookXPath() + ']'))
+                                                     + await _objCharacter.Settings.BookXPathAsync() + ']'))
                 {
                     if (xmlLifestyleList?.Count > 0)
                     {
@@ -119,7 +119,7 @@ namespace Chummer
 
             string strSpace = await LanguageManager.GetStringAsync("String_Space");
             // Fill the Options list.
-            using (XmlNodeList xmlLifestyleOptionsList = _objXmlDocument.SelectNodes("/chummer/qualities/quality[(source = \"SR5\" or category = \"Contracts\") and (" + _objCharacter.Settings.BookXPath() + ")]"))
+            using (XmlNodeList xmlLifestyleOptionsList = _objXmlDocument.SelectNodes("/chummer/qualities/quality[(source = \"SR5\" or category = \"Contracts\") and (" + await _objCharacter.Settings.BookXPathAsync() + ")]"))
             {
                 if (xmlLifestyleOptionsList?.Count > 0)
                 {
@@ -150,7 +150,7 @@ namespace Chummer
                         else
                         {
                             string strCost = objXmlOption["cost"]?.InnerText;
-                            object objProcess = CommonFunctions.EvaluateInvariantXPath(strCost, out bool blnIsSuccess);
+                            (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strCost);
                             decimal decCost = blnIsSuccess ? Convert.ToDecimal((double)objProcess) : 0;
                             nodOption.Text = (objXmlOption["translate"]?.InnerText ?? strOptionName)
                                              + strSpace
@@ -440,7 +440,7 @@ namespace Chummer
                             string strCost = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = " + objNode.Tag.ToString().CleanXPath() + "]/cost")?.InnerText;
                             if (!string.IsNullOrEmpty(strCost))
                             {
-                                object objProcess = CommonFunctions.EvaluateInvariantXPath(strCost, out bool blnIsSuccess);
+                                (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strCost, token);
                                 if (blnIsSuccess)
                                     decCost += Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
                             }

@@ -830,7 +830,7 @@ namespace Chummer
 
         private async void txtPriorities_TextChanged(object sender, EventArgs e)
         {
-            Color objWindowTextColor = await ColorManager.WindowTextAsync;
+            Color objWindowTextColor = await ColorManager.GetWindowTextAsync();
             await txtPriorities.DoThreadSafeAsync(x => x.ForeColor
                                                       = x.TextLength == 5
                                                           ? objWindowTextColor
@@ -842,7 +842,7 @@ namespace Chummer
             Color objColor
                 = await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
                     await txtContactPoints.DoThreadSafeFuncAsync(x => x.Text))
-                    ? await ColorManager.WindowTextAsync
+                    ? await ColorManager.GetWindowTextAsync()
                     : ColorManager.ErrorColor;
             await txtContactPoints.DoThreadSafeAsync(x => x.ForeColor = objColor);
         }
@@ -852,7 +852,7 @@ namespace Chummer
             Color objColor
                 = await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
                     await txtKnowledgePoints.DoThreadSafeFuncAsync(x => x.Text))
-                    ? await ColorManager.WindowTextAsync
+                    ? await ColorManager.GetWindowTextAsync()
                     : ColorManager.ErrorColor;
             await txtKnowledgePoints.DoThreadSafeAsync(x => x.ForeColor = objColor);
         }
@@ -865,7 +865,7 @@ namespace Chummer
             Color objColor
                 = await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(strText.Replace("{Karma}", "1")
                     .Replace("{PriorityNuyen}", "1"))
-                    ? await ColorManager.WindowTextAsync
+                    ? await ColorManager.GetWindowTextAsync()
                     : ColorManager.ErrorColor;
             await txtNuyenExpression.DoThreadSafeAsync(x => x.ForeColor = objColor);
             await _objCharacterSettings.SetChargenKarmaToNuyenExpressionAsync(strText); // Not data-bound so that the setter can be asynchronous
@@ -876,7 +876,7 @@ namespace Chummer
             Color objColor
                 = await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
                     await txtBoundSpiritLimit.DoThreadSafeFuncAsync(x => x.Text))
-                    ? await ColorManager.WindowTextAsync
+                    ? await ColorManager.GetWindowTextAsync()
                     : ColorManager.ErrorColor;
             await txtBoundSpiritLimit.DoThreadSafeAsync(x => x.ForeColor = objColor);
         }
@@ -886,7 +886,7 @@ namespace Chummer
             Color objColor
                 = await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
                     await txtRegisteredSpriteLimit.DoThreadSafeFuncAsync(x => x.Text))
-                    ? await ColorManager.WindowTextAsync
+                    ? await ColorManager.GetWindowTextAsync()
                     : ColorManager.ErrorColor;
             await txtRegisteredSpriteLimit.DoThreadSafeAsync(x => x.ForeColor = objColor);
         }
@@ -896,7 +896,7 @@ namespace Chummer
             Color objColor
                 = await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
                     await txtLiftLimit.DoThreadSafeFuncAsync(x => x.Text))
-                    ? await ColorManager.WindowTextAsync
+                    ? await ColorManager.GetWindowTextAsync()
                     : ColorManager.ErrorColor;
             await txtLiftLimit.DoThreadSafeAsync(x => x.ForeColor = objColor);
         }
@@ -906,7 +906,7 @@ namespace Chummer
             Color objColor
                 = await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
                     await txtCarryLimit.DoThreadSafeFuncAsync(x => x.Text))
-                    ? await ColorManager.WindowTextAsync
+                    ? await ColorManager.GetWindowTextAsync()
                     : ColorManager.ErrorColor;
             await txtCarryLimit.DoThreadSafeAsync(x => x.ForeColor = objColor);
         }
@@ -916,7 +916,7 @@ namespace Chummer
             Color objColor
                 = await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
                     await txtEncumbranceInterval.DoThreadSafeFuncAsync(x => x.Text))
-                    ? await ColorManager.WindowTextAsync
+                    ? await ColorManager.GetWindowTextAsync()
                     : ColorManager.ErrorColor;
             await txtEncumbranceInterval.DoThreadSafeAsync(x => x.ForeColor = objColor);
         }
@@ -1076,7 +1076,7 @@ namespace Chummer
             try
             {
                 string strFileNotFound = await LanguageManager.GetStringAsync("MessageTitle_FileNotFound", token: token).ConfigureAwait(false);
-                Color objGrayTextColor = await ColorManager.GrayTextAsync.ConfigureAwait(false);
+                Color objGrayTextColor = await ColorManager.GetGrayTextAsync(token).ConfigureAwait(false);
                 if (_dicCharacterCustomDataDirectoryInfos.Count != treCustomDataDirectories.Nodes.Count)
                 {
                     List<TreeNode> lstNodes = new List<TreeNode>(_dicCharacterCustomDataDirectoryInfos.Count);
@@ -1130,7 +1130,7 @@ namespace Chummer
                 }
                 else
                 {
-                    Color objWindowTextColor = await ColorManager.WindowTextAsync.ConfigureAwait(false);
+                    Color objWindowTextColor = await ColorManager.GetWindowTextAsync(token).ConfigureAwait(false);
                     for (int i = 0; i < _dicCharacterCustomDataDirectoryInfos.Count; ++i)
                     {
                         KeyValuePair<object, bool> kvpInfo = _dicCharacterCustomDataDirectoryInfos[i];

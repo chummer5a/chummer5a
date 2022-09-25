@@ -1763,8 +1763,8 @@ namespace Chummer.Backend.Equipment
                     _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdValue, strExpression);
 
                     // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                    object objProcess
-                        = CommonFunctions.EvaluateInvariantXPath(sbdValue.ToString(), out bool blnIsSuccess);
+                    (bool blnIsSuccess, object objProcess)
+                        = CommonFunctions.EvaluateInvariantXPath(sbdValue.ToString());
                     return blnIsSuccess ? ((double) objProcess).StandardRound() : 0;
                 }
             }
@@ -2827,7 +2827,10 @@ namespace Chummer.Backend.Equipment
                     strDamage = strDamage.Replace("/", " div ");
                     try
                     {
-                        object objProcess = CommonFunctions.EvaluateInvariantXPath(strDamage, out bool blnIsSuccess);
+                        (bool blnIsSuccess, object objProcess) = blnSync
+                            // ReSharper disable once MethodHasAsyncOverload
+                            ? CommonFunctions.EvaluateInvariantXPath(strDamage)
+                            : await CommonFunctions.EvaluateInvariantXPathAsync(strDamage, token);
                         if (blnIsSuccess)
                         {
                             int intDamage = (Convert.ToDecimal((double)objProcess) + decImprove).StandardRound();
@@ -3852,8 +3855,8 @@ namespace Chummer.Backend.Equipment
 
                     // Replace the division sign with "div" since we're using XPath.
                     sbdCost.Replace("/", " div ");
-                    object objProcess
-                        = CommonFunctions.EvaluateInvariantXPath(sbdCost.ToString(), out bool blnIsSuccess);
+                    (bool blnIsSuccess, object objProcess)
+                        = CommonFunctions.EvaluateInvariantXPath(sbdCost.ToString());
                     if (blnIsSuccess)
                         decReturn = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
                 }
@@ -3914,7 +3917,7 @@ namespace Chummer.Backend.Equipment
 
                     // Replace the division sign with "div" since we're using XPath.
                     sbdWeight.Replace("/", " div ");
-                    object objProcess = CommonFunctions.EvaluateInvariantXPath(sbdWeight.ToString(), out bool blnIsSuccess);
+                    (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(sbdWeight.ToString());
                     if (blnIsSuccess)
                         decReturn = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
                 }
@@ -4482,8 +4485,8 @@ namespace Chummer.Backend.Equipment
 
                     // Replace the division sign with "div" since we're using XPath.
                     sbdAccuracy.Replace("/", " div ");
-                    object objProcess
-                        = CommonFunctions.EvaluateInvariantXPath(sbdAccuracy.ToString(), out bool blnIsSuccess);
+                    (bool blnIsSuccess, object objProcess)
+                        = CommonFunctions.EvaluateInvariantXPath(sbdAccuracy.ToString());
                     if (blnIsSuccess)
                         intAccuracy = ((double) objProcess).StandardRound();
                 }
@@ -4899,7 +4902,7 @@ namespace Chummer.Backend.Equipment
                 // Replace the division sign with "div" since we're using XPath.
                 sbdRange.Replace("/", " div ");
 
-                object objProcess = CommonFunctions.EvaluateInvariantXPath(sbdRange.ToString(), out bool blnIsSuccess);
+                (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(sbdRange.ToString());
 
                 return blnIsSuccess
                     ? (Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo) * _decRangeMultiplier)
@@ -5780,8 +5783,8 @@ namespace Chummer.Backend.Equipment
 
                     // Replace the division sign with "div" since we're using XPath.
                     sbdAvail.Replace("/", " div ");
-                    object objProcess
-                        = CommonFunctions.EvaluateInvariantXPath(sbdAvail.ToString(), out bool blnIsSuccess);
+                    (bool blnIsSuccess, object objProcess)
+                        = CommonFunctions.EvaluateInvariantXPath(sbdAvail.ToString());
                     if (blnIsSuccess)
                         intAvail += ((double) objProcess).StandardRound();
                 }
@@ -7372,8 +7375,8 @@ namespace Chummer.Backend.Equipment
                     // Replace the division sign with "div" since we're using XPath.
                     sbdValue.Replace("/", " div ");
                     // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                    object objProcess
-                        = CommonFunctions.EvaluateInvariantXPath(sbdValue.ToString(), out bool blnIsSuccess);
+                    (bool blnIsSuccess, object objProcess)
+                        = CommonFunctions.EvaluateInvariantXPath(sbdValue.ToString());
                     return blnIsSuccess ? ((double) objProcess).StandardRound() : 0;
                 }
             }

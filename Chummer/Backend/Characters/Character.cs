@@ -8953,7 +8953,7 @@ namespace Chummer
                     {
                         foreach (Cyberware objCyberware in Cyberware)
                         {
-                            await objCyberware.Print(objWriter, objCulture, strLanguageToPrint);
+                            await objCyberware.Print(objWriter, objCulture, strLanguageToPrint, token);
                         }
                     }
                     finally
@@ -14270,9 +14270,9 @@ namespace Chummer
                                 AttributeSection.ProcessAttributesInXPath(sbdValue, strExpression);
 
                                 // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                                object objProcess
+                                (bool blnIsSuccess, object objProcess)
                                     = CommonFunctions.EvaluateInvariantXPath(
-                                        sbdValue.ToString(), out bool blnIsSuccess);
+                                        sbdValue.ToString());
                                 _intCachedContactPoints = blnIsSuccess ? ((double) objProcess).StandardRound() : 0;
                             }
                         }
@@ -14392,9 +14392,9 @@ namespace Chummer
                                 sbdValue.Append(strExpression);
                                 AttributeSection.ProcessAttributesInXPath(sbdValue, strExpression);
                                 // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                                object objProcess
+                                (bool blnIsSuccess, object objProcess)
                                     = CommonFunctions.EvaluateInvariantXPath(
-                                        sbdValue.ToString(), out bool blnIsSuccess);
+                                        sbdValue.ToString());
                                 _decCachedBaseCarryLimit = blnIsSuccess ? Convert.ToDecimal((double) objProcess) : 0;
                             }
                         }
@@ -14440,9 +14440,9 @@ namespace Chummer
                                 sbdValue.Append(strExpression);
                                 AttributeSection.ProcessAttributesInXPath(sbdValue, strExpression);
                                 // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                                object objProcess
+                                (bool blnIsSuccess, object objProcess)
                                     = CommonFunctions.EvaluateInvariantXPath(
-                                        sbdValue.ToString(), out bool blnIsSuccess);
+                                        sbdValue.ToString());
                                 _decCachedBaseLiftLimit = blnIsSuccess ? Convert.ToDecimal((double) objProcess) : 0;
                             }
                         }
@@ -14476,9 +14476,9 @@ namespace Chummer
                                 sbdValue.Append(strExpression);
                                 AttributeSection.ProcessAttributesInXPath(sbdValue, strExpression);
                                 // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                                object objProcess
+                                (bool blnIsSuccess, object objProcess)
                                     = CommonFunctions.EvaluateInvariantXPath(
-                                        sbdValue.ToString(), out bool blnIsSuccess);
+                                        sbdValue.ToString());
                                 _decCachedEncumbranceInterval
                                     = blnIsSuccess ? Convert.ToDecimal((double) objProcess) : 0;
                             }
@@ -15921,9 +15921,9 @@ namespace Chummer
                                 AttributeSection.ProcessAttributesInXPath(sbdValue, strExpression);
 
                                 // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                                object objProcess
+                                (bool blnIsSuccess, object objProcess)
                                     = CommonFunctions.EvaluateInvariantXPath(
-                                        sbdValue.ToString(), out bool blnIsSuccess);
+                                        sbdValue.ToString());
                                 _intBoundSpiritLimit = blnIsSuccess ? ((double) objProcess).StandardRound() : 0;
                             }
                         }
@@ -15974,9 +15974,9 @@ namespace Chummer
                                 AttributeSection.ProcessAttributesInXPath(sbdValue, strExpression);
 
                                 // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                                object objProcess
+                                (bool blnIsSuccess, object objProcess)
                                     = CommonFunctions.EvaluateInvariantXPath(
-                                        sbdValue.ToString(), out bool blnIsSuccess);
+                                        sbdValue.ToString());
                                 _intRegisteredSpriteLimit = blnIsSuccess ? ((double) objProcess).StandardRound() : 0;
                             }
                         }
@@ -17099,7 +17099,7 @@ namespace Chummer
                                   / 100.0m;
 
                         // Run through all of the pieces of Cyberware and include their Essence cost.
-                        decESS -= await Cyberware.SumAsync(objCyberware => objCyberware.CalculatedESSAsync, token: token);
+                        decESS -= await Cyberware.SumAsync(objCyberware => objCyberware.GetCalculatedESSAsync(token), token: token);
 
                         //1781 Essence is not printing
                         //ESS.Base = Convert.ToInt32(decESS); -- Disabled because this messes up Character Validity, and it really shouldn't be what "Base" of an attribute is supposed to be (it's supposed to be extra levels gained)
@@ -22455,8 +22455,8 @@ namespace Chummer
                         AttributeSection.ProcessAttributesInXPath(sbdValue, strExpression);
 
                         // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                        object objProcess =
-                            CommonFunctions.EvaluateInvariantXPath(sbdValue.ToString(), out bool blnIsSuccess);
+                        (bool blnIsSuccess, object objProcess) =
+                            CommonFunctions.EvaluateInvariantXPath(sbdValue.ToString());
                         if (blnIsSuccess)
                             decFromKarma = Convert.ToDecimal((double) objProcess);
                     }
@@ -25108,7 +25108,19 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Whether or not user is getting free bioware from Prototype Transhuman.
+        /// </summary>
+        public async ValueTask<decimal> GetPrototypeTranshumanAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _decPrototypeTranshuman;
+        }
+
         public bool IsPrototypeTranshuman => PrototypeTranshuman > 0;
+
+        public async ValueTask<bool> GetIsPrototypeTranshumanAsync(CancellationToken token = default) =>
+            await GetPrototypeTranshumanAsync(token) > 0;
 
         /// <summary>
         /// Whether or not Friends in High Places is enabled.

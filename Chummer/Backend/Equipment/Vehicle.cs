@@ -1504,8 +1504,8 @@ namespace Chummer.Backend.Equipment
                                                   GlobalSettings.InvariantCultureInfo));
                     }
 
-                    object objProcess
-                        = CommonFunctions.EvaluateInvariantXPath(sbdAvail.ToString(), out bool blnIsSuccess);
+                    (bool blnIsSuccess, object objProcess)
+                        = CommonFunctions.EvaluateInvariantXPath(sbdAvail.ToString());
                     if (blnIsSuccess)
                         intAvail += ((double) objProcess).StandardRound();
                 }
@@ -1641,18 +1641,18 @@ namespace Chummer.Backend.Equipment
                 if ((chrFirstCharacter == '+' || chrFirstCharacter == '-')&& blnBonus)
                 {
                     // If the bonus is determined by the existing number, evaluate the expression.
-                    object objProcess = CommonFunctions.EvaluateInvariantXPath(strBonus.TrimStart('+')
+                    (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strBonus.TrimStart('+')
                         .Replace("Rating", intModRating.ToString(GlobalSettings.InvariantCultureInfo))
-                        .Replace(strReplaceRating, intTotalRating.ToString(GlobalSettings.InvariantCultureInfo)), out bool blnIsSuccess);
+                        .Replace(strReplaceRating, intTotalRating.ToString(GlobalSettings.InvariantCultureInfo)));
                     if (blnIsSuccess)
                         return ((double)objProcess).StandardRound();
                 }
                 if (chrFirstCharacter != '+' && chrFirstCharacter != '-' && !blnBonus)
                 {
                     // If the bonus is determined by the existing number, evaluate the expression.
-                    object objProcess = CommonFunctions.EvaluateInvariantXPath(strBonus.TrimStart('+')
+                    (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strBonus.TrimStart('+')
                         .Replace("Rating", intModRating.ToString(GlobalSettings.InvariantCultureInfo))
-                        .Replace(strReplaceRating, intTotalRating.ToString(GlobalSettings.InvariantCultureInfo)), out bool blnIsSuccess);
+                        .Replace(strReplaceRating, intTotalRating.ToString(GlobalSettings.InvariantCultureInfo)));
                     if (blnIsSuccess)
                         return ((double)objProcess).StandardRound();
                 }
@@ -2138,8 +2138,8 @@ namespace Chummer.Backend.Equipment
                                                  GlobalSettings.InvariantCultureInfo));
                     }
 
-                    object objProcess
-                        = CommonFunctions.EvaluateInvariantXPath(sbdCost.ToString(), out bool blnIsSuccess);
+                    (bool blnIsSuccess, object objProcess)
+                        = CommonFunctions.EvaluateInvariantXPath(sbdCost.ToString());
                     if (blnIsSuccess)
                         decCost = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
                 }
@@ -3299,8 +3299,8 @@ namespace Chummer.Backend.Equipment
 
                     _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdValue, strExpression);
                     // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                    object objProcess
-                        = CommonFunctions.EvaluateInvariantXPath(sbdValue.ToString(), out bool blnIsSuccess);
+                    (bool blnIsSuccess, object objProcess)
+                        = CommonFunctions.EvaluateInvariantXPath(sbdValue.ToString());
                     return blnIsSuccess ? ((double) objProcess).StandardRound() : 0;
                 }
             }

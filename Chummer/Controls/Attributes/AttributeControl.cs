@@ -229,20 +229,25 @@ namespace Chummer.UI.Attributes
 
         private async void cmdImproveATT_Click(object sender, EventArgs e)
         {
-            int intUpgradeKarmaCost = AttributeObject.UpgradeKarmaCost;
+            int intUpgradeKarmaCost = await AttributeObject.GetUpgradeKarmaCostAsync();
 
             if (intUpgradeKarmaCost == -1) return; //TODO: more descriptive
             if (intUpgradeKarmaCost > _objCharacter.Karma)
             {
-                Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_NotEnoughKarma"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_NotEnoughKarma"),
+                                       await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"),
+                                       MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            string confirmstring = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpense"), await AttributeObject.DisplayNameFormattedAsync, await AttributeObject.GetValueAsync() + 1, intUpgradeKarmaCost);
+            string confirmstring = string.Format(GlobalSettings.CultureInfo,
+                                                 await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpense"),
+                                                 await AttributeObject.GetDisplayNameFormattedAsync(),
+                                                 await AttributeObject.GetValueAsync() + 1, intUpgradeKarmaCost);
             if (!CommonFunctions.ConfirmKarmaExpense(confirmstring))
                 return;
 
-            AttributeObject.Upgrade();
+            await AttributeObject.Upgrade();
             await this.DoThreadSafeAsync(x => x.ValueChanged?.Invoke(this, e));
         }
 

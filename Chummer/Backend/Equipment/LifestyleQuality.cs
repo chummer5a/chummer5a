@@ -749,7 +749,7 @@ namespace Chummer.Backend.Equipment
                 if (!decimal.TryParse(CostString, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
                     out decimal decReturn))
                 {
-                    object objProcess = CommonFunctions.EvaluateInvariantXPath(CostString, out bool blnIsSuccess);
+                    (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(CostString);
                     if (blnIsSuccess)
                         return Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
                 }

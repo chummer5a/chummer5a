@@ -653,9 +653,8 @@ namespace Chummer
                     for (int i = 1; i <= intHighestForce; i++)
                     {
                         // Calculate the Spell's Drain for the current Force.
-                        object xprResult = CommonFunctions.EvaluateInvariantXPath(
-                            strDV.Replace("F", i.ToString(GlobalSettings.InvariantCultureInfo)).Replace("/", " div "),
-                            out bool blnIsSuccess);
+                        (bool blnIsSuccess, object xprResult) = CommonFunctions.EvaluateInvariantXPath(
+                            strDV.Replace("F", i.ToString(GlobalSettings.InvariantCultureInfo)).Replace("/", " div "));
 
                         if (blnIsSuccess && strDV != "Special")
                         {
@@ -811,7 +810,7 @@ namespace Chummer
                     sbdReturn.AppendFormat(GlobalSettings.InvariantCultureInfo, " + {0:0;-0;0}", improvement.Value);
                 string output = sbdReturn.ToString();
 
-                object xprResult = CommonFunctions.EvaluateInvariantXPath(output.TrimStart('+'), out bool blnIsSuccess);
+                (bool blnIsSuccess, object xprResult) = CommonFunctions.EvaluateInvariantXPath(output.TrimStart('+'));
                 sbdReturn.Clear();
                 if (blnIsSuccess)
                     sbdReturn.Append(xprResult);
@@ -990,7 +989,8 @@ namespace Chummer
                         sbdReturn.Insert(0, "2 * (").Append(')');
                     }
 
-                    xprResult = CommonFunctions.EvaluateInvariantXPath(sbdReturn.ToString(), out bool blnIsSuccess);
+                    bool blnIsSuccess;
+                    (blnIsSuccess, xprResult) = CommonFunctions.EvaluateInvariantXPath(sbdReturn.ToString());
                     if (!blnIsSuccess)
                         return strReturn;
                 }

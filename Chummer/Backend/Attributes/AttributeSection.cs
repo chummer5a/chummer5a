@@ -899,8 +899,9 @@ namespace Chummer.Backend.Attributes
             // This statement is wrapped in a try/catch since trying 1 div 2 results in an error with XSLT.
             try
             {
-                object objProcess = CommonFunctions.EvaluateInvariantXPath(objCharacterNode.SelectSingleNode(strAttributeLower + "min")?.Value.Replace("/", " div ").Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1",
-                    out bool blnIsSuccess, token);
+                (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(
+                    objCharacterNode.SelectSingleNode(strAttributeLower + "min")?.Value.Replace("/", " div ")
+                                    .Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1", token);
                 if (blnIsSuccess)
                     intMinValue = ((double)objProcess).StandardRound();
             }
@@ -909,8 +910,9 @@ namespace Chummer.Backend.Attributes
             catch (InvalidCastException) { intMinValue = 1; }
             try
             {
-                object objProcess = CommonFunctions.EvaluateInvariantXPath(objCharacterNode.SelectSingleNode(strAttributeLower + "max")?.Value.Replace("/", " div ").Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1",
-                    out bool blnIsSuccess, token);
+                (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(
+                    objCharacterNode.SelectSingleNode(strAttributeLower + "max")?.Value.Replace("/", " div ")
+                                    .Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1", token);
                 if (blnIsSuccess)
                     intMaxValue = ((double)objProcess).StandardRound();
             }
@@ -919,8 +921,9 @@ namespace Chummer.Backend.Attributes
             catch (InvalidCastException) { intMaxValue = 1; }
             try
             {
-                object objProcess = CommonFunctions.EvaluateInvariantXPath(objCharacterNode.SelectSingleNode(strAttributeLower + "aug")?.Value.Replace("/", " div ").Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1",
-                    out bool blnIsSuccess, token);
+                (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(
+                    objCharacterNode.SelectSingleNode(strAttributeLower + "aug")?.Value.Replace("/", " div ")
+                                    .Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1", token);
                 if (blnIsSuccess)
                     intAugValue = ((double)objProcess).StandardRound();
             }

@@ -685,7 +685,7 @@ namespace Chummer.Backend.Uniques
 
                 if (!decimal.TryParse(strDrain, out decimal decDrain))
                 {
-                    object objProcess = CommonFunctions.EvaluateInvariantXPath(strDrain, out bool blnIsSuccess);
+                    (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strDrain);
                     if (blnIsSuccess)
                         decDrain = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
                 }
