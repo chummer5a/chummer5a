@@ -67,7 +67,7 @@ namespace Chummer
         {
             XPathNavigator xmlVehicleNode = await _objVehicle.GetNodeXPathAsync();
             // Populate the Weapon Mount Category list.
-            string strSizeFilter = "category = \"Size\" and " + _objCharacter.Settings.BookXPath();
+            string strSizeFilter = "category = \"Size\" and " + await _objCharacter.Settings.BookXPathAsync();
             if (!_objVehicle.IsDrone && _objCharacter.Settings.DroneMods)
                 strSizeFilter += " and not(optionaldrone)";
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSize))
@@ -432,7 +432,7 @@ namespace Chummer
                         await _objVehicle.WeaponMounts.AddAsync(_objMount);
                     }
                     bool blnOverCapacity;
-                    if (_objCharacter.Settings.BookEnabled("R5"))
+                    if (await _objCharacter.Settings.BookEnabledAsync("R5"))
                     {
                         if (_objVehicle.IsDrone && _objCharacter.Settings.DroneMods)
                             blnOverCapacity = _objVehicle.DroneModSlotsUsed > _objVehicle.DroneModSlots;
@@ -906,7 +906,7 @@ namespace Chummer
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstControl))
             {
                 // Populate the Weapon Mount Category list.
-                string strFilter = "category != \"Size\" and " + _objCharacter.Settings.BookXPath();
+                string strFilter = "category != \"Size\" and " + await _objCharacter.Settings.BookXPathAsync(token: token);
                 if (!_objVehicle.IsDrone && _objCharacter.Settings.DroneMods)
                     strFilter += " and not(optionaldrone)";
                 XPathNodeIterator xmlWeaponMountOptionNodeList

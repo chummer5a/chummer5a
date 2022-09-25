@@ -625,7 +625,7 @@ namespace Chummer.UI.Skills
             CursorWait objCursorWait = await CursorWait.NewAsync(ParentForm);
             try
             {
-                await CommonFunctions.OpenPdf(_objSkill.Source + ' ' + _objSkill.DisplayPage(GlobalSettings.Language),
+                await CommonFunctions.OpenPdf(_objSkill.Source + ' ' + await _objSkill.DisplayPageAsync(GlobalSettings.Language),
                                               _objSkill.CharacterObject);
             }
             finally
