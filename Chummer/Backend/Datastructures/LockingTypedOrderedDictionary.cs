@@ -113,7 +113,7 @@ namespace Chummer
             using (await EnterReadLock.EnterAsync(LockObject, token))
                 return _dicUnorderedData.TryGetValue(item.Key, out TValue objValue) && objValue.Equals(item.Value);
         }
-        
+
         public async ValueTask CopyToAsync(KeyValuePair<TKey, TValue>[] array, int index, CancellationToken token = default)
         {
             using (await EnterReadLock.EnterAsync(LockObject, token))
@@ -250,7 +250,7 @@ namespace Chummer
                 _lstIndexes.Add(key);
             }
         }
-        
+
         public ValueTask AddAsync(KeyValuePair<TKey, TValue> item, CancellationToken token = default)
         {
             return AddAsync(item.Key, item.Value, token);
@@ -262,7 +262,7 @@ namespace Chummer
             (TKey objKey, TValue objValue) = item;
             return AddAsync(objKey, objValue, token);
         }
-        
+
         public ValueTask AddAsync(object key, object value, CancellationToken token = default)
         {
             if (!(key is TKey objKey))
@@ -271,7 +271,7 @@ namespace Chummer
                 throw new ArgumentException(nameof(objValue));
             return AddAsync(objKey, objValue, token);
         }
-        
+
         public async ValueTask AddAsync(TKey key, TValue value, CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);

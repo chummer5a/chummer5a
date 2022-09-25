@@ -90,6 +90,7 @@ namespace Chummer
                 case 0:
                     Image = null;
                     return;
+
                 case 1:
                     Image = lstImages[0];
                     return;

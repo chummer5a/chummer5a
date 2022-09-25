@@ -238,6 +238,7 @@ namespace Chummer.Backend.Equipment
                         foreach (Cyberware objNewItem in e.NewItems)
                             objNewItem.Parent = this;
                         break;
+
                     case NotifyCollectionChangedAction.Remove:
                         foreach (Cyberware objOldItem in e.OldItems)
                         {
@@ -245,6 +246,7 @@ namespace Chummer.Backend.Equipment
                                 objOldItem.Parent = null;
                         }
                         break;
+
                     case NotifyCollectionChangedAction.Replace:
                         HashSet<Cyberware> setNewItems = e.NewItems.OfType<Cyberware>().ToHashSet();
                         foreach (Cyberware objOldItem in e.OldItems)
@@ -255,8 +257,10 @@ namespace Chummer.Backend.Equipment
                         foreach (Cyberware objNewItem in setNewItems)
                             objNewItem.Parent = this;
                         break;
+
                     case NotifyCollectionChangedAction.Move:
                         return;
+
                     case NotifyCollectionChangedAction.Reset:
                         break;
                 }
@@ -2028,7 +2032,7 @@ namespace Chummer.Backend.Equipment
                     // </children>
                     await objChildrenElement.DisposeAsync();
                 }
-                
+
                 if (GlobalSettings.PrintNotes)
                     await objWriter.WriteElementStringAsync("notes", Notes, token: token);
             }
@@ -3450,7 +3454,7 @@ namespace Chummer.Backend.Equipment
 
                 (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strRating, token);
                 if (blnIsSuccess)
-                    intReturn = ((double) objProcess).StandardRound();
+                    intReturn = ((double)objProcess).StandardRound();
             }
 
             return intReturn;
@@ -3964,7 +3968,7 @@ namespace Chummer.Backend.Equipment
                     (bool blnIsSuccess, object objProcess)
                         = CommonFunctions.EvaluateInvariantXPath(sbdAvail.ToString());
                     if (blnIsSuccess)
-                        intAvail += ((double) objProcess).StandardRound();
+                        intAvail += ((double)objProcess).StandardRound();
                 }
             }
 
@@ -4508,7 +4512,7 @@ namespace Chummer.Backend.Equipment
                     // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
                     (bool blnIsSuccess, object objProcess)
                         = CommonFunctions.EvaluateInvariantXPath(sbdValue.ToString());
-                    return blnIsSuccess ? ((double) objProcess).StandardRound() : 0;
+                    return blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
                 }
             }
 
@@ -5000,9 +5004,11 @@ namespace Chummer.Backend.Equipment
                 case "STR":
                     // Base Strength for any limb is 3.
                     return ParentVehicle != null ? Math.Max(ParentVehicle.TotalBody, 0) : 3;
+
                 case "AGI":
                     // Base Agility for any limb is 3.
                     return ParentVehicle != null ? Math.Max(ParentVehicle.Pilot, 0) : 3;
+
                 default:
                     return 0;
             }
@@ -5022,9 +5028,11 @@ namespace Chummer.Backend.Equipment
                 case "STR":
                     // Base Strength for any limb is 3.
                     return ParentVehicle != null ? Math.Max(await ParentVehicle.GetTotalBodyAsync(token), 0) : 3;
+
                 case "AGI":
                     // Base Agility for any limb is 3.
                     return ParentVehicle != null ? Math.Max(await ParentVehicle.GetPilotAsync(token), 0) : 3;
+
                 default:
                     return 0;
             }

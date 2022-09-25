@@ -38,8 +38,10 @@ namespace Chummer
             {
                 case WaitHandle.WaitTimeout:
                     return false;
+
                 case 0:
                     return true;
+
                 default:
                     token.ThrowIfCancellationRequested();
                     return false; // never reached

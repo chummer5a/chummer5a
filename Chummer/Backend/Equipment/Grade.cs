@@ -176,10 +176,13 @@ namespace Chummer.Backend.Equipment
             {
                 case Improvement.ImprovementSource.Drug:
                     return "drugcomponents.xml";
+
                 case Improvement.ImprovementSource.Bioware:
                     return "bioware.xml";
+
                 case Improvement.ImprovementSource.Cyberware:
                     return "cyberware.xml";
+
                 default:
                     Utils.BreakIfDebug();
                     return "cyberware.xml";

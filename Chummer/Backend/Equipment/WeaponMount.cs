@@ -115,6 +115,7 @@ namespace Chummer.Backend.Equipment
                             objNewMod.WeaponMountParent = this;
                         }
                         break;
+
                     case NotifyCollectionChangedAction.Remove:
                         foreach (VehicleMod objOldMod in args.OldItems)
                         {
@@ -123,6 +124,7 @@ namespace Chummer.Backend.Equipment
                             objOldMod.Parent = null;
                         }
                         break;
+
                     case NotifyCollectionChangedAction.Replace:
                         foreach (VehicleMod objOldMod in args.OldItems)
                         {
@@ -135,6 +137,7 @@ namespace Chummer.Backend.Equipment
                             objNewMod.WeaponMountParent = this;
                         }
                         break;
+
                     case NotifyCollectionChangedAction.Reset:
                         foreach (VehicleMod objMod in Mods)
                         {
@@ -930,7 +933,7 @@ namespace Chummer.Backend.Equipment
                     (bool blnIsSuccess, object objProcess)
                         = CommonFunctions.EvaluateInvariantXPath(sbdAvail.ToString());
                     if (blnIsSuccess)
-                        intAvail += ((double) objProcess).StandardRound();
+                        intAvail += ((double)objProcess).StandardRound();
                 }
             }
 
@@ -1811,7 +1814,7 @@ namespace Chummer.Backend.Equipment
                     }
 
                     blnModifyParentAvail = strAvail.StartsWith('+', '-');
-                    
+
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAvail))
                     {
                         sbdAvail.Append(strAvail.TrimStart('+'));
@@ -1830,7 +1833,7 @@ namespace Chummer.Backend.Equipment
                         (bool blnIsSuccess, object objProcess)
                             = CommonFunctions.EvaluateInvariantXPath(sbdAvail.ToString());
                         if (blnIsSuccess)
-                            intAvail += ((double) objProcess).StandardRound();
+                            intAvail += ((double)objProcess).StandardRound();
                     }
                 }
 

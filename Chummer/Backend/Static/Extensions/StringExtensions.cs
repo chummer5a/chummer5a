@@ -1737,6 +1737,7 @@ namespace Chummer
                                 case 32u:
                                     num--;
                                     break;
+
                                 case 61u:
                                     num--;
                                     num2++;
@@ -1749,11 +1750,14 @@ namespace Chummer
                             case 1:
                                 num2 = 2;
                                 break;
+
                             case 2:
                                 num2 = 1;
                                 break;
+
                             case 0:
                                 break;
+
                             default:
                                 throw new FormatException(
                                     "The input is not a valid Base-64 string as it contains a non-base 64 character, more than two padding characters, or an illegal character among the padding characters.");
@@ -1815,13 +1819,13 @@ namespace Chummer
                                                     "Invalid length for a Base-64 char array or string.");
                                             }
 
-                                            if ((int) (ptr4 - ptr2) < 2)
+                                            if ((int)(ptr4 - ptr2) < 2)
                                             {
                                                 return -1;
                                             }
 
-                                            *(ptr2++) = (byte) (num >> 16);
-                                            *(ptr2++) = (byte) (num >> 8);
+                                            *(ptr2++) = (byte)(num >> 16);
+                                            *(ptr2++) = (byte)(num >> 8);
                                             num = 255u;
                                             break;
                                         }
@@ -1844,12 +1848,12 @@ namespace Chummer
                                                     "Invalid length for a Base-64 char array or string.");
                                             }
 
-                                            if ((int) (ptr4 - ptr2) < 1)
+                                            if ((int)(ptr4 - ptr2) < 1)
                                             {
                                                 return -1;
                                             }
 
-                                            *(ptr2++) = (byte) (num >> 16);
+                                            *(ptr2++) = (byte)(num >> 16);
                                             num = 255u;
                                             break;
                                         }
@@ -1869,20 +1873,20 @@ namespace Chummer
                             num = (num << 6) | num2;
                             if ((num & 0x80000000u) != 0)
                             {
-                                if ((int) (ptr4 - ptr2) < 3)
+                                if ((int)(ptr4 - ptr2) < 3)
                                 {
                                     return -1;
                                 }
 
-                                *ptr2 = (byte) (num >> 16);
-                                ptr2[1] = (byte) (num >> 8);
-                                ptr2[2] = (byte) num;
+                                *ptr2 = (byte)(num >> 16);
+                                ptr2[1] = (byte)(num >> 8);
+                                ptr2[2] = (byte)num;
                                 ptr2 += 3;
                                 num = 255u;
                             }
 
                             continue;
-                            IL_0097:
+                        IL_0097:
                             throw new FormatException(
                                 "The input is not a valid Base-64 string as it contains a non-base 64 character, more than two padding characters, or an illegal character among the padding characters.");
                         }
@@ -1892,7 +1896,7 @@ namespace Chummer
                             throw new FormatException("Invalid length for a Base-64 char array or string.");
                         }
 
-                        return (int) (ptr2 - startDestPtr);
+                        return (int)(ptr2 - startDestPtr);
                     }
                 }
             }

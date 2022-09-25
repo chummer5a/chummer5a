@@ -488,7 +488,7 @@ namespace Chummer.Backend.Equipment
         /// Total cost of the Drug.
         /// </summary>
         public decimal TotalCost => Cost * Quantity;
-        
+
         public decimal StolenTotalCost => Stolen ? TotalCost : 0;
 
         public decimal NonStolenTotalCost => Stolen ? 0 : TotalCost;
@@ -553,7 +553,7 @@ namespace Chummer.Backend.Equipment
                     (bool blnIsSuccess, object objProcess)
                         = CommonFunctions.EvaluateInvariantXPath(sbdAvail.ToString());
                     if (blnIsSuccess)
-                        intAvail += ((double) objProcess).StandardRound();
+                        intAvail += ((double)objProcess).StandardRound();
                 }
             }
             if (blnCheckChildren)
@@ -1854,7 +1854,7 @@ namespace Chummer.Backend.Equipment
                         (bool blnIsSuccess, object objProcess)
                             = CommonFunctions.EvaluateInvariantXPath(sbdAvail.ToString());
                         if (blnIsSuccess)
-                            intAvail += ((double) objProcess).StandardRound();
+                            intAvail += ((double)objProcess).StandardRound();
                     }
                 }
 

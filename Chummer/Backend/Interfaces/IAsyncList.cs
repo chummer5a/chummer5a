@@ -16,21 +16,26 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Threading;
-using Chummer.Annotations;
-using System.Linq;
+
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Chummer.Annotations;
 
 namespace Chummer
 {
     public interface IAsyncList<T> : IList<T>, IAsyncCollection<T>
     {
         ValueTask<T> GetValueAtAsync(int index, CancellationToken token = default);
+
         ValueTask SetValueAtAsync(int index, T value, CancellationToken token = default);
+
         ValueTask<int> IndexOfAsync(T item, CancellationToken token = default);
+
         ValueTask InsertAsync(int index, T item, CancellationToken token = default);
+
         ValueTask RemoveAtAsync(int index, CancellationToken token = default);
     }
 
@@ -601,7 +606,7 @@ namespace Chummer
             }
         }
 
-        public static async Task RemoveAllAsync<T>(this IAsyncList<T> lstCollection, Func<T,Task<bool>> predicate,
+        public static async Task RemoveAllAsync<T>(this IAsyncList<T> lstCollection, Func<T, Task<bool>> predicate,
                                               CancellationToken token = default)
         {
             if (lstCollection == null)

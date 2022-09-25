@@ -193,14 +193,14 @@ namespace Chummer
                 switch (kevent.KeyCode)
                 {
                     case Keys.Space:
-                    {
-                        if (MouseButtons == MouseButtons.None)
                         {
-                            State = PushButtonState.Normal;
-                        }
+                            if (MouseButtons == MouseButtons.None)
+                            {
+                                State = PushButtonState.Normal;
+                            }
 
-                        break;
-                    }
+                            break;
+                        }
                     case Keys.Apps when MouseButtons == MouseButtons.None && !_isSplitMenuVisible:
                         ShowContextMenuStrip();
                         break;

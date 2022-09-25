@@ -33,9 +33,10 @@ namespace Chummer
         // In order to properly allow async lock to be recursive but still make them work properly as locks, we need to set up something
         // that is a bit like a singly-linked list. Each lock creates a disposable SafeSemaphoreRelease, and only disposing it frees the lock.
         private readonly AsyncLocal<DebuggableSemaphoreSlim> _objCurrentSemaphore = new AsyncLocal<DebuggableSemaphoreSlim>();
+
         private readonly DebuggableSemaphoreSlim _objTopLevelSemaphore = new DebuggableSemaphoreSlim();
         private int _intDisposedStatus;
-        
+
         public Task<IAsyncDisposable> TakeLockAsync()
         {
             if (_intDisposedStatus != 0)
@@ -121,7 +122,7 @@ namespace Chummer
         {
             if (Interlocked.CompareExchange(ref _intDisposedStatus, 1, 0) != 0)
                 return;
-            
+
             try
             {
                 // Ensure the lock isn't held. If it is, wait for it to be released

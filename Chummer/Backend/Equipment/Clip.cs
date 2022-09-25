@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.ComponentModel;
 using System.Globalization;
@@ -29,8 +30,10 @@ namespace Chummer.Backend.Equipment
     {
         private readonly Character _objCharacter;
         private readonly Weapon _objWeapon;
+
         // can be null for the internal clip
         private readonly WeaponAccessory _objAccessory;
+
         private Gear _objAmmoGear;
 
         internal Clip(Character objCharacter, WeaponAccessory objAccessory, Weapon objWeapon, Gear objGear, int intAmmoCount)

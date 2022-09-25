@@ -32,10 +32,13 @@ namespace Chummer
         //public IOperationHolder<DependencyTelemetry> myOperationDependencyHolder { get; set; }
         //public IOperationHolder<RequestTelemetry> myOperationRequestHolder { get; set; }
         public TelemetryClient MyTelemetryClient { get; set; }
+
         [CLSCompliant(false)]
         public DependencyTelemetry MyDependencyTelemetry { get; private set; }
+
         [CLSCompliant(false)]
         public RequestTelemetry MyRequestTelemetry { get; private set; }
+
         public string MyTelemetryTarget { get; private set; }
 
         public enum OperationType

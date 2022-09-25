@@ -658,7 +658,7 @@ namespace Chummer
 
                         if (blnIsSuccess && strDV != "Special")
                         {
-                            int intDV = ((double) xprResult).StandardRound();
+                            int intDV = ((double)xprResult).StandardRound();
 
                             // Drain cannot be lower than 2.
                             if (intDV < 2)
@@ -1401,6 +1401,7 @@ namespace Chummer
                                 yield break;
                         }
                         break;
+
                     case Improvement.ImprovementType.SpellCategory:
                         if (objImprovement.ImprovedName == Category)
                         {

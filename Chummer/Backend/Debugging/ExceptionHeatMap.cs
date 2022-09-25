@@ -28,7 +28,7 @@ namespace Chummer.Backend
 {
     public sealed class ExceptionHeatMap : IDisposable
     {
-        private readonly Lazy<LockingDictionary<string, int>> _map = new Lazy<LockingDictionary<string,int>>(() => new LockingDictionary<string, int>());
+        private readonly Lazy<LockingDictionary<string, int>> _map = new Lazy<LockingDictionary<string, int>>(() => new LockingDictionary<string, int>());
 
         public void OnException(object sender, FirstChanceExceptionEventArgs e)
         {
@@ -56,7 +56,7 @@ namespace Chummer.Backend
                 sbdReturn.AppendLine();
                 foreach (KeyValuePair<string, int> exception in _map.Value.OrderBy(i => -i.Value))
                 {
-                    intLength = Math.Max((int) Math.Ceiling(Math.Log10(exception.Value)), intLength);
+                    intLength = Math.Max((int)Math.Ceiling(Math.Log10(exception.Value)), intLength);
                     sbdReturn.Append("\t\t")
                              .Append(exception.Value.ToString(
                                          "D" + intLength.ToString(GlobalSettings.InvariantCultureInfo),

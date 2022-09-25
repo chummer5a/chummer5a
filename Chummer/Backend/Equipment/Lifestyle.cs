@@ -230,7 +230,7 @@ namespace Chummer.Backend.Equipment
                     {
                         objFreeGrid.Remove(false);
                     }
-                    
+
                     XmlDocument xmlLifestyleDocument = _objCharacter.LoadData("lifestyles.xml");
                     foreach (XmlNode xmlNode in lstGridNodes)
                     {
@@ -1663,6 +1663,7 @@ namespace Chummer.Backend.Equipment
                         objQuality.Dispose();
                     }
                     break;
+
                 case NotifyCollectionChangedAction.Replace:
                     HashSet<LifestyleQuality> setNewLifestyleQualities = e.NewItems.OfType<LifestyleQuality>().ToHashSet();
                     foreach (LifestyleQuality objQuality in e.OldItems)
@@ -1671,6 +1672,7 @@ namespace Chummer.Backend.Equipment
                             objQuality.Dispose();
                     }
                     break;
+
                 case NotifyCollectionChangedAction.Move:
                     return;
             }

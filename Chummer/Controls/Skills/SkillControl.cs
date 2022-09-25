@@ -46,20 +46,29 @@ namespace Chummer.UI.Skills
         private readonly Font _fntNormalName;
         private readonly Font _fntItalicName;
         private CharacterAttrib _objAttributeActive;
+
         // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly Button cmdDelete;
+
         // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly ButtonWithToolTip btnCareerIncrease;
+
         private readonly Label lblCareerRating;
+
         // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly NumericUpDownEx nudKarma;
+
         private readonly NumericUpDownEx nudSkill;
+
         // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly Label lblCareerSpec;
+
         private readonly ButtonWithToolTip btnAddSpec;
         private readonly ElasticComboBox cboSpec;
+
         // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly ColorableCheckBox chkKarma;
+
         private readonly ElasticComboBox cboSelectAttribute;
 
         public SkillControl(Skill objSkill)
@@ -416,11 +425,11 @@ namespace Chummer.UI.Skills
                     break;
 
                 case nameof(Skill.Specializations):
-                {
-                    if (await Program.GetFormForDialogAsync(_objSkill.CharacterObject) is CharacterShared frmParent)
-                        await frmParent.RequestCharacterUpdate();
-                    break;
-                }
+                    {
+                        if (await Program.GetFormForDialogAsync(_objSkill.CharacterObject) is CharacterShared frmParent)
+                            await frmParent.RequestCharacterUpdate();
+                        break;
+                    }
             }
         }
 
@@ -487,7 +496,7 @@ namespace Chummer.UI.Skills
 
             if (!CommonFunctions.ConfirmKarmaExpense(confirmstring))
                 return;
-            
+
             using (ThreadSafeForm<SelectSpec> selectForm = await ThreadSafeForm<SelectSpec>.GetAsync(() => new SelectSpec(_objSkill)))
             {
                 if (await selectForm.ShowDialogSafeAsync(_objSkill.CharacterObject) != DialogResult.OK)
@@ -517,7 +526,7 @@ namespace Chummer.UI.Skills
             await cboSelectAttribute.DoThreadSafeAsync(x => x.Visible = false, token: token);
             await SetAttributeActiveAsync(
                 await _objSkill.CharacterObject.GetAttributeAsync(
-                    (string) await cboSelectAttribute.DoThreadSafeFuncAsync(x => x.SelectedValue, token: token),
+                    (string)await cboSelectAttribute.DoThreadSafeFuncAsync(x => x.SelectedValue, token: token),
                     token: token), token);
             string strText = await cboSelectAttribute.DoThreadSafeFuncAsync(x => x.Text, token: token);
             await btnAttribute.DoThreadSafeAsync(x => x.Text = strText, token: token);
@@ -583,7 +592,7 @@ namespace Chummer.UI.Skills
             }, token: token);
             await SetAttributeActiveAsync(
                 await _objSkill.CharacterObject.GetAttributeAsync(
-                    (string) await cboSelectAttribute.DoThreadSafeFuncAsync(x => x.SelectedValue, token: token), token: token), token);
+                    (string)await cboSelectAttribute.DoThreadSafeFuncAsync(x => x.SelectedValue, token: token), token: token), token);
             string strText = await cboSelectAttribute.DoThreadSafeFuncAsync(x => x.Text, token: token);
             await btnAttribute.DoThreadSafeAsync(x =>
             {
@@ -648,6 +657,7 @@ namespace Chummer.UI.Skills
         /// I'm not super pleased with how this works, but it's functional so w/e.
         /// The goal is for controls to retain the ability to display tooltips even while disabled. IT DOES NOT WORK VERY WELL.
         /// </summary>
+
         #region ButtonWithToolTip Visibility workaround
 
         private ButtonWithToolTip _activeButton;

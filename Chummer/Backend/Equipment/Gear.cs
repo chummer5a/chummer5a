@@ -1758,7 +1758,7 @@ namespace Chummer.Backend.Equipment
                     // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
                     (bool blnIsSuccess, object objProcess)
                         = CommonFunctions.EvaluateInvariantXPath(sbdValue.ToString());
-                    return blnIsSuccess ? ((double) objProcess).StandardRound() : 0;
+                    return blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
                 }
             }
 
@@ -2568,7 +2568,7 @@ namespace Chummer.Backend.Equipment
                     (bool blnIsSuccess, object objProcess)
                         = CommonFunctions.EvaluateInvariantXPath(sbdAvail.ToString());
                     if (blnIsSuccess)
-                        intAvail += ((double) objProcess).StandardRound();
+                        intAvail += ((double)objProcess).StandardRound();
                 }
             }
 
@@ -2949,7 +2949,7 @@ namespace Chummer.Backend.Equipment
                 return decReturn;
             }
         }
-        
+
         public decimal StolenTotalCost => CalculatedStolenTotalCost(true);
 
         public decimal NonStolenTotalCost => CalculatedStolenTotalCost(false);
@@ -3007,8 +3007,8 @@ namespace Chummer.Backend.Equipment
                 decimal decParentWeight = 0;
                 if (Parent != null && (strWeightExpression.Contains("Parent Weight") || strWeightExpression.Contains("Gear Weight")))
                 {
-                    decParentWeight = ((Gear) Parent).OwnWeight;
-                    decGearWeight = decParentWeight * ((Gear) Parent).Quantity;
+                    decParentWeight = ((Gear)Parent).OwnWeight;
+                    decGearWeight = decParentWeight * ((Gear)Parent).Quantity;
                 }
 
                 decimal decTotalChildrenWeight = 0;

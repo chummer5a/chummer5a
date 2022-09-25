@@ -479,7 +479,7 @@ namespace Chummer
 
                         if (blnIsSuccess && strFv != "Special")
                         {
-                            int intFv = ((double) xprResult).StandardRound();
+                            int intFv = ((double)xprResult).StandardRound();
 
                             // Fading cannot be lower than 2.
                             if (intFv < 2)

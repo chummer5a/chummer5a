@@ -64,9 +64,11 @@ namespace Chummer
                     case WatcherChangeTypes.Created:
                         await AddSpecificCustomCharacterSetting(Path.GetFileName(e.FullPath));
                         break;
+
                     case WatcherChangeTypes.Deleted:
                         await RemoveSpecificCustomCharacterSetting(Path.GetFileName(e.FullPath));
                         break;
+
                     case WatcherChangeTypes.Changed:
                     case WatcherChangeTypes.Renamed:
                         await ReloadSpecificCustomCharacterSetting(Path.GetFileName(e.FullPath));

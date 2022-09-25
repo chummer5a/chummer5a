@@ -890,7 +890,7 @@ namespace Chummer.Backend.Equipment
                     break;
                 }
             }
-            
+
             Clip objInternalClip = new Clip(_objCharacter, null, this, null, intAmmoCount);
             _lstAmmo.Add(objInternalClip);
         }
@@ -1765,7 +1765,7 @@ namespace Chummer.Backend.Equipment
                     // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
                     (bool blnIsSuccess, object objProcess)
                         = CommonFunctions.EvaluateInvariantXPath(sbdValue.ToString());
-                    return blnIsSuccess ? ((double) objProcess).StandardRound() : 0;
+                    return blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
                 }
             }
 
@@ -3273,13 +3273,13 @@ namespace Chummer.Backend.Equipment
                             : await strThisAmmo.CheapReplaceAsync("Weapon", () => AmmoCapacity(Ammo), token: token);
                         // Replace the division sign with "div" since we're using XPath.
                         strThisAmmo = strThisAmmo.Replace("/", " div ");
-                        (bool blnIsSuccess, object objProcess ) = blnSync
+                        (bool blnIsSuccess, object objProcess) = blnSync
                             // ReSharper disable once MethodHasAsyncOverload
                             ? CommonFunctions.EvaluateInvariantXPath(strThisAmmo)
                             : await CommonFunctions.EvaluateInvariantXPathAsync(strThisAmmo, token);
                         if (blnIsSuccess)
                         {
-                            int intAmmo = ((double) objProcess).StandardRound() + intAmmoBonusFlat;
+                            int intAmmo = ((double)objProcess).StandardRound() + intAmmoBonusFlat;
 
                             intAmmo += (intAmmo * intAmmoBonus + 99) / 100;
 
@@ -4054,7 +4054,7 @@ namespace Chummer.Backend.Equipment
                         ? CommonFunctions.EvaluateInvariantXPath(sbdAP.ToString())
                         : await CommonFunctions.EvaluateInvariantXPathAsync(sbdAP.ToString(), token);
                     if (blnIsSuccess)
-                        intAP = ((double) objProcess).StandardRound();
+                        intAP = ((double)objProcess).StandardRound();
                     else if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                         return strAP;
                     else if (blnSync)
@@ -4488,7 +4488,7 @@ namespace Chummer.Backend.Equipment
                     (bool blnIsSuccess, object objProcess)
                         = CommonFunctions.EvaluateInvariantXPath(sbdAccuracy.ToString());
                     if (blnIsSuccess)
-                        intAccuracy = ((double) objProcess).StandardRound();
+                        intAccuracy = ((double)objProcess).StandardRound();
                 }
 
                 int intBonusAccuracyFromAccessories = 0;
@@ -4584,7 +4584,7 @@ namespace Chummer.Backend.Equipment
                 (bool blnIsSuccess, object objProcess)
                     = await CommonFunctions.EvaluateInvariantXPathAsync(sbdAccuracy.ToString(), token);
                 if (blnIsSuccess)
-                    intAccuracy = ((double) objProcess).StandardRound();
+                    intAccuracy = ((double)objProcess).StandardRound();
             }
 
             int intBonusAccuracyFromAccessories = 0;
@@ -5786,7 +5786,7 @@ namespace Chummer.Backend.Equipment
                     (bool blnIsSuccess, object objProcess)
                         = CommonFunctions.EvaluateInvariantXPath(sbdAvail.ToString());
                     if (blnIsSuccess)
-                        intAvail += ((double) objProcess).StandardRound();
+                        intAvail += ((double)objProcess).StandardRound();
                 }
             }
 
@@ -6775,8 +6775,6 @@ namespace Chummer.Backend.Equipment
             return objAmmo;
         }
 
-        
-
         public IEnumerable<Gear> GetAmmoReloadable(IEnumerable<Gear> lstGears)
         {
             if (!RequireAmmo)
@@ -7047,7 +7045,7 @@ namespace Chummer.Backend.Equipment
                                 if (xmlTestNode != null)
                                 {
                                     //Add to set for O(N log M) runtime instead of O(N * M)
-                                    
+
                                     using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
                                                out HashSet<string> setForbiddenAccessory))
                                     {
@@ -7377,7 +7375,7 @@ namespace Chummer.Backend.Equipment
                     // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
                     (bool blnIsSuccess, object objProcess)
                         = CommonFunctions.EvaluateInvariantXPath(sbdValue.ToString());
-                    return blnIsSuccess ? ((double) objProcess).StandardRound() : 0;
+                    return blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
                 }
             }
             int.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out int intReturn);
@@ -7562,7 +7560,7 @@ namespace Chummer.Backend.Equipment
 
             if (!objXmlAccessory.RequirementsMet(_objCharacter, this, string.Empty, string.Empty))
                 return false;
-            
+
             XPathNavigator xmlTestNode = objXmlAccessory.SelectSingleNode("forbidden/weapondetails");
             if (xmlTestNode != null)
             {

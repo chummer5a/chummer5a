@@ -97,10 +97,13 @@ namespace Chummer.Backend.Equipment
             {
                 case "BuiltIn":
                     return QualitySource.BuiltIn;
+
                 case "Heritage":
                     return QualitySource.Heritage;
+
                 case "Improvement":
                     return QualitySource.Improvement;
+
                 default:
                     return QualitySource.Selected;
             }
@@ -810,6 +813,7 @@ namespace Chummer.Backend.Equipment
                     case true when OriginSource == QualitySource.Selected:
                         OriginSource = QualitySource.BuiltIn;
                         break;
+
                     case false when OriginSource == QualitySource.BuiltIn:
                         OriginSource = QualitySource.Selected;
                         break;

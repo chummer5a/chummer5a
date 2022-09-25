@@ -71,7 +71,7 @@
       <spec>Gunnery</spec>
     </weapon>
     <weapon>
-      <spec2 amendoperation="remove"/>
+      <spec2 amendoperation="remove" />
     </weapon>
     <!-- Region Shadowrun 5 -->
     <weapon>

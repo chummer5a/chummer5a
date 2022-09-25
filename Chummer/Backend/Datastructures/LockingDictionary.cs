@@ -64,7 +64,7 @@ namespace Chummer
         {
             _dicData = new Dictionary<TKey, TValue>(comparer);
         }
-        
+
         /// <inheritdoc />
         public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
         {
@@ -88,7 +88,7 @@ namespace Chummer
             objReturn.SetEnumerator(_dicData.GetEnumerator());
             return objReturn;
         }
-        
+
         public async ValueTask<IEnumerator<KeyValuePair<TKey, TValue>>> GetEnumeratorAsync(CancellationToken token = default)
         {
             LockingEnumerator<KeyValuePair<TKey, TValue>> objReturn = await LockingEnumerator<KeyValuePair<TKey, TValue>>.GetAsync(this, token);
@@ -306,7 +306,7 @@ namespace Chummer
         {
             Remove((TKey)key);
         }
-        
+
         public async ValueTask<bool> RemoveAsync(KeyValuePair<TKey, TValue> item, CancellationToken token = default)
         {
             // Immediately enter a write lock to prevent attempted reads until we have either removed the item we want to remove or failed to do so
@@ -322,7 +322,7 @@ namespace Chummer
                 await objLocker.DisposeAsync();
             }
         }
-        
+
         public async ValueTask<bool> RemoveAsync(TKey key, CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
@@ -336,7 +336,7 @@ namespace Chummer
                 await objLocker.DisposeAsync();
             }
         }
-        
+
         public ValueTask<bool> RemoveAsync(object key, CancellationToken token = default)
         {
             return RemoveAsync((TKey)key, token);

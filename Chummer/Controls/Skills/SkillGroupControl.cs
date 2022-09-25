@@ -33,6 +33,7 @@ namespace Chummer.UI.Skills
 
         // ReSharper disable PrivateFieldCanBeConvertedToLocalVariable
         private readonly NumericUpDownEx nudSkill;
+
         private readonly NumericUpDownEx nudKarma;
         private readonly Label lblGroupRating;
         private readonly ButtonWithToolTip btnCareerIncrease;
@@ -181,6 +182,7 @@ namespace Chummer.UI.Skills
         /// I'm not super pleased with how this works, but it's functional so w/e.
         /// The goal is for controls to retain the ability to display tooltips even while disabled. IT DOES NOT WORK VERY WELL.
         /// </summary>
+
         #region ButtonWithToolTip Visibility workaround
 
         private ButtonWithToolTip _activeButton;

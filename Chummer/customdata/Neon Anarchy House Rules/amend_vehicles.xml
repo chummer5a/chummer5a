@@ -29,7 +29,7 @@
 			<hide />
 		</vehicle>
 		<vehicle xpathfilter="source='SS' and category='Corpsec/Police/Military'">
-			<hide amendoperation="addnode"/>
+			<hide amendoperation="addnode" />
 		</vehicle>
 		<vehicle>
 			<name>Krime Bazoo Basic</name>
@@ -176,7 +176,7 @@
 			<weaponcategories>Blades,Clubs,Improvised Weapons,Exotic Melee Weapons,Exotic Ranged Weapons,Cyberweapon,Bio-Weapon,Unarmed,Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns,Assault Rifles,Shotguns,Machine Guns,Assault Cannons,Grenade Launchers,Missile Launchers,Laser Weapons,Light Machine Guns,Medium Machine Guns,Heavy Machine Guns,Sporting Rifles,Sniper Rifles,Carbines</weaponcategories>
 		</weaponmount>
 	</weaponmounts>
-	<weaponmountmods>	
+	<weaponmountmods>
 		<mod>
 		  <name>Ammo Bin</name>
 		  <forbidden>

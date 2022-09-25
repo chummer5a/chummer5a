@@ -123,7 +123,7 @@ namespace Chummer
             }
             return dblReturn;
         }
-        
+
         public async Task<int> NextAsync(CancellationToken token = default)
         {
             int intReturn;
@@ -138,7 +138,7 @@ namespace Chummer
             }
             return intReturn;
         }
-        
+
         public async Task<int> NextAsync(int minValue, int maxValue, CancellationToken token = default)
         {
             int intReturn;
@@ -153,7 +153,7 @@ namespace Chummer
             }
             return intReturn;
         }
-        
+
         public async Task<int> NextAsync(int maxValue, CancellationToken token = default)
         {
             int intReturn;
@@ -168,7 +168,7 @@ namespace Chummer
             }
             return intReturn;
         }
-        
+
         public async Task NextBytesAsync(byte[] buffer, CancellationToken token = default)
         {
             await _objLock.WaitAsync(token);
@@ -181,7 +181,7 @@ namespace Chummer
                 _objLock.Release();
             }
         }
-        
+
         public async Task<double> NextDoubleAsync(CancellationToken token = default)
         {
             double dblReturn;

@@ -97,6 +97,7 @@ namespace Chummer
 
         // General character info.
         private string _strName = string.Empty;
+
         private readonly ThreadSafeList<Image> _lstMugshots = new ThreadSafeList<Image>(3);
         private int _intMainMugshotIndex = -1;
         private string _strGender = string.Empty;
@@ -130,6 +131,7 @@ namespace Chummer
 
         // Metatype Information.
         private string _strMetatype = "Human";
+
         private Guid _guiMetatype = Guid.Empty;
         private string _strMetavariant = string.Empty;
         private Guid _guiMetavariant = Guid.Empty;
@@ -170,6 +172,7 @@ namespace Chummer
 
         // Pseudo-Attributes use for Mystic Adepts.
         private int _intMAGMagician;
+
         private int _intMAGAdept;
 
         // Magic Tradition.
@@ -177,14 +180,17 @@ namespace Chummer
 
         // Condition Monitor Progress.
         private int _intPhysicalCMFilled;
+
         private int _intStunCMFilled;
 
         // Spirit Reputation
         private int _intBaseAstralReputation;
+
         private int _intBaseWildReputation;
 
         // Priority Selections.
         private string _strPriorityMetatype = "A";
+
         private string _strPriorityAttributes = "B";
         private string _strPrioritySpecial = "C";
         private string _strPrioritySkills = "D";
@@ -248,11 +254,13 @@ namespace Chummer
         private readonly ThreadSafeObservableCollection<Drug> _lstDrugs = new ThreadSafeObservableCollection<Drug>();
 
         private SortedDictionary<decimal, Tuple<string, string>> _dicAvailabilityMap;
+
         //private readonly List<LifeModule> _lstLifeModules = new List<LifeModule>(10);
         private readonly ThreadSafeList<string> _lstInternalIdsNeedingReapplyImprovements = new ThreadSafeList<string>(1);
 
         // Character Version
         private string _strVersionCreated = Application.ProductVersion.FastEscapeOnceFromStart("0.0.");
+
         private Version _verSavedVersion = new Version();
 
         public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
@@ -334,6 +342,7 @@ namespace Chummer
         }
 
         private bool _blnClearingInitiations;
+
         private async void InitiationGradesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (_blnClearingInitiations || IsLoading)
@@ -445,20 +454,24 @@ namespace Chummer
             {
                 case NotifyCollectionChangedAction.Add:
                     break;
+
                 case NotifyCollectionChangedAction.Remove:
                     foreach (IHasInternalId objItem in e.OldItems)
                     {
                         await SustainedCollection.RemoveAllAsync(x => ReferenceEquals(x.LinkedObject, objItem));
                     }
                     break;
+
                 case NotifyCollectionChangedAction.Replace:
                     foreach (IHasInternalId objItem in e.OldItems)
                     {
                         await SustainedCollection.RemoveAllAsync(x => ReferenceEquals(x.LinkedObject, objItem));
                     }
                     break;
+
                 case NotifyCollectionChangedAction.Move:
                     break;
+
                 case NotifyCollectionChangedAction.Reset:
                     await SustainedCollection.RemoveAllAsync(async x =>
                                                                  !await Spells.AnyAsync(
@@ -589,42 +602,55 @@ namespace Chummer
                         case "BOD":
                             objAttribute.PropertyChanged -= RefreshBODDependentProperties;
                             break;
+
                         case "AGI":
                             objAttribute.PropertyChanged -= RefreshAGIDependentProperties;
                             break;
+
                         case "REA":
                             objAttribute.PropertyChanged -= RefreshREADependentProperties;
                             break;
+
                         case "STR":
                             objAttribute.PropertyChanged -= RefreshSTRDependentProperties;
                             break;
+
                         case "CHA":
                             objAttribute.PropertyChanged -= RefreshCHADependentProperties;
                             break;
+
                         case "INT":
                             objAttribute.PropertyChanged -= RefreshINTDependentProperties;
                             break;
+
                         case "LOG":
                             objAttribute.PropertyChanged -= RefreshLOGDependentProperties;
                             break;
+
                         case "WIL":
                             objAttribute.PropertyChanged -= RefreshWILDependentProperties;
                             break;
+
                         case "EDG":
                             objAttribute.PropertyChanged -= RefreshEDGDependentProperties;
                             break;
+
                         case "MAG":
                             objAttribute.PropertyChanged -= RefreshMAGDependentProperties;
                             break;
+
                         case "MAGAdept":
                             objAttribute.PropertyChanged -= RefreshMAGAdeptDependentProperties;
                             break;
+
                         case "RES":
                             objAttribute.PropertyChanged -= RefreshRESDependentProperties;
                             break;
+
                         case "DEP":
                             objAttribute.PropertyChanged -= RefreshDEPDependentProperties;
                             break;
+
                         case "ESS":
                             objAttribute.PropertyChanged -= RefreshESSDependentProperties;
                             break;
@@ -661,86 +687,111 @@ namespace Chummer
                 case nameof(CharacterSettings.UseCalculatedPublicAwareness):
                     OnPropertyChanged(nameof(CalculatedPublicAwareness));
                     break;
+
                 case nameof(CharacterSettings.SpiritForceBasedOnTotalMAG):
                     OnPropertyChanged(nameof(MaxSpiritForce));
                     break;
+
                 case nameof(CharacterSettings.CyberlegMovement):
                     OnPropertyChanged(nameof(Movement));
                     break;
+
                 case nameof(CharacterSettings.AllowInitiationInCreateMode):
                     OnPropertyChanged(nameof(AddInitiationsAllowed));
                     break;
+
                 case nameof(CharacterSettings.MysAdeptAllowPpCareer):
                     OnPropertyChanged(nameof(MysAdeptAllowPPCareer));
                     break;
+
                 case nameof(CharacterSettings.MysAdeptSecondMAGAttribute):
                     this.OnMultiplePropertyChanged(nameof(UseMysticAdeptPPs), nameof(AllowAdeptWayPowerDiscount));
                     break;
+
                 case nameof(CharacterSettings.ContactPointsExpression):
                     OnPropertyChanged(nameof(ContactPoints));
                     break;
+
                 case nameof(CharacterSettings.SpecialKarmaCostBasedOnShownValue):
                     await RefreshEssenceLossImprovementsAsync();
                     break;
+
                 case nameof(CharacterSettings.NuyenFormat):
                     this.OnMultiplePropertyChanged(nameof(DisplayNuyen), nameof(DisplayCareerNuyen),
                                                    nameof(DisplayStolenNuyen));
                     break;
+
                 case nameof(CharacterSettings.WeightFormat):
                     this.OnMultiplePropertyChanged(nameof(LiftAndCarryLimits), nameof(DisplayTotalCarriedWeight));
                     break;
+
                 case nameof(CharacterSettings.EssenceFormat):
                 case nameof(CharacterSettings.DontRoundEssenceInternally):
                     this.OnMultiplePropertyChanged(nameof(PrototypeTranshumanEssenceUsed), nameof(BiowareEssence),
                                                    nameof(CyberwareEssence), nameof(EssenceHole));
                     break;
+
                 case nameof(CharacterSettings.NuyenMaximumBP):
                 case nameof(CharacterSettings.UnrestrictedNuyen):
                     OnPropertyChanged(nameof(TotalNuyenMaximumBP));
                     break;
+
                 case nameof(CharacterSettings.KarmaMysticAdeptPowerPoint):
                     OnPropertyChanged(nameof(CanAffordCareerPP));
                     break;
+
                 case nameof(CharacterSettings.BuildMethod):
                     OnPropertyChanged(nameof(EffectiveBuildMethod));
                     break;
+
                 case nameof(CharacterSettings.AutomaticBackstory):
                     OnPropertyChanged(nameof(EnableAutomaticStoryButton));
                     break;
+
                 case nameof(CharacterSettings.ChargenKarmaToNuyenExpression):
                     OnPropertyChanged(nameof(TotalStartingNuyen));
                     break;
+
                 case nameof(CharacterSettings.LimbCount):
                     OnPropertyChanged(nameof(LimbCount));
                     break;
+
                 case nameof(CharacterSettings.MetatypeCostsKarmaMultiplier):
                     OnPropertyChanged(nameof(DisplayMetatypeBP));
                     break;
+
                 case nameof(CharacterSettings.RedlinerExcludes):
                     OnPropertyChanged(nameof(RedlinerBonus));
                     break;
+
                 case nameof(CharacterSettings.NoArmorEncumbrance):
                     OnPropertyChanged(nameof(ArmorEncumbrance));
                     break;
+
                 case nameof(CharacterSettings.KarmaQuality):
                 case nameof(CharacterSettings.QualityKarmaLimit):
                     this.OnMultiplePropertyChanged(nameof(PositiveQualityLimitKarma), nameof(PositiveQualityKarma),
                                                    nameof(NegativeQualityLimitKarma), nameof(NegativeQualityKarma));
                     break;
+
                 case nameof(CharacterSettings.ExceedPositiveQualitiesCostDoubled):
                     this.OnMultiplePropertyChanged(nameof(PositiveQualityLimitKarma), nameof(PositiveQualityKarma));
                     break;
+
                 case nameof(CharacterSettings.EnemyKarmaQualityLimit):
                 case nameof(CharacterSettings.ExceedNegativeQualitiesNoBonus):
                     this.OnMultiplePropertyChanged(nameof(NegativeQualityLimitKarma), nameof(NegativeQualityKarma));
                     break;
+
                 case nameof(CharacterSettings.EnableEnemyTracking):
                 case nameof(CharacterSettings.KarmaEnemy):
                     OnPropertyChanged(nameof(EnemyKarma));
                     break;
+
                 case nameof(CharacterSettings.DicePenaltySustaining):
                     OnPropertyChanged(nameof(SustainingPenalty));
                     break;
+
                 case nameof(CharacterSettings.KarmaSpell):
                     using (await EnterReadLock.EnterAsync(LockObject))
                     {
@@ -748,6 +799,7 @@ namespace Chummer
                             OnPropertyChanged(nameof(PositiveQualityKarma));
                     }
                     break;
+
                 case nameof(CharacterSettings.MinInitiativeDice):
                     using (await EnterReadLock.EnterAsync(LockObject))
                     {
@@ -759,17 +811,21 @@ namespace Chummer
                         }
                     }
                     break;
+
                 case nameof(CharacterSettings.MaxInitiativeDice):
                     OnPropertyChanged(nameof(InitiativeDice));
                     break;
+
                 case nameof(CharacterSettings.MinAstralInitiativeDice):
                 case nameof(CharacterSettings.MaxAstralInitiativeDice):
                     OnPropertyChanged(nameof(AstralInitiativeDice));
                     break;
+
                 case nameof(CharacterSettings.MinColdSimInitiativeDice):
                 case nameof(CharacterSettings.MaxColdSimInitiativeDice):
                     OnPropertyChanged(nameof(MatrixInitiativeColdDice));
                     break;
+
                 case nameof(CharacterSettings.MinHotSimInitiativeDice):
                     using (await EnterReadLock.EnterAsync(LockObject))
                     {
@@ -780,32 +836,40 @@ namespace Chummer
                             OnPropertyChanged(nameof(MatrixInitiativeHotDice));
                     }
                     break;
+
                 case nameof(CharacterSettings.MaxHotSimInitiativeDice):
                     OnPropertyChanged(nameof(MatrixInitiativeHotDice));
                     break;
+
                 case nameof(CharacterSettings.LiftLimitExpression):
                     OnPropertyChanged(nameof(BaseLiftLimit));
                     break;
+
                 case nameof(CharacterSettings.CarryLimitExpression):
                     OnPropertyChanged(nameof(BaseCarryLimit));
                     break;
+
                 case nameof(CharacterSettings.EncumbranceIntervalExpression):
                     OnPropertyChanged(nameof(EncumbranceInterval));
                     break;
+
                 case nameof(CharacterSettings.DoEncumbrancePenaltyPhysicalLimit):
                 case nameof(CharacterSettings.DoEncumbrancePenaltyMovementSpeed):
                 case nameof(CharacterSettings.DoEncumbrancePenaltyAgility):
                 case nameof(CharacterSettings.DoEncumbrancePenaltyReaction):
                     OnPropertyChanged(nameof(Encumbrance));
                     break;
+
                 case nameof(CharacterSettings.EncumbrancePenaltyPhysicalLimit):
                     if (Settings.DoEncumbrancePenaltyPhysicalLimit)
                         OnPropertyChanged(nameof(Encumbrance));
                     break;
+
                 case nameof(CharacterSettings.EncumbrancePenaltyMovementSpeed):
                     if (Settings.DoEncumbrancePenaltyMovementSpeed)
                         OnPropertyChanged(nameof(Encumbrance));
                     break;
+
                 case nameof(CharacterSettings.EncumbrancePenaltyAgility):
                     using (await EnterReadLock.EnterAsync(LockObject))
                     {
@@ -813,6 +877,7 @@ namespace Chummer
                             OnPropertyChanged(nameof(Encumbrance));
                     }
                     break;
+
                 case nameof(CharacterSettings.EncumbrancePenaltyReaction):
                     using (await EnterReadLock.EnterAsync(LockObject))
                     {
@@ -820,9 +885,11 @@ namespace Chummer
                             OnPropertyChanged(nameof(Encumbrance));
                     }
                     break;
+
                 case nameof(CharacterSettings.DoEncumbrancePenaltyWoundModifier):
                     this.OnMultiplePropertyChanged(nameof(WoundModifier), nameof(Encumbrance));
                     break;
+
                 case nameof(CharacterSettings.EncumbrancePenaltyWoundModifier):
                     using (await EnterReadLock.EnterAsync(LockObject))
                     {
@@ -1012,8 +1079,10 @@ namespace Chummer
                 case NotifyCollectionChangedAction.Replace:
                     lstImprovementSourcesToProcess.AddRange(e.NewItems.Cast<MentorSpirit>());
                     break;
+
                 case NotifyCollectionChangedAction.Move:
                     return;
+
                 case NotifyCollectionChangedAction.Reset:
                     lstImprovementSourcesToProcess.AddRange(MentorSpirits);
                     break;
@@ -1087,8 +1156,10 @@ namespace Chummer
                 case NotifyCollectionChangedAction.Replace:
                     lstImprovementSourcesToProcess.AddRange(e.NewItems.Cast<Quality>());
                     break;
+
                 case NotifyCollectionChangedAction.Move:
                     return;
+
                 case NotifyCollectionChangedAction.Reset:
                     lstImprovementSourcesToProcess.AddRange(Qualities);
                     break;
@@ -1167,8 +1238,10 @@ namespace Chummer
                 case NotifyCollectionChangedAction.Replace:
                     lstImprovementSourcesToProcess.AddRange(e.NewItems.Cast<MartialArt>());
                     break;
+
                 case NotifyCollectionChangedAction.Move:
                     return;
+
                 case NotifyCollectionChangedAction.Reset:
                     lstImprovementSourcesToProcess.AddRange(MartialArts);
                     break;
@@ -1242,8 +1315,10 @@ namespace Chummer
                 case NotifyCollectionChangedAction.Replace:
                     lstImprovementSourcesToProcess.AddRange(e.NewItems.Cast<Metamagic>());
                     break;
+
                 case NotifyCollectionChangedAction.Move:
                     return;
+
                 case NotifyCollectionChangedAction.Reset:
                     lstImprovementSourcesToProcess.AddRange(Metamagics);
                     break;
@@ -1324,6 +1399,7 @@ namespace Chummer
                         }
 
                         break;
+
                     case NotifyCollectionChangedAction.Remove:
                         foreach (ExpenseLogEntry objOldItem in e.OldItems)
                         {
@@ -1336,6 +1412,7 @@ namespace Chummer
                         }
 
                         break;
+
                     case NotifyCollectionChangedAction.Replace:
                         foreach (ExpenseLogEntry objOldItem in e.OldItems)
                         {
@@ -1358,6 +1435,7 @@ namespace Chummer
                         }
 
                         break;
+
                     case NotifyCollectionChangedAction.Reset:
                         setPropertiesToRefresh.Add(nameof(CareerNuyen));
                         setPropertiesToRefresh.Add(nameof(CareerKarma));
@@ -1423,6 +1501,7 @@ namespace Chummer
                             }
 
                             break;
+
                         case NotifyCollectionChangedAction.Remove:
                             foreach (Gear objOldItem in e.OldItems)
                             {
@@ -1434,6 +1513,7 @@ namespace Chummer
                             }
 
                             break;
+
                         case NotifyCollectionChangedAction.Replace:
                             foreach (Gear objOldItem in e.OldItems)
                             {
@@ -1484,6 +1564,7 @@ namespace Chummer
                             }
 
                             break;
+
                         case NotifyCollectionChangedAction.Reset:
                             blnDoEncumbranceRefresh = true;
                             break;
@@ -1566,6 +1647,7 @@ namespace Chummer
                             }
 
                             break;
+
                         case NotifyCollectionChangedAction.Remove:
                             foreach (Weapon objOldItem in e.OldItems)
                             {
@@ -1577,6 +1659,7 @@ namespace Chummer
                             }
 
                             break;
+
                         case NotifyCollectionChangedAction.Replace:
                             foreach (Weapon objOldItem in e.OldItems)
                             {
@@ -1627,6 +1710,7 @@ namespace Chummer
                             }
 
                             break;
+
                         case NotifyCollectionChangedAction.Reset:
                             blnDoEncumbranceRefresh = true;
                             break;
@@ -1712,6 +1796,7 @@ namespace Chummer
                             }
 
                             break;
+
                         case NotifyCollectionChangedAction.Remove:
                             foreach (Armor objOldItem in e.OldItems)
                             {
@@ -1727,6 +1812,7 @@ namespace Chummer
                             }
 
                             break;
+
                         case NotifyCollectionChangedAction.Replace:
                             foreach (Armor objOldItem in e.OldItems)
                             {
@@ -1783,6 +1869,7 @@ namespace Chummer
                             }
 
                             break;
+
                         case NotifyCollectionChangedAction.Reset:
                             blnDoEquippedArmorRefresh = true;
                             blnDoArmorEncumbranceRefresh = true;
@@ -2029,17 +2116,21 @@ namespace Chummer
                     blnDoRefreshPenalties =
                         e.NewItems.OfType<SustainedObject>().Any(objItem => objItem.HasSustainingPenalty);
                     break;
+
                 case NotifyCollectionChangedAction.Remove:
                     blnDoRefreshPenalties =
                         e.OldItems.OfType<SustainedObject>().Any(objItem => objItem.HasSustainingPenalty);
                     break;
+
                 case NotifyCollectionChangedAction.Replace:
                     blnDoRefreshPenalties =
                         e.OldItems.OfType<SustainedObject>().Any(objItem => objItem.HasSustainingPenalty) ||
                         e.NewItems.OfType<SustainedObject>().Any(objItem => objItem.HasSustainingPenalty);
                     break;
+
                 case NotifyCollectionChangedAction.Move:
                     break;
+
                 case NotifyCollectionChangedAction.Reset:
                     blnDoRefreshPenalties = true;
                     break;
@@ -2265,7 +2356,7 @@ namespace Chummer
                     string strSkill = xmlSkill.InnerText;
                     string strSpec = xmlSkill.Attributes?["spec"]?.InnerText ?? string.Empty;
                     Skill objSkill = SkillsSection.GetActiveSkill(strSkill);
-                    
+
                     if (objSkill == null && ExoticSkill.IsExoticSkillName(strSkill))
                     {
                         SkillsSection.AddExoticSkill(strSkill, strSpec);
@@ -4486,7 +4577,7 @@ namespace Chummer
                             UploadObjectAsMetric.UploadObject(TelemetryClient, Settings);
                         }
 
-                        XmlDocument objXmlDocument = new XmlDocument {XmlResolver = null};
+                        XmlDocument objXmlDocument = new XmlDocument { XmlResolver = null };
                         XmlNode objXmlCharacter = null;
                         XPathNavigator xmlCharacterNavigator = null;
                         Quality objLivingPersonaQuality = null;
@@ -4838,7 +4929,7 @@ namespace Chummer
                                                        .RaiseToPower(0.5m).StandardRound();
 
                                         int intBaseline = objOptionsToCheck.BuiltInOption ? 5 : 4;
-                                        
+
                                         if (Created && eSavedBuildMethod != CharacterBuildMethod.LifeModule)
                                         {
                                             if (objOptionsToCheck.BuildMethod != eSavedBuildMethod)
@@ -9273,7 +9364,8 @@ namespace Chummer
                 }
             }
         }
-        #endregion
+
+        #endregion Create, Save, Load and Print Methods
 
         public bool IsDisposed { get; private set; }
 
@@ -9785,7 +9877,7 @@ namespace Chummer
             }
         }
 
-        #endregion
+        #endregion Initialization, Save, Load, Print, and Reset Methods
 
         #region Helper Methods
 
@@ -10169,6 +10261,7 @@ namespace Chummer
                         }
 
                         break;
+
                     case Improvement.ImprovementSource.Power:
                         foreach (Power objPower in Powers)
                         {
@@ -10179,6 +10272,7 @@ namespace Chummer
                         }
 
                         break;
+
                     case Improvement.ImprovementSource.CritterPower:
                         foreach (CritterPower objPower in CritterPowers)
                         {
@@ -10189,6 +10283,7 @@ namespace Chummer
                         }
 
                         break;
+
                     case Improvement.ImprovementSource.Metamagic:
                         foreach (Metamagic objMetamagic in Metamagics)
                         {
@@ -10200,6 +10295,7 @@ namespace Chummer
                         }
 
                         break;
+
                     case Improvement.ImprovementSource.Echo:
                         foreach (Metamagic objMetamagic in Metamagics)
                         {
@@ -10211,6 +10307,7 @@ namespace Chummer
                         }
 
                         break;
+
                     case Improvement.ImprovementSource.Art:
                         foreach (Art objArt in Arts)
                         {
@@ -10221,6 +10318,7 @@ namespace Chummer
                         }
 
                         break;
+
                     case Improvement.ImprovementSource.Enhancement:
                         foreach (Enhancement objEnhancement in Enhancements)
                         {
@@ -10231,6 +10329,7 @@ namespace Chummer
                         }
 
                         break;
+
                     case Improvement.ImprovementSource.Armor:
                     {
                         foreach (Armor objArmor in Armor)
@@ -10277,6 +10376,7 @@ namespace Chummer
                         }
 
                         break;
+
                     case Improvement.ImprovementSource.AIProgram:
                         foreach (AIProgram objProgram in AIPrograms)
                         {
@@ -10287,6 +10387,7 @@ namespace Chummer
                         }
 
                         break;
+
                     case Improvement.ImprovementSource.Quality:
                         if (strImprovedSourceName.StartsWith("SEEKER", StringComparison.Ordinal))
                         {
@@ -10309,6 +10410,7 @@ namespace Chummer
                         }
 
                         break;
+
                     case Improvement.ImprovementSource.MartialArtTechnique:
                         foreach (MartialArtTechnique objTechnique in MartialArts.SelectMany(x => x.Techniques))
                         {
@@ -10319,6 +10421,7 @@ namespace Chummer
                         }
 
                         break;
+
                     case Improvement.ImprovementSource.MentorSpirit:
                         foreach (MentorSpirit objMentorSpirit in MentorSpirits)
                         {
@@ -10329,25 +10432,34 @@ namespace Chummer
                         }
 
                         break;
+
                     case Improvement.ImprovementSource.Heritage:
                         return LanguageManager.GetString("String_Priority", strLanguage, token: token);
+
                     case Improvement.ImprovementSource.Initiation:
                         return LanguageManager.GetString("Tab_Initiation", strLanguage, token: token);
+
                     case Improvement.ImprovementSource.Submersion:
                         return LanguageManager.GetString("Tab_Submersion", strLanguage, token: token);
+
                     case Improvement.ImprovementSource.Encumbrance:
                         return LanguageManager.GetString("String_Encumbrance", strLanguage, token: token);
+
                     case Improvement.ImprovementSource.ArmorEncumbrance:
                         return LanguageManager.GetString("String_ArmorEncumbrance", strLanguage, token: token);
+
                     case Improvement.ImprovementSource.Tradition:
                         return LanguageManager.GetString("String_Tradition", strLanguage, token: token);
+
                     case Improvement.ImprovementSource.AstralReputation:
                         return LanguageManager.GetString("String_AstralReputation", strLanguage, token: token);
+
                     case Improvement.ImprovementSource.CyberadeptDaemon:
                         return LoadDataXPath("qualities.xml", strLanguage, token: token)
                                .SelectSingleNode(
                                    "/chummer/qualities/quality[name = \"Resonant Stream: Cyberadept\"]/translate")
                                ?.Value ?? "Resonant Stream: Cyberadept";
+
                     default:
                         if (objImprovement.ImproveType == Improvement.ImprovementType.ArmorEncumbrancePenalty)
                             return LanguageManager.GetString("String_ArmorEncumbrance", strLanguage, token: token);
@@ -10750,6 +10862,7 @@ namespace Chummer
                         }
 
                         break;
+
                     case Improvement.ImprovementSource.Power:
                         foreach (Power objPower in Powers)
                         {
@@ -10760,6 +10873,7 @@ namespace Chummer
                         }
 
                         break;
+
                     case Improvement.ImprovementSource.CritterPower:
                         foreach (CritterPower objPower in CritterPowers)
                         {
@@ -10770,6 +10884,7 @@ namespace Chummer
                         }
 
                         break;
+
                     case Improvement.ImprovementSource.Metamagic:
                         foreach (Metamagic objMetamagic in Metamagics)
                         {
@@ -10781,6 +10896,7 @@ namespace Chummer
                         }
 
                         break;
+
                     case Improvement.ImprovementSource.Echo:
                         foreach (Metamagic objMetamagic in Metamagics)
                         {
@@ -10792,6 +10908,7 @@ namespace Chummer
                         }
 
                         break;
+
                     case Improvement.ImprovementSource.Art:
                         foreach (Art objArt in Arts)
                         {
@@ -10802,6 +10919,7 @@ namespace Chummer
                         }
 
                         break;
+
                     case Improvement.ImprovementSource.Enhancement:
                         foreach (Enhancement objEnhancement in Enhancements)
                         {
@@ -10812,6 +10930,7 @@ namespace Chummer
                         }
 
                         break;
+
                     case Improvement.ImprovementSource.Armor:
                         {
                             foreach (Armor objArmor in Armor)
@@ -10858,6 +10977,7 @@ namespace Chummer
                         }
 
                         break;
+
                     case Improvement.ImprovementSource.AIProgram:
                         foreach (AIProgram objProgram in AIPrograms)
                         {
@@ -10868,6 +10988,7 @@ namespace Chummer
                         }
 
                         break;
+
                     case Improvement.ImprovementSource.Quality:
                         if (strImprovedSourceName.StartsWith("SEEKER", StringComparison.Ordinal))
                         {
@@ -10890,6 +11011,7 @@ namespace Chummer
                         }
 
                         break;
+
                     case Improvement.ImprovementSource.MartialArtTechnique:
                         foreach (MartialArtTechnique objTechnique in MartialArts.SelectMany(x => x.Techniques))
                         {
@@ -10900,6 +11022,7 @@ namespace Chummer
                         }
 
                         break;
+
                     case Improvement.ImprovementSource.MentorSpirit:
                         foreach (MentorSpirit objMentorSpirit in MentorSpirits)
                         {
@@ -10910,25 +11033,34 @@ namespace Chummer
                         }
 
                         break;
+
                     case Improvement.ImprovementSource.Heritage:
                         return await LanguageManager.GetStringAsync("String_Priority", strLanguage, token: token);
+
                     case Improvement.ImprovementSource.Initiation:
                         return await LanguageManager.GetStringAsync("Tab_Initiation", strLanguage, token: token);
+
                     case Improvement.ImprovementSource.Submersion:
                         return await LanguageManager.GetStringAsync("Tab_Submersion", strLanguage, token: token);
+
                     case Improvement.ImprovementSource.Encumbrance:
                         return await LanguageManager.GetStringAsync("String_Encumbrance", strLanguage, token: token);
+
                     case Improvement.ImprovementSource.ArmorEncumbrance:
                         return await LanguageManager.GetStringAsync("String_ArmorEncumbrance", strLanguage, token: token);
+
                     case Improvement.ImprovementSource.Tradition:
                         return await LanguageManager.GetStringAsync("String_Tradition", strLanguage, token: token);
+
                     case Improvement.ImprovementSource.AstralReputation:
                         return await LanguageManager.GetStringAsync("String_AstralReputation", strLanguage, token: token);
+
                     case Improvement.ImprovementSource.CyberadeptDaemon:
                         return (await LoadDataXPathAsync("qualities.xml", strLanguage, token: token))
                                .SelectSingleNode(
                                    "/chummer/qualities/quality[name = \"Resonant Stream: Cyberadept\"]/translate")
                                ?.Value ?? "Resonant Stream: Cyberadept";
+
                     default:
                         if (objImprovement.ImproveType == Improvement.ImprovementType.ArmorEncumbrancePenalty)
                             return await LanguageManager.GetStringAsync("String_ArmorEncumbrance", strLanguage, token: token);
@@ -11185,11 +11317,13 @@ namespace Chummer
                                                           this, Improvement.ImprovementType.FreeSpiritPowerPoints,
                                                           token: token).ConfigureAwait(false)).StandardRound();
                             break;
+
                         case "Ally Spirit":
                             // Ally Spirits get a number of Power Points equal to their MAG.
                             intPowerPoints = await (await GetAttributeAsync("MAG", token: token).ConfigureAwait(false))
                                                    .GetTotalValueAsync(token).ConfigureAwait(false);
                             break;
+
                         default:
                             // Spirits get 1 Power Point for every 3 full points of Force (MAG) they possess.
                             intPowerPoints = await (await GetAttributeAsync("MAG", token: token).ConfigureAwait(false))
@@ -11902,7 +12036,8 @@ namespace Chummer
         {
             return LanguageManager.ReverseTranslateExtraAsync(strExtra, strFromLanguage, this, strPreferFile, token);
         }
-        #endregion
+
+        #endregion Helper Methods
 
         #region UI Methods
 
@@ -11919,33 +12054,33 @@ namespace Chummer
             if (objGearNode == null || objDestination == null)
                 return;
             // The item cannot be dropped onto itself or onto one of its children.
-            for(TreeNode objCheckNode = objDestination;
+            for (TreeNode objCheckNode = objDestination;
                 objCheckNode != null && objCheckNode.Level >= objDestination.Level;
                 objCheckNode = objCheckNode.Parent)
-                if(objCheckNode == objGearNode)
+                if (objCheckNode == objGearNode)
                     return;
-            if(!(objGearNode.Tag is Gear objGear))
+            if (!(objGearNode.Tag is Gear objGear))
             {
                 return;
             }
 
             // Gear cannot be moved to one if its children.
             bool blnAllowMove = true;
-            if(objDestination.Level > 0)
+            if (objDestination.Level > 0)
             {
                 TreeNode objFindNode = objDestination;
                 do
                 {
                     objFindNode = objFindNode.Parent;
-                    if(objFindNode.Tag == objGear)
+                    if (objFindNode.Tag == objGear)
                     {
                         blnAllowMove = false;
                         break;
                     }
-                } while(objFindNode.Level > 0);
+                } while (objFindNode.Level > 0);
             }
 
-            if(!blnAllowMove)
+            if (!blnAllowMove)
                 return;
 
             using (LockObject.EnterWriteLock(token))
@@ -11964,6 +12099,7 @@ namespace Chummer
                         objLocation.Children.Add(objGear);
                         Gear.Add(objGear);
                         break;
+
                     case Gear objParent:
                         // Add the Gear as a child of the destination Node and clear its location.
                         objGear.Location = null;
@@ -11999,6 +12135,7 @@ namespace Chummer
                         objGear.Location = objLocation;
                         objNewParent.Nodes.Insert(0, nodeToMove);
                         break;
+
                     case string _:
                         objGear.Location = null;
                         intNewIndex = Math.Min(intNewIndex, Gear.Count - 1);
@@ -12018,18 +12155,18 @@ namespace Chummer
         {
             if (nodOldNode == null)
                 return;
-            if(objDestination != null)
+            if (objDestination != null)
             {
                 TreeNode objNewParent = objDestination;
-                while(objNewParent.Level > 0)
+                while (objNewParent.Level > 0)
                     objNewParent = objNewParent.Parent;
                 intNewIndex = objNewParent.Index;
             }
 
-            if(intNewIndex == 0)
+            if (intNewIndex == 0)
                 return;
 
-            if(!(nodOldNode.Tag is Location objLocation))
+            if (!(nodOldNode.Tag is Location objLocation))
                 return;
             GearLocations.Move(GearLocations.IndexOf(objLocation), intNewIndex);
         }
@@ -12047,7 +12184,7 @@ namespace Chummer
             if (objDestination != null)
             {
                 TreeNode objNewParent = objDestination;
-                while(objNewParent.Level > 0)
+                while (objNewParent.Level > 0)
                     objNewParent = objNewParent.Parent;
                 intNewIndex = objNewParent.Index;
             }
@@ -12086,6 +12223,7 @@ namespace Chummer
                         objArmor.Location = objLocation;
                         objNewParent.Nodes.Insert(0, nodeToMove);
                         break;
+
                     case string _:
                         objArmor.Location = null;
                         intNewIndex = Math.Min(intNewIndex, Armor.Count - 1);
@@ -12147,6 +12285,7 @@ namespace Chummer
                         objWeapon.Location = objLocation;
                         objNewParent.Nodes.Insert(0, nodeToMove);
                         break;
+
                     case string _:
                         objWeapon.Location = null;
                         intNewIndex = Math.Min(intNewIndex, Weapons.Count - 1);
@@ -12208,6 +12347,7 @@ namespace Chummer
                         objVehicle.Location = objLocation;
                         objNewParent.Nodes.Insert(0, nodeToMove);
                         break;
+
                     case string _:
                         objVehicle.Location = null;
                         intNewIndex = Math.Min(intNewIndex, Weapons.Count - 1);
@@ -12340,19 +12480,19 @@ namespace Chummer
             if (objDestination != null)
             {
                 TreeNode objNewParent = objDestination;
-                while(objNewParent.Level > 0)
+                while (objNewParent.Level > 0)
                     objNewParent = objNewParent.Parent;
                 intNewIndex = objNewParent.Index;
             }
 
-            if(intNewIndex == 0)
+            if (intNewIndex == 0)
                 return;
 
             string strLocation = nodOldNode.Tag.ToString();
             ImprovementGroups.Move(ImprovementGroups.IndexOf(strLocation), intNewIndex);
         }
 
-        #endregion
+        #endregion Move TreeNodes
 
         #region Tab clearing
 
@@ -12606,9 +12746,9 @@ namespace Chummer
             }
         }
 
-        #endregion
+        #endregion Tab clearing
 
-        #endregion
+        #endregion UI Methods
 
         #region Basic Properties
 
@@ -12847,7 +12987,7 @@ namespace Chummer
             }
             set
             {
-                if(value == null)
+                if (value == null)
                 {
                     MainMugshotIndex = -1;
                     return;
@@ -13384,6 +13524,7 @@ namespace Chummer
                         case "GENTLEMAN":
                         case "GUY":
                             return _strCachedCharacterGrammaticGender = "male";
+
                         case "F":
                         case "W":
                         case "FEMALE":
@@ -13392,6 +13533,7 @@ namespace Chummer
                         case "LADY":
                         case "GAL":
                             return _strCachedCharacterGrammaticGender = "female";
+
                         default:
                             return _strCachedCharacterGrammaticGender = "neutral";
                     }
@@ -14273,7 +14415,7 @@ namespace Chummer
                                 (bool blnIsSuccess, object objProcess)
                                     = CommonFunctions.EvaluateInvariantXPath(
                                         sbdValue.ToString());
-                                _intCachedContactPoints = blnIsSuccess ? ((double) objProcess).StandardRound() : 0;
+                                _intCachedContactPoints = blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
                             }
                         }
                         else
@@ -14395,7 +14537,7 @@ namespace Chummer
                                 (bool blnIsSuccess, object objProcess)
                                     = CommonFunctions.EvaluateInvariantXPath(
                                         sbdValue.ToString());
-                                _decCachedBaseCarryLimit = blnIsSuccess ? Convert.ToDecimal((double) objProcess) : 0;
+                                _decCachedBaseCarryLimit = blnIsSuccess ? Convert.ToDecimal((double)objProcess) : 0;
                             }
                         }
                         else
@@ -14443,7 +14585,7 @@ namespace Chummer
                                 (bool blnIsSuccess, object objProcess)
                                     = CommonFunctions.EvaluateInvariantXPath(
                                         sbdValue.ToString());
-                                _decCachedBaseLiftLimit = blnIsSuccess ? Convert.ToDecimal((double) objProcess) : 0;
+                                _decCachedBaseLiftLimit = blnIsSuccess ? Convert.ToDecimal((double)objProcess) : 0;
                             }
                         }
                         else
@@ -14480,7 +14622,7 @@ namespace Chummer
                                     = CommonFunctions.EvaluateInvariantXPath(
                                         sbdValue.ToString());
                                 _decCachedEncumbranceInterval
-                                    = blnIsSuccess ? Convert.ToDecimal((double) objProcess) : 0;
+                                    = blnIsSuccess ? Convert.ToDecimal((double)objProcess) : 0;
                             }
                         }
                         else
@@ -14666,6 +14808,7 @@ namespace Chummer
             using (await EnterReadLock.EnterAsync(LockObject, token))
                 return _intKarma;
         }
+
         /// <summary>
         /// Karma.
         /// </summary>
@@ -15030,10 +15173,12 @@ namespace Chummer
                             if (Created)
                                 decReturn += objLoopImprovement.Value;
                             break;
+
                         case "create":
                             if (!Created)
                                 decReturn += objLoopImprovement.Value;
                             break;
+
                         default:
                             continue;
                     }
@@ -15059,10 +15204,12 @@ namespace Chummer
                             if (Created)
                                 decMultiplier *= objLoopImprovement.Value / 100.0m;
                             break;
+
                         case "create":
                             if (!Created)
                                 decMultiplier *= objLoopImprovement.Value / 100.0m;
                             break;
+
                         default:
                             continue;
                     }
@@ -15098,6 +15245,7 @@ namespace Chummer
                             if (blnCreated)
                                 decReturn += objLoopImprovement.Value;
                             break;
+
                         case "create":
                             if (!blnCreated)
                                 decReturn += objLoopImprovement.Value;
@@ -15125,6 +15273,7 @@ namespace Chummer
                             if (blnCreated)
                                 decMultiplier *= objLoopImprovement.Value / 100.0m;
                             break;
+
                         case "create":
                             if (!blnCreated)
                                 decMultiplier *= objLoopImprovement.Value / 100.0m;
@@ -15159,6 +15308,7 @@ namespace Chummer
                                 case Improvement.ImprovementType.NewComplexFormKarmaCost:
                                     decReturn += objLoopImprovement.Value;
                                     break;
+
                                 case Improvement.ImprovementType.NewComplexFormKarmaCostMultiplier:
                                     decMultiplier *= objLoopImprovement.Value / 100.0m;
                                     break;
@@ -15193,6 +15343,7 @@ namespace Chummer
                             case Improvement.ImprovementType.NewComplexFormKarmaCost:
                                 decReturn += objLoopImprovement.Value;
                                 break;
+
                             case Improvement.ImprovementType.NewComplexFormKarmaCostMultiplier:
                                 decMultiplier *= objLoopImprovement.Value / 100.0m;
                                 break;
@@ -15227,6 +15378,7 @@ namespace Chummer
                                 case Improvement.ImprovementType.NewAIProgramKarmaCost:
                                     decReturn += objLoopImprovement.Value;
                                     break;
+
                                 case Improvement.ImprovementType.NewAIProgramKarmaCostMultiplier:
                                     decMultiplier *= objLoopImprovement.Value / 100.0m;
                                     break;
@@ -15262,6 +15414,7 @@ namespace Chummer
                         case Improvement.ImprovementType.NewAIProgramKarmaCost:
                             decReturn += objLoopImprovement.Value;
                             break;
+
                         case Improvement.ImprovementType.NewAIProgramKarmaCostMultiplier:
                             decMultiplier *= objLoopImprovement.Value / 100.0m;
                             break;
@@ -15295,6 +15448,7 @@ namespace Chummer
                                 case Improvement.ImprovementType.NewAIAdvancedProgramKarmaCost:
                                     decReturn += objLoopImprovement.Value;
                                     break;
+
                                 case Improvement.ImprovementType.NewAIAdvancedProgramKarmaCostMultiplier:
                                     decMultiplier *= objLoopImprovement.Value / 100.0m;
                                     break;
@@ -15330,6 +15484,7 @@ namespace Chummer
                         case Improvement.ImprovementType.NewAIAdvancedProgramKarmaCost:
                             decReturn += objLoopImprovement.Value;
                             break;
+
                         case Improvement.ImprovementType.NewAIAdvancedProgramKarmaCostMultiplier:
                             decMultiplier *= objLoopImprovement.Value / 100.0m;
                             break;
@@ -15350,7 +15505,7 @@ namespace Chummer
             return (await ImprovementManager.GetCachedImprovementListForValueOfAsync(this, Improvement.ImprovementType.Ambidextrous, token: token)).Count > 0;
         }
 
-        #endregion
+        #endregion Basic Properties
 
         #region Attributes
 
@@ -15812,6 +15967,7 @@ namespace Chummer
                                             case Improvement.ImprovementType.EssencePenalty:
                                                 decLoopEssencePenalty += objImprovement.Value;
                                                 break;
+
                                             case Improvement.ImprovementType.EssencePenaltyT100:
                                             case Improvement.ImprovementType.EssencePenaltyMAGOnlyT100:
                                                 decLoopEssencePenalty += objImprovement.Value / 100.0m;
@@ -15924,7 +16080,7 @@ namespace Chummer
                                 (bool blnIsSuccess, object objProcess)
                                     = CommonFunctions.EvaluateInvariantXPath(
                                         sbdValue.ToString());
-                                _intBoundSpiritLimit = blnIsSuccess ? ((double) objProcess).StandardRound() : 0;
+                                _intBoundSpiritLimit = blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
                             }
                         }
                         else
@@ -15977,7 +16133,7 @@ namespace Chummer
                                 (bool blnIsSuccess, object objProcess)
                                     = CommonFunctions.EvaluateInvariantXPath(
                                         sbdValue.ToString());
-                                _intRegisteredSpriteLimit = blnIsSuccess ? ((double) objProcess).StandardRound() : 0;
+                                _intRegisteredSpriteLimit = blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
                             }
                         }
                         else
@@ -16436,6 +16592,7 @@ namespace Chummer
                                             case Improvement.ImprovementType.EssencePenalty:
                                                 decLoopEssencePenalty += objImprovement.Value;
                                                 break;
+
                                             case Improvement.ImprovementType.EssencePenaltyT100:
                                                 decLoopEssencePenalty += objImprovement.Value / 100.0m;
                                                 break;
@@ -16713,6 +16870,7 @@ namespace Chummer
                                             case Improvement.ImprovementType.EssencePenalty:
                                                 decLoopEssencePenalty += objImprovement.Value;
                                                 break;
+
                                             case Improvement.ImprovementType.EssencePenaltyT100:
                                                 decLoopEssencePenalty += objImprovement.Value / 100.0m;
                                                 break;
@@ -17578,7 +17736,7 @@ namespace Chummer
             }
         }
 
-        #endregion
+        #endregion Physical
 
         #region Astral
 
@@ -17651,7 +17809,7 @@ namespace Chummer
             }
         }
 
-        #endregion
+        #endregion Astral
 
         #region Matrix
 
@@ -17801,7 +17959,7 @@ namespace Chummer
             }
         }
 
-        #endregion
+        #endregion AR
 
         #region Cold Sim
 
@@ -17924,7 +18082,7 @@ namespace Chummer
             }
         }
 
-        #endregion
+        #endregion Cold Sim
 
         #region Hot Sim
 
@@ -18047,9 +18205,10 @@ namespace Chummer
             }
         }
 
-        #endregion
+        #endregion Hot Sim
 
         #region XPath Processing
+
         /// <summary>
         /// Replaces substring in the form of {Skill} with the total dicepool of the skill.
         /// </summary>
@@ -18096,17 +18255,19 @@ namespace Chummer
                 }
             }
         }
-        #endregion
-        #endregion
 
-        #endregion
+        #endregion XPath Processing
+
+        #endregion Matrix
+
+        #endregion Initiative
 
         /// <summary>
         /// Character's total Spell Resistance from qualities and metatype properties.
         /// </summary>
         public int SpellResistance => ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance).StandardRound();
 
-        #endregion
+        #endregion Attributes
 
         #region Special CharacterAttribute Tests
 
@@ -18714,7 +18875,7 @@ namespace Chummer
             }
         }
 
-        #endregion
+        #endregion Special CharacterAttribute Tests
 
         #region Reputation
 
@@ -19041,7 +19202,7 @@ namespace Chummer
             }
         }
 
-        #endregion
+        #endregion Reputation
 
         #region List Properties
 
@@ -19677,7 +19838,7 @@ namespace Chummer
             }
         }
 
-        #endregion
+        #endregion List Properties
 
         #region Armor Properties
 
@@ -20050,6 +20211,7 @@ namespace Chummer
         }
 
         #region Dodge
+
         public int Dodge
         {
             get
@@ -20107,9 +20269,13 @@ namespace Chummer
                 }
             }
         }
-        #endregion
+
+        #endregion Dodge
+
         #region Spell Defense
+
         #region Indirect Dodge
+
         public int SpellDefenseIndirectDodge
         {
             get
@@ -20154,8 +20320,11 @@ namespace Chummer
                 }
             }
         }
-        #endregion
+
+        #endregion Indirect Dodge
+
         #region Indirect Soak
+
         public int SpellDefenseIndirectSoak
         {
             get
@@ -20250,8 +20419,11 @@ namespace Chummer
                 }
             }
         }
-        #endregion
+
+        #endregion Indirect Soak
+
         #region Direct Soak Mana
+
         public int SpellDefenseDirectSoakMana
         {
             get
@@ -20317,8 +20489,11 @@ namespace Chummer
                 }
             }
         }
-        #endregion
+
+        #endregion Direct Soak Mana
+
         #region Direct Soak Physical
+
         public int SpellDefenseDirectSoakPhysical
         {
             get
@@ -20414,8 +20589,11 @@ namespace Chummer
                 }
             }
         }
-        #endregion
+
+        #endregion Direct Soak Physical
+
         #region Detection
+
         public int SpellDefenseDetection
         {
             get
@@ -20487,8 +20665,11 @@ namespace Chummer
                 }
             }
         }
-        #endregion
+
+        #endregion Detection
+
         #region Decrease Attributes
+
         public int SpellDefenseDecreaseBOD
         {
             get
@@ -21084,8 +21265,10 @@ namespace Chummer
                 }
             }
         }
-        #endregion
-        #endregion
+
+        #endregion Decrease Attributes
+
+        #endregion Spell Defense
 
         public int Surprise
         {
@@ -21514,9 +21697,10 @@ namespace Chummer
             }
         }
 
-        #endregion
+        #endregion Armor Properties
 
         #region Spell Defense
+
         public int SpellDefenseIllusionMana
         {
             get
@@ -21574,7 +21758,7 @@ namespace Chummer
                     {
                         FormatImprovementModifiers(
                             sbdToolTip,
-                            new []
+                            new[]
                             {
                                 Improvement.ImprovementType.SpellResistance,
                                 Improvement.ImprovementType.ManaIllusionResist
@@ -21645,7 +21829,7 @@ namespace Chummer
                     {
                         FormatImprovementModifiers(
                             sbdToolTip,
-                            new []
+                            new[]
                             {
                                 Improvement.ImprovementType.SpellResistance,
                                 Improvement.ImprovementType.PhysicalIllusionResist
@@ -21717,7 +21901,7 @@ namespace Chummer
                     {
                         FormatImprovementModifiers(
                             sbdToolTip,
-                            new []
+                            new[]
                             {
                                 Improvement.ImprovementType.SpellResistance,
                                 Improvement.ImprovementType.MentalManipulationResist
@@ -21831,7 +22015,8 @@ namespace Chummer
                 }
             }
         }
-        #endregion
+
+        #endregion Spell Defense
 
         /// <summary>
         /// Custom Drugs created by the character.
@@ -22184,7 +22369,7 @@ namespace Chummer
             }
         }
 
-        #endregion
+        #endregion Condition Monitors
 
         #region Build Properties
 
@@ -22223,6 +22408,7 @@ namespace Chummer
                     return EffectiveBuildMethod == CharacterBuildMethod.LifeModule;
             }
         }
+
         public async ValueTask<bool> GetEffectiveBuildMethodIsLifeModuleAsync(CancellationToken token = default)
         {
             using (await EnterReadLock.EnterAsync(LockObject, token))
@@ -22315,7 +22501,7 @@ namespace Chummer
                 }
             }
         }
-        
+
         public async ValueTask<decimal> GetStolenNuyenAsync(CancellationToken token = default)
         {
             using (await EnterReadLock.EnterAsync(LockObject, token))
@@ -22458,7 +22644,7 @@ namespace Chummer
                         (bool blnIsSuccess, object objProcess) =
                             CommonFunctions.EvaluateInvariantXPath(sbdValue.ToString());
                         if (blnIsSuccess)
-                            decFromKarma = Convert.ToDecimal((double) objProcess);
+                            decFromKarma = Convert.ToDecimal((double)objProcess);
                     }
                 }
                 else
@@ -22926,7 +23112,7 @@ namespace Chummer
             }
         }
 
-        #endregion
+        #endregion Build Properties
 
         #region Metatype/Metavariant Information
 
@@ -23811,6 +23997,7 @@ namespace Chummer
                     case "Fly":
                         intIndexToGet = 2;
                         break;
+
                     case "Swim":
                         intIndexToGet = 1;
                         break;
@@ -23847,6 +24034,7 @@ namespace Chummer
                     case "Fly":
                         intIndexToGet = 2;
                         break;
+
                     case "Swim":
                         intIndexToGet = 1;
                         break;
@@ -23884,6 +24072,7 @@ namespace Chummer
                     case "Fly":
                         intIndexToGet = 2;
                         break;
+
                     case "Swim":
                         intIndexToGet = 1;
                         break;
@@ -23920,6 +24109,7 @@ namespace Chummer
                     case "Fly":
                         intIndexToGet = 2;
                         break;
+
                     case "Swim":
                         intIndexToGet = 1;
                         break;
@@ -23957,6 +24147,7 @@ namespace Chummer
                     case "Fly":
                         intIndexToGet = 2;
                         break;
+
                     case "Swim":
                         intIndexToGet = 1;
                         break;
@@ -23993,6 +24184,7 @@ namespace Chummer
                     case "Fly":
                         intIndexToGet = 2;
                         break;
+
                     case "Swim":
                         intIndexToGet = 1;
                         break;
@@ -24364,6 +24556,7 @@ namespace Chummer
                             s = (MetatypeBP * Settings.MetatypeCostsKarmaMultiplier).ToString(
                                 GlobalSettings.CultureInfo);
                             break;
+
                         case CharacterBuildMethod.Priority:
                         case CharacterBuildMethod.SumtoTen:
                             s = (MetatypeBP).ToString(GlobalSettings.CultureInfo);
@@ -24409,7 +24602,7 @@ namespace Chummer
                 return MetatypeCategory == "Free Sprite";
         }
 
-        #endregion
+        #endregion Metatype/Metavariant Information
 
         #region Special Functions and Enabled Check Properties
 
@@ -25258,7 +25451,7 @@ namespace Chummer
                 return LanguageManager.GetString("String_None");
             bool blnShowTest = false;
             string strTestSuffix = LanguageManager.GetString("String_AvailRestricted");
-            if(strAvail.EndsWith(strTestSuffix, StringComparison.Ordinal))
+            if (strAvail.EndsWith(strTestSuffix, StringComparison.Ordinal))
             {
                 blnShowTest = true;
                 strAvail = strAvail.TrimEndOnce(strTestSuffix, true);
@@ -25266,14 +25459,14 @@ namespace Chummer
             else
             {
                 strTestSuffix = LanguageManager.GetString("String_AvailForbidden");
-                if(strAvail.EndsWith(strTestSuffix, StringComparison.Ordinal))
+                if (strAvail.EndsWith(strTestSuffix, StringComparison.Ordinal))
                 {
                     blnShowTest = true;
                     strAvail = strAvail.TrimEndOnce(strTestSuffix, true);
                 }
             }
 
-            if(int.TryParse(strAvail, out int intAvail) && (intAvail != 0 || blnShowTest))
+            if (int.TryParse(strAvail, out int intAvail) && (intAvail != 0 || blnShowTest))
             {
                 return GetAvailTestString(decCost, intAvail);
             }
@@ -25288,7 +25481,7 @@ namespace Chummer
         /// <param name="objAvailability">Item's Availability.</param>
         public string AvailTest(decimal decCost, AvailabilityValue objAvailability)
         {
-            if(objAvailability.Value != 0 || objAvailability.Suffix == 'R' || objAvailability.Suffix == 'F')
+            if (objAvailability.Value != 0 || objAvailability.Suffix == 'R' || objAvailability.Suffix == 'F')
             {
                 return GetAvailTestString(decCost, objAvailability.Value);
             }
@@ -25469,7 +25662,7 @@ namespace Chummer
                 .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.BurnoutsWay)
                 .Count > 0;
 
-        #endregion
+        #endregion Special Functions and Enabled Check Properties
 
         #region Application Properties
 
@@ -25487,7 +25680,7 @@ namespace Chummer
             }
         }
 
-        #endregion
+        #endregion Application Properties
 
         #region Old Quality Conversion Code
 
@@ -25735,7 +25928,7 @@ namespace Chummer
         private static string GetQualityName(string strQuality)
         {
             int intPos = strQuality.IndexOf('[');
-            if(intPos != -1)
+            if (intPos != -1)
                 strQuality = strQuality.Substring(0, intPos - 1);
             return strQuality;
         }
@@ -25748,7 +25941,7 @@ namespace Chummer
         {
             XmlNode xmlNewQuality = null;
             int intRanks = 0;
-            switch(xmlOldQuality["name"]?.InnerText)
+            switch (xmlOldQuality["name"]?.InnerText)
             {
                 case "Focused Concentration (Rating 1)":
                     {
@@ -26178,7 +26371,7 @@ namespace Chummer
                     }
             }
 
-            if(intRanks > 0)
+            if (intRanks > 0)
             {
                 using (LockObject.EnterWriteLock())
                 {
@@ -26210,7 +26403,7 @@ namespace Chummer
             return false;
         }
 
-        #endregion
+        #endregion Old Quality Conversion Code
 
         #region Temporary Properties : Dashboard
 
@@ -26277,7 +26470,7 @@ namespace Chummer
         /// </summary>
         public int InitialInit { get; set; }
 
-        #endregion
+        #endregion Temporary Properties : Dashboard
 
         #region Temporary Properties
 
@@ -26330,7 +26523,7 @@ namespace Chummer
             }
         }
 
-        #endregion
+        #endregion Temporary Properties
 
         //Can't be at improvementmanager due reasons
         private readonly Lazy<ThreadSafeStack<string>> _stkPushText = new Lazy<ThreadSafeStack<string>>();
@@ -26645,14 +26838,17 @@ namespace Chummer
                                         intOldRESCareerMinimumReduction -=
                                             objImprovement.Minimum + objImprovement.Augmented.StandardRound();
                                         break;
+
                                     case "DEP":
                                         intOldDEPCareerMinimumReduction -=
                                             objImprovement.Minimum + objImprovement.Augmented.StandardRound();
                                         break;
+
                                     case "MAG":
                                         intOldMAGCareerMinimumReduction -=
                                             objImprovement.Minimum + objImprovement.Augmented.StandardRound();
                                         break;
+
                                     case "MAGAdept":
                                         intOldMAGAdeptCareerMinimumReduction -=
                                             objImprovement.Minimum + objImprovement.Augmented.StandardRound();
@@ -27105,8 +27301,8 @@ namespace Chummer
                                 decimal decNonCyberwareEssence = BiowareEssence + EssenceHole;
                                 int intMaxCyberadeptDaemonBonus = Math.Ceiling(decNonCyberwareEssence) ==
                                                                   Math.Floor(decNonCyberwareEssence)
-                                    ? (int) Math.Ceiling(CyberwareEssence)
-                                    : (int) Math.Floor(CyberwareEssence);
+                                    ? (int)Math.Ceiling(CyberwareEssence)
+                                    : (int)Math.Floor(CyberwareEssence);
                                 int intCyberadeptDaemonBonus = 0;
                                 for (int i = 1; i <= SubmersionGrade; ++i)
                                 {
@@ -27199,14 +27395,17 @@ namespace Chummer
                                         intOldRESCareerMinimumReduction -=
                                             objImprovement.Minimum + objImprovement.Augmented.StandardRound();
                                         break;
+
                                     case "DEP":
                                         intOldDEPCareerMinimumReduction -=
                                             objImprovement.Minimum + objImprovement.Augmented.StandardRound();
                                         break;
+
                                     case "MAG":
                                         intOldMAGCareerMinimumReduction -=
                                             objImprovement.Minimum + objImprovement.Augmented.StandardRound();
                                         break;
+
                                     case "MAGAdept":
                                         intOldMAGAdeptCareerMinimumReduction -=
                                             objImprovement.Minimum + objImprovement.Augmented.StandardRound();
@@ -28498,6 +28697,7 @@ namespace Chummer
         }
 
         private int _intSustainingPenalty;
+
         /// <summary>
         /// Dicepool modifier the character has from wounds. Should be a non-positive number because wound modifiers are always penalties if they are not 0.
         /// </summary>
@@ -29456,7 +29656,8 @@ namespace Chummer
                         )
                     )
                 );
-        #endregion
+
+        #endregion Static
 
         [NotifyPropertyChangedInvocator]
         public void OnPropertyChanged([CallerMemberName] string strPropertyName = null)
@@ -29727,21 +29928,21 @@ namespace Chummer
 
             if (Program.MainForm == null || IsLoading)
                 return;
-            foreach(Character objLoopOpenCharacter in Program.OpenCharacters)
+            foreach (Character objLoopOpenCharacter in Program.OpenCharacters)
             {
-                if(objLoopOpenCharacter != this && objLoopOpenCharacter.LinkedCharacters.Contains(this))
+                if (objLoopOpenCharacter != this && objLoopOpenCharacter.LinkedCharacters.Contains(this))
                 {
-                    foreach(Spirit objSpirit in objLoopOpenCharacter.Spirits)
+                    foreach (Spirit objSpirit in objLoopOpenCharacter.Spirits)
                     {
-                        if(objSpirit.LinkedCharacter == this)
+                        if (objSpirit.LinkedCharacter == this)
                         {
                             objSpirit.OnPropertyChanged(nameof(Spirit.LinkedCharacter));
                         }
                     }
 
-                    foreach(Contact objContact in objLoopOpenCharacter.Contacts)
+                    foreach (Contact objContact in objLoopOpenCharacter.Contacts)
                     {
-                        if(objContact.LinkedCharacter == this)
+                        if (objContact.LinkedCharacter == this)
                         {
                             objContact.OnPropertyChanged(nameof(Contact.LinkedCharacter));
                         }
@@ -29751,6 +29952,7 @@ namespace Chummer
         }
 
         #region Hero Lab Importing
+
         public static readonly ReadOnlyCollection<string> HeroLabPluginNodeNames = Array.AsReadOnly(new[]
             {"modifications", "accessories", "ammunition", "programs", "othergear"});
 
@@ -29775,7 +29977,7 @@ namespace Chummer
         /// </summary>
         public async Task<bool> LoadFromHeroLabFileCoreAsync(bool blnSync, string strPorFile, string strCharacterId, string strSettingsKey = "", CancellationToken token = default)
         {
-            if(!File.Exists(strPorFile))
+            if (!File.Exists(strPorFile))
                 return false;
 
             IDisposable objLocker = null;
@@ -30344,27 +30546,35 @@ namespace Chummer
                                             case "quAware":
                                                 _strPriorityTalent = "Aware";
                                                 break;
+
                                             case "quEnchanter":
                                                 _strPriorityTalent = "Enchanter";
                                                 break;
+
                                             case "quExplorer":
                                                 _strPriorityTalent = "Explorer";
                                                 break;
+
                                             case "quApprentice":
                                                 _strPriorityTalent = "Apprentice";
                                                 break;
+
                                             case "quAspectedMagician":
                                                 _strPriorityTalent = "Aspected Magician";
                                                 break;
+
                                             case "quAdept":
                                                 _strPriorityTalent = "Adept";
                                                 break;
+
                                             case "quMagician":
                                                 _strPriorityTalent = "Magician";
                                                 break;
+
                                             case "quMysticAdept":
                                                 _strPriorityTalent = "Mystic Adept";
                                                 break;
+
                                             case "quTechnoma":
                                                 _strPriorityTalent = "Technomancer";
                                                 break;
@@ -30633,15 +30843,19 @@ namespace Chummer
                                             case "Reduced (hearing)":
                                                 strQualityName = "Reduced Sense (Hearing)";
                                                 break;
+
                                             case "Reduced (smell)":
                                                 strQualityName = "Reduced Sense (Smell)";
                                                 break;
+
                                             case "Reduced (taste)":
                                                 strQualityName = "Reduced Sense (Taste)";
                                                 break;
+
                                             case "Reduced (touch)":
                                                 strQualityName = "Reduced Sense (Touch)";
                                                 break;
+
                                             case "Reduced (sight)":
                                                 strQualityName = "Reduced Sense (Sight)";
                                                 break;
@@ -30773,7 +30987,7 @@ namespace Chummer
 
                             /* TODO: Add support for locations from HeroLab
                             Timekeeper.Start("load_char_loc");
-        
+
                             // Locations.
                             XmlNodeList objXmlLocationList = objXmlCharacter.SelectNodes("gearlocations/gearlocation");
                             foreach (XmlNode objXmlLocation in objXmlLocationList)
@@ -30781,24 +30995,24 @@ namespace Chummer
                                 Location objLocation = new Location(this, _lstGearLocations, string.Empty, false);
                                 objLocation.Load(objXmlLocation);
                             }
-        
+
                             objXmlLocationList = objXmlCharacter.SelectNodes("locations/location");
                             foreach (XmlNode objXmlLocation in objXmlLocationList)
                             {
                                 Location objLocation = new Location(this, _lstGearLocations, string.Empty, false);
                                 objLocation.Load(objXmlLocation);
                             }
-        
+
                             objXmlLocationList = objXmlCharacter.SelectNodes("gearlocations/location");
                             foreach (XmlNode objXmlLocation in objXmlLocationList)
                             {
                                 Location objLocation = new Location(this, _lstGearLocations, string.Empty, false);
                                 objLocation.Load(objXmlLocation);
                             }
-        
+
                             Timekeeper.Finish("load_char_loc");
                             Timekeeper.Start("load_char_abundle");
-        
+
                             // Armor Bundles.
                             objXmlLocationList = objXmlCharacter.SelectNodes("armorbundles/armorbundle");
                             foreach (XmlNode objXmlLocation in objXmlLocationList)
@@ -30806,24 +31020,24 @@ namespace Chummer
                                 Location objLocation = new Location(this, _lstArmorLocations, string.Empty, false);
                                 objLocation.Load(objXmlLocation);
                             }
-        
+
                             objXmlLocationList = objXmlCharacter.SelectNodes("armorlocations/armorlocation");
                             foreach (XmlNode objXmlLocation in objXmlLocationList)
                             {
                                 Location objLocation = new Location(this, _lstArmorLocations, string.Empty, false);
                                 objLocation.Load(objXmlLocation);
                             }
-        
+
                             objXmlLocationList = objXmlCharacter.SelectNodes("armorlocations/location");
                             foreach (XmlNode objXmlLocation in objXmlLocationList)
                             {
                                 Location objLocation = new Location(this, _lstArmorLocations, string.Empty, false);
                                 objLocation.Load(objXmlLocation);
                             }
-        
+
                             Timekeeper.Finish("load_char_abundle");
                             Timekeeper.Start("load_char_vloc");
-        
+
                             // Vehicle Locations.
                             XmlNodeList objXmlVehicleLocationList = objXmlCharacter.SelectNodes("vehiclelocations/vehiclelocation");
                             foreach (XmlNode objXmlLocation in objXmlVehicleLocationList)
@@ -30831,17 +31045,17 @@ namespace Chummer
                                 Location objLocation = new Location(this, _lstVehicleLocations, string.Empty, false);
                                 objLocation.Load(objXmlLocation);
                             }
-        
+
                             objXmlVehicleLocationList = objXmlCharacter.SelectNodes("vehiclelocations/location");
                             foreach (XmlNode objXmlLocation in objXmlVehicleLocationList)
                             {
                                 Location objLocation = new Location(this, _lstVehicleLocations, string.Empty, false);
                                 objLocation.Load(objXmlLocation);
                             }
-        
+
                             Timekeeper.Finish("load_char_vloc");
                             Timekeeper.Start("load_char_wloc");
-        
+
                             // Weapon Locations.
                             XmlNodeList objXmlWeaponLocationList = objXmlCharacter.SelectNodes("weaponlocations/weaponlocation");
                             foreach (XmlNode objXmlLocation in objXmlWeaponLocationList)
@@ -30849,14 +31063,14 @@ namespace Chummer
                                 Location objLocation = new Location(this, _lstWeaponLocations, string.Empty, false);
                                 objLocation.Load(objXmlLocation);
                             }
-        
+
                             objXmlWeaponLocationList = objXmlCharacter.SelectNodes("weaponlocations/location");
                             foreach (XmlNode objXmlLocation in objXmlWeaponLocationList)
                             {
                                 Location objLocation = new Location(this, _lstWeaponLocations, string.Empty, false);
                                 objLocation.Load(objXmlLocation);
                             }
-        
+
                             Timekeeper.Finish("load_char_wloc");
                             */
                             using (_ = blnSync
@@ -30892,24 +31106,31 @@ namespace Chummer
                                                 case "Metatype":
                                                     objContact.Metatype = astrLineColonSplit[1].Trim();
                                                     break;
+
                                                 case "Gender":
                                                     objContact.Gender = astrLineColonSplit[1].Trim();
                                                     break;
+
                                                 case "Age":
                                                     objContact.Age = astrLineColonSplit[1].Trim();
                                                     break;
+
                                                 case "Preferred Payment Method":
                                                     objContact.PreferredPayment = astrLineColonSplit[1].Trim();
                                                     break;
+
                                                 case "Hobbies/Vice":
                                                     objContact.HobbiesVice = astrLineColonSplit[1].Trim();
                                                     break;
+
                                                 case "Personal Life":
                                                     objContact.PersonalLife = astrLineColonSplit[1].Trim();
                                                     break;
+
                                                 case "Type":
                                                     objContact.Type = astrLineColonSplit[1].Trim();
                                                     break;
+
                                                 default:
                                                     sbdNotes.AppendLine(strLine);
                                                     break;
@@ -31362,62 +31583,77 @@ namespace Chummer
                                                 strForcedValue = "BOD";
                                                 strSpellName = "Increase [Attribute]";
                                                 break;
+
                                             case "Increase Agility":
                                                 strForcedValue = "AGI";
                                                 strSpellName = "Increase [Attribute]";
                                                 break;
+
                                             case "Increase Reaction":
                                                 strForcedValue = "REA";
                                                 strSpellName = "Increase [Attribute]";
                                                 break;
+
                                             case "Increase Strength":
                                                 strForcedValue = "STR";
                                                 strSpellName = "Increase [Attribute]";
                                                 break;
+
                                             case "Increase Charisma":
                                                 strForcedValue = "CHA";
                                                 strSpellName = "Increase [Attribute]";
                                                 break;
+
                                             case "Increase Intuition":
                                                 strForcedValue = "INT";
                                                 strSpellName = "Increase [Attribute]";
                                                 break;
+
                                             case "Increase Logic":
                                                 strForcedValue = "LOG";
                                                 strSpellName = "Increase [Attribute]";
                                                 break;
+
                                             case "Increase Willpower":
                                                 strForcedValue = "WIL";
                                                 strSpellName = "Increase [Attribute]";
                                                 break;
+
                                             case "Decrease Body":
                                                 strForcedValue = "BOD";
                                                 strSpellName = "Decrease [Attribute]";
                                                 break;
+
                                             case "Decrease Agility":
                                                 strForcedValue = "AGI";
                                                 strSpellName = "Decrease [Attribute]";
                                                 break;
+
                                             case "Decrease Reaction":
                                                 strForcedValue = "REA";
                                                 strSpellName = "Decrease [Attribute]";
                                                 break;
+
                                             case "Decrease Strength":
                                                 strForcedValue = "STR";
                                                 strSpellName = "Decrease [Attribute]";
                                                 break;
+
                                             case "Decrease Charisma":
                                                 strForcedValue = "CHA";
                                                 strSpellName = "Decrease [Attribute]";
                                                 break;
+
                                             case "Decrease Intuition":
                                                 strForcedValue = "INT";
                                                 strSpellName = "Decrease [Attribute]";
                                                 break;
+
                                             case "Decrease Logic":
                                                 strForcedValue = "LOG";
                                                 strSpellName = "Decrease [Attribute]";
                                                 break;
+
                                             case "Decrease Willpower":
                                                 strForcedValue = "WIL";
                                                 strSpellName = "Decrease [Attribute]";
@@ -31703,7 +31939,7 @@ namespace Chummer
 
                                         if (xmlPowerData != null)
                                         {
-                                            Power objPower = new Power(this) {Extra = strForcedValue};
+                                            Power objPower = new Power(this) { Extra = strForcedValue };
                                             objPower.Create(xmlPowerData, intRating);
                                             objPower.Notes = xmlHeroLabPower.SelectSingleNode("description")?.Value;
                                             if (blnSync)
@@ -31720,7 +31956,7 @@ namespace Chummer
 
                             /* TODO: Spirit/Sprite Importing
                             Timekeeper.Start("load_char_spirits");
-        
+
                             // Spirits/Sprites.
                             foreach (XPathNavigator xmlSpirit in xmlCharacterNavigator.SelectAndCacheExpression("spirits/spirit"))
                             {
@@ -31728,7 +31964,7 @@ namespace Chummer
                                 objSpirit.Load(xmlSpirit);
                                 _lstSpirits.Add(objSpirit);
                             }
-        
+
                             Timekeeper.Finish("load_char_spirits");
                             */
                             using (_ = blnSync
@@ -31762,30 +31998,37 @@ namespace Chummer
                                                 strComplexFormName = "Diffusion of [Matrix Attribute]";
                                                 strForcedValue = "Attack";
                                                 break;
+
                                             case "Diffusion of Sleaze":
                                                 strComplexFormName = "Diffusion of [Matrix Attribute]";
                                                 strForcedValue = "Sleaze";
                                                 break;
+
                                             case "Diffusion of Data Processing":
                                                 strComplexFormName = "Diffusion of [Matrix Attribute]";
                                                 strForcedValue = "Data Processing";
                                                 break;
+
                                             case "Diffusion of Firewall":
                                                 strComplexFormName = "Diffusion of [Matrix Attribute]";
                                                 strForcedValue = "Firewall";
                                                 break;
+
                                             case "Infusion of Attack":
                                                 strComplexFormName = "Infusion of [Matrix Attribute]";
                                                 strForcedValue = "Attack";
                                                 break;
+
                                             case "Infusion of Sleaze":
                                                 strComplexFormName = "Infusion of [Matrix Attribute]";
                                                 strForcedValue = "Sleaze";
                                                 break;
+
                                             case "Infusion of Data Processing":
                                                 strComplexFormName = "Infusion of [Matrix Attribute]";
                                                 strForcedValue = "Data Processing";
                                                 break;
+
                                             case "Infusion of Firewall":
                                                 strComplexFormName = "Infusion of [Matrix Attribute]";
                                                 strForcedValue = "Firewall";
@@ -31844,7 +32087,7 @@ namespace Chummer
 
                             /* TODO: AI Advanced Program Importing
                             Timekeeper.Start("load_char_aiprogram");
-        
+
                             // AI Advanced Programs.
                             objXmlNodeList = objXmlCharacter.SelectNodes("aiprograms/aiprogram");
                             foreach (XmlNode xmlHeroLabProgram in xmlNodeList)
@@ -31853,12 +32096,12 @@ namespace Chummer
                                 objProgram.Load(xmlHeroLabProgram);
                                 _lstAIPrograms.Add(objProgram);
                             }
-        
+
                             Timekeeper.Finish("load_char_aiprogram");
                             */
                             /* TODO: Martial Arts import, which are saved in TXT and HTML statblocks but not in XML statblock
                             Timekeeper.Start("load_char_marts");
-        
+
                             // Martial Arts.
                             xmlNodeList = objXmlCharacter.SelectNodes("martialarts/martialart");
                             foreach (XmlNode xmlHeroLabArt in xmlNodeList)
@@ -31867,7 +32110,7 @@ namespace Chummer
                                 objMartialArt.Load(xmlHeroLabArt);
                                 _lstMartialArts.Add(objMartialArt);
                             }
-        
+
                             Timekeeper.Finish("load_char_marts");
                             */
                             using (_ = blnSync
@@ -32048,10 +32291,10 @@ namespace Chummer
                                 objMetamagic.Load(xmlHeroLabMetamagic);
                                 _lstMetamagics.Add(objMetamagic);
                             }
-        
+
                             Timekeeper.Finish("load_char_mmagic");
                             Timekeeper.Start("load_char_arts");
-        
+
                             // Arts
                             xmlNodeList = objXmlCharacter.SelectNodes("arts/art");
                             foreach (XmlNode xmlHeroLabArt in xmlNodeList)
@@ -32060,10 +32303,10 @@ namespace Chummer
                                 objArt.Load(xmlHeroLabArt);
                                 _lstArts.Add(objArt);
                             }
-        
+
                             Timekeeper.Finish("load_char_arts");
                             Timekeeper.Start("load_char_ench");
-        
+
                             // Enhancements
                             xmlNodeList = objXmlCharacter.SelectNodes("enhancements/enhancement");
                             foreach (XmlNode xmlHeroLabEnhancement in objXmlNodeList)
@@ -32072,10 +32315,10 @@ namespace Chummer
                                 objEnhancement.Load(xmlHeroLabEnhancement);
                                 _lstEnhancements.Add(objEnhancement);
                             }
-        
+
                             Timekeeper.Finish("load_char_ench");
                             Timekeeper.Start("load_char_cpow");
-        
+
                             // Critter Powers.
                             xmlNodeList = objXmlCharacter.SelectNodes("critterpowers/critterpower");
                             foreach (XmlNode xmlHeroLabPower in xmlNodeList)
@@ -32084,10 +32327,10 @@ namespace Chummer
                                 objPower.Load(xmlHeroLabPower);
                                 _lstCritterPowers.Add(objPower);
                             }
-        
+
                             Timekeeper.Finish("load_char_cpow");
                             Timekeeper.Start("load_char_foci");
-        
+
                             // Foci.
                             xmlNodeList = objXmlCharacter.SelectNodes("foci/focus");
                             foreach (XmlNode xmlHeroLabFocus in xmlNodeList)
@@ -32096,10 +32339,10 @@ namespace Chummer
                                 objFocus.Load(xmlHeroLabFocus);
                                 _lstFoci.Add(objFocus);
                             }
-        
+
                             Timekeeper.Finish("load_char_foci");
                             Timekeeper.Start("load_char_init");
-        
+
                             // Initiation Grades.
                             xmlNodeList = objXmlCharacter.SelectNodes("initiationgrades/initiationgrade");
                             foreach (XmlNode xmlHeroLabGrade in xmlNodeList)
@@ -32108,12 +32351,12 @@ namespace Chummer
                                 objGrade.Load(xmlHeroLabGrade);
                                 _lstInitiationGrades.Add(objGrade);
                             }
-        
+
                             Timekeeper.Finish("load_char_init");
                             */
                             /* TODO: Import HeroLab Expense Logs, which are different from Journal entries
                             Timekeeper.Start("load_char_elog");
-        
+
                             // Expense Log Entries.
                             XmlNodeList xmlExpenseList = objXmlCharacter.SelectNodes("expenses/expense");
                             foreach (XmlNode xmlHeroLabExpense in xmlExpenseList)
@@ -32122,7 +32365,7 @@ namespace Chummer
                                 objExpenseLogEntry.Load(xmlHeroLabExpense);
                                 _lstExpenseLog.Add(objExpenseLogEntry);
                             }
-        
+
                             Timekeeper.Finish("load_char_elog");
                             */
                             _lstWeapons.AddRange(lstWeapons);
@@ -32229,10 +32472,13 @@ namespace Chummer
                     await objLockerAsync.DisposeAsync();
             }
         }
-        #endregion
+
+        #endregion Hero Lab Importing
 
         #region Karma Values
+
         private int _intCachedPositiveQualityLimitKarma = int.MinValue;
+
         /// <summary>
         /// Total value of positive qualities that count towards the maximum quality limit in create mode.
         /// </summary>
@@ -32276,6 +32522,7 @@ namespace Chummer
         }
 
         private int _intCachedPositiveQualities = int.MinValue;
+
         /// <summary>
         /// Total value of ALL positive qualities, including those that don't contribute to the quality limit during character creation.
         /// </summary>
@@ -32453,6 +32700,7 @@ namespace Chummer
         }
 
         private int _intCachedNegativeQualities = int.MinValue;
+
         public int NegativeQualityKarma
         {
             get
@@ -32544,6 +32792,7 @@ namespace Chummer
         }
 
         private int _intCachedNegativeQualityLimitKarma = int.MinValue;
+
         /// <summary>
         /// Negative qualities that contribute to the character's Quality Limit during character creation.
         /// </summary>
@@ -32650,6 +32899,7 @@ namespace Chummer
         }
 
         private int _intCachedMetagenicNegativeQualities = int.MinValue;
+
         public int MetagenicNegativeQualityKarma
         {
             get
@@ -32717,6 +32967,7 @@ namespace Chummer
         }
 
         private int _intCachedEnemyKarma = int.MinValue;
+
         public int EnemyKarma
         {
             get
@@ -32761,7 +33012,7 @@ namespace Chummer
             + LanguageManager.GetString("String_Space")
             + LanguageManager.GetString("String_Karma");
 
-        #endregion
+        #endregion Karma Values
 
         #region Source
 
@@ -32900,7 +33151,8 @@ namespace Chummer
         {
             return SourceDetail.SetControlAsync(sourceControl, token);
         }
-        #endregion
+
+        #endregion Source
 
         #region Special Methods
 
@@ -33035,6 +33287,7 @@ namespace Chummer
                 return true;
             }
         }
-        #endregion
+
+        #endregion Special Methods
     }
 }

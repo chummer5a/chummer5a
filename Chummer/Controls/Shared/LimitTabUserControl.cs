@@ -327,118 +327,118 @@ namespace Chummer.UI.Shared
                 switch (e.Action)
                 {
                     case NotifyCollectionChangedAction.Add:
-                    {
-                        foreach (LimitModifier objLimitModifier in e.NewItems)
                         {
-                            int intTargetLimit = (int) Enum.Parse(typeof(LimitType), objLimitModifier.Limit);
-                            TreeNode objParentNode = await GetLimitModifierParentNode(intTargetLimit);
-                            await treLimit.DoThreadSafeAsync(x =>
+                            foreach (LimitModifier objLimitModifier in e.NewItems)
                             {
-                                TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
-                                if (!lstParentNodeChildren.ContainsKey(objLimitModifier.CurrentDisplayName))
+                                int intTargetLimit = (int)Enum.Parse(typeof(LimitType), objLimitModifier.Limit);
+                                TreeNode objParentNode = await GetLimitModifierParentNode(intTargetLimit);
+                                await treLimit.DoThreadSafeAsync(x =>
                                 {
-                                    TreeNode objNode = objLimitModifier.CreateTreeNode(
-                                        objLimitModifier.CanDelete ? cmsLimitModifier : cmsLimitModifierNotesOnly);
-                                    int intNodesCount = lstParentNodeChildren.Count;
-                                    int intTargetIndex = 0;
-                                    for (; intTargetIndex < intNodesCount; ++intTargetIndex)
+                                    TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
+                                    if (!lstParentNodeChildren.ContainsKey(objLimitModifier.CurrentDisplayName))
                                     {
-                                        if (CompareTreeNodes.CompareText(
-                                                lstParentNodeChildren[intTargetIndex], objNode) >= 0)
+                                        TreeNode objNode = objLimitModifier.CreateTreeNode(
+                                            objLimitModifier.CanDelete ? cmsLimitModifier : cmsLimitModifierNotesOnly);
+                                        int intNodesCount = lstParentNodeChildren.Count;
+                                        int intTargetIndex = 0;
+                                        for (; intTargetIndex < intNodesCount; ++intTargetIndex)
                                         {
-                                            break;
+                                            if (CompareTreeNodes.CompareText(
+                                                    lstParentNodeChildren[intTargetIndex], objNode) >= 0)
+                                            {
+                                                break;
+                                            }
                                         }
+
+                                        lstParentNodeChildren.Insert(intTargetIndex, objNode);
+                                        objParentNode.Expand();
+                                        x.SelectedNode = objNode;
                                     }
+                                }, token: token);
+                            }
 
-                                    lstParentNodeChildren.Insert(intTargetIndex, objNode);
-                                    objParentNode.Expand();
-                                    x.SelectedNode = objNode;
-                                }
-                            }, token: token);
+                            break;
                         }
-
-                        break;
-                    }
 
                     case NotifyCollectionChangedAction.Remove:
-                    {
-                        await treLimit.DoThreadSafeAsync(x =>
                         {
-                            foreach (LimitModifier objLimitModifier in e.OldItems)
-                            {
-                                TreeNode objNode = x.FindNodeByTag(objLimitModifier);
-                                if (objNode != null)
-                                {
-                                    TreeNode objParent = objNode.Parent;
-                                    objNode.Remove();
-                                    if (objParent.Level == 0 && objParent.Nodes.Count == 0)
-                                        objParent.Remove();
-                                }
-                            }
-                        }, token: token);
-                        break;
-                    }
-
-                    case NotifyCollectionChangedAction.Replace:
-                    {
-                        List<TreeNode> lstOldParentNodes = new List<TreeNode>(e.OldItems.Count);
-                        await treLimit.DoThreadSafeAsync(x =>
-                        {
-                            foreach (LimitModifier objLimitModifier in e.OldItems)
-                            {
-                                TreeNode objNode = x.FindNodeByTag(objLimitModifier);
-                                if (objNode != null)
-                                {
-                                    lstOldParentNodes.Add(objNode.Parent);
-                                    objNode.Remove();
-                                }
-                            }
-                        }, token: token);
-                        foreach (LimitModifier objLimitModifier in e.NewItems)
-                        {
-                            int intTargetLimit = (int) Enum.Parse(typeof(LimitType), objLimitModifier.Limit);
-                            TreeNode objParentNode = await GetLimitModifierParentNode(intTargetLimit);
                             await treLimit.DoThreadSafeAsync(x =>
                             {
-                                TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
-                                if (!lstParentNodeChildren.ContainsKey(objLimitModifier.CurrentDisplayName))
+                                foreach (LimitModifier objLimitModifier in e.OldItems)
                                 {
-                                    TreeNode objNode = objLimitModifier.CreateTreeNode(
-                                        objLimitModifier.CanDelete ? cmsLimitModifier : cmsLimitModifierNotesOnly);
-                                    int intNodesCount = lstParentNodeChildren.Count;
-                                    int intTargetIndex = 0;
-                                    for (; intTargetIndex < intNodesCount; ++intTargetIndex)
+                                    TreeNode objNode = x.FindNodeByTag(objLimitModifier);
+                                    if (objNode != null)
                                     {
-                                        if (CompareTreeNodes.CompareText(
-                                                lstParentNodeChildren[intTargetIndex], objNode) >= 0)
-                                        {
-                                            break;
-                                        }
+                                        TreeNode objParent = objNode.Parent;
+                                        objNode.Remove();
+                                        if (objParent.Level == 0 && objParent.Nodes.Count == 0)
+                                            objParent.Remove();
                                     }
-
-                                    lstParentNodeChildren.Insert(intTargetIndex, objNode);
-                                    objParentNode.Expand();
-                                    x.SelectedNode = objNode;
                                 }
                             }, token: token);
+                            break;
                         }
 
-                        await treLimit.DoThreadSafeAsync(() =>
+                    case NotifyCollectionChangedAction.Replace:
                         {
-                            foreach (TreeNode objOldParentNode in lstOldParentNodes)
+                            List<TreeNode> lstOldParentNodes = new List<TreeNode>(e.OldItems.Count);
+                            await treLimit.DoThreadSafeAsync(x =>
                             {
-                                if (objOldParentNode.Level == 0 && objOldParentNode.Nodes.Count == 0)
-                                    objOldParentNode.Remove();
+                                foreach (LimitModifier objLimitModifier in e.OldItems)
+                                {
+                                    TreeNode objNode = x.FindNodeByTag(objLimitModifier);
+                                    if (objNode != null)
+                                    {
+                                        lstOldParentNodes.Add(objNode.Parent);
+                                        objNode.Remove();
+                                    }
+                                }
+                            }, token: token);
+                            foreach (LimitModifier objLimitModifier in e.NewItems)
+                            {
+                                int intTargetLimit = (int)Enum.Parse(typeof(LimitType), objLimitModifier.Limit);
+                                TreeNode objParentNode = await GetLimitModifierParentNode(intTargetLimit);
+                                await treLimit.DoThreadSafeAsync(x =>
+                                {
+                                    TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
+                                    if (!lstParentNodeChildren.ContainsKey(objLimitModifier.CurrentDisplayName))
+                                    {
+                                        TreeNode objNode = objLimitModifier.CreateTreeNode(
+                                            objLimitModifier.CanDelete ? cmsLimitModifier : cmsLimitModifierNotesOnly);
+                                        int intNodesCount = lstParentNodeChildren.Count;
+                                        int intTargetIndex = 0;
+                                        for (; intTargetIndex < intNodesCount; ++intTargetIndex)
+                                        {
+                                            if (CompareTreeNodes.CompareText(
+                                                    lstParentNodeChildren[intTargetIndex], objNode) >= 0)
+                                            {
+                                                break;
+                                            }
+                                        }
+
+                                        lstParentNodeChildren.Insert(intTargetIndex, objNode);
+                                        objParentNode.Expand();
+                                        x.SelectedNode = objNode;
+                                    }
+                                }, token: token);
                             }
-                        }, token: token);
-                        break;
-                    }
+
+                            await treLimit.DoThreadSafeAsync(() =>
+                            {
+                                foreach (TreeNode objOldParentNode in lstOldParentNodes)
+                                {
+                                    if (objOldParentNode.Level == 0 && objOldParentNode.Nodes.Count == 0)
+                                        objOldParentNode.Remove();
+                                }
+                            }, token: token);
+                            break;
+                        }
 
                     case NotifyCollectionChangedAction.Reset:
-                    {
-                        await RefreshLimitModifiers(token: token);
-                        break;
-                    }
+                        {
+                            await RefreshLimitModifiers(token: token);
+                            break;
+                        }
                 }
             }
 

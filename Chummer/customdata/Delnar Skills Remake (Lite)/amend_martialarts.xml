@@ -27,7 +27,7 @@
         </addskillspecializationoption>
         <addskillspecializationoption xpathfilter="skill = 'Automatics' or skill = 'Pistols' or skill = 'Longarms' or skill = 'Heavy Weapons' or skills/skill = 'Automatics' or skills/skill = 'Pistols' or skills/skill = 'Longarms' or skills/skill = 'Heavy Weapons'">
           <skill>Firearms</skill>
-          <skills amendoperation="remove"/>
+          <skills amendoperation="remove" />
         </addskillspecializationoption>
         <addskillspecializationoption xpathfilter="skill = 'Archery' or skill = 'Throwing Weapons'">
           <skill>Projectile Weapons</skill>

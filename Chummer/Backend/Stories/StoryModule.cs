@@ -331,13 +331,13 @@ namespace Chummer
                         return await _objCharacter.ReverseTranslateExtraAsync(strArguments, token: token);
                     }
                 case "$XmlNameFriendly":
-                {
-                    return strArguments
-                           .FastEscape(' ', '$', '/', '?', ',', '\'', '\"', ';', ':', '(', ')', '[', ']', '|', '\\',
-                                       '+', '=', '`', '~', '!', '@', '#', '%', '^', '&', '*')
-                           .FastEscape((await LanguageManager.GetStringAsync("String_NuyenSymbol", strLanguage, token: token))
-                                       .ToCharArray()).ToLower(objCulture);
-                }
+                    {
+                        return strArguments
+                               .FastEscape(' ', '$', '/', '?', ',', '\'', '\"', ';', ':', '(', ')', '[', ']', '|', '\\',
+                                           '+', '=', '`', '~', '!', '@', '#', '%', '^', '&', '*')
+                               .FastEscape((await LanguageManager.GetStringAsync("String_NuyenSymbol", strLanguage, token: token))
+                                           .ToCharArray()).ToLower(objCulture);
+                    }
                 case "$CharacterName":
                     {
                         return _objCharacter.CharacterName;

@@ -67,12 +67,16 @@ namespace Chummer
 
         /// <inheritdoc />
         bool IList.IsFixedSize => false;
+
         /// <inheritdoc />
         bool ICollection<T>.IsReadOnly => false;
+
         /// <inheritdoc />
         bool IList.IsReadOnly => false;
+
         /// <inheritdoc />
         bool ICollection.IsSynchronized => true;
+
         /// <inheritdoc />
         object ICollection.SyncRoot => LockObject;
 
@@ -647,7 +651,7 @@ namespace Chummer
         {
             return GetEnumerator();
         }
-        
+
         public event EventHandler<RemovingOldEventArgs> BeforeRemove
         {
             add

@@ -75,6 +75,7 @@ namespace Chummer
                         lstImprovementSourcesToProcess.Add(objNewItem);
                     }
                     break;
+
                 case NotifyCollectionChangedAction.Remove:
                     foreach (MartialArtTechnique objOldItem in e.OldItems)
                     {
@@ -83,6 +84,7 @@ namespace Chummer
                         objOldItem.Parent = null;
                     }
                     break;
+
                 case NotifyCollectionChangedAction.Replace:
                     // ReSharper disable once AssignNullToNotNullAttribute
                     HashSet<MartialArtTechnique> setNewItems = e.NewItems.OfType<MartialArtTechnique>().ToHashSet();
@@ -101,6 +103,7 @@ namespace Chummer
                         lstImprovementSourcesToProcess.Add(objNewItem);
                     }
                     break;
+
                 case NotifyCollectionChangedAction.Reset:
                 case NotifyCollectionChangedAction.Move:
                     break;

@@ -54,12 +54,12 @@ namespace Chummer
         private static readonly LockingDictionary<ImprovementDictionaryKey, Tuple<decimal, List<Improvement>>>
             s_DictionaryCachedValues
                 = new LockingDictionary<ImprovementDictionaryKey, Tuple<decimal, List<Improvement>>>(
-                    (int) Improvement.ImprovementType.NumImprovementTypes);
+                    (int)Improvement.ImprovementType.NumImprovementTypes);
 
         private static readonly LockingDictionary<ImprovementDictionaryKey, Tuple<decimal, List<Improvement>>>
             s_DictionaryCachedAugmentedValues
                 = new LockingDictionary<ImprovementDictionaryKey, Tuple<decimal, List<Improvement>>>(
-                    (int) Improvement.ImprovementType.NumImprovementTypes);
+                    (int)Improvement.ImprovementType.NumImprovementTypes);
 
         public readonly struct ImprovementDictionaryKey : IEquatable<ImprovementDictionaryKey>,
             IEquatable<Tuple<Character, Improvement.ImprovementType, string>>
@@ -354,6 +354,7 @@ namespace Chummer
         #endregion Properties
 
         #region Helper Methods
+
         /// <summary>
         /// Retrieve the total Improvement value for the specified ImprovementType.
         /// </summary>
@@ -1386,7 +1387,7 @@ namespace Chummer
 
                 // Treat this as a decimal value so any fractions can be rounded down. This is currently only used by the Boosted Reflexes Cyberware from SR2050.
                 (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strReturn);
-                int intValue = blnIsSuccess ? ((double) objProcess).StandardRound() : 0;
+                int intValue = blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
 
                 //Log.Exit("ValueToInt");
                 return intValue;
@@ -1429,7 +1430,7 @@ namespace Chummer
 
                 // Treat this as a decimal value so any fractions can be rounded down. This is currently only used by the Boosted Reflexes Cyberware from SR2050.
                 (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strReturn);
-                decimal decValue = blnIsSuccess ? Convert.ToDecimal((double) objProcess) : 0;
+                decimal decValue = blnIsSuccess ? Convert.ToDecimal((double)objProcess) : 0;
 
                 //Log.Exit("ValueToInt");
                 return decValue;
@@ -2324,7 +2325,7 @@ namespace Chummer
             else if (bonusNode.NodeType != XmlNodeType.Comment)
             {
                 Utils.BreakIfDebug();
-                Log.Warn(new object[] {"Tried to get unknown bonus", bonusNode.OuterXml});
+                Log.Warn(new object[] { "Tried to get unknown bonus", bonusNode.OuterXml });
                 return false;
             }
 
@@ -2460,16 +2461,16 @@ namespace Chummer
                             break;
 
                         case Improvement.ImprovementType.Skillsoft:
-                        {
-                            foreach (KnowledgeSkill objKnowledgeSkill in
-                                     objCharacter.SkillsSection.KnowsoftSkills.Where(
-                                         x => x.InternalId == strImprovedName))
                             {
-                                if (blnCharacterHasSkillsoftAccess
-                                    && !objCharacter.SkillsSection.KnowledgeSkills.Contains(objKnowledgeSkill))
-                                    objCharacter.SkillsSection.KnowledgeSkills.Add(objKnowledgeSkill);
+                                foreach (KnowledgeSkill objKnowledgeSkill in
+                                         objCharacter.SkillsSection.KnowsoftSkills.Where(
+                                             x => x.InternalId == strImprovedName))
+                                {
+                                    if (blnCharacterHasSkillsoftAccess
+                                        && !objCharacter.SkillsSection.KnowledgeSkills.Contains(objKnowledgeSkill))
+                                        objCharacter.SkillsSection.KnowledgeSkills.Add(objKnowledgeSkill);
+                                }
                             }
-                        }
                             break;
 
                         case Improvement.ImprovementType.Attribute:
@@ -2694,16 +2695,16 @@ namespace Chummer
                             break;
 
                         case Improvement.ImprovementType.SpecialSkills:
-                        {
-                            SkillsSection.FilterOption eFilterOption
-                                = (SkillsSection.FilterOption) Enum.Parse(
-                                    typeof(SkillsSection.FilterOption), strImprovedName);
-                            foreach (Skill objSkill in objCharacter.SkillsSection.GetActiveSkillsFromData(
-                                         eFilterOption, false, objImprovement.Target))
                             {
-                                objSkill.ForceDisabled = false;
+                                SkillsSection.FilterOption eFilterOption
+                                    = (SkillsSection.FilterOption)Enum.Parse(
+                                        typeof(SkillsSection.FilterOption), strImprovedName);
+                                foreach (Skill objSkill in objCharacter.SkillsSection.GetActiveSkillsFromData(
+                                             eFilterOption, false, objImprovement.Target))
+                                {
+                                    objSkill.ForceDisabled = false;
+                                }
                             }
-                        }
                             break;
 
                         case Improvement.ImprovementType.SpecificQuality:
@@ -2742,11 +2743,11 @@ namespace Chummer
                             break;
 
                         case Improvement.ImprovementType.FreeWare:
-                        {
-                            Cyberware objCyberware
-                                = objCharacter.Cyberware.FirstOrDefault(o => o.InternalId == strImprovedName);
-                            objCyberware?.ChangeModularEquip(true);
-                        }
+                            {
+                                Cyberware objCyberware
+                                    = objCharacter.Cyberware.FirstOrDefault(o => o.InternalId == strImprovedName);
+                                objCyberware?.ChangeModularEquip(true);
+                            }
                             break;
                     }
                 }
@@ -3074,7 +3075,7 @@ namespace Chummer
                             if (!blnHasDuplicate)
                             {
                                 SkillsSection.FilterOption eFilterOption
-                                    = (SkillsSection.FilterOption) Enum.Parse(
+                                    = (SkillsSection.FilterOption)Enum.Parse(
                                         typeof(SkillsSection.FilterOption), strImprovedName);
                                 HashSet<Skill> setSkillsToDisable
                                     = new HashSet<Skill>(objCharacter.SkillsSection.GetActiveSkillsFromData(
@@ -3085,7 +3086,7 @@ namespace Chummer
                                     if (objLoopImprovement == objImprovement)
                                         continue;
                                     eFilterOption
-                                        = (SkillsSection.FilterOption) Enum.Parse(
+                                        = (SkillsSection.FilterOption)Enum.Parse(
                                             typeof(SkillsSection.FilterOption), objLoopImprovement.ImprovedName);
                                     setSkillsToDisable.ExceptWith(
                                         objCharacter.SkillsSection.GetActiveSkillsFromData(
@@ -3138,11 +3139,11 @@ namespace Chummer
                             break;
 
                         case Improvement.ImprovementType.FreeWare:
-                        {
-                            Cyberware objCyberware
-                                = objCharacter.Cyberware.FirstOrDefault(o => o.InternalId == strImprovedName);
-                            objCyberware?.ChangeModularEquip(false);
-                        }
+                            {
+                                Cyberware objCyberware
+                                    = objCharacter.Cyberware.FirstOrDefault(o => o.InternalId == strImprovedName);
+                                objCyberware?.ChangeModularEquip(false);
+                            }
                             break;
                     }
                 }
@@ -3527,20 +3528,20 @@ namespace Chummer
                             break;
 
                         case Improvement.ImprovementType.Adapsin:
-                        {
-                            if (!blnHasDuplicate && !blnReapplyImprovements)
                             {
-                                foreach (Cyberware objCyberware in objCharacter.Cyberware.DeepWhere(
-                                             x => x.Children, x => x.Grade.Adapsin))
+                                if (!blnHasDuplicate && !blnReapplyImprovements)
                                 {
-                                    string strNewName = objCyberware.Grade.Name.FastEscapeOnceFromEnd("(Adapsin)")
-                                                                    .Trim();
-                                    // Determine which GradeList to use for the Cyberware.
-                                    objCyberware.Grade = objCharacter.GetGrades(objCyberware.SourceType, true)
-                                                                     .FirstOrDefault(x => x.Name == strNewName);
+                                    foreach (Cyberware objCyberware in objCharacter.Cyberware.DeepWhere(
+                                                 x => x.Children, x => x.Grade.Adapsin))
+                                    {
+                                        string strNewName = objCyberware.Grade.Name.FastEscapeOnceFromEnd("(Adapsin)")
+                                                                        .Trim();
+                                        // Determine which GradeList to use for the Cyberware.
+                                        objCyberware.Grade = objCharacter.GetGrades(objCyberware.SourceType, true)
+                                                                         .FirstOrDefault(x => x.Name == strNewName);
+                                    }
                                 }
                             }
-                        }
                             break;
 
                         case Improvement.ImprovementType.AddContact:
@@ -3668,18 +3669,18 @@ namespace Chummer
                             break;
 
                         case Improvement.ImprovementType.Weapon:
-                        {
-                            Weapon objWeapon
-                                = objCharacter.Weapons.DeepFirstOrDefault(x => x.Children,
-                                                                          x => x.InternalId == strImprovedName)
-                                  ??
-                                  objCharacter.Vehicles.FindVehicleWeapon(strImprovedName);
-                            if (objWeapon != null)
                             {
-                                decReturn += objWeapon.TotalCost;
-                                decReturn += objWeapon.DeleteWeapon();
+                                Weapon objWeapon
+                                    = objCharacter.Weapons.DeepFirstOrDefault(x => x.Children,
+                                                                              x => x.InternalId == strImprovedName)
+                                      ??
+                                      objCharacter.Vehicles.FindVehicleWeapon(strImprovedName);
+                                if (objWeapon != null)
+                                {
+                                    decReturn += objWeapon.TotalCost;
+                                    decReturn += objWeapon.DeleteWeapon();
+                                }
                             }
-                        }
                             break;
 
                         case Improvement.ImprovementType.Spell:
@@ -3735,12 +3736,12 @@ namespace Chummer
                                 if (blnSync)
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     objCharacter.SkillsSection.RemoveSkills(
-                                        (SkillsSection.FilterOption) Enum.Parse(typeof(SkillsSection.FilterOption),
+                                        (SkillsSection.FilterOption)Enum.Parse(typeof(SkillsSection.FilterOption),
                                             strImprovedName), objImprovement.Target,
                                         !blnReapplyImprovements && objCharacter.Created);
                                 else
                                     await objCharacter.SkillsSection.RemoveSkillsAsync(
-                                        (SkillsSection.FilterOption) Enum.Parse(typeof(SkillsSection.FilterOption),
+                                        (SkillsSection.FilterOption)Enum.Parse(typeof(SkillsSection.FilterOption),
                                             strImprovedName), objImprovement.Target,
                                         !blnReapplyImprovements && objCharacter.Created, token);
                             }
@@ -3760,24 +3761,24 @@ namespace Chummer
 
                         case Improvement.ImprovementType.SkillSpecialization:
                         case Improvement.ImprovementType.SkillExpertise:
-                        {
-                            Skill objSkill = blnSync
-                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                ? objCharacter.SkillsSection.GetActiveSkill(strImprovedName)
-                                : await objCharacter.SkillsSection.GetActiveSkillAsync(strImprovedName, token).ConfigureAwait(false);
-                            SkillSpecialization objSkillSpec = strUniqueName.IsGuid()
-                                ? objSkill?.Specializations.FirstOrDefault(x => x.InternalId == strUniqueName)
-                                // Kept for legacy reasons
-                                : objSkill?.Specializations.FirstOrDefault(x => x.Name == strUniqueName);
-                            if (objSkillSpec != null)
                             {
-                                if (blnSync)
+                                Skill objSkill = blnSync
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    ? objCharacter.SkillsSection.GetActiveSkill(strImprovedName)
+                                    : await objCharacter.SkillsSection.GetActiveSkillAsync(strImprovedName, token).ConfigureAwait(false);
+                                SkillSpecialization objSkillSpec = strUniqueName.IsGuid()
+                                    ? objSkill?.Specializations.FirstOrDefault(x => x.InternalId == strUniqueName)
+                                    // Kept for legacy reasons
+                                    : objSkill?.Specializations.FirstOrDefault(x => x.Name == strUniqueName);
+                                if (objSkillSpec != null)
+                                {
+                                    if (blnSync)
                                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         objSkill.Specializations.Remove(objSkillSpec);
-                                else
-                                    await objSkill.Specializations.RemoveAsync(objSkillSpec, token).ConfigureAwait(false);
+                                    else
+                                        await objSkill.Specializations.RemoveAsync(objSkillSpec, token).ConfigureAwait(false);
+                                }
                             }
-                        }
                             break;
 
                         case Improvement.ImprovementType.AIProgram:
@@ -3822,15 +3823,15 @@ namespace Chummer
                             break;
 
                         case Improvement.ImprovementType.FreeWare:
-                        {
-                            Cyberware objCyberware
-                                = objCharacter.Cyberware.FirstOrDefault(o => o.InternalId == strImprovedName);
-                            if (objCyberware != null)
                             {
-                                decReturn += objCyberware.TotalCost;
-                                decReturn += objCyberware.DeleteCyberware();
+                                Cyberware objCyberware
+                                    = objCharacter.Cyberware.FirstOrDefault(o => o.InternalId == strImprovedName);
+                                if (objCyberware != null)
+                                {
+                                    decReturn += objCyberware.TotalCost;
+                                    decReturn += objCyberware.DeleteCyberware();
+                                }
                             }
-                        }
                             break;
                     }
                 }

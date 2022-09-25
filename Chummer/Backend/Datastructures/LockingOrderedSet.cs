@@ -206,7 +206,7 @@ namespace Chummer
             using (EnterReadLock.Enter(LockObject))
                 return _setData.SetEquals(other);
         }
-        
+
         public async ValueTask UnionWithAsync(IEnumerable<T> other, CancellationToken token = default)
         {
             List<T> lstOther = other.ToList();
@@ -221,7 +221,7 @@ namespace Chummer
                 await objLocker.DisposeAsync();
             }
         }
-        
+
         public async ValueTask IntersectWithAsync(IEnumerable<T> other, CancellationToken token = default)
         {
             HashSet<T> setOther = other.ToHashSet();
@@ -236,7 +236,7 @@ namespace Chummer
                 await objLocker.DisposeAsync();
             }
         }
-        
+
         public async ValueTask ExceptWithAsync(IEnumerable<T> other, CancellationToken token = default)
         {
             HashSet<T> setOther = other.ToHashSet();
@@ -251,7 +251,7 @@ namespace Chummer
                 await objLocker.DisposeAsync();
             }
         }
-        
+
         public async ValueTask SymmetricExceptWithAsync(IEnumerable<T> other, CancellationToken token = default)
         {
             HashSet<T> setOther = other.ToHashSet();
@@ -267,37 +267,37 @@ namespace Chummer
                 await objLocker.DisposeAsync();
             }
         }
-        
+
         public async ValueTask<bool> IsSubsetOfAsync(IEnumerable<T> other, CancellationToken token = default)
         {
             using (await EnterReadLock.EnterAsync(LockObject, token))
                 return _setData.IsSubsetOf(other);
         }
-        
+
         public async ValueTask<bool> IsSupersetOfAsync(IEnumerable<T> other, CancellationToken token = default)
         {
             using (await EnterReadLock.EnterAsync(LockObject, token))
                 return _setData.IsSupersetOf(other);
         }
-        
+
         public async ValueTask<bool> IsProperSupersetOfAsync(IEnumerable<T> other, CancellationToken token = default)
         {
             using (await EnterReadLock.EnterAsync(LockObject, token))
                 return _setData.IsProperSupersetOf(other);
         }
-        
+
         public async ValueTask<bool> IsProperSubsetOfAsync(IEnumerable<T> other, CancellationToken token = default)
         {
             using (await EnterReadLock.EnterAsync(LockObject, token))
                 return _setData.IsProperSubsetOf(other);
         }
-        
+
         public async ValueTask<bool> OverlapsAsync(IEnumerable<T> other, CancellationToken token = default)
         {
             using (await EnterReadLock.EnterAsync(LockObject, token))
                 return _setData.Overlaps(other);
         }
-        
+
         public async ValueTask<bool> SetEqualsAsync(IEnumerable<T> other, CancellationToken token = default)
         {
             using (await EnterReadLock.EnterAsync(LockObject, token))

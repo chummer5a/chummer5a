@@ -163,7 +163,7 @@
           <name>Stagecraft</name>
           <condition>Acting</condition>
         </specificskill>
-        <specificskill xpathfilter="(name = 'Compiling' or name = 'Registering' or name = 'Summoning' or name = 'Binding') and condition" amendoperation="remove"/>
+        <specificskill xpathfilter="(name = 'Compiling' or name = 'Registering' or name = 'Summoning' or name = 'Binding') and condition" amendoperation="remove" />
       </bonus>
       <choices>
         <choice>
@@ -291,7 +291,7 @@
               <name>Stagecraft</name>
               <condition>Acting</condition>
             </specificskill>
-            <specificskill xpathfilter="(name = 'Compiling' or name = 'Registering' or name = 'Summoning' or name = 'Binding') and condition" amendoperation="remove"/>
+            <specificskill xpathfilter="(name = 'Compiling' or name = 'Registering' or name = 'Summoning' or name = 'Binding') and condition" amendoperation="remove" />
           </bonus>
         </choice>
       </choices>
@@ -422,7 +422,7 @@
     <mentor>
       <name>Blacksmith</name>
       <advantage>All: +2 dice to Armorer or Alchemy Tests.</advantage>
-      <bonus amendoperation="remove"/>
+      <bonus amendoperation="remove" />
       <choices>
         <choice amendoperation="addnode">
           <name>+2 dice on Armorer Tests</name>
@@ -482,7 +482,7 @@
     <mentor>
       <name>Electro Marten</name>
       <advantage>All: +2 dice to Electronics or Matrix Tests.</advantage>
-      <bonus amendoperation="remove"/>
+      <bonus amendoperation="remove" />
       <choices>
         <choice amendoperation="addnode">
           <name>+2 dice on Electronics Tests</name>
@@ -613,7 +613,7 @@
     <mentor>
       <name>Lion</name>
       <advantage>All: +2 dice pool modifier for Survival Tests, Athletics Tests, or Query Tests (Choose One)</advantage>
-      <bonus amendoperation="remove"/>
+      <bonus amendoperation="remove" />
       <choices>
         <choice amendoperation="addnode">
           <name>+2 dice on Survival Tests</name>
@@ -655,7 +655,7 @@
       <name>Tohu Wa-Bohu</name>
       <advantage>All: +2 dice to Command or Demolitions Tests (choose one).</advantage>
       <bonus>
-        <selectskill xpathfilter="@limittoskill='Demolitions,Intimidation'" amendoperation="remove"/>
+        <selectskill xpathfilter="@limittoskill='Demolitions,Intimidation'" amendoperation="remove" />
       </bonus>
       <choices>
         <choice amendoperation="addnode">

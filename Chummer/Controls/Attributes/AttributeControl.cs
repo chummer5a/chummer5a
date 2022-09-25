@@ -38,13 +38,16 @@ namespace Chummer.UI.Attributes
         private int _oldBase;
         private int _oldKarma;
         private readonly Character _objCharacter;
+
         // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly BindingSource _dataSource;
 
         private readonly NumericUpDownEx nudKarma;
         private readonly NumericUpDownEx nudBase;
+
         // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly ButtonWithToolTip cmdBurnEdge;
+
         // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly ButtonWithToolTip cmdImproveATT;
 
@@ -404,6 +407,7 @@ namespace Chummer.UI.Attributes
         /// I'm not super pleased with how this works, but it's functional so w/e.
         /// The goal is for controls to retain the ability to display tooltips even while disabled. IT DOES NOT WORK VERY WELL.
         /// </summary>
+
         #region ButtonWithToolTip Visibility workaround
 
         private ButtonWithToolTip _activeButton;

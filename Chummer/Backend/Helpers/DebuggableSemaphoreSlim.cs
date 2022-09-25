@@ -179,6 +179,7 @@ namespace Chummer
             return true;
         }
 #else
+
         /// <inheritdoc cref="SemaphoreSlim.WaitAsync()"/>
         public Task WaitAsync()
         {
@@ -214,6 +215,7 @@ namespace Chummer
         {
             return _objSemaphoreSlim.WaitAsync(millisecondsTimeout, token);
         }
+
 #endif
 
         /// <summary>

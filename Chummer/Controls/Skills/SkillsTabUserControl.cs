@@ -37,6 +37,7 @@ namespace Chummer.UI.Skills
     public partial class SkillsTabUserControl : UserControl
     {
         private bool _blnDisposeCharacterOnDispose;
+
         public event PropertyChangedEventHandler MakeDirtyWithCharacterUpdate;
 
         private BindingListDisplay<Skill> _lstActiveSkills;
@@ -827,7 +828,7 @@ namespace Chummer.UI.Skills
             if (_objCharacter.Created)
             {
                 string strSelectedSkill;
-                
+
                 string strDescription = await LanguageManager.GetStringAsync("Label_Options_NewKnowledgeSkill");
                 using (ThreadSafeForm<SelectItem> form = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem
                 {
@@ -861,12 +862,12 @@ namespace Chummer.UI.Skills
                             return;
 
                         case DialogResult.Yes:
-                        {
-                            if (!skill.IsLanguage)
-                                skill.Type = "Language";
-                            skill.IsNativeLanguage = true;
-                            break;
-                        }
+                            {
+                                if (!skill.IsLanguage)
+                                    skill.Type = "Language";
+                                skill.IsNativeLanguage = true;
+                                break;
+                            }
                     }
                 }
 

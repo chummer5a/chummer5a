@@ -45,8 +45,8 @@ namespace Chummer
 
         // TODO: implement a sane expression evaluator
         // A single instance of an XmlDocument and its corresponding XPathNavigator helps reduce overhead of evaluating XPaths that just contain mathematical operations
-        private static readonly XmlDocument s_ObjXPathNavigatorDocument = new XmlDocument {XmlResolver = null};
-        
+        private static readonly XmlDocument s_ObjXPathNavigatorDocument = new XmlDocument { XmlResolver = null };
+
         private static readonly DebuggableSemaphoreSlim s_ObjXPathNavigatorDocumentLock = new DebuggableSemaphoreSlim();
 
         private static readonly ThreadSafeStack<XPathNavigator> s_StkXPathNavigatorPool = new ThreadSafeStack<XPathNavigator>(1);
@@ -542,7 +542,7 @@ namespace Chummer
                     }
                 }
             }
-            
+
             objFoundWeaponAccessory = null;
             objFoundCyberware = null;
             return null;
@@ -1397,7 +1397,7 @@ namespace Chummer
         public static async Task<XmlDocument> GenerateCharactersExportXml(CultureInfo objCultureInfo, string strLanguage, CancellationToken objToken, params Character[] lstCharacters)
         {
             objToken.ThrowIfCancellationRequested();
-            XmlDocument objReturn = new XmlDocument {XmlResolver = null};
+            XmlDocument objReturn = new XmlDocument { XmlResolver = null };
             // Write the Character information to a MemoryStream so we don't need to create any files.
             using (MemoryStream objStream = new MemoryStream())
             {
@@ -1528,9 +1528,9 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strSpace))
                 astrSourceParts = strSource.Split(strSpace, StringSplitOptions.RemoveEmptyEntries);
             else if (strSource.StartsWith("SR5", StringComparison.Ordinal))
-                astrSourceParts = new[] {"SR5", strSource.Substring(3)};
+                astrSourceParts = new[] { "SR5", strSource.Substring(3) };
             else if (strSource.StartsWith("R5", StringComparison.Ordinal))
-                astrSourceParts = new[] {"R5", strSource.Substring(2)};
+                astrSourceParts = new[] { "R5", strSource.Substring(2) };
             else
             {
                 int i = strSource.Length - 1;
@@ -1542,7 +1542,7 @@ namespace Chummer
                     }
                 }
 
-                astrSourceParts = new[] {strSource.Substring(0, i), strSource.Substring(i)};
+                astrSourceParts = new[] { strSource.Substring(0, i), strSource.Substring(i) };
             }
 
             if (astrSourceParts.Length < 2)

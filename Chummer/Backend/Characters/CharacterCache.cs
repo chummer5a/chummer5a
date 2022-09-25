@@ -640,6 +640,7 @@ namespace Chummer
                     case "Recent":
                         GlobalSettings.MostRecentlyUsedCharacters.Remove(FilePath);
                         break;
+
                     case "Favorite":
                         GlobalSettings.FavoriteCharacters.Remove(FilePath);
                         break;
@@ -912,6 +913,7 @@ namespace Chummer
                     case "Recent":
                         GlobalSettings.MostRecentlyUsedCharacters.Remove(FilePath);
                         break;
+
                     case "Favorite":
                         GlobalSettings.FavoriteCharacters.Remove(FilePath);
                         break;

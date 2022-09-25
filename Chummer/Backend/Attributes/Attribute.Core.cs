@@ -1706,7 +1706,7 @@ namespace Chummer.Backend.Attributes
                 {
                     intUpgradeCost = (intValue + 1) * intOptionsCost;
                 }
-                
+
                 if (_objCharacter.Settings.AlternateMetatypeAttributeKarma && !s_SetAlternateMetatypeAttributeKarmaExceptions.Contains(Abbrev))
                     intUpgradeCost -= (MetatypeMinimum - 1) * intOptionsCost;
 

@@ -16,20 +16,26 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Threading;
+
 using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Chummer
 {
     public interface IAsyncCollection<T> : ICollection<T>, IAsyncEnumerable<T>
     {
         ValueTask<int> GetCountAsync(CancellationToken token = default);
+
         ValueTask AddAsync(T item, CancellationToken token = default);
+
         ValueTask ClearAsync(CancellationToken token = default);
+
         ValueTask<bool> ContainsAsync(T item, CancellationToken token = default);
+
         ValueTask CopyToAsync(T[] array, int index, CancellationToken token = default);
+
         ValueTask<bool> RemoveAsync(T item, CancellationToken token = default);
     }
 

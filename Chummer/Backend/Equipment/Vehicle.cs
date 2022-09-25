@@ -795,7 +795,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
             objNode.TryGetBoolFieldQuickly("stolen", ref _blnStolen);
             string strNodeInnerXml = objNode.InnerXml;
-            
+
             // Load gear first so that ammo stuff for weapons get loaded in properly
             if (strNodeInnerXml.Contains("<gears>"))
             {
@@ -1507,7 +1507,7 @@ namespace Chummer.Backend.Equipment
                     (bool blnIsSuccess, object objProcess)
                         = CommonFunctions.EvaluateInvariantXPath(sbdAvail.ToString());
                     if (blnIsSuccess)
-                        intAvail += ((double) objProcess).StandardRound();
+                        intAvail += ((double)objProcess).StandardRound();
                 }
             }
 
@@ -1596,7 +1596,7 @@ namespace Chummer.Backend.Equipment
                     if (objMod.IncludedInVehicle || !objMod.Equipped)
                         continue;
                     string strBonusSensor = objMod.WirelessOn ? objMod.WirelessBonus?["sensor"]?.InnerText ?? objMod.Bonus?["sensor"]?.InnerText : objMod.Bonus?["sensor"]?.InnerText;
-                    intTotalSensor = Math.Max(ParseBonus(strBonusSensor, objMod.Rating, _intSensor, "Sensor", false),intTotalSensor);
+                    intTotalSensor = Math.Max(ParseBonus(strBonusSensor, objMod.Rating, _intSensor, "Sensor", false), intTotalSensor);
                 }
 
                 // Then check for mods that modify the sensor value (needs separate loop in case of % modifiers on top of stat-overriding mods)
@@ -1624,7 +1624,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Parse a given string from a Mod's bonus node to calculate new bonus or base value. 
+        /// Parse a given string from a Mod's bonus node to calculate new bonus or base value.
         /// </summary>
         /// <param name="strBonus">String that will be parsed, replacing values.</param>
         /// <param name="intModRating">Current Rating of the relevant Mod.</param>
@@ -1637,8 +1637,8 @@ namespace Chummer.Backend.Equipment
             if (!string.IsNullOrEmpty(strBonus))
             {
                 char chrFirstCharacter = strBonus[0];
-                //Value is a bonus 
-                if ((chrFirstCharacter == '+' || chrFirstCharacter == '-')&& blnBonus)
+                //Value is a bonus
+                if ((chrFirstCharacter == '+' || chrFirstCharacter == '-') && blnBonus)
                 {
                     // If the bonus is determined by the existing number, evaluate the expression.
                     (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strBonus.TrimStart('+')
@@ -1661,7 +1661,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Parse a given string from a Mod's bonus node to calculate new bonus or base value. 
+        /// Parse a given string from a Mod's bonus node to calculate new bonus or base value.
         /// </summary>
         /// <param name="strBonus">String that will be parsed, replacing values.</param>
         /// <param name="intModRating">Current Rating of the relevant Mod.</param>
@@ -1675,7 +1675,7 @@ namespace Chummer.Backend.Equipment
             if (!string.IsNullOrEmpty(strBonus))
             {
                 char chrFirstCharacter = strBonus[0];
-                //Value is a bonus 
+                //Value is a bonus
                 if ((chrFirstCharacter == '+' || chrFirstCharacter == '-') && blnBonus)
                 {
                     // If the bonus is determined by the existing number, evaluate the expression.
@@ -1856,10 +1856,12 @@ namespace Chummer.Backend.Equipment
                     case "VTOL/VSTOL":
                         strUniqueToSearchFor = "Aircraft";
                         break;
+
                     case "Boats":
                     case "Submarines":
                         strUniqueToSearchFor = "Watercraft";
                         break;
+
                     case "Bikes":
                     case "Cars":
                     case "Trucks":
@@ -1896,9 +1898,11 @@ namespace Chummer.Backend.Equipment
                 case "Rotorcraft":
                 case "VTOL/VSTOL":
                     return lstUniques.Contains("Aircraft");
+
                 case "Boats":
                 case "Submarines":
                     return lstUniques.Contains("Watercraft");
+
                 case "Bikes":
                 case "Cars":
                 case "Trucks":
@@ -2793,7 +2797,8 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Empty for Vehicles.
         /// </summary>
-        public string CanFormPersona {
+        public string CanFormPersona
+        {
             get => string.Empty;
             set
             {
@@ -3301,7 +3306,7 @@ namespace Chummer.Backend.Equipment
                     // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
                     (bool blnIsSuccess, object objProcess)
                         = CommonFunctions.EvaluateInvariantXPath(sbdValue.ToString());
-                    return blnIsSuccess ? ((double) objProcess).StandardRound() : 0;
+                    return blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
                 }
             }
 

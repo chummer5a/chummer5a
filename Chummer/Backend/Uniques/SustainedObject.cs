@@ -265,6 +265,7 @@ namespace Chummer
                     if (_objLinkedObject is Spell objSpell)
                         return objSpell.DisplayNameShortAsync(strLanguage, token);
                     break;
+
                 case Improvement.ImprovementSource.ComplexForm:
                     if (_objLinkedObject is ComplexForm objComplexForm)
                         return objComplexForm.DisplayNameShortAsync(strLanguage, token);
@@ -310,6 +311,7 @@ namespace Chummer
                     if (_objLinkedObject is Spell objSpell)
                         return objSpell.DisplayNameAsync(strLanguage, token);
                     break;
+
                 case Improvement.ImprovementSource.ComplexForm:
                     if (_objLinkedObject is ComplexForm objComplexForm)
                         return objComplexForm.DisplayNameAsync(strLanguage, token);

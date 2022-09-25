@@ -163,6 +163,7 @@ namespace Chummer
 
         // Initiative variables
         private int _intMinInitiativeDice = 1;
+
         private int _intMaxInitiativeDice = 5;
         private int _intMinAstralInitiativeDice = 3;
         private int _intMaxAstralInitiativeDice = 5;
@@ -924,7 +925,7 @@ namespace Chummer
                     hashCode = (hashCode * 397) ^ _intKarmaSummoningFocus;
                     hashCode = (hashCode * 397) ^ _intKarmaWeaponFocus;
                     hashCode = (hashCode * 397) ^ _intDicePenaltySustaining;
-                    hashCode = (hashCode * 397) ^ (int) _eBuildMethod;
+                    hashCode = (hashCode * 397) ^ (int)_eBuildMethod;
                     hashCode = (hashCode * 397) ^ _intBuildPoints;
                     hashCode = (hashCode * 397) ^ _intQualityKarmaLimit;
                     hashCode = (hashCode * 397) ^ (_strPriorityArray?.GetHashCode() ?? 0);
@@ -3596,6 +3597,7 @@ namespace Chummer
         #endregion Build Properties
 
         #region Properties and Methods
+
         /// <summary>
         /// Determine whether or not a given book is in use.
         /// </summary>
@@ -4908,7 +4910,6 @@ namespace Chummer
         {
             using (await EnterReadLock.EnterAsync(LockObject, token))
                 return _intMetatypeCostMultiplier;
-
         }
 
         /// <summary>
@@ -7143,7 +7144,7 @@ namespace Chummer
             }
         }
 
-        #endregion
+        #endregion Initiative Dice Properties
 
         #region Karma
 
@@ -8602,11 +8603,11 @@ namespace Chummer
 
         #endregion Karma
 
-            #region Default Build
+        #region Default Build
 
-            /// <summary>
-            /// Percentage by which adding an Initiate Grade to an Awakened is discounted if a member of a Group.
-            /// </summary>
+        /// <summary>
+        /// Percentage by which adding an Initiate Grade to an Awakened is discounted if a member of a Group.
+        /// </summary>
         public decimal KarmaMAGInitiationGroupPercent
         {
             get

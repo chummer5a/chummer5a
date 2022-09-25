@@ -340,111 +340,111 @@ namespace Chummer.Controls.Shared
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                {
-                    int intIndex = e.NewStartingIndex;
-                    foreach (TType objNewItem in e.NewItems)
-                        _lstContentList.Insert(intIndex++, new ControlWithMetaData(objNewItem, this));
-                    _indexComparer.Reset(Contents);
-                    lstToRedraw = _lstContentList.Skip(e.NewStartingIndex);
-                    break;
-                }
+                    {
+                        int intIndex = e.NewStartingIndex;
+                        foreach (TType objNewItem in e.NewItems)
+                            _lstContentList.Insert(intIndex++, new ControlWithMetaData(objNewItem, this));
+                        _indexComparer.Reset(Contents);
+                        lstToRedraw = _lstContentList.Skip(e.NewStartingIndex);
+                        break;
+                    }
                 case NotifyCollectionChangedAction.Remove:
-                {
-                    int intIndex = e.OldStartingIndex;
-                    foreach (TType _ in e.OldItems)
                     {
-                        _lstContentList[intIndex].Cleanup();
-                        _lstContentList.RemoveAt(intIndex);
+                        int intIndex = e.OldStartingIndex;
+                        foreach (TType _ in e.OldItems)
+                        {
+                            _lstContentList[intIndex].Cleanup();
+                            _lstContentList.RemoveAt(intIndex);
+                        }
+                        _indexComparer.Reset(Contents);
+                        lstToRedraw = _lstContentList.Skip(e.OldStartingIndex);
+                        break;
                     }
-                    _indexComparer.Reset(Contents);
-                    lstToRedraw = _lstContentList.Skip(e.OldStartingIndex);
-                    break;
-                }
                 case NotifyCollectionChangedAction.Replace:
-                {
-                    int intIndex = e.OldStartingIndex;
-                    foreach (TType _ in e.OldItems)
                     {
-                        _lstContentList[intIndex].Cleanup();
-                        _lstContentList.RemoveAt(intIndex);
+                        int intIndex = e.OldStartingIndex;
+                        foreach (TType _ in e.OldItems)
+                        {
+                            _lstContentList[intIndex].Cleanup();
+                            _lstContentList.RemoveAt(intIndex);
+                        }
+                        foreach (TType objNewItem in e.NewItems)
+                            _lstContentList.Insert(intIndex++, new ControlWithMetaData(objNewItem, this));
+                        _indexComparer.Reset(Contents);
+                        lstToRedraw = _lstContentList.Skip(e.OldStartingIndex);
+                        break;
                     }
-                    foreach (TType objNewItem in e.NewItems)
-                        _lstContentList.Insert(intIndex++, new ControlWithMetaData(objNewItem, this));
-                    _indexComparer.Reset(Contents);
-                    lstToRedraw = _lstContentList.Skip(e.OldStartingIndex);
-                    break;
-                }
                 case NotifyCollectionChangedAction.Move:
-                {
-                    // Refresh the underlying lists, but do not refresh any displays
-                    int intNewIndex = e.NewStartingIndex;
-                    int intOldIndex = e.OldStartingIndex;
-                    int intDirection = intOldIndex < intNewIndex ? 1 : -1;
-                    ControlWithMetaData objMovedControl = _lstContentList[intOldIndex];
-                    int intLoopDisplayIndex = _lstDisplayIndex.IndexOf(intOldIndex);
-                    int intFinalDisplayIndexValue = intLoopDisplayIndex >= 0 ? intNewIndex : -1;
-                    bool blnFinalRenderedValue = intLoopDisplayIndex >= 0 && _ablnRendered[intLoopDisplayIndex];
-                    for (int i = intOldIndex; i * intDirection < intNewIndex * intDirection; i += intDirection)
                     {
-                        _lstContentList[i] = _lstContentList[i + intDirection];
-                        int intDisplayIndex = _lstDisplayIndex.IndexOf(i + intDirection);
-                        if (intDisplayIndex != -1)
+                        // Refresh the underlying lists, but do not refresh any displays
+                        int intNewIndex = e.NewStartingIndex;
+                        int intOldIndex = e.OldStartingIndex;
+                        int intDirection = intOldIndex < intNewIndex ? 1 : -1;
+                        ControlWithMetaData objMovedControl = _lstContentList[intOldIndex];
+                        int intLoopDisplayIndex = _lstDisplayIndex.IndexOf(intOldIndex);
+                        int intFinalDisplayIndexValue = intLoopDisplayIndex >= 0 ? intNewIndex : -1;
+                        bool blnFinalRenderedValue = intLoopDisplayIndex >= 0 && _ablnRendered[intLoopDisplayIndex];
+                        for (int i = intOldIndex; i * intDirection < intNewIndex * intDirection; i += intDirection)
                         {
-                            if (intLoopDisplayIndex != -1)
+                            _lstContentList[i] = _lstContentList[i + intDirection];
+                            int intDisplayIndex = _lstDisplayIndex.IndexOf(i + intDirection);
+                            if (intDisplayIndex != -1)
                             {
-                                _lstDisplayIndex[intLoopDisplayIndex] = _lstDisplayIndex[intDisplayIndex];
-                                _ablnRendered[intLoopDisplayIndex] = _ablnRendered[intDisplayIndex];
+                                if (intLoopDisplayIndex != -1)
+                                {
+                                    _lstDisplayIndex[intLoopDisplayIndex] = _lstDisplayIndex[intDisplayIndex];
+                                    _ablnRendered[intLoopDisplayIndex] = _ablnRendered[intDisplayIndex];
+                                }
+                                else
+                                {
+                                    intFinalDisplayIndexValue = i;
+                                    blnFinalRenderedValue = _ablnRendered[intDisplayIndex];
+                                }
+                                intLoopDisplayIndex = intDisplayIndex;
                             }
-                            else
-                            {
-                                intFinalDisplayIndexValue = i;
-                                blnFinalRenderedValue = _ablnRendered[intDisplayIndex];
-                            }
-                            intLoopDisplayIndex = intDisplayIndex;
                         }
+                        _lstContentList[intNewIndex] = objMovedControl;
+                        if (intLoopDisplayIndex != -1)
+                        {
+                            _lstDisplayIndex[intLoopDisplayIndex] = intFinalDisplayIndexValue;
+                            _ablnRendered[intLoopDisplayIndex] = blnFinalRenderedValue;
+                        }
+                        return;
                     }
-                    _lstContentList[intNewIndex] = objMovedControl;
-                    if (intLoopDisplayIndex != -1)
-                    {
-                        _lstDisplayIndex[intLoopDisplayIndex] = intFinalDisplayIndexValue;
-                        _ablnRendered[intLoopDisplayIndex] = blnFinalRenderedValue;
-                    }
-                    return;
-                }
                 case NotifyCollectionChangedAction.Reset:
-                {
-                    bool blnIsTopmostSuspendLayout = _blnIsTopmostSuspendLayout;
-                    if (blnIsTopmostSuspendLayout)
-                        _blnIsTopmostSuspendLayout = false;
-                    pnlDisplay.SuspendLayout();
-                    try
                     {
-                        foreach (ControlWithMetaData objLoopControl in _lstContentList)
-                        {
-                            objLoopControl.Cleanup();
-                        }
-
-                        _lstContentList.Clear();
-                        foreach (TType objLoopTType in Contents)
-                        {
-                            _lstContentList.Add(new ControlWithMetaData(objLoopTType, this, false));
-                        }
-
-                        pnlDisplay.Controls.AddRange(_lstContentList.Select(x => x.Control).ToArray());
-                    }
-                    finally
-                    {
+                        bool blnIsTopmostSuspendLayout = _blnIsTopmostSuspendLayout;
                         if (blnIsTopmostSuspendLayout)
+                            _blnIsTopmostSuspendLayout = false;
+                        pnlDisplay.SuspendLayout();
+                        try
                         {
-                            _blnIsTopmostSuspendLayout = true;
-                            pnlDisplay.ResumeLayout();
-                        }
-                    }
+                            foreach (ControlWithMetaData objLoopControl in _lstContentList)
+                            {
+                                objLoopControl.Cleanup();
+                            }
 
-                    _indexComparer.Reset(Contents);
-                    lstToRedraw = _lstContentList;
-                    break;
-                }
+                            _lstContentList.Clear();
+                            foreach (TType objLoopTType in Contents)
+                            {
+                                _lstContentList.Add(new ControlWithMetaData(objLoopTType, this, false));
+                            }
+
+                            pnlDisplay.Controls.AddRange(_lstContentList.Select(x => x.Control).ToArray());
+                        }
+                        finally
+                        {
+                            if (blnIsTopmostSuspendLayout)
+                            {
+                                _blnIsTopmostSuspendLayout = true;
+                                pnlDisplay.ResumeLayout();
+                            }
+                        }
+
+                        _indexComparer.Reset(Contents);
+                        lstToRedraw = _lstContentList;
+                        break;
+                    }
             }
             if (lstToRedraw != null)
             {

@@ -492,7 +492,7 @@ namespace Chummer.Backend.Skills
             }
 
             objSkill.SkillId = suid;
-            
+
             foreach (XPathNavigator xmlSpecializationNode in xmlSkillNode.SelectAndCacheExpression("specialization"))
             {
                 string strSpecializationName = xmlSpecializationNode.SelectSingleNode("@bonustext")?.Value;
@@ -571,14 +571,14 @@ namespace Chummer.Backend.Skills
                         break;
                     }
                 case NotifyCollectionChangedAction.Replace:
-                {
-                    if (e.OldItems.OfType<CharacterAttrib>().Any(x => x.Abbrev == Attribute)
-                        || e.NewItems.OfType<CharacterAttrib>().Any(x => x.Abbrev == Attribute))
                     {
-                        RecacheAttribute();
+                        if (e.OldItems.OfType<CharacterAttrib>().Any(x => x.Abbrev == Attribute)
+                            || e.NewItems.OfType<CharacterAttrib>().Any(x => x.Abbrev == Attribute))
+                        {
+                            RecacheAttribute();
+                        }
+                        break;
                     }
-                    break;
-                }
                 case NotifyCollectionChangedAction.Reset:
                     {
                         RecacheAttribute();
@@ -3554,14 +3554,14 @@ namespace Chummer.Backend.Skills
                         break;
                     }
                 case nameof(Skills.SkillGroup.SkillList) when CharacterObject.Settings.CompensateSkillGroupKarmaDifference:
-                {
-                    if (Enabled)
                     {
-                        this.OnMultiplePropertyChanged(nameof(RangeCost), nameof(UpgradeKarmaCost));
-                    }
+                        if (Enabled)
+                        {
+                            this.OnMultiplePropertyChanged(nameof(RangeCost), nameof(UpgradeKarmaCost));
+                        }
 
-                    break;
-                }
+                        break;
+                    }
             }
         }
 
@@ -3712,13 +3712,13 @@ namespace Chummer.Backend.Skills
                         break;
                     }
                 case nameof(CharacterSettings.ExpertiseBonus):
-                {
-                    if (Specializations.Any(x => x.Expertise))
                     {
-                        OnPropertyChanged(nameof(PoolOtherAttribute));
+                        if (Specializations.Any(x => x.Expertise))
+                        {
+                            OnPropertyChanged(nameof(PoolOtherAttribute));
+                        }
+                        break;
                     }
-                    break;
-                }
             }
         }
 
@@ -3752,6 +3752,7 @@ namespace Chummer.Backend.Skills
                     foreach (SkillSpecialization objSkillSpecialization in e.NewItems)
                         objSkillSpecialization.Parent = this;
                     break;
+
                 case NotifyCollectionChangedAction.Remove:
                     foreach (SkillSpecialization objSkillSpecialization in e.OldItems)
                     {
@@ -3759,6 +3760,7 @@ namespace Chummer.Backend.Skills
                             objSkillSpecialization.Parent = null;
                     }
                     break;
+
                 case NotifyCollectionChangedAction.Replace:
                     foreach (SkillSpecialization objSkillSpecialization in e.OldItems)
                     {
@@ -3768,6 +3770,7 @@ namespace Chummer.Backend.Skills
                     foreach (SkillSpecialization objSkillSpecialization in e.NewItems)
                         objSkillSpecialization.Parent = this;
                     break;
+
                 case NotifyCollectionChangedAction.Reset:
                     foreach (SkillSpecialization objSkillSpecialization in Specializations)
                         objSkillSpecialization.Parent = this;

@@ -304,9 +304,9 @@ namespace Chummer
             return frmForm.ShowDialogNonBlockingSafeAsync(Program.GetFormForDialog(objCharacter), token);
         }
 
-#endregion
+        #endregion Forms Extensions
 
-#region Controls Extensions
+        #region Controls Extensions
 
         /// <summary>
         /// Runs code on a WinForms control in a thread-safe manner and waits for it to complete.
@@ -1708,9 +1708,9 @@ namespace Chummer
             }
         }
 
-#endregion Controls Extensions
+        #endregion Controls Extensions
 
-#region ComboBox Extensions
+        #region ComboBox Extensions
 
         public static void PopulateWithListItems(this ListBox lsbThis, IEnumerable<ListItem> lstItems, CancellationToken token = default)
         {
@@ -1889,9 +1889,9 @@ namespace Chummer
             }
         }
 
-#endregion ComboBox Extensions
+        #endregion ComboBox Extensions
 
-#region TreeNode Extensions
+        #region TreeNode Extensions
 
         public static TreeNode GetTopParent(this TreeNode objThis)
         {
@@ -1971,9 +1971,9 @@ namespace Chummer
             return intReturn;
         }
 
-#endregion TreeNode Extensions
+        #endregion TreeNode Extensions
 
-#region TreeView Extensions
+        #region TreeView Extensions
 
         /// <summary>
         /// Sort the contents of a TreeView alphabetically within each group Node.
@@ -2183,9 +2183,9 @@ namespace Chummer
             return intReturn;
         }
 
-#endregion TreeView Extensions
+        #endregion TreeView Extensions
 
-#region TreeNodeCollection Extensions
+        #region TreeNodeCollection Extensions
 
         /// <summary>
         /// Recursive method to clear the background color for all TreeNodes except the one currently being hovered over during a drag-and-drop operation.
@@ -2204,9 +2204,10 @@ namespace Chummer
             }
         }
 
-#endregion TreeNodeCollection Extensions
+        #endregion TreeNodeCollection Extensions
 
-#region TextBox Extensions
+        #region TextBox Extensions
+
         /// <summary>
         /// Automatically (un)set vertical scrollbars for a TextBox based on whether or not it needs them.
         /// </summary>
@@ -2224,7 +2225,7 @@ namespace Chummer
                     foreach (string strLine in astrLines)
                     {
                         Size objTextSize = TextRenderer.MeasureText(strLine, txtText.Font);
-                        intNumDisplayedLines += ((decimal) objTextSize.Width / txtText.Width).StandardRound();
+                        intNumDisplayedLines += ((decimal)objTextSize.Width / txtText.Width).StandardRound();
                         intMaxLineHeight = Math.Max(intMaxLineHeight, objTextSize.Height);
                     }
                 }
@@ -2249,6 +2250,6 @@ namespace Chummer
             });
         }
 
-#endregion
+        #endregion TextBox Extensions
     }
 }

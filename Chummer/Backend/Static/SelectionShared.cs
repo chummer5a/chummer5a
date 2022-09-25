@@ -215,12 +215,12 @@ namespace Chummer
                                 break;
                             }
                         case "technique":
-                        {
-                            objListToCheck = objParent is MartialArt objArt
-                                ? objArt.Techniques
-                                : objCharacter.MartialArts.SelectMany(x => x.Children);
-                            break;
-                        }
+                            {
+                                objListToCheck = objParent is MartialArt objArt
+                                    ? objArt.Techniques
+                                    : objCharacter.MartialArts.SelectMany(x => x.Children);
+                                break;
+                            }
                         case "cyberware":
                         case "bioware":
                             {
@@ -658,74 +658,74 @@ namespace Chummer
                                >= count;
                     }
                 case "biowarecategory":
-                {
-                    int count = xmlNode.SelectSingleNodeAndCacheExpression("@count")?.ValueAsInt ?? 1;
-                    if (blnShowMessage)
                     {
-                        string strTranslate = objCharacter.LoadDataXPath("bioware.xml").SelectSingleNode(
-                            "/chummer/categories/category[. = " + strNodeInnerText.CleanXPath() + "]/translate")?.Value;
-                        strName = Environment.NewLine + '\t' + LanguageManager.GetString("Label_Bioware")
-                                  + strSpace + (!string.IsNullOrEmpty(strTranslate)
-                                      ? strTranslate
-                                      : strNodeInnerText);
-                    }
-                    if (xmlNode.GetAttribute("sameparent", string.Empty) == bool.TrueString)
-                    {
-                        if (objParent is Cyberware objCyberware)
-                            return objCyberware.Children.Any(mod => mod.Category == strNodeInnerText);
-                        return false;
-                    }
-                    string strWareNodeSelectAttribute = xmlNode.SelectSingleNodeAndCacheExpression("@select")?.Value ?? string.Empty;
-                    if (string.IsNullOrEmpty(strWareNodeSelectAttribute))
+                        int count = xmlNode.SelectSingleNodeAndCacheExpression("@count")?.ValueAsInt ?? 1;
+                        if (blnShowMessage)
+                        {
+                            string strTranslate = objCharacter.LoadDataXPath("bioware.xml").SelectSingleNode(
+                                "/chummer/categories/category[. = " + strNodeInnerText.CleanXPath() + "]/translate")?.Value;
+                            strName = Environment.NewLine + '\t' + LanguageManager.GetString("Label_Bioware")
+                                      + strSpace + (!string.IsNullOrEmpty(strTranslate)
+                                          ? strTranslate
+                                          : strNodeInnerText);
+                        }
+                        if (xmlNode.GetAttribute("sameparent", string.Empty) == bool.TrueString)
+                        {
+                            if (objParent is Cyberware objCyberware)
+                                return objCyberware.Children.Any(mod => mod.Category == strNodeInnerText);
+                            return false;
+                        }
+                        string strWareNodeSelectAttribute = xmlNode.SelectSingleNodeAndCacheExpression("@select")?.Value ?? string.Empty;
+                        if (string.IsNullOrEmpty(strWareNodeSelectAttribute))
+                            return objCharacter.Cyberware.DeepCount(x => x.Children, objCyberware =>
+                                                                        objCyberware.Category == strNodeInnerText &&
+                                                                        objCyberware.SourceType
+                                                                        == Improvement.ImprovementSource.Bioware
+                                                                        && string.IsNullOrEmpty(
+                                                                            objCyberware.PlugsIntoModularMount)) >= count;
                         return objCharacter.Cyberware.DeepCount(x => x.Children, objCyberware =>
                                                                     objCyberware.Category == strNodeInnerText &&
                                                                     objCyberware.SourceType
                                                                     == Improvement.ImprovementSource.Bioware
                                                                     && string.IsNullOrEmpty(
-                                                                        objCyberware.PlugsIntoModularMount)) >= count;
-                    return objCharacter.Cyberware.DeepCount(x => x.Children, objCyberware =>
-                                                                objCyberware.Category == strNodeInnerText &&
-                                                                objCyberware.SourceType
-                                                                == Improvement.ImprovementSource.Bioware
-                                                                && string.IsNullOrEmpty(
-                                                                    objCyberware.PlugsIntoModularMount) &&
-                                                                strWareNodeSelectAttribute == objCyberware.Extra)
-                           >= count;
-                }
+                                                                        objCyberware.PlugsIntoModularMount) &&
+                                                                    strWareNodeSelectAttribute == objCyberware.Extra)
+                               >= count;
+                    }
                 case "cyberwarecategory":
-                {
-                    int count = xmlNode.SelectSingleNodeAndCacheExpression("@count")?.ValueAsInt ?? 1;
-                    if (blnShowMessage)
                     {
-                        string strTranslate = objCharacter.LoadDataXPath("cyberware.xml").SelectSingleNode(
-                            "/chummer/categories/category[. = " + strNodeInnerText.CleanXPath() + "]/translate")?.Value;
-                        strName = Environment.NewLine + '\t' + LanguageManager.GetString("Label_Cyberware")
-                                  + strSpace + (!string.IsNullOrEmpty(strTranslate)
-                                      ? strTranslate
-                                      : strNodeInnerText);
-                    }
-                    if (xmlNode.GetAttribute("sameparent", string.Empty) == bool.TrueString)
-                    {
-                        if (objParent is Cyberware objCyberware)
-                            return objCyberware.Children.Any(mod => mod.Category == strNodeInnerText);
-                        return false;
-                    }
-                    string strWareNodeSelectAttribute = xmlNode.SelectSingleNodeAndCacheExpression("@select")?.Value ?? string.Empty;
-                    if (string.IsNullOrEmpty(strWareNodeSelectAttribute))
+                        int count = xmlNode.SelectSingleNodeAndCacheExpression("@count")?.ValueAsInt ?? 1;
+                        if (blnShowMessage)
+                        {
+                            string strTranslate = objCharacter.LoadDataXPath("cyberware.xml").SelectSingleNode(
+                                "/chummer/categories/category[. = " + strNodeInnerText.CleanXPath() + "]/translate")?.Value;
+                            strName = Environment.NewLine + '\t' + LanguageManager.GetString("Label_Cyberware")
+                                      + strSpace + (!string.IsNullOrEmpty(strTranslate)
+                                          ? strTranslate
+                                          : strNodeInnerText);
+                        }
+                        if (xmlNode.GetAttribute("sameparent", string.Empty) == bool.TrueString)
+                        {
+                            if (objParent is Cyberware objCyberware)
+                                return objCyberware.Children.Any(mod => mod.Category == strNodeInnerText);
+                            return false;
+                        }
+                        string strWareNodeSelectAttribute = xmlNode.SelectSingleNodeAndCacheExpression("@select")?.Value ?? string.Empty;
+                        if (string.IsNullOrEmpty(strWareNodeSelectAttribute))
+                            return objCharacter.Cyberware.DeepCount(x => x.Children, objCyberware =>
+                                                                        objCyberware.Category == strNodeInnerText &&
+                                                                        objCyberware.SourceType
+                                                                        == Improvement.ImprovementSource.Cyberware
+                                                                        && string.IsNullOrEmpty(
+                                                                            objCyberware.PlugsIntoModularMount)) >= count;
                         return objCharacter.Cyberware.DeepCount(x => x.Children, objCyberware =>
                                                                     objCyberware.Category == strNodeInnerText &&
                                                                     objCyberware.SourceType
                                                                     == Improvement.ImprovementSource.Cyberware
                                                                     && string.IsNullOrEmpty(
-                                                                        objCyberware.PlugsIntoModularMount)) >= count;
-                    return objCharacter.Cyberware.DeepCount(x => x.Children, objCyberware =>
-                                                                objCyberware.Category == strNodeInnerText &&
-                                                                objCyberware.SourceType
-                                                                == Improvement.ImprovementSource.Cyberware
-                                                                && string.IsNullOrEmpty(
-                                                                    objCyberware.PlugsIntoModularMount) &&
-                                                                strWareNodeSelectAttribute == objCyberware.Extra)
-                           >= count;
+                                                                        objCyberware.PlugsIntoModularMount) &&
+                                                                    strWareNodeSelectAttribute == objCyberware.Extra)
+                               >= count;
                     }
                 case "biowarecontains":
                     {
@@ -1019,10 +1019,10 @@ namespace Chummer
                         return false;
                     }
                 case "martialtechnique":
-                {
-                    MartialArtTechnique objMartialArtTechnique = objCharacter.MartialArts.SelectMany(x => x.Techniques)
-                                                                             .FirstOrDefault(
-                                                                                 x => x.Name == strNodeInnerText);
+                    {
+                        MartialArtTechnique objMartialArtTechnique = objCharacter.MartialArts.SelectMany(x => x.Techniques)
+                                                                                 .FirstOrDefault(
+                                                                                     x => x.Name == strNodeInnerText);
                         if (objMartialArtTechnique != null)
                         {
                             if (blnShowMessage)
@@ -1374,56 +1374,56 @@ namespace Chummer
                     }
                 case "skilltotal":
                     {
-                    // Check if the total combined Ratings of Skills adds up to a particular total.
-                    int intTotal = 0;
-                    string[] strGroups = xmlNode.SelectSingleNodeAndCacheExpression("skills")?.Value.Split('+', StringSplitOptions.RemoveEmptyEntries);
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                  out StringBuilder sbdOutput))
-                    {
-                        sbdOutput.AppendLine().Append('\t');
-                        if (strGroups != null)
+                        // Check if the total combined Ratings of Skills adds up to a particular total.
+                        int intTotal = 0;
+                        string[] strGroups = xmlNode.SelectSingleNodeAndCacheExpression("skills")?.Value.Split('+', StringSplitOptions.RemoveEmptyEntries);
+                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                      out StringBuilder sbdOutput))
                         {
-                            // If the xmlnode contains Type element, assume that it is a Knowledge skill. 
-                            if (xmlNode.SelectSingleNodeAndCacheExpression("type") != null)
+                            sbdOutput.AppendLine().Append('\t');
+                            if (strGroups != null)
                             {
-                                for (int i = 0; i <= strGroups.Length - 1; ++i)
+                                // If the xmlnode contains Type element, assume that it is a Knowledge skill.
+                                if (xmlNode.SelectSingleNodeAndCacheExpression("type") != null)
                                 {
-                                    foreach (KnowledgeSkill objGroup in objCharacter.SkillsSection.KnowledgeSkills)
+                                    for (int i = 0; i <= strGroups.Length - 1; ++i)
                                     {
-                                        if (objGroup.Name != strGroups[i]) continue;
-                                        if (blnShowMessage)
-                                            sbdOutput.Append(objGroup.CurrentDisplayName).Append(',')
-                                                     .Append(strSpace);
-                                        intTotal += objGroup.Rating;
-                                        break;
+                                        foreach (KnowledgeSkill objGroup in objCharacter.SkillsSection.KnowledgeSkills)
+                                        {
+                                            if (objGroup.Name != strGroups[i]) continue;
+                                            if (blnShowMessage)
+                                                sbdOutput.Append(objGroup.CurrentDisplayName).Append(',')
+                                                         .Append(strSpace);
+                                            intTotal += objGroup.Rating;
+                                            break;
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    for (int i = 0; i <= strGroups.Length - 1; ++i)
+                                    {
+                                        foreach (Skill objGroup in objCharacter.SkillsSection.Skills)
+                                        {
+                                            if (objGroup.Name != strGroups[i]) continue;
+                                            if (blnShowMessage)
+                                                sbdOutput.Append(objGroup.CurrentDisplayName).Append(',')
+                                                         .Append(strSpace);
+                                            intTotal += objGroup.Rating;
+                                            break;
+                                        }
                                     }
                                 }
                             }
-                            else
-                            {
-                                for (int i = 0; i <= strGroups.Length - 1; ++i)
-                                {
-                                    foreach (Skill objGroup in objCharacter.SkillsSection.Skills)
-                                    {
-                                        if (objGroup.Name != strGroups[i]) continue;
-                                        if (blnShowMessage)
-                                            sbdOutput.Append(objGroup.CurrentDisplayName).Append(',')
-                                                     .Append(strSpace);
-                                        intTotal += objGroup.Rating;
-                                        break;
-                                    }
-                                }
-                            }
+
+                            if (!blnShowMessage)
+                                return intTotal >= (xmlNode.SelectSingleNodeAndCacheExpression("val")?.ValueAsInt ?? 0);
+                            if (sbdOutput.Length > 0)
+                                sbdOutput.Length -= 2;
+                            strName = sbdOutput + strSpace + '(' + LanguageManager.GetString("String_ExpenseSkill") + ')';
                         }
 
-                        if (!blnShowMessage)
-                            return intTotal >= (xmlNode.SelectSingleNodeAndCacheExpression("val")?.ValueAsInt ?? 0);
-                        if (sbdOutput.Length > 0)
-                            sbdOutput.Length -= 2;
-                        strName = sbdOutput + strSpace + '(' + LanguageManager.GetString("String_ExpenseSkill") + ')';
-                    }
-
-                    return intTotal >= (xmlNode.SelectSingleNodeAndCacheExpression("val")?.ValueAsInt ?? 0);
+                        return intTotal >= (xmlNode.SelectSingleNodeAndCacheExpression("val")?.ValueAsInt ?? 0);
                     }
                 case "skillgrouptotal":
                     {

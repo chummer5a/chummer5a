@@ -71,7 +71,7 @@
       </bonus>
       <bonus>
         <specificskill xpathfilter="name = 'Escape Artist' or name = 'Free-Fall' or name = 'Perception' or name = 'Diving' or name = 'Tracking' or name = 'Artificing' or name = 'Disenchanting' or name = 'Exotic Melee Weapon'" amendoperation="remove" />
-        <selectskill xpathfilter="@limittoskill = 'Artisan,Performance' and val = '1'" amendoperation="remove"/>
+        <selectskill xpathfilter="@limittoskill = 'Artisan,Performance' and val = '1'" amendoperation="remove" />
         <specificskill xpathfilter="name = 'Assensing'">
           <name>Astral</name>
           <condition>Assensing</condition>

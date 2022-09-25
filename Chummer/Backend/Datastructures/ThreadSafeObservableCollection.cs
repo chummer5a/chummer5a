@@ -34,6 +34,7 @@ namespace Chummer
     {
         [CLSCompliant(false)]
         protected readonly EnhancedObservableCollection<T> _lstData;
+
         public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
 
         public ThreadSafeObservableCollection()
@@ -80,7 +81,7 @@ namespace Chummer
 
         public void Remove(object value)
         {
-            Remove((T) value);
+            Remove((T)value);
         }
 
         /// <inheritdoc />
@@ -235,7 +236,7 @@ namespace Chummer
 
         public void Insert(int index, object value)
         {
-            Insert(index, (T) value);
+            Insert(index, (T)value);
         }
 
         /// <inheritdoc cref="EnhancedObservableCollection{T}.Insert" />
@@ -282,7 +283,7 @@ namespace Chummer
 
         public bool Contains(object value)
         {
-            return Contains((T) value);
+            return Contains((T)value);
         }
 
         /// <inheritdoc cref="EnhancedObservableCollection{T}.Contains" />

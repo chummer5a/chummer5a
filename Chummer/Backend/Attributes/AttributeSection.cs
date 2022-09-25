@@ -38,6 +38,7 @@ namespace Chummer.Backend.Attributes
     public sealed class AttributeSection : INotifyMultiplePropertyChanged, IHasLockObject
     {
         private bool _blnLoading = true;
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
@@ -265,6 +266,7 @@ namespace Chummer.Backend.Attributes
                             objBindingSource.DataSource = GetAttributeByName(objAttribute.Abbrev);
                     }
                     break;
+
                 case NotifyCollectionChangedAction.Remove:
                     foreach (CharacterAttrib objAttribute in e.OldItems)
                     {
@@ -273,6 +275,7 @@ namespace Chummer.Backend.Attributes
                             objBindingSource.DataSource = GetAttributeByName(objAttribute.Abbrev);
                     }
                     break;
+
                 case NotifyCollectionChangedAction.Replace:
                     HashSet<CharacterAttrib> setNewAttribs = e.NewItems.OfType<CharacterAttrib>().ToHashSet();
                     foreach (CharacterAttrib objAttribute in e.OldItems)
@@ -305,6 +308,7 @@ namespace Chummer.Backend.Attributes
                             objBindingSource.DataSource = GetAttributeByName(objAttribute.Abbrev);
                     }
                     break;
+
                 case NotifyCollectionChangedAction.Remove:
                     foreach (CharacterAttrib objAttribute in e.OldItems)
                     {
@@ -313,6 +317,7 @@ namespace Chummer.Backend.Attributes
                             objBindingSource.DataSource = GetAttributeByName(objAttribute.Abbrev);
                     }
                     break;
+
                 case NotifyCollectionChangedAction.Replace:
                     HashSet<CharacterAttrib> setNewAttribs = e.NewItems.OfType<CharacterAttrib>().ToHashSet();
                     foreach (CharacterAttrib objAttribute in e.OldItems)

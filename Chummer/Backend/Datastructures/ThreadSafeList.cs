@@ -65,7 +65,7 @@ namespace Chummer
                 }
             }
         }
-        
+
         public void CopyTo(Array array, int index)
         {
             using (EnterReadLock.Enter(LockObject))
@@ -77,7 +77,7 @@ namespace Chummer
                 }
             }
         }
-        
+
         public async ValueTask CopyToAsync(Array array, int index, CancellationToken token = default)
         {
             using (await EnterReadLock.EnterAsync(LockObject, token))
@@ -108,15 +108,19 @@ namespace Chummer
 
         /// <inheritdoc />
         bool IList.IsFixedSize => false;
+
         /// <inheritdoc />
         bool ICollection<T>.IsReadOnly => false;
+
         /// <inheritdoc />
         bool IList.IsReadOnly => false;
+
         /// <inheritdoc />
         bool ICollection.IsSynchronized => true;
+
         /// <inheritdoc />
         object ICollection.SyncRoot => LockObject;
-        
+
         public T this[int index]
         {
             get
@@ -1060,7 +1064,7 @@ namespace Chummer
         {
             LockObject.Dispose();
         }
-        
+
         /// <inheritdoc />
         public ValueTask DisposeAsync()
         {

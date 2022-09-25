@@ -686,7 +686,7 @@ namespace Chummer
             //            string strName = xmlNode.InnerText;
             //            ContactProfession.Add(new ListItem(strName, xmlNode.Attributes?["translate"]?.InnerText ?? strName));
             //        }
-            
+
             await cboContactRole.PopulateWithListItemsAsync(Contact.ContactArchetypes(_objContact.CharacterObject), token: token);
             await cboContactRole.DoThreadSafeAsync(x =>
             {
@@ -740,10 +740,10 @@ namespace Chummer
                     {
                         Anchor = AnchorStyles.Left | AnchorStyles.Right,
                         AutoSize = true,
-                        Maximum = new decimal(new[] {12, 0, 0, 0}),
-                        Minimum = new decimal(new[] {1, 0, 0, 0}),
+                        Maximum = new decimal(new[] { 12, 0, 0, 0 }),
+                        Minimum = new decimal(new[] { 1, 0, 0, 0 }),
                         Name = "nudConnection",
-                        Value = new decimal(new[] {1, 0, 0, 0})
+                        Value = new decimal(new[] { 1, 0, 0, 0 })
                     };
                     x.lblLoyalty = new Label
                     {
@@ -758,10 +758,10 @@ namespace Chummer
                     {
                         Anchor = AnchorStyles.Left | AnchorStyles.Right,
                         AutoSize = true,
-                        Maximum = new decimal(new[] {6, 0, 0, 0}),
-                        Minimum = new decimal(new[] {1, 0, 0, 0}),
+                        Maximum = new decimal(new[] { 6, 0, 0, 0 }),
+                        Minimum = new decimal(new[] { 1, 0, 0, 0 }),
                         Name = "nudLoyalty",
-                        Value = new decimal(new[] {1, 0, 0, 0})
+                        Value = new decimal(new[] { 1, 0, 0, 0 })
                     };
                     x.chkFree = new ColorableCheckBox(x.components)
                     {
@@ -808,7 +808,7 @@ namespace Chummer
                         Anchor = AnchorStyles.Right,
                         AutoSize = true,
                         AutoSizeMode = AutoSizeMode.GrowAndShrink,
-                        FlatAppearance = {BorderSize = 0},
+                        FlatAppearance = { BorderSize = 0 },
                         FlatStyle = FlatStyle.Flat,
                         Padding = new Padding(1),
                         MinimumSize = new Size(24, 24),
@@ -909,10 +909,10 @@ namespace Chummer
                     {
                         Anchor = AnchorStyles.Left | AnchorStyles.Right,
                         AutoSize = true,
-                        Maximum = new decimal(new[] {12, 0, 0, 0}),
-                        Minimum = new decimal(new[] {1, 0, 0, 0}),
+                        Maximum = new decimal(new[] { 12, 0, 0, 0 }),
+                        Minimum = new decimal(new[] { 1, 0, 0, 0 }),
                         Name = "nudConnection",
-                        Value = new decimal(new[] {1, 0, 0, 0})
+                        Value = new decimal(new[] { 1, 0, 0, 0 })
                     };
                     x.lblLoyalty = new Label
                     {
@@ -927,10 +927,10 @@ namespace Chummer
                     {
                         Anchor = AnchorStyles.Left | AnchorStyles.Right,
                         AutoSize = true,
-                        Maximum = new decimal(new[] {6, 0, 0, 0}),
-                        Minimum = new decimal(new[] {1, 0, 0, 0}),
+                        Maximum = new decimal(new[] { 6, 0, 0, 0 }),
+                        Minimum = new decimal(new[] { 1, 0, 0, 0 }),
                         Name = "nudLoyalty",
-                        Value = new decimal(new[] {1, 0, 0, 0})
+                        Value = new decimal(new[] { 1, 0, 0, 0 })
                     };
                     x.chkFree = new ColorableCheckBox(x.components)
                     {
@@ -977,7 +977,7 @@ namespace Chummer
                         Anchor = AnchorStyles.Right,
                         AutoSize = true,
                         AutoSizeMode = AutoSizeMode.GrowAndShrink,
-                        FlatAppearance = {BorderSize = 0},
+                        FlatAppearance = { BorderSize = 0 },
                         FlatStyle = FlatStyle.Flat,
                         Padding = new Padding(1),
                         MinimumSize = new Size(24, 24),
@@ -1109,27 +1109,32 @@ namespace Chummer
                 {
                     x.cboMetatype = new ElasticComboBox
                     {
-                        Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboMetatype"
+                        Anchor = AnchorStyles.Left | AnchorStyles.Right,
+                        FormattingEnabled = true,
+                        Name = "cboMetatype"
                     };
                     x.cboGender = new ElasticComboBox
-                        {Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboGender"};
+                    { Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboGender" };
                     x.cboAge = new ElasticComboBox
-                        {Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboAge"};
+                    { Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboAge" };
                     x.cboType = new ElasticComboBox
-                        {Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboType"};
+                    { Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboType" };
                     x.cboPersonalLife = new ElasticComboBox
                     {
-                        Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true,
+                        Anchor = AnchorStyles.Left | AnchorStyles.Right,
+                        FormattingEnabled = true,
                         Name = "cboPersonalLife"
                     };
                     x.cboPreferredPayment = new ElasticComboBox
                     {
-                        Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true,
+                        Anchor = AnchorStyles.Left | AnchorStyles.Right,
+                        FormattingEnabled = true,
                         Name = "cboPreferredPayment"
                     };
                     x.cboHobbiesVice = new ElasticComboBox
                     {
-                        Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true,
+                        Anchor = AnchorStyles.Left | AnchorStyles.Right,
+                        FormattingEnabled = true,
                         Name = "cboHobbiesVice"
                     };
                 });
@@ -1332,11 +1337,11 @@ namespace Chummer
                         Name = "cboMetatype"
                     };
                     x.cboGender = new ElasticComboBox
-                        { Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboGender" };
+                    { Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboGender" };
                     x.cboAge = new ElasticComboBox
-                        { Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboAge" };
+                    { Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboAge" };
                     x.cboType = new ElasticComboBox
-                        { Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboType" };
+                    { Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboType" };
                     x.cboPersonalLife = new ElasticComboBox
                     {
                         Anchor = AnchorStyles.Left | AnchorStyles.Right,
@@ -1549,7 +1554,6 @@ namespace Chummer
                 // Need these as separate instead of as simple data bindings so that we don't get annoying live partial translations
                 await this.DoThreadSafeAsync(x =>
                 {
-
                     x.cboMetatype.SelectedIndexChanged += UpdateMetatype;
                     x.cboGender.SelectedIndexChanged += UpdateGender;
                     x.cboAge.SelectedIndexChanged += UpdateAge;
@@ -1685,7 +1689,7 @@ namespace Chummer
                 lstTypes.Sort(CompareListItems.CompareNames);
                 lstHobbiesVices.Sort(CompareListItems.CompareNames);
                 lstPreferredPayments.Sort(CompareListItems.CompareNames);
-                
+
                 cboMetatype.PopulateWithListItems(lstMetatypes);
                 cboGender.PopulateWithListItems(lstGenders);
                 cboAge.PopulateWithListItems(lstAges);

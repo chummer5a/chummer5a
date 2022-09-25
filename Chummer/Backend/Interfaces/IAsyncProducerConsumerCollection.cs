@@ -27,8 +27,11 @@ namespace Chummer
     public interface IAsyncProducerConsumerCollection<T> : IProducerConsumerCollection<T>, IAsyncEnumerable<T>
     {
         ValueTask CopyToAsync(T[] array, int index, CancellationToken token = default);
+
         ValueTask<bool> TryAddAsync(T item, CancellationToken token = default);
+
         ValueTask<Tuple<bool, T>> TryTakeAsync(CancellationToken token = default);
+
         ValueTask<T[]> ToArrayAsync(CancellationToken token = default);
     }
 }

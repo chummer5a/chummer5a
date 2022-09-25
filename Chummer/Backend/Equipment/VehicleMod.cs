@@ -1048,7 +1048,7 @@ namespace Chummer.Backend.Equipment
                     (bool blnIsSuccess, object objProcess)
                         = CommonFunctions.EvaluateInvariantXPath(sbdAvail.ToString());
                     if (blnIsSuccess)
-                        intAvail += ((double) objProcess).StandardRound();
+                        intAvail += ((double)objProcess).StandardRound();
                 }
             }
 
@@ -1439,7 +1439,7 @@ namespace Chummer.Backend.Equipment
                     string[] strValues = strSlotsExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
                     strSlotsExpression = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
                 }
-                
+
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
                 {
                     sbdReturn.Append(strSlotsExpression.TrimStart('+'));
@@ -1487,7 +1487,7 @@ namespace Chummer.Backend.Equipment
                                            () => Parent?.Pilot.ToString(GlobalSettings.InvariantCultureInfo) ?? "0");
                     (bool blnIsSuccess, object objProcess)
                         = CommonFunctions.EvaluateInvariantXPath(sbdReturn.ToString());
-                    return blnIsSuccess ? ((double) objProcess).StandardRound() : 0;
+                    return blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
                 }
             }
         }
@@ -1548,7 +1548,7 @@ namespace Chummer.Backend.Equipment
         public string CurrentDisplayName => DisplayName(GlobalSettings.CultureInfo, GlobalSettings.Language);
 
         public ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default) =>
-            DisplayNameAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token); 
+            DisplayNameAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
 
         /// <summary>
         /// Vehicle arm/leg Strength.

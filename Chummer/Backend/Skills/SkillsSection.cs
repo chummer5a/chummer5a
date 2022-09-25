@@ -176,36 +176,37 @@ namespace Chummer.Backend.Skills
                 case nameof(CharacterSettings.KnowledgePointsExpression):
                     OnPropertyChanged(nameof(KnowledgeSkillPoints));
                     break;
+
                 case nameof(CharacterSettings.MaxSkillRatingCreate):
-                {
-                    using (EnterReadLock.Enter(LockObject))
                     {
-                        if (!_objCharacter.Created && !_objCharacter.IgnoreRules)
+                        using (EnterReadLock.Enter(LockObject))
                         {
-                            foreach (Skill objSkill in Skills)
-                                objSkill.OnPropertyChanged(nameof(Skill.RatingMaximum));
-                            foreach (Skill objSkill in _dicSkillBackups.Values.Where(x => !x.IsKnowledgeSkill))
-                                objSkill.OnPropertyChanged(nameof(Skill.RatingMaximum));
+                            if (!_objCharacter.Created && !_objCharacter.IgnoreRules)
+                            {
+                                foreach (Skill objSkill in Skills)
+                                    objSkill.OnPropertyChanged(nameof(Skill.RatingMaximum));
+                                foreach (Skill objSkill in _dicSkillBackups.Values.Where(x => !x.IsKnowledgeSkill))
+                                    objSkill.OnPropertyChanged(nameof(Skill.RatingMaximum));
+                            }
                         }
-                    }
 
-                    break;
-                }
+                        break;
+                    }
                 case nameof(CharacterSettings.MaxKnowledgeSkillRatingCreate):
-                {
-                    using (EnterReadLock.Enter(LockObject))
                     {
-                        if (!_objCharacter.Created && !_objCharacter.IgnoreRules)
+                        using (EnterReadLock.Enter(LockObject))
                         {
-                            foreach (KnowledgeSkill objSkill in KnowledgeSkills)
-                                objSkill.OnPropertyChanged(nameof(Skill.RatingMaximum));
-                            foreach (Skill objSkill in _dicSkillBackups.Values.Where(x => x.IsKnowledgeSkill))
-                                objSkill.OnPropertyChanged(nameof(Skill.RatingMaximum));
+                            if (!_objCharacter.Created && !_objCharacter.IgnoreRules)
+                            {
+                                foreach (KnowledgeSkill objSkill in KnowledgeSkills)
+                                    objSkill.OnPropertyChanged(nameof(Skill.RatingMaximum));
+                                foreach (Skill objSkill in _dicSkillBackups.Values.Where(x => x.IsKnowledgeSkill))
+                                    objSkill.OnPropertyChanged(nameof(Skill.RatingMaximum));
+                            }
                         }
-                    }
 
-                    break;
-                }
+                        break;
+                    }
             }
         }
 
@@ -438,7 +439,7 @@ namespace Chummer.Backend.Skills
                              x => x.ImproveType == Improvement.ImprovementType.SpecialSkills))
                 {
                     FilterOption eFilterOption
-                        = (FilterOption) Enum.Parse(typeof(FilterOption), objImprovement.ImprovedName);
+                        = (FilterOption)Enum.Parse(typeof(FilterOption), objImprovement.ImprovedName);
                     setSkillsToRemove.ExceptWith(GetActiveSkillsFromData(eFilterOption, false, objImprovement.Target));
                 }
 
@@ -488,8 +489,10 @@ namespace Chummer.Backend.Skills
                                 {
                                     case 0:
                                         return CompareSkills(x, y);
+
                                     case -1:
                                         return -1;
+
                                     default:
                                         return 1;
                                 }
@@ -525,7 +528,7 @@ namespace Chummer.Backend.Skills
                     if (objImprovement.ImproveType == Improvement.ImprovementType.SpecialSkills)
                     {
                         FilterOption eFilterOption
-                            = (FilterOption) Enum.Parse(typeof(FilterOption), objImprovement.ImprovedName);
+                            = (FilterOption)Enum.Parse(typeof(FilterOption), objImprovement.ImprovedName);
                         setSkillsToRemove.ExceptWith(
                             await GetActiveSkillsFromDataAsync(eFilterOption, false, objImprovement.Target, token));
                     }
@@ -579,8 +582,10 @@ namespace Chummer.Backend.Skills
                                 {
                                     case 0:
                                         return CompareSkills(x, y);
+
                                     case -1:
                                         return -1;
+
                                     default:
                                         return 1;
                                 }
@@ -1585,7 +1590,7 @@ namespace Chummer.Backend.Skills
                                 (bool blnIsSuccess, object objProcess)
                                     = CommonFunctions.EvaluateInvariantXPath(
                                         sbdValue.ToString());
-                                _intCachedKnowledgePoints = blnIsSuccess ? ((double) objProcess).StandardRound() : 0;
+                                _intCachedKnowledgePoints = blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
                             }
                         }
                         else
@@ -1979,6 +1984,7 @@ namespace Chummer.Backend.Skills
         }
 
         #region XPath Processing
+
         /// <summary>
         /// Replaces substring in the form of {Skill} with the total dicepool of the skill.
         /// </summary>
@@ -2098,7 +2104,8 @@ namespace Chummer.Backend.Skills
                 }
             }
         }
-        #endregion
+
+        #endregion XPath Processing
 
         /// <inheritdoc />
         public void Dispose()

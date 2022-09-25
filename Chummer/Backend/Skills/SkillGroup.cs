@@ -928,7 +928,7 @@ namespace Chummer.Backend.Skills
 
                 if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
                     return;
-                
+
                 if (setNamesOfChangedProperties.Contains(nameof(IsDisabled)))
                     _intCachedIsDisabled = int.MinValue;
                 if (setNamesOfChangedProperties.Contains(nameof(KarmaUnbroken)))
@@ -1015,7 +1015,7 @@ namespace Chummer.Backend.Skills
             {
                 int intReturn = BasePoints;
                 int intValue = intReturn;
-                
+
                 decimal decMultiplier = 1.0m;
                 decimal decExtra = 0;
                 using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
@@ -1161,7 +1161,7 @@ namespace Chummer.Backend.Skills
                     intCost *= _objCharacter.Settings.KarmaNewSkillGroup;
                 else
                     intCost *= _objCharacter.Settings.KarmaImproveSkillGroup;
-                
+
                 decimal decMultiplier = 1.0m;
                 decimal decExtra = 0;
                 using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
@@ -1339,7 +1339,7 @@ namespace Chummer.Backend.Skills
                 {
                     return -1;
                 }
-                
+
                 decimal decMultiplier = 1.0m;
                 decimal decExtra = 0;
                 using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
