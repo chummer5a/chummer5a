@@ -1,4 +1,4 @@
-Future Build 223
+Build 223
 Application Changes:
 - Migrated Chummer to .NET Framework 4.8.1 to get receive various improvements and bugfixes to WinForms.
 - Characters can now be opened up directly for printing (including exporting to PDF) or for exporting without needing to fully open a character for editing.
