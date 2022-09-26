@@ -177,7 +177,14 @@ namespace Chummer
             if (e.CloseReason == CloseReason.UserClosing && GlobalSettings.AutomaticUpdate)
             {
                 e.Cancel = true;
-                await this.DoThreadSafeAsync(x => x.Hide(), _objGenericToken);
+                try
+                {
+                    await this.DoThreadSafeAsync(x => x.Hide(), _objGenericToken);
+                }
+                catch (OperationCanceledException)
+                {
+                    //swallow this
+                }
                 SilentMode = true;
                 return;
             }
@@ -689,16 +696,16 @@ namespace Chummer
                 {
                     try
                     {
-                        using (var zipToOpen = new FileStream(strBackupZipPath, FileMode.Create))
-                        using (var archive = new ZipArchive(zipToOpen, ZipArchiveMode.Create))
+                        using (FileStream zipToOpen = new FileStream(strBackupZipPath, FileMode.Create))
+                        using (ZipArchive archive = new ZipArchive(zipToOpen, ZipArchiveMode.Create))
                         {
-                            foreach (var file in Directory.GetFiles(_strAppPath))
+                            foreach (string file in Directory.GetFiles(_strAppPath))
                             {
-                                var entry = archive.CreateEntry(Path.GetFileName(file));
+                                ZipArchiveEntry entry = archive.CreateEntry(Path.GetFileName(file));
                                 entry.LastWriteTime = File.GetLastWriteTime(file);
-                                using (var fs = new FileStream(file, FileMode.Open, FileAccess.Read,
-                                           FileShare.ReadWrite))
-                                using (var stream = entry.Open())
+                                using (FileStream fs = new FileStream(file, FileMode.Open, FileAccess.Read,
+                                                                      FileShare.ReadWrite))
+                                using (Stream stream = entry.Open())
                                 {
                                     //magic number default buffer size, no overload that is only stream+token
                                     await fs.CopyToAsync(stream, 81920, token);
@@ -1106,7 +1113,7 @@ namespace Chummer
 
                     await pgbOverallProgress.DoThreadSafeAsync(x => x.Value = intTmp, _objGenericToken);
             }
-            catch (TaskCanceledException)
+            catch (OperationCanceledException)
             {
                 //Swallow this. Closing the form cancels the download which is a change of download progress so token is already cancelled. 
             }

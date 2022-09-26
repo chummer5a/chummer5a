@@ -47,7 +47,7 @@
         <skill amendoperation="addnode">Stealth</skill>
       </skills>
       <skills>
-        <group amendoperation="remove"/>
+        <group amendoperation="remove" />
         <skill xpathfilter=". = 'Assensing' or . = 'Astral Combat'" spec="Astral">Aetherology</skill>
         <skill xpathfilter=". = 'Arcana' or . = 'Artificing' or . = 'Disenchanting'" spec="Arcana">Aetherology</skill>
         <skill xpathfilter=". = 'Ritual Spellcasting'" spec="Ceremony">Aetherology</skill>
@@ -92,7 +92,7 @@
         <skill xpathfilter=". = 'Gunnery'" spec="Gunnery">Military Science</skill>
         <skill xpathfilter=". = 'Throwing Weapons'" spec="Throwing Weapons">Projectile Weapons</skill>
         <skill xpathfilter=". = 'Archery'" spec="Archery">Projectile Weapons</skill>
-        <skill xpathfilter=". = 'Perception' or . = 'Artisan' or . = 'Forgery' or . = 'Exotic Ranged Weapon'" amendoperation="remove"/>
+        <skill xpathfilter=". = 'Perception' or . = 'Artisan' or . = 'Forgery' or . = 'Exotic Ranged Weapon'" amendoperation="remove" />
       </skills>
     </metatype>
   </metatypes>

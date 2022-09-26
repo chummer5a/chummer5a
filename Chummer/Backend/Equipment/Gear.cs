@@ -1756,9 +1756,9 @@ namespace Chummer.Backend.Equipment
                     }
 
                     // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                    object objProcess
-                        = CommonFunctions.EvaluateInvariantXPath(sbdValue.ToString(), out bool blnIsSuccess);
-                    return blnIsSuccess ? ((double) objProcess).StandardRound() : 0;
+                    (bool blnIsSuccess, object objProcess)
+                        = CommonFunctions.EvaluateInvariantXPath(sbdValue.ToString());
+                    return blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
                 }
             }
 
@@ -1937,14 +1937,15 @@ namespace Chummer.Backend.Equipment
         /// Returns Page if not found or the string is empty.
         /// </summary>
         /// <param name="strLanguage">Language file keyword to use.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns></returns>
-        public async ValueTask<string> DisplayPageAsync(string strLanguage)
+        public async ValueTask<string> DisplayPageAsync(string strLanguage, CancellationToken token = default)
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
-            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage);
+            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token);
             string s = objNode != null
-                ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage"))?.Value ?? Page
+                ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage", token: token))?.Value ?? Page
                 : Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
@@ -2504,9 +2505,9 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total Availability of the Gear and its accessories.
         /// </summary>
-        public async ValueTask<string> TotalAvailAsync(CultureInfo objCulture, string strLanguage)
+        public async ValueTask<string> TotalAvailAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
-            return (await TotalAvailTupleAsync()).ToString(objCulture, strLanguage);
+            return (await TotalAvailTupleAsync(token: token)).ToString(objCulture, strLanguage);
         }
 
         /// <summary>
@@ -2564,10 +2565,10 @@ namespace Chummer.Backend.Equipment
                                                   GlobalSettings.InvariantCultureInfo));
                     }
 
-                    object objProcess
-                        = CommonFunctions.EvaluateInvariantXPath(sbdAvail.ToString(), out bool blnIsSuccess);
+                    (bool blnIsSuccess, object objProcess)
+                        = CommonFunctions.EvaluateInvariantXPath(sbdAvail.ToString());
                     if (blnIsSuccess)
-                        intAvail += ((double) objProcess).StandardRound();
+                        intAvail += ((double)objProcess).StandardRound();
                 }
             }
 
@@ -2599,8 +2600,9 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total Availability as a triple.
         /// </summary>
-        public async ValueTask<AvailabilityValue> TotalAvailTupleAsync(bool blnCheckChildren = true)
+        public async ValueTask<AvailabilityValue> TotalAvailTupleAsync(bool blnCheckChildren = true, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             bool blnModifyParentAvail = false;
             string strAvail = Avail;
             char chrLastAvailChar = ' ';
@@ -2625,34 +2627,34 @@ namespace Chummer.Backend.Equipment
                 {
                     sbdAvail.Append(strAvail.TrimStart('+'));
                     await sbdAvail.CheapReplaceAsync(strAvail, "MinRating",
-                                                     () => MinRatingValue.ToString(GlobalSettings.InvariantCultureInfo));
+                                                     () => MinRatingValue.ToString(GlobalSettings.InvariantCultureInfo), token: token);
                     await sbdAvail.CheapReplaceAsync(strAvail, "Parent Rating",
                                                      () => (Parent as IHasRating)?.Rating.ToString(
-                                                         GlobalSettings.InvariantCultureInfo));
+                                                         GlobalSettings.InvariantCultureInfo), token: token);
                     sbdAvail.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
                     // Keeping enumerations separate reduces heap allocations
                     foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList)
                     {
                         await sbdAvail.CheapReplaceAsync(strAvail, objLoopAttribute.Abbrev,
                                                          () => objLoopAttribute.TotalValue.ToString(
-                                                             GlobalSettings.InvariantCultureInfo));
+                                                             GlobalSettings.InvariantCultureInfo), token: token);
                         await sbdAvail.CheapReplaceAsync(strAvail, objLoopAttribute.Abbrev + "Base",
                                                          () => objLoopAttribute.TotalBase.ToString(
-                                                             GlobalSettings.InvariantCultureInfo));
+                                                             GlobalSettings.InvariantCultureInfo), token: token);
                     }
 
                     foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.SpecialAttributeList)
                     {
                         await sbdAvail.CheapReplaceAsync(strAvail, objLoopAttribute.Abbrev,
                                                          () => objLoopAttribute.TotalValue.ToString(
-                                                             GlobalSettings.InvariantCultureInfo));
+                                                             GlobalSettings.InvariantCultureInfo), token: token);
                         await sbdAvail.CheapReplaceAsync(strAvail, objLoopAttribute.Abbrev + "Base",
                                                          () => objLoopAttribute.TotalBase.ToString(
-                                                             GlobalSettings.InvariantCultureInfo));
+                                                             GlobalSettings.InvariantCultureInfo), token: token);
                     }
 
-                    object objProcess
-                        = CommonFunctions.EvaluateInvariantXPath(sbdAvail.ToString(), out bool blnIsSuccess);
+                    (bool blnIsSuccess, object objProcess)
+                        = await CommonFunctions.EvaluateInvariantXPathAsync(sbdAvail.ToString(), token);
                     if (blnIsSuccess)
                         intAvail += ((double)objProcess).StandardRound();
                 }
@@ -2665,7 +2667,7 @@ namespace Chummer.Backend.Equipment
                 {
                     if (objChild.ParentID != InternalId)
                     {
-                        AvailabilityValue objLoopAvailTuple = await objChild.TotalAvailTupleAsync();
+                        AvailabilityValue objLoopAvailTuple = await objChild.TotalAvailTupleAsync(token: token);
                         if (objLoopAvailTuple.AddToParent)
                             intAvail += objLoopAvailTuple.Value;
                         if (objLoopAvailTuple.Suffix == 'F')
@@ -2720,9 +2722,8 @@ namespace Chummer.Backend.Equipment
                             strFirstHalf = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
                         }
 
-                        object objProcess = CommonFunctions.EvaluateInvariantXPath(
-                            strFirstHalf.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo)),
-                            out bool blnIsSuccess);
+                        (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(
+                            strFirstHalf.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo)));
                         strReturn = blnIsSuccess
                             ? ((double)objProcess).ToString("#,0.##", GlobalSettings.CultureInfo)
                             : strFirstHalf;
@@ -2744,11 +2745,10 @@ namespace Chummer.Backend.Equipment
                     if (strReturn.Contains("Rating"))
                     {
                         // This has resulted in a non-whole number, so round it (minimum of 1).
-                        object objProcess = CommonFunctions.EvaluateInvariantXPath(strReturn
+                        (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strReturn
                                 .CheapReplace("Parent Rating",
                                     () => (Parent as IHasRating)?.Rating.ToString(GlobalSettings.InvariantCultureInfo))
-                                .Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo)),
-                            out bool blnIsSuccess);
+                                .Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo)));
                         double dblNumber = blnIsSuccess ? (double)objProcess : 1;
                         if (dblNumber < 1)
                             dblNumber = 1;
@@ -2799,9 +2799,8 @@ namespace Chummer.Backend.Equipment
                             strFirstHalf = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
                         }
 
-                        object objProcess = CommonFunctions.EvaluateInvariantXPath(
-                            strFirstHalf.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo)),
-                            out bool blnIsSuccess);
+                        (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(
+                            strFirstHalf.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo)));
                         strReturn = blnIsSuccess
                             ? ((double)objProcess).ToString("#,0.##", GlobalSettings.CultureInfo)
                             : strFirstHalf;
@@ -2819,9 +2818,8 @@ namespace Chummer.Backend.Equipment
                     if (blnSquareBrackets)
                         strReturn = strReturn.Substring(1, strReturn.Length - 2);
 
-                    object objProcess = CommonFunctions.EvaluateInvariantXPath(
-                        strReturn.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo)),
-                        out bool blnIsSuccess);
+                    (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(
+                        strReturn.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo)));
                     if (blnIsSuccess)
                         strReturn = ((double)objProcess).ToString("#,0.##", GlobalSettings.CultureInfo);
                     if (blnSquareBrackets)
@@ -2907,8 +2905,8 @@ namespace Chummer.Backend.Equipment
                     }
 
                     // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                    object objProcess
-                        = CommonFunctions.EvaluateInvariantXPath(sbdCost.ToString(), out bool blnIsSuccess);
+                    (bool blnIsSuccess, object objProcess)
+                        = CommonFunctions.EvaluateInvariantXPath(sbdCost.ToString());
                     if (blnIsSuccess)
                         decReturn = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
                 }
@@ -2951,7 +2949,7 @@ namespace Chummer.Backend.Equipment
                 return decReturn;
             }
         }
-        
+
         public decimal StolenTotalCost => CalculatedStolenTotalCost(true);
 
         public decimal NonStolenTotalCost => CalculatedStolenTotalCost(false);
@@ -3009,8 +3007,8 @@ namespace Chummer.Backend.Equipment
                 decimal decParentWeight = 0;
                 if (Parent != null && (strWeightExpression.Contains("Parent Weight") || strWeightExpression.Contains("Gear Weight")))
                 {
-                    decParentWeight = ((Gear) Parent).OwnWeight;
-                    decGearWeight = decParentWeight * ((Gear) Parent).Quantity;
+                    decParentWeight = ((Gear)Parent).OwnWeight;
+                    decGearWeight = decParentWeight * ((Gear)Parent).Quantity;
                 }
 
                 decimal decTotalChildrenWeight = 0;
@@ -3051,9 +3049,9 @@ namespace Chummer.Backend.Equipment
                                                () => objLoopAttribute.TotalBase.ToString(
                                                    GlobalSettings.InvariantCultureInfo));
                     }
-                    
-                    object objProcess
-                        = CommonFunctions.EvaluateInvariantXPath(sbdWeight.ToString(), out bool blnIsSuccess);
+
+                    (bool blnIsSuccess, object objProcess)
+                        = CommonFunctions.EvaluateInvariantXPath(sbdWeight.ToString());
                     if (blnIsSuccess)
                         decReturn = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
                 }
@@ -3306,8 +3304,9 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Weapon Bonus Damage.
         /// </summary>
-        public async ValueTask<string> WeaponBonusDamageAsync(string strLanguage)
+        public async ValueTask<string> WeaponBonusDamageAsync(string strLanguage, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (_nodWeaponBonus == null)
                 return string.Empty;
             string strReturn = _nodWeaponBonus["damagereplace"]?.InnerText ?? "0";
@@ -3330,9 +3329,9 @@ namespace Chummer.Backend.Equipment
             {
                 strReturn = await strReturn
                                   .CheapReplaceAsync(
-                                      "P", () => LanguageManager.GetStringAsync("String_DamagePhysical", strLanguage))
+                                      "P", () => LanguageManager.GetStringAsync("String_DamagePhysical", strLanguage, token: token), token: token)
                                   .CheapReplaceAsync(
-                                      "S", () => LanguageManager.GetStringAsync("String_DamageStun", strLanguage));
+                                      "S", () => LanguageManager.GetStringAsync("String_DamageStun", strLanguage, token: token), token: token);
             }
 
             return strReturn;
@@ -3429,8 +3428,9 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Weapon Bonus Damage.
         /// </summary>
-        public async ValueTask<string> FlechetteWeaponBonusDamageAsync(string strLanguage)
+        public async ValueTask<string> FlechetteWeaponBonusDamageAsync(string strLanguage, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (_nodFlechetteWeaponBonus == null)
                 return string.Empty;
             string strReturn = _nodFlechetteWeaponBonus["damagereplace"]?.InnerText ?? "0";
@@ -3451,8 +3451,8 @@ namespace Chummer.Backend.Equipment
             // Translate the Avail string.
             if (!strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
             {
-                strReturn = await strReturn.CheapReplaceAsync("P", () => LanguageManager.GetStringAsync("String_DamagePhysical", strLanguage))
-                                           .CheapReplaceAsync("S", () => LanguageManager.GetStringAsync("String_DamageStun", strLanguage));
+                strReturn = await strReturn.CheapReplaceAsync("P", () => LanguageManager.GetStringAsync("String_DamagePhysical", strLanguage, token: token), token: token)
+                                           .CheapReplaceAsync("S", () => LanguageManager.GetStringAsync("String_DamageStun", strLanguage, token: token), token: token);
             }
 
             return strReturn;

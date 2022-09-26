@@ -18,6 +18,7 @@
  */
 
 using System.Drawing;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -37,20 +38,18 @@ namespace Chummer
         /// <summary>
         /// Writes notes to an IHasNotes object, returns True if notes were changed and False otherwise.
         /// </summary>
-        /// <param name="objNotes"></param>
-        /// <param name="treNode"></param>
-        public static async ValueTask<bool> WriteNotes(this IHasNotes objNotes, TreeNode treNode)
+        public static async ValueTask<bool> WriteNotes(this IHasNotes objNotes, TreeNode treNode, CancellationToken token = default)
         {
             if (objNotes == null || treNode == null)
                 return false;
             TreeView objTreeView = treNode.TreeView;
             Form frmToUse = objTreeView != null
-                ? await objTreeView.DoThreadSafeFuncAsync(x => x.FindForm()) ?? Program.MainForm
+                ? await objTreeView.DoThreadSafeFuncAsync(x => x.FindForm(), token: token) ?? Program.MainForm
                 : Program.MainForm;
 
-            using (ThreadSafeForm<EditNotes> frmItemNotes = await ThreadSafeForm<EditNotes>.GetAsync(() => new EditNotes(objNotes.Notes, objNotes.NotesColor)))
+            using (ThreadSafeForm<EditNotes> frmItemNotes = await ThreadSafeForm<EditNotes>.GetAsync(() => new EditNotes(objNotes.Notes, objNotes.NotesColor), token))
             {
-                if (await frmItemNotes.ShowDialogSafeAsync(frmToUse) != DialogResult.OK)
+                if (await frmItemNotes.ShowDialogSafeAsync(frmToUse, token) != DialogResult.OK)
                     return false;
 
                 objNotes.Notes = frmItemNotes.MyForm.Notes;
@@ -63,7 +62,7 @@ namespace Chummer
                 {
                     treNode.ForeColor = objNotes.PreferredColor;
                     treNode.ToolTipText = objNotes.Notes.WordWrap();
-                });
+                }, token: token);
             }
             else
             {

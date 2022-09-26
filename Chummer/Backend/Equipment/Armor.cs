@@ -158,7 +158,7 @@ namespace Chummer.Backend.Equipment
                             blnDoArmorEncumbranceRefresh = Equipped && objOldItem.Encumbrance;
                         }
                     }
-                    
+
                     foreach (ArmorMod objNewItem in setNewItems)
                     {
                         objNewItem.Parent = this;
@@ -1223,7 +1223,7 @@ namespace Chummer.Backend.Equipment
                 if (blnSquareBrackets)
                     strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
 
-                object objProcess = CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo)), out bool blnIsSuccess);
+                (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo)));
                 string strReturn = blnIsSuccess ? ((double)objProcess).ToString("#,0.##", objCultureInfo) : objProcess.ToString();
                 if (blnSquareBrackets)
                     strReturn = '[' + strReturn + ']';
@@ -1305,7 +1305,7 @@ namespace Chummer.Backend.Equipment
                 if (strReturn.Contains("Rating"))
                 {
                     string strCost = strReturn.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                    object objProcess = CommonFunctions.EvaluateInvariantXPath(strCost, out bool blnIsSuccess);
+                    (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strCost);
                     decTotalCost = blnIsSuccess ? Convert.ToDecimal(objProcess.ToString(), GlobalSettings.InvariantCultureInfo) : 0;
                 }
                 else
@@ -1396,14 +1396,15 @@ namespace Chummer.Backend.Equipment
         /// Returns Page if not found or the string is empty.
         /// </summary>
         /// <param name="strLanguage">Language file keyword to use.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns></returns>
-        public async ValueTask<string> DisplayPageAsync(string strLanguage)
+        public async ValueTask<string> DisplayPageAsync(string strLanguage, CancellationToken token = default)
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
-            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage);
+            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token);
             string s = objNode != null
-                ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage"))?.Value ?? Page
+                ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage", token: token))?.Value ?? Page
                 : Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
@@ -1620,8 +1621,8 @@ namespace Chummer.Backend.Equipment
                                                  GlobalSettings.InvariantCultureInfo));
                     }
 
-                    object objProcess
-                        = CommonFunctions.EvaluateInvariantXPath(sbdCost.ToString(), out bool blnIsSuccess);
+                    (bool blnIsSuccess, object objProcess)
+                        = CommonFunctions.EvaluateInvariantXPath(sbdCost.ToString());
                     if (blnIsSuccess)
                         decReturn = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
                 }
@@ -1666,8 +1667,8 @@ namespace Chummer.Backend.Equipment
                                                    GlobalSettings.InvariantCultureInfo));
                     }
 
-                    object objProcess
-                        = CommonFunctions.EvaluateInvariantXPath(sbdWeight.ToString(), out bool blnIsSuccess);
+                    (bool blnIsSuccess, object objProcess)
+                        = CommonFunctions.EvaluateInvariantXPath(sbdWeight.ToString());
                     if (blnIsSuccess)
                         decReturn = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
                 }
@@ -2010,10 +2011,10 @@ namespace Chummer.Backend.Equipment
                                                   GlobalSettings.InvariantCultureInfo));
                     }
 
-                    object objProcess
-                        = CommonFunctions.EvaluateInvariantXPath(sbdAvail.ToString(), out bool blnIsSuccess);
+                    (bool blnIsSuccess, object objProcess)
+                        = CommonFunctions.EvaluateInvariantXPath(sbdAvail.ToString());
                     if (blnIsSuccess)
-                        intAvail = ((double) objProcess).StandardRound();
+                        intAvail = ((double)objProcess).StandardRound();
                 }
             }
 
@@ -2084,7 +2085,7 @@ namespace Chummer.Backend.Equipment
                                      .CheapReplace("Capacity", () => TotalArmorCapacity(GlobalSettings.InvariantCultureInfo))
                                      .Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
 
-                object objProcess = CommonFunctions.EvaluateInvariantXPath(strCapacity, out bool blnIsSuccess);
+                (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strCapacity);
                 if (blnIsSuccess)
                 {
                     strCapacity = (Convert.ToDecimal(strReturn, objCultureInfo)
@@ -2234,7 +2235,11 @@ namespace Chummer.Backend.Equipment
 
         public string CurrentDisplayName => DisplayName(GlobalSettings.CultureInfo, GlobalSettings.Language);
 
+        public ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default) => DisplayNameAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
+
         public string CurrentDisplayNameShort => DisplayNameShort(GlobalSettings.Language);
+
+        public ValueTask<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default) => DisplayNameShortAsync(GlobalSettings.Language, token);
 
         /// <summary>
         /// A custom name for the Armor assigned by the player.
@@ -2355,9 +2360,9 @@ namespace Chummer.Backend.Equipment
                     // Replace the division sign with "div" since we're using XPath.
                     sbdValue.Replace("/", " div ");
                     // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                    object objProcess
-                        = CommonFunctions.EvaluateInvariantXPath(sbdValue.ToString(), out bool blnIsSuccess);
-                    return blnIsSuccess ? ((double) objProcess).StandardRound() : 0;
+                    (bool blnIsSuccess, object objProcess)
+                        = CommonFunctions.EvaluateInvariantXPath(sbdValue.ToString());
+                    return blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
                 }
             }
             int.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out int intReturn);

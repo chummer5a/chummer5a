@@ -23,6 +23,7 @@ using System.Data;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
@@ -107,7 +108,7 @@ namespace Chummer
             await chkBlackMarketDiscount.DoThreadSafeAsync(x => x.Visible = _objCharacter.BlackMarketDiscount);
 
             // Populate the Vehicle Category list.
-            string strFilterPrefix = "vehicles/vehicle[(" + _objCharacter.Settings.BookXPath() + ") and category = ";
+            string strFilterPrefix = "vehicles/vehicle[(" + await _objCharacter.Settings.BookXPathAsync() + ") and category = ";
             foreach (XPathNavigator objXmlCategory in await _xmlBaseVehicleDataNode.SelectAndCacheExpressionAsync("categories/category"))
             {
                 string strInnerText = objXmlCategory.Value;
@@ -275,12 +276,12 @@ namespace Chummer
         /// <summary>
         /// Refresh the information for the selected Vehicle.
         /// </summary>
-        private async ValueTask UpdateSelectedVehicle()
+        private async ValueTask UpdateSelectedVehicle(CancellationToken token = default)
         {
             if (_blnLoading)
                 return;
 
-            string strSelectedId = await lstVehicle.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
+            string strSelectedId = await lstVehicle.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token);
             XPathNavigator objXmlVehicle = null;
             if (!string.IsNullOrEmpty(strSelectedId))
             {
@@ -289,43 +290,43 @@ namespace Chummer
             }
             if (objXmlVehicle == null)
             {
-                await tlpRight.DoThreadSafeAsync(x => x.Visible = false);
+                await tlpRight.DoThreadSafeAsync(x => x.Visible = false, token: token);
                 return;
             }
 
-            await this.DoThreadSafeAsync(x => x.SuspendLayout());
+            await this.DoThreadSafeAsync(x => x.SuspendLayout(), token: token);
             try
             {
                 string strHandling = objXmlVehicle.SelectSingleNode("handling")?.Value;
-                await lblVehicleHandling.DoThreadSafeAsync(x => x.Text = strHandling);
+                await lblVehicleHandling.DoThreadSafeAsync(x => x.Text = strHandling, token: token);
                 string strAccel = objXmlVehicle.SelectSingleNode("accel")?.Value;
-                await lblVehicleAccel.DoThreadSafeAsync(x => x.Text = strAccel);
+                await lblVehicleAccel.DoThreadSafeAsync(x => x.Text = strAccel, token: token);
                 string strSpeed = objXmlVehicle.SelectSingleNode("speed")?.Value;
-                await lblVehicleSpeed.DoThreadSafeAsync(x => x.Text = strSpeed);
+                await lblVehicleSpeed.DoThreadSafeAsync(x => x.Text = strSpeed, token: token);
                 string strPilot = objXmlVehicle.SelectSingleNode("pilot")?.Value;
-                await lblVehiclePilot.DoThreadSafeAsync(x => x.Text = strPilot);
+                await lblVehiclePilot.DoThreadSafeAsync(x => x.Text = strPilot, token: token);
                 string strBody = objXmlVehicle.SelectSingleNode("body")?.Value;
-                await lblVehicleBody.DoThreadSafeAsync(x => x.Text = strBody);
+                await lblVehicleBody.DoThreadSafeAsync(x => x.Text = strBody, token: token);
                 string strArmor = objXmlVehicle.SelectSingleNode("armor")?.Value;
-                await lblVehicleArmor.DoThreadSafeAsync(x => x.Text = strArmor);
+                await lblVehicleArmor.DoThreadSafeAsync(x => x.Text = strArmor, token: token);
                 string strSeats = objXmlVehicle.SelectSingleNode("seats")?.Value;
-                await lblVehicleSeats.DoThreadSafeAsync(x => x.Text = strSeats);
+                await lblVehicleSeats.DoThreadSafeAsync(x => x.Text = strSeats, token: token);
                 string strSensor = objXmlVehicle.SelectSingleNode("sensor")?.Value;
-                await lblVehicleSensor.DoThreadSafeAsync(x => x.Text = strSensor);
-                await lblVehicleHandlingLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strHandling));
-                await lblVehicleAccelLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strAccel));
-                await lblVehicleSpeedLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strSpeed));
-                await lblVehiclePilotLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strPilot));
-                await lblVehicleBodyLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strBody));
-                await lblVehicleArmorLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strArmor));
-                await lblVehicleSeatsLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strSeats));
-                await lblVehicleSensorLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strSensor));
+                await lblVehicleSensor.DoThreadSafeAsync(x => x.Text = strSensor, token: token);
+                await lblVehicleHandlingLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strHandling), token: token);
+                await lblVehicleAccelLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strAccel), token: token);
+                await lblVehicleSpeedLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strSpeed), token: token);
+                await lblVehiclePilotLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strPilot), token: token);
+                await lblVehicleBodyLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strBody), token: token);
+                await lblVehicleArmorLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strArmor), token: token);
+                await lblVehicleSeatsLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strSeats), token: token);
+                await lblVehicleSensorLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strSensor), token: token);
                 AvailabilityValue objTotalAvail
                     = new AvailabilityValue(0, objXmlVehicle.SelectSingleNode("avail")?.Value,
-                                            await chkUsedVehicle.DoThreadSafeFuncAsync(x => x.Checked) ? -4 : 0);
+                                            await chkUsedVehicle.DoThreadSafeFuncAsync(x => x.Checked, token: token) ? -4 : 0);
                 string strAvail = objTotalAvail.ToString();
-                await lblVehicleAvail.DoThreadSafeAsync(x => x.Text = strAvail);
-                await lblVehicleAvailLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strAvail));
+                await lblVehicleAvail.DoThreadSafeAsync(x => x.Text = strAvail, token: token);
+                await lblVehicleAvailLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strAvail), token: token);
 
                 bool blnCanBlackMarketDiscount
                     = _setBlackMarketMaps.Contains(objXmlVehicle.SelectSingleNode("category")?.Value);
@@ -341,34 +342,34 @@ namespace Chummer
                         //Prevent chkBlackMarketDiscount from being checked if the category doesn't match.
                         x.Checked = false;
                     }
-                });
+                }, token: token);
 
-                await UpdateSelectedVehicleCost();
+                await UpdateSelectedVehicleCost(token);
 
                 string strSource = objXmlVehicle.SelectSingleNode("source")?.Value
-                                   ?? await LanguageManager.GetStringAsync("String_Unknown");
-                string strPage = (await objXmlVehicle.SelectSingleNodeAndCacheExpressionAsync("altpage"))?.Value
+                                   ?? await LanguageManager.GetStringAsync("String_Unknown", token: token);
+                string strPage = (await objXmlVehicle.SelectSingleNodeAndCacheExpressionAsync("altpage", token: token))?.Value
                                  ?? objXmlVehicle.SelectSingleNode("page")?.Value
-                                 ?? await LanguageManager.GetStringAsync("String_Unknown");
+                                 ?? await LanguageManager.GetStringAsync("String_Unknown", token: token);
                 SourceString objSource = await SourceString.GetSourceStringAsync(
                     strSource, strPage, GlobalSettings.Language,
-                    GlobalSettings.CultureInfo, _objCharacter);
-                await objSource.SetControlAsync(lblSource);
-                await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(objSource.ToString()));
-                await tlpRight.DoThreadSafeAsync(x => x.Visible = true);
+                    GlobalSettings.CultureInfo, _objCharacter, token: token);
+                await objSource.SetControlAsync(lblSource, token: token);
+                await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(objSource.ToString()), token: token);
+                await tlpRight.DoThreadSafeAsync(x => x.Visible = true, token: token);
             }
             finally
             {
-                await this.DoThreadSafeAsync(x => x.ResumeLayout());
+                await this.DoThreadSafeAsync(x => x.ResumeLayout(), token: token);
             }
         }
 
         /// <summary>
         /// Refresh the cost information for the selected Vehicle.
         /// </summary>
-        private async ValueTask UpdateSelectedVehicleCost()
+        private async ValueTask UpdateSelectedVehicleCost(CancellationToken token = default)
         {
-            string strSelectedId = await lstVehicle.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
+            string strSelectedId = await lstVehicle.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token);
             XPathNavigator objXmlVehicle = null;
             if (!string.IsNullOrEmpty(strSelectedId))
             {
@@ -377,7 +378,7 @@ namespace Chummer
             }
             if (objXmlVehicle == null)
             {
-                await tlpRight.DoThreadSafeAsync(x => x.Visible = false);
+                await tlpRight.DoThreadSafeAsync(x => x.Visible = false, token: token);
                 return;
             }
 
@@ -386,35 +387,35 @@ namespace Chummer
             if (strCost.StartsWith("Variable", StringComparison.Ordinal))
             {
                 strCost = strCost.TrimStartOnce("Variable(", true).TrimEndOnce(')');
-                await lblVehicleCost.DoThreadSafeAsync(x => x.Text = strCost);
-                await lblVehicleCostLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strCost));
-                await lblTest.DoThreadSafeAsync(x => x.Text = string.Empty);
-                await lblTestLabel.DoThreadSafeAsync(x => x.Visible = false);
+                await lblVehicleCost.DoThreadSafeAsync(x => x.Text = strCost, token: token);
+                await lblVehicleCostLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strCost), token: token);
+                await lblTest.DoThreadSafeAsync(x => x.Text = string.Empty, token: token);
+                await lblTestLabel.DoThreadSafeAsync(x => x.Visible = false, token: token);
             }
             else
             {
                 decimal decCost = 0.0m;
-                if (!await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked) && decimal.TryParse(strCost, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decTmp))
+                if (!await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked, token: token) && decimal.TryParse(strCost, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decTmp))
                 {
                     decCost = decTmp;
 
-                    if (await chkUsedVehicle.DoThreadSafeFuncAsync(x => x.Checked))
-                        decCost *= 1.0m - (await nudUsedVehicleDiscount.DoThreadSafeFuncAsync(x => x.Value) / 100.0m);
+                    if (await chkUsedVehicle.DoThreadSafeFuncAsync(x => x.Checked, token: token))
+                        decCost *= 1.0m - (await nudUsedVehicleDiscount.DoThreadSafeFuncAsync(x => x.Value, token: token) / 100.0m);
                     // Apply the markup if applicable.
-                    decCost *= 1 + (await nudMarkup.DoThreadSafeFuncAsync(x => x.Value) / 100.0m);
+                    decCost *= 1 + (await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token) / 100.0m);
 
-                    if (await chkBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked))
+                    if (await chkBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked, token: token))
                         decCost *= 0.9m;
                     if (Vehicle.DoesDealerConnectionApply(_setDealerConnectionMaps, objXmlVehicle.SelectSingleNode("category")?.Value))
                         decCost *= 0.9m;
                 }
 
-                strCost = decCost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + await LanguageManager.GetStringAsync("String_NuyenSymbol");
-                await lblVehicleCost.DoThreadSafeAsync(x => x.Text = strCost);
-                await lblVehicleCostLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strCost));
-                string strTest = _objCharacter.AvailTest(decCost, await lblVehicleAvail.DoThreadSafeFuncAsync(x => x.Text));
-                await lblTest.DoThreadSafeAsync(x => x.Text = strTest);
-                await lblTestLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strTest));
+                strCost = decCost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token);
+                await lblVehicleCost.DoThreadSafeAsync(x => x.Text = strCost, token: token);
+                await lblVehicleCostLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strCost), token: token);
+                string strTest = await _objCharacter.AvailTestAsync(decCost, await lblVehicleAvail.DoThreadSafeFuncAsync(x => x.Text, token: token), token);
+                await lblTest.DoThreadSafeAsync(x => x.Text = strTest, token: token);
+                await lblTestLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strTest), token: token);
             }
         }
 
@@ -496,7 +497,7 @@ namespace Chummer
 
                     foreach (XPathNavigator objXmlVehicle in objXmlVehicleList)
                     {
-                        if (blnHideOverAvailLimit && !objXmlVehicle.CheckAvailRestriction(_objCharacter))
+                        if (blnHideOverAvailLimit && !await objXmlVehicle.CheckAvailRestrictionAsync(_objCharacter))
                         {
                             ++intOverLimit;
                             continue;
@@ -517,7 +518,7 @@ namespace Chummer
                                                                           "category"))
                                                                   ?.Value))
                                 decCostMultiplier *= 0.9m;
-                            if (!objXmlVehicle.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier))
+                            if (!await objXmlVehicle.CheckNuyenRestrictionAsync(_objCharacter.Nuyen, decCostMultiplier))
                             {
                                 ++intOverLimit;
                                 continue;
@@ -621,7 +622,7 @@ namespace Chummer
                     {
                         foreach (XPathNavigator objXmlVehicle in objXmlVehicleList)
                         {
-                            if (blnHideOverAvailLimit && !objXmlVehicle.CheckAvailRestriction(_objCharacter))
+                            if (blnHideOverAvailLimit && !await objXmlVehicle.CheckAvailRestrictionAsync(_objCharacter))
                             {
                                 ++intOverLimit;
                                 continue;
@@ -642,7 +643,7 @@ namespace Chummer
                                                                               "category"))
                                                                       ?.Value))
                                     decCostMultiplier *= 0.9m;
-                                if (!objXmlVehicle.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier))
+                                if (!await objXmlVehicle.CheckNuyenRestrictionAsync(_objCharacter.Nuyen, decCostMultiplier))
                                 {
                                     ++intOverLimit;
                                     continue;
@@ -709,83 +710,83 @@ namespace Chummer
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>
-        private async ValueTask AcceptForm()
+        private async ValueTask AcceptForm(CancellationToken token = default)
         {
             XPathNavigator xmlVehicle = null;
             switch (tabViews.SelectedIndex)
             {
                 case 0:
-                    string strSelectedId = await lstVehicle.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
+                    string strSelectedId = await lstVehicle.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token);
                     if (!string.IsNullOrEmpty(strSelectedId))
                     {
                         xmlVehicle = _xmlBaseVehicleDataNode.SelectSingleNode("vehicles/vehicle[id = " + strSelectedId.CleanXPath() + ']');
                         if (xmlVehicle != null)
                         {
-                            _strSelectCategory = (GlobalSettings.SearchInCategoryOnly || await txtSearch.DoThreadSafeFuncAsync(x => x.TextLength) == 0)
-                                ? await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString())
+                            _strSelectCategory = (GlobalSettings.SearchInCategoryOnly || await txtSearch.DoThreadSafeFuncAsync(x => x.TextLength, token: token) == 0)
+                                ? await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token)
                                 : xmlVehicle.SelectSingleNode("category")?.Value;
                             _strSelectedVehicle = xmlVehicle.SelectSingleNode("id")?.Value;
-                            _decMarkup = await nudMarkup.DoThreadSafeFuncAsync(x => x.Value);
-                            _blnBlackMarketDiscount = await chkBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked);
+                            _decMarkup = await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token);
+                            _blnBlackMarketDiscount = await chkBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked, token: token);
 
                             await this.DoThreadSafeAsync(x =>
                             {
                                 x.DialogResult = DialogResult.OK;
                                 x.Close();
-                            });
+                            }, token: token);
                         }
                     }
 
                     break;
 
                 case 1:
-                    if (await dgvVehicles.DoThreadSafeFuncAsync(x => x.SelectedRows.Count) == 1)
+                    if (await dgvVehicles.DoThreadSafeFuncAsync(x => x.SelectedRows.Count, token: token) == 1)
                     {
-                        string strWeapon = await dgvVehicles.DoThreadSafeFuncAsync(x => x.SelectedRows[0].Cells[0].Value.ToString());
+                        string strWeapon = await dgvVehicles.DoThreadSafeFuncAsync(x => x.SelectedRows[0].Cells[0].Value.ToString(), token: token);
                         xmlVehicle = _xmlBaseVehicleDataNode.SelectSingleNode("/chummer/vehicles/vehicle[id = " + strWeapon.CleanXPath() + ']');
                         if (xmlVehicle != null)
                         {
                             _strSelectCategory
                                 = (GlobalSettings.SearchInCategoryOnly
-                                   || await txtSearch.DoThreadSafeFuncAsync(x => x.TextLength) == 0)
-                                    ? await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString())
+                                   || await txtSearch.DoThreadSafeFuncAsync(x => x.TextLength, token: token) == 0)
+                                    ? await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token)
                                     : xmlVehicle.SelectSingleNode("category")?.Value;
                             _strSelectedVehicle = xmlVehicle.SelectSingleNode("id")?.Value;
                         }
-                        _decMarkup = await nudMarkup.DoThreadSafeFuncAsync(x => x.Value);
+                        _decMarkup = await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token);
 
                         await this.DoThreadSafeAsync(x =>
                         {
                             x.DialogResult = DialogResult.OK;
                             x.Close();
-                        });
+                        }, token: token);
                     }
                     break;
             }
 
-            if (await chkUsedVehicle.DoThreadSafeFuncAsync(x => x.Checked))
+            if (await chkUsedVehicle.DoThreadSafeFuncAsync(x => x.Checked, token: token))
             {
                 decimal decCost = Convert.ToDecimal(xmlVehicle?.SelectSingleNode("cost")?.Value, GlobalSettings.InvariantCultureInfo);
-                decCost *= 1 - (await nudUsedVehicleDiscount.DoThreadSafeFuncAsync(x => x.Value) / 100.0m);
+                decCost *= 1 - (await nudUsedVehicleDiscount.DoThreadSafeFuncAsync(x => x.Value, token: token) / 100.0m);
 
                 _blnUsedVehicle = true;
-                _strUsedAvail = (await lblVehicleAvail.DoThreadSafeFuncAsync(x => x.Text))
-                                .Replace(await LanguageManager.GetStringAsync("String_AvailRestricted"), "R")
-                                .Replace(await LanguageManager.GetStringAsync("String_AvailForbidden"), "F");
+                _strUsedAvail = (await lblVehicleAvail.DoThreadSafeFuncAsync(x => x.Text, token: token))
+                                .Replace(await LanguageManager.GetStringAsync("String_AvailRestricted", token: token), "R")
+                                .Replace(await LanguageManager.GetStringAsync("String_AvailForbidden", token: token), "F");
                 _decUsedCost = decCost;
             }
 
-            _blnBlackMarketDiscount = await chkBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked);
-            _strSelectCategory = (GlobalSettings.SearchInCategoryOnly || await txtSearch.DoThreadSafeFuncAsync(x => x.TextLength) == 0)
-                ? await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString())
+            _blnBlackMarketDiscount = await chkBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked, token: token);
+            _strSelectCategory = (GlobalSettings.SearchInCategoryOnly || await txtSearch.DoThreadSafeFuncAsync(x => x.TextLength, token: token) == 0)
+                ? await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token)
                 : xmlVehicle?.SelectSingleNode("category")?.Value;
-            _decMarkup = await nudMarkup.DoThreadSafeFuncAsync(x => x.Value);
+            _decMarkup = await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token);
 
             await this.DoThreadSafeAsync(x =>
             {
                 x.DialogResult = DialogResult.OK;
                 x.Close();
-            });
+            }, token: token);
         }
 
         private async void OpenSourceFromLabel(object sender, EventArgs e)

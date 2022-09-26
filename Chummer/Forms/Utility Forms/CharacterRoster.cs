@@ -61,7 +61,7 @@ namespace Chummer
             }
         }
 
-        public async ValueTask SetMyEventHandlers(bool deleteThem = false)
+        public async ValueTask SetMyEventHandlers(bool deleteThem = false, CancellationToken token = default)
         {
             if (!deleteThem)
             {
@@ -79,7 +79,7 @@ namespace Chummer
                     x.DragDrop += treCharacterList_OnDefaultDragDrop;
                     x.DragOver += treCharacterList_OnDefaultDragOver;
                     x.NodeMouseDoubleClick += treCharacterList_OnDefaultDoubleClick;
-                }, _objGenericToken);
+                }, token);
                 OnMyMouseDown += OnDefaultMouseDown;
                 if (_watcherCharacterRosterFolder != null)
                 {
@@ -105,7 +105,7 @@ namespace Chummer
                     x.DragDrop -= treCharacterList_OnDefaultDragDrop;
                     x.DragOver -= treCharacterList_OnDefaultDragOver;
                     x.NodeMouseDoubleClick -= treCharacterList_OnDefaultDoubleClick;
-                }, _objGenericToken);
+                }, token);
                 OnMyMouseDown = null;
 
                 if (_watcherCharacterRosterFolder != null)
@@ -253,7 +253,7 @@ namespace Chummer
                         //swallow this
                     }
 
-                    await SetMyEventHandlers();
+                    await SetMyEventHandlers(token: _objGenericToken);
                     CancellationTokenSource objTemp = new CancellationTokenSource();
                     CancellationTokenSource objCurrent = Interlocked.CompareExchange(
                         ref _objMostRecentlyUsedsRefreshCancellationTokenSource,
@@ -282,7 +282,7 @@ namespace Chummer
                     {
                         await Task.WhenAll(_tskMostRecentlyUsedsRefresh, _tskWatchFolderRefresh,
                                            Task.WhenAll(
-                                               Program.PluginLoader.MyActivePlugins.Select(RefreshPluginNodesAsync)));
+                                               Program.PluginLoader.MyActivePlugins.Select(x => RefreshPluginNodesAsync(x, _objGenericToken))));
                     }
                     catch (OperationCanceledException)
                     {
@@ -332,7 +332,7 @@ namespace Chummer
                         objTemp.Dispose();
                     }
 
-                    await SetMyEventHandlers(true);
+                    await SetMyEventHandlers(true, _objGenericToken);
 
                     await DisposeTagNodes(await treCharacterList.DoThreadSafeFuncAsync(x => x.Nodes, _objGenericToken));
 
@@ -815,7 +815,7 @@ namespace Chummer
 
             string strErrorPrefix = await LanguageManager.GetStringAsync("String_Error", token: token)
                                     + await LanguageManager.GetStringAsync("String_Colon", token: token) + Environment.NewLine;
-            Color objWindowTextColor = await ColorManager.WindowTextAsync;
+            Color objWindowTextColor = await ColorManager.GetWindowTextAsync(token);
             await treCharacterList.DoThreadSafeAsync(x =>
             {
                 foreach (TreeNode objCharacterNode in x.Nodes.Cast<TreeNode>().GetAllDescendants(y => y.Nodes.Cast<TreeNode>()))
@@ -1119,7 +1119,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
             }
 
-            foreach (string s in dicWatchNodes.Values.Distinct().OrderBy(x => x))
+            foreach (string s in new SortedSet<string>(dicWatchNodes.Values))
             {
                 token.ThrowIfCancellationRequested();
                 if (s == "Watch")
@@ -1196,11 +1196,11 @@ namespace Chummer
             }, token);
         }
 
-        public Task RefreshPluginNodesAsync(IPlugin objPluginToRefresh)
+        public Task RefreshPluginNodesAsync(IPlugin objPluginToRefresh, CancellationToken objToken = default)
         {
             if (objPluginToRefresh == null)
                 throw new ArgumentNullException(nameof(objPluginToRefresh));
-            return RefreshPluginNodesInner(_objGenericToken); // Split up this way so that the parameter check happens synchronously
+            return RefreshPluginNodesInner(objToken); // Split up this way so that the parameter check happens synchronously
 
             async Task RefreshPluginNodesInner(CancellationToken token = default)
             {
@@ -1210,7 +1210,7 @@ namespace Chummer
                 {
                     Log.Info("Starting new Task to get CharacterRosterTreeNodes for plugin:" + objPluginToRefresh);
                     List<TreeNode> lstNodes =
-                        (await objPluginToRefresh.GetCharacterRosterTreeNode(this, true))?.ToList();
+                        (await objPluginToRefresh.GetCharacterRosterTreeNode(this, true, token))?.ToList();
                     if (lstNodes != null)
                     {
                         lstNodes.Sort((x, y) => string.CompareOrdinal(x.Text, y.Text));
@@ -1339,7 +1339,7 @@ namespace Chummer
                             if (blnSuccess)
                                 break;
                         }
-                        objCache = await CharacterCache.CreateFromFileAsync(strFile).ConfigureAwait(false);
+                        objCache = await CharacterCache.CreateFromFileAsync(strFile, token).ConfigureAwait(false);
                         if (await _dicSavedCharacterCaches.TryAddAsync(strFile, objCache, token).ConfigureAwait(false))
                             break;
                         await objCache.DisposeAsync().ConfigureAwait(false);
@@ -1351,11 +1351,11 @@ namespace Chummer
                     // something went wrong (but not fatally so, which is why the exception is handled)
                     Utils.BreakIfDebug();
                     if (objCache == null)
-                        objCache = await CharacterCache.CreateFromFileAsync(strFile).ConfigureAwait(false);
+                        objCache = await CharacterCache.CreateFromFileAsync(strFile, token).ConfigureAwait(false);
                 }
             }
             else
-                objCache = await CharacterCache.CreateFromFileAsync(strFile).ConfigureAwait(false);
+                objCache = await CharacterCache.CreateFromFileAsync(strFile, token).ConfigureAwait(false);
             token.ThrowIfCancellationRequested();
             if (objCache == null)
                 return new TreeNode
@@ -1521,7 +1521,7 @@ namespace Chummer
                             }, token).ConfigureAwait(false);
                         }
                         else
-                            await ColorManager.WindowTextAsync
+                            await ColorManager.GetWindowTextAsync(token)
                                               .ContinueWith(
                                                   y => txtCharacterBio.DoThreadSafeAsync(
                                                       x => x.ForeColor = y.Result, token), token).Unwrap().ConfigureAwait(false);
@@ -1710,8 +1710,18 @@ namespace Chummer
                     plugintag = temp;
                 nodDestinationNode = nodDestinationNode.Parent;
             }
+
             if (plugintag != null)
-                await plugintag.DoCharacterList_DragDrop(sender, e, treCharacterList);
+            {
+                try
+                {
+                    await plugintag.DoCharacterList_DragDrop(sender, e, treCharacterList, _objGenericToken);
+                }
+                catch (OperationCanceledException)
+                {
+                    //swallow this
+                }
+            }
         }
 
         private void treCharacterList_OnDefaultItemDrag(object sender, ItemDragEventArgs e)

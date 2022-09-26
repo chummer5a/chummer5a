@@ -78,6 +78,7 @@ namespace Chummer
                 case 0:
                     Image = null;
                     return;
+
                 case 1:
                     Image = lstImages[0];
                     return;
@@ -277,6 +278,12 @@ namespace Chummer
         protected override void OnTextChanged(EventArgs e)
         {
             base.OnTextChanged(e);
+            RefreshImage();
+        }
+
+        protected override void OnBoundsChanged()
+        {
+            base.OnBoundsChanged();
             RefreshImage();
         }
     }

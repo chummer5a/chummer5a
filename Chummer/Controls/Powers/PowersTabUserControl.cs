@@ -301,7 +301,7 @@ namespace Chummer.UI.Powers
                     Extractor = (power => power.CurrentDisplayName),
                     Tag = "String_Power",
                     Sorter = (name1, name2) =>
-                        string.Compare((string) name1, (string) name2, GlobalSettings.CultureInfo,
+                        string.Compare((string)name1, (string)name2, GlobalSettings.CultureInfo,
                                        CompareOptions.Ordinal)
                 });
             nameColumn.AddDependency(nameof(Power.CurrentDisplayName));
@@ -313,7 +313,7 @@ namespace Chummer.UI.Powers
                     Extractor = (power => power.DisplayAction),
                     Tag = "ColumnHeader_Action",
                     Sorter = (action1, action2) =>
-                        string.Compare((string) action1, (string) action2, GlobalSettings.CultureInfo,
+                        string.Compare((string)action1, (string)action2, GlobalSettings.CultureInfo,
                                        CompareOptions.Ordinal)
                 });
             actionColumn.AddDependency(nameof(Power.DisplayAction));
@@ -328,7 +328,7 @@ namespace Chummer.UI.Powers
                                                                                     0)),
                                                                             ValueUpdater = (p, newRating) =>
                                                                             {
-                                                                                int delta = ((int) newRating)
+                                                                                int delta = ((int)newRating)
                                                                                     - p.Rating;
                                                                                 if (delta != 0)
                                                                                 {
@@ -338,27 +338,27 @@ namespace Chummer.UI.Powers
                                                                             MinExtractor = (p => 0),
                                                                             ValueGetter = (p => p.Rating)
                                                                         })
-                                                                    {
-                                                                        Text = "Rating",
-                                                                        Tag = "String_Rating",
-                                                                        Sorter = (o1, o2) =>
-                                                                        {
-                                                                            if (o1 is Power objPower1
-                                                                                && o2 is Power objPower2)
-                                                                                return objPower1.Rating
-                                                                                    - objPower2.Rating;
-                                                                            string strMessage
-                                                                                = "Can't sort an Object of Type "
-                                                                                + o1.GetType() +
-                                                                                " against another one of Type "
-                                                                                + o2.GetType() + " in the ratingColumn."
-                                                                                +
-                                                                                Environment.NewLine
-                                                                                + "Both objects SHOULD be of the type \"Power\".";
-                                                                            throw new ArgumentException(
-                                                                                strMessage, nameof(o1));
-                                                                        }
-                                                                    });
+            {
+                Text = "Rating",
+                Tag = "String_Rating",
+                Sorter = (o1, o2) =>
+                {
+                    if (o1 is Power objPower1
+                        && o2 is Power objPower2)
+                        return objPower1.Rating
+                            - objPower2.Rating;
+                    string strMessage
+                        = "Can't sort an Object of Type "
+                        + o1.GetType() +
+                        " against another one of Type "
+                        + o2.GetType() + " in the ratingColumn."
+                        +
+                        Environment.NewLine
+                        + "Both objects SHOULD be of the type \"Power\".";
+                    throw new ArgumentException(
+                        strMessage, nameof(o1));
+                }
+            });
 
             ratingColumn.AddDependency(nameof(Power.LevelsEnabled));
             ratingColumn.AddDependency(nameof(Power.FreeLevels));
@@ -395,16 +395,16 @@ namespace Chummer.UI.Powers
             powerPointsColumn.AddDependency(nameof(Power.ToolTip));
 
             TableColumn<Power> sourceColumn = this.DoThreadSafeFunc(() => new TableColumn<Power>(() => new TextTableCell
-                                                                    {
-                                                                        Cursor = Cursors.Hand
-                                                                    })
-                                                                    {
-                                                                        Text = "Source",
-                                                                        Extractor = (power => power.SourceDetail),
-                                                                        Tag = "Label_Source",
-                                                                        ToolTipExtractor = (item =>
-                                                                            item.SourceDetail.LanguageBookTooltip)
-                                                                    });
+            {
+                Cursor = Cursors.Hand
+            })
+            {
+                Text = "Source",
+                Extractor = (power => power.SourceDetail),
+                Tag = "Label_Source",
+                ToolTipExtractor = (item =>
+                    item.SourceDetail.LanguageBookTooltip)
+            });
             powerPointsColumn.AddDependency(nameof(Power.Source));
 
             TableColumn<Power> adeptWayColumn = this.DoThreadSafeFunc(() => new TableColumn<Power>(
@@ -421,10 +421,10 @@ namespace Chummer.UI.Powers
                                                                                   || p.DiscountedAdeptWay,
                                                                               Alignment = Alignment.Center
                                                                           })
-                                                                      {
-                                                                          Text = "Adept Way",
-                                                                          Tag = "Checkbox_Power_AdeptWay"
-                                                                      });
+            {
+                Text = "Adept Way",
+                Tag = "Checkbox_Power_AdeptWay"
+            });
             adeptWayColumn.AddDependency(nameof(Power.DiscountedAdeptWay));
             adeptWayColumn.AddDependency(nameof(Power.AdeptWayDiscountEnabled));
             adeptWayColumn.AddDependency(nameof(Character.AllowAdeptWayPowerDiscount));
@@ -470,21 +470,21 @@ namespace Chummer.UI.Powers
                                                                           },
                                                                           Alignment = Alignment.Center
                                                                       })
-                                                                  {
-                                                                      Text = "Notes",
-                                                                      Tag = "ColumnHeader_Notes",
-                                                                      ToolTipExtractor = (p =>
-                                                                      {
-                                                                          string strTooltip
-                                                                              = LanguageManager.GetString(
-                                                                                  "Tip_Power_EditNotes");
-                                                                          if (!string.IsNullOrEmpty(p.Notes))
-                                                                              strTooltip += Environment.NewLine
-                                                                                  + Environment.NewLine
-                                                                                  + p.Notes.RtfToPlainText();
-                                                                          return strTooltip.WordWrap();
-                                                                      })
-                                                                  });
+            {
+                Text = "Notes",
+                Tag = "ColumnHeader_Notes",
+                ToolTipExtractor = (p =>
+                {
+                    string strTooltip
+                        = LanguageManager.GetString(
+                            "Tip_Power_EditNotes");
+                    if (!string.IsNullOrEmpty(p.Notes))
+                        strTooltip += Environment.NewLine
+                            + Environment.NewLine
+                            + p.Notes.RtfToPlainText();
+                    return strTooltip.WordWrap();
+                })
+            });
             noteColumn.AddDependency(nameof(Power.Notes));
 
             TableColumn<Power> deleteColumn = this.DoThreadSafeFunc(() => new TableColumn<Power>(

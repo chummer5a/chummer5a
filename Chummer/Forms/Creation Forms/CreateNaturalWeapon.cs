@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.XPath;
@@ -120,11 +121,11 @@ namespace Chummer
             nudReach.Left = lblReach.Left + intWidth + 6;
         }
 
-        private async ValueTask AcceptForm()
+        private async ValueTask AcceptForm(CancellationToken token = default)
         {
             // Assemble the DV from the fields.
-            string strDamage = await cboDVBase.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString());
-            int intDVMod = await nudDVMod.DoThreadSafeFuncAsync(x => x.ValueAsInt);
+            string strDamage = await cboDVBase.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token: token);
+            int intDVMod = await nudDVMod.DoThreadSafeFuncAsync(x => x.ValueAsInt, token: token);
             if (intDVMod != 0)
             {
                 if (intDVMod < 0)
@@ -132,11 +133,11 @@ namespace Chummer
                 else
                     strDamage += '+' + intDVMod.ToString(GlobalSettings.InvariantCultureInfo);
             }
-            strDamage += await cboDVType.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString());
+            strDamage += await cboDVType.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token: token);
 
             // Create the AP value.
             string strAP;
-            int intAP = await nudAP.DoThreadSafeFuncAsync(x => x.ValueAsInt);
+            int intAP = await nudAP.DoThreadSafeFuncAsync(x => x.ValueAsInt, token: token);
             if (intAP == 0)
                 strAP = "0";
             else if (intAP > 0)
@@ -153,9 +154,9 @@ namespace Chummer
                 _objWeapon = new Weapon(_objCharacter)
                 {
                     Name = txtName.Text,
-                    Category = await LanguageManager.GetStringAsync("Tab_Critter"),
+                    Category = await LanguageManager.GetStringAsync("Tab_Critter", token: token),
                     RangeType = "Melee",
-                    Reach = nudReach.ValueAsInt,
+                    Reach = await nudReach.DoThreadSafeFuncAsync(x => x.ValueAsInt, token: token),
                     Damage = strDamage,
                     AP = strAP,
                     Mode = "0",
@@ -163,16 +164,18 @@ namespace Chummer
                     Concealability = 0,
                     Avail = "0",
                     Cost = "0",
-                    UseSkill = await cboSkill.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString()),
-                    Source = (await objPower.SelectSingleNodeAndCacheExpressionAsync("source"))?.Value,
-                    Page = (await objPower.SelectSingleNodeAndCacheExpressionAsync("page"))?.Value
+                    Ammo = "0",
+                    UseSkill = await cboSkill.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token: token),
+                    Source = (await objPower.SelectSingleNodeAndCacheExpressionAsync("source", token: token))?.Value,
+                    Page = (await objPower.SelectSingleNodeAndCacheExpressionAsync("page", token: token))?.Value
                 };
+                _objWeapon.CreateClips();
 
                 await this.DoThreadSafeAsync(x =>
                 {
                     x.DialogResult = DialogResult.OK;
                     x.Close();
-                });
+                }, token: token);
             }
         }
 

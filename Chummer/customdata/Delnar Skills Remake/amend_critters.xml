@@ -55,7 +55,7 @@
         <skill xpathfilter=". = 'Computer'">Matrix</skill>
         <skill xpathfilter=". = 'Cybercombat' or . = 'Hacking' or . = 'Electronic Warfare'">Cyberwarfare</skill>
         <skill xpathfilter=". = 'Hardware' or . = 'Cybertechnology'">Electronics</skill>
-        <skill xpathfilter=". = 'Perception' or . = 'Artisan' or . = 'Forgery' or . = 'Exotic Ranged Weapon'" amendoperation="remove"/>
+        <skill xpathfilter=". = 'Perception' or . = 'Artisan' or . = 'Forgery' or . = 'Exotic Ranged Weapon'" amendoperation="remove" />
       </skills>
     </metatype>
   </metatypes>

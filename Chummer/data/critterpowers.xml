@@ -4513,7 +4513,7 @@
           <damage>({STR}-1)P</damage>
           <ap>+1</ap>
             <useskill>Exotic Melee Weapon</useskill>
-            <useskillspec>Trunk</useskillspec>          
+            <useskillspec>Trunk</useskillspec>
             <accuracy>Physical</accuracy>
           <source>HS</source>
           <page>172</page>

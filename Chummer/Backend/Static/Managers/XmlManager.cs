@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -250,6 +251,7 @@ namespace Chummer
 
         private static readonly LockingDictionary<KeyArray<string>, XmlReference> s_DicXmlDocuments =
             new LockingDictionary<KeyArray<string>, XmlReference>(); // Key is language + array of all file paths for the complete combination of data used
+
         private static readonly AsyncFriendlyReaderWriterLock s_objDataDirectoriesLock = new AsyncFriendlyReaderWriterLock();
         private static readonly HashSet<string> s_SetDataDirectories = new HashSet<string>(Utils.GetDataFolderPath.Yield());
         private static readonly Dictionary<string, HashSet<string>> s_DicPathsWithCustomFiles = new Dictionary<string, HashSet<string>>();
@@ -318,7 +320,7 @@ namespace Chummer
             IAsyncDisposable objLocker = await s_objDataDirectoriesLock.EnterWriteLockAsync(token);
             try
             {
-                await s_DicXmlDocuments.ForEachAsync(async kvpDocument => await kvpDocument.Value.DisposeAsync(), token: token);
+                await s_DicXmlDocuments.ForEachAsync(kvpDocument => kvpDocument.Value.DisposeAsync().AsTask(), token: token);
                 await s_DicXmlDocuments.ClearAsync(token);
                 s_SetDataDirectories.Clear();
                 token.ThrowIfCancellationRequested();
@@ -416,7 +418,7 @@ namespace Chummer
                     {
                         // We don't actually have such a file
                         Utils.BreakIfDebug();
-                        return new XmlDocument {XmlResolver = null}.CreateNavigator();
+                        return new XmlDocument { XmlResolver = null }.CreateNavigator();
                     }
                 }
 
@@ -462,7 +464,7 @@ namespace Chummer
                     }
                 }
 
-                List<string> lstKey = new List<string>(2 + astrRelevantCustomDataPaths.Length) {strLanguage, strPath};
+                List<string> lstKey = new List<string>(2 + astrRelevantCustomDataPaths.Length) { strLanguage, strPath };
                 lstKey.AddRange(astrRelevantCustomDataPaths);
                 KeyArray<string> objDataKey = new KeyArray<string>(lstKey);
 
@@ -603,7 +605,7 @@ namespace Chummer
                 if (!blnFileFound)
                 {
                     Utils.BreakIfDebug();
-                    return new XmlDocument {XmlResolver = null};
+                    return new XmlDocument { XmlResolver = null };
                 }
 
                 if (string.IsNullOrEmpty(strLanguage))
@@ -619,13 +621,13 @@ namespace Chummer
                     astrRelevantCustomDataPaths = CompileRelevantCustomDataPaths(strFileName, lstEnabledCustomDataPaths, token)
                         .ToArray();
                 bool blnHasCustomData = astrRelevantCustomDataPaths.Length > 0;
-                List<string> lstKey = new List<string>(2 + astrRelevantCustomDataPaths.Length) {strLanguage, strPath};
+                List<string> lstKey = new List<string>(2 + astrRelevantCustomDataPaths.Length) { strLanguage, strPath };
                 lstKey.AddRange(astrRelevantCustomDataPaths);
                 KeyArray<string> objDataKey = new KeyArray<string>(lstKey);
 
                 XmlDocument xmlReturn = null;
                 // Create a new document that everything will be merged into.
-                XmlDocument xmlScratchpad = new XmlDocument {XmlResolver = null};
+                XmlDocument xmlScratchpad = new XmlDocument { XmlResolver = null };
                 // Look to see if this XmlDocument is already loaded.
                 XmlReference xmlReferenceOfReturn;
                 if (blnSync)
@@ -661,7 +663,7 @@ namespace Chummer
                         {
                             Utils.BreakIfDebug();
                             xmlReferenceOfReturn.Dispose();
-                            return new XmlDocument {XmlResolver = null};
+                            return new XmlDocument { XmlResolver = null };
                         }
                     }
                     // ReSharper restore MethodHasAsyncOverload
@@ -701,7 +703,7 @@ namespace Chummer
                         {
                             Utils.BreakIfDebug();
                             await xmlReferenceOfReturn.DisposeAsync().ConfigureAwait(false);
-                            return new XmlDocument {XmlResolver = null};
+                            return new XmlDocument { XmlResolver = null };
                         }
                     }
                 }
@@ -741,7 +743,7 @@ namespace Chummer
                         if (xmlReturn
                             == null) // Not an else in case something goes wrong in safe cast in the line above
                         {
-                            xmlReturn = new XmlDocument {XmlResolver = null};
+                            xmlReturn = new XmlDocument { XmlResolver = null };
                             // write the root chummer node.
                             xmlReturn.AppendChild(xmlReturn.CreateElement("chummer"));
                             XmlElement xmlReturnDocElement = xmlReturn.DocumentElement;
@@ -847,7 +849,7 @@ namespace Chummer
                         xmlReturn = objTemp;
                 }
 
-                xmlReturn = xmlReturn ?? new XmlDocument {XmlResolver = null};
+                xmlReturn = xmlReturn ?? new XmlDocument { XmlResolver = null };
                 if (strFileName == "improvements.xml")
                     return xmlReturn;
 
@@ -1138,8 +1140,9 @@ namespace Chummer
                 {
                     token.ThrowIfCancellationRequested();
                     string strInnerFileName = Path.GetFileName(strLoopFile);
-                    if (strInnerFileName.StartsWith("override_") || strInnerFileName.StartsWith("custom_")
-                                                                 || strInnerFileName.StartsWith("amend_"))
+                    if (strInnerFileName.StartsWith("override_", StringComparison.OrdinalIgnoreCase)
+                        || strInnerFileName.StartsWith("custom_", StringComparison.OrdinalIgnoreCase)
+                        || strInnerFileName.StartsWith("amend_", StringComparison.OrdinalIgnoreCase))
                     {
                         yield return strLoopPath;
                         break;
@@ -1158,16 +1161,16 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 string strLoopFileName = Path.GetFileName(strFile);
-                if (!strLoopFileName.StartsWith("override_")
-                    && !strLoopFileName.StartsWith("custom_")
-                    && !strLoopFileName.StartsWith("amend_"))
+                if (!strLoopFileName.StartsWith("override_", StringComparison.OrdinalIgnoreCase)
+                    && !strLoopFileName.StartsWith("custom_", StringComparison.OrdinalIgnoreCase)
+                    && !strLoopFileName.StartsWith("amend_", StringComparison.OrdinalIgnoreCase))
                     continue;
                 lstPossibleCustomFiles.Add(strFile);
             }
             foreach (string strFile in lstPossibleCustomFiles)
             {
                 token.ThrowIfCancellationRequested();
-                if (!Path.GetFileName(strFile).StartsWith("override_"))
+                if (!Path.GetFileName(strFile).StartsWith("override_", StringComparison.OrdinalIgnoreCase))
                     continue;
                 try
                 {
@@ -1248,7 +1251,7 @@ namespace Chummer
             foreach (string strFile in lstPossibleCustomFiles)
             {
                 token.ThrowIfCancellationRequested();
-                if (!Path.GetFileName(strFile).StartsWith("custom_"))
+                if (!Path.GetFileName(strFile).StartsWith("custom_", StringComparison.OrdinalIgnoreCase))
                     continue;
                 try
                 {
@@ -1385,7 +1388,7 @@ namespace Chummer
             foreach (string strFile in lstPossibleCustomFiles)
             {
                 token.ThrowIfCancellationRequested();
-                if (!Path.GetFileName(strFile).StartsWith("amend_"))
+                if (!Path.GetFileName(strFile).StartsWith("amend_", StringComparison.OrdinalIgnoreCase))
                     continue;
                 try
                 {
@@ -1583,6 +1586,7 @@ namespace Chummer
                     case "replace":
                     case "append":
                         break;
+
                     case "regexreplace":
                         // Operation only supported if a pattern is actually defined
                         if (string.IsNullOrWhiteSpace(strRegexPattern))
@@ -1601,6 +1605,7 @@ namespace Chummer
                         }
 
                         break;
+
                     case "recurse":
                         // Operation only supported if we have children
                         if (lstElementChildren?.Count > 0)
@@ -1695,45 +1700,45 @@ namespace Chummer
                                                     case XmlNodeType.Text:
                                                     case XmlNodeType.Attribute:
                                                     case XmlNodeType.CDATA:
-                                                    {
-                                                        if (objNodeToEdit.HasChildNodes)
                                                         {
-                                                            XmlNode objChildToEdit = null;
-                                                            if (eChildNodeType == XmlNodeType.Attribute)
+                                                            if (objNodeToEdit.HasChildNodes)
                                                             {
-                                                                foreach (XmlNode objLoopChildNode in objNodeToEdit
-                                                                             .ChildNodes)
+                                                                XmlNode objChildToEdit = null;
+                                                                if (eChildNodeType == XmlNodeType.Attribute)
                                                                 {
-                                                                    if (objLoopChildNode.NodeType == eChildNodeType
-                                                                        && objLoopChildNode.Name == xmlChild.Name)
+                                                                    foreach (XmlNode objLoopChildNode in objNodeToEdit
+                                                                                 .ChildNodes)
                                                                     {
-                                                                        objChildToEdit = objLoopChildNode;
-                                                                        break;
+                                                                        if (objLoopChildNode.NodeType == eChildNodeType
+                                                                            && objLoopChildNode.Name == xmlChild.Name)
+                                                                        {
+                                                                            objChildToEdit = objLoopChildNode;
+                                                                            break;
+                                                                        }
                                                                     }
                                                                 }
-                                                            }
-                                                            else
-                                                            {
-                                                                foreach (XmlNode objLoopChildNode in objNodeToEdit
-                                                                             .ChildNodes)
+                                                                else
                                                                 {
-                                                                    token.ThrowIfCancellationRequested();
-                                                                    if (objLoopChildNode.NodeType == eChildNodeType)
+                                                                    foreach (XmlNode objLoopChildNode in objNodeToEdit
+                                                                                 .ChildNodes)
                                                                     {
-                                                                        objChildToEdit = objLoopChildNode;
-                                                                        break;
+                                                                        token.ThrowIfCancellationRequested();
+                                                                        if (objLoopChildNode.NodeType == eChildNodeType)
+                                                                        {
+                                                                            objChildToEdit = objLoopChildNode;
+                                                                            break;
+                                                                        }
                                                                     }
                                                                 }
+                                                                if (objChildToEdit != null)
+                                                                {
+                                                                    objChildToEdit.Value += xmlChild.Value;
+                                                                    continue;
+                                                                }
                                                             }
-                                                            if (objChildToEdit != null)
-                                                            {
-                                                                objChildToEdit.Value += xmlChild.Value;
-                                                                continue;
-                                                            }
-                                                        }
 
-                                                        break;
-                                                    }
+                                                            break;
+                                                        }
                                                 }
 
                                                 StripAmendAttributesRecursively(xmlChild, token);
@@ -1763,6 +1768,7 @@ namespace Chummer
                                         }
 
                                         break;
+
                                     case "replace":
                                         StripAmendAttributesRecursively(xmlAmendingNode, token);
                                         if (xmlParentNode != null)
@@ -1774,6 +1780,7 @@ namespace Chummer
                                         }
 
                                         break;
+
                                     case "regexreplace":
                                         if (xmlAmendingNode.HasChildNodes)
                                         {
@@ -2610,6 +2617,6 @@ namespace Chummer
             }
         }
 
-        #endregion
+        #endregion Methods
     }
 }

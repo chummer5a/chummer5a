@@ -575,7 +575,7 @@ namespace Chummer.Backend.Skills
             try
             {
                 await objWriter.WriteElementStringAsync("guid", InternalId, token: token);
-                await objWriter.WriteElementStringAsync("name", await DisplayNameAsync(strLanguageToPrint), token: token);
+                await objWriter.WriteElementStringAsync("name", await DisplayNameAsync(strLanguageToPrint, token), token: token);
                 await objWriter.WriteElementStringAsync("name_english", Name, token: token);
                 await objWriter.WriteElementStringAsync("rating", Rating.ToString(objCulture), token: token);
                 await objWriter.WriteElementStringAsync("ratingmax", RatingMaximum.ToString(objCulture), token: token);
@@ -766,11 +766,11 @@ namespace Chummer.Backend.Skills
             return _objCharacter.LoadDataXPath("skills.xml", strLanguage).SelectSingleNode("/chummer/skillgroups/name[. = " + Name.CleanXPath() + "]/@translate")?.Value ?? Name;
         }
 
-        public async ValueTask<string> DisplayNameAsync(string strLanguage)
+        public async ValueTask<string> DisplayNameAsync(string strLanguage, CancellationToken token = default)
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
-            return (await _objCharacter.LoadDataXPathAsync("skills.xml", strLanguage))
+            return (await _objCharacter.LoadDataXPathAsync("skills.xml", strLanguage, token: token))
                    .SelectSingleNode("/chummer/skillgroups/name[. = " + Name.CleanXPath() + "]/@translate")?.Value
                    ?? Name;
         }
@@ -928,7 +928,7 @@ namespace Chummer.Backend.Skills
 
                 if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
                     return;
-                
+
                 if (setNamesOfChangedProperties.Contains(nameof(IsDisabled)))
                     _intCachedIsDisabled = int.MinValue;
                 if (setNamesOfChangedProperties.Contains(nameof(KarmaUnbroken)))
@@ -1015,7 +1015,7 @@ namespace Chummer.Backend.Skills
             {
                 int intReturn = BasePoints;
                 int intValue = intReturn;
-                
+
                 decimal decMultiplier = 1.0m;
                 decimal decExtra = 0;
                 using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
@@ -1161,7 +1161,7 @@ namespace Chummer.Backend.Skills
                     intCost *= _objCharacter.Settings.KarmaNewSkillGroup;
                 else
                     intCost *= _objCharacter.Settings.KarmaImproveSkillGroup;
-                
+
                 decimal decMultiplier = 1.0m;
                 decimal decExtra = 0;
                 using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
@@ -1339,7 +1339,7 @@ namespace Chummer.Backend.Skills
                 {
                     return -1;
                 }
-                
+
                 decimal decMultiplier = 1.0m;
                 decimal decExtra = 0;
                 using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,

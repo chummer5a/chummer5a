@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -83,15 +84,15 @@ namespace Chummer
             }
         }
 
-        private async ValueTask DoRoll()
+        private async ValueTask DoRoll(CancellationToken token = default)
         {
             int intResult = 0;
             for (int i = 0; i < Dice; ++i)
             {
-                intResult += await GlobalSettings.RandomGenerator.NextD6ModuloBiasRemovedAsync();
+                intResult += await GlobalSettings.RandomGenerator.NextD6ModuloBiasRemovedAsync(token: token);
             }
 
-            await nudDiceResult.DoThreadSafeAsync(x => x.ValueAsInt = intResult);
+            await nudDiceResult.DoThreadSafeAsync(x => x.ValueAsInt = intResult, token: token);
         }
 
         #endregion Control Events

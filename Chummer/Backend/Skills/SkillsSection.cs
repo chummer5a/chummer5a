@@ -176,36 +176,37 @@ namespace Chummer.Backend.Skills
                 case nameof(CharacterSettings.KnowledgePointsExpression):
                     OnPropertyChanged(nameof(KnowledgeSkillPoints));
                     break;
+
                 case nameof(CharacterSettings.MaxSkillRatingCreate):
-                {
-                    using (EnterReadLock.Enter(LockObject))
                     {
-                        if (!_objCharacter.Created && !_objCharacter.IgnoreRules)
+                        using (EnterReadLock.Enter(LockObject))
                         {
-                            foreach (Skill objSkill in Skills)
-                                objSkill.OnPropertyChanged(nameof(Skill.RatingMaximum));
-                            foreach (Skill objSkill in _dicSkillBackups.Values.Where(x => !x.IsKnowledgeSkill))
-                                objSkill.OnPropertyChanged(nameof(Skill.RatingMaximum));
+                            if (!_objCharacter.Created && !_objCharacter.IgnoreRules)
+                            {
+                                foreach (Skill objSkill in Skills)
+                                    objSkill.OnPropertyChanged(nameof(Skill.RatingMaximum));
+                                foreach (Skill objSkill in _dicSkillBackups.Values.Where(x => !x.IsKnowledgeSkill))
+                                    objSkill.OnPropertyChanged(nameof(Skill.RatingMaximum));
+                            }
                         }
-                    }
 
-                    break;
-                }
+                        break;
+                    }
                 case nameof(CharacterSettings.MaxKnowledgeSkillRatingCreate):
-                {
-                    using (EnterReadLock.Enter(LockObject))
                     {
-                        if (!_objCharacter.Created && !_objCharacter.IgnoreRules)
+                        using (EnterReadLock.Enter(LockObject))
                         {
-                            foreach (KnowledgeSkill objSkill in KnowledgeSkills)
-                                objSkill.OnPropertyChanged(nameof(Skill.RatingMaximum));
-                            foreach (Skill objSkill in _dicSkillBackups.Values.Where(x => x.IsKnowledgeSkill))
-                                objSkill.OnPropertyChanged(nameof(Skill.RatingMaximum));
+                            if (!_objCharacter.Created && !_objCharacter.IgnoreRules)
+                            {
+                                foreach (KnowledgeSkill objSkill in KnowledgeSkills)
+                                    objSkill.OnPropertyChanged(nameof(Skill.RatingMaximum));
+                                foreach (Skill objSkill in _dicSkillBackups.Values.Where(x => x.IsKnowledgeSkill))
+                                    objSkill.OnPropertyChanged(nameof(Skill.RatingMaximum));
+                            }
                         }
-                    }
 
-                    break;
-                }
+                        break;
+                    }
             }
         }
 
@@ -302,7 +303,7 @@ namespace Chummer.Backend.Skills
             {
                 XmlDocument xmlSkillsDocument = await _objCharacter.LoadDataAsync("skills.xml", token: token);
                 using (XmlNodeList xmlSkillList = xmlSkillsDocument
-                           .SelectNodes("/chummer/skills/skill[not(exotic) and (" + _objCharacter.Settings.BookXPath()
+                           .SelectNodes("/chummer/skills/skill[not(exotic) and (" + await _objCharacter.Settings.BookXPathAsync(token: token)
                                         + ')'
                                         + SkillFilter(eFilterOption, strName) + ']'))
                 {
@@ -438,7 +439,7 @@ namespace Chummer.Backend.Skills
                              x => x.ImproveType == Improvement.ImprovementType.SpecialSkills))
                 {
                     FilterOption eFilterOption
-                        = (FilterOption) Enum.Parse(typeof(FilterOption), objImprovement.ImprovedName);
+                        = (FilterOption)Enum.Parse(typeof(FilterOption), objImprovement.ImprovedName);
                     setSkillsToRemove.ExceptWith(GetActiveSkillsFromData(eFilterOption, false, objImprovement.Target));
                 }
 
@@ -488,8 +489,10 @@ namespace Chummer.Backend.Skills
                                 {
                                     case 0:
                                         return CompareSkills(x, y);
+
                                     case -1:
                                         return -1;
+
                                     default:
                                         return 1;
                                 }
@@ -525,7 +528,7 @@ namespace Chummer.Backend.Skills
                     if (objImprovement.ImproveType == Improvement.ImprovementType.SpecialSkills)
                     {
                         FilterOption eFilterOption
-                            = (FilterOption) Enum.Parse(typeof(FilterOption), objImprovement.ImprovedName);
+                            = (FilterOption)Enum.Parse(typeof(FilterOption), objImprovement.ImprovedName);
                         setSkillsToRemove.ExceptWith(
                             await GetActiveSkillsFromDataAsync(eFilterOption, false, objImprovement.Target, token));
                     }
@@ -579,8 +582,10 @@ namespace Chummer.Backend.Skills
                                 {
                                     case 0:
                                         return CompareSkills(x, y);
+
                                     case -1:
                                         return -1;
+
                                     default:
                                         return 1;
                                 }
@@ -1263,7 +1268,27 @@ namespace Chummer.Backend.Skills
                 _blnSkillsInitialized = false;
             }
         }
-        
+
+        internal async ValueTask ResetAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
+            try
+            {
+                await _dicSkills.ClearAsync(token);
+                await _lstSkills.ClearAsync(token);
+                await KnowledgeSkills.ClearAsync(token);
+                await KnowsoftSkills.ClearAsync(token);
+                await SkillGroups.ClearAsync(token);
+                SkillPointsMaximum = 0;
+                SkillGroupPointsMaximum = 0;
+                _blnSkillsInitialized = false;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync();
+            }
+        }
+
         private bool _blnSkillsInitialized;
         private readonly ReaderWriterLockSlim _objSkillsInitializerLock = new ReaderWriterLockSlim();
         private readonly ThreadSafeBindingList<Skill> _lstSkills = new ThreadSafeBindingList<Skill>();
@@ -1364,7 +1389,7 @@ namespace Chummer.Backend.Skills
                                 XmlDocument xmlSkillsDocument = await _objCharacter.LoadDataAsync("skills.xml", token: token);
                                 using (XmlNodeList xmlSkillList = xmlSkillsDocument
                                            .SelectNodes("/chummer/skills/skill[not(exotic) and ("
-                                                        + (await _objCharacter.GetSettingsAsync(token)).BookXPath() + ')'
+                                                        + await (await _objCharacter.GetSettingsAsync(token)).BookXPathAsync(token: token) + ')'
                                                         + SkillFilter(FilterOption.NonSpecial) + ']'))
                                 {
                                     if (xmlSkillList?.Count > 0)
@@ -1562,10 +1587,10 @@ namespace Chummer.Backend.Skills
                                 _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdValue, strExpression);
 
                                 // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                                object objProcess
+                                (bool blnIsSuccess, object objProcess)
                                     = CommonFunctions.EvaluateInvariantXPath(
-                                        sbdValue.ToString(), out bool blnIsSuccess);
-                                _intCachedKnowledgePoints = blnIsSuccess ? ((double) objProcess).StandardRound() : 0;
+                                        sbdValue.ToString());
+                                _intCachedKnowledgePoints = blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
                             }
                         }
                         else
@@ -1959,6 +1984,7 @@ namespace Chummer.Backend.Skills
         }
 
         #region XPath Processing
+
         /// <summary>
         /// Replaces substring in the form of {Skill} with the total dicepool of the skill.
         /// </summary>
@@ -2078,7 +2104,8 @@ namespace Chummer.Backend.Skills
                 }
             }
         }
-        #endregion
+
+        #endregion XPath Processing
 
         /// <inheritdoc />
         public void Dispose()

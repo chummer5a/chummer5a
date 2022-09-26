@@ -20,6 +20,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -60,7 +61,8 @@ namespace Chummer
         /// Loads the character
         /// </summary>
         /// <param name="fileName"></param>
-        private async ValueTask LoadCharacter(string fileName)
+        /// <param name="token"></param>
+        private async ValueTask LoadCharacter(string fileName, CancellationToken token = default)
         {
             if (File.Exists(fileName) && fileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
             {
@@ -68,22 +70,22 @@ namespace Chummer
                 {
                     FileName = fileName
                 };
-                CursorWait objCursorWait = await CursorWait.NewAsync(this);
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
                 try
                 {
-                    if (!await objCharacter.LoadAsync())
+                    if (!await objCharacter.LoadAsync(token: token))
                     {
                         // TODO edward setup error page
                         await objCharacter.DisposeAsync();
                         return; // we obviously cannot init
                     }
 
-                    await nudInit.DoThreadSafeAsync(x => x.Value = objCharacter.InitiativeDice);
-                    await txtName.DoThreadSafeAsync(x => x.Text = objCharacter.Name);
+                    await nudInit.DoThreadSafeAsync(x => x.Value = objCharacter.InitiativeDice, token: token);
+                    await txtName.DoThreadSafeAsync(x => x.Text = objCharacter.Name, token: token);
                     if (int.TryParse(
                             objCharacter.Initiative.SplitNoAlloc(' ', StringSplitOptions.RemoveEmptyEntries)
                                         .FirstOrDefault(), out int intTemp))
-                        await nudInitStart.DoThreadSafeAsync(x => x.Value = intTemp);
+                        await nudInitStart.DoThreadSafeAsync(x => x.Value = intTemp, token: token);
                     if (_character != null)
                     {
                         await _character.DisposeAsync();

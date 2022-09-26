@@ -853,6 +853,9 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string CurrentDisplayName => DisplayName(GlobalSettings.Language);
 
+        public ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default) =>
+            DisplayNameAsync(GlobalSettings.Language, token);
+
         /// <summary>
         /// Mount Used.
         /// </summary>
@@ -907,7 +910,7 @@ namespace Chummer.Backend.Equipment
                     strConceal = strConceal.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
                     try
                     {
-                        object objProcess = CommonFunctions.EvaluateInvariantXPath(strConceal, out bool blnIsSuccess);
+                        (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strConceal);
                         if (blnIsSuccess)
                             intReturn = ((double)objProcess).StandardRound();
                     }
@@ -1037,14 +1040,15 @@ namespace Chummer.Backend.Equipment
         /// Returns Page if not found or the string is empty.
         /// </summary>
         /// <param name="strLanguage">Language file keyword to use.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns></returns>
-        public async ValueTask<string> DisplayPageAsync(string strLanguage)
+        public async ValueTask<string> DisplayPageAsync(string strLanguage, CancellationToken token = default)
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
-            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage);
+            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token);
             string s = objNode != null
-                ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage"))?.Value ?? Page
+                ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage", token: token))?.Value ?? Page
                 : Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
@@ -1163,10 +1167,10 @@ namespace Chummer.Backend.Equipment
                                                   GlobalSettings.InvariantCultureInfo));
                     }
 
-                    object objProcess
-                        = CommonFunctions.EvaluateInvariantXPath(sbdAvail.ToString(), out bool blnIsSuccess);
+                    (bool blnIsSuccess, object objProcess)
+                        = CommonFunctions.EvaluateInvariantXPath(sbdAvail.ToString());
                     if (blnIsSuccess)
-                        intAvail += ((double) objProcess).StandardRound();
+                        intAvail += ((double)objProcess).StandardRound();
                 }
             }
 
@@ -1329,8 +1333,8 @@ namespace Chummer.Backend.Equipment
                                                  GlobalSettings.InvariantCultureInfo));
                     }
 
-                    object objProcess
-                        = CommonFunctions.EvaluateInvariantXPath(sbdCost.ToString(), out bool blnIsSuccess);
+                    (bool blnIsSuccess, object objProcess)
+                        = CommonFunctions.EvaluateInvariantXPath(sbdCost.ToString());
                     if (blnIsSuccess)
                         decReturn = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
                 }
@@ -1401,8 +1405,8 @@ namespace Chummer.Backend.Equipment
                                                    GlobalSettings.InvariantCultureInfo));
                     }
 
-                    object objProcess
-                        = CommonFunctions.EvaluateInvariantXPath(sbdWeight.ToString(), out bool blnIsSuccess);
+                    (bool blnIsSuccess, object objProcess)
+                        = CommonFunctions.EvaluateInvariantXPath(sbdWeight.ToString());
                     if (blnIsSuccess)
                         decReturn = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
                 }
@@ -1450,7 +1454,7 @@ namespace Chummer.Backend.Equipment
                     strAmmoBonus = strAmmoBonus.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
                     try
                     {
-                        object objProcess = CommonFunctions.EvaluateInvariantXPath(strAmmoBonus, out bool blnIsSuccess);
+                        (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strAmmoBonus);
                         if (blnIsSuccess)
                             intReturn = ((double)objProcess).StandardRound();
                     }

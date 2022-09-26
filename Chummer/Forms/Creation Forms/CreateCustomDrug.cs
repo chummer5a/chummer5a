@@ -114,14 +114,14 @@ namespace Chummer
         /// <summary>
         /// Populate the list of Drug Grades.
         /// </summary>
-        private async Task PopulateGrades()
+        private async Task PopulateGrades(CancellationToken token = default)
         {
             _lstGrade.Clear();
-            foreach (Grade objGrade in await _objCharacter.GetGradesListAsync(Improvement.ImprovementSource.Drug))
+            foreach (Grade objGrade in await _objCharacter.GetGradesListAsync(Improvement.ImprovementSource.Drug, token: token))
             {
                 _lstGrade.Add(new ListItem(objGrade.Name, objGrade.CurrentDisplayName));
             }
-            await cboGrade.PopulateWithListItemsAsync(_lstGrade);
+            await cboGrade.PopulateWithListItemsAsync(_lstGrade, token: token);
         }
 
         private async ValueTask UpdateCustomDrugStats(CancellationToken token = default)
@@ -249,7 +249,7 @@ namespace Chummer
             }, token);
             _lstSelectedDrugComponents.Add(objNodeData);
             await UpdateCustomDrugStats(token);
-            string strDescription = await _objDrug.GenerateDescriptionAsync(0);
+            string strDescription = await _objDrug.GenerateDescriptionAsync(0, token: token);
             await lblDrugDescription.DoThreadSafeAsync(x => x.Text = strDescription, token);
         }
 

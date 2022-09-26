@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
@@ -688,20 +689,20 @@ namespace Chummer
         /// <summary>
         /// Accept the values on the Form and create the required XML data.
         /// </summary>
-        private async ValueTask AcceptForm()
+        private async ValueTask AcceptForm(CancellationToken token = default)
         {
             // Make sure a value has been selected if necessary.
-            if (await txtTranslateSelection.DoThreadSafeFuncAsync(x => x.Visible) && string.IsNullOrEmpty(await txtSelect.DoThreadSafeFuncAsync(x => x.Text)))
+            if (await txtTranslateSelection.DoThreadSafeFuncAsync(x => x.Visible, token: token) && string.IsNullOrEmpty(await txtSelect.DoThreadSafeFuncAsync(x => x.Text, token: token)))
             {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectItem"), await LanguageManager.GetStringAsync("MessageTitle_SelectItem"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectItem", token: token), await LanguageManager.GetStringAsync("MessageTitle_SelectItem", token: token), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
             // Make sure a value has been provided for the name.
-            if (string.IsNullOrEmpty(await txtName.DoThreadSafeFuncAsync(x => x.Text)))
+            if (string.IsNullOrEmpty(await txtName.DoThreadSafeFuncAsync(x => x.Text, token: token)))
             {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ImprovementName"), await LanguageManager.GetStringAsync("MessageTitle_ImprovementName"), MessageBoxButtons.OK, MessageBoxIcon.Error);
-                await txtName.DoThreadSafeAsync(x => x.Focus());
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ImprovementName", token: token), await LanguageManager.GetStringAsync("MessageTitle_ImprovementName", token: token), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                await txtName.DoThreadSafeAsync(x => x.Focus(), token: token);
                 return;
             }
 
@@ -711,17 +712,17 @@ namespace Chummer
                 using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
                 {
                     // Build the XML for the Improvement.
-                    XmlNode objFetchNode = _objDocument.SelectSingleNode("/chummer/improvements/improvement[id = " + (await cboImprovemetType.DoThreadSafeFuncAsync(x => x.SelectedValue)).ToString().CleanXPath() + ']');
+                    XmlNode objFetchNode = _objDocument.SelectSingleNode("/chummer/improvements/improvement[id = " + (await cboImprovemetType.DoThreadSafeFuncAsync(x => x.SelectedValue, token: token)).ToString().CleanXPath() + ']');
                     string strInternal = objFetchNode?["internal"]?.InnerText;
                     if (string.IsNullOrEmpty(strInternal))
                         return;
                     await objWriter.WriteStartDocumentAsync();
                     // <bonus>
-                    XmlElementWriteHelper objBonusNode = await objWriter.StartElementAsync("bonus");
+                    XmlElementWriteHelper objBonusNode = await objWriter.StartElementAsync("bonus", token: token);
                     try
                     {
                         // <whatever element>
-                        XmlElementWriteHelper objInternalNode = await objWriter.StartElementAsync(strInternal);
+                        XmlElementWriteHelper objInternalNode = await objWriter.StartElementAsync(strInternal, token: token);
                         try
                         {
                             // Retrieve the XML data from the document and replace the values as necessary.
@@ -731,7 +732,7 @@ namespace Chummer
                                 foreach (XmlAttribute xmlAttribute in xmlAttributeCollection)
                                 {
                                     await objWriter.WriteAttributeStringAsync(
-                                        xmlAttribute.LocalName, xmlAttribute.Value);
+                                        xmlAttribute.LocalName, xmlAttribute.Value, token: token);
                                 }
                             }
 
@@ -740,36 +741,36 @@ namespace Chummer
                                                                      .CheapReplaceAsync("{val}",
                                                                          () => nudVal.DoThreadSafeFuncAsync(
                                                                              x => x.Value.ToString(
-                                                                                 GlobalSettings.InvariantCultureInfo)))
+                                                                                 GlobalSettings.InvariantCultureInfo), token: token), token: token)
                                                                      .CheapReplaceAsync("{min}",
                                                                          () => nudMin.DoThreadSafeFuncAsync(
                                                                              x => x.Value.ToString(
-                                                                                 GlobalSettings.InvariantCultureInfo)))
+                                                                                 GlobalSettings.InvariantCultureInfo), token: token), token: token)
                                                                      .CheapReplaceAsync("{max}",
                                                                          () => nudMax.DoThreadSafeFuncAsync(
                                                                              x => x.Value.ToString(
-                                                                                 GlobalSettings.InvariantCultureInfo)))
+                                                                                 GlobalSettings.InvariantCultureInfo), token: token), token: token)
                                                                      .CheapReplaceAsync("{aug}",
                                                                          () => nudAug.DoThreadSafeFuncAsync(
                                                                              x => x.Value.ToString(
-                                                                                 GlobalSettings.InvariantCultureInfo)))
+                                                                                 GlobalSettings.InvariantCultureInfo), token: token), token: token)
                                                                      .CheapReplaceAsync("{free}",
                                                                          () =>
                                                                              chkFree.DoThreadSafeFuncAsync(
                                                                                  x => x.Checked.ToString(
                                                                                      GlobalSettings
-                                                                                         .InvariantCultureInfo)))
+                                                                                         .InvariantCultureInfo), token: token), token: token)
                                                                      .CheapReplaceAsync("{select}",
                                                                          () => txtSelect
                                                                              .DoThreadSafeFuncAsync(
-                                                                                 x => x.Text))
+                                                                                 x => x.Text, token: token), token: token)
                                                                      .CheapReplaceAsync(
                                                                          "{applytorating}",
                                                                          async () =>
                                                                              await chkApplyToRating
-                                                                                 .DoThreadSafeFuncAsync(x => x.Checked)
+                                                                                 .DoThreadSafeFuncAsync(x => x.Checked, token: token)
                                                                                  ? "<applytorating>True</applytorating>"
-                                                                                 : string.Empty);
+                                                                                 : string.Empty, token: token);
                             await objWriter.WriteRawAsync(strXml);
 
                             // Write the rest of the document.
@@ -802,7 +803,7 @@ namespace Chummer
 
             // Pass it to the Improvement Manager so that it can be added to the character.
             string strGuid = Guid.NewGuid().ToString("D", GlobalSettings.InvariantCultureInfo);
-            await ImprovementManager.CreateImprovementsAsync(_objCharacter, Improvement.ImprovementSource.Custom, strGuid, objNode, 1, txtName.Text);
+            await ImprovementManager.CreateImprovementsAsync(_objCharacter, Improvement.ImprovementSource.Custom, strGuid, objNode, 1, txtName.Text, token: token);
 
             // If an Improvement was passed in, remove it from the character.
             string strNotes = string.Empty;
@@ -812,7 +813,7 @@ namespace Chummer
                 // Copy the notes over to the new item.
                 strNotes = EditImprovementObject.Notes;
                 intOrder = EditImprovementObject.SortOrder;
-                await ImprovementManager.RemoveImprovementsAsync(_objCharacter, Improvement.ImprovementSource.Custom, EditImprovementObject.SourceName);
+                await ImprovementManager.RemoveImprovementsAsync(_objCharacter, Improvement.ImprovementSource.Custom, EditImprovementObject.SourceName, token);
             }
 
             // Find the newly-created Improvement and attach its custom name.
@@ -833,7 +834,7 @@ namespace Chummer
             {
                 x.DialogResult = DialogResult.OK;
                 x.Close();
-            });
+            }, token: token);
         }
 
         /// <summary>
@@ -841,8 +842,9 @@ namespace Chummer
         /// </summary>
         /// <param name="strImprovementType"> The selector for the target translation. Often just _strSelect. </param>
         /// <param name="strToTranslate"> The string which to translate. Usually name. Guid in the case of adept powers.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns></returns>
-        private async ValueTask<string> TranslateField(string strImprovementType, string strToTranslate)
+        private async ValueTask<string> TranslateField(string strImprovementType, string strToTranslate, CancellationToken token = default)
         {
             XPathNavigator objXmlNode;
             switch (strImprovementType)
@@ -852,8 +854,8 @@ namespace Chummer
                 case "SelectMentalAttribute":
                 case "SelectSpecialAttribute":
                     return strToTranslate == "MAGAdept"
-                    ? await LanguageManager.GetStringAsync("String_AttributeMAGShort") + await LanguageManager.GetStringAsync("String_Space") + '(' + await LanguageManager.GetStringAsync("String_DescAdept") + ')'
-                    : await LanguageManager.GetStringAsync("String_Attribute" + strToTranslate + "Short");
+                    ? await LanguageManager.GetStringAsync("String_AttributeMAGShort", token: token) + await LanguageManager.GetStringAsync("String_Space", token: token) + '(' + await LanguageManager.GetStringAsync("String_DescAdept", token: token) + ')'
+                    : await LanguageManager.GetStringAsync("String_Attribute" + strToTranslate + "Short", token: token);
 
                 case "SelectSkill":
                     if (ExoticSkill.IsExoticSkillName(strToTranslate))
@@ -862,70 +864,70 @@ namespace Chummer
                         astrToTranslateParts[0] = astrToTranslateParts[0].Trim();
                         astrToTranslateParts[1] = astrToTranslateParts[1].Substring(0, astrToTranslateParts[1].Length - 1);
 
-                        objXmlNode = (await _objCharacter.LoadDataXPathAsync("skills.xml")).SelectSingleNode("/chummer/skills/skill[name = " + astrToTranslateParts[0].CleanXPath() + ']');
+                        objXmlNode = (await _objCharacter.LoadDataXPathAsync("skills.xml", token: token)).SelectSingleNode("/chummer/skills/skill[name = " + astrToTranslateParts[0].CleanXPath() + ']');
                         string strFirstPartTranslated = objXmlNode != null
-                            ? ((await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
-                               ?? (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value
+                            ? ((await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token))?.Value
+                               ?? (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("name", token: token))?.Value
                                ?? astrToTranslateParts[0])
                             : astrToTranslateParts[0];
 
-                        return strFirstPartTranslated + await LanguageManager.GetStringAsync("String_Space") + '(' + await _objCharacter.TranslateExtraAsync(astrToTranslateParts[1]) + ')';
+                        return strFirstPartTranslated + await LanguageManager.GetStringAsync("String_Space", token: token) + '(' + await _objCharacter.TranslateExtraAsync(astrToTranslateParts[1], token: token) + ')';
                     }
                     else
                     {
-                        objXmlNode = (await _objCharacter.LoadDataXPathAsync("skills.xml")).SelectSingleNode("/chummer/skills/skill[name = " + strToTranslate.CleanXPath() + ']');
+                        objXmlNode = (await _objCharacter.LoadDataXPathAsync("skills.xml", token: token)).SelectSingleNode("/chummer/skills/skill[name = " + strToTranslate.CleanXPath() + ']');
                         if (objXmlNode == null)
                             return strToTranslate;
-                        return (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value ?? (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value ?? strToTranslate;
+                        return (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token))?.Value ?? (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("name", token: token))?.Value ?? strToTranslate;
                     }
 
                 case "SelectKnowSkill":
-                    objXmlNode = (await _objCharacter.LoadDataXPathAsync("skills.xml")).SelectSingleNode("/chummer/knowledgeskills/skill[name = " + strToTranslate.CleanXPath() + ']');
+                    objXmlNode = (await _objCharacter.LoadDataXPathAsync("skills.xml", token: token)).SelectSingleNode("/chummer/knowledgeskills/skill[name = " + strToTranslate.CleanXPath() + ']');
                     if (objXmlNode == null)
                         return strToTranslate;
-                    return (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value ?? (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value ?? strToTranslate;
+                    return (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token))?.Value ?? (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("name", token: token))?.Value ?? strToTranslate;
 
                 case "SelectSkillCategory":
-                    objXmlNode = (await _objCharacter.LoadDataXPathAsync("skills.xml")).SelectSingleNode("/chummer/categories/category[. = " + strToTranslate.CleanXPath() + ']');
+                    objXmlNode = (await _objCharacter.LoadDataXPathAsync("skills.xml", token: token)).SelectSingleNode("/chummer/categories/category[. = " + strToTranslate.CleanXPath() + ']');
                     if (objXmlNode == null)
                         return strToTranslate;
-                    return (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("@translate"))?.Value ?? (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("."))?.Value ?? strToTranslate;
+                    return (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("@translate", token: token))?.Value ?? (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync(".", token: token))?.Value ?? strToTranslate;
 
                 case "SelectSkillGroup":
-                    objXmlNode = (await _objCharacter.LoadDataXPathAsync("skills.xml")).SelectSingleNode("/chummer/skillgroups/name[. = " + strToTranslate.CleanXPath() + ']');
+                    objXmlNode = (await _objCharacter.LoadDataXPathAsync("skills.xml", token: token)).SelectSingleNode("/chummer/skillgroups/name[. = " + strToTranslate.CleanXPath() + ']');
                     if (objXmlNode == null)
                         return strToTranslate;
-                    return (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("@translate"))?.Value ?? (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("."))?.Value ?? strToTranslate;
+                    return (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("@translate", token: token))?.Value ?? (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync(".", token: token))?.Value ?? strToTranslate;
 
                 case "SelectWeaponCategory":
-                    objXmlNode = (await _objCharacter.LoadDataXPathAsync("weapons.xml")).SelectSingleNode("/chummer/categories/category[. = " + strToTranslate.CleanXPath() + ']');
+                    objXmlNode = (await _objCharacter.LoadDataXPathAsync("weapons.xml", token: token)).SelectSingleNode("/chummer/categories/category[. = " + strToTranslate.CleanXPath() + ']');
                     if (objXmlNode == null)
                         return strToTranslate;
-                    return (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("@translate"))?.Value ?? (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("."))?.Value ?? strToTranslate;
+                    return (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("@translate", token: token))?.Value ?? (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync(".", token: token))?.Value ?? strToTranslate;
 
                 case "SelectSpellCategory":
-                    objXmlNode = (await _objCharacter.LoadDataXPathAsync("spells.xml")).SelectSingleNode("/chummer/categories/category[. = " + strToTranslate.CleanXPath() + ']');
+                    objXmlNode = (await _objCharacter.LoadDataXPathAsync("spells.xml", token: token)).SelectSingleNode("/chummer/categories/category[. = " + strToTranslate.CleanXPath() + ']');
                     if (objXmlNode == null)
                         return strToTranslate;
-                    return (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("@translate"))?.Value ?? (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("."))?.Value ?? strToTranslate;
+                    return (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("@translate", token: token))?.Value ?? (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync(".", token: token))?.Value ?? strToTranslate;
 
                 case "SelectAdeptPower":
-                    objXmlNode = (await _objCharacter.LoadDataXPathAsync("powers.xml")).SelectSingleNode("/chummer/powers/power[id = " + strToTranslate.CleanXPath() + " or name = " + strToTranslate.CleanXPath() + ']');
+                    objXmlNode = (await _objCharacter.LoadDataXPathAsync("powers.xml", token: token)).SelectSingleNode("/chummer/powers/power[id = " + strToTranslate.CleanXPath() + " or name = " + strToTranslate.CleanXPath() + ']');
                     if (objXmlNode == null)
                         return strToTranslate;
-                    return (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value ?? (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value ?? strToTranslate;
+                    return (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token))?.Value ?? (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("name", token: token))?.Value ?? strToTranslate;
 
                 case "SelectMetamagic":
-                    objXmlNode = (await _objCharacter.LoadDataXPathAsync("metamagic.xml")).SelectSingleNode("/chummer/metamagics/metamagic[name = " + strToTranslate.CleanXPath() + ']');
+                    objXmlNode = (await _objCharacter.LoadDataXPathAsync("metamagic.xml", token: token)).SelectSingleNode("/chummer/metamagics/metamagic[name = " + strToTranslate.CleanXPath() + ']');
                     if (objXmlNode == null)
                         return strToTranslate;
-                    return (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value ?? (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value ?? strToTranslate;
+                    return (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token))?.Value ?? (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("name", token: token))?.Value ?? strToTranslate;
 
                 case "SelectEcho":
-                    objXmlNode = (await _objCharacter.LoadDataXPathAsync("echoes.xml")).SelectSingleNode("/chummer/echoes/echo[name = " + strToTranslate.CleanXPath() + ']');
+                    objXmlNode = (await _objCharacter.LoadDataXPathAsync("echoes.xml", token: token)).SelectSingleNode("/chummer/echoes/echo[name = " + strToTranslate.CleanXPath() + ']');
                     if (objXmlNode == null)
                         return strToTranslate;
-                    return (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value ?? (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value ?? strToTranslate;
+                    return (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token))?.Value ?? (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("name", token: token))?.Value ?? strToTranslate;
 
                 default:
                     return strToTranslate;

@@ -128,7 +128,7 @@ namespace Chummer
         {
             return _dicUnorderedData.TryGetValue(item.Key, out TValue objValue) && item.Value.Equals(objValue);
         }
-        
+
         public bool Contains(Tuple<TKey, TValue> item)
         {
             (TKey objKey, TValue objValue) = item;
@@ -185,7 +185,7 @@ namespace Chummer
             for (int i = 0; i < Count; ++i)
                 array[i + arrayIndex] = this[i];
         }
-        
+
         public void CopyTo(Tuple<TKey, TValue>[] array, int arrayIndex)
         {
             if (arrayIndex + Count >= array.Length)

@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Chummer.Backend.Equipment;
@@ -69,12 +70,12 @@ namespace Chummer
             await RefreshResultLabel();
         }
 
-        private async ValueTask RefreshResultLabel()
+        private async ValueTask RefreshResultLabel(CancellationToken token = default)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
             try
             {
-                string strSpace = await LanguageManager.GetStringAsync("String_Space");
+                string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token);
                 await lblResult.DoThreadSafeAsync(x => x.Text = strSpace + '+' + strSpace
                                                                 + Extra.ToString("#,0", GlobalSettings.CultureInfo)
                                                                 + ')' +
@@ -88,7 +89,7 @@ namespace Chummer
                                                                 StartingNuyen.ToString(
                                                                     _objCharacter.Settings.NuyenFormat
                                                                     + LanguageManager.GetString("String_NuyenSymbol"),
-                                                                    GlobalSettings.CultureInfo));
+                                                                    GlobalSettings.CultureInfo), token: token);
             }
             finally
             {
@@ -187,9 +188,9 @@ namespace Chummer
             }
         }
 
-        private async ValueTask RefreshCalculation()
+        private async ValueTask RefreshCalculation(CancellationToken token = default)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
             try
             {
                 await nudDiceResult.DoThreadSafeAsync(x =>
@@ -206,8 +207,8 @@ namespace Chummer
                     {
                         x.ResumeLayout();
                     }
-                });
-                await RefreshResultLabel();
+                }, token: token);
+                await RefreshResultLabel(token);
             }
             finally
             {
@@ -230,15 +231,15 @@ namespace Chummer
             }
         }
 
-        private async ValueTask DoRoll()
+        private async ValueTask DoRoll(CancellationToken token = default)
         {
             int intResult = 0;
             for (int i = 0; i < SelectedLifestyle.Dice; ++i)
             {
-                intResult += await GlobalSettings.RandomGenerator.NextD6ModuloBiasRemovedAsync();
+                intResult += await GlobalSettings.RandomGenerator.NextD6ModuloBiasRemovedAsync(token: token);
             }
 
-            await nudDiceResult.DoThreadSafeAsync(x => x.ValueAsInt = intResult);
+            await nudDiceResult.DoThreadSafeAsync(x => x.ValueAsInt = intResult, token: token);
         }
 
         #endregion Control Events

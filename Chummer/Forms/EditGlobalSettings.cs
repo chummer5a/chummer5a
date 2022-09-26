@@ -1276,14 +1276,15 @@ namespace Chummer
             foreach (CustomDataDirectoryInfo objInfo in _setCustomDataDirectoryInfos)
                 GlobalSettings.CustomDataDirectoryInfos.Add(objInfo);
             await XmlManager.RebuildDataDirectoryInfoAsync(GlobalSettings.CustomDataDirectoryInfos, token);
-            IAsyncDisposable objLocker = await GlobalSettings.SourcebookInfos.LockObject.EnterWriteLockAsync(token);
+            LockingDictionary<string, SourcebookInfo> dicSourcebookInfos = await GlobalSettings.GetSourcebookInfosAsync(token);
+            IAsyncDisposable objLocker = await dicSourcebookInfos.LockObject.EnterWriteLockAsync(token);
             try
             {
                 token.ThrowIfCancellationRequested();
-                await GlobalSettings.SourcebookInfos.ClearAsync(token);
+                await dicSourcebookInfos.ClearAsync(token);
                 token.ThrowIfCancellationRequested();
                 foreach (SourcebookInfo objInfo in _dicSourcebookInfos.Values)
-                    await GlobalSettings.SourcebookInfos.AddAsync(objInfo.Code, objInfo, token);
+                    await dicSourcebookInfos.AddAsync(objInfo.Code, objInfo, token);
             }
             finally
             {
@@ -1294,10 +1295,10 @@ namespace Chummer
         /// <summary>
         /// Save the global settings to the registry.
         /// </summary>
-        private async ValueTask SaveRegistrySettings()
+        private async ValueTask SaveRegistrySettings(CancellationToken token = default)
         {
-            await SaveGlobalOptions();
-            await GlobalSettings.SaveOptionsToRegistry();
+            await SaveGlobalOptions(token);
+            await GlobalSettings.SaveOptionsToRegistry(token);
         }
 
         private async ValueTask PopulateDefaultCharacterSettingLists(CancellationToken token = default)
@@ -1306,8 +1307,7 @@ namespace Chummer
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                            out List<ListItem> lstCharacterSettings))
             {
-                foreach (KeyValuePair<string, CharacterSettings> kvpLoopCharacterOptions in SettingsManager
-                             .LoadedCharacterSettings)
+                foreach (KeyValuePair<string, CharacterSettings> kvpLoopCharacterOptions in await SettingsManager.GetLoadedCharacterSettingsAsync(token))
                 {
                     string strId = kvpLoopCharacterOptions.Key;
                     if (!string.IsNullOrEmpty(strId))

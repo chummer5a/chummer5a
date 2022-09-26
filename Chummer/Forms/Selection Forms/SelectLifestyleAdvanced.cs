@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
@@ -265,16 +266,16 @@ namespace Chummer
             }
         }
 
-        private async ValueTask ResetLifestyleQualitiesTree()
+        private async ValueTask ResetLifestyleQualitiesTree(CancellationToken token = default)
         {
             TreeNode nodPositiveQualityRoot = null;
             TreeNode nodNegativeQualityRoot = null;
             TreeNode nodEntertainmentsRoot = null;
             TreeNode nodFreeGridsRoot = null;
 
-            string strSelectedNode = await treLifestyleQualities.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag.ToString());
+            string strSelectedNode = await treLifestyleQualities.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag.ToString(), token: token);
 
-            await treLifestyleQualities.DoThreadSafeAsync(x => x.Nodes.Clear());
+            await treLifestyleQualities.DoThreadSafeAsync(x => x.Nodes.Clear(), token: token);
 
             foreach (LifestyleQuality objQuality in _objLifestyle.LifestyleQualities)
             {
@@ -288,7 +289,7 @@ namespace Chummer
                         nodFreeGridsRoot = new TreeNode
                         {
                             Tag = "Node_SelectAdvancedLifestyle_PositiveQualities",
-                            Text = await LanguageManager.GetStringAsync("Node_SelectAdvancedLifestyle_PositiveQualities")
+                            Text = await LanguageManager.GetStringAsync("Node_SelectAdvancedLifestyle_PositiveQualities", token: token)
                         };
                         await treLifestyleQualities.DoThreadSafeAsync(x =>
                         {
@@ -298,9 +299,9 @@ namespace Chummer
                                 + (nodEntertainmentsRoot == null ? 0 : 1),
                                 nodFreeGridsRoot);
                             nodFreeGridsRoot.Expand();
-                        });
+                        }, token: token);
                     }
-                    await treLifestyleQualities.DoThreadSafeAsync(() => nodFreeGridsRoot.Nodes.Add(objNode));
+                    await treLifestyleQualities.DoThreadSafeAsync(() => nodFreeGridsRoot.Nodes.Add(objNode), token: token);
                 }
                 else
                 {
@@ -313,16 +314,16 @@ namespace Chummer
                                 {
                                     Tag = "Node_SelectAdvancedLifestyle_PositiveQualities",
                                     Text = await LanguageManager.GetStringAsync(
-                                        "Node_SelectAdvancedLifestyle_PositiveQualities")
+                                        "Node_SelectAdvancedLifestyle_PositiveQualities", token: token)
                                 };
                                 await treLifestyleQualities.DoThreadSafeAsync(x =>
                                 {
                                     x.Nodes.Insert(0, nodPositiveQualityRoot);
                                     nodPositiveQualityRoot.Expand();
-                                });
+                                }, token: token);
                             }
 
-                            await treLifestyleQualities.DoThreadSafeAsync(() => nodPositiveQualityRoot.Nodes.Add(objNode));
+                            await treLifestyleQualities.DoThreadSafeAsync(() => nodPositiveQualityRoot.Nodes.Add(objNode), token: token);
                             break;
 
                         case QualityType.Negative:
@@ -332,7 +333,7 @@ namespace Chummer
                                 {
                                     Tag = "Node_SelectAdvancedLifestyle_NegativeQualities",
                                     Text = await LanguageManager.GetStringAsync(
-                                        "Node_SelectAdvancedLifestyle_NegativeQualities")
+                                        "Node_SelectAdvancedLifestyle_NegativeQualities", token: token)
                                 };
                                 await treLifestyleQualities.DoThreadSafeAsync(x =>
                                 {
@@ -340,10 +341,10 @@ namespace Chummer
                                         nodPositiveQualityRoot == null ? 0 : 1,
                                         nodNegativeQualityRoot);
                                     nodNegativeQualityRoot.Expand();
-                                });
+                                }, token: token);
                             }
 
-                            await treLifestyleQualities.DoThreadSafeAsync(() => nodNegativeQualityRoot.Nodes.Add(objNode));
+                            await treLifestyleQualities.DoThreadSafeAsync(() => nodNegativeQualityRoot.Nodes.Add(objNode), token: token);
                             break;
 
                         default:
@@ -353,7 +354,7 @@ namespace Chummer
                                 {
                                     Tag = "Node_SelectAdvancedLifestyle_Entertainments",
                                     Text = await LanguageManager.GetStringAsync(
-                                        "Node_SelectAdvancedLifestyle_Entertainments")
+                                        "Node_SelectAdvancedLifestyle_Entertainments", token: token)
                                 };
                                 await treLifestyleQualities.DoThreadSafeAsync(x =>
                                 {
@@ -362,16 +363,16 @@ namespace Chummer
                                         + (nodNegativeQualityRoot == null ? 0 : 1),
                                         nodEntertainmentsRoot);
                                     nodEntertainmentsRoot.Expand();
-                                });
+                                }, token: token);
                             }
 
-                            await treLifestyleQualities.DoThreadSafeAsync(() => nodEntertainmentsRoot.Nodes.Add(objNode));
+                            await treLifestyleQualities.DoThreadSafeAsync(() => nodEntertainmentsRoot.Nodes.Add(objNode), token: token);
                             break;
                     }
                 }
             }
 
-            await treLifestyleQualities.DoThreadSafeAsync(x => x.SortCustomAlphabetically(strSelectedNode));
+            await treLifestyleQualities.DoThreadSafeAsync(x => x.SortCustomAlphabetically(strSelectedNode), token: token);
         }
 
         private async void SelectAdvancedLifestyle_Load(object sender, EventArgs e)
@@ -661,21 +662,21 @@ namespace Chummer
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>
-        private async ValueTask AcceptForm()
+        private async ValueTask AcceptForm(CancellationToken token = default)
         {
-            string strLifestyleName = await txtLifestyleName.DoThreadSafeFuncAsync(x => x.Text);
+            string strLifestyleName = await txtLifestyleName.DoThreadSafeFuncAsync(x => x.Text, token: token);
             if (string.IsNullOrEmpty(strLifestyleName))
             {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectAdvancedLifestyle_LifestyleName"), await LanguageManager.GetStringAsync("MessageTitle_SelectAdvancedLifestyle_LifestyleName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectAdvancedLifestyle_LifestyleName", token: token), await LanguageManager.GetStringAsync("MessageTitle_SelectAdvancedLifestyle_LifestyleName", token: token), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             if (_objLifestyle.TotalLP < 0)
             {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectAdvancedLifestyle_OverLPLimit"), await LanguageManager.GetStringAsync("MessageTitle_SelectAdvancedLifestyle_OverLPLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectAdvancedLifestyle_OverLPLimit", token: token), await LanguageManager.GetStringAsync("MessageTitle_SelectAdvancedLifestyle_OverLPLimit", token: token), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            string strBaseLifestyle = await cboBaseLifestyle.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString());
+            string strBaseLifestyle = await cboBaseLifestyle.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token: token);
             XmlNode objXmlLifestyle = _xmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = " + strBaseLifestyle.CleanXPath() + ']');
             if (objXmlLifestyle == null)
                 return;
@@ -683,15 +684,15 @@ namespace Chummer
             _objLifestyle.Page = objXmlLifestyle["page"]?.InnerText;
             _objLifestyle.Name = strLifestyleName;
             _objLifestyle.Cost = Convert.ToInt32(objXmlLifestyle["cost"]?.InnerText, GlobalSettings.InvariantCultureInfo);
-            _objLifestyle.Percentage = await nudPercentage.DoThreadSafeFuncAsync(x => x.Value);
+            _objLifestyle.Percentage = await nudPercentage.DoThreadSafeFuncAsync(x => x.Value, token);
             _objLifestyle.BaseLifestyle = strBaseLifestyle;
-            _objLifestyle.Area = await nudArea.DoThreadSafeFuncAsync(x => x.ValueAsInt);
-            _objLifestyle.Comforts = await nudComforts.DoThreadSafeFuncAsync(x => x.ValueAsInt);
-            _objLifestyle.Security = await nudSecurity.DoThreadSafeFuncAsync(x => x.ValueAsInt);
+            _objLifestyle.Area = await nudArea.DoThreadSafeFuncAsync(x => x.ValueAsInt, token);
+            _objLifestyle.Comforts = await nudComforts.DoThreadSafeFuncAsync(x => x.ValueAsInt, token);
+            _objLifestyle.Security = await nudSecurity.DoThreadSafeFuncAsync(x => x.ValueAsInt, token);
             _objLifestyle.TrustFund = chkTrustFund.Checked;
-            _objLifestyle.Roommates = _objLifestyle.TrustFund ? 0 : await nudRoommates.DoThreadSafeFuncAsync(x => x.ValueAsInt);
-            _objLifestyle.PrimaryTenant = await chkPrimaryTenant.DoThreadSafeFuncAsync(x => x.Checked);
-            _objLifestyle.BonusLP = await nudBonusLP.DoThreadSafeFuncAsync(x => x.ValueAsInt);
+            _objLifestyle.Roommates = _objLifestyle.TrustFund ? 0 : await nudRoommates.DoThreadSafeFuncAsync(x => x.ValueAsInt, token);
+            _objLifestyle.PrimaryTenant = await chkPrimaryTenant.DoThreadSafeFuncAsync(x => x.Checked, token);
+            _objLifestyle.BonusLP = await nudBonusLP.DoThreadSafeFuncAsync(x => x.ValueAsInt, token);
 
             // Get the starting Nuyen information.
             _objLifestyle.Dice = Convert.ToInt32(objXmlLifestyle["dice"]?.InnerText, GlobalSettings.InvariantCultureInfo);
@@ -702,37 +703,37 @@ namespace Chummer
             {
                 x.DialogResult = DialogResult.OK;
                 x.Close();
-            });
+            }, token);
         }
 
-        private async ValueTask RefreshSelectedLifestyle()
+        private async ValueTask RefreshSelectedLifestyle(CancellationToken token = default)
         {
             if (_blnSkipRefresh)
                 return;
             
-            _objLifestyle.BaseLifestyle = await cboBaseLifestyle.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()) ?? string.Empty;
-            XPathNavigator xmlAspect = await _objLifestyle.GetNodeXPathAsync();
+            _objLifestyle.BaseLifestyle = await cboBaseLifestyle.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token) ?? string.Empty;
+            XPathNavigator xmlAspect = await _objLifestyle.GetNodeXPathAsync(token: token);
             if (xmlAspect != null)
             {
                 string strSource = xmlAspect.SelectSingleNode("source")?.Value ?? string.Empty;
-                string strPage = (await xmlAspect.SelectSingleNodeAndCacheExpressionAsync("altpage"))?.Value ?? xmlAspect.SelectSingleNode("page")?.Value ?? string.Empty;
+                string strPage = (await xmlAspect.SelectSingleNodeAndCacheExpressionAsync("altpage", token: token))?.Value ?? xmlAspect.SelectSingleNode("page")?.Value ?? string.Empty;
                 if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
                 {
                     SourceString objSource = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language,
-                        GlobalSettings.CultureInfo, _objCharacter);
-                    await objSource.SetControlAsync(lblSource);
-                    await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = true);
+                        GlobalSettings.CultureInfo, _objCharacter, token);
+                    await objSource.SetControlAsync(lblSource, token);
+                    await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                 }
                 else
                 {
-                    await SourceString.Blank.SetControlAsync(lblSource);
-                    await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = false);
+                    await SourceString.Blank.SetControlAsync(lblSource, token);
+                    await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = false, token);
                 }
             }
             else
             {
-                await SourceString.Blank.SetControlAsync(lblSource);
-                await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = false);
+                await SourceString.Blank.SetControlAsync(lblSource, token);
+                await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = false, token);
             }
 
             // Characters with the Trust Fund Quality can have the lifestyle discounted.
@@ -742,7 +743,7 @@ namespace Chummer
                 {
                     x.Visible = true;
                     x.Checked = _objLifestyle.TrustFund;
-                });
+                }, token);
             }
             else
             {
@@ -750,37 +751,37 @@ namespace Chummer
                 {
                     x.Checked = false;
                     x.Visible = false;
-                });
+                }, token);
             }
 
             if (_objLifestyle.AllowBonusLP)
             {
-                await lblBonusLP.DoThreadSafeAsync(x => x.Visible = true);
-                await nudBonusLP.DoThreadSafeAsync(x => x.Visible = true);
-                await chkBonusLPRandomize.DoThreadSafeAsync(x => x.Visible = true);
+                await lblBonusLP.DoThreadSafeAsync(x => x.Visible = true, token);
+                await nudBonusLP.DoThreadSafeAsync(x => x.Visible = true, token);
+                await chkBonusLPRandomize.DoThreadSafeAsync(x => x.Visible = true, token);
 
-                if (await chkBonusLPRandomize.DoThreadSafeFuncAsync(x => x.Checked))
+                if (await chkBonusLPRandomize.DoThreadSafeFuncAsync(x => x.Checked, token))
                 {
-                    int intValue = await GlobalSettings.RandomGenerator.NextD6ModuloBiasRemovedAsync();
+                    int intValue = await GlobalSettings.RandomGenerator.NextD6ModuloBiasRemovedAsync(token);
                     await nudBonusLP.DoThreadSafeAsync(x =>
                     {
                         x.Enabled = false;
                         _blnSkipRefresh = true;
                         x.Value = intValue;
                         _blnSkipRefresh = false;
-                    });
+                    }, token);
                 }
                 else
                 {
-                    await nudBonusLP.DoThreadSafeAsync(x => x.Enabled = true);
+                    await nudBonusLP.DoThreadSafeAsync(x => x.Enabled = true, token: token);
                 }
             }
             else
             {
-                await lblBonusLP.DoThreadSafeAsync(x => x.Visible = false);
-                await nudBonusLP.DoThreadSafeAsync(x => x.Visible = false);
-                await nudBonusLP.DoThreadSafeAsync(x => x.Value = 0);
-                await chkBonusLPRandomize.DoThreadSafeAsync(x => x.Visible = false);
+                await lblBonusLP.DoThreadSafeAsync(x => x.Visible = false, token);
+                await nudBonusLP.DoThreadSafeAsync(x => x.Visible = false, token);
+                await nudBonusLP.DoThreadSafeAsync(x => x.Value = 0, token);
+                await chkBonusLPRandomize.DoThreadSafeAsync(x => x.Visible = false, token);
             }
         }
 
@@ -792,9 +793,9 @@ namespace Chummer
         /// <summary>
         /// Populates The District list after a City was selected
         /// </summary>
-        private async ValueTask RefreshDistrictList()
+        private async ValueTask RefreshDistrictList(CancellationToken token = default)
         {
-            string strSelectedCityRefresh = await cboCity.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()) ?? string.Empty;
+            string strSelectedCityRefresh = await cboCity.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token) ?? string.Empty;
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstDistrict))
             {
                 using (XmlNodeList xmlDistrictList
@@ -806,23 +807,23 @@ namespace Chummer
                         foreach (XmlNode objXmlDistrict in xmlDistrictList)
                         {
                             string strName = objXmlDistrict["name"]?.InnerText
-                                             ?? await LanguageManager.GetStringAsync("String_Unknown");
+                                             ?? await LanguageManager.GetStringAsync("String_Unknown", token: token);
                             lstDistrict.Add(new ListItem(strName, objXmlDistrict["translate"]?.InnerText ?? strName));
                         }
                     }
                 }
                 
-                await cboDistrict.PopulateWithListItemsAsync(lstDistrict);
+                await cboDistrict.PopulateWithListItemsAsync(lstDistrict, token: token);
             }
         }
 
         /// <summary>
         /// Refreshes the BoroughList based on the selected District to generate a cascading dropdown menu
         /// </summary>
-        private async ValueTask RefreshBoroughList()
+        private async ValueTask RefreshBoroughList(CancellationToken token = default)
         {
-            string strSelectedCityRefresh = await cboCity.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()) ?? string.Empty;
-            string strSelectedDistrictRefresh = await cboDistrict.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()) ?? string.Empty;
+            string strSelectedCityRefresh = await cboCity.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token) ?? string.Empty;
+            string strSelectedDistrictRefresh = await cboDistrict.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token) ?? string.Empty;
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstBorough))
             {
                 using (XmlNodeList xmlBoroughList = _xmlDocument.SelectNodes(
@@ -834,13 +835,13 @@ namespace Chummer
                         foreach (XmlNode objXmlDistrict in xmlBoroughList)
                         {
                             string strName = objXmlDistrict["name"]?.InnerText
-                                             ?? await LanguageManager.GetStringAsync("String_Unknown");
+                                             ?? await LanguageManager.GetStringAsync("String_Unknown", token: token);
                             lstBorough.Add(new ListItem(strName, objXmlDistrict["translate"]?.InnerText ?? strName));
                         }
                     }
                 }
                 
-                await cboBorough.PopulateWithListItemsAsync(lstBorough);
+                await cboBorough.PopulateWithListItemsAsync(lstBorough, token: token);
             }
         }
 

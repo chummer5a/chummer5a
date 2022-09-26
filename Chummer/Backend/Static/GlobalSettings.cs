@@ -232,6 +232,7 @@ namespace Chummer
 
         // Plugins information
         private static readonly LockingDictionary<string, bool> s_dicPluginsEnabled = new LockingDictionary<string, bool>();
+
         public static LockingDictionary<string, bool> PluginsEnabledDic => s_dicPluginsEnabled;
 
         // PDF information.
@@ -863,9 +864,10 @@ namespace Chummer
                 {
                     if (objSourceRegistry != null)
                     {
-                        using (await EnterReadLock.EnterAsync(SourcebookInfos, token))
+                        LockingDictionary<string, SourcebookInfo> dicSourcebookInfos = await GetSourcebookInfosAsync(token);
+                        using (await EnterReadLock.EnterAsync(dicSourcebookInfos, token))
                         {
-                            foreach (SourcebookInfo objSource in SourcebookInfos.Values)
+                            foreach (SourcebookInfo objSource in await dicSourcebookInfos.GetValuesAsync(token))
                             {
                                 token.ThrowIfCancellationRequested();
                                 objSourceRegistry.SetValue(objSource.Code,
@@ -1440,19 +1442,55 @@ namespace Chummer
         {
             get
             {
-                // We need to generate s_DicSourcebookInfos outside of the constructor to avoid initialization cycles
-                if (s_intSourcebookInfosLoadingStatus < 0)
-                    LoadSourcebookInfos();
-                while (s_intSourcebookInfosLoadingStatus <= 0)
-                    Utils.SafeSleep();
+                do
+                {
+                    try
+                    {
+                        // We need to generate s_DicSourcebookInfos outside of the constructor to avoid initialization cycles
+                        if (Interlocked.CompareExchange(ref s_intSourcebookInfosLoadingStatus, 0, -1) < 0)
+                            LoadSourcebookInfos();
+                    }
+                    catch
+                    {
+                        s_intSourcebookInfosLoadingStatus = -1;
+                        throw;
+                    }
+
+                    while (s_intSourcebookInfosLoadingStatus <= 0)
+                        Utils.SafeSleep();
+                } while (s_intSourcebookInfosLoadingStatus < 0);
                 return s_DicSourcebookInfos;
             }
         }
 
+        /// <summary>
+        /// List of SourcebookInfo.
+        /// </summary>
+        public static async Task<LockingDictionary<string, SourcebookInfo>> GetSourcebookInfosAsync(CancellationToken token = default)
+        {
+            do
+            {
+                try
+                {
+                    // We need to generate s_DicSourcebookInfos outside of the constructor to avoid initialization cycles
+                    if (Interlocked.CompareExchange(ref s_intSourcebookInfosLoadingStatus, 0, -1) < 0)
+                        await LoadSourcebookInfosAsync(token);
+                }
+                catch
+                {
+                    s_intSourcebookInfosLoadingStatus = -1;
+                    throw;
+                }
+
+                while (s_intSourcebookInfosLoadingStatus <= 0)
+                    await Utils.SafeSleepAsync(token);
+            } while (s_intSourcebookInfosLoadingStatus < 0);
+            return s_DicSourcebookInfos;
+        }
+
         private static void LoadSourcebookInfos()
         {
-            if (Interlocked.CompareExchange(ref s_intSourcebookInfosLoadingStatus, 0, -1) >= 0)
-                return;
+            s_intSourcebookInfosLoadingStatus = 0;
             try
             {
                 if (s_DicSourcebookInfos == null)
@@ -1506,6 +1544,66 @@ namespace Chummer
                         await s_DicSourcebookInfos.AddAsync(strCode, objSource);
                     }
                 });
+            }
+            finally
+            {
+                Interlocked.Increment(ref s_intSourcebookInfosLoadingStatus);
+            }
+        }
+
+        private static async ValueTask LoadSourcebookInfosAsync(CancellationToken token = default)
+        {
+            s_intSourcebookInfosLoadingStatus = 0;
+            try
+            {
+                if (s_DicSourcebookInfos == null)
+                    s_DicSourcebookInfos = new LockingDictionary<string, SourcebookInfo>();
+                else
+                    await s_DicSourcebookInfos.ClearAsync(token);
+                foreach (XPathNavigator xmlBook in await (await XmlManager.LoadXPathAsync("books.xml", token: token))
+                                 .SelectAndCacheExpressionAsync("/chummer/books/book", token: token))
+                {
+                    string strCode = (await xmlBook.SelectSingleNodeAndCacheExpressionAsync("code", token: token))?.Value;
+                    if (string.IsNullOrEmpty(strCode))
+                        continue;
+                    SourcebookInfo objSource = new SourcebookInfo
+                    {
+                        Code = strCode
+                    };
+
+                    try
+                    {
+                        string strTemp = string.Empty;
+                        if (LoadStringFromRegistry(ref strTemp, strCode, "Sourcebook")
+                            && !string.IsNullOrEmpty(strTemp))
+                        {
+                            string[] strParts = strTemp.Split('|');
+                            objSource.Path = strParts[0];
+                            if (string.IsNullOrEmpty(objSource.Path))
+                            {
+                                objSource.Path = string.Empty;
+                                objSource.Offset = 0;
+                            }
+                            else
+                            {
+                                if (!File.Exists(objSource.Path))
+                                    objSource.Path = string.Empty;
+                                if (strParts.Length > 1 && int.TryParse(strParts[1], out int intTmp))
+                                    objSource.Offset = intTmp;
+                            }
+                        }
+                    }
+                    catch (System.Security.SecurityException)
+                    {
+                        //swallow this
+                    }
+                    catch (UnauthorizedAccessException)
+                    {
+                        //swallow this
+                    }
+
+                    await s_DicSourcebookInfos.AddAsync(strCode, objSource, token);
+                }
             }
             finally
             {
@@ -1625,41 +1723,8 @@ namespace Chummer
                 switch (e.Action)
                 {
                     case NotifyCollectionChangedAction.Add:
-                    {
-                        for (int i = e.NewStartingIndex + 1; i <= MaxMruSize; ++i)
                         {
-                            if (i <= s_LstFavoriteCharacters.Count)
-                                s_ObjBaseChummerKey.SetValue("stickymru" + i.ToString(InvariantCultureInfo),
-                                                             s_LstFavoriteCharacters[i - 1]);
-                            else
-                                s_ObjBaseChummerKey.DeleteValue("stickymru" + i.ToString(InvariantCultureInfo),
-                                                                false);
-                        }
-
-                        break;
-                    }
-                    case NotifyCollectionChangedAction.Remove:
-                    {
-                        for (int i = e.OldStartingIndex + 1; i <= MaxMruSize; ++i)
-                        {
-                            if (i <= s_LstFavoriteCharacters.Count)
-                                s_ObjBaseChummerKey.SetValue("stickymru" + i.ToString(InvariantCultureInfo),
-                                                             s_LstFavoriteCharacters[i - 1]);
-                            else
-                                s_ObjBaseChummerKey.DeleteValue("stickymru" + i.ToString(InvariantCultureInfo), false);
-                        }
-
-                        break;
-                    }
-                    case NotifyCollectionChangedAction.Replace:
-                    {
-                        string strNewFile = e.NewItems.Count > 0 ? e.NewItems[0] as string : string.Empty;
-                        if (!string.IsNullOrEmpty(strNewFile))
-                            s_ObjBaseChummerKey.SetValue(
-                                "stickymru" + (e.OldStartingIndex + 1).ToString(InvariantCultureInfo), strNewFile);
-                        else
-                        {
-                            for (int i = e.OldStartingIndex + 1; i <= MaxMruSize; ++i)
+                            for (int i = e.NewStartingIndex + 1; i <= MaxMruSize; ++i)
                             {
                                 if (i <= s_LstFavoriteCharacters.Count)
                                     s_ObjBaseChummerKey.SetValue("stickymru" + i.ToString(InvariantCultureInfo),
@@ -1668,50 +1733,83 @@ namespace Chummer
                                     s_ObjBaseChummerKey.DeleteValue("stickymru" + i.ToString(InvariantCultureInfo),
                                                                     false);
                             }
-                        }
 
-                        break;
-                    }
-                    case NotifyCollectionChangedAction.Move:
-                    {
-                        int intOldStartingIndex = e.OldStartingIndex;
-                        int intNewStartingIndex = e.NewStartingIndex;
-                        if (intOldStartingIndex == intNewStartingIndex)
                             break;
-                        int intUpdateFrom;
-                        int intUpdateTo;
-                        if (intOldStartingIndex > intNewStartingIndex)
-                        {
-                            intUpdateFrom = intNewStartingIndex;
-                            intUpdateTo = intOldStartingIndex;
                         }
-                        else
+                    case NotifyCollectionChangedAction.Remove:
                         {
-                            intUpdateFrom = intOldStartingIndex;
-                            intUpdateTo = intNewStartingIndex;
-                        }
+                            for (int i = e.OldStartingIndex + 1; i <= MaxMruSize; ++i)
+                            {
+                                if (i <= s_LstFavoriteCharacters.Count)
+                                    s_ObjBaseChummerKey.SetValue("stickymru" + i.ToString(InvariantCultureInfo),
+                                                                 s_LstFavoriteCharacters[i - 1]);
+                                else
+                                    s_ObjBaseChummerKey.DeleteValue("stickymru" + i.ToString(InvariantCultureInfo), false);
+                            }
 
-                        for (int i = intUpdateFrom; i <= intUpdateTo; ++i)
-                        {
-                            s_ObjBaseChummerKey.SetValue("stickymru" + (i + 1).ToString(InvariantCultureInfo),
-                                                         s_LstFavoriteCharacters[i]);
+                            break;
                         }
-
-                        break;
-                    }
-                    case NotifyCollectionChangedAction.Reset:
-                    {
-                        for (int i = 1; i <= MaxMruSize; ++i)
+                    case NotifyCollectionChangedAction.Replace:
                         {
-                            if (i <= s_LstFavoriteCharacters.Count)
-                                s_ObjBaseChummerKey.SetValue("stickymru" + i.ToString(InvariantCultureInfo),
-                                                             s_LstFavoriteCharacters[i - 1]);
+                            string strNewFile = e.NewItems.Count > 0 ? e.NewItems[0] as string : string.Empty;
+                            if (!string.IsNullOrEmpty(strNewFile))
+                                s_ObjBaseChummerKey.SetValue(
+                                    "stickymru" + (e.OldStartingIndex + 1).ToString(InvariantCultureInfo), strNewFile);
                             else
-                                s_ObjBaseChummerKey.DeleteValue("stickymru" + i.ToString(InvariantCultureInfo), false);
-                        }
+                            {
+                                for (int i = e.OldStartingIndex + 1; i <= MaxMruSize; ++i)
+                                {
+                                    if (i <= s_LstFavoriteCharacters.Count)
+                                        s_ObjBaseChummerKey.SetValue("stickymru" + i.ToString(InvariantCultureInfo),
+                                                                     s_LstFavoriteCharacters[i - 1]);
+                                    else
+                                        s_ObjBaseChummerKey.DeleteValue("stickymru" + i.ToString(InvariantCultureInfo),
+                                                                        false);
+                                }
+                            }
 
-                        break;
-                    }
+                            break;
+                        }
+                    case NotifyCollectionChangedAction.Move:
+                        {
+                            int intOldStartingIndex = e.OldStartingIndex;
+                            int intNewStartingIndex = e.NewStartingIndex;
+                            if (intOldStartingIndex == intNewStartingIndex)
+                                break;
+                            int intUpdateFrom;
+                            int intUpdateTo;
+                            if (intOldStartingIndex > intNewStartingIndex)
+                            {
+                                intUpdateFrom = intNewStartingIndex;
+                                intUpdateTo = intOldStartingIndex;
+                            }
+                            else
+                            {
+                                intUpdateFrom = intOldStartingIndex;
+                                intUpdateTo = intNewStartingIndex;
+                            }
+
+                            for (int i = intUpdateFrom; i <= intUpdateTo; ++i)
+                            {
+                                s_ObjBaseChummerKey.SetValue("stickymru" + (i + 1).ToString(InvariantCultureInfo),
+                                                             s_LstFavoriteCharacters[i]);
+                            }
+
+                            break;
+                        }
+                    case NotifyCollectionChangedAction.Reset:
+                        {
+                            for (int i = 1; i <= MaxMruSize; ++i)
+                            {
+                                if (i <= s_LstFavoriteCharacters.Count)
+                                    s_ObjBaseChummerKey.SetValue("stickymru" + i.ToString(InvariantCultureInfo),
+                                                                 s_LstFavoriteCharacters[i - 1]);
+                                else
+                                    s_ObjBaseChummerKey.DeleteValue("stickymru" + i.ToString(InvariantCultureInfo), false);
+                            }
+
+                            break;
+                        }
                 }
 
                 MruChanged?.Invoke(null, new TextEventArgs("stickymru"));
@@ -1740,40 +1838,19 @@ namespace Chummer
                 switch (e.Action)
                 {
                     case NotifyCollectionChangedAction.Add:
-                    {
-                        for (int i = e.NewStartingIndex + 1; i <= MaxMruSize; ++i)
                         {
-                            if (i <= s_LstMostRecentlyUsedCharacters.Count)
-                                s_ObjBaseChummerKey.SetValue("mru" + i.ToString(InvariantCultureInfo),
-                                                             s_LstMostRecentlyUsedCharacters[i - 1]);
-                            else
-                                s_ObjBaseChummerKey.DeleteValue("mru" + i.ToString(InvariantCultureInfo), false);
-                        }
+                            for (int i = e.NewStartingIndex + 1; i <= MaxMruSize; ++i)
+                            {
+                                if (i <= s_LstMostRecentlyUsedCharacters.Count)
+                                    s_ObjBaseChummerKey.SetValue("mru" + i.ToString(InvariantCultureInfo),
+                                                                 s_LstMostRecentlyUsedCharacters[i - 1]);
+                                else
+                                    s_ObjBaseChummerKey.DeleteValue("mru" + i.ToString(InvariantCultureInfo), false);
+                            }
 
-                        break;
-                    }
+                            break;
+                        }
                     case NotifyCollectionChangedAction.Remove:
-                    {
-                        for (int i = e.OldStartingIndex + 1; i <= MaxMruSize; ++i)
-                        {
-                            if (i <= s_LstMostRecentlyUsedCharacters.Count)
-                                s_ObjBaseChummerKey.SetValue("mru" + i.ToString(InvariantCultureInfo),
-                                                             s_LstMostRecentlyUsedCharacters[i - 1]);
-                            else
-                                s_ObjBaseChummerKey.DeleteValue("mru" + i.ToString(InvariantCultureInfo), false);
-                        }
-
-                        break;
-                    }
-                    case NotifyCollectionChangedAction.Replace:
-                    {
-                        string strNewFile = e.NewItems.Count > 0 ? e.NewItems[0] as string : string.Empty;
-                        if (!string.IsNullOrEmpty(strNewFile))
-                        {
-                            s_ObjBaseChummerKey.SetValue(
-                                "mru" + (e.OldStartingIndex + 1).ToString(InvariantCultureInfo), strNewFile);
-                        }
-                        else
                         {
                             for (int i = e.OldStartingIndex + 1; i <= MaxMruSize; ++i)
                             {
@@ -1783,50 +1860,71 @@ namespace Chummer
                                 else
                                     s_ObjBaseChummerKey.DeleteValue("mru" + i.ToString(InvariantCultureInfo), false);
                             }
-                        }
 
-                        break;
-                    }
-                    case NotifyCollectionChangedAction.Move:
-                    {
-                        int intOldStartingIndex = e.OldStartingIndex;
-                        int intNewStartingIndex = e.NewStartingIndex;
-                        if (intOldStartingIndex == intNewStartingIndex)
                             break;
-                        int intUpdateFrom;
-                        int intUpdateTo;
-                        if (intOldStartingIndex > intNewStartingIndex)
-                        {
-                            intUpdateFrom = intNewStartingIndex;
-                            intUpdateTo = intOldStartingIndex;
                         }
-                        else
+                    case NotifyCollectionChangedAction.Replace:
                         {
-                            intUpdateFrom = intOldStartingIndex;
-                            intUpdateTo = intNewStartingIndex;
-                        }
-
-                        for (int i = intUpdateFrom; i <= intUpdateTo; ++i)
-                        {
-                            s_ObjBaseChummerKey.SetValue("mru" + (i + 1).ToString(InvariantCultureInfo),
-                                                         s_LstMostRecentlyUsedCharacters[i]);
-                        }
-
-                        break;
-                    }
-                    case NotifyCollectionChangedAction.Reset:
-                    {
-                        for (int i = 1; i <= MaxMruSize; ++i)
-                        {
-                            if (i <= s_LstMostRecentlyUsedCharacters.Count)
-                                s_ObjBaseChummerKey.SetValue("mru" + i.ToString(InvariantCultureInfo),
-                                                             s_LstMostRecentlyUsedCharacters[i - 1]);
+                            string strNewFile = e.NewItems.Count > 0 ? e.NewItems[0] as string : string.Empty;
+                            if (!string.IsNullOrEmpty(strNewFile))
+                            {
+                                s_ObjBaseChummerKey.SetValue(
+                                    "mru" + (e.OldStartingIndex + 1).ToString(InvariantCultureInfo), strNewFile);
+                            }
                             else
-                                s_ObjBaseChummerKey.DeleteValue("mru" + i.ToString(InvariantCultureInfo), false);
-                        }
+                            {
+                                for (int i = e.OldStartingIndex + 1; i <= MaxMruSize; ++i)
+                                {
+                                    if (i <= s_LstMostRecentlyUsedCharacters.Count)
+                                        s_ObjBaseChummerKey.SetValue("mru" + i.ToString(InvariantCultureInfo),
+                                                                     s_LstMostRecentlyUsedCharacters[i - 1]);
+                                    else
+                                        s_ObjBaseChummerKey.DeleteValue("mru" + i.ToString(InvariantCultureInfo), false);
+                                }
+                            }
 
-                        break;
-                    }
+                            break;
+                        }
+                    case NotifyCollectionChangedAction.Move:
+                        {
+                            int intOldStartingIndex = e.OldStartingIndex;
+                            int intNewStartingIndex = e.NewStartingIndex;
+                            if (intOldStartingIndex == intNewStartingIndex)
+                                break;
+                            int intUpdateFrom;
+                            int intUpdateTo;
+                            if (intOldStartingIndex > intNewStartingIndex)
+                            {
+                                intUpdateFrom = intNewStartingIndex;
+                                intUpdateTo = intOldStartingIndex;
+                            }
+                            else
+                            {
+                                intUpdateFrom = intOldStartingIndex;
+                                intUpdateTo = intNewStartingIndex;
+                            }
+
+                            for (int i = intUpdateFrom; i <= intUpdateTo; ++i)
+                            {
+                                s_ObjBaseChummerKey.SetValue("mru" + (i + 1).ToString(InvariantCultureInfo),
+                                                             s_LstMostRecentlyUsedCharacters[i]);
+                            }
+
+                            break;
+                        }
+                    case NotifyCollectionChangedAction.Reset:
+                        {
+                            for (int i = 1; i <= MaxMruSize; ++i)
+                            {
+                                if (i <= s_LstMostRecentlyUsedCharacters.Count)
+                                    s_ObjBaseChummerKey.SetValue("mru" + i.ToString(InvariantCultureInfo),
+                                                                 s_LstMostRecentlyUsedCharacters[i - 1]);
+                                else
+                                    s_ObjBaseChummerKey.DeleteValue("mru" + i.ToString(InvariantCultureInfo), false);
+                            }
+
+                            break;
+                        }
                 }
 
                 MruChanged?.Invoke(null, new TextEventArgs("mru"));

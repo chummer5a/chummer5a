@@ -75,31 +75,31 @@
           <condition>Acting</condition>
         </specificskill>
       </bonus>
-      <bonus xpathfilter="skillgroup/[name = 'Conjuring' and bonus = '1']">
+      <bonus xpathfilter="skillgroup[name = 'Conjuring' and bonus = '1']">
         <specificskill amendoperation="addnode">
           <name>Conjuring</name>
           <bonus>1</bonus>
         </specificskill>
       </bonus>
-      <bonus xpathfilter="skillgroup/[name = 'Influence' and bonus = '1']">
+      <bonus xpathfilter="skillgroup[name = 'Influence' and bonus = '1']">
         <specificskill amendoperation="addnode">
           <name>Influence</name>
           <bonus>1</bonus>
         </specificskill>
       </bonus>
-      <bonus xpathfilter="skillgroup/[name = 'Electronics' and bonus = '-4']">
+      <bonus xpathfilter="skillgroup[name = 'Electronics' and bonus = '-4']">
         <specificskill amendoperation="addnode">
           <name>Electronics</name>
           <bonus>-4</bonus>
         </specificskill>
       </bonus>
-      <bonus xpathfilter="skillgroup/[name = 'Close Combat' and bonus = '1']">
+      <bonus xpathfilter="skillgroup[name = 'Close Combat' and bonus = '1']">
         <specificskill amendoperation="addnode">
           <name>Close Combat</name>
           <bonus>1</bonus>
         </specificskill>
       </bonus>
-      <bonus xpathfilter="skillgroup/[name = 'Engineering' and bonus = '1']">
+      <bonus xpathfilter="skillgroup[name = 'Engineering' and bonus = '1']">
         <specificskill amendoperation="addnode">
           <name>Engineering</name>
           <bonus>1</bonus>
@@ -126,10 +126,10 @@
       </bonus>
       <bonus>
         <specificskill xpathfilter="name = 'Disguise' or name = 'Leadership' or name = 'Instruction' or name = 'Astral Combat' or name = 'Escape Artist' or name = 'Free-Fall' or name = 'Perception' or name = 'Diving' or name = 'Tracking' or name = 'Artificing' or name = 'Disenchanting' or name = 'Exotic Melee Weapon'" amendoperation="remove" />
-        <skillgroup amendoperation="remove"/>
-        <skillgroupdisable amendoperation="remove"/>
-        <blockskillgroupdefaulting amendoperation="remove"/>
-        <selectskill xpathfilter="@limittoskill = 'Artisan,Performance' and val = '1'" amendoperation="remove"/>
+        <skillgroup amendoperation="remove" />
+        <skillgroupdisable amendoperation="remove" />
+        <blockskillgroupdefaulting amendoperation="remove" />
+        <selectskill xpathfilter="@limittoskill = 'Artisan,Performance' and val = '1'" amendoperation="remove" />
         <specificskill xpathfilter="name = 'Arcana'">
           <name>Aetherology</name>
           <condition>Arcana</condition>
@@ -198,7 +198,7 @@
           <name>Stagecraft</name>
           <condition>Acting</condition>
         </specificskill>
-        <specificskill xpathfilter="(name = 'Compiling' or name = 'Registering' or name = 'Summoning' or name = 'Binding') and condition" amendoperation="remove"/>
+        <specificskill xpathfilter="(name = 'Compiling' or name = 'Registering' or name = 'Summoning' or name = 'Binding') and condition" amendoperation="remove" />
         <focusbindingkarmacost xpathfilter="name = 'Qi Focus' and extracontains = 'Improved Ability (skill) (Artisan)'" amendoperation="remove" />
         <unlockskills xpathfilter="@name = 'Assensing' or @name = 'Astral Combat'" amendoperation="replace" name="Aetherology">Name</unlockskills>
         <skillcategory xpathfilter="exclude">
@@ -284,31 +284,31 @@
               <condition>Acting</condition>
             </specificskill>
           </bonus>
-          <bonus xpathfilter="skillgroup/[name = 'Conjuring' and bonus = '1']">
+          <bonus xpathfilter="skillgroup[name = 'Conjuring' and bonus = '1']">
             <specificskill amendoperation="addnode">
               <name>Conjuring</name>
               <bonus>1</bonus>
             </specificskill>
           </bonus>
-          <bonus xpathfilter="skillgroup/[name = 'Influence' and bonus = '1']">
+          <bonus xpathfilter="skillgroup[name = 'Influence' and bonus = '1']">
             <specificskill amendoperation="addnode">
               <name>Influence</name>
               <bonus>1</bonus>
             </specificskill>
           </bonus>
-          <bonus xpathfilter="skillgroup/[name = 'Electronics' and bonus = '-4']">
+          <bonus xpathfilter="skillgroup[name = 'Electronics' and bonus = '-4']">
             <specificskill amendoperation="addnode">
               <name>Electronics</name>
               <bonus>-4</bonus>
             </specificskill>
           </bonus>
-          <bonus xpathfilter="skillgroup/[name = 'Close Combat' and bonus = '1']">
+          <bonus xpathfilter="skillgroup[name = 'Close Combat' and bonus = '1']">
             <specificskill amendoperation="addnode">
               <name>Close Combat</name>
               <bonus>1</bonus>
             </specificskill>
           </bonus>
-          <bonus xpathfilter="skillgroup/[name = 'Engineering' and bonus = '1']">
+          <bonus xpathfilter="skillgroup[name = 'Engineering' and bonus = '1']">
             <specificskill amendoperation="addnode">
               <name>Engineering</name>
               <bonus>1</bonus>
@@ -335,10 +335,10 @@
           </bonus>
           <bonus>
             <specificskill xpathfilter="name = 'Disguise' or name = 'Leadership' or name = 'Instruction' or name = 'Astral Combat' or name = 'Escape Artist' or name = 'Free-Fall' or name = 'Perception' or name = 'Diving' or name = 'Tracking' or name = 'Artificing' or name = 'Disenchanting' or name = 'Exotic Melee Weapon'" amendoperation="remove" />
-            <skillgroup amendoperation="remove"/>
-            <skillgroupdisable amendoperation="remove"/>
-            <blockskillgroupdefaulting amendoperation="remove"/>
-            <selectskill xpathfilter="@limittoskill = 'Artisan,Performance' and val = '1'" amendoperation="remove"/>
+            <skillgroup amendoperation="remove" />
+            <skillgroupdisable amendoperation="remove" />
+            <blockskillgroupdefaulting amendoperation="remove" />
+            <selectskill xpathfilter="@limittoskill = 'Artisan,Performance' and val = '1'" amendoperation="remove" />
             <specificskill xpathfilter="name = 'Arcana'">
               <name>Aetherology</name>
               <condition>Arcana</condition>
@@ -407,7 +407,7 @@
               <name>Stagecraft</name>
               <condition>Acting</condition>
             </specificskill>
-            <specificskill xpathfilter="(name = 'Compiling' or name = 'Registering' or name = 'Summoning' or name = 'Binding') and condition" amendoperation="remove"/>
+            <specificskill xpathfilter="(name = 'Compiling' or name = 'Registering' or name = 'Summoning' or name = 'Binding') and condition" amendoperation="remove" />
             <focusbindingkarmacost xpathfilter="name = 'Qi Focus' and extracontains = 'Improved Ability (skill) (Artisan)'" amendoperation="remove" />
             <unlockskills xpathfilter="@name = 'Assensing' or @name = 'Astral Combat'" amendoperation="replace" name="Aetherology">Name</unlockskills>
             <skillcategory xpathfilter="exclude">

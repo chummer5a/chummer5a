@@ -1192,7 +1192,7 @@ namespace Chummer
             TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
             Program.MySynchronizationContext.Post(x =>
             {
-                TaskCompletionSource<bool> objCompletionSource = (TaskCompletionSource<bool>) x;
+                TaskCompletionSource<bool> objCompletionSource = (TaskCompletionSource<bool>)x;
                 try
                 {
                     func.Invoke();
@@ -2172,21 +2172,27 @@ namespace Chummer
                         }
 
                         break;
+
                     case PlatformID.Win32S:
                         strReturn = "Legacy Windows 16-bit Compatibility Layer";
                         break;
+
                     case PlatformID.WinCE:
                         strReturn = "Windows Embedded Compact " + objOSInfoVersion.Major + ".0";
                         break;
+
                     case PlatformID.Unix:
                         strReturn = "Unix Kernel " + objOSInfoVersion;
                         break;
+
                     case PlatformID.Xbox:
                         strReturn = "Xbox 360";
                         break;
+
                     case PlatformID.MacOSX:
                         strReturn = "macOS with Darwin Kernel " + objOSInfoVersion;
                         break;
+
                     default:
                         BreakIfDebug();
                         strReturn = objOSInfo.VersionString;
@@ -2195,7 +2201,7 @@ namespace Chummer
                 //Make sure we actually got something in our OS check
                 //We don't want to just return " Service Pack 2" or " 32-bit"
                 //That information is useless without the OS version.
-                if (strReturn.StartsWith("Windows") && !string.IsNullOrEmpty(objOSInfo.ServicePack))
+                if (strReturn.StartsWith("Windows", StringComparison.OrdinalIgnoreCase) && !string.IsNullOrEmpty(objOSInfo.ServicePack))
                 {
                     //Append service pack to the OS name.  i.e. "Windows XP Service Pack 3"
                     strReturn += ' ' + objOSInfo.ServicePack;
@@ -2247,7 +2253,7 @@ namespace Chummer
         }
 
         private static readonly XmlWriterSettings _objStandardXmlWriterSettings = new XmlWriterSettings
-            { Async = true, Encoding = Encoding.UTF8, Indent = true, IndentChars = "\t" };
+        { Async = true, Encoding = Encoding.UTF8, Indent = true, IndentChars = "\t" };
 
         public static XmlWriter GetStandardXmlWriter(Stream output)
         {
@@ -2255,7 +2261,7 @@ namespace Chummer
         }
 
         private static readonly XmlWriterSettings _objXslTransformXmlWriterSettings = new XmlWriterSettings
-            { Encoding = Encoding.UTF8, Indent = true, IndentChars = "\t", CheckCharacters = false, ConformanceLevel = ConformanceLevel.Fragment };
+        { Encoding = Encoding.UTF8, Indent = true, IndentChars = "\t", CheckCharacters = false, ConformanceLevel = ConformanceLevel.Fragment };
 
         public static XmlWriter GetXslTransformXmlWriter(Stream output)
         {
@@ -2308,7 +2314,8 @@ namespace Chummer
         /// </summary>
         [CLSCompliant(false)]
         public static ObjectPool<Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>>
-            DictionaryForMultiplePropertyChangedPool { get; }
+            DictionaryForMultiplePropertyChangedPool
+        { get; }
             = s_ObjObjectPoolProvider.Create(
                 new CollectionPooledObjectPolicy<Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>,
                     KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>>>());

@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Chummer
@@ -42,22 +43,22 @@ namespace Chummer
                    dicRight.Keys.All(x => dicLeft.ContainsKey(x) && dicRight[x].Equals(dicLeft[x]));
         }
 
-        public static async ValueTask<bool> EqualsByValueAsync(this IAsyncReadOnlyDictionary<object, IComparable> dicLeft, IAsyncReadOnlyDictionary<object, IComparable> dicRight)
+        public static async ValueTask<bool> EqualsByValueAsync(this IAsyncReadOnlyDictionary<object, IComparable> dicLeft, IAsyncReadOnlyDictionary<object, IComparable> dicRight, CancellationToken token = default)
         {
-            if (dicLeft.Count != dicRight.Count)
+            if (await dicLeft.GetCountAsync(token) != await dicRight.GetCountAsync(token))
                 return false;
-            IEnumerator<KeyValuePair<object, IComparable>> objLeftEnumerator = await dicLeft.GetEnumeratorAsync();
+            IEnumerator<KeyValuePair<object, IComparable>> objLeftEnumerator = await dicLeft.GetEnumeratorAsync(token);
             while (objLeftEnumerator.MoveNext())
             {
                 object objKey = objLeftEnumerator.Current.Key;
-                if (!await dicRight.ContainsKeyAsync(objKey))
+                if (!await dicRight.ContainsKeyAsync(objKey, token))
                     return false;
             }
-            IEnumerator<KeyValuePair<object, IComparable>> objRightEnumerator = await dicRight.GetEnumeratorAsync();
+            IEnumerator<KeyValuePair<object, IComparable>> objRightEnumerator = await dicRight.GetEnumeratorAsync(token);
             while (objRightEnumerator.MoveNext())
             {
                 object objKey = objRightEnumerator.Current.Key;
-                (bool blnContains, IComparable objValue) = await dicLeft.TryGetValueAsync(objKey);
+                (bool blnContains, IComparable objValue) = await dicLeft.TryGetValueAsync(objKey, token);
                 if (!blnContains)
                     return false;
                 if (!objValue.Equals(objRightEnumerator.Current.Value))

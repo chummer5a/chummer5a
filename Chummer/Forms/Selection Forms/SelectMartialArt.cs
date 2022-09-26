@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.XPath;
@@ -230,14 +231,14 @@ namespace Chummer
         /// <summary>
         /// Populate the Martial Arts list.
         /// </summary>
-        private async ValueTask RefreshArtList()
+        private async ValueTask RefreshArtList(CancellationToken token = default)
         {
             string strFilter = '(' + _objCharacter.Settings.BookXPath() + ')';
             if (ShowQualities)
                 strFilter += " and isquality = " + bool.TrueString.CleanXPath();
             else
                 strFilter += " and not(isquality = " + bool.TrueString.CleanXPath() + ')';
-            string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text);
+            string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token: token);
             if (!string.IsNullOrEmpty(strSearch))
                 strFilter += " and " + CommonFunctions.GenerateSearchXPath(strSearch);
 
@@ -247,21 +248,21 @@ namespace Chummer
             {
                 foreach (XPathNavigator objXmlArt in objArtList)
                 {
-                    string strId = (await objXmlArt.SelectSingleNodeAndCacheExpressionAsync("id"))?.Value;
+                    string strId = (await objXmlArt.SelectSingleNodeAndCacheExpressionAsync("id", token: token))?.Value;
                     if (!string.IsNullOrEmpty(strId) && objXmlArt.RequirementsMet(_objCharacter))
                     {
                         lstMartialArt.Add(new ListItem(
                                               strId,
-                                              (await objXmlArt.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
-                                              ?? (await objXmlArt.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value
-                                              ?? await LanguageManager.GetStringAsync("String_Unknown")));
+                                              (await objXmlArt.SelectSingleNodeAndCacheExpressionAsync("translate", token: token))?.Value
+                                              ?? (await objXmlArt.SelectSingleNodeAndCacheExpressionAsync("name", token: token))?.Value
+                                              ?? await LanguageManager.GetStringAsync("String_Unknown", token: token)));
                     }
                 }
 
                 lstMartialArt.Sort(CompareListItems.CompareNames);
-                string strOldSelected = await lstMartialArts.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
+                string strOldSelected = await lstMartialArts.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token);
                 _blnLoading = true;
-                await lstMartialArts.PopulateWithListItemsAsync(lstMartialArt);
+                await lstMartialArts.PopulateWithListItemsAsync(lstMartialArt, token: token);
                 _blnLoading = false;
                 await lstMartialArts.DoThreadSafeAsync(x =>
                 {
@@ -269,7 +270,7 @@ namespace Chummer
                         x.SelectedValue = strOldSelected;
                     else
                         x.SelectedIndex = -1;
-                });
+                }, token: token);
             }
         }
 

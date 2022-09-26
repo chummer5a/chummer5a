@@ -75,6 +75,7 @@ namespace Chummer
                         lstImprovementSourcesToProcess.Add(objNewItem);
                     }
                     break;
+
                 case NotifyCollectionChangedAction.Remove:
                     foreach (MartialArtTechnique objOldItem in e.OldItems)
                     {
@@ -83,6 +84,7 @@ namespace Chummer
                         objOldItem.Parent = null;
                     }
                     break;
+
                 case NotifyCollectionChangedAction.Replace:
                     // ReSharper disable once AssignNullToNotNullAttribute
                     HashSet<MartialArtTechnique> setNewItems = e.NewItems.OfType<MartialArtTechnique>().ToHashSet();
@@ -101,6 +103,7 @@ namespace Chummer
                         lstImprovementSourcesToProcess.Add(objNewItem);
                     }
                     break;
+
                 case NotifyCollectionChangedAction.Reset:
                 case NotifyCollectionChangedAction.Move:
                     break;
@@ -399,17 +402,20 @@ namespace Chummer
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
         /// </summary>
-        public async ValueTask<string> DisplayNameShortAsync(string strLanguage)
+        public async ValueTask<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
         {
             // Get the translated name if applicable.
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
-            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage);
-            return objNode != null ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value ?? Name : Name;
+            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token);
+            return objNode != null ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token))?.Value ?? Name : Name;
         }
 
         public string CurrentDisplayNameShort => DisplayNameShort(GlobalSettings.Language);
+
+        public ValueTask<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default) =>
+            DisplayNameShortAsync(GlobalSettings.Language, token);
 
         /// <summary>
         /// The name of the object as it should be displayed in lists. Name (Extra).
@@ -422,12 +428,15 @@ namespace Chummer
         /// <summary>
         /// The name of the object as it should be displayed in lists. Name (Extra).
         /// </summary>
-        public ValueTask<string> DisplayNameAsync(string strLanguage)
+        public ValueTask<string> DisplayNameAsync(string strLanguage, CancellationToken token = default)
         {
-            return DisplayNameShortAsync(strLanguage);
+            return DisplayNameShortAsync(strLanguage, token);
         }
 
         public string CurrentDisplayName => DisplayName(GlobalSettings.Language);
+
+        public ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default) =>
+            DisplayNameAsync(GlobalSettings.Language, token);
 
         /// <summary>
         /// Sourcebook.
@@ -466,14 +475,15 @@ namespace Chummer
         /// Returns Page if not found or the string is empty.
         /// </summary>
         /// <param name="strLanguage">Language file keyword to use.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns></returns>
-        public async ValueTask<string> DisplayPageAsync(string strLanguage)
+        public async ValueTask<string> DisplayPageAsync(string strLanguage, CancellationToken token = default)
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
-            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage);
+            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token);
             string s = objNode != null
-                ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage"))?.Value ?? Page
+                ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage", token: token))?.Value ?? Page
                 : Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }

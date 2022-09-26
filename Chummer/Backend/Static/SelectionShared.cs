@@ -21,6 +21,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -166,8 +168,8 @@ namespace Chummer
                                                             .ToString(GlobalSettings.InvariantCultureInfo));
                         }
 
-                        object objProcess
-                            = CommonFunctions.EvaluateInvariantXPath(sbdLimitString.ToString(), out bool blnIsSuccess);
+                        (bool blnIsSuccess, object objProcess)
+                            = CommonFunctions.EvaluateInvariantXPath(sbdLimitString.ToString());
                         strLimitString = blnIsSuccess ? objProcess.ToString() : "1";
                     }
 
@@ -213,12 +215,12 @@ namespace Chummer
                                 break;
                             }
                         case "technique":
-                        {
-                            objListToCheck = objParent is MartialArt objArt
-                                ? objArt.Techniques
-                                : objCharacter.MartialArts.SelectMany(x => x.Children);
-                            break;
-                        }
+                            {
+                                objListToCheck = objParent is MartialArt objArt
+                                    ? objArt.Techniques
+                                    : objCharacter.MartialArts.SelectMany(x => x.Children);
+                                break;
+                            }
                         case "cyberware":
                         case "bioware":
                             {
@@ -542,7 +544,7 @@ namespace Chummer
                                 strSpace,
                                 objCharacter.AttributeSection.ProcessAttributesInXPathForTooltip(strNodeAttributes,
                                     blnShowValues: false), intNodeVal);
-                        object objProcess = CommonFunctions.EvaluateInvariantXPath(strValue, out bool blnIsSuccess);
+                        (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strValue);
                         return (blnIsSuccess ? ((double)objProcess).StandardRound() : 0) >= intNodeVal;
                     }
                 case "careerkarma":
@@ -656,74 +658,74 @@ namespace Chummer
                                >= count;
                     }
                 case "biowarecategory":
-                {
-                    int count = xmlNode.SelectSingleNodeAndCacheExpression("@count")?.ValueAsInt ?? 1;
-                    if (blnShowMessage)
                     {
-                        string strTranslate = objCharacter.LoadDataXPath("bioware.xml").SelectSingleNode(
-                            "/chummer/categories/category[. = " + strNodeInnerText.CleanXPath() + "]/translate")?.Value;
-                        strName = Environment.NewLine + '\t' + LanguageManager.GetString("Label_Bioware")
-                                  + strSpace + (!string.IsNullOrEmpty(strTranslate)
-                                      ? strTranslate
-                                      : strNodeInnerText);
-                    }
-                    if (xmlNode.GetAttribute("sameparent", string.Empty) == bool.TrueString)
-                    {
-                        if (objParent is Cyberware objCyberware)
-                            return objCyberware.Children.Any(mod => mod.Category == strNodeInnerText);
-                        return false;
-                    }
-                    string strWareNodeSelectAttribute = xmlNode.SelectSingleNodeAndCacheExpression("@select")?.Value ?? string.Empty;
-                    if (string.IsNullOrEmpty(strWareNodeSelectAttribute))
+                        int count = xmlNode.SelectSingleNodeAndCacheExpression("@count")?.ValueAsInt ?? 1;
+                        if (blnShowMessage)
+                        {
+                            string strTranslate = objCharacter.LoadDataXPath("bioware.xml").SelectSingleNode(
+                                "/chummer/categories/category[. = " + strNodeInnerText.CleanXPath() + "]/translate")?.Value;
+                            strName = Environment.NewLine + '\t' + LanguageManager.GetString("Label_Bioware")
+                                      + strSpace + (!string.IsNullOrEmpty(strTranslate)
+                                          ? strTranslate
+                                          : strNodeInnerText);
+                        }
+                        if (xmlNode.GetAttribute("sameparent", string.Empty) == bool.TrueString)
+                        {
+                            if (objParent is Cyberware objCyberware)
+                                return objCyberware.Children.Any(mod => mod.Category == strNodeInnerText);
+                            return false;
+                        }
+                        string strWareNodeSelectAttribute = xmlNode.SelectSingleNodeAndCacheExpression("@select")?.Value ?? string.Empty;
+                        if (string.IsNullOrEmpty(strWareNodeSelectAttribute))
+                            return objCharacter.Cyberware.DeepCount(x => x.Children, objCyberware =>
+                                                                        objCyberware.Category == strNodeInnerText &&
+                                                                        objCyberware.SourceType
+                                                                        == Improvement.ImprovementSource.Bioware
+                                                                        && string.IsNullOrEmpty(
+                                                                            objCyberware.PlugsIntoModularMount)) >= count;
                         return objCharacter.Cyberware.DeepCount(x => x.Children, objCyberware =>
                                                                     objCyberware.Category == strNodeInnerText &&
                                                                     objCyberware.SourceType
                                                                     == Improvement.ImprovementSource.Bioware
                                                                     && string.IsNullOrEmpty(
-                                                                        objCyberware.PlugsIntoModularMount)) >= count;
-                    return objCharacter.Cyberware.DeepCount(x => x.Children, objCyberware =>
-                                                                objCyberware.Category == strNodeInnerText &&
-                                                                objCyberware.SourceType
-                                                                == Improvement.ImprovementSource.Bioware
-                                                                && string.IsNullOrEmpty(
-                                                                    objCyberware.PlugsIntoModularMount) &&
-                                                                strWareNodeSelectAttribute == objCyberware.Extra)
-                           >= count;
-                }
+                                                                        objCyberware.PlugsIntoModularMount) &&
+                                                                    strWareNodeSelectAttribute == objCyberware.Extra)
+                               >= count;
+                    }
                 case "cyberwarecategory":
-                {
-                    int count = xmlNode.SelectSingleNodeAndCacheExpression("@count")?.ValueAsInt ?? 1;
-                    if (blnShowMessage)
                     {
-                        string strTranslate = objCharacter.LoadDataXPath("cyberware.xml").SelectSingleNode(
-                            "/chummer/categories/category[. = " + strNodeInnerText.CleanXPath() + "]/translate")?.Value;
-                        strName = Environment.NewLine + '\t' + LanguageManager.GetString("Label_Cyberware")
-                                  + strSpace + (!string.IsNullOrEmpty(strTranslate)
-                                      ? strTranslate
-                                      : strNodeInnerText);
-                    }
-                    if (xmlNode.GetAttribute("sameparent", string.Empty) == bool.TrueString)
-                    {
-                        if (objParent is Cyberware objCyberware)
-                            return objCyberware.Children.Any(mod => mod.Category == strNodeInnerText);
-                        return false;
-                    }
-                    string strWareNodeSelectAttribute = xmlNode.SelectSingleNodeAndCacheExpression("@select")?.Value ?? string.Empty;
-                    if (string.IsNullOrEmpty(strWareNodeSelectAttribute))
+                        int count = xmlNode.SelectSingleNodeAndCacheExpression("@count")?.ValueAsInt ?? 1;
+                        if (blnShowMessage)
+                        {
+                            string strTranslate = objCharacter.LoadDataXPath("cyberware.xml").SelectSingleNode(
+                                "/chummer/categories/category[. = " + strNodeInnerText.CleanXPath() + "]/translate")?.Value;
+                            strName = Environment.NewLine + '\t' + LanguageManager.GetString("Label_Cyberware")
+                                      + strSpace + (!string.IsNullOrEmpty(strTranslate)
+                                          ? strTranslate
+                                          : strNodeInnerText);
+                        }
+                        if (xmlNode.GetAttribute("sameparent", string.Empty) == bool.TrueString)
+                        {
+                            if (objParent is Cyberware objCyberware)
+                                return objCyberware.Children.Any(mod => mod.Category == strNodeInnerText);
+                            return false;
+                        }
+                        string strWareNodeSelectAttribute = xmlNode.SelectSingleNodeAndCacheExpression("@select")?.Value ?? string.Empty;
+                        if (string.IsNullOrEmpty(strWareNodeSelectAttribute))
+                            return objCharacter.Cyberware.DeepCount(x => x.Children, objCyberware =>
+                                                                        objCyberware.Category == strNodeInnerText &&
+                                                                        objCyberware.SourceType
+                                                                        == Improvement.ImprovementSource.Cyberware
+                                                                        && string.IsNullOrEmpty(
+                                                                            objCyberware.PlugsIntoModularMount)) >= count;
                         return objCharacter.Cyberware.DeepCount(x => x.Children, objCyberware =>
                                                                     objCyberware.Category == strNodeInnerText &&
                                                                     objCyberware.SourceType
                                                                     == Improvement.ImprovementSource.Cyberware
                                                                     && string.IsNullOrEmpty(
-                                                                        objCyberware.PlugsIntoModularMount)) >= count;
-                    return objCharacter.Cyberware.DeepCount(x => x.Children, objCyberware =>
-                                                                objCyberware.Category == strNodeInnerText &&
-                                                                objCyberware.SourceType
-                                                                == Improvement.ImprovementSource.Cyberware
-                                                                && string.IsNullOrEmpty(
-                                                                    objCyberware.PlugsIntoModularMount) &&
-                                                                strWareNodeSelectAttribute == objCyberware.Extra)
-                           >= count;
+                                                                        objCyberware.PlugsIntoModularMount) &&
+                                                                    strWareNodeSelectAttribute == objCyberware.Extra)
+                               >= count;
                     }
                 case "biowarecontains":
                     {
@@ -1017,10 +1019,10 @@ namespace Chummer
                         return false;
                     }
                 case "martialtechnique":
-                {
-                    MartialArtTechnique objMartialArtTechnique = objCharacter.MartialArts.SelectMany(x => x.Techniques)
-                                                                             .FirstOrDefault(
-                                                                                 x => x.Name == strNodeInnerText);
+                    {
+                        MartialArtTechnique objMartialArtTechnique = objCharacter.MartialArts.SelectMany(x => x.Techniques)
+                                                                                 .FirstOrDefault(
+                                                                                     x => x.Name == strNodeInnerText);
                         if (objMartialArtTechnique != null)
                         {
                             if (blnShowMessage)
@@ -1372,56 +1374,56 @@ namespace Chummer
                     }
                 case "skilltotal":
                     {
-                    // Check if the total combined Ratings of Skills adds up to a particular total.
-                    int intTotal = 0;
-                    string[] strGroups = xmlNode.SelectSingleNodeAndCacheExpression("skills")?.Value.Split('+', StringSplitOptions.RemoveEmptyEntries);
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                  out StringBuilder sbdOutput))
-                    {
-                        sbdOutput.AppendLine().Append('\t');
-                        if (strGroups != null)
+                        // Check if the total combined Ratings of Skills adds up to a particular total.
+                        int intTotal = 0;
+                        string[] strGroups = xmlNode.SelectSingleNodeAndCacheExpression("skills")?.Value.Split('+', StringSplitOptions.RemoveEmptyEntries);
+                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                      out StringBuilder sbdOutput))
                         {
-                            // If the xmlnode contains Type element, assume that it is a Knowledge skill. 
-                            if (xmlNode.SelectSingleNodeAndCacheExpression("type") != null)
+                            sbdOutput.AppendLine().Append('\t');
+                            if (strGroups != null)
                             {
-                                for (int i = 0; i <= strGroups.Length - 1; ++i)
+                                // If the xmlnode contains Type element, assume that it is a Knowledge skill.
+                                if (xmlNode.SelectSingleNodeAndCacheExpression("type") != null)
                                 {
-                                    foreach (KnowledgeSkill objGroup in objCharacter.SkillsSection.KnowledgeSkills)
+                                    for (int i = 0; i <= strGroups.Length - 1; ++i)
                                     {
-                                        if (objGroup.Name != strGroups[i]) continue;
-                                        if (blnShowMessage)
-                                            sbdOutput.Append(objGroup.CurrentDisplayName).Append(',')
-                                                     .Append(strSpace);
-                                        intTotal += objGroup.Rating;
-                                        break;
+                                        foreach (KnowledgeSkill objGroup in objCharacter.SkillsSection.KnowledgeSkills)
+                                        {
+                                            if (objGroup.Name != strGroups[i]) continue;
+                                            if (blnShowMessage)
+                                                sbdOutput.Append(objGroup.CurrentDisplayName).Append(',')
+                                                         .Append(strSpace);
+                                            intTotal += objGroup.Rating;
+                                            break;
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    for (int i = 0; i <= strGroups.Length - 1; ++i)
+                                    {
+                                        foreach (Skill objGroup in objCharacter.SkillsSection.Skills)
+                                        {
+                                            if (objGroup.Name != strGroups[i]) continue;
+                                            if (blnShowMessage)
+                                                sbdOutput.Append(objGroup.CurrentDisplayName).Append(',')
+                                                         .Append(strSpace);
+                                            intTotal += objGroup.Rating;
+                                            break;
+                                        }
                                     }
                                 }
                             }
-                            else
-                            {
-                                for (int i = 0; i <= strGroups.Length - 1; ++i)
-                                {
-                                    foreach (Skill objGroup in objCharacter.SkillsSection.Skills)
-                                    {
-                                        if (objGroup.Name != strGroups[i]) continue;
-                                        if (blnShowMessage)
-                                            sbdOutput.Append(objGroup.CurrentDisplayName).Append(',')
-                                                     .Append(strSpace);
-                                        intTotal += objGroup.Rating;
-                                        break;
-                                    }
-                                }
-                            }
+
+                            if (!blnShowMessage)
+                                return intTotal >= (xmlNode.SelectSingleNodeAndCacheExpression("val")?.ValueAsInt ?? 0);
+                            if (sbdOutput.Length > 0)
+                                sbdOutput.Length -= 2;
+                            strName = sbdOutput + strSpace + '(' + LanguageManager.GetString("String_ExpenseSkill") + ')';
                         }
 
-                        if (!blnShowMessage)
-                            return intTotal >= (xmlNode.SelectSingleNodeAndCacheExpression("val")?.ValueAsInt ?? 0);
-                        if (sbdOutput.Length > 0)
-                            sbdOutput.Length -= 2;
-                        strName = sbdOutput + strSpace + '(' + LanguageManager.GetString("String_ExpenseSkill") + ')';
-                    }
-
-                    return intTotal >= (xmlNode.SelectSingleNodeAndCacheExpression("val")?.ValueAsInt ?? 0);
+                        return intTotal >= (xmlNode.SelectSingleNodeAndCacheExpression("val")?.ValueAsInt ?? 0);
                     }
                 case "skillgrouptotal":
                     {
@@ -1694,7 +1696,83 @@ namespace Chummer
 
             strAvailExpr = strAvailExpr.TrimEndOnce(" or Gear").TrimEndOnce('F', 'R');
             int intAvail = intAvailModifier;
-            object objProcess = CommonFunctions.EvaluateInvariantXPath(strAvailExpr.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo)), out bool blnIsSuccess);
+            (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strAvailExpr.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo)));
+            if (blnIsSuccess)
+                intAvail += ((double)objProcess).StandardRound();
+            return intAvail <= objCharacter.Settings.MaximumAvailability;
+        }
+
+        /// <summary>
+        ///     Evaluates the availability of a given node against Availability Limits in Create Mode
+        /// </summary>
+        public static async ValueTask<bool> CheckAvailRestrictionAsync(XmlNode objXmlGear, Character objCharacter, int intRating = 1, int intAvailModifier = 0, CancellationToken token = default)
+        {
+            return objXmlGear != null && await objXmlGear.CreateNavigator().CheckAvailRestrictionAsync(objCharacter, intRating, intAvailModifier, token);
+        }
+
+        /// <summary>
+        ///     Evaluates the availability of a given node against Availability Limits in Create Mode
+        /// </summary>
+        /// <param name="objXmlGear">XPathNavigator element to evaluate.</param>
+        /// <param name="objCharacter">Character that we're comparing the Availability against.</param>
+        /// <param name="intRating">Effective Rating of the object.</param>
+        /// <param name="intAvailModifier">Availability Modifier from other sources.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>Returns False if not permitted with the current gameplay restrictions. Returns True if valid.</returns>
+        public static async ValueTask<bool> CheckAvailRestrictionAsync(this XPathNavigator objXmlGear, Character objCharacter, int intRating = 1, int intAvailModifier = 0, CancellationToken token = default)
+        {
+            if (objXmlGear == null)
+                return false;
+            if (objCharacter == null)
+                return true;
+            //TODO: Better handler for restricted gear
+            if (await objCharacter.GetCreatedAsync(token) || await objCharacter.GetRestrictedGearAsync(token) > 0 || await objCharacter.GetIgnoreRulesAsync(token))
+                return true;
+            // Avail.
+
+            XPathNavigator objAvailNode = await objXmlGear.SelectSingleNodeAndCacheExpressionAsync("avail", token);
+            if (objAvailNode == null)
+            {
+                int intHighestAvailNode = 0;
+                foreach (XPathNavigator objLoopNode in objXmlGear.SelectChildren(XPathNodeType.Element))
+                {
+                    if (!objLoopNode.Name.StartsWith("avail", StringComparison.Ordinal))
+                        continue;
+                    string strLoopCostString = objLoopNode.Name.Substring(5);
+                    if (int.TryParse(strLoopCostString, out int intTmp))
+                    {
+                        intHighestAvailNode = Math.Max(intHighestAvailNode, intTmp);
+                    }
+                }
+                objAvailNode = objXmlGear.SelectSingleNode("avail" + intHighestAvailNode);
+                for (int i = intRating; i <= intHighestAvailNode; ++i)
+                {
+                    XPathNavigator objLoopNode = objXmlGear.SelectSingleNode("avail" + i.ToString(GlobalSettings.InvariantCultureInfo));
+                    if (objLoopNode != null)
+                    {
+                        objAvailNode = objLoopNode;
+                        break;
+                    }
+                }
+            }
+
+            // If avail contains "F" or "R", remove it from the string so we can use the expression.
+            string strAvailExpr = objAvailNode?.Value ?? string.Empty;
+            if (strAvailExpr.StartsWith("FixedValues(", StringComparison.Ordinal))
+            {
+                string[] strValues = strAvailExpr.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
+                strAvailExpr = strValues[Math.Max(Math.Min(intRating - 1, strValues.Length - 1), 0)];
+            }
+
+            if (string.IsNullOrEmpty(strAvailExpr))
+                return true;
+            char chrFirstAvailChar = strAvailExpr[0];
+            if (chrFirstAvailChar == '+' || chrFirstAvailChar == '-')
+                return true;
+
+            strAvailExpr = strAvailExpr.TrimEndOnce(" or Gear").TrimEndOnce('F', 'R');
+            int intAvail = intAvailModifier;
+            (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strAvailExpr.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo)), token);
             if (blnIsSuccess)
                 intAvail += ((double)objProcess).StandardRound();
             return intAvail <= objCharacter.Settings.MaximumAvailability;
@@ -1751,7 +1829,68 @@ namespace Chummer
                     strCost = intHyphenIndex != -1 ? strCost.Substring(0, intHyphenIndex) : strCost.FastEscape('+');
                 }
 
-                object objProcess = CommonFunctions.EvaluateInvariantXPath(strCost.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo)), out bool blnIsSuccess);
+                (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strCost.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo)));
+                if (blnIsSuccess)
+                    decCost = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
+            }
+            return decMaxNuyen >= decCost * decCostMultiplier;
+        }
+
+        public static async ValueTask<bool> CheckNuyenRestrictionAsync(XmlNode objXmlGear, decimal decMaxNuyen, decimal decCostMultiplier = 1.0m, int intRating = 1, CancellationToken token = default)
+        {
+            return objXmlGear != null && await objXmlGear.CreateNavigator()
+                                                         .CheckNuyenRestrictionAsync(
+                                                             decMaxNuyen, decCostMultiplier, intRating, token);
+        }
+
+        /// <summary>
+        ///     Evaluates whether a given node can be purchased.
+        /// </summary>
+        /// <param name="objXmlGear">XPathNavigator element to evaluate.</param>
+        /// <param name="decMaxNuyen">Total nuyen amount that the character possesses.</param>
+        /// <param name="decCostMultiplier">Multiplier of the object's cost value.</param>
+        /// <param name="intRating">Effective Rating of the object.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>Returns False if not permitted with the current restrictions. Returns True if valid.</returns>
+        public static async ValueTask<bool> CheckNuyenRestrictionAsync(this XPathNavigator objXmlGear, decimal decMaxNuyen, decimal decCostMultiplier = 1.0m, int intRating = 1, CancellationToken token = default)
+        {
+            if (objXmlGear == null)
+                return false;
+            // Cost.
+            decimal decCost = 0.0m;
+            XPathNavigator objCostNode = await objXmlGear.SelectSingleNodeAndCacheExpressionAsync("cost", token);
+            if (objCostNode == null)
+            {
+                int intCostRating = 1;
+                foreach (XmlNode objLoopNode in objXmlGear.SelectChildren(XPathNodeType.Element))
+                {
+                    if (!objLoopNode.Name.StartsWith("cost", StringComparison.Ordinal))
+                        continue;
+                    string strLoopCostString = objLoopNode.Name.Substring(4);
+                    if (int.TryParse(strLoopCostString, out int intTmp) && intTmp <= intRating)
+                    {
+                        intCostRating = Math.Max(intCostRating, intTmp);
+                    }
+                }
+
+                objCostNode = objXmlGear.SelectSingleNode("cost" + intCostRating.ToString(GlobalSettings.InvariantCultureInfo));
+            }
+            string strCost = objCostNode?.Value;
+            if (!string.IsNullOrEmpty(strCost))
+            {
+                if (strCost.StartsWith("FixedValues(", StringComparison.Ordinal))
+                {
+                    string[] strValues = strCost.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
+                    strCost = strValues[Math.Max(Math.Min(intRating, strValues.Length) - 1, 0)];
+                }
+                else if (strCost.StartsWith("Variable", StringComparison.Ordinal))
+                {
+                    strCost = strCost.TrimStartOnce("Variable(", true).TrimEndOnce(')');
+                    int intHyphenIndex = strCost.IndexOf('-');
+                    strCost = intHyphenIndex != -1 ? strCost.Substring(0, intHyphenIndex) : strCost.FastEscape('+');
+                }
+
+                (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strCost.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo)), token);
                 if (blnIsSuccess)
                     decCost = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
             }

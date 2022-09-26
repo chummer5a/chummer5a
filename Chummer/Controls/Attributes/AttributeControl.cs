@@ -38,13 +38,16 @@ namespace Chummer.UI.Attributes
         private int _oldBase;
         private int _oldKarma;
         private readonly Character _objCharacter;
+
         // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly BindingSource _dataSource;
 
         private readonly NumericUpDownEx nudKarma;
         private readonly NumericUpDownEx nudBase;
+
         // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly ButtonWithToolTip cmdBurnEdge;
+
         // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly ButtonWithToolTip cmdImproveATT;
 
@@ -229,20 +232,25 @@ namespace Chummer.UI.Attributes
 
         private async void cmdImproveATT_Click(object sender, EventArgs e)
         {
-            int intUpgradeKarmaCost = AttributeObject.UpgradeKarmaCost;
+            int intUpgradeKarmaCost = await AttributeObject.GetUpgradeKarmaCostAsync();
 
             if (intUpgradeKarmaCost == -1) return; //TODO: more descriptive
             if (intUpgradeKarmaCost > _objCharacter.Karma)
             {
-                Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_NotEnoughKarma"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_NotEnoughKarma"),
+                                       await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"),
+                                       MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            string confirmstring = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpense"), await AttributeObject.DisplayNameFormattedAsync, await AttributeObject.GetValueAsync() + 1, intUpgradeKarmaCost);
+            string confirmstring = string.Format(GlobalSettings.CultureInfo,
+                                                 await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpense"),
+                                                 await AttributeObject.GetDisplayNameFormattedAsync(),
+                                                 await AttributeObject.GetValueAsync() + 1, intUpgradeKarmaCost);
             if (!CommonFunctions.ConfirmKarmaExpense(confirmstring))
                 return;
 
-            AttributeObject.Upgrade();
+            await AttributeObject.Upgrade();
             await this.DoThreadSafeAsync(x => x.ValueChanged?.Invoke(this, e));
         }
 
@@ -399,6 +407,7 @@ namespace Chummer.UI.Attributes
         /// I'm not super pleased with how this works, but it's functional so w/e.
         /// The goal is for controls to retain the ability to display tooltips even while disabled. IT DOES NOT WORK VERY WELL.
         /// </summary>
+
         #region ButtonWithToolTip Visibility workaround
 
         private ButtonWithToolTip _activeButton;

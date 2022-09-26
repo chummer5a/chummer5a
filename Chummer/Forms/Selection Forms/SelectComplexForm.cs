@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.XPath;
@@ -270,13 +271,13 @@ namespace Chummer
 
         #region Methods
 
-        private async ValueTask BuildComplexFormList()
+        private async ValueTask BuildComplexFormList(CancellationToken token = default)
         {
             if (_blnLoading)
                 return;
 
-            string strFilter = '(' + _objCharacter.Settings.BookXPath() + ')';
-            string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text);
+            string strFilter = '(' + await _objCharacter.Settings.BookXPathAsync(token: token) + ')';
+            string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token: token);
             if (!string.IsNullOrEmpty(strSearch))
                 strFilter += " and " + CommonFunctions.GenerateSearchXPath(strSearch);
             // Populate the Complex Form list.
@@ -286,34 +287,34 @@ namespace Chummer
                 foreach (XPathNavigator xmlComplexForm in _xmlBaseComplexFormsNode.Select(
                              "complexform[" + strFilter + ']'))
                 {
-                    string strId = (await xmlComplexForm.SelectSingleNodeAndCacheExpressionAsync("id"))?.Value;
+                    string strId = (await xmlComplexForm.SelectSingleNodeAndCacheExpressionAsync("id", token: token))?.Value;
                     if (string.IsNullOrEmpty(strId))
                         continue;
 
                     if (!xmlComplexForm.RequirementsMet(_objCharacter))
                         continue;
 
-                    string strName = (await xmlComplexForm.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value
-                                     ?? await LanguageManager.GetStringAsync("String_Unknown");
+                    string strName = (await xmlComplexForm.SelectSingleNodeAndCacheExpressionAsync("name", token: token))?.Value
+                                     ?? await LanguageManager.GetStringAsync("String_Unknown", token: token);
                     // If this is a Sprite with Optional Complex Forms, see if this Complex Form is allowed.
                     if (_xmlOptionalComplexFormNode != null
-                        && await _xmlOptionalComplexFormNode.SelectSingleNodeAndCacheExpressionAsync("complexform") != null
+                        && await _xmlOptionalComplexFormNode.SelectSingleNodeAndCacheExpressionAsync("complexform", token: token) != null
                         && _xmlOptionalComplexFormNode.SelectSingleNode("complexform[. = " + strName.CleanXPath() + ']') == null)
                         continue;
 
                     lstComplexFormItems.Add(
-                        new ListItem(strId, (await xmlComplexForm.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value ?? strName));
+                        new ListItem(strId, (await xmlComplexForm.SelectSingleNodeAndCacheExpressionAsync("translate", token: token))?.Value ?? strName));
                 }
 
                 lstComplexFormItems.Sort(CompareListItems.CompareNames);
                 _blnLoading = true;
-                string strOldSelected = await lstComplexForms.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
-                await lstComplexForms.PopulateWithListItemsAsync(lstComplexFormItems);
+                string strOldSelected = await lstComplexForms.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token);
+                await lstComplexForms.PopulateWithListItemsAsync(lstComplexFormItems, token: token);
                 _blnLoading = false;
                 if (!string.IsNullOrEmpty(strOldSelected))
-                    await lstComplexForms.DoThreadSafeAsync(x => x.SelectedValue = strOldSelected);
+                    await lstComplexForms.DoThreadSafeAsync(x => x.SelectedValue = strOldSelected, token: token);
                 else
-                    await lstComplexForms.DoThreadSafeAsync(x => x.SelectedIndex = -1);
+                    await lstComplexForms.DoThreadSafeAsync(x => x.SelectedIndex = -1, token: token);
             }
         }
 

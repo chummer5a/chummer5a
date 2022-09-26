@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
@@ -196,7 +197,7 @@ namespace Chummer
                     else
                     {
                         strCost = objXmlQuality["cost"]?.InnerText;
-                        object objProcess = CommonFunctions.EvaluateInvariantXPath(strCost, out bool blnIsSuccess);
+                        (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strCost);
                         decimal decCost = blnIsSuccess ? Convert.ToDecimal((double) objProcess) : 0;
                         strCost = decCost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo)
                                   + await LanguageManager.GetStringAsync("String_NuyenSymbol");
@@ -348,25 +349,25 @@ namespace Chummer
 
         #region Methods
 
-        private ValueTask<bool> AnyItemInList(string strCategory = "")
+        private ValueTask<bool> AnyItemInList(string strCategory = "", CancellationToken token = default)
         {
-            return RefreshList(strCategory, false);
+            return RefreshList(strCategory, false, token);
         }
 
-        private ValueTask<bool> RefreshList(string strCategory = "")
+        private ValueTask<bool> RefreshList(string strCategory = "", CancellationToken token = default)
         {
-            return RefreshList(strCategory, true);
+            return RefreshList(strCategory, true, token);
         }
 
-        private async ValueTask<bool> RefreshList(string strCategory, bool blnDoUIUpdate)
+        private async ValueTask<bool> RefreshList(string strCategory, bool blnDoUIUpdate, CancellationToken token = default)
         {
             if (_blnLoading && blnDoUIUpdate)
                 return false;
             string strFilter = string.Empty;
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
             {
-                string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text);
-                sbdFilter.Append('(').Append(_objCharacter.Settings.BookXPath()).Append(')');
+                string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token: token);
+                sbdFilter.Append('(').Append(await _objCharacter.Settings.BookXPathAsync(token: token)).Append(')');
                 if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All"
                                                        && (GlobalSettings.SearchInCategoryOnly
                                                            || string.IsNullOrWhiteSpace(strSearch)))
@@ -412,7 +413,7 @@ namespace Chummer
                 {
                     if (objXmlQualityList?.Count > 0)
                     {
-                        bool blnLimitList = await chkLimitList.DoThreadSafeFuncAsync(x => x.Checked);
+                        bool blnLimitList = await chkLimitList.DoThreadSafeFuncAsync(x => x.Checked, token: token);
                         foreach (XmlNode objXmlQuality in objXmlQualityList)
                         {
                             string strId = objXmlQuality["id"]?.InnerText;
@@ -423,14 +424,14 @@ namespace Chummer
                                 return true;
                             }
 
-                            if (blnLimitList && !await RequirementMet(objXmlQuality, false))
+                            if (blnLimitList && !await RequirementMet(objXmlQuality, false, token))
                                 continue;
 
                             lstLifestyleQuality.Add(
                                 new ListItem(
                                     strId,
                                     objXmlQuality["translate"]?.InnerText ?? objXmlQuality["name"]?.InnerText
-                                    ?? await LanguageManager.GetStringAsync("String_Unknown")));
+                                    ?? await LanguageManager.GetStringAsync("String_Unknown", token: token)));
                         }
                     }
                 }
@@ -439,9 +440,9 @@ namespace Chummer
                 {
                     lstLifestyleQuality.Sort(CompareListItems.CompareNames);
 
-                    string strOldSelectedQuality = await lstLifestyleQualities.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
+                    string strOldSelectedQuality = await lstLifestyleQualities.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token);
                     _blnLoading = true;
-                    await lstLifestyleQualities.PopulateWithListItemsAsync(lstLifestyleQuality);
+                    await lstLifestyleQualities.PopulateWithListItemsAsync(lstLifestyleQuality, token: token);
                     _blnLoading = false;
                     await lstLifestyleQualities.DoThreadSafeAsync(x =>
                     {
@@ -449,7 +450,7 @@ namespace Chummer
                             x.SelectedIndex = -1;
                         else
                             x.SelectedValue = strOldSelectedQuality;
-                    });
+                    }, token: token);
                 }
 
                 return lstLifestyleQuality?.Count > 0;
@@ -464,25 +465,25 @@ namespace Chummer
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>
-        private async ValueTask AcceptForm()
+        private async ValueTask AcceptForm(CancellationToken token = default)
         {
-            string strSelectedSourceIDString = await lstLifestyleQualities.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
+            string strSelectedSourceIDString = await lstLifestyleQualities.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token);
             if (string.IsNullOrEmpty(strSelectedSourceIDString))
                 return;
             XmlNode objNode = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = " + strSelectedSourceIDString.CleanXPath() + ']');
-            if (objNode == null || !await RequirementMet(objNode, true))
+            if (objNode == null || !await RequirementMet(objNode, true, token: token))
                 return;
 
             _strSelectedQuality = strSelectedSourceIDString;
-            _strSelectCategory = (GlobalSettings.SearchInCategoryOnly || await txtSearch.DoThreadSafeFuncAsync(x => x.TextLength) == 0)
-                ? await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString())
+            _strSelectCategory = (GlobalSettings.SearchInCategoryOnly || await txtSearch.DoThreadSafeFuncAsync(x => x.TextLength, token: token) == 0)
+                ? await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token)
                 : objNode["category"]?.InnerText;
 
             await this.DoThreadSafeAsync(x =>
             {
                 x.DialogResult = DialogResult.OK;
                 x.Close();
-            });
+            }, token: token);
         }
 
         /// <summary>
@@ -490,10 +491,11 @@ namespace Chummer
         /// </summary>
         /// <param name="objXmlQuality">XmlNode of the Quality.</param>
         /// <param name="blnShowMessage">Whether or not a message should be shown if the requirements are not met.</param>
-        private async ValueTask<bool> RequirementMet(XmlNode objXmlQuality, bool blnShowMessage)
+        /// <param name="token">Cancellation token to listen to.</param>
+        private async ValueTask<bool> RequirementMet(XmlNode objXmlQuality, bool blnShowMessage, CancellationToken token = default)
         {
             // Ignore the rules.
-            if (await _objCharacter.GetIgnoreRulesAsync())
+            if (await _objCharacter.GetIgnoreRulesAsync(token))
                 return true;
 
             // See if the character already has this Quality and whether or not multiple copies are allowed.
@@ -505,7 +507,7 @@ namespace Chummer
                     if (objXmlQuality["allowmultiple"] == null && objQuality.Name == objXmlQuality["name"].InnerText)
                     {
                         if (blnShowMessage)
-                            Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectQuality_QualityLimit"), await LanguageManager.GetStringAsync("MessageTitle_SelectQuality_QualityLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectQuality_QualityLimit", token: token), await LanguageManager.GetStringAsync("MessageTitle_SelectQuality_QualityLimit", token: token), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         return false;
                     }
                 }
@@ -623,7 +625,7 @@ namespace Chummer
                                             // Check to see if the character has a Metagenic Quality.
                                             foreach (Quality objQuality in _objCharacter.Qualities)
                                             {
-                                                if ((await objQuality.GetNodeXPathAsync())
+                                                if ((await objQuality.GetNodeXPathAsync(token: token))
                                                     ?.SelectSingleNode("metagenic")
                                                     ?.Value == bool.TrueString)
                                                 {
@@ -647,10 +649,10 @@ namespace Chummer
                         if (blnShowMessage)
                             Program.ShowMessageBox(this,
                                                             await LanguageManager.GetStringAsync(
-                                                                "Message_SelectQuality_QualityRestriction")
+                                                                "Message_SelectQuality_QualityRestriction", token: token)
                                                             + sbdForbidden,
                                                             await LanguageManager.GetStringAsync(
-                                                                "MessageTitle_SelectQuality_QualityRestriction"),
+                                                                "MessageTitle_SelectQuality_QualityRestriction", token: token),
                                                             MessageBoxButtons.OK, MessageBoxIcon.Information);
                         return false;
                     }
@@ -664,7 +666,7 @@ namespace Chummer
                 {
                     bool blnRequirementMet = true;
 
-                    XmlDocument objXmlQualityDocument = await _objCharacter.LoadDataAsync("qualities.xml");
+                    XmlDocument objXmlQualityDocument = await _objCharacter.LoadDataAsync("qualities.xml", token: token);
                     // Loop through the oneof requirements.
                     using (XmlNodeList objXmlRequiredList = objXmlQuality.SelectNodes("required/oneof"))
                     {
@@ -676,7 +678,7 @@ namespace Chummer
                             {
                                 sbdThisRequirement.AppendLine()
                                                   .Append(await LanguageManager.GetStringAsync(
-                                                              "Message_SelectQuality_OneOf"));
+                                                              "Message_SelectQuality_OneOf", token: token));
                                 using (XmlNodeList objXmlOneOfList = objXmlOneOf.ChildNodes)
                                 {
                                     foreach (XmlNode objXmlRequired in objXmlOneOfList)
@@ -800,7 +802,7 @@ namespace Chummer
                                                 sbdThisRequirement.AppendLine().Append('\t')
                                                                   .Append(
                                                                       await LanguageManager.GetStringAsync(
-                                                                          "Message_SelectQuality_Inherit"));
+                                                                          "Message_SelectQuality_Inherit", token: token));
                                                 break;
 
                                             case "careerkarma":
@@ -813,7 +815,7 @@ namespace Chummer
                                                     sbdThisRequirement.AppendLine().Append('\t').AppendFormat(
                                                         GlobalSettings.CultureInfo,
                                                         await LanguageManager.GetStringAsync(
-                                                            "Message_SelectQuality_RequireKarma"),
+                                                            "Message_SelectQuality_RequireKarma", token: token),
                                                         objXmlRequired.InnerText);
                                                 break;
 
@@ -822,7 +824,7 @@ namespace Chummer
                                                 if (objXmlRequired.InnerText.StartsWith('-'))
                                                 {
                                                     // Essence must be less than the value.
-                                                    if (await _objCharacter.EssenceAsync() < Convert.ToDecimal(
+                                                    if (await _objCharacter.EssenceAsync(token: token) < Convert.ToDecimal(
                                                             objXmlRequired.InnerText.TrimStart('-'),
                                                             GlobalSettings.InvariantCultureInfo))
                                                         blnOneOfMet = true;
@@ -830,7 +832,7 @@ namespace Chummer
                                                 else
                                                 {
                                                     // Essence must be equal to or greater than the value.
-                                                    if (await _objCharacter.EssenceAsync()
+                                                    if (await _objCharacter.EssenceAsync(token: token)
                                                         >= Convert.ToDecimal(objXmlRequired.InnerText,
                                                                              GlobalSettings.InvariantCultureInfo))
                                                         blnOneOfMet = true;
@@ -842,7 +844,7 @@ namespace Chummer
                                                 // Check if the character has the required Skill.
                                                 Skill objSkill
                                                     = await _objCharacter.SkillsSection.GetActiveSkillAsync(
-                                                        objXmlRequired["name"].InnerText);
+                                                        objXmlRequired["name"].InnerText, token);
                                                 if ((objSkill?.Rating ?? 0)
                                                     >= Convert.ToInt32(objXmlRequired["val"].InnerText,
                                                                        GlobalSettings.InvariantCultureInfo))
@@ -855,9 +857,9 @@ namespace Chummer
                                             case "attribute":
                                                 // Check to see if an Attribute meets a requirement.
                                                 CharacterAttrib objAttribute
-                                                    = await _objCharacter.GetAttributeAsync(objXmlRequired["name"].InnerText);
+                                                    = await _objCharacter.GetAttributeAsync(objXmlRequired["name"].InnerText, token: token);
                                                 // Make sure the Attribute's total value meets the requirement.
-                                                if (objXmlRequired["total"] != null && await objAttribute.GetTotalValueAsync()
+                                                if (objXmlRequired["total"] != null && await objAttribute.GetTotalValueAsync(token)
                                                     >= Convert.ToInt32(objXmlRequired["total"].InnerText,
                                                                        GlobalSettings.InvariantCultureInfo))
                                                 {
@@ -871,10 +873,10 @@ namespace Chummer
                                                 string strAttributes = objXmlRequired["attributes"].InnerText;
                                                 strAttributes
                                                     = await _objCharacter.AttributeSection
-                                                                         .ProcessAttributesInXPathAsync(strAttributes);
+                                                                         .ProcessAttributesInXPathAsync(strAttributes, token: token);
                                                 (bool blnIsSuccess, object objProcess)
                                                     = await CommonFunctions.EvaluateInvariantXPathAsync(
-                                                        strAttributes);
+                                                        strAttributes, token);
                                                 if ((blnIsSuccess ? ((double) objProcess).StandardRound() : 0)
                                                     >= Convert.ToInt32(objXmlRequired["val"].InnerText,
                                                                        GlobalSettings.InvariantCultureInfo))
@@ -937,9 +939,9 @@ namespace Chummer
                                                 // Check Bioware.
                                                 foreach (XmlNode objXmlBioware in objXmlRequired.SelectNodes("bioware"))
                                                 {
-                                                    if (_objCharacter.Cyberware.Any(
+                                                    if (await _objCharacter.Cyberware.AnyAsync(
                                                             objCyberware =>
-                                                                objCyberware.Name == objXmlBioware.InnerText))
+                                                                objCyberware.Name == objXmlBioware.InnerText, token: token))
                                                     {
                                                         intTotal++;
                                                     }
@@ -991,9 +993,9 @@ namespace Chummer
                                                 {
                                                     foreach (Cyberware objCyberware in _objCharacter.Cyberware)
                                                     {
-                                                        if (objCyberware.Children.Any(
+                                                        if (await objCyberware.Children.AnyAsync(
                                                                 objPlugin =>
-                                                                    objPlugin.Name == objXmlCyberware.InnerText))
+                                                                    objPlugin.Name == objXmlCyberware.InnerText, token: token))
                                                         {
                                                             intTotal++;
                                                         }
@@ -1004,8 +1006,8 @@ namespace Chummer
                                                 foreach (XmlNode objXmlCyberware in objXmlRequired.SelectNodes(
                                                              "cyberwarecategory"))
                                                 {
-                                                    intTotal += _objCharacter.Cyberware.Count(objCyberware =>
-                                                        objCyberware.Category == objXmlCyberware.InnerText);
+                                                    intTotal += await _objCharacter.Cyberware.CountAsync(objCyberware =>
+                                                        objCyberware.Category == objXmlCyberware.InnerText, token: token);
                                                 }
 
                                                 if (intTotal >= Convert.ToInt32(objXmlRequired["count"].InnerText,
@@ -1022,10 +1024,10 @@ namespace Chummer
 
                                             case "damageresistance":
                                                 // Damage Resistance must be a particular value.
-                                                if (_objCharacter.BOD.TotalValue
+                                                if (await _objCharacter.BOD.GetTotalValueAsync(token)
                                                     + await ImprovementManager.ValueOfAsync(_objCharacter,
                                                         Improvement.ImprovementType
-                                                                   .DamageResistance)
+                                                                   .DamageResistance, token: token)
                                                     >= Convert.ToInt32(objXmlRequired.InnerText,
                                                                        GlobalSettings.InvariantCultureInfo))
                                                     blnOneOfMet = true;
@@ -1052,7 +1054,7 @@ namespace Chummer
                             {
                                 sbdThisRequirement.AppendLine()
                                                   .Append(await LanguageManager.GetStringAsync(
-                                                              "Message_SelectQuality_AllOf"));
+                                                              "Message_SelectQuality_AllOf", token: token));
                                 using (XmlNodeList objXmlAllOfList = objXmlAllOf.ChildNodes)
                                 {
                                     foreach (XmlNode objXmlRequired in objXmlAllOfList)
@@ -1155,7 +1157,7 @@ namespace Chummer
                                                 sbdThisRequirement.AppendLine().Append('\t')
                                                                   .Append(
                                                                       await LanguageManager.GetStringAsync(
-                                                                          "Message_SelectQuality_Inherit"));
+                                                                          "Message_SelectQuality_Inherit", token: token));
                                                 break;
 
                                             case "careerkarma":
@@ -1168,7 +1170,7 @@ namespace Chummer
                                                     sbdThisRequirement.AppendLine().Append('\t').AppendFormat(
                                                         GlobalSettings.CultureInfo,
                                                         await LanguageManager.GetStringAsync(
-                                                            "Message_SelectQuality_RequireKarma"),
+                                                            "Message_SelectQuality_RequireKarma", token: token),
                                                         objXmlRequired.InnerText);
                                                 break;
 
@@ -1177,7 +1179,7 @@ namespace Chummer
                                                 if (objXmlRequired.InnerText.StartsWith('-'))
                                                 {
                                                     // Essence must be less than the value.
-                                                    if (await _objCharacter.EssenceAsync() < Convert.ToDecimal(
+                                                    if (await _objCharacter.EssenceAsync(token: token) < Convert.ToDecimal(
                                                             objXmlRequired.InnerText.TrimStart('-'),
                                                             GlobalSettings.InvariantCultureInfo))
                                                         blnFound = true;
@@ -1185,7 +1187,7 @@ namespace Chummer
                                                 else
                                                 {
                                                     // Essence must be equal to or greater than the value.
-                                                    if (await _objCharacter.EssenceAsync()
+                                                    if (await _objCharacter.EssenceAsync(token: token)
                                                         >= Convert.ToDecimal(objXmlRequired.InnerText,
                                                                              GlobalSettings.InvariantCultureInfo))
                                                         blnFound = true;
@@ -1197,7 +1199,7 @@ namespace Chummer
                                                 // Check if the character has the required Skill.
                                                 Skill objSkill
                                                     = await _objCharacter.SkillsSection.GetActiveSkillAsync(
-                                                        objXmlRequired["name"].InnerText);
+                                                        objXmlRequired["name"].InnerText, token);
                                                 if ((objSkill?.Rating ?? 0)
                                                     >= Convert.ToInt32(objXmlRequired["val"].InnerText,
                                                                        GlobalSettings.InvariantCultureInfo))
@@ -1210,9 +1212,9 @@ namespace Chummer
                                             case "attribute":
                                                 // Check to see if an Attribute meets a requirement.
                                                 CharacterAttrib objAttribute
-                                                    = await _objCharacter.GetAttributeAsync(objXmlRequired["name"].InnerText);
+                                                    = await _objCharacter.GetAttributeAsync(objXmlRequired["name"].InnerText, token: token);
                                                 // Make sure the Attribute's total value meets the requirement.
-                                                if (objXmlRequired["total"] != null && objAttribute.TotalValue
+                                                if (objXmlRequired["total"] != null && await objAttribute.GetTotalValueAsync(token)
                                                     >= Convert.ToInt32(objXmlRequired["total"].InnerText,
                                                                        GlobalSettings.InvariantCultureInfo))
                                                 {
@@ -1226,10 +1228,10 @@ namespace Chummer
                                                 string strAttributes = objXmlRequired["attributes"].InnerText;
                                                 strAttributes
                                                     = await _objCharacter.AttributeSection
-                                                                         .ProcessAttributesInXPathAsync(strAttributes);
+                                                                         .ProcessAttributesInXPathAsync(strAttributes, token: token);
                                                 (bool blnIsSuccess, object objProcess)
                                                     = await CommonFunctions.EvaluateInvariantXPathAsync(
-                                                        strAttributes);
+                                                        strAttributes, token);
                                                 if ((blnIsSuccess ? ((double)objProcess).StandardRound() : 0)
                                                     >= Convert.ToInt32(objXmlRequired["val"].InnerText,
                                                                        GlobalSettings.InvariantCultureInfo))
@@ -1293,19 +1295,19 @@ namespace Chummer
                                                     // Check Bioware.
                                                     foreach (XmlNode objXmlBioware in objXmlRequired.SelectNodes("bioware"))
                                                     {
-                                                        if (_objCharacter.Cyberware.Any(
+                                                        if (await _objCharacter.Cyberware.AnyAsync(
                                                                 objCyberware =>
-                                                                    objCyberware.Name == objXmlBioware.InnerText))
+                                                                    objCyberware.Name == objXmlBioware.InnerText, token: token))
                                                         {
                                                             intTotal++;
                                                         }
                                                     }
 
-                                                    // Check Cyberware name that contain a straing.
+                                                    // Check Cyberware name that contain a string.
                                                     foreach (XmlNode objXmlCyberware in objXmlRequired.SelectNodes(
                                                                  "cyberwarecontains"))
                                                     {
-                                                        foreach (Cyberware objCyberware in _objCharacter.Cyberware)
+                                                        foreach (Cyberware objCyberware in await _objCharacter.GetCyberwareAsync(token))
                                                         {
                                                             if (objCyberware.Name.Contains(objXmlCyberware.InnerText))
                                                             {
@@ -1321,11 +1323,11 @@ namespace Chummer
                                                         }
                                                     }
 
-                                                    // Check Bioware name that contain a straing.
+                                                    // Check Bioware name that contain a string.
                                                     foreach (XmlNode objXmlCyberware in objXmlRequired.SelectNodes(
                                                                  "biowarecontains"))
                                                     {
-                                                        foreach (Cyberware objCyberware in _objCharacter.Cyberware)
+                                                        foreach (Cyberware objCyberware in await _objCharacter.GetCyberwareAsync(token))
                                                         {
                                                             if (objCyberware.Name.Contains(objXmlCyberware.InnerText))
                                                             {
@@ -1347,9 +1349,9 @@ namespace Chummer
                                                     {
                                                         foreach (Cyberware objCyberware in _objCharacter.Cyberware)
                                                         {
-                                                            if (objCyberware.Children.Any(
+                                                            if (await objCyberware.Children.AnyAsync(
                                                                     objPlugin =>
-                                                                        objPlugin.Name == objXmlCyberware.InnerText))
+                                                                        objPlugin.Name == objXmlCyberware.InnerText, token: token))
                                                             {
                                                                 intTotal++;
                                                             }
@@ -1360,9 +1362,9 @@ namespace Chummer
                                                     foreach (XmlNode objXmlCyberware in objXmlRequired.SelectNodes(
                                                                  "cyberwarecategory"))
                                                     {
-                                                        intTotal += _objCharacter.Cyberware.Count(
+                                                        intTotal += await _objCharacter.Cyberware.CountAsync(
                                                             objCyberware =>
-                                                                objCyberware.Category == objXmlCyberware.InnerText);
+                                                                objCyberware.Category == objXmlCyberware.InnerText, token: token);
                                                     }
 
                                                     if (intTotal >= Convert.ToInt32(objXmlRequired["count"].InnerText,
@@ -1379,10 +1381,10 @@ namespace Chummer
 
                                             case "damageresistance":
                                                 // Damage Resistance must be a particular value.
-                                                if (_objCharacter.BOD.TotalValue
+                                                if (await _objCharacter.BOD.GetTotalValueAsync(token)
                                                     + await ImprovementManager.ValueOfAsync(_objCharacter,
                                                         Improvement.ImprovementType
-                                                                   .DamageResistance)
+                                                                   .DamageResistance, token: token)
                                                     >= Convert.ToInt32(objXmlRequired.InnerText,
                                                                        GlobalSettings.InvariantCultureInfo))
                                                     blnFound = true;
@@ -1407,11 +1409,11 @@ namespace Chummer
                     {
                         if (blnShowMessage)
                         {
-                            string strMessage = await LanguageManager.GetStringAsync("Message_SelectQuality_QualityRequirement");
+                            string strMessage = await LanguageManager.GetStringAsync("Message_SelectQuality_QualityRequirement", token: token);
                             strMessage += sbdRequirement.ToString();
                             Program.ShowMessageBox(this, strMessage,
                                                             await LanguageManager.GetStringAsync(
-                                                                "MessageTitle_SelectQuality_QualityRequirement"),
+                                                                "MessageTitle_SelectQuality_QualityRequirement", token: token),
                                                             MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
 

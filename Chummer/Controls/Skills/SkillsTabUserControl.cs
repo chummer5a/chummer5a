@@ -24,6 +24,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.XPath;
@@ -36,6 +37,7 @@ namespace Chummer.UI.Skills
     public partial class SkillsTabUserControl : UserControl
     {
         private bool _blnDisposeCharacterOnDispose;
+
         public event PropertyChangedEventHandler MakeDirtyWithCharacterUpdate;
 
         private BindingListDisplay<Skill> _lstActiveSkills;
@@ -92,7 +94,7 @@ namespace Chummer.UI.Skills
             }
         }
 
-        public async ValueTask RealLoad()
+        public async ValueTask RealLoad(CancellationToken token = default)
         {
             if (ParentForm is CharacterShared frmParent)
                 _objCharacter = frmParent.CharacterObject;
@@ -118,7 +120,7 @@ namespace Chummer.UI.Skills
 
             //Visible = false;
 
-            bool blnExoticVisible = (await _objCharacter.LoadDataXPathAsync("skills.xml"))
+            bool blnExoticVisible = (await _objCharacter.LoadDataXPathAsync("skills.xml", token: token))
                 .SelectSingleNode(
                     "/chummer/skills/skill[exotic = "
                     + bool.TrueString.CleanXPath()
@@ -300,7 +302,7 @@ namespace Chummer.UI.Skills
                 {
                     ResumeLayout(true);
                 }
-            });
+            }, token: token);
             sw.Stop();
             Debug.WriteLine("RealLoad() in {0} ms", sw.Elapsed.TotalMilliseconds);
 
@@ -770,8 +772,16 @@ namespace Chummer.UI.Skills
             if (_blnActiveSkillSearchMode)
             {
                 _lstActiveSkills.SuspendLayout();
-                _lstActiveSkills.Filter(skill => GlobalSettings.CultureInfo.CompareInfo.IndexOf(skill.CurrentDisplayName, cboDisplayFilter.Text, CompareOptions.IgnoreCase) >= 0, true);
-                _lstActiveSkills.ResumeLayout();
+                try
+                {
+                    _lstActiveSkills.Filter(
+                        skill => GlobalSettings.CultureInfo.CompareInfo.IndexOf(
+                            skill.CurrentDisplayName, cboDisplayFilter.Text, CompareOptions.IgnoreCase) >= 0, true);
+                }
+                finally
+                {
+                    _lstActiveSkills.ResumeLayout();
+                }
             }
         }
 
@@ -780,8 +790,14 @@ namespace Chummer.UI.Skills
             if (cboSort.SelectedItem is Tuple<string, IComparer<Skill>> selectedItem)
             {
                 _lstActiveSkills.SuspendLayout();
-                _lstActiveSkills.Sort(selectedItem.Item2);
-                _lstActiveSkills.ResumeLayout();
+                try
+                {
+                    _lstActiveSkills.Sort(selectedItem.Item2);
+                }
+                finally
+                {
+                    _lstActiveSkills.ResumeLayout();
+                }
             }
         }
 
@@ -812,7 +828,7 @@ namespace Chummer.UI.Skills
             if (_objCharacter.Created)
             {
                 string strSelectedSkill;
-                
+
                 string strDescription = await LanguageManager.GetStringAsync("Label_Options_NewKnowledgeSkill");
                 using (ThreadSafeForm<SelectItem> form = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem
                 {
@@ -846,12 +862,12 @@ namespace Chummer.UI.Skills
                             return;
 
                         case DialogResult.Yes:
-                        {
-                            if (!skill.IsLanguage)
-                                skill.Type = "Language";
-                            skill.IsNativeLanguage = true;
-                            break;
-                        }
+                            {
+                                if (!skill.IsLanguage)
+                                    skill.Type = "Language";
+                                skill.IsNativeLanguage = true;
+                                break;
+                            }
                     }
                 }
 
@@ -863,15 +879,21 @@ namespace Chummer.UI.Skills
             }
         }
 
-        private void btnResetCustomDisplayAttribute_Click(object sender, EventArgs e)
+        private async void btnResetCustomDisplayAttribute_Click(object sender, EventArgs e)
         {
-            _lstActiveSkills.SuspendLayout();
-            foreach (SkillControl objSkillControl in _lstActiveSkills.DisplayPanel.Controls)
+            await _lstActiveSkills.DoThreadSafeAsync(x => x.SuspendLayout());
+            try
             {
-                if (objSkillControl.CustomAttributeSet)
-                    objSkillControl.ResetSelectAttribute(sender, e);
+                foreach (SkillControl objSkillControl in await _lstActiveSkills.DisplayPanel.DoThreadSafeFuncAsync(x => x.Controls))
+                {
+                    if (objSkillControl.CustomAttributeSet)
+                        await objSkillControl.ResetSelectAttribute();
+                }
             }
-            _lstActiveSkills.ResumeLayout();
+            finally
+            {
+                await _lstActiveSkills.DoThreadSafeAsync(x => x.ResumeLayout());
+            }
         }
 
         private void cboSortKnowledge_SelectedIndexChanged(object sender, EventArgs e)
@@ -879,8 +901,14 @@ namespace Chummer.UI.Skills
             if (cboSortKnowledge.SelectedItem is Tuple<string, IComparer<KnowledgeSkill>> selectedItem)
             {
                 _lstKnowledgeSkills.SuspendLayout();
-                _lstKnowledgeSkills.Sort(selectedItem.Item2);
-                _lstKnowledgeSkills.ResumeLayout();
+                try
+                {
+                    _lstKnowledgeSkills.Sort(selectedItem.Item2);
+                }
+                finally
+                {
+                    _lstKnowledgeSkills.ResumeLayout();
+                }
             }
         }
 
@@ -899,8 +927,14 @@ namespace Chummer.UI.Skills
                     cboDisplayFilterKnowledge.DropDownStyle = ComboBoxStyle.DropDownList;
                     _blnKnowledgeSkillSearchMode = false;
                     _lstKnowledgeSkills.SuspendLayout();
-                    _lstKnowledgeSkills.Filter(selectedItem.Item2);
-                    _lstKnowledgeSkills.ResumeLayout();
+                    try
+                    {
+                        _lstKnowledgeSkills.Filter(selectedItem.Item2);
+                    }
+                    finally
+                    {
+                        _lstKnowledgeSkills.ResumeLayout();
+                    }
                 }
             }
         }
@@ -910,8 +944,17 @@ namespace Chummer.UI.Skills
             if (_blnKnowledgeSkillSearchMode)
             {
                 _lstKnowledgeSkills.SuspendLayout();
-                _lstKnowledgeSkills.Filter(skill => GlobalSettings.CultureInfo.CompareInfo.IndexOf(skill.CurrentDisplayName, cboDisplayFilterKnowledge.Text, CompareOptions.IgnoreCase) >= 0, true);
-                _lstKnowledgeSkills.ResumeLayout();
+                try
+                {
+                    _lstKnowledgeSkills.Filter(
+                        skill => GlobalSettings.CultureInfo.CompareInfo.IndexOf(
+                            skill.CurrentDisplayName, cboDisplayFilterKnowledge.Text, CompareOptions.IgnoreCase) >= 0,
+                        true);
+                }
+                finally
+                {
+                    _lstKnowledgeSkills.ResumeLayout();
+                }
             }
         }
 

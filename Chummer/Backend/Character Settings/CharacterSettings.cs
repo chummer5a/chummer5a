@@ -163,6 +163,7 @@ namespace Chummer
 
         // Initiative variables
         private int _intMinInitiativeDice = 1;
+
         private int _intMaxInitiativeDice = 5;
         private int _intMinAstralInitiativeDice = 3;
         private int _intMaxAstralInitiativeDice = 5;
@@ -454,7 +455,22 @@ namespace Chummer
                             objProperty.SetValue(this, objOtherValue);
                         }
 
-                        if (!_dicCustomDataDirectoryKeys.SequenceEqual(objOther.CustomDataDirectoryKeys))
+                        bool blnDoRebuildDirectoryKeys = _dicCustomDataDirectoryKeys.Count != objOther._dicCustomDataDirectoryKeys.Count;
+                        if (!blnDoRebuildDirectoryKeys)
+                        {
+                            for (int i = 0; i < _dicCustomDataDirectoryKeys.Count; ++i)
+                            {
+                                KeyValuePair<string, bool> kvpMine = _dicCustomDataDirectoryKeys[i];
+                                KeyValuePair<string, bool> kvpOther = objOther._dicCustomDataDirectoryKeys[i];
+                                if (!string.Equals(kvpMine.Key, kvpOther.Key, StringComparison.OrdinalIgnoreCase)
+                                    || kvpMine.Value != kvpOther.Value)
+                                {
+                                    blnDoRebuildDirectoryKeys = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if (blnDoRebuildDirectoryKeys)
                         {
                             lstPropertiesToUpdate.Add(nameof(CustomDataDirectoryKeys));
                             _dicCustomDataDirectoryKeys.Clear();
@@ -496,11 +512,11 @@ namespace Chummer
             }
         }
 
-        public async ValueTask CopyValuesAsync(CharacterSettings objOther, bool blnCopySourceId = true, string strOverrideFileName = "")
+        public async ValueTask CopyValuesAsync(CharacterSettings objOther, bool blnCopySourceId = true, string strOverrideFileName = "", CancellationToken token = default)
         {
             if (objOther == null || objOther == this)
                 return;
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
             try
             {
                 _blnDoingCopy = true;
@@ -509,7 +525,7 @@ namespace Chummer
                 {
                     PropertyInfo[] aobjProperties = typeof(CharacterSettings).GetProperties();
                     lstPropertiesToUpdate = new List<string>(aobjProperties.Length);
-                    using (await EnterReadLock.EnterAsync(objOther))
+                    using (await EnterReadLock.EnterAsync(objOther, token))
                     {
                         if (blnCopySourceId && !_guiSourceId.Equals(objOther._guiSourceId))
                         {
@@ -542,13 +558,29 @@ namespace Chummer
                             objProperty.SetValue(this, objOtherValue);
                         }
 
-                        if (!_dicCustomDataDirectoryKeys.SequenceEqual(objOther.CustomDataDirectoryKeys))
+                        int intMyCount = await _dicCustomDataDirectoryKeys.GetCountAsync(token);
+                        bool blnDoRebuildDirectoryKeys = intMyCount != await objOther._dicCustomDataDirectoryKeys.GetCountAsync(token);
+                        if (!blnDoRebuildDirectoryKeys)
+                        {
+                            for (int i = 0; i < intMyCount; ++i)
+                            {
+                                KeyValuePair<string, bool> kvpMine = await _dicCustomDataDirectoryKeys.GetValueAtAsync(i, token);
+                                KeyValuePair<string, bool> kvpOther = await objOther._dicCustomDataDirectoryKeys.GetValueAtAsync(i, token);
+                                if (!string.Equals(kvpMine.Key, kvpOther.Key, StringComparison.OrdinalIgnoreCase)
+                                    || kvpMine.Value != kvpOther.Value)
+                                {
+                                    blnDoRebuildDirectoryKeys = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if (blnDoRebuildDirectoryKeys)
                         {
                             lstPropertiesToUpdate.Add(nameof(CustomDataDirectoryKeys));
-                            await _dicCustomDataDirectoryKeys.ClearAsync();
-                            foreach (KeyValuePair<string, bool> kvpOther in objOther.CustomDataDirectoryKeys)
+                            await _dicCustomDataDirectoryKeys.ClearAsync(token);
+                            foreach (KeyValuePair<string, bool> kvpOther in objOther._dicCustomDataDirectoryKeys)
                             {
-                                await _dicCustomDataDirectoryKeys.AddAsync(kvpOther.Key, kvpOther.Value);
+                                await _dicCustomDataDirectoryKeys.AddAsync(kvpOther.Key, kvpOther.Value, token);
                             }
                         }
 
@@ -669,8 +701,61 @@ namespace Chummer
                         return false;
                 }
 
-                if (!_dicCustomDataDirectoryKeys.SequenceEqual(objOther._dicCustomDataDirectoryKeys))
+                if (_dicCustomDataDirectoryKeys.Count != objOther._dicCustomDataDirectoryKeys.Count)
                     return false;
+                for (int i = 0; i < _dicCustomDataDirectoryKeys.Count; ++i)
+                {
+                    KeyValuePair<string, bool> kvpMine = _dicCustomDataDirectoryKeys[i];
+                    KeyValuePair<string, bool> kvpOther = objOther._dicCustomDataDirectoryKeys[i];
+                    if (!string.Equals(kvpMine.Key, kvpOther.Key, StringComparison.OrdinalIgnoreCase)
+                        || kvpMine.Value != kvpOther.Value)
+                    {
+                        return false;
+                    }
+                }
+
+                // RedlinerExcludes handled through the four RedlinerExcludes[Limb] properties
+
+                return _setBooks.SetEquals(objOther._setBooks) && _setBannedWareGrades.SetEquals(objOther._setBannedWareGrades);
+            }
+        }
+
+        public async ValueTask<bool> HasIdenticalSettingsAsync(CharacterSettings objOther, CancellationToken token = default)
+        {
+            if (objOther == null)
+                return false;
+            using (await EnterReadLock.EnterAsync(objOther, token))
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+            {
+                if (_guiSourceId != objOther._guiSourceId)
+                    return false;
+                if (_strFileName != objOther._strFileName)
+                    return false;
+                if (GetEquatableHashCode() != objOther.GetEquatableHashCode())
+                    return false;
+
+                PropertyInfo[] aobjProperties = typeof(CharacterSettings).GetProperties();
+                foreach (PropertyInfo objProperty in aobjProperties.Where(x => x.PropertyType.IsValueType && x.CanRead))
+                {
+                    object objMyValue = objProperty.GetValue(this);
+                    object objOtherValue = objProperty.GetValue(objOther);
+                    if (!objMyValue.Equals(objOtherValue))
+                        return false;
+                }
+
+                int intMyCount = await _dicCustomDataDirectoryKeys.GetCountAsync(token);
+                if (intMyCount != await objOther._dicCustomDataDirectoryKeys.GetCountAsync(token))
+                    return false;
+                for (int i = 0; i < intMyCount; ++i)
+                {
+                    KeyValuePair<string, bool> kvpMine = await _dicCustomDataDirectoryKeys.GetValueAtAsync(i, token);
+                    KeyValuePair<string, bool> kvpOther = await objOther._dicCustomDataDirectoryKeys.GetValueAtAsync(i, token);
+                    if (!string.Equals(kvpMine.Key, kvpOther.Key, StringComparison.OrdinalIgnoreCase)
+                        || kvpMine.Value != kvpOther.Value)
+                    {
+                        return false;
+                    }
+                }
 
                 // RedlinerExcludes handled through the four RedlinerExcludes[Limb] properties
 
@@ -840,7 +925,7 @@ namespace Chummer
                     hashCode = (hashCode * 397) ^ _intKarmaSummoningFocus;
                     hashCode = (hashCode * 397) ^ _intKarmaWeaponFocus;
                     hashCode = (hashCode * 397) ^ _intDicePenaltySustaining;
-                    hashCode = (hashCode * 397) ^ (int) _eBuildMethod;
+                    hashCode = (hashCode * 397) ^ (int)_eBuildMethod;
                     hashCode = (hashCode * 397) ^ _intBuildPoints;
                     hashCode = (hashCode * 397) ^ _intQualityKarmaLimit;
                     hashCode = (hashCode * 397) ^ (_strPriorityArray?.GetHashCode() ?? 0);
@@ -1496,7 +1581,7 @@ namespace Chummer
                             string strDirectoryName = kvpDirectoryInfo.Key;
                             bool blnDirectoryIsEnabled = kvpDirectoryInfo.Value;
                             if (!blnDirectoryIsEnabled && GlobalSettings.CustomDataDirectoryInfos.Any(
-                                    x => x.DirectoryPath.StartsWith(strCustomDataRootPath)
+                                    x => x.DirectoryPath.StartsWith(strCustomDataRootPath, StringComparison.Ordinal)
                                          && x.CharacterSettingsSaveKey.Equals(
                                              strDirectoryName, StringComparison.OrdinalIgnoreCase)))
                                 continue; // Do not save disabled custom data directories that are in the customdata folder and would be auto-populated anyway
@@ -2317,6 +2402,775 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Load the settings from the settings file.
+        /// </summary>
+        /// <param name="strFileName">Settings file to load from.</param>
+        /// <param name="blnShowDialogs">Whether or not to show message boxes on failures to load.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async Task<bool> LoadAsync(string strFileName, bool blnShowDialogs = true, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
+            try
+            {
+                _strFileName = strFileName;
+                string strFilePath = Path.Combine(Utils.GetStartupPath, "settings", _strFileName);
+                XPathDocument objXmlDocument = null;
+                // Make sure the settings file exists. If not, ask the user if they would like to use the default settings file instead. A character cannot be loaded without a settings file.
+                if (File.Exists(strFilePath))
+                {
+                    try
+                    {
+                        await Task.Run(() =>
+                            {
+                                using (StreamReader objStreamReader
+                                       = new StreamReader(strFilePath, Encoding.UTF8, true))
+                                using (XmlReader objXmlReader
+                                       = XmlReader.Create(objStreamReader, GlobalSettings.SafeXmlReaderSettings))
+                                    objXmlDocument = new XPathDocument(objXmlReader);
+                            }, token);
+                    }
+                    catch (IOException)
+                    {
+                        if (blnShowDialogs)
+                            Program.ShowMessageBox(
+                                await LanguageManager.GetStringAsync("Message_CharacterOptions_CannotLoadCharacter", token: token),
+                                await LanguageManager.GetStringAsync("MessageText_CharacterOptions_CannotLoadCharacter", token: token),
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Error);
+                        return false;
+                    }
+                    catch (XmlException)
+                    {
+                        if (blnShowDialogs)
+                            Program.ShowMessageBox(
+                                await LanguageManager.GetStringAsync("Message_CharacterOptions_CannotLoadCharacter", token: token),
+                                await LanguageManager.GetStringAsync("MessageText_CharacterOptions_CannotLoadCharacter", token: token),
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Error);
+                        return false;
+                    }
+                }
+                else
+                {
+                    if (blnShowDialogs)
+                        Program.ShowMessageBox(
+                            await LanguageManager.GetStringAsync("Message_CharacterOptions_CannotLoadCharacter", token: token),
+                            await LanguageManager.GetStringAsync("MessageText_CharacterOptions_CannotLoadCharacter", token: token),
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Error);
+                    return false;
+                }
+
+                if (objXmlDocument == null)
+                    return false;
+
+                return await LoadAsync(await objXmlDocument.CreateNavigator().SelectSingleNodeAndCacheExpressionAsync(".//settings", token), token);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync();
+            }
+        }
+
+        /// <summary>
+        /// Load the settings from a settings node.
+        /// </summary>
+        /// <param name="objXmlNode">Settings node to load from.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async Task<bool> LoadAsync(XPathNavigator objXmlNode, CancellationToken token = default)
+        {
+            if (objXmlNode == null)
+                return false;
+            string strTemp = string.Empty;
+            // Setting id.
+            string strId = string.Empty;
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
+            try
+            {
+                if (objXmlNode.TryGetStringFieldQuickly("id", ref strId) && Guid.TryParse(strId, out Guid guidTemp))
+                    _guiSourceId = guidTemp;
+                // Setting name.
+                objXmlNode.TryGetStringFieldQuickly("name", ref _strName);
+                // License Restricted items.
+                objXmlNode.TryGetBoolFieldQuickly("licenserestricted", ref _blnLicenseRestrictedItems);
+                // More Lethal Gameplay.
+                objXmlNode.TryGetBoolFieldQuickly("morelethalgameplay", ref _blnMoreLethalGameplay);
+                // Spirit Force Based on Total MAG.
+                objXmlNode.TryGetBoolFieldQuickly("spiritforcebasedontotalmag", ref _blnSpiritForceBasedOnTotalMAG);
+                // Nuyen per Build Point
+                if (!objXmlNode.TryGetDecFieldQuickly("nuyenperbpwftm", ref _decNuyenPerBPWftM))
+                {
+                    objXmlNode.TryGetDecFieldQuickly("nuyenperbp", ref _decNuyenPerBPWftM);
+                    _decNuyenPerBPWftP = _decNuyenPerBPWftM;
+                }
+                else
+                    objXmlNode.TryGetDecFieldQuickly("nuyenperbpwftp", ref _decNuyenPerBPWftP);
+
+                // Knucks use Unarmed
+                objXmlNode.TryGetBoolFieldQuickly("unarmedimprovementsapplytoweapons",
+                                                  ref _blnUnarmedImprovementsApplyToWeapons);
+                // Allow Initiation in Create Mode
+                objXmlNode.TryGetBoolFieldQuickly("allowinitiationincreatemode", ref _blnAllowInitiationInCreateMode);
+                // Use Points on Broken Groups
+                objXmlNode.TryGetBoolFieldQuickly("usepointsonbrokengroups", ref _blnUsePointsOnBrokenGroups);
+                // Don't Double the Cost of purchasing Qualities in Career Mode
+                objXmlNode.TryGetBoolFieldQuickly("dontdoublequalities", ref _blnDontDoubleQualityPurchaseCost);
+                // Don't Double the Cost of removing Qualities in Career Mode
+                objXmlNode.TryGetBoolFieldQuickly("dontdoublequalityrefunds", ref _blnDontDoubleQualityRefundCost);
+                // Ignore Art Requirements from Street Grimoire
+                objXmlNode.TryGetBoolFieldQuickly("ignoreart", ref _blnIgnoreArt);
+                // Use Cyberleg Stats for Movement
+                objXmlNode.TryGetBoolFieldQuickly("cyberlegmovement", ref _blnCyberlegMovement);
+                // XPath expression for contact points
+                if (!objXmlNode.TryGetStringFieldQuickly("contactpointsexpression", ref _strContactPointsExpression))
+                {
+                    // Legacy shim
+                    int intTemp = 3;
+                    bool blnTemp = false;
+                    strTemp = "{CHAUnaug}";
+                    if (objXmlNode.TryGetBoolFieldQuickly("usetotalvalueforcontacts", ref blnTemp) && blnTemp)
+                        strTemp = "{CHA}";
+                    if (objXmlNode.TryGetBoolFieldQuickly("freecontactsmultiplierenabled", ref blnTemp) && blnTemp)
+                        objXmlNode.TryGetInt32FieldQuickly("freekarmacontactsmultiplier", ref intTemp);
+                    _strContactPointsExpression
+                        = strTemp + " * " + intTemp.ToString(GlobalSettings.InvariantCultureInfo);
+                }
+
+                // XPath expression for knowledge points
+                if (!objXmlNode.TryGetStringFieldQuickly("knowledgepointsexpression",
+                                                         ref _strKnowledgePointsExpression))
+                {
+                    // Legacy shim
+                    int intTemp = 2;
+                    bool blnTemp = false;
+                    strTemp = "({INTUnaug} + {LOGUnaug})";
+                    if (objXmlNode.TryGetBoolFieldQuickly("usetotalvalueforknowledge", ref blnTemp) && blnTemp)
+                        strTemp = "({INT} + {LOG})";
+                    if (objXmlNode.TryGetBoolFieldQuickly("freekarmaknowledgemultiplierenabled", ref blnTemp)
+                        && blnTemp)
+                        objXmlNode.TryGetInt32FieldQuickly("freekarmaknowledgemultiplier", ref intTemp);
+                    _strKnowledgePointsExpression
+                        = strTemp + " * " + intTemp.ToString(GlobalSettings.InvariantCultureInfo);
+                }
+
+                // XPath expression for nuyen at chargen
+                if (!objXmlNode.TryGetStringFieldQuickly("chargenkarmatonuyenexpression",
+                                                         ref _strChargenKarmaToNuyenExpression))
+                {
+                    // Legacy shim
+                    _strChargenKarmaToNuyenExpression = "{Karma} * "
+                                                        + _decNuyenPerBPWftM.ToString(
+                                                            GlobalSettings.InvariantCultureInfo) + " + {PriorityNuyen}";
+                }
+                // A very hacky legacy shim, but also works as a bit of a sanity check
+                else if (!_strChargenKarmaToNuyenExpression.Contains("{PriorityNuyen}"))
+                {
+                    _strChargenKarmaToNuyenExpression = '(' + _strChargenKarmaToNuyenExpression + ") + {PriorityNuyen}";
+                }
+
+                // Various expressions used to determine certain character stats
+                objXmlNode.TryGetStringFieldQuickly("compiledspriteexpression", ref _strRegisteredSpriteExpression);
+                objXmlNode.TryGetStringFieldQuickly("boundspiritexpression", ref _strBoundSpiritExpression);
+                objXmlNode.TryGetStringFieldQuickly("liftlimitexpression", ref _strLiftLimitExpression);
+                objXmlNode.TryGetStringFieldQuickly("carrylimitexpression", ref _strCarryLimitExpression);
+                objXmlNode.TryGetStringFieldQuickly("encumbranceintervalexpression",
+                                                    ref _strEncumbranceIntervalExpression);
+                // Whether to apply certain penalties to encumbrance and, if so, how much per tick
+                objXmlNode.TryGetBoolFieldQuickly("doencumbrancepenaltyphysicallimit",
+                                                  ref _blnDoEncumbrancePenaltyPhysicalLimit);
+                objXmlNode.TryGetBoolFieldQuickly("doencumbrancepenaltymovementspeed",
+                                                  ref _blnDoEncumbrancePenaltyMovementSpeed);
+                objXmlNode.TryGetBoolFieldQuickly("doencumbrancepenaltyagility", ref _blnDoEncumbrancePenaltyAgility);
+                objXmlNode.TryGetBoolFieldQuickly("doencumbrancepenaltyreaction", ref _blnDoEncumbrancePenaltyReaction);
+                objXmlNode.TryGetBoolFieldQuickly("doencumbrancepenaltywoundmodifier",
+                                                  ref _blnDoEncumbrancePenaltyWoundModifier);
+                objXmlNode.TryGetInt32FieldQuickly("encumbrancepenaltyphysicallimit",
+                                                   ref _intEncumbrancePenaltyPhysicalLimit);
+                objXmlNode.TryGetInt32FieldQuickly("encumbrancepenaltymovementspeed",
+                                                   ref _intEncumbrancePenaltyMovementSpeed);
+                objXmlNode.TryGetInt32FieldQuickly("encumbrancepenaltyagility", ref _intEncumbrancePenaltyAgility);
+                objXmlNode.TryGetInt32FieldQuickly("encumbrancepenaltyreaction", ref _intEncumbrancePenaltyReaction);
+                objXmlNode.TryGetInt32FieldQuickly("encumbrancepenaltywoundmodifier",
+                                                   ref _intEncumbrancePenaltyWoundModifier);
+                // Drone Armor Multiplier Enabled
+                objXmlNode.TryGetBoolFieldQuickly("dronearmormultiplierenabled", ref _blnDroneArmorMultiplierEnabled);
+                // Drone Armor Multiplier Value
+                objXmlNode.TryGetInt32FieldQuickly("dronearmorflatnumber", ref _intDroneArmorMultiplier);
+                // No Single Armor Encumbrance
+                objXmlNode.TryGetBoolFieldQuickly("nosinglearmorencumbrance", ref _blnNoSingleArmorEncumbrance);
+                // Ignore Armor Encumbrance
+                objXmlNode.TryGetBoolFieldQuickly("noarmorencumbrance", ref _blnNoArmorEncumbrance);
+                // Ignore Complex Form Limit
+                objXmlNode.TryGetBoolFieldQuickly("ignorecomplexformlimit", ref _blnIgnoreComplexFormLimit);
+                // Essence Loss Reduces Maximum Only.
+                objXmlNode.TryGetBoolFieldQuickly("esslossreducesmaximumonly", ref _blnESSLossReducesMaximumOnly);
+                // Allow Skill Regrouping.
+                objXmlNode.TryGetBoolFieldQuickly("allowskillregrouping", ref _blnAllowSkillRegrouping);
+                // Whether skill specializations break skill groups.
+                objXmlNode.TryGetBoolFieldQuickly("specializationsbreakskillgroups",
+                                                  ref _blnSpecializationsBreakSkillGroups);
+                // Metatype Costs Karma.
+                objXmlNode.TryGetBoolFieldQuickly("metatypecostskarma", ref _blnMetatypeCostsKarma);
+                // Allow characters to spend karma before attribute points.
+                objXmlNode.TryGetBoolFieldQuickly("reverseattributepriorityorder",
+                                                  ref _blnReverseAttributePriorityOrder);
+                // Metatype Costs Karma Multiplier.
+                objXmlNode.TryGetInt32FieldQuickly("metatypecostskarmamultiplier", ref _intMetatypeCostMultiplier);
+                // Limb Count.
+                objXmlNode.TryGetInt32FieldQuickly("limbcount", ref _intLimbCount);
+                // Exclude Limb Slot.
+                objXmlNode.TryGetStringFieldQuickly("excludelimbslot", ref _strExcludeLimbSlot);
+                // Allow Cyberware Essence Cost Discounts.
+                objXmlNode.TryGetBoolFieldQuickly("allowcyberwareessdiscounts", ref _blnAllowCyberwareESSDiscounts);
+                // Use Maximum Armor Modifications.
+                objXmlNode.TryGetBoolFieldQuickly("maximumarmormodifications", ref _blnMaximumArmorModifications);
+                // Allow Armor Degradation.
+                objXmlNode.TryGetBoolFieldQuickly("armordegredation", ref _blnArmorDegradation);
+                // Whether or not Karma costs for increasing Special Attributes is based on the shown value instead of actual value.
+                objXmlNode.TryGetBoolFieldQuickly("specialkarmacostbasedonshownvalue",
+                                                  ref _blnSpecialKarmaCostBasedOnShownValue);
+                // Allow more than 35 BP in Positive Qualities.
+                objXmlNode.TryGetBoolFieldQuickly("exceedpositivequalities", ref _blnExceedPositiveQualities);
+                // Double all positive qualities in excess of the limit
+                objXmlNode.TryGetBoolFieldQuickly("exceedpositivequalitiescostdoubled",
+                                                  ref _blnExceedPositiveQualitiesCostDoubled);
+
+                objXmlNode.TryGetBoolFieldQuickly("mysaddppcareer", ref _blnMysAdeptAllowPpCareer);
+
+                // Split MAG for Mystic Adepts so that they have a separate MAG rating for Adept Powers instead of using the special PP rules for mystic adepts
+                objXmlNode.TryGetBoolFieldQuickly("mysadeptsecondmagattribute", ref _blnMysAdeptSecondMAGAttribute);
+
+                // Grant a free specialization when taking a martial art.
+                objXmlNode.TryGetBoolFieldQuickly("freemartialartspecialization", ref _blnFreeMartialArtSpecialization);
+                // Can spend spells from Magic priority as power points
+                objXmlNode.TryGetBoolFieldQuickly("priorityspellsasadeptpowers", ref _blnPrioritySpellsAsAdeptPowers);
+                // Allow more than 35 BP in Negative Qualities.
+                objXmlNode.TryGetBoolFieldQuickly("exceednegativequalities", ref _blnExceedNegativeQualities);
+                // Character can still only receive 35 BP from Negative Qualities (though they can still add as many as they'd like).
+                if (!objXmlNode.TryGetBoolFieldQuickly("exceednegativequalitiesnobonus",
+                                                       ref _blnExceedNegativeQualitiesNoBonus))
+                    objXmlNode.TryGetBoolFieldQuickly("exceednegativequalitieslimit",
+                                                      ref _blnExceedNegativeQualitiesNoBonus);
+                // Whether or not Restricted items have their cost multiplied.
+                objXmlNode.TryGetBoolFieldQuickly("multiplyrestrictedcost", ref _blnMultiplyRestrictedCost);
+                // Whether or not Forbidden items have their cost multiplied.
+                objXmlNode.TryGetBoolFieldQuickly("multiplyforbiddencost", ref _blnMultiplyForbiddenCost);
+                // Restricted cost multiplier.
+                objXmlNode.TryGetInt32FieldQuickly("restrictedcostmultiplier", ref _intRestrictedCostMultiplier);
+                // Forbidden cost multiplier.
+                objXmlNode.TryGetInt32FieldQuickly("forbiddencostmultiplier", ref _intForbiddenCostMultiplier);
+                // Only round essence when its value is displayed
+                objXmlNode.TryGetBoolFieldQuickly("donotroundessenceinternally", ref _blnDoNotRoundEssenceInternally);
+                // Allow use of enemies
+                objXmlNode.TryGetBoolFieldQuickly("enableenemytracking", ref _blnEnableEnemyTracking);
+                // Have enemies contribute to negative quality limit
+                objXmlNode.TryGetBoolFieldQuickly("enemykarmaqualitylimit", ref _blnEnemyKarmaQualityLimit);
+                // Format in which nuyen values are displayed
+                objXmlNode.TryGetStringFieldQuickly("nuyenformat", ref _strNuyenFormat);
+                // Format in which weight values are displayed
+                if (objXmlNode.TryGetStringFieldQuickly("weightformat", ref _strWeightFormat))
+                {
+                    int intDecimalPlaces = _strWeightFormat.IndexOf('.');
+                    if (intDecimalPlaces == -1)
+                        _strWeightFormat += ".###";
+                }
+
+                // Format in which essence values should be displayed (and to which they should be rounded)
+                if (!objXmlNode.TryGetStringFieldQuickly("essenceformat", ref _strEssenceFormat))
+                {
+                    int intTemp = 2;
+                    // Number of decimal places to round to when calculating Essence.
+                    objXmlNode.TryGetInt32FieldQuickly("essencedecimals", ref intTemp);
+                    EssenceDecimals = intTemp;
+                }
+                else
+                {
+                    int intDecimalPlaces = _strEssenceFormat.IndexOf('.');
+                    if (intDecimalPlaces < 2)
+                    {
+                        if (intDecimalPlaces == -1)
+                            _strEssenceFormat += ".00";
+                        else
+                        {
+                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                          out StringBuilder sbdZeros))
+                            {
+                                for (int i = _strEssenceFormat.Length - 1 - intDecimalPlaces; i < intDecimalPlaces; ++i)
+                                    sbdZeros.Append('0');
+                                _strEssenceFormat += sbdZeros.ToString();
+                            }
+                        }
+                    }
+                }
+
+                // Whether or not Capacity limits should be enforced.
+                objXmlNode.TryGetBoolFieldQuickly("enforcecapacity", ref _blnEnforceCapacity);
+                // Whether or not Recoil modifiers are restricted (AR 148).
+                objXmlNode.TryGetBoolFieldQuickly("restrictrecoil", ref _blnRestrictRecoil);
+                // Whether or not character are not restricted to the number of points they can invest in Nuyen.
+                objXmlNode.TryGetBoolFieldQuickly("unrestrictednuyen", ref _blnUnrestrictedNuyen);
+                // Whether or not Stacked Foci can go a combined Force higher than 6.
+                objXmlNode.TryGetBoolFieldQuickly("allowhigherstackedfoci", ref _blnAllowHigherStackedFoci);
+                // Whether or not the user can change the status of a Weapon Mod or Accessory being part of the base Weapon.
+                objXmlNode.TryGetBoolFieldQuickly("alloweditpartofbaseweapon", ref _blnAllowEditPartOfBaseWeapon);
+                // Whether or not the user can break Skill Groups while in Create Mode.
+                objXmlNode.TryGetBoolFieldQuickly("breakskillgroupsincreatemode",
+                                                  ref _blnStrictSkillGroupsInCreateMode);
+                // Whether or not the user is allowed to buy specializations with skill points for skills only bought with karma.
+                objXmlNode.TryGetBoolFieldQuickly("allowpointbuyspecializationsonkarmaskills",
+                                                  ref _blnAllowPointBuySpecializationsOnKarmaSkills);
+                // Whether or not any Detection Spell can be taken as Extended range version.
+                objXmlNode.TryGetBoolFieldQuickly("extendanydetectionspell", ref _blnExtendAnyDetectionSpell);
+                // Whether or not cyberlimbs are used for augmented attribute calculation.
+                objXmlNode.TryGetBoolFieldQuickly("dontusecyberlimbcalculation", ref _blnDontUseCyberlimbCalculation);
+                // House rule: Treat the Metatype Attribute Minimum as 1 for the purpose of calculating Karma costs.
+                objXmlNode.TryGetBoolFieldQuickly("alternatemetatypeattributekarma",
+                                                  ref _blnAlternateMetatypeAttributeKarma);
+                // Whether or not Obsolescent can be removed/upgrade in the same manner as Obsolete.
+                objXmlNode.TryGetBoolFieldQuickly("allowobsolescentupgrade", ref _blnAllowObsolescentUpgrade);
+                // Whether or not Bioware Suites can be created and added.
+                objXmlNode.TryGetBoolFieldQuickly("allowbiowaresuites", ref _blnAllowBiowareSuites);
+                // House rule: Free Spirits calculate their Power Points based on their MAG instead of EDG.
+                objXmlNode.TryGetBoolFieldQuickly("freespiritpowerpointsmag", ref _blnFreeSpiritPowerPointsMAG);
+                // House rule: Whether to compensate for the karma cost difference between raising skill ratings and skill groups when increasing the rating of the last skill in the group
+                objXmlNode.TryGetBoolFieldQuickly("compensateskillgroupkarmadifference",
+                                                  ref _blnCompensateSkillGroupKarmaDifference);
+                // Optional Rule: Whether Life Modules should automatically create a character back story.
+                objXmlNode.TryGetBoolFieldQuickly("autobackstory", ref _blnAutomaticBackstory);
+                // House Rule: Whether Public Awareness should be a calculated attribute based on Street Cred and Notoriety.
+                objXmlNode.TryGetBoolFieldQuickly("usecalculatedpublicawareness", ref _blnUseCalculatedPublicAwareness);
+                // House Rule: Whether Improved Ability should be capped at 0.5 (false) or 1.5 (true) of the target skill's Learned Rating.
+                objXmlNode.TryGetBoolFieldQuickly("increasedimprovedabilitymodifier",
+                                                  ref _blnIncreasedImprovedAbilityMultiplier);
+                // House Rule: Whether lifestyles will give free grid subscriptions found in HT to players.
+                objXmlNode.TryGetBoolFieldQuickly("allowfreegrids", ref _blnAllowFreeGrids);
+                // House Rule: Whether Technomancers should be allowed to receive Schooling discounts in the same manner as Awakened.
+                objXmlNode.TryGetBoolFieldQuickly("allowtechnomancerschooling", ref _blnAllowTechnomancerSchooling);
+                // House Rule: Maximum value that cyberlimbs can have as a bonus on top of their Customization.
+                objXmlNode.TryGetInt32FieldQuickly("cyberlimbattributebonuscap", ref _intCyberlimbAttributeBonusCap);
+                if (!objXmlNode.TryGetBoolFieldQuickly("cyberlimbattributebonuscapoverride",
+                                                       ref _blnCyberlimbAttributeBonusCapOverride))
+                    _blnCyberlimbAttributeBonusCapOverride = _intCyberlimbAttributeBonusCap == 4;
+                // House/Optional Rule: Attribute values are allowed to go below 0 due to Essence Loss.
+                objXmlNode.TryGetBoolFieldQuickly("unclampattributeminimum", ref _blnUnclampAttributeMinimum);
+                // Following two settings used to be stored in global options, so they are fetched from the registry if they are not present
+                // Use Rigger 5.0 drone mods
+                if (!objXmlNode.TryGetBoolFieldQuickly("dronemods", ref _blnDroneMods))
+                    GlobalSettings.LoadBoolFromRegistry(ref _blnDroneMods, "dronemods", string.Empty, true);
+                // Apply maximum drone attribute improvement rule to Pilot, too
+                if (!objXmlNode.TryGetBoolFieldQuickly("dronemodsmaximumpilot", ref _blnDroneModsMaximumPilot))
+                    GlobalSettings.LoadBoolFromRegistry(ref _blnDroneModsMaximumPilot, "dronemodsPilot", string.Empty,
+                                                        true);
+
+                // Maximum number of attributes at metatype maximum in character creation
+                if (!objXmlNode.TryGetInt32FieldQuickly("maxnumbermaxattributescreate",
+                                                        ref _intMaxNumberMaxAttributesCreate))
+                {
+                    // Legacy shim
+                    bool blnTemp = false;
+                    if (objXmlNode.TryGetBoolFieldQuickly("allow2ndmaxattribute", ref blnTemp) && blnTemp)
+                        _intMaxNumberMaxAttributesCreate = 2;
+                }
+
+                // Maximum skill rating in character creation
+                objXmlNode.TryGetInt32FieldQuickly("maxskillratingcreate", ref _intMaxSkillRatingCreate);
+                // Maximum knowledge skill rating in character creation
+                objXmlNode.TryGetInt32FieldQuickly("maxknowledgeskillratingcreate",
+                                                   ref _intMaxKnowledgeSkillRatingCreate);
+                // Maximum skill rating
+                if (objXmlNode.TryGetInt32FieldQuickly("maxskillrating", ref _intMaxSkillRating)
+                    && _intMaxSkillRatingCreate > _intMaxSkillRating)
+                    _intMaxSkillRatingCreate = _intMaxSkillRating;
+                // Maximum knowledge skill rating
+                if (objXmlNode.TryGetInt32FieldQuickly("maxknowledgeskillrating", ref _intMaxKnowledgeSkillRating)
+                    && _intMaxKnowledgeSkillRatingCreate > _intMaxKnowledgeSkillRating)
+                    _intMaxKnowledgeSkillRatingCreate = _intMaxKnowledgeSkillRating;
+
+                //House Rule: The DicePenalty per sustained spell or form
+                objXmlNode.TryGetInt32FieldQuickly("dicepenaltysustaining", ref _intDicePenaltySustaining);
+
+                // Initiative dice
+                objXmlNode.TryGetInt32FieldQuickly("mininitiativedice", ref _intMinInitiativeDice);
+                objXmlNode.TryGetInt32FieldQuickly("maxinitiativedice", ref _intMaxInitiativeDice);
+                objXmlNode.TryGetInt32FieldQuickly("minastralinitiativedice", ref _intMinAstralInitiativeDice);
+                objXmlNode.TryGetInt32FieldQuickly("maxastralinitiativedice", ref _intMaxAstralInitiativeDice);
+                objXmlNode.TryGetInt32FieldQuickly("mincoldsiminitiativedice", ref _intMinColdSimInitiativeDice);
+                objXmlNode.TryGetInt32FieldQuickly("maxcoldsiminitiativedice", ref _intMaxColdSimInitiativeDice);
+                objXmlNode.TryGetInt32FieldQuickly("minhotsiminitiativedice", ref _intMinHotSimInitiativeDice);
+                objXmlNode.TryGetInt32FieldQuickly("maxhotsiminitiativedice", ref _intMaxHotSimInitiativeDice);
+
+                XPathNavigator xmlKarmaCostNode = await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("karmacost", token);
+                // Attempt to populate the Karma values.
+                if (xmlKarmaCostNode != null)
+                {
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaattribute", ref _intKarmaAttribute);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaquality", ref _intKarmaQuality);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaspecialization", ref _intKarmaSpecialization);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaknospecialization", ref _intKarmaKnoSpecialization);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmanewknowledgeskill", ref _intKarmaNewKnowledgeSkill);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmanewactiveskill", ref _intKarmaNewActiveSkill);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmanewskillgroup", ref _intKarmaNewSkillGroup);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaimproveknowledgeskill",
+                                                             ref _intKarmaImproveKnowledgeSkill);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaimproveactiveskill",
+                                                             ref _intKarmaImproveActiveSkill);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaimproveskillgroup", ref _intKarmaImproveSkillGroup);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaspell", ref _intKarmaSpell);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmanewcomplexform", ref _intKarmaNewComplexForm);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmanewaiprogram", ref _intKarmaNewAIProgram);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmanewaiadvancedprogram",
+                                                             ref _intKarmaNewAIAdvancedProgram);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmacontact", ref _intKarmaContact);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaenemy", ref _intKarmaEnemy);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmacarryover", ref _intKarmaCarryover);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaspirit", ref _intKarmaSpirit);
+                    if (!xmlKarmaCostNode.TryGetInt32FieldQuickly("karmatechnique", ref _intKarmaTechnique))
+                        xmlKarmaCostNode.TryGetInt32FieldQuickly("karmamaneuver", ref _intKarmaTechnique);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmainitiation", ref _intKarmaInitiation);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmainitiationflat", ref _intKarmaInitiationFlat);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmametamagic", ref _intKarmaMetamagic);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmajoingroup", ref _intKarmaJoinGroup);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaleavegroup", ref _intKarmaLeaveGroup);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaenhancement", ref _intKarmaEnhancement);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmamysadpp", ref _intKarmaMysticAdeptPowerPoint);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaspiritfettering", ref _intKarmaSpiritFettering);
+
+                    // Attempt to load the Karma costs for Foci.
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaalchemicalfocus", ref _intKarmaAlchemicalFocus);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmabanishingfocus", ref _intKarmaBanishingFocus);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmabindingfocus", ref _intKarmaBindingFocus);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmacenteringfocus", ref _intKarmaCenteringFocus);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmacounterspellingfocus",
+                                                             ref _intKarmaCounterspellingFocus);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmadisenchantingfocus",
+                                                             ref _intKarmaDisenchantingFocus);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaflexiblesignaturefocus",
+                                                             ref _intKarmaFlexibleSignatureFocus);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmamaskingfocus", ref _intKarmaMaskingFocus);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmapowerfocus", ref _intKarmaPowerFocus);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaqifocus", ref _intKarmaQiFocus);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaritualspellcastingfocus",
+                                                             ref _intKarmaRitualSpellcastingFocus);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaspellcastingfocus", ref _intKarmaSpellcastingFocus);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaspellshapingfocus", ref _intKarmaSpellShapingFocus);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmasummoningfocus", ref _intKarmaSummoningFocus);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmasustainingfocus", ref _intKarmaSustainingFocus);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaweaponfocus", ref _intKarmaWeaponFocus);
+                }
+
+                XPathNavigator xmlLegacyCharacterNavigator = null;
+                // Legacy sweep by looking at MRU
+                if (!await GetBuiltInOptionAsync(token)
+                    && await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("books/book", token) == null
+                    && await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("customdatadirectorynames/directoryname", token) == null)
+                {
+                    foreach (string strMruCharacterFile in GlobalSettings.MostRecentlyUsedCharacters)
+                    {
+                        XPathDocument objXmlDocument;
+                        if (!File.Exists(strMruCharacterFile))
+                            continue;
+                        try
+                        {
+                            using (StreamReader sr = new StreamReader(strMruCharacterFile, Encoding.UTF8, true))
+                            using (XmlReader objXmlReader = XmlReader.Create(sr, GlobalSettings.SafeXmlReaderSettings))
+                                objXmlDocument = new XPathDocument(objXmlReader);
+                        }
+                        catch (XmlException)
+                        {
+                            continue;
+                        }
+
+                        xmlLegacyCharacterNavigator = await objXmlDocument.CreateNavigator()
+                                                                          .SelectSingleNodeAndCacheExpressionAsync("/character", token);
+
+                        if (xmlLegacyCharacterNavigator == null)
+                            continue;
+
+                        string strLoopSettingsFile = (await xmlLegacyCharacterNavigator
+                            .SelectSingleNodeAndCacheExpressionAsync("settings", token))?.Value;
+                        if (strLoopSettingsFile == _strFileName)
+                            break;
+                        xmlLegacyCharacterNavigator = null;
+                    }
+
+                    if (xmlLegacyCharacterNavigator == null)
+                    {
+                        foreach (string strMruCharacterFile in GlobalSettings.FavoriteCharacters)
+                        {
+                            XPathDocument objXmlDocument;
+                            if (!File.Exists(strMruCharacterFile))
+                                continue;
+                            try
+                            {
+                                using (StreamReader sr = new StreamReader(strMruCharacterFile, Encoding.UTF8, true))
+                                using (XmlReader objXmlReader
+                                       = XmlReader.Create(sr, GlobalSettings.SafeXmlReaderSettings))
+                                    objXmlDocument = new XPathDocument(objXmlReader);
+                            }
+                            catch (XmlException)
+                            {
+                                continue;
+                            }
+
+                            xmlLegacyCharacterNavigator = await objXmlDocument.CreateNavigator()
+                                                                              .SelectSingleNodeAndCacheExpressionAsync(
+                                                                                  "/character", token);
+
+                            if (xmlLegacyCharacterNavigator == null)
+                                continue;
+
+                            string strLoopSettingsFile = (await xmlLegacyCharacterNavigator
+                                .SelectSingleNodeAndCacheExpressionAsync("settings", token))?.Value;
+                            if (strLoopSettingsFile == _strFileName)
+                                break;
+                            xmlLegacyCharacterNavigator = null;
+                        }
+                    }
+                }
+
+                // Load Books.
+                _setBooks.Clear();
+                foreach (XPathNavigator xmlBook in await objXmlNode.SelectAndCacheExpressionAsync("books/book", token))
+                    _setBooks.Add(xmlBook.Value);
+                // Legacy sweep for sourcebooks
+                if (xmlLegacyCharacterNavigator != null)
+                {
+                    foreach (XPathNavigator xmlBook in await xmlLegacyCharacterNavigator.SelectAndCacheExpressionAsync(
+                                 "sources/source", token))
+                    {
+                        if (!string.IsNullOrEmpty(xmlBook.Value))
+                            _setBooks.Add(xmlBook.Value);
+                    }
+                }
+
+                // Load Custom Data Directory names.
+                int intTopMostOrder = 0;
+                int intBottomMostOrder = 0;
+                Dictionary<int, Tuple<string, bool>> dicLoadingCustomDataDirectories =
+                    new Dictionary<int, Tuple<string, bool>>(GlobalSettings.CustomDataDirectoryInfos.Count);
+                bool blnNeedToProcessInfosWithoutLoadOrder = false;
+                foreach (XPathNavigator objXmlDirectoryName in await objXmlNode.SelectAndCacheExpressionAsync(
+                             "customdatadirectorynames/customdatadirectoryname", token))
+                {
+                    string strDirectoryKey
+                        = (await objXmlDirectoryName.SelectSingleNodeAndCacheExpressionAsync("directoryname", token))?.Value;
+                    if (string.IsNullOrEmpty(strDirectoryKey))
+                        continue;
+                    string strLoopId = CustomDataDirectoryInfo.GetIdFromCharacterSettingsSaveKey(strDirectoryKey);
+                    // Only load in directories that are either present in our GlobalSettings or are enabled
+                    bool blnLoopEnabled = (await objXmlDirectoryName.SelectSingleNodeAndCacheExpressionAsync("enabled", token))?.Value
+                                          == bool.TrueString;
+                    if (blnLoopEnabled || (string.IsNullOrEmpty(strLoopId)
+                            ? GlobalSettings.CustomDataDirectoryInfos.Any(
+                                x => x.Name.Equals(strDirectoryKey, StringComparison.OrdinalIgnoreCase))
+                            : GlobalSettings.CustomDataDirectoryInfos.Any(
+                                x => x.InternalId.Equals(strLoopId, StringComparison.OrdinalIgnoreCase))))
+                    {
+                        string strOrder = (await objXmlDirectoryName.SelectSingleNodeAndCacheExpressionAsync("order", token))?.Value;
+                        if (!string.IsNullOrEmpty(strOrder)
+                            && int.TryParse(strOrder, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo,
+                                            out int intOrder))
+                        {
+                            while (dicLoadingCustomDataDirectories.ContainsKey(intOrder))
+                                ++intOrder;
+                            intTopMostOrder = Math.Max(intOrder, intTopMostOrder);
+                            intBottomMostOrder = Math.Min(intOrder, intBottomMostOrder);
+                            dicLoadingCustomDataDirectories.Add(intOrder,
+                                                                new Tuple<string, bool>(
+                                                                    strDirectoryKey, blnLoopEnabled));
+                        }
+                        else
+                            blnNeedToProcessInfosWithoutLoadOrder = true;
+                    }
+                }
+
+                await _dicCustomDataDirectoryKeys.ClearAsync(token);
+                for (int i = intBottomMostOrder; i <= intTopMostOrder; ++i)
+                {
+                    if (!dicLoadingCustomDataDirectories.ContainsKey(i))
+                        continue;
+                    string strDirectoryKey = dicLoadingCustomDataDirectories[i].Item1;
+                    string strLoopId = CustomDataDirectoryInfo.GetIdFromCharacterSettingsSaveKey(strDirectoryKey);
+                    if (string.IsNullOrEmpty(strLoopId))
+                    {
+                        CustomDataDirectoryInfo objExistingInfo = null;
+                        foreach (CustomDataDirectoryInfo objLoopInfo in GlobalSettings.CustomDataDirectoryInfos)
+                        {
+                            if (!objLoopInfo.Name.Equals(strDirectoryKey, StringComparison.OrdinalIgnoreCase))
+                                continue;
+                            if (objExistingInfo == null || objLoopInfo.MyVersion > objExistingInfo.MyVersion)
+                                objExistingInfo = objLoopInfo;
+                        }
+
+                        if (objExistingInfo != null)
+                            strDirectoryKey = objExistingInfo.CharacterSettingsSaveKey;
+                    }
+
+                    if (!await _dicCustomDataDirectoryKeys.ContainsKeyAsync(strDirectoryKey, token))
+                        await _dicCustomDataDirectoryKeys.AddAsync(strDirectoryKey, dicLoadingCustomDataDirectories[i].Item2, token);
+                }
+
+                // Legacy sweep for custom data directories
+                if (xmlLegacyCharacterNavigator != null)
+                {
+                    foreach (XPathNavigator xmlCustomDataDirectoryName in await xmlLegacyCharacterNavigator
+                                 .SelectAndCacheExpressionAsync("customdatadirectorynames/directoryname", token))
+                    {
+                        string strDirectoryKey = xmlCustomDataDirectoryName.Value;
+                        if (string.IsNullOrEmpty(strDirectoryKey))
+                            continue;
+                        string strLoopId = CustomDataDirectoryInfo.GetIdFromCharacterSettingsSaveKey(strDirectoryKey);
+                        if (string.IsNullOrEmpty(strLoopId))
+                        {
+                            CustomDataDirectoryInfo objExistingInfo = null;
+                            foreach (CustomDataDirectoryInfo objLoopInfo in GlobalSettings.CustomDataDirectoryInfos)
+                            {
+                                if (!objLoopInfo.Name.Equals(strDirectoryKey, StringComparison.OrdinalIgnoreCase))
+                                    continue;
+                                if (objExistingInfo == null || objLoopInfo.MyVersion > objExistingInfo.MyVersion)
+                                    objExistingInfo = objLoopInfo;
+                            }
+
+                            if (objExistingInfo != null)
+                                strDirectoryKey = objExistingInfo.CharacterSettingsSaveKey;
+                        }
+
+                        if (!await _dicCustomDataDirectoryKeys.ContainsKeyAsync(strDirectoryKey, token))
+                            await _dicCustomDataDirectoryKeys.AddAsync(strDirectoryKey, true, token);
+                    }
+                }
+
+                // Add in the stragglers that didn't have any load order info
+                if (blnNeedToProcessInfosWithoutLoadOrder)
+                {
+                    foreach (XPathNavigator objXmlDirectoryName in await objXmlNode.SelectAndCacheExpressionAsync(
+                                 "customdatadirectorynames/customdatadirectoryname", token))
+                    {
+                        string strDirectoryKey = (await objXmlDirectoryName.SelectSingleNodeAndCacheExpressionAsync("directoryname", token))
+                                                                    ?.Value;
+                        if (string.IsNullOrEmpty(strDirectoryKey))
+                            continue;
+                        string strLoopId = CustomDataDirectoryInfo.GetIdFromCharacterSettingsSaveKey(strDirectoryKey);
+                        string strOrder = (await objXmlDirectoryName.SelectSingleNodeAndCacheExpressionAsync("order", token))?.Value;
+                        if (!string.IsNullOrEmpty(strOrder) && int.TryParse(strOrder, NumberStyles.Integer,
+                                                                            GlobalSettings.InvariantCultureInfo,
+                                                                            out int _))
+                            continue;
+                        // Only load in directories that are either present in our GlobalSettings or are enabled
+                        bool blnLoopEnabled = (await objXmlDirectoryName.SelectSingleNodeAndCacheExpressionAsync("enabled", token))?.Value
+                                              == bool.TrueString;
+                        if (blnLoopEnabled || (string.IsNullOrEmpty(strLoopId)
+                                ? GlobalSettings.CustomDataDirectoryInfos.Any(
+                                    x => x.Name.Equals(strDirectoryKey, StringComparison.OrdinalIgnoreCase))
+                                : GlobalSettings.CustomDataDirectoryInfos.Any(
+                                    x => x.InternalId.Equals(strLoopId, StringComparison.OrdinalIgnoreCase))))
+                        {
+                            if (string.IsNullOrEmpty(strLoopId))
+                            {
+                                CustomDataDirectoryInfo objExistingInfo = null;
+                                foreach (CustomDataDirectoryInfo objLoopInfo in GlobalSettings.CustomDataDirectoryInfos)
+                                {
+                                    if (!objLoopInfo.Name.Equals(strDirectoryKey, StringComparison.OrdinalIgnoreCase))
+                                        continue;
+                                    if (objExistingInfo == null || objLoopInfo.MyVersion > objExistingInfo.MyVersion)
+                                        objExistingInfo = objLoopInfo;
+                                }
+
+                                if (objExistingInfo != null)
+                                    strDirectoryKey = objExistingInfo.InternalId;
+                            }
+
+                            if (!await _dicCustomDataDirectoryKeys.ContainsKeyAsync(strDirectoryKey, token))
+                                await _dicCustomDataDirectoryKeys.AddAsync(strDirectoryKey, blnLoopEnabled, token);
+                        }
+                    }
+                }
+
+                if (_dicCustomDataDirectoryKeys.Count == 0)
+                {
+                    foreach (XPathNavigator objXmlDirectoryName in await objXmlNode.SelectAndCacheExpressionAsync(
+                                 "customdatadirectorynames/directoryname", token))
+                    {
+                        string strDirectoryKey = objXmlDirectoryName.Value;
+                        if (string.IsNullOrEmpty(strDirectoryKey))
+                            continue;
+                        string strLoopId = CustomDataDirectoryInfo.GetIdFromCharacterSettingsSaveKey(strDirectoryKey);
+                        if (string.IsNullOrEmpty(strLoopId))
+                        {
+                            CustomDataDirectoryInfo objExistingInfo = null;
+                            foreach (CustomDataDirectoryInfo objLoopInfo in GlobalSettings.CustomDataDirectoryInfos)
+                            {
+                                if (!objLoopInfo.Name.Equals(strDirectoryKey, StringComparison.OrdinalIgnoreCase))
+                                    continue;
+                                if (objExistingInfo == null || objLoopInfo.MyVersion > objExistingInfo.MyVersion)
+                                    objExistingInfo = objLoopInfo;
+                            }
+
+                            if (objExistingInfo != null)
+                                strDirectoryKey = objExistingInfo.InternalId;
+                        }
+
+                        if (!await _dicCustomDataDirectoryKeys.ContainsKeyAsync(strDirectoryKey, token))
+                            await _dicCustomDataDirectoryKeys.AddAsync(strDirectoryKey, true, token);
+                    }
+                }
+
+                // Add in any directories that are in GlobalSettings but are not present in the settings so that we may enable them if we want to
+                foreach (string strCharacterSettingsSaveKey in GlobalSettings.CustomDataDirectoryInfos.Select(
+                             x => x.CharacterSettingsSaveKey))
+                {
+                    if (!await _dicCustomDataDirectoryKeys.ContainsKeyAsync(strCharacterSettingsSaveKey, token))
+                        await _dicCustomDataDirectoryKeys.AddAsync(strCharacterSettingsSaveKey, false, token);
+                }
+
+                await RecalculateEnabledCustomDataDirectoriesAsync(token);
+
+                foreach (XPathNavigator xmlBook in await (await XmlManager.LoadXPathAsync("books.xml", EnabledCustomDataDirectoryPaths, token: token))
+                             .SelectAndCacheExpressionAsync(
+                                 "/chummer/books/book[permanent]/code", token))
+                {
+                    if (!string.IsNullOrEmpty(xmlBook.Value))
+                        _setBooks.Add(xmlBook.Value);
+                }
+
+                await RecalculateBookXPathAsync(token);
+
+                // Used to legacy sweep build settings.
+                XPathNavigator xmlDefaultBuildNode = await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("defaultbuild", token);
+                if (objXmlNode.TryGetStringFieldQuickly("buildmethod", ref strTemp)
+                    && Enum.TryParse(strTemp, true, out CharacterBuildMethod eBuildMethod)
+                    || xmlDefaultBuildNode?.TryGetStringFieldQuickly("buildmethod", ref strTemp) == true
+                    && Enum.TryParse(strTemp, true, out eBuildMethod))
+                    _eBuildMethod = eBuildMethod;
+                if (!objXmlNode.TryGetInt32FieldQuickly("buildpoints", ref _intBuildPoints))
+                    xmlDefaultBuildNode?.TryGetInt32FieldQuickly("buildpoints", ref _intBuildPoints);
+                if (!objXmlNode.TryGetInt32FieldQuickly("qualitykarmalimit", ref _intQualityKarmaLimit)
+                    && BuildMethodUsesPriorityTables)
+                    _intQualityKarmaLimit = _intBuildPoints;
+                objXmlNode.TryGetStringFieldQuickly("priorityarray", ref _strPriorityArray);
+                objXmlNode.TryGetStringFieldQuickly("prioritytable", ref _strPriorityTable);
+                objXmlNode.TryGetInt32FieldQuickly("sumtoten", ref _intSumtoTen);
+                if (!objXmlNode.TryGetInt32FieldQuickly("availability", ref _intAvailability))
+                    xmlDefaultBuildNode?.TryGetInt32FieldQuickly("availability", ref _intAvailability);
+                objXmlNode.TryGetDecFieldQuickly("nuyenmaxbp", ref _decNuyenMaximumBP);
+
+                _setBannedWareGrades.Clear();
+                foreach (XPathNavigator xmlGrade in await objXmlNode.SelectAndCacheExpressionAsync("bannedwaregrades/grade", token))
+                    _setBannedWareGrades.Add(xmlGrade.Value);
+
+                _setRedlinerExcludes.Clear();
+                foreach (XPathNavigator xmlLimb in await objXmlNode.SelectAndCacheExpressionAsync("redlinerexclusion/limb", token))
+                    _setRedlinerExcludes.Add(xmlLimb.Value);
+
+                return true;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync();
+            }
+        }
+
         #endregion Initialization, Save, and Load Methods
 
         #region Build Properties
@@ -2346,12 +3200,21 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Method being used to build the character.
+        /// </summary>
+        public async ValueTask<CharacterBuildMethod> GetBuildMethodAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _eBuildMethod;
+        }
+
         public bool BuildMethodUsesPriorityTables
         {
             get
             {
                 using (EnterReadLock.Enter(LockObject))
-                    return BuildMethod.UsesPriorityTables();
+                    return _eBuildMethod.UsesPriorityTables();
             }
         }
 
@@ -2726,9 +3589,15 @@ namespace Chummer
 
         public string DictionaryKey => BuiltInOption ? SourceId : FileName;
 
+        public async ValueTask<string> GetDictionaryKeyAsync(CancellationToken token = default)
+        {
+            return await GetBuiltInOptionAsync(token) ? await GetSourceIdAsync(token) : await GetFileNameAsync(token);
+        }
+
         #endregion Build Properties
 
         #region Properties and Methods
+
         /// <summary>
         /// Determine whether or not a given book is in use.
         /// </summary>
@@ -2736,6 +3605,17 @@ namespace Chummer
         public bool BookEnabled(string strCode)
         {
             using (EnterReadLock.Enter(LockObject))
+                return _setBooks.Contains(strCode);
+        }
+
+        /// <summary>
+        /// Determine whether or not a given book is in use.
+        /// </summary>
+        /// <param name="strCode">Book code to search for.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async ValueTask<bool> BookEnabledAsync(string strCode, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
                 return _setBooks.Contains(strCode);
         }
 
@@ -2787,11 +3667,88 @@ namespace Chummer
         }
 
         /// <summary>
+        /// XPath query used to filter items based on the user's selected source books and optional rules.
+        /// </summary>
+        public async ValueTask<string> BookXPathAsync(bool excludeHidden = true, CancellationToken token = default)
+        {
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                          out StringBuilder sbdPath))
+            {
+                if (excludeHidden)
+                    sbdPath.Append("not(hide)");
+                using (await EnterReadLock.EnterAsync(LockObject, token))
+                {
+                    if (string.IsNullOrWhiteSpace(_strBookXPath) && _setBooks.Count > 0)
+                    {
+                        await RecalculateBookXPathAsync(token);
+                    }
+
+                    if (!string.IsNullOrEmpty(_strBookXPath))
+                    {
+                        if (sbdPath.Length != 0)
+                            sbdPath.Append(" and ");
+                        sbdPath.Append("(ignoresourcedisabled or ").Append(_strBookXPath).Append(')');
+                    }
+                    else
+                    {
+                        // Should not ever have a situation where BookXPath remains empty after recalculation, but it's here just in case
+                        Utils.BreakIfDebug();
+                    }
+
+                    if (!await GetDroneModsAsync(token))
+                    {
+                        if (sbdPath.Length != 0)
+                            sbdPath.Append(" and ");
+                        sbdPath.Append("not(optionaldrone)");
+                    }
+                }
+
+                if (sbdPath.Length > 1)
+                    return '(' + sbdPath.ToString() + ')';
+            }
+
+            // We have only the opening parentheses; return an empty string
+            // The above should not happen, so break if we're debugging, as there's something weird going on with the character's setup
+            Utils.BreakIfDebug();
+            return string.Empty;
+        }
+
+        /// <summary>
         /// XPath query used to filter items based on the user's selected source books.
         /// </summary>
         public void RecalculateBookXPath()
         {
             using (EnterReadLock.Enter(LockObject))
+            {
+                _strBookXPath = string.Empty;
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdBookXPath))
+                {
+                    sbdBookXPath.Append('(');
+                    foreach (string strBook in _setBooks)
+                    {
+                        if (!string.IsNullOrWhiteSpace(strBook))
+                        {
+                            sbdBookXPath.Append("source = ").Append(strBook.CleanXPath()).Append(" or ");
+                        }
+                    }
+
+                    if (sbdBookXPath.Length >= 4)
+                    {
+                        sbdBookXPath.Length -= 4;
+                        sbdBookXPath.Append(')');
+                        Interlocked.CompareExchange(ref _strBookXPath, sbdBookXPath.ToString(), string.Empty);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// XPath query used to filter items based on the user's selected source books.
+        /// </summary>
+        public async ValueTask RecalculateBookXPathAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
             {
                 _strBookXPath = string.Empty;
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
@@ -2919,6 +3876,75 @@ namespace Chummer
             }
         }
 
+        public async ValueTask RecalculateEnabledCustomDataDirectoriesAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
+            try
+            {
+                _setEnabledCustomDataDirectoryGuids.Clear();
+                _setEnabledCustomDataDirectories.Clear();
+                _lstEnabledCustomDataDirectoryPaths.Clear();
+                foreach (KeyValuePair<string, bool> kvpCustomDataDirectoryName in _dicCustomDataDirectoryKeys)
+                {
+                    if (!kvpCustomDataDirectoryName.Value)
+                        continue;
+                    string strKey = kvpCustomDataDirectoryName.Key;
+                    string strId
+                        = CustomDataDirectoryInfo.GetIdFromCharacterSettingsSaveKey(
+                            strKey, out Version objPreferredVersion);
+                    CustomDataDirectoryInfo objInfoToAdd = null;
+                    if (string.IsNullOrEmpty(strId))
+                    {
+                        foreach (CustomDataDirectoryInfo objLoopInfo in GlobalSettings.CustomDataDirectoryInfos)
+                        {
+                            if (!objLoopInfo.Name.Equals(strKey, StringComparison.OrdinalIgnoreCase))
+                                continue;
+                            if (objInfoToAdd == null || objLoopInfo.MyVersion > objInfoToAdd.MyVersion)
+                                objInfoToAdd = objLoopInfo;
+                        }
+                    }
+                    else
+                    {
+                        foreach (CustomDataDirectoryInfo objLoopInfo in GlobalSettings.CustomDataDirectoryInfos)
+                        {
+                            if (!objLoopInfo.InternalId.Equals(strId, StringComparison.OrdinalIgnoreCase))
+                                continue;
+                            if (objInfoToAdd == null || VersionMatchScore(objLoopInfo.MyVersion)
+                                > VersionMatchScore(objInfoToAdd.MyVersion))
+                                objInfoToAdd = objLoopInfo;
+                        }
+
+                        int VersionMatchScore(Version objVersion)
+                        {
+                            int intReturn = int.MaxValue;
+                            intReturn -= (objPreferredVersion.Build - objVersion.Build).RaiseToPower(2)
+                                         * 2.RaiseToPower(24);
+                            intReturn -= (objPreferredVersion.Major - objVersion.Major).RaiseToPower(2)
+                                         * 2.RaiseToPower(16);
+                            intReturn -= (objPreferredVersion.Minor - objVersion.Minor).RaiseToPower(2)
+                                         * 2.RaiseToPower(8);
+                            intReturn -= (objPreferredVersion.Revision - objVersion.Revision).RaiseToPower(2);
+                            return intReturn;
+                        }
+                    }
+
+                    if (objInfoToAdd != null)
+                    {
+                        if (!_setEnabledCustomDataDirectoryGuids.Contains(objInfoToAdd.Guid))
+                            _setEnabledCustomDataDirectoryGuids.Add(objInfoToAdd.Guid);
+                        _setEnabledCustomDataDirectories.Add(objInfoToAdd);
+                        _lstEnabledCustomDataDirectoryPaths.Add(objInfoToAdd.DirectoryPath);
+                    }
+                    else
+                        Utils.BreakIfDebug();
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync();
+            }
+        }
+
         public string SourceId
         {
             get
@@ -2928,6 +3954,12 @@ namespace Chummer
             }
         }
 
+        public async ValueTask<string> GetSourceIdAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _guiSourceId.ToString("D", GlobalSettings.InvariantCultureInfo);
+        }
+
         public bool BuiltInOption
         {
             get
@@ -2935,6 +3967,12 @@ namespace Chummer
                 using (EnterReadLock.Enter(LockObject))
                     return _guiSourceId != Guid.Empty;
             }
+        }
+
+        public async ValueTask<bool> GetBuiltInOptionAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _guiSourceId != Guid.Empty;
         }
 
         /// <summary>
@@ -3478,6 +4516,37 @@ namespace Chummer
         }
 
         /// <summary>
+        /// The XPath expression to use to determine how much nuyen the character gets at character creation
+        /// </summary>
+        public async ValueTask SetChargenKarmaToNuyenExpressionAsync(string value, CancellationToken token = default)
+        {
+            string strNewValue = value.CleanXPath().Trim('\"');
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+            {
+                if (_strChargenKarmaToNuyenExpression == strNewValue)
+                    return;
+                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
+                try
+                {
+                    _strChargenKarmaToNuyenExpression = strNewValue;
+                    // A safety check to make sure that we always still account for Priority-given Nuyen
+                    if (await (await SettingsManager.GetLoadedCharacterSettingsAsync(token)).ContainsKeyAsync(await GetDictionaryKeyAsync(token), token)
+                        && !_strChargenKarmaToNuyenExpression.Contains("{PriorityNuyen}"))
+                    {
+                        _strChargenKarmaToNuyenExpression
+                            = '(' + _strChargenKarmaToNuyenExpression + ") + {PriorityNuyen}";
+                    }
+
+                    OnPropertyChanged(nameof(ChargenKarmaToNuyenExpression));
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync();
+                }
+            }
+        }
+
+        /// <summary>
         /// The XPath expression to use to determine how many spirits a character can bind
         /// </summary>
         public string BoundSpiritExpression
@@ -3727,6 +4796,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// File name of the option (if it is not a built-in one).
+        /// </summary>
+        public async ValueTask<string> GetFileNameAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _strFileName;
+        }
+
+        /// <summary>
         /// Setting name.
         /// </summary>
         public string Name
@@ -3832,7 +4910,6 @@ namespace Chummer
         {
             using (await EnterReadLock.EnterAsync(LockObject, token))
                 return _intMetatypeCostMultiplier;
-
         }
 
         /// <summary>
@@ -5371,6 +6448,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Use Rigger 5.0 drone modding rules
+        /// </summary>
+        public async ValueTask<bool> GetDroneModsAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _blnDroneMods;
+        }
+
+        /// <summary>
         /// Apply drone mod attribute maximum rule to Pilot, too
         /// </summary>
         public bool DroneModsMaximumPilot
@@ -6058,7 +7144,7 @@ namespace Chummer
             }
         }
 
-        #endregion
+        #endregion Initiative Dice Properties
 
         #region Karma
 
@@ -7517,11 +8603,11 @@ namespace Chummer
 
         #endregion Karma
 
-            #region Default Build
+        #region Default Build
 
-            /// <summary>
-            /// Percentage by which adding an Initiate Grade to an Awakened is discounted if a member of a Group.
-            /// </summary>
+        /// <summary>
+        /// Percentage by which adding an Initiate Grade to an Awakened is discounted if a member of a Group.
+        /// </summary>
         public decimal KarmaMAGInitiationGroupPercent
         {
             get

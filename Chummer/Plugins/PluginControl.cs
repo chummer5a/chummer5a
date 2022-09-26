@@ -26,6 +26,7 @@ using System.Linq;
 using System.Reflection;
 using System.Security.Principal;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.ApplicationInsights.Channel;
@@ -40,11 +41,11 @@ namespace Chummer.Plugins
         //only very rudimentary initialization should take place here. Make it QUICK.
         void CustomInitialize(ChummerMainForm mainControl);
 
-        Task<ICollection<TabPage>> GetTabPages(CharacterCareer input);
+        Task<ICollection<TabPage>> GetTabPages(CharacterCareer input, CancellationToken token = default);
 
-        Task<ICollection<TabPage>> GetTabPages(CharacterCreate input);
+        Task<ICollection<TabPage>> GetTabPages(CharacterCreate input, CancellationToken token = default);
 
-        Task<ICollection<ToolStripMenuItem>> GetMenuItems(ToolStripMenuItem menu);
+        Task<ICollection<ToolStripMenuItem>> GetMenuItems(ToolStripMenuItem menu, CancellationToken token = default);
 
         [CLSCompliant(false)]
 #pragma warning disable CS3010 // CLS-compliant interfaces must have only CLS-compliant members
@@ -53,7 +54,7 @@ namespace Chummer.Plugins
 
         bool ProcessCommandLine(string parameter);
 
-        Task<ICollection<TreeNode>> GetCharacterRosterTreeNode(CharacterRoster frmCharRoster, bool forceUpdate);
+        Task<ICollection<TreeNode>> GetCharacterRosterTreeNode(CharacterRoster frmCharRoster, bool forceUpdate, CancellationToken token = default);
 
         UserControl GetOptionsControl();
 
@@ -67,7 +68,7 @@ namespace Chummer.Plugins
 
         bool SetCharacterRosterNode(TreeNode objNode);
 
-        Task<bool> DoCharacterList_DragDrop(object sender, DragEventArgs dragEventArgs, TreeView treCharacterList);
+        Task<bool> DoCharacterList_DragDrop(object sender, DragEventArgs dragEventArgs, TreeView treCharacterList, CancellationToken token = default);
     }
 
     public class PluginControl : IDisposable
@@ -456,14 +457,14 @@ namespace Chummer.Plugins
             }
         }
 
-        internal async Task CallPlugins(CharacterCareer frmCareer, CustomActivity parentActivity)
+        internal async Task CallPlugins(CharacterCareer frmCareer, CustomActivity parentActivity, CancellationToken token = default)
         {
             foreach (IPlugin plugin in MyActivePlugins)
             {
                 using (_ = await Timekeeper.StartSyncronAsync("load_plugin_GetTabPage_Career_" + plugin,
-                                                              parentActivity, CustomActivity.OperationType.DependencyOperation, plugin.ToString()))
+                                                              parentActivity, CustomActivity.OperationType.DependencyOperation, plugin.ToString(), token))
                 {
-                    ICollection<TabPage> pages = await plugin.GetTabPages(frmCareer);
+                    ICollection<TabPage> pages = await plugin.GetTabPages(frmCareer, token);
                     if (pages == null)
                         continue;
                     foreach (TabPage page in pages)
@@ -477,13 +478,13 @@ namespace Chummer.Plugins
             }
         }
 
-        internal async Task CallPlugins(CharacterCreate frmCreate, CustomActivity parentActivity)
+        internal async Task CallPlugins(CharacterCreate frmCreate, CustomActivity parentActivity, CancellationToken token = default)
         {
             foreach (IPlugin plugin in MyActivePlugins)
             {
-                using (_ = await Timekeeper.StartSyncronAsync("load_plugin_GetTabPage_Create_" + plugin, parentActivity, CustomActivity.OperationType.DependencyOperation, plugin.ToString()))
+                using (_ = await Timekeeper.StartSyncronAsync("load_plugin_GetTabPage_Create_" + plugin, parentActivity, CustomActivity.OperationType.DependencyOperation, plugin.ToString(), token))
                 {
-                    ICollection<TabPage> pages = await plugin.GetTabPages(frmCreate);
+                    ICollection<TabPage> pages = await plugin.GetTabPages(frmCreate, token);
                     if (pages == null)
                         continue;
                     foreach (TabPage page in pages)
@@ -497,14 +498,14 @@ namespace Chummer.Plugins
             }
         }
 
-        internal async Task CallPlugins(ToolStripMenuItem menu, CustomActivity parentActivity)
+        internal async Task CallPlugins(ToolStripMenuItem menu, CustomActivity parentActivity, CancellationToken token = default)
         {
             foreach (IPlugin plugin in MyActivePlugins)
             {
                 using (_ = await Timekeeper.StartSyncronAsync("load_plugin_GetMenuItems_" + plugin,
-                                                              parentActivity, CustomActivity.OperationType.DependencyOperation, plugin.ToString()))
+                                                              parentActivity, CustomActivity.OperationType.DependencyOperation, plugin.ToString(), token))
                 {
-                    ICollection<ToolStripMenuItem> menuitems = await plugin.GetMenuItems(menu);
+                    ICollection<ToolStripMenuItem> menuitems = await plugin.GetMenuItems(menu, token);
                     if (menuitems == null)
                         continue;
                     foreach (ToolStripMenuItem plugInMenu in menuitems)

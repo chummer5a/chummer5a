@@ -19,7 +19,6 @@
 
 using System;
 using System.Collections;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -33,7 +32,7 @@ namespace Chummer
     /// Use ThreadSafeObservableCollection instead for classes without INotifyPropertyChanged.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public sealed class ThreadSafeBindingList<T> : IAsyncList<T>, IAsyncReadOnlyList<T>, IBindingList, ICancelAddNew, IRaiseItemChangedEvents, IHasLockObject, IProducerConsumerCollection<T> where T : INotifyPropertyChanged
+    public sealed class ThreadSafeBindingList<T> : IAsyncList<T>, IAsyncReadOnlyList<T>, IBindingList, ICancelAddNew, IRaiseItemChangedEvents, IHasLockObject, IAsyncProducerConsumerCollection<T> where T : INotifyPropertyChanged
     {
         /// <inheritdoc />
         public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
@@ -68,12 +67,16 @@ namespace Chummer
 
         /// <inheritdoc />
         bool IList.IsFixedSize => false;
+
         /// <inheritdoc />
         bool ICollection<T>.IsReadOnly => false;
+
         /// <inheritdoc />
         bool IList.IsReadOnly => false;
+
         /// <inheritdoc />
         bool ICollection.IsSynchronized => true;
+
         /// <inheritdoc />
         object ICollection.SyncRoot => LockObject;
 
@@ -309,6 +312,29 @@ namespace Chummer
         {
             await AddAsync(item, token);
             return true;
+        }
+
+        /// <inheritdoc />
+        public async ValueTask<Tuple<bool, T>> TryTakeAsync(CancellationToken token = default)
+        {
+            // Immediately enter a write lock to prevent attempted reads until we have either taken the item we want to take or failed to do so
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
+            try
+            {
+                if (_lstData.Count > 0)
+                {
+                    // FIFO to be compliant with how the default for BlockingCollection<T> is ConcurrentQueue
+                    T objReturn = _lstData[0];
+                    _lstData.RemoveAt(0);
+                    return new Tuple<bool, T>(true, objReturn);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync();
+            }
+
+            return new Tuple<bool, T>(false, default);
         }
 
         /// <inheritdoc />
@@ -625,7 +651,7 @@ namespace Chummer
         {
             return GetEnumerator();
         }
-        
+
         public event EventHandler<RemovingOldEventArgs> BeforeRemove
         {
             add

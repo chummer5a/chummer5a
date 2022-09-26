@@ -823,7 +823,7 @@
       <allowed>Commercial</allowed>
 	  <allowmultiple />
       <bonus>
-        <selectskill />
+        <selecttext xml="skills.xml" xpath="/chummer/skills/skill/name | /chummer/knowledgeskills/skill/name" allowedit="True" />
       </bonus>
       <source>RF</source>
       <cost>2500</cost>
@@ -835,7 +835,7 @@
       <category>Entertainment - Asset</category>
       <lp>2</lp>
       <bonus>
-        <selectskill />
+        <selecttext xml="skills.xml" xpath="/chummer/skills/skill/name | /chummer/knowledgeskills/skill/name" allowedit="True" />
       </bonus>
       <allowed>Commercial</allowed>
 	  <allowmultiple />

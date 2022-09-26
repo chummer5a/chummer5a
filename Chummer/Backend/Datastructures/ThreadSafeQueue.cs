@@ -19,14 +19,13 @@
 
 using System;
 using System.Collections;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Chummer
 {
-    public class ThreadSafeQueue<T> : IHasLockObject, IProducerConsumerCollection<T>, IAsyncReadOnlyCollection<T>
+    public class ThreadSafeQueue<T> : IHasLockObject, IAsyncProducerConsumerCollection<T>, IAsyncCollection<T>, IAsyncReadOnlyCollection<T>
     {
         private readonly Queue<T> _queData;
 
@@ -69,11 +68,23 @@ namespace Chummer
             return GetEnumerator();
         }
 
+        /// <inheritdoc />
+        public void Add(T item)
+        {
+            Enqueue(item);
+        }
+
         /// <inheritdoc cref="Queue{T}.Clear" />
         public void Clear()
         {
             using (LockObject.EnterWriteLock())
                 _queData.Clear();
+        }
+
+        /// <inheritdoc />
+        public ValueTask AddAsync(T item, CancellationToken token = default)
+        {
+            return EnqueueAsync(item, token);
         }
 
         /// <inheritdoc cref="Queue{T}.Clear" />
@@ -102,6 +113,21 @@ namespace Chummer
         {
             using (await EnterReadLock.EnterAsync(LockObject, token))
                 return _queData.Contains(item);
+        }
+
+        /// <inheritdoc />
+        public async ValueTask<bool> RemoveAsync(T item, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+            {
+                if (ReferenceEquals(await PeekAsync(token), item))
+                {
+                    await DequeueAsync(token);
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         /// <inheritdoc cref="Queue{T}.TrimExcess" />
@@ -207,9 +233,9 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="Queue{T}.ToArray" />
-        public async ValueTask<T[]> ToArrayAsync()
+        public async ValueTask<T[]> ToArrayAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject))
+            using (await EnterReadLock.EnterAsync(LockObject, token))
                 return _queData.ToArray();
         }
 
@@ -220,10 +246,25 @@ namespace Chummer
                 _queData.CopyTo(array, index);
         }
 
-        /// <inheritdoc cref="Queue{T}.CopyTo" />
-        public async ValueTask CopyToAsync(T[] array, int index)
+        /// <inheritdoc />
+        public bool Remove(T item)
         {
-            using (await EnterReadLock.EnterAsync(LockObject))
+            using (EnterReadLock.Enter(LockObject))
+            {
+                if (ReferenceEquals(Peek(), item))
+                {
+                    Dequeue();
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <inheritdoc cref="Queue{T}.CopyTo" />
+        public async ValueTask CopyToAsync(T[] array, int index, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
                 _queData.CopyTo(array, index);
         }
 
@@ -234,10 +275,30 @@ namespace Chummer
             return true;
         }
 
-        public async ValueTask<bool> TryAddAsync(T item)
+        public async ValueTask<bool> TryAddAsync(T item, CancellationToken token = default)
         {
-            await EnqueueAsync(item);
+            await EnqueueAsync(item, token);
             return true;
+        }
+
+        /// <inheritdoc />
+        public async ValueTask<Tuple<bool, T>> TryTakeAsync(CancellationToken token = default)
+        {
+            // Immediately enter a write lock to prevent attempted reads until we have either taken the item we want to take or failed to do so
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
+            try
+            {
+                if (_queData.Count > 0)
+                {
+                    return new Tuple<bool, T>(true, _queData.Dequeue());
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync();
+            }
+
+            return new Tuple<bool, T>(false, default);
         }
 
         /// <inheritdoc cref="Queue{T}.CopyTo" />
@@ -254,9 +315,9 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="Queue{T}.CopyTo" />
-        public async ValueTask CopyToAsync(Array array, int index)
+        public async ValueTask CopyToAsync(Array array, int index, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject))
+            using (await EnterReadLock.EnterAsync(LockObject, token))
             {
                 foreach (T objItem in _queData)
                 {
@@ -275,6 +336,9 @@ namespace Chummer
                     return _queData.Count;
             }
         }
+
+        /// <inheritdoc />
+        public bool IsReadOnly => false;
 
         public async ValueTask<int> GetCountAsync(CancellationToken token = default)
         {

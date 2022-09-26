@@ -40,12 +40,15 @@ namespace Chummer
                 case IAsyncReadOnlyCollection<T> lstAsyncReadOnlyEnumerable:
                     lstReturn = new List<T>(await lstAsyncReadOnlyEnumerable.GetCountAsync(token));
                     break;
+
                 case ICollection<T> lstEnumerable:
                     lstReturn = new List<T>(lstEnumerable.Count);
                     break;
+
                 case IReadOnlyCollection<T> lstReadOnlyEnumerable:
                     lstReturn = new List<T>(lstReadOnlyEnumerable.Count);
                     break;
+
                 default:
                     lstReturn = new List<T>();
                     break;
@@ -69,12 +72,15 @@ namespace Chummer
                 case IAsyncReadOnlyCollection<T> lstAsyncReadOnlyEnumerable:
                     lstReturn = new List<T>(await lstAsyncReadOnlyEnumerable.GetCountAsync(token));
                     break;
+
                 case ICollection<T> lstEnumerable:
                     lstReturn = new List<T>(lstEnumerable.Count);
                     break;
+
                 case IReadOnlyCollection<T> lstReadOnlyEnumerable:
                     lstReturn = new List<T>(lstReadOnlyEnumerable.Count);
                     break;
+
                 default:
                     lstReturn = new List<T>();
                     break;
@@ -99,12 +105,15 @@ namespace Chummer
                 case IAsyncReadOnlyCollection<T> lstAsyncReadOnlyEnumerable:
                     lstReturn = new List<T>(await lstAsyncReadOnlyEnumerable.GetCountAsync(token));
                     break;
+
                 case ICollection<T> lstEnumerable:
                     lstReturn = new List<T>(lstEnumerable.Count);
                     break;
+
                 case IReadOnlyCollection<T> lstReadOnlyEnumerable:
                     lstReturn = new List<T>(lstReadOnlyEnumerable.Count);
                     break;
+
                 default:
                     lstReturn = new List<T>();
                     break;
@@ -129,9 +138,11 @@ namespace Chummer
                 case ICollection<T> lstEnumerable:
                     lstReturn = new List<T>(lstEnumerable.Count);
                     break;
+
                 case IReadOnlyCollection<T> lstReadOnlyEnumerable:
                     lstReturn = new List<T>(lstReadOnlyEnumerable.Count);
                     break;
+
                 default:
                     lstReturn = new List<T>();
                     break;
@@ -400,7 +411,7 @@ namespace Chummer
             }
             return intReturn;
         }
-        
+
         public static async Task<int> SumAsync<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, int> funcSelector, CancellationToken token = default)
         {
             return await SumAsync(await tskEnumerable, funcSelector, token);
@@ -448,7 +459,7 @@ namespace Chummer
         {
             return await SumAsync(await tskEnumerable, funcSelector, token);
         }
-        
+
         public static async Task<float> SumAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, float> funcSelector, CancellationToken token = default)
         {
             float fltReturn = 0;
@@ -514,7 +525,7 @@ namespace Chummer
             }
             return dblReturn;
         }
-        
+
         public static async Task<double> SumAsync<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, double> funcSelector, CancellationToken token = default)
         {
             return await SumAsync(await tskEnumerable, funcSelector, token);
@@ -524,7 +535,7 @@ namespace Chummer
         {
             return await SumAsync(await tskEnumerable, funcSelector, token);
         }
-        
+
         public static async Task<decimal> SumAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, decimal> funcSelector, CancellationToken token = default)
         {
             decimal decReturn = 0;
@@ -562,7 +573,7 @@ namespace Chummer
         {
             return await SumAsync(await tskEnumerable, funcSelector, token);
         }
-        
+
         public static async Task<int> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, int> funcSelector, CancellationToken token = default)
         {
             List<Task<int>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
@@ -648,7 +659,7 @@ namespace Chummer
         {
             return await SumParallelAsync(await tskEnumerable, funcSelector, token);
         }
-        
+
         public static async Task<long> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, long> funcSelector, CancellationToken token = default)
         {
             List<Task<long>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
@@ -724,7 +735,6 @@ namespace Chummer
                 lngReturn += await tskLoop;
             return lngReturn;
         }
-        
 
         public static async Task<long> SumParallelAsync<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, long> funcSelector, CancellationToken token = default)
         {
@@ -735,7 +745,7 @@ namespace Chummer
         {
             return await SumParallelAsync(await tskEnumerable, funcSelector, token);
         }
-        
+
         public static async Task<float> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, float> funcSelector, CancellationToken token = default)
         {
             List<Task<float>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
@@ -2293,6 +2303,7 @@ namespace Chummer
             }
             return objReturn;
         }
+
         public static async Task<T> AggregateAsync<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, T, T> funcAggregator, CancellationToken token = default)
         {
             return await AggregateAsync(await tskEnumerable, funcAggregator, token);
@@ -2787,7 +2798,6 @@ namespace Chummer
                 lngReturn = Math.Max(lngReturn, await tskLoop);
             return lngReturn;
         }
-
 
         public static async Task<long> MaxParallelAsync<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, long> funcSelector, CancellationToken token = default)
         {
@@ -4688,7 +4698,6 @@ namespace Chummer
             return lngReturn;
         }
 
-
         public static async Task<long> MinParallelAsync<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, long> funcSelector, CancellationToken token = default)
         {
             return await MinParallelAsync(await tskEnumerable, funcSelector, token);
@@ -6501,7 +6510,7 @@ namespace Chummer
         public static async Task ForEachParallelWithBreak<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, bool> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
         {
             using (CancellationTokenSource objSource = new CancellationTokenSource())
-                // ReSharper disable once AccessToDisposedClosure
+            // ReSharper disable once AccessToDisposedClosure
             using (token.Register(() => objSource.Cancel(false)))
             {
                 CancellationToken objToken = objSource.Token;
@@ -6559,7 +6568,7 @@ namespace Chummer
         public static async Task ForEachParallelWithBreak<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
         {
             using (CancellationTokenSource objSource = new CancellationTokenSource())
-                // ReSharper disable once AccessToDisposedClosure
+            // ReSharper disable once AccessToDisposedClosure
             using (token.Register(() => objSource.Cancel(false)))
             {
                 CancellationToken objToken = objSource.Token;

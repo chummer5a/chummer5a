@@ -38,6 +38,7 @@ namespace Chummer.Backend.Attributes
     public sealed class AttributeSection : INotifyMultiplePropertyChanged, IHasLockObject
     {
         private bool _blnLoading = true;
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
@@ -265,6 +266,7 @@ namespace Chummer.Backend.Attributes
                             objBindingSource.DataSource = GetAttributeByName(objAttribute.Abbrev);
                     }
                     break;
+
                 case NotifyCollectionChangedAction.Remove:
                     foreach (CharacterAttrib objAttribute in e.OldItems)
                     {
@@ -273,6 +275,7 @@ namespace Chummer.Backend.Attributes
                             objBindingSource.DataSource = GetAttributeByName(objAttribute.Abbrev);
                     }
                     break;
+
                 case NotifyCollectionChangedAction.Replace:
                     HashSet<CharacterAttrib> setNewAttribs = e.NewItems.OfType<CharacterAttrib>().ToHashSet();
                     foreach (CharacterAttrib objAttribute in e.OldItems)
@@ -305,6 +308,7 @@ namespace Chummer.Backend.Attributes
                             objBindingSource.DataSource = GetAttributeByName(objAttribute.Abbrev);
                     }
                     break;
+
                 case NotifyCollectionChangedAction.Remove:
                     foreach (CharacterAttrib objAttribute in e.OldItems)
                     {
@@ -313,6 +317,7 @@ namespace Chummer.Backend.Attributes
                             objBindingSource.DataSource = GetAttributeByName(objAttribute.Abbrev);
                     }
                     break;
+
                 case NotifyCollectionChangedAction.Replace:
                     HashSet<CharacterAttrib> setNewAttribs = e.NewItems.OfType<CharacterAttrib>().ToHashSet();
                     foreach (CharacterAttrib objAttribute in e.OldItems)
@@ -899,8 +904,9 @@ namespace Chummer.Backend.Attributes
             // This statement is wrapped in a try/catch since trying 1 div 2 results in an error with XSLT.
             try
             {
-                object objProcess = CommonFunctions.EvaluateInvariantXPath(objCharacterNode.SelectSingleNode(strAttributeLower + "min")?.Value.Replace("/", " div ").Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1",
-                    out bool blnIsSuccess, token);
+                (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(
+                    objCharacterNode.SelectSingleNode(strAttributeLower + "min")?.Value.Replace("/", " div ")
+                                    .Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1", token);
                 if (blnIsSuccess)
                     intMinValue = ((double)objProcess).StandardRound();
             }
@@ -909,8 +915,9 @@ namespace Chummer.Backend.Attributes
             catch (InvalidCastException) { intMinValue = 1; }
             try
             {
-                object objProcess = CommonFunctions.EvaluateInvariantXPath(objCharacterNode.SelectSingleNode(strAttributeLower + "max")?.Value.Replace("/", " div ").Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1",
-                    out bool blnIsSuccess, token);
+                (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(
+                    objCharacterNode.SelectSingleNode(strAttributeLower + "max")?.Value.Replace("/", " div ")
+                                    .Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1", token);
                 if (blnIsSuccess)
                     intMaxValue = ((double)objProcess).StandardRound();
             }
@@ -919,8 +926,9 @@ namespace Chummer.Backend.Attributes
             catch (InvalidCastException) { intMaxValue = 1; }
             try
             {
-                object objProcess = CommonFunctions.EvaluateInvariantXPath(objCharacterNode.SelectSingleNode(strAttributeLower + "aug")?.Value.Replace("/", " div ").Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1",
-                    out bool blnIsSuccess, token);
+                (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(
+                    objCharacterNode.SelectSingleNode(strAttributeLower + "aug")?.Value.Replace("/", " div ")
+                                    .Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1", token);
                 if (blnIsSuccess)
                     intAugValue = ((double)objProcess).StandardRound();
             }
@@ -1170,17 +1178,17 @@ namespace Chummer.Backend.Attributes
                                                          (dicValueOverrides?.ContainsKey(strCharAttributeName) == true
                                                              ? dicValueOverrides[strCharAttributeName]
                                                              : await objAttribute.GetTotalValueAsync(token).ConfigureAwait(false))
-                                                         .ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
+                                                         .ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                     await sbdInput.CheapReplaceAsync(strOriginal, '{' + strCharAttributeName + "Unaug}", async () =>
                                                          (dicValueOverrides?.ContainsKey(strCharAttributeName + "Unaug") == true
                                                              ? dicValueOverrides[strCharAttributeName + "Unaug"]
                                                              : await objAttribute.GetValueAsync(token).ConfigureAwait(false))
-                                                         .ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
+                                                         .ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                     await sbdInput.CheapReplaceAsync(strOriginal, '{' + strCharAttributeName + "Base}", async () =>
                                                          (dicValueOverrides?.ContainsKey(strCharAttributeName + "Base") == true
                                                              ? dicValueOverrides[strCharAttributeName + "Base"]
                                                              : await objAttribute.GetTotalBaseAsync(token).ConfigureAwait(false))
-                                                         .ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
+                                                         .ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                 }
             }
         }
@@ -1345,7 +1353,7 @@ namespace Chummer.Backend.Attributes
                                       .CheapReplaceAsync('{' + strCharAttributeName + '}', async () =>
                                       {
                                           string strInnerReturn = await (await _objCharacter.GetAttributeAsync(strCharAttributeName, token: token))
-                                              .DisplayNameShortAsync(strLanguage);
+                                              .DisplayNameShortAsync(strLanguage, token);
                                           if (blnShowValues)
                                           {
                                               if (dicValueOverrides == null
@@ -1363,7 +1371,7 @@ namespace Chummer.Backend.Attributes
                                       .CheapReplaceAsync('{' + strCharAttributeName + "Unaug}", async () =>
                                       {
                                           string strInnerReturn = await (await _objCharacter.GetAttributeAsync(strCharAttributeName, token: token))
-                                              .DisplayNameShortAsync(strLanguage);
+                                              .DisplayNameShortAsync(strLanguage, token);
                                           if (blnShowValues)
                                           {
                                               if (dicValueOverrides == null
@@ -1384,7 +1392,7 @@ namespace Chummer.Backend.Attributes
                                       .CheapReplaceAsync('{' + strCharAttributeName + "Base}", async () =>
                                       {
                                           string strInnerReturn = await (await _objCharacter.GetAttributeAsync(strCharAttributeName, token: token))
-                                              .DisplayNameShortAsync(strLanguage);
+                                              .DisplayNameShortAsync(strLanguage, token);
                                           if (blnShowValues)
                                           {
                                               if (dicValueOverrides == null
@@ -1426,7 +1434,7 @@ namespace Chummer.Backend.Attributes
                     await sbdInput.CheapReplaceAsync(strOriginal, '{' + strCharAttributeName + '}', async () =>
                     {
                         string strInnerReturn = await (await _objCharacter.GetAttributeAsync(strCharAttributeName, token: token))
-                                                                   .DisplayNameShortAsync(strLanguage);
+                                                                   .DisplayNameShortAsync(strLanguage, token);
                         if (blnShowValues)
                         {
                             if (dicValueOverrides == null
@@ -1436,11 +1444,11 @@ namespace Chummer.Backend.Attributes
                         }
 
                         return strInnerReturn;
-                    });
+                    }, token: token);
                     await sbdInput.CheapReplaceAsync(strOriginal, '{' + strCharAttributeName + "Unaug}", async () =>
                     {
                         string strInnerReturn = await (await _objCharacter.GetAttributeAsync(strCharAttributeName, token: token))
-                                                                   .DisplayNameShortAsync(strLanguage);
+                                                                   .DisplayNameShortAsync(strLanguage, token);
                         if (blnShowValues)
                         {
                             if (dicValueOverrides == null
@@ -1453,11 +1461,11 @@ namespace Chummer.Backend.Attributes
                         return string.Format(objCultureInfo,
                                              await LanguageManager.GetStringAsync("String_NaturalAttribute", strLanguage, token: token),
                                              strInnerReturn);
-                    });
+                    }, token: token);
                     await sbdInput.CheapReplaceAsync(strOriginal, '{' + strCharAttributeName + "Base}", async () =>
                     {
                         string strInnerReturn = await (await _objCharacter.GetAttributeAsync(strCharAttributeName, token: token))
-                                                                   .DisplayNameShortAsync(strLanguage);
+                                                                   .DisplayNameShortAsync(strLanguage, token);
                         if (blnShowValues)
                         {
                             if (dicValueOverrides == null
@@ -1470,7 +1478,7 @@ namespace Chummer.Backend.Attributes
                         return string.Format(objCultureInfo,
                                              await LanguageManager.GetStringAsync("String_BaseAttribute", strLanguage, token: token),
                                              strInnerReturn);
-                    });
+                    }, token: token);
                 }
             }
         }
@@ -1521,6 +1529,60 @@ namespace Chummer.Backend.Attributes
                 {
                     _blnLoading = blnOldLoading;
                 }
+            }
+        }
+
+        internal async ValueTask ResetAsync(bool blnFirstTime = false, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
+            try
+            {
+                bool blnOldLoading = !blnFirstTime && _blnLoading;
+                try
+                {
+                    _blnLoading = true;
+                    await AttributeList.ClearAsync(token);
+                    await SpecialAttributeList.ClearAsync(token);
+                    foreach (string strAttribute in AttributeStrings)
+                    {
+                        CharacterAttrib objAttribute;
+                        switch (CharacterAttrib.ConvertToAttributeCategory(strAttribute))
+                        {
+                            case CharacterAttrib.AttributeCategory.Special:
+                                objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
+                                                                   CharacterAttrib.AttributeCategory.Special);
+                                await SpecialAttributeList.AddAsync(objAttribute, token);
+                                break;
+
+                            case CharacterAttrib.AttributeCategory.Standard:
+                                objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
+                                                                   CharacterAttrib.AttributeCategory.Standard);
+                                await AttributeList.AddAsync(objAttribute, token);
+                                break;
+                        }
+                    }
+
+                    if (blnFirstTime)
+                    {
+                        foreach (BindingSource objSource in _dicBindings.Values)
+                            objSource.Dispose();
+                        await _dicBindings.ClearAsync(token);
+                        foreach (string strAttributeString in AttributeStrings)
+                        {
+                            await _dicBindings.AddAsync(strAttributeString, new BindingSource(), token);
+                        }
+                    }
+
+                    ResetBindings(token);
+                }
+                finally
+                {
+                    _blnLoading = blnOldLoading;
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync();
             }
         }
 

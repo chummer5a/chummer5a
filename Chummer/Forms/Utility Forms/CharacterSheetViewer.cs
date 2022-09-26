@@ -201,9 +201,9 @@ namespace Chummer
             // Re-generate the output when a new sheet is selected.
             if (!_blnLoading)
             {
-                _strSelectedSheet = await cboXSLT.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString() ?? string.Empty, _objGenericToken);
                 try
                 {
+                    _strSelectedSheet = await cboXSLT.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString() ?? string.Empty, _objGenericToken);
                     await RefreshSheet(_objGenericToken);
                 }
                 catch (OperationCanceledException)
@@ -370,7 +370,7 @@ namespace Chummer
                         switch (ePdfPrinterDialogResult)
                         {
                             case DialogResult.Cancel:
-                            case DialogResult.Yes when await DoPdfPrinterShortcut(strPdfPrinter):
+                            case DialogResult.Yes when await DoPdfPrinterShortcut(strPdfPrinter, _objGenericToken):
                                 return;
 
                             case DialogResult.Yes:
@@ -492,43 +492,63 @@ namespace Chummer
                 if (strOldSelected.Contains(Path.DirectorySeparatorChar))
                     strOldSelected
                         = strOldSelected.Substring(strOldSelected.LastIndexOf(Path.DirectorySeparatorChar) + 1);
-                await PopulateXsltList(_objGenericToken);
-                string strNewLanguage = cboLanguage.SelectedValue?.ToString() ?? strOldSelected;
-                if (strNewLanguage == strOldSelected)
+                try
                 {
-                    _strSelectedSheet
-                        = strNewLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
-                            ? strOldSelected
-                            : Path.Combine(strNewLanguage, strOldSelected);
-                }
+                    await PopulateXsltList(_objGenericToken);
 
-                cboXSLT.SelectedValue = _strSelectedSheet;
-                // If the desired sheet was not found, fall back to the Shadowrun 5 sheet.
-                if (cboXSLT.SelectedIndex == -1)
-                {
-                    int intNameIndex = cboXSLT.FindStringExact(
-                        strNewLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
-                            ? GlobalSettings.DefaultCharacterSheet
-                            : GlobalSettings.DefaultCharacterSheet.Substring(
-                                strNewLanguage.LastIndexOf(Path.DirectorySeparatorChar) + 1));
-                    if (intNameIndex != -1)
-                        cboXSLT.SelectedIndex = intNameIndex;
-                    else if (cboXSLT.Items.Count > 0)
+                    string strNewLanguage
+                        = (await cboLanguage.DoThreadSafeFuncAsync(x => x.SelectedValue, token: _objGenericToken))
+                        ?.ToString() ?? strOldSelected;
+                    if (strNewLanguage == strOldSelected)
                     {
                         _strSelectedSheet
                             = strNewLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
-                                ? GlobalSettings.DefaultCharacterSheetDefaultValue
-                                : Path.Combine(strNewLanguage, GlobalSettings.DefaultCharacterSheetDefaultValue);
-                        cboXSLT.SelectedValue = _strSelectedSheet;
-                        if (cboXSLT.SelectedIndex == -1)
-                        {
-                            cboXSLT.SelectedIndex = 0;
-                            _strSelectedSheet = cboXSLT.SelectedValue?.ToString();
-                        }
+                                ? strOldSelected
+                                : Path.Combine(strNewLanguage, strOldSelected);
                     }
-                }
 
-                _blnLoading = false;
+                    await cboXSLT.DoThreadSafeAsync(x =>
+                    {
+                        x.SelectedValue = _strSelectedSheet;
+                        // If the desired sheet was not found, fall back to the Shadowrun 5 sheet.
+                        if (x.SelectedIndex == -1)
+                        {
+                            int intNameIndex = x.FindStringExact(
+                                strNewLanguage.Equals(GlobalSettings.DefaultLanguage,
+                                                      StringComparison.OrdinalIgnoreCase)
+                                    ? GlobalSettings.DefaultCharacterSheet
+                                    : GlobalSettings.DefaultCharacterSheet.Substring(
+                                        strNewLanguage.LastIndexOf(Path.DirectorySeparatorChar) + 1));
+                            if (intNameIndex != -1)
+                                x.SelectedIndex = intNameIndex;
+                            else if (x.Items.Count > 0)
+                            {
+                                _strSelectedSheet
+                                    = strNewLanguage.Equals(GlobalSettings.DefaultLanguage,
+                                                            StringComparison.OrdinalIgnoreCase)
+                                        ? GlobalSettings.DefaultCharacterSheetDefaultValue
+                                        : Path.Combine(strNewLanguage,
+                                                       GlobalSettings.DefaultCharacterSheetDefaultValue);
+                                x.SelectedValue = _strSelectedSheet;
+                                if (x.SelectedIndex == -1)
+                                {
+                                    x.SelectedIndex = 0;
+                                    _strSelectedSheet = x.SelectedValue?.ToString();
+                                }
+                            }
+                        }
+                    }, _objGenericToken);
+                }
+                catch (OperationCanceledException)
+                {
+                    //swallow this
+                    return;
+                }
+                finally
+                {
+                    _blnLoading = false;
+                }
+                
                 try
                 {
                     await RefreshCharacters(_objGenericToken);
@@ -724,7 +744,7 @@ namespace Chummer
                 XslCompiledTransform objXslTransform;
                 try
                 {
-                    objXslTransform = await XslManager.GetTransformForFileAsync(strXslPath);
+                    objXslTransform = await XslManager.GetTransformForFileAsync(strXslPath, token);
                 }
                 catch (ArgumentException)
                 {
@@ -858,7 +878,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask<bool> DoPdfPrinterShortcut(string strPdfPrinterName)
+        private async ValueTask<bool> DoPdfPrinterShortcut(string strPdfPrinterName, CancellationToken token = default)
         {
             // We've got a proper, built-in PDF printer, so let's use that instead of wkhtmltopdf
             string strOldHeader = null;
@@ -906,7 +926,7 @@ namespace Chummer
                 {
                     // There is also no way to silently have it print to a PDF, so we have to show the print dialog
                     // and have the user click through, though the PDF printer will be temporarily set as their default
-                    await webViewer.DoThreadSafeAsync(x => x.ShowPrintDialog(), _objGenericToken);
+                    await webViewer.DoThreadSafeAsync(x => x.ShowPrintDialog(), token);
                 }
             }
             catch

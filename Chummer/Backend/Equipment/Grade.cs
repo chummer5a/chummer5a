@@ -176,10 +176,13 @@ namespace Chummer.Backend.Equipment
             {
                 case Improvement.ImprovementSource.Drug:
                     return "drugcomponents.xml";
+
                 case Improvement.ImprovementSource.Bioware:
                     return "bioware.xml";
+
                 case Improvement.ImprovementSource.Cyberware:
                     return "cyberware.xml";
+
                 default:
                     Utils.BreakIfDebug();
                     return "cyberware.xml";
@@ -228,14 +231,14 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The name of the Grade as it should be displayed in lists.
         /// </summary>
-        public async ValueTask<string> DisplayNameAsync(string strLanguage)
+        public async ValueTask<string> DisplayNameAsync(string strLanguage, CancellationToken token = default)
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
-            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage);
+            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token);
             return objNode != null
-                ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value ?? Name
+                ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token))?.Value ?? Name
                 : Name;
         }
 

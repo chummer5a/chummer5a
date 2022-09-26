@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Chummer
@@ -122,11 +123,11 @@ namespace Chummer
             }
             return dblReturn;
         }
-        
-        public async Task<int> NextAsync()
+
+        public async Task<int> NextAsync(CancellationToken token = default)
         {
             int intReturn;
-            await _objLock.WaitAsync();
+            await _objLock.WaitAsync(token);
             try
             {
                 intReturn = _objRandom.Next();
@@ -137,11 +138,11 @@ namespace Chummer
             }
             return intReturn;
         }
-        
-        public async Task<int> NextAsync(int minValue, int maxValue)
+
+        public async Task<int> NextAsync(int minValue, int maxValue, CancellationToken token = default)
         {
             int intReturn;
-            await _objLock.WaitAsync();
+            await _objLock.WaitAsync(token);
             try
             {
                 intReturn = _objRandom.Next(minValue, maxValue);
@@ -152,11 +153,11 @@ namespace Chummer
             }
             return intReturn;
         }
-        
-        public async Task<int> NextAsync(int maxValue)
+
+        public async Task<int> NextAsync(int maxValue, CancellationToken token = default)
         {
             int intReturn;
-            await _objLock.WaitAsync();
+            await _objLock.WaitAsync(token);
             try
             {
                 intReturn = _objRandom.Next(maxValue);
@@ -167,10 +168,10 @@ namespace Chummer
             }
             return intReturn;
         }
-        
-        public async Task NextBytesAsync(byte[] buffer)
+
+        public async Task NextBytesAsync(byte[] buffer, CancellationToken token = default)
         {
-            await _objLock.WaitAsync();
+            await _objLock.WaitAsync(token);
             try
             {
                 _objRandom.NextBytes(buffer);
@@ -180,11 +181,11 @@ namespace Chummer
                 _objLock.Release();
             }
         }
-        
-        public async Task<double> NextDoubleAsync()
+
+        public async Task<double> NextDoubleAsync(CancellationToken token = default)
         {
             double dblReturn;
-            await _objLock.WaitAsync();
+            await _objLock.WaitAsync(token);
             try
             {
                 dblReturn = _objRandom.NextDouble();

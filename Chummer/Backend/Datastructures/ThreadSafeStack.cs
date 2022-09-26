@@ -19,14 +19,13 @@
 
 using System;
 using System.Collections;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Chummer
 {
-    public class ThreadSafeStack<T> : IHasLockObject, IProducerConsumerCollection<T>, IAsyncReadOnlyCollection<T>
+    public class ThreadSafeStack<T> : IHasLockObject, IAsyncProducerConsumerCollection<T>, IAsyncCollection<T>, IAsyncReadOnlyCollection<T>
     {
         private readonly Stack<T> _stkData;
 
@@ -69,11 +68,23 @@ namespace Chummer
             return GetEnumerator();
         }
 
+        /// <inheritdoc />
+        public void Add(T item)
+        {
+            Push(item);
+        }
+
         /// <inheritdoc cref="Stack{T}.Clear"/>
         public void Clear()
         {
             using (LockObject.EnterWriteLock())
                 _stkData.Clear();
+        }
+
+        /// <inheritdoc />
+        public ValueTask AddAsync(T item, CancellationToken token = default)
+        {
+            return PushAsync(item, token);
         }
 
         /// <inheritdoc cref="Stack{T}.Clear"/>
@@ -266,6 +277,21 @@ namespace Chummer
         }
 
         /// <inheritdoc />
+        public bool Remove(T item)
+        {
+            using (EnterReadLock.Enter(LockObject))
+            {
+                if (ReferenceEquals(Peek(), item))
+                {
+                    Pop();
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <inheritdoc />
         public void CopyTo(Array array, int index)
         {
             using (EnterReadLock.Enter(LockObject))
@@ -283,6 +309,21 @@ namespace Chummer
         {
             using (await EnterReadLock.EnterAsync(LockObject, token))
                 _stkData.CopyTo(array, index);
+        }
+
+        /// <inheritdoc />
+        public async ValueTask<bool> RemoveAsync(T item, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+            {
+                if (ReferenceEquals(await PeekAsync(token), item))
+                {
+                    await PopAsync(token);
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         /// <inheritdoc cref="Stack{T}.CopyTo"/>
@@ -307,6 +348,9 @@ namespace Chummer
                     return _stkData.Count;
             }
         }
+
+        /// <inheritdoc />
+        public bool IsReadOnly => false;
 
         public async ValueTask<int> GetCountAsync(CancellationToken token = default)
         {

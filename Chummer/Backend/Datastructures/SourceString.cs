@@ -50,7 +50,7 @@ namespace Chummer
         }
 
         public static ValueTask<SourceString> GetSourceStringAsync(string strSourceString, string strLanguage = "",
-                                                                         CultureInfo objCultureInfo = null, Character objCharacter = null)
+                                                                         CultureInfo objCultureInfo = null, Character objCharacter = null, CancellationToken token = default)
         {
             string strCode = strSourceString ?? string.Empty;
             int intPage = 0;
@@ -63,7 +63,7 @@ namespace Chummer
                     int.TryParse(strCode.Substring(intWhitespaceIndex + 1), NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out intPage);
                 }
             }
-            return GetSourceStringAsync(strCode, intPage, strLanguage, objCultureInfo, objCharacter);
+            return GetSourceStringAsync(strCode, intPage, strLanguage, objCultureInfo, objCharacter, token);
         }
 
         public static SourceString GetSourceString(string strSource, string strPage, string strLanguage = "",
@@ -74,10 +74,10 @@ namespace Chummer
         }
 
         public static ValueTask<SourceString> GetSourceStringAsync(string strSource, string strPage, string strLanguage = "",
-                                                                   CultureInfo objCultureInfo = null, Character objCharacter = null)
+                                                                   CultureInfo objCultureInfo = null, Character objCharacter = null, CancellationToken token = default)
         {
             int.TryParse(strPage, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intPage);
-            return GetSourceStringAsync(strSource, intPage, strLanguage, objCultureInfo, objCharacter);
+            return GetSourceStringAsync(strSource, intPage, strLanguage, objCultureInfo, objCharacter, token);
         }
 
         public static SourceString GetSourceString(string strSource, int intPage, string strLanguage = "",
@@ -91,12 +91,12 @@ namespace Chummer
         }
 
         public static async ValueTask<SourceString> GetSourceStringAsync(string strSource, int intPage, string strLanguage = "",
-                                                                         CultureInfo objCultureInfo = null, Character objCharacter = null)
+                                                                         CultureInfo objCultureInfo = null, Character objCharacter = null, CancellationToken token = default)
         {
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalSettings.Language;
-            return new SourceString(await CommonFunctions.LanguageBookShortAsync(strSource, strLanguage, objCharacter),
-                                    await CommonFunctions.LanguageBookLongAsync(strSource, strLanguage, objCharacter), intPage,
+            return new SourceString(await CommonFunctions.LanguageBookShortAsync(strSource, strLanguage, objCharacter, token),
+                                    await CommonFunctions.LanguageBookLongAsync(strSource, strLanguage, objCharacter, token), intPage,
                                     strLanguage, objCultureInfo);
         }
 

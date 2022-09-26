@@ -19,7 +19,6 @@
 
 using System;
 using System.Collections;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -36,7 +35,7 @@ namespace Chummer
     /// </summary>
     /// <typeparam name="TKey">Key to use for the dictionary.</typeparam>
     /// <typeparam name="TValue">Values to use for the dictionary.</typeparam>
-    public sealed class LockingDictionary<TKey, TValue> : IDictionary, IAsyncDictionary<TKey, TValue>, IAsyncReadOnlyDictionary<TKey, TValue>, IProducerConsumerCollection<KeyValuePair<TKey, TValue>>, IHasLockObject, ISerializable, IDeserializationCallback
+    public sealed class LockingDictionary<TKey, TValue> : IDictionary, IAsyncDictionary<TKey, TValue>, IAsyncReadOnlyDictionary<TKey, TValue>, IAsyncProducerConsumerCollection<KeyValuePair<TKey, TValue>>, IHasLockObject, ISerializable, IDeserializationCallback
     {
         private readonly Dictionary<TKey, TValue> _dicData;
         public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
@@ -65,7 +64,7 @@ namespace Chummer
         {
             _dicData = new Dictionary<TKey, TValue>(comparer);
         }
-        
+
         /// <inheritdoc />
         public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
         {
@@ -89,7 +88,7 @@ namespace Chummer
             objReturn.SetEnumerator(_dicData.GetEnumerator());
             return objReturn;
         }
-        
+
         public async ValueTask<IEnumerator<KeyValuePair<TKey, TValue>>> GetEnumeratorAsync(CancellationToken token = default)
         {
             LockingEnumerator<KeyValuePair<TKey, TValue>> objReturn = await LockingEnumerator<KeyValuePair<TKey, TValue>>.GetAsync(this, token);
@@ -238,6 +237,37 @@ namespace Chummer
             }
         }
 
+        /// <inheritdoc />
+        public async ValueTask<Tuple<bool, KeyValuePair<TKey, TValue>>> TryTakeAsync(CancellationToken token = default)
+        {
+            bool blnTakeSuccessful = false;
+            TKey objKeyToTake = default;
+            TValue objValue = default;
+            // Immediately enter a write lock to prevent attempted reads until we have either taken the item we want to take or failed to do so
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
+            try
+            {
+                if (_dicData.Count > 0)
+                {
+                    // FIFO to be compliant with how the default for BlockingCollection<T> is ConcurrentQueue
+                    objKeyToTake = _dicData.Keys.First();
+                    if (_dicData.TryGetValue(objKeyToTake, out objValue))
+                    {
+                        blnTakeSuccessful = _dicData.Remove(objKeyToTake);
+                    }
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync();
+            }
+
+            return blnTakeSuccessful
+                ? new Tuple<bool, KeyValuePair<TKey, TValue>>(
+                    true, new KeyValuePair<TKey, TValue>(objKeyToTake, objValue))
+                : new Tuple<bool, KeyValuePair<TKey, TValue>>(false, default);
+        }
+
         public async ValueTask<KeyValuePair<TKey, TValue>[]> ToArrayAsync(CancellationToken token = default)
         {
             using (await EnterReadLock.EnterAsync(LockObject, token))
@@ -276,7 +306,7 @@ namespace Chummer
         {
             Remove((TKey)key);
         }
-        
+
         public async ValueTask<bool> RemoveAsync(KeyValuePair<TKey, TValue> item, CancellationToken token = default)
         {
             // Immediately enter a write lock to prevent attempted reads until we have either removed the item we want to remove or failed to do so
@@ -292,7 +322,7 @@ namespace Chummer
                 await objLocker.DisposeAsync();
             }
         }
-        
+
         public async ValueTask<bool> RemoveAsync(TKey key, CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
@@ -306,7 +336,7 @@ namespace Chummer
                 await objLocker.DisposeAsync();
             }
         }
-        
+
         public ValueTask<bool> RemoveAsync(object key, CancellationToken token = default)
         {
             return RemoveAsync((TKey)key, token);

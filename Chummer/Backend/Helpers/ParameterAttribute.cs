@@ -42,7 +42,7 @@ namespace Chummer
         private readonly Gear _objGear;
         private readonly string _strAttribute;
         private readonly double[] _dblFixedValues;
-        
+
         public ParameterAttribute(Gear gear, string attribute)
         {
             _objGear = gear ?? throw new ArgumentNullException(nameof(gear));

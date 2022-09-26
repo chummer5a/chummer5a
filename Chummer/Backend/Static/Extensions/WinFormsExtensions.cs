@@ -304,9 +304,9 @@ namespace Chummer
             return frmForm.ShowDialogNonBlockingSafeAsync(Program.GetFormForDialog(objCharacter), token);
         }
 
-#endregion
+        #endregion Forms Extensions
 
-#region Controls Extensions
+        #region Controls Extensions
 
         /// <summary>
         /// Runs code on a WinForms control in a thread-safe manner and waits for it to complete.
@@ -1572,6 +1572,55 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Bind a control's property to a data property with an async getter in one direction. Similar to a one-way databinding, but the processing is done
+        /// with async tasks, thus bypassing potential synchronous locking issues.
+        /// </summary>
+        /// <typeparam name="T1">Control type of <paramref name="objControl"/>.</typeparam>
+        /// <typeparam name="T2">Source for the data property.</typeparam>
+        /// <typeparam name="T3">Type of the data property that will be bound to the control</typeparam>
+        /// <param name="objControl">Control to bind.</param>
+        /// <param name="funcControlSetter">Setter function to use to set the appropriate property of <paramref name="objControl"/>.</param>
+        /// <param name="objDataSource">Instance owner of <paramref name="strDataMember"/>.</param>
+        /// <param name="strDataMember">Name of the property of <paramref name="objDataSource"/> that is being bound to <paramref name="objControl"/> through the <paramref name="funcControlSetter"/> setter.</param>
+        /// <param name="funcAsyncDataGetter">Asynchronous getter function of <paramref name="strDataMember"/>.</param>
+        /// <param name="objGetterToken">Cancellation to use in any asynchronous getting or updating of </param>
+        /// <param name="token">Cancellation token to listen to for this assignment.</param>
+        public static async ValueTask RegisterOneWayAsyncDataBinding<T1, T2, T3>(
+            this T1 objControl, Action<T1, T3> funcControlSetter, T2 objDataSource, string strDataMember,
+            Func<T2, Task<T3>> funcAsyncDataGetter, CancellationToken objGetterToken = default,
+            CancellationToken token = default)
+            where T1 : Control where T2 : INotifyPropertyChanged
+        {
+            if (objControl == null)
+                return;
+            await Utils.RunOnMainThreadAsync(() =>
+            {
+                if (!objControl.IsHandleCreated)
+                {
+                    IntPtr _ = objControl.Handle; // accessing Handle forces its creation
+                }
+            }, token);
+            await funcAsyncDataGetter.Invoke(objDataSource)
+                                     .ContinueWith(
+                                         x => objControl.DoThreadSafeAsync(
+                                             y => funcControlSetter.Invoke(y, x.Result), objGetterToken),
+                                         objGetterToken).Unwrap();
+            objDataSource.PropertyChanged += OnPropertyChangedAsync;
+            await Utils.RunOnMainThreadAsync(() => objControl.Disposed += (o, args) => objDataSource.PropertyChanged -= OnPropertyChangedAsync, token);
+            async void OnPropertyChangedAsync(object sender, PropertyChangedEventArgs e)
+            {
+                if (e.PropertyName == strDataMember && !objGetterToken.IsCancellationRequested)
+                {
+                    await funcAsyncDataGetter.Invoke(objDataSource)
+                                             .ContinueWith(
+                                                 x => objControl.DoThreadSafeAsync(
+                                                     y => funcControlSetter.Invoke(y, x.Result), objGetterToken),
+                                                 objGetterToken).Unwrap();
+                }
+            }
+        }
+
+        /// <summary>
         /// Bind a control's property to a property via OnPropertyChanged
         /// </summary>
         /// <param name="objControl">Control to bind</param>
@@ -1659,9 +1708,9 @@ namespace Chummer
             }
         }
 
-#endregion Controls Extensions
+        #endregion Controls Extensions
 
-#region ComboBox Extensions
+        #region ComboBox Extensions
 
         public static void PopulateWithListItems(this ListBox lsbThis, IEnumerable<ListItem> lstItems, CancellationToken token = default)
         {
@@ -1840,9 +1889,9 @@ namespace Chummer
             }
         }
 
-#endregion ComboBox Extensions
+        #endregion ComboBox Extensions
 
-#region TreeNode Extensions
+        #region TreeNode Extensions
 
         public static TreeNode GetTopParent(this TreeNode objThis)
         {
@@ -1922,9 +1971,9 @@ namespace Chummer
             return intReturn;
         }
 
-#endregion TreeNode Extensions
+        #endregion TreeNode Extensions
 
-#region TreeView Extensions
+        #region TreeView Extensions
 
         /// <summary>
         /// Sort the contents of a TreeView alphabetically within each group Node.
@@ -2134,9 +2183,9 @@ namespace Chummer
             return intReturn;
         }
 
-#endregion TreeView Extensions
+        #endregion TreeView Extensions
 
-#region TreeNodeCollection Extensions
+        #region TreeNodeCollection Extensions
 
         /// <summary>
         /// Recursive method to clear the background color for all TreeNodes except the one currently being hovered over during a drag-and-drop operation.
@@ -2155,9 +2204,10 @@ namespace Chummer
             }
         }
 
-#endregion TreeNodeCollection Extensions
+        #endregion TreeNodeCollection Extensions
 
-#region TextBox Extensions
+        #region TextBox Extensions
+
         /// <summary>
         /// Automatically (un)set vertical scrollbars for a TextBox based on whether or not it needs them.
         /// </summary>
@@ -2175,7 +2225,7 @@ namespace Chummer
                     foreach (string strLine in astrLines)
                     {
                         Size objTextSize = TextRenderer.MeasureText(strLine, txtText.Font);
-                        intNumDisplayedLines += ((decimal) objTextSize.Width / txtText.Width).StandardRound();
+                        intNumDisplayedLines += ((decimal)objTextSize.Width / txtText.Width).StandardRound();
                         intMaxLineHeight = Math.Max(intMaxLineHeight, objTextSize.Height);
                     }
                 }
@@ -2200,6 +2250,6 @@ namespace Chummer
             });
         }
 
-#endregion
+        #endregion TextBox Extensions
     }
 }

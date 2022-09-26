@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Chummer;
@@ -70,21 +71,21 @@ namespace SamplePlugin
             GC.SuppressFinalize(this);
         }
 
-        public Task<bool> DoCharacterList_DragDrop(object sender, DragEventArgs dragEventArgs, TreeView treCharacterList)
+        public Task<bool> DoCharacterList_DragDrop(object sender, DragEventArgs dragEventArgs, TreeView treCharacterList, CancellationToken token = default)
         {
             //if we don't want to use the dragdrop-feature, just return true
             // If you do this all synchronously, just make sure you return the final result wrapped in a task
             return Task.FromResult(true);
         }
 
-        public Task<ICollection<TreeNode>> GetCharacterRosterTreeNode(CharacterRoster frmCharRoster, bool forceUpdate)
+        public Task<ICollection<TreeNode>> GetCharacterRosterTreeNode(CharacterRoster frmCharRoster, bool forceUpdate, CancellationToken token = default)
         {
             //here you can add nodes to the character roster.
             // If you do this all synchronously, just make sure you return the final result wrapped in a task
             return Task.FromResult<ICollection<TreeNode>>(null);
         }
 
-        public Task<ICollection<ToolStripMenuItem>> GetMenuItems(ToolStripMenuItem menu)
+        public Task<ICollection<ToolStripMenuItem>> GetMenuItems(ToolStripMenuItem menu, CancellationToken token = default)
         {
             //here you could add menu items to the chummer menu
             // If you do this all synchronously, just make sure you return the final result wrapped in a task
@@ -127,7 +128,7 @@ namespace SamplePlugin
                 //here you can inject your own string in every chummer save file. Preferable as json, so you can
                 //a) distingish it from the main chummer elements in xml
                 //b) actually use it ;)
-                var savesetting = "This Char was saved with the SamplePlugin enabled!";
+                string savesetting = "This Char was saved with the SamplePlugin enabled!";
                 return JsonConvert.SerializeObject(savesetting, Formatting.Indented);
             }
             catch (Exception e)
@@ -137,7 +138,7 @@ namespace SamplePlugin
             return null;
         }
 
-        public Task<ICollection<TabPage>> GetTabPages(CharacterCareer input)
+        public Task<ICollection<TabPage>> GetTabPages(CharacterCareer input, CancellationToken token = default)
         {
             //here you can add (or remove!) tabs from frmCareer
             //as well as manipulate every single tab
@@ -145,7 +146,7 @@ namespace SamplePlugin
             return Task.FromResult<ICollection<TabPage>>(null);
         }
 
-        public Task<ICollection<TabPage>> GetTabPages(CharacterCreate input)
+        public Task<ICollection<TabPage>> GetTabPages(CharacterCreate input, CancellationToken token = default)
         {
             //the same goes for the frmCreate
             return Task.FromResult<ICollection<TabPage>>(null);

@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.XPath;
@@ -169,37 +170,37 @@ namespace Chummer
         /// <summary>
         /// Build the list of Arts.
         /// </summary>
-        private async ValueTask BuildList()
+        private async ValueTask BuildList(CancellationToken token = default)
         {
             if (_blnLoading)
                 return;
             
             string strFilter = _strXPathFilter;
-            string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text);
+            string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token: token);
             if (!string.IsNullOrEmpty(strSearch))
                 strFilter += " and " + CommonFunctions.GenerateSearchXPath(strSearch);
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                            out List<ListItem> lstArts))
             {
-                bool blnLimitList = await chkLimitList.DoThreadSafeFuncAsync(x => x.Checked);
+                bool blnLimitList = await chkLimitList.DoThreadSafeFuncAsync(x => x.Checked, token: token);
                 foreach (XPathNavigator objXmlMetamagic in
                          _objXmlDocument.Select(_strBaseXPath + '[' + strFilter + ']'))
                 {
-                    string strId = (await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("id"))?.Value;
+                    string strId = (await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("id", token: token))?.Value;
                     if (!string.IsNullOrEmpty(strId)
                         && (!blnLimitList || objXmlMetamagic.RequirementsMet(_objCharacter)))
                     {
-                        lstArts.Add(new ListItem((await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("id"))?.Value,
-                                                 (await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
-                                                 ?? (await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value
-                                                 ?? await LanguageManager.GetStringAsync("String_Unknown")));
+                        lstArts.Add(new ListItem((await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("id", token: token))?.Value,
+                                                 (await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("translate", token: token))?.Value
+                                                 ?? (await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("name", token: token))?.Value
+                                                 ?? await LanguageManager.GetStringAsync("String_Unknown", token: token)));
                     }
                 }
 
                 lstArts.Sort(CompareListItems.CompareNames);
-                string strOldSelected = await lstArt.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
+                string strOldSelected = await lstArt.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token);
                 _blnLoading = true;
-                await lstArt.PopulateWithListItemsAsync(lstArts);
+                await lstArt.PopulateWithListItemsAsync(lstArts, token: token);
                 _blnLoading = false;
                 await lstArt.DoThreadSafeAsync(x =>
                 {
@@ -207,7 +208,7 @@ namespace Chummer
                         x.SelectedValue = strOldSelected;
                     else
                         x.SelectedIndex = -1;
-                });
+                }, token: token);
             }
         }
 

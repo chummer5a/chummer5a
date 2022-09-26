@@ -33,7 +33,18 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static int DivAwayFromZero(this int intA, int intB)
         {
-            return (intA + Math.Sign(intA) * (Math.Abs(intB) - 1)) / intB; // Adding 1 if modulo > 0 would require a separate modulo operation that is as slow as division
+            if (intB == 0)
+                throw new DivideByZeroException();
+            if (intA == 0)
+                return 0;
+            // Adding 1 if modulo > 0 would require a separate modulo operation that is as slow as division
+            if (intA > 0)
+            {
+                --intA;
+                return (intB > 0 ? intA + intB : intA - intB) / intB;
+            }
+            ++intA;
+            return (intB > 0 ? intA - intB : intA + intB) / intB;
         }
 
         /// <summary>
@@ -70,7 +81,7 @@ namespace Chummer
                     return 0;
 
                 case -1:
-                    return 1 - 2 * (Math.Abs(intPower) & 1);
+                    return (Math.Abs(intPower) & 1) == 0 ? 1 : -1;
             }
             // Integer division always rounds towards zero, so every base except the ones already handled ends up producing 0 after rounding
             if (intPower < 0)

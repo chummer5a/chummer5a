@@ -394,54 +394,8 @@ namespace Chummer
                     case Label _:
                     case Button _:
                     case CheckBox _:
-                    {
-                        objChild.DoThreadSafe((x, y) =>
                         {
-                            string strControlTag = x.Tag?.ToString();
-                            if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int _)
-                                                                     && !strControlTag.IsGuid()
-                                                                     && !File.Exists(strControlTag))
-                                x.Text = GetString(strControlTag, strIntoLanguage, token: y);
-                            else if (x.Text.StartsWith('['))
-                                x.Text = string.Empty;
-                        }, token);
-                        break;
-                    }
-                    case ToolStrip tssStrip:
-                    {
-                        tssStrip.DoThreadSafe((x, y) =>
-                        {
-                            foreach (ToolStripItem tssItem in x.Items)
-                            {
-                                TranslateToolStripItemsRecursively(tssItem, strIntoLanguage, eIntoRightToLeft, y);
-                            }
-                        }, token);
-
-                        break;
-                    }
-                    case ListView lstList:
-                    {
-                        lstList.DoThreadSafe((x, y) =>
-                        {
-                            foreach (ColumnHeader objHeader in x.Columns)
-                            {
-                                string strControlTag = objHeader.Tag?.ToString();
-                                if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int _)
-                                                                         && !strControlTag.IsGuid()
-                                                                         && !File.Exists(strControlTag))
-                                    objHeader.Text = GetString(strControlTag, strIntoLanguage, token: y);
-                                else if (objHeader.Text.StartsWith('['))
-                                    objHeader.Text = string.Empty;
-                            }
-                        }, token);
-
-                        break;
-                    }
-                    case TabControl objTabControl:
-                    {
-                        foreach (TabPage tabPage in objTabControl.DoThreadSafeFunc((x, y) => x.TabPages, token))
-                        {
-                            tabPage.DoThreadSafe((x, y) =>
+                            objChild.DoThreadSafe((x, y) =>
                             {
                                 string strControlTag = x.Tag?.ToString();
                                 if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int _)
@@ -451,11 +405,57 @@ namespace Chummer
                                 else if (x.Text.StartsWith('['))
                                     x.Text = string.Empty;
                             }, token);
-                            UpdateControls(tabPage, strIntoLanguage, eIntoRightToLeft, token);
+                            break;
                         }
+                    case ToolStrip tssStrip:
+                        {
+                            tssStrip.DoThreadSafe((x, y) =>
+                            {
+                                foreach (ToolStripItem tssItem in x.Items)
+                                {
+                                    TranslateToolStripItemsRecursively(tssItem, strIntoLanguage, eIntoRightToLeft, y);
+                                }
+                            }, token);
 
-                        break;
-                    }
+                            break;
+                        }
+                    case ListView lstList:
+                        {
+                            lstList.DoThreadSafe((x, y) =>
+                            {
+                                foreach (ColumnHeader objHeader in x.Columns)
+                                {
+                                    string strControlTag = objHeader.Tag?.ToString();
+                                    if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int _)
+                                                                             && !strControlTag.IsGuid()
+                                                                             && !File.Exists(strControlTag))
+                                        objHeader.Text = GetString(strControlTag, strIntoLanguage, token: y);
+                                    else if (objHeader.Text.StartsWith('['))
+                                        objHeader.Text = string.Empty;
+                                }
+                            }, token);
+
+                            break;
+                        }
+                    case TabControl objTabControl:
+                        {
+                            foreach (TabPage tabPage in objTabControl.DoThreadSafeFunc((x, y) => x.TabPages, token))
+                            {
+                                tabPage.DoThreadSafe((x, y) =>
+                                {
+                                    string strControlTag = x.Tag?.ToString();
+                                    if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int _)
+                                                                             && !strControlTag.IsGuid()
+                                                                             && !File.Exists(strControlTag))
+                                        x.Text = GetString(strControlTag, strIntoLanguage, token: y);
+                                    else if (x.Text.StartsWith('['))
+                                        x.Text = string.Empty;
+                                }, token);
+                                UpdateControls(tabPage, strIntoLanguage, eIntoRightToLeft, token);
+                            }
+
+                            break;
+                        }
                     case SplitContainer objSplitControl:
                         UpdateControls(objSplitControl.DoThreadSafeFunc((x, y) => x.Panel1, token), strIntoLanguage,
                                        eIntoRightToLeft, token);
@@ -464,65 +464,65 @@ namespace Chummer
                         break;
 
                     case GroupBox _:
-                    {
-                        objChild.DoThreadSafe((x, y) =>
                         {
-                            string strControlTag = x.Tag?.ToString();
-                            if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int _)
-                                                                     && !strControlTag.IsGuid()
-                                                                     && !File.Exists(strControlTag))
-                                x.Text = GetString(strControlTag, strIntoLanguage, token: y);
-                            else if (x.Text.StartsWith('['))
-                                x.Text = string.Empty;
-                        }, token);
-                        UpdateControls(objChild, strIntoLanguage, eIntoRightToLeft, token);
-                        break;
-                    }
+                            objChild.DoThreadSafe((x, y) =>
+                            {
+                                string strControlTag = x.Tag?.ToString();
+                                if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int _)
+                                                                         && !strControlTag.IsGuid()
+                                                                         && !File.Exists(strControlTag))
+                                    x.Text = GetString(strControlTag, strIntoLanguage, token: y);
+                                else if (x.Text.StartsWith('['))
+                                    x.Text = string.Empty;
+                            }, token);
+                            UpdateControls(objChild, strIntoLanguage, eIntoRightToLeft, token);
+                            break;
+                        }
                     case Panel _:
                         UpdateControls(objChild, strIntoLanguage, eIntoRightToLeft, token);
                         break;
 
                     case TreeView treTree:
-                    {
-                        treTree.DoThreadSafe((x, y) =>
                         {
-                            foreach (TreeNode objNode in x.Nodes)
+                            treTree.DoThreadSafe((x, y) =>
                             {
-                                if (objNode.Level == 0)
+                                foreach (TreeNode objNode in x.Nodes)
                                 {
-                                    string strControlTag = objNode.Tag?.ToString();
-                                    if (!string.IsNullOrEmpty(strControlTag)
-                                        && strControlTag.StartsWith("Node_", StringComparison.Ordinal))
+                                    if (objNode.Level == 0)
                                     {
-                                        objNode.Text = GetString(strControlTag, strIntoLanguage, token: y);
+                                        string strControlTag = objNode.Tag?.ToString();
+                                        if (!string.IsNullOrEmpty(strControlTag)
+                                            && strControlTag.StartsWith("Node_", StringComparison.Ordinal))
+                                        {
+                                            objNode.Text = GetString(strControlTag, strIntoLanguage, token: y);
+                                        }
+                                        else if (objNode.Text.StartsWith('['))
+                                            objNode.Text = string.Empty;
                                     }
                                     else if (objNode.Text.StartsWith('['))
                                         objNode.Text = string.Empty;
                                 }
-                                else if (objNode.Text.StartsWith('['))
-                                    objNode.Text = string.Empty;
-                            }
-                        }, token);
+                            }, token);
 
-                        break;
-                    }
+                            break;
+                        }
                     case DataGridView objDataGridView:
-                    {
-                        objDataGridView.DoThreadSafe((x, y) =>
                         {
-                            foreach (DataGridViewTextBoxColumn objColumn in x.Columns)
+                            objDataGridView.DoThreadSafe((x, y) =>
                             {
-                                if (objColumn is DataGridViewTextBoxColumnTranslated objTranslatedColumn
-                                    && !string.IsNullOrWhiteSpace(objTranslatedColumn.TranslationTag))
+                                foreach (DataGridViewTextBoxColumn objColumn in x.Columns)
                                 {
-                                    objColumn.HeaderText
-                                        = GetString(objTranslatedColumn.TranslationTag, strIntoLanguage, token: y);
+                                    if (objColumn is DataGridViewTextBoxColumnTranslated objTranslatedColumn
+                                        && !string.IsNullOrWhiteSpace(objTranslatedColumn.TranslationTag))
+                                    {
+                                        objColumn.HeaderText
+                                            = GetString(objTranslatedColumn.TranslationTag, strIntoLanguage, token: y);
+                                    }
                                 }
-                            }
-                        }, token);
+                            }, token);
 
-                        break;
-                    }
+                            break;
+                        }
                     case ITranslatable translatable:
                         // let custom nodes determine how they want to be translated
                         translatable.Translate(token);
@@ -737,8 +737,9 @@ namespace Chummer
         /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strLanguage">Language into which to translate the compound string.</param>
         /// <param name="blnUseTranslateExtra">Whether to use TranslateExtra() instead of GetString() for translating localized strings.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns></returns>
-        public static async ValueTask<string> ProcessCompoundString(string strInput, string strLanguage = "", Character objCharacter = null, bool blnUseTranslateExtra = false)
+        public static async ValueTask<string> ProcessCompoundString(string strInput, string strLanguage = "", Character objCharacter = null, bool blnUseTranslateExtra = false, CancellationToken token = default)
         {
             if (Utils.IsDesignerMode || string.IsNullOrEmpty(strInput))
                 return strInput;
@@ -820,13 +821,13 @@ namespace Chummer
                         if (strLoop.IndexOfAny('{', '}') != -1)
                         {
                             strLoop = await ProcessCompoundString(strLoop, strLanguage, objCharacter,
-                                                                  blnUseTranslateExtra);
+                                                                  blnUseTranslateExtra, token);
                         }
 
                         // Use more expensive TranslateExtra if flag is set to use that
                         sbdReturn.Append(blnUseTranslateExtra
-                                             ? await TranslateExtraAsync(strLoop, strLanguage, objCharacter)
-                                             : await GetStringAsync(strLoop, strLanguage, false));
+                                             ? await TranslateExtraAsync(strLoop, strLanguage, objCharacter, token: token)
+                                             : await GetStringAsync(strLoop, strLanguage, false, token));
                     }
                     // Items between curly bracket sets do not need processing, so just append them to the return value wholesale
                     else

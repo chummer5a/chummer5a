@@ -193,14 +193,14 @@ namespace Chummer
                 switch (kevent.KeyCode)
                 {
                     case Keys.Space:
-                    {
-                        if (MouseButtons == MouseButtons.None)
                         {
-                            State = PushButtonState.Normal;
-                        }
+                            if (MouseButtons == MouseButtons.None)
+                            {
+                                State = PushButtonState.Normal;
+                            }
 
-                        break;
-                    }
+                            break;
+                        }
                     case Keys.Apps when MouseButtons == MouseButtons.None && !_isSplitMenuVisible:
                         ShowContextMenuStrip();
                         break;
@@ -431,10 +431,12 @@ namespace Chummer
 
         public override Size GetPreferredSize(Size proposedSize)
         {
+            if (Disposing || IsDisposed)
+                return default;
             Size preferredSize = base.GetPreferredSize(proposedSize);
 
             //autosize correctly for splitbuttons
-            if (_showSplit && !Disposing && !IsDisposed)
+            if (_showSplit)
             {
                 if (AutoSize)
                     return CalculateButtonAutoSize(preferredSize);

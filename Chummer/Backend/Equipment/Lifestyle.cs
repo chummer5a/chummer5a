@@ -230,7 +230,7 @@ namespace Chummer.Backend.Equipment
                     {
                         objFreeGrid.Remove(false);
                     }
-                    
+
                     XmlDocument xmlLifestyleDocument = _objCharacter.LoadData("lifestyles.xml");
                     foreach (XmlNode xmlNode in lstGridNodes)
                     {
@@ -792,14 +792,15 @@ namespace Chummer.Backend.Equipment
         /// Returns Page if not found or the string is empty.
         /// </summary>
         /// <param name="strLanguage">Language file keyword to use.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns></returns>
-        public async ValueTask<string> DisplayPageAsync(string strLanguage)
+        public async ValueTask<string> DisplayPageAsync(string strLanguage, CancellationToken token = default)
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
-            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage);
+            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token);
             string s = objNode != null
-                ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage"))?.Value ?? Page
+                ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage", token: token))?.Value ?? Page
                 : Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
@@ -1662,6 +1663,7 @@ namespace Chummer.Backend.Equipment
                         objQuality.Dispose();
                     }
                     break;
+
                 case NotifyCollectionChangedAction.Replace:
                     HashSet<LifestyleQuality> setNewLifestyleQualities = e.NewItems.OfType<LifestyleQuality>().ToHashSet();
                     foreach (LifestyleQuality objQuality in e.OldItems)
@@ -1670,6 +1672,7 @@ namespace Chummer.Backend.Equipment
                             objQuality.Dispose();
                     }
                     break;
+
                 case NotifyCollectionChangedAction.Move:
                     return;
             }

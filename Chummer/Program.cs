@@ -178,7 +178,8 @@ namespace Chummer
                     }
 
                     // Mono, non-Windows native stuff, and Win11 don't always play nice with ProfileOptimization, so it's better to just not bother with it when running under them
-                    if (!IsMono && Utils.HumanReadableOSVersion.StartsWith("Windows") && !Utils.HumanReadableOSVersion.StartsWith("Windows 11"))
+                    if (!IsMono && Utils.HumanReadableOSVersion.StartsWith("Windows", StringComparison.OrdinalIgnoreCase)
+                                && !Utils.HumanReadableOSVersion.StartsWith("Windows 11", StringComparison.OrdinalIgnoreCase))
                     {
                         ProfileOptimization.SetProfileRoot(Utils.GetStartupPath);
                         ProfileOptimization.StartProfile(strProfileOptimizationName);
@@ -1070,7 +1071,7 @@ namespace Chummer
                 };
                 if (blnShowErrors) // Only do the autosave prompt if we will show prompts
                 {
-                    if (!strFileName.StartsWith(strAutosavesPath))
+                    if (!strFileName.StartsWith(strAutosavesPath, StringComparison.OrdinalIgnoreCase))
                     {
                         string strNewAutosaveName = Path.GetFileName(strFileName);
                         if (!string.IsNullOrEmpty(strNewAutosaveName))
@@ -1151,7 +1152,7 @@ namespace Chummer
                 if (blnLoadAutosave)
                     objCharacter.FileName = strFileName;
                 // Clear out file name if the character's file is in the autosaves folder because we do not want them to be manually saving there.
-                if (objCharacter.FileName.StartsWith(strAutosavesPath))
+                if (objCharacter.FileName.StartsWith(strAutosavesPath, StringComparison.OrdinalIgnoreCase))
                     objCharacter.FileName = string.Empty;
             }
             else if (blnShowErrors)

@@ -654,14 +654,15 @@ namespace Chummer
         /// Returns Page if not found or the string is empty.
         /// </summary>
         /// <param name="strLanguage">Language file keyword to use.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns></returns>
-        public async ValueTask<string> DisplayPageAsync(string strLanguage)
+        public async ValueTask<string> DisplayPageAsync(string strLanguage, CancellationToken token = default)
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
-            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage);
+            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token);
             string s = objNode != null
-                ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage"))?.Value ?? Page
+                ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage", token: token))?.Value ?? Page
                 : Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
@@ -692,9 +693,9 @@ namespace Chummer
         /// <summary>
         /// Name of the Improvement that added this quality.
         /// </summary>
-        public Task<string> GetSourceNameAsync(string strLanguage)
+        public Task<string> GetSourceNameAsync(string strLanguage, CancellationToken token = default)
         {
-            return _objCharacter.TranslateExtraAsync(_strSourceName, strLanguage);
+            return _objCharacter.TranslateExtraAsync(_strSourceName, strLanguage, token: token);
         }
 
         /// <summary>
@@ -822,13 +823,13 @@ namespace Chummer
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
         /// </summary>
-        public async ValueTask<string> DisplayNameShortAsync(string strLanguage)
+        public async ValueTask<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
-            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage);
-            return objNode != null ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value ?? Name : Name;
+            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token);
+            return objNode != null ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token))?.Value ?? Name : Name;
         }
 
         /// <summary>
@@ -866,15 +867,15 @@ namespace Chummer
         /// The name of the object as it should be displayed in lists. Name (Extra).
         /// If there is more than one instance of the same quality, it's: Name (Extra) Number
         /// </summary>
-        public async ValueTask<string> DisplayNameAsync(CultureInfo objCulture, string strLanguage)
+        public async ValueTask<string> DisplayNameAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
-            string strReturn = await DisplayNameShortAsync(strLanguage);
-            string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage);
+            string strReturn = await DisplayNameShortAsync(strLanguage, token);
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token);
 
             if (!string.IsNullOrEmpty(Extra))
             {
                 // Attempt to retrieve the CharacterAttribute name.
-                strReturn += strSpace + '(' + await _objCharacter.TranslateExtraAsync(Extra, strLanguage) + ')';
+                strReturn += strSpace + '(' + await _objCharacter.TranslateExtraAsync(Extra, strLanguage, token: token) + ')';
             }
 
             int intLevels = Levels;
@@ -885,10 +886,10 @@ namespace Chummer
             else
             {
                 // Add a "1" to qualities that have levels, but for which we are only at level 1
-                XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage);
+                XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token);
                 if (objNode != null)
                 {
-                    XPathNavigator xmlMyLimitNode = await objNode.SelectSingleNodeAndCacheExpressionAsync("limit");
+                    XPathNavigator xmlMyLimitNode = await objNode.SelectSingleNodeAndCacheExpressionAsync("limit", token: token);
                     if (xmlMyLimitNode != null && int.TryParse(xmlMyLimitNode.Value, out int _))
                         strReturn += strSpace + intLevels.ToString(objCulture);
                 }
@@ -899,7 +900,13 @@ namespace Chummer
 
         public string CurrentDisplayName => DisplayName(GlobalSettings.CultureInfo, GlobalSettings.Language);
 
+        public ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default) =>
+            DisplayNameAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
+
         public string CurrentDisplayNameShort => DisplayNameShort(GlobalSettings.Language);
+
+        public ValueTask<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default) =>
+            DisplayNameShortAsync(GlobalSettings.Language, token);
 
         /// <summary>
         /// Returns how many instances of this quality there are in the character's quality list

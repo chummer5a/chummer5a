@@ -222,15 +222,22 @@ namespace Codaxy.WkHtmlToPdf
                 if (document.ExtraParams != null)
                 {
                     foreach (KeyValuePair<string, string> extraParam in document.ExtraParams)
-                        sbdParams.Append("--").Append(extraParam.Key).Append(' ').Append(extraParam.Value)
-                                 .Append(' ');
+					{
+						if (string.IsNullOrEmpty(extraParam.Key))
+							continue;
+                        sbdParams.Append("--").Append(extraParam.Key).Append(' ');
+						if (!string.IsNullOrEmpty(extraParam.Value))
+							sbdParams.Append(extraParam.Value).Append(' ');
+					}
                 }
 
                 if (document.Cookies != null)
                 {
                     foreach (KeyValuePair<string, string> cookie in document.Cookies)
-                        sbdParams.Append("--cookie ").Append(cookie.Key).Append(' ').Append(cookie.Value)
-                                 .Append(' ');
+					{
+						if (!string.IsNullOrEmpty(cookie.Key) && !string.IsNullOrEmpty(cookie.Value))
+							sbdParams.Append("--cookie ").Append(cookie.Key).Append(' ').Append(cookie.Value).Append(' ');
+					}
                 }
 
                 sbdParams.Append('\"').Append(document.Url).Append("\" \"").Append(outputPdfFilePath).Append('\"');
@@ -385,22 +392,27 @@ namespace Codaxy.WkHtmlToPdf
                     using (FileStream fs = new FileStream(outputPdfFilePath, FileMode.Open))
                     {
                         byte[] buffer = ArrayPool<byte>.Shared.Rent(32 * 1024);
-                        int read;
-
-                        if (blnSync)
+                        try
                         {
-                            // ReSharper disable once MethodHasAsyncOverload
-                            while ((read = fs.Read(buffer, 0, buffer.Length)) > 0)
+                            int read;
+
+                            if (blnSync)
+                            {
                                 // ReSharper disable once MethodHasAsyncOverload
-                                woutput.OutputStream.Write(buffer, 0, read);
+                                while ((read = fs.Read(buffer, 0, buffer.Length)) > 0)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    woutput.OutputStream.Write(buffer, 0, read);
+                            }
+                            else
+                            {
+                                while ((read = await fs.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false)) > 0)
+                                    await woutput.OutputStream.WriteAsync(buffer, 0, read).ConfigureAwait(false);
+                            }
                         }
-                        else
+                        finally
                         {
-                            while ((read = await fs.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false)) > 0)
-                                await woutput.OutputStream.WriteAsync(buffer, 0, read).ConfigureAwait(false);
+                            ArrayPool<byte>.Shared.Return(buffer, true);
                         }
-
-                        ArrayPool<byte>.Shared.Return(buffer);
                     }
                 }
 

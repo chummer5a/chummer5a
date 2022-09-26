@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
@@ -334,21 +335,21 @@ namespace Chummer
         }
 
         // Rebuild the list of Spirits/Sprites based on the character's selected Tradition/Stream.
-        public async ValueTask RebuildSpiritList(Tradition objTradition)
+        public async ValueTask RebuildSpiritList(Tradition objTradition, CancellationToken token = default)
         {
             if (objTradition == null)
                 return;
-            string strCurrentValue = await cboSpiritName.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()) ?? _objSpirit.Name;
+            string strCurrentValue = await cboSpiritName.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token) ?? _objSpirit.Name;
 
             XPathNavigator objXmlDocument = await _objSpirit.CharacterObject.LoadDataXPathAsync(_objSpirit.EntityType == SpiritType.Spirit
                 ? "traditions.xml"
-                : "streams.xml");
+                : "streams.xml", token: token);
 
             using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
                                                             out HashSet<string> setLimitCategories))
             {
                 foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(
-                             _objSpirit.CharacterObject, Improvement.ImprovementType.LimitSpiritCategory))
+                             _objSpirit.CharacterObject, Improvement.ImprovementType.LimitSpiritCategory, token: token))
                 {
                     setLimitCategories.Add(objImprovement.ImprovedName);
                 }
@@ -370,7 +371,7 @@ namespace Chummer
                                 = objXmlDocument.SelectSingleNode(
                                     "/chummer/spirits/spirit[name = " + strSpiritCombat.CleanXPath() + ']');
                             string strTranslatedName = objXmlCritterNode != null
-                                ? (await objXmlCritterNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
+                                ? (await objXmlCritterNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token))?.Value
                                   ?? strSpiritCombat
                                 : strSpiritCombat;
                             lstCritters.Add(new ListItem(strSpiritCombat, strTranslatedName));
@@ -383,7 +384,7 @@ namespace Chummer
                                 = objXmlDocument.SelectSingleNode(
                                     "/chummer/spirits/spirit[name = " + strSpiritDetection.CleanXPath() + ']');
                             string strTranslatedName = objXmlCritterNode != null
-                                ? (await objXmlCritterNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
+                                ? (await objXmlCritterNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token))?.Value
                                   ?? strSpiritDetection
                                 : strSpiritDetection;
                             lstCritters.Add(new ListItem(strSpiritDetection, strTranslatedName));
@@ -396,7 +397,7 @@ namespace Chummer
                                 = objXmlDocument.SelectSingleNode(
                                     "/chummer/spirits/spirit[name = " + strSpiritHealth.CleanXPath() + ']');
                             string strTranslatedName = objXmlCritterNode != null
-                                ? (await objXmlCritterNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
+                                ? (await objXmlCritterNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token))?.Value
                                   ?? strSpiritHealth
                                 : strSpiritHealth;
                             lstCritters.Add(new ListItem(strSpiritHealth, strTranslatedName));
@@ -409,7 +410,7 @@ namespace Chummer
                                 = objXmlDocument.SelectSingleNode(
                                     "/chummer/spirits/spirit[name = " + strSpiritIllusion.CleanXPath() + ']');
                             string strTranslatedName = objXmlCritterNode != null
-                                ? (await objXmlCritterNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
+                                ? (await objXmlCritterNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token))?.Value
                                   ?? strSpiritIllusion
                                 : strSpiritIllusion;
                             lstCritters.Add(new ListItem(strSpiritIllusion, strTranslatedName));
@@ -422,7 +423,7 @@ namespace Chummer
                                 = objXmlDocument.SelectSingleNode(
                                     "/chummer/spirits/spirit[name = " + strSpiritManipulation.CleanXPath() + ']');
                             string strTranslatedName = objXmlCritterNode != null
-                                ? (await objXmlCritterNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
+                                ? (await objXmlCritterNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token))?.Value
                                   ?? strSpiritManipulation
                                 : strSpiritManipulation;
                             lstCritters.Add(new ListItem(strSpiritManipulation, strTranslatedName));
@@ -430,18 +431,18 @@ namespace Chummer
                     }
                     else
                     {
-                        if ((await objTradition.GetNodeXPathAsync())?.SelectSingleNode("spirits/spirit[. = \"All\"]") != null)
+                        if ((await objTradition.GetNodeXPathAsync(token: token))?.SelectSingleNode("spirits/spirit[. = \"All\"]") != null)
                         {
                             if (setLimitCategories.Count == 0)
                             {
                                 foreach (XPathNavigator objXmlCritterNode in await objXmlDocument.SelectAndCacheExpressionAsync(
-                                             "/chummer/spirits/spirit"))
+                                             "/chummer/spirits/spirit", token: token))
                                 {
-                                    string strSpiritName = (await objXmlCritterNode.SelectSingleNodeAndCacheExpressionAsync("name"))
+                                    string strSpiritName = (await objXmlCritterNode.SelectSingleNodeAndCacheExpressionAsync("name", token: token))
                                                                             ?.Value;
                                     lstCritters.Add(new ListItem(strSpiritName,
                                                                  (await objXmlCritterNode
-                                                                     .SelectSingleNodeAndCacheExpressionAsync("translate"))
+                                                                     .SelectSingleNodeAndCacheExpressionAsync("translate", token: token))
                                                                      ?.Value
                                                                  ?? strSpiritName));
                                 }
@@ -454,7 +455,7 @@ namespace Chummer
                                         = objXmlDocument.SelectSingleNode(
                                             "/chummer/spirits/spirit[name = " + strSpiritName.CleanXPath() + ']');
                                     string strTranslatedName = objXmlCritterNode != null
-                                        ? (await objXmlCritterNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
+                                        ? (await objXmlCritterNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token))?.Value
                                           ?? strSpiritName
                                         : strSpiritName;
                                     lstCritters.Add(new ListItem(strSpiritName, strTranslatedName));
@@ -463,7 +464,7 @@ namespace Chummer
                         }
                         else
                         {
-                            XPathNodeIterator xmlSpiritList = (await objTradition.GetNodeXPathAsync())?.Select("spirits/*");
+                            XPathNodeIterator xmlSpiritList = (await objTradition.GetNodeXPathAsync(token: token))?.Select("spirits/*");
                             if (xmlSpiritList != null)
                             {
                                 foreach (XPathNavigator objXmlSpirit in xmlSpiritList)
@@ -476,7 +477,7 @@ namespace Chummer
                                                 "/chummer/spirits/spirit[name = " + strSpiritName.CleanXPath()
                                                 + ']');
                                         string strTranslatedName = objXmlCritterNode != null
-                                            ? (await objXmlCritterNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
+                                            ? (await objXmlCritterNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token))?.Value
                                               ?? strSpiritName
                                             : strSpiritName;
                                         lstCritters.Add(new ListItem(strSpiritName, strTranslatedName));
@@ -491,7 +492,7 @@ namespace Chummer
                     if (_objSpirit.CharacterObject.MAGEnabled)
                     {
                         foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(
-                                     _objSpirit.CharacterObject, Improvement.ImprovementType.AddSpirit))
+                                     _objSpirit.CharacterObject, Improvement.ImprovementType.AddSpirit, token: token))
                         {
                             string strImprovedName = objImprovement.ImprovedName;
                             if (!string.IsNullOrEmpty(strImprovedName))
@@ -510,7 +511,7 @@ namespace Chummer
                     if (_objSpirit.CharacterObject.RESEnabled)
                     {
                         foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(
-                                     _objSpirit.CharacterObject, Improvement.ImprovementType.AddSprite))
+                                     _objSpirit.CharacterObject, Improvement.ImprovementType.AddSprite, token: token))
                         {
                             string strImprovedName = objImprovement.ImprovedName;
                             if (!string.IsNullOrEmpty(strImprovedName))
@@ -525,10 +526,10 @@ namespace Chummer
                             }
                         }
                     }
-                    
-                    await cboSpiritName.PopulateWithListItemsAsync(lstCritters);
+
+                    await cboSpiritName.PopulateWithListItemsAsync(lstCritters, token: token);
                     // Set the control back to its original value.
-                    await cboSpiritName.DoThreadSafeAsync(x => x.SelectedValue = strCurrentValue);
+                    await cboSpiritName.DoThreadSafeAsync(x => x.SelectedValue = strCurrentValue, token: token);
                 }
             }
         }
@@ -538,72 +539,77 @@ namespace Chummer
         /// </summary>
         /// <param name="strCritterName">Name of the Critter's Metatype.</param>
         /// <param name="intForce">Critter's Force.</param>
-        private async ValueTask CreateCritter(string strCritterName, int intForce)
+        /// <param name="token">Cancellation token to listen to.</param>
+        private async ValueTask CreateCritter(string strCritterName, int intForce, CancellationToken token = default)
         {
             // Code from frmMetatype.
-            XmlDocument objXmlDocument = await _objSpirit.CharacterObject.LoadDataAsync("critters.xml");
+            XmlDocument objXmlDocument = await _objSpirit.CharacterObject.LoadDataAsync("critters.xml", token: token);
 
             XmlNode objXmlMetatype = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = " + strCritterName.CleanXPath() + ']');
 
             // If the Critter could not be found, show an error and get out of here.
             if (objXmlMetatype == null)
             {
-                Program.ShowMessageBox(string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_UnknownCritterType"), strCritterName), await LanguageManager.GetStringAsync("MessageTitle_SelectCritterType"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Program.ShowMessageBox(
+                    string.Format(GlobalSettings.CultureInfo,
+                                  await LanguageManager.GetStringAsync("Message_UnknownCritterType", token: token),
+                                  strCritterName),
+                    await LanguageManager.GetStringAsync("MessageTitle_SelectCritterType", token: token),
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            CursorWait objCursorWait = await CursorWait.NewAsync(ParentForm);
+            CursorWait objCursorWait = await CursorWait.NewAsync(ParentForm, token: token);
             try
             {
                 // The Critter should use the same settings file as the character.
-                Character objCharacter = new Character
-                {
-                    SettingsKey = _objSpirit.CharacterObject.SettingsKey,
-                    // Override the defaults for the setting.
-                    IgnoreRules = true,
-                    IsCritter = true,
-                    Alias = strCritterName,
-                    Created = true
-                };
+                Character objCharacter = new Character();
+                await objCharacter.SetSettingsKeyAsync(await _objSpirit.CharacterObject.GetSettingsKeyAsync(token),
+                                                       token);
+                // Override the defaults for the setting.
+                objCharacter.IgnoreRules = true;
+                objCharacter.IsCritter = true;
+                objCharacter.Alias = strCritterName;
+                objCharacter.Created = true;
                 try
                 {
-                    string strCritterCharacterName = await txtCritterName.DoThreadSafeFuncAsync(x => x.Text);
+                    string strCritterCharacterName = await txtCritterName.DoThreadSafeFuncAsync(x => x.Text, token: token);
                     if (!string.IsNullOrEmpty(strCritterCharacterName))
                         objCharacter.Name = strCritterCharacterName;
 
-                    string strSpace = await LanguageManager.GetStringAsync("String_Space");
-                    using (SaveFileDialog dlgSaveFile = await this.DoThreadSafeFuncAsync(() => new SaveFileDialog()))
+                    string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token);
+                    using (SaveFileDialog dlgSaveFile = await this.DoThreadSafeFuncAsync(() => new SaveFileDialog(), token: token))
                     {
-                        dlgSaveFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|'
-                            + await LanguageManager.GetStringAsync("DialogFilter_All");
+                        dlgSaveFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5", token: token) + '|'
+                            + await LanguageManager.GetStringAsync("DialogFilter_All", token: token);
                         dlgSaveFile.FileName = strCritterName + strSpace + '('
-                                               + await LanguageManager.GetStringAsync(_objSpirit.RatingLabel) + strSpace
+                                               + await LanguageManager.GetStringAsync(_objSpirit.RatingLabel, token: token) + strSpace
                                                + _objSpirit.Force.ToString(GlobalSettings.InvariantCultureInfo)
                                                + ").chum5";
-                        if (await this.DoThreadSafeFuncAsync(x => dlgSaveFile.ShowDialog(x)) != DialogResult.OK)
+                        if (await this.DoThreadSafeFuncAsync(x => dlgSaveFile.ShowDialog(x), token: token) != DialogResult.OK)
                             return;
                         string strFileName = dlgSaveFile.FileName;
                         objCharacter.FileName = strFileName;
                     }
 
                     objCharacter.Create(objXmlMetatype["category"]?.InnerText, objXmlMetatype["id"]?.InnerText,
-                                        string.Empty, objXmlMetatype, intForce);
+                                        string.Empty, objXmlMetatype, intForce, token: token);
                     objCharacter.MetatypeBP = 0;
-                    using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program.CreateAndShowProgressBarAsync())
+                    using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program.CreateAndShowProgressBarAsync(token: token))
                     {
                         await frmLoadingBar.MyForm.PerformStepAsync(objCharacter.CharacterName,
-                                                                    LoadingBar.ProgressBarTextPatterns.Saving);
-                        if (!await objCharacter.SaveAsync())
+                                                                    LoadingBar.ProgressBarTextPatterns.Saving, token);
+                        if (!await objCharacter.SaveAsync(token: token))
                             return;
                     }
 
                     // Link the newly-created Critter to the Spirit.
                     string strText = await LanguageManager.GetStringAsync(
-                        _objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_OpenFile" : "Tip_Sprite_OpenFile");
+                        _objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_OpenFile" : "Tip_Sprite_OpenFile", token: token);
                     await cmdLink.SetToolTipTextAsync(strText);
                     ContactDetailChanged?.Invoke(this, EventArgs.Empty);
 
-                    await Program.OpenCharacter(objCharacter);
+                    await Program.OpenCharacter(objCharacter, token: token);
                 }
                 finally
                 {

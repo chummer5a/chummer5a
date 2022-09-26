@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
@@ -95,7 +96,7 @@ namespace Chummer
 
             // Populate the Weapon Category list.
             // Populate the Category list.
-            string strFilterPrefix = "/chummer/weapons/weapon[(" + _objCharacter.Settings.BookXPath() + ") and category = ";
+            string strFilterPrefix = "/chummer/weapons/weapon[(" + await _objCharacter.Settings.BookXPathAsync() + ") and category = ";
             using (XmlNodeList xmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category"))
             {
                 if (xmlCategoryList != null)
@@ -166,12 +167,12 @@ namespace Chummer
             await UpdateWeaponInfo();
         }
 
-        private async ValueTask UpdateWeaponInfo()
+        private async ValueTask UpdateWeaponInfo(CancellationToken token = default)
         {
             if (_blnLoading || _blnSkipUpdate)
                 return;
             _blnSkipUpdate = true;
-            await this.DoThreadSafeAsync(x => x.SuspendLayout());
+            await this.DoThreadSafeAsync(x => x.SuspendLayout(), token: token);
             try
             {
                 if (_objSelectedWeapon != null)
@@ -191,106 +192,106 @@ namespace Chummer
                         }
 
                         _objSelectedWeapon.DiscountCost = x.Checked;
-                    });
+                    }, token: token);
 
                     string strReach = _objSelectedWeapon.TotalReach.ToString(GlobalSettings.CultureInfo);
-                    await lblWeaponReach.DoThreadSafeAsync(x => x.Text = strReach);
-                    await lblWeaponReachLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strReach));
+                    await lblWeaponReach.DoThreadSafeAsync(x => x.Text = strReach, token: token);
+                    await lblWeaponReachLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strReach), token: token);
                     string strDamage = _objSelectedWeapon.DisplayDamage;
-                    await lblWeaponDamage.DoThreadSafeAsync(x => x.Text = strDamage);
-                    await lblWeaponDamageLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strDamage));
+                    await lblWeaponDamage.DoThreadSafeAsync(x => x.Text = strDamage, token: token);
+                    await lblWeaponDamageLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strDamage), token: token);
                     string strAP = _objSelectedWeapon.DisplayTotalAP;
-                    await lblWeaponAP.DoThreadSafeAsync(x => x.Text = strAP);
-                    await lblWeaponAPLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strAP));
+                    await lblWeaponAP.DoThreadSafeAsync(x => x.Text = strAP, token: token);
+                    await lblWeaponAPLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strAP), token: token);
                     string strMode = _objSelectedWeapon.DisplayMode;
-                    await lblWeaponMode.DoThreadSafeAsync(x => x.Text = strMode);
-                    await lblWeaponModeLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strMode));
+                    await lblWeaponMode.DoThreadSafeAsync(x => x.Text = strMode, token: token);
+                    await lblWeaponModeLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strMode), token: token);
                     string strRC = _objSelectedWeapon.DisplayTotalRC;
-                    await lblWeaponRC.DoThreadSafeAsync(x => x.Text = strRC);
-                    await lblWeaponRC.SetToolTipAsync(_objSelectedWeapon.RCToolTip);
-                    await lblWeaponRCLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strRC));
+                    await lblWeaponRC.DoThreadSafeAsync(x => x.Text = strRC, token: token);
+                    await lblWeaponRC.SetToolTipAsync(_objSelectedWeapon.RCToolTip, token: token);
+                    await lblWeaponRCLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strRC), token: token);
                     string strAmmo = _objSelectedWeapon.DisplayAmmo;
-                    await lblWeaponAmmo.DoThreadSafeAsync(x => x.Text = strAmmo);
-                    await lblWeaponAmmoLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strAmmo));
+                    await lblWeaponAmmo.DoThreadSafeAsync(x => x.Text = strAmmo, token: token);
+                    await lblWeaponAmmoLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strAmmo), token: token);
                     string strAccuracy = _objSelectedWeapon.DisplayAccuracy;
-                    await lblWeaponAccuracy.DoThreadSafeAsync(x => x.Text = strAccuracy);
-                    await lblWeaponAccuracyLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strAccuracy));
+                    await lblWeaponAccuracy.DoThreadSafeAsync(x => x.Text = strAccuracy, token: token);
+                    await lblWeaponAccuracyLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strAccuracy), token: token);
                     string strConceal = _objSelectedWeapon.DisplayConcealability;
-                    await lblWeaponConceal.DoThreadSafeAsync(x => x.Text = strConceal);
-                    await lblWeaponConcealLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strConceal));
+                    await lblWeaponConceal.DoThreadSafeAsync(x => x.Text = strConceal, token: token);
+                    await lblWeaponConcealLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strConceal), token: token);
 
                     decimal decItemCost = 0;
                     string strWeaponCost;
-                    if (await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked))
+                    if (await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked, token: token))
                     {
-                        strWeaponCost = (0.0m).ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + await LanguageManager.GetStringAsync("String_NuyenSymbol");
+                        strWeaponCost = (0.0m).ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token);
                     }
                     else
                     {
-                        strWeaponCost = _objSelectedWeapon.DisplayCost(out decItemCost, await nudMarkup.DoThreadSafeFuncAsync(x => x.Value) / 100.0m);
+                        strWeaponCost = _objSelectedWeapon.DisplayCost(out decItemCost, await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token) / 100.0m);
                     }
 
-                    await lblWeaponCost.DoThreadSafeAsync(x => x.Text = strWeaponCost);
-                    await lblWeaponCostLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strWeaponCost));
+                    await lblWeaponCost.DoThreadSafeAsync(x => x.Text = strWeaponCost, token: token);
+                    await lblWeaponCostLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strWeaponCost), token: token);
 
                     AvailabilityValue objTotalAvail = _objSelectedWeapon.TotalAvailTuple();
                     string strAvail = objTotalAvail.ToString();
-                    await lblWeaponAvail.DoThreadSafeAsync(x => x.Text = strAvail);
-                    await lblWeaponAvailLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strAvail));
-                    string strTest = _objCharacter.AvailTest(decItemCost, objTotalAvail);
-                    await lblTest.DoThreadSafeAsync(x => x.Text = strTest);
-                    await lblTestLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strTest));
-                    await _objSelectedWeapon.SetSourceDetailAsync(lblSource);
-                    await lblSource.DoThreadSafeFuncAsync(x => x.Text)
-                                   .ContinueWith(y => lblSourceLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(y.Result)))
+                    await lblWeaponAvail.DoThreadSafeAsync(x => x.Text = strAvail, token: token);
+                    await lblWeaponAvailLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strAvail), token: token);
+                    string strTest = await _objCharacter.AvailTestAsync(decItemCost, objTotalAvail, token);
+                    await lblTest.DoThreadSafeAsync(x => x.Text = strTest, token: token);
+                    await lblTestLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strTest), token: token);
+                    await _objSelectedWeapon.SetSourceDetailAsync(lblSource, token: token);
+                    await lblSource.DoThreadSafeFuncAsync(x => x.Text, token: token)
+                                   .ContinueWith(y => lblSourceLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(y.Result), token: token), token)
                                    .Unwrap();
 
-                    string strIncludedAccessores;
+                    string strIncludedAccessories;
                     // Build a list of included Accessories and Modifications that come with the weapon.
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                   out StringBuilder sbdAccessories))
                     {
                         foreach (WeaponAccessory objAccessory in _objSelectedWeapon.WeaponAccessories)
                         {
-                            sbdAccessories.AppendLine(objAccessory.CurrentDisplayName);
+                            sbdAccessories.AppendLine(await objAccessory.GetCurrentDisplayNameAsync(token));
                         }
 
                         if (sbdAccessories.Length > 0)
                             sbdAccessories.Length -= Environment.NewLine.Length;
 
-                        strIncludedAccessores = sbdAccessories.Length == 0
-                            ? await LanguageManager.GetStringAsync("String_None")
+                        strIncludedAccessories = sbdAccessories.Length == 0
+                            ? await LanguageManager.GetStringAsync("String_None", token: token)
                             : sbdAccessories.ToString();
                     }
 
-                    await lblIncludedAccessories.DoThreadSafeAsync(x => x.Text = strIncludedAccessores);
-                    await tlpRight.DoThreadSafeAsync(x => x.Visible = true);
-                    await gpbIncludedAccessories.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strIncludedAccessores));
+                    await lblIncludedAccessories.DoThreadSafeAsync(x => x.Text = strIncludedAccessories, token: token);
+                    await tlpRight.DoThreadSafeAsync(x => x.Visible = true, token: token);
+                    await gpbIncludedAccessories.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strIncludedAccessories), token: token);
                 }
                 else
                 {
-                    await chkBlackMarketDiscount.DoThreadSafeAsync(x => x.Checked = false);
-                    await tlpRight.DoThreadSafeAsync(x => x.Visible = false);
-                    await gpbIncludedAccessories.DoThreadSafeAsync(x => x.Visible = false);
+                    await chkBlackMarketDiscount.DoThreadSafeAsync(x => x.Checked = false, token: token);
+                    await tlpRight.DoThreadSafeAsync(x => x.Visible = false, token: token);
+                    await gpbIncludedAccessories.DoThreadSafeAsync(x => x.Visible = false, token: token);
                 }
             }
             finally
             {
-                await this.DoThreadSafeAsync(x => x.ResumeLayout());
+                await this.DoThreadSafeAsync(x => x.ResumeLayout(), token: token);
             }
             _blnSkipUpdate = false;
         }
 
-        private async ValueTask<bool> BuildWeaponList(XmlNodeList objNodeList, bool blnForCategories = false)
+        private async ValueTask<bool> BuildWeaponList(XmlNodeList objNodeList, bool blnForCategories = false, CancellationToken token = default)
         {
-            await this.DoThreadSafeAsync(x => x.SuspendLayout());
+            await this.DoThreadSafeAsync(x => x.SuspendLayout(), token: token);
             try
             {
-                bool blnHideOverAvailLimit = await chkHideOverAvailLimit.DoThreadSafeFuncAsync(x => x.Checked);
-                bool blnShowOnlyAffordItems = await chkShowOnlyAffordItems.DoThreadSafeFuncAsync(x => x.Checked);
-                bool blnFreeItem = await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked);
-                decimal decBaseCostMultiplier = 1 + (await nudMarkup.DoThreadSafeFuncAsync(x => x.Value) / 100.0m);
-                if (await tabControl.DoThreadSafeFuncAsync(x => x.SelectedIndex) == 1 && !blnForCategories)
+                bool blnHideOverAvailLimit = await chkHideOverAvailLimit.DoThreadSafeFuncAsync(x => x.Checked, token: token);
+                bool blnShowOnlyAffordItems = await chkShowOnlyAffordItems.DoThreadSafeFuncAsync(x => x.Checked, token: token);
+                bool blnFreeItem = await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked, token: token);
+                decimal decBaseCostMultiplier = 1 + (await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token) / 100.0m);
+                if (await tabControl.DoThreadSafeFuncAsync(x => x.SelectedIndex, token: token) == 1 && !blnForCategories)
                 {
                     DataTable tabWeapons = new DataTable("weapons");
                     tabWeapons.Columns.Add("WeaponGuid");
@@ -348,15 +349,15 @@ namespace Chummer
                         if (!string.IsNullOrEmpty(strTest) && !Mounts.Contains(strTest))
                             continue;
                         if (blnHideOverAvailLimit
-                            && !SelectionShared.CheckAvailRestriction(objXmlWeapon, _objCharacter))
+                            && !await SelectionShared.CheckAvailRestrictionAsync(objXmlWeapon, _objCharacter, token: token))
                             continue;
                         if (!blnFreeItem && blnShowOnlyAffordItems)
                         {
                             decimal decCostMultiplier = decBaseCostMultiplier;
                             if (_setBlackMarketMaps.Contains(objXmlWeapon["category"]?.InnerText))
                                 decCostMultiplier *= 0.9m;
-                            if (!SelectionShared.CheckNuyenRestriction(objXmlWeapon, _objCharacter.Nuyen,
-                                                                       decCostMultiplier))
+                            if (!await SelectionShared.CheckNuyenRestrictionAsync(objXmlWeapon, _objCharacter.Nuyen,
+                                    decCostMultiplier, token: token))
                                 continue;
                         }
 
@@ -396,7 +397,7 @@ namespace Chummer
                                     await objWeapon.DisplayPageAsync(GlobalSettings.Language),
                                     GlobalSettings.Language,
                                     GlobalSettings.CultureInfo,
-                                    _objCharacter);
+                                    _objCharacter, token);
                                 NuyenString strCost = new NuyenString(objWeapon.DisplayCost(out decimal _));
 
                                 tabWeapons.Rows.Add(strID, strWeaponName, strDice, strAccuracy, strDamage, strAP, strRC,
@@ -416,7 +417,7 @@ namespace Chummer
                             x.Columns[6].Visible = true;
                             x.Columns[7].Visible = true;
                             x.Columns[8].Visible = true;
-                        });
+                        }, token: token);
                     }
                     else
                     {
@@ -425,7 +426,7 @@ namespace Chummer
                             x.Columns[6].Visible = false;
                             x.Columns[7].Visible = false;
                             x.Columns[8].Visible = false;
-                        });
+                        }, token: token);
                     }
 
                     await dgvWeapons.DoThreadSafeAsync(x =>
@@ -436,7 +437,7 @@ namespace Chummer
                         x.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
                         x.DataSource = set;
                         x.DataMember = "weapons";
-                    });
+                    }, token: token);
                 }
                 else
                 {
@@ -487,7 +488,7 @@ namespace Chummer
                             if (blnForCategories)
                                 return true;
                             if (blnHideOverAvailLimit
-                                && !SelectionShared.CheckAvailRestriction(objXmlWeapon, _objCharacter))
+                                && !await SelectionShared.CheckAvailRestrictionAsync(objXmlWeapon, _objCharacter, token: token))
                             {
                                 ++intOverLimit;
                                 continue;
@@ -511,8 +512,8 @@ namespace Chummer
                                     }
                                 }
 
-                                if (!SelectionShared.CheckNuyenRestriction(
-                                        objXmlWeapon, _objCharacter.Nuyen, decCostMultiplier))
+                                if (!await SelectionShared.CheckNuyenRestrictionAsync(
+                                        objXmlWeapon, _objCharacter.Nuyen, decCostMultiplier, token: token))
                                 {
                                     ++intOverLimit;
                                     continue;
@@ -533,13 +534,13 @@ namespace Chummer
                             lstWeapons.Add(new ListItem(string.Empty,
                                                         string.Format(GlobalSettings.CultureInfo,
                                                                       await LanguageManager.GetStringAsync(
-                                                                          "String_RestrictedItemsHidden"),
+                                                                          "String_RestrictedItemsHidden", token: token),
                                                                       intOverLimit)));
                         }
 
-                        string strOldSelected = await lstWeapon.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
+                        string strOldSelected = await lstWeapon.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token);
                         _blnLoading = true;
-                        await lstWeapon.PopulateWithListItemsAsync(lstWeapons);
+                        await lstWeapon.PopulateWithListItemsAsync(lstWeapons, token: token);
                         _blnLoading = false;
                         await lstWeapon.DoThreadSafeAsync(x =>
                         {
@@ -547,13 +548,13 @@ namespace Chummer
                                 x.SelectedValue = strOldSelected;
                             else
                                 x.SelectedIndex = -1;
-                        });
+                        }, token: token);
                     }
                 }
             }
             finally
             {
-                await this.DoThreadSafeAsync(x => x.ResumeLayout());
+                await this.DoThreadSafeAsync(x => x.ResumeLayout(), token: token);
             }
             
             return true;
@@ -711,13 +712,13 @@ namespace Chummer
 
         #region Methods
 
-        private ValueTask<bool> RefreshList()
+        private async ValueTask<bool> RefreshList(CancellationToken token = default)
         {
-            string strCategory = cboCategory.SelectedValue?.ToString();
+            string strCategory = await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token);
             string strFilter = string.Empty;
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
             {
-                sbdFilter.Append('(').Append(_objCharacter.Settings.BookXPath()).Append(')');
+                sbdFilter.Append('(').Append(await _objCharacter.Settings.BookXPathAsync(token: token)).Append(')');
                 if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All"
                                                        && (GlobalSettings.SearchInCategoryOnly
                                                            || txtSearch.TextLength == 0))
@@ -757,7 +758,7 @@ namespace Chummer
             }
 
             XmlNodeList objXmlWeaponList = _objXmlDocument.SelectNodes("/chummer/weapons/weapon" + strFilter);
-            return BuildWeaponList(objXmlWeaponList);
+            return await BuildWeaponList(objXmlWeaponList, token: token);
         }
 
         /// <summary>

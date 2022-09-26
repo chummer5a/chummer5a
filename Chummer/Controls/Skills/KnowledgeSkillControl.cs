@@ -36,18 +36,25 @@ namespace Chummer.UI.Skills
         private readonly KnowledgeSkill _objSkill;
         private readonly Timer _tmrNameChangeTimer;
         private readonly Timer _tmrSpecChangeTimer;
+
         // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly NumericUpDownEx nudKarma;
+
         private readonly NumericUpDownEx nudSkill;
         private readonly Label lblRating;
+
         // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly ButtonWithToolTip btnCareerIncrease;
+
         private readonly ColorableCheckBox chkNativeLanguage;
         private readonly ElasticComboBox cboSpec;
+
         // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly ColorableCheckBox chkKarma;
+
         // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly Label lblSpec;
+
         // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly ButtonWithToolTip btnAddSpec;
 
@@ -66,7 +73,7 @@ namespace Chummer.UI.Skills
                 lblModifiedRating.DoOneWayDataBinding("ToolTipText", objSkill, nameof(KnowledgeSkill.PoolToolTip));
 
                 cmdDelete.DoOneWayDataBinding("Visible", objSkill, nameof(Skill.AllowDelete));
-                
+
                 cboType.PopulateWithListItems(objSkill.CharacterObject.SkillsSection.MyKnowledgeTypes);
                 cboType.DoDataBinding("SelectedValue", objSkill, nameof(KnowledgeSkill.Type));
                 cboType.DoOneWayDataBinding("Enabled", objSkill, nameof(Skill.AllowTypeChange));
@@ -74,7 +81,7 @@ namespace Chummer.UI.Skills
                 lblName.DoOneWayNegatableDataBinding("Visible", objSkill, nameof(Skill.AllowNameChange));
                 lblName.DoOneWayDataBinding("Text", objSkill, nameof(KnowledgeSkill.WritableName));
                 lblName.DoOneWayDataBinding("ForeColor", objSkill, nameof(Skill.PreferredColor));
-                
+
                 cboName.PopulateWithListItems(objSkill.CharacterObject.SkillsSection.MyDefaultKnowledgeSkills);
                 cboName.SelectedIndex = -1;
                 cboName.Text = objSkill.WritableName;
@@ -140,7 +147,7 @@ namespace Chummer.UI.Skills
                         UseVisualStyleBackColor = true
                     };
                     btnAddSpec.Click += btnAddSpec_Click;
-                    
+
                     lblSpec.DoOneWayDataBinding("Text", objSkill, nameof(Skill.CurrentDisplaySpecialization));
 
                     btnAddSpec.DoOneWayDataBinding("Visible", objSkill, nameof(Skill.CanHaveSpecs));
@@ -218,7 +225,7 @@ namespace Chummer.UI.Skills
                     chkNativeLanguage.Enabled = objSkill.IsNativeLanguage ||
                                                 objSkill.CharacterObject.SkillsSection.HasAvailableNativeLanguageSlots;
                     chkNativeLanguage.DoDataBinding("Checked", objSkill, nameof(Skill.IsNativeLanguage));
-                    
+
                     cboSpec.PopulateWithListItems(objSkill.CGLSpecializations);
                     cboSpec.DoOneWayDataBinding("Enabled", objSkill, nameof(Skill.CanHaveSpecs));
                     cboSpec.Text = objSkill.CurrentDisplaySpecialization;
@@ -353,11 +360,11 @@ namespace Chummer.UI.Skills
                     break;
 
                 case nameof(Skill.Specializations):
-                {
-                    if (await Program.GetFormForDialogAsync(_objSkill.CharacterObject) is CharacterShared frmParent)
-                        await frmParent.RequestCharacterUpdate();
-                    break;
-                }
+                    {
+                        if (await Program.GetFormForDialogAsync(_objSkill.CharacterObject) is CharacterShared frmParent)
+                            await frmParent.RequestCharacterUpdate();
+                        break;
+                    }
             }
         }
 
@@ -460,6 +467,7 @@ namespace Chummer.UI.Skills
         /// I'm not super pleased with how this works, but it's functional so w/e.
         /// The goal is for controls to retain the ability to display tooltips even while disabled. IT DOES NOT WORK VERY WELL.
         /// </summary>
+
         #region ButtonWithToolTip Visibility workaround
 
         private ButtonWithToolTip _activeButton;

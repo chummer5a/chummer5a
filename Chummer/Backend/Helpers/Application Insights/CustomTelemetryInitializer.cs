@@ -50,7 +50,7 @@ namespace Chummer
                 Properties.Settings.Default.Save();
             }
             else
-            { 
+            {
                 //sometimes, there are odd values stored in the UploadClientId.
                 if (!Properties.Settings.Default.UploadClientId.ToString().IsGuid())
                 {

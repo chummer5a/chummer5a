@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.XPath;
@@ -130,7 +131,7 @@ namespace Chummer
             await ProcessGradeChanged();
         }
 
-        private async ValueTask ProcessGradeChanged()
+        private async ValueTask ProcessGradeChanged(CancellationToken token = default)
         {
             if (_blnLoading)
                 return;
@@ -138,8 +139,8 @@ namespace Chummer
 
             XPathNavigator xmlGrade = null;
             // Retrieve the information for the selected Grade.
-            string strSelectedGrade = await cboGrade.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
-            if (await cboGrade.DoThreadSafeFuncAsync(x => x.Enabled) && strSelectedGrade != null)
+            string strSelectedGrade = await cboGrade.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token);
+            if (await cboGrade.DoThreadSafeFuncAsync(x => x.Enabled, token: token) && strSelectedGrade != null)
                 _strOldSelectedGrade = strSelectedGrade;
             if (!string.IsNullOrEmpty(strSelectedGrade))
                 xmlGrade = _xmlBaseDrugDataNode.SelectSingleNode("grades/grade[id = " + strSelectedGrade.CleanXPath() + ']');
@@ -151,12 +152,12 @@ namespace Chummer
                 _intAvailModifier = xmlGrade.SelectSingleNode("avail")?.ValueAsInt ?? 0;
 
                 _blnLoading = false;
-                await RefreshList();
+                await RefreshList(token: token);
             }
             else
             {
                 _blnLoading = false;
-                await UpdateDrugInfo();
+                await UpdateDrugInfo(token);
             }
         }
 
@@ -219,7 +220,7 @@ namespace Chummer
                                                                 () => (ParentVehicle?.Pilot ?? 3).ToString(
                                                                     GlobalSettings.InvariantCultureInfo));
 
-                        object objProcess = CommonFunctions.EvaluateInvariantXPath(strMinRating, out bool blnIsSuccess);
+                        (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strMinRating);
                         intMinRating = blnIsSuccess ? ((double)objProcess).StandardRound() : 1;
                     }
                     await nudRating.DoThreadSafeAsync(x => x.Minimum = intMinRating);
@@ -247,42 +248,35 @@ namespace Chummer
                                                                 () => (ParentVehicle?.Pilot ?? 3).ToString(
                                                                     GlobalSettings.InvariantCultureInfo));
 
-                        object objProcess = CommonFunctions.EvaluateInvariantXPath(strMaxRating, out bool blnIsSuccess);
+                        (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strMaxRating);
                         intMaxRating = blnIsSuccess ? ((double)objProcess).StandardRound() : 1;
                     }
-                    await nudRating.DoThreadSafeAsync(x => x.Maximum = intMaxRating);
                     if (await chkHideOverAvailLimit.DoThreadSafeFuncAsync(x => x.Checked))
                     {
                         int intAvailModifier = strForceGrade == "None" ? 0 : _intAvailModifier;
-                        await nudRating.DoThreadSafeAsync(x =>
+                        while (intMaxRating > intMinRating
+                               && !await xmlDrug.CheckAvailRestrictionAsync(
+                                   _objCharacter, intMaxRating, intAvailModifier))
                         {
-                            while (x.Maximum > intMinRating
-                                   && !xmlDrug.CheckAvailRestriction(_objCharacter, x.MaximumAsInt,
-                                                                     intAvailModifier))
-                            {
-                                --x.Maximum;
-                            }
-                        });
+                            --intMaxRating;
+                        }
                     }
-
-                    if (await chkShowOnlyAffordItems.DoThreadSafeFuncAsync(x => x.Checked) && !await chkFree.DoThreadSafeFuncAsync(x => x.Checked))
+                    if (await chkShowOnlyAffordItems.DoThreadSafeFuncAsync(x => x.Checked)
+                        && !await chkFree.DoThreadSafeFuncAsync(x => x.Checked))
                     {
                         decimal decCostMultiplier = 1 + nudMarkup.Value / 100.0m;
                         if (await chkBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked))
                             decCostMultiplier *= 0.9m;
-                        await nudRating.DoThreadSafeAsync(x =>
+                        while (intMaxRating > intMinRating
+                               && !await xmlDrug.CheckNuyenRestrictionAsync(
+                                   _objCharacter.Nuyen, decCostMultiplier, intMaxRating))
                         {
-                            while (x.Maximum > intMinRating
-                                   && !xmlDrug.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier,
-                                                                     x.MaximumAsInt))
-                            {
-                                --x.Maximum;
-                            }
-                        });
+                            --intMaxRating;
+                        }
                     }
-
                     await nudRating.DoThreadSafeAsync(x =>
                     {
+                        x.Maximum = intMaxRating;
                         x.Value = x.Minimum;
                         x.Enabled = x.Minimum != x.Maximum;
                         x.Visible = true;
@@ -567,10 +561,10 @@ namespace Chummer
         /// <summary>
         /// Update the Drug's information based on the Drug selected and current Rating.
         /// </summary>
-        private async ValueTask UpdateDrugInfo()
+        private async ValueTask UpdateDrugInfo(CancellationToken token = default)
         {
             XPathNavigator objXmlDrug = null;
-            string strSelectedId = await lstDrug.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
+            string strSelectedId = await lstDrug.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token);
             if (!string.IsNullOrEmpty(strSelectedId))
             {
                 // Retrieve the information for the selected piece of Drug.
@@ -578,14 +572,14 @@ namespace Chummer
             }
             if (objXmlDrug == null)
             {
-                await tlpRight.DoThreadSafeAsync(x => x.Visible = false);
+                await tlpRight.DoThreadSafeAsync(x => x.Visible = false, token: token);
                 return;
             }
 
             // Extract the Avail and Cost values from the Drug info since these may contain formulas and/or be based off of the Rating.
             // This is done using XPathExpression.
 
-            int intRating = await nudRating.DoThreadSafeFuncAsync(x => x.ValueAsInt);
+            int intRating = await nudRating.DoThreadSafeFuncAsync(x => x.ValueAsInt, token: token);
             // Avail.
             // If avail contains "F" or "R", remove it from the string so we can use the expression.
             string strAvail = objXmlDrug.SelectSingleNode("avail")?.Value;
@@ -603,13 +597,13 @@ namespace Chummer
                 switch (chrSuffix)
                 {
                     case 'R':
-                        strSuffix = await LanguageManager.GetStringAsync("String_AvailRestricted");
+                        strSuffix = await LanguageManager.GetStringAsync("String_AvailRestricted", token: token);
                         // Remove the trailing character if it is "F" or "R".
                         strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
                         break;
 
                     case 'F':
-                        strSuffix = await LanguageManager.GetStringAsync("String_AvailForbidden");
+                        strSuffix = await LanguageManager.GetStringAsync("String_AvailForbidden", token: token);
                         // Remove the trailing character if it is "F" or "R".
                         strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
                         break;
@@ -626,39 +620,39 @@ namespace Chummer
                 strAvailExpr = await strAvailExpr.CheapReplaceAsync("MinRating",
                                                                     async () =>
                                                                         (await nudRating.DoThreadSafeFuncAsync(
-                                                                            x => x.Minimum))
-                                                                        .ToString(GlobalSettings.InvariantCultureInfo))
+                                                                            x => x.Minimum, token: token))
+                                                                        .ToString(GlobalSettings.InvariantCultureInfo), token: token)
                                                  .CheapReplaceAsync(
                                                      "Rating",
-                                                     () => intRating.ToString(GlobalSettings.InvariantCultureInfo));
+                                                     () => intRating.ToString(GlobalSettings.InvariantCultureInfo), token: token);
 
-                object objProcess = CommonFunctions.EvaluateInvariantXPath(strAvailExpr, out bool blnIsSuccess);
+                (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strAvailExpr, token);
                 if (blnIsSuccess)
                 {
                     int intAvail = ((double)objProcess).StandardRound() + _intAvailModifier;
                     // Avail cannot go below 0.
                     if (intAvail < 0)
                         intAvail = 0;
-                    await lblAvail.DoThreadSafeAsync(x => x.Text = strPrefix + intAvail.ToString(GlobalSettings.CultureInfo) + strSuffix);
+                    await lblAvail.DoThreadSafeAsync(x => x.Text = strPrefix + intAvail.ToString(GlobalSettings.CultureInfo) + strSuffix, token: token);
                 }
                 else
                 {
-                    await lblAvail.DoThreadSafeAsync(x => x.Text = strAvail);
+                    await lblAvail.DoThreadSafeAsync(x => x.Text = strAvail, token: token);
                 }
             }
             else
             {
-                await lblAvail.DoThreadSafeAsync(x => x.Text = 0.ToString(GlobalSettings.CultureInfo));
+                await lblAvail.DoThreadSafeAsync(x => x.Text = 0.ToString(GlobalSettings.CultureInfo), token: token);
             }
 
-            strAvail = await lblAvail.DoThreadSafeFuncAsync(x => x.Text);
-            await lblAvailLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strAvail));
+            strAvail = await lblAvail.DoThreadSafeFuncAsync(x => x.Text, token: token);
+            await lblAvailLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strAvail), token: token);
 
             // Cost.
             decimal decItemCost = 0;
-            if (await chkFree.DoThreadSafeFuncAsync(x => x.Checked))
+            if (await chkFree.DoThreadSafeFuncAsync(x => x.Checked, token: token))
             {
-                await lblCost.DoThreadSafeAsync(x => x.Text = 0.0m.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol"));
+                await lblCost.DoThreadSafeAsync(x => x.Text = 0.0m.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol"), token: token);
             }
             else
             {
@@ -691,67 +685,67 @@ namespace Chummer
                                                             : decMin.ToString(_objCharacter.Settings.NuyenFormat,
                                                                               GlobalSettings.CultureInfo) + " - "
                                                             + decMax.ToString(_objCharacter.Settings.NuyenFormat,
-                                                                              GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol"));
+                                                                              GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol"), token: token);
 
                         decItemCost = decMin;
                     }
                     else
                     {
-                        strCost = await (await strCost.CheapReplaceAsync("MinRating", () => nudRating.Minimum.ToString(GlobalSettings.InvariantCultureInfo)))
-                            .CheapReplaceAsync("Rating", () => nudRating.Value.ToString(GlobalSettings.InvariantCultureInfo));
+                        strCost = await (await strCost.CheapReplaceAsync("MinRating", () => nudRating.Minimum.ToString(GlobalSettings.InvariantCultureInfo), token: token))
+                            .CheapReplaceAsync("Rating", () => nudRating.Value.ToString(GlobalSettings.InvariantCultureInfo), token: token);
 
-                        object objProcess = CommonFunctions.EvaluateInvariantXPath(strCost, out bool blnIsSuccess);
+                        (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strCost, token);
                         if (blnIsSuccess)
                         {
                             decItemCost = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo) * _decCostMultiplier;
-                            decItemCost *= 1 + (await nudMarkup.DoThreadSafeFuncAsync(x => x.Value) / 100.0m);
+                            decItemCost *= 1 + (await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token) / 100.0m);
 
-                            if (await chkBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked))
+                            if (await chkBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked, token: token))
                             {
                                 decItemCost *= 0.9m;
                             }
 
-                            await lblCost.DoThreadSafeAsync(x => x.Text = decItemCost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol"));
+                            await lblCost.DoThreadSafeAsync(x => x.Text = decItemCost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol"), token: token);
                         }
                         else
                         {
-                            await lblCost.DoThreadSafeAsync(x => x.Text = strCost + LanguageManager.GetString("String_NuyenSymbol"));
+                            await lblCost.DoThreadSafeAsync(x => x.Text = strCost + LanguageManager.GetString("String_NuyenSymbol"), token: token);
                         }
                     }
                 }
                 else
-                    await lblCost.DoThreadSafeAsync(x => x.Text = 0.0m.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol"));
+                    await lblCost.DoThreadSafeAsync(x => x.Text = 0.0m.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol"), token: token);
             }
 
-            await lblCost.DoThreadSafeFuncAsync(x => x.Text)
+            await lblCost.DoThreadSafeFuncAsync(x => x.Text, token: token)
                          .ContinueWith(
-                             y => lblCostLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(y.Result)))
+                             y => lblCostLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(y.Result), token: token), token)
                          .Unwrap();
 
             // Test required to find the item.
-            string strTest = _objCharacter.AvailTest(decItemCost, strAvail);
-            await lblTest.DoThreadSafeAsync(x => x.Text = strTest);
-            await lblTestLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strTest));
-            await tlpRight.DoThreadSafeAsync(x => x.Visible = true);
+            string strTest = await _objCharacter.AvailTestAsync(decItemCost, strAvail, token);
+            await lblTest.DoThreadSafeAsync(x => x.Text = strTest, token: token);
+            await lblTestLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strTest), token: token);
+            await tlpRight.DoThreadSafeAsync(x => x.Visible = true, token: token);
         }
 
         private bool _blnSkipListRefresh;
 
-        private ValueTask<bool> AnyItemInList(string strCategory = "")
+        private ValueTask<bool> AnyItemInList(string strCategory = "", CancellationToken token = default)
         {
-            return RefreshList(strCategory, false);
+            return RefreshList(strCategory, false, token);
         }
 
-        private ValueTask<bool> RefreshList(string strCategory = "")
+        private ValueTask<bool> RefreshList(string strCategory = "", CancellationToken token = default)
         {
-            return RefreshList(strCategory, true);
+            return RefreshList(strCategory, true, token);
         }
 
-        private async ValueTask<bool> RefreshList(string strCategory, bool blnDoUIUpdate)
+        private async ValueTask<bool> RefreshList(string strCategory, bool blnDoUIUpdate, CancellationToken token = default)
         {
             if ((_blnLoading || _blnSkipListRefresh) && blnDoUIUpdate)
                 return false;
-            string strCurrentGradeId = await cboGrade.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
+            string strCurrentGradeId = await cboGrade.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token);
             Grade objCurrentGrade = string.IsNullOrEmpty(strCurrentGradeId)
                 ? null
                 : _lstGrades.Find(x => x.SourceId.ToString("D", GlobalSettings.InvariantCultureInfo)
@@ -759,7 +753,7 @@ namespace Chummer
             string strFilter = string.Empty;
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
             {
-                sbdFilter.Append('(').Append(_objCharacter.Settings.BookXPath()).Append(')');
+                sbdFilter.Append('(').Append(await _objCharacter.Settings.BookXPathAsync(token: token)).Append(')');
                 if (objCurrentGrade != null)
                 {
                     sbdFilter.Append(" and (not(forcegrade) or forcegrade = \"None\" or forcegrade = ")
@@ -768,7 +762,7 @@ namespace Chummer
                         sbdFilter.Append(" and not(nosecondhand)");
                 }
 
-                string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text);
+                string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token: token);
                 if (!string.IsNullOrEmpty(strSearch))
                     sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(strSearch));
 
@@ -780,17 +774,17 @@ namespace Chummer
             List<ListItem> lstDrugs = blnDoUIUpdate ? Utils.ListItemListPool.Get() : null;
             try
             {
-                bool blnHideOverAvailLimit = await chkHideOverAvailLimit.DoThreadSafeFuncAsync(x => x.Checked);
-                bool blnShowOnlyAffordItems = await chkShowOnlyAffordItems.DoThreadSafeFuncAsync(x => x.Checked);
-                bool blnFree = await chkFree.DoThreadSafeFuncAsync(x => x.Checked);
-                decimal decBaseCostMultiplier = 1 + await nudMarkup.DoThreadSafeFuncAsync(x => x.Value) / 100.0m;
+                bool blnHideOverAvailLimit = await chkHideOverAvailLimit.DoThreadSafeFuncAsync(x => x.Checked, token: token);
+                bool blnShowOnlyAffordItems = await chkShowOnlyAffordItems.DoThreadSafeFuncAsync(x => x.Checked, token: token);
+                bool blnFree = await chkFree.DoThreadSafeFuncAsync(x => x.Checked, token: token);
+                decimal decBaseCostMultiplier = 1 + await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token) / 100.0m;
                 foreach (XPathNavigator xmlDrug in _xmlBaseDrugDataNode.Select(_strNodeXPath + strFilter))
                 {
                     bool blnIsForceGrade = xmlDrug.SelectSingleNode("forcegrade") == null;
                     if (objCurrentGrade != null && blnIsForceGrade && (await ImprovementManager
                             .GetCachedImprovementListForValueOfAsync(
                                 _objCharacter,
-                                Improvement.ImprovementType.DisableDrugGrade))
+                                Improvement.ImprovementType.DisableDrugGrade, token: token))
                                                                       .Any(x => objCurrentGrade.Name.Contains(
                                                                                x.ImprovedName)))
                         continue;
@@ -802,9 +796,9 @@ namespace Chummer
                     if (!string.IsNullOrEmpty(strMaxRating) && !int.TryParse(strMaxRating, out int intMaxRating)
                         || !string.IsNullOrEmpty(strMinRating) && !int.TryParse(strMinRating, out intMinRating))
                     {
-                        object objProcess = CommonFunctions.EvaluateInvariantXPath(strMinRating, out bool blnIsSuccess);
+                        (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strMinRating, token);
                         intMinRating = blnIsSuccess ? ((double) objProcess).StandardRound() : 1;
-                        objProcess = CommonFunctions.EvaluateInvariantXPath(strMaxRating, out blnIsSuccess);
+                        (blnIsSuccess, objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strMaxRating, token);
                         intMaxRating = blnIsSuccess ? ((double) objProcess).StandardRound() : 1;
                         if (intMaxRating < intMinRating)
                             continue;
@@ -819,8 +813,8 @@ namespace Chummer
                     }
 
                     if (blnHideOverAvailLimit
-                        && !xmlDrug.CheckAvailRestriction(_objCharacter, intMinRating,
-                                                          blnIsForceGrade ? 0 : _intAvailModifier))
+                        && !await xmlDrug.CheckAvailRestrictionAsync(_objCharacter, intMinRating,
+                                                                     blnIsForceGrade ? 0 : _intAvailModifier, token))
                     {
                         ++intOverLimit;
                         continue;
@@ -831,7 +825,7 @@ namespace Chummer
                         decimal decCostMultiplier = decBaseCostMultiplier;
                         if (_setBlackMarketMaps.Contains(xmlDrug.SelectSingleNode("category")?.Value))
                             decCostMultiplier *= 0.9m;
-                        if (!xmlDrug.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier))
+                        if (!await xmlDrug.CheckNuyenRestrictionAsync(_objCharacter.Nuyen, decCostMultiplier, token: token))
                         {
                             ++intOverLimit;
                             continue;
@@ -839,7 +833,7 @@ namespace Chummer
                     }
                     
                     lstDrugs.Add(new ListItem(xmlDrug.SelectSingleNode("id")?.Value,
-                                              (await xmlDrug.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
+                                              (await xmlDrug.SelectSingleNodeAndCacheExpressionAsync("translate", token: token))?.Value
                                               ?? xmlDrug.SelectSingleNode("name")?.Value));
                 }
 
@@ -852,13 +846,13 @@ namespace Chummer
                         lstDrugs.Add(new ListItem(string.Empty,
                                                   string.Format(GlobalSettings.CultureInfo,
                                                                 await LanguageManager.GetStringAsync(
-                                                                    "String_RestrictedItemsHidden"),
+                                                                    "String_RestrictedItemsHidden", token: token),
                                                                 intOverLimit)));
                     }
 
-                    string strOldSelected = await lstDrug.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
+                    string strOldSelected = await lstDrug.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token);
                     _blnLoading = true;
-                    await lstDrug.PopulateWithListItemsAsync(lstDrugs);
+                    await lstDrug.PopulateWithListItemsAsync(lstDrugs, token: token);
                     _blnLoading = false;
                     await lstDrug.DoThreadSafeAsync(x =>
                     {
@@ -866,7 +860,7 @@ namespace Chummer
                             x.SelectedValue = strOldSelected;
                         else
                             x.SelectedIndex = -1;
-                    });
+                    }, token: token);
                 }
 
                 return lstDrugs?.Count > 0;
@@ -890,16 +884,16 @@ namespace Chummer
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>
-        private async ValueTask AcceptForm()
+        private async ValueTask AcceptForm(CancellationToken token = default)
         {
-            string strSelectedId = await lstDrug.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
+            string strSelectedId = await lstDrug.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token);
             if (string.IsNullOrEmpty(strSelectedId))
                 return;
-            if (await cboGrade.DoThreadSafeFuncAsync(x => x.Text.StartsWith('*')))
+            if (await cboGrade.DoThreadSafeFuncAsync(x => x.Text.StartsWith('*'), token: token))
             {
                 Program.ShowMessageBox(this,
-                    await LanguageManager.GetStringAsync("Message_BannedGrade"),
-                    await LanguageManager.GetStringAsync("MessageTitle_BannedGrade"),
+                    await LanguageManager.GetStringAsync("Message_BannedGrade", token: token),
+                    await LanguageManager.GetStringAsync("MessageTitle_BannedGrade", token: token),
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
@@ -907,7 +901,7 @@ namespace Chummer
             if (objDrugNode == null)
                 return;
 
-            if (!objDrugNode.RequirementsMet(_objCharacter, null, await LanguageManager.GetStringAsync("String_SelectPACKSKit_Drug")))
+            if (!objDrugNode.RequirementsMet(_objCharacter, null, await LanguageManager.GetStringAsync("String_SelectPACKSKit_Drug", token: token)))
                 return;
 
             string strForceGrade = objDrugNode.SelectSingleNode("forcegrade")?.Value;
@@ -917,7 +911,7 @@ namespace Chummer
             }
             else
             {
-                strForceGrade = await cboGrade.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
+                strForceGrade = await cboGrade.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token);
                 if (!string.IsNullOrEmpty(strForceGrade))
                     SelectedGrade = _lstGrades.Find(x => x.SourceId.ToString("D", GlobalSettings.InvariantCultureInfo) == strForceGrade);
                 else
@@ -926,15 +920,15 @@ namespace Chummer
 
             _sStrSelectGrade = SelectedGrade?.SourceId.ToString("D", GlobalSettings.InvariantCultureInfo);
             SelectedDrug = strSelectedId;
-            SelectedRating = await nudRating.DoThreadSafeFuncAsync(x => x.ValueAsInt);
-            BlackMarketDiscount = await chkBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked);
-            Markup = await nudMarkup.DoThreadSafeFuncAsync(x => x.Value);
+            SelectedRating = await nudRating.DoThreadSafeFuncAsync(x => x.ValueAsInt, token: token);
+            BlackMarketDiscount = await chkBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked, token: token);
+            Markup = await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token);
 
             await this.DoThreadSafeAsync(x =>
             {
                 x.DialogResult = DialogResult.OK;
                 x.Close();
-            });
+            }, token: token);
         }
 
         private bool _blnPopulatingGrades;
@@ -945,12 +939,13 @@ namespace Chummer
         /// <param name="blnIgnoreSecondHand">Whether or not Second-Hand Grades should be added to the list.</param>
         /// <param name="blnForce">Force grades to be repopulated.</param>
         /// <param name="strForceGrade">If not empty, force this grade to be selected.</param>
-        private async ValueTask PopulateGrades(bool blnIgnoreSecondHand = false, bool blnForce = false, string strForceGrade = "")
+        /// <param name="token">Cancellation token to listen to.</param>
+        private async ValueTask PopulateGrades(bool blnIgnoreSecondHand = false, bool blnForce = false, string strForceGrade = "", CancellationToken token = default)
         {
             if (_blnPopulatingGrades)
                 return;
             _blnPopulatingGrades = true;
-            if (blnForce || blnIgnoreSecondHand != _blnIgnoreSecondHand || _strForceGrade != strForceGrade || await cboGrade.DoThreadSafeFuncAsync(x => x.Items.Count) == 0)
+            if (blnForce || blnIgnoreSecondHand != _blnIgnoreSecondHand || _strForceGrade != strForceGrade || await cboGrade.DoThreadSafeFuncAsync(x => x.Items.Count, token: token) == 0)
             {
                 _blnIgnoreSecondHand = blnIgnoreSecondHand;
                 _strForceGrade = strForceGrade;
@@ -978,14 +973,14 @@ namespace Chummer
                         }*/
                     }
 
-                    string strOldSelected = await cboGrade.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
+                    string strOldSelected = await cboGrade.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token);
                     bool blnOldSkipListRefresh = _blnSkipListRefresh;
                     if (strForceGrade == _strNoneGradeId || strOldSelected == _strNoneGradeId
                                                          || lstGrade.Any(x => x.Value.ToString() == strOldSelected))
                         _blnSkipListRefresh = true;
                     bool blnOldLoading = _blnLoading;
                     _blnLoading = true;
-                    await cboGrade.PopulateWithListItemsAsync(lstGrade);
+                    await cboGrade.PopulateWithListItemsAsync(lstGrade, token: token);
                     _blnLoading = blnOldLoading;
                     await cboGrade.DoThreadSafeAsync(x =>
                     {
@@ -995,7 +990,7 @@ namespace Chummer
                             x.SelectedValue = strOldSelected;
                         if (x.SelectedIndex == -1 && lstGrade.Count > 0)
                             x.SelectedIndex = 0;
-                    });
+                    }, token: token);
 
                     _blnSkipListRefresh = blnOldSkipListRefresh;
                 }

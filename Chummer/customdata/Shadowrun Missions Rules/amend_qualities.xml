@@ -625,7 +625,7 @@
         <notoriety amendoperation="addnode">2</notoriety>
       </firstlevelbonus>
       <bonus>
-        <nuyenmaxbp amendoperation="remove"/>
+        <nuyenmaxbp amendoperation="remove" />
       </bonus>
     </quality>
     <!-- End Region -->

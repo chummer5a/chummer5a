@@ -19,7 +19,6 @@
 
 using System;
 using System.Collections;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -28,7 +27,7 @@ using System.Threading.Tasks;
 
 namespace Chummer
 {
-    public class LockingOrderedSet<T> : IAsyncSet<T>, IAsyncList<T>, IAsyncReadOnlyList<T>, IProducerConsumerCollection<T>, ISerializable, IDeserializationCallback, IHasLockObject
+    public class LockingOrderedSet<T> : IAsyncSet<T>, IAsyncList<T>, IAsyncReadOnlyList<T>, IAsyncProducerConsumerCollection<T>, ISerializable, IDeserializationCallback, IHasLockObject
     {
         private readonly HashSet<T> _setData;
         private readonly List<T> _lstOrderedData;
@@ -207,7 +206,7 @@ namespace Chummer
             using (EnterReadLock.Enter(LockObject))
                 return _setData.SetEquals(other);
         }
-        
+
         public async ValueTask UnionWithAsync(IEnumerable<T> other, CancellationToken token = default)
         {
             List<T> lstOther = other.ToList();
@@ -222,7 +221,7 @@ namespace Chummer
                 await objLocker.DisposeAsync();
             }
         }
-        
+
         public async ValueTask IntersectWithAsync(IEnumerable<T> other, CancellationToken token = default)
         {
             HashSet<T> setOther = other.ToHashSet();
@@ -237,7 +236,7 @@ namespace Chummer
                 await objLocker.DisposeAsync();
             }
         }
-        
+
         public async ValueTask ExceptWithAsync(IEnumerable<T> other, CancellationToken token = default)
         {
             HashSet<T> setOther = other.ToHashSet();
@@ -252,7 +251,7 @@ namespace Chummer
                 await objLocker.DisposeAsync();
             }
         }
-        
+
         public async ValueTask SymmetricExceptWithAsync(IEnumerable<T> other, CancellationToken token = default)
         {
             HashSet<T> setOther = other.ToHashSet();
@@ -268,37 +267,37 @@ namespace Chummer
                 await objLocker.DisposeAsync();
             }
         }
-        
+
         public async ValueTask<bool> IsSubsetOfAsync(IEnumerable<T> other, CancellationToken token = default)
         {
             using (await EnterReadLock.EnterAsync(LockObject, token))
                 return _setData.IsSubsetOf(other);
         }
-        
+
         public async ValueTask<bool> IsSupersetOfAsync(IEnumerable<T> other, CancellationToken token = default)
         {
             using (await EnterReadLock.EnterAsync(LockObject, token))
                 return _setData.IsSupersetOf(other);
         }
-        
+
         public async ValueTask<bool> IsProperSupersetOfAsync(IEnumerable<T> other, CancellationToken token = default)
         {
             using (await EnterReadLock.EnterAsync(LockObject, token))
                 return _setData.IsProperSupersetOf(other);
         }
-        
+
         public async ValueTask<bool> IsProperSubsetOfAsync(IEnumerable<T> other, CancellationToken token = default)
         {
             using (await EnterReadLock.EnterAsync(LockObject, token))
                 return _setData.IsProperSubsetOf(other);
         }
-        
+
         public async ValueTask<bool> OverlapsAsync(IEnumerable<T> other, CancellationToken token = default)
         {
             using (await EnterReadLock.EnterAsync(LockObject, token))
                 return _setData.Overlaps(other);
         }
-        
+
         public async ValueTask<bool> SetEqualsAsync(IEnumerable<T> other, CancellationToken token = default)
         {
             using (await EnterReadLock.EnterAsync(LockObject, token))
@@ -371,6 +370,31 @@ namespace Chummer
         public ValueTask<bool> TryAddAsync(T item, CancellationToken token = default)
         {
             return AddAsync(item, token);
+        }
+
+        /// <inheritdoc />
+        public async ValueTask<Tuple<bool, T>> TryTakeAsync(CancellationToken token = default)
+        {
+            // Immediately enter a write lock to prevent attempted reads until we have either taken the item we want to take or failed to do so
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
+            try
+            {
+                if (_setData.Count > 0)
+                {
+                    // FIFO to be compliant with how the default for BlockingCollection<T> is ConcurrentQueue
+                    T objReturn = _lstOrderedData[0];
+                    if (_setData.Remove(objReturn))
+                    {
+                        _lstOrderedData.RemoveAt(0);
+                        return new Tuple<bool, T>(true, objReturn);
+                    }
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync();
+            }
+            return new Tuple<bool, T>(false, default);
         }
 
         /// <inheritdoc />

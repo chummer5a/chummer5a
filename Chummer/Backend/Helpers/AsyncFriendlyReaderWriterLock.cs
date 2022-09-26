@@ -18,9 +18,13 @@
  */
 
 using System;
+
 #if DEBUG
+
 using System.Diagnostics;
+
 #endif
+
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -40,9 +44,11 @@ namespace Chummer
     {
         // Because readers are always recursive and it's fine that way, we only need to deploy complicated stuff on the writer side
         private readonly DebuggableSemaphoreSlim _objReaderSemaphore = new DebuggableSemaphoreSlim();
+
         // In order to properly allow async lock to be recursive but still make them work properly as locks, we need to set up something
         // that is a bit like a singly-linked list. Each lock creates a disposable SafeWriterSemaphoreRelease, and only disposing it frees the lock.
         private readonly AsyncLocal<Tuple<DebuggableSemaphoreSlim, DebuggableSemaphoreSlim>> _objCurrentWriterSemaphore = new AsyncLocal<Tuple<DebuggableSemaphoreSlim, DebuggableSemaphoreSlim>>();
+
         private readonly DebuggableSemaphoreSlim _objTopLevelWriterSemaphore = new DebuggableSemaphoreSlim();
         private int _intCountActiveReaders;
         private int _intDisposedStatus;

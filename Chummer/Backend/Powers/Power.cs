@@ -528,6 +528,9 @@ namespace Chummer
         /// </summary>
         public string CurrentDisplayNameShort => DisplayNameShort(GlobalSettings.Language);
 
+        public ValueTask<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default) =>
+            DisplayNameAsync(GlobalSettings.Language, token);
+
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
         /// </summary>
@@ -973,14 +976,15 @@ namespace Chummer
         /// Returns Page if not found or the string is empty.
         /// </summary>
         /// <param name="strLanguage">Language file keyword to use.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns></returns>
-        public async ValueTask<string> DisplayPageAsync(string strLanguage)
+        public async ValueTask<string> DisplayPageAsync(string strLanguage, CancellationToken token = default)
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
-            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage);
+            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token);
             string s = objNode != null
-                ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage"))?.Value ?? Page
+                ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage", token: token))?.Value ?? Page
                 : Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
@@ -1116,27 +1120,27 @@ namespace Chummer
         /// <summary>
         /// Translated Action.
         /// </summary>
-        public Task<string> DisplayActionMethodAsync(string strLanguage)
+        public Task<string> DisplayActionMethodAsync(string strLanguage, CancellationToken token = default)
         {
             switch (Action)
             {
                 case "Auto":
-                    return LanguageManager.GetStringAsync("String_ActionAutomatic", strLanguage);
+                    return LanguageManager.GetStringAsync("String_ActionAutomatic", strLanguage, token: token);
 
                 case "Free":
-                    return LanguageManager.GetStringAsync("String_ActionFree", strLanguage);
+                    return LanguageManager.GetStringAsync("String_ActionFree", strLanguage, token: token);
 
                 case "Simple":
-                    return LanguageManager.GetStringAsync("String_ActionSimple", strLanguage);
+                    return LanguageManager.GetStringAsync("String_ActionSimple", strLanguage, token: token);
 
                 case "Complex":
-                    return LanguageManager.GetStringAsync("String_ActionComplex", strLanguage);
+                    return LanguageManager.GetStringAsync("String_ActionComplex", strLanguage, token: token);
 
                 case "Interrupt":
-                    return LanguageManager.GetStringAsync("String_ActionInterrupt", strLanguage);
+                    return LanguageManager.GetStringAsync("String_ActionInterrupt", strLanguage, token: token);
 
                 case "Special":
-                    return LanguageManager.GetStringAsync("String_SpellDurationSpecial", strLanguage);
+                    return LanguageManager.GetStringAsync("String_SpellDurationSpecial", strLanguage, token: token);
             }
 
             return Task.FromResult(string.Empty);

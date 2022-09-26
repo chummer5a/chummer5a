@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Chummer
@@ -67,7 +68,8 @@ namespace Chummer
         /// Special version of NextModuloBiasRemoved(minValue, maxValue) built specifically for a 1D6 roll. The modulo bias to check is calculated at compile time, so the code should run faster.
         /// </summary>
         /// <param name="objRandom">Instance of Random to use.</param>
-        public static ValueTask<int> NextD6ModuloBiasRemovedAsync(this Random objRandom)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static ValueTask<int> NextD6ModuloBiasRemovedAsync(this Random objRandom, CancellationToken token = default)
         {
             if (objRandom == null)
                 throw new ArgumentNullException(nameof(objRandom));
@@ -82,7 +84,7 @@ namespace Chummer
                     {
                         do
                         {
-                            intLoopResult = await objThreadSafeRandom.NextAsync();
+                            intLoopResult = await objThreadSafeRandom.NextAsync(token);
                         } while (intLoopResult >= intModuloCheck);
                     }
                     else
@@ -92,7 +94,7 @@ namespace Chummer
                             intLoopResult = objRandom.Next();
                         } while (intLoopResult >= intModuloCheck);
                     }
-                });
+                }, token);
 
                 return 1 + intLoopResult % 6;
             }
@@ -103,7 +105,8 @@ namespace Chummer
         /// </summary>
         /// <param name="objRandom">Instance of Random to use.</param>
         /// <param name="maxValue">Maximum value (exclusive) to generate.</param>
-        public static ValueTask<int> NextModuloBiasRemovedAsync(this Random objRandom, int maxValue)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static ValueTask<int> NextModuloBiasRemovedAsync(this Random objRandom, int maxValue, CancellationToken token = default)
         {
             if (objRandom == null)
                 throw new ArgumentNullException(nameof(objRandom));
@@ -118,7 +121,7 @@ namespace Chummer
                     {
                         do
                         {
-                            intLoopResult = await objThreadSafeRandom.NextAsync();
+                            intLoopResult = await objThreadSafeRandom.NextAsync(token);
                         } while (intLoopResult >= intModuloCheck);
                     }
                     else
@@ -128,7 +131,7 @@ namespace Chummer
                             intLoopResult = objRandom.Next();
                         } while (intLoopResult >= intModuloCheck);
                     }
-                });
+                }, token);
 
                 return intLoopResult % maxValue;
             }

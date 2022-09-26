@@ -77,9 +77,15 @@ namespace Chummer
                 return setFirst.SetEquals(second);
             if (second is ISet<T> setSecond)
                 return setSecond.SetEquals(first);
-            return first.GetOrderInvariantEnsembleHashCode() == second.GetOrderInvariantEnsembleHashCode() && first
-                .Concat(second).Distinct()
-                .All(objItem => first.Count(x => x.Equals(objItem)) == second.Count(x => x.Equals(objItem)));
+            if (first.GetOrderInvariantEnsembleHashCode() != second.GetOrderInvariantEnsembleHashCode())
+                return false;
+            List<T> lstTemp = second.ToList();
+            foreach (T item in first)
+            {
+                if (!lstTemp.Remove(item))
+                    return false;
+            }
+            return lstTemp.Count == 0; // The list will only be empty if all elements in second are also in first
         }
 
         /// <summary>
@@ -92,11 +98,19 @@ namespace Chummer
         public static bool CollectionEqual<T>([NotNull] this IReadOnlyCollection<T> first, [NotNull] IReadOnlyCollection<T> second, IEqualityComparer<T> comparer)
         {
             // Sets do not have IEqualityComparer versions for SetEquals, so we always need to do this the slow way
-            return first.Count == second.Count
-                   && first.GetOrderInvariantEnsembleHashCode() == second.GetOrderInvariantEnsembleHashCode()
-                   && first.Concat(second).Distinct().All(objItem =>
-                                                              first.Count(x => comparer.Equals(x, objItem))
-                                                              == second.Count(x => comparer.Equals(x, objItem)));
+            if (first.Count != second.Count)
+                return false;
+            if (first.GetOrderInvariantEnsembleHashCode() != second.GetOrderInvariantEnsembleHashCode())
+                return false;
+            List<T> lstTemp = second.ToList();
+            foreach (T item in first)
+            {
+                int i = lstTemp.FindIndex(x => comparer.Equals(x, item));
+                if (i < 0)
+                    return false;
+                lstTemp.RemoveAt(i);
+            }
+            return lstTemp.Count == 0; // The list will only be empty if all elements in second are also in first
         }
 
         /// <summary>
@@ -474,8 +488,10 @@ namespace Chummer
                 {
                     case 0:
                         return 0;
+
                     case 1:
                         return funcSelector.Invoke(objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0));
+
                     default:
                         lstTasks = new List<Task<int>>(Math.Max(Utils.MaxParallelBatchSize, objTemp.Count));
                         break;
@@ -519,8 +535,10 @@ namespace Chummer
                 {
                     case 0:
                         return 0;
+
                     case 1:
                         return Utils.RunWithoutThreadLock(() => funcSelector.Invoke(objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0)), token);
+
                     default:
                         lstTasks = new List<Task<int>>(Math.Max(Utils.MaxParallelBatchSize, objTemp.Count));
                         break;
@@ -564,8 +582,10 @@ namespace Chummer
                 {
                     case 0:
                         return 0;
+
                     case 1:
                         return funcSelector.Invoke(objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0));
+
                     default:
                         lstTasks = new List<Task<long>>(Math.Max(Utils.MaxParallelBatchSize, objTemp.Count));
                         break;
@@ -609,8 +629,10 @@ namespace Chummer
                 {
                     case 0:
                         return 0;
+
                     case 1:
                         return Utils.RunWithoutThreadLock(() => funcSelector.Invoke(objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0)), token);
+
                     default:
                         lstTasks = new List<Task<long>>(Math.Max(Utils.MaxParallelBatchSize, objTemp.Count));
                         break;
@@ -654,8 +676,10 @@ namespace Chummer
                 {
                     case 0:
                         return 0;
+
                     case 1:
                         return funcSelector.Invoke(objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0));
+
                     default:
                         lstTasks = new List<Task<float>>(Math.Max(Utils.MaxParallelBatchSize, objTemp.Count));
                         break;
@@ -699,8 +723,10 @@ namespace Chummer
                 {
                     case 0:
                         return 0;
+
                     case 1:
                         return Utils.RunWithoutThreadLock(() => funcSelector.Invoke(objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0)), token);
+
                     default:
                         lstTasks = new List<Task<float>>(Math.Max(Utils.MaxParallelBatchSize, objTemp.Count));
                         break;
@@ -744,8 +770,10 @@ namespace Chummer
                 {
                     case 0:
                         return 0;
+
                     case 1:
                         return funcSelector.Invoke(objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0));
+
                     default:
                         lstTasks = new List<Task<double>>(Math.Max(Utils.MaxParallelBatchSize, objTemp.Count));
                         break;
@@ -789,8 +817,10 @@ namespace Chummer
                 {
                     case 0:
                         return 0;
+
                     case 1:
                         return Utils.RunWithoutThreadLock(() => funcSelector.Invoke(objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0)), token);
+
                     default:
                         lstTasks = new List<Task<double>>(Math.Max(Utils.MaxParallelBatchSize, objTemp.Count));
                         break;
@@ -834,8 +864,10 @@ namespace Chummer
                 {
                     case 0:
                         return 0;
+
                     case 1:
                         return funcSelector.Invoke(objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0));
+
                     default:
                         lstTasks = new List<Task<decimal>>(Math.Max(Utils.MaxParallelBatchSize, objTemp.Count));
                         break;
@@ -879,8 +911,10 @@ namespace Chummer
                 {
                     case 0:
                         return 0;
+
                     case 1:
                         return Utils.RunWithoutThreadLock(() => funcSelector.Invoke(objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0)), token);
+
                     default:
                         lstTasks = new List<Task<decimal>>(Math.Max(Utils.MaxParallelBatchSize, objTemp.Count));
                         break;
@@ -924,9 +958,11 @@ namespace Chummer
                 {
                     case 0:
                         return 0;
+
                     case 1:
                         T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
                         return funcPredicate(objFirstElement) ? funcSelector.Invoke(objFirstElement) : 0;
+
                     default:
                         lstTasks = new List<Task<int>>(objTemp.Count);
                         break;
@@ -970,9 +1006,11 @@ namespace Chummer
                 {
                     case 0:
                         return 0;
+
                     case 1:
                         T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
                         return funcPredicate(objFirstElement) ? Utils.RunWithoutThreadLock(() => funcSelector.Invoke(objFirstElement), token) : 0;
+
                     default:
                         lstTasks = new List<Task<int>>(objTemp.Count);
                         break;
@@ -1016,9 +1054,11 @@ namespace Chummer
                 {
                     case 0:
                         return 0;
+
                     case 1:
                         T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
                         return funcPredicate(objFirstElement) ? funcSelector.Invoke(objFirstElement) : 0;
+
                     default:
                         lstTasks = new List<Task<long>>(objTemp.Count);
                         break;
@@ -1062,9 +1102,11 @@ namespace Chummer
                 {
                     case 0:
                         return 0;
+
                     case 1:
                         T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
                         return funcPredicate(objFirstElement) ? Utils.RunWithoutThreadLock(() => funcSelector.Invoke(objFirstElement), token) : 0;
+
                     default:
                         lstTasks = new List<Task<long>>(objTemp.Count);
                         break;
@@ -1108,9 +1150,11 @@ namespace Chummer
                 {
                     case 0:
                         return 0;
+
                     case 1:
                         T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
                         return funcPredicate(objFirstElement) ? funcSelector.Invoke(objFirstElement) : 0;
+
                     default:
                         lstTasks = new List<Task<float>>(objTemp.Count);
                         break;
@@ -1154,9 +1198,11 @@ namespace Chummer
                 {
                     case 0:
                         return 0;
+
                     case 1:
                         T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
                         return funcPredicate(objFirstElement) ? Utils.RunWithoutThreadLock(() => funcSelector.Invoke(objFirstElement), token) : 0;
+
                     default:
                         lstTasks = new List<Task<float>>(objTemp.Count);
                         break;
@@ -1200,9 +1246,11 @@ namespace Chummer
                 {
                     case 0:
                         return 0;
+
                     case 1:
                         T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
                         return funcPredicate(objFirstElement) ? funcSelector.Invoke(objFirstElement) : 0;
+
                     default:
                         lstTasks = new List<Task<double>>(objTemp.Count);
                         break;
@@ -1246,9 +1294,11 @@ namespace Chummer
                 {
                     case 0:
                         return 0;
+
                     case 1:
                         T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
                         return funcPredicate(objFirstElement) ? Utils.RunWithoutThreadLock(() => funcSelector.Invoke(objFirstElement), token) : 0;
+
                     default:
                         lstTasks = new List<Task<double>>(objTemp.Count);
                         break;
@@ -1292,9 +1342,11 @@ namespace Chummer
                 {
                     case 0:
                         return 0;
+
                     case 1:
                         T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
                         return funcPredicate(objFirstElement) ? funcSelector.Invoke(objFirstElement) : 0;
+
                     default:
                         lstTasks = new List<Task<decimal>>(objTemp.Count);
                         break;
@@ -1338,9 +1390,11 @@ namespace Chummer
                 {
                     case 0:
                         return 0;
+
                     case 1:
                         T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
                         return funcPredicate(objFirstElement) ? Utils.RunWithoutThreadLock(() => funcSelector.Invoke(objFirstElement), token) : 0;
+
                     default:
                         lstTasks = new List<Task<decimal>>(objTemp.Count);
                         break;
@@ -1384,9 +1438,11 @@ namespace Chummer
                 {
                     case 0:
                         return 0;
+
                     case 1:
                         T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
                         return Utils.RunWithoutThreadLock(() => funcPredicate(objFirstElement), token) ? funcSelector.Invoke(objFirstElement) : 0;
+
                     default:
                         lstTasks = new List<Task<int>>(objTemp.Count);
                         break;
@@ -1430,9 +1486,11 @@ namespace Chummer
                 {
                     case 0:
                         return 0;
+
                     case 1:
                         T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
                         return Utils.RunWithoutThreadLock(async () => await funcPredicate(objFirstElement) ? await funcSelector.Invoke(objFirstElement) : 0, token);
+
                     default:
                         lstTasks = new List<Task<int>>(objTemp.Count);
                         break;
@@ -1476,9 +1534,11 @@ namespace Chummer
                 {
                     case 0:
                         return 0;
+
                     case 1:
                         T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
                         return Utils.RunWithoutThreadLock(() => funcPredicate(objFirstElement), token) ? funcSelector.Invoke(objFirstElement) : 0;
+
                     default:
                         lstTasks = new List<Task<long>>(objTemp.Count);
                         break;
@@ -1522,9 +1582,11 @@ namespace Chummer
                 {
                     case 0:
                         return 0;
+
                     case 1:
                         T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
                         return Utils.RunWithoutThreadLock(async () => await funcPredicate(objFirstElement) ? await funcSelector.Invoke(objFirstElement) : 0, token);
+
                     default:
                         lstTasks = new List<Task<long>>(objTemp.Count);
                         break;
@@ -1568,9 +1630,11 @@ namespace Chummer
                 {
                     case 0:
                         return 0;
+
                     case 1:
                         T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
                         return Utils.RunWithoutThreadLock(() => funcPredicate(objFirstElement), token) ? funcSelector.Invoke(objFirstElement) : 0;
+
                     default:
                         lstTasks = new List<Task<float>>(objTemp.Count);
                         break;
@@ -1614,9 +1678,11 @@ namespace Chummer
                 {
                     case 0:
                         return 0;
+
                     case 1:
                         T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
                         return Utils.RunWithoutThreadLock(async () => await funcPredicate(objFirstElement) ? await funcSelector.Invoke(objFirstElement) : 0, token);
+
                     default:
                         lstTasks = new List<Task<float>>(objTemp.Count);
                         break;
@@ -1660,9 +1726,11 @@ namespace Chummer
                 {
                     case 0:
                         return 0;
+
                     case 1:
                         T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
                         return Utils.RunWithoutThreadLock(() => funcPredicate(objFirstElement), token) ? funcSelector.Invoke(objFirstElement) : 0;
+
                     default:
                         lstTasks = new List<Task<double>>(objTemp.Count);
                         break;
@@ -1706,9 +1774,11 @@ namespace Chummer
                 {
                     case 0:
                         return 0;
+
                     case 1:
                         T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
                         return Utils.RunWithoutThreadLock(async () => await funcPredicate(objFirstElement) ? await funcSelector.Invoke(objFirstElement) : 0, token);
+
                     default:
                         lstTasks = new List<Task<double>>(objTemp.Count);
                         break;
@@ -1752,9 +1822,11 @@ namespace Chummer
                 {
                     case 0:
                         return 0;
+
                     case 1:
                         T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
                         return Utils.RunWithoutThreadLock(() => funcPredicate(objFirstElement), token) ? funcSelector.Invoke(objFirstElement) : 0;
+
                     default:
                         lstTasks = new List<Task<decimal>>(objTemp.Count);
                         break;
@@ -1798,9 +1870,11 @@ namespace Chummer
                 {
                     case 0:
                         return 0;
+
                     case 1:
                         T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
                         return Utils.RunWithoutThreadLock(async () => await funcPredicate(objFirstElement) ? await funcSelector.Invoke(objFirstElement) : 0, token);
+
                     default:
                         lstTasks = new List<Task<decimal>>(objTemp.Count);
                         break;

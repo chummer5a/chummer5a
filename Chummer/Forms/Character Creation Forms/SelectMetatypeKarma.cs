@@ -586,7 +586,7 @@ namespace Chummer
                     string strPage = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("altpage", token: token))?.Value ?? (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("page", token: token))?.Value;
                     if (!string.IsNullOrEmpty(strPage))
                     {
-                        SourceString objSource = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter);
+                        SourceString objSource = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter, token);
                         await lblSource.DoThreadSafeAsync(x => x.Text = objSource.ToString(), token);
                         await lblSource.SetToolTipAsync(objSource.LanguageBookTooltip, token);
                     }
@@ -737,7 +737,7 @@ namespace Chummer
                     string strPage = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("altpage", token: token))?.Value ?? (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("page", token: token))?.Value;
                     if (!string.IsNullOrEmpty(strPage))
                     {
-                        SourceString objSource = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter);
+                        SourceString objSource = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter, token);
                         await lblSource.DoThreadSafeAsync(x => x.Text = objSource.ToString(), token);
                         await lblSource.SetToolTipAsync(objSource.LanguageBookTooltip, token);
                     }

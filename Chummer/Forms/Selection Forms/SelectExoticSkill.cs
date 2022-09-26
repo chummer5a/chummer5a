@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
@@ -124,12 +125,12 @@ namespace Chummer
 
         #endregion Properties
 
-        private async ValueTask BuildList()
+        private async ValueTask BuildList(CancellationToken token = default)
         {
-            string strSelectedCategory = await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()) ?? string.Empty;
+            string strSelectedCategory = await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token) ?? string.Empty;
             if (string.IsNullOrEmpty(strSelectedCategory))
                 return;
-            XPathNodeIterator xmlWeaponList = (await _objCharacter.LoadDataXPathAsync("weapons.xml"))
+            XPathNodeIterator xmlWeaponList = (await _objCharacter.LoadDataXPathAsync("weapons.xml", token: token))
                                                            .Select("/chummer/weapons/weapon[(category = "
                                                                    + (strSelectedCategory + 's').CleanXPath()
                                                                    + " or useskill = "
@@ -147,12 +148,12 @@ namespace Chummer
                             lstSkillSpecializations.Add(
                                 new ListItem(
                                     strName,
-                                    (await xmlWeapon.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value ?? strName));
+                                    (await xmlWeapon.SelectSingleNodeAndCacheExpressionAsync("translate", token: token))?.Value ?? strName));
                         }
                     }
                 }
 
-                foreach (XPathNavigator xmlSpec in (await _objCharacter.LoadDataXPathAsync("skills.xml"))
+                foreach (XPathNavigator xmlSpec in (await _objCharacter.LoadDataXPathAsync("skills.xml", token: token))
                                                                 .Select("/chummer/skills/skill[name = "
                                                                         + strSelectedCategory.CleanXPath() + " and ("
                                                                         + _objCharacter.Settings.BookXPath()
@@ -163,7 +164,7 @@ namespace Chummer
                     {
                         lstSkillSpecializations.Add(new ListItem(
                                                         strName,
-                                                        (await xmlSpec.SelectSingleNodeAndCacheExpressionAsync("@translate"))?.Value
+                                                        (await xmlSpec.SelectSingleNodeAndCacheExpressionAsync("@translate", token: token))?.Value
                                                         ?? strName));
                     }
                 }
@@ -182,9 +183,9 @@ namespace Chummer
 
                 lstSkillSpecializations.Sort(
                     Comparer<ListItem>.Create((a, b) => string.CompareOrdinal(a.Name, b.Name)));
-                string strOldText = await cboSkillSpecialisations.DoThreadSafeFuncAsync(x => x.Text);
-                string strOldSelectedValue = await cboSkillSpecialisations.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()) ?? string.Empty;
-                await cboSkillSpecialisations.PopulateWithListItemsAsync(lstSkillSpecializations);
+                string strOldText = await cboSkillSpecialisations.DoThreadSafeFuncAsync(x => x.Text, token: token);
+                string strOldSelectedValue = await cboSkillSpecialisations.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token) ?? string.Empty;
+                await cboSkillSpecialisations.PopulateWithListItemsAsync(lstSkillSpecializations, token: token);
                 await cboSkillSpecialisations.DoThreadSafeAsync(x =>
                 {
                     if (!string.IsNullOrEmpty(strOldSelectedValue))
@@ -197,7 +198,7 @@ namespace Chummer
                         else if (lstSkillSpecializations.Count > 0)
                             x.SelectedIndex = 0;
                     }
-                });
+                }, token: token);
             }
         }
     }

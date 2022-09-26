@@ -71,7 +71,7 @@
       </bonus>
       <bonus>
         <specificskill xpathfilter="name = 'Escape Artist' or name = 'Free-Fall' or name = 'Perception' or name = 'Diving' or name = 'Tracking' or name = 'Artificing' or name = 'Disenchanting' or name = 'Exotic Melee Weapon'" amendoperation="remove" />
-        <selectskill xpathfilter="@limittoskill = 'Artisan,Performance' and val = '1'" amendoperation="remove"/>
+        <selectskill xpathfilter="@limittoskill = 'Artisan,Performance' and val = '1'" amendoperation="remove" />
         <specificskill xpathfilter="name = 'Assensing'">
           <name>Astral</name>
           <condition>Assensing</condition>
@@ -218,11 +218,7 @@
       </bonus>
     </quality>
     <quality>
-      <id>3f536570-2f0c-40b1-a056-d310e29e983d</id>
       <name>The Athlete's Way</name>
-      <karma>20</karma>
-      <category>Positive</category>
-      <doublecareer>False</doublecareer>
       <bonus>
         <focusbindingkarmacost xpathfilter="name = 'Qi Focus' and extracontains = 'Improved Ability (skill) (Flight)'" amendoperation="remove" />
         <focusbindingkarmacost xpathfilter="name = 'Qi Focus' and extracontains = 'Improved Ability (skill) (Gymnastics)'">

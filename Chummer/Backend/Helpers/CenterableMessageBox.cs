@@ -134,8 +134,10 @@ namespace Chummer
             public readonly IntPtr lResult;
             public readonly IntPtr lParam;
             public readonly IntPtr wParam;
+
             [CLSCompliant(false)]
             public readonly uint message;
+
             public readonly IntPtr hwnd;
 
             public override int GetHashCode()
@@ -145,7 +147,7 @@ namespace Chummer
                     int hashCode = lResult.GetHashCode();
                     hashCode = (hashCode * 397) ^ lParam.GetHashCode();
                     hashCode = (hashCode * 397) ^ wParam.GetHashCode();
-                    hashCode = (hashCode * 397) ^ (int) message;
+                    hashCode = (hashCode * 397) ^ (int)message;
                     hashCode = (hashCode * 397) ^ hwnd.GetHashCode();
                     return hashCode;
                 }

@@ -1,6 +1,5 @@
 Build 223
 Application Changes:
-- Migrated Chummer to .NET Framework 4.8.1 to get receive various improvements and bugfixes to WinForms.
 - Characters can now be opened up directly for printing (including exporting to PDF) or for exporting without needing to fully open a character for editing.
 - Character sheet viewers and character export windows are now treated the same way as "normal" character windows, meaning they open in tabs now instead of a dialog and can be kept open in the background while editing characters.
 - Changing the rating of a knowsoft or linguasoft after it has been bought no longer causes Chummer to crash. Fixes #4708.
@@ -57,6 +56,8 @@ Application Changes:
 - Loading a character with an unavailable settings file is now overwhelmingly more likely to pick a default setting whose build method matches the one that the character was made with. Fixes #4889.
 - Characters that leave character creation with negative karma (possible if ignoring character creation rules) will now have an entry in their karma logs showing their negative starting karma.
 - Mystic Adept PPs can now be bought up to a character's unaugmented MAG instead of their total MAG. This is only relevant when using the house rule where karma costs are not decreased from burning out special attributes.
+- Having armor accessories but no armor equipped no longer causes the program to ignore non-armor-based armor bonuses and penalties.
+- Metatype karma costs are now properly shown and updated in the sidebar during character creation.
 
 Data Changes:
 - One with the Matrix I, II, and III can no longer be taken multiple times.
@@ -91,6 +92,7 @@ Data Changes:
 - Smart Tires are now properly recognized as tires.
 - Added missing Off-Road Suspension mod to the Yamaha Growler.
 - Added missing, German-specific vehicle mods to the Harley-Davidson Nightmare, the Evo Falcon-EX, and the Thundercloud Mustang. Fixes #4919.
+- Tool Kits, Tool Shops, Tool Facilities, and Workshops now work off of a flexible text field that suggests skills instead of only allowing characters to choose active skills. This should make it easier for users to pick versions of these items that aren't properly represented by skills (e.g. a forensics tool kit).
 
 Changed/New Strings:
 - Checkbox_Options_SpecializationsBreakSkillGroups

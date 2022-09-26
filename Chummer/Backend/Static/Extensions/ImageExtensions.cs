@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Buffers;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -278,16 +279,25 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Image ToImage(this string strBase64String)
         {
+            if (string.IsNullOrEmpty(strBase64String))
+                return default;
             Image imgReturn = null;
             try
             {
-                byte[] achrImage = Convert.FromBase64String(strBase64String);
-                if (achrImage.Length > 0)
+                byte[] achrImage = strBase64String.ToBase64PooledByteArray();
+                try
                 {
-                    using (MemoryStream objStream = new MemoryStream(achrImage, 0, achrImage.Length))
+                    if (achrImage.Length > 0)
                     {
-                        imgReturn = Image.FromStream(objStream, true);
+                        using (MemoryStream objStream = new MemoryStream(achrImage, 0, achrImage.Length))
+                        {
+                            imgReturn = Image.FromStream(objStream, true);
+                        }
                     }
+                }
+                finally
+                {
+                    ArrayPool<byte>.Shared.Return(achrImage, true);
                 }
             }
             catch (Exception e)
@@ -307,6 +317,8 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Bitmap ToImage(this string strBase64String, PixelFormat eFormat)
         {
+            if (string.IsNullOrEmpty(strBase64String))
+                return default;
             using (Image imgInput = strBase64String.ToImage())
             {
                 Bitmap bmpInput = new Bitmap(imgInput);
@@ -333,18 +345,27 @@ namespace Chummer
         public static async ValueTask<Image> ToImageAsync(this string strBase64String, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
+            if (string.IsNullOrEmpty(strBase64String))
+                return default;
             Image imgReturn = null;
             try
             {
-                byte[] achrImage = Convert.FromBase64String(strBase64String);
-                token.ThrowIfCancellationRequested();
-                if (achrImage.Length > 0)
+                byte[] achrImage = strBase64String.ToBase64PooledByteArray();
+                try
                 {
-                    using (MemoryStream objStream = new MemoryStream())
+                    token.ThrowIfCancellationRequested();
+                    if (achrImage.Length > 0)
                     {
-                        await objStream.WriteAsync(achrImage, 0, achrImage.Length, token);
-                        imgReturn = Image.FromStream(objStream, true);
+                        using (MemoryStream objStream = new MemoryStream())
+                        {
+                            await objStream.WriteAsync(achrImage, 0, achrImage.Length, token);
+                            imgReturn = Image.FromStream(objStream, true);
+                        }
                     }
+                }
+                finally
+                {
+                    ArrayPool<byte>.Shared.Return(achrImage, true);
                 }
             }
             catch (OperationCanceledException)
@@ -370,6 +391,8 @@ namespace Chummer
         public static async ValueTask<Bitmap> ToImageAsync(this string strBase64String, PixelFormat eFormat, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
+            if (string.IsNullOrEmpty(strBase64String))
+                return default;
             using (Image imgInput = await strBase64String.ToImageAsync(token: token))
             {
                 token.ThrowIfCancellationRequested();
@@ -514,7 +537,7 @@ namespace Chummer
 
             try
             {
-                return await Task.Run(() =>
+                return await Task.Run(async () =>
                 {
                     using (MemoryStream objImageStream = new MemoryStream())
                     {
@@ -531,9 +554,16 @@ namespace Chummer
 
                         bmpClone.Save(objImageStream, eOverrideFormat);
                         token.ThrowIfCancellationRequested();
-                        byte[] achrData = objImageStream.ToArray();
-                        token.ThrowIfCancellationRequested();
-                        return Convert.ToBase64String(achrData);
+                        byte[] achrData = await objImageStream.ToPooledArrayAsync(token);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            return Convert.ToBase64String(achrData);
+                        }
+                        finally
+                        {
+                            ArrayPool<byte>.Shared.Return(achrData, true);
+                        }
                     }
                 }, token);
             }
@@ -576,15 +606,22 @@ namespace Chummer
 
             try
             {
-                return await Task.Run(() =>
+                return await Task.Run(async () =>
                 {
                     using (MemoryStream objImageStream = new MemoryStream())
                     {
                         bmpClone.Save(objImageStream, objCodecInfo, lstEncoderParameters);
                         token.ThrowIfCancellationRequested();
-                        byte[] achrData = objImageStream.ToArray();
-                        token.ThrowIfCancellationRequested();
-                        return Convert.ToBase64String(achrData);
+                        byte[] achrData = await objImageStream.ToPooledArrayAsync(token);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            return Convert.ToBase64String(achrData);
+                        }
+                        finally
+                        {
+                            ArrayPool<byte>.Shared.Return(achrData, true);
+                        }
                     }
                 }, token);
             }
@@ -677,15 +714,22 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             try
             {
-                return await Task.Run(() =>
+                return await Task.Run(async () =>
                 {
                     using (MemoryStream objImageStream = new MemoryStream())
                     {
                         bmpClone.Save(objImageStream, s_LzyJpegEncoder.Value, lstJpegParameters);
                         token.ThrowIfCancellationRequested();
-                        byte[] achrData = objImageStream.ToArray();
-                        token.ThrowIfCancellationRequested();
-                        return Convert.ToBase64String(achrData);
+                        byte[] achrData = await objImageStream.ToPooledArrayAsync(token);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            return Convert.ToBase64String(achrData);
+                        }
+                        finally
+                        {
+                            ArrayPool<byte>.Shared.Return(achrData, true);
+                        }
                     }
                 }, token);
             }

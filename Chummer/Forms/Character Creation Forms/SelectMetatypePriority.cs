@@ -1253,7 +1253,7 @@ namespace Chummer
                                 }
 
                                 blnRemoveFreeSkills = false;
-                                await AddFreeSkills(intFreeLevels, eType, strSkill1, strSkill2, strSkill3);
+                                await AddFreeSkills(intFreeLevels, eType, strSkill1, strSkill2, strSkill3, token);
 
                                 if (int.TryParse(
                                         (await xmlTalentPriorityNode.SelectSingleNodeAndCacheExpressionAsync(
@@ -1533,10 +1533,10 @@ namespace Chummer
             }
         }
 
-        private async ValueTask AddFreeSkills(int intFreeLevels, Improvement.ImprovementType type, string strSkill1, string strSkill2, string strSkill3)
+        private async ValueTask AddFreeSkills(int intFreeLevels, Improvement.ImprovementType type, string strSkill1, string strSkill2, string strSkill3, CancellationToken token = default)
         {
             List<Improvement> lstOldFreeSkillImprovements
-                = await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter, type);
+                = await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter, type, token: token);
             lstOldFreeSkillImprovements.RemoveAll(x => x.ImproveSource != Improvement.ImprovementSource.Heritage);
             if (intFreeLevels != 0)
             {
@@ -1551,7 +1551,7 @@ namespace Chummer
                         blnCommit = true;
                         await AddExoticSkillIfNecessary(strSkill1);
                         await ImprovementManager.CreateImprovementAsync(_objCharacter, strSkill1, Improvement.ImprovementSource.Heritage, string.Empty,
-                                                                        type, string.Empty, intFreeLevels);
+                                                                        type, string.Empty, intFreeLevels, token: token);
                     }
                 }
 
@@ -1565,7 +1565,7 @@ namespace Chummer
                         blnCommit = true;
                         await AddExoticSkillIfNecessary(strSkill2);
                         await ImprovementManager.CreateImprovementAsync(_objCharacter, strSkill2, Improvement.ImprovementSource.Heritage, string.Empty,
-                                                                        type, string.Empty, intFreeLevels);
+                                                                        type, string.Empty, intFreeLevels, token: token);
                     }
                 }
 
@@ -1579,20 +1579,20 @@ namespace Chummer
                         blnCommit = true;
                         await AddExoticSkillIfNecessary(strSkill3);
                         await ImprovementManager.CreateImprovementAsync(_objCharacter, strSkill3, Improvement.ImprovementSource.Heritage, string.Empty,
-                                                                        type, string.Empty, intFreeLevels);
+                                                                        type, string.Empty, intFreeLevels, token: token);
                     }
                 }
 
                 if (lstOldFreeSkillImprovements.Count > 0)
-                    await ImprovementManager.RemoveImprovementsAsync(_objCharacter, lstOldFreeSkillImprovements);
+                    await ImprovementManager.RemoveImprovementsAsync(_objCharacter, lstOldFreeSkillImprovements, token: token);
                 if (blnCommit)
-                    await ImprovementManager.CommitAsync(_objCharacter);
+                    await ImprovementManager.CommitAsync(_objCharacter, token);
 
                 async ValueTask AddExoticSkillIfNecessary(string strDictionaryKey)
                 {
                     // Add exotic skills if we are increasing their base level
                     if (!ExoticSkill.IsExoticSkillName(strDictionaryKey) ||
-                        await _objCharacter.SkillsSection.GetActiveSkillAsync(strDictionaryKey) != null)
+                        await _objCharacter.SkillsSection.GetActiveSkillAsync(strDictionaryKey, token) != null)
                         return;
                     string strSkillName = strDictionaryKey;
                     string strSkillSpecific = string.Empty;
@@ -1602,11 +1602,11 @@ namespace Chummer
                         strSkillSpecific = strSkillName.Substring(intParenthesesIndex + 2, strSkillName.Length - intParenthesesIndex - 3);
                         strSkillName = strSkillName.Substring(0, intParenthesesIndex);
                     }
-                    await _objCharacter.SkillsSection.AddExoticSkillAsync(strSkillName, strSkillSpecific);
+                    await _objCharacter.SkillsSection.AddExoticSkillAsync(strSkillName, strSkillSpecific, token);
                 }
             }
             else
-                await ImprovementManager.RemoveImprovementsAsync(_objCharacter, lstOldFreeSkillImprovements);
+                await ImprovementManager.RemoveImprovementsAsync(_objCharacter, lstOldFreeSkillImprovements, token: token);
         }
 
         /// <summary>
@@ -1831,7 +1831,7 @@ namespace Chummer
                     {
                         SourceString objSource = await SourceString.GetSourceStringAsync(
                             strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo,
-                            _objCharacter);
+                            _objCharacter, token);
                         await lblSource.DoThreadSafeAsync(x => x.Text = objSource.ToString(), token);
                         await lblSource.SetToolTipAsync(objSource.LanguageBookTooltip, token);
                     }
@@ -2088,7 +2088,7 @@ namespace Chummer
                     {
                         SourceString objSource = await SourceString.GetSourceStringAsync(
                             strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo,
-                            _objCharacter);
+                            _objCharacter, token);
                         await objSource.SetControlAsync(lblSource, token);
                     }
                     else

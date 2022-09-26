@@ -79,11 +79,12 @@ namespace Chummer
         /// <param name="blnIsOrNode">Whether this is an OR node (true) or an AND node (false). Default is AND (false).</param>
         /// <param name="xmlOperationNode">The node containing the filter operation or a list of filter operations. Every element here is checked against corresponding elements in the parent node, using an operation specified in the element's attributes.</param>
         /// <param name="xmlParentNode">The parent node against which the filter operations are checked.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>True if the parent node passes the conditions set in the operation node/nodelist, false otherwise.</returns>
         public static Task<bool> ProcessFilterOperationNodeAsync(this XPathNavigator xmlParentNode,
-                                                                 XPathNavigator xmlOperationNode, bool blnIsOrNode)
+                                                                 XPathNavigator xmlOperationNode, bool blnIsOrNode, CancellationToken token = default)
         {
-            return ProcessFilterOperationNodeCoreAsync(false, xmlParentNode, xmlOperationNode, blnIsOrNode);
+            return ProcessFilterOperationNodeCoreAsync(false, xmlParentNode, xmlOperationNode, blnIsOrNode, token);
         }
 
         /// <summary>
@@ -95,8 +96,9 @@ namespace Chummer
         /// <param name="blnIsOrNode">Whether this is an OR node (true) or an AND node (false). Default is AND (false).</param>
         /// <param name="xmlOperationNode">The node containing the filter operation or a list of filter operations. Every element here is checked against corresponding elements in the parent node, using an operation specified in the element's attributes.</param>
         /// <param name="xmlParentNode">The parent node against which the filter operations are checked.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>True if the parent node passes the conditions set in the operation node/nodelist, false otherwise.</returns>
-        private static async Task<bool> ProcessFilterOperationNodeCoreAsync(bool blnSync, XPathNavigator xmlParentNode, XPathNavigator xmlOperationNode, bool blnIsOrNode)
+        private static async Task<bool> ProcessFilterOperationNodeCoreAsync(bool blnSync, XPathNavigator xmlParentNode, XPathNavigator xmlOperationNode, bool blnIsOrNode, CancellationToken token = default)
         {
             if (xmlOperationNode == null)
                 return false;
@@ -105,9 +107,9 @@ namespace Chummer
             {
                 bool blnInvert
                     = (blnSync
-                        // ReSharper disable once MethodHasAsyncOverload
+                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                         ? xmlOperationChildNode.SelectSingleNodeAndCacheExpression("@NOT")
-                        : await xmlOperationChildNode.SelectSingleNodeAndCacheExpressionAsync("@NOT").ConfigureAwait(false)) != null;
+                        : await xmlOperationChildNode.SelectSingleNodeAndCacheExpressionAsync("@NOT", token: token).ConfigureAwait(false)) != null;
 
                 bool blnOperationChildNodeResult = blnInvert;
                 string strNodeName = xmlOperationChildNode.Name;
@@ -116,36 +118,36 @@ namespace Chummer
                     case "OR":
                         blnOperationChildNodeResult =
                             (blnSync
-                                // ReSharper disable once MethodHasAsyncOverload
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 ? ProcessFilterOperationNode(xmlParentNode, xmlOperationChildNode, true)
-                                : await ProcessFilterOperationNodeAsync(xmlParentNode, xmlOperationChildNode, true).ConfigureAwait(false))
+                                : await ProcessFilterOperationNodeAsync(xmlParentNode, xmlOperationChildNode, true, token).ConfigureAwait(false))
                             != blnInvert;
                         break;
 
                     case "NOR":
                         blnOperationChildNodeResult =
                             (blnSync
-                                // ReSharper disable once MethodHasAsyncOverload
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 ? ProcessFilterOperationNode(xmlParentNode, xmlOperationChildNode, true)
-                                : await ProcessFilterOperationNodeAsync(xmlParentNode, xmlOperationChildNode, true).ConfigureAwait(false))
+                                : await ProcessFilterOperationNodeAsync(xmlParentNode, xmlOperationChildNode, true, token).ConfigureAwait(false))
                             == blnInvert;
                         break;
 
                     case "AND":
                         blnOperationChildNodeResult =
                             (blnSync
-                                // ReSharper disable once MethodHasAsyncOverload
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 ? ProcessFilterOperationNode(xmlParentNode, xmlOperationChildNode, false)
-                                : await ProcessFilterOperationNodeAsync(xmlParentNode, xmlOperationChildNode, false).ConfigureAwait(false))
+                                : await ProcessFilterOperationNodeAsync(xmlParentNode, xmlOperationChildNode, false, token).ConfigureAwait(false))
                             != blnInvert;
                         break;
 
                     case "NAND":
                         blnOperationChildNodeResult =
                             (blnSync
-                                // ReSharper disable once MethodHasAsyncOverload
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 ? ProcessFilterOperationNode(xmlParentNode, xmlOperationChildNode, false)
-                                : await ProcessFilterOperationNodeAsync(xmlParentNode, xmlOperationChildNode, false).ConfigureAwait(false))
+                                : await ProcessFilterOperationNodeAsync(xmlParentNode, xmlOperationChildNode, false, token).ConfigureAwait(false))
                             == blnInvert;
                         break;
 
@@ -158,9 +160,9 @@ namespace Chummer
                             if (xmlParentNode != null)
                             {
                                 XPathNavigator objOperationAttribute = blnSync
-                                    // ReSharper disable once MethodHasAsyncOverload
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     ? xmlOperationChildNode.SelectSingleNodeAndCacheExpression("@operation")
-                                    : await xmlOperationChildNode.SelectSingleNodeAndCacheExpressionAsync("@operation").ConfigureAwait(false);
+                                    : await xmlOperationChildNode.SelectSingleNodeAndCacheExpressionAsync("@operation", token: token).ConfigureAwait(false);
                                 string strOperationType = objOperationAttribute?.Value ?? "==";
                                 XPathNodeIterator objXmlTargetNodeList = xmlParentNode.Select(strNodeName);
                                 // If we're just checking for existence of a node, no need for more processing
@@ -172,15 +174,15 @@ namespace Chummer
                                 {
                                     bool blnOperationChildNodeAttributeOr = (blnSync
                                         ? xmlOperationChildNode
-                                            // ReSharper disable once MethodHasAsyncOverload
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             .SelectSingleNodeAndCacheExpression("@OR")
                                         : await xmlOperationChildNode
-                                            .SelectSingleNodeAndCacheExpressionAsync("@OR").ConfigureAwait(false)) != null;
+                                            .SelectSingleNodeAndCacheExpressionAsync("@OR", token: token).ConfigureAwait(false)) != null;
                                     // default is "any", replace with switch() if more check modes are necessary
                                     XPathNavigator objCheckTypeAttribute = blnSync
-                                        // ReSharper disable once MethodHasAsyncOverload
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         ? xmlOperationChildNode.SelectSingleNodeAndCacheExpression("@checktype")
-                                        : await xmlOperationChildNode.SelectSingleNodeAndCacheExpressionAsync("@checktype").ConfigureAwait(false);
+                                        : await xmlOperationChildNode.SelectSingleNodeAndCacheExpressionAsync("@checktype", token: token).ConfigureAwait(false);
                                     bool blnCheckAll = objCheckTypeAttribute?.Value == "all";
                                     blnOperationChildNodeResult = blnCheckAll;
                                     string strOperationChildNodeText = xmlOperationChildNode.Value;
@@ -193,14 +195,14 @@ namespace Chummer
                                         {
                                             if (xmlOperationChildNode.SelectChildren(XPathNodeType.Element).Count > 0)
                                                 boolSubNodeResult = (blnSync
-                                                                        // ReSharper disable once MethodHasAsyncOverload
+                                                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                                         ? ProcessFilterOperationNode(xmlTargetNode,
                                                                             xmlOperationChildNode,
                                                                             blnOperationChildNodeAttributeOr)
                                                                         : await ProcessFilterOperationNodeAsync(
                                                                             xmlTargetNode,
                                                                             xmlOperationChildNode,
-                                                                            blnOperationChildNodeAttributeOr).ConfigureAwait(false))
+                                                                            blnOperationChildNodeAttributeOr, token).ConfigureAwait(false))
                                                                     != blnInvert;
                                         }
                                         else

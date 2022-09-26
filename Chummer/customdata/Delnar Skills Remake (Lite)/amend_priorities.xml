@@ -23,7 +23,7 @@
     <priority xpathfilter="talents">
       <talents>
         <talent xpathfilter="value = 'Aspected Magician'">
-          <skillgroupchoices amendoperation="remove"/>
+          <skillgroupchoices amendoperation="remove" />
           <skillchoices amendoperation="addnode">
             <skill>Sorcery</skill>
             <skill>Conjuring</skill>
