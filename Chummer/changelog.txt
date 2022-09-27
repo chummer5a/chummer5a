@@ -1,6 +1,7 @@
 Future Build 224
 Application Changes:
 - Fixed certain texts in Dark Mode not properly switching to a white color.
+- The checkboxes for the list to set what cyberware and bioware grades are allowed at character creation no longer appears weird in dark mode on machines running Windows 10 or earlier.
 
 Build 223
 Application Changes:

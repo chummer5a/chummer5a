@@ -1436,7 +1436,7 @@ namespace Chummer
                             x.Controls.Clear();
                             foreach (ListItem objGrade in lstGrades)
                             {
-                                CheckBox chkGrade = new CheckBox
+                                ColorableCheckBox chkGrade = new ColorableCheckBox
                                 {
                                     UseVisualStyleBackColor = true,
                                     Text = objGrade.Name,
