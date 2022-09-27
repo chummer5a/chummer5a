@@ -933,7 +933,7 @@ namespace Chummer
                             x.ForeColor = blnLightMode ? ControlDarkestLight : ControlDarkestDark;
                         else if (x.ForeColor == (blnLightMode ? WindowTextDark : WindowTextLight))
                             x.ForeColor = blnLightMode ? WindowTextLight : WindowTextDark;
-                        else if (x.BackColor == ControlTextLight || x.BackColor == ControlTextDark)
+                        else if (x.ForeColor == ControlTextLight || x.ForeColor == ControlTextDark)
                             x.ForeColor = blnLightMode ? ControlTextLight : ControlTextDark;
                         // These controls never have backgrounds set explicitly, so shouldn't have their backgrounds overwritten
                         if (!(x is Label || x is CheckBox || x is PictureBox || x is Button
@@ -1204,7 +1204,7 @@ namespace Chummer
                             x.ForeColor = blnLightMode ? ControlDarkerLight : ControlDarkerDark;
                         else if (x.ForeColor == (blnLightMode ? ControlDarkestDark : ControlDarkestLight))
                             x.ForeColor = blnLightMode ? ControlDarkestLight : ControlDarkestDark;
-                        else
+                        else if (x.ForeColor == ControlTextLight || x.ForeColor == ControlTextDark)
                             x.ForeColor = blnLightMode ? ControlTextLight : ControlTextDark;
                         // These controls never have backgrounds set explicitly, so shouldn't have their backgrounds overwritten
                         if (!(x is Label || x is CheckBox || x is PictureBox || x is Button

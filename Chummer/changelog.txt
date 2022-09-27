@@ -1,3 +1,7 @@
+Future Build 224
+Application Changes:
+- Fixed certain texts in Dark Mode not properly switching to a white color.
+
 Build 223
 Application Changes:
 - Characters can now be opened up directly for printing (including exporting to PDF) or for exporting without needing to fully open a character for editing.
