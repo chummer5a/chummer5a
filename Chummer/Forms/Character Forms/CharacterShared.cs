@@ -66,6 +66,11 @@ namespace Chummer
         {
             GenericToken = GenericCancellationTokenSource.Token;
             _objCharacter = objCharacter;
+            CancellationTokenRegistration objCancellationRegistration = GenericToken.Register(() =>
+            {
+                _objUpdateCharacterInfoCancellationTokenSource?.Cancel(false);
+            });
+            Disposed += (sender, args) => objCancellationRegistration.Dispose();
             _objCharacter.PropertyChanged += CharacterPropertyChanged;
             dlgSaveFile = new SaveFileDialog();
             Load += OnLoad;
@@ -8613,90 +8618,64 @@ namespace Chummer
         {
             if (IsLoading)
                 return;
+            CancellationTokenSource objSource = null;
+            if (token != GenericToken)
+            {
+                objSource = CancellationTokenSource.CreateLinkedTokenSource(token, GenericToken);
+                token = objSource.Token;
+            }
             try
             {
+                token.ThrowIfCancellationRequested();
                 if (!await _objUpdateCharacterInfoSemaphoreSlim.WaitAsync(0, token))
                     return;
-            }
-            catch (OperationCanceledException)
-            {
-                return;
-            }
-            try
-            {
-                CancellationTokenSource objNewSource = new CancellationTokenSource();
-                CancellationTokenSource objTemp = Interlocked.Exchange(ref _objUpdateCharacterInfoCancellationTokenSource, objNewSource);
                 try
                 {
-                    if (objTemp?.IsCancellationRequested == true)
+                    GenericToken.ThrowIfCancellationRequested();
+                    if (_objUpdateCharacterInfoCancellationTokenSource != null)
+                    {
+                        if (_objUpdateCharacterInfoCancellationTokenSource.IsCancellationRequested == false)
+                        {
+                            try
+                            {
+                                _objUpdateCharacterInfoCancellationTokenSource.Cancel(false);
+                            }
+                            catch (ObjectDisposedException)
+                            {
+                                //swallow this
+                            }
+                        }
+
+                        _objUpdateCharacterInfoCancellationTokenSource.Dispose();
+                        _objUpdateCharacterInfoCancellationTokenSource = null;
+                    }
+
+                    token.ThrowIfCancellationRequested();
+                    if (_tskUpdateCharacterInfo != null)
                     {
                         try
                         {
-                            objTemp.Cancel(false);
+                            await _tskUpdateCharacterInfo;
                         }
-                        catch (ObjectDisposedException)
+                        catch (OperationCanceledException)
                         {
                             //swallow this
                         }
-                        finally
-                        {
-                            objTemp.Dispose();
-                        }
                     }
+
                     token.ThrowIfCancellationRequested();
+                    _objUpdateCharacterInfoCancellationTokenSource = new CancellationTokenSource();
+                    CancellationToken objToken = _objUpdateCharacterInfoCancellationTokenSource.Token;
+                    _tskUpdateCharacterInfo = Task.Run(() => DoUpdateCharacterInfo(objToken), objToken);
                 }
-                catch
+                finally
                 {
-                    Interlocked.CompareExchange(ref _objUpdateCharacterInfoCancellationTokenSource, null, objNewSource);
-                    objNewSource.Dispose();
-                    throw;
-                }
-
-                Task tskOriginalTask = Interlocked.Exchange(ref _tskUpdateCharacterInfo, null);
-                if (tskOriginalTask != null)
-                {
-                    try
-                    {
-                        await tskOriginalTask;
-                    }
-                    catch (OperationCanceledException)
-                    {
-                        //swallow this
-                    }
-                    catch
-                    {
-                        Interlocked.CompareExchange(ref _objUpdateCharacterInfoCancellationTokenSource, null,
-                                                    objNewSource);
-                        objNewSource.Dispose();
-                        throw;
-                    }
-                }
-
-                CancellationToken objToken = objNewSource.Token;
-                Task tskNewTask = Task.Run(() => DoUpdateCharacterInfo(objToken), objToken);
-                if (Interlocked.CompareExchange(ref _tskUpdateCharacterInfo, tskNewTask, null) != null)
-                {
-                    objNewSource.Cancel(false);
-                    try
-                    {
-                        await tskNewTask;
-                    }
-                    catch (OperationCanceledException)
-                    {
-                        //swallow this
-                    }
-                    catch
-                    {
-                        Interlocked.CompareExchange(ref _objUpdateCharacterInfoCancellationTokenSource, null,
-                                                    objNewSource);
-                        objNewSource.Dispose();
-                        throw;
-                    }
+                    _objUpdateCharacterInfoSemaphoreSlim.Release();
                 }
             }
             finally
             {
-                _objUpdateCharacterInfoSemaphoreSlim.Release();
+                objSource?.Dispose();
             }
         }
 
@@ -8783,14 +8762,29 @@ namespace Chummer
         /// </summary>
         protected async Task UpdateWindowTitleAsync(bool blnCanSkip, CancellationToken token = default)
         {
-            if (Text.EndsWith('*') == _blnIsDirty && blnCanSkip)
-                return;
+            CancellationTokenSource objSource = null;
+            if (token != GenericToken)
+            {
+                objSource = CancellationTokenSource.CreateLinkedTokenSource(token, GenericToken);
+                token = objSource.Token;
+            }
 
-            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token);
-            string strTitle = CharacterObject.CharacterName + strSpace + '-' + strSpace + FormMode + strSpace + '(' + CharacterObjectSettings.Name + ')';
-            if (_blnIsDirty)
-                strTitle += '*';
-            await this.DoThreadSafeAsync(x => x.Text = strTitle, token);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Text.EndsWith('*') == _blnIsDirty && blnCanSkip)
+                    return;
+                string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token);
+                string strTitle = CharacterObject.CharacterName + strSpace + '-' + strSpace + FormMode + strSpace + '('
+                                  + CharacterObjectSettings.Name + ')';
+                if (_blnIsDirty)
+                    strTitle += '*';
+                await this.DoThreadSafeAsync(x => x.Text = strTitle, token);
+            }
+            finally
+            {
+                objSource?.Dispose();
+            }
         }
 
         /// <summary>
@@ -8798,50 +8792,65 @@ namespace Chummer
         /// </summary>
         public virtual async ValueTask<bool> SaveCharacter(bool blnNeedConfirm = true, bool blnDoCreated = false, CancellationToken token = default)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            CancellationTokenSource objSource = null;
+            if (token != GenericToken)
+            {
+                objSource = CancellationTokenSource.CreateLinkedTokenSource(token, GenericToken);
+                token = objSource.Token;
+            }
+
             try
             {
-                // If the Character does not have a file name, trigger the Save As menu item instead.
-                if (string.IsNullOrEmpty(CharacterObject.FileName))
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+                try
                 {
-                    return await SaveCharacterAs(blnDoCreated, token);
-                }
-
-                if (blnDoCreated)
-                {
-                    // If the Created is checked, make sure the user wants to actually save this character.
-                    if (blnNeedConfirm && !await ConfirmSaveCreatedCharacter(token))
-                        return false;
-                    // If this character has just been saved as Created, close this form and re-open the character which will open it in the Career window instead.
-                    return await SaveCharacterAsCreated(token);
-                }
-
-                using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program.CreateAndShowProgressBarAsync(token: token))
-                {
-                    await frmLoadingBar.MyForm.PerformStepAsync(CharacterObject.CharacterName,
-                                                                LoadingBar.ProgressBarTextPatterns.Saving, token);
-                    if (_objCharacterFileWatcher != null)
-                        _objCharacterFileWatcher.Changed -= LiveUpdateFromCharacterFile;
-                    try
+                    // If the Character does not have a file name, trigger the Save As menu item instead.
+                    if (string.IsNullOrEmpty(CharacterObject.FileName))
                     {
-                        if (!await CharacterObject.SaveAsync(token: token))
+                        return await SaveCharacterAs(blnDoCreated, token);
+                    }
+
+                    if (blnDoCreated)
+                    {
+                        // If the Created is checked, make sure the user wants to actually save this character.
+                        if (blnNeedConfirm && !await ConfirmSaveCreatedCharacter(token))
                             return false;
+                        // If this character has just been saved as Created, close this form and re-open the character which will open it in the Career window instead.
+                        return await SaveCharacterAsCreated(token);
                     }
-                    finally
+
+                    using (ThreadSafeForm<LoadingBar> frmLoadingBar
+                           = await Program.CreateAndShowProgressBarAsync(token: token))
                     {
+                        await frmLoadingBar.MyForm.PerformStepAsync(CharacterObject.CharacterName,
+                                                                    LoadingBar.ProgressBarTextPatterns.Saving, token);
                         if (_objCharacterFileWatcher != null)
-                            _objCharacterFileWatcher.Changed += LiveUpdateFromCharacterFile;
+                            _objCharacterFileWatcher.Changed -= LiveUpdateFromCharacterFile;
+                        try
+                        {
+                            if (!await CharacterObject.SaveAsync(token: token))
+                                return false;
+                        }
+                        finally
+                        {
+                            if (_objCharacterFileWatcher != null)
+                                _objCharacterFileWatcher.Changed += LiveUpdateFromCharacterFile;
+                        }
+
+                        await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(0, CharacterObject.FileName, token);
+                        await SetDirty(false, token);
                     }
 
-                    await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(0, CharacterObject.FileName, token);
-                    await SetDirty(false, token);
+                    return true;
                 }
-
-                return true;
+                finally
+                {
+                    await objCursorWait.DisposeAsync();
+                }
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                objSource?.Dispose();
             }
         }
 
@@ -8850,39 +8859,54 @@ namespace Chummer
         /// </summary>
         public virtual async ValueTask<bool> SaveCharacterAs(bool blnDoCreated = false, CancellationToken token = default)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            CancellationTokenSource objSource = null;
+            if (token != GenericToken)
+            {
+                objSource = CancellationTokenSource.CreateLinkedTokenSource(token, GenericToken);
+                token = objSource.Token;
+            }
+
             try
             {
-                // If the Created is checked, make sure the user wants to actually save this character.
-                if (blnDoCreated && !await ConfirmSaveCreatedCharacter(token))
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+                try
                 {
-                    return false;
+                    // If the Created is checked, make sure the user wants to actually save this character.
+                    if (blnDoCreated && !await ConfirmSaveCreatedCharacter(token))
+                    {
+                        return false;
+                    }
+
+                    string strOldFileName = CharacterObject.FileName;
+                    string strShowFileName = CharacterObject.FileName
+                                                            .SplitNoAlloc(
+                                                                Path.DirectorySeparatorChar,
+                                                                StringSplitOptions.RemoveEmptyEntries)
+                                                            .LastOrDefault();
+
+                    if (string.IsNullOrEmpty(strShowFileName))
+                        strShowFileName = CharacterObject.CharacterName;
+                    dlgSaveFile.FileName = strShowFileName;
+
+                    if (await this.DoThreadSafeFuncAsync(x => dlgSaveFile.ShowDialog(x), token: token)
+                        != DialogResult.OK)
+                        return false;
+
+                    CharacterObject.FileName = dlgSaveFile.FileName;
+
+                    bool blnReturn = await SaveCharacter(false, blnDoCreated, token);
+                    if (!blnReturn)
+                        CharacterObject.FileName = strOldFileName;
+                    return blnReturn;
                 }
-
-                string strOldFileName = CharacterObject.FileName;
-                string strShowFileName = CharacterObject.FileName
-                                                        .SplitNoAlloc(
-                                                            Path.DirectorySeparatorChar,
-                                                            StringSplitOptions.RemoveEmptyEntries)
-                                                        .LastOrDefault();
-
-                if (string.IsNullOrEmpty(strShowFileName))
-                    strShowFileName = CharacterObject.CharacterName;
-                dlgSaveFile.FileName = strShowFileName;
-
-                if (await this.DoThreadSafeFuncAsync(x => dlgSaveFile.ShowDialog(x), token: token) != DialogResult.OK)
-                    return false;
-
-                CharacterObject.FileName = dlgSaveFile.FileName;
-
-                bool blnReturn = await SaveCharacter(false, blnDoCreated, token);
-                if (!blnReturn)
-                    CharacterObject.FileName = strOldFileName;
-                return blnReturn;
+                finally
+                {
+                    await objCursorWait.DisposeAsync();
+                }
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                objSource?.Dispose();
             }
         }
 

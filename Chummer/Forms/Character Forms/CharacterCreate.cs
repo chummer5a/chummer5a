@@ -1319,7 +1319,7 @@ namespace Chummer
                 return;
             try
             {
-                await SetDirty(true, GenericToken);
+                await SetDirty(true);
                 switch (e.PropertyName)
                 {
                     case nameof(Character.CharacterName):
@@ -1588,7 +1588,7 @@ namespace Chummer
                             }
                         }
 
-                        await RequestCharacterUpdate(GenericToken);
+                        await RequestCharacterUpdate();
                     }
                         break;
 
@@ -1874,7 +1874,7 @@ namespace Chummer
 
                             if (blnDoRefresh)
                             {
-                                await RequestCharacterUpdate(GenericToken);
+                                await RequestCharacterUpdate();
                             }
                         }
                     }
@@ -1914,7 +1914,7 @@ namespace Chummer
 
                             if (blnDoRefresh)
                             {
-                                await RequestCharacterUpdate(GenericToken);
+                                await RequestCharacterUpdate();
                             }
                         }
                     }
@@ -4401,7 +4401,7 @@ namespace Chummer
 
                 if (blnStatusChanged)
                 {
-                    await SetDirty(true, GenericToken);
+                    await SetDirty(true);
                 }
             }
             catch (OperationCanceledException)
@@ -6388,7 +6388,7 @@ namespace Chummer
 
                 await treWeapons.DoThreadSafeAsync(x => x.SelectedNode.Text = objWeapon.CurrentDisplayName, GenericToken);
 
-                await SetDirty(true, GenericToken);
+                await SetDirty(true);
             }
             catch (OperationCanceledException)
             {
@@ -6531,7 +6531,7 @@ namespace Chummer
                     objGear.Extra = frmPickText.MyForm.SelectedValue;
                     await treGear.DoThreadSafeAsync(x => x.SelectedNode.Text = objGear.CurrentDisplayName,
                                                     token: GenericToken);
-                    await SetDirty(true, GenericToken);
+                    await SetDirty(true);
                 }
             }
             catch (OperationCanceledException)
@@ -7199,7 +7199,7 @@ namespace Chummer
 
                 await treGear.DoThreadSafeAsync(x => x.SelectedNode.Text = objLocation.DisplayName(), GenericToken);
 
-                await SetDirty(true, GenericToken);
+                await SetDirty(true);
             }
             catch (OperationCanceledException)
             {
@@ -7297,7 +7297,7 @@ namespace Chummer
 
                 await treArmor.DoThreadSafeAsync(x => x.SelectedNode.Text = objLocation.DisplayName(), GenericToken);
 
-                await SetDirty(true, GenericToken);
+                await SetDirty(true);
             }
             catch (OperationCanceledException)
             {
@@ -12176,7 +12176,7 @@ namespace Chummer
                     }
 
                     // Immediately call character update because we know it's necessary
-                    await RequestCharacterUpdate(GenericToken).ConfigureAwait(false);
+                    await RequestCharacterUpdate().ConfigureAwait(false);
                     try
                     {
                         await UpdateCharacterInfoTask.ConfigureAwait(false);
@@ -19613,9 +19613,9 @@ namespace Chummer
                         return;
                 }
 
-                await RequestCharacterUpdate(GenericToken);
+                await RequestCharacterUpdate();
 
-                await SetDirty(true, GenericToken);
+                await SetDirty(true);
             }
             catch (OperationCanceledException)
             {
@@ -19802,7 +19802,7 @@ namespace Chummer
                     : Weapon.FiringMode.DogBrain, GenericToken);
                 await RefreshSelectedVehicle(GenericToken);
 
-                await SetDirty(true, GenericToken);
+                await SetDirty(true);
             }
             catch (OperationCanceledException)
             {
@@ -19820,8 +19820,8 @@ namespace Chummer
                         ICanBlackMarketDiscount objItem))
                     return;
                 objItem.DiscountCost = await chkCyberwareBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked, GenericToken);
-                await RequestCharacterUpdate(GenericToken);
-                await SetDirty(true, GenericToken);
+                await RequestCharacterUpdate();
+                await SetDirty(true);
             }
             catch (OperationCanceledException)
             {
@@ -19840,8 +19840,8 @@ namespace Chummer
                     return;
                 objItem.DiscountCost
                     = await chkGearBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked, GenericToken);
-                await RequestCharacterUpdate(GenericToken);
-                await SetDirty(true, GenericToken);
+                await RequestCharacterUpdate();
+                await SetDirty(true);
             }
             catch (OperationCanceledException)
             {
@@ -19860,8 +19860,8 @@ namespace Chummer
                     return;
                 objItem.DiscountCost
                     = await chkArmorBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked, GenericToken);
-                await RequestCharacterUpdate(GenericToken);
-                await SetDirty(true, GenericToken);
+                await RequestCharacterUpdate();
+                await SetDirty(true);
             }
             catch (OperationCanceledException)
             {
@@ -19880,8 +19880,8 @@ namespace Chummer
                     return;
                 objItem.DiscountCost
                     = await chkWeaponBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked, token: GenericToken);
-                await RequestCharacterUpdate(GenericToken);
-                await SetDirty(true, GenericToken);
+                await RequestCharacterUpdate();
+                await SetDirty(true);
             }
             catch (OperationCanceledException)
             {
@@ -19900,8 +19900,8 @@ namespace Chummer
                     return;
                 objItem.DiscountCost
                     = await chkVehicleBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked, GenericToken);
-                await RequestCharacterUpdate(GenericToken);
-                await SetDirty(true, GenericToken);
+                await RequestCharacterUpdate();
+                await SetDirty(true);
             }
             catch (OperationCanceledException)
             {

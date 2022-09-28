@@ -1113,7 +1113,7 @@ namespace Chummer
                                     chkStunCM_CheckedChanged,
                                     true, CharacterObject.StunCMFilled, GenericToken);
 
-                                await RequestCharacterUpdate(GenericToken);
+                                await RequestCharacterUpdate();
                                 // Directly awaiting here so that we can properly unset the dirty flag after the update
                                 await UpdateCharacterInfoTask;
 
@@ -1773,7 +1773,7 @@ namespace Chummer
                     case nameof(Character.ActiveCommlink):
                     case nameof(Character.Nuyen):
                     case nameof(Character.Karma):
-                        await RequestCharacterUpdate(GenericToken);
+                        await RequestCharacterUpdate();
                         break;
 
                     case nameof(Character.Source):
@@ -1923,7 +1923,7 @@ namespace Chummer
                         await gpbGearBondedFoci.DoThreadSafeAsync(x => x.Visible = CharacterObject.MAGEnabled, GenericToken);
                         await lblAstralINI.DoThreadSafeAsync(x => x.Visible = CharacterObject.MAGEnabled, GenericToken);
 
-                        await RequestCharacterUpdate(GenericToken);
+                        await RequestCharacterUpdate();
                     }
                         break;
 
@@ -2024,7 +2024,7 @@ namespace Chummer
                                 await CharacterObject.AttributeSection.Attributes.RemoveAsync(CharacterObject.RES);
                             }
                         }
-                        await RequestCharacterUpdate(GenericToken);
+                        await RequestCharacterUpdate();
                     }
                         break;
 
@@ -2456,14 +2456,14 @@ namespace Chummer
                     }
                     case nameof(Character.MetatypeCategory):
                     {
-                        await RequestCharacterUpdate(GenericToken);
+                        await RequestCharacterUpdate();
                         await mnuCreateMenu.DoThreadSafeAsync(
                             () => mnuSpecialCyberzombie.Visible = CharacterObject.MetatypeCategory != "Cyberzombie", GenericToken);
                         break;
                     }
                     case nameof(Character.IsSprite):
                     {
-                        await RequestCharacterUpdate(GenericToken);
+                        await RequestCharacterUpdate();
                         await mnuCreateMenu.DoThreadSafeAsync(
                             () => mnuSpecialConvertToFreeSprite.Visible = CharacterObject.IsSprite, GenericToken);
                         break;
@@ -2884,7 +2884,7 @@ namespace Chummer
                 }
                 finally
                 {
-                    await RequestCharacterUpdate(GenericToken);
+                    await RequestCharacterUpdate();
                 }
             }
             catch (OperationCanceledException)
@@ -3036,8 +3036,8 @@ namespace Chummer
                     (await CharacterObject.GetAttributeAsync(frmPickAttribute.MyForm.SelectedAttribute)).Degrade(1);
                 }
 
-                await RequestCharacterUpdate(GenericToken);
-                await SetDirty(true, GenericToken);
+                await RequestCharacterUpdate();
+                await SetDirty(true);
             }
             catch (OperationCanceledException)
             {
@@ -5272,7 +5272,7 @@ namespace Chummer
 
                 if (blnStatusChanged)
                 {
-                    await SetDirty(true, GenericToken);
+                    await SetDirty(true);
                 }
             }
             catch (OperationCanceledException)
@@ -5748,8 +5748,8 @@ namespace Chummer
 
                 --objLifestyle.Increments;
 
-                await RequestCharacterUpdate(GenericToken);
-                await SetDirty(true, GenericToken);
+                await RequestCharacterUpdate();
+                await SetDirty(true);
             }
             catch (OperationCanceledException)
             {
@@ -5767,8 +5767,8 @@ namespace Chummer
 
                 objLifestyle.IncrementMonths();
 
-                await RequestCharacterUpdate(GenericToken);
-                await SetDirty(true, GenericToken);
+                await RequestCharacterUpdate();
+                await SetDirty(true);
             }
             catch (OperationCanceledException)
             {
@@ -5892,8 +5892,8 @@ namespace Chummer
                 if (objGear.Quantity > 0)
                 {
                     objSelectedNode.Text = objGear.CurrentDisplayName;
-                    await RequestCharacterUpdate(GenericToken);
-                    await SetDirty(true, GenericToken);
+                    await RequestCharacterUpdate();
+                    await SetDirty(true);
                 }
                 else
                 {
@@ -6055,8 +6055,8 @@ namespace Chummer
                 else
                 {
                     objSelectedNode.Text = objGear.CurrentDisplayName;
-                    await RequestCharacterUpdate(GenericToken);
-                    await SetDirty(true, GenericToken);
+                    await RequestCharacterUpdate();
+                    await SetDirty(true);
                 }
             }
             catch (OperationCanceledException)
@@ -6161,8 +6161,8 @@ namespace Chummer
                 else
                 {
                     objSelectedNode.Text = objSelectedGear.CurrentDisplayName;
-                    await RequestCharacterUpdate(GenericToken);
-                    await SetDirty(true, GenericToken);
+                    await RequestCharacterUpdate();
+                    await SetDirty(true);
                 }
             }
             catch (OperationCanceledException)
@@ -6314,8 +6314,8 @@ namespace Chummer
                             else
                             {
                                 objSelectedNode.Text = objSelectedGear.CurrentDisplayName;
-                                await RequestCharacterUpdate(GenericToken);
-                                await SetDirty(true, GenericToken);
+                                await RequestCharacterUpdate();
+                                await SetDirty(true);
                             }
 
                             break;
@@ -6389,8 +6389,8 @@ namespace Chummer
                 if (objGear.Quantity > 0)
                 {
                     await treVehicles.DoThreadSafeAsync(() => objSelectedNode.Text = objGear.CurrentDisplayName, GenericToken);
-                    await RequestCharacterUpdate(GenericToken);
-                    await SetDirty(true, GenericToken);
+                    await RequestCharacterUpdate();
+                    await SetDirty(true);
                 }
                 else
                 {
@@ -9537,7 +9537,7 @@ namespace Chummer
                 await lblVehicleWeaponAmmoRemaining.DoThreadSafeAsync(
                     x => x.Text = objWeapon.AmmoRemaining.ToString(GlobalSettings.CultureInfo), GenericToken);
 
-                await SetDirty(true, GenericToken);
+                await SetDirty(true);
             }
             catch (OperationCanceledException)
             {
@@ -12880,9 +12880,9 @@ namespace Chummer
                     + strSpace + objLifestyle.CurrentDisplayName, ExpenseType.Nuyen, DateTime.Now);
                 await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken);
 
-                await RequestCharacterUpdate(GenericToken);
+                await RequestCharacterUpdate();
 
-                await SetDirty(true, GenericToken);
+                await SetDirty(true);
             }
             catch (OperationCanceledException)
             {
@@ -13009,8 +13009,8 @@ namespace Chummer
                         return;
                 }
 
-                await RequestCharacterUpdate(GenericToken);
-                await SetDirty(true, GenericToken);
+                await RequestCharacterUpdate();
+                await SetDirty(true);
             }
             catch (OperationCanceledException)
             {
@@ -13045,8 +13045,8 @@ namespace Chummer
                     return;
                 await objWeapon.Reload(CharacterObject.Gear, treGear, GenericToken);
 
-                await RequestCharacterUpdate(GenericToken);
-                await SetDirty(true, GenericToken);
+                await RequestCharacterUpdate();
+                await SetDirty(true);
             }
             catch (OperationCanceledException)
             {
@@ -13063,8 +13063,8 @@ namespace Chummer
                     return;
                 await objWeapon.Unload(CharacterObject.Gear, treGear, GenericToken);
 
-                await RequestCharacterUpdate(GenericToken);
-                await SetDirty(true, GenericToken);
+                await RequestCharacterUpdate();
+                await SetDirty(true);
             }
             catch (OperationCanceledException)
             {
@@ -13105,8 +13105,8 @@ namespace Chummer
                         return;
                 }
 
-                await RequestCharacterUpdate(GenericToken);
-                await SetDirty(true, GenericToken);
+                await RequestCharacterUpdate();
+                await SetDirty(true);
             }
             catch (OperationCanceledException)
             {
@@ -13127,8 +13127,8 @@ namespace Chummer
                 objAccessory.IncludedInWeapon
                     = await chkIncludedInWeapon.DoThreadSafeFuncAsync(x => x.Checked, GenericToken);
 
-                await RequestCharacterUpdate(GenericToken);
-                await SetDirty(true, GenericToken);
+                await RequestCharacterUpdate();
+                await SetDirty(true);
             }
             catch (OperationCanceledException)
             {
@@ -13211,8 +13211,8 @@ namespace Chummer
                 objSelectedGear.Equipped = blnChecked;
                 objSelectedGear.ChangeEquippedStatus(blnChecked);
 
-                await RequestCharacterUpdate(GenericToken);
-                await SetDirty(true, GenericToken);
+                await RequestCharacterUpdate();
+                await SetDirty(true);
             }
             catch (OperationCanceledException)
             {
@@ -13235,8 +13235,8 @@ namespace Chummer
                     = Convert.ToInt32(
                         await cboWeaponAmmo.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), GenericToken),
                         GlobalSettings.InvariantCultureInfo);
-                await RequestCharacterUpdate(GenericToken);
-                await SetDirty(true, GenericToken);
+                await RequestCharacterUpdate();
+                await SetDirty(true);
             }
             catch (OperationCanceledException)
             {
@@ -13505,8 +13505,8 @@ namespace Chummer
 
                 --objArmor.ArmorDamage;
 
-                await RequestCharacterUpdate(GenericToken);
-                await SetDirty(true, GenericToken);
+                await RequestCharacterUpdate();
+                await SetDirty(true);
             }
             catch (OperationCanceledException)
             {
@@ -13523,8 +13523,8 @@ namespace Chummer
 
                 ++objArmor.ArmorDamage;
 
-                await RequestCharacterUpdate(GenericToken);
-                await SetDirty(true, GenericToken);
+                await RequestCharacterUpdate();
+                await SetDirty(true);
             }
             catch (OperationCanceledException)
             {
@@ -13626,8 +13626,8 @@ namespace Chummer
                             CharacterObject, cboGearAttack, cboGearAttack,
                             cboGearSleaze, cboGearDataProcessing, cboGearFirewall, GenericToken))
                     {
-                        await RequestCharacterUpdate(GenericToken);
-                        await SetDirty(true, GenericToken);
+                        await RequestCharacterUpdate();
+                        await SetDirty(true);
                     }
                 }
                 finally
@@ -13659,8 +13659,8 @@ namespace Chummer
                             CharacterObject, cboGearSleaze, cboGearAttack,
                             cboGearSleaze, cboGearDataProcessing, cboGearFirewall, GenericToken))
                     {
-                        await RequestCharacterUpdate(GenericToken);
-                        await SetDirty(true, GenericToken);
+                        await RequestCharacterUpdate();
+                        await SetDirty(true);
                     }
                 }
                 finally
@@ -13692,8 +13692,8 @@ namespace Chummer
                             CharacterObject, cboGearDataProcessing, cboGearAttack,
                             cboGearSleaze, cboGearDataProcessing, cboGearFirewall, GenericToken))
                     {
-                        await RequestCharacterUpdate(GenericToken);
-                        await SetDirty(true, GenericToken);
+                        await RequestCharacterUpdate();
+                        await SetDirty(true);
                     }
                 }
                 finally
@@ -13725,8 +13725,8 @@ namespace Chummer
                             CharacterObject, cboGearFirewall, cboGearAttack,
                             cboGearSleaze, cboGearDataProcessing, cboGearFirewall, GenericToken))
                     {
-                        await RequestCharacterUpdate(GenericToken);
-                        await SetDirty(true, GenericToken);
+                        await RequestCharacterUpdate();
+                        await SetDirty(true);
                     }
                 }
                 finally
@@ -13758,8 +13758,8 @@ namespace Chummer
                             CharacterObject, cboVehicleAttack, cboVehicleAttack,
                             cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall))
                     {
-                        await RequestCharacterUpdate(GenericToken);
-                        await SetDirty(true, GenericToken);
+                        await RequestCharacterUpdate();
+                        await SetDirty(true);
                     }
                 }
                 finally
@@ -14378,8 +14378,8 @@ namespace Chummer
                     return;
                 await objWeapon.Reload(objWeapon.ParentVehicle.GearChildren, treVehicles, GenericToken);
 
-                await RequestCharacterUpdate(GenericToken);
-                await SetDirty(true, GenericToken);
+                await RequestCharacterUpdate();
+                await SetDirty(true);
             }
             catch (OperationCanceledException)
             {
@@ -14396,8 +14396,8 @@ namespace Chummer
                     return;
                 await objWeapon.Unload(objWeapon.ParentVehicle.GearChildren, treGear, GenericToken);
 
-                await RequestCharacterUpdate(GenericToken);
-                await SetDirty(true, GenericToken);
+                await RequestCharacterUpdate();
+                await SetDirty(true);
             }
             catch (OperationCanceledException)
             {
@@ -14417,7 +14417,7 @@ namespace Chummer
                 objEquippable.Equipped
                     = await chkVehicleWeaponAccessoryInstalled.DoThreadSafeFuncAsync(x => x.Checked, GenericToken);
 
-                await SetDirty(true, GenericToken);
+                await SetDirty(true);
             }
             catch (OperationCanceledException)
             {
@@ -14437,8 +14437,8 @@ namespace Chummer
                     = Convert.ToInt32(
                         await cboVehicleWeaponAmmo.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), GenericToken),
                         GlobalSettings.InvariantCultureInfo);
-                await RequestCharacterUpdate(GenericToken);
-                await SetDirty(true, GenericToken);
+                await RequestCharacterUpdate();
+                await SetDirty(true);
             }
             catch (OperationCanceledException)
             {
@@ -15890,7 +15890,7 @@ namespace Chummer
 
                 ++CharacterObject.EdgeUsed;
 
-                await SetDirty(true, GenericToken);
+                await SetDirty(true);
             }
             catch (OperationCanceledException)
             {
@@ -16557,7 +16557,7 @@ namespace Chummer
                         await objCursorWait.DisposeAsync();
                     }
 
-                    await RequestCharacterUpdate(GenericToken).ConfigureAwait(false);
+                    await RequestCharacterUpdate().ConfigureAwait(false);
                     // Immediately await character update because we know it's necessary
                     try
                     {
@@ -22161,7 +22161,7 @@ namespace Chummer
                 CharacterObject.PrimaryArm
                     = await cboPrimaryArm.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), GenericToken);
 
-                await SetDirty(true, GenericToken);
+                await SetDirty(true);
             }
             catch (OperationCanceledException)
             {
@@ -22568,7 +22568,7 @@ namespace Chummer
                     : Weapon.FiringMode.DogBrain, GenericToken);
                 await RefreshSelectedVehicle(GenericToken);
 
-                await SetDirty(true, GenericToken);
+                await SetDirty(true);
             }
             catch (OperationCanceledException)
             {
@@ -22833,8 +22833,8 @@ namespace Chummer
                     Utils.BreakIfDebug();
                 }
 
-                await RequestCharacterUpdate(GenericToken);
-                await SetDirty(true, GenericToken);
+                await RequestCharacterUpdate();
+                await SetDirty(true);
             }
             catch (OperationCanceledException)
             {
