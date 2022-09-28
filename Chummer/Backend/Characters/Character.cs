@@ -2111,7 +2111,7 @@ namespace Chummer
             }
         }
 
-        private void SustainedObjectsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async void SustainedObjectsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             bool blnDoRefreshPenalties = false;
             switch (e.Action)
@@ -2140,7 +2140,7 @@ namespace Chummer
                     break;
             }
             if (blnDoRefreshPenalties)
-                RefreshSustainingPenalties();
+                await RefreshSustainingPenaltiesAsync();
         }
 
         [HubTag]
@@ -4503,7 +4503,7 @@ namespace Chummer
         /// <summary>
         /// Queue of asynchronous methods to execute after loading has finished. Return value signals whether loading should continue after execution (True) or terminate/cancel (False).
         /// </summary>
-        public ThreadSafeQueue<Func<Task<bool>>> PostLoadMethodsAsync
+        public ThreadSafeQueue<Func<CancellationToken, Task<bool>>> PostLoadMethodsAsync
         {
             get
             {
@@ -8012,6 +8012,11 @@ namespace Chummer
                                 RefreshEssenceLossImprovements();
                                 // Refresh dicepool modifiers due to filled condition monitor boxes
                                 RefreshWoundPenalties();
+                                // Refresh dicepool modifiers due to sustained spells
+                                RefreshSustainingPenalties();
+                                // Refresh encumbrance penalties
+                                RefreshEncumbrance();
+                                RefreshArmorEncumbrance();
                                 // ReSharper restore MethodHasAsyncOverloadWithCancellation
                             }
                             else
@@ -8020,12 +8025,13 @@ namespace Chummer
                                 await RefreshEssenceLossImprovementsAsync(token).ConfigureAwait(false);
                                 // Refresh dicepool modifiers due to filled condition monitor boxes
                                 await RefreshWoundPenaltiesAsync(token).ConfigureAwait(false);
+                                // Refresh dicepool modifiers due to sustained spells
+                                await RefreshSustainingPenaltiesAsync(token).ConfigureAwait(false);
+                                // Refresh encumbrance penalties
+                                await RefreshEncumbranceAsync(token).ConfigureAwait(false);
+                                await RefreshArmorEncumbranceAsync(token).ConfigureAwait(false);
                             }
-                            // Refresh dicepool modifiers due to sustained spells
-                            RefreshSustainingPenalties();
-                            // Refresh encumbrance penalties
-                            RefreshEncumbrance();
-                            RefreshArmorEncumbrance();
+
                             // Curb Mystic Adept power points if the values that were loaded in would be illegal
                             if (MysticAdeptPowerPoints > 0)
                             {
@@ -8046,9 +8052,9 @@ namespace Chummer
                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 PostLoadMethods.Clear();
 
-                                foreach (Func<Task<bool>> funcToCall in PostLoadMethodsAsync)
+                                foreach (Func<CancellationToken, Task<bool>> funcToCall in PostLoadMethodsAsync)
                                 {
-                                    Task<bool> tskToCall = funcToCall.Invoke();
+                                    Task<bool> tskToCall = funcToCall.Invoke(token);
                                     if (tskToCall.Status == TaskStatus.Created)
                                         tskToCall.RunSynchronously();
                                     if (!tskToCall.GetAwaiter().GetResult())
@@ -8062,9 +8068,9 @@ namespace Chummer
                             {
                                 await PostLoadMethods.ClearAsync(token).ConfigureAwait(false);
 
-                                foreach (Func<Task<bool>> funcToCall in PostLoadMethodsAsync)
+                                foreach (Func<CancellationToken, Task<bool>> funcToCall in PostLoadMethodsAsync)
                                 {
-                                    if (!await funcToCall.Invoke().ConfigureAwait(false))
+                                    if (!await funcToCall.Invoke(token).ConfigureAwait(false))
                                         return false;
                                 }
 
@@ -21669,7 +21675,7 @@ namespace Chummer
                     List<Armor> lstArmorsToConsider = Armor.Where(objArmor => objArmor.Equipped).ToList();
                     if (lstArmorsToConsider.Count == 0 || lstArmorsToConsider.All(objArmor => !objArmor.Encumbrance))
                         return 0;
-                    int intAverageStrength = STR.TotalValue;
+                    int intAverageStrength = STR?.TotalValue ?? 0;
                     // Run through the list of Armor currently worn and look at armors that start with '+' since they stack with the highest Armor, but only up to STR.
                     Dictionary<Armor, Tuple<int, int>> dicArmorStackingValues
                         = lstArmorsToConsider.ToDictionary(x => x, y => new Tuple<int, int>(0, 0));
@@ -21766,6 +21772,121 @@ namespace Chummer
                         return (intAverageStrength - intLowestEncumbrance) / 2; // a negative number is expected
                     return 0;
                 }
+            }
+        }
+
+        /// <summary>
+        /// Armor Encumbrance modifier from Armor.
+        /// </summary>
+        public async ValueTask<int> GetArmorEncumbranceAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+            {
+                if (Settings.NoArmorEncumbrance)
+                    return 0;
+                List<Armor> lstArmorsToConsider = await Armor.ToListAsync(objArmor => objArmor.Equipped, token: token);
+                if (lstArmorsToConsider.Count == 0 || lstArmorsToConsider.All(objArmor => !objArmor.Encumbrance))
+                    return 0;
+                CharacterAttrib objStrength = await GetAttributeAsync("STR", token: token);
+                int intAverageStrength = objStrength != null ? await objStrength.GetTotalValueAsync(token) : 0;
+                // Run through the list of Armor currently worn and look at armors that start with '+' since they stack with the highest Armor, but only up to STR.
+                Dictionary<Armor, Tuple<int, int>> dicArmorStackingValues
+                    = lstArmorsToConsider.ToDictionary(x => x, y => new Tuple<int, int>(0, 0));
+                int intNakedEncumbranceValue = 0;
+                foreach (Armor objArmor in lstArmorsToConsider)
+                {
+                    if (!objArmor.ArmorValue.StartsWith('+')
+                        && !objArmor.ArmorValue.StartsWith('-')
+                        && !objArmor.ArmorOverrideValue.StartsWith('+')
+                        && !objArmor.ArmorOverrideValue.StartsWith('-'))
+                        continue;
+                    string strCustomFitName = string.Empty;
+                    foreach (ArmorMod objMod in objArmor.ArmorMods)
+                    {
+                        if (objMod.Name == "Custom Fit (Stack)" && objMod.Equipped)
+                        {
+                            strCustomFitName = objMod.Extra;
+                            break;
+                        }
+                    }
+
+                    int intLoopStack = objArmor.ArmorValue.StartsWith('+') || objArmor.ArmorValue.StartsWith('-')
+                        ? objArmor.TotalArmor
+                        : 0;
+                    foreach (Armor objInnerArmor in lstArmorsToConsider)
+                    {
+                        if (objInnerArmor == objArmor
+                            || objInnerArmor.ArmorValue.StartsWith('+')
+                            || objInnerArmor.ArmorValue.StartsWith('-'))
+                            continue;
+                        if (string.IsNullOrEmpty(strCustomFitName) || strCustomFitName != objArmor.Name)
+                        {
+                            (int intI, int intJ) = dicArmorStackingValues[objInnerArmor];
+                            if (objArmor.Encumbrance)
+                                dicArmorStackingValues[objInnerArmor]
+                                    = new Tuple<int, int>(intI + intLoopStack, intJ + intLoopStack);
+                            else
+                                dicArmorStackingValues[objInnerArmor]
+                                    = new Tuple<int, int>(intI + intLoopStack, intJ);
+                        }
+                        else if (objArmor.ArmorOverrideValue.StartsWith('+')
+                                 || objArmor.ArmorOverrideValue.StartsWith('-'))
+                        {
+                            int intLoopCustomFitStack = objArmor.TotalOverrideArmor;
+                            (int intI, int intJ) = dicArmorStackingValues[objInnerArmor];
+                            if (objArmor.Encumbrance)
+                                dicArmorStackingValues[objInnerArmor]
+                                    = new Tuple<int, int>(intI + intLoopCustomFitStack,
+                                                          intJ + intLoopCustomFitStack);
+                            else
+                                dicArmorStackingValues[objInnerArmor]
+                                    = new Tuple<int, int>(intI + intLoopCustomFitStack, intJ);
+                        }
+                    }
+
+                    if (objArmor.Encumbrance)
+                        intNakedEncumbranceValue += intLoopStack;
+                }
+
+                // Run through list of Armor again to cap off any whose stacking bonuses are greater than STR
+                if (!Settings.UncappedArmorAccessoryBonuses)
+                {
+                    foreach (Armor objArmor in lstArmorsToConsider)
+                    {
+                        if (dicArmorStackingValues.TryGetValue(objArmor, out var tupStack)
+                            && tupStack.Item1 > intAverageStrength)
+                            dicArmorStackingValues[objArmor]
+                                = new Tuple<int, int>(intAverageStrength, tupStack.Item2);
+                    }
+                }
+
+                Armor objHighestArmor = null;
+                int intHighest = 0;
+                int intLowestEncumbrance = int.MaxValue;
+                // Run through the list of Armor a third time to retrieve the highest total Armor rating.
+                foreach (Armor objArmor in lstArmorsToConsider)
+                {
+                    if (objArmor.ArmorValue.StartsWith('+')
+                        || objArmor.ArmorValue.StartsWith('-'))
+                        continue;
+                    (int intLoopStack, int intLoopEncumbrance) = dicArmorStackingValues[objArmor];
+                    int intLoopTotal = objArmor.TotalArmor + intLoopStack;
+                    if (intLoopTotal >= intHighest
+                        && (intLoopTotal > intHighest || intLoopEncumbrance < intLowestEncumbrance))
+                    {
+                        intHighest = intLoopTotal;
+                        intLowestEncumbrance = intLoopEncumbrance;
+                        objHighestArmor = objArmor;
+                    }
+                }
+
+                if (objHighestArmor == null)
+                    intLowestEncumbrance = intNakedEncumbranceValue;
+
+                // calculate armor encumbrance
+                if (intLowestEncumbrance > intAverageStrength + 1)
+                    return (intAverageStrength - intLowestEncumbrance) / 2; // a negative number is expected
+                return 0;
             }
         }
 
@@ -28800,6 +28921,91 @@ namespace Chummer
             }
         }
 
+        public async ValueTask RefreshEncumbranceAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
+            try
+            {
+                // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
+                if (IsLoading)
+                    return;
+                // Remove any Improvements from Armor Encumbrance.
+                await ImprovementManager.RemoveImprovementsAsync(this, Improvement.ImprovementSource.Encumbrance, token: token);
+                if (!Settings.DoEncumbrancePenaltyPhysicalLimit
+                    && !Settings.DoEncumbrancePenaltyMovementSpeed
+                    && !Settings.DoEncumbrancePenaltyAgility
+                    && !Settings.DoEncumbrancePenaltyReaction)
+                    return;
+                // Create the Encumbrance Improvements.
+                int intEncumbrance = Encumbrance;
+                if (intEncumbrance == 0)
+                    return;
+                if (Settings.DoEncumbrancePenaltyPhysicalLimit)
+                    await ImprovementManager.CreateImprovementAsync(this, "Physical", Improvement.ImprovementSource.Encumbrance,
+                                                                    string.Empty, Improvement.ImprovementType.PhysicalLimit,
+                                                                    "precedence-1",
+                                                                    intEncumbrance * Settings.EncumbrancePenaltyPhysicalLimit, token: token);
+                if (Settings.DoEncumbrancePenaltyMovementSpeed)
+                {
+                    await ImprovementManager.CreateImprovementAsync(this, "Ground", Improvement.ImprovementSource.Encumbrance,
+                                                                    string.Empty, Improvement.ImprovementType.SprintBonusPercent,
+                                                                    "precedence-1",
+                                                                    intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed, token: token);
+                    await ImprovementManager.CreateImprovementAsync(this, "Fly", Improvement.ImprovementSource.Encumbrance,
+                                                                    string.Empty, Improvement.ImprovementType.SprintBonusPercent,
+                                                                    "precedence-1",
+                                                                    intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed, token: token);
+                    await ImprovementManager.CreateImprovementAsync(this, "Swim", Improvement.ImprovementSource.Encumbrance,
+                                                                    string.Empty, Improvement.ImprovementType.SprintBonusPercent,
+                                                                    "precedence-1",
+                                                                    intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed, token: token);
+                    await ImprovementManager.CreateImprovementAsync(this, "Ground", Improvement.ImprovementSource.Encumbrance,
+                                                                    string.Empty, Improvement.ImprovementType.RunMultiplierPercent,
+                                                                    "precedence-1",
+                                                                    intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed, token: token);
+                    await ImprovementManager.CreateImprovementAsync(this, "Fly", Improvement.ImprovementSource.Encumbrance,
+                                                                    string.Empty, Improvement.ImprovementType.RunMultiplierPercent,
+                                                                    "precedence-1",
+                                                                    intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed, token: token);
+                    await ImprovementManager.CreateImprovementAsync(this, "Swim", Improvement.ImprovementSource.Encumbrance,
+                                                                    string.Empty, Improvement.ImprovementType.RunMultiplierPercent,
+                                                                    "precedence-1",
+                                                                    intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed, token: token);
+                    await ImprovementManager.CreateImprovementAsync(this, "Ground", Improvement.ImprovementSource.Encumbrance,
+                                                                    string.Empty,
+                                                                    Improvement.ImprovementType.WalkMultiplierPercent,
+                                                                    "precedence-1",
+                                                                    intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed, token: token);
+                    await ImprovementManager.CreateImprovementAsync(this, "Fly", Improvement.ImprovementSource.Encumbrance,
+                                                                    string.Empty,
+                                                                    Improvement.ImprovementType.WalkMultiplierPercent,
+                                                                    "precedence-1",
+                                                                    intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed, token: token);
+                    await ImprovementManager.CreateImprovementAsync(this, "Swim", Improvement.ImprovementSource.Encumbrance,
+                                                                    string.Empty,
+                                                                    Improvement.ImprovementType.WalkMultiplierPercent,
+                                                                    "precedence-1",
+                                                                    intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed, token: token);
+                }
+
+                if (Settings.DoEncumbrancePenaltyAgility)
+                    await ImprovementManager.CreateImprovementAsync(this, "AGI", Improvement.ImprovementSource.Encumbrance,
+                                                                    string.Empty, Improvement.ImprovementType.Attribute,
+                                                                    "precedence-1", 0, 1, 0, 0,
+                                                                    intEncumbrance * Settings.EncumbrancePenaltyAgility, token: token);
+                if (Settings.DoEncumbrancePenaltyReaction)
+                    await ImprovementManager.CreateImprovementAsync(this, "REA", Improvement.ImprovementSource.Encumbrance,
+                                                                    string.Empty, Improvement.ImprovementType.Attribute,
+                                                                    "precedence-1", 0, 1, 0, 0,
+                                                                    intEncumbrance * Settings.EncumbrancePenaltyReaction, token: token);
+                await ImprovementManager.CommitAsync(this, token);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync();
+            }
+        }
+
         public void RefreshArmorEncumbrance()
         {
             using (LockObject.EnterWriteLock())
@@ -28821,6 +29027,37 @@ namespace Chummer
                         intEncumbrance);
                     ImprovementManager.Commit(this);
                 }
+            }
+        }
+
+        public async ValueTask RefreshArmorEncumbranceAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
+            try
+            {
+                // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
+                if (IsLoading)
+                    return;
+                // Remove any Improvements from Armor Encumbrance.
+                await ImprovementManager.RemoveImprovementsAsync(this, Improvement.ImprovementSource.ArmorEncumbrance, token: token);
+                // Create the Armor Encumbrance Improvements.
+                int intEncumbrance = await GetArmorEncumbranceAsync(token);
+                if (intEncumbrance != 0)
+                {
+                    await ImprovementManager.CreateImprovementAsync(this, "AGI", Improvement.ImprovementSource.ArmorEncumbrance,
+                                                                    string.Empty, Improvement.ImprovementType.Attribute,
+                                                                    "precedence-1", 0, 1, 0, 0,
+                                                                    intEncumbrance, token: token);
+                    await ImprovementManager.CreateImprovementAsync(this, "REA", Improvement.ImprovementSource.ArmorEncumbrance,
+                                                                    string.Empty, Improvement.ImprovementType.Attribute,
+                                                                    "precedence-1", 0, 1, 0, 0,
+                                                                    intEncumbrance, token: token);
+                    await ImprovementManager.CommitAsync(this, token);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync();
             }
         }
 
@@ -28888,7 +29125,7 @@ namespace Chummer
         private int _intWoundModifier;
 
         /// <summary>
-        /// Recalculates the Dicepoolmodifier for sustaining spells or complex forms
+        /// Recalculates the Dicepool modifier for sustaining spells or complex forms
         /// </summary>
         public bool RefreshSustainingPenalties()
         {
@@ -28971,6 +29208,100 @@ namespace Chummer
                 int intModifierPerSpell = PsycheActive ? -1 : -intDicePenaltySustainedSpell;
 
                 SustainingPenalty = lstSustainedSpells.Count * intModifierPerSpell;
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Recalculates the Dicepool modifier for sustaining spells or complex forms
+        /// </summary>
+        public async Task<bool> RefreshSustainingPenaltiesAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
+            try
+            {
+                if (IsLoading) // If we are in the middle of loading, just queue a single refresh to happen at the end of the process
+                {
+                    if (!await PostLoadMethodsAsync.ContainsAsync(RefreshSustainingPenaltiesAsync, token))
+                        await PostLoadMethodsAsync.EnqueueAsync(RefreshSustainingPenaltiesAsync, token);
+                    return true;
+                }
+
+                int intDicePenaltySustainedSpell = Settings.DicePenaltySustaining;
+
+                //The sustaining of Critterpowers doesn't cause any penalties that's why they aren't counted there is no way to change them to self sustained anyway, but just to be sure
+                List<SustainedObject> lstSustainedSpells =
+                    await SustainedCollection.ToListAsync(x => x.HasSustainingPenalty, token: token);
+                (decimal decValue, List<Improvement> lstUsedImprovements)
+                    = await ImprovementManager.ValueOfTupleAsync(this, Improvement.ImprovementType.PenaltyFreeSustain, token: token);
+                // Handling of bonuses that let characters sustain some objects for free requires special handling in order to best match the bonus ensemble to the sustained spells ensemble
+                if (decValue != 0)
+                {
+                    // Set up a dictionary where the key is the maximum force/level of the bonus and the value is the number of objects that can be sustained
+                    SortedDictionary<decimal, int> dicPenaltyFreeSustains = new SortedDictionary<decimal, int>();
+                    foreach (Improvement objImprovement in lstUsedImprovements)
+                    {
+                        decimal decForce = objImprovement.Value;
+                        if (dicPenaltyFreeSustains.TryGetValue(decForce, out int intExistingRating))
+                            dicPenaltyFreeSustains[decForce] = intExistingRating + objImprovement.Rating;
+                        else
+                            dicPenaltyFreeSustains.Add(decForce, objImprovement.Rating);
+                    }
+
+                    // List of supported objects, sorted in descending order of Force
+                    List<SustainedObject> lstSupportedObjects = new List<SustainedObject>(lstSustainedSpells.Count);
+                    // Go from lowest maximum force/level bonus to highest (that's why we use SortedDictionary) and match each one to the highest possible objects for it.
+                    foreach (KeyValuePair<decimal, int> kvpLoop in dicPenaltyFreeSustains)
+                    {
+                        int intSupportedForce = kvpLoop.Key.StandardRound();
+                        int intNumSupportsPossible = kvpLoop.Value;
+                        lstSupportedObjects.Clear();
+                        foreach (SustainedObject objLoopObject in lstSustainedSpells)
+                        {
+                            int intLoopForce = objLoopObject.Force;
+                            if (intLoopForce > intSupportedForce)
+                                continue;
+                            if (intLoopForce == intSupportedForce)
+                            {
+                                if (lstSupportedObjects.Count + 1 > intNumSupportsPossible)
+                                    // Remove the last element because we know it's the lowest
+                                    lstSupportedObjects.RemoveAt(lstSupportedObjects.Count - 1);
+                                // Safe to insert object at the top because we cannot get objects with more Force in the list
+                                lstSupportedObjects.Insert(0, objLoopObject);
+                                if (lstSupportedObjects.Count == intNumSupportsPossible &&
+                                    lstSupportedObjects[lstSupportedObjects.Count - 1].Force == intSupportedForce)
+                                    // The entire list at this point is saturated with objects with the maximum allowable force, so quit out early
+                                    break;
+                            }
+                            else
+                            {
+                                if (lstSupportedObjects.Count + 1 > intNumSupportsPossible)
+                                {
+                                    // Check against the last element because we know it'll be the lowest, only replace item if loop has a higher force than this one
+                                    if (intLoopForce <= lstSupportedObjects[lstSupportedObjects.Count - 1].Force)
+                                        continue;
+                                    lstSupportedObjects.RemoveAt(lstSupportedObjects.Count - 1);
+                                }
+
+                                lstSupportedObjects.AddWithSort(objLoopObject, (x, y) => y.Force.CompareTo(x.Force));
+                            }
+                        }
+
+                        // Remove all sustained objects that supported as penalty-free
+                        lstSustainedSpells.RemoveAll(x => lstSupportedObjects.Contains(x));
+                        // If we have no more sustained objects in need of penalty removal, exit out early
+                        if (lstSustainedSpells.Count == 0)
+                            break;
+                    }
+                }
+
+                int intModifierPerSpell = PsycheActive ? -1 : -intDicePenaltySustainedSpell;
+
+                SustainingPenalty = lstSustainedSpells.Count * intModifierPerSpell;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync();
             }
             return true;
         }
@@ -32713,6 +33044,9 @@ namespace Chummer
                                 RefreshEssenceLossImprovements();
                                 // Refresh dicepool modifiers due to filled condition monitor boxes
                                 RefreshWoundPenalties();
+                                // Refresh encumbrance penalties
+                                RefreshEncumbrance();
+                                RefreshArmorEncumbrance();
                                 // ReSharper restore MethodHasAsyncOverloadWithCancellation
                             }
                             else
@@ -32721,10 +33055,10 @@ namespace Chummer
                                 await RefreshEssenceLossImprovementsAsync(token).ConfigureAwait(false);
                                 // Refresh dicepool modifiers due to filled condition monitor boxes
                                 await RefreshWoundPenaltiesAsync(token).ConfigureAwait(false);
+                                // Refresh encumbrance penalties
+                                await RefreshEncumbranceAsync(token).ConfigureAwait(false);
+                                await RefreshArmorEncumbranceAsync(token).ConfigureAwait(false);
                             }
-                            // Refresh encumbrance penalties
-                            RefreshEncumbrance();
-                            RefreshArmorEncumbrance();
                             // Curb Mystic Adept power points if the values that were loaded in would be illegal
                             if (MysticAdeptPowerPoints > 0)
                             {
@@ -33307,7 +33641,7 @@ namespace Chummer
         private readonly SkillsSection _objSkillsSection;
         private readonly AttributeSection _objAttributeSection;
         private readonly ThreadSafeQueue<Func<bool>> _quePostLoadMethods = new ThreadSafeQueue<Func<bool>>();
-        private readonly ThreadSafeQueue<Func<Task<bool>>> _quePostLoadMethodsAsync = new ThreadSafeQueue<Func<Task<bool>>>();
+        private readonly ThreadSafeQueue<Func<CancellationToken, Task<bool>>> _quePostLoadMethodsAsync = new ThreadSafeQueue<Func<CancellationToken, Task<bool>>>();
 
         public SourceString SourceDetail
         {
