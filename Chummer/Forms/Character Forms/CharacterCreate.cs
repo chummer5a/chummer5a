@@ -12432,11 +12432,19 @@ namespace Chummer
                                                                       && !objCyberware.Suite
                                                                       && string.IsNullOrWhiteSpace(
                                                                           objCyberware.ForceGrade), token);
-                        bool blnIgnoreSecondHand
-                            = (await objCyberware.GetNodeXPathAsync(token: token))?.SelectSingleNode("nosecondhand") != null;
+                        XPathNavigator xmlCyberware = await objCyberware.GetNodeXPathAsync(token: token);
+                        HashSet<string> setDisallowedGrades = null;
+                        if (xmlCyberware?.SelectSingleNode("bannedgrades") != null)
+                        {
+                            setDisallowedGrades = new HashSet<string>();
+                            foreach (XPathNavigator objNode in xmlCyberware.Select("bannedgrades/grade"))
+                            {
+                                setDisallowedGrades.Add(objNode.Value);
+                            }
+                        }
                         await PopulateCyberwareGradeList(
                             objCyberware.SourceType == Improvement.ImprovementSource.Bioware,
-                            blnIgnoreSecondHand,
+                            setDisallowedGrades,
                             await cboCyberwareGrade.DoThreadSafeFuncAsync(x => x.Enabled, token) ? string.Empty : objCyberware.Grade.Name, token);
                         await lblCyberwareGradeLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                         await cboCyberwareGrade.DoThreadSafeAsync(x =>
@@ -16352,8 +16360,10 @@ namespace Chummer
         /// <summary>
         /// Add or remove the Adapsin Cyberware Grade categories.
         /// </summary>
-        public async Task PopulateCyberwareGradeList(bool blnBioware = false, bool blnIgnoreSecondHand = false, string strForceGrade = "", CancellationToken token = default)
+        public async Task PopulateCyberwareGradeList(bool blnBioware = false, ICollection<string> setDisallowedGrades = null, string strForceGrade = "", CancellationToken token = default)
         {
+            if (setDisallowedGrades == null)
+                setDisallowedGrades = Array.Empty<string>();
             List<Grade> objGradeList = await CharacterObject.GetGradesListAsync(blnBioware ? Improvement.ImprovementSource.Bioware : Improvement.ImprovementSource.Cyberware, token: token);
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                            out List<ListItem> lstCyberwareGrades))
@@ -16362,7 +16372,7 @@ namespace Chummer
                 {
                     if (objWareGrade.Name == "None" && (string.IsNullOrEmpty(strForceGrade) || strForceGrade != "None"))
                         continue;
-                    if (blnIgnoreSecondHand && objWareGrade.SecondHand)
+                    if (setDisallowedGrades.Contains(objWareGrade.Name))
                         continue;
                     if (blnBioware)
                     {

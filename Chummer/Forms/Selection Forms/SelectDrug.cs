@@ -46,7 +46,7 @@ namespace Chummer
         private static string _sStrSelectGrade = string.Empty;
         private string _strOldSelectedGrade = string.Empty;
         private bool _blnOldGradeEnabled = true;
-        private bool _blnIgnoreSecondHand;
+        private readonly HashSet<string> _setDisallowedGrades = new HashSet<string>();
         private string _strForceGrade = string.Empty;
         private readonly HashSet<string> _setBlackMarketMaps = Utils.StringHashSetPool.Get();
         private readonly XPathNavigator _xmlBaseDrugDataNode;
@@ -110,7 +110,7 @@ namespace Chummer
             await chkBlackMarketDiscount.DoThreadSafeAsync(x => x.Visible = _objCharacter.BlackMarketDiscount);
 
             // Populate the Grade list. Do not show the Adapsin Grades if Adapsin is not enabled for the character.
-            await PopulateGrades(false, true, _objForcedGrade?.SourceId.ToString("D", GlobalSettings.InvariantCultureInfo) ?? string.Empty);
+            await PopulateGrades(null, true, _objForcedGrade?.SourceId.ToString("D", GlobalSettings.InvariantCultureInfo) ?? string.Empty);
 
             await cboGrade.DoThreadSafeAsync(x =>
             {
@@ -340,8 +340,17 @@ namespace Chummer
                     }
                 });
 
-                // We may need to rebuild the Grade list since Cultured Bioware is not allowed to select Standard (Second-Hand) as Grade and ForceGrades can change.
-                await PopulateGrades(xmlDrug.SelectSingleNode("nosecondhand") != null || !await cboGrade.DoThreadSafeFuncAsync(x => x.Enabled) && objForcedGrade?.SecondHand != true, false, strForceGrade);
+                // We will need to rebuild the Grade list since certain categories of 'ware disallow certain grades (e.g. Used for cultured bioware) and ForceGrades can change.
+                HashSet<string> setDisallowedGrades = null;
+                if (xmlDrug.SelectSingleNode("bannedgrades") != null)
+                {
+                    setDisallowedGrades = new HashSet<string>();
+                    foreach (XPathNavigator objNode in xmlDrug.Select("bannedgrades/grade"))
+                    {
+                        setDisallowedGrades.Add(objNode.Value);
+                    }
+                }
+                await PopulateGrades(setDisallowedGrades, false, strForceGrade);
                 /*
                 string strNotes = xmlDrug.SelectSingleNode("altnotes")?.Value ?? xmlDrug.SelectSingleNode("notes")?.Value;
                 if (!string.IsNullOrEmpty(strNotes))
@@ -365,13 +374,11 @@ namespace Chummer
                 await tlpRight.DoThreadSafeAsync(x => x.Visible = false);
                 await cboGrade.DoThreadSafeAsync(x => x.Enabled = !_blnLockGrade);
                 strForceGrade = string.Empty;
-                Grade objForcedGrade = null;
                 if (_blnLockGrade)
                 {
                     strForceGrade = _objForcedGrade?.SourceId.ToString("D", GlobalSettings.InvariantCultureInfo) ?? await cboGrade.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
-                    objForcedGrade = _objForcedGrade ?? _lstGrades.Find(x => x.SourceId.ToString("D", GlobalSettings.InvariantCultureInfo) == strForceGrade);
                 }
-                await PopulateGrades(_blnLockGrade && objForcedGrade?.SecondHand != true, false, strForceGrade);
+                await PopulateGrades(null, false, strForceGrade);
                 await chkBlackMarketDiscount.DoThreadSafeAsync(x => x.Checked = false);
             }
             _blnLoading = false;
@@ -756,10 +763,10 @@ namespace Chummer
                 sbdFilter.Append('(').Append(await _objCharacter.Settings.BookXPathAsync(token: token)).Append(')');
                 if (objCurrentGrade != null)
                 {
+                    string strGradeNameCleaned = objCurrentGrade.Name.CleanXPath();
                     sbdFilter.Append(" and (not(forcegrade) or forcegrade = \"None\" or forcegrade = ")
-                             .Append(objCurrentGrade.Name.CleanXPath()).Append(')');
-                    if (objCurrentGrade.SecondHand)
-                        sbdFilter.Append(" and not(nosecondhand)");
+                             .Append(strGradeNameCleaned).Append(") and (not(bannedgrades[grade = ")
+                             .Append(strGradeNameCleaned).Append("])");
                 }
 
                 string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token: token);
@@ -936,18 +943,21 @@ namespace Chummer
         /// <summary>
         /// Populate the list of Drug Grades.
         /// </summary>
-        /// <param name="blnIgnoreSecondHand">Whether or not Second-Hand Grades should be added to the list.</param>
+        /// <param name="setDisallowedGrades">Set of all grades that should not be shown.</param>
         /// <param name="blnForce">Force grades to be repopulated.</param>
         /// <param name="strForceGrade">If not empty, force this grade to be selected.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        private async ValueTask PopulateGrades(bool blnIgnoreSecondHand = false, bool blnForce = false, string strForceGrade = "", CancellationToken token = default)
+        private async ValueTask PopulateGrades(ICollection<string> setDisallowedGrades = null, bool blnForce = false, string strForceGrade = "", CancellationToken token = default)
         {
             if (_blnPopulatingGrades)
                 return;
             _blnPopulatingGrades = true;
-            if (blnForce || blnIgnoreSecondHand != _blnIgnoreSecondHand || _strForceGrade != strForceGrade || await cboGrade.DoThreadSafeFuncAsync(x => x.Items.Count, token: token) == 0)
+            if (setDisallowedGrades == null)
+                setDisallowedGrades = Array.Empty<string>();
+            if (blnForce || !_setDisallowedGrades.SetEquals(setDisallowedGrades) || _strForceGrade != strForceGrade || await cboGrade.DoThreadSafeFuncAsync(x => x.Items.Count, token: token) == 0)
             {
-                _blnIgnoreSecondHand = blnIgnoreSecondHand;
+                _setDisallowedGrades.Clear();
+                _setDisallowedGrades.AddRange(setDisallowedGrades);
                 _strForceGrade = strForceGrade;
                 using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstGrade))
                 {
@@ -958,7 +968,7 @@ namespace Chummer
                             continue;
                         //if (ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.DisableDrugGrade).Any(x => objWareGrade.Name.Contains(x.ImprovedName)))
                         //    continue;
-                        if (blnIgnoreSecondHand && objWareGrade.SecondHand)
+                        if (_setDisallowedGrades.Contains(objWareGrade.Name))
                             continue;
                         /*
                         if (blnHideBannedGrades && !_objCharacter.Created && !_objCharacter.IgnoreRules && _objCharacter.BannedDrugGrades.Any(s => objWareGrade.Name.Contains(s)))

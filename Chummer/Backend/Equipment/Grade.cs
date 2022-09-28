@@ -280,11 +280,6 @@ namespace Chummer.Backend.Equipment
         public bool Burnout => _strName.Contains("Burnout's Way");
 
         /// <summary>
-        /// Whether or not this is a Second-Hand Grade.
-        /// </summary>
-        public bool SecondHand => _strName.Contains("Used");
-
-        /// <summary>
         /// The Grade's Addiction Threshold Modifier. Used for Drugs.
         /// </summary>
         public int AddictionThreshold

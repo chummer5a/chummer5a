@@ -4,9 +4,11 @@ Application Changes:
 - The checkboxes for the list to set what cyberware and bioware grades are allowed at character creation no longer appears weird in dark mode on machines running Windows 10 or earlier.
 - Fixed various display issues with custom rating names for vehicle mods.
 - Karma cost modifiers that only apply in character creation mode no longer cause characters to be created with less/negative karma, and karma cost modifiers that only apply after character creation no longer cause characters to be created with extra karma. Fixes #4926 and fixes #4918.
+- Softcoded the system that prevents cultured bioware from being bought at Used grade. Instead of a single "nosecondhand" node controlling whether or not some 'ware can be taken at Used grade, 'ware can now have a "bannedgrades" node that lists every single grade that is not allowed for the given piece.
 
 Data Changes:
 - Concealed and Regular vehicle armor mods now properly add to their parent's Armor. Fixes #4925.
+- Greyware is now properly disallowed for biodrone cyberware, cybersuites, nanocybernetics, and implanted commlinks and cyberdecks.
 
 Build 223
 Application Changes:
