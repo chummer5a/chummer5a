@@ -570,7 +570,7 @@ namespace Chummer
                 objCharacter.IgnoreRules = true;
                 objCharacter.IsCritter = true;
                 objCharacter.Alias = strCritterName;
-                objCharacter.Created = true;
+                await objCharacter.SetCreatedAsync(true, token: token);
                 try
                 {
                     string strCritterCharacterName = await txtCritterName.DoThreadSafeFuncAsync(x => x.Text, token: token);

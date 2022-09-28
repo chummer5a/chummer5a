@@ -14111,95 +14111,113 @@ namespace Chummer
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
             try
             {
-                // If the character was built with Karma, record their staring Karma amount (if any).
-                if (CharacterObject.Karma != 0)
+                bool blnOldSkipUpdate = SkipUpdate;
+                SkipUpdate = true;
+                try
                 {
-                    ExpenseLogEntry objKarma = new ExpenseLogEntry(CharacterObject);
-                    objKarma.Create(CharacterObject.Karma,
-                                    await LanguageManager.GetStringAsync("Label_SelectBP_StartingKarma", token: token),
-                                    ExpenseType.Karma, DateTime.Now);
-                    await CharacterObject.ExpenseEntries.AddWithSortAsync(objKarma, token: token);
-
-                    // Create an Undo entry so that the starting Karma amount can be modified if needed.
-                    ExpenseUndo objKarmaUndo = new ExpenseUndo();
-                    objKarmaUndo.CreateKarma(KarmaExpenseType.ManualAdd, string.Empty);
-                    objKarma.Undo = objKarmaUndo;
-                }
-
-                List<CharacterAttrib> lstAttributesToAdd = null;
-                if (CharacterObject.MetatypeCategory == "Shapeshifter")
-                {
-                    lstAttributesToAdd = new List<CharacterAttrib>(AttributeSection.AttributeStrings.Count);
-                    XmlDocument xmlDoc = await CharacterObject.LoadDataAsync("metatypes.xml", token: token);
-                    string strMetavariantXPath = "/chummer/metatypes/metatype[id = "
-                                                 + CharacterObject.MetatypeGuid
-                                                                  .ToString("D", GlobalSettings.InvariantCultureInfo)
-                                                                  .CleanXPath()
-                                                 + "]/metavariants/metavariant[id = "
-                                                 + CharacterObject.MetavariantGuid
-                                                                  .ToString("D", GlobalSettings.InvariantCultureInfo)
-                                                                  .CleanXPath()
-                                                 + ']';
-                    foreach (CharacterAttrib objOldAttribute in CharacterObject.AttributeSection.AttributeList)
+                    // If the character was built with Karma, record their staring Karma amount (if any).
+                    if (CharacterObject.Karma != 0)
                     {
-                        CharacterAttrib objNewAttribute = new CharacterAttrib(CharacterObject, objOldAttribute.Abbrev,
-                                                                              CharacterAttrib.AttributeCategory
-                                                                                  .Shapeshifter);
-                        AttributeSection.CopyAttribute(objOldAttribute, objNewAttribute, strMetavariantXPath, xmlDoc);
-                        lstAttributesToAdd.Add(objNewAttribute);
+                        ExpenseLogEntry objKarma = new ExpenseLogEntry(CharacterObject);
+                        objKarma.Create(CharacterObject.Karma,
+                                        await LanguageManager.GetStringAsync(
+                                            "Label_SelectBP_StartingKarma", token: token),
+                                        ExpenseType.Karma, DateTime.Now);
+                        await CharacterObject.ExpenseEntries.AddWithSortAsync(objKarma, token: token);
+
+                        // Create an Undo entry so that the starting Karma amount can be modified if needed.
+                        ExpenseUndo objKarmaUndo = new ExpenseUndo();
+                        objKarmaUndo.CreateKarma(KarmaExpenseType.ManualAdd, string.Empty);
+                        objKarma.Undo = objKarmaUndo;
                     }
 
-                    foreach (CharacterAttrib objAttributeToAdd in lstAttributesToAdd)
+                    List<CharacterAttrib> lstAttributesToAdd = null;
+                    if (CharacterObject.MetatypeCategory == "Shapeshifter")
                     {
-                        await CharacterObject.AttributeSection.AttributeList.AddAsync(objAttributeToAdd, token);
-                    }
-                }
-
-                // Create an Expense Entry for Starting Nuyen.
-                ExpenseLogEntry objNuyen = new ExpenseLogEntry(CharacterObject);
-                objNuyen.Create(CharacterObject.Nuyen, await LanguageManager.GetStringAsync("Title_LifestyleNuyen", token: token),
-                                ExpenseType.Nuyen, DateTime.Now);
-                await CharacterObject.ExpenseEntries.AddWithSortAsync(objNuyen, token: token);
-
-                // Create an Undo entry so that the Starting Nuyen amount can be modified if needed.
-                ExpenseUndo objNuyenUndo = new ExpenseUndo();
-                objNuyenUndo.CreateNuyen(NuyenExpenseType.ManualAdd, string.Empty);
-                objNuyen.Undo = objNuyenUndo;
-
-                CharacterObject.Created = true;
-
-                using (ThreadSafeForm<LoadingBar> frmLoadingBar
-                       = await Program.CreateAndShowProgressBarAsync(token: token))
-                {
-                    await frmLoadingBar.MyForm.PerformStepAsync(CharacterObject.CharacterName,
-                                                                LoadingBar.ProgressBarTextPatterns.Saving, token);
-                    _blnFileUpdateQueued = true;
-                    try
-                    {
-                        if (!await CharacterObject.SaveAsync(token: token))
+                        lstAttributesToAdd = new List<CharacterAttrib>(AttributeSection.AttributeStrings.Count);
+                        XmlDocument xmlDoc = await CharacterObject.LoadDataAsync("metatypes.xml", token: token);
+                        string strMetavariantXPath = "/chummer/metatypes/metatype[id = "
+                                                     + CharacterObject.MetatypeGuid
+                                                                      .ToString(
+                                                                          "D", GlobalSettings.InvariantCultureInfo)
+                                                                      .CleanXPath()
+                                                     + "]/metavariants/metavariant[id = "
+                                                     + CharacterObject.MetavariantGuid
+                                                                      .ToString(
+                                                                          "D", GlobalSettings.InvariantCultureInfo)
+                                                                      .CleanXPath()
+                                                     + ']';
+                        foreach (CharacterAttrib objOldAttribute in CharacterObject.AttributeSection.AttributeList)
                         {
-                            await CharacterObject.ExpenseEntries.ClearAsync(token);
-                            if (lstAttributesToAdd != null)
-                            {
-                                foreach (CharacterAttrib objAttributeToAdd in lstAttributesToAdd)
-                                {
-                                    await CharacterObject.AttributeSection.AttributeList.RemoveAsync(objAttributeToAdd, token);
-                                }
-                            }
+                            CharacterAttrib objNewAttribute = new CharacterAttrib(
+                                CharacterObject, objOldAttribute.Abbrev,
+                                CharacterAttrib.AttributeCategory
+                                               .Shapeshifter);
+                            AttributeSection.CopyAttribute(objOldAttribute, objNewAttribute, strMetavariantXPath,
+                                                           xmlDoc);
+                            lstAttributesToAdd.Add(objNewAttribute);
+                        }
 
-                            CharacterObject.Created = false;
-                            return false;
+                        foreach (CharacterAttrib objAttributeToAdd in lstAttributesToAdd)
+                        {
+                            await CharacterObject.AttributeSection.AttributeList.AddAsync(objAttributeToAdd, token);
                         }
                     }
-                    finally
+
+                    // Create an Expense Entry for Starting Nuyen.
+                    ExpenseLogEntry objNuyen = new ExpenseLogEntry(CharacterObject);
+                    objNuyen.Create(CharacterObject.Nuyen,
+                                    await LanguageManager.GetStringAsync("Title_LifestyleNuyen", token: token),
+                                    ExpenseType.Nuyen, DateTime.Now);
+                    await CharacterObject.ExpenseEntries.AddWithSortAsync(objNuyen, token: token);
+
+                    // Create an Undo entry so that the Starting Nuyen amount can be modified if needed.
+                    ExpenseUndo objNuyenUndo = new ExpenseUndo();
+                    objNuyenUndo.CreateNuyen(NuyenExpenseType.ManualAdd, string.Empty);
+                    objNuyen.Undo = objNuyenUndo;
+
+                    await CharacterObject.SetCreatedAsync(true, false, token: token);
+
+                    using (ThreadSafeForm<LoadingBar> frmLoadingBar
+                           = await Program.CreateAndShowProgressBarAsync(token: token))
                     {
-                        _blnFileUpdateQueued = false;
+                        await frmLoadingBar.MyForm.PerformStepAsync(CharacterObject.CharacterName,
+                                                                    LoadingBar.ProgressBarTextPatterns.Saving, token);
+                        _blnFileUpdateQueued = true;
+                        try
+                        {
+                            if (!await CharacterObject.SaveAsync(token: token))
+                            {
+                                await CharacterObject.ExpenseEntries.ClearAsync(token);
+                                if (lstAttributesToAdd != null)
+                                {
+                                    foreach (CharacterAttrib objAttributeToAdd in lstAttributesToAdd)
+                                    {
+                                        await CharacterObject.AttributeSection.AttributeList.RemoveAsync(
+                                            objAttributeToAdd, token);
+                                    }
+                                }
+
+                                await CharacterObject.SetCreatedAsync(false, false, token: token);
+                                SkipUpdate = blnOldSkipUpdate;
+                                return false;
+                            }
+                        }
+                        finally
+                        {
+                            _blnFileUpdateQueued = false;
+                        }
+
+                        IsDirty = false;
                     }
 
-                    IsDirty = false;
+                    IsReopenQueued = true;
                 }
-
-                IsReopenQueued = true;
+                catch
+                {
+                    SkipUpdate = blnOldSkipUpdate;
+                    throw;
+                }
             }
             finally
             {

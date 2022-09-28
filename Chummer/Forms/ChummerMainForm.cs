@@ -1217,7 +1217,7 @@ namespace Chummer
                     // Override the defaults for the setting.
                     objCharacter.IgnoreRules = true;
                     objCharacter.IsCritter = true;
-                    objCharacter.Created = true;
+                    await objCharacter.SetCreatedAsync(true);
 
                     // Show the Metatype selection window.
                     using (ThreadSafeForm<SelectMetatypeKarma> frmSelectMetatype =

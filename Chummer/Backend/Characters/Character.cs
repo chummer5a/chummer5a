@@ -12911,17 +12911,40 @@ namespace Chummer
                 using (EnterReadLock.Enter(LockObject))
                     return _blnCreated;
             }
-            set
+        }
+
+        public void SetCreated(bool value, bool blnDoOnPropertyChanged = true)
+        {
+            using (EnterReadLock.Enter(LockObject))
             {
-                using (EnterReadLock.Enter(LockObject))
+                if (_blnCreated == value)
+                    return;
+                using (LockObject.EnterWriteLock())
                 {
-                    if (_blnCreated == value)
-                        return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        _blnCreated = value;
+                    _blnCreated = value;
+                    if (blnDoOnPropertyChanged)
                         OnPropertyChanged();
-                    }
+                }
+            }
+        }
+
+        public async ValueTask SetCreatedAsync(bool value, bool blnDoOnPropertyChanged = true,
+                                               CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+            {
+                if (_blnCreated == value)
+                    return;
+                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
+                try
+                {
+                    _blnCreated = value;
+                    if (blnDoOnPropertyChanged)
+                        OnPropertyChanged();
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync();
                 }
             }
         }
