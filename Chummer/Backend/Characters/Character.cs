@@ -28862,7 +28862,7 @@ namespace Chummer
                     return;
                 int intPhysicalCMFilled = Math.Min(PhysicalCMFilled, await GetPhysicalCMAsync(token));
                 int intStunCMFilled = Math.Min(StunCMFilled, await GetStunCMAsync(token));
-                int intCMThreshold = CMThreshold;
+                int intCMThreshold = await GetCMThresholdAsync(token);
                 int intStunCMPenalty = (await ImprovementManager
                         .GetCachedImprovementListForValueOfAsync(
                             this, Improvement.ImprovementType.IgnoreCMPenaltyStun, token: token))

@@ -1104,7 +1104,7 @@ namespace Chummer
                                     panPhysicalCM, await CharacterObject.GetPhysicalCMAsync(GenericToken),
                                     await CharacterObject.GetCMThresholdAsync(GenericToken),
                                     await CharacterObject.GetPhysicalCMThresholdOffsetAsync(GenericToken),
-                                    await CharacterObject.GetCMOverflowAsync(token), chkPhysicalCM_CheckedChanged, true,
+                                    await CharacterObject.GetCMOverflowAsync(GenericToken), chkPhysicalCM_CheckedChanged, true,
                                     CharacterObject.PhysicalCMFilled, GenericToken);
                                 await ProcessCharacterConditionMonitorBoxDisplays(
                                     panStunCM, await CharacterObject.GetStunCMAsync(GenericToken),
@@ -1787,7 +1787,7 @@ namespace Chummer
                             panPhysicalCM, await CharacterObject.GetPhysicalCMAsync(GenericToken),
                             await CharacterObject.GetCMThresholdAsync(GenericToken),
                             await CharacterObject.GetPhysicalCMThresholdOffsetAsync(GenericToken),
-                            await CharacterObject.GetCMOverflowAsync(token), chkPhysicalCM_CheckedChanged, true,
+                            await CharacterObject.GetCMOverflowAsync(GenericToken), chkPhysicalCM_CheckedChanged, true,
                             CharacterObject.PhysicalCMFilled, GenericToken);
                         await ProcessCharacterConditionMonitorBoxDisplays(
                             panStunCM, await CharacterObject.GetStunCMAsync(GenericToken),
@@ -1813,7 +1813,7 @@ namespace Chummer
                             panPhysicalCM, await CharacterObject.GetPhysicalCMAsync(GenericToken),
                             await CharacterObject.GetCMThresholdAsync(GenericToken),
                             await CharacterObject.GetPhysicalCMThresholdOffsetAsync(GenericToken),
-                            await CharacterObject.GetCMOverflowAsync(token), chkPhysicalCM_CheckedChanged, true,
+                            await CharacterObject.GetCMOverflowAsync(GenericToken), chkPhysicalCM_CheckedChanged, true,
                             CharacterObject.PhysicalCMFilled, GenericToken);
                         break;
 
