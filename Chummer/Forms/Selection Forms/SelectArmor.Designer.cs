@@ -355,6 +355,7 @@ namespace Chummer
             // 
             // tabListDetail
             // 
+            this.tabListDetail.BackColor = System.Drawing.SystemColors.Control;
             this.tabListDetail.Controls.Add(this.tlpListDetail);
             this.tabListDetail.Location = new System.Drawing.Point(4, 22);
             this.tabListDetail.Name = "tabListDetail";
@@ -363,7 +364,6 @@ namespace Chummer
             this.tabListDetail.TabIndex = 1;
             this.tabListDetail.Tag = "Title_ListView";
             this.tabListDetail.Text = "List View";
-            this.tabListDetail.UseVisualStyleBackColor = true;
             // 
             // tlpListDetail
             // 
@@ -794,6 +794,7 @@ namespace Chummer
             // 
             // tabBrowse
             // 
+            this.tabBrowse.BackColor = System.Drawing.SystemColors.Control;
             this.tabBrowse.Controls.Add(this.dgvArmor);
             this.tabBrowse.Location = new System.Drawing.Point(4, 22);
             this.tabBrowse.Name = "tabBrowse";
@@ -802,7 +803,6 @@ namespace Chummer
             this.tabBrowse.TabIndex = 0;
             this.tabBrowse.Tag = "Title_Browse";
             this.tabBrowse.Text = "Browse";
-            this.tabBrowse.UseVisualStyleBackColor = true;
             // 
             // tmrSearch
             // 

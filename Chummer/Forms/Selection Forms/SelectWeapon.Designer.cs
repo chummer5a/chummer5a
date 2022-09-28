@@ -33,11 +33,11 @@ namespace Chummer
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tmrSearch = new System.Windows.Forms.Timer(this.components);
             this.cmdOK = new System.Windows.Forms.Button();
             this.cmdCancel = new System.Windows.Forms.Button();
@@ -46,11 +46,6 @@ namespace Chummer
             this.tabListView = new System.Windows.Forms.TabPage();
             this.tlpWeapon = new Chummer.BufferedTableLayoutPanel(this.components);
             this.lstWeapon = new System.Windows.Forms.ListBox();
-            this.chkHideOverAvailLimit = new Chummer.ColorableCheckBox(this.components);
-            this.chkShowOnlyAffordItems = new Chummer.ColorableCheckBox(this.components);
-            this.gpbIncludedAccessories = new System.Windows.Forms.GroupBox();
-            this.pnlIncludedAccessories = new System.Windows.Forms.Panel();
-            this.lblIncludedAccessories = new System.Windows.Forms.Label();
             this.tlpRight = new Chummer.BufferedTableLayoutPanel(this.components);
             this.lblWeaponConceal = new System.Windows.Forms.Label();
             this.lblSourceLabel = new System.Windows.Forms.Label();
@@ -83,6 +78,12 @@ namespace Chummer
             this.lblWeaponAccuracyLabel = new System.Windows.Forms.Label();
             this.lblWeaponAccuracy = new System.Windows.Forms.Label();
             this.lblWeaponAP = new System.Windows.Forms.Label();
+            this.tlpBottomRight = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.chkHideOverAvailLimit = new Chummer.ColorableCheckBox(this.components);
+            this.chkShowOnlyAffordItems = new Chummer.ColorableCheckBox(this.components);
+            this.gpbIncludedAccessories = new System.Windows.Forms.GroupBox();
+            this.pnlIncludedAccessories = new System.Windows.Forms.Panel();
+            this.lblIncludedAccessories = new System.Windows.Forms.Label();
             this.tabBrowse = new System.Windows.Forms.TabPage();
             this.dgvWeapons = new System.Windows.Forms.DataGridView();
             this.dgvc_Guid = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -106,21 +107,20 @@ namespace Chummer
             this.lblSearchLabel = new System.Windows.Forms.Label();
             this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
             this.cmdOKAdd = new System.Windows.Forms.Button();
-            this.tlpBottomRight = new Chummer.BufferedTableLayoutPanel(this.components);
             this.tlpMain.SuspendLayout();
             this.tabControl.SuspendLayout();
             this.tabListView.SuspendLayout();
             this.tlpWeapon.SuspendLayout();
-            this.gpbIncludedAccessories.SuspendLayout();
-            this.pnlIncludedAccessories.SuspendLayout();
             this.tlpRight.SuspendLayout();
             this.flpMarkup.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudMarkup)).BeginInit();
             this.flpCheckBoxes.SuspendLayout();
+            this.tlpBottomRight.SuspendLayout();
+            this.gpbIncludedAccessories.SuspendLayout();
+            this.pnlIncludedAccessories.SuspendLayout();
             this.tabBrowse.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvWeapons)).BeginInit();
             this.tlpButtons.SuspendLayout();
-            this.tlpBottomRight.SuspendLayout();
             this.SuspendLayout();
             // 
             // tmrSearch
@@ -195,6 +195,7 @@ namespace Chummer
             // 
             // tabListView
             // 
+            this.tabListView.BackColor = System.Drawing.SystemColors.Control;
             this.tabListView.Controls.Add(this.tlpWeapon);
             this.tabListView.Location = new System.Drawing.Point(4, 22);
             this.tabListView.Name = "tabListView";
@@ -203,7 +204,6 @@ namespace Chummer
             this.tabListView.TabIndex = 1;
             this.tabListView.Tag = "Title_ListView";
             this.tabListView.Text = "List View";
-            this.tabListView.UseVisualStyleBackColor = true;
             // 
             // tlpWeapon
             // 
@@ -235,71 +235,6 @@ namespace Chummer
             this.lstWeapon.TabIndex = 66;
             this.lstWeapon.SelectedIndexChanged += new System.EventHandler(this.lstWeapon_SelectedIndexChanged);
             this.lstWeapon.DoubleClick += new System.EventHandler(this.cmdOK_Click);
-            // 
-            // chkHideOverAvailLimit
-            // 
-            this.chkHideOverAvailLimit.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.chkHideOverAvailLimit.AutoSize = true;
-            this.chkHideOverAvailLimit.DefaultColorScheme = true;
-            this.chkHideOverAvailLimit.Location = new System.Drawing.Point(3, 208);
-            this.chkHideOverAvailLimit.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chkHideOverAvailLimit.Name = "chkHideOverAvailLimit";
-            this.chkHideOverAvailLimit.Size = new System.Drawing.Size(175, 17);
-            this.chkHideOverAvailLimit.TabIndex = 70;
-            this.chkHideOverAvailLimit.Tag = "Checkbox_HideOverAvailLimit";
-            this.chkHideOverAvailLimit.Text = "Hide Items Over Avail Limit ({0})";
-            this.chkHideOverAvailLimit.UseVisualStyleBackColor = true;
-            this.chkHideOverAvailLimit.CheckedChanged += new System.EventHandler(this.RefreshCurrentList);
-            // 
-            // chkShowOnlyAffordItems
-            // 
-            this.chkShowOnlyAffordItems.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.chkShowOnlyAffordItems.AutoSize = true;
-            this.chkShowOnlyAffordItems.DefaultColorScheme = true;
-            this.chkShowOnlyAffordItems.Location = new System.Drawing.Point(3, 233);
-            this.chkShowOnlyAffordItems.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chkShowOnlyAffordItems.Name = "chkShowOnlyAffordItems";
-            this.chkShowOnlyAffordItems.Size = new System.Drawing.Size(164, 17);
-            this.chkShowOnlyAffordItems.TabIndex = 71;
-            this.chkShowOnlyAffordItems.Tag = "Checkbox_ShowOnlyAffordItems";
-            this.chkShowOnlyAffordItems.Text = "Show Only Items I Can Afford";
-            this.chkShowOnlyAffordItems.UseVisualStyleBackColor = true;
-            this.chkShowOnlyAffordItems.CheckedChanged += new System.EventHandler(this.RefreshCurrentList);
-            // 
-            // gpbIncludedAccessories
-            // 
-            this.gpbIncludedAccessories.AutoSize = true;
-            this.gpbIncludedAccessories.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.gpbIncludedAccessories.Controls.Add(this.pnlIncludedAccessories);
-            this.gpbIncludedAccessories.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.gpbIncludedAccessories.Location = new System.Drawing.Point(3, 3);
-            this.gpbIncludedAccessories.Name = "gpbIncludedAccessories";
-            this.gpbIncludedAccessories.Size = new System.Drawing.Size(446, 198);
-            this.gpbIncludedAccessories.TabIndex = 74;
-            this.gpbIncludedAccessories.TabStop = false;
-            this.gpbIncludedAccessories.Tag = "Label_SelectWeapon_IncludedItems";
-            this.gpbIncludedAccessories.Text = "Included Accessories and Modifications:";
-            // 
-            // pnlIncludedAccessories
-            // 
-            this.pnlIncludedAccessories.AutoScroll = true;
-            this.pnlIncludedAccessories.AutoScrollMinSize = new System.Drawing.Size(0, 60);
-            this.pnlIncludedAccessories.Controls.Add(this.lblIncludedAccessories);
-            this.pnlIncludedAccessories.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlIncludedAccessories.Location = new System.Drawing.Point(3, 16);
-            this.pnlIncludedAccessories.Name = "pnlIncludedAccessories";
-            this.pnlIncludedAccessories.Padding = new System.Windows.Forms.Padding(3, 6, 13, 6);
-            this.pnlIncludedAccessories.Size = new System.Drawing.Size(440, 179);
-            this.pnlIncludedAccessories.TabIndex = 0;
-            // 
-            // lblIncludedAccessories
-            // 
-            this.lblIncludedAccessories.AutoSize = true;
-            this.lblIncludedAccessories.Location = new System.Drawing.Point(3, 6);
-            this.lblIncludedAccessories.Name = "lblIncludedAccessories";
-            this.lblIncludedAccessories.Size = new System.Drawing.Size(39, 13);
-            this.lblIncludedAccessories.TabIndex = 63;
-            this.lblIncludedAccessories.Text = "[None]";
             // 
             // tlpRight
             // 
@@ -761,8 +696,94 @@ namespace Chummer
             this.lblWeaponAP.Text = "[AP]";
             this.lblWeaponAP.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // tlpBottomRight
+            // 
+            this.tlpBottomRight.AutoSize = true;
+            this.tlpBottomRight.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpBottomRight.ColumnCount = 1;
+            this.tlpBottomRight.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpBottomRight.Controls.Add(this.chkHideOverAvailLimit, 0, 1);
+            this.tlpBottomRight.Controls.Add(this.chkShowOnlyAffordItems, 0, 2);
+            this.tlpBottomRight.Controls.Add(this.gpbIncludedAccessories, 0, 0);
+            this.tlpBottomRight.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpBottomRight.Location = new System.Drawing.Point(300, 201);
+            this.tlpBottomRight.Margin = new System.Windows.Forms.Padding(0);
+            this.tlpBottomRight.Name = "tlpBottomRight";
+            this.tlpBottomRight.RowCount = 3;
+            this.tlpBottomRight.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpBottomRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpBottomRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpBottomRight.Size = new System.Drawing.Size(452, 254);
+            this.tlpBottomRight.TabIndex = 78;
+            // 
+            // chkHideOverAvailLimit
+            // 
+            this.chkHideOverAvailLimit.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkHideOverAvailLimit.AutoSize = true;
+            this.chkHideOverAvailLimit.DefaultColorScheme = true;
+            this.chkHideOverAvailLimit.Location = new System.Drawing.Point(3, 208);
+            this.chkHideOverAvailLimit.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkHideOverAvailLimit.Name = "chkHideOverAvailLimit";
+            this.chkHideOverAvailLimit.Size = new System.Drawing.Size(175, 17);
+            this.chkHideOverAvailLimit.TabIndex = 70;
+            this.chkHideOverAvailLimit.Tag = "Checkbox_HideOverAvailLimit";
+            this.chkHideOverAvailLimit.Text = "Hide Items Over Avail Limit ({0})";
+            this.chkHideOverAvailLimit.UseVisualStyleBackColor = true;
+            this.chkHideOverAvailLimit.CheckedChanged += new System.EventHandler(this.RefreshCurrentList);
+            // 
+            // chkShowOnlyAffordItems
+            // 
+            this.chkShowOnlyAffordItems.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkShowOnlyAffordItems.AutoSize = true;
+            this.chkShowOnlyAffordItems.DefaultColorScheme = true;
+            this.chkShowOnlyAffordItems.Location = new System.Drawing.Point(3, 233);
+            this.chkShowOnlyAffordItems.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkShowOnlyAffordItems.Name = "chkShowOnlyAffordItems";
+            this.chkShowOnlyAffordItems.Size = new System.Drawing.Size(164, 17);
+            this.chkShowOnlyAffordItems.TabIndex = 71;
+            this.chkShowOnlyAffordItems.Tag = "Checkbox_ShowOnlyAffordItems";
+            this.chkShowOnlyAffordItems.Text = "Show Only Items I Can Afford";
+            this.chkShowOnlyAffordItems.UseVisualStyleBackColor = true;
+            this.chkShowOnlyAffordItems.CheckedChanged += new System.EventHandler(this.RefreshCurrentList);
+            // 
+            // gpbIncludedAccessories
+            // 
+            this.gpbIncludedAccessories.AutoSize = true;
+            this.gpbIncludedAccessories.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.gpbIncludedAccessories.Controls.Add(this.pnlIncludedAccessories);
+            this.gpbIncludedAccessories.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.gpbIncludedAccessories.Location = new System.Drawing.Point(3, 3);
+            this.gpbIncludedAccessories.Name = "gpbIncludedAccessories";
+            this.gpbIncludedAccessories.Size = new System.Drawing.Size(446, 198);
+            this.gpbIncludedAccessories.TabIndex = 74;
+            this.gpbIncludedAccessories.TabStop = false;
+            this.gpbIncludedAccessories.Tag = "Label_SelectWeapon_IncludedItems";
+            this.gpbIncludedAccessories.Text = "Included Accessories and Modifications:";
+            // 
+            // pnlIncludedAccessories
+            // 
+            this.pnlIncludedAccessories.AutoScroll = true;
+            this.pnlIncludedAccessories.AutoScrollMinSize = new System.Drawing.Size(0, 60);
+            this.pnlIncludedAccessories.Controls.Add(this.lblIncludedAccessories);
+            this.pnlIncludedAccessories.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlIncludedAccessories.Location = new System.Drawing.Point(3, 16);
+            this.pnlIncludedAccessories.Name = "pnlIncludedAccessories";
+            this.pnlIncludedAccessories.Padding = new System.Windows.Forms.Padding(3, 6, 13, 6);
+            this.pnlIncludedAccessories.Size = new System.Drawing.Size(440, 179);
+            this.pnlIncludedAccessories.TabIndex = 0;
+            // 
+            // lblIncludedAccessories
+            // 
+            this.lblIncludedAccessories.AutoSize = true;
+            this.lblIncludedAccessories.Location = new System.Drawing.Point(3, 6);
+            this.lblIncludedAccessories.Name = "lblIncludedAccessories";
+            this.lblIncludedAccessories.Size = new System.Drawing.Size(39, 13);
+            this.lblIncludedAccessories.TabIndex = 63;
+            this.lblIncludedAccessories.Text = "[None]";
+            // 
             // tabBrowse
             // 
+            this.tabBrowse.BackColor = System.Drawing.SystemColors.Control;
             this.tabBrowse.Controls.Add(this.dgvWeapons);
             this.tabBrowse.Location = new System.Drawing.Point(4, 22);
             this.tabBrowse.Name = "tabBrowse";
@@ -771,23 +792,22 @@ namespace Chummer
             this.tabBrowse.TabIndex = 0;
             this.tabBrowse.Tag = "Title_Browse";
             this.tabBrowse.Text = "Browse";
-            this.tabBrowse.UseVisualStyleBackColor = true;
             // 
             // dgvWeapons
             // 
             this.dgvWeapons.AllowUserToAddRows = false;
             this.dgvWeapons.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.dgvWeapons.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.dgvWeapons.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle6;
             this.dgvWeapons.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvWeapons.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedCells;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvWeapons.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle7.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle7.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle7.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle7.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvWeapons.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle7;
             this.dgvWeapons.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvWeapons.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.dgvc_Guid,
@@ -831,8 +851,8 @@ namespace Chummer
             // 
             this.dgvc_Name.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
             this.dgvc_Name.DataPropertyName = "WeaponName";
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvc_Name.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvc_Name.DefaultCellStyle = dataGridViewCellStyle8;
             this.dgvc_Name.HeaderText = "Name";
             this.dgvc_Name.Name = "dgvc_Name";
             this.dgvc_Name.ReadOnly = true;
@@ -952,8 +972,8 @@ namespace Chummer
             // 
             this.dgvc_Accessories.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
             this.dgvc_Accessories.DataPropertyName = "Accessories";
-            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvc_Accessories.DefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle9.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvc_Accessories.DefaultCellStyle = dataGridViewCellStyle9;
             this.dgvc_Accessories.HeaderText = "Accessories";
             this.dgvc_Accessories.Name = "dgvc_Accessories";
             this.dgvc_Accessories.ReadOnly = true;
@@ -988,10 +1008,10 @@ namespace Chummer
             // 
             this.dgvc_Cost.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
             this.dgvc_Cost.DataPropertyName = "Cost";
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopRight;
-            dataGridViewCellStyle5.Format = "#,0.##¥";
-            dataGridViewCellStyle5.NullValue = null;
-            this.dgvc_Cost.DefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopRight;
+            dataGridViewCellStyle10.Format = "#,0.##¥";
+            dataGridViewCellStyle10.NullValue = null;
+            this.dgvc_Cost.DefaultCellStyle = dataGridViewCellStyle10;
             this.dgvc_Cost.FillWeight = 60F;
             this.dgvc_Cost.HeaderText = "Cost";
             this.dgvc_Cost.Name = "dgvc_Cost";
@@ -1083,26 +1103,6 @@ namespace Chummer
             this.cmdOKAdd.UseVisualStyleBackColor = true;
             this.cmdOKAdd.Click += new System.EventHandler(this.cmdOKAdd_Click);
             // 
-            // tlpBottomRight
-            // 
-            this.tlpBottomRight.AutoSize = true;
-            this.tlpBottomRight.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpBottomRight.ColumnCount = 1;
-            this.tlpBottomRight.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpBottomRight.Controls.Add(this.chkHideOverAvailLimit, 0, 1);
-            this.tlpBottomRight.Controls.Add(this.chkShowOnlyAffordItems, 0, 2);
-            this.tlpBottomRight.Controls.Add(this.gpbIncludedAccessories, 0, 0);
-            this.tlpBottomRight.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpBottomRight.Location = new System.Drawing.Point(300, 201);
-            this.tlpBottomRight.Margin = new System.Windows.Forms.Padding(0);
-            this.tlpBottomRight.Name = "tlpBottomRight";
-            this.tlpBottomRight.RowCount = 3;
-            this.tlpBottomRight.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpBottomRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpBottomRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpBottomRight.Size = new System.Drawing.Size(452, 254);
-            this.tlpBottomRight.TabIndex = 78;
-            // 
             // SelectWeapon
             // 
             this.AcceptButton = this.cmdOK;
@@ -1131,9 +1131,6 @@ namespace Chummer
             this.tabListView.PerformLayout();
             this.tlpWeapon.ResumeLayout(false);
             this.tlpWeapon.PerformLayout();
-            this.gpbIncludedAccessories.ResumeLayout(false);
-            this.pnlIncludedAccessories.ResumeLayout(false);
-            this.pnlIncludedAccessories.PerformLayout();
             this.tlpRight.ResumeLayout(false);
             this.tlpRight.PerformLayout();
             this.flpMarkup.ResumeLayout(false);
@@ -1141,12 +1138,15 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudMarkup)).EndInit();
             this.flpCheckBoxes.ResumeLayout(false);
             this.flpCheckBoxes.PerformLayout();
+            this.tlpBottomRight.ResumeLayout(false);
+            this.tlpBottomRight.PerformLayout();
+            this.gpbIncludedAccessories.ResumeLayout(false);
+            this.pnlIncludedAccessories.ResumeLayout(false);
+            this.pnlIncludedAccessories.PerformLayout();
             this.tabBrowse.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvWeapons)).EndInit();
             this.tlpButtons.ResumeLayout(false);
             this.tlpButtons.PerformLayout();
-            this.tlpBottomRight.ResumeLayout(false);
-            this.tlpBottomRight.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
