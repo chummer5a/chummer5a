@@ -19676,6 +19676,8 @@ namespace Chummer
                         await lblVehicleName.DoThreadSafeAsync(x => x.Text = objMod.CurrentDisplayName, token);
                         string strText = await LanguageManager.GetStringAsync("String_VehicleModification", token: token);
                         await lblVehicleCategory.DoThreadSafeAsync(x => x.Text = strText, token);
+                        strText = await LanguageManager.GetStringAsync(objMod.RatingLabel, token: token);
+                        await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Text = strText, token);
                         if (!objMod.MaxRating.Equals("qty", StringComparison.OrdinalIgnoreCase))
                         {
                             if (objMod.MaxRating.Equals("seats", StringComparison.OrdinalIgnoreCase))

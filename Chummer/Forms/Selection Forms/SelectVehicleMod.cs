@@ -563,7 +563,7 @@ namespace Chummer
                 //Used for the Armor modifications.
                 else if (strRating.Equals("body", StringComparison.OrdinalIgnoreCase))
                 {
-                    await LanguageManager.GetStringAsync("Label_Body", token: token)
+                    await LanguageManager.GetStringAsync("Label_Rating", token: token)
                                          .ContinueWith(y => lblRatingLabel.DoThreadSafeAsync(x => x.Text = y.Result, token: token), token)
                                          .Unwrap();
                     await nudRating.DoThreadSafeAsync(x =>

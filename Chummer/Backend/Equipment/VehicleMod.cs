@@ -185,6 +185,15 @@ namespace Chummer.Backend.Equipment
             _colNotes = ColorTranslator.FromHtml(sNotesColor);
             objXmlMod.TryGetStringFieldQuickly("capacity", ref _strCapacity);
             objXmlMod.TryGetStringFieldQuickly("rating", ref _strMaxRating);
+            switch (_strMaxRating)
+            {
+                case "qty":
+                    _strRatingLabel = "Label_Qty";
+                    break;
+                case "seats":
+                    _strRatingLabel = "Label_Seats";
+                    break;
+            }
             objXmlMod.TryGetStringFieldQuickly("ratinglabel", ref _strRatingLabel);
             objXmlMod.TryGetInt32FieldQuickly("conditionmonitor", ref _intConditionMonitor);
             objXmlMod.TryGetStringFieldQuickly("weaponmountcategories", ref _strWeaponMountCategories);
