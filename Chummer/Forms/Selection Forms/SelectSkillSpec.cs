@@ -69,7 +69,7 @@ namespace Chummer
                 else
                     xmlParentSkill = _objXmlDocument.SelectSingleNode(
                         "/chummer/skills/skill[name = " + _objSkill.Name.CleanXPath() + " and ("
-                        + _objCharacter.Settings.BookXPath() + ")]");
+                        + await _objCharacter.Settings.BookXPathAsync() + ")]");
                 // Populate the Skill's Specializations (if any).
                 XPathNodeIterator xmlSpecList = xmlParentSkill != null ? await xmlParentSkill.SelectAndCacheExpressionAsync("specs/spec") : null;
                 if (xmlSpecList?.Count > 0)
@@ -88,7 +88,7 @@ namespace Chummer
                         //Might need to include skill name or might miss some values?
                         foreach (XPathNavigator objXmlWeapon in objXmlWeaponDocument.Select(
                                      "/chummer/weapons/weapon[(spec = " + strInnerText.CleanXPath() + " or spec2 = "
-                                     + strInnerText.CleanXPath() + ") and (" + _objCharacter.Settings.BookXPath()
+                                     + strInnerText.CleanXPath() + ") and (" + await _objCharacter.Settings.BookXPathAsync()
                                      + ")]"))
                         {
                             string strName = (await objXmlWeapon.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value;

@@ -92,7 +92,7 @@ namespace Chummer
                                     setAlreadyProcessed.Add(strInnerText);
                                     if (xmlMetatypesNode.SelectSingleNode(
                                             "metatype[category = " + strInnerText.CleanXPath()
-                                                                   + " and (" + _objCharacter.Settings.BookXPath()
+                                                                   + " and (" + await _objCharacter.Settings.BookXPathAsync()
                                                                    + ")]")
                                         != null)
                                     {
@@ -872,7 +872,7 @@ namespace Chummer
                 {
                     lstMetavariants.Add(new ListItem(Guid.Empty, await LanguageManager.GetStringAsync("String_None", token: token)));
                     foreach (XPathNavigator objXmlMetavariant in objXmlMetatype.Select(
-                                 "metavariants/metavariant[" + _objCharacter.Settings.BookXPath() + ']'))
+                                 "metavariants/metavariant[" + await _objCharacter.Settings.BookXPathAsync(token: token) + ']'))
                     {
                         string strId = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("id", token: token))?.Value;
                         if (!string.IsNullOrEmpty(strId))
@@ -952,7 +952,7 @@ namespace Chummer
                     string strFilter = string.Empty;
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
                     {
-                        sbdFilter.Append('(').Append(_objCharacter.Settings.BookXPath()).Append(')');
+                        sbdFilter.Append('(').Append(await _objCharacter.Settings.BookXPathAsync(token: token)).Append(')');
                         if (!string.IsNullOrEmpty(strSelectedCategory) && strSelectedCategory != "Show All"
                                                                        && (GlobalSettings.SearchInCategoryOnly
                                                                            || strSearchText.Length == 0))

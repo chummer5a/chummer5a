@@ -18,7 +18,6 @@
  */
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -44,7 +43,7 @@ namespace CrashHandler
         public string WorkingDirectory { get; }
         public Process Process { get; private set; }
 
-        private readonly ConcurrentDictionary<string, string> _dicFilePaths;
+        private readonly Dictionary<string, string> _dicFilePaths;
         private readonly Dictionary<string, string> _lstPretendFilePaths;
         private readonly Dictionary<string, string> _attributes;
         private readonly int _procId;
