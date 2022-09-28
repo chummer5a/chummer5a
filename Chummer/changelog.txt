@@ -6,6 +6,7 @@ Application Changes:
 - Karma cost modifiers that only apply in character creation mode no longer cause characters to be created with less/negative karma, and karma cost modifiers that only apply after character creation no longer cause characters to be created with extra karma. Fixes #4926 and fixes #4918.
 - Softcoded the system that prevents cultured bioware from being bought at Used grade. Instead of a single "nosecondhand" node controlling whether or not some 'ware can be taken at Used grade, 'ware can now have a "bannedgrades" node that lists every single grade that is not allowed for the given piece.
 - Armor bonuses from +Armor accessories are now properly limited to characters' STR attribute values, as per page 169 of the Core Rulebook. This includes armor with "Custom Fit (Stack)", as they act as +Armor accessories when stacking. A house rule has been added to character settings that removes this cap.
+- Ammo that modifies or replaces a weapon's accuracy now does that properly.
 
 Data Changes:
 - Concealed and Regular vehicle armor mods now properly add to their parent's Armor. Fixes #4925.
@@ -13,9 +14,14 @@ Data Changes:
 - Vindicator 200-round belts can no longer be bought as gear, only as weapon accessories. However, the weapon accessory version now has slots for loading in ammo, just like the weapon accessory versions of spare clips and speed loaders.
 - Spare clips and speed loaders bought as gear now properly only allow the user to select ranged weapon types that can accommodate them instead of any ranged weapon.
 - Added Maker Arms weapons and magazines from Street Lethal. Maker mags are not fully functional, however, so users will need to track used and consumed capacities manually.
+- Fixed the names of corporate weapons and armor from Street Lethal made by subsidiaries to no longer show the corporate owner.
+- Added the Nemesis Arms Man-Catcher, torpedo grenades, Spinstorm Ferrous Slug ammo, Grey Goo Armor Eater ammo, and Grey Goo Penetrator ammo from Street Lethal.
+- Fixed the vehicle mods on the Maersk Shipyards Wavecutter MPAC. Existing characters with this vehicle will need to re-add it to seen its changes.
+- Fixed the name, ammo capacity type, and built-in accessories of the Wuxing-Armtech PTL-02.
 
 Changed/New Strings:
 - Checkbox_Options_UncappedArmorAccessoryBonuses
+- String_DamageTorpedo
 
 Build 223
 Application Changes:

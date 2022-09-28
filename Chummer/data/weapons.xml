@@ -14215,7 +14215,7 @@
     </weapon>
     <weapon>
       <id>7158a75f-6c6c-4854-a7cc-51cec011572d</id>
-      <name>Lone Star Remington 995</name>
+      <name>Lone Star Remington 995 "Buzzsaw"</name>
       <category>Shotguns</category>
       <type>Ranged</type>
       <conceal>+6</conceal>
@@ -14270,7 +14270,7 @@
     </weapon>
     <weapon>
       <id>47c4da06-fa71-4784-b0c6-f85002589b94</id>
-      <name>Minigrenade: MCT/Winchester-Howe Hornet Direct-Fire</name>
+      <name>Minigrenade: Winchester-Howe Hornet Direct-Fire</name>
       <category>Gear</category>
       <type>Ranged</type>
       <conceal>-2</conceal>
@@ -14291,7 +14291,7 @@
     </weapon>
     <weapon>
       <id>93190477-d1f9-45d0-bee9-9f9bc9a29638</id>
-      <name>Renraku/Ingram Supermach 200</name>
+      <name>Ingram Supermach 200</name>
       <category>Submachine Guns</category>
       <type>Ranged</type>
       <conceal>2</conceal>
@@ -14343,7 +14343,7 @@
     </weapon>
     <weapon>
       <id>09502fce-989a-4143-95a8-86dbe70b909d</id>
-      <name>SK/Onotari Arms Silent Claw Stiletto</name>
+      <name>Onotari Arms Silent Claw Stiletto</name>
       <category>Blades</category>
       <type>Melee</type>
       <conceal>-2</conceal>
@@ -14361,25 +14361,92 @@
       <spec>Knives</spec>
     </weapon>
     <weapon>
+      <id>48bd7d7a-a7ab-4d3b-83f9-994a5bcd256a</id>
+      <name>Nemesis Arms Man-Catcher</name>
+      <category>Exotic Ranged Weapons</category>
+      <type>Ranged</type>
+      <conceal>10</conceal>
+      <accuracy>4</accuracy>
+      <reach>0</reach>
+      <damage>Special (10m Radius)</damage>
+      <ap>0</ap>
+      <mode>SS</mode>
+      <rc>0</rc>
+      <ammo>10(m)</ammo>
+      <avail>18F</avail>
+      <cost>6000</cost>
+      <source>SL</source>
+      <page>133</page>
+      <range>Missile Launchers</range>
+      <sizecategory>Missile Launchers</sizecategory>
+      <useskill>Exotic Ranged Weapons</useskill>
+      <weapontype>man-catcher</weapontype>
+    </weapon>
+    <weapon>
       <id>b14a54e6-a60d-4e89-8ddb-91b4af9d41e8</id>
-      <name>Wuxing-Armtec PTL-02</name>
+      <name>Wuxing-Armtech PTL-02</name>
       <category>Grenade Launchers</category>
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>5</accuracy>
       <reach>0</reach>
-      <damage>Grenade</damage>
-      <ap>Grenade</ap>
+      <damage>Torpedo</damage>
+      <ap>-</ap>
       <mode>SS</mode>
       <rc>0</rc>
-      <ammo>6(c)</ammo>
+      <ammo>6(cy)</ammo>
       <avail>18F</avail>
       <cost>5000</cost>
       <source>SL</source>
       <page>133</page>
-      <ammocategory>Grenade Launchers</ammocategory>
+      <accessories>
+        <accessory>
+          <name>Extreme Environment Modification</name>
+          <rating>2</rating>
+        </accessory>
+      </accessories>
+      <weapontype>torpglauncher</weapontype>
+    </weapon>
+    <weapon>
+      <id>b15ff567-845a-46b7-9486-e51ed37c4a1a</id>
+      <name>Torpedo Grenade: HEAP</name>
+      <category>Gear</category>
+      <type>Ranged</type>
+      <conceal>-2</conceal>
+      <accuracy>0</accuracy>
+      <reach>0</reach>
+      <damage>14P (-2/m)</damage>
+      <ap>-4</ap>
+      <mode>0</mode>
+      <rc>0</rc>
+      <ammo>0</ammo>
+      <avail>14F</avail>
+      <cost>300</cost>
+      <source>SL</source>
+      <page>133</page>
       <range>Grenade Launchers</range>
-      <spec>Grenade Launchers</spec>
+      <spec>Grenade Launcher</spec>
+      <useskill>Heavy Weapons</useskill>
+    </weapon>
+    <weapon>
+      <id>47ea663c-f95e-4632-84fa-30b5dfc9c66c</id>
+      <name>Torpedo Grenade: Depth Charge</name>
+      <category>Gear</category>
+      <type>Ranged</type>
+      <conceal>-2</conceal>
+      <accuracy>0</accuracy>
+      <reach>0</reach>
+      <damage>12S (10m Radius)</damage>
+      <ap>-4</ap>
+      <mode>0</mode>
+      <rc>0</rc>
+      <ammo>0</ammo>
+      <avail>12F</avail>
+      <cost>175</cost>
+      <source>SL</source>
+      <page>133</page>
+      <range>Grenade Launchers</range>
+      <spec>Grenade Launcher</spec>
       <useskill>Heavy Weapons</useskill>
     </weapon>
     <!-- End Region -->

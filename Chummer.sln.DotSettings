@@ -82,6 +82,7 @@
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Armant_00E9/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Armatus/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Armtec/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/UserDictionary/Words/=Armtech/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Arnis/@EntryIndexedValue">True</s:Boolean>
 	
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Arrester/@EntryIndexedValue">True</s:Boolean>
@@ -1055,6 +1056,7 @@
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Sperethiel/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Spidersilk/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Spinrad/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/UserDictionary/Words/=Spinstorm/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Spitter/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Sporter/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=squirtgun/@EntryIndexedValue">True</s:Boolean>

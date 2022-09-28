@@ -3940,6 +3940,10 @@
       <text>Rocket</text>
     </string>
     <string>
+      <key>String_DamageTorpedo</key>
+      <text>Torpedo</text>
+    </string>
+    <string>
       <key>String_DamageAsDrugToxin</key>
       <text>As Drug/Toxin</text>
     </string>

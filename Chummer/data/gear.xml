@@ -1622,6 +1622,89 @@
       <cost>5000</cost>
       <ammoforweapontype noextra="True">mlauncher</ammoforweapontype>
     </gear>
+    <gear>
+      <id>c7104585-4c86-4e11-9677-5d7f1912658c</id>
+      <name>Ammo: Spinstorm Ferrous Slugs</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>SL</source>
+      <page>80</page>
+      <avail>12R</avail>
+      <cost>10</cost>
+      <ammoforweapontype noextra="True">spinstorm</ammoforweapontype>
+    </gear>
+    <gear>
+      <id>0c2be0b1-1b88-4b35-abe1-c2b887788ff3</id>
+      <name>Ammo: Grey Goo Armor Eater</name>
+      <category>Ammunition</category>
+      <rating>1000</rating>
+      <source>SL</source>
+      <page>88</page>
+      <avail>24F</avail>
+      <cost>50 * Rating</cost>
+      <costfor>10</costfor>
+      <weaponbonus>
+        <accuracyreplace>3</accuracyreplace>
+        <apreplace>0</apreplace>
+        <damagereplace>Special</damagereplace>
+        <userange>Holdouts</userange>
+      </weaponbonus>
+      <ammoforweapontype>gun</ammoforweapontype>
+    </gear>
+    <gear>
+      <id>3425fbe8-d842-4a7c-8f0d-3262b19c2ba9</id>
+      <name>Ammo: Grey Goo Penetrator</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>SL</source>
+      <page>88</page>
+      <avail>24F</avail>
+      <cost>1000</cost>
+      <costfor>10</costfor>
+      <weaponbonus>
+        <accuracyreplace>3</accuracyreplace>
+        <apreplace>-8</apreplace>
+        <damagereplace>9P</damagereplace>
+        <userange>Holdouts</userange>
+      </weaponbonus>
+      <ammoforweapontype>gun</ammoforweapontype>
+    </gear>
+    <gear>
+      <id>105acad3-5877-40c5-a472-290f953c6e5a</id>
+      <name>Ammo: Man-Catcher Ammo Compound</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>SL</source>
+      <page>133</page>
+      <avail>18</avail>
+      <cost>200</cost>
+      <costfor>10</costfor>
+      <ammoforweapontype noextra="True">man-catcher</ammoforweapontype>
+    </gear>
+    <gear>
+      <id>8fe79706-ff0e-4701-a8b9-a20c27609761</id>
+      <name>Torpedo Grenade: HEAP</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>SL</source>
+      <page>133</page>
+      <avail>14F</avail>
+      <addweapon>Torpedo Grenade: HEAP</addweapon>
+      <cost>300</cost>
+      <ammoforweapontype noextra="True">torpglauncher</ammoforweapontype>
+    </gear>
+    <gear>
+      <id>63d1284d-9cf1-4214-ae1e-cfb3b74be548</id>
+      <name>Torpedo Grenade: Depth Charge</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>SL</source>
+      <page>133</page>
+      <avail>12F</avail>
+      <addweapon>Torpedo Grenade: Depth Charge</addweapon>
+      <cost>175</cost>
+      <ammoforweapontype noextra="True">torpglauncher</ammoforweapontype>
+    </gear>
     <!-- End Region -->
     <!-- Region Kill Code-->
     <gear>
@@ -5042,6 +5125,28 @@
       <devicerating>5</devicerating>
       <dataprocessing>5</dataprocessing>
       <firewall>5</firewall>
+      <hide />
+      <canformpersona>Self</canformpersona>
+      <gears>
+        <usegear>
+          <name>Commlink Functionality</name>
+          <category>Electronics Accessories</category>
+        </usegear>
+      </gears>
+    </gear>
+    <gear>
+      <id>0b9a81c4-d600-4788-98c7-7fc65a92c182</id>
+      <name>Maersk Shipyards Wavecutter MPAC (Commlink)</name>
+      <category>Commlinks</category>
+      <rating>0</rating>
+      <source>SL</source>
+      <page>132</page>
+      <avail>0</avail>
+      <capacity>0</capacity>
+      <cost>0</cost>
+      <devicerating>7</devicerating>
+      <dataprocessing>7</dataprocessing>
+      <firewall>7</firewall>
       <hide />
       <canformpersona>Self</canformpersona>
       <gears>
@@ -19946,13 +20051,13 @@
     </gear>
     <gear>
       <id>2790877a-046e-4c93-be2d-1053fbafd6c0</id>
-      <name>Minigrenade: MCT/Winchester-Howe Hornet Direct-Fire</name>
+      <name>Minigrenade: Winchester-Howe Hornet Direct-Fire</name>
       <category>Ammunition</category>
       <rating>0</rating>
       <source>SL</source>
       <page>132</page>
       <avail>16F</avail>
-      <addweapon>Minigrenade: MCT/Winchester-Howe Hornet Direct-Fire</addweapon>
+      <addweapon>Minigrenade: Winchester-Howe Hornet Direct-Fire</addweapon>
       <cost>400</cost>
       <ammoforweapontype noextra="True">glauncher</ammoforweapontype>
     </gear>

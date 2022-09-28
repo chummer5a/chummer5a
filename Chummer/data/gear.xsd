@@ -76,6 +76,7 @@
                                             <xs:complexType>
                                                 <xs:sequence>
                                                     <xs:element name="accuracy" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                                    <xs:element name="accuracyreplace" type="xs:string" minOccurs="0" maxOccurs="1" />
                                                     <xs:element name="ap" type="xs:string" minOccurs="0" maxOccurs="1" />
                                                     <xs:element name="apreplace" type="xs:string" minOccurs="0" maxOccurs="1" />
                                                     <xs:element name="damage" type="xs:string" minOccurs="0" maxOccurs="1" />
@@ -95,6 +96,7 @@
                                           <xs:complexType>
                                             <xs:sequence>
                                               <xs:element name="accuracy" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                              <xs:element name="accuracyreplace" type="xs:string" minOccurs="0" maxOccurs="1" />
                                               <xs:element name="ap" type="xs:string" minOccurs="0" maxOccurs="1" />
                                               <xs:element name="apreplace" type="xs:string" minOccurs="0" maxOccurs="1" />
                                               <xs:element name="damage" type="xs:string" minOccurs="0" maxOccurs="1" />
