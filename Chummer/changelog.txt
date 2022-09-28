@@ -5,10 +5,14 @@ Application Changes:
 - Fixed various display issues with custom rating names for vehicle mods.
 - Karma cost modifiers that only apply in character creation mode no longer cause characters to be created with less/negative karma, and karma cost modifiers that only apply after character creation no longer cause characters to be created with extra karma. Fixes #4926 and fixes #4918.
 - Softcoded the system that prevents cultured bioware from being bought at Used grade. Instead of a single "nosecondhand" node controlling whether or not some 'ware can be taken at Used grade, 'ware can now have a "bannedgrades" node that lists every single grade that is not allowed for the given piece.
+- Armor bonuses from +Armor accessories are now properly limited to characters' STR attribute values, as per page 169 of the Core Rulebook. This includes armor with "Custom Fit (Stack)", as they act as +Armor accessories when stacking. A house rule has been added to character settings that removes this cap.
 
 Data Changes:
 - Concealed and Regular vehicle armor mods now properly add to their parent's Armor. Fixes #4925.
 - Greyware is now properly disallowed for biodrone cyberware, cybersuites, nanocybernetics, and implanted commlinks and cyberdecks.
+
+Changed/New Strings:
+- Checkbox_Options_UncappedArmorAccessoryBonuses
 
 Build 223
 Application Changes:

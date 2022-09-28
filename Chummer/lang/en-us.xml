@@ -7695,6 +7695,10 @@
       <text>Essence loss only reduces MAG/RES maximum</text>
     </string>
     <string>
+      <key>Checkbox_Options_UncappedArmorAccessoryBonuses</key>
+      <text>No Cap on Armor Bonuses from Armor Accessories</text>
+    </string>
+    <string>
       <key>Checkbox_Options_NoArmorEncumbrance</key>
       <text>No Armor Encumbrance</text>
     </string>

@@ -371,6 +371,7 @@ namespace Chummer
             this.cmdRestoreDefaults = new System.Windows.Forms.Button();
             this.cmdSave = new System.Windows.Forms.Button();
             this.cmdSaveAs = new System.Windows.Forms.Button();
+            this.chkUncappedArmorAccessoryBonuses = new Chummer.ColorableCheckBox(this.components);
             this.tlpOptions.SuspendLayout();
             this.tabOptions.SuspendLayout();
             this.tabBasicOptions.SuspendLayout();
@@ -5352,7 +5353,7 @@ namespace Chummer
             this.gpbHouseRulesCombat.Controls.Add(this.tlpHouseRulesCombat);
             this.gpbHouseRulesCombat.Location = new System.Drawing.Point(461, 204);
             this.gpbHouseRulesCombat.Name = "gpbHouseRulesCombat";
-            this.gpbHouseRulesCombat.Size = new System.Drawing.Size(384, 69);
+            this.gpbHouseRulesCombat.Size = new System.Drawing.Size(384, 94);
             this.gpbHouseRulesCombat.TabIndex = 4;
             this.gpbHouseRulesCombat.TabStop = false;
             this.gpbHouseRulesCombat.Tag = "Label_CharacterOptions_Combat";
@@ -5364,15 +5365,17 @@ namespace Chummer
             this.tlpHouseRulesCombat.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpHouseRulesCombat.ColumnCount = 1;
             this.tlpHouseRulesCombat.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpHouseRulesCombat.Controls.Add(this.chkUncappedArmorAccessoryBonuses, 0, 1);
             this.tlpHouseRulesCombat.Controls.Add(this.chkNoArmorEncumbrance, 0, 0);
-            this.tlpHouseRulesCombat.Controls.Add(this.chkUnarmedSkillImprovements, 0, 1);
+            this.tlpHouseRulesCombat.Controls.Add(this.chkUnarmedSkillImprovements, 0, 2);
             this.tlpHouseRulesCombat.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpHouseRulesCombat.Location = new System.Drawing.Point(3, 16);
             this.tlpHouseRulesCombat.Name = "tlpHouseRulesCombat";
-            this.tlpHouseRulesCombat.RowCount = 2;
+            this.tlpHouseRulesCombat.RowCount = 3;
             this.tlpHouseRulesCombat.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpHouseRulesCombat.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpHouseRulesCombat.Size = new System.Drawing.Size(378, 50);
+            this.tlpHouseRulesCombat.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpHouseRulesCombat.Size = new System.Drawing.Size(378, 75);
             this.tlpHouseRulesCombat.TabIndex = 0;
             // 
             // chkNoArmorEncumbrance
@@ -5394,7 +5397,7 @@ namespace Chummer
             this.chkUnarmedSkillImprovements.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkUnarmedSkillImprovements.AutoSize = true;
             this.chkUnarmedSkillImprovements.DefaultColorScheme = true;
-            this.chkUnarmedSkillImprovements.Location = new System.Drawing.Point(3, 29);
+            this.chkUnarmedSkillImprovements.Location = new System.Drawing.Point(3, 54);
             this.chkUnarmedSkillImprovements.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkUnarmedSkillImprovements.Name = "chkUnarmedSkillImprovements";
             this.chkUnarmedSkillImprovements.Size = new System.Drawing.Size(372, 17);
@@ -5915,6 +5918,20 @@ namespace Chummer
             this.cmdSaveAs.Text = "Save As...";
             this.cmdSaveAs.UseVisualStyleBackColor = true;
             this.cmdSaveAs.Click += new System.EventHandler(this.cmdSaveAs_Click);
+            // 
+            // chkUncappedArmorAccessoryBonuses
+            // 
+            this.chkUncappedArmorAccessoryBonuses.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkUncappedArmorAccessoryBonuses.AutoSize = true;
+            this.chkUncappedArmorAccessoryBonuses.DefaultColorScheme = true;
+            this.chkUncappedArmorAccessoryBonuses.Location = new System.Drawing.Point(3, 29);
+            this.chkUncappedArmorAccessoryBonuses.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkUncappedArmorAccessoryBonuses.Name = "chkUncappedArmorAccessoryBonuses";
+            this.chkUncappedArmorAccessoryBonuses.Size = new System.Drawing.Size(264, 17);
+            this.chkUncappedArmorAccessoryBonuses.TabIndex = 39;
+            this.chkUncappedArmorAccessoryBonuses.Tag = "Checkbox_Options_UncappedArmorAccessoryBonuses";
+            this.chkUncappedArmorAccessoryBonuses.Text = "No Cap on Armor Bonuses from Armor Accessories";
+            this.chkUncappedArmorAccessoryBonuses.UseVisualStyleBackColor = true;
             // 
             // EditCharacterSettings
             // 
@@ -6452,5 +6469,6 @@ namespace Chummer
         private System.Windows.Forms.Label lblMaxKnowledgeSkillRating;
         private NumericUpDownEx nudMaxKnowledgeSkillRating;
         private ColorableCheckBox chkSpecializationsBreakSkillGroups;
+        private ColorableCheckBox chkUncappedArmorAccessoryBonuses;
     }
 }

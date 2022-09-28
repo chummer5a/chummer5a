@@ -89,6 +89,7 @@ namespace Chummer
         private bool _blnDroneArmorMultiplierEnabled;
         private bool _blnFreeSpiritPowerPointsMAG;
         private bool _blnNoArmorEncumbrance;
+        private bool _blnUncappedArmorAccessoryBonuses;
         private bool _blnIgnoreArt;
         private bool _blnIgnoreComplexFormLimit;
         private bool _blnUnarmedImprovementsApplyToWeapons;
@@ -804,6 +805,7 @@ namespace Chummer
                     hashCode = (hashCode * 397) ^ _blnDroneArmorMultiplierEnabled.GetHashCode();
                     hashCode = (hashCode * 397) ^ _blnFreeSpiritPowerPointsMAG.GetHashCode();
                     hashCode = (hashCode * 397) ^ _blnNoArmorEncumbrance.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _blnUncappedArmorAccessoryBonuses.GetHashCode();
                     hashCode = (hashCode * 397) ^ _blnIgnoreArt.GetHashCode();
                     hashCode = (hashCode * 397) ^ _blnIgnoreComplexFormLimit.GetHashCode();
                     hashCode = (hashCode * 397) ^ _blnUnarmedImprovementsApplyToWeapons.GetHashCode();
@@ -1118,9 +1120,13 @@ namespace Chummer
                         objWriter.WriteElementString("ignorecomplexformlimit",
                                                      _blnIgnoreComplexFormLimit.ToString(
                                                          GlobalSettings.InvariantCultureInfo));
-                        // <NoArmorEncumbrance />
+                        // <noarmorencumbrance />
                         objWriter.WriteElementString("noarmorencumbrance",
                                                      _blnNoArmorEncumbrance.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <uncappedarmoraccessorybonuses />
+                        objWriter.WriteElementString("uncappedarmoraccessorybonuses",
+                                                     _blnUncappedArmorAccessoryBonuses.ToString(
                                                          GlobalSettings.InvariantCultureInfo));
                         // <esslossreducesmaximumonly />
                         objWriter.WriteElementString("esslossreducesmaximumonly",
@@ -1836,6 +1842,9 @@ namespace Chummer
                 objXmlNode.TryGetBoolFieldQuickly("nosinglearmorencumbrance", ref _blnNoSingleArmorEncumbrance);
                 // Ignore Armor Encumbrance
                 objXmlNode.TryGetBoolFieldQuickly("noarmorencumbrance", ref _blnNoArmorEncumbrance);
+                // Do not cap armor bonuses from accessories
+                objXmlNode.TryGetBoolFieldQuickly("uncappedarmoraccessorybonuses",
+                                                  ref _blnUncappedArmorAccessoryBonuses);
                 // Ignore Complex Form Limit
                 objXmlNode.TryGetBoolFieldQuickly("ignorecomplexformlimit", ref _blnIgnoreComplexFormLimit);
                 // Essence Loss Reduces Maximum Only.
@@ -2601,6 +2610,9 @@ namespace Chummer
                 objXmlNode.TryGetBoolFieldQuickly("nosinglearmorencumbrance", ref _blnNoSingleArmorEncumbrance);
                 // Ignore Armor Encumbrance
                 objXmlNode.TryGetBoolFieldQuickly("noarmorencumbrance", ref _blnNoArmorEncumbrance);
+                // Do not cap armor bonuses from accessories
+                objXmlNode.TryGetBoolFieldQuickly("uncappedarmoraccessorybonuses",
+                                                  ref _blnUncappedArmorAccessoryBonuses);
                 // Ignore Complex Form Limit
                 objXmlNode.TryGetBoolFieldQuickly("ignorecomplexformlimit", ref _blnIgnoreComplexFormLimit);
                 // Essence Loss Reduces Maximum Only.
@@ -4669,6 +4681,31 @@ namespace Chummer
                     using (LockObject.EnterWriteLock())
                     {
                         _blnNoArmorEncumbrance = value;
+                        OnPropertyChanged();
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// House Rule: Do not cap armor bonuses from accessories.
+        /// </summary>
+        public bool UncappedArmorAccessoryBonuses
+        {
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _blnUncappedArmorAccessoryBonuses;
+            }
+            set
+            {
+                using (EnterReadLock.Enter(LockObject))
+                {
+                    if (_blnUncappedArmorAccessoryBonuses == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _blnUncappedArmorAccessoryBonuses = value;
                         OnPropertyChanged();
                     }
                 }

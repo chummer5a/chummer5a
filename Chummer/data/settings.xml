@@ -46,6 +46,7 @@
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
       <ignorecomplexformlimit>False</ignorecomplexformlimit>
       <noarmorencumbrance>False</noarmorencumbrance>
+      <uncappedarmoraccessorybonuses>False</uncappedarmoraccessorybonuses>
       <esslossreducesmaximumonly>False</esslossreducesmaximumonly>
       <allowskillregrouping>True</allowskillregrouping>
       <metatypecostskarma>True</metatypecostskarma>
@@ -203,6 +204,7 @@
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
       <ignorecomplexformlimit>False</ignorecomplexformlimit>
       <noarmorencumbrance>False</noarmorencumbrance>
+      <uncappedarmoraccessorybonuses>False</uncappedarmoraccessorybonuses>
       <esslossreducesmaximumonly>False</esslossreducesmaximumonly>
       <allowskillregrouping>True</allowskillregrouping>
       <metatypecostskarma>True</metatypecostskarma>
@@ -360,6 +362,7 @@
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
       <ignorecomplexformlimit>False</ignorecomplexformlimit>
       <noarmorencumbrance>False</noarmorencumbrance>
+      <uncappedarmoraccessorybonuses>False</uncappedarmoraccessorybonuses>
       <esslossreducesmaximumonly>False</esslossreducesmaximumonly>
       <allowskillregrouping>True</allowskillregrouping>
       <metatypecostskarma>True</metatypecostskarma>
@@ -517,6 +520,7 @@
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
       <ignorecomplexformlimit>False</ignorecomplexformlimit>
       <noarmorencumbrance>False</noarmorencumbrance>
+      <uncappedarmoraccessorybonuses>False</uncappedarmoraccessorybonuses>
       <esslossreducesmaximumonly>False</esslossreducesmaximumonly>
       <allowskillregrouping>True</allowskillregrouping>
       <metatypecostskarma>True</metatypecostskarma>
@@ -674,6 +678,7 @@
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
       <ignorecomplexformlimit>False</ignorecomplexformlimit>
       <noarmorencumbrance>False</noarmorencumbrance>
+      <uncappedarmoraccessorybonuses>False</uncappedarmoraccessorybonuses>
       <esslossreducesmaximumonly>False</esslossreducesmaximumonly>
       <allowskillregrouping>True</allowskillregrouping>
       <metatypecostskarma>True</metatypecostskarma>
@@ -831,6 +836,7 @@
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
       <ignorecomplexformlimit>False</ignorecomplexformlimit>
       <noarmorencumbrance>False</noarmorencumbrance>
+      <uncappedarmoraccessorybonuses>False</uncappedarmoraccessorybonuses>
       <esslossreducesmaximumonly>False</esslossreducesmaximumonly>
       <allowskillregrouping>True</allowskillregrouping>
       <metatypecostskarma>True</metatypecostskarma>
@@ -988,6 +994,7 @@
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
       <ignorecomplexformlimit>False</ignorecomplexformlimit>
       <noarmorencumbrance>False</noarmorencumbrance>
+      <uncappedarmoraccessorybonuses>False</uncappedarmoraccessorybonuses>
       <esslossreducesmaximumonly>False</esslossreducesmaximumonly>
       <allowskillregrouping>True</allowskillregrouping>
       <metatypecostskarma>True</metatypecostskarma>
@@ -1146,6 +1153,7 @@
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
       <ignorecomplexformlimit>False</ignorecomplexformlimit>
       <noarmorencumbrance>False</noarmorencumbrance>
+      <uncappedarmoraccessorybonuses>False</uncappedarmoraccessorybonuses>
       <esslossreducesmaximumonly>False</esslossreducesmaximumonly>
       <allowskillregrouping>True</allowskillregrouping>
       <metatypecostskarma>True</metatypecostskarma>
@@ -1310,6 +1318,7 @@
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
       <ignorecomplexformlimit>False</ignorecomplexformlimit>
       <noarmorencumbrance>False</noarmorencumbrance>
+      <uncappedarmoraccessorybonuses>False</uncappedarmoraccessorybonuses>
       <esslossreducesmaximumonly>False</esslossreducesmaximumonly>
       <allowskillregrouping>True</allowskillregrouping>
       <metatypecostskarma>True</metatypecostskarma>
@@ -1468,6 +1477,7 @@
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
       <ignorecomplexformlimit>False</ignorecomplexformlimit>
       <noarmorencumbrance>False</noarmorencumbrance>
+      <uncappedarmoraccessorybonuses>False</uncappedarmoraccessorybonuses>
       <esslossreducesmaximumonly>False</esslossreducesmaximumonly>
       <allowskillregrouping>True</allowskillregrouping>
       <metatypecostskarma>True</metatypecostskarma>
@@ -1618,13 +1628,15 @@
       <allow2ndmaxattribute>False</allow2ndmaxattribute>
       <contactpointsexpression>{CHAUnaug} * 3</contactpointsexpression>
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
-      <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>      <boundspiritexpression>{CHA}</boundspiritexpression>
+      <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
+      <boundspiritexpression>{CHA}</boundspiritexpression>
       <compiledspiritexpression>{LOG}</compiledspiritexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
       <ignorecomplexformlimit>False</ignorecomplexformlimit>
       <noarmorencumbrance>False</noarmorencumbrance>
+      <uncappedarmoraccessorybonuses>False</uncappedarmoraccessorybonuses>
       <esslossreducesmaximumonly>False</esslossreducesmaximumonly>
       <allowskillregrouping>True</allowskillregrouping>
       <metatypecostskarma>True</metatypecostskarma>
@@ -1788,6 +1800,7 @@
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
       <ignorecomplexformlimit>False</ignorecomplexformlimit>
       <noarmorencumbrance>False</noarmorencumbrance>
+      <uncappedarmoraccessorybonuses>False</uncappedarmoraccessorybonuses>
       <esslossreducesmaximumonly>False</esslossreducesmaximumonly>
       <allowskillregrouping>True</allowskillregrouping>
       <metatypecostskarma>True</metatypecostskarma>
@@ -1952,6 +1965,7 @@
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
       <ignorecomplexformlimit>False</ignorecomplexformlimit>
       <noarmorencumbrance>False</noarmorencumbrance>
+      <uncappedarmoraccessorybonuses>False</uncappedarmoraccessorybonuses>
       <esslossreducesmaximumonly>False</esslossreducesmaximumonly>
       <allowskillregrouping>True</allowskillregrouping>
       <metatypecostskarma>True</metatypecostskarma>
@@ -2121,6 +2135,7 @@
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
       <ignorecomplexformlimit>False</ignorecomplexformlimit>
       <noarmorencumbrance>False</noarmorencumbrance>
+      <uncappedarmoraccessorybonuses>False</uncappedarmoraccessorybonuses>
       <esslossreducesmaximumonly>False</esslossreducesmaximumonly>
       <allowskillregrouping>True</allowskillregrouping>
       <metatypecostskarma>True</metatypecostskarma>
@@ -2285,6 +2300,7 @@
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
       <ignorecomplexformlimit>False</ignorecomplexformlimit>
       <noarmorencumbrance>False</noarmorencumbrance>
+      <uncappedarmoraccessorybonuses>False</uncappedarmoraccessorybonuses>
       <esslossreducesmaximumonly>False</esslossreducesmaximumonly>
       <allowskillregrouping>True</allowskillregrouping>
       <metatypecostskarma>True</metatypecostskarma>
@@ -2481,6 +2497,7 @@
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
       <ignorecomplexformlimit>False</ignorecomplexformlimit>
       <noarmorencumbrance>False</noarmorencumbrance>
+      <uncappedarmoraccessorybonuses>False</uncappedarmoraccessorybonuses>
       <esslossreducesmaximumonly>False</esslossreducesmaximumonly>
       <allowskillregrouping>True</allowskillregrouping>
       <metatypecostskarma>True</metatypecostskarma>
@@ -2677,6 +2694,7 @@
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
       <ignorecomplexformlimit>False</ignorecomplexformlimit>
       <noarmorencumbrance>False</noarmorencumbrance>
+      <uncappedarmoraccessorybonuses>False</uncappedarmoraccessorybonuses>
       <esslossreducesmaximumonly>False</esslossreducesmaximumonly>
       <allowskillregrouping>True</allowskillregrouping>
       <metatypecostskarma>True</metatypecostskarma>
@@ -2879,6 +2897,7 @@
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
       <ignorecomplexformlimit>False</ignorecomplexformlimit>
       <noarmorencumbrance>False</noarmorencumbrance>
+      <uncappedarmoraccessorybonuses>False</uncappedarmoraccessorybonuses>
       <esslossreducesmaximumonly>False</esslossreducesmaximumonly>
       <allowskillregrouping>True</allowskillregrouping>
       <metatypecostskarma>True</metatypecostskarma>
@@ -3075,6 +3094,7 @@
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
       <ignorecomplexformlimit>False</ignorecomplexformlimit>
       <noarmorencumbrance>False</noarmorencumbrance>
+      <uncappedarmoraccessorybonuses>False</uncappedarmoraccessorybonuses>
       <esslossreducesmaximumonly>False</esslossreducesmaximumonly>
       <allowskillregrouping>True</allowskillregrouping>
       <metatypecostskarma>True</metatypecostskarma>
@@ -3284,6 +3304,7 @@
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
       <ignorecomplexformlimit>False</ignorecomplexformlimit>
       <noarmorencumbrance>False</noarmorencumbrance>
+      <uncappedarmoraccessorybonuses>False</uncappedarmoraccessorybonuses>
       <esslossreducesmaximumonly>False</esslossreducesmaximumonly>
       <allowskillregrouping>True</allowskillregrouping>
       <metatypecostskarma>True</metatypecostskarma>
@@ -3493,6 +3514,7 @@
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
       <ignorecomplexformlimit>False</ignorecomplexformlimit>
       <noarmorencumbrance>False</noarmorencumbrance>
+      <uncappedarmoraccessorybonuses>False</uncappedarmoraccessorybonuses>
       <esslossreducesmaximumonly>False</esslossreducesmaximumonly>
       <allowskillregrouping>True</allowskillregrouping>
       <metatypecostskarma>True</metatypecostskarma>
@@ -3707,6 +3729,7 @@
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
       <ignorecomplexformlimit>False</ignorecomplexformlimit>
       <noarmorencumbrance>False</noarmorencumbrance>
+      <uncappedarmoraccessorybonuses>False</uncappedarmoraccessorybonuses>
       <esslossreducesmaximumonly>False</esslossreducesmaximumonly>
       <allowskillregrouping>True</allowskillregrouping>
       <metatypecostskarma>True</metatypecostskarma>
@@ -3916,6 +3939,7 @@
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
       <ignorecomplexformlimit>False</ignorecomplexformlimit>
       <noarmorencumbrance>False</noarmorencumbrance>
+      <uncappedarmoraccessorybonuses>False</uncappedarmoraccessorybonuses>
       <esslossreducesmaximumonly>False</esslossreducesmaximumonly>
       <allowskillregrouping>True</allowskillregrouping>
       <metatypecostskarma>True</metatypecostskarma>
@@ -4080,6 +4104,7 @@
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
       <ignorecomplexformlimit>False</ignorecomplexformlimit>
       <noarmorencumbrance>False</noarmorencumbrance>
+      <uncappedarmoraccessorybonuses>False</uncappedarmoraccessorybonuses>
       <esslossreducesmaximumonly>False</esslossreducesmaximumonly>
       <allowskillregrouping>True</allowskillregrouping>
       <metatypecostskarma>True</metatypecostskarma>
@@ -4249,6 +4274,7 @@
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
       <ignorecomplexformlimit>False</ignorecomplexformlimit>
       <noarmorencumbrance>False</noarmorencumbrance>
+      <uncappedarmoraccessorybonuses>False</uncappedarmoraccessorybonuses>
       <esslossreducesmaximumonly>False</esslossreducesmaximumonly>
       <allowskillregrouping>True</allowskillregrouping>
       <metatypecostskarma>True</metatypecostskarma>
@@ -4447,6 +4473,7 @@
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
       <ignorecomplexformlimit>False</ignorecomplexformlimit>
       <noarmorencumbrance>False</noarmorencumbrance>
+      <uncappedarmoraccessorybonuses>False</uncappedarmoraccessorybonuses>
       <esslossreducesmaximumonly>False</esslossreducesmaximumonly>
       <allowskillregrouping>True</allowskillregrouping>
       <metatypecostskarma>True</metatypecostskarma>
@@ -4645,6 +4672,7 @@
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
       <ignorecomplexformlimit>False</ignorecomplexformlimit>
       <noarmorencumbrance>False</noarmorencumbrance>
+      <uncappedarmoraccessorybonuses>False</uncappedarmoraccessorybonuses>
       <esslossreducesmaximumonly>False</esslossreducesmaximumonly>
       <allowskillregrouping>True</allowskillregrouping>
       <metatypecostskarma>True</metatypecostskarma>
@@ -4848,6 +4876,7 @@
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
       <ignorecomplexformlimit>False</ignorecomplexformlimit>
       <noarmorencumbrance>False</noarmorencumbrance>
+      <uncappedarmoraccessorybonuses>False</uncappedarmoraccessorybonuses>
       <esslossreducesmaximumonly>False</esslossreducesmaximumonly>
       <allowskillregrouping>True</allowskillregrouping>
       <metatypecostskarma>True</metatypecostskarma>
@@ -5053,6 +5082,7 @@
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
       <ignorecomplexformlimit>False</ignorecomplexformlimit>
       <noarmorencumbrance>False</noarmorencumbrance>
+      <uncappedarmoraccessorybonuses>False</uncappedarmoraccessorybonuses>
       <esslossreducesmaximumonly>False</esslossreducesmaximumonly>
       <allowskillregrouping>True</allowskillregrouping>
       <metatypecostskarma>True</metatypecostskarma>
@@ -5257,6 +5287,7 @@
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
       <ignorecomplexformlimit>False</ignorecomplexformlimit>
       <noarmorencumbrance>False</noarmorencumbrance>
+      <uncappedarmoraccessorybonuses>False</uncappedarmoraccessorybonuses>
       <esslossreducesmaximumonly>False</esslossreducesmaximumonly>
       <allowskillregrouping>True</allowskillregrouping>
       <metatypecostskarma>True</metatypecostskarma>
@@ -5461,6 +5492,7 @@
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
       <ignorecomplexformlimit>False</ignorecomplexformlimit>
       <noarmorencumbrance>False</noarmorencumbrance>
+      <uncappedarmoraccessorybonuses>False</uncappedarmoraccessorybonuses>
       <esslossreducesmaximumonly>False</esslossreducesmaximumonly>
       <allowskillregrouping>True</allowskillregrouping>
       <metatypecostskarma>True</metatypecostskarma>
@@ -5665,6 +5697,7 @@
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
       <ignorecomplexformlimit>False</ignorecomplexformlimit>
       <noarmorencumbrance>False</noarmorencumbrance>
+      <uncappedarmoraccessorybonuses>False</uncappedarmoraccessorybonuses>
       <esslossreducesmaximumonly>False</esslossreducesmaximumonly>
       <allowskillregrouping>True</allowskillregrouping>
       <metatypecostskarma>True</metatypecostskarma>
@@ -5869,6 +5902,7 @@
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
       <ignorecomplexformlimit>False</ignorecomplexformlimit>
       <noarmorencumbrance>False</noarmorencumbrance>
+      <uncappedarmoraccessorybonuses>False</uncappedarmoraccessorybonuses>
       <esslossreducesmaximumonly>False</esslossreducesmaximumonly>
       <allowskillregrouping>True</allowskillregrouping>
       <metatypecostskarma>True</metatypecostskarma>
@@ -6073,6 +6107,7 @@
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
       <ignorecomplexformlimit>False</ignorecomplexformlimit>
       <noarmorencumbrance>False</noarmorencumbrance>
+      <uncappedarmoraccessorybonuses>False</uncappedarmoraccessorybonuses>
       <esslossreducesmaximumonly>False</esslossreducesmaximumonly>
       <allowskillregrouping>True</allowskillregrouping>
       <metatypecostskarma>True</metatypecostskarma>

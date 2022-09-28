@@ -768,6 +768,10 @@ namespace Chummer
                     OnPropertyChanged(nameof(ArmorEncumbrance));
                     break;
 
+                case nameof(CharacterSettings.UncappedArmorAccessoryBonuses):
+                    this.OnMultiplePropertyChanged(nameof(ArmorEncumbrance), nameof(GetArmorRatingWithImprovement));
+                    break;
+
                 case nameof(CharacterSettings.KarmaQuality):
                 case nameof(CharacterSettings.QualityKarmaLimit):
                     this.OnMultiplePropertyChanged(nameof(PositiveQualityLimitKarma), nameof(PositiveQualityKarma),
@@ -19914,82 +19918,82 @@ namespace Chummer
                     }
                 }
 
-                Armor objHighestArmor = null;
-                int intHighest = 0;
-                int intHighestNoCustomStack = 0;
-                // Run through the list of Armor currently worn and retrieve the highest total Armor rating.
-                // This is used for Custom-Fit armour's stacking.
-                foreach (Armor objArmor in lstArmorsToConsider)
-                {
-                    if (objArmor.ArmorValue.StartsWith('+')
-                        || objArmor.ArmorValue.StartsWith('-'))
-                        continue;
-                    int intCustomStackBonus = 0;
-                    string strArmorName = objArmor.Name;
-                    foreach (Armor objInnerArmor in lstArmorsToConsider)
-                    {
-                        if (objInnerArmor == objArmor)
-                            continue;
-                        if (!objInnerArmor.ArmorOverrideValue.StartsWith('+')
-                            && !objInnerArmor.ArmorOverrideValue.StartsWith('-'))
-                            continue;
-                        if (objInnerArmor.ArmorMods.Any(objMod => objMod.Name == "Custom Fit (Stack)"
-                                                                  && objMod.Extra == strArmorName
-                                                                  && objMod.Equipped))
-                            intCustomStackBonus += objInnerArmor.TotalOverrideArmor;
-                    }
+                int intAverageStrength = Settings.UncappedArmorAccessoryBonuses ? int.MaxValue : STR.TotalValue;
 
-                    int intArmorValue = objArmor.TotalArmor + dicArmorImprovementValues[objArmor].StandardRound();
-                    if (intArmorValue + intCustomStackBonus > intHighest)
-                    {
-                        intHighest = intArmorValue + intCustomStackBonus;
-                        intFromEquippedArmorImprovements
-                            = (dicArmorImprovementValues[objArmor] - decGeneralArmorImprovementValue).StandardRound();
-                        intHighestNoCustomStack = intArmorValue;
-                        objHighestArmor = objArmor;
-                    }
-                }
-
-                int intArmor = objHighestArmor != null
-                    ? intHighestNoCustomStack
-                    : decGeneralArmorImprovementValue.StandardRound();
-
-                // Run through the list of Armor currently worn again and look at armors that start with '+' since they stack with the highest Armor.
-                int intStacking = 0;
+                // Run through the list of Armor currently worn and look at armors that start with '+' since they stack with the highest Armor, but only up to STR.
+                Dictionary<Armor, int> dicArmorStackingValues
+                    = lstArmorsToConsider.ToDictionary(x => x, y => 0);
+                int intNakedStackingValue = 0;
                 foreach (Armor objArmor in lstArmorsToConsider)
                 {
                     if (!objArmor.ArmorValue.StartsWith('+')
                         && !objArmor.ArmorValue.StartsWith('-')
                         && !objArmor.ArmorOverrideValue.StartsWith('+')
-                        && !objArmor.ArmorOverrideValue.StartsWith('-')
-                        || objArmor == objHighestArmor)
+                        && !objArmor.ArmorOverrideValue.StartsWith('-'))
                         continue;
-                    bool blnDoAdd = true;
-                    bool blnCustomFit = false;
-                    if (objHighestArmor != null)
+                    string strCustomFitName = string.Empty;
+                    foreach (ArmorMod objMod in objArmor.ArmorMods)
                     {
-                        foreach (ArmorMod objMod in objArmor.ArmorMods)
+                        if (objMod.Name == "Custom Fit (Stack)" && objMod.Equipped)
                         {
-                            if (objMod.Name == "Custom Fit (Stack)")
-                            {
-                                blnDoAdd = objMod.Extra == objHighestArmor.Name && objMod.Equipped;
-                                blnCustomFit = true;
-                                break;
-                            }
+                            strCustomFitName = objMod.Extra;
+                            break;
                         }
                     }
 
-                    if (blnDoAdd)
+                    foreach (Armor objInnerArmor in lstArmorsToConsider)
                     {
-                        if (!blnCustomFit
-                            && (objArmor.ArmorValue.StartsWith('+') || objArmor.ArmorValue.StartsWith('-')))
-                            intStacking += objArmor.TotalArmor;
-                        else
-                            intStacking += objArmor.TotalOverrideArmor;
+                        if (objInnerArmor == objArmor
+                            || objInnerArmor.ArmorValue.StartsWith('+')
+                            || objInnerArmor.ArmorValue.StartsWith('-'))
+                            continue;
+                        if (string.IsNullOrEmpty(strCustomFitName) || strCustomFitName != objArmor.Name)
+                        {
+                            if (objArmor.ArmorValue.StartsWith('+') || objArmor.ArmorValue.StartsWith('-'))
+                                dicArmorStackingValues[objInnerArmor] += objArmor.TotalArmor;
+                        }
+                        else if (objArmor.ArmorOverrideValue.StartsWith('+') || objArmor.ArmorOverrideValue.StartsWith('-'))
+                        {
+                            dicArmorStackingValues[objInnerArmor] += objArmor.TotalOverrideArmor;
+                        }
+                    }
+
+                    if (intNakedStackingValue < intAverageStrength
+                        && (objArmor.ArmorValue.StartsWith('+') || objArmor.ArmorValue.StartsWith('-')))
+                        intNakedStackingValue
+                            = Math.Min(intNakedStackingValue + objArmor.TotalArmor, intNakedStackingValue);
+                }
+
+                // Run through list of Armor again to cap off any whose stacking bonuses are greater than STR
+                foreach (Armor objArmor in lstArmorsToConsider)
+                {
+                    if (dicArmorStackingValues.TryGetValue(objArmor, out int intStack) && intStack > intAverageStrength)
+                        dicArmorStackingValues[objArmor] = intAverageStrength;
+                }
+
+                // Run through the list of Armor a third time to retrieve the highest total Armor rating.
+                Armor objHighestArmor = null;
+                int intHighest = 0;
+                foreach (Armor objArmor in lstArmorsToConsider)
+                {
+                    if (objArmor.ArmorValue.StartsWith('+')
+                        || objArmor.ArmorValue.StartsWith('-'))
+                        continue;
+
+                    int intArmorValue = objArmor.TotalArmor + dicArmorStackingValues[objArmor] + dicArmorImprovementValues[objArmor].StandardRound();
+                    if (intArmorValue > intHighest)
+                    {
+                        intHighest = intArmorValue;
+                        intFromEquippedArmorImprovements = (dicArmorImprovementValues[objArmor] - decGeneralArmorImprovementValue).StandardRound();
+                        objHighestArmor = objArmor;
                     }
                 }
 
-                return intArmor + intStacking;
+                int intArmor = objHighestArmor != null
+                    ? intHighest
+                    : intNakedStackingValue + decGeneralArmorImprovementValue.StandardRound();
+
+                return intArmor;
             }
         }
 
@@ -20042,82 +20046,84 @@ namespace Chummer
                     }
                 }
 
+                int intAverageStrength = Settings.UncappedArmorAccessoryBonuses
+                    ? int.MaxValue
+                    : await (await GetAttributeAsync("STR", token: token)).GetTotalValueAsync(token);
+                
+                // Run through the list of Armor currently worn and look at armors that start with '+' since they stack with the highest Armor, but only up to STR.
+                Dictionary<Armor, int> dicArmorStackingValues
+                    = lstArmorsToConsider.ToDictionary(x => x, y => 0);
+                int intNakedStackingValue = 0;
+                foreach (Armor objArmor in lstArmorsToConsider)
+                {
+                    if (!objArmor.ArmorValue.StartsWith('+')
+                        && !objArmor.ArmorValue.StartsWith('-') 
+                        && !objArmor.ArmorOverrideValue.StartsWith('+') 
+                        && !objArmor.ArmorOverrideValue.StartsWith('-'))
+                        continue;
+                    string strCustomFitName = string.Empty;
+                    foreach (ArmorMod objMod in objArmor.ArmorMods)
+                    {
+                        if (objMod.Name == "Custom Fit (Stack)" && objMod.Equipped)
+                        {
+                            strCustomFitName = objMod.Extra;
+                            break;
+                        }
+                    }
+
+                    foreach (Armor objInnerArmor in lstArmorsToConsider)
+                    {
+                        if (objInnerArmor == objArmor
+                            || objInnerArmor.ArmorValue.StartsWith('+')
+                            || objInnerArmor.ArmorValue.StartsWith('-'))
+                            continue;
+                        if (string.IsNullOrEmpty(strCustomFitName) || strCustomFitName != objArmor.Name)
+                        {
+                            if (objArmor.ArmorValue.StartsWith('+') || objArmor.ArmorValue.StartsWith('-'))
+                                dicArmorStackingValues[objInnerArmor] += objArmor.TotalArmor;
+                        }
+                        else if (objArmor.ArmorOverrideValue.StartsWith('+') || objArmor.ArmorOverrideValue.StartsWith('-'))
+                        {
+                            dicArmorStackingValues[objInnerArmor] += objArmor.TotalOverrideArmor;
+                        }
+                    }
+
+                    if (intNakedStackingValue < intAverageStrength
+                        && (objArmor.ArmorValue.StartsWith('+') || objArmor.ArmorValue.StartsWith('-')))
+                        intNakedStackingValue
+                            = Math.Min(intNakedStackingValue + objArmor.TotalArmor, intNakedStackingValue);
+                }
+
+                // Run through list of Armor again to cap off any whose stacking bonuses are greater than STR
+                foreach (Armor objArmor in lstArmorsToConsider)
+                {
+                    if (dicArmorStackingValues.TryGetValue(objArmor, out int intStack) && intStack > intAverageStrength)
+                        dicArmorStackingValues[objArmor] = intAverageStrength;
+                }
+
+                // Run through the list of Armor a third time to retrieve the highest total Armor rating.
                 Armor objHighestArmor = null;
                 int intHighest = 0;
-                int intHighestNoCustomStack = 0;
-                // Run through the list of Armor currently worn and retrieve the highest total Armor rating.
-                // This is used for Custom-Fit armour's stacking.
                 foreach (Armor objArmor in lstArmorsToConsider)
                 {
                     if (objArmor.ArmorValue.StartsWith('+')
                         || objArmor.ArmorValue.StartsWith('-'))
                         continue;
-                    int intCustomStackBonus = 0;
-                    string strArmorName = objArmor.Name;
-                    foreach (Armor objInnerArmor in lstArmorsToConsider)
-                    {
-                        if (objInnerArmor == objArmor)
-                            continue;
-                        if (!objInnerArmor.ArmorOverrideValue.StartsWith('+')
-                            && !objInnerArmor.ArmorOverrideValue.StartsWith('-'))
-                            continue;
-                        if (objInnerArmor.ArmorMods.Any(objMod => objMod.Name == "Custom Fit (Stack)"
-                                                                  && objMod.Extra == strArmorName
-                                                                  && objMod.Equipped))
-                            intCustomStackBonus += objInnerArmor.TotalOverrideArmor;
-                    }
 
-                    int intArmorValue = objArmor.TotalArmor + dicArmorImprovementValues[objArmor].StandardRound();
-                    if (intArmorValue + intCustomStackBonus > intHighest)
+                    int intArmorValue = objArmor.TotalArmor + dicArmorStackingValues[objArmor] + dicArmorImprovementValues[objArmor].StandardRound();
+                    if (intArmorValue > intHighest)
                     {
-                        intHighest = intArmorValue + intCustomStackBonus;
-                        intFromEquippedArmorImprovements
-                            = (dicArmorImprovementValues[objArmor] - decGeneralArmorImprovementValue).StandardRound();
-                        intHighestNoCustomStack = intArmorValue;
+                        intHighest = intArmorValue;
+                        intFromEquippedArmorImprovements = (dicArmorImprovementValues[objArmor] - decGeneralArmorImprovementValue).StandardRound();
                         objHighestArmor = objArmor;
                     }
                 }
 
                 int intArmor = objHighestArmor != null
-                    ? intHighestNoCustomStack
-                    : decGeneralArmorImprovementValue.StandardRound();
+                    ? intHighest
+                    : intNakedStackingValue + decGeneralArmorImprovementValue.StandardRound();
 
-                // Run through the list of Armor currently worn again and look at armors that start with '+' since they stack with the highest Armor.
-                int intStacking = 0;
-                foreach (Armor objArmor in lstArmorsToConsider)
-                {
-                    if (!objArmor.ArmorValue.StartsWith('+')
-                        && !objArmor.ArmorValue.StartsWith('-')
-                        && !objArmor.ArmorOverrideValue.StartsWith('+')
-                        && !objArmor.ArmorOverrideValue.StartsWith('-')
-                        || objArmor == objHighestArmor)
-                        continue;
-                    bool blnDoAdd = true;
-                    bool blnCustomFit = false;
-                    if (objHighestArmor != null)
-                    {
-                        foreach (ArmorMod objMod in objArmor.ArmorMods)
-                        {
-                            if (objMod.Name == "Custom Fit (Stack)")
-                            {
-                                blnDoAdd = objMod.Extra == objHighestArmor.Name && objMod.Equipped;
-                                blnCustomFit = true;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (blnDoAdd)
-                    {
-                        if (!blnCustomFit
-                            && (objArmor.ArmorValue.StartsWith('+') || objArmor.ArmorValue.StartsWith('-')))
-                            intStacking += objArmor.TotalArmor;
-                        else
-                            intStacking += objArmor.TotalOverrideArmor;
-                    }
-                }
-
-                return new Tuple<int, int, List<Improvement>>(intArmor + intStacking, intFromEquippedArmorImprovements, lstUsedImprovements);
+                return new Tuple<int, int, List<Improvement>>(intArmor, intFromEquippedArmorImprovements, lstUsedImprovements);
             }
         }
 
@@ -21644,77 +21650,101 @@ namespace Chummer
                     List<Armor> lstArmorsToConsider = Armor.Where(objArmor => objArmor.Equipped).ToList();
                     if (lstArmorsToConsider.Count == 0 || lstArmorsToConsider.All(objArmor => !objArmor.Encumbrance))
                         return 0;
+                    int intAverageStrength = STR.TotalValue;
+                    // Run through the list of Armor currently worn and look at armors that start with '+' since they stack with the highest Armor, but only up to STR.
+                    Dictionary<Armor, Tuple<int, int>> dicArmorStackingValues
+                        = lstArmorsToConsider.ToDictionary(x => x, y => new Tuple<int, int>(0, 0));
+                    int intNakedEncumbranceValue = 0;
+                    foreach (Armor objArmor in lstArmorsToConsider)
+                    {
+                        if (!objArmor.ArmorValue.StartsWith('+')
+                            && !objArmor.ArmorValue.StartsWith('-')
+                            && !objArmor.ArmorOverrideValue.StartsWith('+')
+                            && !objArmor.ArmorOverrideValue.StartsWith('-'))
+                            continue;
+                        string strCustomFitName = string.Empty;
+                        foreach (ArmorMod objMod in objArmor.ArmorMods)
+                        {
+                            if (objMod.Name == "Custom Fit (Stack)" && objMod.Equipped)
+                            {
+                                strCustomFitName = objMod.Extra;
+                                break;
+                            }
+                        }
+
+                        int intLoopStack = objArmor.ArmorValue.StartsWith('+') || objArmor.ArmorValue.StartsWith('-')
+                            ? objArmor.TotalArmor
+                            : 0;
+                        foreach (Armor objInnerArmor in lstArmorsToConsider)
+                        {
+                            if (objInnerArmor == objArmor
+                                || objInnerArmor.ArmorValue.StartsWith('+')
+                                || objInnerArmor.ArmorValue.StartsWith('-'))
+                                continue;
+                            if (string.IsNullOrEmpty(strCustomFitName) || strCustomFitName != objArmor.Name)
+                            {
+                                (int intI, int intJ) = dicArmorStackingValues[objInnerArmor];
+                                if (objArmor.Encumbrance)
+                                    dicArmorStackingValues[objInnerArmor]
+                                        = new Tuple<int, int>(intI + intLoopStack, intJ + intLoopStack);
+                                else
+                                    dicArmorStackingValues[objInnerArmor]
+                                        = new Tuple<int, int>(intI + intLoopStack, intJ);
+                            }
+                            else if (objArmor.ArmorOverrideValue.StartsWith('+') || objArmor.ArmorOverrideValue.StartsWith('-'))
+                            {
+                                int intLoopCustomFitStack = objArmor.TotalOverrideArmor;
+                                (int intI, int intJ) = dicArmorStackingValues[objInnerArmor];
+                                if (objArmor.Encumbrance)
+                                    dicArmorStackingValues[objInnerArmor]
+                                        = new Tuple<int, int>(intI + intLoopCustomFitStack,
+                                                              intJ + intLoopCustomFitStack);
+                                else
+                                    dicArmorStackingValues[objInnerArmor] = new Tuple<int, int>(intI + intLoopCustomFitStack, intJ);
+                            }
+                        }
+                        
+                        if (objArmor.Encumbrance)
+                            intNakedEncumbranceValue += intLoopStack;
+                    }
+
+                    // Run through list of Armor again to cap off any whose stacking bonuses are greater than STR
+                    if (!Settings.UncappedArmorAccessoryBonuses)
+                    {
+                        foreach (Armor objArmor in lstArmorsToConsider)
+                        {
+                            if (dicArmorStackingValues.TryGetValue(objArmor, out var tupStack)
+                                && tupStack.Item1 > intAverageStrength)
+                                dicArmorStackingValues[objArmor]
+                                    = new Tuple<int, int>(intAverageStrength, tupStack.Item2);
+                        }
+                    }
+
                     Armor objHighestArmor = null;
                     int intHighest = 0;
-                    // Run through the list of Armor currently worn and retrieve the highest total Armor rating.
-                    // This is used for Custom-Fit armour's stacking.
+                    int intLowestEncumbrance = int.MaxValue;
+                    // Run through the list of Armor a third time to retrieve the highest total Armor rating.
                     foreach (Armor objArmor in lstArmorsToConsider)
                     {
                         if (objArmor.ArmorValue.StartsWith('+')
                             || objArmor.ArmorValue.StartsWith('-'))
                             continue;
-                        int intLoopTotal = objArmor.TotalArmor;
-                        string strArmorName = objArmor.Name;
-                        foreach (Armor objInnerArmor in lstArmorsToConsider)
-                        {
-                            if (objInnerArmor == objArmor)
-                                continue;
-                            if (!objInnerArmor.ArmorOverrideValue.StartsWith('+')
-                                && !objInnerArmor.ArmorOverrideValue.StartsWith('-'))
-                                continue;
-                            if (objInnerArmor.ArmorMods.Any(objMod => objMod.Name == "Custom Fit (Stack)"
-                                                                      && objMod.Extra == strArmorName
-                                                                      && objMod.Equipped))
-                                intLoopTotal += objInnerArmor.TotalOverrideArmor;
-                        }
-
-                        if (intLoopTotal > intHighest)
+                        (int intLoopStack, int intLoopEncumbrance) = dicArmorStackingValues[objArmor];
+                        int intLoopTotal = objArmor.TotalArmor + intLoopStack;
+                        if (intLoopTotal >= intHighest && (intLoopTotal > intHighest || intLoopEncumbrance < intLowestEncumbrance))
                         {
                             intHighest = intLoopTotal;
+                            intLowestEncumbrance = intLoopEncumbrance;
                             objHighestArmor = objArmor;
                         }
                     }
 
-                    int intTotalA = 0;
-
-                    foreach (Armor objArmor in lstArmorsToConsider)
-                    {
-                        if (!objArmor.Encumbrance
-                            || (!objArmor.ArmorValue.StartsWith('+')
-                                && !objArmor.ArmorValue.StartsWith('-')
-                                && !objArmor.ArmorOverrideValue.StartsWith('+')
-                                && !objArmor.ArmorOverrideValue.StartsWith('-'))
-                            || objArmor == objHighestArmor)
-                            continue;
-                        bool blnDoAdd = true;
-                        bool blnCustomFit = false;
-                        if (objHighestArmor != null)
-                        {
-                            foreach (ArmorMod objMod in objArmor.ArmorMods)
-                            {
-                                if (objMod.Name == "Custom Fit (Stack)")
-                                {
-                                    blnDoAdd = objMod.Extra == objHighestArmor.Name && objMod.Equipped;
-                                    blnCustomFit = true;
-                                    break;
-                                }
-                            }
-                        }
-
-                        if (blnDoAdd)
-                        {
-                            if (!blnCustomFit && (objArmor.ArmorValue.StartsWith('+')
-                                                  || objArmor.ArmorValue.StartsWith('-')))
-                                intTotalA += objArmor.TotalArmor;
-                            else
-                                intTotalA += objArmor.TotalOverrideArmor;
-                        }
-                    }
+                    if (objHighestArmor == null)
+                        intLowestEncumbrance = intNakedEncumbranceValue;
 
                     // calculate armor encumbrance
-                    int intSTRTotalValue = STR.TotalValue;
-                    if (intTotalA > intSTRTotalValue + 1)
-                        return (intSTRTotalValue - intTotalA) / 2; // a negative number is expected
+                    if (intLowestEncumbrance > intAverageStrength + 1)
+                        return (intAverageStrength - intLowestEncumbrance) / 2; // a negative number is expected
                     return 0;
                 }
             }
