@@ -1101,17 +1101,16 @@ namespace Chummer
 
                                 // Condition Monitor.
                                 await ProcessCharacterConditionMonitorBoxDisplays(
-                                    panPhysicalCM, CharacterObject.PhysicalCM,
-                                    CharacterObject.CMThreshold,
-                                    CharacterObject.PhysicalCMThresholdOffset,
-                                    CharacterObject.CMOverflow,
-                                    chkPhysicalCM_CheckedChanged, true,
+                                    panPhysicalCM, await CharacterObject.GetPhysicalCMAsync(GenericToken),
+                                    await CharacterObject.GetCMThresholdAsync(GenericToken),
+                                    await CharacterObject.GetPhysicalCMThresholdOffsetAsync(GenericToken),
+                                    await CharacterObject.GetCMOverflowAsync(token), chkPhysicalCM_CheckedChanged, true,
                                     CharacterObject.PhysicalCMFilled, GenericToken);
-                                await ProcessCharacterConditionMonitorBoxDisplays(panStunCM, CharacterObject.StunCM,
-                                    CharacterObject.CMThreshold,
-                                    CharacterObject.StunCMThresholdOffset, 0,
-                                    chkStunCM_CheckedChanged,
-                                    true, CharacterObject.StunCMFilled, GenericToken);
+                                await ProcessCharacterConditionMonitorBoxDisplays(
+                                    panStunCM, await CharacterObject.GetStunCMAsync(GenericToken),
+                                    await CharacterObject.GetCMThresholdAsync(GenericToken),
+                                    await CharacterObject.GetStunCMThresholdOffsetAsync(GenericToken), 0,
+                                    chkStunCM_CheckedChanged, true, CharacterObject.StunCMFilled, GenericToken);
 
                                 await RequestCharacterUpdate();
                                 // Directly awaiting here so that we can properly unset the dirty flag after the update
@@ -1784,38 +1783,38 @@ namespace Chummer
                     case nameof(Character.CMOverflow):
                     case nameof(Character.CMThreshold):
                     case nameof(Character.CMThresholdOffsets):
-                        await ProcessCharacterConditionMonitorBoxDisplays(panPhysicalCM, CharacterObject.PhysicalCM,
-                                                                          CharacterObject.CMThreshold,
-                                                                          CharacterObject.PhysicalCMThresholdOffset,
-                                                                          CharacterObject.CMOverflow,
-                                                                          chkPhysicalCM_CheckedChanged, true,
-                                                                          CharacterObject.PhysicalCMFilled, GenericToken);
-                        await ProcessCharacterConditionMonitorBoxDisplays(panStunCM, CharacterObject.StunCM,
-                                                                          CharacterObject.CMThreshold,
-                                                                          CharacterObject.StunCMThresholdOffset, 0,
-                                                                          chkStunCM_CheckedChanged,
-                                                                          true, CharacterObject.StunCMFilled, GenericToken);
+                        await ProcessCharacterConditionMonitorBoxDisplays(
+                            panPhysicalCM, await CharacterObject.GetPhysicalCMAsync(GenericToken),
+                            await CharacterObject.GetCMThresholdAsync(GenericToken),
+                            await CharacterObject.GetPhysicalCMThresholdOffsetAsync(GenericToken),
+                            await CharacterObject.GetCMOverflowAsync(token), chkPhysicalCM_CheckedChanged, true,
+                            CharacterObject.PhysicalCMFilled, GenericToken);
+                        await ProcessCharacterConditionMonitorBoxDisplays(
+                            panStunCM, await CharacterObject.GetStunCMAsync(GenericToken),
+                            await CharacterObject.GetCMThresholdAsync(GenericToken),
+                            await CharacterObject.GetStunCMThresholdOffsetAsync(GenericToken), 0,
+                            chkStunCM_CheckedChanged, true, CharacterObject.StunCMFilled, GenericToken);
                         break;
 
                     case nameof(Character.StunCM):
                     case nameof(Character.StunCMFilled):
                     case nameof(Character.StunCMThresholdOffset):
-                        await ProcessCharacterConditionMonitorBoxDisplays(panStunCM, CharacterObject.StunCM,
-                                                                          CharacterObject.CMThreshold,
-                                                                          CharacterObject.StunCMThresholdOffset, 0,
-                                                                          chkStunCM_CheckedChanged,
-                                                                          true, CharacterObject.StunCMFilled, GenericToken);
+                        await ProcessCharacterConditionMonitorBoxDisplays(
+                            panStunCM, await CharacterObject.GetStunCMAsync(GenericToken),
+                            await CharacterObject.GetCMThresholdAsync(GenericToken),
+                            await CharacterObject.GetStunCMThresholdOffsetAsync(GenericToken), 0,
+                            chkStunCM_CheckedChanged, true, CharacterObject.StunCMFilled, GenericToken);
                         break;
 
                     case nameof(Character.PhysicalCM):
                     case nameof(Character.PhysicalCMFilled):
                     case nameof(Character.PhysicalCMThresholdOffset):
-                        await ProcessCharacterConditionMonitorBoxDisplays(panPhysicalCM, CharacterObject.PhysicalCM,
-                                                                          CharacterObject.CMThreshold,
-                                                                          CharacterObject.PhysicalCMThresholdOffset,
-                                                                          CharacterObject.CMOverflow,
-                                                                          chkPhysicalCM_CheckedChanged, true,
-                                                                          CharacterObject.PhysicalCMFilled, GenericToken);
+                        await ProcessCharacterConditionMonitorBoxDisplays(
+                            panPhysicalCM, await CharacterObject.GetPhysicalCMAsync(GenericToken),
+                            await CharacterObject.GetCMThresholdAsync(GenericToken),
+                            await CharacterObject.GetPhysicalCMThresholdOffsetAsync(GenericToken),
+                            await CharacterObject.GetCMOverflowAsync(token), chkPhysicalCM_CheckedChanged, true,
+                            CharacterObject.PhysicalCMFilled, GenericToken);
                         break;
 
                     case nameof(Character.MAGEnabled):

@@ -4198,14 +4198,14 @@ namespace Chummer
                             await objWriter.WriteCommentAsync(
                                 "these values are not loaded and only stored here for third parties, who parse this files (to not have to calculate them themselves)");
                             await objWriter.WriteElementStringAsync("physicalcm",
-                                PhysicalCM.ToString(GlobalSettings.InvariantCultureInfo), token: innerToken);
+                                                                    (await GetPhysicalCMAsync(innerToken)).ToString(GlobalSettings.InvariantCultureInfo), token: innerToken);
                             await objWriter.WriteElementStringAsync("physicalcmthresholdoffset",
-                                PhysicalCMThresholdOffset.ToString(GlobalSettings.InvariantCultureInfo), token: innerToken);
+                                                                    (await GetPhysicalCMThresholdOffsetAsync(innerToken)).ToString(GlobalSettings.InvariantCultureInfo), token: innerToken);
                             await objWriter.WriteElementStringAsync("physicalcmoverflow",
-                                CMOverflow.ToString(GlobalSettings.InvariantCultureInfo), token: innerToken);
-                            await objWriter.WriteElementStringAsync("stuncm", StunCM.ToString(GlobalSettings.InvariantCultureInfo), token: innerToken);
+                                                                    (await GetCMOverflowAsync(innerToken)).ToString(GlobalSettings.InvariantCultureInfo), token: innerToken);
+                            await objWriter.WriteElementStringAsync("stuncm", (await GetStunCMAsync(innerToken)).ToString(GlobalSettings.InvariantCultureInfo), token: innerToken);
                             await objWriter.WriteElementStringAsync("stuncmthresholdoffset",
-                                StunCMThresholdOffset.ToString(GlobalSettings.InvariantCultureInfo), token: innerToken);
+                                                                    (await GetStunCMThresholdOffsetAsync(innerToken)).ToString(GlobalSettings.InvariantCultureInfo), token: innerToken);
                             await objWriter.WriteEndElementAsync();
                             // </calculatedValues>
 
@@ -8005,14 +8005,22 @@ namespace Chummer
                             RefreshBlackMarketDiscounts();
                             // Refresh Dealer Connection discounts
                             RefreshDealerConnectionDiscounts();
-                            // Refresh permanent attribute changes due to essence loss
                             if (blnSync)
-                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                            {
+                                // ReSharper disable MethodHasAsyncOverloadWithCancellation
+                                // Refresh permanent attribute changes due to essence loss
                                 RefreshEssenceLossImprovements();
+                                // Refresh dicepool modifiers due to filled condition monitor boxes
+                                RefreshWoundPenalties();
+                                // ReSharper restore MethodHasAsyncOverloadWithCancellation
+                            }
                             else
+                            {
+                                // Refresh permanent attribute changes due to essence loss
                                 await RefreshEssenceLossImprovementsAsync(token).ConfigureAwait(false);
-                            // Refresh dicepool modifiers due to filled condition monitor boxes
-                            RefreshWoundPenalties();
+                                // Refresh dicepool modifiers due to filled condition monitor boxes
+                                await RefreshWoundPenaltiesAsync(token).ConfigureAwait(false);
+                            }
                             // Refresh dicepool modifiers due to sustained spells
                             RefreshSustainingPenalties();
                             // Refresh encumbrance penalties
@@ -8497,17 +8505,17 @@ namespace Chummer
                                                                               + intFallingArmor)
                                                             .ToString(objCulture), token: token);
 
-                    bool blnIsAI = IsAI;
+                    bool blnIsAI = await GetIsAIAsync(token);
                     bool blnPhysicalTrackIsCore = blnIsAI && !(HomeNode is Vehicle);
                     // Condition Monitors.
                     // <physicalcm />
-                    int intPhysicalCM = PhysicalCM;
+                    int intPhysicalCM = await GetPhysicalCMAsync(token);
                     await objWriter.WriteElementStringAsync("physicalcm", intPhysicalCM.ToString(objCulture), token: token);
                     await objWriter.WriteElementStringAsync("physicalcmiscorecm",
                                                             blnPhysicalTrackIsCore.ToString(
                                                                 GlobalSettings.InvariantCultureInfo), token: token);
                     // <stuncm />
-                    int intStunCM = StunCM;
+                    int intStunCM = await GetStunCMAsync(token);
                     await objWriter.WriteElementStringAsync("stuncm", intStunCM.ToString(objCulture), token: token);
                     await objWriter.WriteElementStringAsync("stuncmismatrixcm",
                                                             blnIsAI.ToString(GlobalSettings.InvariantCultureInfo), token: token);
@@ -8519,17 +8527,17 @@ namespace Chummer
                     await objWriter.WriteElementStringAsync("stuncmfilled", StunCMFilled.ToString(objCulture), token: token);
 
                     // <cmthreshold>
-                    await objWriter.WriteElementStringAsync("cmthreshold", CMThreshold.ToString(objCulture), token: token);
+                    await objWriter.WriteElementStringAsync("cmthreshold", (await GetCMThresholdAsync(token)).ToString(objCulture), token: token);
                     // <cmthresholdoffset>
                     await objWriter.WriteElementStringAsync("physicalcmthresholdoffset",
-                                                            Math.Min(PhysicalCMThresholdOffset, intPhysicalCM)
+                                                            Math.Min(await GetPhysicalCMThresholdOffsetAsync(token), intPhysicalCM)
                                                                 .ToString(objCulture), token: token);
                     // <cmthresholdoffset>
                     await objWriter.WriteElementStringAsync("stuncmthresholdoffset",
-                                                            Math.Min(StunCMThresholdOffset, intStunCM)
+                                                            Math.Min(await GetStunCMThresholdOffsetAsync(token), intStunCM)
                                                                 .ToString(objCulture), token: token);
                     // <cmoverflow>
-                    await objWriter.WriteElementStringAsync("cmoverflow", CMOverflow.ToString(objCulture), token: token);
+                    await objWriter.WriteElementStringAsync("cmoverflow", (await GetCMOverflowAsync(token)).ToString(objCulture), token: token);
 
                     // <psyche>
                     await objWriter.WriteElementStringAsync(
@@ -16947,7 +16955,18 @@ namespace Chummer
             get
             {
                 using (EnterReadLock.Enter(LockObject))
-                    return DEPEnabled && BOD.MetatypeMaximum == 0;
+                    return DEPEnabled && BOD?.MetatypeMaximum == 0;
+            }
+        }
+
+        public async ValueTask<bool> GetIsAIAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+            {
+                if (!await GetDEPEnabledAsync(token))
+                    return false;
+                CharacterAttrib objBody = await GetAttributeAsync("BOD", token: token);
+                return objBody == null || await objBody.GetMetatypeMaximumAsync(token) == 0;
             }
         }
 
@@ -22130,6 +22149,41 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Number of Physical Condition Monitor boxes.
+        /// </summary>
+        public async ValueTask<int> GetPhysicalCMAsync(CancellationToken token = default)
+        {
+            int intCMPhysical = 8;
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+            {
+                if (await GetIsAIAsync(token))
+                {
+                    if (HomeNode is Vehicle objVehicle)
+                    {
+                        return objVehicle.PhysicalCM;
+                    }
+
+                    CharacterAttrib objDepth = await GetAttributeAsync("BOD", token: token);
+                    if (objDepth != null)
+                        // A.I.s use Core Condition Monitors instead of Physical Condition Monitors if they are not in a vehicle or drone.
+                        intCMPhysical += (await objDepth.GetTotalValueAsync(token) + 1) / 2;
+                }
+                else
+                {
+                    CharacterAttrib objBody = await GetAttributeAsync("BOD", token: token);
+                    if (objBody != null)
+                        intCMPhysical += (await objBody.GetTotalValueAsync(token) + 1) / 2;
+                }
+
+                // Include Improvements in the Condition Monitor values.
+                intCMPhysical += (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.PhysicalCM, token: token))
+                                                   .StandardRound();
+            }
+
+            return intCMPhysical;
+        }
+
         public string PhysicalCMLabelText
         {
             get
@@ -22231,6 +22285,37 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Number of Stun Condition Monitor boxes.
+        /// </summary>
+        public async ValueTask<int> GetStunCMAsync(CancellationToken token = default)
+        {
+            int intCMStun = 0;
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+            {
+                if (await GetIsAIAsync(token))
+                {
+                    // A.I. do not have a Stun Condition Monitor, but they do have a Matrix Condition Monitor if they are in their home node.
+                    if (HomeNode != null)
+                    {
+                        intCMStun = HomeNode.MatrixCM;
+                    }
+                }
+                else
+                {
+                    intCMStun = 8;
+                    CharacterAttrib objWillpower = await GetAttributeAsync("WIL", token: token);
+                    if (objWillpower != null)
+                        intCMStun += (await objWillpower.GetTotalValueAsync(token) + 1) / 2;
+                    // Include Improvements in the Condition Monitor values.
+                    intCMStun += (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.StunCM, token: token))
+                                                   .StandardRound();
+                }
+            }
+
+            return intCMStun;
+        }
+
         public bool StunCMVisible
         {
             get
@@ -22316,6 +22401,19 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Number of Condition Monitor boxes are needed to reach a Condition Monitor Threshold.
+        /// </summary>
+        public async ValueTask<int> GetCMThresholdAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+            {
+                int intCMThreshold = 3 + (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.CMThreshold, token: token))
+                                                           .StandardRound();
+                return intCMThreshold;
+            }
+        }
+
+        /// <summary>
         /// Returns PhysicalCMThresholdOffset and StunCMThresholdOffset as a pair.
         /// </summary>
         public Tuple<int, int> CMThresholdOffsets
@@ -22325,6 +22423,15 @@ namespace Chummer
                 using (EnterReadLock.Enter(LockObject))
                     return new Tuple<int, int>(PhysicalCMThresholdOffset, StunCMThresholdOffset);
             }
+        }
+
+        /// <summary>
+        /// Returns PhysicalCMThresholdOffset and StunCMThresholdOffset as a pair.
+        /// </summary>
+        public async ValueTask<Tuple<int, int>> GetCMThresholdOffsetsAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return new Tuple<int, int>(await GetPhysicalCMThresholdOffsetAsync(token), await GetStunCMThresholdOffsetAsync(token));
         }
 
         /// <summary>
@@ -22358,6 +22465,37 @@ namespace Chummer
                                                          Math.Max(StunCMFilled - CMThreshold - decCMThresholdOffset, 0);
                     return Math.Max(decCMThresholdOffset, decCMSharedThresholdOffset).StandardRound();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Number of additional boxes appear before the first Physical Condition Monitor penalty.
+        /// </summary>
+        public async ValueTask<int> GetPhysicalCMThresholdOffsetAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+            {
+                if ((await ImprovementManager
+                        .GetCachedImprovementListForValueOfAsync(this, Improvement.ImprovementType.IgnoreCMPenaltyPhysical, token: token))
+                    .Count
+                    > 0)
+                    return int.MaxValue;
+                if (await GetIsAIAsync(token) || (await ImprovementManager
+                        .GetCachedImprovementListForValueOfAsync(
+                            this, Improvement.ImprovementType.IgnoreCMPenaltyStun, token: token))
+                            .Count > 0)
+                    return (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.CMThresholdOffset, token: token) +
+                            await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.CMSharedThresholdOffset, token: token))
+                        .StandardRound();
+
+                decimal decCMThresholdOffset =
+                    await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.CMThresholdOffset, token: token);
+                // We're subtracting CM Threshold from the amount of CM boxes filled because you only need to ignore wounds up to your first wound threshold, not all wounds
+                decimal decCMSharedThresholdOffset = decCMThresholdOffset +
+                                                     await ImprovementManager.ValueOfAsync(this,
+                                                         Improvement.ImprovementType.CMSharedThresholdOffset, token: token) -
+                                                     Math.Max(StunCMFilled - await GetCMThresholdAsync(token) - decCMThresholdOffset, 0);
+                return Math.Max(decCMThresholdOffset, decCMSharedThresholdOffset).StandardRound();
             }
         }
 
@@ -22399,6 +22537,40 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Number of additional boxes appear before the first Stun Condition Monitor penalty.
+        /// </summary>
+        public async ValueTask<int> GetStunCMThresholdOffsetAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+            {
+                // A.I.s don't get wound penalties from Matrix damage
+                if (await GetIsAIAsync(token))
+                    return int.MaxValue;
+                if ((await ImprovementManager
+                        .GetCachedImprovementListForValueOfAsync(this, Improvement.ImprovementType.IgnoreCMPenaltyStun, token: token))
+                    .Count > 0)
+                    return int.MaxValue;
+                if ((await ImprovementManager
+                        .GetCachedImprovementListForValueOfAsync(this, Improvement.ImprovementType.IgnoreCMPenaltyPhysical, token: token))
+                    .Count
+                    > 0)
+                    return (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.CMThresholdOffset, token: token) +
+                            await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.CMSharedThresholdOffset, token: token))
+                        .StandardRound();
+
+                decimal decCMThresholdOffset =
+                    await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.CMThresholdOffset, token: token);
+                // We're subtracting CM Threshold from the amount of CM boxes filled because you only need to ignore wounds up to your first wound threshold, not all wounds
+                decimal decCMSharedThresholdOffset = decCMThresholdOffset +
+                                                     await ImprovementManager.ValueOfAsync(this,
+                                                         Improvement.ImprovementType.CMSharedThresholdOffset, token: token) -
+                                                     Math.Max(PhysicalCMFilled - await GetCMThresholdAsync(token) - decCMThresholdOffset,
+                                                              0);
+                return Math.Max(decCMThresholdOffset, decCMSharedThresholdOffset).StandardRound();
+            }
+        }
+
+        /// <summary>
         /// Number of Overflow Condition Monitor boxes.
         /// </summary>
         public int CMOverflow
@@ -22419,6 +22591,27 @@ namespace Chummer
 
                     return intCMOverflow;
                 }
+            }
+        }
+
+        /// <summary>
+        /// Number of Overflow Condition Monitor boxes.
+        /// </summary>
+        public async ValueTask<int> GetCMOverflowAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+            {
+                int intCMOverflow = 0;
+                // A.I. do not have an Overflow Condition Monitor.
+                if (!await GetIsAIAsync(token))
+                {
+                    // Characters get a number of overflow boxes equal to their BOD (plus any Improvements). One more boxes is added to mark the character as dead.
+                    intCMOverflow = await (await GetAttributeAsync("BOD", token: token)).GetTotalValueAsync(token) +
+                                    (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.CMOverflow, token: token))
+                                                      .StandardRound() + 1;
+                }
+
+                return intCMOverflow;
             }
         }
 
@@ -28659,6 +28852,39 @@ namespace Chummer
             }
         }
 
+        public async ValueTask RefreshWoundPenaltiesAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
+            try
+            {
+                // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
+                if (IsLoading)
+                    return;
+                int intPhysicalCMFilled = Math.Min(PhysicalCMFilled, await GetPhysicalCMAsync(token));
+                int intStunCMFilled = Math.Min(StunCMFilled, await GetStunCMAsync(token));
+                int intCMThreshold = CMThreshold;
+                int intStunCMPenalty = (await ImprovementManager
+                        .GetCachedImprovementListForValueOfAsync(
+                            this, Improvement.ImprovementType.IgnoreCMPenaltyStun, token: token))
+                                       .Count > 0
+                    ? 0
+                    : Math.Min(0, await GetStunCMThresholdOffsetAsync(token) - intStunCMFilled) / intCMThreshold;
+                int intPhysicalCMPenalty = (await ImprovementManager
+                        .GetCachedImprovementListForValueOfAsync(
+                            this, Improvement.ImprovementType.IgnoreCMPenaltyPhysical, token: token))
+                                           .Count > 0
+                    ? 0
+                    : Math.Min(0, await GetPhysicalCMThresholdOffsetAsync(token) - intPhysicalCMFilled) / intCMThreshold;
+                _intWoundModifier = intPhysicalCMPenalty + intStunCMPenalty;
+                if (Settings.DoEncumbrancePenaltyWoundModifier && Encumbrance != 0)
+                    _intWoundModifier += Encumbrance * Settings.EncumbrancePenaltyWoundModifier;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync();
+            }
+        }
+
         private int _intWoundModifier;
 
         /// <summary>
@@ -32480,14 +32706,22 @@ namespace Chummer
                             RefreshBlackMarketDiscounts();
                             // Refresh Dealer Connection discounts
                             RefreshDealerConnectionDiscounts();
-                            // Refresh permanent attribute changes due to essence loss
                             if (blnSync)
-                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                            {
+                                // ReSharper disable MethodHasAsyncOverloadWithCancellation
+                                // Refresh permanent attribute changes due to essence loss
                                 RefreshEssenceLossImprovements();
+                                // Refresh dicepool modifiers due to filled condition monitor boxes
+                                RefreshWoundPenalties();
+                                // ReSharper restore MethodHasAsyncOverloadWithCancellation
+                            }
                             else
-                                await RefreshEssenceLossImprovementsAsync(token);
-                            // Refresh dicepool modifiers due to filled condition monitor boxes
-                            RefreshWoundPenalties();
+                            {
+                                // Refresh permanent attribute changes due to essence loss
+                                await RefreshEssenceLossImprovementsAsync(token).ConfigureAwait(false);
+                                // Refresh dicepool modifiers due to filled condition monitor boxes
+                                await RefreshWoundPenaltiesAsync(token).ConfigureAwait(false);
+                            }
                             // Refresh encumbrance penalties
                             RefreshEncumbrance();
                             RefreshArmorEncumbrance();
