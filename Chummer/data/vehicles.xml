@@ -11255,7 +11255,7 @@
       <rating>body</rating>
       <slots>Rating * 2</slots>
       <bonus>
-        <armor>Rating</armor>
+        <armor>+Rating</armor>
       </bonus>
     </mod>
     <mod>
@@ -11269,7 +11269,7 @@
       <rating>body</rating>
       <slots>Rating * 3</slots>
       <bonus>
-        <armor>Rating</armor>
+        <armor>+Rating</armor>
       </bonus>
     </mod>
     <mod>

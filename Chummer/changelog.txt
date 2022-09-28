@@ -4,6 +4,9 @@ Application Changes:
 - The checkboxes for the list to set what cyberware and bioware grades are allowed at character creation no longer appears weird in dark mode on machines running Windows 10 or earlier.
 - Fixed various display issues with custom rating names for vehicle mods.
 
+Data Changes:
+- Concealed and Regular vehicle armor mods now properly add to their parent's Armor. Fixes #4925.
+
 Build 223
 Application Changes:
 - Characters can now be opened up directly for printing (including exporting to PDF) or for exporting without needing to fully open a character for editing.
