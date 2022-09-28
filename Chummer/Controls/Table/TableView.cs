@@ -701,7 +701,7 @@ namespace Chummer.UI.Table
                             IList<TableCell> cells = _lstCells[i].cells;
                             for (int j = intOldCount; j < intNewCount; j++)
                             {
-                                TableCell cell = CreateCell(_lstItems[j], column);
+                                TableCell cell = CreateCell(value[j], column);
                                 cells.Add(cell);
                                 _lstRowCells[j].Controls.Add(cell);
                             }
@@ -732,7 +732,7 @@ namespace Chummer.UI.Table
                     }
                     for (int i = 0; i < intLimit; i++)
                     {
-                        UpdateRow(i, _lstItems[i]);
+                        UpdateRow(i, value[i]);
                     }
                     Sort(false);
                     DoFilter();
