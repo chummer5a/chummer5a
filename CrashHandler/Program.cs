@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
+using Chummer;
 
 [assembly: CLSCompliant(true)]
 
@@ -54,6 +55,13 @@ namespace CrashHandler
         [STAThread]
         private static void Main(string[] args)
         {
+            Chummer.Program.SetProcessDPI(GlobalSettings.DpiScalingMethodSetting);
+            if (Chummer.Program.IsMainThread)
+                Chummer.Program.SetThreadDPI(GlobalSettings.DpiScalingMethodSetting);
+
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+
             for (int i = 0; i < args.Length - 1; ++i)
             {
                 if (s_DictionaryFunctions.TryGetValue(args[i], out Action<string[]> actCachedAction))
@@ -62,10 +70,6 @@ namespace CrashHandler
                     break;
                 }
             }
-
-            //Application.EnableVisualStyles();
-            //Application.SetCompatibleTextRenderingDefault(false);
-            //Application.Run(new frmCrashReporter());
         }
     }
 }

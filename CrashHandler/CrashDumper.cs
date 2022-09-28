@@ -27,9 +27,9 @@ using System.IO.Compression;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Web.Script.Serialization;
 using Chummer;
 using Microsoft.Win32.SafeHandles;
+using Newtonsoft.Json;
 
 namespace CrashHandler
 {
@@ -59,19 +59,19 @@ namespace CrashHandler
         /// <summary>
         /// Start up the crash dump collector from a Base64-encoded string containing the serialized info for the crash.
         /// </summary>
-        /// <param name="strBase64Json">String path of the text file that contains our JSON package.</param>
-        public CrashDumper(string strBase64Json)
+        /// <param name="strJsonPath">String path of the text file that contains our JSON package.</param>
+        public CrashDumper(string strJsonPath)
         {
+            if (!Deserialize(strJsonPath, out _procId, out _dicFilePaths, out _lstPretendFilePaths, out _attributes,
+                             out _threadId, out _exceptionPrt))
+            {
+                throw new ArgumentException("Could not deserialize");
+            }
+
             CrashLogWriter = new StreamWriter(CrashDumpLogName, false, Encoding.UTF8);
 
             CrashLogWriter.WriteLine("This file contains information on a crash report for Chummer5A.");
             CrashLogWriter.WriteLine("You can safely delete this file, but a developer might want to look at it.");
-
-            if (!Deserialize(strBase64Json, out _procId, out _dicFilePaths, out _lstPretendFilePaths, out _attributes,
-                out _threadId, out _exceptionPrt))
-            {
-                throw new ArgumentException("Could not deserialize");
-            }
 
             if (_lstPretendFilePaths.TryGetValue("exception.txt", out string exception))
             {
@@ -317,22 +317,25 @@ namespace CrashHandler
             }
         }
 
-        private static bool Deserialize(string strBase64json,
+        private static bool Deserialize(string strJsonPath,
             out int intProcessId,
-            out ConcurrentDictionary<string, string> dicFiles,
+            out Dictionary<string, string> dicFiles,
             out Dictionary<string, string> dicPretendFiles,
             out Dictionary<string, string> dicAttributes,
             out uint uintThreadId,
             out IntPtr ptrException)
         {
-            string json = Encoding.UTF8.GetString(File.ReadAllBytes(strBase64json));
-            byte[] tempBytes = Convert.FromBase64String(json);
-            object obj = new JavaScriptSerializer().DeserializeObject(Encoding.UTF8.GetString(tempBytes));
+            Dictionary<string, object> parts;
 
-            Dictionary<string, object> parts = obj as Dictionary<string, object>;
+            using (StreamReader objStreamReader = new StreamReader(strJsonPath))
+            using (JsonReader objJsonReader = new JsonTextReader(objStreamReader))
+            {
+                parts = JsonSerializer.CreateDefault().Deserialize<Dictionary<string, object>>(objJsonReader);
+            }
+            
             if (parts?["_uintProcessId"] is int pid)
             {
-                dicFiles = parts["_dicCapturedFiles"] as ConcurrentDictionary<string, string>;
+                dicFiles = parts["_dicCapturedFiles"] as Dictionary<string, string>;
                 dicAttributes =
                     ((Dictionary<string, object>) parts["_dicAttributes"]).ToDictionary(x => x.Key,
                         y => y.Value.ToString());

@@ -26,10 +26,9 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Web.Script.Serialization;
 using System.Windows.Forms;
 using Microsoft.Win32;
+using Newtonsoft.Json;
 using NLog;
 
 namespace Chummer.Backend
@@ -137,7 +136,7 @@ namespace Chummer.Backend
 
             // JavaScriptSerializer requires that all properties it accesses be public.
             // ReSharper disable once MemberCanBePrivate.Local
-            public readonly ConcurrentDictionary<string, string> _dicCapturedFiles = new ConcurrentDictionary<string, string>();
+            public readonly Dictionary<string, string> _dicCapturedFiles = new Dictionary<string, string>();
 
             // ReSharper disable once MemberCanBePrivate.Local
             public readonly Dictionary<string, string> _dicPretendFiles;
@@ -154,14 +153,23 @@ namespace Chummer.Backend
             // ReSharper disable once MemberCanBePrivate.Local
             public readonly IntPtr _ptrExceptionInfo = Marshal.GetExceptionPointers();
 
-            public string SerializeBase64()
+            public void SerializeJson(JsonWriter objWriter)
             {
-                string altson = new JavaScriptSerializer().Serialize(this);
-                return Convert.ToBase64String(Encoding.UTF8.GetBytes(altson));
+                JsonSerializer.CreateDefault().Serialize(objWriter, this);
             }
 
-            public void AddFile(string strFileName)
+            internal void AddFile(string strFileName)
             {
+                if (_dicCapturedFiles.ContainsKey(strFileName))
+                    return;
+                try
+                {
+                    _dicCapturedFiles.Add(strFileName, string.Empty);
+                }
+                catch (ArgumentException)
+                {
+                    return;
+                }
                 string strContents;
                 try
                 {
@@ -171,8 +179,7 @@ namespace Chummer.Backend
                 {
                     strContents = e.ToString();
                 }
-
-                _dicCapturedFiles.AddOrUpdate(strFileName, strContents, (s, s1) => strContents);
+                _dicCapturedFiles[strFileName] = strContents;
             }
 
             public void GetObjectData(SerializationInfo info, StreamingContext context)
@@ -205,16 +212,19 @@ namespace Chummer.Backend
 
                 dump.AddFile(Path.Combine(Utils.GetStartupPath, "chummerlog.txt"));
 
-                byte[] info = new UTF8Encoding(true).GetBytes(dump.SerializeBase64());
-                File.WriteAllBytes(Path.Combine(Utils.GetStartupPath, "json.txt"), info);
+                string strJsonPath = Path.Combine(Utils.GetStartupPath, "latest_crash_json.txt");
+                using (StreamWriter objStreamWriter = new StreamWriter(strJsonPath))
+                using (JsonWriter objJsonWriter = new JsonTextWriter(objStreamWriter))
+                {
+                    dump.SerializeJson(objJsonWriter);
+                }
 
 #if DEBUG
                 using (Process crashHandler
-                       = Process.Start(Path.Combine(Utils.GetStartupPath, "CrashHandler.exe"), "crash \"" + Path.Combine(Utils.GetStartupPath, "json.txt")
-                                                                + "\" --debug"))
+                       = Process.Start(Path.Combine(Utils.GetStartupPath, "CrashHandler.exe"), "crash \"" + strJsonPath + "\" --debug"))
 #else
                 using (Process crashHandler
-                       = Process.Start(Path.Combine(Utils.GetStartupPath, "CrashHandler.exe"), "crash \"" + Path.Combine(Utils.GetStartupPath, "json.txt") + "\""))
+                       = Process.Start(Path.Combine(Utils.GetStartupPath, "CrashHandler.exe"), "crash \"" + strJsonPath + "\""))
 #endif
                     crashHandler?.WaitForExit();
             }

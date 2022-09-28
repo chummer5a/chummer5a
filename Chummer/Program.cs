@@ -221,41 +221,40 @@ namespace Chummer
 
                     void HandleCrash(object o, UnhandledExceptionEventArgs exa)
                     {
-                        if (exa.ExceptionObject is Exception ex)
+                        if (!(exa.ExceptionObject is Exception ex))
+                            return;
+                        try
                         {
-                            try
+                            if (GlobalSettings.UseLoggingApplicationInsights >= UseAILogging.Crashes
+                                && ChummerTelemetryClient != null
+                                && !Utils.IsMilestoneVersion)
                             {
-                                if (GlobalSettings.UseLoggingApplicationInsights >= UseAILogging.Crashes
-                                    && ChummerTelemetryClient != null
-                                    && !Utils.IsMilestoneVersion)
+                                ExceptionTelemetry et = new ExceptionTelemetry(ex)
                                 {
-                                    ExceptionTelemetry et = new ExceptionTelemetry(ex)
-                                    {
-                                        SeverityLevel = SeverityLevel.Critical
-                                    };
-                                    //we have to enable the uploading of THIS message, so it isn't filtered out in the DropUserdataTelemetryProcessos
-                                    foreach (DictionaryEntry d in ex.Data)
-                                    {
-                                        if (d.Key != null && d.Value != null)
-                                            et.Properties.Add(d.Key.ToString(), d.Value.ToString());
-                                    }
-
-                                    et.Properties.Add("IsCrash", bool.TrueString);
-                                    CustomTelemetryInitializer ti = new CustomTelemetryInitializer();
-                                    ti.Initialize(et);
-
-                                    ChummerTelemetryClient.TrackException(et);
-                                    ChummerTelemetryClient.Flush();
+                                    SeverityLevel = SeverityLevel.Critical
+                                };
+                                //we have to enable the uploading of THIS message, so it isn't filtered out in the DropUserdataTelemetryProcessos
+                                foreach (DictionaryEntry d in ex.Data)
+                                {
+                                    if (d.Key != null && d.Value != null)
+                                        et.Properties.Add(d.Key.ToString(), d.Value.ToString());
                                 }
-                            }
-                            catch (Exception ex1)
-                            {
-                                Log.Error(ex1);
-                            }
 
-                            Utils.BreakIfDebug();
-                            CrashHandler.WebMiniDumpHandler(ex);
+                                et.Properties.Add("IsCrash", bool.TrueString);
+                                CustomTelemetryInitializer ti = new CustomTelemetryInitializer();
+                                ti.Initialize(et);
+
+                                ChummerTelemetryClient.TrackException(et);
+                                ChummerTelemetryClient.Flush();
+                            }
                         }
+                        catch (Exception ex1)
+                        {
+                            Log.Error(ex1);
+                        }
+
+                        Utils.BreakIfDebug();
+                        CrashHandler.WebMiniDumpHandler(ex);
                     }
 
                     if (!Utils.IsUnitTest)
@@ -626,7 +625,7 @@ namespace Chummer
             return NativeMethods.DeleteFile(strFileName + ":Zone.Identifier");
         }
 
-        private static void SetProcessDPI(DpiScalingMethod eMethod)
+        public static void SetProcessDPI(DpiScalingMethod eMethod)
         {
             switch (eMethod)
             {
@@ -690,7 +689,7 @@ namespace Chummer
             Utils.BreakOnErrorIfDebug();
         }
 
-        private static void SetThreadDPI(DpiScalingMethod eMethod)
+        public static void SetThreadDPI(DpiScalingMethod eMethod)
         {
             if (Environment.OSVersion.Version <
                 new Version(10, 0, 15063)) // Windows 10 Creators Update added SetThreadDpiAwarenessContext
