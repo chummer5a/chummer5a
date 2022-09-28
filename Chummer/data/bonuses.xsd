@@ -898,6 +898,7 @@
         <xs:complexType>
           <xs:attribute name="excludecategory" type="xs:string" use="optional" />
           <xs:attribute name="includeunarmed" type="xs:string" use="optional" />
+          <xs:attribute name="weapondetails" type="xs:string" use="optional" />
         </xs:complexType>
       </xs:element>
       <xs:element name="sensitivesystem" minOccurs="0" maxOccurs="1" />

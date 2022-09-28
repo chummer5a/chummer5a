@@ -10,6 +10,8 @@ Application Changes:
 Data Changes:
 - Concealed and Regular vehicle armor mods now properly add to their parent's Armor. Fixes #4925.
 - Greyware is now properly disallowed for biodrone cyberware, cybersuites, nanocybernetics, and implanted commlinks and cyberdecks.
+- Vindicator 200-round belts can no longer be bought as gear, only as weapon accessories. However, the weapon accessory version now has slots for loading in ammo, just like the weapon accessory versions of spare clips and speed loaders.
+- Spare clips and speed loaders bought as gear now properly only allow the user to select ranged weapon types that can accommodate them instead of any ranged weapon.
 
 Changed/New Strings:
 - Checkbox_Options_UncappedArmorAccessoryBonuses

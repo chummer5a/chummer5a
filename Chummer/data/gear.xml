@@ -218,22 +218,9 @@
       <page>433</page>
       <avail>4</avail>
       <bonus>
-        <selectweapon excludecategory="Melee" />
+        <selectweapon weapondetails="contains(ammo, '(c)') or contains(ammo, '(d)')" />
       </bonus>
       <cost>5</cost>
-    </gear>
-    <gear>
-      <id>18ad29eb-33d2-4032-9520-47b69979ebf3</id>
-      <name>Vindicator 200-Round Belt</name>
-      <category>Ammunition</category>
-      <rating>0</rating>
-      <source>RG</source>
-      <page>42</page>
-      <avail>4</avail>
-      <bonus>
-        <selectweapon excludecategory="Melee" />
-      </bonus>
-      <cost>100</cost>
     </gear>
     <gear>
       <id>f87701a0-4ea2-47db-bcac-f5b8396c369e</id>
@@ -244,7 +231,7 @@
       <page>433</page>
       <avail>2</avail>
       <bonus>
-        <selectweapon excludecategory="Melee" />
+        <selectweapon weapondetails="contains(ammo, '(cy)')" />
       </bonus>
       <cost>25</cost>
     </gear>

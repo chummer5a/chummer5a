@@ -16570,6 +16570,7 @@
       <cost>100</cost>
       <source>RG</source>
       <page>42</page>
+      <ammoslots>1</ammoslots>
       <rating>0</rating>
       <required>
         <weapondetails>

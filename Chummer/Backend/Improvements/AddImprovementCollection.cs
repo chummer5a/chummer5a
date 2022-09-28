@@ -5698,14 +5698,18 @@ namespace Chummer
                 {
                     bool blnIncludeUnarmed = bonusNode.Attributes?["includeunarmed"]?.InnerText == bool.TrueString;
                     string strExclude = bonusNode.Attributes?["excludecategory"]?.InnerText ?? string.Empty;
+                    string strWeaponDetails = bonusNode.Attributes?["weapondetails"]?.InnerText ?? string.Empty;
                     foreach (Weapon objWeapon in _objCharacter.Weapons.GetAllDescendants(x => x.Children))
                     {
-                        if ((string.IsNullOrEmpty(strExclude) || objWeapon.RangeType != strExclude)
-                            && (blnIncludeUnarmed || objWeapon.Name != "Unarmed Attack"))
-                        {
-                            lstWeapons.Add(new ListItem(objWeapon.InternalId,
-                                                        objWeapon.DisplayNameShort(GlobalSettings.Language)));
-                        }
+                        if (!string.IsNullOrEmpty(strExclude) && objWeapon.RangeType == strExclude)
+                            continue;
+                        if (!blnIncludeUnarmed && objWeapon.Name == "Unarmed Attack")
+                            continue;
+                        if (!string.IsNullOrEmpty(strWeaponDetails)
+                            && objWeapon.GetNodeXPath()?.SelectSingleNode('[' + strWeaponDetails + ']') == null)
+                            continue;
+                        lstWeapons.Add(new ListItem(objWeapon.InternalId,
+                                                    objWeapon.DisplayNameShort(GlobalSettings.Language)));
                     }
 
                     if (string.IsNullOrWhiteSpace(LimitSelection)
