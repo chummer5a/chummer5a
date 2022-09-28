@@ -14050,6 +14050,66 @@
       <requireammo>False</requireammo>
     </weapon>
     <weapon>
+      <id>1a94c082-eea9-43ba-a9c9-f3e44141327e</id>
+      <name>Grenade: Maker</name>
+      <category>Gear</category>
+      <type>Ranged</type>
+      <conceal>0</conceal>
+      <accuracy>Physical</accuracy>
+      <reach>0</reach>
+      <damage>Special</damage>
+      <ap>Special</ap>
+      <mode>0</mode>
+      <rc>0</rc>
+      <ammo>0</ammo>
+      <avail>18F</avail>
+      <cost>500</cost>
+      <source>SL</source>
+      <page>76</page>
+      <range>Standard Grenade</range>
+      <spec>Non-Aerodynamic</spec>
+      <useskill>Throwing Weapons</useskill>
+    </weapon>
+    <weapon>
+      <id>7bf2253a-654c-4f30-8f13-37e565ee806a</id>
+      <name>Grenade: Maker, Aerodynamic</name>
+      <category>Gear</category>
+      <type>Ranged</type>
+      <conceal>0</conceal>
+      <accuracy>Physical</accuracy>
+      <reach>0</reach>
+      <damage>Special</damage>
+      <ap>Special</ap>
+      <mode>0</mode>
+      <rc>0</rc>
+      <ammo>0</ammo>
+      <avail>18F</avail>
+      <cost>500</cost>
+      <source>SL</source>
+      <page>76</page>
+      <range>Aerodynamic Grenade</range>
+      <spec>Aerodynamic</spec>
+      <useskill>Throwing Weapons</useskill>
+    </weapon>
+    <weapon>
+      <id>84866857-f40c-4a0c-9373-ddb8f6e37a87</id>
+      <name>Missile: Maker</name>
+      <category>Gear</category>
+      <type>Ranged</type>
+      <conceal>10</conceal>
+      <accuracy>0</accuracy>
+      <reach>0</reach>
+      <damage>Special</damage>
+      <ap>Special</ap>
+      <mode>0</mode>
+      <rc>0</rc>
+      <ammo>0</ammo>
+      <avail>24F</avail>
+      <cost>5000</cost>
+      <source>SL</source>
+      <page>76</page>
+    </weapon>
+    <weapon>
       <id>fb545997-dcd5-48d4-963e-4f0c797e5982</id>
       <name>Stoner-Ares M-22A1</name>
       <category>Heavy Machine Guns</category>
@@ -18261,6 +18321,50 @@
       <source>SL</source>
       <page>47</page>
       <rating>0</rating>
+    </accessory>
+    <accessory>
+      <id>861819f2-827e-444b-ae6c-33eb161a14dc</id>
+      <name>Standard Maker Mag</name>
+      <mount />
+      <avail>18R</avail>
+      <cost>100 * Rating</cost>
+      <source>SL</source>
+      <page>76</page>
+      <ammobonus>-50</ammobonus>
+      <ammoslots>1</ammoslots>
+      <conceal>0</conceal>
+      <rating>1000</rating> <!-- TODO: Create system where rating is based on weapon ammo capacity and can be consumed as charges -->
+      <required>
+        <weapondetails>
+          <mode operation="contains">SA</mode>
+          <OR>
+            <ammo operation="contains">(c)</ammo>
+            <ammo operation="contains">(d)</ammo>
+          </OR>
+        </weapondetails>
+      </required>
+    </accessory>
+    <accessory>
+      <id>c455e976-a3b8-4c45-8777-6814f14c295b</id>
+      <name>Extended Maker Mag</name>
+      <mount />
+      <avail>18R</avail>
+      <cost>150 * Rating</cost>
+      <source>SL</source>
+      <page>76</page>
+      <ammobonus>-25</ammobonus>
+      <ammoslots>1</ammoslots>
+      <conceal>1</conceal>
+      <rating>1000</rating> <!-- TODO: Create system where rating is based on weapon ammo capacity and can be consumed as charges -->
+      <required>
+        <weapondetails>
+          <mode operation="contains">SA</mode>
+          <OR>
+            <ammo operation="contains">(c)</ammo>
+            <ammo operation="contains">(d)</ammo>
+          </OR>
+        </weapondetails>
+      </required>
     </accessory>
     <accessory>
       <id>91d1b0c0-3146-4435-b2ef-322e80dbbb59</id>

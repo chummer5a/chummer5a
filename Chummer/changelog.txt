@@ -12,6 +12,7 @@ Data Changes:
 - Greyware is now properly disallowed for biodrone cyberware, cybersuites, nanocybernetics, and implanted commlinks and cyberdecks.
 - Vindicator 200-round belts can no longer be bought as gear, only as weapon accessories. However, the weapon accessory version now has slots for loading in ammo, just like the weapon accessory versions of spare clips and speed loaders.
 - Spare clips and speed loaders bought as gear now properly only allow the user to select ranged weapon types that can accommodate them instead of any ranged weapon.
+- Added Maker Arms weapons and magazines from Street Lethal. Maker mags are not fully functional, however, so users will need to track used and consumed capacities manually.
 
 Changed/New Strings:
 - Checkbox_Options_UncappedArmorAccessoryBonuses

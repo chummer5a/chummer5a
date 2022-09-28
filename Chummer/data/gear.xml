@@ -1587,9 +1587,43 @@
       </weaponbonus>
       <ammoforweapontype noextra="True">slingshot</ammoforweapontype>
     </gear>
-
+    <!-- Region Street Lethal -->
+    <gear>
+      <id>bdb59ce5-5283-44dd-9d9c-363e3ffced96</id>
+      <name>Grenade: Maker</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>SL</source>
+      <page>76</page>
+      <avail>18F</avail>
+      <addweapon>Grenade: Maker</addweapon>
+      <cost>500</cost>
+    </gear>
+    <gear>
+      <id>aae8f02a-3459-4df8-ac25-9f74c1b523df</id>
+      <name>Grenade: Maker, Aerodynamic</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>SL</source>
+      <page>76</page>
+      <avail>18F</avail>
+      <addweapon>Grenade: Maker, Aerodynamic</addweapon>
+      <cost>500</cost>
+    </gear>
+    <gear>
+      <id>d51c31c2-3f55-44b2-a52f-c175d0aaa03a</id>
+      <name>Missile: Maker</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>SL</source>
+      <page>76</page>
+      <avail>24F</avail>
+      <addweapon>Missile: Maker</addweapon>
+      <cost>5000</cost>
+      <ammoforweapontype noextra="True">mlauncher</ammoforweapontype>
+    </gear>
+    <!-- End Region -->
     <!-- Region Kill Code-->
-
     <gear>
       <id>7e104b61-69b3-4a7e-8221-a6190314c411</id>
       <name>Ammo: Zapper</name>
