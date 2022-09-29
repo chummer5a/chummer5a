@@ -462,9 +462,9 @@ namespace Chummer.Plugins
             foreach (IPlugin plugin in MyActivePlugins)
             {
                 using (_ = await Timekeeper.StartSyncronAsync("load_plugin_GetTabPage_Career_" + plugin,
-                                                              parentActivity, CustomActivity.OperationType.DependencyOperation, plugin.ToString(), token))
+                                                              parentActivity, CustomActivity.OperationType.DependencyOperation, plugin.ToString(), token).ConfigureAwait(false))
                 {
-                    ICollection<TabPage> pages = await plugin.GetTabPages(frmCareer, token);
+                    ICollection<TabPage> pages = await plugin.GetTabPages(frmCareer, token).ConfigureAwait(false);
                     if (pages == null)
                         continue;
                     foreach (TabPage page in pages)
@@ -482,9 +482,9 @@ namespace Chummer.Plugins
         {
             foreach (IPlugin plugin in MyActivePlugins)
             {
-                using (_ = await Timekeeper.StartSyncronAsync("load_plugin_GetTabPage_Create_" + plugin, parentActivity, CustomActivity.OperationType.DependencyOperation, plugin.ToString(), token))
+                using (_ = await Timekeeper.StartSyncronAsync("load_plugin_GetTabPage_Create_" + plugin, parentActivity, CustomActivity.OperationType.DependencyOperation, plugin.ToString(), token).ConfigureAwait(false))
                 {
-                    ICollection<TabPage> pages = await plugin.GetTabPages(frmCreate, token);
+                    ICollection<TabPage> pages = await plugin.GetTabPages(frmCreate, token).ConfigureAwait(false);
                     if (pages == null)
                         continue;
                     foreach (TabPage page in pages)
@@ -503,9 +503,9 @@ namespace Chummer.Plugins
             foreach (IPlugin plugin in MyActivePlugins)
             {
                 using (_ = await Timekeeper.StartSyncronAsync("load_plugin_GetMenuItems_" + plugin,
-                                                              parentActivity, CustomActivity.OperationType.DependencyOperation, plugin.ToString(), token))
+                                                              parentActivity, CustomActivity.OperationType.DependencyOperation, plugin.ToString(), token).ConfigureAwait(false))
                 {
-                    ICollection<ToolStripMenuItem> menuitems = await plugin.GetMenuItems(menu, token);
+                    ICollection<ToolStripMenuItem> menuitems = await plugin.GetMenuItems(menu, token).ConfigureAwait(false);
                     if (menuitems == null)
                         continue;
                     foreach (ToolStripMenuItem plugInMenu in menuitems)

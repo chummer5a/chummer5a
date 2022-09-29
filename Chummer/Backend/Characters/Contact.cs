@@ -381,59 +381,59 @@ namespace Chummer
             else
             {
                 // <contact>
-                XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("contact");
+                XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("contact").ConfigureAwait(false);
                 try
                 {
-                    await objWriter.WriteElementStringAsync("name", _strName);
-                    await objWriter.WriteElementStringAsync("role", _strRole);
-                    await objWriter.WriteElementStringAsync("location", _strLocation);
+                    await objWriter.WriteElementStringAsync("name", _strName).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("role", _strRole).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("location", _strLocation).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("connection",
                                                             _intConnection.ToString(
-                                                                GlobalSettings.InvariantCultureInfo));
+                                                                GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync(
-                        "loyalty", _intLoyalty.ToString(GlobalSettings.InvariantCultureInfo));
-                    await objWriter.WriteElementStringAsync("metatype", _strMetatype);
-                    await objWriter.WriteElementStringAsync("gender", _strGender);
-                    await objWriter.WriteElementStringAsync("age", _strAge);
-                    await objWriter.WriteElementStringAsync("contacttype", _strType);
-                    await objWriter.WriteElementStringAsync("preferredpayment", _strPreferredPayment);
-                    await objWriter.WriteElementStringAsync("hobbiesvice", _strHobbiesVice);
-                    await objWriter.WriteElementStringAsync("personallife", _strPersonalLife);
-                    await objWriter.WriteElementStringAsync("type", _eContactType.ToString());
-                    await objWriter.WriteElementStringAsync("file", _strFileName);
-                    await objWriter.WriteElementStringAsync("relative", _strRelativeName);
-                    await objWriter.WriteElementStringAsync("notes", _strNotes.CleanOfInvalidUnicodeChars());
-                    await objWriter.WriteElementStringAsync("notesColor", ColorTranslator.ToHtml(_colNotes));
-                    await objWriter.WriteElementStringAsync("groupname", _strGroupName);
+                        "loyalty", _intLoyalty.ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("metatype", _strMetatype).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("gender", _strGender).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("age", _strAge).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("contacttype", _strType).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("preferredpayment", _strPreferredPayment).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("hobbiesvice", _strHobbiesVice).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("personallife", _strPersonalLife).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("type", _eContactType.ToString()).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("file", _strFileName).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("relative", _strRelativeName).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("notes", _strNotes.CleanOfInvalidUnicodeChars()).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("notesColor", ColorTranslator.ToHtml(_colNotes)).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("groupname", _strGroupName).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync(
-                        "colour", _objColour.ToArgb().ToString(GlobalSettings.InvariantCultureInfo));
+                        "colour", _objColour.ToArgb().ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync(
-                        "group", _blnIsGroup.ToString(GlobalSettings.InvariantCultureInfo));
+                        "group", _blnIsGroup.ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync(
-                        "family", _blnFamily.ToString(GlobalSettings.InvariantCultureInfo));
+                        "family", _blnFamily.ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("blackmail",
                                                             _blnBlackmail.ToString(
-                                                                GlobalSettings.InvariantCultureInfo));
+                                                                GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync(
-                        "free", _blnFree.ToString(GlobalSettings.InvariantCultureInfo));
+                        "free", _blnFree.ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("groupenabled",
                                                             _blnGroupEnabled.ToString(
-                                                                GlobalSettings.InvariantCultureInfo));
+                                                                GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
 
                     if (_blnReadOnly)
-                        await objWriter.WriteElementStringAsync("readonly", string.Empty);
+                        await objWriter.WriteElementStringAsync("readonly", string.Empty).ConfigureAwait(false);
 
                     if (_strUnique != null)
                     {
-                        await objWriter.WriteElementStringAsync("guid", _strUnique);
+                        await objWriter.WriteElementStringAsync("guid", _strUnique).ConfigureAwait(false);
                     }
 
-                    await SaveMugshotsAsync(objWriter);
+                    await SaveMugshotsAsync(objWriter).ConfigureAwait(false);
                 }
                 finally
                 {
                     // </contact>
-                    await objBaseElement.DisposeAsync();
+                    await objBaseElement.DisposeAsync().ConfigureAwait(false);
                 }
             }
         }
@@ -506,67 +506,67 @@ namespace Chummer
             if (objWriter == null)
                 return;
             // <contact>
-            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("contact", token: token);
+            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("contact", token: token).ConfigureAwait(false);
             try
             {
-                await objWriter.WriteElementStringAsync("guid", InternalId, token: token);
-                await objWriter.WriteElementStringAsync("name", Name, token: token);
-                await objWriter.WriteElementStringAsync("role", await DisplayRoleMethodAsync(strLanguageToPrint, token),
-                                                        token: token);
-                await objWriter.WriteElementStringAsync("location", Location, token: token);
+                await objWriter.WriteElementStringAsync("guid", InternalId, token: token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("name", Name, token: token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("role", await DisplayRoleMethodAsync(strLanguageToPrint, token).ConfigureAwait(false),
+                                                        token: token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("location", Location, token: token).ConfigureAwait(false);
                 if (!IsGroup)
                     await objWriter.WriteElementStringAsync("connection",
-                                                            (await GetConnectionAsync(token)).ToString(objCulture),
-                                                            token: token);
+                                                            (await GetConnectionAsync(token).ConfigureAwait(false)).ToString(objCulture),
+                                                            token: token).ConfigureAwait(false);
                 else
                     await objWriter.WriteElementStringAsync("connection",
                                                             await LanguageManager.GetStringAsync(
-                                                                "String_Group", strLanguageToPrint, token: token) + '('
-                                                            + (await GetConnectionAsync(token)).ToString(objCulture)
-                                                            + ')', token: token);
-                await objWriter.WriteElementStringAsync("loyalty", (await GetLoyaltyAsync(token)).ToString(objCulture),
-                                                        token: token);
+                                                                "String_Group", strLanguageToPrint, token: token).ConfigureAwait(false) + '('
+                                                            + (await GetConnectionAsync(token).ConfigureAwait(false)).ToString(objCulture)
+                                                            + ')', token: token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("loyalty", (await GetLoyaltyAsync(token).ConfigureAwait(false)).ToString(objCulture),
+                                                        token: token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync(
-                    "metatype", await DisplayMetatypeMethodAsync(strLanguageToPrint, token), token: token);
+                    "metatype", await DisplayMetatypeMethodAsync(strLanguageToPrint, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync(
-                    "gender", await DisplayGenderMethodAsync(strLanguageToPrint, token),
-                    token: token);
-                await objWriter.WriteElementStringAsync("age", await DisplayAgeMethodAsync(strLanguageToPrint, token),
-                                                        token: token);
+                    "gender", await DisplayGenderMethodAsync(strLanguageToPrint, token).ConfigureAwait(false),
+                    token: token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("age", await DisplayAgeMethodAsync(strLanguageToPrint, token).ConfigureAwait(false),
+                                                        token: token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("contacttype",
-                                                        await DisplayTypeMethodAsync(strLanguageToPrint, token),
-                                                        token: token);
+                                                        await DisplayTypeMethodAsync(strLanguageToPrint, token).ConfigureAwait(false),
+                                                        token: token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("preferredpayment",
                                                         await DisplayPreferredPaymentMethodAsync(
-                                                            strLanguageToPrint, token),
-                                                        token: token);
+                                                            strLanguageToPrint, token).ConfigureAwait(false),
+                                                        token: token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("hobbiesvice",
-                                                        await DisplayHobbiesViceMethodAsync(strLanguageToPrint, token),
-                                                        token: token);
+                                                        await DisplayHobbiesViceMethodAsync(strLanguageToPrint, token).ConfigureAwait(false),
+                                                        token: token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("personallife",
-                                                        await DisplayPersonalLifeMethodAsync(strLanguageToPrint, token),
-                                                        token: token);
+                                                        await DisplayPersonalLifeMethodAsync(strLanguageToPrint, token).ConfigureAwait(false),
+                                                        token: token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync(
                     "type",
-                    await LanguageManager.GetStringAsync("String_" + EntityType, strLanguageToPrint, token: token),
-                    token: token);
+                    await LanguageManager.GetStringAsync("String_" + EntityType, strLanguageToPrint, token: token).ConfigureAwait(false),
+                    token: token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("forcedloyalty",
-                                                        (await GetForcedLoyaltyAsync(token)).ToString(objCulture),
-                                                        token: token);
+                                                        (await GetForcedLoyaltyAsync(token).ConfigureAwait(false)).ToString(objCulture),
+                                                        token: token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("blackmail",
                                                         Blackmail.ToString(GlobalSettings.InvariantCultureInfo),
-                                                        token: token);
+                                                        token: token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("family", Family.ToString(GlobalSettings.InvariantCultureInfo),
-                                                        token: token);
+                                                        token: token).ConfigureAwait(false);
                 if (GlobalSettings.PrintNotes)
-                    await objWriter.WriteElementStringAsync("notes", Notes, token: token);
+                    await objWriter.WriteElementStringAsync("notes", Notes, token: token).ConfigureAwait(false);
 
-                await PrintMugshots(objWriter, token);
+                await PrintMugshots(objWriter, token).ConfigureAwait(false);
             }
             finally
             {
                 // </contact>
-                await objBaseElement.DisposeAsync();
+                await objBaseElement.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -632,7 +632,7 @@ namespace Chummer
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Role;
 
-            return (await _objCharacter.LoadDataXPathAsync("contacts.xml", strLanguage, token: token))
+            return (await _objCharacter.LoadDataXPathAsync("contacts.xml", strLanguage, token: token).ConfigureAwait(false))
                    .SelectSingleNode("/chummer/contacts/contact[. = " + Role.CleanXPath() + "]/@translate")
                    ?.Value ?? Role;
         }
@@ -649,7 +649,7 @@ namespace Chummer
         public async ValueTask SetDisplayRoleAsync(string value, CancellationToken token = default)
         {
             Role = await _objCharacter.ReverseTranslateExtraAsync(value, GlobalSettings.Language, "contacts.xml",
-                                                                  token);
+                                                                  token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -706,7 +706,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<int> GetConnectionAsync(CancellationToken token = default)
         {
-            return Math.Min(_intConnection, await GetConnectionMaximumAsync(token));
+            return Math.Min(_intConnection, await GetConnectionMaximumAsync(token).ConfigureAwait(false));
         }
 
         /// <summary>
@@ -735,7 +735,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<int> GetLoyaltyAsync(CancellationToken token = default)
         {
-            int intForced = await GetForcedLoyaltyAsync(token);
+            int intForced = await GetForcedLoyaltyAsync(token).ConfigureAwait(false);
             if (intForced > 0)
                 return intForced;
             return IsGroup ? 1 : _intLoyalty;
@@ -779,14 +779,14 @@ namespace Chummer
             if (LinkedCharacter != null)
             {
                 // Update character information fields.
-                XPathNavigator objMetatypeNode = await _objCharacter.GetNodeXPathAsync(true, token: token);
+                XPathNavigator objMetatypeNode = await _objCharacter.GetNodeXPathAsync(true, token: token).ConfigureAwait(false);
 
                 strReturn
-                    = (await objMetatypeNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token))?.Value
-                      ?? await _objCharacter.TranslateExtraAsync(await LinkedCharacter.GetMetatypeAsync(token),
-                                                                 strLanguage, "metatypes.xml", token);
+                    = (await objMetatypeNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value
+                      ?? await _objCharacter.TranslateExtraAsync(await LinkedCharacter.GetMetatypeAsync(token).ConfigureAwait(false),
+                                                                 strLanguage, "metatypes.xml", token).ConfigureAwait(false);
 
-                Guid guiMetavariant = await LinkedCharacter.GetMetavariantGuidAsync(token);
+                Guid guiMetavariant = await LinkedCharacter.GetMetavariantGuidAsync(token).ConfigureAwait(false);
                 if (guiMetavariant == Guid.Empty)
                     return strReturn;
                 objMetatypeNode = objMetatypeNode
@@ -795,19 +795,19 @@ namespace Chummer
                                       + ']');
 
                 string strMetatypeTranslate = objMetatypeNode != null
-                    ? (await objMetatypeNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token))?.Value
+                    ? (await objMetatypeNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value
                     : null;
-                strReturn += await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token)
+                strReturn += await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false)
                              + '('
                              + (!string.IsNullOrEmpty(strMetatypeTranslate)
                                  ? strMetatypeTranslate
                                  : await _objCharacter.TranslateExtraAsync(
-                                     await LinkedCharacter.GetMetavariantAsync(token), strLanguage, "metatypes.xml",
-                                     token))
+                                     await LinkedCharacter.GetMetavariantAsync(token).ConfigureAwait(false), strLanguage, "metatypes.xml",
+                                     token).ConfigureAwait(false))
                              + ')';
             }
             else
-                strReturn = await _objCharacter.TranslateExtraAsync(strReturn, strLanguage, "metatypes.xml", token);
+                strReturn = await _objCharacter.TranslateExtraAsync(strReturn, strLanguage, "metatypes.xml", token).ConfigureAwait(false);
 
             return strReturn;
         }
@@ -824,7 +824,7 @@ namespace Chummer
         public async ValueTask SetDisplayMetatypeAsync(string value, CancellationToken token = default)
         {
             Metatype = await _objCharacter.ReverseTranslateExtraAsync(value, GlobalSettings.Language, "contacts.xml",
-                                                                      token);
+                                                                      token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -866,12 +866,12 @@ namespace Chummer
         {
             if (LinkedCharacter != null)
             {
-                string strMetatype = await LinkedCharacter.GetMetatypeAsync(token);
-                string strMetavariant = await LinkedCharacter.GetMetavariantAsync(token);
+                string strMetatype = await LinkedCharacter.GetMetatypeAsync(token).ConfigureAwait(false);
+                string strMetavariant = await LinkedCharacter.GetMetavariantAsync(token).ConfigureAwait(false);
 
                 if (!string.IsNullOrEmpty(strMetavariant) && strMetavariant != "None")
                 {
-                    strMetatype += await LanguageManager.GetStringAsync("String_Space", token: token) + '('
+                    strMetatype += await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '('
                         + strMetavariant + ')';
                 }
 
@@ -896,7 +896,7 @@ namespace Chummer
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Gender;
 
-            return (await _objCharacter.LoadDataXPathAsync("contacts.xml", strLanguage, token: token))
+            return (await _objCharacter.LoadDataXPathAsync("contacts.xml", strLanguage, token: token).ConfigureAwait(false))
                    .SelectSingleNode("/chummer/genders/gender[. = " + Gender.CleanXPath() + "]/@translate")?.Value
                    ?? Gender;
         }
@@ -913,7 +913,7 @@ namespace Chummer
         public async ValueTask SetDisplayGenderAsync(string value, CancellationToken token = default)
         {
             Gender = await _objCharacter.ReverseTranslateExtraAsync(value, GlobalSettings.Language, "contacts.xml",
-                                                                    token);
+                                                                    token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -936,7 +936,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<string> GetGenderAsync(CancellationToken token = default)
         {
-            return LinkedCharacter != null ? await LinkedCharacter.GetGenderAsync(token) : _strGender;
+            return LinkedCharacter != null ? await LinkedCharacter.GetGenderAsync(token).ConfigureAwait(false) : _strGender;
         }
 
         public string DisplayAgeMethod(string strLanguage)
@@ -952,7 +952,7 @@ namespace Chummer
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Age;
 
-            return (await _objCharacter.LoadDataXPathAsync("contacts.xml", strLanguage, token: token)).SelectSingleNode("/chummer/ages/age[. = " + Age.CleanXPath() + "]/@translate")?.Value ?? Age;
+            return (await _objCharacter.LoadDataXPathAsync("contacts.xml", strLanguage, token: token).ConfigureAwait(false)).SelectSingleNode("/chummer/ages/age[. = " + Age.CleanXPath() + "]/@translate")?.Value ?? Age;
         }
 
         public string DisplayAge
@@ -966,7 +966,7 @@ namespace Chummer
 
         public async ValueTask SetDisplayAgeAsync(string value, CancellationToken token = default)
         {
-            Age = await _objCharacter.ReverseTranslateExtraAsync(value, GlobalSettings.Language, "contacts.xml", token);
+            Age = await _objCharacter.ReverseTranslateExtraAsync(value, GlobalSettings.Language, "contacts.xml", token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -989,7 +989,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<string> GetAgeAsync(CancellationToken token = default)
         {
-            return LinkedCharacter != null ? await LinkedCharacter.GetAgeAsync(token) : _strGender;
+            return LinkedCharacter != null ? await LinkedCharacter.GetAgeAsync(token).ConfigureAwait(false) : _strGender;
         }
 
         public string DisplayTypeMethod(string strLanguage)
@@ -1005,7 +1005,7 @@ namespace Chummer
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Type;
 
-            return (await _objCharacter.LoadDataXPathAsync("contacts.xml", strLanguage, token: token)).SelectSingleNode("/chummer/types/type[. = " + Type.CleanXPath() + "]/@translate")?.Value ?? Type;
+            return (await _objCharacter.LoadDataXPathAsync("contacts.xml", strLanguage, token: token).ConfigureAwait(false)).SelectSingleNode("/chummer/types/type[. = " + Type.CleanXPath() + "]/@translate")?.Value ?? Type;
         }
 
         public string DisplayType
@@ -1019,7 +1019,7 @@ namespace Chummer
 
         public async ValueTask SetDisplayTypeAsync(string value, CancellationToken token = default)
         {
-            Type = await _objCharacter.ReverseTranslateExtraAsync(value, GlobalSettings.Language, "contacts.xml", token);
+            Type = await _objCharacter.ReverseTranslateExtraAsync(value, GlobalSettings.Language, "contacts.xml", token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -1051,7 +1051,7 @@ namespace Chummer
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return PreferredPayment;
 
-            return (await _objCharacter.LoadDataXPathAsync("contacts.xml", strLanguage, token: token))
+            return (await _objCharacter.LoadDataXPathAsync("contacts.xml", strLanguage, token: token).ConfigureAwait(false))
                                 .SelectSingleNode("/chummer/preferredpayments/preferredpayment[. = " + PreferredPayment.CleanXPath() + "]/@translate")?.Value ?? PreferredPayment;
         }
 
@@ -1066,7 +1066,7 @@ namespace Chummer
 
         public async ValueTask SetDisplayPreferredPaymentAsync(string value, CancellationToken token = default)
         {
-            PreferredPayment = await _objCharacter.ReverseTranslateExtraAsync(value, GlobalSettings.Language, "contacts.xml", token);
+            PreferredPayment = await _objCharacter.ReverseTranslateExtraAsync(value, GlobalSettings.Language, "contacts.xml", token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -1098,7 +1098,7 @@ namespace Chummer
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return HobbiesVice;
 
-            return (await _objCharacter.LoadDataXPathAsync("contacts.xml", strLanguage, token: token)).SelectSingleNode("/chummer/hobbiesvices/hobbyvice[. = " + HobbiesVice.CleanXPath() + "]/@translate")?.Value
+            return (await _objCharacter.LoadDataXPathAsync("contacts.xml", strLanguage, token: token).ConfigureAwait(false)).SelectSingleNode("/chummer/hobbiesvices/hobbyvice[. = " + HobbiesVice.CleanXPath() + "]/@translate")?.Value
                    ?? HobbiesVice;
         }
 
@@ -1113,7 +1113,7 @@ namespace Chummer
 
         public async ValueTask SetDisplayHobbiesViceAsync(string value, CancellationToken token = default)
         {
-            HobbiesVice = await _objCharacter.ReverseTranslateExtraAsync(value, GlobalSettings.Language, "contacts.xml", token);
+            HobbiesVice = await _objCharacter.ReverseTranslateExtraAsync(value, GlobalSettings.Language, "contacts.xml", token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -1145,7 +1145,7 @@ namespace Chummer
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return PersonalLife;
 
-            return (await _objCharacter.LoadDataXPathAsync("contacts.xml", strLanguage, token: token)).SelectSingleNode("/chummer/personallives/personallife[. = " + PersonalLife.CleanXPath() + "]/@translate")?.Value
+            return (await _objCharacter.LoadDataXPathAsync("contacts.xml", strLanguage, token: token).ConfigureAwait(false)).SelectSingleNode("/chummer/personallives/personallife[. = " + PersonalLife.CleanXPath() + "]/@translate")?.Value
                    ?? PersonalLife;
         }
 
@@ -1160,7 +1160,7 @@ namespace Chummer
 
         public async ValueTask SetDisplayPersonalLifeAsync(string value, CancellationToken token = default)
         {
-            PersonalLife = await _objCharacter.ReverseTranslateExtraAsync(value, GlobalSettings.Language, "contacts.xml", token);
+            PersonalLife = await _objCharacter.ReverseTranslateExtraAsync(value, GlobalSettings.Language, "contacts.xml", token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -1197,14 +1197,14 @@ namespace Chummer
 
         public async ValueTask<bool> GetLoyaltyEnabledAsync(CancellationToken token = default)
         {
-            return !ReadOnly && !IsGroup && await GetForcedLoyaltyAsync(token) <= 0;
+            return !ReadOnly && !IsGroup && await GetForcedLoyaltyAsync(token).ConfigureAwait(false) <= 0;
         }
 
         public int ConnectionMaximum => CharacterObject.Created || CharacterObject.FriendsInHighPlaces ? 12 : 6;
 
         public async ValueTask<int> GetConnectionMaximumAsync(CancellationToken token = default)
         {
-            return await CharacterObject.GetCreatedAsync(token) || await CharacterObject.GetFriendsInHighPlacesAsync(token)
+            return await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false) || await CharacterObject.GetFriendsInHighPlacesAsync(token).ConfigureAwait(false)
                 ? 12
                 : 6;
         }
@@ -1213,7 +1213,7 @@ namespace Chummer
 
         public async ValueTask<string> GetQuickTextAsync(CancellationToken token = default)
         {
-            return string.Format(GlobalSettings.CultureInfo, IsGroup ? "({0}/{1}G)" : "({0}/{1})", await GetConnectionAsync(token), await GetLoyaltyAsync(token));
+            return string.Format(GlobalSettings.CultureInfo, IsGroup ? "({0}/{1}G)" : "({0}/{1})", await GetConnectionAsync(token).ConfigureAwait(false), await GetLoyaltyAsync(token).ConfigureAwait(false));
         }
 
         /// <summary>
@@ -1361,9 +1361,9 @@ namespace Chummer
             if (_intCachedFreeFromImprovement < 0)
             {
                 _intCachedFreeFromImprovement = (await ImprovementManager
-                    .GetCachedImprovementListForValueOfAsync(
-                        CharacterObject, Improvement.ImprovementType.ContactMakeFree,
-                        UniqueId, token: token)).Count > 0
+                                                       .GetCachedImprovementListForValueOfAsync(
+                                                           CharacterObject, Improvement.ImprovementType.ContactMakeFree,
+                                                           UniqueId, token: token).ConfigureAwait(false)).Count > 0
                     ? 1
                     : 0;
             }
@@ -1394,9 +1394,9 @@ namespace Chummer
             if (_intCachedFreeFromImprovement < 0)
             {
                 _intCachedFreeFromImprovement = (await ImprovementManager
-                    .GetCachedImprovementListForValueOfAsync(
-                        CharacterObject, Improvement.ImprovementType.ContactMakeFree,
-                        UniqueId, token: token)).Count > 0
+                                                       .GetCachedImprovementListForValueOfAsync(
+                                                           CharacterObject, Improvement.ImprovementType.ContactMakeFree,
+                                                           UniqueId, token: token).ConfigureAwait(false)).Count > 0
                     ? 1
                     : 0;
             }
@@ -1443,9 +1443,9 @@ namespace Chummer
             if (_intCachedGroupEnabled < 0)
             {
                 _intCachedGroupEnabled = !ReadOnly && (await ImprovementManager
-                        .GetCachedImprovementListForValueOfAsync(
-                            CharacterObject,
-                            Improvement.ImprovementType.ContactForceGroup, UniqueId, token: token))
+                                                             .GetCachedImprovementListForValueOfAsync(
+                                                                 CharacterObject,
+                                                                 Improvement.ImprovementType.ContactForceGroup, UniqueId, token: token).ConfigureAwait(false))
                                                       .Count == 0
                     ? 1
                     : 0;
@@ -1506,7 +1506,7 @@ namespace Chummer
 
             int intMaxForcedLoyalty = 0;
             foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(
-                         CharacterObject, Improvement.ImprovementType.ContactForcedLoyalty, UniqueId, token: token))
+                         CharacterObject, Improvement.ImprovementType.ContactForcedLoyalty, UniqueId, token: token).ConfigureAwait(false))
             {
                 intMaxForcedLoyalty = Math.Max(intMaxForcedLoyalty, objImprovement.Value.StandardRound());
             }
@@ -1755,21 +1755,21 @@ namespace Chummer
             else
             {
                 await objWriter.WriteElementStringAsync("mainmugshotindex",
-                                                        MainMugshotIndex.ToString(GlobalSettings.InvariantCultureInfo), token: token);
+                                                        MainMugshotIndex.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                 // <mugshots>
-                XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("mugshots", token: token);
+                XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("mugshots", token: token).ConfigureAwait(false);
                 try
                 {
                     foreach (Image imgMugshot in Mugshots)
                     {
                         await objWriter.WriteElementStringAsync(
-                            "mugshot", await GlobalSettings.ImageToBase64StringForStorageAsync(imgMugshot, token), token: token);
+                            "mugshot", await GlobalSettings.ImageToBase64StringForStorageAsync(imgMugshot, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                     }
                 }
                 finally
                 {
                     // </mugshots>
-                    await objBaseElement.DisposeAsync();
+                    await objBaseElement.DisposeAsync().ConfigureAwait(false);
                 }
             }
         }
@@ -1805,8 +1805,8 @@ namespace Chummer
             if (objWriter == null)
                 return;
             if (LinkedCharacter != null)
-                await LinkedCharacter.PrintMugshots(objWriter, token);
-            else if (await Mugshots.GetCountAsync(token) > 0)
+                await LinkedCharacter.PrintMugshots(objWriter, token).ConfigureAwait(false);
+            else if (await Mugshots.GetCountAsync(token).ConfigureAwait(false) > 0)
             {
                 // Since IE is retarded and can't handle base64 images before IE9, we need to dump the image to a temporary directory and re-write the information.
                 // If you give it an extension of jpg, gif, or png, it expects the file to be in that format and won't render the image unless it was originally that type.
@@ -1820,7 +1820,7 @@ namespace Chummer
                     }
                     catch (UnauthorizedAccessException)
                     {
-                        Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning", token: token));
+                        Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning", token: token).ConfigureAwait(false));
                     }
                 }
                 Guid guiImage = Guid.NewGuid();
@@ -1832,46 +1832,46 @@ namespace Chummer
                     imgMainMugshot.Save(imgMugshotPath);
                     // <mainmugshotpath />
                     await objWriter.WriteElementStringAsync("mainmugshotpath",
-                        "file://" + imgMugshotPath.Replace(Path.DirectorySeparatorChar, '/'), token: token);
+                                                            "file://" + imgMugshotPath.Replace(Path.DirectorySeparatorChar, '/'), token: token).ConfigureAwait(false);
                     // <mainmugshotbase64 />
-                    await objWriter.WriteElementStringAsync("mainmugshotbase64", await imgMainMugshot.ToBase64StringAsJpegAsync(token: token), token: token);
+                    await objWriter.WriteElementStringAsync("mainmugshotbase64", await imgMainMugshot.ToBase64StringAsJpegAsync(token: token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                 }
                 // <hasothermugshots>
                 await objWriter.WriteElementStringAsync("hasothermugshots",
-                    (imgMainMugshot == null || await Mugshots.GetCountAsync(token) > 1).ToString(GlobalSettings.InvariantCultureInfo), token: token);
+                                                        (imgMainMugshot == null || await Mugshots.GetCountAsync(token).ConfigureAwait(false) > 1).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                 // <othermugshots>
-                XmlElementWriteHelper objOtherMugshotsElement = await objWriter.StartElementAsync("othermugshots", token: token);
+                XmlElementWriteHelper objOtherMugshotsElement = await objWriter.StartElementAsync("othermugshots", token: token).ConfigureAwait(false);
                 try
                 {
-                    for (int i = 0; i < await Mugshots.GetCountAsync(token); ++i)
+                    for (int i = 0; i < await Mugshots.GetCountAsync(token).ConfigureAwait(false); ++i)
                     {
                         if (i == MainMugshotIndex)
                             continue;
-                        Image imgMugshot = await Mugshots.GetValueAtAsync(i, token);
+                        Image imgMugshot = await Mugshots.GetValueAtAsync(i, token).ConfigureAwait(false);
                         // <mugshot>
-                        XmlElementWriteHelper objMugshotElement = await objWriter.StartElementAsync("mugshot", token: token);
+                        XmlElementWriteHelper objMugshotElement = await objWriter.StartElementAsync("mugshot", token: token).ConfigureAwait(false);
                         try
                         {
-                            await objWriter.WriteElementStringAsync("stringbase64", await imgMugshot.ToBase64StringAsJpegAsync(token: token), token: token);
+                            await objWriter.WriteElementStringAsync("stringbase64", await imgMugshot.ToBase64StringAsJpegAsync(token: token).ConfigureAwait(false), token: token).ConfigureAwait(false);
 
                             string imgMugshotPath = Path.Combine(strMugshotsDirectoryPath,
                                                                  guiImage.ToString("N", GlobalSettings.InvariantCultureInfo) +
                                                                  i.ToString(GlobalSettings.InvariantCultureInfo) + ".jpg");
                             imgMugshot.Save(imgMugshotPath);
                             await objWriter.WriteElementStringAsync("temppath",
-                                                                    "file://" + imgMugshotPath.Replace(Path.DirectorySeparatorChar, '/'), token: token);
+                                                                    "file://" + imgMugshotPath.Replace(Path.DirectorySeparatorChar, '/'), token: token).ConfigureAwait(false);
                         }
                         finally
                         {
                             // </mugshot>
-                            await objMugshotElement.DisposeAsync();
+                            await objMugshotElement.DisposeAsync().ConfigureAwait(false);
                         }
                     }
                 }
                 finally
                 {
                     // </othermugshots>
-                    await objOtherMugshotsElement.DisposeAsync();
+                    await objOtherMugshotsElement.DisposeAsync().ConfigureAwait(false);
                 }
             }
         }

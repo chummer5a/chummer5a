@@ -183,27 +183,27 @@ namespace Chummer
             if (objWriter == null)
                 return;
             // <aiprogram>
-            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("aiprogram");
+            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("aiprogram").ConfigureAwait(false);
             try
             {
-                await objWriter.WriteElementStringAsync("guid", InternalId);
-                await objWriter.WriteElementStringAsync("sourceid", SourceIDString);
-                await objWriter.WriteElementStringAsync("name", await DisplayNameShortAsync(strLanguageToPrint));
-                await objWriter.WriteElementStringAsync("fullname", CurrentDisplayNameShort);
-                await objWriter.WriteElementStringAsync("name_english", Name);
-                if (string.IsNullOrEmpty(_strRequiresProgram) || _strRequiresProgram == await LanguageManager.GetStringAsync("String_None", strLanguageToPrint))
-                    await objWriter.WriteElementStringAsync("requiresprogram", await LanguageManager.GetStringAsync("String_None", strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("guid", InternalId).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("sourceid", SourceIDString).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("name", await DisplayNameShortAsync(strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("fullname", CurrentDisplayNameShort).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("name_english", Name).ConfigureAwait(false);
+                if (string.IsNullOrEmpty(_strRequiresProgram) || _strRequiresProgram == await LanguageManager.GetStringAsync("String_None", strLanguageToPrint).ConfigureAwait(false))
+                    await objWriter.WriteElementStringAsync("requiresprogram", await LanguageManager.GetStringAsync("String_None", strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
                 else
-                    await objWriter.WriteElementStringAsync("requiresprogram", await DisplayRequiresProgramAsync(strLanguageToPrint));
-                await objWriter.WriteElementStringAsync("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint));
-                await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint));
+                    await objWriter.WriteElementStringAsync("requiresprogram", await DisplayRequiresProgramAsync(strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
                 if (GlobalSettings.PrintNotes)
-                    await objWriter.WriteElementStringAsync("notes", Notes);
+                    await objWriter.WriteElementStringAsync("notes", Notes).ConfigureAwait(false);
             }
             finally
             {
                 // </aiprogram>
-                await objBaseElement.DisposeAsync();
+                await objBaseElement.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -290,16 +290,16 @@ namespace Chummer
             // Get the translated name if applicable.
             if (!strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
             {
-                XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token);
-                strReturn = objNode != null ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token))?.Value ?? Name : Name;
+                XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
+                strReturn = objNode != null ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value ?? Name : Name;
             }
 
             if (!string.IsNullOrEmpty(Extra))
             {
                 string strExtra = Extra;
                 if (!strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
-                    strExtra = await _objCharacter.TranslateExtraAsync(Extra, strLanguage, token: token);
-                strReturn += await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token) + '(' + strExtra + ')';
+                    strExtra = await _objCharacter.TranslateExtraAsync(Extra, strLanguage, token: token).ConfigureAwait(false);
+                strReturn += await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false) + '(' + strExtra + ')';
             }
             return strReturn;
         }
@@ -343,11 +343,11 @@ namespace Chummer
         public async ValueTask<string> DisplayRequiresProgramAsync(string strLanguage, CancellationToken token = default)
         {
             if (string.IsNullOrEmpty(RequiresProgram))
-                return await LanguageManager.GetStringAsync("String_None", strLanguage, token: token);
+                return await LanguageManager.GetStringAsync("String_None", strLanguage, token: token).ConfigureAwait(false);
             if (strLanguage == GlobalSettings.Language)
                 return RequiresProgram;
 
-            return (await _objCharacter.LoadDataXPathAsync("programs.xml", strLanguage, token: token)).SelectSingleNode("/chummer/programs/program[name = " + RequiresProgram.CleanXPath() + "]/translate")?.Value ?? RequiresProgram;
+            return (await _objCharacter.LoadDataXPathAsync("programs.xml", strLanguage, token: token).ConfigureAwait(false)).SelectSingleNode("/chummer/programs/program[name = " + RequiresProgram.CleanXPath() + "]/translate")?.Value ?? RequiresProgram;
         }
 
         /// <summary>
@@ -402,9 +402,9 @@ namespace Chummer
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
-            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token);
+            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
             string s = objNode != null
-                ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage", token: token))?.Value ?? Page
+                ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage", token: token).ConfigureAwait(false))?.Value ?? Page
                 : Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
@@ -443,7 +443,7 @@ namespace Chummer
             _objCachedMyXmlNode = (blnSync
                     // ReSharper disable once MethodHasAsyncOverload
                     ? _objCharacter.LoadData("programs.xml", strLanguage, token: token)
-                    : await _objCharacter.LoadDataAsync("programs.xml", strLanguage, token: token))
+                    : await _objCharacter.LoadDataAsync("programs.xml", strLanguage, token: token).ConfigureAwait(false))
                 .SelectSingleNode(SourceID == Guid.Empty
                                       ? "/chummer/programs/program[name = "
                                         + Name.CleanXPath() + ']'
@@ -467,7 +467,7 @@ namespace Chummer
             _objCachedMyXPathNode = (blnSync
                     // ReSharper disable once MethodHasAsyncOverload
                     ? _objCharacter.LoadDataXPath("programs.xml", strLanguage, token: token)
-                    : await _objCharacter.LoadDataXPathAsync("programs.xml", strLanguage, token: token))
+                    : await _objCharacter.LoadDataXPathAsync("programs.xml", strLanguage, token: token).ConfigureAwait(false))
                 .SelectSingleNode(SourceID == Guid.Empty
                                       ? "/chummer/programs/program[name = "
                                         + Name.CleanXPath() + ']'

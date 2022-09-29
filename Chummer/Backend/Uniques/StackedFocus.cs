@@ -290,71 +290,71 @@ namespace Chummer
                 }
 
                 decimal decKarmaMultiplier;
-                CharacterSettings objSettings = await _objCharacter.GetSettingsAsync(token);
+                CharacterSettings objSettings = await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false);
                 switch (strFocusName)
                 {
                     case "Qi Focus":
-                        decKarmaMultiplier = await objSettings.GetKarmaQiFocusAsync(token);
+                        decKarmaMultiplier = await objSettings.GetKarmaQiFocusAsync(token).ConfigureAwait(false);
                         break;
 
                     case "Sustaining Focus":
-                        decKarmaMultiplier = await objSettings.GetKarmaSustainingFocusAsync(token);
+                        decKarmaMultiplier = await objSettings.GetKarmaSustainingFocusAsync(token).ConfigureAwait(false);
                         break;
 
                     case "Counterspelling Focus":
-                        decKarmaMultiplier = await objSettings.GetKarmaCounterspellingFocusAsync(token);
+                        decKarmaMultiplier = await objSettings.GetKarmaCounterspellingFocusAsync(token).ConfigureAwait(false);
                         break;
 
                     case "Banishing Focus":
-                        decKarmaMultiplier = await objSettings.GetKarmaBanishingFocusAsync(token);
+                        decKarmaMultiplier = await objSettings.GetKarmaBanishingFocusAsync(token).ConfigureAwait(false);
                         break;
 
                     case "Binding Focus":
-                        decKarmaMultiplier = await objSettings.GetKarmaBindingFocusAsync(token);
+                        decKarmaMultiplier = await objSettings.GetKarmaBindingFocusAsync(token).ConfigureAwait(false);
                         break;
 
                     case "Weapon Focus":
-                        decKarmaMultiplier = await objSettings.GetKarmaWeaponFocusAsync(token);
+                        decKarmaMultiplier = await objSettings.GetKarmaWeaponFocusAsync(token).ConfigureAwait(false);
                         break;
 
                     case "Spellcasting Focus":
-                        decKarmaMultiplier = await objSettings.GetKarmaSpellcastingFocusAsync(token);
+                        decKarmaMultiplier = await objSettings.GetKarmaSpellcastingFocusAsync(token).ConfigureAwait(false);
                         break;
 
                     case "Summoning Focus":
-                        decKarmaMultiplier = await objSettings.GetKarmaSummoningFocusAsync(token);
+                        decKarmaMultiplier = await objSettings.GetKarmaSummoningFocusAsync(token).ConfigureAwait(false);
                         break;
 
                     case "Alchemical Focus":
-                        decKarmaMultiplier = await objSettings.GetKarmaAlchemicalFocusAsync(token);
+                        decKarmaMultiplier = await objSettings.GetKarmaAlchemicalFocusAsync(token).ConfigureAwait(false);
                         break;
 
                     case "Centering Focus":
-                        decKarmaMultiplier = await objSettings.GetKarmaCenteringFocusAsync(token);
+                        decKarmaMultiplier = await objSettings.GetKarmaCenteringFocusAsync(token).ConfigureAwait(false);
                         break;
 
                     case "Masking Focus":
-                        decKarmaMultiplier = await objSettings.GetKarmaMaskingFocusAsync(token);
+                        decKarmaMultiplier = await objSettings.GetKarmaMaskingFocusAsync(token).ConfigureAwait(false);
                         break;
 
                     case "Disenchanting Focus":
-                        decKarmaMultiplier = await objSettings.GetKarmaDisenchantingFocusAsync(token);
+                        decKarmaMultiplier = await objSettings.GetKarmaDisenchantingFocusAsync(token).ConfigureAwait(false);
                         break;
 
                     case "Power Focus":
-                        decKarmaMultiplier = await objSettings.GetKarmaPowerFocusAsync(token);
+                        decKarmaMultiplier = await objSettings.GetKarmaPowerFocusAsync(token).ConfigureAwait(false);
                         break;
 
                     case "Flexible Signature Focus":
-                        decKarmaMultiplier = await objSettings.GetKarmaFlexibleSignatureFocusAsync(token);
+                        decKarmaMultiplier = await objSettings.GetKarmaFlexibleSignatureFocusAsync(token).ConfigureAwait(false);
                         break;
 
                     case "Ritual Spellcasting Focus":
-                        decKarmaMultiplier = await objSettings.GetKarmaRitualSpellcastingFocusAsync(token);
+                        decKarmaMultiplier = await objSettings.GetKarmaRitualSpellcastingFocusAsync(token).ConfigureAwait(false);
                         break;
 
                     case "Spell Shaping Focus":
-                        decKarmaMultiplier = await objSettings.GetKarmaSpellShapingFocusAsync(token);
+                        decKarmaMultiplier = await objSettings.GetKarmaSpellShapingFocusAsync(token).ConfigureAwait(false);
                         break;
 
                     default:
@@ -362,7 +362,7 @@ namespace Chummer
                         break;
                 }
 
-                await (await _objCharacter.GetImprovementsAsync(token)).ForEachAsync(objLoopImprovement =>
+                await (await _objCharacter.GetImprovementsAsync(token).ConfigureAwait(false)).ForEachAsync(objLoopImprovement =>
                 {
                     if (objLoopImprovement.ImprovedName != strFocusName
                         || (!string.IsNullOrEmpty(objLoopImprovement.Target)
@@ -379,7 +379,7 @@ namespace Chummer
                             decKarmaMultiplier += objLoopImprovement.Value;
                             break;
                     }
-                }, token: token);
+                }, token: token).ConfigureAwait(false);
 
                 decCost += objFocus.Rating * decKarmaMultiplier + decExtraKarmaCost;
             }
@@ -418,7 +418,7 @@ namespace Chummer
             {
                 foreach (Gear objGear in Gear)
                 {
-                    sbdReturn.Append(await objGear.DisplayNameAsync(objCulture, strLanguage, token: token)).Append(", ");
+                    sbdReturn.Append(await objGear.DisplayNameAsync(objCulture, strLanguage, token: token).ConfigureAwait(false)).Append(", ");
                 }
 
                 // Remove the trailing comma.

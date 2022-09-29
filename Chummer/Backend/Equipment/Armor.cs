@@ -941,85 +941,85 @@ namespace Chummer.Backend.Equipment
             if (objWriter == null)
                 return;
             // <armor>
-            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("armor");
+            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("armor").ConfigureAwait(false);
             try
             {
-                await objWriter.WriteElementStringAsync("guid", InternalId);
-                await objWriter.WriteElementStringAsync("sourceid", SourceIDString);
-                await objWriter.WriteElementStringAsync("name", await DisplayNameShortAsync(strLanguageToPrint));
-                await objWriter.WriteElementStringAsync("fullname", await DisplayNameAsync(objCulture, strLanguageToPrint));
-                await objWriter.WriteElementStringAsync("name_english", Name);
-                await objWriter.WriteElementStringAsync("category", DisplayCategory(strLanguageToPrint));
-                await objWriter.WriteElementStringAsync("category_english", Category);
-                await objWriter.WriteElementStringAsync("armor", DisplayArmorValue);
-                await objWriter.WriteElementStringAsync("totalarmorcapacity", TotalArmorCapacity(objCulture));
-                await objWriter.WriteElementStringAsync("calculatedcapacity", CalculatedCapacity(objCulture));
-                await objWriter.WriteElementStringAsync("capacityremaining", CapacityRemaining.ToString(objCulture));
-                await objWriter.WriteElementStringAsync("avail", TotalAvail(objCulture, strLanguageToPrint));
-                await objWriter.WriteElementStringAsync("cost", TotalCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
-                await objWriter.WriteElementStringAsync("owncost", OwnCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
-                await objWriter.WriteElementStringAsync("weight", TotalWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture));
-                await objWriter.WriteElementStringAsync("ownweight", OwnWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture));
-                await objWriter.WriteElementStringAsync("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint));
-                await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint));
-                await objWriter.WriteElementStringAsync("armorname", CustomName);
-                await objWriter.WriteElementStringAsync("equipped", Equipped.ToString(GlobalSettings.InvariantCultureInfo));
-                await objWriter.WriteElementStringAsync("ratinglabel", RatingLabel);
-                await objWriter.WriteElementStringAsync("wirelesson", WirelessOn.ToString(GlobalSettings.InvariantCultureInfo));
+                await objWriter.WriteElementStringAsync("guid", InternalId).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("sourceid", SourceIDString).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("name", await DisplayNameShortAsync(strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("fullname", await DisplayNameAsync(objCulture, strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("name_english", Name).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("category", DisplayCategory(strLanguageToPrint)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("category_english", Category).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("armor", DisplayArmorValue).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("totalarmorcapacity", TotalArmorCapacity(objCulture)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("calculatedcapacity", CalculatedCapacity(objCulture)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("capacityremaining", CapacityRemaining.ToString(objCulture)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("avail", TotalAvail(objCulture, strLanguageToPrint)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("cost", TotalCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("owncost", OwnCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("weight", TotalWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("ownweight", OwnWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("armorname", CustomName).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("equipped", Equipped.ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("ratinglabel", RatingLabel).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("wirelesson", WirelessOn.ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
                 // <armormods>
-                XmlElementWriteHelper objArmorModsElement = await objWriter.StartElementAsync("armormods");
+                XmlElementWriteHelper objArmorModsElement = await objWriter.StartElementAsync("armormods").ConfigureAwait(false);
                 try
                 {
                     foreach (ArmorMod objMod in ArmorMods)
                     {
-                        await objMod.Print(objWriter, objCulture, strLanguageToPrint);
+                        await objMod.Print(objWriter, objCulture, strLanguageToPrint).ConfigureAwait(false);
                     }
                 }
                 finally
                 {
                     // </armormods>
-                    await objArmorModsElement.DisposeAsync();
+                    await objArmorModsElement.DisposeAsync().ConfigureAwait(false);
                 }
                 // <gears>
-                XmlElementWriteHelper objGearsElement = await objWriter.StartElementAsync("gears");
+                XmlElementWriteHelper objGearsElement = await objWriter.StartElementAsync("gears").ConfigureAwait(false);
                 try
                 {
                     foreach (Gear objGear in GearChildren)
                     {
-                        await objGear.Print(objWriter, objCulture, strLanguageToPrint);
+                        await objGear.Print(objWriter, objCulture, strLanguageToPrint).ConfigureAwait(false);
                     }
                 }
                 finally
                 {
                     // </gears>
-                    await objGearsElement.DisposeAsync();
+                    await objGearsElement.DisposeAsync().ConfigureAwait(false);
                 }
-                await objWriter.WriteElementStringAsync("extra", await _objCharacter.TranslateExtraAsync(Extra, strLanguageToPrint));
-                await objWriter.WriteElementStringAsync("location", Location?.DisplayNameShort(strLanguageToPrint));
-                await objWriter.WriteElementStringAsync("attack", this.GetTotalMatrixAttribute("Attack").ToString(objCulture));
-                await objWriter.WriteElementStringAsync("sleaze", this.GetTotalMatrixAttribute("Sleaze").ToString(objCulture));
+                await objWriter.WriteElementStringAsync("extra", await _objCharacter.TranslateExtraAsync(Extra, strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("location", Location?.DisplayNameShort(strLanguageToPrint)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("attack", this.GetTotalMatrixAttribute("Attack").ToString(objCulture)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("sleaze", this.GetTotalMatrixAttribute("Sleaze").ToString(objCulture)).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("dataprocessing",
-                                                        this.GetTotalMatrixAttribute("Data Processing").ToString(objCulture));
-                await objWriter.WriteElementStringAsync("firewall", this.GetTotalMatrixAttribute("Firewall").ToString(objCulture));
+                                                        this.GetTotalMatrixAttribute("Data Processing").ToString(objCulture)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("firewall", this.GetTotalMatrixAttribute("Firewall").ToString(objCulture)).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("devicerating",
-                                                        this.GetTotalMatrixAttribute("Device Rating").ToString(objCulture));
+                                                        this.GetTotalMatrixAttribute("Device Rating").ToString(objCulture)).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("programlimit",
-                                                        this.GetTotalMatrixAttribute("Program Limit").ToString(objCulture));
-                await objWriter.WriteElementStringAsync("iscommlink", IsCommlink.ToString(GlobalSettings.InvariantCultureInfo));
-                await objWriter.WriteElementStringAsync("isprogram", IsProgram.ToString(GlobalSettings.InvariantCultureInfo));
+                                                        this.GetTotalMatrixAttribute("Program Limit").ToString(objCulture)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("iscommlink", IsCommlink.ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("isprogram", IsProgram.ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("active",
-                                                        this.IsActiveCommlink(_objCharacter).ToString(GlobalSettings.InvariantCultureInfo));
+                                                        this.IsActiveCommlink(_objCharacter).ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("homenode",
-                                                        this.IsHomeNode(_objCharacter).ToString(GlobalSettings.InvariantCultureInfo));
-                await objWriter.WriteElementStringAsync("conditionmonitor", MatrixCM.ToString(objCulture));
-                await objWriter.WriteElementStringAsync("matrixcmfilled", MatrixCMFilled.ToString(objCulture));
+                                                        this.IsHomeNode(_objCharacter).ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("conditionmonitor", MatrixCM.ToString(objCulture)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("matrixcmfilled", MatrixCMFilled.ToString(objCulture)).ConfigureAwait(false);
                 if (GlobalSettings.PrintNotes)
-                    await objWriter.WriteElementStringAsync("notes", Notes);
+                    await objWriter.WriteElementStringAsync("notes", Notes).ConfigureAwait(false);
             }
             finally
             {
                 // </armor>
-                await objBaseElement.DisposeAsync();
+                await objBaseElement.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1402,9 +1402,9 @@ namespace Chummer.Backend.Equipment
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
-            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token);
+            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
             string s = objNode != null
-                ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage", token: token))?.Value ?? Page
+                ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage", token: token).ConfigureAwait(false))?.Value ?? Page
                 : Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
@@ -2197,8 +2197,8 @@ namespace Chummer.Backend.Equipment
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
-            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token);
-            return objNode != null ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token))?.Value ?? Name : Name;
+            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
+            return objNode != null ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value ?? Name : Name;
         }
 
         /// <summary>
@@ -2222,14 +2222,14 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public async ValueTask<string> DisplayNameAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
-            string strReturn = await DisplayNameShortAsync(strLanguage, token);
-            string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token);
+            string strReturn = await DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false);
             if (!string.IsNullOrEmpty(CustomName))
                 strReturn += strSpace + "(\"" + CustomName + "\")";
             if (Rating > 0)
-                strReturn += strSpace + '(' + await LanguageManager.GetStringAsync(RatingLabel, strLanguage, token: token) + strSpace + Rating.ToString(objCulture) + ')';
+                strReturn += strSpace + '(' + await LanguageManager.GetStringAsync(RatingLabel, strLanguage, token: token).ConfigureAwait(false) + strSpace + Rating.ToString(objCulture) + ')';
             if (!string.IsNullOrEmpty(Extra))
-                strReturn += strSpace + '(' + await _objCharacter.TranslateExtraAsync(Extra, strLanguage, token: token) + ')';
+                strReturn += strSpace + '(' + await _objCharacter.TranslateExtraAsync(Extra, strLanguage, token: token).ConfigureAwait(false) + ')';
             return strReturn;
         }
 
@@ -2260,7 +2260,7 @@ namespace Chummer.Backend.Equipment
             _objCachedMyXmlNode = (blnSync
                     // ReSharper disable once MethodHasAsyncOverload
                     ? _objCharacter.LoadData("armor.xml", strLanguage, token: token)
-                    : await _objCharacter.LoadDataAsync("armor.xml", strLanguage, token: token))
+                    : await _objCharacter.LoadDataAsync("armor.xml", strLanguage, token: token).ConfigureAwait(false))
                 .SelectSingleNode(SourceID == Guid.Empty
                                       ? "/chummer/armors/armor[name = "
                                         + Name.CleanXPath() + ']'
@@ -2284,7 +2284,7 @@ namespace Chummer.Backend.Equipment
             _objCachedMyXPathNode = (blnSync
                     // ReSharper disable once MethodHasAsyncOverload
                     ? _objCharacter.LoadDataXPath("armor.xml", strLanguage, token: token)
-                    : await _objCharacter.LoadDataXPathAsync("armor.xml", strLanguage, token: token))
+                    : await _objCharacter.LoadDataXPathAsync("armor.xml", strLanguage, token: token).ConfigureAwait(false))
                 .SelectSingleNode(SourceID == Guid.Empty
                                       ? "/chummer/armors/armor[name = "
                                         + Name.CleanXPath() + ']'

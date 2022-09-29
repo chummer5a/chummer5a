@@ -201,7 +201,7 @@ namespace Chummer
 
                 Action<Form> funcBegin = BeginShow;
                 frmForm.BeginInvoke(funcBegin, frmForm);
-                return await objCompletionSource.Task;
+                return await objCompletionSource.Task.ConfigureAwait(false);
             }
         }
 
@@ -215,7 +215,7 @@ namespace Chummer
         public static Task<DialogResult> ShowDialogSafeAsync(this Form frmForm, Character objCharacter, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            return Program.GetFormForDialogAsync(objCharacter, token).ContinueWith(async x => await frmForm.ShowDialogSafeAsync(await x, token), token).Unwrap();
+            return Program.GetFormForDialogAsync(objCharacter, token).ContinueWith(async x => await frmForm.ShowDialogSafeAsync(await x.ConfigureAwait(false), token).ConfigureAwait(false), token).Unwrap();
         }
 
         /// <summary>
@@ -582,7 +582,7 @@ namespace Chummer
             {
                 if (objControl == null)
                 {
-                    await Task.Run(funcToRun, token);
+                    await Task.Run(funcToRun, token).ConfigureAwait(false);
                 }
 #if USE_INVOKE
                 else if (!objControl.Disposing && !objControl.IsDisposed)
@@ -666,7 +666,7 @@ namespace Chummer
             {
                 if (objControl == null)
                 {
-                    await Task.Run(() => funcToRun(null), token);
+                    await Task.Run(() => funcToRun(null), token).ConfigureAwait(false);
                 }
 #if USE_INVOKE
                 else if (!objControl.Disposing && !objControl.IsDisposed)
@@ -750,7 +750,7 @@ namespace Chummer
             {
                 if (objControl == null)
                 {
-                    await Task.Run(() => funcToRun(token), token);
+                    await Task.Run(() => funcToRun(token), token).ConfigureAwait(false);
                 }
 #if USE_INVOKE
                 else if (!objControl.Disposing && !objControl.IsDisposed)
@@ -834,7 +834,7 @@ namespace Chummer
             {
                 if (objControl == null)
                 {
-                    await Task.Run(() => funcToRun(null, token), token);
+                    await Task.Run(() => funcToRun(null, token), token).ConfigureAwait(false);
                 }
 #if USE_INVOKE
                 else if (!objControl.Disposing && !objControl.IsDisposed)
@@ -1599,14 +1599,14 @@ namespace Chummer
                 {
                     IntPtr _ = objControl.Handle; // accessing Handle forces its creation
                 }
-            }, token);
+            }, token).ConfigureAwait(false);
             await funcAsyncDataGetter.Invoke(objDataSource)
                                      .ContinueWith(
                                          x => objControl.DoThreadSafeAsync(
                                              y => funcControlSetter.Invoke(y, x.Result), objGetterToken),
-                                         objGetterToken).Unwrap();
+                                         objGetterToken).Unwrap().ConfigureAwait(false);
             objDataSource.PropertyChanged += OnPropertyChangedAsync;
-            await Utils.RunOnMainThreadAsync(() => objControl.Disposed += (o, args) => objDataSource.PropertyChanged -= OnPropertyChangedAsync, token);
+            await Utils.RunOnMainThreadAsync(() => objControl.Disposed += (o, args) => objDataSource.PropertyChanged -= OnPropertyChangedAsync, token).ConfigureAwait(false);
             async void OnPropertyChangedAsync(object sender, PropertyChangedEventArgs e)
             {
                 if (e.PropertyName == strDataMember && !objGetterToken.IsCancellationRequested)
@@ -1615,7 +1615,7 @@ namespace Chummer
                                              .ContinueWith(
                                                  x => objControl.DoThreadSafeAsync(
                                                      y => funcControlSetter.Invoke(y, x.Result), objGetterToken),
-                                                 objGetterToken).Unwrap();
+                                                 objGetterToken).Unwrap().ConfigureAwait(false);
                 }
             }
         }

@@ -106,7 +106,7 @@ namespace Chummer.Backend.Equipment
             _objCachedMyXmlNode = (blnSync
                     // ReSharper disable once MethodHasAsyncOverload
                     ? _objCharacter.LoadData(GetDataFileNameFromImprovementSource(_eSource), strLanguage, token: token)
-                    : await _objCharacter.LoadDataAsync(GetDataFileNameFromImprovementSource(_eSource), strLanguage, token: token))
+                    : await _objCharacter.LoadDataAsync(GetDataFileNameFromImprovementSource(_eSource), strLanguage, token: token).ConfigureAwait(false))
                 .SelectSingleNode(SourceId == Guid.Empty
                                       ? "/chummer/grades/grade[name = "
                                         + Name.CleanXPath() + ']'
@@ -129,7 +129,7 @@ namespace Chummer.Backend.Equipment
                     // ReSharper disable once MethodHasAsyncOverload
                     ? _objCharacter.LoadDataXPath(GetDataFileNameFromImprovementSource(_eSource), strLanguage, token: token)
                     : await _objCharacter.LoadDataXPathAsync(GetDataFileNameFromImprovementSource(_eSource),
-                                                             strLanguage, token: token))
+                                                             strLanguage, token: token).ConfigureAwait(false))
                 .SelectSingleNode(SourceId == Guid.Empty
                                       ? "/chummer/grades/grade[name = "
                                         + Name.CleanXPath() + ']'
@@ -236,9 +236,9 @@ namespace Chummer.Backend.Equipment
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
-            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token);
+            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
             return objNode != null
-                ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token))?.Value ?? Name
+                ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value ?? Name
                 : Name;
         }
 

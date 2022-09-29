@@ -374,42 +374,42 @@ namespace Chummer
                 return;
 
             // <power>
-            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("power");
+            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("power").ConfigureAwait(false);
             try
             {
-                await objWriter.WriteElementStringAsync("guid", InternalId);
-                await objWriter.WriteElementStringAsync("sourceid", SourceIDString);
-                await objWriter.WriteElementStringAsync("name", await DisplayNameShortAsync(strLanguageToPrint));
-                await objWriter.WriteElementStringAsync("fullname", await DisplayNameAsync(strLanguageToPrint));
-                await objWriter.WriteElementStringAsync("extra", await CharacterObject.TranslateExtraAsync(Extra, strLanguageToPrint));
-                await objWriter.WriteElementStringAsync("pointsperlevel", PointsPerLevel.ToString(objCulture));
-                await objWriter.WriteElementStringAsync("adeptway", AdeptWayDiscount.ToString(objCulture));
-                await objWriter.WriteElementStringAsync("rating", LevelsEnabled ? TotalRating.ToString(objCulture) : "0");
-                await objWriter.WriteElementStringAsync("totalpoints", PowerPoints.ToString(objCulture));
-                await objWriter.WriteElementStringAsync("action", await DisplayActionMethodAsync(strLanguageToPrint));
-                await objWriter.WriteElementStringAsync("source", await CharacterObject.LanguageBookShortAsync(Source, strLanguageToPrint));
-                await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("guid", InternalId).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("sourceid", SourceIDString).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("name", await DisplayNameShortAsync(strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("fullname", await DisplayNameAsync(strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("extra", await CharacterObject.TranslateExtraAsync(Extra, strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("pointsperlevel", PointsPerLevel.ToString(objCulture)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("adeptway", AdeptWayDiscount.ToString(objCulture)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("rating", LevelsEnabled ? TotalRating.ToString(objCulture) : "0").ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("totalpoints", PowerPoints.ToString(objCulture)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("action", await DisplayActionMethodAsync(strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("source", await CharacterObject.LanguageBookShortAsync(Source, strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
                 if (GlobalSettings.PrintNotes)
-                    await objWriter.WriteElementStringAsync("notes", Notes);
+                    await objWriter.WriteElementStringAsync("notes", Notes).ConfigureAwait(false);
                 // <enhancements>
-                XmlElementWriteHelper objEnhancementsElement = await objWriter.StartElementAsync("enhancements");
+                XmlElementWriteHelper objEnhancementsElement = await objWriter.StartElementAsync("enhancements").ConfigureAwait(false);
                 try
                 {
                     foreach (Enhancement objEnhancement in Enhancements)
                     {
-                        await objEnhancement.Print(objWriter, strLanguageToPrint);
+                        await objEnhancement.Print(objWriter, strLanguageToPrint).ConfigureAwait(false);
                     }
                 }
                 finally
                 {
                     // </enhancements>
-                    await objEnhancementsElement.DisposeAsync();
+                    await objEnhancementsElement.DisposeAsync().ConfigureAwait(false);
                 }
             }
             finally
             {
                 // </power>
-                await objBaseElement.DisposeAsync();
+                await objBaseElement.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -555,8 +555,8 @@ namespace Chummer
 
             if (!strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
             {
-                XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token);
-                strReturn = objNode != null ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token))?.Value ?? Name : Name;
+                XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
+                strReturn = objNode != null ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value ?? Name : Name;
             }
 
             return strReturn;
@@ -591,12 +591,12 @@ namespace Chummer
         /// </summary>
         public async ValueTask<string> DisplayNameAsync(string strLanguage, CancellationToken token = default)
         {
-            string strReturn = await DisplayNameShortAsync(strLanguage, token);
+            string strReturn = await DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
 
             if (!string.IsNullOrEmpty(Extra))
             {
                 // Attempt to retrieve the CharacterAttribute name.
-                strReturn += await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token) + '(' + await CharacterObject.TranslateExtraAsync(Extra, strLanguage, token: token) + ')';
+                strReturn += await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false) + '(' + await CharacterObject.TranslateExtraAsync(Extra, strLanguage, token: token).ConfigureAwait(false) + ')';
             }
 
             return strReturn;
@@ -700,7 +700,7 @@ namespace Chummer
         public async ValueTask<int> GetRatingAsync(CancellationToken token = default)
         {
             //TODO: This isn't super safe, but it's more reliable than checking it at load as improvement effects like Essence Loss take effect after powers are loaded. Might need another solution.
-            int intTotalMax = await GetTotalMaximumLevelsAsync(token);
+            int intTotalMax = await GetTotalMaximumLevelsAsync(token).ConfigureAwait(false);
             if (_intRating <= intTotalMax)
                 return _intRating;
             return _intRating = intTotalMax;
@@ -720,7 +720,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<int> GetTotalRatingAsync(CancellationToken token = default)
         {
-            return Math.Min(await GetRatingAsync(token) + await GetFreeLevelsAsync(token), await GetTotalMaximumLevelsAsync(token));
+            return Math.Min(await GetRatingAsync(token).ConfigureAwait(false) + await GetFreeLevelsAsync(token).ConfigureAwait(false), await GetTotalMaximumLevelsAsync(token).ConfigureAwait(false));
         }
 
         public bool DoesNotHaveFreeLevels => FreeLevels == 0;
@@ -786,9 +786,9 @@ namespace Chummer
             decimal decExtraCost = FreePoints;
             // Rating does not include free levels from improvements, and those free levels can be used to buy the first level of a power so that Qi Foci, so need to check for those first
             int intReturn = (await ImprovementManager
-                    .GetCachedImprovementListForValueOfAsync(CharacterObject,
-                                                             Improvement.ImprovementType.AdeptPowerFreeLevels,
-                                                             Name, token: token))
+                                   .GetCachedImprovementListForValueOfAsync(CharacterObject,
+                                                                            Improvement.ImprovementType.AdeptPowerFreeLevels,
+                                                                            Name, token: token).ConfigureAwait(false))
                             .Sum(objImprovement => objImprovement.UniqueName == Extra,
                                  objImprovement => objImprovement.Rating);
             // The power has an extra cost, so free PP from things like Qi Foci have to be charged first.
@@ -819,7 +819,7 @@ namespace Chummer
                 }
             }
 
-            return _intCachedFreeLevels = Math.Min(intReturn, MAGAttributeObject != null ? await MAGAttributeObject.GetTotalValueAsync(token) : 0);
+            return _intCachedFreeLevels = Math.Min(intReturn, MAGAttributeObject != null ? await MAGAttributeObject.GetTotalValueAsync(token).ConfigureAwait(false) : 0);
         }
 
         private decimal _decCachedPowerPoints = decimal.MinValue;
@@ -863,15 +863,15 @@ namespace Chummer
             if (_decCachedPowerPoints != decimal.MinValue)
                 return _decCachedPowerPoints;
 
-            int intFreeLevels = await GetFreeLevelsAsync(token);
-            int intRating = await GetRatingAsync(token);
+            int intFreeLevels = await GetFreeLevelsAsync(token).ConfigureAwait(false);
+            int intRating = await GetRatingAsync(token).ConfigureAwait(false);
             if (intRating == 0 || !LevelsEnabled && intFreeLevels > 0)
             {
                 return _decCachedPowerPoints = 0;
             }
 
             decimal decReturn;
-            decimal decFreePoints = await GetFreePointsAsync(token);
+            decimal decFreePoints = await GetFreePointsAsync(token).ConfigureAwait(false);
             if (intFreeLevels * PointsPerLevel >= decFreePoints)
             {
                 decReturn = intRating * PointsPerLevel;
@@ -879,7 +879,7 @@ namespace Chummer
             }
             else
             {
-                decReturn = await GetTotalRatingAsync(token) * PointsPerLevel + ExtraPointCost;
+                decReturn = await GetTotalRatingAsync(token).ConfigureAwait(false) * PointsPerLevel + ExtraPointCost;
                 decReturn -= decFreePoints;
             }
 
@@ -931,9 +931,9 @@ namespace Chummer
         public async ValueTask<decimal> GetFreePointsAsync(CancellationToken token = default)
         {
             int intRating = (await ImprovementManager
-                    .GetCachedImprovementListForValueOfAsync(CharacterObject,
-                                                             Improvement.ImprovementType.AdeptPowerFreePoints,
-                                                             Name, token: token))
+                                   .GetCachedImprovementListForValueOfAsync(CharacterObject,
+                                                                            Improvement.ImprovementType.AdeptPowerFreePoints,
+                                                                            Name, token: token).ConfigureAwait(false))
                             .Sum(objImprovement => objImprovement.UniqueName == Extra,
                                  objImprovement => objImprovement.Rating);
             return intRating * 0.25m;
@@ -982,9 +982,9 @@ namespace Chummer
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
-            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token);
+            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
             string s = objNode != null
-                ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage", token: token))?.Value ?? Page
+                ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage", token: token).ConfigureAwait(false))?.Value ?? Page
                 : Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
@@ -1192,23 +1192,23 @@ namespace Chummer
             if (intReturn == 0)
             {
                 // if unspecified, max rating = MAG
-                intReturn = MAGAttributeObject != null ? await MAGAttributeObject.GetTotalValueAsync(token) : 0;
+                intReturn = MAGAttributeObject != null ? await MAGAttributeObject.GetTotalValueAsync(token).ConfigureAwait(false) : 0;
             }
 
             if (BoostedSkill != null)
             {
-                int intBoostedSkillLearnedRating = await BoostedSkill.GetLearnedRatingAsync(token);
+                int intBoostedSkillLearnedRating = await BoostedSkill.GetLearnedRatingAsync(token).ConfigureAwait(false);
                 // +1 at the end so that division of 2 always rounds up, and integer division by 2 is significantly less expensive than decimal/double division
                 intReturn = Math.Min(intReturn, (intBoostedSkillLearnedRating + 1) / 2);
-                if (await (await CharacterObject.GetSettingsAsync(token)).GetIncreasedImprovedAbilityMultiplierAsync(token))
+                if (await (await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false)).GetIncreasedImprovedAbilityMultiplierAsync(token).ConfigureAwait(false))
                 {
                     intReturn += intBoostedSkillLearnedRating;
                 }
             }
 
-            if (!await CharacterObject.GetIgnoreRulesAsync(token))
+            if (!await CharacterObject.GetIgnoreRulesAsync(token).ConfigureAwait(false))
             {
-                intReturn = Math.Min(intReturn, MAGAttributeObject != null ? await MAGAttributeObject.GetTotalValueAsync(token) : 0);
+                intReturn = Math.Min(intReturn, MAGAttributeObject != null ? await MAGAttributeObject.GetTotalValueAsync(token).ConfigureAwait(false) : 0);
             }
 
             return intReturn;
@@ -1429,7 +1429,7 @@ namespace Chummer
             _objCachedMyXmlNode = (blnSync
                     // ReSharper disable once MethodHasAsyncOverload
                     ? CharacterObject.LoadData("powers.xml", strLanguage, token: token)
-                    : await CharacterObject.LoadDataAsync("powers.xml", strLanguage, token: token))
+                    : await CharacterObject.LoadDataAsync("powers.xml", strLanguage, token: token).ConfigureAwait(false))
                 .SelectSingleNode(SourceID == Guid.Empty
                                       ? "/chummer/powers/power[name = "
                                         + Name.CleanXPath() + ']'
@@ -1453,7 +1453,7 @@ namespace Chummer
             _objCachedMyXPathNode = (blnSync
                     // ReSharper disable once MethodHasAsyncOverload
                     ? CharacterObject.LoadDataXPath("powers.xml", strLanguage, token: token)
-                    : await CharacterObject.LoadDataXPathAsync("powers.xml", strLanguage, token: token))
+                    : await CharacterObject.LoadDataXPathAsync("powers.xml", strLanguage, token: token).ConfigureAwait(false))
                 .SelectSingleNode(SourceID == Guid.Empty
                                       ? "/chummer/powers/power[name = "
                                         + Name.CleanXPath() + ']'

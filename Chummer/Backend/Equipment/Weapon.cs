@@ -1375,145 +1375,145 @@ namespace Chummer.Backend.Equipment
             Gear objGear = lstGearToSearch.DeepFindById(ParentID);
 
             // <weapon>
-            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("weapon");
+            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("weapon").ConfigureAwait(false);
             try
             {
-                await objWriter.WriteElementStringAsync("guid", InternalId);
-                await objWriter.WriteElementStringAsync("sourceid", SourceIDString);
-                await objWriter.WriteElementStringAsync("name", await DisplayNameShortAsync(strLanguageToPrint));
-                await objWriter.WriteElementStringAsync("fullname", await DisplayNameAsync(objCulture, strLanguageToPrint));
-                await objWriter.WriteElementStringAsync("name_english", Name);
-                await objWriter.WriteElementStringAsync("category", await DisplayCategoryAsync(strLanguageToPrint));
-                await objWriter.WriteElementStringAsync("category_english", Category);
-                await objWriter.WriteElementStringAsync("type", RangeType);
-                await objWriter.WriteElementStringAsync("reach", TotalReach.ToString(objCulture));
-                await objWriter.WriteElementStringAsync("accuracy", await GetAccuracyAsync(objCulture, strLanguageToPrint));
-                await objWriter.WriteElementStringAsync("rawaccuracy", Accuracy);
-                await objWriter.WriteElementStringAsync("damage", await CalculatedDamageAsync(objCulture, strLanguageToPrint));
-                await objWriter.WriteElementStringAsync("damage_english", await CalculatedDamageAsync(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage));
-                await objWriter.WriteElementStringAsync("rawdamage", Damage);
-                await objWriter.WriteElementStringAsync("ap", await TotalAPAsync(objCulture, strLanguageToPrint));
-                await objWriter.WriteElementStringAsync("rawap", AP);
-                await objWriter.WriteElementStringAsync("mode", await CalculatedModeAsync(strLanguageToPrint));
-                await objWriter.WriteElementStringAsync("rc", await TotalRCAsync(objCulture, strLanguageToPrint));
-                await objWriter.WriteElementStringAsync("rawrc", RC);
-                await objWriter.WriteElementStringAsync("ammo", await CalculatedAmmoAsync(objCulture, strLanguageToPrint));
-                await objWriter.WriteElementStringAsync("ammo_english", await CalculatedAmmoAsync(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage));
-                await objWriter.WriteElementStringAsync("maxammo", Ammo);
-                await objWriter.WriteElementStringAsync("conceal", CalculatedConcealability(objCulture));
+                await objWriter.WriteElementStringAsync("guid", InternalId).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("sourceid", SourceIDString).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("name", await DisplayNameShortAsync(strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("fullname", await DisplayNameAsync(objCulture, strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("name_english", Name).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("category", await DisplayCategoryAsync(strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("category_english", Category).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("type", RangeType).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("reach", TotalReach.ToString(objCulture)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("accuracy", await GetAccuracyAsync(objCulture, strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("rawaccuracy", Accuracy).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("damage", await CalculatedDamageAsync(objCulture, strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("damage_english", await CalculatedDamageAsync(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage).ConfigureAwait(false)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("rawdamage", Damage).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("ap", await TotalAPAsync(objCulture, strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("rawap", AP).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("mode", await CalculatedModeAsync(strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("rc", await TotalRCAsync(objCulture, strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("rawrc", RC).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("ammo", await CalculatedAmmoAsync(objCulture, strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("ammo_english", await CalculatedAmmoAsync(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage).ConfigureAwait(false)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("maxammo", Ammo).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("conceal", CalculatedConcealability(objCulture)).ConfigureAwait(false);
                 if (objGear != null)
                 {
-                    await objWriter.WriteElementStringAsync("avail", await objGear.TotalAvailAsync(objCulture, strLanguageToPrint));
-                    await objWriter.WriteElementStringAsync("cost", objGear.TotalCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
-                    await objWriter.WriteElementStringAsync("owncost", objGear.OwnCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
-                    await objWriter.WriteElementStringAsync("weight", objGear.TotalWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture));
-                    await objWriter.WriteElementStringAsync("ownweight", objGear.OwnWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture));
+                    await objWriter.WriteElementStringAsync("avail", await objGear.TotalAvailAsync(objCulture, strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("cost", objGear.TotalCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture)).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("owncost", objGear.OwnCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture)).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("weight", objGear.TotalWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture)).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("ownweight", objGear.OwnWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture)).ConfigureAwait(false);
                 }
                 else
                 {
-                    await objWriter.WriteElementStringAsync("avail", TotalAvail(objCulture, strLanguageToPrint));
-                    await objWriter.WriteElementStringAsync("cost", TotalCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
-                    await objWriter.WriteElementStringAsync("owncost", OwnCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
-                    await objWriter.WriteElementStringAsync("weight", TotalWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture));
-                    await objWriter.WriteElementStringAsync("ownweight", OwnWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture));
+                    await objWriter.WriteElementStringAsync("avail", TotalAvail(objCulture, strLanguageToPrint)).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("cost", TotalCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture)).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("owncost", OwnCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture)).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("weight", TotalWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture)).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("ownweight", OwnWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture)).ConfigureAwait(false);
                 }
-                await objWriter.WriteElementStringAsync("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint));
-                await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint));
-                await objWriter.WriteElementStringAsync("weaponname", CustomName);
-                await objWriter.WriteElementStringAsync("location", Location?.DisplayName(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("weaponname", CustomName).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("location", Location?.DisplayName(strLanguageToPrint)).ConfigureAwait(false);
 
-                await objWriter.WriteElementStringAsync("attack", this.GetTotalMatrixAttribute("Attack").ToString(objCulture));
-                await objWriter.WriteElementStringAsync("sleaze", this.GetTotalMatrixAttribute("Sleaze").ToString(objCulture));
-                await objWriter.WriteElementStringAsync("dataprocessing", this.GetTotalMatrixAttribute("Data Processing").ToString(objCulture));
-                await objWriter.WriteElementStringAsync("firewall", this.GetTotalMatrixAttribute("Firewall").ToString(objCulture));
-                await objWriter.WriteElementStringAsync("devicerating", this.GetTotalMatrixAttribute("Device Rating").ToString(objCulture));
-                await objWriter.WriteElementStringAsync("programlimit", this.GetTotalMatrixAttribute("Program Limit").ToString(objCulture));
-                await objWriter.WriteElementStringAsync("iscommlink", IsCommlink.ToString(GlobalSettings.InvariantCultureInfo));
-                await objWriter.WriteElementStringAsync("isprogram", IsProgram.ToString(GlobalSettings.InvariantCultureInfo));
-                await objWriter.WriteElementStringAsync("active", this.IsActiveCommlink(_objCharacter).ToString(GlobalSettings.InvariantCultureInfo));
-                await objWriter.WriteElementStringAsync("homenode", this.IsHomeNode(_objCharacter).ToString(GlobalSettings.InvariantCultureInfo));
-                await objWriter.WriteElementStringAsync("conditionmonitor", MatrixCM.ToString(objCulture));
-                await objWriter.WriteElementStringAsync("matrixcmfilled", MatrixCMFilled.ToString(objCulture));
+                await objWriter.WriteElementStringAsync("attack", this.GetTotalMatrixAttribute("Attack").ToString(objCulture)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("sleaze", this.GetTotalMatrixAttribute("Sleaze").ToString(objCulture)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("dataprocessing", this.GetTotalMatrixAttribute("Data Processing").ToString(objCulture)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("firewall", this.GetTotalMatrixAttribute("Firewall").ToString(objCulture)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("devicerating", this.GetTotalMatrixAttribute("Device Rating").ToString(objCulture)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("programlimit", this.GetTotalMatrixAttribute("Program Limit").ToString(objCulture)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("iscommlink", IsCommlink.ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("isprogram", IsProgram.ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("active", this.IsActiveCommlink(_objCharacter).ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("homenode", this.IsHomeNode(_objCharacter).ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("conditionmonitor", MatrixCM.ToString(objCulture)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("matrixcmfilled", MatrixCMFilled.ToString(objCulture)).ConfigureAwait(false);
 
                 if (WeaponAccessories.Count > 0)
                 {
                     // <accessories>
-                    XmlElementWriteHelper objAccessoriesElement = await objWriter.StartElementAsync("accessories");
+                    XmlElementWriteHelper objAccessoriesElement = await objWriter.StartElementAsync("accessories").ConfigureAwait(false);
                     try
                     {
                         foreach (WeaponAccessory objAccessory in WeaponAccessories)
-                            await objAccessory.Print(objWriter, objCulture, strLanguageToPrint);
+                            await objAccessory.Print(objWriter, objCulture, strLanguageToPrint).ConfigureAwait(false);
                     }
                     finally
                     {
                         // </accessories>
-                        await objAccessoriesElement.DisposeAsync();
+                        await objAccessoriesElement.DisposeAsync().ConfigureAwait(false);
                     }
                 }
 
                 Dictionary<string, string> dictionaryRanges = GetRangeStrings(objCulture);
 
                 // <ranges>
-                XmlElementWriteHelper objRangesElement = await objWriter.StartElementAsync("ranges");
+                XmlElementWriteHelper objRangesElement = await objWriter.StartElementAsync("ranges").ConfigureAwait(false);
                 try
                 {
-                    await objWriter.WriteElementStringAsync("name", await DisplayRangeAsync(strLanguageToPrint));
-                    await objWriter.WriteElementStringAsync("short", dictionaryRanges["short"]);
-                    await objWriter.WriteElementStringAsync("medium", dictionaryRanges["medium"]);
-                    await objWriter.WriteElementStringAsync("long", dictionaryRanges["long"]);
-                    await objWriter.WriteElementStringAsync("extreme", dictionaryRanges["extreme"]);
+                    await objWriter.WriteElementStringAsync("name", await DisplayRangeAsync(strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("short", dictionaryRanges["short"]).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("medium", dictionaryRanges["medium"]).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("long", dictionaryRanges["long"]).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("extreme", dictionaryRanges["extreme"]).ConfigureAwait(false);
                 }
                 finally
                 {
                     // </ranges>
-                    await objRangesElement.DisposeAsync();
+                    await objRangesElement.DisposeAsync().ConfigureAwait(false);
                 }
 
                 // <alternateranges>
-                XmlElementWriteHelper objAlternateRangesElement = await objWriter.StartElementAsync("alternateranges");
+                XmlElementWriteHelper objAlternateRangesElement = await objWriter.StartElementAsync("alternateranges").ConfigureAwait(false);
                 try
                 {
-                    await objWriter.WriteElementStringAsync("name", await DisplayAlternateRangeAsync(strLanguageToPrint));
-                    await objWriter.WriteElementStringAsync("short", dictionaryRanges["alternateshort"]);
-                    await objWriter.WriteElementStringAsync("medium", dictionaryRanges["alternatemedium"]);
-                    await objWriter.WriteElementStringAsync("long", dictionaryRanges["alternatelong"]);
-                    await objWriter.WriteElementStringAsync("extreme", dictionaryRanges["alternateextreme"]);
+                    await objWriter.WriteElementStringAsync("name", await DisplayAlternateRangeAsync(strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("short", dictionaryRanges["alternateshort"]).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("medium", dictionaryRanges["alternatemedium"]).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("long", dictionaryRanges["alternatelong"]).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("extreme", dictionaryRanges["alternateextreme"]).ConfigureAwait(false);
                 }
                 finally
                 {
                     // </alternateranges>
-                    await objAlternateRangesElement.DisposeAsync();
+                    await objAlternateRangesElement.DisposeAsync().ConfigureAwait(false);
                 }
 
                 foreach (Weapon objUnderbarrel in Children)
                 {
                     // <underbarrel>
-                    XmlElementWriteHelper objUnderbarrelElement = await objWriter.StartElementAsync("underbarrel");
+                    XmlElementWriteHelper objUnderbarrelElement = await objWriter.StartElementAsync("underbarrel").ConfigureAwait(false);
                     try
                     {
-                        await objUnderbarrel.Print(objWriter, objCulture, strLanguageToPrint);
+                        await objUnderbarrel.Print(objWriter, objCulture, strLanguageToPrint).ConfigureAwait(false);
                     }
                     finally
                     {
                         // </underbarrel>
-                        await objUnderbarrelElement.DisposeAsync();
+                        await objUnderbarrelElement.DisposeAsync().ConfigureAwait(false);
                     }
                 }
 
                 // Currently loaded Ammo.
                 Clip objLoadedClip = GetClip(_intActiveAmmoSlot);
-                await objWriter.WriteElementStringAsync("availableammo", GetAvailableAmmo.ToString(objCulture));
-                await objWriter.WriteElementStringAsync("currentammo", await objLoadedClip.DisplayAmmoNameAsync(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("availableammo", GetAvailableAmmo.ToString(objCulture)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("currentammo", await objLoadedClip.DisplayAmmoNameAsync(strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
 
                 // <clips>
-                XmlElementWriteHelper objClipsElement = await objWriter.StartElementAsync("clips");
+                XmlElementWriteHelper objClipsElement = await objWriter.StartElementAsync("clips").ConfigureAwait(false);
                 try
                 {
                     if (RequireAmmo)
                     {
                         foreach (Clip objClip in _lstAmmo)
                         {
-                            await objClip.Print(objWriter, objCulture, strLanguageToPrint);
+                            await objClip.Print(objWriter, objCulture, strLanguageToPrint).ConfigureAwait(false);
                         }
 
                         foreach (Gear objAmmoGear in GetAmmoReloadable(lstGearToSearch))
@@ -1524,32 +1524,32 @@ namespace Chummer.Backend.Equipment
                                     ? objAmmoGear.Location.Name
                                     : "available or loaded"
                             };
-                            await objClip.Print(objWriter, objCulture, strLanguageToPrint);
+                            await objClip.Print(objWriter, objCulture, strLanguageToPrint).ConfigureAwait(false);
                             //reloadClipGear.Save(objWriter);
                         }
                     }
                     else
                     {
-                        await GetClip(_intActiveAmmoSlot).Print(objWriter, objCulture, strLanguageToPrint);
+                        await GetClip(_intActiveAmmoSlot).Print(objWriter, objCulture, strLanguageToPrint).ConfigureAwait(false);
                     }
                 }
                 finally
                 {
                     // </clips>
-                    await objClipsElement.DisposeAsync();
+                    await objClipsElement.DisposeAsync().ConfigureAwait(false);
                 }
 
-                await objWriter.WriteElementStringAsync("dicepool", DicePool.ToString(objCulture));
-                await objWriter.WriteElementStringAsync("skill", Skill?.Name);
+                await objWriter.WriteElementStringAsync("dicepool", DicePool.ToString(objCulture)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("skill", Skill?.Name).ConfigureAwait(false);
 
-                await objWriter.WriteElementStringAsync("wirelesson", WirelessOn.ToString(GlobalSettings.InvariantCultureInfo));
+                await objWriter.WriteElementStringAsync("wirelesson", WirelessOn.ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
                 if (GlobalSettings.PrintNotes)
-                    await objWriter.WriteElementStringAsync("notes", Notes);
+                    await objWriter.WriteElementStringAsync("notes", Notes).ConfigureAwait(false);
             }
             finally
             {
                 // </weapon>
-                await objBaseElement.DisposeAsync();
+                await objBaseElement.DisposeAsync().ConfigureAwait(false);
             }
         }
 

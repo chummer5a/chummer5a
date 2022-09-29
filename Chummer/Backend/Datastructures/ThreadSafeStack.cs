@@ -57,7 +57,7 @@ namespace Chummer
 
         public async ValueTask<IEnumerator<T>> GetEnumeratorAsync(CancellationToken token = default)
         {
-            LockingEnumerator<T> objReturn = await LockingEnumerator<T>.GetAsync(this, token);
+            LockingEnumerator<T> objReturn = await LockingEnumerator<T>.GetAsync(this, token).ConfigureAwait(false);
             objReturn.SetEnumerator(_stkData.GetEnumerator());
             return objReturn;
         }
@@ -90,14 +90,14 @@ namespace Chummer
         /// <inheritdoc cref="Stack{T}.Clear"/>
         public async ValueTask ClearAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
                 _stkData.Clear();
             }
             finally
             {
-                await objLocker.DisposeAsync();
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -111,7 +111,7 @@ namespace Chummer
         /// <inheritdoc cref="Stack{T}.Contains"/>
         public async ValueTask<bool> ContainsAsync(T item, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token))
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
                 return _stkData.Contains(item);
         }
 
@@ -125,14 +125,14 @@ namespace Chummer
         /// <inheritdoc cref="Stack{T}.TrimExcess"/>
         public async ValueTask TrimExcessAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
                 _stkData.TrimExcess();
             }
             finally
             {
-                await objLocker.DisposeAsync();
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -146,7 +146,7 @@ namespace Chummer
         /// <inheritdoc cref="Stack{T}.Peek"/>
         public async ValueTask<T> PeekAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token))
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
                 return _stkData.Peek();
         }
 
@@ -160,14 +160,14 @@ namespace Chummer
         /// <inheritdoc cref="Stack{T}.Pop"/>
         public async ValueTask<T> PopAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
                 return _stkData.Pop();
             }
             finally
             {
-                await objLocker.DisposeAsync();
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -181,14 +181,14 @@ namespace Chummer
         /// <inheritdoc cref="Stack{T}.Push"/>
         public async ValueTask PushAsync(T item, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
                 _stkData.Push(item);
             }
             finally
             {
-                await objLocker.DisposeAsync();
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -201,7 +201,7 @@ namespace Chummer
 
         public async ValueTask<bool> TryAddAsync(T item, CancellationToken token = default)
         {
-            await PushAsync(item, token);
+            await PushAsync(item, token).ConfigureAwait(false);
             return true;
         }
 
@@ -239,7 +239,7 @@ namespace Chummer
         public async ValueTask<Tuple<bool, T>> TryTakeAsync(CancellationToken token = default)
         {
             // Immediately enter a write lock to prevent attempted reads until we have either taken the item we want to take or failed to do so
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
                 if (_stkData.Count > 0)
@@ -249,7 +249,7 @@ namespace Chummer
             }
             finally
             {
-                await objLocker.DisposeAsync();
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
 
             return new Tuple<bool, T>(false, default);
@@ -265,7 +265,7 @@ namespace Chummer
         /// <inheritdoc cref="Stack{T}.ToArray"/>
         public async ValueTask<T[]> ToArrayAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token))
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
                 return _stkData.ToArray();
         }
 
@@ -307,18 +307,18 @@ namespace Chummer
         /// <inheritdoc cref="Stack{T}.CopyTo"/>
         public async ValueTask CopyToAsync(T[] array, int index, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token))
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
                 _stkData.CopyTo(array, index);
         }
 
         /// <inheritdoc />
         public async ValueTask<bool> RemoveAsync(T item, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token))
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                if (ReferenceEquals(await PeekAsync(token), item))
+                if (ReferenceEquals(await PeekAsync(token).ConfigureAwait(false), item))
                 {
-                    await PopAsync(token);
+                    await PopAsync(token).ConfigureAwait(false);
                     return true;
                 }
             }
@@ -329,7 +329,7 @@ namespace Chummer
         /// <inheritdoc cref="Stack{T}.CopyTo"/>
         public async ValueTask CopyToAsync(Array array, int index, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token))
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
                 foreach (T objItem in _stkData)
                 {
@@ -354,7 +354,7 @@ namespace Chummer
 
         public async ValueTask<int> GetCountAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token))
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
                 return _stkData.Count;
         }
 
@@ -383,14 +383,14 @@ namespace Chummer
         {
             if (disposing)
             {
-                await LockObject.DisposeAsync();
+                await LockObject.DisposeAsync().ConfigureAwait(false);
             }
         }
 
         /// <inheritdoc />
         public async ValueTask DisposeAsync()
         {
-            await DisposeAsync(true);
+            await DisposeAsync(true).ConfigureAwait(false);
             GC.SuppressFinalize(this);
         }
     }

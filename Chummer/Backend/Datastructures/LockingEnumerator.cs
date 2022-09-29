@@ -43,7 +43,7 @@ namespace Chummer
 
         public static async ValueTask<LockingEnumerator<T>> GetAsync(IHasLockObject objMyParent, CancellationToken token = default)
         {
-            await objMyParent.LockObject.EnterReadLockAsync(token);
+            await objMyParent.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             return new LockingEnumerator<T>(objMyParent);
         }
 

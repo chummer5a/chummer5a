@@ -350,8 +350,8 @@ namespace Chummer
                             }
                             if (blnMismatch)
                             {
-                                sbdReturn.AppendFormat(await LanguageManager.GetStringAsync("Tooltip_Dependency_VersionMismatch", token: token),
-                                                       await lstEnabledCustomData[0].GetDisplayNameAsync(token), await dependency.GetDisplayNameAsync(token))
+                                sbdReturn.AppendFormat(await LanguageManager.GetStringAsync("Tooltip_Dependency_VersionMismatch", token: token).ConfigureAwait(false),
+                                                       await lstEnabledCustomData[0].GetDisplayNameAsync(token).ConfigureAwait(false), await dependency.GetDisplayNameAsync(token).ConfigureAwait(false))
                                          .AppendLine();
                                 continue;
                             }
@@ -375,14 +375,14 @@ namespace Chummer
                             < objCharacterSettings.EnabledCustomDataDirectoryInfos.FindLastIndex(
                                 x => lstEnabledCustomData.Contains(x)))
                         {
-                            sbdReturn.AppendFormat(await LanguageManager.GetStringAsync("Tooltip_Dependency_BadLoadOrder", token: token),
+                            sbdReturn.AppendFormat(await LanguageManager.GetStringAsync("Tooltip_Dependency_BadLoadOrder", token: token).ConfigureAwait(false),
                                                    lstEnabledCustomData[0].Name, Name).AppendLine();
                         }
                     }
                     else
                     {
                         //We don't even need to attempt to check any versions if all guids are mismatched
-                        sbdReturn.AppendLine(await dependency.GetDisplayNameAsync(token));
+                        sbdReturn.AppendLine(await dependency.GetDisplayNameAsync(token).ConfigureAwait(false));
                     }
                 }
 
@@ -500,8 +500,8 @@ namespace Chummer
                     //if the version is within the version range add it to the list.
                     if (objInfoToDisplay != default)
                     {
-                        sbdReturn.AppendFormat(await LanguageManager.GetStringAsync("Tooltip_Incompatibility_VersionMismatch", token: token),
-                                               await objInfoToDisplay.GetDisplayNameAsync(token), await incompatibility.GetDisplayNameAsync(token)).AppendLine();
+                        sbdReturn.AppendFormat(await LanguageManager.GetStringAsync("Tooltip_Incompatibility_VersionMismatch", token: token).ConfigureAwait(false),
+                                               await objInfoToDisplay.GetDisplayNameAsync(token).ConfigureAwait(false), await incompatibility.GetDisplayNameAsync(token).ConfigureAwait(false)).AppendLine();
                     }
                 }
 
@@ -547,14 +547,14 @@ namespace Chummer
 
             if (!string.IsNullOrEmpty(missingDependency))
             {
-                strReturn = await LanguageManager.GetStringAsync("Tooltip_Dependency_Missing", token: token) + Environment.NewLine + missingDependency;
+                strReturn = await LanguageManager.GetStringAsync("Tooltip_Dependency_Missing", token: token).ConfigureAwait(false) + Environment.NewLine + missingDependency;
             }
 
             if (!string.IsNullOrEmpty(presentIncompatibilities))
             {
                 if (!string.IsNullOrEmpty(strReturn))
                     strReturn += Environment.NewLine;
-                strReturn += await LanguageManager.GetStringAsync("Tooltip_Incompatibility_Present", token: token) + Environment.NewLine + presentIncompatibilities;
+                strReturn += await LanguageManager.GetStringAsync("Tooltip_Incompatibility_Present", token: token).ConfigureAwait(false) + Environment.NewLine + presentIncompatibilities;
             }
 
             return strReturn;
@@ -642,16 +642,16 @@ namespace Chummer
         public async Task<string> GetDisplayDescriptionAsync(string strLanguage, CancellationToken token = default)
         {
             if (!File.Exists(Path.Combine(DirectoryPath, "manifest.xml")))
-                return await LanguageManager.GetStringAsync("Tooltip_CharacterOptions_ManifestMissing", strLanguage, token: token);
+                return await LanguageManager.GetStringAsync("Tooltip_CharacterOptions_ManifestMissing", strLanguage, token: token).ConfigureAwait(false);
 
             if (DescriptionDictionary.TryGetValue(strLanguage, out string description))
                 return description.NormalizeLineEndings(true);
 
             if (!DescriptionDictionary.TryGetValue(GlobalSettings.DefaultLanguage, out description))
-                return await LanguageManager.GetStringAsync("Tooltip_CharacterOptions_ManifestDescriptionMissing", strLanguage, token: token);
+                return await LanguageManager.GetStringAsync("Tooltip_CharacterOptions_ManifestDescriptionMissing", strLanguage, token: token).ConfigureAwait(false);
 
             return await LanguageManager.GetStringAsync("Tooltip_CharacterOptions_LanguageSpecificManifestMissing",
-                                                        strLanguage, token: token) +
+                                                        strLanguage, token: token).ConfigureAwait(false) +
                    Environment.NewLine + Environment.NewLine + description.NormalizeLineEndings(true);
         }
 
@@ -714,7 +714,7 @@ namespace Chummer
                     sbdDisplayAuthors.AppendLine(kvp.Value
                                                      ? string.Format(objCultureInfo, kvp.Key,
                                                                      await LanguageManager.GetStringAsync(
-                                                                         "String_IsMainAuthor", strLanguage, token: token))
+                                                                         "String_IsMainAuthor", strLanguage, token: token).ConfigureAwait(false))
                                                      : kvp.Key);
                 }
 
@@ -753,7 +753,7 @@ namespace Chummer
             return MyVersion == default
                 ? Name
                 : string.Format(GlobalSettings.CultureInfo, "{0}{1}({2})", Name,
-                                await LanguageManager.GetStringAsync("String_Space", token: token), MyVersion);
+                                await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false), MyVersion);
         }
 
         public string InternalId => Guid.ToString("D", GlobalSettings.InvariantCultureInfo);
@@ -927,7 +927,7 @@ namespace Chummer
 
         public async ValueTask<string> GetDisplayNameAsync(CancellationToken token = default)
         {
-            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token);
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
 
             if (MinimumVersion != default)
             {

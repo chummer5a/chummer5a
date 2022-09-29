@@ -239,10 +239,10 @@ namespace Chummer
                     = new ImprovementDictionaryKey(objCharacter, eImprovementType, strImprovementName);
                 if (!await s_DictionaryCachedValues.TryAddAsync(objCheckKey,
                                                                 new Tuple<decimal, List<Improvement>>(
-                                                                    decimal.MinValue, new List<Improvement>()), token))
+                                                                    decimal.MinValue, new List<Improvement>()), token).ConfigureAwait(false))
                 {
                     (bool blnSuccess, Tuple<decimal, List<Improvement>> tupTemp)
-                        = await s_DictionaryCachedValues.TryGetValueAsync(objCheckKey, token);
+                        = await s_DictionaryCachedValues.TryGetValueAsync(objCheckKey, token).ConfigureAwait(false);
                     if (blnSuccess)
                     {
                         List<Improvement> lstTemp = tupTemp.Item2;
@@ -251,16 +251,16 @@ namespace Chummer
                                                                         x => new Tuple<decimal, List<Improvement>>(
                                                                             decimal.MinValue, lstTemp),
                                                                         (x, y) => new Tuple<decimal, List<Improvement>>(
-                                                                            decimal.MinValue, lstTemp), token);
+                                                                            decimal.MinValue, lstTemp), token).ConfigureAwait(false);
                     }
                 }
 
                 if (!await s_DictionaryCachedAugmentedValues.TryAddAsync(objCheckKey,
                                                                          new Tuple<decimal, List<Improvement>>(
-                                                                             decimal.MinValue, new List<Improvement>()), token))
+                                                                             decimal.MinValue, new List<Improvement>()), token).ConfigureAwait(false))
                 {
                     (bool blnSuccess, Tuple<decimal, List<Improvement>> tupTemp)
-                        = await s_DictionaryCachedAugmentedValues.TryGetValueAsync(objCheckKey, token);
+                        = await s_DictionaryCachedAugmentedValues.TryGetValueAsync(objCheckKey, token).ConfigureAwait(false);
                     if (blnSuccess)
                     {
                         List<Improvement> lstTemp = tupTemp.Item2;
@@ -269,7 +269,7 @@ namespace Chummer
                             x => new Tuple<decimal, List<Improvement>>(
                                 decimal.MinValue, lstTemp),
                             (x, y) => new Tuple<decimal, List<Improvement>>(
-                                decimal.MinValue, lstTemp), token);
+                                decimal.MinValue, lstTemp), token).ConfigureAwait(false);
                     }
                 }
             }
@@ -280,7 +280,7 @@ namespace Chummer
                              .ToList())
                 {
                     (bool blnSuccess, Tuple<decimal, List<Improvement>> tupTemp)
-                        = await s_DictionaryCachedValues.TryGetValueAsync(objCheckKey, token);
+                        = await s_DictionaryCachedValues.TryGetValueAsync(objCheckKey, token).ConfigureAwait(false);
                     if (blnSuccess)
                     {
                         List<Improvement> lstTemp = tupTemp.Item2;
@@ -289,7 +289,7 @@ namespace Chummer
                                                                         x => new Tuple<decimal, List<Improvement>>(
                                                                             decimal.MinValue, lstTemp),
                                                                         (x, y) => new Tuple<decimal, List<Improvement>>(
-                                                                            decimal.MinValue, lstTemp), token);
+                                                                            decimal.MinValue, lstTemp), token).ConfigureAwait(false);
                     }
                 }
 
@@ -298,7 +298,7 @@ namespace Chummer
                              .ToList())
                 {
                     (bool blnSuccess, Tuple<decimal, List<Improvement>> tupTemp)
-                        = await s_DictionaryCachedAugmentedValues.TryGetValueAsync(objCheckKey, token);
+                        = await s_DictionaryCachedAugmentedValues.TryGetValueAsync(objCheckKey, token).ConfigureAwait(false);
                     if (blnSuccess)
                     {
                         List<Improvement> lstTemp = tupTemp.Item2;
@@ -307,7 +307,7 @@ namespace Chummer
                             x => new Tuple<decimal, List<Improvement>>(
                                 decimal.MinValue, lstTemp),
                             (x, y) => new Tuple<decimal, List<Improvement>>(
-                                decimal.MinValue, lstTemp), token);
+                                decimal.MinValue, lstTemp), token).ConfigureAwait(false);
                     }
                 }
             }

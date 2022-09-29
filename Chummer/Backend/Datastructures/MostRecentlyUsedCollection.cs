@@ -54,18 +54,18 @@ namespace Chummer
         /// <inheritdoc cref="List{T}.Insert" />
         public override async ValueTask InsertAsync(int index, T item, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
-                int intExistingIndex = await IndexOfAsync(item, token);
+                int intExistingIndex = await IndexOfAsync(item, token).ConfigureAwait(false);
                 if (intExistingIndex == -1)
-                    await base.InsertAsync(index, item, token);
+                    await base.InsertAsync(index, item, token).ConfigureAwait(false);
                 else
-                    await MoveAsync(intExistingIndex, Math.Min(index, await GetCountAsync(token) - 1), token);
+                    await MoveAsync(intExistingIndex, Math.Min(index, await GetCountAsync(token).ConfigureAwait(false) - 1), token).ConfigureAwait(false);
             }
             finally
             {
-                await objLocker.DisposeAsync();
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -97,18 +97,18 @@ namespace Chummer
 
         public override async ValueTask AddAsync(T item, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
-                int intExistingIndex = await IndexOfAsync(item, token);
+                int intExistingIndex = await IndexOfAsync(item, token).ConfigureAwait(false);
                 if (intExistingIndex == -1)
-                    await base.AddAsync(item, token);
+                    await base.AddAsync(item, token).ConfigureAwait(false);
                 else
-                    await MoveAsync(intExistingIndex, await GetCountAsync(token) - 1, token);
+                    await MoveAsync(intExistingIndex, await GetCountAsync(token).ConfigureAwait(false) - 1, token).ConfigureAwait(false);
             }
             finally
             {
-                await objLocker.DisposeAsync();
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -128,12 +128,12 @@ namespace Chummer
         /// <inheritdoc />
         public override async ValueTask<bool> TryAddAsync(T item, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token))
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                int intExistingIndex = await IndexOfAsync(item, token);
+                int intExistingIndex = await IndexOfAsync(item, token).ConfigureAwait(false);
                 if (intExistingIndex == -1)
-                    return await base.TryAddAsync(item, token);
-                await MoveAsync(intExistingIndex, await GetCountAsync(token) - 1, token);
+                    return await base.TryAddAsync(item, token).ConfigureAwait(false);
+                await MoveAsync(intExistingIndex, await GetCountAsync(token).ConfigureAwait(false) - 1, token).ConfigureAwait(false);
                 return true;
             }
         }

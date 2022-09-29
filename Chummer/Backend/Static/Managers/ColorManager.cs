@@ -1571,7 +1571,7 @@ namespace Chummer
                               || objControl is Button || (objControl is Panel && !(objControl is SplitterPanel
                                                                                    || (await objControl
                                                                                        .DoThreadSafeFuncAsync(
-                                                                                           x => x.BackColor, token)).A
+                                                                                           x => x.BackColor, token).ConfigureAwait(false)).A
                                                                                    == byte.MaxValue))))
                         {
                             Color objControlLighterLightColor

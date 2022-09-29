@@ -297,7 +297,7 @@ namespace Chummer
                     }
                     else
                     {
-                        await objDispatcherCopy.Dispatcher.InvokeAsync(funcToRun, DispatcherPriority.Normal, token).Task;
+                        await objDispatcherCopy.Dispatcher.InvokeAsync(funcToRun, DispatcherPriority.Normal, token).Task.ConfigureAwait(false);
                     }
                 }
             }
@@ -361,12 +361,12 @@ namespace Chummer
                     {
                         DispatcherOperation objOperation = objDispatcherCopy.Dispatcher.BeginInvoke(funcToRun, objDispatcherCopy);
                         using (token.Register(() => objOperation.Abort()))
-                            await objOperation.Task;
+                            await objOperation.Task.ConfigureAwait(false);
                         token.ThrowIfCancellationRequested();
                     }
                     else
                     {
-                        await objDispatcherCopy.Dispatcher.BeginInvoke(funcToRun, objDispatcherCopy).Task;
+                        await objDispatcherCopy.Dispatcher.BeginInvoke(funcToRun, objDispatcherCopy).Task.ConfigureAwait(false);
                     }
                 }
             }
@@ -430,12 +430,12 @@ namespace Chummer
                     {
                         DispatcherOperation objOperation = objDispatcherCopy.Dispatcher.BeginInvoke(funcToRun, token);
                         using (token.Register(() => objOperation.Abort()))
-                            await objOperation.Task;
+                            await objOperation.Task.ConfigureAwait(false);
                         token.ThrowIfCancellationRequested();
                     }
                     else
                     {
-                        await objDispatcherCopy.Dispatcher.BeginInvoke(funcToRun, token).Task;
+                        await objDispatcherCopy.Dispatcher.BeginInvoke(funcToRun, token).Task.ConfigureAwait(false);
                     }
                 }
             }
@@ -499,12 +499,12 @@ namespace Chummer
                     {
                         DispatcherOperation objOperation = objDispatcherCopy.Dispatcher.BeginInvoke(funcToRun, objDispatcherCopy, token);
                         using (token.Register(() => objOperation.Abort()))
-                            await objOperation.Task;
+                            await objOperation.Task.ConfigureAwait(false);
                         token.ThrowIfCancellationRequested();
                     }
                     else
                     {
-                        await objDispatcherCopy.Dispatcher.BeginInvoke(funcToRun, objDispatcherCopy, token).Task;
+                        await objDispatcherCopy.Dispatcher.BeginInvoke(funcToRun, objDispatcherCopy, token).Task.ConfigureAwait(false);
                     }
                 }
             }
@@ -823,7 +823,7 @@ namespace Chummer
                     else
                     {
                         token.ThrowIfCancellationRequested();
-                        objReturn = await objDispatcherCopy.Dispatcher.InvokeAsync(funcToRun, DispatcherPriority.Normal, token).Task;
+                        objReturn = await objDispatcherCopy.Dispatcher.InvokeAsync(funcToRun, DispatcherPriority.Normal, token).Task.ConfigureAwait(false);
                     }
                 }
             }
@@ -889,12 +889,12 @@ namespace Chummer
                         if (token != default)
                         {
                             using (token.Register(() => objOperation.Abort()))
-                                await objOperation.Task;
+                                await objOperation.Task.ConfigureAwait(false);
                             token.ThrowIfCancellationRequested();
                         }
                         else
                         {
-                            await objOperation.Task;
+                            await objOperation.Task.ConfigureAwait(false);
                         }
                         switch (objOperation.Result)
                         {
@@ -969,12 +969,12 @@ namespace Chummer
                         if (token != default)
                         {
                             using (token.Register(() => objOperation.Abort()))
-                                await objOperation.Task;
+                                await objOperation.Task.ConfigureAwait(false);
                             token.ThrowIfCancellationRequested();
                         }
                         else
                         {
-                            await objOperation.Task;
+                            await objOperation.Task.ConfigureAwait(false);
                         }
                         switch (objOperation.Result)
                         {
@@ -1049,12 +1049,12 @@ namespace Chummer
                         if (token != default)
                         {
                             using (token.Register(() => objOperation.Abort()))
-                                await objOperation.Task;
+                                await objOperation.Task.ConfigureAwait(false);
                             token.ThrowIfCancellationRequested();
                         }
                         else
                         {
-                            await objOperation.Task;
+                            await objOperation.Task.ConfigureAwait(false);
                         }
                         switch (objOperation.Result)
                         {

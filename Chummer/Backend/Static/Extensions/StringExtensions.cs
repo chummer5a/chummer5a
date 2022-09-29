@@ -49,7 +49,7 @@ namespace Chummer
                 foreach (Task<string> tskString in lstStringTasks)
                 {
                     token.ThrowIfCancellationRequested();
-                    sbdReturn.Append(await tskString);
+                    sbdReturn.Append(await tskString.ConfigureAwait(false));
                     token.ThrowIfCancellationRequested();
                     if (blnAddSeparator)
                         sbdReturn.Append(strSeparator);
@@ -974,7 +974,7 @@ namespace Chummer
                             await Task.WhenAny(Task.Factory.FromAsync(funcNewValueFactory.BeginInvoke,
                                                                       x => strFactoryResult
                                                                           = funcNewValueFactory.EndInvoke(x), null),
-                                               objCancelTaskSource.Task);
+                                               objCancelTaskSource.Task).ConfigureAwait(false);
                         }
                         token.ThrowIfCancellationRequested();
                         return strInput.Replace(strOldValue, strFactoryResult);
@@ -989,7 +989,7 @@ namespace Chummer
                         await Task.WhenAny(Task.Factory.FromAsync(funcNewValueFactory.BeginInvoke,
                                                                   x => strFactoryResult
                                                                       = funcNewValueFactory.EndInvoke(x), null),
-                                           objCancelTaskSource.Task);
+                                           objCancelTaskSource.Task).ConfigureAwait(false);
                     }
                     token.ThrowIfCancellationRequested();
                     return strInput.Replace(strOldValue, strFactoryResult, eStringComparison);
@@ -1014,7 +1014,7 @@ namespace Chummer
         public static async Task<string> CheapReplaceAsync(this ValueTask<string> strInputTask, string strOldValue, Func<string> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            return await CheapReplaceAsync(await strInputTask, strOldValue, funcNewValueFactory, eStringComparison, token);
+            return await CheapReplaceAsync(await strInputTask.ConfigureAwait(false), strOldValue, funcNewValueFactory, eStringComparison, token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -1032,7 +1032,7 @@ namespace Chummer
         public static async Task<string> CheapReplaceAsync(this Task<string> strInputTask, string strOldValue, Func<string> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            return await CheapReplaceAsync(await strInputTask, strOldValue, funcNewValueFactory, eStringComparison, token);
+            return await CheapReplaceAsync(await strInputTask.ConfigureAwait(false), strOldValue, funcNewValueFactory, eStringComparison, token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -1057,7 +1057,7 @@ namespace Chummer
                     if (strInput.Contains(strOldValue))
                     {
                         token.ThrowIfCancellationRequested();
-                        string strNewValue = await funcNewValueFactory.Invoke();
+                        string strNewValue = await funcNewValueFactory.Invoke().ConfigureAwait(false);
                         token.ThrowIfCancellationRequested();
                         return strInput.Replace(strOldValue, strNewValue);
                     }
@@ -1065,7 +1065,7 @@ namespace Chummer
                 else if (strInput.IndexOf(strOldValue, eStringComparison) != -1)
                 {
                     token.ThrowIfCancellationRequested();
-                    string strNewValue = await funcNewValueFactory.Invoke();
+                    string strNewValue = await funcNewValueFactory.Invoke().ConfigureAwait(false);
                     token.ThrowIfCancellationRequested();
                     return strInput.Replace(strOldValue, strNewValue, eStringComparison);
                 }
@@ -1089,7 +1089,7 @@ namespace Chummer
         public static async Task<string> CheapReplaceAsync(this ValueTask<string> strInputTask, string strOldValue, Func<Task<string>> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            return await CheapReplaceAsync(await strInputTask, strOldValue, funcNewValueFactory, eStringComparison, token);
+            return await CheapReplaceAsync(await strInputTask.ConfigureAwait(false), strOldValue, funcNewValueFactory, eStringComparison, token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -1107,7 +1107,7 @@ namespace Chummer
         public static async Task<string> CheapReplaceAsync(this Task<string> strInputTask, string strOldValue, Func<Task<string>> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            return await CheapReplaceAsync(await strInputTask, strOldValue, funcNewValueFactory, eStringComparison, token);
+            return await CheapReplaceAsync(await strInputTask.ConfigureAwait(false), strOldValue, funcNewValueFactory, eStringComparison, token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -1379,10 +1379,10 @@ namespace Chummer
 
             async Task<string> InnerDo()
             {
-                if (await strInput.IsRtfAsync(token))
+                if (await strInput.IsRtfAsync(token).ConfigureAwait(false))
                     return strInput;
                 strInput = strInput.NormalizeWhiteSpace();
-                await s_RtbRtfManipulatorLock.WaitAsync(token);
+                await s_RtbRtfManipulatorLock.WaitAsync(token).ConfigureAwait(false);
                 try
                 {
                     if (!s_RtbRtfManipulator.IsHandleCreated)
@@ -1393,7 +1393,7 @@ namespace Chummer
                     {
                         x.Text = strInput;
                         return x.Rtf;
-                    }, token);
+                    }, token).ConfigureAwait(false);
                 }
                 finally
                 {
@@ -1467,7 +1467,7 @@ namespace Chummer
                 if (strInputTrimmed.StartsWith("{/rtf1", StringComparison.Ordinal)
                     || strInputTrimmed.StartsWith(@"{\rtf1", StringComparison.Ordinal))
                 {
-                    await s_RtbRtfManipulatorLock.WaitAsync(token);
+                    await s_RtbRtfManipulatorLock.WaitAsync(token).ConfigureAwait(false);
                     try
                     {
                         if (!s_RtbRtfManipulator.IsHandleCreated)
@@ -1481,7 +1481,7 @@ namespace Chummer
                             {
                                 x.Rtf = strInput;
                                 return x.Text;
-                            }, token);
+                            }, token).ConfigureAwait(false);
                         }
                         catch (ArgumentException)
                         {
@@ -1514,7 +1514,7 @@ namespace Chummer
             return string.IsNullOrEmpty(strInput) ? Task.FromResult(string.Empty) : InnerDo();
             async Task<string> InnerDo()
             {
-                return await strInput.IsRtfAsync(token) ? Rtf.ToHtml(strInput) : strInput.CleanForHtml();
+                return await strInput.IsRtfAsync(token).ConfigureAwait(false) ? Rtf.ToHtml(strInput) : strInput.CleanForHtml();
             }
         }
 
@@ -1575,7 +1575,7 @@ namespace Chummer
                 if (strInputTrimmed.StartsWith("{/rtf1", StringComparison.Ordinal)
                     || strInputTrimmed.StartsWith(@"{\rtf1", StringComparison.Ordinal))
                 {
-                    await s_RtbRtfManipulatorLock.WaitAsync(token);
+                    await s_RtbRtfManipulatorLock.WaitAsync(token).ConfigureAwait(false);
                     try
                     {
                         if (!s_RtbRtfManipulator.IsHandleCreated)
@@ -1584,7 +1584,7 @@ namespace Chummer
                         }
                         try
                         {
-                            await s_RtbRtfManipulator.DoThreadSafeAsync(x => x.Rtf = strInput, token);
+                            await s_RtbRtfManipulator.DoThreadSafeAsync(x => x.Rtf = strInput, token).ConfigureAwait(false);
                         }
                         catch (ArgumentException)
                         {

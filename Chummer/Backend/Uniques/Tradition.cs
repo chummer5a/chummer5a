@@ -361,34 +361,34 @@ namespace Chummer.Backend.Uniques
             if (objWriter == null)
                 return;
             // <tradition>
-            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("tradition");
+            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("tradition").ConfigureAwait(false);
             try
             {
-                await objWriter.WriteElementStringAsync("guid", InternalId);
-                await objWriter.WriteElementStringAsync("sourceid", SourceIDString);
-                await objWriter.WriteElementStringAsync("istechnomancertradition", (Type == TraditionType.RES).ToString(GlobalSettings.InvariantCultureInfo));
-                await objWriter.WriteElementStringAsync("name", await DisplayNameShortAsync(strLanguageToPrint));
-                await objWriter.WriteElementStringAsync("fullname", await DisplayNameAsync(strLanguageToPrint));
-                await objWriter.WriteElementStringAsync("name_english", Name);
-                await objWriter.WriteElementStringAsync("extra", await _objCharacter.TranslateExtraAsync(Extra, strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("guid", InternalId).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("sourceid", SourceIDString).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("istechnomancertradition", (Type == TraditionType.RES).ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("name", await DisplayNameShortAsync(strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("fullname", await DisplayNameAsync(strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("name_english", Name).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("extra", await _objCharacter.TranslateExtraAsync(Extra, strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
                 if (Type == TraditionType.MAG)
                 {
-                    await objWriter.WriteElementStringAsync("spiritcombat", await DisplaySpiritCombatMethodAsync(strLanguageToPrint));
-                    await objWriter.WriteElementStringAsync("spiritdetection", await DisplaySpiritDetectionMethodAsync(strLanguageToPrint));
-                    await objWriter.WriteElementStringAsync("spirithealth", await DisplaySpiritHealthMethodAsync(strLanguageToPrint));
-                    await objWriter.WriteElementStringAsync("spiritillusion", await DisplaySpiritIllusionMethodAsync(strLanguageToPrint));
-                    await objWriter.WriteElementStringAsync("spiritmanipulation", await DisplaySpiritManipulationMethodAsync(strLanguageToPrint));
-                    await objWriter.WriteElementStringAsync("spiritform", await DisplaySpiritFormAsync(strLanguageToPrint));
+                    await objWriter.WriteElementStringAsync("spiritcombat", await DisplaySpiritCombatMethodAsync(strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("spiritdetection", await DisplaySpiritDetectionMethodAsync(strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("spirithealth", await DisplaySpiritHealthMethodAsync(strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("spiritillusion", await DisplaySpiritIllusionMethodAsync(strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("spiritmanipulation", await DisplaySpiritManipulationMethodAsync(strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("spiritform", await DisplaySpiritFormAsync(strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
                 }
-                await objWriter.WriteElementStringAsync("drainattributes", await DisplayDrainExpressionMethodAsync(objCulture, strLanguageToPrint));
-                await objWriter.WriteElementStringAsync("drainvalue", DrainValue.ToString(objCulture));
-                await objWriter.WriteElementStringAsync("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint));
-                await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("drainattributes", await DisplayDrainExpressionMethodAsync(objCulture, strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("drainvalue", DrainValue.ToString(objCulture)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
             }
             finally
             {
                 // </tradition>
-                await objBaseElement.DisposeAsync();
+                await objBaseElement.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -531,19 +531,19 @@ namespace Chummer.Backend.Uniques
                         = strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
                             ? Name
                             : await _objCharacter.ReverseTranslateExtraAsync(
-                                Name, GlobalSettings.DefaultLanguage, strFile, token);
-                    return await _objCharacter.TranslateExtraAsync(strReturnEnglish, strLanguage, token: token);
+                                Name, GlobalSettings.DefaultLanguage, strFile, token).ConfigureAwait(false);
+                    return await _objCharacter.TranslateExtraAsync(strReturnEnglish, strLanguage, token: token).ConfigureAwait(false);
                 }
 
-                return await _objCharacter.TranslateExtraAsync(Name, strLanguage, token: token);
+                return await _objCharacter.TranslateExtraAsync(Name, strLanguage, token: token).ConfigureAwait(false);
             }
 
             // Get the translated name if applicable.
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
-            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token);
-            return objNode != null ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token))?.Value ?? Name : Name;
+            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
+            return objNode != null ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value ?? Name : Name;
         }
 
         /// <summary>
@@ -564,10 +564,10 @@ namespace Chummer.Backend.Uniques
         /// </summary>
         public async Task<string> DisplayNameAsync(string strLanguage, CancellationToken token = default)
         {
-            string strReturn = await DisplayNameShortAsync(strLanguage, token);
+            string strReturn = await DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
 
             if (!string.IsNullOrEmpty(Extra))
-                strReturn += await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token) + '(' + await _objCharacter.TranslateExtraAsync(Extra, strLanguage, token: token) + ')';
+                strReturn += await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false) + '(' + await _objCharacter.TranslateExtraAsync(Extra, strLanguage, token: token).ConfigureAwait(false) + ')';
 
             return strReturn;
         }
@@ -1045,9 +1045,9 @@ namespace Chummer.Backend.Uniques
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
-            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token);
+            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
             string s = objNode != null
-                ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage", token: token))?.Value ?? Page
+                ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage", token: token).ConfigureAwait(false))?.Value ?? Page
                 : Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
@@ -1071,14 +1071,14 @@ namespace Chummer.Backend.Uniques
                     objDoc = blnSync
                         // ReSharper disable once MethodHasAsyncOverload
                         ? _objCharacter.LoadData("traditions.xml", strLanguage, token: token)
-                        : await _objCharacter.LoadDataAsync("traditions.xml", strLanguage, token: token);
+                        : await _objCharacter.LoadDataAsync("traditions.xml", strLanguage, token: token).ConfigureAwait(false);
                     break;
 
                 case TraditionType.RES:
                     objDoc = blnSync
                         // ReSharper disable once MethodHasAsyncOverload
                         ? _objCharacter.LoadData("traditions.xml", strLanguage, token: token)
-                        : await _objCharacter.LoadDataAsync("streams.xml", strLanguage, token: token);
+                        : await _objCharacter.LoadDataAsync("streams.xml", strLanguage, token: token).ConfigureAwait(false);
                     break;
             }
             if (objDoc == null)
@@ -1111,14 +1111,14 @@ namespace Chummer.Backend.Uniques
                     objDoc = blnSync
                         // ReSharper disable once MethodHasAsyncOverload
                         ? _objCharacter.LoadDataXPath("traditions.xml", strLanguage, token: token)
-                        : await _objCharacter.LoadDataXPathAsync("traditions.xml", strLanguage, token: token);
+                        : await _objCharacter.LoadDataXPathAsync("traditions.xml", strLanguage, token: token).ConfigureAwait(false);
                     break;
 
                 case TraditionType.RES:
                     objDoc = blnSync
                         // ReSharper disable once MethodHasAsyncOverload
                         ? _objCharacter.LoadDataXPath("streams.xml", strLanguage, token: token)
-                        : await _objCharacter.LoadDataXPathAsync("streams.xml", strLanguage, token: token);
+                        : await _objCharacter.LoadDataXPathAsync("streams.xml", strLanguage, token: token).ConfigureAwait(false);
                     break;
             }
             if (objDoc == null)

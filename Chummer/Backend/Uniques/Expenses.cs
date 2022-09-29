@@ -348,20 +348,20 @@ namespace Chummer
             if (Amount != 0 || GlobalSettings.PrintFreeExpenses)
             {
                 // <expense>
-                XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("expense");
+                XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("expense").ConfigureAwait(false);
                 try
                 {
-                    await objWriter.WriteElementStringAsync("guid", InternalId);
-                    await objWriter.WriteElementStringAsync("date", Date.ToString(objCulture));
-                    await objWriter.WriteElementStringAsync("amount", Amount.ToString(Type == ExpenseType.Nuyen ? _objCharacter.Settings.NuyenFormat : "#,0.##", objCulture));
-                    await objWriter.WriteElementStringAsync("reason", await DisplayReasonAsync(strLanguageToPrint));
-                    await objWriter.WriteElementStringAsync("type", Type.ToString());
-                    await objWriter.WriteElementStringAsync("refund", Refund.ToString(GlobalSettings.InvariantCultureInfo));
+                    await objWriter.WriteElementStringAsync("guid", InternalId).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("date", Date.ToString(objCulture)).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("amount", Amount.ToString(Type == ExpenseType.Nuyen ? _objCharacter.Settings.NuyenFormat : "#,0.##", objCulture)).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("reason", await DisplayReasonAsync(strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("type", Type.ToString()).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("refund", Refund.ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
                 }
                 finally
                 {
                     // </expense>
-                    await objBaseElement.DisposeAsync();
+                    await objBaseElement.DisposeAsync().ConfigureAwait(false);
                 }
             }
         }
@@ -428,7 +428,7 @@ namespace Chummer
         public async ValueTask<string> DisplayReasonAsync(string strLanguage, CancellationToken token = default)
         {
             if (Refund)
-                return Reason + await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token) + '(' + await LanguageManager.GetStringAsync("String_Expense_Refund", strLanguage, token: token) + ')';
+                return Reason + await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false) + '(' + await LanguageManager.GetStringAsync("String_Expense_Refund", strLanguage, token: token).ConfigureAwait(false) + ')';
             return Reason;
         }
 

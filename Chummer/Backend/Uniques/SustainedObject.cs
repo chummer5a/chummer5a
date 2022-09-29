@@ -161,20 +161,20 @@ namespace Chummer
             if (objWriter == null)
                 return;
             // <sustainedobject>
-            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("sustainedobject");
+            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("sustainedobject").ConfigureAwait(false);
             try
             {
-                await objWriter.WriteElementStringAsync("name", await DisplayNameShortAsync(strLanguageToPrint));
-                await objWriter.WriteElementStringAsync("fullname", await DisplayNameAsync(strLanguageToPrint));
-                await objWriter.WriteElementStringAsync("name_english", Name);
-                await objWriter.WriteElementStringAsync("force", Force.ToString(objCulture));
-                await objWriter.WriteElementStringAsync("nethits", NetHits.ToString(objCulture));
-                await objWriter.WriteElementStringAsync("self", SelfSustained.ToString(objCulture));
+                await objWriter.WriteElementStringAsync("name", await DisplayNameShortAsync(strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("fullname", await DisplayNameAsync(strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("name_english", Name).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("force", Force.ToString(objCulture)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("nethits", NetHits.ToString(objCulture)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("self", SelfSustained.ToString(objCulture)).ConfigureAwait(false);
             }
             finally
             {
                 // </sustainedobject>
-                await objBaseElement.DisposeAsync();
+                await objBaseElement.DisposeAsync().ConfigureAwait(false);
             }
         }
 

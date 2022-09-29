@@ -54,7 +54,7 @@ namespace Chummer
             try
             {
                 Array.Clear(achrReturn, 0, achrReturn.Length);
-                _ = await objStream.ReadAsync(achrReturn, 0, intLength, token);
+                _ = await objStream.ReadAsync(achrReturn, 0, intLength, token).ConfigureAwait(false);
             }
             catch
             {

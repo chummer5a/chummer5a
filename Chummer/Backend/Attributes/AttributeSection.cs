@@ -356,24 +356,24 @@ namespace Chummer.Backend.Attributes
 
         public async ValueTask DisposeAsync()
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
             try
             {
-                await AttributeList.ClearAsync();
-                await SpecialAttributeList.ClearAsync();
-                foreach (BindingSource objSource in await _dicBindings.GetValuesAsync())
+                await AttributeList.ClearAsync().ConfigureAwait(false);
+                await SpecialAttributeList.ClearAsync().ConfigureAwait(false);
+                foreach (BindingSource objSource in await _dicBindings.GetValuesAsync().ConfigureAwait(false))
                     objSource.Dispose();
-                await _dicBindings.DisposeAsync();
-                await _lstNormalAttributes.DisposeAsync();
-                await _lstSpecialAttributes.DisposeAsync();
-                await _lstAttributes.DisposeAsync();
-                await _objAttributesInitializerLock.DisposeAsync();
+                await _dicBindings.DisposeAsync().ConfigureAwait(false);
+                await _lstNormalAttributes.DisposeAsync().ConfigureAwait(false);
+                await _lstSpecialAttributes.DisposeAsync().ConfigureAwait(false);
+                await _lstAttributes.DisposeAsync().ConfigureAwait(false);
+                await _objAttributesInitializerLock.DisposeAsync().ConfigureAwait(false);
             }
             finally
             {
-                await objLocker.DisposeAsync();
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
-            await LockObject.DisposeAsync();
+            await LockObject.DisposeAsync().ConfigureAwait(false);
         }
 
         internal void Save(XmlWriter objWriter, CancellationToken token = default)
@@ -944,21 +944,21 @@ namespace Chummer.Backend.Attributes
 
         internal async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token))
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
                 if (_objCharacter.MetatypeCategory == "Shapeshifter")
                 {
-                    XPathNavigator xmlNode = await _objCharacter.GetNodeXPathAsync(true, token: token);
+                    XPathNavigator xmlNode = await _objCharacter.GetNodeXPathAsync(true, token: token).ConfigureAwait(false);
 
                     if (AttributeCategory == CharacterAttrib.AttributeCategory.Standard)
                     {
                         await objWriter.WriteElementStringAsync("attributecategory",
                                                                 xmlNode != null
                                                                     ? (await xmlNode
-                                                                        .SelectSingleNodeAndCacheExpressionAsync(
-                                                                            "name/@translate", token: token))
+                                                                             .SelectSingleNodeAndCacheExpressionAsync(
+                                                                                 "name/@translate", token: token).ConfigureAwait(false))
                                                                     ?.Value ?? _objCharacter.Metatype
-                                                                    : _objCharacter.Metatype, token: token);
+                                                                    : _objCharacter.Metatype, token: token).ConfigureAwait(false);
                     }
                     else
                     {
@@ -968,19 +968,19 @@ namespace Chummer.Backend.Attributes
                                                                                "D", GlobalSettings.InvariantCultureInfo)
                                                                            .CleanXPath() + ']');
                         await objWriter.WriteElementStringAsync("attributecategory",
-                                                                xmlNode?.Value ?? _objCharacter.Metavariant, token: token);
+                                                                xmlNode?.Value ?? _objCharacter.Metavariant, token: token).ConfigureAwait(false);
                     }
                 }
 
-                await objWriter.WriteElementStringAsync("attributecategory_english", AttributeCategory.ToString(), token: token);
+                await objWriter.WriteElementStringAsync("attributecategory_english", AttributeCategory.ToString(), token: token).ConfigureAwait(false);
                 foreach (CharacterAttrib att in AttributeList)
                 {
-                    await att.Print(objWriter, objCulture, strLanguageToPrint, token);
+                    await att.Print(objWriter, objCulture, strLanguageToPrint, token).ConfigureAwait(false);
                 }
 
                 foreach (CharacterAttrib att in SpecialAttributeList)
                 {
-                    await att.Print(objWriter, objCulture, strLanguageToPrint, token);
+                    await att.Print(objWriter, objCulture, strLanguageToPrint, token).ConfigureAwait(false);
                 }
             }
         }
@@ -1007,16 +1007,16 @@ namespace Chummer.Backend.Attributes
 
         public async ValueTask<CharacterAttrib> GetAttributeByNameAsync(string abbrev, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token))
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                bool blnGetShifterAttribute = await _objCharacter.GetMetatypeCategoryAsync(token) == "Shapeshifter" && await _objCharacter.GetCreatedAsync(token)
-                    && await GetAttributeCategoryAsync(token) == CharacterAttrib.AttributeCategory.Shapeshifter;
+                bool blnGetShifterAttribute = await _objCharacter.GetMetatypeCategoryAsync(token).ConfigureAwait(false) == "Shapeshifter" && await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false)
+                    && await GetAttributeCategoryAsync(token).ConfigureAwait(false) == CharacterAttrib.AttributeCategory.Shapeshifter;
                 CharacterAttrib objReturn
-                    = (await GetAttributeListAsync(token)).Find(att => att.Abbrev == abbrev
+                    = (await GetAttributeListAsync(token).ConfigureAwait(false)).Find(att => att.Abbrev == abbrev
                                                            && (att.MetatypeCategory
                                                                == CharacterAttrib.AttributeCategory.Shapeshifter)
                                                            == blnGetShifterAttribute)
-                      ?? (await GetSpecialAttributeListAsync(token)).Find(att => att.Abbrev == abbrev);
+                      ?? (await GetSpecialAttributeListAsync(token).ConfigureAwait(false)).Find(att => att.Abbrev == abbrev);
                 return objReturn;
             }
         }
@@ -1029,9 +1029,9 @@ namespace Chummer.Backend.Attributes
 
         public async ValueTask<BindingSource> GetAttributeBindingByNameAsync(string abbrev, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token))
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                (bool blnSuccess, BindingSource objAttributeBinding) = await _dicBindings.TryGetValueAsync(abbrev, token);
+                (bool blnSuccess, BindingSource objAttributeBinding) = await _dicBindings.TryGetValueAsync(abbrev, token).ConfigureAwait(false);
                 return blnSuccess ? objAttributeBinding : null;
             }
         }
@@ -1343,24 +1343,24 @@ namespace Chummer.Backend.Attributes
                 objCultureInfo = GlobalSettings.CultureInfo;
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalSettings.Language;
-            string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token);
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false);
             string strReturn = strInput;
-            using (await EnterReadLock.EnterAsync(LockObject, token))
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
                 foreach (string strCharAttributeName in AttributeStrings)
                 {
                     strReturn = await strReturn
                                       .CheapReplaceAsync('{' + strCharAttributeName + '}', async () =>
                                       {
-                                          string strInnerReturn = await (await _objCharacter.GetAttributeAsync(strCharAttributeName, token: token))
-                                              .DisplayNameShortAsync(strLanguage, token);
+                                          string strInnerReturn = await (await _objCharacter.GetAttributeAsync(strCharAttributeName, token: token).ConfigureAwait(false))
+                                                                        .DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
                                           if (blnShowValues)
                                           {
                                               if (dicValueOverrides == null
                                                   || !dicValueOverrides.TryGetValue(
                                                       strCharAttributeName, out int intAttributeValue))
-                                                  intAttributeValue = await (await _objCharacter.GetAttributeAsync(strCharAttributeName, token: token))
-                                                      .GetTotalValueAsync(token);
+                                                  intAttributeValue = await (await _objCharacter.GetAttributeAsync(strCharAttributeName, token: token).ConfigureAwait(false))
+                                                                            .GetTotalValueAsync(token).ConfigureAwait(false);
                                               strInnerReturn
                                                   += strSpace + '(' + intAttributeValue.ToString(objCultureInfo)
                                                      + ')';
@@ -1370,15 +1370,15 @@ namespace Chummer.Backend.Attributes
                                       }, token: token)
                                       .CheapReplaceAsync('{' + strCharAttributeName + "Unaug}", async () =>
                                       {
-                                          string strInnerReturn = await (await _objCharacter.GetAttributeAsync(strCharAttributeName, token: token))
-                                              .DisplayNameShortAsync(strLanguage, token);
+                                          string strInnerReturn = await (await _objCharacter.GetAttributeAsync(strCharAttributeName, token: token).ConfigureAwait(false))
+                                                                        .DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
                                           if (blnShowValues)
                                           {
                                               if (dicValueOverrides == null
                                                   || !dicValueOverrides.TryGetValue(
                                                       strCharAttributeName + "Unaug", out int intAttributeValue))
-                                                  intAttributeValue = await (await _objCharacter.GetAttributeAsync(strCharAttributeName, token: token))
-                                                      .GetValueAsync(token);
+                                                  intAttributeValue = await (await _objCharacter.GetAttributeAsync(strCharAttributeName, token: token).ConfigureAwait(false))
+                                                                            .GetValueAsync(token).ConfigureAwait(false);
                                               strInnerReturn
                                                   += strSpace + '(' + intAttributeValue.ToString(objCultureInfo)
                                                      + ')';
@@ -1386,20 +1386,20 @@ namespace Chummer.Backend.Attributes
 
                                           return string.Format(objCultureInfo,
                                                                await LanguageManager.GetStringAsync(
-                                                                   "String_NaturalAttribute", strLanguage, token: token),
+                                                                   "String_NaturalAttribute", strLanguage, token: token).ConfigureAwait(false),
                                                                strInnerReturn);
                                       }, token: token)
                                       .CheapReplaceAsync('{' + strCharAttributeName + "Base}", async () =>
                                       {
-                                          string strInnerReturn = await (await _objCharacter.GetAttributeAsync(strCharAttributeName, token: token))
-                                              .DisplayNameShortAsync(strLanguage, token);
+                                          string strInnerReturn = await (await _objCharacter.GetAttributeAsync(strCharAttributeName, token: token).ConfigureAwait(false))
+                                                                        .DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
                                           if (blnShowValues)
                                           {
                                               if (dicValueOverrides == null
                                                   || !dicValueOverrides.TryGetValue(
                                                       strCharAttributeName + "Base", out int intAttributeValue))
-                                                  intAttributeValue = await (await _objCharacter.GetAttributeAsync(strCharAttributeName, token: token))
-                                                      .GetTotalBaseAsync(token);
+                                                  intAttributeValue = await (await _objCharacter.GetAttributeAsync(strCharAttributeName, token: token).ConfigureAwait(false))
+                                                                            .GetTotalBaseAsync(token).ConfigureAwait(false);
                                               strInnerReturn
                                                   += strSpace + '(' + intAttributeValue.ToString(objCultureInfo)
                                                      + ')';
@@ -1407,9 +1407,9 @@ namespace Chummer.Backend.Attributes
 
                                           return string.Format(objCultureInfo,
                                                                await LanguageManager.GetStringAsync(
-                                                                   "String_BaseAttribute", strLanguage, token: token),
+                                                                   "String_BaseAttribute", strLanguage, token: token).ConfigureAwait(false),
                                                                strInnerReturn);
-                                      }, token: token);
+                                      }, token: token).ConfigureAwait(false);
                 }
             }
 
@@ -1426,59 +1426,59 @@ namespace Chummer.Backend.Attributes
                 objCultureInfo = GlobalSettings.CultureInfo;
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalSettings.Language;
-            string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token);
-            using (await EnterReadLock.EnterAsync(LockObject, token))
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false);
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
                 foreach (string strCharAttributeName in AttributeStrings)
                 {
                     await sbdInput.CheapReplaceAsync(strOriginal, '{' + strCharAttributeName + '}', async () =>
                     {
-                        string strInnerReturn = await (await _objCharacter.GetAttributeAsync(strCharAttributeName, token: token))
-                                                                   .DisplayNameShortAsync(strLanguage, token);
+                        string strInnerReturn = await (await _objCharacter.GetAttributeAsync(strCharAttributeName, token: token).ConfigureAwait(false))
+                                                      .DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
                         if (blnShowValues)
                         {
                             if (dicValueOverrides == null
                                 || !dicValueOverrides.TryGetValue(strCharAttributeName, out int intAttributeValue))
-                                intAttributeValue = await (await _objCharacter.GetAttributeAsync(strCharAttributeName, token: token)).GetTotalValueAsync(token);
+                                intAttributeValue = await (await _objCharacter.GetAttributeAsync(strCharAttributeName, token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false);
                             strInnerReturn += strSpace + '(' + intAttributeValue.ToString(objCultureInfo) + ')';
                         }
 
                         return strInnerReturn;
-                    }, token: token);
+                    }, token: token).ConfigureAwait(false);
                     await sbdInput.CheapReplaceAsync(strOriginal, '{' + strCharAttributeName + "Unaug}", async () =>
                     {
-                        string strInnerReturn = await (await _objCharacter.GetAttributeAsync(strCharAttributeName, token: token))
-                                                                   .DisplayNameShortAsync(strLanguage, token);
+                        string strInnerReturn = await (await _objCharacter.GetAttributeAsync(strCharAttributeName, token: token).ConfigureAwait(false))
+                                                      .DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
                         if (blnShowValues)
                         {
                             if (dicValueOverrides == null
                                 || !dicValueOverrides.TryGetValue(strCharAttributeName + "Unaug",
                                                                   out int intAttributeValue))
-                                intAttributeValue = await (await _objCharacter.GetAttributeAsync(strCharAttributeName, token: token)).GetValueAsync(token);
+                                intAttributeValue = await (await _objCharacter.GetAttributeAsync(strCharAttributeName, token: token).ConfigureAwait(false)).GetValueAsync(token).ConfigureAwait(false);
                             strInnerReturn += strSpace + '(' + intAttributeValue.ToString(objCultureInfo) + ')';
                         }
 
                         return string.Format(objCultureInfo,
-                                             await LanguageManager.GetStringAsync("String_NaturalAttribute", strLanguage, token: token),
+                                             await LanguageManager.GetStringAsync("String_NaturalAttribute", strLanguage, token: token).ConfigureAwait(false),
                                              strInnerReturn);
-                    }, token: token);
+                    }, token: token).ConfigureAwait(false);
                     await sbdInput.CheapReplaceAsync(strOriginal, '{' + strCharAttributeName + "Base}", async () =>
                     {
-                        string strInnerReturn = await (await _objCharacter.GetAttributeAsync(strCharAttributeName, token: token))
-                                                                   .DisplayNameShortAsync(strLanguage, token);
+                        string strInnerReturn = await (await _objCharacter.GetAttributeAsync(strCharAttributeName, token: token).ConfigureAwait(false))
+                                                      .DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
                         if (blnShowValues)
                         {
                             if (dicValueOverrides == null
                                 || !dicValueOverrides.TryGetValue(strCharAttributeName + "Base",
                                                                   out int intAttributeValue))
-                                intAttributeValue = await (await _objCharacter.GetAttributeAsync(strCharAttributeName, token: token)).GetTotalBaseAsync(token);
+                                intAttributeValue = await (await _objCharacter.GetAttributeAsync(strCharAttributeName, token: token).ConfigureAwait(false)).GetTotalBaseAsync(token).ConfigureAwait(false);
                             strInnerReturn += strSpace + '(' + intAttributeValue.ToString(objCultureInfo) + ')';
                         }
 
                         return string.Format(objCultureInfo,
-                                             await LanguageManager.GetStringAsync("String_BaseAttribute", strLanguage, token: token),
+                                             await LanguageManager.GetStringAsync("String_BaseAttribute", strLanguage, token: token).ConfigureAwait(false),
                                              strInnerReturn);
-                    }, token: token);
+                    }, token: token).ConfigureAwait(false);
                 }
             }
         }
@@ -1534,15 +1534,15 @@ namespace Chummer.Backend.Attributes
 
         internal async ValueTask ResetAsync(bool blnFirstTime = false, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
                 bool blnOldLoading = !blnFirstTime && _blnLoading;
                 try
                 {
                     _blnLoading = true;
-                    await AttributeList.ClearAsync(token);
-                    await SpecialAttributeList.ClearAsync(token);
+                    await AttributeList.ClearAsync(token).ConfigureAwait(false);
+                    await SpecialAttributeList.ClearAsync(token).ConfigureAwait(false);
                     foreach (string strAttribute in AttributeStrings)
                     {
                         CharacterAttrib objAttribute;
@@ -1551,13 +1551,13 @@ namespace Chummer.Backend.Attributes
                             case CharacterAttrib.AttributeCategory.Special:
                                 objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
                                                                    CharacterAttrib.AttributeCategory.Special);
-                                await SpecialAttributeList.AddAsync(objAttribute, token);
+                                await SpecialAttributeList.AddAsync(objAttribute, token).ConfigureAwait(false);
                                 break;
 
                             case CharacterAttrib.AttributeCategory.Standard:
                                 objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
                                                                    CharacterAttrib.AttributeCategory.Standard);
-                                await AttributeList.AddAsync(objAttribute, token);
+                                await AttributeList.AddAsync(objAttribute, token).ConfigureAwait(false);
                                 break;
                         }
                     }
@@ -1566,10 +1566,10 @@ namespace Chummer.Backend.Attributes
                     {
                         foreach (BindingSource objSource in _dicBindings.Values)
                             objSource.Dispose();
-                        await _dicBindings.ClearAsync(token);
+                        await _dicBindings.ClearAsync(token).ConfigureAwait(false);
                         foreach (string strAttributeString in AttributeStrings)
                         {
-                            await _dicBindings.AddAsync(strAttributeString, new BindingSource(), token);
+                            await _dicBindings.AddAsync(strAttributeString, new BindingSource(), token).ConfigureAwait(false);
                         }
                     }
 
@@ -1582,7 +1582,7 @@ namespace Chummer.Backend.Attributes
             }
             finally
             {
-                await objLocker.DisposeAsync();
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1633,15 +1633,15 @@ namespace Chummer.Backend.Attributes
         /// <returns></returns>
         public async ValueTask<bool> CanRaiseAttributeToMetatypeMax(CharacterAttrib objAttribute, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token))
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
                 if (_objCharacter.Created || _objCharacter.IgnoreRules
                                           || objAttribute.MetatypeCategory == CharacterAttrib.AttributeCategory.Special
-                                          || _objCharacter.Settings.MaxNumberMaxAttributesCreate >= await AttributeList.GetCountAsync(token))
+                                          || _objCharacter.Settings.MaxNumberMaxAttributesCreate >= await AttributeList.GetCountAsync(token).ConfigureAwait(false))
                     return true;
                 return await AttributeList.CountAsync(async x => x.MetatypeCategory == objAttribute.MetatypeCategory
                                                                  && x != objAttribute
-                                                                 && await x.GetAtMetatypeMaximumAsync(token), token)
+                                                                 && await x.GetAtMetatypeMaximumAsync(token).ConfigureAwait(false), token).ConfigureAwait(false)
                        < _objCharacter.Settings.MaxNumberMaxAttributesCreate;
             }
         }
@@ -1665,7 +1665,7 @@ namespace Chummer.Backend.Attributes
 
         public async ValueTask<ThreadSafeObservableCollection<CharacterAttrib>> GetAttributeListAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token))
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
                 return _lstNormalAttributes;
         }
 
@@ -1683,7 +1683,7 @@ namespace Chummer.Backend.Attributes
 
         public async ValueTask<ThreadSafeObservableCollection<CharacterAttrib>> GetSpecialAttributeListAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token))
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
                 return _lstSpecialAttributes;
         }
 
@@ -1717,7 +1717,7 @@ namespace Chummer.Backend.Attributes
 
         public async ValueTask<CharacterAttrib.AttributeCategory> GetAttributeCategoryAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token))
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
                 return _eAttributeCategory;
         }
 

@@ -94,7 +94,7 @@ namespace Chummer.Backend.Skills
         {
             return strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
                 ? Specific
-                : await CharacterObject.TranslateExtraAsync(Specific, strLanguage, token: token);
+                : await CharacterObject.TranslateExtraAsync(Specific, strLanguage, token: token).ConfigureAwait(false);
         }
 
         public override string DisplaySpecialization(string strLanguage)

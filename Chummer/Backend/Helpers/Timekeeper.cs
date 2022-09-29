@@ -59,7 +59,7 @@ namespace Chummer
         public static async ValueTask<CustomActivity> StartSyncronAsync(string taskname, CustomActivity parentActivity, CustomActivity.OperationType operationType, string target, CancellationToken token = default)
         {
             CustomActivity dependencyActivity = new CustomActivity(taskname, parentActivity, operationType, target);
-            await s_DictionaryStarts.TryAddAsync(taskname, s_Time.Elapsed, token);
+            await s_DictionaryStarts.TryAddAsync(taskname, s_Time.Elapsed, token).ConfigureAwait(false);
             return dependencyActivity;
         }
 
@@ -67,7 +67,7 @@ namespace Chummer
         public static async ValueTask<CustomActivity> StartSyncronAsync(string taskname, CustomActivity parentActivity, CancellationToken token = default)
         {
             CustomActivity dependencyActivity = new CustomActivity(taskname, parentActivity);
-            await s_DictionaryStarts.TryAddAsync(taskname, s_Time.Elapsed, token);
+            await s_DictionaryStarts.TryAddAsync(taskname, s_Time.Elapsed, token).ConfigureAwait(false);
             return dependencyActivity;
         }
 
@@ -83,7 +83,7 @@ namespace Chummer
 
         public static async ValueTask<TimeSpan> ElapsedAsync(string taskname, CancellationToken token = default)
         {
-            (bool blnSuccess, TimeSpan objStartTimeSpan) = await s_DictionaryStarts.TryGetValueAsync(taskname, token);
+            (bool blnSuccess, TimeSpan objStartTimeSpan) = await s_DictionaryStarts.TryGetValueAsync(taskname, token).ConfigureAwait(false);
             if (blnSuccess)
             {
                 return s_Time.Elapsed - objStartTimeSpan;
@@ -121,7 +121,7 @@ namespace Chummer
         public static async ValueTask<TimeSpan> FinishAsync(string taskname, CancellationToken token = default)
         {
             TimeSpan final = TimeSpan.Zero;
-            (bool blnSuccess, TimeSpan objStartTimeSpan) = await s_DictionaryStarts.TryRemoveAsync(taskname, token);
+            (bool blnSuccess, TimeSpan objStartTimeSpan) = await s_DictionaryStarts.TryRemoveAsync(taskname, token).ConfigureAwait(false);
             if (blnSuccess)
             {
                 final = s_Time.Elapsed - objStartTimeSpan;
@@ -136,7 +136,7 @@ namespace Chummer
 
                 await s_DictionaryStatistics.AddOrUpdateAsync(taskname, x => new Tuple<TimeSpan, int>(final, 1),
                                                               (x, y) => new Tuple<TimeSpan, int>(
-                                                                  y.Item1 + final, y.Item2 + 1), token);
+                                                                  y.Item1 + final, y.Item2 + 1), token).ConfigureAwait(false);
             }
             else
             {

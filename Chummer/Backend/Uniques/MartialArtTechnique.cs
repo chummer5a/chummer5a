@@ -158,22 +158,22 @@ namespace Chummer
             if (objWriter == null)
                 return;
             // <martialarttechnique>
-            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("martialarttechnique");
+            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("martialarttechnique").ConfigureAwait(false);
             try
             {
-                await objWriter.WriteElementStringAsync("guid", InternalId);
-                await objWriter.WriteElementStringAsync("sourceid", SourceIDString);
-                await objWriter.WriteElementStringAsync("name", await DisplayNameAsync(strLanguageToPrint));
-                await objWriter.WriteElementStringAsync("name_english", Name);
+                await objWriter.WriteElementStringAsync("guid", InternalId).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("sourceid", SourceIDString).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("name", await DisplayNameAsync(strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("name_english", Name).ConfigureAwait(false);
                 if (GlobalSettings.PrintNotes)
-                    await objWriter.WriteElementStringAsync("notes", Notes);
-                await objWriter.WriteElementStringAsync("source", Source);
-                await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint));
+                    await objWriter.WriteElementStringAsync("notes", Notes).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("source", Source).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
             }
             finally
             {
                 // </martialarttechnique>
-                await objBaseElement.DisposeAsync();
+                await objBaseElement.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -246,8 +246,8 @@ namespace Chummer
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
-            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token);
-            return objNode != null ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token))?.Value ?? Name : Name;
+            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
+            return objNode != null ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value ?? Name : Name;
         }
 
         public string CurrentDisplayName => DisplayName(GlobalSettings.Language);
@@ -316,9 +316,9 @@ namespace Chummer
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
-            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token);
+            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
             string s = objNode != null
-                ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage", token: token))?.Value ?? Page
+                ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage", token: token).ConfigureAwait(false))?.Value ?? Page
                 : Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
@@ -333,7 +333,7 @@ namespace Chummer
                 _objCachedMyXmlNode = (blnSync
                         // ReSharper disable once MethodHasAsyncOverload
                         ? _objCharacter.LoadData("martialarts.xml", strLanguage, token: token)
-                        : await _objCharacter.LoadDataAsync("martialarts.xml", strLanguage, token: token))
+                        : await _objCharacter.LoadDataAsync("martialarts.xml", strLanguage, token: token).ConfigureAwait(false))
                     .SelectSingleNode(SourceID == Guid.Empty
                                           ? "/chummer/techniques/technique[name = "
                                             + Name.CleanXPath() + ']'
@@ -358,7 +358,7 @@ namespace Chummer
             _objCachedMyXPathNode = (blnSync
                     // ReSharper disable once MethodHasAsyncOverload
                     ? _objCharacter.LoadDataXPath("martialarts.xml", strLanguage, token: token)
-                    : await _objCharacter.LoadDataXPathAsync("martialarts.xml", strLanguage, token: token))
+                    : await _objCharacter.LoadDataXPathAsync("martialarts.xml", strLanguage, token: token).ConfigureAwait(false))
                 .SelectSingleNode(SourceID == Guid.Empty
                                       ? "/chummer/techniques/technique[name = "
                                         + Name.CleanXPath() + ']'

@@ -181,29 +181,29 @@ namespace Chummer.Backend.Equipment
         {
             if (AmmoGear == null && Ammo == 0) //Don't save empty clips, we are recreating them anyway. Save those kb
                 return;
-            await objWriter.WriteStartElementAsync("clip");
-            await objWriter.WriteElementStringAsync("name", await DisplayAmmoNameAsync(strLanguageToPrint));
-            await objWriter.WriteElementStringAsync("count", Ammo.ToString(objCulture));
-            await objWriter.WriteElementStringAsync("location", AmmoLocation);
+            await objWriter.WriteStartElementAsync("clip").ConfigureAwait(false);
+            await objWriter.WriteElementStringAsync("name", await DisplayAmmoNameAsync(strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
+            await objWriter.WriteElementStringAsync("count", Ammo.ToString(objCulture)).ConfigureAwait(false);
+            await objWriter.WriteElementStringAsync("location", AmmoLocation).ConfigureAwait(false);
             if (AmmoGear != null)
             {
-                await objWriter.WriteElementStringAsync("id", AmmoGear.InternalId);
-                await objWriter.WriteStartElementAsync("ammotype");
+                await objWriter.WriteElementStringAsync("id", AmmoGear.InternalId).ConfigureAwait(false);
+                await objWriter.WriteStartElementAsync("ammotype").ConfigureAwait(false);
 
-                await AmmoGear.PrintWeaponBonusEntries(objWriter, objCulture, strLanguageToPrint, true);
+                await AmmoGear.PrintWeaponBonusEntries(objWriter, objCulture, strLanguageToPrint, true).ConfigureAwait(false);
                 // Here for Legacy reasons
                 await objWriter.WriteElementStringAsync(
-                    "DV", await AmmoGear.WeaponBonusDamageAsync(strLanguageToPrint));
+                    "DV", await AmmoGear.WeaponBonusDamageAsync(strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("BonusRange",
-                                                        AmmoGear.WeaponBonusRange.ToString(objCulture));
+                                                        AmmoGear.WeaponBonusRange.ToString(objCulture)).ConfigureAwait(false);
 
-                await objWriter.WriteEndElementAsync();
+                await objWriter.WriteEndElementAsync().ConfigureAwait(false);
             }
             else
                 await objWriter.WriteElementStringAsync(
-                    "id", Guid.Empty.ToString("D", GlobalSettings.InvariantCultureInfo));
+                    "id", Guid.Empty.ToString("D", GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
 
-            await objWriter.WriteEndElementAsync();
+            await objWriter.WriteEndElementAsync().ConfigureAwait(false);
         }
     }
 }

@@ -444,34 +444,34 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("guid", InternalId);
             // Because of the weird way in which weapon mounts work with and without Rigger 5.0, instead of hiding built-in mounts from disabled sourcebooks,
             // we instead display them as if they were one of the CRB mounts, but give them a different name
-            if (IncludedInVehicle && !string.IsNullOrEmpty(Source) && !await _objCharacter.Settings.BookEnabledAsync(Source, token))
+            if (IncludedInVehicle && !string.IsNullOrEmpty(Source) && !await _objCharacter.Settings.BookEnabledAsync(Source, token).ConfigureAwait(false))
             {
-                XPathNavigator xmlOverrideNode = await this.GetNodeXPathAsync(strLanguageToPrint, token: token);
+                XPathNavigator xmlOverrideNode = await this.GetNodeXPathAsync(strLanguageToPrint, token: token).ConfigureAwait(false);
                 if (xmlOverrideNode != null)
                 {
                     objWriter.WriteElementString(
                         "sourceid",
-                        (await xmlOverrideNode.SelectSingleNodeAndCacheExpressionAsync("id", token: token))?.Value ?? SourceIDString);
+                        (await xmlOverrideNode.SelectSingleNodeAndCacheExpressionAsync("id", token: token).ConfigureAwait(false))?.Value ?? SourceIDString);
                     objWriter.WriteElementString(
                         "source",
                         await _objCharacter.LanguageBookShortAsync(
-                            (await xmlOverrideNode.SelectSingleNodeAndCacheExpressionAsync("source", token: token))?.Value ?? Source,
-                            strLanguageToPrint, token));
+                            (await xmlOverrideNode.SelectSingleNodeAndCacheExpressionAsync("source", token: token).ConfigureAwait(false))?.Value ?? Source,
+                            strLanguageToPrint, token).ConfigureAwait(false));
                 }
                 else
                 {
                     objWriter.WriteElementString("sourceid", SourceIDString);
-                    objWriter.WriteElementString("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint, token));
+                    objWriter.WriteElementString("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint, token).ConfigureAwait(false));
                 }
             }
             else
             {
                 objWriter.WriteElementString("sourceid", SourceIDString);
-                objWriter.WriteElementString("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint, token));
+                objWriter.WriteElementString("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint, token).ConfigureAwait(false));
             }
-            objWriter.WriteElementString("name", await DisplayNameShortAsync(strLanguageToPrint, token));
+            objWriter.WriteElementString("name", await DisplayNameShortAsync(strLanguageToPrint, token).ConfigureAwait(false));
             objWriter.WriteElementString("name_english", Name);
-            objWriter.WriteElementString("fullname", await DisplayNameAsync(strLanguageToPrint, token));
+            objWriter.WriteElementString("fullname", await DisplayNameAsync(strLanguageToPrint, token).ConfigureAwait(false));
             objWriter.WriteElementString("category", DisplayCategory(strLanguageToPrint));
             objWriter.WriteElementString("category_english", Category);
             objWriter.WriteElementString("limit", Limit);
@@ -485,18 +485,18 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteStartElement("weapons");
             foreach (Weapon objWeapon in Weapons)
             {
-                await objWeapon.Print(objWriter, objCulture, strLanguageToPrint);
+                await objWeapon.Print(objWriter, objCulture, strLanguageToPrint).ConfigureAwait(false);
             }
-            await objWriter.WriteEndElementAsync();
+            await objWriter.WriteEndElementAsync().ConfigureAwait(false);
             objWriter.WriteStartElement("mods");
             foreach (VehicleMod objVehicleMod in Mods)
             {
-                await objVehicleMod.Print(objWriter, objCulture, strLanguageToPrint);
+                await objVehicleMod.Print(objWriter, objCulture, strLanguageToPrint).ConfigureAwait(false);
             }
-            await objWriter.WriteEndElementAsync();
+            await objWriter.WriteEndElementAsync().ConfigureAwait(false);
             if (GlobalSettings.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);
-            await objWriter.WriteEndElementAsync();
+            await objWriter.WriteEndElementAsync().ConfigureAwait(false);
         }
 
         /// <summary>
@@ -1097,19 +1097,19 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public async ValueTask<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
         {
-            XPathNavigator xmlDataNode = await this.GetNodeXPathAsync(strLanguage, token: token);
+            XPathNavigator xmlDataNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
             if (xmlDataNode == null)
                 return Name;
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
             {
                 // Because of the weird way in which weapon mounts work with and without Rigger 5.0, instead of hiding built-in mounts from disabled sourcebooks,
                 // we instead display them as if they were one of the CRB mounts, but give them a different name
-                if (IncludedInVehicle && !string.IsNullOrEmpty(Source) && !await _objCharacter.Settings.BookEnabledAsync(Source, token))
-                    return (await xmlDataNode.SelectSingleNodeAndCacheExpressionAsync("name", token))?.Value ?? Name;
+                if (IncludedInVehicle && !string.IsNullOrEmpty(Source) && !await _objCharacter.Settings.BookEnabledAsync(Source, token).ConfigureAwait(false))
+                    return (await xmlDataNode.SelectSingleNodeAndCacheExpressionAsync("name", token).ConfigureAwait(false))?.Value ?? Name;
                 return Name;
             }
 
-            return (await xmlDataNode.SelectSingleNodeAndCacheExpressionAsync("translate", token))?.Value ?? Name;
+            return (await xmlDataNode.SelectSingleNodeAndCacheExpressionAsync("translate", token).ConfigureAwait(false))?.Value ?? Name;
         }
 
         public string CurrentDisplayNameShort => DisplayNameShort(GlobalSettings.Language);
@@ -1154,13 +1154,13 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public async ValueTask<string> DisplayNameAsync(string strLanguage, CancellationToken token = default)
         {
-            string strReturn = await DisplayNameShortAsync(strLanguage, token);
+            string strReturn = await DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
             if (WeaponMountOptions.Count > 0)
             {
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
                 {
                     sbdReturn.Append(strReturn);
-                    string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token);
+                    string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false);
                     sbdReturn.Append(strSpace).Append('(');
                     bool blnCloseParantheses = false;
                     foreach (WeaponMountOption objOption in WeaponMountOptions)
@@ -1190,7 +1190,7 @@ namespace Chummer.Backend.Equipment
         {
             // Because of the weird way in which weapon mounts work with and without Rigger 5.0, instead of hiding built-in mounts from disabled sourcebooks,
             // we instead display them as if they were one of the CRB mounts, but give them a different name
-            if (IncludedInVehicle && !string.IsNullOrEmpty(Source) && !await _objCharacter.Settings.BookEnabledAsync(Source, token))
+            if (IncludedInVehicle && !string.IsNullOrEmpty(Source) && !await _objCharacter.Settings.BookEnabledAsync(Source, token).ConfigureAwait(false))
             {
                 string strOverrideId = AllowedWeaponCategories.Contains("Machine Guns") ||
                                        AllowedWeaponCategories.Contains("Launchers") ||
@@ -1203,7 +1203,7 @@ namespace Chummer.Backend.Equipment
                     = (blnSync
                         // ReSharper disable once MethodHasAsyncOverload
                         ? _objCharacter.LoadData("vehicles.xml", strLanguage, token: token)
-                        : await _objCharacter.LoadDataAsync("vehicles.xml", strLanguage, token: token))
+                        : await _objCharacter.LoadDataAsync("vehicles.xml", strLanguage, token: token).ConfigureAwait(false))
                     .SelectSingleNode("/chummer/weaponmounts/weaponmount[id = "
                                       + strOverrideId.CleanXPath() + " or id = "
                                       + strOverrideId.ToUpperInvariant()
@@ -1219,7 +1219,7 @@ namespace Chummer.Backend.Equipment
             _objCachedMyXmlNode = (blnSync
                     // ReSharper disable once MethodHasAsyncOverload
                     ? _objCharacter.LoadData("vehicles.xml", strLanguage, token: token)
-                    : await _objCharacter.LoadDataAsync("vehicles.xml", strLanguage, token: token))
+                    : await _objCharacter.LoadDataAsync("vehicles.xml", strLanguage, token: token).ConfigureAwait(false))
                 .SelectSingleNode(SourceID == Guid.Empty
                                       ? "/chummer/weaponmounts/weaponmount[name = "
                                         + Name.CleanXPath() + ']'
@@ -1239,7 +1239,7 @@ namespace Chummer.Backend.Equipment
         {
             // Because of the weird way in which weapon mounts work with and without Rigger 5.0, instead of hiding built-in mounts from disabled sourcebooks,
             // we instead display them as if they were one of the CRB mounts, but give them a different name
-            if (IncludedInVehicle && !string.IsNullOrEmpty(Source) && !await _objCharacter.Settings.BookEnabledAsync(Source, token))
+            if (IncludedInVehicle && !string.IsNullOrEmpty(Source) && !await _objCharacter.Settings.BookEnabledAsync(Source, token).ConfigureAwait(false))
             {
                 string strOverrideId = AllowedWeaponCategories.Contains("Machine Guns") ||
                                        AllowedWeaponCategories.Contains("Launchers") ||
@@ -1252,7 +1252,7 @@ namespace Chummer.Backend.Equipment
                     = (blnSync
                         // ReSharper disable once MethodHasAsyncOverload
                         ? _objCharacter.LoadDataXPath("vehicles.xml", strLanguage, token: token)
-                        : await _objCharacter.LoadDataXPathAsync("vehicles.xml", strLanguage, token: token))
+                        : await _objCharacter.LoadDataXPathAsync("vehicles.xml", strLanguage, token: token).ConfigureAwait(false))
                     .SelectSingleNode("/chummer/weaponmounts/weaponmount[id = "
                                       + strOverrideId.CleanXPath() + " or id = "
                                       + strOverrideId.ToUpperInvariant()
@@ -1268,7 +1268,7 @@ namespace Chummer.Backend.Equipment
             _objCachedMyXPathNode = (blnSync
                     // ReSharper disable once MethodHasAsyncOverload
                     ? _objCharacter.LoadDataXPath("vehicles.xml", strLanguage, token: token)
-                    : await _objCharacter.LoadDataXPathAsync("vehicles.xml", strLanguage, token: token))
+                    : await _objCharacter.LoadDataXPathAsync("vehicles.xml", strLanguage, token: token).ConfigureAwait(false))
                 .SelectSingleNode(SourceID == Guid.Empty
                                       ? "/chummer/weaponmounts/weaponmount[name = "
                                         + Name.CleanXPath() + ']'
@@ -1852,7 +1852,7 @@ namespace Chummer.Backend.Equipment
             _objCachedMyXmlNode = (blnSync
                     // ReSharper disable once MethodHasAsyncOverload
                     ? _objCharacter.LoadData("vehicles.xml", strLanguage, token: token)
-                    : await _objCharacter.LoadDataAsync("vehicles.xml", strLanguage, token: token))
+                    : await _objCharacter.LoadDataAsync("vehicles.xml", strLanguage, token: token).ConfigureAwait(false))
                 .SelectSingleNode(SourceID == Guid.Empty
                                       ? "/chummer/weaponmounts/weaponmount[name = "
                                         + Name.CleanXPath() + ']'
@@ -1876,7 +1876,7 @@ namespace Chummer.Backend.Equipment
             _objCachedMyXPathNode = (blnSync
                     // ReSharper disable once MethodHasAsyncOverload
                     ? _objCharacter.LoadDataXPath("vehicles.xml", strLanguage, token: token)
-                    : await _objCharacter.LoadDataXPathAsync("vehicles.xml", strLanguage, token: token))
+                    : await _objCharacter.LoadDataXPathAsync("vehicles.xml", strLanguage, token: token).ConfigureAwait(false))
                 .SelectSingleNode(SourceID == Guid.Empty
                                       ? "/chummer/weaponmounts/weaponmount[name = "
                                         + Name.CleanXPath() + ']'

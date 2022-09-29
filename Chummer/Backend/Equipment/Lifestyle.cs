@@ -604,63 +604,63 @@ namespace Chummer.Backend.Equipment
             if (objWriter == null)
                 return;
             // <lifestyle>
-            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("lifestyle");
+            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("lifestyle").ConfigureAwait(false);
             try
             {
-                await objWriter.WriteElementStringAsync("guid", InternalId);
-                await objWriter.WriteElementStringAsync("sourceid", SourceIDString);
-                await objWriter.WriteElementStringAsync("name", CustomName);
-                await objWriter.WriteElementStringAsync("cost", Cost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
-                await objWriter.WriteElementStringAsync("totalmonthlycost", TotalMonthlyCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
-                await objWriter.WriteElementStringAsync("totalcost", TotalCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
-                await objWriter.WriteElementStringAsync("dice", Dice.ToString(objCulture));
-                await objWriter.WriteElementStringAsync("multiplier", Multiplier.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
-                await objWriter.WriteElementStringAsync("months", Increments.ToString(objCulture));
-                await objWriter.WriteElementStringAsync("purchased", Purchased.ToString(GlobalSettings.InvariantCultureInfo));
-                await objWriter.WriteElementStringAsync("type", StyleType.ToString());
-                await objWriter.WriteElementStringAsync("increment", IncrementType.ToString());
-                await objWriter.WriteElementStringAsync("sourceid", SourceIDString);
-                await objWriter.WriteElementStringAsync("bonuslp", BonusLP.ToString(objCulture));
+                await objWriter.WriteElementStringAsync("guid", InternalId).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("sourceid", SourceIDString).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("name", CustomName).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("cost", Cost.ToString(_objCharacter.Settings.NuyenFormat, objCulture)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("totalmonthlycost", TotalMonthlyCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("totalcost", TotalCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("dice", Dice.ToString(objCulture)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("multiplier", Multiplier.ToString(_objCharacter.Settings.NuyenFormat, objCulture)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("months", Increments.ToString(objCulture)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("purchased", Purchased.ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("type", StyleType.ToString()).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("increment", IncrementType.ToString()).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("sourceid", SourceIDString).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("bonuslp", BonusLP.ToString(objCulture)).ConfigureAwait(false);
                 string strBaseLifestyle = string.Empty;
 
                 // Retrieve the Advanced Lifestyle information if applicable.
                 if (!string.IsNullOrEmpty(BaseLifestyle))
                 {
-                    XPathNavigator objXmlAspect = await this.GetNodeXPathAsync();
+                    XPathNavigator objXmlAspect = await this.GetNodeXPathAsync().ConfigureAwait(false);
                     if (objXmlAspect != null)
                     {
-                        strBaseLifestyle = (await objXmlAspect.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
-                                           ?? (await objXmlAspect.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value ?? strBaseLifestyle;
+                        strBaseLifestyle = (await objXmlAspect.SelectSingleNodeAndCacheExpressionAsync("translate").ConfigureAwait(false))?.Value
+                                           ?? (await objXmlAspect.SelectSingleNodeAndCacheExpressionAsync("name").ConfigureAwait(false))?.Value ?? strBaseLifestyle;
                     }
                 }
 
-                await objWriter.WriteElementStringAsync("baselifestyle", strBaseLifestyle);
-                await objWriter.WriteElementStringAsync("trustfund", TrustFund.ToString(GlobalSettings.InvariantCultureInfo));
-                await objWriter.WriteElementStringAsync("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint));
-                await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("baselifestyle", strBaseLifestyle).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("trustfund", TrustFund.ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
 
                 // <qualities>
-                XmlElementWriteHelper objQualitiesElement = await objWriter.StartElementAsync("qualities");
+                XmlElementWriteHelper objQualitiesElement = await objWriter.StartElementAsync("qualities").ConfigureAwait(false);
                 try
                 {
                     // Retrieve the Qualities for the Advanced Lifestyle if applicable.
                     foreach (LifestyleQuality objQuality in LifestyleQualities)
                     {
-                        await objQuality.Print(objWriter, objCulture, strLanguageToPrint);
+                        await objQuality.Print(objWriter, objCulture, strLanguageToPrint).ConfigureAwait(false);
                     }
                 }
                 finally
                 {
                     // </qualities>
-                    await objQualitiesElement.DisposeAsync();
+                    await objQualitiesElement.DisposeAsync().ConfigureAwait(false);
                 }
                 if (GlobalSettings.PrintNotes)
-                    await objWriter.WriteElementStringAsync("notes", Notes);
+                    await objWriter.WriteElementStringAsync("notes", Notes).ConfigureAwait(false);
             }
             finally
             {
                 // </lifestyle>
-                await objBaseElement.DisposeAsync();
+                await objBaseElement.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -798,9 +798,9 @@ namespace Chummer.Backend.Equipment
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
-            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token);
+            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
             string s = objNode != null
-                ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage", token: token))?.Value ?? Page
+                ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage", token: token).ConfigureAwait(false))?.Value ?? Page
                 : Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
@@ -1360,7 +1360,7 @@ namespace Chummer.Backend.Equipment
             _objCachedMyXmlNode = (blnSync
                     // ReSharper disable once MethodHasAsyncOverload
                     ? _objCharacter.LoadData("lifestyles.xml", strLanguage, token: token)
-                    : await _objCharacter.LoadDataAsync("lifestyles.xml", strLanguage, token: token))
+                    : await _objCharacter.LoadDataAsync("lifestyles.xml", strLanguage, token: token).ConfigureAwait(false))
                 .SelectSingleNode(SourceID == Guid.Empty
                                       ? "/chummer/lifestyles/lifestyle[name = "
                                         + Name.CleanXPath() + ']'
@@ -1384,7 +1384,7 @@ namespace Chummer.Backend.Equipment
             _objCachedMyXPathNode = (blnSync
                     // ReSharper disable once MethodHasAsyncOverload
                     ? _objCharacter.LoadDataXPath("lifestyles.xml", strLanguage, token: token)
-                    : await _objCharacter.LoadDataXPathAsync("lifestyles.xml", strLanguage, token: token))
+                    : await _objCharacter.LoadDataXPathAsync("lifestyles.xml", strLanguage, token: token).ConfigureAwait(false))
                 .SelectSingleNode(SourceID == Guid.Empty
                                       ? "/chummer/lifestyles/lifestyle[name = "
                                         + Name.CleanXPath() + ']'

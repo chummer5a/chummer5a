@@ -599,12 +599,12 @@ namespace Chummer
         public static async ValueTask<XPathNavigator> SelectSingleNodeAndCacheExpressionAsync(this XPathNavigator xmlNode, string xpath, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            (bool blnSuccess, XPathExpression objExpression) = await s_dicCachedExpressions.TryGetValueAsync(xpath, token);
+            (bool blnSuccess, XPathExpression objExpression) = await s_dicCachedExpressions.TryGetValueAsync(xpath, token).ConfigureAwait(false);
             if (blnSuccess)
                 return xmlNode.SelectSingleNode(objExpression);
             token.ThrowIfCancellationRequested();
             objExpression = XPathExpression.Compile(xpath);
-            await s_dicCachedExpressions.TryAddAsync(xpath, objExpression, token);
+            await s_dicCachedExpressions.TryAddAsync(xpath, objExpression, token).ConfigureAwait(false);
             return xmlNode.SelectSingleNode(objExpression);
         }
 
@@ -620,13 +620,13 @@ namespace Chummer
         public static async ValueTask<XPathNavigator> SelectSingleNodeAndCacheExpressionAsync(this Task<XPathNavigator> tskNode, string xpath, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            (bool blnSuccess, XPathExpression objExpression) = await s_dicCachedExpressions.TryGetValueAsync(xpath, token);
-            XPathNavigator xmlNode = await tskNode;
+            (bool blnSuccess, XPathExpression objExpression) = await s_dicCachedExpressions.TryGetValueAsync(xpath, token).ConfigureAwait(false);
+            XPathNavigator xmlNode = await tskNode.ConfigureAwait(false);
             if (blnSuccess)
                 return xmlNode.SelectSingleNode(objExpression);
             token.ThrowIfCancellationRequested();
             objExpression = XPathExpression.Compile(xpath);
-            await s_dicCachedExpressions.TryAddAsync(xpath, objExpression, token);
+            await s_dicCachedExpressions.TryAddAsync(xpath, objExpression, token).ConfigureAwait(false);
             return xmlNode.SelectSingleNode(objExpression);
         }
 
@@ -659,12 +659,12 @@ namespace Chummer
         public static async ValueTask<XPathNodeIterator> SelectAndCacheExpressionAsync(this XPathNavigator xmlNode, string xpath, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            (bool blnSuccess, XPathExpression objExpression) = await s_dicCachedExpressions.TryGetValueAsync(xpath, token);
+            (bool blnSuccess, XPathExpression objExpression) = await s_dicCachedExpressions.TryGetValueAsync(xpath, token).ConfigureAwait(false);
             if (blnSuccess)
                 return xmlNode.Select(objExpression);
             objExpression = XPathExpression.Compile(xpath);
             token.ThrowIfCancellationRequested();
-            await s_dicCachedExpressions.TryAddAsync(xpath, objExpression, token);
+            await s_dicCachedExpressions.TryAddAsync(xpath, objExpression, token).ConfigureAwait(false);
             return xmlNode.Select(objExpression);
         }
 
@@ -680,13 +680,13 @@ namespace Chummer
         public static async ValueTask<XPathNodeIterator> SelectAndCacheExpressionAsync(this Task<XPathNavigator> tskNode, string xpath, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            (bool blnSuccess, XPathExpression objExpression) = await s_dicCachedExpressions.TryGetValueAsync(xpath, token);
-            XPathNavigator xmlNode = await tskNode;
+            (bool blnSuccess, XPathExpression objExpression) = await s_dicCachedExpressions.TryGetValueAsync(xpath, token).ConfigureAwait(false);
+            XPathNavigator xmlNode = await tskNode.ConfigureAwait(false);
             if (blnSuccess)
                 return xmlNode.Select(objExpression);
             objExpression = XPathExpression.Compile(xpath);
             token.ThrowIfCancellationRequested();
-            await s_dicCachedExpressions.TryAddAsync(xpath, objExpression, token);
+            await s_dicCachedExpressions.TryAddAsync(xpath, objExpression, token).ConfigureAwait(false);
             return xmlNode.Select(objExpression);
         }
 

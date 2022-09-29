@@ -168,7 +168,7 @@ namespace Chummer
             if (_blnDisposed)
                 return;
 
-            await Timekeeper.FinishAsync(OperationName);
+            await Timekeeper.FinishAsync(OperationName).ConfigureAwait(false);
             switch (MyOperationType)
             {
                 case OperationType.DependencyOperation:

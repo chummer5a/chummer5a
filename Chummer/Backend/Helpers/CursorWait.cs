@@ -103,19 +103,19 @@ namespace Chummer
             Form frmControl = objReturn._objControl as Form;
             try
             {
-                if (frmControl == null || await frmControl.DoThreadSafeFuncAsync(x => x.IsMdiChild, token))
+                if (frmControl == null || await frmControl.DoThreadSafeFuncAsync(x => x.IsMdiChild, token).ConfigureAwait(false))
                 {
                     if (frmControl != null)
                     {
-                        objReturn._frmControlTopParent = await frmControl.DoThreadSafeFuncAsync(x => x.MdiParent, token);
+                        objReturn._frmControlTopParent = await frmControl.DoThreadSafeFuncAsync(x => x.MdiParent, token).ConfigureAwait(false);
                     }
                     else if (objReturn._objControl is UserControl objUserControl)
                     {
-                        objReturn._frmControlTopParent = await objUserControl.DoThreadSafeFuncAsync(x => x.ParentForm, token);
+                        objReturn._frmControlTopParent = await objUserControl.DoThreadSafeFuncAsync(x => x.ParentForm, token).ConfigureAwait(false);
                     }
                     else if (objReturn._objControl != null)
                     {
-                        for (Control objLoop = await objReturn._objControl.DoThreadSafeFuncAsync(x => x.Parent, token); objLoop != null; objLoop = await objLoop.DoThreadSafeFuncAsync(x => x.Parent, token))
+                        for (Control objLoop = await objReturn._objControl.DoThreadSafeFuncAsync(x => x.Parent, token).ConfigureAwait(false); objLoop != null; objLoop = await objLoop.DoThreadSafeFuncAsync(x => x.Parent, token).ConfigureAwait(false))
                         {
                             if (objLoop is Form objLoopForm)
                             {
@@ -128,7 +128,7 @@ namespace Chummer
             }
             catch (OperationCanceledException)
             {
-                await objReturn.DisposeAsync();
+                await objReturn.DisposeAsync().ConfigureAwait(false);
                 throw;
             }
 
@@ -139,11 +139,11 @@ namespace Chummer
                     int intNewValue = s_DicCursorControls.AddOrUpdate(objReturn._objControl, 1, (x, y) => Interlocked.Increment(ref y));
                     try
                     {
-                        await objReturn.SetControlCursorAsync(intNewValue < short.MaxValue ? Cursors.AppStarting : Cursors.WaitCursor, token);
+                        await objReturn.SetControlCursorAsync(intNewValue < short.MaxValue ? Cursors.AppStarting : Cursors.WaitCursor, token).ConfigureAwait(false);
                     }
                     catch (OperationCanceledException)
                     {
-                        await objReturn.DisposeAsync();
+                        await objReturn.DisposeAsync().ConfigureAwait(false);
                         throw;
                     }
                     objReturn._blnDoUnsetCursorOnDispose = true;
@@ -153,11 +153,11 @@ namespace Chummer
                     s_DicCursorControls.AddOrUpdate(objReturn._objControl, short.MaxValue, (x, y) => Interlocked.Add(ref y, short.MaxValue));
                     try
                     {
-                        await objReturn.SetControlCursorAsync(Cursors.WaitCursor, token);
+                        await objReturn.SetControlCursorAsync(Cursors.WaitCursor, token).ConfigureAwait(false);
                     }
                     catch (OperationCanceledException)
                     {
-                        await objReturn.DisposeAsync();
+                        await objReturn.DisposeAsync().ConfigureAwait(false);
                         throw;
                     }
                     objReturn._blnDoUnsetCursorOnDispose = true;
@@ -191,15 +191,15 @@ namespace Chummer
         {
             if (objCursor != null)
             {
-                await _objControl.DoThreadSafeAsync(x => x.Cursor = objCursor, token);
+                await _objControl.DoThreadSafeAsync(x => x.Cursor = objCursor, token).ConfigureAwait(false);
                 if (_frmControlTopParent != null)
-                    await _frmControlTopParent.DoThreadSafeAsync(x => x.Cursor = objCursor, token);
+                    await _frmControlTopParent.DoThreadSafeAsync(x => x.Cursor = objCursor, token).ConfigureAwait(false);
             }
             else
             {
-                await _objControl.DoThreadSafeAsync(x => x.ResetCursor(), token);
+                await _objControl.DoThreadSafeAsync(x => x.ResetCursor(), token).ConfigureAwait(false);
                 if (_frmControlTopParent != null)
-                    await _frmControlTopParent.DoThreadSafeAsync(x => x.ResetCursor(), token);
+                    await _frmControlTopParent.DoThreadSafeAsync(x => x.ResetCursor(), token).ConfigureAwait(false);
             }
         }
 
@@ -263,7 +263,7 @@ namespace Chummer
                     if (intDecrementedValue > 0)
                         s_DicCursorControls.AddOrUpdate(_objControl, intDecrementedValue, (x, y) => y + intDecrementedValue);
                     else if (_blnDoUnsetCursorOnDispose)
-                        await SetControlCursorAsync(null);
+                        await SetControlCursorAsync(null).ConfigureAwait(false);
                 }
             }
             else if (s_DicCursorControls.TryRemove(_objControl, out int intCurrentValue))
@@ -273,10 +273,10 @@ namespace Chummer
                 {
                     s_DicCursorControls.AddOrUpdate(_objControl, intDecrementedValue, (x, y) => y + intDecrementedValue);
                     if (_blnDoUnsetCursorOnDispose)
-                        await SetControlCursorAsync(intDecrementedValue < short.MaxValue ? Cursors.AppStarting : Cursors.WaitCursor);
+                        await SetControlCursorAsync(intDecrementedValue < short.MaxValue ? Cursors.AppStarting : Cursors.WaitCursor).ConfigureAwait(false);
                 }
                 else if (_blnDoUnsetCursorOnDispose)
-                    await SetControlCursorAsync(null);
+                    await SetControlCursorAsync(null).ConfigureAwait(false);
             }
         }
     }

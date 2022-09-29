@@ -97,19 +97,19 @@ namespace Chummer.Backend.Skills
             if (objWriter == null)
                 return;
             // <skillspecialization>
-            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("skillspecialization", token: token);
+            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("skillspecialization", token: token).ConfigureAwait(false);
             try
             {
-                await objWriter.WriteElementStringAsync("guid", InternalId, token: token);
-                await objWriter.WriteElementStringAsync("name", await DisplayNameAsync(strLanguageToPrint, token), token: token);
-                await objWriter.WriteElementStringAsync("free", Free.ToString(GlobalSettings.InvariantCultureInfo), token: token);
-                await objWriter.WriteElementStringAsync("expertise", Expertise.ToString(GlobalSettings.InvariantCultureInfo), token: token);
-                await objWriter.WriteElementStringAsync("specbonus", (await GetSpecializationBonusAsync(token)).ToString(objCulture), token: token);
+                await objWriter.WriteElementStringAsync("guid", InternalId, token: token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("name", await DisplayNameAsync(strLanguageToPrint, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("free", Free.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("expertise", Expertise.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("specbonus", (await GetSpecializationBonusAsync(token).ConfigureAwait(false)).ToString(objCulture), token: token).ConfigureAwait(false);
             }
             finally
             {
                 // </skillspecialization>
-                await objBaseElement.DisposeAsync();
+                await objBaseElement.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -141,7 +141,7 @@ namespace Chummer.Backend.Skills
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
-            return (await this.GetNodeXPathAsync(strLanguage, token: token))?.SelectSingleNode("@translate")?.Value ?? Name;
+            return (await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false))?.SelectSingleNode("@translate")?.Value ?? Name;
         }
 
         /// <summary>
@@ -168,7 +168,7 @@ namespace Chummer.Backend.Skills
                 _objCachedMyXmlNode = (blnSync
                         // ReSharper disable once MethodHasAsyncOverload
                         ? Parent.GetNode(strLanguage, token: token)
-                        : await Parent.GetNodeAsync(strLanguage, token: token))
+                        : await Parent.GetNodeAsync(strLanguage, token: token).ConfigureAwait(false))
                     ?.SelectSingleNode("specs/spec[. = " + Name.CleanXPath() + ']');
             _strCachedXmlNodeLanguage = strLanguage;
             return _objCachedMyXmlNode;
@@ -188,7 +188,7 @@ namespace Chummer.Backend.Skills
                 _objCachedMyXPathNode = (blnSync
                         // ReSharper disable once MethodHasAsyncOverload
                         ? Parent.GetNodeXPath(strLanguage, token: token)
-                        : await Parent.GetNodeXPathAsync(strLanguage, token: token))
+                        : await Parent.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false))
                     ?.SelectSingleNode("specs/spec[. = " + Name.CleanXPath() + ']');
             _strCachedXPathNodeLanguage = strLanguage;
             return _objCachedMyXPathNode;
@@ -280,9 +280,9 @@ namespace Chummer.Backend.Skills
         {
             int intReturn = 0;
             if ((await ImprovementManager
-                    .GetCachedImprovementListForValueOfAsync(_objCharacter,
-                                                             Improvement.ImprovementType.DisableSpecializationEffects,
-                                                             await Parent.GetDictionaryKeyAsync(token), token: token))
+                       .GetCachedImprovementListForValueOfAsync(_objCharacter,
+                                                                Improvement.ImprovementType.DisableSpecializationEffects,
+                                                                await Parent.GetDictionaryKeyAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false))
                 .Count == 0)
             {
                 if (Expertise)
@@ -293,7 +293,7 @@ namespace Chummer.Backend.Skills
 
             decimal decBonus = 0;
             foreach (Improvement objImprovement in await Parent.RelevantImprovementsAsync(
-                         x => x.Condition == Name && !x.AddToRating, blnIncludeConditionals: true, token: token))
+                         x => x.Condition == Name && !x.AddToRating, blnIncludeConditionals: true, token: token).ConfigureAwait(false))
             {
                 switch (objImprovement.ImproveType)
                 {

@@ -133,7 +133,7 @@ namespace Chummer
                             await Task.WhenAny(Task.Factory.FromAsync(funcNewValueFactory.BeginInvoke,
                                                                       x => strFactoryResult
                                                                           = funcNewValueFactory.EndInvoke(x),
-                                                                      null), objCancellationTokenTaskSource.Task);
+                                                                      null), objCancellationTokenTaskSource.Task).ConfigureAwait(false);
                         }
                         token.ThrowIfCancellationRequested();
                         sbdInput.Replace(strOldValue, strFactoryResult);
@@ -152,7 +152,7 @@ namespace Chummer
                                                                               = funcNewValueFactory.EndInvoke(x), null);
                         strOldStringBuilderValue = sbdInput.ToString();
                         sbdInput.Clear();
-                        await Task.WhenAny(tskGetValue, objCancellationTokenTaskSource.Task);
+                        await Task.WhenAny(tskGetValue, objCancellationTokenTaskSource.Task).ConfigureAwait(false);
                     }
                     token.ThrowIfCancellationRequested();
                     sbdInput.Append(
@@ -190,10 +190,10 @@ namespace Chummer
                         using (CancellationTokenTaskSource<string> objCancellationTokenTaskSource
                                = new CancellationTokenTaskSource<string>(token))
                         {
-                            await Task.WhenAny(tskReplaceTask, objCancellationTokenTaskSource.Task);
+                            await Task.WhenAny(tskReplaceTask, objCancellationTokenTaskSource.Task).ConfigureAwait(false);
                         }
                         token.ThrowIfCancellationRequested();
-                        sbdInput.Replace(strOldValue, await tskReplaceTask);
+                        sbdInput.Replace(strOldValue, await tskReplaceTask.ConfigureAwait(false));
                     }
                 }
                 else if (strOriginal.IndexOf(strOldValue, eStringComparison) != -1)
@@ -206,10 +206,10 @@ namespace Chummer
                     using (CancellationTokenTaskSource<string> objCancellationTokenTaskSource
                            = new CancellationTokenTaskSource<string>(token))
                     {
-                        await Task.WhenAny(tskReplaceTask, objCancellationTokenTaskSource.Task);
+                        await Task.WhenAny(tskReplaceTask, objCancellationTokenTaskSource.Task).ConfigureAwait(false);
                     }
                     token.ThrowIfCancellationRequested();
-                    sbdInput.Append(strOldStringBuilderValue.Replace(strOldValue, await tskReplaceTask, eStringComparison));
+                    sbdInput.Append(strOldStringBuilderValue.Replace(strOldValue, await tskReplaceTask.ConfigureAwait(false), eStringComparison));
                 }
             }
 

@@ -65,7 +65,7 @@ namespace Chummer
 
         private static async Task<IAsyncDisposable> TakeLockCoreAsync(DebuggableSemaphoreSlim objCurrentSemaphore, SafeSemaphoreRelease objRelease)
         {
-            await objCurrentSemaphore.WaitAsync();
+            await objCurrentSemaphore.WaitAsync().ConfigureAwait(false);
             return objRelease;
         }
 
@@ -73,7 +73,7 @@ namespace Chummer
         {
             try
             {
-                await objCurrentSemaphore.WaitAsync(token);
+                await objCurrentSemaphore.WaitAsync(token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -146,7 +146,7 @@ namespace Chummer
             {
                 // Ensure the lock isn't held. If it is, wait for it to be released
                 // before completing the dispose.
-                await _objTopLevelSemaphore.WaitAsync();
+                await _objTopLevelSemaphore.WaitAsync().ConfigureAwait(false);
                 _objTopLevelSemaphore.Release();
                 _objTopLevelSemaphore.Dispose();
             }
@@ -202,7 +202,7 @@ namespace Chummer
                 {
                     if (_objCurrentSemaphore.CurrentCount == 0)
                     {
-                        await _objNextSemaphore.WaitAsync();
+                        await _objNextSemaphore.WaitAsync().ConfigureAwait(false);
                         try
                         {
                             _objCurrentSemaphore.Release();

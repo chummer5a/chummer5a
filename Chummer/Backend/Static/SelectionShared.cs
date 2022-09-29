@@ -1707,7 +1707,7 @@ namespace Chummer
         /// </summary>
         public static async ValueTask<bool> CheckAvailRestrictionAsync(XmlNode objXmlGear, Character objCharacter, int intRating = 1, int intAvailModifier = 0, CancellationToken token = default)
         {
-            return objXmlGear != null && await objXmlGear.CreateNavigator().CheckAvailRestrictionAsync(objCharacter, intRating, intAvailModifier, token);
+            return objXmlGear != null && await objXmlGear.CreateNavigator().CheckAvailRestrictionAsync(objCharacter, intRating, intAvailModifier, token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -1726,11 +1726,11 @@ namespace Chummer
             if (objCharacter == null)
                 return true;
             //TODO: Better handler for restricted gear
-            if (await objCharacter.GetCreatedAsync(token) || await objCharacter.GetRestrictedGearAsync(token) > 0 || await objCharacter.GetIgnoreRulesAsync(token))
+            if (await objCharacter.GetCreatedAsync(token).ConfigureAwait(false) || await objCharacter.GetRestrictedGearAsync(token).ConfigureAwait(false) > 0 || await objCharacter.GetIgnoreRulesAsync(token).ConfigureAwait(false))
                 return true;
             // Avail.
 
-            XPathNavigator objAvailNode = await objXmlGear.SelectSingleNodeAndCacheExpressionAsync("avail", token);
+            XPathNavigator objAvailNode = await objXmlGear.SelectSingleNodeAndCacheExpressionAsync("avail", token).ConfigureAwait(false);
             if (objAvailNode == null)
             {
                 int intHighestAvailNode = 0;
@@ -1772,7 +1772,7 @@ namespace Chummer
 
             strAvailExpr = strAvailExpr.TrimEndOnce(" or Gear").TrimEndOnce('F', 'R');
             int intAvail = intAvailModifier;
-            (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strAvailExpr.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo)), token);
+            (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strAvailExpr.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo)), token).ConfigureAwait(false);
             if (blnIsSuccess)
                 intAvail += ((double)objProcess).StandardRound();
             return intAvail <= objCharacter.Settings.MaximumAvailability;
@@ -1840,7 +1840,7 @@ namespace Chummer
         {
             return objXmlGear != null && await objXmlGear.CreateNavigator()
                                                          .CheckNuyenRestrictionAsync(
-                                                             decMaxNuyen, decCostMultiplier, intRating, token);
+                                                             decMaxNuyen, decCostMultiplier, intRating, token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -1858,7 +1858,7 @@ namespace Chummer
                 return false;
             // Cost.
             decimal decCost = 0.0m;
-            XPathNavigator objCostNode = await objXmlGear.SelectSingleNodeAndCacheExpressionAsync("cost", token);
+            XPathNavigator objCostNode = await objXmlGear.SelectSingleNodeAndCacheExpressionAsync("cost", token).ConfigureAwait(false);
             if (objCostNode == null)
             {
                 int intCostRating = 1;
@@ -1890,7 +1890,7 @@ namespace Chummer
                     strCost = intHyphenIndex != -1 ? strCost.Substring(0, intHyphenIndex) : strCost.FastEscape('+');
                 }
 
-                (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strCost.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo)), token);
+                (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strCost.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo)), token).ConfigureAwait(false);
                 if (blnIsSuccess)
                     decCost = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
             }

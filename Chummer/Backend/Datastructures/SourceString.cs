@@ -95,8 +95,8 @@ namespace Chummer
         {
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalSettings.Language;
-            return new SourceString(await CommonFunctions.LanguageBookShortAsync(strSource, strLanguage, objCharacter, token),
-                                    await CommonFunctions.LanguageBookLongAsync(strSource, strLanguage, objCharacter, token), intPage,
+            return new SourceString(await CommonFunctions.LanguageBookShortAsync(strSource, strLanguage, objCharacter, token).ConfigureAwait(false),
+                                    await CommonFunctions.LanguageBookLongAsync(strSource, strLanguage, objCharacter, token).ConfigureAwait(false), intPage,
                                     strLanguage, objCultureInfo);
         }
 

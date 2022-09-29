@@ -159,22 +159,22 @@ namespace Chummer
         public static async Task<Bitmap> GetCachedIconBitmapAsync(Icon objIcon, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            (bool blnSuccess, Bitmap bmpReturn) = await s_dicCachedIconBitmaps.TryGetValueAsync(objIcon, token);
+            (bool blnSuccess, Bitmap bmpReturn) = await s_dicCachedIconBitmaps.TryGetValueAsync(objIcon, token).ConfigureAwait(false);
             if (blnSuccess)
                 return bmpReturn;
-            IAsyncDisposable objLocker = await s_dicCachedIconBitmaps.LockObject.EnterWriteLockAsync(token);
+            IAsyncDisposable objLocker = await s_dicCachedIconBitmaps.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
-                (blnSuccess, bmpReturn) = await s_dicCachedIconBitmaps.TryGetValueAsync(objIcon, token);
+                (blnSuccess, bmpReturn) = await s_dicCachedIconBitmaps.TryGetValueAsync(objIcon, token).ConfigureAwait(false);
                 if (!blnSuccess)
                 {
                     bmpReturn = objIcon.ToBitmap();
-                    await s_dicCachedIconBitmaps.AddAsync(objIcon, bmpReturn, token);
+                    await s_dicCachedIconBitmaps.AddAsync(objIcon, bmpReturn, token).ConfigureAwait(false);
                 }
             }
             finally
             {
-                await objLocker.DisposeAsync();
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
             return bmpReturn;
         }
@@ -237,10 +237,10 @@ namespace Chummer
         public static async Task<Bitmap> GetStockIconBitmapsForSystemIconAsync(Icon objIcon, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            (bool blnSuccess, Bitmap bmpReturn) = await s_dicCachedIconBitmaps.TryGetValueAsync(objIcon, token);
+            (bool blnSuccess, Bitmap bmpReturn) = await s_dicCachedIconBitmaps.TryGetValueAsync(objIcon, token).ConfigureAwait(false);
             if (blnSuccess)
                 return bmpReturn;
-            IAsyncDisposable objLocker = await s_dicCachedIconBitmaps.LockObject.EnterWriteLockAsync(token);
+            IAsyncDisposable objLocker = await s_dicCachedIconBitmaps.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
                 if (s_dicStockIconBitmapsForSystemIcons.TryGetValue(objIcon, out bmpReturn))
@@ -277,11 +277,11 @@ namespace Chummer
                 {
                     throw new ArgumentOutOfRangeException(nameof(objIcon));
                 }
-                await s_dicStockIconBitmapsForSystemIcons.AddAsync(objIcon, bmpReturn, token);
+                await s_dicStockIconBitmapsForSystemIcons.AddAsync(objIcon, bmpReturn, token).ConfigureAwait(false);
             }
             finally
             {
-                await objLocker.DisposeAsync();
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
             return bmpReturn;
         }
@@ -796,9 +796,9 @@ namespace Chummer
                 strLanguage = GlobalSettings.Language;
             if (!string.IsNullOrEmpty(strText))
             {
-                string text = await LanguageManager.GetStringAsync(strText, strLanguage, token: token);
+                string text = await LanguageManager.GetStringAsync(strText, strLanguage, token: token).ConfigureAwait(false);
                 string caption
-                    = await LanguageManager.GetStringAsync("MessageTitle_Options_CloseForms", strLanguage, token: token);
+                    = await LanguageManager.GetStringAsync("MessageTitle_Options_CloseForms", strLanguage, token: token).ConfigureAwait(false);
                 token.ThrowIfCancellationRequested();
                 if (Program.ShowMessageBox(text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question)
                     != DialogResult.Yes)
@@ -817,20 +817,20 @@ namespace Chummer
                     switch (Program.ShowMessageBox(
                                 string.Format(GlobalSettings.CultureInfo,
                                               await LanguageManager.GetStringAsync(
-                                                  "Message_UnsavedChanges", strLanguage, token: token), strCharacterName),
-                                await LanguageManager.GetStringAsync("MessageTitle_UnsavedChanges", strLanguage, token: token),
+                                                  "Message_UnsavedChanges", strLanguage, token: token).ConfigureAwait(false), strCharacterName),
+                                await LanguageManager.GetStringAsync("MessageTitle_UnsavedChanges", strLanguage, token: token).ConfigureAwait(false),
                                 MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question))
                     {
                         case DialogResult.Yes:
                             {
                                 // Attempt to save the Character. If the user cancels the Save As dialogue that may open, cancel the closing event so that changes are not lost.
-                                bool blnResult = await objOpenCharacterForm.SaveCharacter(token: token);
+                                bool blnResult = await objOpenCharacterForm.SaveCharacter(token: token).ConfigureAwait(false);
                                 if (!blnResult)
                                     return;
                                 // We saved a character as created, which closed the current form and added a new one
                                 // This works regardless of dispose, because dispose would just set the objOpenCharacterForm pointer to null, so OpenCharacterEditorForms would never contain it
                                 if (!await Program.MainForm.OpenCharacterEditorForms
-                                                  .ContainsAsync(objOpenCharacterForm, token: token))
+                                                  .ContainsAsync(objOpenCharacterForm, token: token).ConfigureAwait(false))
                                     --i;
                                 break;
                             }
@@ -858,7 +858,7 @@ namespace Chummer
                     // Restart current application, with same arguments/parameters
                     foreach (Form objForm in Program.MainForm.MdiChildren)
                     {
-                        await objForm.DoThreadSafeAsync(x => x.Close(), token: token);
+                        await objForm.DoThreadSafeAsync(x => x.Close(), token: token).ConfigureAwait(false);
                     }
 
                     strArguments = sbdArguments.ToString();
@@ -942,7 +942,7 @@ namespace Chummer
             {
                 try
                 {
-                    await func;
+                    await func.ConfigureAwait(false);
                     // This is needed because SetResult always needs a return type
                     tcs.TrySetResult(true);
                 }
@@ -968,7 +968,7 @@ namespace Chummer
             {
                 try
                 {
-                    tcs.TrySetResult(await func);
+                    tcs.TrySetResult(await func.ConfigureAwait(false));
                 }
                 catch (Exception e)
                 {
@@ -1051,7 +1051,7 @@ namespace Chummer
             {
                 try
                 {
-                    await func;
+                    await func.ConfigureAwait(false);
                     // This is needed because SetResult always needs a return type
                     tcs.TrySetResult(true);
                 }
@@ -1082,7 +1082,7 @@ namespace Chummer
             {
                 try
                 {
-                    tcs.TrySetResult(await func);
+                    tcs.TrySetResult(await func.ConfigureAwait(false));
                 }
                 catch (Exception e)
                 {

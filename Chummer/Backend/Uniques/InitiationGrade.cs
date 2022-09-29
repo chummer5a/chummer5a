@@ -144,22 +144,22 @@ namespace Chummer
             if (objWriter == null)
                 return;
             // <initiationgrade>
-            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("initiationgrade");
+            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("initiationgrade").ConfigureAwait(false);
             try
             {
-                await objWriter.WriteElementStringAsync("guid", InternalId);
-                await objWriter.WriteElementStringAsync("grade", Grade.ToString(objCulture));
-                await objWriter.WriteElementStringAsync("group", Group.ToString(GlobalSettings.InvariantCultureInfo));
-                await objWriter.WriteElementStringAsync("ordeal", Ordeal.ToString(GlobalSettings.InvariantCultureInfo));
-                await objWriter.WriteElementStringAsync("schooling", Schooling.ToString(GlobalSettings.InvariantCultureInfo));
-                await objWriter.WriteElementStringAsync("technomancer", Technomancer.ToString(GlobalSettings.InvariantCultureInfo));
+                await objWriter.WriteElementStringAsync("guid", InternalId).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("grade", Grade.ToString(objCulture)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("group", Group.ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("ordeal", Ordeal.ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("schooling", Schooling.ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("technomancer", Technomancer.ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
                 if (GlobalSettings.PrintNotes)
-                    await objWriter.WriteElementStringAsync("notes", Notes);
+                    await objWriter.WriteElementStringAsync("notes", Notes).ConfigureAwait(false);
             }
             finally
             {
                 // </initiationgrade>
-                await objBaseElement.DisposeAsync();
+                await objBaseElement.DisposeAsync().ConfigureAwait(false);
             }
         }
 

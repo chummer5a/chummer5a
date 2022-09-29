@@ -864,10 +864,10 @@ namespace Chummer
                 {
                     if (objSourceRegistry != null)
                     {
-                        LockingDictionary<string, SourcebookInfo> dicSourcebookInfos = await GetSourcebookInfosAsync(token);
-                        using (await EnterReadLock.EnterAsync(dicSourcebookInfos, token))
+                        LockingDictionary<string, SourcebookInfo> dicSourcebookInfos = await GetSourcebookInfosAsync(token).ConfigureAwait(false);
+                        using (await EnterReadLock.EnterAsync(dicSourcebookInfos, token).ConfigureAwait(false))
                         {
-                            foreach (SourcebookInfo objSource in await dicSourcebookInfos.GetValuesAsync(token))
+                            foreach (SourcebookInfo objSource in await dicSourcebookInfos.GetValuesAsync(token).ConfigureAwait(false))
                             {
                                 token.ThrowIfCancellationRequested();
                                 objSourceRegistry.SetValue(objSource.Code,
@@ -907,17 +907,17 @@ namespace Chummer
             catch (System.Security.SecurityException)
             {
                 Program.ShowMessageBox(
-                    await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning_Registry", token: token));
+                    await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning_Registry", token: token).ConfigureAwait(false));
             }
             catch (UnauthorizedAccessException)
             {
                 Program.ShowMessageBox(
-                    await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning_Registry", token: token));
+                    await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning_Registry", token: token).ConfigureAwait(false));
             }
             catch (ArgumentNullException e) when (e.ParamName == nameof(Registry))
             {
                 Program.ShowMessageBox(
-                    await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning_Registry", token: token));
+                    await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning_Registry", token: token).ConfigureAwait(false));
             }
         }
 
@@ -1296,26 +1296,26 @@ namespace Chummer
             CultureInfo.DefaultThreadCurrentUICulture = _objLanguageCultureInfo;
             if (Program.MainForm != null)
             {
-                await Program.MainForm.TranslateWinFormAsync(token: token);
+                await Program.MainForm.TranslateWinFormAsync(token: token).ConfigureAwait(false);
                 foreach (CharacterShared frmLoop in Program.MainForm.OpenCharacterEditorForms)
                 {
-                    await frmLoop.TranslateWinFormAsync(token: token);
+                    await frmLoop.TranslateWinFormAsync(token: token).ConfigureAwait(false);
                 }
                 foreach (CharacterSheetViewer frmLoop in Program.MainForm.OpenCharacterSheetViewers)
                 {
-                    await frmLoop.TranslateWinFormAsync(token: token);
+                    await frmLoop.TranslateWinFormAsync(token: token).ConfigureAwait(false);
                 }
                 foreach (ExportCharacter frmLoop in Program.MainForm.OpenCharacterExportForms)
                 {
-                    await frmLoop.TranslateWinFormAsync(token: token);
+                    await frmLoop.TranslateWinFormAsync(token: token).ConfigureAwait(false);
                 }
                 if (Program.MainForm.PrintMultipleCharactersForm != null)
-                    await Program.MainForm.PrintMultipleCharactersForm.TranslateWinFormAsync(token: token);
+                    await Program.MainForm.PrintMultipleCharactersForm.TranslateWinFormAsync(token: token).ConfigureAwait(false);
                 if (Program.MainForm.CharacterRoster != null)
-                    await Program.MainForm.CharacterRoster.TranslateWinFormAsync(token: token);
+                    await Program.MainForm.CharacterRoster.TranslateWinFormAsync(token: token).ConfigureAwait(false);
                 if (Program.MainForm.MasterIndex != null)
-                    await Program.MainForm.MasterIndex.TranslateWinFormAsync(token: token);
-                await Program.MainForm.RefreshAllTabTitlesAsync(token);
+                    await Program.MainForm.MasterIndex.TranslateWinFormAsync(token: token).ConfigureAwait(false);
+                await Program.MainForm.RefreshAllTabTitlesAsync(token).ConfigureAwait(false);
             }
         }
 
@@ -1474,7 +1474,7 @@ namespace Chummer
                 {
                     // We need to generate s_DicSourcebookInfos outside of the constructor to avoid initialization cycles
                     if (Interlocked.CompareExchange(ref s_intSourcebookInfosLoadingStatus, 0, -1) < 0)
-                        await LoadSourcebookInfosAsync(token);
+                        await LoadSourcebookInfosAsync(token).ConfigureAwait(false);
                 }
                 catch
                 {
@@ -1483,7 +1483,7 @@ namespace Chummer
                 }
 
                 while (s_intSourcebookInfosLoadingStatus <= 0)
-                    await Utils.SafeSleepAsync(token);
+                    await Utils.SafeSleepAsync(token).ConfigureAwait(false);
             } while (s_intSourcebookInfosLoadingStatus < 0);
             return s_DicSourcebookInfos;
         }
@@ -1499,10 +1499,10 @@ namespace Chummer
                     s_DicSourcebookInfos.Clear();
                 Utils.RunWithoutThreadLock(async () => // Retrieve the SourcebookInfo objects.
                 {
-                    foreach (XPathNavigator xmlBook in await (await XmlManager.LoadXPathAsync("books.xml"))
-                                 .SelectAndCacheExpressionAsync("/chummer/books/book"))
+                    foreach (XPathNavigator xmlBook in await (await XmlManager.LoadXPathAsync("books.xml").ConfigureAwait(false))
+                                                             .SelectAndCacheExpressionAsync("/chummer/books/book").ConfigureAwait(false))
                     {
-                        string strCode = (await xmlBook.SelectSingleNodeAndCacheExpressionAsync("code"))?.Value;
+                        string strCode = (await xmlBook.SelectSingleNodeAndCacheExpressionAsync("code").ConfigureAwait(false))?.Value;
                         if (string.IsNullOrEmpty(strCode))
                             continue;
                         SourcebookInfo objSource = new SourcebookInfo
@@ -1541,7 +1541,7 @@ namespace Chummer
                             //swallow this
                         }
 
-                        await s_DicSourcebookInfos.AddAsync(strCode, objSource);
+                        await s_DicSourcebookInfos.AddAsync(strCode, objSource).ConfigureAwait(false);
                     }
                 });
             }
@@ -1559,11 +1559,11 @@ namespace Chummer
                 if (s_DicSourcebookInfos == null)
                     s_DicSourcebookInfos = new LockingDictionary<string, SourcebookInfo>();
                 else
-                    await s_DicSourcebookInfos.ClearAsync(token);
-                foreach (XPathNavigator xmlBook in await (await XmlManager.LoadXPathAsync("books.xml", token: token))
-                                 .SelectAndCacheExpressionAsync("/chummer/books/book", token: token))
+                    await s_DicSourcebookInfos.ClearAsync(token).ConfigureAwait(false);
+                foreach (XPathNavigator xmlBook in await (await XmlManager.LoadXPathAsync("books.xml", token: token).ConfigureAwait(false))
+                                                         .SelectAndCacheExpressionAsync("/chummer/books/book", token: token).ConfigureAwait(false))
                 {
-                    string strCode = (await xmlBook.SelectSingleNodeAndCacheExpressionAsync("code", token: token))?.Value;
+                    string strCode = (await xmlBook.SelectSingleNodeAndCacheExpressionAsync("code", token: token).ConfigureAwait(false))?.Value;
                     if (string.IsNullOrEmpty(strCode))
                         continue;
                     SourcebookInfo objSource = new SourcebookInfo
@@ -1602,7 +1602,7 @@ namespace Chummer
                         //swallow this
                     }
 
-                    await s_DicSourcebookInfos.AddAsync(strCode, objSource, token);
+                    await s_DicSourcebookInfos.AddAsync(strCode, objSource, token).ConfigureAwait(false);
                 }
             }
             finally

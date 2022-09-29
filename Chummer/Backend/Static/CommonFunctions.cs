@@ -65,7 +65,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static async ValueTask<Tuple<bool, object>> EvaluateInvariantXPathAsync(string strXPath, CancellationToken token = default)
         {
-            (bool blnSuccess, Tuple<bool, object> objCachedEvaluation) = await s_DicCompiledEvaluations.TryGetValueAsync(strXPath, token);
+            (bool blnSuccess, Tuple<bool, object> objCachedEvaluation) = await s_DicCompiledEvaluations.TryGetValueAsync(strXPath, token).ConfigureAwait(false);
             if (blnSuccess)
             {
                 return objCachedEvaluation;
@@ -75,14 +75,14 @@ namespace Chummer
             if (string.IsNullOrWhiteSpace(strXPath))
             {
                 tupReturn = new Tuple<bool, object>(false, null);
-                await s_DicCompiledEvaluations.TryAddAsync(strXPath, tupReturn, token);
+                await s_DicCompiledEvaluations.TryAddAsync(strXPath, tupReturn, token).ConfigureAwait(false);
                 return tupReturn;
             }
 
             if (!strXPath.IsLegalCharsOnly(true, s_LstInvariantXPathLegalChars))
             {
                 tupReturn = new Tuple<bool, object>(false, strXPath);
-                await s_DicCompiledEvaluations.TryAddAsync(strXPath, tupReturn, token);
+                await s_DicCompiledEvaluations.TryAddAsync(strXPath, tupReturn, token).ConfigureAwait(false);
                 return tupReturn;
             }
 
@@ -97,10 +97,10 @@ namespace Chummer
             {
                 try
                 {
-                    (bool blnHasEvaluator, XPathNavigator objEvaluator) = await s_StkXPathNavigatorPool.TryTakeAsync(token);
+                    (bool blnHasEvaluator, XPathNavigator objEvaluator) = await s_StkXPathNavigatorPool.TryTakeAsync(token).ConfigureAwait(false);
                     if (!blnHasEvaluator)
                     {
-                        await s_ObjXPathNavigatorDocumentLock.WaitAsync(token);
+                        await s_ObjXPathNavigatorDocumentLock.WaitAsync(token).ConfigureAwait(false);
                         try
                         {
                             objEvaluator = s_ObjXPathNavigatorDocument.CreateNavigator();
@@ -117,7 +117,7 @@ namespace Chummer
                     }
                     finally
                     {
-                        await s_StkXPathNavigatorPool.PushAsync(objEvaluator, token);
+                        await s_StkXPathNavigatorPool.PushAsync(objEvaluator, token).ConfigureAwait(false);
                     }
 
                     blnIsSuccess = objReturn != null;
@@ -137,7 +137,7 @@ namespace Chummer
             }
 
             tupReturn = new Tuple<bool, object>(blnIsSuccess, objReturn);
-            await s_DicCompiledEvaluations.TryAddAsync(strXPath, tupReturn, token); // don't want to store managed objects, only primitives
+            await s_DicCompiledEvaluations.TryAddAsync(strXPath, tupReturn, token).ConfigureAwait(false); // don't want to store managed objects, only primitives
             return tupReturn;
         }
 
@@ -235,7 +235,7 @@ namespace Chummer
         public static async ValueTask<Tuple<bool, object>> EvaluateInvariantXPathAsync(XPathExpression objXPath, CancellationToken token = default)
         {
             string strExpression = objXPath.Expression;
-            (bool blnSuccess, Tuple<bool, object> objCachedEvaluation) = await s_DicCompiledEvaluations.TryGetValueAsync(strExpression, token);
+            (bool blnSuccess, Tuple<bool, object> objCachedEvaluation) = await s_DicCompiledEvaluations.TryGetValueAsync(strExpression, token).ConfigureAwait(false);
             if (blnSuccess)
             {
                 return objCachedEvaluation;
@@ -245,10 +245,10 @@ namespace Chummer
             bool blnIsSuccess;
             try
             {
-                (bool blnHasEvaluator, XPathNavigator objEvaluator) = await s_StkXPathNavigatorPool.TryTakeAsync(token);
+                (bool blnHasEvaluator, XPathNavigator objEvaluator) = await s_StkXPathNavigatorPool.TryTakeAsync(token).ConfigureAwait(false);
                 if (!blnHasEvaluator)
                 {
-                    await s_ObjXPathNavigatorDocumentLock.WaitAsync(token);
+                    await s_ObjXPathNavigatorDocumentLock.WaitAsync(token).ConfigureAwait(false);
                     try
                     {
                         objEvaluator = s_ObjXPathNavigatorDocument.CreateNavigator();
@@ -265,7 +265,7 @@ namespace Chummer
                 }
                 finally
                 {
-                    await s_StkXPathNavigatorPool.PushAsync(objEvaluator, token);
+                    await s_StkXPathNavigatorPool.PushAsync(objEvaluator, token).ConfigureAwait(false);
                 }
 
                 blnIsSuccess = objReturn != null;
@@ -284,7 +284,7 @@ namespace Chummer
             }
 
             Tuple<bool, object> tupReturn = new Tuple<bool, object>(blnIsSuccess, objReturn);
-            await s_DicCompiledEvaluations.TryAddAsync(strExpression, tupReturn, token); // don't want to store managed objects, only primitives
+            await s_DicCompiledEvaluations.TryAddAsync(strExpression, tupReturn, token).ConfigureAwait(false); // don't want to store managed objects, only primitives
             return tupReturn;
         }
 
@@ -394,7 +394,7 @@ namespace Chummer
 
             if (string.IsNullOrEmpty(strXPathExpression))
                 return true;
-            (bool blnSuccess, object _) = await EvaluateInvariantXPathAsync(strXPathExpression, token);
+            (bool blnSuccess, object _) = await EvaluateInvariantXPathAsync(strXPathExpression, token).ConfigureAwait(false);
             return blnSuccess;
         }
 
@@ -1072,8 +1072,8 @@ namespace Chummer
             if (string.IsNullOrWhiteSpace(strAltCode))
                 return string.Empty;
             XPathNavigator xmlOriginalCode = objCharacter != null
-                ? await objCharacter.LoadDataXPathAsync("books.xml", strLanguage, token: token)
-                : await XmlManager.LoadXPathAsync("books.xml", null, strLanguage, token: token);
+                ? await objCharacter.LoadDataXPathAsync("books.xml", strLanguage, token: token).ConfigureAwait(false)
+                : await XmlManager.LoadXPathAsync("books.xml", null, strLanguage, token: token).ConfigureAwait(false);
             xmlOriginalCode = xmlOriginalCode?.SelectSingleNode("/chummer/books/book[altcode = " + strAltCode.CleanXPath() + "]/code");
             return xmlOriginalCode?.Value ?? strAltCode;
         }
@@ -1107,8 +1107,8 @@ namespace Chummer
             if (string.IsNullOrWhiteSpace(strCode))
                 return string.Empty;
             XPathNavigator xmlAltCode = objCharacter != null
-                ? await objCharacter.LoadDataXPathAsync("books.xml", strLanguage, token: token)
-                : await XmlManager.LoadXPathAsync("books.xml", null, strLanguage, token: token);
+                ? await objCharacter.LoadDataXPathAsync("books.xml", strLanguage, token: token).ConfigureAwait(false)
+                : await XmlManager.LoadXPathAsync("books.xml", null, strLanguage, token: token).ConfigureAwait(false);
             xmlAltCode = xmlAltCode?.SelectSingleNode("/chummer/books/book[code = " + strCode.CleanXPath() + "]/altcode");
             return xmlAltCode?.Value ?? strCode;
         }
@@ -1149,13 +1149,13 @@ namespace Chummer
             if (string.IsNullOrWhiteSpace(strCode))
                 return string.Empty;
             XPathNavigator xmlBook = objCharacter != null
-                ? await objCharacter.LoadDataXPathAsync("books.xml", strLanguage, token: token)
-                : await XmlManager.LoadXPathAsync("books.xml", null, strLanguage, token: token);
+                ? await objCharacter.LoadDataXPathAsync("books.xml", strLanguage, token: token).ConfigureAwait(false)
+                : await XmlManager.LoadXPathAsync("books.xml", null, strLanguage, token: token).ConfigureAwait(false);
             xmlBook = xmlBook?.SelectSingleNode("/chummer/books/book[code = " + strCode.CleanXPath() + ']');
             if (xmlBook != null)
             {
-                string strReturn = (await xmlBook.SelectSingleNodeAndCacheExpressionAsync("translate", token: token))?.Value
-                                   ?? (await xmlBook.SelectSingleNodeAndCacheExpressionAsync("name", token: token))?.Value;
+                string strReturn = (await xmlBook.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value
+                                   ?? (await xmlBook.SelectSingleNodeAndCacheExpressionAsync("name", token: token).ConfigureAwait(false))?.Value;
                 if (!string.IsNullOrWhiteSpace(strReturn))
                     return strReturn;
             }
@@ -1404,29 +1404,29 @@ namespace Chummer
                 using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
                 {
                     // Begin the document.
-                    await objWriter.WriteStartDocumentAsync();
+                    await objWriter.WriteStartDocumentAsync().ConfigureAwait(false);
                     try
                     {
                         // </characters>
-                        XmlElementWriteHelper objCharactersElement = await objWriter.StartElementAsync("characters", token: objToken);
+                        XmlElementWriteHelper objCharactersElement = await objWriter.StartElementAsync("characters", token: objToken).ConfigureAwait(false);
                         try
                         {
                             foreach (Character objCharacter in lstCharacters)
                             {
-                                await objCharacter.PrintToXmlTextWriter(objWriter, objCultureInfo, strLanguage, objToken);
+                                await objCharacter.PrintToXmlTextWriter(objWriter, objCultureInfo, strLanguage, objToken).ConfigureAwait(false);
                             }
                         }
                         finally
                         {
                             // </characters>
-                            await objCharactersElement.DisposeAsync();
+                            await objCharactersElement.DisposeAsync().ConfigureAwait(false);
                         }
                     }
                     finally
                     {
                         // Finish the document and flush the Writer and Stream.
-                        await objWriter.WriteEndDocumentAsync();
-                        await objWriter.FlushAsync();
+                        await objWriter.WriteEndDocumentAsync().ConfigureAwait(false);
+                        await objWriter.FlushAsync().ConfigureAwait(false);
                     }
                 }
 
@@ -1463,19 +1463,19 @@ namespace Chummer
                     break;
                 }
 
-                objLoopControl = await objLoopControl.DoThreadSafeFuncAsync(x => x.Parent, token: token);
+                objLoopControl = await objLoopControl.DoThreadSafeFuncAsync(x => x.Parent, token: token).ConfigureAwait(false);
             }
 
             CursorWait objCursorWait
-                = await CursorWait.NewAsync(await objControl.DoThreadSafeFuncAsync(x => x.FindForm(), token: token) ?? objControl, token: token);
+                = await CursorWait.NewAsync(await objControl.DoThreadSafeFuncAsync(x => x.FindForm(), token: token).ConfigureAwait(false) ?? objControl, token: token).ConfigureAwait(false);
             try
             {
-                await OpenPdf(await objControl.DoThreadSafeFuncAsync(x => x.Text, token: token), objCharacter, string.Empty,
-                              string.Empty, true, token);
+                await OpenPdf(await objControl.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false), objCharacter, string.Empty,
+                              string.Empty, true, token).ConfigureAwait(false);
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1499,19 +1499,19 @@ namespace Chummer
             // The user must have specified the arguments of their PDF application in order to use this functionality.
             while (string.IsNullOrWhiteSpace(strPdfParameters) || string.IsNullOrWhiteSpace(strPdfAppPath) || !File.Exists(strPdfAppPath))
             {
-                if (!blnOpenOptions || Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_NoPDFProgramSet", token: token),
-                    await LanguageManager.GetStringAsync("MessageTitle_NoPDFProgramSet", token: token), MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                if (!blnOpenOptions || Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_NoPDFProgramSet", token: token).ConfigureAwait(false),
+                    await LanguageManager.GetStringAsync("MessageTitle_NoPDFProgramSet", token: token).ConfigureAwait(false), MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                     return;
-                CursorWait objCursorWait = await CursorWait.NewAsync(Program.MainForm, token: token);
+                CursorWait objCursorWait = await CursorWait.NewAsync(Program.MainForm, token: token).ConfigureAwait(false);
                 try
                 {
                     using (ThreadSafeForm<EditGlobalSettings> frmOptions
-                           = await ThreadSafeForm<EditGlobalSettings>.GetAsync(() => new EditGlobalSettings(), token))
+                           = await ThreadSafeForm<EditGlobalSettings>.GetAsync(() => new EditGlobalSettings(), token).ConfigureAwait(false))
                     {
                         if (string.IsNullOrWhiteSpace(strPdfAppPath) || !File.Exists(strPdfAppPath))
                             // ReSharper disable once AccessToDisposedClosure
-                            await frmOptions.MyForm.DoLinkPdfReader(token);
-                        if (await frmOptions.ShowDialogSafeAsync(Program.MainForm, token) != DialogResult.OK)
+                            await frmOptions.MyForm.DoLinkPdfReader(token).ConfigureAwait(false);
+                        if (await frmOptions.ShowDialogSafeAsync(Program.MainForm, token).ConfigureAwait(false) != DialogResult.OK)
                             return;
                         strPdfParameters = GlobalSettings.PdfParameters;
                         strPdfAppPath = GlobalSettings.PdfAppPath;
@@ -1519,11 +1519,11 @@ namespace Chummer
                 }
                 finally
                 {
-                    await objCursorWait.DisposeAsync();
+                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
 
-            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token);
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
             string[] astrSourceParts;
             if (!string.IsNullOrEmpty(strSpace))
                 astrSourceParts = strSource.Split(strSpace, StringSplitOptions.RemoveEmptyEntries);
@@ -1555,10 +1555,10 @@ namespace Chummer
                 return;
 
             // Revert the sourcebook code to the one from the XML file if necessary.
-            string strBook = await LanguageBookCodeFromAltCodeAsync(astrSourceParts[0], string.Empty, objCharacter, token);
+            string strBook = await LanguageBookCodeFromAltCodeAsync(astrSourceParts[0], string.Empty, objCharacter, token).ConfigureAwait(false);
 
             // Retrieve the sourcebook information including page offset and PDF application name.
-            (bool blnSuccess, SourcebookInfo objBookInfo) = await (await GlobalSettings.GetSourcebookInfosAsync(token)).TryGetValueAsync(strBook, token);
+            (bool blnSuccess, SourcebookInfo objBookInfo) = await (await GlobalSettings.GetSourcebookInfosAsync(token).ConfigureAwait(false)).TryGetValueAsync(strBook, token).ConfigureAwait(false);
             // If the sourcebook was not found, we can't open anything.
             if (!blnSuccess || objBookInfo == null)
                 return;
@@ -1578,18 +1578,18 @@ namespace Chummer
             {
                 if (!blnOpenOptions)
                     return;
-                if (Program.ShowMessageBox(string.Format(await LanguageManager.GetStringAsync("Message_NoLinkedPDF", token: token), await LanguageBookLongAsync(strBook, token: token)),
-                        await LanguageManager.GetStringAsync("MessageTitle_NoLinkedPDF", token: token), MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                if (Program.ShowMessageBox(string.Format(await LanguageManager.GetStringAsync("Message_NoLinkedPDF", token: token).ConfigureAwait(false), await LanguageBookLongAsync(strBook, token: token).ConfigureAwait(false)),
+                        await LanguageManager.GetStringAsync("MessageTitle_NoLinkedPDF", token: token).ConfigureAwait(false), MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                     return;
-                CursorWait objCursorWait = await CursorWait.NewAsync(Program.MainForm, token: token);
+                CursorWait objCursorWait = await CursorWait.NewAsync(Program.MainForm, token: token).ConfigureAwait(false);
                 try
                 {
                     using (ThreadSafeForm<EditGlobalSettings> frmOptions
-                           = await ThreadSafeForm<EditGlobalSettings>.GetAsync(() => new EditGlobalSettings(), token))
+                           = await ThreadSafeForm<EditGlobalSettings>.GetAsync(() => new EditGlobalSettings(), token).ConfigureAwait(false))
                     {
                         // ReSharper disable once AccessToDisposedClosure
-                        await frmOptions.MyForm.DoLinkPdf(objBookInfo.Code, token);
-                        if (await frmOptions.ShowDialogSafeAsync(Program.MainForm, token) != DialogResult.OK)
+                        await frmOptions.MyForm.DoLinkPdf(objBookInfo.Code, token).ConfigureAwait(false);
+                        if (await frmOptions.ShowDialogSafeAsync(Program.MainForm, token).ConfigureAwait(false) != DialogResult.OK)
                             return;
                         uriPath = null;
                         try
@@ -1605,7 +1605,7 @@ namespace Chummer
                 }
                 finally
                 {
-                    await objCursorWait.DisposeAsync();
+                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
 
@@ -1686,7 +1686,7 @@ namespace Chummer
             if (blnSync)
                 blnSuccess = GlobalSettings.SourcebookInfos.TryGetValue(strBook, out objBookInfo);
             else
-                (blnSuccess, objBookInfo) = await (await GlobalSettings.GetSourcebookInfosAsync(token)).TryGetValueAsync(strBook, token).ConfigureAwait(false);
+                (blnSuccess, objBookInfo) = await (await GlobalSettings.GetSourcebookInfosAsync(token).ConfigureAwait(false)).TryGetValueAsync(strBook, token).ConfigureAwait(false);
             // If the sourcebook was not found, we can't open anything.
             if (!blnSuccess || objBookInfo == null)
                 return string.Empty;

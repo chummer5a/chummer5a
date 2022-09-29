@@ -65,24 +65,24 @@ namespace Chummer
             /// </summary>
             public async ValueTask<bool> GetDuplicatesCheckedAsync(CancellationToken token = default)
             {
-                using (await EnterReadLock.EnterAsync(LockObject, token))
+                using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
                     return _blnDuplicatesChecked;
             }
 
             public async ValueTask SetDuplicatesCheckedAsync(bool blnNewValue, CancellationToken token = default)
             {
-                using (await EnterReadLock.EnterAsync(LockObject, token))
+                using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
                 {
                     if (_blnDuplicatesChecked == blnNewValue)
                         return;
-                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
+                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         _blnDuplicatesChecked = blnNewValue;
                     }
                     finally
                     {
-                        await objLocker.DisposeAsync();
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
                     }
                 }
             }
@@ -120,13 +120,13 @@ namespace Chummer
                 while (true)
                 {
                     bool blnLoadComplete;
-                    using (await EnterReadLock.EnterAsync(LockObject, token))
+                    using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
                         blnLoadComplete = _blnInitialLoadComplete;
                     if (blnLoadComplete)
                         break;
-                    await Utils.SafeSleepAsync(token);
+                    await Utils.SafeSleepAsync(token).ConfigureAwait(false);
                 }
-                using (await EnterReadLock.EnterAsync(LockObject, token))
+                using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
                     return _xmlContent;
             }
 
@@ -165,11 +165,11 @@ namespace Chummer
             /// </summary>
             public async ValueTask SetXmlContentAsync(XmlDocument objContent, CancellationToken token = default)
             {
-                using (await EnterReadLock.EnterAsync(LockObject, token))
+                using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
                 {
                     if (objContent == _xmlContent)
                         return;
-                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
+                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         _xmlContent = objContent;
@@ -190,7 +190,7 @@ namespace Chummer
                     }
                     finally
                     {
-                        await objLocker.DisposeAsync();
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
                     }
                 }
             }
@@ -223,13 +223,13 @@ namespace Chummer
                 while (true)
                 {
                     bool blnLoadComplete;
-                    using (await EnterReadLock.EnterAsync(LockObject, token))
+                    using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
                         blnLoadComplete = _blnInitialLoadComplete;
                     if (blnLoadComplete)
                         break;
-                    await Utils.SafeSleepAsync(token);
+                    await Utils.SafeSleepAsync(token).ConfigureAwait(false);
                 }
-                using (await EnterReadLock.EnterAsync(LockObject, token))
+                using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
                     return _objXPathContent;
             }
 
@@ -317,11 +317,11 @@ namespace Chummer
 
         public static async ValueTask RebuildDataDirectoryInfoAsync(IEnumerable<CustomDataDirectoryInfo> lstCustomDirectories, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await s_objDataDirectoriesLock.EnterWriteLockAsync(token);
+            IAsyncDisposable objLocker = await s_objDataDirectoriesLock.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
-                await s_DicXmlDocuments.ForEachAsync(kvpDocument => kvpDocument.Value.DisposeAsync().AsTask(), token: token);
-                await s_DicXmlDocuments.ClearAsync(token);
+                await s_DicXmlDocuments.ForEachAsync(kvpDocument => kvpDocument.Value.DisposeAsync().AsTask(), token: token).ConfigureAwait(false);
+                await s_DicXmlDocuments.ClearAsync(token).ConfigureAwait(false);
                 s_SetDataDirectories.Clear();
                 token.ThrowIfCancellationRequested();
                 s_SetDataDirectories.Add(Utils.GetDataFolderPath);
@@ -351,7 +351,7 @@ namespace Chummer
             }
             finally
             {
-                await objLocker.DisposeAsync();
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -2502,7 +2502,7 @@ namespace Chummer
                                                     if (!blnTypeWritten)
                                                     {
                                                         blnTypeWritten = true;
-                                                        await objWriter.WriteStartElementAsync(strTypeName, token: token);
+                                                        await objWriter.WriteStartElementAsync(strTypeName, token: token).ConfigureAwait(false);
                                                     }
 
                                                     // No match was found, so write out that the data item is missing.

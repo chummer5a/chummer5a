@@ -48,20 +48,20 @@ namespace Chummer
             if (lstCollection == null)
                 throw new ArgumentNullException(nameof(lstCollection));
             // Binary search for the place where item should be inserted
-            int intIntervalEnd = await lstCollection.GetCountAsync(token) - 1;
+            int intIntervalEnd = await lstCollection.GetCountAsync(token).ConfigureAwait(false) - 1;
             int intTargetIndex = intIntervalEnd / 2;
             for (int intIntervalStart = 0;
                  intIntervalStart <= intIntervalEnd;
                  intTargetIndex = (intIntervalStart + intIntervalEnd) / 2)
             {
-                T objLoopExistingItem = await lstCollection.GetValueAtAsync(intTargetIndex, token);
+                T objLoopExistingItem = await lstCollection.GetValueAtAsync(intTargetIndex, token).ConfigureAwait(false);
                 int intCompareResult = objLoopExistingItem.CompareTo(objNewItem);
                 if (intCompareResult == 0)
                 {
                     // Make sure we insert new items at the end of any equalities (so that order is maintained when adding multiple items)
-                    for (int i = intTargetIndex + 1; i < await lstCollection.GetCountAsync(token); ++i)
+                    for (int i = intTargetIndex + 1; i < await lstCollection.GetCountAsync(token).ConfigureAwait(false); ++i)
                     {
-                        T objInnerLoopExistingItem = await lstCollection.GetValueAtAsync(i, token);
+                        T objInnerLoopExistingItem = await lstCollection.GetValueAtAsync(i, token).ConfigureAwait(false);
                         if (objInnerLoopExistingItem.CompareTo(objNewItem) == 0)
                         {
                             ++intTargetIndex;
@@ -93,7 +93,7 @@ namespace Chummer
                     intIntervalEnd = intTargetIndex - 1;
             }
 
-            await lstCollection.InsertAsync(intTargetIndex, objNewItem, token);
+            await lstCollection.InsertAsync(intTargetIndex, objNewItem, token).ConfigureAwait(false);
         }
 
         public static async Task AddWithSortAsync<T>(this IAsyncList<T> lstCollection, T objNewItem, IComparer<T> comparer,
@@ -105,20 +105,20 @@ namespace Chummer
             if (comparer == null)
                 throw new ArgumentNullException(nameof(comparer));
             // Binary search for the place where item should be inserted
-            int intIntervalEnd = await lstCollection.GetCountAsync(token) - 1;
+            int intIntervalEnd = await lstCollection.GetCountAsync(token).ConfigureAwait(false) - 1;
             int intTargetIndex = intIntervalEnd / 2;
             for (int intIntervalStart = 0;
                  intIntervalStart <= intIntervalEnd;
                  intTargetIndex = (intIntervalStart + intIntervalEnd) / 2)
             {
-                T objLoopExistingItem = await lstCollection.GetValueAtAsync(intTargetIndex, token);
+                T objLoopExistingItem = await lstCollection.GetValueAtAsync(intTargetIndex, token).ConfigureAwait(false);
                 int intCompareResult = comparer.Compare(objLoopExistingItem, objNewItem);
                 if (intCompareResult == 0)
                 {
                     // Make sure we insert new items at the end of any equalities (so that order is maintained when adding multiple items)
-                    for (int i = intTargetIndex + 1; i < await lstCollection.GetCountAsync(token); ++i)
+                    for (int i = intTargetIndex + 1; i < await lstCollection.GetCountAsync(token).ConfigureAwait(false); ++i)
                     {
-                        T objInnerLoopExistingItem = await lstCollection.GetValueAtAsync(i, token);
+                        T objInnerLoopExistingItem = await lstCollection.GetValueAtAsync(i, token).ConfigureAwait(false);
                         if (comparer.Compare(objInnerLoopExistingItem, objNewItem) == 0)
                         {
                             ++intTargetIndex;
@@ -150,7 +150,7 @@ namespace Chummer
                     intIntervalEnd = intTargetIndex - 1;
             }
 
-            await lstCollection.InsertAsync(intTargetIndex, objNewItem, token);
+            await lstCollection.InsertAsync(intTargetIndex, objNewItem, token).ConfigureAwait(false);
         }
 
         public static async Task AddWithSortAsync<T>(this IAsyncList<T> lstCollection, T objNewItem,
@@ -162,20 +162,20 @@ namespace Chummer
             if (funcComparison == null)
                 throw new ArgumentNullException(nameof(funcComparison));
             // Binary search for the place where item should be inserted
-            int intIntervalEnd = await lstCollection.GetCountAsync(token) - 1;
+            int intIntervalEnd = await lstCollection.GetCountAsync(token).ConfigureAwait(false) - 1;
             int intTargetIndex = intIntervalEnd / 2;
             for (int intIntervalStart = 0;
                  intIntervalStart <= intIntervalEnd;
                  intTargetIndex = (intIntervalStart + intIntervalEnd) / 2)
             {
-                T objLoopExistingItem = await lstCollection.GetValueAtAsync(intTargetIndex, token);
+                T objLoopExistingItem = await lstCollection.GetValueAtAsync(intTargetIndex, token).ConfigureAwait(false);
                 int intCompareResult = funcComparison.Invoke(objLoopExistingItem, objNewItem);
                 if (intCompareResult == 0)
                 {
                     // Make sure we insert new items at the end of any equalities (so that order is maintained when adding multiple items)
-                    for (int i = intTargetIndex + 1; i < await lstCollection.GetCountAsync(token); ++i)
+                    for (int i = intTargetIndex + 1; i < await lstCollection.GetCountAsync(token).ConfigureAwait(false); ++i)
                     {
-                        T objInnerLoopExistingItem = await lstCollection.GetValueAtAsync(i, token);
+                        T objInnerLoopExistingItem = await lstCollection.GetValueAtAsync(i, token).ConfigureAwait(false);
                         if (funcComparison.Invoke(objInnerLoopExistingItem, objNewItem) == 0)
                         {
                             ++intTargetIndex;
@@ -207,7 +207,7 @@ namespace Chummer
                     intIntervalEnd = intTargetIndex - 1;
             }
 
-            await lstCollection.InsertAsync(intTargetIndex, objNewItem, token);
+            await lstCollection.InsertAsync(intTargetIndex, objNewItem, token).ConfigureAwait(false);
         }
 
         public static async Task AddRangeWithSortAsync<T>(this IAsyncList<T> lstCollection, IEnumerable<T> lstToAdd,
@@ -219,7 +219,7 @@ namespace Chummer
             if (lstToAdd == null)
                 throw new ArgumentNullException(nameof(lstToAdd));
             foreach (T objItem in lstToAdd)
-                await AddWithSortAsync(lstCollection, objItem, funcOverrideIfEquals, token);
+                await AddWithSortAsync(lstCollection, objItem, funcOverrideIfEquals, token).ConfigureAwait(false);
         }
 
         public static async Task AddRangeWithSortAsync<T>(this IAsyncList<T> lstCollection, IEnumerable<T> lstToAdd,
@@ -233,7 +233,7 @@ namespace Chummer
             if (comparer == null)
                 throw new ArgumentNullException(nameof(comparer));
             foreach (T objItem in lstToAdd)
-                await AddWithSortAsync(lstCollection, objItem, comparer, funcOverrideIfEquals, token);
+                await AddWithSortAsync(lstCollection, objItem, comparer, funcOverrideIfEquals, token).ConfigureAwait(false);
         }
 
         public static async Task AddRangeWithSortAsync<T>(this IAsyncList<T> lstCollection, IEnumerable<T> lstToAdd,
@@ -248,7 +248,7 @@ namespace Chummer
             if (funcComparison == null)
                 throw new ArgumentNullException(nameof(funcComparison));
             foreach (T objItem in lstToAdd)
-                await AddWithSortAsync(lstCollection, objItem, funcComparison, funcOverrideIfEquals, token);
+                await AddWithSortAsync(lstCollection, objItem, funcComparison, funcOverrideIfEquals, token).ConfigureAwait(false);
         }
 
         public static async Task AddAsyncRangeWithSortAsync<T>(this IAsyncList<T> lstCollection, IAsyncEnumerable<T> lstToAdd,
@@ -259,11 +259,11 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(lstCollection));
             if (lstToAdd == null)
                 throw new ArgumentNullException(nameof(lstToAdd));
-            using (IEnumerator<T> objEnumerator = await lstToAdd.GetEnumeratorAsync(token))
+            using (IEnumerator<T> objEnumerator = await lstToAdd.GetEnumeratorAsync(token).ConfigureAwait(false))
             {
                 while (objEnumerator.MoveNext())
                 {
-                    await AddWithSortAsync(lstCollection, objEnumerator.Current, funcOverrideIfEquals, token);
+                    await AddWithSortAsync(lstCollection, objEnumerator.Current, funcOverrideIfEquals, token).ConfigureAwait(false);
                 }
             }
         }
@@ -278,11 +278,11 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(lstToAdd));
             if (comparer == null)
                 throw new ArgumentNullException(nameof(comparer));
-            using (IEnumerator<T> objEnumerator = await lstToAdd.GetEnumeratorAsync(token))
+            using (IEnumerator<T> objEnumerator = await lstToAdd.GetEnumeratorAsync(token).ConfigureAwait(false))
             {
                 while (objEnumerator.MoveNext())
                 {
-                    await AddWithSortAsync(lstCollection, objEnumerator.Current, comparer, funcOverrideIfEquals, token);
+                    await AddWithSortAsync(lstCollection, objEnumerator.Current, comparer, funcOverrideIfEquals, token).ConfigureAwait(false);
                 }
             }
         }
@@ -298,11 +298,11 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(lstToAdd));
             if (funcComparison == null)
                 throw new ArgumentNullException(nameof(funcComparison));
-            using (IEnumerator<T> objEnumerator = await lstToAdd.GetEnumeratorAsync(token))
+            using (IEnumerator<T> objEnumerator = await lstToAdd.GetEnumeratorAsync(token).ConfigureAwait(false))
             {
                 while (objEnumerator.MoveNext())
                 {
-                    await AddWithSortAsync(lstCollection, objEnumerator.Current, funcComparison, funcOverrideIfEquals, token);
+                    await AddWithSortAsync(lstCollection, objEnumerator.Current, funcComparison, funcOverrideIfEquals, token).ConfigureAwait(false);
                 }
             }
         }
@@ -314,20 +314,20 @@ namespace Chummer
             if (lstCollection == null)
                 throw new ArgumentNullException(nameof(lstCollection));
             // Binary search for the place where item should be inserted
-            int intIntervalEnd = await lstCollection.GetCountAsync(token) - 1;
+            int intIntervalEnd = await lstCollection.GetCountAsync(token).ConfigureAwait(false) - 1;
             int intTargetIndex = intIntervalEnd / 2;
             for (int intIntervalStart = 0;
                  intIntervalStart <= intIntervalEnd;
                  intTargetIndex = (intIntervalStart + intIntervalEnd) / 2)
             {
-                T objLoopExistingItem = await lstCollection.GetValueAtAsync(intTargetIndex, token);
+                T objLoopExistingItem = await lstCollection.GetValueAtAsync(intTargetIndex, token).ConfigureAwait(false);
                 int intCompareResult = objLoopExistingItem.CompareTo(objNewItem);
                 if (intCompareResult == 0)
                 {
                     // Make sure we insert new items at the end of any equalities (so that order is maintained when adding multiple items)
-                    for (int i = intTargetIndex + 1; i < await lstCollection.GetCountAsync(token); ++i)
+                    for (int i = intTargetIndex + 1; i < await lstCollection.GetCountAsync(token).ConfigureAwait(false); ++i)
                     {
-                        T objInnerLoopExistingItem = await lstCollection.GetValueAtAsync(i, token);
+                        T objInnerLoopExistingItem = await lstCollection.GetValueAtAsync(i, token).ConfigureAwait(false);
                         if (objInnerLoopExistingItem.CompareTo(objNewItem) == 0)
                         {
                             ++intTargetIndex;
@@ -339,7 +339,7 @@ namespace Chummer
 
                     if (funcOverrideIfEquals != null)
                     {
-                        await funcOverrideIfEquals.Invoke(objLoopExistingItem, objNewItem);
+                        await funcOverrideIfEquals.Invoke(objLoopExistingItem, objNewItem).ConfigureAwait(false);
                         return;
                     }
 
@@ -359,7 +359,7 @@ namespace Chummer
                     intIntervalEnd = intTargetIndex - 1;
             }
 
-            await lstCollection.InsertAsync(intTargetIndex, objNewItem, token);
+            await lstCollection.InsertAsync(intTargetIndex, objNewItem, token).ConfigureAwait(false);
         }
 
         public static async Task AddWithSortAsync<T>(this IAsyncList<T> lstCollection, T objNewItem, IComparer<T> comparer,
@@ -371,20 +371,20 @@ namespace Chummer
             if (comparer == null)
                 throw new ArgumentNullException(nameof(comparer));
             // Binary search for the place where item should be inserted
-            int intIntervalEnd = await lstCollection.GetCountAsync(token) - 1;
+            int intIntervalEnd = await lstCollection.GetCountAsync(token).ConfigureAwait(false) - 1;
             int intTargetIndex = intIntervalEnd / 2;
             for (int intIntervalStart = 0;
                  intIntervalStart <= intIntervalEnd;
                  intTargetIndex = (intIntervalStart + intIntervalEnd) / 2)
             {
-                T objLoopExistingItem = await lstCollection.GetValueAtAsync(intTargetIndex, token);
+                T objLoopExistingItem = await lstCollection.GetValueAtAsync(intTargetIndex, token).ConfigureAwait(false);
                 int intCompareResult = comparer.Compare(objLoopExistingItem, objNewItem);
                 if (intCompareResult == 0)
                 {
                     // Make sure we insert new items at the end of any equalities (so that order is maintained when adding multiple items)
-                    for (int i = intTargetIndex + 1; i < await lstCollection.GetCountAsync(token); ++i)
+                    for (int i = intTargetIndex + 1; i < await lstCollection.GetCountAsync(token).ConfigureAwait(false); ++i)
                     {
-                        T objInnerLoopExistingItem = await lstCollection.GetValueAtAsync(i, token);
+                        T objInnerLoopExistingItem = await lstCollection.GetValueAtAsync(i, token).ConfigureAwait(false);
                         if (comparer.Compare(objInnerLoopExistingItem, objNewItem) == 0)
                         {
                             ++intTargetIndex;
@@ -396,7 +396,7 @@ namespace Chummer
 
                     if (funcOverrideIfEquals != null)
                     {
-                        await funcOverrideIfEquals.Invoke(objLoopExistingItem, objNewItem);
+                        await funcOverrideIfEquals.Invoke(objLoopExistingItem, objNewItem).ConfigureAwait(false);
                         return;
                     }
 
@@ -416,7 +416,7 @@ namespace Chummer
                     intIntervalEnd = intTargetIndex - 1;
             }
 
-            await lstCollection.InsertAsync(intTargetIndex, objNewItem, token);
+            await lstCollection.InsertAsync(intTargetIndex, objNewItem, token).ConfigureAwait(false);
         }
 
         public static async Task AddWithSortAsync<T>(this IAsyncList<T> lstCollection, T objNewItem,
@@ -428,20 +428,20 @@ namespace Chummer
             if (funcComparison == null)
                 throw new ArgumentNullException(nameof(funcComparison));
             // Binary search for the place where item should be inserted
-            int intIntervalEnd = await lstCollection.GetCountAsync(token) - 1;
+            int intIntervalEnd = await lstCollection.GetCountAsync(token).ConfigureAwait(false) - 1;
             int intTargetIndex = intIntervalEnd / 2;
             for (int intIntervalStart = 0;
                  intIntervalStart <= intIntervalEnd;
                  intTargetIndex = (intIntervalStart + intIntervalEnd) / 2)
             {
-                T objLoopExistingItem = await lstCollection.GetValueAtAsync(intTargetIndex, token);
+                T objLoopExistingItem = await lstCollection.GetValueAtAsync(intTargetIndex, token).ConfigureAwait(false);
                 int intCompareResult = funcComparison.Invoke(objLoopExistingItem, objNewItem);
                 if (intCompareResult == 0)
                 {
                     // Make sure we insert new items at the end of any equalities (so that order is maintained when adding multiple items)
-                    for (int i = intTargetIndex + 1; i < await lstCollection.GetCountAsync(token); ++i)
+                    for (int i = intTargetIndex + 1; i < await lstCollection.GetCountAsync(token).ConfigureAwait(false); ++i)
                     {
-                        T objInnerLoopExistingItem = await lstCollection.GetValueAtAsync(i, token);
+                        T objInnerLoopExistingItem = await lstCollection.GetValueAtAsync(i, token).ConfigureAwait(false);
                         if (funcComparison.Invoke(objInnerLoopExistingItem, objNewItem) == 0)
                         {
                             ++intTargetIndex;
@@ -453,7 +453,7 @@ namespace Chummer
 
                     if (funcOverrideIfEquals != null)
                     {
-                        await funcOverrideIfEquals.Invoke(objLoopExistingItem, objNewItem);
+                        await funcOverrideIfEquals.Invoke(objLoopExistingItem, objNewItem).ConfigureAwait(false);
                         return;
                     }
 
@@ -473,7 +473,7 @@ namespace Chummer
                     intIntervalEnd = intTargetIndex - 1;
             }
 
-            await lstCollection.InsertAsync(intTargetIndex, objNewItem, token);
+            await lstCollection.InsertAsync(intTargetIndex, objNewItem, token).ConfigureAwait(false);
         }
 
         public static async Task AddRangeWithSortAsync<T>(this IAsyncList<T> lstCollection, IEnumerable<T> lstToAdd,
@@ -485,7 +485,7 @@ namespace Chummer
             if (lstToAdd == null)
                 throw new ArgumentNullException(nameof(lstToAdd));
             foreach (T objItem in lstToAdd)
-                await AddWithSortAsync(lstCollection, objItem, funcOverrideIfEquals, token);
+                await AddWithSortAsync(lstCollection, objItem, funcOverrideIfEquals, token).ConfigureAwait(false);
         }
 
         public static async Task AddRangeWithSortAsync<T>(this IAsyncList<T> lstCollection, IEnumerable<T> lstToAdd,
@@ -499,7 +499,7 @@ namespace Chummer
             if (comparer == null)
                 throw new ArgumentNullException(nameof(comparer));
             foreach (T objItem in lstToAdd)
-                await AddWithSortAsync(lstCollection, objItem, comparer, funcOverrideIfEquals, token);
+                await AddWithSortAsync(lstCollection, objItem, comparer, funcOverrideIfEquals, token).ConfigureAwait(false);
         }
 
         public static async Task AddRangeWithSortAsync<T>(this IAsyncList<T> lstCollection, IEnumerable<T> lstToAdd,
@@ -514,7 +514,7 @@ namespace Chummer
             if (funcComparison == null)
                 throw new ArgumentNullException(nameof(funcComparison));
             foreach (T objItem in lstToAdd)
-                await AddWithSortAsync(lstCollection, objItem, funcComparison, funcOverrideIfEquals, token);
+                await AddWithSortAsync(lstCollection, objItem, funcComparison, funcOverrideIfEquals, token).ConfigureAwait(false);
         }
 
         public static async Task AddAsyncRangeWithSortAsync<T>(this IAsyncList<T> lstCollection, IAsyncEnumerable<T> lstToAdd,
@@ -525,11 +525,11 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(lstCollection));
             if (lstToAdd == null)
                 throw new ArgumentNullException(nameof(lstToAdd));
-            using (IEnumerator<T> objEnumerator = await lstToAdd.GetEnumeratorAsync(token))
+            using (IEnumerator<T> objEnumerator = await lstToAdd.GetEnumeratorAsync(token).ConfigureAwait(false))
             {
                 while (objEnumerator.MoveNext())
                 {
-                    await AddWithSortAsync(lstCollection, objEnumerator.Current, funcOverrideIfEquals, token);
+                    await AddWithSortAsync(lstCollection, objEnumerator.Current, funcOverrideIfEquals, token).ConfigureAwait(false);
                 }
             }
         }
@@ -544,11 +544,11 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(lstToAdd));
             if (comparer == null)
                 throw new ArgumentNullException(nameof(comparer));
-            using (IEnumerator<T> objEnumerator = await lstToAdd.GetEnumeratorAsync(token))
+            using (IEnumerator<T> objEnumerator = await lstToAdd.GetEnumeratorAsync(token).ConfigureAwait(false))
             {
                 while (objEnumerator.MoveNext())
                 {
-                    await AddWithSortAsync(lstCollection, objEnumerator.Current, comparer, funcOverrideIfEquals, token);
+                    await AddWithSortAsync(lstCollection, objEnumerator.Current, comparer, funcOverrideIfEquals, token).ConfigureAwait(false);
                 }
             }
         }
@@ -564,11 +564,11 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(lstToAdd));
             if (funcComparison == null)
                 throw new ArgumentNullException(nameof(funcComparison));
-            using (IEnumerator<T> objEnumerator = await lstToAdd.GetEnumeratorAsync(token))
+            using (IEnumerator<T> objEnumerator = await lstToAdd.GetEnumeratorAsync(token).ConfigureAwait(false))
             {
                 while (objEnumerator.MoveNext())
                 {
-                    await AddWithSortAsync(lstCollection, objEnumerator.Current, funcComparison, funcOverrideIfEquals, token);
+                    await AddWithSortAsync(lstCollection, objEnumerator.Current, funcComparison, funcOverrideIfEquals, token).ConfigureAwait(false);
                 }
             }
         }
@@ -580,14 +580,14 @@ namespace Chummer
                 return;
             if (lstCollection == null)
                 throw new ArgumentNullException(nameof(lstCollection));
-            if (await lstCollection.GetCountAsync(token) == 0)
+            if (await lstCollection.GetCountAsync(token).ConfigureAwait(false) == 0)
                 return;
-            if (index < 0 || index >= await lstCollection.GetCountAsync(token))
+            if (index < 0 || index >= await lstCollection.GetCountAsync(token).ConfigureAwait(false))
                 throw new ArgumentOutOfRangeException(nameof(index));
             if (count < 0)
                 throw new ArgumentOutOfRangeException(nameof(count));
-            for (int i = Math.Min(index + count - 1, await lstCollection.GetCountAsync(token)); i >= index; --i)
-                await lstCollection.RemoveAtAsync(i, token);
+            for (int i = Math.Min(index + count - 1, await lstCollection.GetCountAsync(token).ConfigureAwait(false)); i >= index; --i)
+                await lstCollection.RemoveAtAsync(i, token).ConfigureAwait(false);
         }
 
         public static async Task RemoveAllAsync<T>(this IAsyncList<T> lstCollection, Predicate<T> predicate,
@@ -597,11 +597,11 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(lstCollection));
             if (predicate == null)
                 throw new ArgumentNullException(nameof(predicate));
-            for (int i = await lstCollection.GetCountAsync(token) - 1; i >= 0; --i)
+            for (int i = await lstCollection.GetCountAsync(token).ConfigureAwait(false) - 1; i >= 0; --i)
             {
-                if (predicate(await lstCollection.GetValueAtAsync(i, token)))
+                if (predicate(await lstCollection.GetValueAtAsync(i, token).ConfigureAwait(false)))
                 {
-                    await lstCollection.RemoveAtAsync(i, token);
+                    await lstCollection.RemoveAtAsync(i, token).ConfigureAwait(false);
                 }
             }
         }
@@ -613,11 +613,11 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(lstCollection));
             if (predicate == null)
                 throw new ArgumentNullException(nameof(predicate));
-            for (int i = await lstCollection.GetCountAsync(token) - 1; i >= 0; --i)
+            for (int i = await lstCollection.GetCountAsync(token).ConfigureAwait(false) - 1; i >= 0; --i)
             {
-                if (await predicate.Invoke(await lstCollection.GetValueAtAsync(i, token)))
+                if (await predicate.Invoke(await lstCollection.GetValueAtAsync(i, token).ConfigureAwait(false)).ConfigureAwait(false))
                 {
-                    await lstCollection.RemoveAtAsync(i, token);
+                    await lstCollection.RemoveAtAsync(i, token).ConfigureAwait(false);
                 }
             }
         }
@@ -629,7 +629,7 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(lstCollection));
             foreach (T item in collection.Reverse())
             {
-                await lstCollection.InsertAsync(index, item, token);
+                await lstCollection.InsertAsync(index, item, token).ConfigureAwait(false);
             }
         }
 
@@ -638,11 +638,11 @@ namespace Chummer
         {
             if (lstCollection == null)
                 throw new ArgumentNullException(nameof(lstCollection));
-            List<T> lstToAdd = await collection.ToListAsync(token);
+            List<T> lstToAdd = await collection.ToListAsync(token).ConfigureAwait(false);
             lstToAdd.Reverse();
             foreach (T item in lstToAdd)
             {
-                await lstCollection.InsertAsync(index, item, token);
+                await lstCollection.InsertAsync(index, item, token).ConfigureAwait(false);
             }
         }
     }

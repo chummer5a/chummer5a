@@ -84,7 +84,7 @@ namespace Chummer
                     {
                         do
                         {
-                            intLoopResult = await objThreadSafeRandom.NextAsync(token);
+                            intLoopResult = await objThreadSafeRandom.NextAsync(token).ConfigureAwait(false);
                         } while (intLoopResult >= intModuloCheck);
                     }
                     else
@@ -94,7 +94,7 @@ namespace Chummer
                             intLoopResult = objRandom.Next();
                         } while (intLoopResult >= intModuloCheck);
                     }
-                }, token);
+                }, token).ConfigureAwait(false);
 
                 return 1 + intLoopResult % 6;
             }
@@ -121,7 +121,7 @@ namespace Chummer
                     {
                         do
                         {
-                            intLoopResult = await objThreadSafeRandom.NextAsync(token);
+                            intLoopResult = await objThreadSafeRandom.NextAsync(token).ConfigureAwait(false);
                         } while (intLoopResult >= intModuloCheck);
                     }
                     else
@@ -131,7 +131,7 @@ namespace Chummer
                             intLoopResult = objRandom.Next();
                         } while (intLoopResult >= intModuloCheck);
                     }
-                }, token);
+                }, token).ConfigureAwait(false);
 
                 return intLoopResult % maxValue;
             }

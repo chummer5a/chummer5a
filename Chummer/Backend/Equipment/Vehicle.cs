@@ -1045,9 +1045,9 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteStartElement("vehicle");
             objWriter.WriteElementString("guid", InternalId);
             objWriter.WriteElementString("sourceid", SourceIDString);
-            objWriter.WriteElementString("name", await DisplayNameShortAsync(strLanguageToPrint));
+            objWriter.WriteElementString("name", await DisplayNameShortAsync(strLanguageToPrint).ConfigureAwait(false));
             objWriter.WriteElementString("name_english", Name);
-            objWriter.WriteElementString("fullname", await DisplayNameAsync(strLanguageToPrint));
+            objWriter.WriteElementString("fullname", await DisplayNameAsync(strLanguageToPrint).ConfigureAwait(false));
             objWriter.WriteElementString("category", DisplayCategory(strLanguageToPrint));
             objWriter.WriteElementString("category_english", Category);
             objWriter.WriteElementString("isdrone", IsDrone.ToString(GlobalSettings.InvariantCultureInfo));
@@ -1062,7 +1062,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("avail", TotalAvail(objCulture, strLanguageToPrint));
             objWriter.WriteElementString("cost", TotalCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
             objWriter.WriteElementString("owncost", OwnCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
-            objWriter.WriteElementString("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint));
+            objWriter.WriteElementString("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint).ConfigureAwait(false));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             objWriter.WriteElementString("physicalcm", PhysicalCM.ToString(objCulture));
             objWriter.WriteElementString("physicalcmfilled", PhysicalCMFilled.ToString(objCulture));
@@ -1085,21 +1085,21 @@ namespace Chummer.Backend.Equipment
 
             objWriter.WriteStartElement("mods");
             foreach (VehicleMod objMod in Mods)
-                await objMod.Print(objWriter, objCulture, strLanguageToPrint);
+                await objMod.Print(objWriter, objCulture, strLanguageToPrint).ConfigureAwait(false);
             foreach (WeaponMount objMount in WeaponMounts)
-                await objMount.Print(objWriter, objCulture, strLanguageToPrint);
-            await objWriter.WriteEndElementAsync();
+                await objMount.Print(objWriter, objCulture, strLanguageToPrint).ConfigureAwait(false);
+            await objWriter.WriteEndElementAsync().ConfigureAwait(false);
             objWriter.WriteStartElement("gears");
             foreach (Gear objGear in GearChildren)
-                await objGear.Print(objWriter, objCulture, strLanguageToPrint);
-            await objWriter.WriteEndElementAsync();
+                await objGear.Print(objWriter, objCulture, strLanguageToPrint).ConfigureAwait(false);
+            await objWriter.WriteEndElementAsync().ConfigureAwait(false);
             objWriter.WriteStartElement("weapons");
             foreach (Weapon objWeapon in Weapons)
-                await objWeapon.Print(objWriter, objCulture, strLanguageToPrint);
-            await objWriter.WriteEndElementAsync();
+                await objWeapon.Print(objWriter, objCulture, strLanguageToPrint).ConfigureAwait(false);
+            await objWriter.WriteEndElementAsync().ConfigureAwait(false);
             if (GlobalSettings.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);
-            await objWriter.WriteEndElementAsync();
+            await objWriter.WriteEndElementAsync().ConfigureAwait(false);
         }
 
         #endregion Constructor, Create, Save, Load, and Print Methods
@@ -1253,10 +1253,10 @@ namespace Chummer.Backend.Equipment
                         ? objMod.WirelessBonus?["pilot"]?.InnerText ?? objMod.Bonus?["pilot"]?.InnerText
                         : objMod.Bonus?["pilot"]?.InnerText;
                     intReturn = Math.Max(
-                        await ParseBonusAsync(strBonusPilot, objMod.Rating, _intPilot, "Pilot", false, token),
+                        await ParseBonusAsync(strBonusPilot, objMod.Rating, _intPilot, "Pilot", false, token).ConfigureAwait(false),
                         intReturn);
                 }
-            }, token);
+            }, token).ConfigureAwait(false);
             return intReturn;
         }
 
@@ -1681,7 +1681,7 @@ namespace Chummer.Backend.Equipment
                     // If the bonus is determined by the existing number, evaluate the expression.
                     (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strBonus.TrimStart('+')
                         .Replace("Rating", intModRating.ToString(GlobalSettings.InvariantCultureInfo))
-                        .Replace(strReplaceRating, intTotalRating.ToString(GlobalSettings.InvariantCultureInfo)), token);
+                        .Replace(strReplaceRating, intTotalRating.ToString(GlobalSettings.InvariantCultureInfo)), token).ConfigureAwait(false);
                     if (blnIsSuccess)
                         return ((double)objProcess).StandardRound();
                 }
@@ -1690,7 +1690,7 @@ namespace Chummer.Backend.Equipment
                     // If the bonus is determined by the existing number, evaluate the expression.
                     (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strBonus.TrimStart('+')
                         .Replace("Rating", intModRating.ToString(GlobalSettings.InvariantCultureInfo))
-                        .Replace(strReplaceRating, intTotalRating.ToString(GlobalSettings.InvariantCultureInfo)), token);
+                        .Replace(strReplaceRating, intTotalRating.ToString(GlobalSettings.InvariantCultureInfo)), token).ConfigureAwait(false);
                     if (blnIsSuccess)
                         return ((double)objProcess).StandardRound();
                 }
@@ -1744,10 +1744,10 @@ namespace Chummer.Backend.Equipment
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
-            XPathNavigator xmlDataNode = await this.GetNodeXPathAsync(strLanguage, token: token);
+            XPathNavigator xmlDataNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
             if (xmlDataNode == null)
                 return Name;
-            return (await xmlDataNode.SelectSingleNodeAndCacheExpressionAsync("translate", token))?.Value ?? Name;
+            return (await xmlDataNode.SelectSingleNodeAndCacheExpressionAsync("translate", token).ConfigureAwait(false))?.Value ?? Name;
         }
 
         /// <summary>
@@ -1785,11 +1785,11 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public async ValueTask<string> DisplayNameAsync(string strLanguage, CancellationToken token = default)
         {
-            string strReturn = await DisplayNameShortAsync(strLanguage, token);
+            string strReturn = await DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
 
             if (!string.IsNullOrEmpty(CustomName))
             {
-                strReturn += await LanguageManager.GetStringAsync("String_Space", token: token) + "(\"" + CustomName + "\")";
+                strReturn += await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + "(\"" + CustomName + "\")";
             }
 
             return strReturn;
@@ -2349,13 +2349,13 @@ namespace Chummer.Backend.Equipment
                 if (!objMod.IncludedInVehicle && objMod.Equipped)
                 {
                     // Add the Modification's Body to the Vehicle's base Body.
-                    intBody += await ParseBonusAsync(objMod.Bonus?["body"]?.InnerText, objMod.Rating, Body, "Body", token: token);
+                    intBody += await ParseBonusAsync(objMod.Bonus?["body"]?.InnerText, objMod.Rating, Body, "Body", token: token).ConfigureAwait(false);
                     if (objMod.WirelessOn && objMod.WirelessBonus != null)
                     {
-                        intBody += await ParseBonusAsync(objMod.WirelessBonus?["body"]?.InnerText, objMod.Rating, Body, "Body", token: token);
+                        intBody += await ParseBonusAsync(objMod.WirelessBonus?["body"]?.InnerText, objMod.Rating, Body, "Body", token: token).ConfigureAwait(false);
                     }
                 }
-            }, token);
+            }, token).ConfigureAwait(false);
             return intBody;
         }
 
@@ -2649,7 +2649,7 @@ namespace Chummer.Backend.Equipment
             _objCachedMyXmlNode = (blnSync
                     // ReSharper disable once MethodHasAsyncOverload
                     ? _objCharacter.LoadData("vehicles.xml", strLanguage, token: token)
-                    : await _objCharacter.LoadDataAsync("vehicles.xml", strLanguage, token: token))
+                    : await _objCharacter.LoadDataAsync("vehicles.xml", strLanguage, token: token).ConfigureAwait(false))
                 .SelectSingleNode(SourceID == Guid.Empty
                                       ? "/chummer/vehicles/vehicle[name = "
                                         + Name.CleanXPath() + ']'
@@ -2672,7 +2672,7 @@ namespace Chummer.Backend.Equipment
             _objCachedMyXPathNode = (blnSync
                     // ReSharper disable once MethodHasAsyncOverload
                     ? _objCharacter.LoadDataXPath("vehicles.xml", strLanguage, token: token)
-                    : await _objCharacter.LoadDataXPathAsync("vehicles.xml", strLanguage, token: token))
+                    : await _objCharacter.LoadDataXPathAsync("vehicles.xml", strLanguage, token: token).ConfigureAwait(false))
                 .SelectSingleNode(SourceID == Guid.Empty
                                       ? "/chummer/vehicles/vehicle[name = "
                                         + Name.CleanXPath() + ']'

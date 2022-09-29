@@ -69,20 +69,20 @@ namespace Chummer
         /// <inheritdoc cref="List{T}.Insert" />
         public override async ValueTask InsertAsync(int index, T item, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
                 if (index >= _intMaxSize)
                     return;
-                for (int intCount = await GetCountAsync(token); intCount >= _intMaxSize; --intCount)
+                for (int intCount = await GetCountAsync(token).ConfigureAwait(false); intCount >= _intMaxSize; --intCount)
                 {
-                    await RemoveAtAsync(intCount - 1, token);
+                    await RemoveAtAsync(intCount - 1, token).ConfigureAwait(false);
                 }
-                await base.InsertAsync(index, item, token);
+                await base.InsertAsync(index, item, token).ConfigureAwait(false);
             }
             finally
             {
-                await objLocker.DisposeAsync();
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -109,11 +109,11 @@ namespace Chummer
 
         public override async ValueTask AddAsync(T item, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token))
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                if (await GetCountAsync(token) >= _intMaxSize)
+                if (await GetCountAsync(token).ConfigureAwait(false) >= _intMaxSize)
                     return;
-                await base.AddAsync(item, token);
+                await base.AddAsync(item, token).ConfigureAwait(false);
             }
         }
 
@@ -132,11 +132,11 @@ namespace Chummer
         /// <inheritdoc />
         public override async ValueTask<bool> TryAddAsync(T item, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token))
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                if (await GetCountAsync(token) >= _intMaxSize)
+                if (await GetCountAsync(token).ConfigureAwait(false) >= _intMaxSize)
                     return false;
-                await base.AddAsync(item, token);
+                await base.AddAsync(item, token).ConfigureAwait(false);
                 return true;
             }
         }

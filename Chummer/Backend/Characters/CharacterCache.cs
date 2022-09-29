@@ -620,15 +620,15 @@ namespace Chummer
 
         public async void OnDefaultDoubleClick(object sender, EventArgs e)
         {
-            Character objOpenCharacter = await Program.OpenCharacters.FirstOrDefaultAsync(x => x.FileName == FileName);
+            Character objOpenCharacter = await Program.OpenCharacters.FirstOrDefaultAsync(x => x.FileName == FileName).ConfigureAwait(false);
             if (objOpenCharacter == null)
             {
-                using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program.CreateAndShowProgressBarAsync(FilePath, Character.NumLoadingSections))
-                    objOpenCharacter = await Program.LoadCharacterAsync(FilePath, frmLoadingBar: frmLoadingBar.MyForm);
+                using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program.CreateAndShowProgressBarAsync(FilePath, Character.NumLoadingSections).ConfigureAwait(false))
+                    objOpenCharacter = await Program.LoadCharacterAsync(FilePath, frmLoadingBar: frmLoadingBar.MyForm).ConfigureAwait(false);
             }
 
-            if (!await Program.SwitchToOpenCharacter(objOpenCharacter))
-                await Program.OpenCharacter(objOpenCharacter);
+            if (!await Program.SwitchToOpenCharacter(objOpenCharacter).ConfigureAwait(false))
+                await Program.OpenCharacter(objOpenCharacter).ConfigureAwait(false);
         }
 
         public void OnDefaultContextMenuDeleteClick(object sender, EventArgs e)
@@ -759,7 +759,7 @@ namespace Chummer
                     if (!string.IsNullOrEmpty(strSettings))
                     {
                         (bool blnSuccess, CharacterSettings objSettings)
-                            = await (await SettingsManager.GetLoadedCharacterSettingsAsync(token)).TryGetValueAsync(strSettings, token).ConfigureAwait(false);
+                            = await (await SettingsManager.GetLoadedCharacterSettingsAsync(token).ConfigureAwait(false)).TryGetValueAsync(strSettings, token).ConfigureAwait(false);
                         if (blnSuccess)
                             _strSettingsFile = objSettings.DisplayName;
                         else
@@ -945,19 +945,19 @@ namespace Chummer
         {
             if (_blnIsDisposed)
                 return;
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
             try
             {
                 _blnIsDisposed = true;
                 _imgMugshot?.Dispose();
                 _tskRunningDownloadTask?.Dispose();
-                await _dicMyPluginData.DisposeAsync();
+                await _dicMyPluginData.DisposeAsync().ConfigureAwait(false);
             }
             finally
             {
-                await objLocker.DisposeAsync();
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
-            await LockObject.DisposeAsync();
+            await LockObject.DisposeAsync().ConfigureAwait(false);
         }
 
         public override string ToString()

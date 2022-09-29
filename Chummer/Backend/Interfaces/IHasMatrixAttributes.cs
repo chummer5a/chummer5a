@@ -344,22 +344,22 @@ namespace Chummer
             {
                 x.SuspendLayout();
                 x.BeginUpdate();
-            }, token);
+            }, token).ConfigureAwait(false);
             await cboSleaze.DoThreadSafeAsync(x =>
             {
                 x.SuspendLayout();
                 x.BeginUpdate();
-            }, token);
+            }, token).ConfigureAwait(false);
             await cboDataProcessing.DoThreadSafeAsync(x =>
             {
                 x.SuspendLayout();
                 x.BeginUpdate();
-            }, token);
+            }, token).ConfigureAwait(false);
             await cboFirewall.DoThreadSafeAsync(x =>
             {
                 x.SuspendLayout();
                 x.BeginUpdate();
-            }, token);
+            }, token).ConfigureAwait(false);
 
             try
             {
@@ -377,7 +377,7 @@ namespace Chummer
                     x.SelectedIndex = 0;
                     x.Visible = true;
                     x.Enabled = objThis.CanSwapAttributes;
-                }, token);
+                }, token).ConfigureAwait(false);
 
                 await cboSleaze.DoThreadSafeAsync(x =>
                 {
@@ -393,7 +393,7 @@ namespace Chummer
                     x.SelectedIndex = 1;
                     x.Visible = true;
                     x.Enabled = objThis.CanSwapAttributes;
-                }, token);
+                }, token).ConfigureAwait(false);
 
                 await cboDataProcessing.DoThreadSafeAsync(x =>
                 {
@@ -409,7 +409,7 @@ namespace Chummer
                     x.SelectedIndex = 2;
                     x.Visible = true;
                     x.Enabled = objThis.CanSwapAttributes;
-                }, token);
+                }, token).ConfigureAwait(false);
 
                 await cboFirewall.DoThreadSafeAsync(x =>
                 {
@@ -425,7 +425,7 @@ namespace Chummer
                     x.SelectedIndex = 3;
                     x.Visible = true;
                     x.Enabled = objThis.CanSwapAttributes;
-                }, token);
+                }, token).ConfigureAwait(false);
             }
             finally
             {
@@ -433,22 +433,22 @@ namespace Chummer
                 {
                     x.EndUpdate();
                     x.ResumeLayout();
-                }, token);
+                }, token).ConfigureAwait(false);
                 await cboSleaze.DoThreadSafeAsync(x =>
                 {
                     x.EndUpdate();
                     x.ResumeLayout();
-                }, token);
+                }, token).ConfigureAwait(false);
                 await cboDataProcessing.DoThreadSafeAsync(x =>
                 {
                     x.EndUpdate();
                     x.ResumeLayout();
-                }, token);
+                }, token).ConfigureAwait(false);
                 await cboFirewall.DoThreadSafeAsync(x =>
                 {
                     x.EndUpdate();
                     x.ResumeLayout();
-                }, token);
+                }, token).ConfigureAwait(false);
             }
         }
 
@@ -597,30 +597,30 @@ namespace Chummer
             else
                 return false;
 
-            int intCurrentIndex = await cboChangedAttribute.DoThreadSafeFuncAsync(x => x.SelectedIndex, token);
+            int intCurrentIndex = await cboChangedAttribute.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false);
             bool blnRefreshCharacter = false;
             bool blnDPChanged = cboChangedAttribute == cboDataProcessing;
             // Find the combo with the same value as this one and change it to the missing value.
-            if (cboChangedAttribute != cboAttack && await cboAttack.DoThreadSafeFuncAsync(x => x.SelectedIndex, token) == intCurrentIndex)
+            if (cboChangedAttribute != cboAttack && await cboAttack.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false) == intCurrentIndex)
             {
                 funcAttributePropertySetter.Invoke(objThis.Attack);
                 objThis.Attack = strTemp;
                 blnRefreshCharacter = true;
             }
-            else if (cboChangedAttribute != cboSleaze && await cboSleaze.DoThreadSafeFuncAsync(x => x.SelectedIndex, token) == intCurrentIndex)
+            else if (cboChangedAttribute != cboSleaze && await cboSleaze.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false) == intCurrentIndex)
             {
                 funcAttributePropertySetter.Invoke(objThis.Sleaze);
                 objThis.Sleaze = strTemp;
                 blnRefreshCharacter = true;
             }
-            else if (!blnDPChanged && await cboDataProcessing.DoThreadSafeFuncAsync(x => x.SelectedIndex, token) == intCurrentIndex)
+            else if (!blnDPChanged && await cboDataProcessing.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false) == intCurrentIndex)
             {
                 funcAttributePropertySetter.Invoke(objThis.DataProcessing);
                 objThis.DataProcessing = strTemp;
                 blnRefreshCharacter = true;
                 blnDPChanged = true;
             }
-            else if (cboChangedAttribute != cboFirewall && await cboFirewall.DoThreadSafeFuncAsync(x => x.SelectedIndex, token) == intCurrentIndex)
+            else if (cboChangedAttribute != cboFirewall && await cboFirewall.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false) == intCurrentIndex)
             {
                 funcAttributePropertySetter.Invoke(objThis.Firewall);
                 objThis.Firewall = strTemp;
@@ -629,7 +629,7 @@ namespace Chummer
 
             if (blnRefreshCharacter)
             {
-                await objThis.RefreshMatrixAttributeComboBoxesAsync(cboAttack, cboSleaze, cboDataProcessing, cboFirewall, token);
+                await objThis.RefreshMatrixAttributeComboBoxesAsync(cboAttack, cboSleaze, cboDataProcessing, cboFirewall, token).ConfigureAwait(false);
                 if (objThis.IsActiveCommlink(objCharacter) || objThis.IsHomeNode(objCharacter))
                 {
                     if (blnDPChanged)

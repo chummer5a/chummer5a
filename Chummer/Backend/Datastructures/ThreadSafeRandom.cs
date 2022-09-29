@@ -127,7 +127,7 @@ namespace Chummer
         public async Task<int> NextAsync(CancellationToken token = default)
         {
             int intReturn;
-            await _objLock.WaitAsync(token);
+            await _objLock.WaitAsync(token).ConfigureAwait(false);
             try
             {
                 intReturn = _objRandom.Next();
@@ -142,7 +142,7 @@ namespace Chummer
         public async Task<int> NextAsync(int minValue, int maxValue, CancellationToken token = default)
         {
             int intReturn;
-            await _objLock.WaitAsync(token);
+            await _objLock.WaitAsync(token).ConfigureAwait(false);
             try
             {
                 intReturn = _objRandom.Next(minValue, maxValue);
@@ -157,7 +157,7 @@ namespace Chummer
         public async Task<int> NextAsync(int maxValue, CancellationToken token = default)
         {
             int intReturn;
-            await _objLock.WaitAsync(token);
+            await _objLock.WaitAsync(token).ConfigureAwait(false);
             try
             {
                 intReturn = _objRandom.Next(maxValue);
@@ -171,7 +171,7 @@ namespace Chummer
 
         public async Task NextBytesAsync(byte[] buffer, CancellationToken token = default)
         {
-            await _objLock.WaitAsync(token);
+            await _objLock.WaitAsync(token).ConfigureAwait(false);
             try
             {
                 _objRandom.NextBytes(buffer);
@@ -185,7 +185,7 @@ namespace Chummer
         public async Task<double> NextDoubleAsync(CancellationToken token = default)
         {
             double dblReturn;
-            await _objLock.WaitAsync(token);
+            await _objLock.WaitAsync(token).ConfigureAwait(false);
             try
             {
                 dblReturn = _objRandom.NextDouble();

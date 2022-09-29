@@ -46,8 +46,8 @@ namespace Chummer
                 strLanguage = GlobalSettings.Language;
 
             //Little bit of data required for following steps
-            XmlDocument xmlDoc = await _objCharacter.LoadDataAsync("lifemodules.xml", strLanguage, token: token);
-            XPathNavigator xdoc = await _objCharacter.LoadDataXPathAsync("lifemodules.xml", strLanguage, token: token);
+            XmlDocument xmlDoc = await _objCharacter.LoadDataAsync("lifemodules.xml", strLanguage, token: token).ConfigureAwait(false);
+            XPathNavigator xdoc = await _objCharacter.LoadDataXPathAsync("lifemodules.xml", strLanguage, token: token).ConfigureAwait(false);
 
             //Generate list of all life modules (xml, we don't save required data to quality) this character has
             List<XmlNode> modules = new List<XmlNode>(10);
@@ -78,7 +78,7 @@ namespace Chummer
 
             string[] story = new string[modules.Count];
             Task<string>[] atskStoryTasks = new Task<string>[modules.Count];
-            XPathNavigator xmlBaseMacrosNode = await xdoc.SelectSingleNodeAndCacheExpressionAsync("/chummer/storybuilder/macros", token: token);
+            XPathNavigator xmlBaseMacrosNode = await xdoc.SelectSingleNodeAndCacheExpressionAsync("/chummer/storybuilder/macros", token: token).ConfigureAwait(false);
             //Actually "write" the story
             for (int i = 0; i < modules.Count; ++i)
             {
@@ -89,16 +89,16 @@ namespace Chummer
                                                                   out StringBuilder sbdTemp))
                     {
                         return (await Write(sbdTemp, modules[intLocal]["story"]?.InnerText ?? string.Empty, 5,
-                                                xmlBaseMacrosNode, token)).ToString();
+                                            xmlBaseMacrosNode, token).ConfigureAwait(false)).ToString();
                     }
                 }, token);
             }
 
-            await Task.WhenAll(atskStoryTasks);
+            await Task.WhenAll(atskStoryTasks).ConfigureAwait(false);
 
             for (int i = 0; i < modules.Count; ++i)
             {
-                story[i] = await atskStoryTasks[i];
+                story[i] = await atskStoryTasks[i].ConfigureAwait(false);
             }
             return string.Join(Environment.NewLine + Environment.NewLine, story);
         }
@@ -113,7 +113,7 @@ namespace Chummer
             IEnumerable<string> words;
             if (innerText.StartsWith('$') && innerText.IndexOf(' ') < 0)
             {
-                words = (await Macro(innerText, xmlBaseMacrosNode, token)).SplitNoAlloc(' ', '\n', '\r', '\t');
+                words = (await Macro(innerText, xmlBaseMacrosNode, token).ConfigureAwait(false)).SplitNoAlloc(' ', '\n', '\r', '\t');
             }
             else
             {
@@ -136,7 +136,7 @@ namespace Chummer
                     else
                     {
                         //if (story.Length > 0 && story[story.Length - 1] == ' ') story.Length--;
-                        await Write(story, trim, --levels, xmlBaseMacrosNode, token);
+                        await Write(story, trim, --levels, xmlBaseMacrosNode, token).ConfigureAwait(false);
                     }
                     mfix = true;
                 }
@@ -203,18 +203,18 @@ namespace Chummer
                 if (xmlUserMacroFirstChild != null)
                 {
                     //Already defined, no need to do anything fancy
-                    (bool blnSuccess, string strSelectedNodeName) = await _dicPersistence.TryGetValueAsync(macroPool, token);
+                    (bool blnSuccess, string strSelectedNodeName) = await _dicPersistence.TryGetValueAsync(macroPool, token).ConfigureAwait(false);
                     if (!blnSuccess)
                     {
                         switch (xmlUserMacroFirstChild.Name)
                         {
                             case "random":
                                 {
-                                    XPathNodeIterator xmlPossibleNodeList = await xmlUserMacroFirstChild.SelectAndCacheExpressionAsync("./*[not(self::default)]", token: token);
+                                    XPathNodeIterator xmlPossibleNodeList = await xmlUserMacroFirstChild.SelectAndCacheExpressionAsync("./*[not(self::default)]", token: token).ConfigureAwait(false);
                                     if (xmlPossibleNodeList.Count > 0)
                                     {
                                         int intUseIndex = xmlPossibleNodeList.Count > 1
-                                            ? await GlobalSettings.RandomGenerator.NextModuloBiasRemovedAsync(xmlPossibleNodeList.Count, token: token)
+                                            ? await GlobalSettings.RandomGenerator.NextModuloBiasRemovedAsync(xmlPossibleNodeList.Count, token: token).ConfigureAwait(false)
                                             : 0;
                                         int i = 0;
                                         foreach (XPathNavigator xmlLoopNode in xmlPossibleNodeList)
@@ -234,11 +234,11 @@ namespace Chummer
                             case "persistent":
                                 {
                                     //Any node not named
-                                    XPathNodeIterator xmlPossibleNodeList = await xmlUserMacroFirstChild.SelectAndCacheExpressionAsync("./*[not(self::default)]", token: token);
+                                    XPathNodeIterator xmlPossibleNodeList = await xmlUserMacroFirstChild.SelectAndCacheExpressionAsync("./*[not(self::default)]", token: token).ConfigureAwait(false);
                                     if (xmlPossibleNodeList.Count > 0)
                                     {
                                         int intUseIndex = xmlPossibleNodeList.Count > 1
-                                            ? await GlobalSettings.RandomGenerator.NextModuloBiasRemovedAsync(xmlPossibleNodeList.Count, token: token)
+                                            ? await GlobalSettings.RandomGenerator.NextModuloBiasRemovedAsync(xmlPossibleNodeList.Count, token: token).ConfigureAwait(false)
                                             : 0;
                                         int i = 0;
                                         foreach (XPathNavigator xmlLoopNode in xmlPossibleNodeList)
@@ -252,8 +252,8 @@ namespace Chummer
                                             ++i;
                                         }
 
-                                        if (!await _dicPersistence.TryAddAsync(macroPool, strSelectedNodeName, token))
-                                            strSelectedNodeName = (await _dicPersistence.TryGetValueAsync(macroPool, token)).Item2;
+                                        if (!await _dicPersistence.TryAddAsync(macroPool, strSelectedNodeName, token).ConfigureAwait(false))
+                                            strSelectedNodeName = (await _dicPersistence.TryGetValueAsync(macroPool, token).ConfigureAwait(false)).Item2;
                                     }
 
                                     break;
@@ -270,7 +270,7 @@ namespace Chummer
                             return strSelected;
                     }
 
-                    string strDefault = (await xmlUserMacroFirstChild.SelectSingleNodeAndCacheExpressionAsync("default", token: token))?.Value;
+                    string strDefault = (await xmlUserMacroFirstChild.SelectSingleNodeAndCacheExpressionAsync("default", token: token).ConfigureAwait(false))?.Value;
                     if (!string.IsNullOrEmpty(strDefault))
                     {
                         return strDefault;

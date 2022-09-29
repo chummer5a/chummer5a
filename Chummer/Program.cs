@@ -538,12 +538,12 @@ namespace Chummer
                                 if (!GlobalSettings.Language.Equals(
                                         GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                                 {
-                                    await XmlManager.LoadXPathAsync(strFile, null, GlobalSettings.DefaultLanguage);
+                                    await XmlManager.LoadXPathAsync(strFile, null, GlobalSettings.DefaultLanguage).ConfigureAwait(false);
                                 }
-                                await XmlManager.LoadXPathAsync(strFile);
+                                await XmlManager.LoadXPathAsync(strFile).ConfigureAwait(false);
                                 await frmLoadingBarInner.PerformStepAsync(
                                     Application.ProductName,
-                                    LoadingBar.ProgressBarTextPatterns.Initializing);
+                                    LoadingBar.ProgressBarTextPatterns.Initializing).ConfigureAwait(false);
                             }
                         }
 
@@ -959,11 +959,11 @@ namespace Chummer
             async Task<Form> InnerMethod()
             {
                 return await MainForm.OpenCharacterEditorForms.FirstOrDefaultAsync(
-                           x => ReferenceEquals(x.CharacterObject, objCharacter), token: token) as Form
+                           x => ReferenceEquals(x.CharacterObject, objCharacter), token: token).ConfigureAwait(false) as Form
                        ?? await MainForm.OpenCharacterSheetViewers.FirstOrDefaultAsync(
-                           x => x.CharacterObjects.Contains(objCharacter), token: token) as Form
+                           x => x.CharacterObjects.Contains(objCharacter), token: token).ConfigureAwait(false) as Form
                        ?? await MainForm.OpenCharacterExportForms.FirstOrDefaultAsync(
-                               x => ReferenceEquals(x.CharacterObject, objCharacter), token: token)
+                               x => ReferenceEquals(x.CharacterObject, objCharacter), token: token).ConfigureAwait(false)
                            as Form
                        ?? MainForm;
             }
@@ -1304,15 +1304,15 @@ namespace Chummer
         public static async ValueTask<ThreadSafeForm<LoadingBar>> CreateAndShowProgressBarAsync(string strFile = "", int intCount = 1, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            ThreadSafeForm<LoadingBar> frmReturn = await ThreadSafeForm<LoadingBar>.GetAsync(() => new LoadingBar { CharacterFile = strFile }, token);
+            ThreadSafeForm<LoadingBar> frmReturn = await ThreadSafeForm<LoadingBar>.GetAsync(() => new LoadingBar { CharacterFile = strFile }, token).ConfigureAwait(false);
             if (intCount > 0)
-                await frmReturn.MyForm.ResetAsync(intCount, token);
+                await frmReturn.MyForm.ResetAsync(intCount, token).ConfigureAwait(false);
             await frmReturn.MyForm.DoThreadSafeAsync(x =>
             {
                 x.Closed += (sender, args) => s_lstLoadingBars.Remove(x);
                 x.Show();
-            }, token);
-            await s_lstLoadingBars.AddAsync(frmReturn.MyForm, token);
+            }, token).ConfigureAwait(false);
+            await s_lstLoadingBars.AddAsync(frmReturn.MyForm, token).ConfigureAwait(false);
             return frmReturn;
         }
 

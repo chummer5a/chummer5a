@@ -224,13 +224,13 @@ namespace Chummer.Backend.Skills
             string strTranslatedName = CurrentDisplayName;
             int intMaxHardwire = -1;
             foreach (Improvement objImprovement in (await ImprovementManager
-                         .GetCachedImprovementListForValueOfAsync(
-                             CharacterObject, Improvement.ImprovementType.Hardwire,
-                             await GetDictionaryKeyAsync(token), token: token))
+                                                          .GetCachedImprovementListForValueOfAsync(
+                                                              CharacterObject, Improvement.ImprovementType.Hardwire,
+                                                              await GetDictionaryKeyAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false))
                                                    .Concat(await ImprovementManager.GetCachedImprovementListForValueOfAsync(
                                                                CharacterObject,
                                                                Improvement.ImprovementType.Hardwire,
-                                                               strTranslatedName, token: token)))
+                                                               strTranslatedName, token: token).ConfigureAwait(false)))
             {
                 intMaxHardwire = Math.Max(intMaxHardwire, objImprovement.Value.StandardRound());
             }
@@ -239,12 +239,12 @@ namespace Chummer.Backend.Skills
                 return _intCachedCyberwareRating = intMaxHardwire;
             }
 
-            int intMaxSkillsoftRating = (await ImprovementManager.ValueOfAsync(CharacterObject, Improvement.ImprovementType.SkillsoftAccess, token: token)).StandardRound();
+            int intMaxSkillsoftRating = (await ImprovementManager.ValueOfAsync(CharacterObject, Improvement.ImprovementType.SkillsoftAccess, token: token).ConfigureAwait(false)).StandardRound();
             if (intMaxSkillsoftRating <= 0)
                 return _intCachedCyberwareRating = 0;
             int intMax = 0;
             foreach (Improvement objSkillsoftImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(
-                         CharacterObject, Improvement.ImprovementType.Skillsoft, InternalId, token: token))
+                         CharacterObject, Improvement.ImprovementType.Skillsoft, InternalId, token: token).ConfigureAwait(false))
             {
                 intMax = Math.Max(intMax, objSkillsoftImprovement.Value.StandardRound());
             }
@@ -259,7 +259,7 @@ namespace Chummer.Backend.Skills
 
         public override async ValueTask<string> DisplaySpecializationAsync(string strLanguage, CancellationToken token = default)
         {
-            return IsNativeLanguage ? string.Empty : await base.DisplaySpecializationAsync(strLanguage, token);
+            return IsNativeLanguage ? string.Empty : await base.DisplaySpecializationAsync(strLanguage, token).ConfigureAwait(false);
         }
 
         public string Type
@@ -402,35 +402,35 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public override async ValueTask<int> GetCurrentKarmaCostAsync(CancellationToken token = default)
         {
-            int intTotalBaseRating = await GetTotalBaseRatingAsync(token);
+            int intTotalBaseRating = await GetTotalBaseRatingAsync(token).ConfigureAwait(false);
             decimal decCost = intTotalBaseRating * (intTotalBaseRating + 1);
-            int intLower = await GetBaseAsync(token) + await GetFreeKarmaAsync(token) + await RatingModifiersAsync(Attribute, token: token);
+            int intLower = await GetBaseAsync(token).ConfigureAwait(false) + await GetFreeKarmaAsync(token).ConfigureAwait(false) + await RatingModifiersAsync(Attribute, token: token).ConfigureAwait(false);
             decCost -= intLower * (intLower + 1);
 
             decCost /= 2;
-            CharacterSettings objSettings = await CharacterObject.GetSettingsAsync(token);
-            decCost *= await objSettings.GetKarmaImproveKnowledgeSkillAsync(token);
+            CharacterSettings objSettings = await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false);
+            decCost *= await objSettings.GetKarmaImproveKnowledgeSkillAsync(token).ConfigureAwait(false);
             // We have bought the first level with karma, too
             if (intLower == 0 && decCost > 0)
-                decCost += await objSettings.GetKarmaNewKnowledgeSkillAsync(token) - await objSettings.GetKarmaImproveKnowledgeSkillAsync(token);
+                decCost += await objSettings.GetKarmaNewKnowledgeSkillAsync(token).ConfigureAwait(false) - await objSettings.GetKarmaImproveKnowledgeSkillAsync(token).ConfigureAwait(false);
 
             decimal decMultiplier = 1.0m;
             decimal decExtra = 0;
-            int intSpecCount = await GetBuyWithKarmaAsync(token) || !await CharacterObject.GetEffectiveBuildMethodUsesPriorityTablesAsync(token)
-                ? await Specializations.CountAsync(objSpec => !objSpec.Free, token: token)
+            int intSpecCount = await GetBuyWithKarmaAsync(token).ConfigureAwait(false) || !await CharacterObject.GetEffectiveBuildMethodUsesPriorityTablesAsync(token).ConfigureAwait(false)
+                ? await Specializations.CountAsync(objSpec => !objSpec.Free, token: token).ConfigureAwait(false)
                 : 0;
-            decimal decSpecCost = intSpecCount * await (await CharacterObject.GetSettingsAsync(token)).GetKarmaKnowledgeSpecializationAsync(token);
+            decimal decSpecCost = intSpecCount * await (await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false)).GetKarmaKnowledgeSpecializationAsync(token).ConfigureAwait(false);
             decimal decExtraSpecCost = 0;
             decimal decSpecCostMultiplier = 1.0m;
-            await (await CharacterObject.GetImprovementsAsync(token)).ForEachAsync(async objLoopImprovement =>
+            await (await CharacterObject.GetImprovementsAsync(token).ConfigureAwait(false)).ForEachAsync(async objLoopImprovement =>
             {
                 if (objLoopImprovement.Minimum > intTotalBaseRating ||
                     (!string.IsNullOrEmpty(objLoopImprovement.Condition)
-                     && (objLoopImprovement.Condition == "career") != await CharacterObject.GetCreatedAsync(token)
-                     && (objLoopImprovement.Condition == "create") == await CharacterObject.GetCreatedAsync(token))
+                     && (objLoopImprovement.Condition == "career") != await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false)
+                     && (objLoopImprovement.Condition == "create") == await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false))
                     || !objLoopImprovement.Enabled)
                     return;
-                if (objLoopImprovement.ImprovedName == await GetDictionaryKeyAsync(token)
+                if (objLoopImprovement.ImprovedName == await GetDictionaryKeyAsync(token).ConfigureAwait(false)
                     || string.IsNullOrEmpty(objLoopImprovement.ImprovedName))
                 {
                     switch (objLoopImprovement.ImproveType)
@@ -475,7 +475,7 @@ namespace Chummer.Backend.Skills
                             break;
                     }
                 }
-            }, token: token);
+            }, token: token).ConfigureAwait(false);
 
             if (decMultiplier != 1.0m)
                 decCost *= decMultiplier;
@@ -627,20 +627,20 @@ namespace Chummer.Backend.Skills
         public override async ValueTask<int> GetCurrentSpCostAsync(CancellationToken token = default)
         {
             int cost = BasePoints;
-            if (!IsExoticSkill && !await GetBuyWithKarmaAsync(token))
-                cost += await Specializations.CountAsync(x => !x.Free, token: token);
+            if (!IsExoticSkill && !await GetBuyWithKarmaAsync(token).ConfigureAwait(false))
+                cost += await Specializations.CountAsync(x => !x.Free, token: token).ConfigureAwait(false);
 
             decimal decExtra = 0;
             decimal decMultiplier = 1.0m;
-            await (await CharacterObject.GetImprovementsAsync(token)).ForEachAsync(async objLoopImprovement =>
+            await (await CharacterObject.GetImprovementsAsync(token).ConfigureAwait(false)).ForEachAsync(async objLoopImprovement =>
             {
                 if (objLoopImprovement.Minimum > BasePoints ||
                     (!string.IsNullOrEmpty(objLoopImprovement.Condition)
-                     && (objLoopImprovement.Condition == "career") != await CharacterObject.GetCreatedAsync(token)
-                     && (objLoopImprovement.Condition == "create") == await CharacterObject.GetCreatedAsync(token))
+                     && (objLoopImprovement.Condition == "career") != await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false)
+                     && (objLoopImprovement.Condition == "create") == await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false))
                     || !objLoopImprovement.Enabled)
                     return;
-                if (objLoopImprovement.ImprovedName == await GetDictionaryKeyAsync(token)
+                if (objLoopImprovement.ImprovedName == await GetDictionaryKeyAsync(token).ConfigureAwait(false)
                     || string.IsNullOrEmpty(objLoopImprovement.ImprovedName))
                 {
                     switch (objLoopImprovement.ImproveType)
@@ -677,7 +677,7 @@ namespace Chummer.Backend.Skills
                             break;
                     }
                 }
-            }, token: token);
+            }, token: token).ConfigureAwait(false);
 
             if (decMultiplier != 1.0m)
                 cost = (cost * decMultiplier + decExtra).StandardRound();

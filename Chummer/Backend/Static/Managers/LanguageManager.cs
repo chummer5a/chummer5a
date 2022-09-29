@@ -821,13 +821,13 @@ namespace Chummer
                         if (strLoop.IndexOfAny('{', '}') != -1)
                         {
                             strLoop = await ProcessCompoundString(strLoop, strLanguage, objCharacter,
-                                                                  blnUseTranslateExtra, token);
+                                                                  blnUseTranslateExtra, token).ConfigureAwait(false);
                         }
 
                         // Use more expensive TranslateExtra if flag is set to use that
                         sbdReturn.Append(blnUseTranslateExtra
-                                             ? await TranslateExtraAsync(strLoop, strLanguage, objCharacter, token: token)
-                                             : await GetStringAsync(strLoop, strLanguage, false, token));
+                                             ? await TranslateExtraAsync(strLoop, strLanguage, objCharacter, token: token).ConfigureAwait(false)
+                                             : await GetStringAsync(strLoop, strLanguage, false, token).ConfigureAwait(false));
                     }
                     // Items between curly bracket sets do not need processing, so just append them to the return value wholesale
                     else
@@ -971,7 +971,7 @@ namespace Chummer
                         {
                             //swallow this
                         }
-                    }, token));
+                    }, token)).ConfigureAwait(false);
 
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdMissingMessage))
@@ -998,7 +998,7 @@ namespace Chummer
                                 if (!setEnglishKeys.Contains(strKey))
                                     sbdUnusedMessage.Append("Unused String: ").AppendLine(strKey);
                             }
-                        }, token));
+                        }, token)).ConfigureAwait(false);
 
                     strMessage = (sbdMissingMessage + sbdUnusedMessage.ToString()).TrimEndOnce(Environment.NewLine);
                 }
@@ -1306,7 +1306,7 @@ namespace Chummer
                         strReturn = blnSync
                             // ReSharper disable once MethodHasAsyncOverload
                             ? GetString("String_Improvement_SideLeft", strIntoLanguage, token: token)
-                            : await GetStringAsync("String_Improvement_SideLeft", strIntoLanguage, token: token);
+                            : await GetStringAsync("String_Improvement_SideLeft", strIntoLanguage, token: token).ConfigureAwait(false);
                         break;
 
                     case "Right":
@@ -1830,17 +1830,17 @@ namespace Chummer
                         strDefaultSheetLanguage = strSheetLanguage;
                 }
 
-                List<ListItem> lstSheetLanguageList = await GetSheetLanguageListAsync(lstCharacters, true, token);
+                List<ListItem> lstSheetLanguageList = await GetSheetLanguageListAsync(lstCharacters, true, token).ConfigureAwait(false);
                 try
                 {
-                    await cboLanguage.PopulateWithListItemsAsync(lstSheetLanguageList, token: token);
+                    await cboLanguage.PopulateWithListItemsAsync(lstSheetLanguageList, token: token).ConfigureAwait(false);
                     await cboLanguage.DoThreadSafeAsync(x =>
                     {
                         x.SelectedValue = strDefaultSheetLanguage;
                         if (x.SelectedIndex == -1)
                             x.SelectedValue
                                 = defaultCulture?.Name.ToLowerInvariant() ?? GlobalSettings.DefaultLanguage;
-                    }, token: token);
+                    }, token: token).ConfigureAwait(false);
                 }
                 finally
                 {

@@ -179,7 +179,7 @@ namespace Chummer
 
         private async Task<IAsyncDisposable> TakeWriteLockCoreAsync(DebuggableSemaphoreSlim objCurrentSemaphore, SafeWriterSemaphoreRelease objRelease)
         {
-            await objCurrentSemaphore.WaitAsync();
+            await objCurrentSemaphore.WaitAsync().ConfigureAwait(false);
             if (Interlocked.Increment(ref _intCountActiveReaders) == 1)
             {
                 try
@@ -187,7 +187,7 @@ namespace Chummer
                     // Wait for the reader lock only if there have been no other write locks before us
                     if (_objTopLevelWriterSemaphore.CurrentCount != 0 || objCurrentSemaphore == _objTopLevelWriterSemaphore)
                     {
-                        await _objReaderSemaphore.WaitAsync();
+                        await _objReaderSemaphore.WaitAsync().ConfigureAwait(false);
                     }
                 }
                 catch
@@ -203,7 +203,7 @@ namespace Chummer
         {
             try
             {
-                await objCurrentSemaphore.WaitAsync(token);
+                await objCurrentSemaphore.WaitAsync(token).ConfigureAwait(false);
                 if (Interlocked.Increment(ref _intCountActiveReaders) == 1)
                 {
                     try
@@ -211,7 +211,7 @@ namespace Chummer
                         // Wait for the reader lock only if there have been no other write locks before us
                         if (_objTopLevelWriterSemaphore.CurrentCount != 0 || objCurrentSemaphore == _objTopLevelWriterSemaphore)
                         {
-                            await _objReaderSemaphore.WaitAsync(token);
+                            await _objReaderSemaphore.WaitAsync(token).ConfigureAwait(false);
                         }
                     }
                     catch
@@ -307,14 +307,14 @@ namespace Chummer
         /// </summary>
         private async Task TakeReadLockCoreAsync(DebuggableSemaphoreSlim objCurrentSemaphore, CancellationToken token = default)
         {
-            await objCurrentSemaphore.WaitAsync(token);
+            await objCurrentSemaphore.WaitAsync(token).ConfigureAwait(false);
             try
             {
                 if (Interlocked.Increment(ref _intCountActiveReaders) == 1)
                 {
                     try
                     {
-                        await _objReaderSemaphore.WaitAsync(token);
+                        await _objReaderSemaphore.WaitAsync(token).ConfigureAwait(false);
                     }
                     catch
                     {
@@ -338,7 +338,7 @@ namespace Chummer
             {
                 try
                 {
-                    await _objReaderSemaphore.WaitAsync(token);
+                    await _objReaderSemaphore.WaitAsync(token).ConfigureAwait(false);
                 }
                 catch
                 {
@@ -420,8 +420,8 @@ namespace Chummer
             {
                 // Ensure the locks aren't held. If they are, wait for them to be released
                 // before completing the dispose.
-                await _objTopLevelWriterSemaphore.WaitAsync();
-                await _objReaderSemaphore.WaitAsync();
+                await _objTopLevelWriterSemaphore.WaitAsync().ConfigureAwait(false);
+                await _objReaderSemaphore.WaitAsync().ConfigureAwait(false);
                 _objReaderSemaphore.Release();
                 _objReaderSemaphore.Dispose();
                 _objTopLevelWriterSemaphore.Release();
@@ -513,7 +513,7 @@ namespace Chummer
                 {
                     if (_objCurrentSemaphore.CurrentCount == 0)
                     {
-                        await _objNextSemaphore.WaitAsync();
+                        await _objNextSemaphore.WaitAsync().ConfigureAwait(false);
                         try
                         {
                             _objCurrentSemaphore.Release();

@@ -128,20 +128,20 @@ namespace Chummer
             if (objWriter == null)
                 return;
             // <limitmodifier>
-            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("limitmodifier");
+            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("limitmodifier").ConfigureAwait(false);
             try
             {
-                await objWriter.WriteElementStringAsync("guid", InternalId);
-                await objWriter.WriteElementStringAsync("name", await DisplayNameAsync(objCulture, strLanguageToPrint));
-                await objWriter.WriteElementStringAsync("name_english", Name);
-                await objWriter.WriteElementStringAsync("condition", await _objCharacter.TranslateExtraAsync(Condition, strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("guid", InternalId).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("name", await DisplayNameAsync(objCulture, strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("name_english", Name).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("condition", await _objCharacter.TranslateExtraAsync(Condition, strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
                 if (GlobalSettings.PrintNotes)
-                    await objWriter.WriteElementStringAsync("notes", Notes);
+                    await objWriter.WriteElementStringAsync("notes", Notes).ConfigureAwait(false);
             }
             finally
             {
                 // </limitmodifier>
-                await objBaseElement.DisposeAsync();
+                await objBaseElement.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -259,7 +259,7 @@ namespace Chummer
             // valid language key. Spare checking it against the dictionary.
             _strCachedDisplayCondition = _strCondition.Contains(' ')
                 ? _strCondition
-                : await LanguageManager.GetStringAsync(_strCondition, strLanguage, false, token);
+                : await LanguageManager.GetStringAsync(_strCondition, strLanguage, false, token).ConfigureAwait(false);
             if (string.IsNullOrWhiteSpace(_strCachedDisplayCondition))
             {
                 _strCachedDisplayCondition = _strCondition;
@@ -323,9 +323,9 @@ namespace Chummer
             else
                 strBonus = _intBonus.ToString(objCulture);
 
-            string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token);
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false);
             string strReturn = DisplayNameShort + strSpace + '[' + strBonus + ']';
-            string strCondition = await DisplayConditionAsync(strLanguage, token);
+            string strCondition = await DisplayConditionAsync(strLanguage, token).ConfigureAwait(false);
             if (!string.IsNullOrEmpty(strCondition))
                 strReturn += strSpace + '(' + strCondition + ')';
             return strReturn;

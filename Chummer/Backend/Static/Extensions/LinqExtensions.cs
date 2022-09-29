@@ -1028,7 +1028,7 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
-                        lstTasks.Add(Task.Run(async () => funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent) : 0, token));
+                        lstTasks.Add(Task.Run(async () => funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent).ConfigureAwait(false) : 0, token));
                         blnMoveNext = objEnumerator.MoveNext();
                     }
 
@@ -1124,7 +1124,7 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
-                        lstTasks.Add(Task.Run(async () => funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent) : 0, token));
+                        lstTasks.Add(Task.Run(async () => funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent).ConfigureAwait(false) : 0, token));
                         blnMoveNext = objEnumerator.MoveNext();
                     }
 
@@ -1220,7 +1220,7 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
-                        lstTasks.Add(Task.Run(async () => funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent) : 0, token));
+                        lstTasks.Add(Task.Run(async () => funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent).ConfigureAwait(false) : 0, token));
                         blnMoveNext = objEnumerator.MoveNext();
                     }
 
@@ -1316,7 +1316,7 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
-                        lstTasks.Add(Task.Run(async () => funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent) : 0, token));
+                        lstTasks.Add(Task.Run(async () => funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent).ConfigureAwait(false) : 0, token));
                         blnMoveNext = objEnumerator.MoveNext();
                     }
 
@@ -1412,7 +1412,7 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
-                        lstTasks.Add(Task.Run(async () => funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent) : 0, token));
+                        lstTasks.Add(Task.Run(async () => funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent).ConfigureAwait(false) : 0, token));
                         blnMoveNext = objEnumerator.MoveNext();
                     }
 
@@ -1460,7 +1460,7 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
-                        lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent) ? funcSelector.Invoke(objCurrent) : 0, token));
+                        lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent).ConfigureAwait(false) ? funcSelector.Invoke(objCurrent) : 0, token));
                         blnMoveNext = objEnumerator.MoveNext();
                     }
 
@@ -1489,7 +1489,7 @@ namespace Chummer
 
                     case 1:
                         T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
-                        return Utils.RunWithoutThreadLock(async () => await funcPredicate(objFirstElement) ? await funcSelector.Invoke(objFirstElement) : 0, token);
+                        return Utils.RunWithoutThreadLock(async () => await funcPredicate(objFirstElement).ConfigureAwait(false) ? await funcSelector.Invoke(objFirstElement).ConfigureAwait(false) : 0, token);
 
                     default:
                         lstTasks = new List<Task<int>>(objTemp.Count);
@@ -1508,7 +1508,7 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
-                        lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent) : 0, token));
+                        lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent).ConfigureAwait(false) ? await funcSelector.Invoke(objCurrent).ConfigureAwait(false) : 0, token));
                         blnMoveNext = objEnumerator.MoveNext();
                     }
 
@@ -1556,7 +1556,7 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
-                        lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent) ? funcSelector.Invoke(objCurrent) : 0, token));
+                        lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent).ConfigureAwait(false) ? funcSelector.Invoke(objCurrent) : 0, token));
                         blnMoveNext = objEnumerator.MoveNext();
                     }
 
@@ -1585,7 +1585,7 @@ namespace Chummer
 
                     case 1:
                         T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
-                        return Utils.RunWithoutThreadLock(async () => await funcPredicate(objFirstElement) ? await funcSelector.Invoke(objFirstElement) : 0, token);
+                        return Utils.RunWithoutThreadLock(async () => await funcPredicate(objFirstElement).ConfigureAwait(false) ? await funcSelector.Invoke(objFirstElement).ConfigureAwait(false) : 0, token);
 
                     default:
                         lstTasks = new List<Task<long>>(objTemp.Count);
@@ -1604,7 +1604,7 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
-                        lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent) : 0, token));
+                        lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent).ConfigureAwait(false) ? await funcSelector.Invoke(objCurrent).ConfigureAwait(false) : 0, token));
                         blnMoveNext = objEnumerator.MoveNext();
                     }
 
@@ -1652,7 +1652,7 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
-                        lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent) ? funcSelector.Invoke(objCurrent) : 0, token));
+                        lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent).ConfigureAwait(false) ? funcSelector.Invoke(objCurrent) : 0, token));
                         blnMoveNext = objEnumerator.MoveNext();
                     }
 
@@ -1681,7 +1681,7 @@ namespace Chummer
 
                     case 1:
                         T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
-                        return Utils.RunWithoutThreadLock(async () => await funcPredicate(objFirstElement) ? await funcSelector.Invoke(objFirstElement) : 0, token);
+                        return Utils.RunWithoutThreadLock(async () => await funcPredicate(objFirstElement).ConfigureAwait(false) ? await funcSelector.Invoke(objFirstElement).ConfigureAwait(false) : 0, token);
 
                     default:
                         lstTasks = new List<Task<float>>(objTemp.Count);
@@ -1700,7 +1700,7 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
-                        lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent) : 0, token));
+                        lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent).ConfigureAwait(false) ? await funcSelector.Invoke(objCurrent).ConfigureAwait(false) : 0, token));
                         blnMoveNext = objEnumerator.MoveNext();
                     }
 
@@ -1748,7 +1748,7 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
-                        lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent) ? funcSelector.Invoke(objCurrent) : 0, token));
+                        lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent).ConfigureAwait(false) ? funcSelector.Invoke(objCurrent) : 0, token));
                         blnMoveNext = objEnumerator.MoveNext();
                     }
 
@@ -1777,7 +1777,7 @@ namespace Chummer
 
                     case 1:
                         T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
-                        return Utils.RunWithoutThreadLock(async () => await funcPredicate(objFirstElement) ? await funcSelector.Invoke(objFirstElement) : 0, token);
+                        return Utils.RunWithoutThreadLock(async () => await funcPredicate(objFirstElement).ConfigureAwait(false) ? await funcSelector.Invoke(objFirstElement).ConfigureAwait(false) : 0, token);
 
                     default:
                         lstTasks = new List<Task<double>>(objTemp.Count);
@@ -1796,7 +1796,7 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
-                        lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent) : 0, token));
+                        lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent).ConfigureAwait(false) ? await funcSelector.Invoke(objCurrent).ConfigureAwait(false) : 0, token));
                         blnMoveNext = objEnumerator.MoveNext();
                     }
 
@@ -1844,7 +1844,7 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
-                        lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent) ? funcSelector.Invoke(objCurrent) : 0, token));
+                        lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent).ConfigureAwait(false) ? funcSelector.Invoke(objCurrent) : 0, token));
                         blnMoveNext = objEnumerator.MoveNext();
                     }
 
@@ -1873,7 +1873,7 @@ namespace Chummer
 
                     case 1:
                         T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
-                        return Utils.RunWithoutThreadLock(async () => await funcPredicate(objFirstElement) ? await funcSelector.Invoke(objFirstElement) : 0, token);
+                        return Utils.RunWithoutThreadLock(async () => await funcPredicate(objFirstElement).ConfigureAwait(false) ? await funcSelector.Invoke(objFirstElement).ConfigureAwait(false) : 0, token);
 
                     default:
                         lstTasks = new List<Task<decimal>>(objTemp.Count);
@@ -1892,7 +1892,7 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
-                        lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent) : 0, token));
+                        lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent).ConfigureAwait(false) ? await funcSelector.Invoke(objCurrent).ConfigureAwait(false) : 0, token));
                         blnMoveNext = objEnumerator.MoveNext();
                     }
 

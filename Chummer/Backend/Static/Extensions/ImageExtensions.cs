@@ -68,9 +68,9 @@ namespace Chummer
             // Split into a private method for performance reasons
             async Task<string> GetImage()
             {
-                using (Image imgTemp = await strBase64String.ToImageAsync(token: token))
+                using (Image imgTemp = await strBase64String.ToImageAsync(token: token).ConfigureAwait(false))
                 {
-                    return imgTemp == null ? strBase64String : await imgTemp.ToBase64StringAsJpegAsync(intQuality, token: token);
+                    return imgTemp == null ? strBase64String : await imgTemp.ToBase64StringAsJpegAsync(intQuality, token: token).ConfigureAwait(false);
                 }
             }
         }
@@ -160,12 +160,12 @@ namespace Chummer
             {
                 if (intThumbWidth >= intImageWidth && intThumbHeight >= intImageHeight)
                 {
-                    return await imgToConvert.GetCompressedImageAsync(intQuality, token: token);
+                    return await imgToConvert.GetCompressedImageAsync(intQuality, token: token).ConfigureAwait(false);
                 }
 
                 using (Image objThumbnail = imgToConvert.GetThumbnailImage(intThumbWidth, intThumbHeight, null, IntPtr.Zero))
                 {
-                    return await objThumbnail.GetCompressedImageAsync(intQuality, token: token);
+                    return await objThumbnail.GetCompressedImageAsync(intQuality, token: token).ConfigureAwait(false);
                 }
             }
         }
@@ -241,7 +241,7 @@ namespace Chummer
                 }
                 catch (InvalidOperationException)
                 {
-                    await Utils.SafeSleepAsync(token);
+                    await Utils.SafeSleepAsync(token).ConfigureAwait(false);
                     continue;
                 }
                 break;
@@ -263,7 +263,7 @@ namespace Chummer
                         objImageStream.Position = 0;
                         return Image.FromStream(objImageStream, true);
                     }
-                }, token);
+                }, token).ConfigureAwait(false);
             }
             finally
             {
@@ -358,7 +358,7 @@ namespace Chummer
                     {
                         using (MemoryStream objStream = new MemoryStream())
                         {
-                            await objStream.WriteAsync(achrImage, 0, achrImage.Length, token);
+                            await objStream.WriteAsync(achrImage, 0, achrImage.Length, token).ConfigureAwait(false);
                             imgReturn = Image.FromStream(objStream, true);
                         }
                     }
@@ -393,7 +393,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strBase64String))
                 return default;
-            using (Image imgInput = await strBase64String.ToImageAsync(token: token))
+            using (Image imgInput = await strBase64String.ToImageAsync(token: token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 Bitmap bmpInput = new Bitmap(imgInput);
@@ -529,7 +529,7 @@ namespace Chummer
                 }
                 catch (InvalidOperationException)
                 {
-                    await Utils.SafeSleepAsync(token);
+                    await Utils.SafeSleepAsync(token).ConfigureAwait(false);
                     continue;
                 }
                 break;
@@ -554,7 +554,7 @@ namespace Chummer
 
                         bmpClone.Save(objImageStream, eOverrideFormat);
                         token.ThrowIfCancellationRequested();
-                        byte[] achrData = await objImageStream.ToPooledArrayAsync(token);
+                        byte[] achrData = await objImageStream.ToPooledArrayAsync(token).ConfigureAwait(false);
                         try
                         {
                             token.ThrowIfCancellationRequested();
@@ -565,7 +565,7 @@ namespace Chummer
                             ArrayPool<byte>.Shared.Return(achrData, true);
                         }
                     }
-                }, token);
+                }, token).ConfigureAwait(false);
             }
             finally
             {
@@ -598,7 +598,7 @@ namespace Chummer
                 }
                 catch (InvalidOperationException)
                 {
-                    await Utils.SafeSleepAsync(token);
+                    await Utils.SafeSleepAsync(token).ConfigureAwait(false);
                     continue;
                 }
                 break;
@@ -612,7 +612,7 @@ namespace Chummer
                     {
                         bmpClone.Save(objImageStream, objCodecInfo, lstEncoderParameters);
                         token.ThrowIfCancellationRequested();
-                        byte[] achrData = await objImageStream.ToPooledArrayAsync(token);
+                        byte[] achrData = await objImageStream.ToPooledArrayAsync(token).ConfigureAwait(false);
                         try
                         {
                             token.ThrowIfCancellationRequested();
@@ -623,7 +623,7 @@ namespace Chummer
                             ArrayPool<byte>.Shared.Return(achrData, true);
                         }
                     }
-                }, token);
+                }, token).ConfigureAwait(false);
             }
             finally
             {
@@ -701,7 +701,7 @@ namespace Chummer
                 }
                 catch (InvalidOperationException)
                 {
-                    await Utils.SafeSleepAsync(token);
+                    await Utils.SafeSleepAsync(token).ConfigureAwait(false);
                     continue;
                 }
                 break;
@@ -720,7 +720,7 @@ namespace Chummer
                     {
                         bmpClone.Save(objImageStream, s_LzyJpegEncoder.Value, lstJpegParameters);
                         token.ThrowIfCancellationRequested();
-                        byte[] achrData = await objImageStream.ToPooledArrayAsync(token);
+                        byte[] achrData = await objImageStream.ToPooledArrayAsync(token).ConfigureAwait(false);
                         try
                         {
                             token.ThrowIfCancellationRequested();
@@ -731,7 +731,7 @@ namespace Chummer
                             ArrayPool<byte>.Shared.Return(achrData, true);
                         }
                     }
-                }, token);
+                }, token).ConfigureAwait(false);
             }
             finally
             {

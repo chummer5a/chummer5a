@@ -38,7 +38,7 @@ namespace Chummer
 
         public static async ValueTask<LockingDictionaryEnumerator> GetAsync(IHasLockObject objMyParent, CancellationToken token = default)
         {
-            await objMyParent.LockObject.EnterReadLockAsync(token);
+            await objMyParent.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             return new LockingDictionaryEnumerator(objMyParent);
         }
 

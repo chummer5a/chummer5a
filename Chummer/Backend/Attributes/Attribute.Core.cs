@@ -180,23 +180,23 @@ namespace Chummer.Backend.Attributes
                     break;
             }
             // <attribute>
-            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("attribute", token: token);
+            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("attribute", token: token).ConfigureAwait(false);
             try
             {
-                await objWriter.WriteElementStringAsync("name_english", Abbrev, token: token);
-                await objWriter.WriteElementStringAsync("name", await GetDisplayAbbrevAsync(strLanguageToPrint, token), token: token);
-                await objWriter.WriteElementStringAsync("base", (await GetValueAsync(token)).ToString(objCulture), token: token);
-                await objWriter.WriteElementStringAsync("total", (await GetTotalValueAsync(token)).ToString(objCulture), token: token);
-                await objWriter.WriteElementStringAsync("min", (await GetTotalMinimumAsync(token)).ToString(objCulture), token: token);
-                await objWriter.WriteElementStringAsync("max", (await GetTotalMaximumAsync(token)).ToString(objCulture), token: token);
-                await objWriter.WriteElementStringAsync("aug", (await GetTotalAugmentedMaximumAsync(token)).ToString(objCulture), token: token);
-                await objWriter.WriteElementStringAsync("bp", (await GetTotalKarmaCostAsync(token)).ToString(objCulture), token: token);
-                await objWriter.WriteElementStringAsync("metatypecategory", MetatypeCategory.ToString(), token: token);
+                await objWriter.WriteElementStringAsync("name_english", Abbrev, token: token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("name", await GetDisplayAbbrevAsync(strLanguageToPrint, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("base", (await GetValueAsync(token).ConfigureAwait(false)).ToString(objCulture), token: token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("total", (await GetTotalValueAsync(token).ConfigureAwait(false)).ToString(objCulture), token: token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("min", (await GetTotalMinimumAsync(token).ConfigureAwait(false)).ToString(objCulture), token: token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("max", (await GetTotalMaximumAsync(token).ConfigureAwait(false)).ToString(objCulture), token: token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("aug", (await GetTotalAugmentedMaximumAsync(token).ConfigureAwait(false)).ToString(objCulture), token: token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("bp", (await GetTotalKarmaCostAsync(token).ConfigureAwait(false)).ToString(objCulture), token: token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("metatypecategory", MetatypeCategory.ToString(), token: token).ConfigureAwait(false);
             }
             finally
             {
                 // </attribute>
-                await objBaseElement.DisposeAsync();
+                await objBaseElement.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -266,7 +266,7 @@ namespace Chummer.Backend.Attributes
             int intReturn = RawMetatypeMinimum;
             Improvement objImprovement = await _objCharacter.Improvements.LastOrDefaultAsync(
                 x => x.ImproveType == Improvement.ImprovementType.ReplaceAttribute && x.ImprovedName == Abbrev
-                    && x.Enabled, token: token);
+                    && x.Enabled, token: token).ConfigureAwait(false);
             if (objImprovement != null)
             {
                 intReturn = objImprovement.Minimum;
@@ -327,7 +327,7 @@ namespace Chummer.Backend.Attributes
             if (MetatypeCategory == AttributeCategory.Shapeshifter)
                 return RawMetatypeMaximum;
             int intReturn = RawMetatypeMaximum;
-            Improvement objImprovement = await _objCharacter.Improvements.LastOrDefaultAsync(x => x.ImproveType == Improvement.ImprovementType.ReplaceAttribute && x.ImprovedName == Abbrev && x.Enabled, token: token);
+            Improvement objImprovement = await _objCharacter.Improvements.LastOrDefaultAsync(x => x.ImproveType == Improvement.ImprovementType.ReplaceAttribute && x.ImprovedName == Abbrev && x.Enabled, token: token).ConfigureAwait(false);
             if (objImprovement != null)
             {
                 intReturn = objImprovement.Maximum;
@@ -335,7 +335,7 @@ namespace Chummer.Backend.Attributes
 
             if (Abbrev == "ESS")
             {
-                intReturn += (await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.EssenceMax, token: token)).StandardRound();
+                intReturn += (await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.EssenceMax, token: token).ConfigureAwait(false)).StandardRound();
             }
             return intReturn;
         }
@@ -384,7 +384,7 @@ namespace Chummer.Backend.Attributes
             if (MetatypeCategory == AttributeCategory.Shapeshifter)
                 return RawMetatypeAugmentedMaximum;
             int intReturn = RawMetatypeAugmentedMaximum;
-            Improvement objImprovement = await _objCharacter.Improvements.LastOrDefaultAsync(x => x.ImproveType == Improvement.ImprovementType.ReplaceAttribute && x.ImprovedName == Abbrev && x.Enabled, token: token);
+            Improvement objImprovement = await _objCharacter.Improvements.LastOrDefaultAsync(x => x.ImproveType == Improvement.ImprovementType.ReplaceAttribute && x.ImprovedName == Abbrev && x.Enabled, token: token).ConfigureAwait(false);
             if (objImprovement != null)
             {
                 intReturn = objImprovement.AugmentedMaximum;
@@ -419,7 +419,7 @@ namespace Chummer.Backend.Attributes
         public async ValueTask<int> GetTotalBaseAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            return Math.Max(Base + await GetFreeBaseAsync(token) + await GetRawMinimumAsync(token), await GetTotalMinimumAsync(token));
+            return Math.Max(Base + await GetFreeBaseAsync(token).ConfigureAwait(false) + await GetRawMinimumAsync(token).ConfigureAwait(false), await GetTotalMinimumAsync(token).ConfigureAwait(false));
         }
 
         public int FreeBase =>
@@ -432,8 +432,8 @@ namespace Chummer.Backend.Attributes
             token.ThrowIfCancellationRequested();
             return Math.Min(
                 await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.Attributelevel, false,
-                                                      Abbrev, token: token),
-                await GetMetatypeMaximumAsync(token) - await GetMetatypeMinimumAsync(token)).StandardRound();
+                                                      Abbrev, token: token).ConfigureAwait(false),
+                await GetMetatypeMaximumAsync(token).ConfigureAwait(false) - await GetMetatypeMinimumAsync(token).ConfigureAwait(false)).StandardRound();
         }
 
         /// <summary>
@@ -485,24 +485,24 @@ namespace Chummer.Backend.Attributes
         /// </summary>
         public async ValueTask<int> GetValueAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(_objCachedValueLock, token))
+            using (await EnterReadLock.EnterAsync(_objCachedValueLock, token).ConfigureAwait(false))
             {
                 if (_intCachedValue == int.MinValue)
                 {
-                    IAsyncDisposable objLocker = await _objCachedValueLock.EnterWriteLockAsync(token);
+                    IAsyncDisposable objLocker = await _objCachedValueLock.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         _intCachedValue
                             = await Task.Run(async () => Math.Min(
                                                  Math.Max(
-                                                     Base + await GetFreeBaseAsync(token) + await GetRawMinimumAsync(token)
-                                                     + await GetAttributeValueModifiersAsync(token), await GetTotalMinimumAsync(token))
+                                                     Base + await GetFreeBaseAsync(token).ConfigureAwait(false) + await GetRawMinimumAsync(token).ConfigureAwait(false)
+                                                     + await GetAttributeValueModifiersAsync(token).ConfigureAwait(false), await GetTotalMinimumAsync(token).ConfigureAwait(false))
                                                  + Karma,
-                                                 await GetTotalMaximumAsync(token)), token);
+                                                 await GetTotalMaximumAsync(token).ConfigureAwait(false)), token).ConfigureAwait(false);
                     }
                     finally
                     {
-                        await objLocker.DisposeAsync();
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
                     }
                 }
             }
@@ -586,12 +586,12 @@ namespace Chummer.Backend.Attributes
                 return 1;
             }
 
-            int intRawMaximumBase = await GetMetatypeMaximumAsync(token);
-            int intRawMinimum = await GetMetatypeMinimumAsync(token);
+            int intRawMaximumBase = await GetMetatypeMaximumAsync(token).ConfigureAwait(false);
+            int intRawMinimum = await GetMetatypeMinimumAsync(token).ConfigureAwait(false);
             int intRawMaximum = intRawMaximumBase;
             int intMinimumLossFromEssence = 0;
             int intMaximumLossFromEssence = 0;
-            List<Improvement> lstModifiers = await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter, Improvement.ImprovementType.Attribute, Abbrev, token: token);
+            List<Improvement> lstModifiers = await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter, Improvement.ImprovementType.Attribute, Abbrev, token: token).ConfigureAwait(false);
             foreach (Improvement objImprovement in lstModifiers)
             {
                 if (objImprovement.ImproveSource != Improvement.ImprovementSource.EssenceLoss
@@ -607,7 +607,7 @@ namespace Chummer.Backend.Attributes
                     intMaximumLossFromEssence += objImprovement.Maximum * objImprovement.Rating;
                 }
             }
-            lstModifiers = await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter, Improvement.ImprovementType.Attribute, Abbrev + "Base", token: token);
+            lstModifiers = await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter, Improvement.ImprovementType.Attribute, Abbrev + "Base", token: token).ConfigureAwait(false);
             foreach (Improvement objImprovement in lstModifiers)
             {
                 if (objImprovement.ImproveSource != Improvement.ImprovementSource.EssenceLoss
@@ -624,7 +624,7 @@ namespace Chummer.Backend.Attributes
                 }
             }
 
-            int intMaxLossFromEssence = blnUseEssenceAtSpecialStart ? CharacterObject.EssenceAtSpecialStart.StandardRound() - await CharacterObject.ESS.GetMetatypeMaximumAsync(token) : 0;
+            int intMaxLossFromEssence = blnUseEssenceAtSpecialStart ? CharacterObject.EssenceAtSpecialStart.StandardRound() - await CharacterObject.ESS.GetMetatypeMaximumAsync(token).ConfigureAwait(false) : 0;
             int intTotalMinimum = intRawMinimum + Math.Max(intMinimumLossFromEssence, intMaxLossFromEssence);
             int intTotalMaximum = intRawMaximum + Math.Max(intMaximumLossFromEssence, intMaxLossFromEssence);
 
@@ -653,9 +653,9 @@ namespace Chummer.Backend.Attributes
         /// </summary>
         public async ValueTask<string> GetDisplayValueAsync(CancellationToken token = default)
         {
-            int intValue = await GetValueAsync(token);
-            return await HasModifiersAsync(token)
-                ? string.Format(GlobalSettings.CultureInfo, "{0}{1}({2})", intValue, await LanguageManager.GetStringAsync("String_Space", token: token), await GetTotalValueAsync(token))
+            int intValue = await GetValueAsync(token).ConfigureAwait(false);
+            return await HasModifiersAsync(token).ConfigureAwait(false)
+                ? string.Format(GlobalSettings.CultureInfo, "{0}{1}({2})", intValue, await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false), await GetTotalValueAsync(token).ConfigureAwait(false))
                 : intValue.ToString(GlobalSettings.CultureInfo);
         }
 
@@ -686,13 +686,13 @@ namespace Chummer.Backend.Attributes
         {
             token.ThrowIfCancellationRequested();
             int intReturn = (await ImprovementManager
-                    .AugmentedValueOfAsync(_objCharacter, Improvement.ImprovementType.Attribute, false, Abbrev, token: token))
+                                   .AugmentedValueOfAsync(_objCharacter, Improvement.ImprovementType.Attribute, false, Abbrev, token: token).ConfigureAwait(false))
                             .StandardRound();
             //The most that any attribute can be increased by is 4, plus/minus any improvements that affect the augmented max.
-            int intModifiersClamp = await GetMetatypeAugmentedMaximumAsync(token) - await GetMetatypeMaximumAsync(token) + await GetAugmentedMaximumModifiersAsync(token);
+            int intModifiersClamp = await GetMetatypeAugmentedMaximumAsync(token).ConfigureAwait(false) - await GetMetatypeMaximumAsync(token).ConfigureAwait(false) + await GetAugmentedMaximumModifiersAsync(token).ConfigureAwait(false);
             if ((await ImprovementManager
-                    .GetCachedImprovementListForValueOfAsync(_objCharacter, Improvement.ImprovementType.AttributeMaxClamp,
-                                                             Abbrev, token: token)).Count > 0)
+                       .GetCachedImprovementListForValueOfAsync(_objCharacter, Improvement.ImprovementType.AttributeMaxClamp,
+                                                                Abbrev, token: token).ConfigureAwait(false)).Count > 0)
                 intModifiersClamp = Math.Min(intModifiersClamp, TotalMaximum - Value);
             return Math.Min(intReturn, intModifiersClamp);
         }
@@ -708,7 +708,7 @@ namespace Chummer.Backend.Attributes
         public async ValueTask<int> GetAttributeValueModifiersAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            return (await ImprovementManager.AugmentedValueOfAsync(_objCharacter, Improvement.ImprovementType.Attribute, false, Abbrev + "Base", token: token)).StandardRound();
+            return (await ImprovementManager.AugmentedValueOfAsync(_objCharacter, Improvement.ImprovementType.Attribute, false, Abbrev + "Base", token: token).ConfigureAwait(false)).StandardRound();
         }
 
         /// <summary>
@@ -761,8 +761,8 @@ namespace Chummer.Backend.Attributes
         {
             token.ThrowIfCancellationRequested();
             foreach (Improvement objImprovement in await ImprovementManager
-                         .GetCachedImprovementListForAugmentedValueOfAsync(
-                             _objCharacter, Improvement.ImprovementType.Attribute, Abbrev, token: token))
+                                                         .GetCachedImprovementListForAugmentedValueOfAsync(
+                                                             _objCharacter, Improvement.ImprovementType.Attribute, Abbrev, token: token).ConfigureAwait(false))
             {
                 if (objImprovement.Augmented * objImprovement.Rating != 0)
                     return true;
@@ -775,8 +775,8 @@ namespace Chummer.Backend.Attributes
                     return true;
             }
             foreach (Improvement objImprovement in await ImprovementManager
-                         .GetCachedImprovementListForAugmentedValueOfAsync(
-                             _objCharacter, Improvement.ImprovementType.Attribute, Abbrev + "Base", token: token))
+                                                         .GetCachedImprovementListForAugmentedValueOfAsync(
+                                                             _objCharacter, Improvement.ImprovementType.Attribute, Abbrev + "Base", token: token).ConfigureAwait(false))
             {
                 if (objImprovement.Augmented * objImprovement.Rating != 0)
                     return true;
@@ -792,7 +792,7 @@ namespace Chummer.Backend.Attributes
             // If this is AGI or STR, factor in any Cyberlimbs.
             if (!_objCharacter.Settings.DontUseCyberlimbCalculation && Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev))
             {
-                return await _objCharacter.Cyberware.AnyAsync(objCyberware => objCyberware.Category == "Cyberlimb" && !string.IsNullOrEmpty(objCyberware.LimbSlot), token: token);
+                return await _objCharacter.Cyberware.AnyAsync(objCyberware => objCyberware.Category == "Cyberlimb" && !string.IsNullOrEmpty(objCyberware.LimbSlot), token: token).ConfigureAwait(false);
             }
 
             return false;
@@ -827,12 +827,12 @@ namespace Chummer.Backend.Attributes
         {
             token.ThrowIfCancellationRequested();
             int intModifier = 0;
-            List<Improvement> lstModifiers = await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter, Improvement.ImprovementType.Attribute, Abbrev, token: token);
+            List<Improvement> lstModifiers = await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter, Improvement.ImprovementType.Attribute, Abbrev, token: token).ConfigureAwait(false);
             foreach (Improvement objImprovement in lstModifiers)
             {
                 intModifier += objImprovement.Minimum * objImprovement.Rating;
             }
-            lstModifiers = await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter, Improvement.ImprovementType.Attribute, Abbrev + "Base", token: token);
+            lstModifiers = await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter, Improvement.ImprovementType.Attribute, Abbrev + "Base", token: token).ConfigureAwait(false);
             foreach (Improvement objImprovement in lstModifiers)
             {
                 intModifier += objImprovement.Minimum * objImprovement.Rating;
@@ -870,12 +870,12 @@ namespace Chummer.Backend.Attributes
         {
             token.ThrowIfCancellationRequested();
             int intModifier = 0;
-            List<Improvement> lstModifiers = await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter, Improvement.ImprovementType.Attribute, Abbrev, token: token);
+            List<Improvement> lstModifiers = await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter, Improvement.ImprovementType.Attribute, Abbrev, token: token).ConfigureAwait(false);
             foreach (Improvement objImprovement in lstModifiers)
             {
                 intModifier += objImprovement.Maximum * objImprovement.Rating;
             }
-            lstModifiers = await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter, Improvement.ImprovementType.Attribute, Abbrev + "Base", token: token);
+            lstModifiers = await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter, Improvement.ImprovementType.Attribute, Abbrev + "Base", token: token).ConfigureAwait(false);
             foreach (Improvement objImprovement in lstModifiers)
             {
                 intModifier += objImprovement.Maximum * objImprovement.Rating;
@@ -907,7 +907,7 @@ namespace Chummer.Backend.Attributes
         {
             token.ThrowIfCancellationRequested();
             int intModifier = 0;
-            List<Improvement> lstModifiers = await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter, Improvement.ImprovementType.Attribute, Abbrev, token: token);
+            List<Improvement> lstModifiers = await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter, Improvement.ImprovementType.Attribute, Abbrev, token: token).ConfigureAwait(false);
             foreach (Improvement objImprovement in lstModifiers)
             {
                 intModifier += objImprovement.AugmentedMaximum * objImprovement.Rating;
@@ -940,7 +940,7 @@ namespace Chummer.Backend.Attributes
             if (_objCharacter.MetatypeCategory == "Cyberzombie" && (Abbrev == "MAG" || Abbrev == "MAGAdept"))
                 return 1;
 
-            int intMeat = blnSync ? Value + AttributeModifiers : await GetValueAsync(token) + await GetAttributeModifiersAsync(token);
+            int intMeat = blnSync ? Value + AttributeModifiers : await GetValueAsync(token).ConfigureAwait(false) + await GetAttributeModifiersAsync(token).ConfigureAwait(false);
             int intReturn = intMeat;
 
             int intPureCyberValue = 0;
@@ -952,7 +952,7 @@ namespace Chummer.Backend.Attributes
                 if (blnSync)
                     (intLimbCount, intLimbTotal) = ProcessCyberlimbs(_objCharacter.Cyberware);
                 else
-                    (intLimbCount, intLimbTotal) = await ProcessCyberlimbsAsync(_objCharacter.Cyberware);
+                    (intLimbCount, intLimbTotal) = await ProcessCyberlimbsAsync(_objCharacter.Cyberware).ConfigureAwait(false);
 
                 Tuple<int, int> ProcessCyberlimbs(IEnumerable<Cyberware> lstToCheck)
                 {
@@ -993,12 +993,12 @@ namespace Chummer.Backend.Attributes
                                                  .Contains(objCyberware.LimbSlot))
                             {
                                 intLimbCountReturn += objCyberware.LimbSlotCount;
-                                intLimbTotalReturn += await objCyberware.GetAttributeTotalValueAsync(Abbrev, token) * objCyberware.LimbSlotCount;
+                                intLimbTotalReturn += await objCyberware.GetAttributeTotalValueAsync(Abbrev, token).ConfigureAwait(false) * objCyberware.LimbSlotCount;
                             }
                         }
                         else
                         {
-                            (int intLoop1, int intLoop2) = await ProcessCyberlimbsAsync(objCyberware.Children);
+                            (int intLoop1, int intLoop2) = await ProcessCyberlimbsAsync(objCyberware.Children).ConfigureAwait(false);
                             intLimbCountReturn += intLoop1;
                             intLimbTotalReturn += intLoop2;
                         }
@@ -1010,7 +1010,7 @@ namespace Chummer.Backend.Attributes
                 {
                     // ReSharper disable once MethodHasAsyncOverload
                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                    int intMaxLimbs = blnSync ? _objCharacter.LimbCount() : await _objCharacter.LimbCountAsync(token: token);
+                    int intMaxLimbs = blnSync ? _objCharacter.LimbCount() : await _objCharacter.LimbCountAsync(token: token).ConfigureAwait(false);
                     int intMissingLimbCount = Math.Max(intMaxLimbs - intLimbCount, 0);
                     intPureCyberValue = intLimbTotal;
                     // Not all of the limbs have been replaced, so we need to place the Attribute in the other "limbs" to get the average value.
@@ -1019,12 +1019,12 @@ namespace Chummer.Backend.Attributes
                 }
             }
             // Do not let the CharacterAttribute go above the Metatype's Augmented Maximum.
-            intReturn = Math.Min(intReturn, blnSync ? TotalAugmentedMaximum : await GetTotalAugmentedMaximumAsync(token));
+            intReturn = Math.Min(intReturn, blnSync ? TotalAugmentedMaximum : await GetTotalAugmentedMaximumAsync(token).ConfigureAwait(false));
 
             // An Attribute cannot go below 1 unless it is EDG, MAG, or RES, the character is a Critter, the Metatype Maximum is 0, or it is caused by encumbrance (or a custom improvement).
             if (intReturn < 1)
             {
-                if (_objCharacter.CritterEnabled || (blnSync ? MetatypeMaximum : await GetMetatypeMaximumAsync(token)) == 0 || Abbrev == "EDG" || Abbrev == "RES" || Abbrev == "MAG" || Abbrev == "MAGAdept" || (_objCharacter.MetatypeCategory != "A.I." && Abbrev == "DEP"))
+                if (_objCharacter.CritterEnabled || (blnSync ? MetatypeMaximum : await GetMetatypeMaximumAsync(token).ConfigureAwait(false)) == 0 || Abbrev == "EDG" || Abbrev == "RES" || Abbrev == "MAG" || Abbrev == "MAGAdept" || (_objCharacter.MetatypeCategory != "A.I." && Abbrev == "DEP"))
                     return 0;
                 List<Improvement> lstUsedImprovements;
                 decimal decImprovementValue;
@@ -1036,7 +1036,7 @@ namespace Chummer.Backend.Attributes
                 else
                     (decImprovementValue, lstUsedImprovements)
                         = await ImprovementManager.AugmentedValueOfTupleAsync(
-                            _objCharacter, Improvement.ImprovementType.Attribute, strImprovedName: Abbrev, token: token);
+                            _objCharacter, Improvement.ImprovementType.Attribute, strImprovedName: Abbrev, token: token).ConfigureAwait(false);
                 if (decImprovementValue < 0)
                 {
                     decimal decTotalCustomImprovements = lstUsedImprovements.Sum(x => x.Custom, x => x.Augmented * x.Rating, token: token);
@@ -1140,7 +1140,7 @@ namespace Chummer.Backend.Attributes
         public async ValueTask<int> GetRawMinimumAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            int intReturn = await GetMetatypeMinimumAsync(token) + await GetMinimumModifiersAsync(token);
+            int intReturn = await GetMetatypeMinimumAsync(token).ConfigureAwait(false) + await GetMinimumModifiersAsync(token).ConfigureAwait(false);
             if (!CharacterObject.Settings.UnclampAttributeMinimum && intReturn < 0)
                 intReturn = 0;
             return intReturn;
@@ -1179,10 +1179,10 @@ namespace Chummer.Backend.Attributes
             if (_objCharacter.MetatypeCategory == "Cyberzombie" && (Abbrev == "MAG" || Abbrev == "MAGAdept"))
                 return 1;
 
-            int intReturn = await GetRawMinimumAsync(token);
+            int intReturn = await GetRawMinimumAsync(token).ConfigureAwait(false);
             if (intReturn < 1)
             {
-                if (_objCharacter.IsCritter || await GetTotalMaximumAsync(token) == 0 || Abbrev == "EDG" || Abbrev == "MAG" || Abbrev == "MAGAdept" || Abbrev == "RES" || Abbrev == "DEP")
+                if (_objCharacter.IsCritter || await GetTotalMaximumAsync(token).ConfigureAwait(false) == 0 || Abbrev == "EDG" || Abbrev == "MAG" || Abbrev == "MAGAdept" || Abbrev == "RES" || Abbrev == "DEP")
                     intReturn = 0;
                 else
                     intReturn = 1;
@@ -1214,7 +1214,7 @@ namespace Chummer.Backend.Attributes
             if (_objCharacter.MetatypeCategory == "Cyberzombie" && (Abbrev == "MAG" || Abbrev == "MAGAdept"))
                 return 1;
 
-            return Math.Max(0, await GetMetatypeMaximumAsync(token) + await GetMaximumModifiersAsync(token));
+            return Math.Max(0, await GetMetatypeMaximumAsync(token).ConfigureAwait(false) + await GetMaximumModifiersAsync(token).ConfigureAwait(false));
         }
 
         /// <summary>
@@ -1244,9 +1244,9 @@ namespace Chummer.Backend.Attributes
             if (_objCharacter.MetatypeCategory == "Cyberzombie" && (Abbrev == "MAG" || Abbrev == "MAGAdept"))
                 return 1;
 
-            return (await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter, Improvement.ImprovementType.AttributeMaxClamp, Abbrev, token: token)).Count > 0
-                ? await GetTotalMaximumAsync(token)
-                : Math.Max(0, await GetMetatypeAugmentedMaximumAsync(token) + await GetMaximumModifiersAsync(token) + await GetAugmentedMaximumModifiersAsync(token));
+            return (await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter, Improvement.ImprovementType.AttributeMaxClamp, Abbrev, token: token).ConfigureAwait(false)).Count > 0
+                ? await GetTotalMaximumAsync(token).ConfigureAwait(false)
+                : Math.Max(0, await GetMetatypeAugmentedMaximumAsync(token).ConfigureAwait(false) + await GetMaximumModifiersAsync(token).ConfigureAwait(false) + await GetAugmentedMaximumModifiersAsync(token).ConfigureAwait(false));
         }
 
         /// <summary>
@@ -1294,12 +1294,12 @@ namespace Chummer.Backend.Attributes
 
         public async Task<string> GetDisplayNameFormattedAsync(string strLanguage, CancellationToken token = default)
         {
-            string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token);
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false);
             if (Abbrev == "MAGAdept")
-                return await LanguageManager.GetStringAsync("String_AttributeMAGLong", strLanguage, token: token) + strSpace + '(' + await LanguageManager.GetStringAsync("String_AttributeMAGShort", strLanguage, token: token) + ')'
-                       + strSpace + '(' + await LanguageManager.GetStringAsync("String_DescAdept", strLanguage, token: token) + ')';
+                return await LanguageManager.GetStringAsync("String_AttributeMAGLong", strLanguage, token: token).ConfigureAwait(false) + strSpace + '(' + await LanguageManager.GetStringAsync("String_AttributeMAGShort", strLanguage, token: token).ConfigureAwait(false) + ')'
+                       + strSpace + '(' + await LanguageManager.GetStringAsync("String_DescAdept", strLanguage, token: token).ConfigureAwait(false) + ')';
 
-            return await DisplayNameLongAsync(strLanguage, token) + strSpace + '(' + await DisplayNameShortAsync(strLanguage, token) + ')';
+            return await DisplayNameLongAsync(strLanguage, token).ConfigureAwait(false) + strSpace + '(' + await DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false) + ')';
         }
 
         /// <summary>
@@ -1320,8 +1320,8 @@ namespace Chummer.Backend.Attributes
         {
             token.ThrowIfCancellationRequested();
             return string.Format(GlobalSettings.CultureInfo, "{1}{0}/{0}{2}{0}({3})",
-                                 await LanguageManager.GetStringAsync("String_Space", token: token), await GetTotalMinimumAsync(token),
-                                 await GetTotalMaximumAsync(token), await GetTotalAugmentedMaximumAsync(token));
+                                 await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false), await GetTotalMinimumAsync(token).ConfigureAwait(false),
+                                 await GetTotalMaximumAsync(token).ConfigureAwait(false), await GetTotalAugmentedMaximumAsync(token).ConfigureAwait(false));
         }
 
         #endregion Properties
@@ -1611,8 +1611,8 @@ namespace Chummer.Backend.Attributes
                 if ((objLoopImprovement.ImprovedName == Abbrev
                      || string.IsNullOrEmpty(objLoopImprovement.ImprovedName)) &&
                     (string.IsNullOrEmpty(objLoopImprovement.Condition)
-                     || (objLoopImprovement.Condition == "career") == await _objCharacter.GetCreatedAsync(token)
-                     || (objLoopImprovement.Condition == "create") != await _objCharacter.GetCreatedAsync(token)) &&
+                     || (objLoopImprovement.Condition == "career") == await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false)
+                     || (objLoopImprovement.Condition == "create") != await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false)) &&
                     objLoopImprovement.Minimum <= intBase && objLoopImprovement.Enabled)
                 {
                     switch (objLoopImprovement.ImproveType)
@@ -1631,7 +1631,7 @@ namespace Chummer.Backend.Attributes
                             break;
                     }
                 }
-            }, token: token);
+            }, token: token).ConfigureAwait(false);
 
             if (decMultiplier != 1.0m)
                 intReturn = (intReturn * decMultiplier + decExtra).StandardRound();
@@ -1646,8 +1646,8 @@ namespace Chummer.Backend.Attributes
         public async ValueTask<bool> GetAtMetatypeMaximumAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            int intTotalMaximum = await GetTotalMaximumAsync(token);
-            return intTotalMaximum > 0 && await GetValueAsync(token) == intTotalMaximum;
+            int intTotalMaximum = await GetTotalMaximumAsync(token).ConfigureAwait(false);
+            return intTotalMaximum > 0 && await GetValueAsync(token).ConfigureAwait(false) == intTotalMaximum;
         }
 
         public int KarmaMaximum => Math.Max(TotalMaximum - TotalBase, 0);
@@ -1655,7 +1655,7 @@ namespace Chummer.Backend.Attributes
         public async ValueTask<int> GetKarmaMaximumAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            return Math.Max(await GetTotalMaximumAsync(token) - await GetTotalBaseAsync(token), 0);
+            return Math.Max(await GetTotalMaximumAsync(token).ConfigureAwait(false) - await GetTotalBaseAsync(token).ConfigureAwait(false), 0);
         }
 
         public int PriorityMaximum => Math.Max(TotalMaximum - Karma - FreeBase - RawMinimum, 0);
@@ -1663,7 +1663,7 @@ namespace Chummer.Backend.Attributes
         public async ValueTask<int> GetPriorityMaximumAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            return Math.Max(await GetTotalMaximumAsync(token) - Karma - await GetFreeBaseAsync(token) - await GetRawMinimumAsync(token), 0);
+            return Math.Max(await GetTotalMaximumAsync(token).ConfigureAwait(false) - Karma - await GetFreeBaseAsync(token).ConfigureAwait(false) - await GetRawMinimumAsync(token).ConfigureAwait(false), 0);
         }
 
         private int _intCachedUpgradeKarmaCost = int.MinValue;
@@ -1748,8 +1748,8 @@ namespace Chummer.Backend.Attributes
             if (_intCachedUpgradeKarmaCost != int.MinValue)
                 return _intCachedUpgradeKarmaCost;
 
-            int intValue = await GetValueAsync(token);
-            if (intValue >= await GetTotalMaximumAsync(token))
+            int intValue = await GetValueAsync(token).ConfigureAwait(false);
+            if (intValue >= await GetTotalMaximumAsync(token).ConfigureAwait(false))
             {
                 return -1;
             }
@@ -1767,17 +1767,17 @@ namespace Chummer.Backend.Attributes
 
             if (_objCharacter.Settings.AlternateMetatypeAttributeKarma
                 && !s_SetAlternateMetatypeAttributeKarmaExceptions.Contains(Abbrev))
-                intUpgradeCost -= (await GetMetatypeMinimumAsync(token) - 1) * intOptionsCost;
+                intUpgradeCost -= (await GetMetatypeMinimumAsync(token).ConfigureAwait(false) - 1) * intOptionsCost;
 
             decimal decExtra = 0;
             decimal decMultiplier = 1.0m;
-            await (await _objCharacter.GetImprovementsAsync(token)).ForEachAsync(async objLoopImprovement =>
+            await (await _objCharacter.GetImprovementsAsync(token).ConfigureAwait(false)).ForEachAsync(async objLoopImprovement =>
             {
                 if ((objLoopImprovement.ImprovedName == Abbrev || string.IsNullOrEmpty(objLoopImprovement.ImprovedName))
                     &&
                     (string.IsNullOrEmpty(objLoopImprovement.Condition)
-                     || (objLoopImprovement.Condition == "career") == await _objCharacter.GetCreatedAsync(token)
-                     || (objLoopImprovement.Condition == "create") != await _objCharacter.GetCreatedAsync(token)) &&
+                     || (objLoopImprovement.Condition == "career") == await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false)
+                     || (objLoopImprovement.Condition == "create") != await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false)) &&
                     (objLoopImprovement.Maximum == 0 || intValue + 1 <= objLoopImprovement.Maximum)
                     && objLoopImprovement.Minimum <= intValue + 1 && objLoopImprovement.Enabled)
                 {
@@ -1792,7 +1792,7 @@ namespace Chummer.Backend.Attributes
                             break;
                     }
                 }
-            }, token: token);
+            }, token: token).ConfigureAwait(false);
 
             if (decMultiplier != 1.0m)
                 intUpgradeCost = (intUpgradeCost * decMultiplier + decExtra).StandardRound();
@@ -1864,20 +1864,20 @@ namespace Chummer.Backend.Attributes
             if (Karma == 0)
                 return 0;
 
-            int intValue = await GetValueAsync(token);
-            int intFreeBase = await GetFreeBaseAsync(token);
+            int intValue = await GetValueAsync(token).ConfigureAwait(false);
+            int intFreeBase = await GetFreeBaseAsync(token).ConfigureAwait(false);
             int intRawTotalBase = _objCharacter.Settings.ReverseAttributePriorityOrder
-                ? Math.Max(intFreeBase + await GetRawMinimumAsync(token), await GetTotalMinimumAsync(token))
-                : await GetTotalBaseAsync(token);
+                ? Math.Max(intFreeBase + await GetRawMinimumAsync(token).ConfigureAwait(false), await GetTotalMinimumAsync(token).ConfigureAwait(false))
+                : await GetTotalBaseAsync(token).ConfigureAwait(false);
             int intTotalBase = intRawTotalBase;
             if (_objCharacter.Settings.AlternateMetatypeAttributeKarma)
             {
-                int intHumanMinimum = intFreeBase + 1 + await GetMinimumModifiersAsync(token);
+                int intHumanMinimum = intFreeBase + 1 + await GetMinimumModifiersAsync(token).ConfigureAwait(false);
                 if (!_objCharacter.Settings.ReverseAttributePriorityOrder)
                     intHumanMinimum += Base;
                 if (intHumanMinimum < 1)
                 {
-                    if (_objCharacter.IsCritter || await GetMetatypeMaximumAsync(token) == 0 || Abbrev == "EDG" || Abbrev == "MAG" || Abbrev == "MAGAdept" || Abbrev == "RES" || Abbrev == "DEP")
+                    if (_objCharacter.IsCritter || await GetMetatypeMaximumAsync(token).ConfigureAwait(false) == 0 || Abbrev == "EDG" || Abbrev == "MAG" || Abbrev == "MAGAdept" || Abbrev == "RES" || Abbrev == "DEP")
                         intHumanMinimum = 0;
                     else
                         intHumanMinimum = 1;
@@ -1934,8 +1934,8 @@ namespace Chummer.Backend.Attributes
         public async ValueTask<bool> GetCanUpgradeCareerAsync(CancellationToken token = default)
         {
             if (_intCachedCanUpgradeCareer < 0)
-                _intCachedCanUpgradeCareer = _objCharacter.Karma >= await GetUpgradeKarmaCostAsync(token)
-                                             && await GetTotalMaximumAsync(token) > await GetValueAsync(token)
+                _intCachedCanUpgradeCareer = _objCharacter.Karma >= await GetUpgradeKarmaCostAsync(token).ConfigureAwait(false)
+                                             && await GetTotalMaximumAsync(token).ConfigureAwait(false) > await GetValueAsync(token).ConfigureAwait(false)
                     ? 1
                     : 0;
 
@@ -2240,29 +2240,29 @@ namespace Chummer.Backend.Attributes
         {
             if (intAmount <= 0)
                 return;
-            bool blnCreated = await _objCharacter.GetCreatedAsync(token);
+            bool blnCreated = await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false);
             for (int i = 0; i < intAmount; ++i)
             {
                 if (blnCreated)
                 {
-                    if (!await GetCanUpgradeCareerAsync(token))
+                    if (!await GetCanUpgradeCareerAsync(token).ConfigureAwait(false))
                         return;
 
-                    int intPrice = await GetUpgradeKarmaCostAsync(token);
-                    int intValue = await GetValueAsync(token);
+                    int intPrice = await GetUpgradeKarmaCostAsync(token).ConfigureAwait(false);
+                    int intValue = await GetValueAsync(token).ConfigureAwait(false);
 
                     string strUpgradetext = string.Format(GlobalSettings.CultureInfo, "{1}{0}{2}{0}{3}{0}->{0}{4}",
                                                           await LanguageManager.GetStringAsync(
-                                                              "String_Space", token: token),
+                                                              "String_Space", token: token).ConfigureAwait(false),
                                                           await LanguageManager.GetStringAsync(
-                                                              "String_ExpenseAttribute", token: token), Abbrev,
+                                                              "String_ExpenseAttribute", token: token).ConfigureAwait(false), Abbrev,
                                                           intValue, intValue + 1);
 
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                     objExpense.Create(intPrice * -1, strUpgradetext, ExpenseType.Karma, DateTime.Now);
                     objExpense.Undo = new ExpenseUndo().CreateKarma(KarmaExpenseType.ImproveAttribute, Abbrev);
 
-                    await _objCharacter.ExpenseEntries.AddWithSortAsync(objExpense, token: token);
+                    await _objCharacter.ExpenseEntries.AddWithSortAsync(objExpense, token: token).ConfigureAwait(false);
 
                     _objCharacter.Karma -= intPrice;
 
@@ -2270,14 +2270,14 @@ namespace Chummer.Backend.Attributes
                     if (Abbrev == "EDG")
                     {
                         int intBurnedEdge = -(await ImprovementManager
-                                .GetCachedImprovementListForValueOfAsync(
-                                    _objCharacter, Improvement.ImprovementType.Attribute, "EDG", token: token))
+                                                    .GetCachedImprovementListForValueOfAsync(
+                                                        _objCharacter, Improvement.ImprovementType.Attribute, "EDG", token: token).ConfigureAwait(false))
                             .Sum(x => x.ImproveSource == Improvement.ImprovementSource.BurnedEdge,
                                  x => x.Minimum * x.Rating);
                         if (intBurnedEdge > 0)
                         {
                             await ImprovementManager.RemoveImprovementsAsync(
-                                _objCharacter, Improvement.ImprovementSource.BurnedEdge, token: token);
+                                _objCharacter, Improvement.ImprovementSource.BurnedEdge, token: token).ConfigureAwait(false);
                             --intBurnedEdge;
                             if (intBurnedEdge > 0)
                             {
@@ -2285,8 +2285,8 @@ namespace Chummer.Backend.Attributes
                                     Improvement.ImprovementSource.BurnedEdge,
                                     string.Empty,
                                     Improvement.ImprovementType.Attribute,
-                                    string.Empty, 0, 1, -intBurnedEdge, token: token);
-                                await ImprovementManager.CommitAsync(_objCharacter, token);
+                                    string.Empty, 0, 1, -intBurnedEdge, token: token).ConfigureAwait(false);
+                                await ImprovementManager.CommitAsync(_objCharacter, token).ConfigureAwait(false);
                             }
 
                             continue; // Skip increasing Karma
@@ -2349,8 +2349,8 @@ namespace Chummer.Backend.Attributes
                 _objCharacter.PropertyChanged -= OnCharacterChanged;
                 _objCharacter.Settings.PropertyChanged -= OnCharacterSettingsPropertyChanged;
             }
-            await _objCachedValueLock.DisposeAsync();
-            await _objCachedTotalValueLock.DisposeAsync();
+            await _objCachedValueLock.DisposeAsync().ConfigureAwait(false);
+            await _objCachedTotalValueLock.DisposeAsync().ConfigureAwait(false);
         }
     }
 }

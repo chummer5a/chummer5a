@@ -115,15 +115,15 @@ namespace Chummer
             XPathNavigator xmlStoryPool = _xmlStoryDocumentBaseNode.SelectSingleNode("storypools/storypool[name = " + strFunction.CleanXPath() + ']');
             if (xmlStoryPool != null)
             {
-                XPathNodeIterator xmlPossibleStoryList = await xmlStoryPool.SelectAndCacheExpressionAsync("story", token: token);
+                XPathNodeIterator xmlPossibleStoryList = await xmlStoryPool.SelectAndCacheExpressionAsync("story", token: token).ConfigureAwait(false);
                 Dictionary<string, int> dicStoriesListWithWeights = new Dictionary<string, int>(xmlPossibleStoryList.Count);
                 int intTotalWeight = 0;
                 foreach (XPathNavigator xmlStory in xmlPossibleStoryList)
                 {
-                    string strStoryId = (await xmlStory.SelectSingleNodeAndCacheExpressionAsync("id", token: token))?.Value;
+                    string strStoryId = (await xmlStory.SelectSingleNodeAndCacheExpressionAsync("id", token: token).ConfigureAwait(false))?.Value;
                     if (!string.IsNullOrEmpty(strStoryId))
                     {
-                        if (!int.TryParse((await xmlStory.SelectSingleNodeAndCacheExpressionAsync("weight", token: token))?.Value ?? "1", out int intWeight))
+                        if (!int.TryParse((await xmlStory.SelectSingleNodeAndCacheExpressionAsync("weight", token: token).ConfigureAwait(false))?.Value ?? "1", out int intWeight))
                             intWeight = 1;
                         intTotalWeight += intWeight;
                         if (dicStoriesListWithWeights.TryGetValue(strStoryId, out int intExistingWeight))
@@ -133,7 +133,7 @@ namespace Chummer
                     }
                 }
 
-                int intRandomResult = await GlobalSettings.RandomGenerator.NextModuloBiasRemovedAsync(intTotalWeight, token: token);
+                int intRandomResult = await GlobalSettings.RandomGenerator.NextModuloBiasRemovedAsync(intTotalWeight, token: token).ConfigureAwait(false);
                 string strSelectedId = string.Empty;
                 foreach (KeyValuePair<string, int> objStoryId in dicStoriesListWithWeights)
                 {
@@ -157,13 +157,13 @@ namespace Chummer
                         };
                         try
                         {
-                            await objPersistentStoryModule.CreateAsync(xmlNewPersistentNode, token);
-                            await _dicPersistentModules.TryAddAsync(strFunction, objPersistentStoryModule, token);
+                            await objPersistentStoryModule.CreateAsync(xmlNewPersistentNode, token).ConfigureAwait(false);
+                            await _dicPersistentModules.TryAddAsync(strFunction, objPersistentStoryModule, token).ConfigureAwait(false);
                             return objPersistentStoryModule;
                         }
                         catch
                         {
-                            await objPersistentStoryModule.DisposeAsync();
+                            await objPersistentStoryModule.DisposeAsync().ConfigureAwait(false);
                             throw;
                         }
                     }
@@ -178,9 +178,9 @@ namespace Chummer
             IAsyncDisposable objLocker = null;
             try
             {
-                objLocker = await LockObject.EnterWriteLockAsync(token);
+                objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 List<string> lstPersistentKeysToRemove
-                    = new List<string>(await _dicPersistentModules.GetCountAsync(token));
+                    = new List<string>(await _dicPersistentModules.GetCountAsync(token).ConfigureAwait(false));
                 foreach (KeyValuePair<string, StoryModule> objPersistentModule in _dicPersistentModules)
                 {
                     if (objPersistentModule.Value.IsRandomlyGenerated)
@@ -188,30 +188,30 @@ namespace Chummer
                 }
 
                 foreach (string strKey in lstPersistentKeysToRemove)
-                    await _dicPersistentModules.RemoveAsync(strKey, token);
+                    await _dicPersistentModules.RemoveAsync(strKey, token).ConfigureAwait(false);
 
                 foreach (StoryModule objModule in Modules)
-                    await objModule.TestRunToGeneratePersistents(objCulture, strLanguage, token);
+                    await objModule.TestRunToGeneratePersistents(objCulture, strLanguage, token).ConfigureAwait(false);
             }
             finally
             {
                 if (objLocker != null)
-                    await objLocker.DisposeAsync();
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
             }
             _blnNeedToRegeneratePersistents = false;
         }
 
         public async ValueTask<string> PrintStory(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token))
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
                 if (_blnNeedToRegeneratePersistents)
-                    await GeneratePersistentsAsync(objCulture, strLanguage, token);
-                int intCount = await Modules.GetCountAsync(token);
+                    await GeneratePersistentsAsync(objCulture, strLanguage, token).ConfigureAwait(false);
+                int intCount = await Modules.GetCountAsync(token).ConfigureAwait(false);
                 string[] strModuleOutputStrings = new string[intCount];
                 for (int i = 0; i < intCount; ++i)
                 {
-                    strModuleOutputStrings[i] = await Modules[i].PrintModule(objCulture, strLanguage, token);
+                    strModuleOutputStrings[i] = await Modules[i].PrintModule(objCulture, strLanguage, token).ConfigureAwait(false);
                 }
                 return string.Concat(strModuleOutputStrings);
             }
@@ -231,17 +231,17 @@ namespace Chummer
         /// <inheritdoc />
         public async ValueTask DisposeAsync()
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
             try
             {
-                await _dicPersistentModules.DisposeAsync();
-                await _lstStoryModules.DisposeAsync();
+                await _dicPersistentModules.DisposeAsync().ConfigureAwait(false);
+                await _lstStoryModules.DisposeAsync().ConfigureAwait(false);
             }
             finally
             {
-                await objLocker.DisposeAsync();
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
-            await LockObject.DisposeAsync();
+            await LockObject.DisposeAsync().ConfigureAwait(false);
         }
 
         /// <inheritdoc />

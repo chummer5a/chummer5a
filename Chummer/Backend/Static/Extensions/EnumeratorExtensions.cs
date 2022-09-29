@@ -35,7 +35,7 @@ namespace Chummer
         public static async ValueTask ForEachAsync<T>(this Task<IEnumerator<T>> tskEnumerator, Action<T> objFuncToRun, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            IEnumerator<T> objEnumerator = await tskEnumerator;
+            IEnumerator<T> objEnumerator = await tskEnumerator.ConfigureAwait(false);
             token.ThrowIfCancellationRequested();
             while (objEnumerator.MoveNext())
             {
@@ -50,19 +50,19 @@ namespace Chummer
             while (objEnumerator.MoveNext())
             {
                 token.ThrowIfCancellationRequested();
-                await objFuncToRun.Invoke(objEnumerator.Current);
+                await objFuncToRun.Invoke(objEnumerator.Current).ConfigureAwait(false);
             }
         }
 
         public static async ValueTask ForEachAsync<T>(this Task<IEnumerator<T>> tskEnumerator, Func<T, Task> objFuncToRun, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            IEnumerator<T> objEnumerator = await tskEnumerator;
+            IEnumerator<T> objEnumerator = await tskEnumerator.ConfigureAwait(false);
             token.ThrowIfCancellationRequested();
             while (objEnumerator.MoveNext())
             {
                 token.ThrowIfCancellationRequested();
-                await objFuncToRun.Invoke(objEnumerator.Current);
+                await objFuncToRun.Invoke(objEnumerator.Current).ConfigureAwait(false);
             }
         }
 
@@ -78,7 +78,7 @@ namespace Chummer
         public static async ValueTask ForEachWithBreakAsync<T>(this Task<IEnumerator<T>> tskEnumerator, Func<T, bool> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            IEnumerator<T> objEnumerator = await tskEnumerator;
+            IEnumerator<T> objEnumerator = await tskEnumerator.ConfigureAwait(false);
             token.ThrowIfCancellationRequested();
             while (objEnumerator.MoveNext())
             {
@@ -94,7 +94,7 @@ namespace Chummer
             while (objEnumerator.MoveNext())
             {
                 token.ThrowIfCancellationRequested();
-                if (!await objFuncToRunWithPossibleTerminate.Invoke(objEnumerator.Current))
+                if (!await objFuncToRunWithPossibleTerminate.Invoke(objEnumerator.Current).ConfigureAwait(false))
                     return;
             }
         }
@@ -102,12 +102,12 @@ namespace Chummer
         public static async ValueTask ForEachWithBreakAsync<T>(this Task<IEnumerator<T>> tskEnumerator, Func<T, Task<bool>> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            IEnumerator<T> objEnumerator = await tskEnumerator;
+            IEnumerator<T> objEnumerator = await tskEnumerator.ConfigureAwait(false);
             token.ThrowIfCancellationRequested();
             while (objEnumerator.MoveNext())
             {
                 token.ThrowIfCancellationRequested();
-                if (!await objFuncToRunWithPossibleTerminate.Invoke(objEnumerator.Current))
+                if (!await objFuncToRunWithPossibleTerminate.Invoke(objEnumerator.Current).ConfigureAwait(false))
                     return;
             }
         }

@@ -120,20 +120,20 @@ namespace Chummer
             if (objWriter == null)
                 return;
             // <week>
-            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("week");
+            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("week").ConfigureAwait(false);
             try
             {
-                await objWriter.WriteElementStringAsync("guid", InternalId);
-                await objWriter.WriteElementStringAsync("year", Year.ToString(objCulture));
-                await objWriter.WriteElementStringAsync("month", Month.ToString(objCulture));
-                await objWriter.WriteElementStringAsync("week", MonthWeek.ToString(objCulture));
+                await objWriter.WriteElementStringAsync("guid", InternalId).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("year", Year.ToString(objCulture)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("month", Month.ToString(objCulture)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("week", MonthWeek.ToString(objCulture)).ConfigureAwait(false);
                 if (blnPrintNotes)
-                    await objWriter.WriteElementStringAsync("notes", Notes);
+                    await objWriter.WriteElementStringAsync("notes", Notes).ConfigureAwait(false);
             }
             finally
             {
                 // </week>
-                await objBaseElement.DisposeAsync();
+                await objBaseElement.DisposeAsync().ConfigureAwait(false);
             }
         }
 

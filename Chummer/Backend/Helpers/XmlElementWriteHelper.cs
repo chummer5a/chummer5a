@@ -37,7 +37,7 @@ namespace Chummer
         public static async Task<XmlElementWriteHelper> StartElementAsync(XmlWriter objWriter, string localName, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            await objWriter.WriteStartElementAsync(localName, token: token);
+            await objWriter.WriteStartElementAsync(localName, token: token).ConfigureAwait(false);
             return new XmlElementWriteHelper(objWriter);
         }
 
