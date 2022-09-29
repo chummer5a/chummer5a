@@ -7,6 +7,8 @@ Application Changes:
 - Softcoded the system that prevents cultured bioware from being bought at Used grade. Instead of a single "nosecondhand" node controlling whether or not some 'ware can be taken at Used grade, 'ware can now have a "bannedgrades" node that lists every single grade that is not allowed for the given piece.
 - Armor bonuses from +Armor accessories are now properly limited to characters' STR attribute values, as per page 169 of the Core Rulebook. This includes armor with "Custom Fit (Stack)", as they act as +Armor accessories when stacking. A house rule has been added to character settings that removes this cap.
 - Ammo that modifies or replaces a weapon's accuracy now does that properly.
+- The program now automatically detects and handles cases where a currently-loading character save was saved with a settings file that is not currently present but that is identical to a different, currently present settings file.
+- The program now automatically detects cases where the settings file with which a currently-loading character was saved has the same name as a currently present settings file but differs from it in some way other than its build method. When this happens, a prompt will be shown to the user warning them of this mismatch and allowing them to modify character settings or cancel out of loading the character.
 
 Data Changes:
 - Concealed and Regular vehicle armor mods now properly add to their parent's Armor. Fixes #4925.
@@ -22,6 +24,8 @@ Data Changes:
 Changed/New Strings:
 - Checkbox_Options_UncappedArmorAccessoryBonuses
 - String_DamageTorpedo
+- Message_CharacterOptions_DesyncFromHashCode
+- MessageTitle_CharacterOptions_DesyncFromHashCode
 
 Build 223
 Application Changes:

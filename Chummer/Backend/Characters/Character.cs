@@ -2787,6 +2787,8 @@ namespace Chummer
 
                             // <settings />
                             objWriter.WriteElementString("settings", _strSettingsKey);
+                            // <settingshashcode />
+                            objWriter.WriteElementString("settingshashcode", Settings.GetEquatableHashCode().ToString(GlobalSettings.InvariantCultureInfo));
                             // <buildmethod />
                             objWriter.WriteElementString("buildmethod", Settings.BuildMethod.ToString());
 
@@ -3531,6 +3533,8 @@ namespace Chummer
 
                             // <settings />
                             await objWriter.WriteElementStringAsync("settings", _strSettingsKey, token: innerToken);
+                            // <settingshashcode />
+                            await objWriter.WriteElementStringAsync("settingshashcode", (await Settings.GetEquatableHashCodeAsync(innerToken)).ToString(GlobalSettings.InvariantCultureInfo), token: innerToken);
                             // <buildmethod />
                             await objWriter.WriteElementStringAsync("buildmethod", Settings.BuildMethod.ToString(), token: innerToken);
 
@@ -4839,6 +4843,9 @@ namespace Chummer
                                 // Get the name of the settings file in use if possible.
                                 xmlCharacterNavigator.TryGetStringFieldQuickly("settings", ref _strSettingsKey);
 
+                                int intSettingsHashCode = 0;
+                                bool blnHashCodeSuccess = xmlCharacterNavigator.TryGetInt32FieldQuickly("settingshashcode", ref intSettingsHashCode);
+
                                 bool blnSuccess;
 
                                 // Load the character's settings file.
@@ -5026,6 +5033,22 @@ namespace Chummer
                                             = await (await SettingsManager.GetLoadedCharacterSettingsAsync(token)).TryGetValueAsync(
                                                 _strSettingsKey, token).ConfigureAwait(false);
 
+                                    if (!blnSuccess && blnHashCodeSuccess)
+                                    {
+                                        CharacterSettings objHashCodeMatchSettings
+                                            = blnSync
+                                                ? SettingsManager.LoadedCharacterSettings.Values.FirstOrDefault(
+                                                    x => x.GetEquatableHashCode() == intSettingsHashCode)
+                                                : await (await (await SettingsManager.GetLoadedCharacterSettingsAsync(token))
+                                                    .GetReadOnlyValuesAsync(token))
+                                                .FirstOrDefaultAsync(async x => await x.GetEquatableHashCodeAsync(token) == intSettingsHashCode, token);
+                                        if (objHashCodeMatchSettings != default && objHashCodeMatchSettings.BuildMethod == eSavedBuildMethod)
+                                        {
+                                            blnSuccess = true;
+                                            objProspectiveSettings = objHashCodeMatchSettings;
+                                        }
+                                    }
+
                                     if (!blnSuccess)
                                     {
                                         // Prompt if we want to switch options or leave
@@ -5192,40 +5215,82 @@ namespace Chummer
                                         _strSettingsKey = strReplacementSettingsKey;
                                         LoadAsDirty = true;
                                     }
-                                    // Legacy load stuff
-                                    else if (!Utils.IsUnitTest && showWarnings &&
-                                             (setSavedBooks.Count > 0 ||
-                                              lstSavedCustomDataDirectoryNames.Count > 0))
+                                    else if (!Utils.IsUnitTest && showWarnings)
                                     {
-                                        CharacterSettings objCurrentlyLoadedSettings = objProspectiveSettings;
-                                        // More books is fine, so just test if the stored book list is a subset of the current option's book list
-                                        bool blnPromptConfirmSetting =
-                                            !setSavedBooks.IsSubsetOf(objCurrentlyLoadedSettings.Books);
-                                        if (!blnPromptConfirmSetting)
+                                        // Legacy load stuff
+                                        if ((setSavedBooks.Count > 0 || lstSavedCustomDataDirectoryNames.Count > 0))
                                         {
-                                            // More custom data directories is not fine because additional ones might apply rules that weren't present before, so prompt
-                                            blnPromptConfirmSetting = lstSavedCustomDataDirectoryNames.Count !=
-                                                                      objCurrentlyLoadedSettings
-                                                                          .EnabledCustomDataDirectoryInfos
-                                                                          .Count;
+                                            // More books is fine, so just test if the stored book list is a subset of the current option's book list
+                                            bool blnPromptConfirmSetting =
+                                                !setSavedBooks.IsSubsetOf(objProspectiveSettings.Books);
                                             if (!blnPromptConfirmSetting)
                                             {
-                                                // Check to make sure all the names are the same
-                                                for (int i = 0; i < lstSavedCustomDataDirectoryNames.Count; ++i)
+                                                // More custom data directories is not fine because additional ones might apply rules that weren't present before, so prompt
+                                                blnPromptConfirmSetting = lstSavedCustomDataDirectoryNames.Count !=
+                                                                          objProspectiveSettings
+                                                                              .EnabledCustomDataDirectoryInfos
+                                                                              .Count;
+                                                if (!blnPromptConfirmSetting)
                                                 {
-                                                    if (lstSavedCustomDataDirectoryNames[i]
-                                                        != objCurrentlyLoadedSettings
-                                                           .EnabledCustomDataDirectoryInfos[i]
-                                                           .Name)
+                                                    // Check to make sure all the names are the same
+                                                    for (int i = 0; i < lstSavedCustomDataDirectoryNames.Count; ++i)
                                                     {
-                                                        blnPromptConfirmSetting = true;
-                                                        break;
+                                                        if (lstSavedCustomDataDirectoryNames[i]
+                                                            != objProspectiveSettings
+                                                               .EnabledCustomDataDirectoryInfos[i]
+                                                               .Name)
+                                                        {
+                                                            blnPromptConfirmSetting = true;
+                                                            break;
+                                                        }
                                                     }
                                                 }
                                             }
-                                        }
 
-                                        if (blnPromptConfirmSetting)
+                                            if (blnPromptConfirmSetting)
+                                            {
+                                                DialogResult eShowBPResult = Program.ShowMessageBox(
+                                                    string.Format(
+                                                        GlobalSettings.CultureInfo,
+                                                        blnSync
+                                                            // ReSharper disable once MethodHasAsyncOverload
+                                                            ? LanguageManager.GetString(
+                                                                "Message_CharacterOptions_DesyncBooksOrCustomData",
+                                                                token: token)
+                                                            : await LanguageManager.GetStringAsync(
+                                                                "Message_CharacterOptions_DesyncBooksOrCustomData",
+                                                                token: token).ConfigureAwait(false),
+                                                        objProspectiveSettings.Name),
+                                                    blnSync
+                                                        // ReSharper disable once MethodHasAsyncOverload
+                                                        ? LanguageManager.GetString(
+                                                            "MessageTitle_CharacterOptions_DesyncBooksOrCustomData",
+                                                            token: token)
+                                                        : await LanguageManager.GetStringAsync(
+                                                            "MessageTitle_CharacterOptions_DesyncBooksOrCustomData",
+                                                            token: token).ConfigureAwait(false),
+                                                    MessageBoxButtons.YesNoCancel);
+                                                if (eShowBPResult == DialogResult.Cancel)
+                                                {
+                                                    return false;
+                                                }
+
+                                                blnShowSelectBP = eShowBPResult == DialogResult.Yes;
+                                            }
+                                        }
+                                        else if (blnHashCodeSuccess
+                                                 && !objProspectiveSettings.BuiltInOption
+                                                 // Need to make sure that the save was made in the same version of Chummer, otherwise we can get a hash code mismatch from settings themselves changing
+                                                 && LastSavedVersion.CompareTo(
+                                                     new Version(
+                                                         Application.ProductVersion.FastEscapeOnceFromStart("0.0.")))
+                                                 == 0
+                                                 && (blnSync
+                                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                     ? objProspectiveSettings.GetEquatableHashCode()
+                                                     : await objProspectiveSettings.GetEquatableHashCodeAsync(
+                                                         token))
+                                                 != intSettingsHashCode)
                                         {
                                             DialogResult eShowBPResult = Program.ShowMessageBox(
                                                 string.Format(
@@ -5233,16 +5298,20 @@ namespace Chummer
                                                     blnSync
                                                         // ReSharper disable once MethodHasAsyncOverload
                                                         ? LanguageManager.GetString(
-                                                            "Message_CharacterOptions_DesyncBooksOrCustomData", token: token)
+                                                            "Message_CharacterOptions_DesyncFromHashCode",
+                                                            token: token)
                                                         : await LanguageManager.GetStringAsync(
-                                                            "Message_CharacterOptions_DesyncBooksOrCustomData", token: token).ConfigureAwait(false),
-                                                    objCurrentlyLoadedSettings.Name),
+                                                            "Message_CharacterOptions_DesyncFromHashCode",
+                                                            token: token).ConfigureAwait(false),
+                                                    objProspectiveSettings.Name),
                                                 blnSync
                                                     // ReSharper disable once MethodHasAsyncOverload
                                                     ? LanguageManager.GetString(
-                                                        "MessageTitle_CharacterOptions_DesyncBooksOrCustomData", token: token)
+                                                        "MessageTitle_CharacterOptions_DesyncFromHashCode",
+                                                        token: token)
                                                     : await LanguageManager.GetStringAsync(
-                                                        "MessageTitle_CharacterOptions_DesyncBooksOrCustomData", token: token).ConfigureAwait(false),
+                                                        "MessageTitle_CharacterOptions_DesyncFromHashCode",
+                                                        token: token).ConfigureAwait(false),
                                                 MessageBoxButtons.YesNoCancel);
                                             if (eShowBPResult == DialogResult.Cancel)
                                             {

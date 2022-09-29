@@ -534,6 +534,12 @@ namespace Chummer
                 return _lstIndexes;
         }
 
+        public async ValueTask<IReadOnlyCollection<TKey>> GetReadOnlyKeysAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _lstIndexes;
+        }
+
         /// <inheritdoc />
         public ICollection<TValue> Values
         {
@@ -551,6 +557,18 @@ namespace Chummer
         }
 
         public async ValueTask<ICollection<TValue>> GetValuesAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+            {
+                // Needed to make sure ordering is retained
+                List<TValue> lstReturn = new List<TValue>(_dicUnorderedData.Count);
+                for (int i = 0; i < _dicUnorderedData.Count; ++i)
+                    lstReturn.Add(_dicUnorderedData[_lstIndexes[i]]);
+                return lstReturn;
+            }
+        }
+
+        public async ValueTask<IReadOnlyCollection<TValue>> GetReadOnlyValuesAsync(CancellationToken token = default)
         {
             using (await EnterReadLock.EnterAsync(LockObject, token))
             {

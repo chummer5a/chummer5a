@@ -748,6 +748,12 @@ namespace Chummer
                 return _dicData.Keys;
         }
 
+        public async ValueTask<IReadOnlyCollection<TKey>> GetReadOnlyKeysAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _dicData.Keys;
+        }
+
         /// <inheritdoc />
         IEnumerable<TValue> IReadOnlyDictionary<TKey, TValue>.Values
         {
@@ -773,6 +779,12 @@ namespace Chummer
         }
 
         public async ValueTask<ICollection<TValue>> GetValuesAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _dicData.Values;
+        }
+
+        public async ValueTask<IReadOnlyCollection<TValue>> GetReadOnlyValuesAsync(CancellationToken token = default)
         {
             using (await EnterReadLock.EnterAsync(LockObject, token))
                 return _dicData.Values;

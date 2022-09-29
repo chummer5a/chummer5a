@@ -9816,6 +9816,14 @@
       <text>Loaded Settings File Has Different Books and/or Custom Data Directories</text>
     </string>
     <string>
+      <key>Message_CharacterOptions_DesyncFromHashCode</key>
+      <text>A settings file was found with the same name as the one used to save this character ({0}), but the settings are not the same.\n\nModify the settings file that this character will use (Yes)?\nOtherwise, the character will continue to be loaded with this settings file (No).</text>
+    </string>
+    <string>
+      <key>MessageTitle_CharacterOptions_DesyncFromHashCode</key>
+      <text>Loaded Settings File Different from One Used to Create This Save</text>
+    </string>
+    <string>
       <key>Message_CharacterOptions_OpenCharacterOnBuildMethodChange</key>
       <text>Due to technical limitations, Chummer cannot change the build method of an existing setting that is being used by an open character in Create mode. Please save your changes as a new setting or close the following characters first:\n\n</text>
     </string>

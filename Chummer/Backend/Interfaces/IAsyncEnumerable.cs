@@ -6341,6 +6341,45 @@ namespace Chummer
             return await LastOrDefaultAsync(await tskEnumerable, funcPredicate, token);
         }
 
+        public static async Task<T> FirstOrDefaultAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, CancellationToken token = default)
+        {
+            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (await funcPredicate.Invoke(objEnumerator.Current))
+                        return objEnumerator.Current;
+                }
+            }
+            return default;
+        }
+
+        public static async Task<T> FirstOrDefaultAsync<T>(this Task<IEnumerable<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, CancellationToken token = default)
+        {
+            return await FirstOrDefaultAsync(await tskEnumerable, funcPredicate, token);
+        }
+
+        public static async Task<T> LastOrDefaultAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, CancellationToken token = default)
+        {
+            T objReturn = default;
+            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (await funcPredicate.Invoke(objEnumerator.Current))
+                        objReturn = objEnumerator.Current;
+                }
+            }
+            return objReturn;
+        }
+        
+        public static async Task<T> LastOrDefaultAsync<T>(this Task<IEnumerable<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, CancellationToken token = default)
+        {
+            return await LastOrDefaultAsync(await tskEnumerable, funcPredicate, token);
+        }
+
         public static async Task ForEachAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Action<T> objFuncToRun, CancellationToken token = default)
         {
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token))
