@@ -675,6 +675,125 @@ namespace Chummer
             }
         }
 
+        public async ValueTask RefreshAttributeBindingsAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                // First remove all existing bindings
+                AttributeSection objAttributeSection = await GetAttributeSectionAsync(token).ConfigureAwait(false);
+                await (await objAttributeSection.GetAttributesAsync(token).ConfigureAwait(false)).ForEachAsync(objAttribute =>
+                {
+                    switch (objAttribute.Abbrev)
+                    {
+                        case "BOD":
+                            objAttribute.PropertyChanged -= RefreshBODDependentProperties;
+                            break;
+
+                        case "AGI":
+                            objAttribute.PropertyChanged -= RefreshAGIDependentProperties;
+                            break;
+
+                        case "REA":
+                            objAttribute.PropertyChanged -= RefreshREADependentProperties;
+                            break;
+
+                        case "STR":
+                            objAttribute.PropertyChanged -= RefreshSTRDependentProperties;
+                            break;
+
+                        case "CHA":
+                            objAttribute.PropertyChanged -= RefreshCHADependentProperties;
+                            break;
+
+                        case "INT":
+                            objAttribute.PropertyChanged -= RefreshINTDependentProperties;
+                            break;
+
+                        case "LOG":
+                            objAttribute.PropertyChanged -= RefreshLOGDependentProperties;
+                            break;
+
+                        case "WIL":
+                            objAttribute.PropertyChanged -= RefreshWILDependentProperties;
+                            break;
+
+                        case "EDG":
+                            objAttribute.PropertyChanged -= RefreshEDGDependentProperties;
+                            break;
+
+                        case "MAG":
+                            objAttribute.PropertyChanged -= RefreshMAGDependentProperties;
+                            break;
+
+                        case "MAGAdept":
+                            objAttribute.PropertyChanged -= RefreshMAGAdeptDependentProperties;
+                            break;
+
+                        case "RES":
+                            objAttribute.PropertyChanged -= RefreshRESDependentProperties;
+                            break;
+
+                        case "DEP":
+                            objAttribute.PropertyChanged -= RefreshDEPDependentProperties;
+                            break;
+
+                        case "ESS":
+                            objAttribute.PropertyChanged -= RefreshESSDependentProperties;
+                            break;
+                    }
+                }, token).ConfigureAwait(false);
+
+                CharacterAttrib objLoopAttribute = await GetAttributeAsync("BOD", token: token).ConfigureAwait(false);
+                if (objLoopAttribute != null)
+                    objLoopAttribute.PropertyChanged += RefreshBODDependentProperties;
+                objLoopAttribute = await GetAttributeAsync("AGI", token: token).ConfigureAwait(false);
+                if (objLoopAttribute != null)
+                    objLoopAttribute.PropertyChanged += RefreshAGIDependentProperties;
+                objLoopAttribute = await GetAttributeAsync("REA", token: token).ConfigureAwait(false);
+                if (objLoopAttribute != null)
+                    objLoopAttribute.PropertyChanged += RefreshREADependentProperties;
+                objLoopAttribute = await GetAttributeAsync("STR", token: token).ConfigureAwait(false);
+                if (objLoopAttribute != null)
+                    objLoopAttribute.PropertyChanged += RefreshSTRDependentProperties;
+                objLoopAttribute = await GetAttributeAsync("CHA", token: token).ConfigureAwait(false);
+                if (objLoopAttribute != null)
+                    objLoopAttribute.PropertyChanged += RefreshCHADependentProperties;
+                objLoopAttribute = await GetAttributeAsync("INT", token: token).ConfigureAwait(false);
+                if (objLoopAttribute != null)
+                    objLoopAttribute.PropertyChanged += RefreshINTDependentProperties;
+                objLoopAttribute = await GetAttributeAsync("LOG", token: token).ConfigureAwait(false);
+                if (objLoopAttribute != null)
+                    objLoopAttribute.PropertyChanged += RefreshLOGDependentProperties;
+                objLoopAttribute = await GetAttributeAsync("WIL", token: token).ConfigureAwait(false);
+                if (objLoopAttribute != null)
+                    objLoopAttribute.PropertyChanged += RefreshWILDependentProperties;
+                objLoopAttribute = await GetAttributeAsync("EDG", token: token).ConfigureAwait(false);
+                if (objLoopAttribute != null)
+                    objLoopAttribute.PropertyChanged += RefreshEDGDependentProperties;
+                objLoopAttribute = await GetAttributeAsync("MAG", token: token).ConfigureAwait(false);
+                if (objLoopAttribute != null)
+                    objLoopAttribute.PropertyChanged += RefreshMAGDependentProperties;
+                objLoopAttribute = await GetAttributeAsync("RES", token: token).ConfigureAwait(false);
+                if (objLoopAttribute != null)
+                    objLoopAttribute.PropertyChanged += RefreshRESDependentProperties;
+                objLoopAttribute = await GetAttributeAsync("DEP", token: token).ConfigureAwait(false);
+                if (objLoopAttribute != null)
+                    objLoopAttribute.PropertyChanged += RefreshDEPDependentProperties;
+                objLoopAttribute = await GetAttributeAsync("ESS", token: token).ConfigureAwait(false);
+                if (objLoopAttribute != null)
+                    objLoopAttribute.PropertyChanged += RefreshESSDependentProperties;
+                // This needs to be explicitly set because a MAGAdept call could redirect to MAG, and we don't want that
+                objLoopAttribute = await objAttributeSection.GetAttributeByNameAsync("MAGAdept", token: token).ConfigureAwait(false);
+                if (objLoopAttribute != null)
+                    objLoopAttribute.PropertyChanged += RefreshMAGAdeptDependentProperties;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         private async void OptionsOnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             await DoOptionsOnPropertyChanged(sender, e).ConfigureAwait(false);

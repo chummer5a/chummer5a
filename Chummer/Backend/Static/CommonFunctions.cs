@@ -1166,14 +1166,6 @@ namespace Chummer
         /// <summary>
         /// Fetch the in-book description of a given object.
         /// </summary>
-        /// <param name="objNode"></param>
-        /// <param name="strName"></param>
-        /// <param name="strDisplayName"></param>
-        /// <param name="strSource"></param>
-        /// <param name="strPage"></param>
-        /// <param name="strDisplayPage"></param>
-        /// <param name="objCharacter"></param>
-        /// <returns></returns>
         public static string GetBookNotes(XmlNode objNode, string strName, string strDisplayName, string strSource, string strPage, string strDisplayPage, Character objCharacter)
         {
             string strEnglishNameOnPage = strName;
@@ -1204,6 +1196,43 @@ namespace Chummer
 
                 return GetTextFromPdf(strSource + ' ' + strDisplayPage,
                                       strTranslatedNameOnPage, objCharacter);
+            }
+        }
+
+        /// <summary>
+        /// Fetch the in-book description of a given object.
+        /// </summary>
+        public static async ValueTask<string> GetBookNotesAsync(XmlNode objNode, string strName, string strDisplayName, string strSource, string strPage, string strDisplayPage, Character objCharacter, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strEnglishNameOnPage = strName;
+            string strNameOnPage = string.Empty;
+            // make sure we have something and not just an empty tag
+            if (objNode.TryGetStringFieldQuickly("nameonpage", ref strNameOnPage) &&
+                !string.IsNullOrEmpty(strNameOnPage))
+                strEnglishNameOnPage = strNameOnPage;
+
+            using (await EnterReadLock.EnterAsync(objCharacter.LockObject, token))
+            {
+                string strGearNotes = await GetTextFromPdfAsync(strSource + ' ' + strPage, strEnglishNameOnPage, objCharacter, token);
+
+                if (!string.IsNullOrEmpty(strGearNotes)
+                    || GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
+                        StringComparison.OrdinalIgnoreCase))
+                    return strGearNotes;
+                string strTranslatedNameOnPage = strDisplayName;
+
+                // don't check again it is not translated
+                if (strTranslatedNameOnPage == strName)
+                    return strGearNotes;
+
+                // if we found <altnameonpage>, and is not empty and not the same as english we must use that instead
+                if (objNode.TryGetStringFieldQuickly("altnameonpage", ref strNameOnPage)
+                    && !string.IsNullOrEmpty(strNameOnPage) && strNameOnPage != strEnglishNameOnPage)
+                    strTranslatedNameOnPage = strNameOnPage;
+
+                return await GetTextFromPdfAsync(strSource + ' ' + strDisplayPage,
+                    strTranslatedNameOnPage, objCharacter, token);
             }
         }
 
@@ -1330,6 +1359,51 @@ namespace Chummer
         /// </summary>
         /// <param name="strIn">Expression to convert.</param>
         /// <param name="intForce">Force value to use.</param>
+        /// <param name="intOffset">Dice offset.</param>
+        /// <param name="intMinValueFromForce">Minimum value to return if Force is present (greater than 0).</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async ValueTask<int> ExpressionToIntAsync(string strIn, int intForce = 0, int intOffset = 0, int intMinValueFromForce = 1, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (string.IsNullOrWhiteSpace(strIn))
+                return intOffset;
+            int intValue = 1;
+            string strForce = intForce.ToString(GlobalSettings.InvariantCultureInfo);
+            // This statement is wrapped in a try/catch since trying 1 div 2 results in an error with XSLT.
+            try
+            {
+                (bool blnIsSuccess, object objProcess) = await EvaluateInvariantXPathAsync(
+                    strIn.Replace("/", " div ").Replace("F", strForce).Replace("1D6", strForce)
+                        .Replace("2D6", strForce), token);
+                if (blnIsSuccess)
+                    intValue = ((double)objProcess).StandardRound();
+            }
+            catch (OverflowException)
+            {
+                // Result is text and not a double
+            }
+            catch (InvalidCastException)
+            {
+                // swallow this
+            }
+
+            intValue += intOffset;
+            if (intForce > 0)
+            {
+                if (intValue < intMinValueFromForce)
+                    return intMinValueFromForce;
+            }
+            else if (intValue < 0)
+                return 0;
+
+            return intValue;
+        }
+
+        /// <summary>
+        /// Convert Force, 1D6, or 2D6 into a usable value.
+        /// </summary>
+        /// <param name="strIn">Expression to convert.</param>
+        /// <param name="intForce">Force value to use.</param>
         /// <param name="decOffset">Dice offset.</param>
         /// <param name="decMinValueFromForce">Minimum value to return if Force is present (greater than 0).</param>
         /// <returns></returns>
@@ -1370,6 +1444,52 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Convert Force, 1D6, or 2D6 into a usable value.
+        /// </summary>
+        /// <param name="strIn">Expression to convert.</param>
+        /// <param name="intForce">Force value to use.</param>
+        /// <param name="decOffset">Dice offset.</param>
+        /// <param name="decMinValueFromForce">Minimum value to return if Force is present (greater than 0).</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns></returns>
+        public static async ValueTask<decimal> ExpressionToDecimalAsync(string strIn, int intForce = 0, decimal decOffset = 0, decimal decMinValueFromForce = 1.0m, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (string.IsNullOrWhiteSpace(strIn))
+                return decOffset;
+            decimal decValue = 1;
+            string strForce = intForce.ToString(GlobalSettings.InvariantCultureInfo);
+            // This statement is wrapped in a try/catch since trying 1 div 2 results in an error with XSLT.
+            try
+            {
+                (bool blnIsSuccess, object objProcess) = await EvaluateInvariantXPathAsync(
+                    strIn.Replace("/", " div ").Replace("F", strForce).Replace("1D6", strForce)
+                        .Replace("2D6", strForce), token);
+                if (blnIsSuccess)
+                    decValue = Convert.ToDecimal((double)objProcess);
+            }
+            catch (OverflowException)
+            {
+                // Result is text and not a double
+            }
+            catch (InvalidCastException)
+            {
+                // swallow this
+            }
+
+            decValue += decOffset;
+            if (intForce > 0)
+            {
+                if (decValue < decMinValueFromForce)
+                    return decMinValueFromForce;
+            }
+            else if (decValue < 0)
+                return 0;
+
+            return decValue;
+        }
+
+        /// <summary>
         /// Verify that the user wants to delete an item.
         /// </summary>
         public static bool ConfirmDelete(string strMessage)
@@ -1380,12 +1500,34 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Verify that the user wants to delete an item.
+        /// </summary>
+        public static async ValueTask<bool> ConfirmDeleteAsync(string strMessage, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return !GlobalSettings.ConfirmDelete ||
+                   Program.ShowMessageBox(strMessage, await LanguageManager.GetStringAsync("MessageTitle_Delete", token: token),
+                       MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
+        }
+
+        /// <summary>
         /// Verify that the user wants to spend their Karma and did not accidentally click the button.
         /// </summary>
         public static bool ConfirmKarmaExpense(string strMessage)
         {
             return !GlobalSettings.ConfirmKarmaExpense ||
                    Program.ShowMessageBox(strMessage, LanguageManager.GetString("MessageTitle_ConfirmKarmaExpense"),
+                       MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
+        }
+
+        /// <summary>
+        /// Verify that the user wants to spend their Karma and did not accidentally click the button.
+        /// </summary>
+        public static async ValueTask<bool> ConfirmKarmaExpenseAsync(string strMessage, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return !GlobalSettings.ConfirmKarmaExpense ||
+                   Program.ShowMessageBox(strMessage, await LanguageManager.GetStringAsync("MessageTitle_ConfirmKarmaExpense", token: token),
                        MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
         }
 
@@ -2042,6 +2184,53 @@ namespace Chummer
                 case Timescale.Instant:
                 default:
                     return LanguageManager.GetString("String_Immediate", strLanguage);
+            }
+        }
+
+        /// <summary>
+        /// Convert a string to a Timescale.
+        /// </summary>
+        /// <param name="strValue">String value to convert.</param>
+        /// <param name="blnSingle">Whether to return multiple of the timescale (Hour vs Hours)</param>
+        /// <param name="strLanguage">Language to use. If left empty, will use current program language.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static Task<string> GetTimescaleStringAsync(Timescale strValue, bool blnSingle, string strLanguage = "", CancellationToken token = default)
+        {
+            switch (strValue)
+            {
+                case Timescale.Seconds when blnSingle:
+                    return LanguageManager.GetStringAsync("String_Second", strLanguage, token: token);
+
+                case Timescale.Seconds:
+                    return LanguageManager.GetStringAsync("String_Seconds", strLanguage, token: token);
+
+                case Timescale.CombatTurns when blnSingle:
+                    return LanguageManager.GetStringAsync("String_CombatTurn", strLanguage, token: token);
+
+                case Timescale.CombatTurns:
+                    return LanguageManager.GetStringAsync("String_CombatTurns", strLanguage, token: token);
+
+                case Timescale.Minutes when blnSingle:
+                    return LanguageManager.GetStringAsync("String_Minute", strLanguage, token: token);
+
+                case Timescale.Minutes:
+                    return LanguageManager.GetStringAsync("String_Minutes", strLanguage, token: token);
+
+                case Timescale.Hours when blnSingle:
+                    return LanguageManager.GetStringAsync("String_Hour", strLanguage, token: token);
+
+                case Timescale.Hours:
+                    return LanguageManager.GetStringAsync("String_Hours", strLanguage, token: token);
+
+                case Timescale.Days when blnSingle:
+                    return LanguageManager.GetStringAsync("String_Day", strLanguage, token: token);
+
+                case Timescale.Days:
+                    return LanguageManager.GetStringAsync("String_Days", strLanguage, token: token);
+
+                case Timescale.Instant:
+                default:
+                    return LanguageManager.GetStringAsync("String_Immediate", strLanguage, token: token);
             }
         }
 

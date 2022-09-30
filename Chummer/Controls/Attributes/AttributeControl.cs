@@ -106,11 +106,14 @@ namespace Chummer.UI.Attributes
             }
             else
             {
-                while (AttributeObject.KarmaMaximum < 0 && AttributeObject.Base > 0)
-                    --AttributeObject.Base;
-                // Very rough fix for when Karma values somehow exceed KarmaMaximum after loading in. This shouldn't happen in the first place, but this ad-hoc patch will help fix crashes.
-                if (AttributeObject.Karma > AttributeObject.KarmaMaximum)
-                    AttributeObject.Karma = AttributeObject.KarmaMaximum;
+                using (EnterReadLock.Enter(AttributeObject))
+                {
+                    while (AttributeObject.KarmaMaximum < 0 && AttributeObject.Base > 0)
+                        --AttributeObject.Base;
+                    // Very rough fix for when Karma values somehow exceed KarmaMaximum after loading in. This shouldn't happen in the first place, but this ad-hoc patch will help fix crashes.
+                    if (AttributeObject.Karma > AttributeObject.KarmaMaximum)
+                        AttributeObject.Karma = AttributeObject.KarmaMaximum;
+                }
 
                 nudKarma = new NumericUpDownEx
                 {
@@ -232,25 +235,30 @@ namespace Chummer.UI.Attributes
 
         private async void cmdImproveATT_Click(object sender, EventArgs e)
         {
-            int intUpgradeKarmaCost = await AttributeObject.GetUpgradeKarmaCostAsync();
-
-            if (intUpgradeKarmaCost == -1) return; //TODO: more descriptive
-            if (intUpgradeKarmaCost > _objCharacter.Karma)
+            CharacterAttrib objAttribute = await GetAttributeObjectAsync();
+            using (await EnterReadLock.EnterAsync(objAttribute))
             {
-                Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_NotEnoughKarma"),
-                                       await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"),
-                                       MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
+                int intUpgradeKarmaCost = await objAttribute.GetUpgradeKarmaCostAsync();
+
+                if (intUpgradeKarmaCost == -1) return; //TODO: more descriptive
+                if (intUpgradeKarmaCost > _objCharacter.Karma)
+                {
+                    Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_NotEnoughKarma"),
+                        await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"),
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                string confirmstring = string.Format(GlobalSettings.CultureInfo,
+                    await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpense"),
+                    await objAttribute.GetDisplayNameFormattedAsync(),
+                    await objAttribute.GetValueAsync() + 1, intUpgradeKarmaCost);
+                if (!await CommonFunctions.ConfirmKarmaExpenseAsync(confirmstring))
+                    return;
+
+                await objAttribute.Upgrade();
             }
 
-            string confirmstring = string.Format(GlobalSettings.CultureInfo,
-                                                 await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpense"),
-                                                 await AttributeObject.GetDisplayNameFormattedAsync(),
-                                                 await AttributeObject.GetValueAsync() + 1, intUpgradeKarmaCost);
-            if (!CommonFunctions.ConfirmKarmaExpense(confirmstring))
-                return;
-
-            await AttributeObject.Upgrade();
             await this.DoThreadSafeAsync(x => x.ValueChanged?.Invoke(this, e));
         }
 
@@ -259,26 +267,35 @@ namespace Chummer.UI.Attributes
             int intValue = await ((NumericUpDownEx)sender).DoThreadSafeFuncAsync(x => x.ValueAsInt);
             if (intValue == _oldBase)
                 return;
-            if (!await CanBeMetatypeMax(
-                Math.Max(
-                    await nudKarma.DoThreadSafeFuncAsync(x => x.ValueAsInt) + await AttributeObject.GetFreeBaseAsync() + await AttributeObject.GetRawMinimumAsync() +
-                    await AttributeObject.GetAttributeValueModifiersAsync(), await AttributeObject.GetTotalMinimumAsync()) + intValue))
+            CharacterAttrib objAttribute = await GetAttributeObjectAsync();
+            using (await EnterReadLock.EnterAsync(objAttribute))
             {
-                await nudBase.DoThreadSafeAsync(x =>
+                if (!await CanBeMetatypeMax(
+                        Math.Max(
+                            await nudKarma.DoThreadSafeFuncAsync(x => x.ValueAsInt) +
+                            await objAttribute.GetFreeBaseAsync() + await objAttribute.GetRawMinimumAsync() +
+                            await objAttribute.GetAttributeValueModifiersAsync(),
+                            await objAttribute.GetTotalMinimumAsync()) + intValue))
                 {
-                    decimal newValue = Math.Max(x.Value - 1, 0);
-                    if (newValue > x.Maximum)
+                    await nudBase.DoThreadSafeAsync(x =>
                     {
-                        newValue = x.Maximum;
-                    }
-                    if (newValue < x.Minimum)
-                    {
-                        newValue = x.Minimum;
-                    }
-                    x.Value = newValue;
-                });
-                return;
+                        decimal newValue = Math.Max(x.Value - 1, 0);
+                        if (newValue > x.Maximum)
+                        {
+                            newValue = x.Maximum;
+                        }
+
+                        if (newValue < x.Minimum)
+                        {
+                            newValue = x.Minimum;
+                        }
+
+                        x.Value = newValue;
+                    });
+                    return;
+                }
             }
+
             await this.DoThreadSafeAsync(x => x.ValueChanged?.Invoke(this, e));
             _oldBase = intValue;
         }
@@ -288,37 +305,48 @@ namespace Chummer.UI.Attributes
             int intValue = await ((NumericUpDownEx)sender).DoThreadSafeFuncAsync(x => x.ValueAsInt);
             if (intValue == _oldKarma)
                 return;
-            if (!await CanBeMetatypeMax(
-                Math.Max(
-                    await nudBase.DoThreadSafeFuncAsync(x => x.ValueAsInt) + await AttributeObject.GetFreeBaseAsync() + await AttributeObject.GetRawMinimumAsync() +
-                    await AttributeObject.GetAttributeValueModifiersAsync(), await AttributeObject.GetTotalMinimumAsync()) + intValue))
+            CharacterAttrib objAttribute = await GetAttributeObjectAsync();
+            using (await EnterReadLock.EnterAsync(objAttribute))
             {
-                // It's possible that the attribute maximum was reduced by an improvement, so confirm the appropriate value to bounce up/down to.
-                int intKarmaMaximum = await AttributeObject.GetKarmaMaximumAsync();
-                if (_oldKarma > intKarmaMaximum)
+                if (!await CanBeMetatypeMax(
+                        Math.Max(
+                            await nudBase.DoThreadSafeFuncAsync(x => x.ValueAsInt) +
+                            await objAttribute.GetFreeBaseAsync() + await objAttribute.GetRawMinimumAsync() +
+                            await objAttribute.GetAttributeValueModifiersAsync(),
+                            await objAttribute.GetTotalMinimumAsync()) + intValue))
                 {
-                    _oldKarma = intKarmaMaximum - 1;
-                }
-                if (_oldKarma < 0)
-                {
-                    await nudBase.DoThreadSafeAsync(x =>
+                    // It's possible that the attribute maximum was reduced by an improvement, so confirm the appropriate value to bounce up/down to.
+                    int intKarmaMaximum = await objAttribute.GetKarmaMaximumAsync();
+                    if (_oldKarma > intKarmaMaximum)
                     {
-                        decimal newValue = Math.Max(x.Value - _oldKarma, 0);
-                        if (newValue > x.Maximum)
+                        _oldKarma = intKarmaMaximum - 1;
+                    }
+
+                    if (_oldKarma < 0)
+                    {
+                        await nudBase.DoThreadSafeAsync(x =>
                         {
-                            newValue = x.Maximum;
-                        }
-                        if (newValue < x.Minimum)
-                        {
-                            newValue = x.Minimum;
-                        }
-                        x.Value = newValue;
-                    });
-                    _oldKarma = 0;
+                            decimal newValue = Math.Max(x.Value - _oldKarma, 0);
+                            if (newValue > x.Maximum)
+                            {
+                                newValue = x.Maximum;
+                            }
+
+                            if (newValue < x.Minimum)
+                            {
+                                newValue = x.Minimum;
+                            }
+
+                            x.Value = newValue;
+                        });
+                        _oldKarma = 0;
+                    }
+
+                    await nudKarma.DoThreadSafeAsync(x => x.Value = _oldKarma);
+                    return;
                 }
-                await nudKarma.DoThreadSafeAsync(x => x.Value = _oldKarma);
-                return;
             }
+
             await this.DoThreadSafeAsync(x => x.ValueChanged?.Invoke(this, e));
             _oldKarma = intValue;
         }
@@ -331,20 +359,24 @@ namespace Chummer.UI.Attributes
         /// </summary>
         private async ValueTask<bool> CanBeMetatypeMax(int intValue, CancellationToken token = default)
         {
-            token.ThrowIfCancellationRequested();
-            int intTotalMaximum = await AttributeObject.GetTotalMaximumAsync(token);
-            if (intValue < intTotalMaximum || intTotalMaximum == 0)
-                return true;
+            CharacterAttrib objAttribute = await GetAttributeObjectAsync(token);
+            using (await EnterReadLock.EnterAsync(objAttribute, token))
+            {
+                int intTotalMaximum = await objAttribute.GetTotalMaximumAsync(token);
+                if (intValue < intTotalMaximum || intTotalMaximum == 0)
+                    return true;
 
-            if (await _objCharacter.AttributeSection.CanRaiseAttributeToMetatypeMax(AttributeObject, token))
-                return true;
+                if (await _objCharacter.AttributeSection.CanRaiseAttributeToMetatypeMax(objAttribute, token))
+                    return true;
 
-            Program.ShowMessageBox(
-                string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_AttributeMaximum", token: token),
-                              _objCharacter.Settings.MaxNumberMaxAttributesCreate),
-                await LanguageManager.GetStringAsync("MessageTitle_Attribute", token: token), MessageBoxButtons.OK,
-                MessageBoxIcon.Information);
-            return false;
+                Program.ShowMessageBox(
+                    string.Format(GlobalSettings.CultureInfo,
+                        await LanguageManager.GetStringAsync("Message_AttributeMaximum", token: token),
+                        _objCharacter.Settings.MaxNumberMaxAttributesCreate),
+                    await LanguageManager.GetStringAsync("MessageTitle_Attribute", token: token), MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+                return false;
+            }
         }
 
         public string AttributeName => _strAttributeName;
@@ -355,23 +387,36 @@ namespace Chummer.UI.Attributes
             _objCachedCharacterAttrib ?? (_objCachedCharacterAttrib =
                 _objCharacter.AttributeSection.GetAttributeByName(AttributeName));
 
+        public async ValueTask<CharacterAttrib> GetAttributeObjectAsync(CancellationToken token = default) =>
+            _objCachedCharacterAttrib ?? (_objCachedCharacterAttrib =
+                await _objCharacter.AttributeSection.GetAttributeByNameAsync(AttributeName, token));
+
         [UsedImplicitly]
         public int NameWidth => lblName.DoThreadSafeFunc(x => x.PreferredWidth);
 
         private async void cmdBurnEdge_Click(object sender, EventArgs e)
         {
             // Edge cannot go below 1.
-            if (await AttributeObject.GetValueAsync() <= 0)
+            CharacterAttrib objAttribute = await GetAttributeObjectAsync();
+            using (await EnterReadLock.EnterAsync(objAttribute))
             {
-                Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_CannotBurnEdge"), await LanguageManager.GetStringAsync("MessageTitle_CannotBurnEdge"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                return;
+                if (await objAttribute.GetValueAsync() <= 0)
+                {
+                    Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_CannotBurnEdge"),
+                        await LanguageManager.GetStringAsync("MessageTitle_CannotBurnEdge"), MessageBoxButtons.OK,
+                        MessageBoxIcon.Exclamation);
+                    return;
+                }
+
+                // Verify that the user wants to Burn a point of Edge.
+                if (Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_BurnEdge"),
+                        await LanguageManager.GetStringAsync("MessageTitle_BurnEdge"), MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Question) == DialogResult.No)
+                    return;
+
+                await objAttribute.Degrade(1).ConfigureAwait(false);
             }
 
-            // Verify that the user wants to Burn a point of Edge.
-            if (Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_BurnEdge"), await LanguageManager.GetStringAsync("MessageTitle_BurnEdge"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
-                return;
-
-            AttributeObject.Degrade(1);
             ValueChanged?.Invoke(this, e);
         }
 

@@ -813,14 +813,18 @@ namespace Chummer.UI.Skills
                     frmPickExoticSkill.MyForm.SelectedExoticSkillSpecialisation);
             }
 
-            // Karma check needs to come after the skill is created to make sure bonus-based modifiers (e.g. JoAT) get applied properly (since they can potentially trigger off of the specific exotic skill target)
-            if (_objCharacter.Created && objSkill.UpgradeKarmaCost > _objCharacter.Karma)
+            using (await EnterReadLock.EnterAsync(objSkill.LockObject))
             {
-                Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_NotEnoughKarma"));
-                await _objCharacter.SkillsSection.Skills.RemoveAsync(objSkill);
-                return;
+                // Karma check needs to come after the skill is created to make sure bonus-based modifiers (e.g. JoAT) get applied properly (since they can potentially trigger off of the specific exotic skill target)
+                if (await _objCharacter.GetCreatedAsync() && objSkill.UpgradeKarmaCost > _objCharacter.Karma)
+                {
+                    Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_NotEnoughKarma"));
+                    await _objCharacter.SkillsSection.Skills.RemoveAsync(objSkill);
+                    return;
+                }
+
+                await objSkill.Upgrade();
             }
-            objSkill.Upgrade();
         }
 
         private async void btnKnowledge_Click(object sender, EventArgs e)

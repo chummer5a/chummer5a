@@ -3032,7 +3032,7 @@ namespace Chummer
                     }
 
                     // Permanently reduce the CharacterAttribute's value.
-                    (await CharacterObject.GetAttributeAsync(frmPickAttribute.MyForm.SelectedAttribute)).Degrade(1);
+                    await (await CharacterObject.GetAttributeAsync(frmPickAttribute.MyForm.SelectedAttribute)).Degrade(1);
                 }
 
                 await RequestCharacterUpdate();
@@ -4579,11 +4579,11 @@ namespace Chummer
                                 break;
                             }
 
-                            if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalSettings.CultureInfo,
-                                                                         await LanguageManager.GetStringAsync(
-                                                                             "Message_ConfirmKarmaExpenseSpend")
-                                                                         , objSpell.CurrentDisplayName
-                                                                         , intSpellKarmaCost.ToString(GlobalSettings.CultureInfo))))
+                            if (!await CommonFunctions.ConfirmKarmaExpenseAsync(string.Format(GlobalSettings.CultureInfo,
+                                    await LanguageManager.GetStringAsync(
+                                        "Message_ConfirmKarmaExpenseSpend")
+                                    , objSpell.CurrentDisplayName
+                                    , intSpellKarmaCost.ToString(GlobalSettings.CultureInfo))))
                             {
                                 objSpell.Dispose();
                                 continue;
@@ -4747,12 +4747,12 @@ namespace Chummer
 
                     await CharacterObject.ComplexForms.AddAsync(objComplexForm);
 
-                    if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalSettings.CultureInfo,
-                                                                           await LanguageManager.GetStringAsync(
-                                                                               "Message_ConfirmKarmaExpenseSpend"),
-                                                                           objComplexForm.CurrentDisplayNameShort,
-                                                                           intComplexFormKarmaCost.ToString(
-                                                                               GlobalSettings.CultureInfo))))
+                    if (!await CommonFunctions.ConfirmKarmaExpenseAsync(string.Format(GlobalSettings.CultureInfo,
+                            await LanguageManager.GetStringAsync(
+                                "Message_ConfirmKarmaExpenseSpend"),
+                            objComplexForm.CurrentDisplayNameShort,
+                            intComplexFormKarmaCost.ToString(
+                                GlobalSettings.CultureInfo))))
                     {
                         // Remove the Improvements created by the Complex Form.
                         await ImprovementManager.RemoveImprovementsAsync(
@@ -5335,26 +5335,26 @@ namespace Chummer
                             return;
                         }
 
-                        if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalSettings.CultureInfo,
-                                                                               await LanguageManager.GetStringAsync(
-                                                                                   "Message_ConfirmKarmaandNuyenExpense")
-                                                                               , await LanguageManager.GetStringAsync(
-                                                                                   "String_InitiateGrade")
-                                                                               , (CharacterObject.InitiateGrade + 1)
-                                                                               .ToString(GlobalSettings.CultureInfo)
-                                                                               , intKarmaExpense.ToString(
-                                                                                   GlobalSettings.CultureInfo)
-                                                                               , 10000.ToString(CharacterObjectSettings.NuyenFormat, GlobalSettings.CultureInfo) + await LanguageManager.GetStringAsync("String_NuyenSymbol"))))
+                        if (!await CommonFunctions.ConfirmKarmaExpenseAsync(string.Format(GlobalSettings.CultureInfo,
+                                await LanguageManager.GetStringAsync(
+                                    "Message_ConfirmKarmaandNuyenExpense")
+                                , await LanguageManager.GetStringAsync(
+                                    "String_InitiateGrade")
+                                , (CharacterObject.InitiateGrade + 1)
+                                .ToString(GlobalSettings.CultureInfo)
+                                , intKarmaExpense.ToString(
+                                    GlobalSettings.CultureInfo)
+                                , 10000.ToString(CharacterObjectSettings.NuyenFormat, GlobalSettings.CultureInfo) + await LanguageManager.GetStringAsync("String_NuyenSymbol"))))
                             return;
                     }
-                    else if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalSettings.CultureInfo,
-                                                                      await LanguageManager.GetStringAsync(
-                                                                          "Message_ConfirmKarmaExpense")
-                                                                      , await LanguageManager.GetStringAsync(
-                                                                          "String_InitiateGrade")
-                                                                      , (CharacterObject.InitiateGrade + 1).ToString(
-                                                                          GlobalSettings.CultureInfo)
-                                                                      , intKarmaExpense.ToString(GlobalSettings.CultureInfo))))
+                    else if (!await CommonFunctions.ConfirmKarmaExpenseAsync(string.Format(GlobalSettings.CultureInfo,
+                                 await LanguageManager.GetStringAsync(
+                                     "Message_ConfirmKarmaExpense")
+                                 , await LanguageManager.GetStringAsync(
+                                     "String_InitiateGrade")
+                                 , (CharacterObject.InitiateGrade + 1).ToString(
+                                     GlobalSettings.CultureInfo)
+                                 , intKarmaExpense.ToString(GlobalSettings.CultureInfo))))
                         return;
 
                     string strSpace = await LanguageManager.GetStringAsync("String_Space");
@@ -5445,14 +5445,14 @@ namespace Chummer
                         return;
                     }
 
-                    if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalSettings.CultureInfo,
-                                                                           await LanguageManager.GetStringAsync(
-                                                                               "Message_ConfirmKarmaExpense")
-                                                                           , await LanguageManager.GetStringAsync(
-                                                                               "String_SubmersionGrade")
-                                                                           , (CharacterObject.SubmersionGrade + 1)
-                                                                           .ToString(GlobalSettings.CultureInfo)
-                                                                           , intKarmaExpense.ToString(GlobalSettings.CultureInfo))))
+                    if (!await CommonFunctions.ConfirmKarmaExpenseAsync(string.Format(GlobalSettings.CultureInfo,
+                            await LanguageManager.GetStringAsync(
+                                "Message_ConfirmKarmaExpense")
+                            , await LanguageManager.GetStringAsync(
+                                "String_SubmersionGrade")
+                            , (CharacterObject.SubmersionGrade + 1)
+                            .ToString(GlobalSettings.CultureInfo)
+                            , intKarmaExpense.ToString(GlobalSettings.CultureInfo))))
                         return;
 
                     string strSpace = await LanguageManager.GetStringAsync("String_Space");
@@ -5804,9 +5804,9 @@ namespace Chummer
                             continue;
                         }
 
-                        if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpenseSpend")
-                            , objPower.CurrentDisplayName
-                            , objPower.Karma.ToString(GlobalSettings.CultureInfo))))
+                        if (!await CommonFunctions.ConfirmKarmaExpenseAsync(string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpenseSpend")
+                                , objPower.CurrentDisplayName
+                                , objPower.Karma.ToString(GlobalSettings.CultureInfo))))
                             continue;
 
                         ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
@@ -5880,10 +5880,10 @@ namespace Chummer
                     decSelectedValue = frmPickNumber.MyForm.SelectedValue;
                 }
 
-                if (!CommonFunctions.ConfirmDelete(string.Format(GlobalSettings.CultureInfo,
-                                                                 await LanguageManager.GetStringAsync(
-                                                                     "Message_ReduceQty", token: GenericToken),
-                                                                 decSelectedValue.ToString(GlobalSettings.CultureInfo))))
+                if (!await CommonFunctions.ConfirmDeleteAsync(string.Format(GlobalSettings.CultureInfo,
+                        await LanguageManager.GetStringAsync(
+                            "Message_ReduceQty", token: GenericToken),
+                        decSelectedValue.ToString(GlobalSettings.CultureInfo))))
                     return;
 
                 objGear.Quantity -= decSelectedValue;
@@ -6380,7 +6380,7 @@ namespace Chummer
                     decSelectedValue = frmPickNumber.MyForm.SelectedValue;
                 }
 
-                if (!CommonFunctions.ConfirmDelete(string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_ReduceQty", token: GenericToken), decSelectedValue.ToString(GlobalSettings.CultureInfo))))
+                if (!await CommonFunctions.ConfirmDeleteAsync(string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_ReduceQty", token: GenericToken), decSelectedValue.ToString(GlobalSettings.CultureInfo))))
                     return;
 
                 objGear.Quantity -= decSelectedValue;
@@ -6500,9 +6500,9 @@ namespace Chummer
                                 string strDisplayName = objXmlQuality["translate"]?.InnerText ??
                                                         objXmlQuality["name"]?.InnerText ??
                                                         await LanguageManager.GetStringAsync("String_Unknown");
-                                if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalSettings.CultureInfo,
-                                                                             await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpenseSpend"), strDisplayName,
-                                                                             intKarmaCost.ToString(GlobalSettings.CultureInfo))))
+                                if (!await CommonFunctions.ConfirmKarmaExpenseAsync(string.Format(GlobalSettings.CultureInfo,
+                                        await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpenseSpend"), strDisplayName,
+                                        intKarmaCost.ToString(GlobalSettings.CultureInfo))))
                                     break;
                             }
                         }
@@ -6693,8 +6693,8 @@ namespace Chummer
                         }
                         string strBP = intBP.ToString(GlobalSettings.CultureInfo) + await LanguageManager.GetStringAsync("String_Space", token: token) + await LanguageManager.GetStringAsync("String_Karma", token: token);
 
-                        if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(
-                            string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync(blnCompleteDelete ? "Message_DeleteMetatypeQuality" : "Message_LowerMetatypeQualityLevel", token: token), strBP)))
+                        if (blnConfirmDelete && !await CommonFunctions.ConfirmDeleteAsync(
+                                string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync(blnCompleteDelete ? "Message_DeleteMetatypeQuality" : "Message_LowerMetatypeQualityLevel", token: token), strBP), token))
                             return false;
 
                         blnMetatypeQuality = true;
@@ -6725,9 +6725,9 @@ namespace Chummer
                     objUndo.Extra = objSelectedQuality.Extra;
                     objExpense.Undo = objUndo;
                 }
-                else if (!blnMetatypeQuality && blnConfirmDelete && !CommonFunctions.ConfirmDelete(blnCompleteDelete
-                    ? await LanguageManager.GetStringAsync("Message_DeletePositiveQualityCareer", token: token)
-                    : await LanguageManager.GetStringAsync("Message_LowerPositiveQualityLevelCareer", token: token)))
+                else if (!blnMetatypeQuality && blnConfirmDelete && !await CommonFunctions.ConfirmDeleteAsync(blnCompleteDelete
+                             ? await LanguageManager.GetStringAsync("Message_DeletePositiveQualityCareer", token: token)
+                             : await LanguageManager.GetStringAsync("Message_LowerPositiveQualityLevelCareer", token: token), token))
                     return false;
             }
             else
@@ -6747,10 +6747,10 @@ namespace Chummer
                     return false;
                 }
 
-                if (!blnMetatypeQuality && blnConfirmDelete && !CommonFunctions.ConfirmKarmaExpense(
-                    string.Format(GlobalSettings.CultureInfo, blnCompleteDelete
-                        ? await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpenseRemove", token: token) : await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpenseLowerLevel", token: token),
-                        objSelectedQuality.CurrentDisplayNameShort, intTotalKarmaCost)))
+                if (!blnMetatypeQuality && blnConfirmDelete && !await CommonFunctions.ConfirmKarmaExpenseAsync(
+                        string.Format(GlobalSettings.CultureInfo, blnCompleteDelete
+                                ? await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpenseRemove", token: token) : await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpenseLowerLevel", token: token),
+                            objSelectedQuality.CurrentDisplayNameShort, intTotalKarmaCost), token))
                     return false;
 
                 // Create the Karma expense.
@@ -6912,12 +6912,12 @@ namespace Chummer
                                   ?? (await objXmlSelectedQuality.SelectSingleNodeAndCacheExpressionAsync("name"))
                                   ?.Value
                                   ?? await LanguageManager.GetStringAsync("String_Unknown", token: GenericToken);
-                            if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalSettings.CultureInfo,
-                                                                         await LanguageManager.GetStringAsync(
-                                                                             "Message_ConfirmKarmaExpenseSpend",
-                                                                             token: GenericToken)
-                                                                         , strDisplayName
-                                                                         , intKarmaCost.ToString(GlobalSettings.CultureInfo))))
+                            if (!await CommonFunctions.ConfirmKarmaExpenseAsync(string.Format(GlobalSettings.CultureInfo,
+                                    await LanguageManager.GetStringAsync(
+                                        "Message_ConfirmKarmaExpenseSpend",
+                                        token: GenericToken)
+                                    , strDisplayName
+                                    , intKarmaCost.ToString(GlobalSettings.CultureInfo))))
                             {
                                 await UpdateQualityLevelValue(objSelectedQuality, GenericToken);
                                 break;
@@ -7125,7 +7125,7 @@ namespace Chummer
 
                 if (objCharacterWeek == null)
                     return;
-                if (!CommonFunctions.ConfirmDelete(await LanguageManager.GetStringAsync("Message_DeleteCalendarWeek")))
+                if (!await CommonFunctions.ConfirmDeleteAsync(await LanguageManager.GetStringAsync("Message_DeleteCalendarWeek")))
                     return;
 
                 await CharacterObject.Calendar.RemoveAsync(objCharacterWeek);
@@ -7457,15 +7457,15 @@ namespace Chummer
             switch (await treImprovements.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token))
             {
                 case Improvement objImprovement:
-                    if (CommonFunctions.ConfirmDelete(await LanguageManager.GetStringAsync("Message_DeleteImprovement", token: token)))
+                    if (await CommonFunctions.ConfirmDeleteAsync(await LanguageManager.GetStringAsync("Message_DeleteImprovement", token: token), token))
                         await ImprovementManager.RemoveImprovementsAsync(CharacterObject, Improvement.ImprovementSource.Custom,
                                                                          objImprovement.SourceName, token);
                     break;
                 case string strSelectedId:
                     if (strSelectedId == "Node_SelectedImprovements")
                         return;
-                    if (!CommonFunctions.ConfirmDelete(
-                            await LanguageManager.GetStringAsync("Message_DeleteImprovementGroup", token: token)))
+                    if (!await CommonFunctions.ConfirmDeleteAsync(
+                            await LanguageManager.GetStringAsync("Message_DeleteImprovementGroup", token: token), token))
                         return;
                     foreach (Improvement imp in CharacterObject.Improvements)
                     {
@@ -7741,12 +7741,12 @@ namespace Chummer
                     return;
                 }
 
-                if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalSettings.CultureInfo,
-                                                                       await LanguageManager.GetStringAsync(
-                                                                           "Message_ConfirmKarmaExpenseQuickeningMetamagic")
-                                                                       , intKarmaCost.ToString(
-                                                                           GlobalSettings.CultureInfo)
-                                                                       , strSelectedSpell)))
+                if (!await CommonFunctions.ConfirmKarmaExpenseAsync(string.Format(GlobalSettings.CultureInfo,
+                        await LanguageManager.GetStringAsync(
+                            "Message_ConfirmKarmaExpenseQuickeningMetamagic")
+                        , intKarmaCost.ToString(
+                            GlobalSettings.CultureInfo)
+                        , strSelectedSpell)))
                     return;
 
                 // Create the Karma expense.
@@ -9907,7 +9907,7 @@ namespace Chummer
                 {
                     case KarmaExpenseType.ImproveAttribute:
                     {
-                        (await CharacterObject.GetAttributeAsync(strUndoId, token: GenericToken)).Degrade(1);
+                        await (await CharacterObject.GetAttributeAsync(strUndoId, token: GenericToken)).Degrade(1);
                         break;
                     }
                     case KarmaExpenseType.AddPowerPoint:
@@ -11301,11 +11301,11 @@ namespace Chummer
                         return;
                     }
 
-                    if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalSettings.CultureInfo,
-                                                                           await LanguageManager.GetStringAsync(
-                                                                               "Message_ConfirmKarmaExpenseSpend")
-                                                                           , objSpell.CurrentDisplayName
-                                                                           , intSpellKarmaCost.ToString(GlobalSettings.CultureInfo))))
+                    if (!await CommonFunctions.ConfirmKarmaExpenseAsync(string.Format(GlobalSettings.CultureInfo,
+                            await LanguageManager.GetStringAsync(
+                                "Message_ConfirmKarmaExpenseSpend")
+                            , objSpell.CurrentDisplayName
+                            , intSpellKarmaCost.ToString(GlobalSettings.CultureInfo))))
                     {
                         objSpell.Dispose();
                         return;
@@ -14650,12 +14650,12 @@ namespace Chummer
                         return;
                     }
 
-                    if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalSettings.CultureInfo,
-                                                                           await LanguageManager.GetStringAsync(
-                                                                               "Message_ConfirmKarmaExpenseFocus")
-                                                                           , intKarmaExpense.ToString(
-                                                                               GlobalSettings.CultureInfo)
-                                                                           , objSelectedFocus.CurrentDisplayNameShort)))
+                    if (!await CommonFunctions.ConfirmKarmaExpenseAsync(string.Format(GlobalSettings.CultureInfo,
+                            await LanguageManager.GetStringAsync(
+                                "Message_ConfirmKarmaExpenseFocus")
+                            , intKarmaExpense.ToString(
+                                GlobalSettings.CultureInfo)
+                            , objSelectedFocus.CurrentDisplayNameShort)))
                     {
                         // Clear created improvements
                         objSelectedFocus.ChangeEquippedStatus(false);
@@ -14763,12 +14763,12 @@ namespace Chummer
                         return;
                     }
 
-                    if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalSettings.CultureInfo,
-                                                                           await LanguageManager.GetStringAsync(
-                                                                               "Message_ConfirmKarmaExpenseFocus")
-                                                                           , intKarmaExpense.ToString(
-                                                                               GlobalSettings.CultureInfo)
-                                                                           , await LanguageManager.GetStringAsync("String_StackedFocus") + await LanguageManager.GetStringAsync("String_Space") + objStackedFocus.CurrentDisplayName)))
+                    if (!await CommonFunctions.ConfirmKarmaExpenseAsync(string.Format(GlobalSettings.CultureInfo,
+                            await LanguageManager.GetStringAsync(
+                                "Message_ConfirmKarmaExpenseFocus")
+                            , intKarmaExpense.ToString(
+                                GlobalSettings.CultureInfo)
+                            , await LanguageManager.GetStringAsync("String_StackedFocus") + await LanguageManager.GetStringAsync("String_Space") + objStackedFocus.CurrentDisplayName)))
                     {
                         // Clear created improvements
                         objStackGear.ChangeEquippedStatus(false);
@@ -15201,9 +15201,9 @@ namespace Chummer
                             strExpense = await LanguageManager.GetStringAsync("String_ExpenseJoinNetwork");
                         }
 
-                        if (!CommonFunctions.ConfirmKarmaExpense(
+                        if (!await CommonFunctions.ConfirmKarmaExpenseAsync(
                                 string.Format(GlobalSettings.CultureInfo, strMessage,
-                                              intKarmaExpense.ToString(GlobalSettings.CultureInfo))))
+                                    intKarmaExpense.ToString(GlobalSettings.CultureInfo))))
                         {
                             IsRefreshing = true;
                             try
@@ -15252,7 +15252,7 @@ namespace Chummer
 
                         string strMessage;
                         string strExpense;
-                        if (CharacterObject.MAGEnabled)
+                        if (await CharacterObject.GetMAGEnabledAsync())
                         {
                             strMessage = await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpenseLeaveGroup");
                             strExpense = await LanguageManager.GetStringAsync("String_ExpenseLeaveGroup");
@@ -15264,9 +15264,9 @@ namespace Chummer
                             strExpense = await LanguageManager.GetStringAsync("String_ExpenseLeaveNetwork");
                         }
 
-                        if (!CommonFunctions.ConfirmKarmaExpense(
+                        if (!await CommonFunctions.ConfirmKarmaExpenseAsync(
                                 string.Format(GlobalSettings.CultureInfo, strMessage,
-                                              intKarmaExpense.ToString(GlobalSettings.CultureInfo))))
+                                    intKarmaExpense.ToString(GlobalSettings.CultureInfo))))
                         {
                             IsRefreshing = true;
                             try
@@ -21313,12 +21313,12 @@ namespace Chummer
                     return;
                 }
 
-                if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalSettings.CultureInfo,
-                                                                       await LanguageManager.GetStringAsync(
-                                                                           "Message_ConfirmKarmaExpenseSpend")
-                                                                       , await LanguageManager.GetStringAsync(
-                                                                           "String_PowerPoint")
-                                                                       , intKarmaCost.ToString(GlobalSettings.CultureInfo))))
+                if (!await CommonFunctions.ConfirmKarmaExpenseAsync(string.Format(GlobalSettings.CultureInfo,
+                        await LanguageManager.GetStringAsync(
+                            "Message_ConfirmKarmaExpenseSpend")
+                        , await LanguageManager.GetStringAsync(
+                            "String_PowerPoint")
+                        , intKarmaCost.ToString(GlobalSettings.CultureInfo))))
                     return;
 
                 // Create the Karma expense.
@@ -21365,21 +21365,21 @@ namespace Chummer
                     return;
                 }
 
-                if (CharacterObject.MAGEnabled && blnPayWithKarma)
+                if (await CharacterObject.GetMAGEnabledAsync() && blnPayWithKarma)
                 {
-                    if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalSettings.CultureInfo,
-                                                                           await LanguageManager.GetStringAsync(
-                                                                               "Message_ConfirmKarmaExpenseSpend")
-                                                                           , await LanguageManager.GetStringAsync(
-                                                                               "String_Metamagic")
-                                                                           , CharacterObjectSettings.KarmaMetamagic.ToString(GlobalSettings.CultureInfo))))
+                    if (!await CommonFunctions.ConfirmKarmaExpenseAsync(string.Format(GlobalSettings.CultureInfo,
+                            await LanguageManager.GetStringAsync(
+                                "Message_ConfirmKarmaExpenseSpend")
+                            , await LanguageManager.GetStringAsync(
+                                "String_Metamagic")
+                            , CharacterObjectSettings.KarmaMetamagic.ToString(GlobalSettings.CultureInfo))))
                         return;
                 }
-                else if (blnPayWithKarma && !CommonFunctions.ConfirmKarmaExpense(
+                else if (blnPayWithKarma && !await CommonFunctions.ConfirmKarmaExpenseAsync(
                              string.Format(GlobalSettings.CultureInfo,
-                                           await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpenseSpend")
-                                           , await LanguageManager.GetStringAsync("String_Echo")
-                                           , CharacterObjectSettings.KarmaMetamagic.ToString(GlobalSettings.CultureInfo))))
+                                 await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpenseSpend")
+                                 , await LanguageManager.GetStringAsync("String_Echo")
+                                 , CharacterObjectSettings.KarmaMetamagic.ToString(GlobalSettings.CultureInfo))))
                     return;
 
                 using (ThreadSafeForm<SelectMetamagic> frmPickMetamagic
@@ -21552,12 +21552,12 @@ namespace Chummer
                         return;
                     }
 
-                    if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalSettings.CultureInfo,
-                                                                           await LanguageManager.GetStringAsync(
-                                                                               "Message_ConfirmKarmaExpenseSpend")
-                                                                           , await LanguageManager.GetStringAsync(
-                                                                               "String_Enchantment")
-                                                                           , intSpellKarmaCost.ToString(GlobalSettings.CultureInfo))))
+                    if (!await CommonFunctions.ConfirmKarmaExpenseAsync(string.Format(GlobalSettings.CultureInfo,
+                            await LanguageManager.GetStringAsync(
+                                "Message_ConfirmKarmaExpenseSpend")
+                            , await LanguageManager.GetStringAsync(
+                                "String_Enchantment")
+                            , intSpellKarmaCost.ToString(GlobalSettings.CultureInfo))))
                         return;
                 }
 
@@ -21641,12 +21641,12 @@ namespace Chummer
                         return;
                     }
 
-                    if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalSettings.CultureInfo,
-                                                                           await LanguageManager.GetStringAsync(
-                                                                               "Message_ConfirmKarmaExpenseSpend")
-                                                                           , await LanguageManager.GetStringAsync(
-                                                                               "String_Ritual")
-                                                                           , intSpellKarmaCost.ToString(GlobalSettings.CultureInfo))))
+                    if (!await CommonFunctions.ConfirmKarmaExpenseAsync(string.Format(GlobalSettings.CultureInfo,
+                            await LanguageManager.GetStringAsync(
+                                "Message_ConfirmKarmaExpenseSpend")
+                            , await LanguageManager.GetStringAsync(
+                                "String_Ritual")
+                            , intSpellKarmaCost.ToString(GlobalSettings.CultureInfo))))
                         return;
                 }
 
@@ -21731,12 +21731,12 @@ namespace Chummer
                     return;
                 }
 
-                if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalSettings.CultureInfo,
-                                                                       await LanguageManager.GetStringAsync(
-                                                                           "Message_ConfirmKarmaExpenseSpend")
-                                                                       , await LanguageManager.GetStringAsync(
-                                                                           "String_Enhancement")
-                                                                       , CharacterObjectSettings.KarmaEnhancement.ToString(GlobalSettings.CultureInfo))))
+                if (!await CommonFunctions.ConfirmKarmaExpenseAsync(string.Format(GlobalSettings.CultureInfo,
+                        await LanguageManager.GetStringAsync(
+                            "Message_ConfirmKarmaExpenseSpend")
+                        , await LanguageManager.GetStringAsync(
+                            "String_Enhancement")
+                        , CharacterObjectSettings.KarmaEnhancement.ToString(GlobalSettings.CultureInfo))))
                     return;
 
                 XmlNode objXmlArt;
@@ -22051,11 +22051,11 @@ namespace Chummer
                             continue;
 
                         bool boolIsAdvancedProgram = objProgram.IsAdvancedProgram;
-                        if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalSettings.CultureInfo,
-                                                                               await LanguageManager.GetStringAsync(
-                                                                                   "Message_ConfirmKarmaExpenseSpend")
-                                                                               , objProgram.CurrentDisplayNameShort
-                                                                               , (boolIsAdvancedProgram ? intNewAIAdvancedProgramCost : intNewAIProgramCost).ToString(GlobalSettings.CultureInfo))))
+                        if (!await CommonFunctions.ConfirmKarmaExpenseAsync(string.Format(GlobalSettings.CultureInfo,
+                                await LanguageManager.GetStringAsync(
+                                    "Message_ConfirmKarmaExpenseSpend")
+                                , objProgram.CurrentDisplayNameShort
+                                , (boolIsAdvancedProgram ? intNewAIAdvancedProgramCost : intNewAIProgramCost).ToString(GlobalSettings.CultureInfo))))
                             continue;
 
                         await CharacterObject.AIPrograms.AddAsync(objProgram);
@@ -22698,11 +22698,11 @@ namespace Chummer
 
                     decimal decSelectedValue = frmPickNumber.MyForm.SelectedValue;
 
-                    if (!CommonFunctions.ConfirmDelete(string.Format(GlobalSettings.CultureInfo,
-                                                                     await LanguageManager.GetStringAsync(
-                                                                         "Message_ReduceQty"),
-                                                                     decSelectedValue.ToString(
-                                                                         GlobalSettings.CultureInfo))))
+                    if (!await CommonFunctions.ConfirmDeleteAsync(string.Format(GlobalSettings.CultureInfo,
+                            await LanguageManager.GetStringAsync(
+                                "Message_ReduceQty"),
+                            decSelectedValue.ToString(
+                                GlobalSettings.CultureInfo))))
                         return;
 
                     objDrug.Quantity -= decSelectedValue;

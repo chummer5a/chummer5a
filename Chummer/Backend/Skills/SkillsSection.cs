@@ -53,7 +53,7 @@ namespace Chummer.Backend.Skills
         private void SkillGroupsOnBeforeRemove(object sender, RemovingOldEventArgs e)
         {
             using (LockObject.EnterWriteLock())
-                SkillGroups[e.OldIndex].UnbindSkillGroup();
+                SkillGroups[e.OldIndex].Dispose();
         }
 
         private void SkillsOnBeforeRemove(object sender, RemovingOldEventArgs e)
@@ -154,13 +154,6 @@ namespace Chummer.Backend.Skills
                     OnPropertyChanged(nameof(HasAvailableNativeLanguageSlots));
                     break;
             }
-        }
-
-        public void UnbindSkillsSection()
-        {
-            _objCharacter.PropertyChanged -= OnCharacterPropertyChanged;
-            _objCharacter.Settings.PropertyChanged -= OnCharacterSettingsPropertyChanged;
-            _dicSkillBackups.Clear();
         }
 
         private void OnCharacterPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -648,7 +641,7 @@ namespace Chummer.Backend.Skills
                                                                             .Where(x => !objExistingSkillGroup
                                                                                 .SkillList.Contains(x)))
                                                                             objExistingSkillGroup.Add(x);
-                                                                        objNewSkillGroup.UnbindSkillGroup();
+                                                                        objNewSkillGroup.Dispose();
                                                                     });
                                         }
                                         else
@@ -903,7 +896,7 @@ namespace Chummer.Backend.Skills
                                                                  .Where(x => !objExistingSkillGroup
                                                                               .SkillList.Contains(x)))
                                                         objExistingSkillGroup.Add(x);
-                                                    objNewSkillGroup.UnbindSkillGroup();
+                                                    objNewSkillGroup.Dispose();
                                                 });
                     }
 
@@ -2112,7 +2105,9 @@ namespace Chummer.Backend.Skills
         {
             using (LockObject.EnterWriteLock())
             {
-                UnbindSkillsSection();
+                _objCharacter.PropertyChanged -= OnCharacterPropertyChanged;
+                _objCharacter.Settings.PropertyChanged -= OnCharacterSettingsPropertyChanged;
+                _dicSkillBackups.Clear();
                 foreach (Skill objSkill in _lstSkills)
                     objSkill.Dispose();
                 _lstSkills.Dispose();
@@ -2121,7 +2116,8 @@ namespace Chummer.Backend.Skills
                 _lstKnowledgeSkills.Dispose();
                 _lstKnowsoftSkills.Clear();
                 _lstKnowsoftSkills.Dispose();
-                _lstSkillGroups.Clear();
+                foreach (SkillGroup objSkillGroup in _lstSkillGroups)
+                    objSkillGroup.Dispose();
                 _lstSkillGroups.Dispose();
                 _dicSkills.Dispose();
                 _dicSkillBackups.Dispose();
@@ -2140,16 +2136,19 @@ namespace Chummer.Backend.Skills
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
             try
             {
-                UnbindSkillsSection();
+                _objCharacter.PropertyChanged -= OnCharacterPropertyChanged;
+                _objCharacter.Settings.PropertyChanged -= OnCharacterSettingsPropertyChanged;
+                await _dicSkillBackups.ClearAsync().ConfigureAwait(false);
                 foreach (Skill objSkill in _lstSkills)
-                    objSkill.Dispose();
+                    await objSkill.DisposeAsync().ConfigureAwait(false);
                 await _lstSkills.DisposeAsync().ConfigureAwait(false);
                 foreach (KnowledgeSkill objSkill in _lstKnowledgeSkills)
-                    objSkill.Dispose();
+                    await objSkill.DisposeAsync().ConfigureAwait(false);
                 await _lstKnowledgeSkills.DisposeAsync().ConfigureAwait(false);
                 await _lstKnowsoftSkills.ClearAsync().ConfigureAwait(false);
                 await _lstKnowsoftSkills.DisposeAsync().ConfigureAwait(false);
-                await _lstSkillGroups.ClearAsync().ConfigureAwait(false);
+                foreach (SkillGroup objSkillGroup in _lstSkillGroups)
+                    await objSkillGroup.DisposeAsync().ConfigureAwait(false);
                 await _lstSkillGroups.DisposeAsync().ConfigureAwait(false);
                 await _dicSkills.DisposeAsync().ConfigureAwait(false);
                 await _dicSkillBackups.DisposeAsync().ConfigureAwait(false);

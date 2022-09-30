@@ -49,40 +49,43 @@ namespace Chummer.Backend.Attributes
 
         public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
-            HashSet<string> setNamesOfChangedProperties = null;
-            try
+            using (EnterReadLock.Enter(LockObject))
             {
-                foreach (string strPropertyName in lstPropertyNames)
+                HashSet<string> setNamesOfChangedProperties = null;
+                try
                 {
-                    if (setNamesOfChangedProperties == null)
-                        setNamesOfChangedProperties
-                            = s_AttributeSectionDependencyGraph.GetWithAllDependents(this, strPropertyName, true);
-                    else
+                    foreach (string strPropertyName in lstPropertyNames)
                     {
-                        foreach (string strLoopChangedProperty in s_AttributeSectionDependencyGraph
-                                     .GetWithAllDependentsEnumerable(this, strPropertyName))
-                            setNamesOfChangedProperties.Add(strLoopChangedProperty);
-                    }
-                }
-
-                if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
-                    return;
-
-                Utils.RunOnMainThread(() =>
-                {
-                    if (PropertyChanged != null)
-                    {
-                        foreach (string strPropertyToChange in setNamesOfChangedProperties)
+                        if (setNamesOfChangedProperties == null)
+                            setNamesOfChangedProperties
+                                = s_AttributeSectionDependencyGraph.GetWithAllDependents(this, strPropertyName, true);
+                        else
                         {
-                            PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
+                            foreach (string strLoopChangedProperty in s_AttributeSectionDependencyGraph
+                                         .GetWithAllDependentsEnumerable(this, strPropertyName))
+                                setNamesOfChangedProperties.Add(strLoopChangedProperty);
                         }
                     }
-                });
-            }
-            finally
-            {
-                if (setNamesOfChangedProperties != null)
-                    Utils.StringHashSetPool.Return(setNamesOfChangedProperties);
+
+                    if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
+                        return;
+
+                    Utils.RunOnMainThread(() =>
+                    {
+                        if (PropertyChanged != null)
+                        {
+                            foreach (string strPropertyToChange in setNamesOfChangedProperties)
+                            {
+                                PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
+                            }
+                        }
+                    });
+                }
+                finally
+                {
+                    if (setNamesOfChangedProperties != null)
+                        Utils.StringHashSetPool.Return(setNamesOfChangedProperties);
+                }
             }
         }
 
@@ -109,6 +112,22 @@ namespace Chummer.Backend.Attributes
                     }
                     return _lstAttributes;
                 }
+            }
+        }
+
+        public async ValueTask<ThreadSafeObservableCollection<CharacterAttrib>> GetAttributesAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+            {
+                using (await EnterReadLock.EnterAsync(_objAttributesInitializerLock, token))
+                {
+                    if (!_blnAttributesInitialized)
+                    {
+                        await InitializeAttributesListAsync(token);
+                    }
+                }
+
+                return _lstAttributes;
             }
         }
 
@@ -148,6 +167,52 @@ namespace Chummer.Backend.Attributes
                     {
                         _lstAttributes.Add(_objCharacter.DEP);
                     }
+                }
+            }
+        }
+
+        private async ValueTask InitializeAttributesListAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(_objCharacter.LockObject, token))
+            {
+                IAsyncDisposable objLocker = await _objAttributesInitializerLock.EnterWriteLockAsync(token);
+                try
+                {
+                    _blnAttributesInitialized = true;
+
+                    // Not creating a new collection here so that CollectionChanged events from previous list are kept
+                    await _lstAttributes.ClearAsync(token);
+                    await _lstAttributes.AddAsync(await GetAttributeByNameAsync("BOD", token), token);
+                    await _lstAttributes.AddAsync(await GetAttributeByNameAsync("AGI", token), token);
+                    await _lstAttributes.AddAsync(await GetAttributeByNameAsync("REA", token), token);
+                    await _lstAttributes.AddAsync(await GetAttributeByNameAsync("STR", token), token);
+                    await _lstAttributes.AddAsync(await GetAttributeByNameAsync("CHA", token), token);
+                    await _lstAttributes.AddAsync(await GetAttributeByNameAsync("INT", token), token);
+                    await _lstAttributes.AddAsync(await GetAttributeByNameAsync("LOG", token), token);
+                    await _lstAttributes.AddAsync(await GetAttributeByNameAsync("WIL", token), token);
+                    await _lstAttributes.AddAsync(await GetAttributeByNameAsync("EDG", token), token);
+
+                    if (await _objCharacter.GetMAGEnabledAsync(token))
+                    {
+                        await _lstAttributes.AddAsync(await GetAttributeByNameAsync("MAG", token), token);
+                        if (await (await _objCharacter.GetSettingsAsync(token)).GetMysAdeptSecondMAGAttributeAsync(token) &&
+                            await _objCharacter.GetIsMysticAdeptAsync(token))
+                            await _lstAttributes.AddAsync(await GetAttributeByNameAsync("MAGAdept", token), token);
+                    }
+
+                    if (await _objCharacter.GetRESEnabledAsync(token))
+                    {
+                        await _lstAttributes.AddAsync(await GetAttributeByNameAsync("RES", token), token);
+                    }
+
+                    if (await _objCharacter.GetDEPEnabledAsync(token))
+                    {
+                        await _lstAttributes.AddAsync(await GetAttributeByNameAsync("DEP", token), token);
+                    }
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync();
                 }
             }
         }
@@ -1541,8 +1606,10 @@ namespace Chummer.Backend.Attributes
                 try
                 {
                     _blnLoading = true;
-                    await AttributeList.ClearAsync(token).ConfigureAwait(false);
-                    await SpecialAttributeList.ClearAsync(token).ConfigureAwait(false);
+                    ThreadSafeObservableCollection<CharacterAttrib> lstAttributes = await GetAttributeListAsync(token).ConfigureAwait(false);
+                    ThreadSafeObservableCollection<CharacterAttrib> lstSpecialAttributes = await GetSpecialAttributeListAsync(token).ConfigureAwait(false);
+                    await lstAttributes.ClearAsync(token).ConfigureAwait(false);
+                    await lstSpecialAttributes.ClearAsync(token).ConfigureAwait(false);
                     foreach (string strAttribute in AttributeStrings)
                     {
                         CharacterAttrib objAttribute;
@@ -1551,13 +1618,13 @@ namespace Chummer.Backend.Attributes
                             case CharacterAttrib.AttributeCategory.Special:
                                 objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
                                                                    CharacterAttrib.AttributeCategory.Special);
-                                await SpecialAttributeList.AddAsync(objAttribute, token).ConfigureAwait(false);
+                                await lstSpecialAttributes.AddAsync(objAttribute, token).ConfigureAwait(false);
                                 break;
 
                             case CharacterAttrib.AttributeCategory.Standard:
                                 objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
                                                                    CharacterAttrib.AttributeCategory.Standard);
-                                await AttributeList.AddAsync(objAttribute, token).ConfigureAwait(false);
+                                await lstAttributes.AddAsync(objAttribute, token).ConfigureAwait(false);
                                 break;
                         }
                     }
@@ -1573,7 +1640,7 @@ namespace Chummer.Backend.Attributes
                         }
                     }
 
-                    ResetBindings(token);
+                    await ResetBindingsAsync(token).ConfigureAwait(false);
                 }
                 finally
                 {
@@ -1621,6 +1688,36 @@ namespace Chummer.Backend.Attributes
                 {
                     objBindingEntry.Value.ResetBindings(false);
                 }
+            }
+        }
+
+        /// <summary>
+        /// Reset the databindings for all character attributes.
+        /// This method is used to support hot-swapping attributes for shapeshifters.
+        /// </summary>
+        public async ValueTask ResetBindingsAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker1 = await _objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    await _dicBindings.ForEachAsync(
+                        async objBindingEntry => objBindingEntry.Value.DataSource =
+                            await GetAttributeByNameAsync(objBindingEntry.Key, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                    await _objCharacter.RefreshAttributeBindingsAsync(token).ConfigureAwait(false);
+                    await _dicBindings.ForEachAsync(objBindingEntry => objBindingEntry.Value.ResetBindings(false),
+                        token: token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker1.DisposeAsync().ConfigureAwait(false);
             }
         }
 

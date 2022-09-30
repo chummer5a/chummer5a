@@ -383,62 +383,74 @@ namespace Chummer.UI.Skills
 
         private async void btnCareerIncrease_Click(object sender, EventArgs e)
         {
-            int upgradeKarmaCost = _objSkill.UpgradeKarmaCost;
+            using (await EnterReadLock.EnterAsync(_objSkill.LockObject))
+            {
+                int upgradeKarmaCost = _objSkill.UpgradeKarmaCost;
 
-            if (upgradeKarmaCost == -1)
-                return; //TODO: more descriptive
-            string confirmstring = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpense"),
-                _objSkill.CurrentDisplayName, _objSkill.Rating + 1, upgradeKarmaCost, cboType.GetItemText(cboType.SelectedItem));
+                if (upgradeKarmaCost == -1)
+                    return; //TODO: more descriptive
+                string confirmstring = string.Format(GlobalSettings.CultureInfo,
+                    await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpense"),
+                    _objSkill.CurrentDisplayName, _objSkill.Rating + 1, upgradeKarmaCost,
+                    cboType.GetItemText(cboType.SelectedItem));
 
-            if (!CommonFunctions.ConfirmKarmaExpense(confirmstring))
-                return;
+                if (!await CommonFunctions.ConfirmKarmaExpenseAsync(confirmstring))
+                    return;
 
-            _objSkill.Upgrade();
+                await _objSkill.Upgrade();
+            }
         }
 
         private async void btnAddSpec_Click(object sender, EventArgs e)
         {
-            int price = _objSkill.CharacterObject.Settings.KarmaKnowledgeSpecialization;
-
-            decimal decExtraSpecCost = 0;
-            int intTotalBaseRating = _objSkill.TotalBaseRating;
-            decimal decSpecCostMultiplier = 1.0m;
-            foreach (Improvement objLoopImprovement in _objSkill.CharacterObject.Improvements)
+            using (await EnterReadLock.EnterAsync(_objSkill.LockObject))
             {
-                if (objLoopImprovement.Minimum <= intTotalBaseRating
-                    && (string.IsNullOrEmpty(objLoopImprovement.Condition)
-                        || (objLoopImprovement.Condition == "career") == _objSkill.CharacterObject.Created
-                        || (objLoopImprovement.Condition == "create") != _objSkill.CharacterObject.Created)
-                    && objLoopImprovement.Enabled
-                    && objLoopImprovement.ImprovedName == _objSkill.SkillCategory)
-                {
-                    switch (objLoopImprovement.ImproveType)
-                    {
-                        case Improvement.ImprovementType.SkillCategorySpecializationKarmaCost:
-                            decExtraSpecCost += objLoopImprovement.Value;
-                            break;
+                int price = _objSkill.CharacterObject.Settings.KarmaKnowledgeSpecialization;
 
-                        case Improvement.ImprovementType.SkillCategorySpecializationKarmaCostMultiplier:
-                            decSpecCostMultiplier *= objLoopImprovement.Value / 100.0m;
-                            break;
+                decimal decExtraSpecCost = 0;
+                int intTotalBaseRating = _objSkill.TotalBaseRating;
+                decimal decSpecCostMultiplier = 1.0m;
+                foreach (Improvement objLoopImprovement in _objSkill.CharacterObject.Improvements)
+                {
+                    if (objLoopImprovement.Minimum <= intTotalBaseRating
+                        && (string.IsNullOrEmpty(objLoopImprovement.Condition)
+                            || (objLoopImprovement.Condition == "career") == _objSkill.CharacterObject.Created
+                            || (objLoopImprovement.Condition == "create") != _objSkill.CharacterObject.Created)
+                        && objLoopImprovement.Enabled
+                        && objLoopImprovement.ImprovedName == _objSkill.SkillCategory)
+                    {
+                        switch (objLoopImprovement.ImproveType)
+                        {
+                            case Improvement.ImprovementType.SkillCategorySpecializationKarmaCost:
+                                decExtraSpecCost += objLoopImprovement.Value;
+                                break;
+
+                            case Improvement.ImprovementType.SkillCategorySpecializationKarmaCostMultiplier:
+                                decSpecCostMultiplier *= objLoopImprovement.Value / 100.0m;
+                                break;
+                        }
                     }
                 }
-            }
-            if (decSpecCostMultiplier != 1.0m)
-                price = (price * decSpecCostMultiplier + decExtraSpecCost).StandardRound();
-            else
-                price += decExtraSpecCost.StandardRound(); //Spec
 
-            string confirmstring = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpenseSkillSpecialization"), price);
+                if (decSpecCostMultiplier != 1.0m)
+                    price = (price * decSpecCostMultiplier + decExtraSpecCost).StandardRound();
+                else
+                    price += decExtraSpecCost.StandardRound(); //Spec
 
-            if (!CommonFunctions.ConfirmKarmaExpense(confirmstring))
-                return;
+                string confirmstring = string.Format(GlobalSettings.CultureInfo,
+                    await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpenseSkillSpecialization"), price);
 
-            using (ThreadSafeForm<SelectSpec> selectForm = await ThreadSafeForm<SelectSpec>.GetAsync(() => new SelectSpec(_objSkill) { Mode = "Knowledge" }))
-            {
-                if (await selectForm.ShowDialogSafeAsync(_objSkill.CharacterObject) != DialogResult.OK)
+                if (!await CommonFunctions.ConfirmKarmaExpenseAsync(confirmstring))
                     return;
-                _objSkill.AddSpecialization(selectForm.MyForm.SelectedItem);
+
+                using (ThreadSafeForm<SelectSpec> selectForm =
+                       await ThreadSafeForm<SelectSpec>.GetAsync(() => new SelectSpec(_objSkill)
+                           { Mode = "Knowledge" }))
+                {
+                    if (await selectForm.ShowDialogSafeAsync(_objSkill.CharacterObject) != DialogResult.OK)
+                        return;
+                    await _objSkill.AddSpecialization(selectForm.MyForm.SelectedItem);
+                }
             }
         }
 
@@ -446,7 +458,7 @@ namespace Chummer.UI.Skills
         {
             if (!_objSkill.AllowDelete)
                 return;
-            if (!CommonFunctions.ConfirmDelete(await LanguageManager.GetStringAsync("Message_DeleteKnowledgeSkill")))
+            if (!await CommonFunctions.ConfirmDeleteAsync(await LanguageManager.GetStringAsync("Message_DeleteKnowledgeSkill")))
                 return;
             await _objSkill.CharacterObject.SkillsSection.KnowledgeSkills.RemoveAsync(_objSkill);
         }

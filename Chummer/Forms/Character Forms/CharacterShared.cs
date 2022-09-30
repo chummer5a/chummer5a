@@ -7687,7 +7687,7 @@ namespace Chummer
             {
                 if (!(sender is ContactControl objSender))
                     return;
-                if (!CommonFunctions.ConfirmDelete(await LanguageManager.GetStringAsync("Message_DeleteContact", token: GenericToken)))
+                if (!await CommonFunctions.ConfirmDeleteAsync(await LanguageManager.GetStringAsync("Message_DeleteContact", token: GenericToken), GenericToken))
                     return;
 
                 await CharacterObject.Contacts.RemoveAsync(objSender.ContactObject, token: GenericToken);
@@ -7722,7 +7722,7 @@ namespace Chummer
             {
                 if (!(sender is PetControl objSender))
                     return;
-                if (!CommonFunctions.ConfirmDelete(await LanguageManager.GetStringAsync("Message_DeleteContact", token: GenericToken)))
+                if (!await CommonFunctions.ConfirmDeleteAsync(await LanguageManager.GetStringAsync("Message_DeleteContact", token: GenericToken), GenericToken))
                     return;
 
                 await CharacterObject.Contacts.RemoveAsync(objSender.ContactObject, token: GenericToken);
@@ -7758,7 +7758,7 @@ namespace Chummer
             {
                 if (!(sender is ContactControl objSender))
                     return;
-                if (!CommonFunctions.ConfirmDelete(await LanguageManager.GetStringAsync("Message_DeleteEnemy", token: GenericToken)))
+                if (!await CommonFunctions.ConfirmDeleteAsync(await LanguageManager.GetStringAsync("Message_DeleteEnemy", token: GenericToken), GenericToken))
                     return;
 
                 await CharacterObject.Contacts.RemoveAsync(objSender.ContactObject, token: GenericToken);
@@ -8209,7 +8209,7 @@ namespace Chummer
                     return;
                 Spirit objSpirit = objSender.SpiritObject;
                 bool blnIsSpirit = objSpirit.EntityType == SpiritType.Spirit;
-                if (!CommonFunctions.ConfirmDelete(await LanguageManager.GetStringAsync(blnIsSpirit ? "Message_DeleteSpirit" : "Message_DeleteSprite", token: GenericToken)))
+                if (!await CommonFunctions.ConfirmDeleteAsync(await LanguageManager.GetStringAsync(blnIsSpirit ? "Message_DeleteSpirit" : "Message_DeleteSprite", token: GenericToken), GenericToken))
                     return;
                 objSpirit.Fettered = false; // Fettered spirits consume MAG.
                 await CharacterObject.Spirits.RemoveAsync(objSpirit, token: GenericToken);

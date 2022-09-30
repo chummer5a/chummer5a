@@ -1201,8 +1201,8 @@ namespace Chummer
                                 if (!xmlTalentPriorityNode.TryGetInt32FieldQuickly("magic", ref intTemp))
                                     intTemp = 1;
                                 if (!xmlTalentPriorityNode.TryGetInt32FieldQuickly("maxmagic", ref intMax))
-                                    intMax = Math.Max(CommonFunctions.ExpressionToInt(
-                                                          charNode["magmax"]?.InnerText, intForce), intTemp);
+                                    intMax = Math.Max(await CommonFunctions.ExpressionToIntAsync(
+                                        charNode["magmax"]?.InnerText, intForce, token: token), intTemp);
                                 _objCharacter.MAG.AssignLimits(intTemp, intMax, intMax);
                                 _objCharacter.FreeSpells
                                     = xmlTalentPriorityNode.TryGetInt32FieldQuickly("spells", ref intTemp)
@@ -1212,8 +1212,8 @@ namespace Chummer
                                 if (!xmlTalentPriorityNode.TryGetInt32FieldQuickly("resonance", ref intTemp))
                                     intTemp = 1;
                                 if (!xmlTalentPriorityNode.TryGetInt32FieldQuickly("maxresonance", ref intMax))
-                                    intMax = Math.Max(CommonFunctions.ExpressionToInt(
-                                                          charNode["resmax"]?.InnerText, intForce), intTemp);
+                                    intMax = Math.Max(await CommonFunctions.ExpressionToIntAsync(
+                                        charNode["resmax"]?.InnerText, intForce, token: token), intTemp);
                                 _objCharacter.RES.AssignLimits(intTemp, intMax, intMax);
                                 _objCharacter.CFPLimit
                                     = xmlTalentPriorityNode.TryGetInt32FieldQuickly("cfp", ref intTemp) ? intTemp : 0;
@@ -1221,8 +1221,8 @@ namespace Chummer
                                 if (!xmlTalentPriorityNode.TryGetInt32FieldQuickly("depth", ref intTemp))
                                     intTemp = 1;
                                 if (!xmlTalentPriorityNode.TryGetInt32FieldQuickly("maxdepth", ref intMax))
-                                    intMax = Math.Max(CommonFunctions.ExpressionToInt(
-                                                          charNode["depmax"]?.InnerText, intForce), intTemp);
+                                    intMax = Math.Max(await CommonFunctions.ExpressionToIntAsync(
+                                        charNode["depmax"]?.InnerText, intForce, token: token), intTemp);
                                 _objCharacter.DEP.AssignLimits(intTemp, intMax, intMax);
                                 _objCharacter.AINormalProgramLimit
                                     = xmlTalentPriorityNode.TryGetInt32FieldQuickly("ainormalprogramlimit", ref intTemp)

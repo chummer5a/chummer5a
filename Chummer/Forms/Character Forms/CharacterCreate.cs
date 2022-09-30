@@ -4875,12 +4875,12 @@ namespace Chummer
                                    + await LanguageManager.GetStringAsync("String_Karma", token: token);
 
                     if (blnConfirmDelete &&
-                        !CommonFunctions.ConfirmDelete(string.Format(GlobalSettings.CultureInfo,
-                                                                     await LanguageManager.GetStringAsync(
-                                                                         blnCompleteDelete
-                                                                             ? "Message_DeleteMetatypeQuality"
-                                                                             : "Message_LowerMetatypeQualityLevel", token: token),
-                                                                     strBP)))
+                        !await CommonFunctions.ConfirmDeleteAsync(string.Format(GlobalSettings.CultureInfo,
+                            await LanguageManager.GetStringAsync(
+                                blnCompleteDelete
+                                    ? "Message_DeleteMetatypeQuality"
+                                    : "Message_LowerMetatypeQualityLevel", token: token),
+                            strBP), token))
                         return false;
 
                     // Remove any Improvements that the Quality might have.
@@ -4922,10 +4922,10 @@ namespace Chummer
                 }
                 else
                 {
-                    if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(
+                    if (blnConfirmDelete && !await CommonFunctions.ConfirmDeleteAsync(
                             blnCompleteDelete
                                 ? await LanguageManager.GetStringAsync("Message_DeleteQuality", token: token)
-                                : await LanguageManager.GetStringAsync("Message_LowerQualityLevel", token: token)))
+                                : await LanguageManager.GetStringAsync("Message_LowerQualityLevel", token: token), token))
                         return false;
 
                     if (objSelectedQuality.OriginSource == QualitySource.MetatypeRemovedAtChargen)

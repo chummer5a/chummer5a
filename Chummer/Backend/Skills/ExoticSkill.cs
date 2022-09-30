@@ -47,7 +47,14 @@ namespace Chummer.Backend.Skills
 
         public override bool IsExoticSkill => true;
 
-        public override bool AllowDelete => !CharacterObject.Created && FreeBase + FreeKarma + RatingModifiers(Attribute) <= 0;
+        public override bool AllowDelete
+        {
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return !CharacterObject.Created && FreeBase + FreeKarma + RatingModifiers(Attribute) <= 0;
+            }
+        }
 
         public override bool BuyWithKarma
         {
@@ -58,13 +65,27 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        public override int CurrentSpCost => Math.Max(BasePoints, 0);
+        public override int CurrentSpCost
+        {
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return Math.Max(BasePoints, 0);
+            }
+        }
 
         /// <summary>
         /// How much karma this costs. Return value during career mode is undefined
         /// </summary>
         /// <returns></returns>
-        public override int CurrentKarmaCost => Math.Max(RangeCost(Base + FreeKarma, TotalBaseRating), 0);
+        public override int CurrentKarmaCost
+        {
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return Math.Max(RangeCost(Base + FreeKarma, TotalBaseRating), 0);
+            }
+        }
 
         public override void WriteToDerived(XmlWriter objWriter)
         {
@@ -73,28 +94,45 @@ namespace Chummer.Backend.Skills
 
         public string Specific
         {
-            get => _strSpecific;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _strSpecific;
+            }
             set
             {
-                if (_strSpecific == value)
-                    return;
-                _strSpecific = value;
-                OnPropertyChanged();
+                using (EnterReadLock.Enter(LockObject))
+                {
+                    if (_strSpecific == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _strSpecific = value;
+                        OnPropertyChanged();
+                    }
+                }
             }
         }
 
         public string DisplaySpecific(string strLanguage)
         {
-            return strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
-                ? Specific
-                : CharacterObject.TranslateExtra(Specific, strLanguage);
+            using (EnterReadLock.Enter(LockObject))
+            {
+                return strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
+                    ? Specific
+                    : CharacterObject.TranslateExtra(Specific, strLanguage);
+            }
         }
 
         public async ValueTask<string> DisplaySpecificAsync(string strLanguage, CancellationToken token = default)
         {
-            return strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
-                ? Specific
-                : await CharacterObject.TranslateExtraAsync(Specific, strLanguage, token: token).ConfigureAwait(false);
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+            {
+                return strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
+                    ? Specific
+                    : await CharacterObject.TranslateExtraAsync(Specific, strLanguage, token: token)
+                        .ConfigureAwait(false);
+            }
         }
 
         public override string DisplaySpecialization(string strLanguage)
