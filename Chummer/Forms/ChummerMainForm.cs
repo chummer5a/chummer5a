@@ -2274,10 +2274,9 @@ namespace Chummer
                 }
 
                 // This weird ordering of WindowState after Show() is meant to counteract a weird WinForms issue where form handle creation crashes
-                foreach (Tuple<CharacterSheetViewer, Character> tupForm in lstNewFormsToProcess)
+                foreach ((CharacterSheetViewer frmViewer, Character objCharacter) in lstNewFormsToProcess)
                 {
-                    CharacterSheetViewer frmViewer = tupForm.Item1;
-                    await frmViewer.SetCharacters(token, tupForm.Item2);
+                    await frmViewer.SetCharacters(token, objCharacter);
                     if (await this.DoThreadSafeFuncAsync(y => y.MdiChildren.Length, token) <= 1)
                     {
                         await frmViewer.DoThreadSafeAsync(x =>

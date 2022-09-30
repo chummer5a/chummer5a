@@ -825,7 +825,7 @@ namespace Chummer.UI.Skills
 
         private async void btnKnowledge_Click(object sender, EventArgs e)
         {
-            if (_objCharacter.Created)
+            if (await _objCharacter.GetCreatedAsync())
             {
                 string strSelectedSkill;
 

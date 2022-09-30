@@ -135,7 +135,7 @@ namespace Chummer
                                                                    + (strSelectedCategory + 's').CleanXPath()
                                                                    + " or useskill = "
                                                                    + strSelectedCategory.CleanXPath() + ") and ("
-                                                                   + _objCharacter.Settings.BookXPath(false) + ")]");
+                                                                   + await _objCharacter.Settings.BookXPathAsync(false, token) + ")]");
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSkillSpecializations))
             {
                 if (xmlWeaponList.Count > 0)
@@ -156,7 +156,7 @@ namespace Chummer
                 foreach (XPathNavigator xmlSpec in (await _objCharacter.LoadDataXPathAsync("skills.xml", token: token))
                                                                 .Select("/chummer/skills/skill[name = "
                                                                         + strSelectedCategory.CleanXPath() + " and ("
-                                                                        + _objCharacter.Settings.BookXPath()
+                                                                        + await _objCharacter.Settings.BookXPathAsync(token: token)
                                                                         + ")]/specs/spec"))
                 {
                     string strName = xmlSpec.Value;

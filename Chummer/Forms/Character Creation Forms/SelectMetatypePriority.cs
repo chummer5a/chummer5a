@@ -2238,7 +2238,7 @@ namespace Chummer
                                              "quality", token))
                                 {
                                     if (_xmlBaseQualityDataNode.SelectSingleNode(
-                                            "qualities/quality[" + _objCharacter.Settings.BookXPath() + " and name = "
+                                            "qualities/quality[" + await _objCharacter.Settings.BookXPathAsync(token: token) + " and name = "
                                             + xmlQuality.Value.CleanXPath() + ']') == null)
                                     {
                                         blnFoundUnavailableQuality = true;
@@ -2414,7 +2414,7 @@ namespace Chummer
                         lstMetavariants.Add(new ListItem(Guid.Empty, await LanguageManager.GetStringAsync("String_None", token: token)));
                         // Retrieve the list of Metavariants for the selected Metatype.
                         foreach (XPathNavigator objXmlMetavariant in objXmlMetatype.Select(
-                                     "metavariants/metavariant[" + _objCharacter.Settings.BookXPath() + ']'))
+                                     "metavariants/metavariant[" + await _objCharacter.Settings.BookXPathAsync(token: token) + ']'))
                         {
                             string strName = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("name", token))?.Value
                                              ?? await LanguageManager.GetStringAsync("String_Unknown", token: token);
@@ -2529,7 +2529,7 @@ namespace Chummer
                             || await xmlBaseMetatypePriority.SelectSingleNodeAndCacheExpressionAsync("prioritytable", token) != null)
                         {
                             foreach (XPathNavigator objXmlMetatype in _xmlBaseMetatypeDataNode.Select(
-                                         "metatypes/metatype[(" + _objCharacter.Settings.BookXPath()
+                                         "metatypes/metatype[(" + await _objCharacter.Settings.BookXPathAsync(token: token)
                                                                 + ") and category = " + strSelectedCategory.CleanXPath()
                                                                 + ']'))
                             {
@@ -2618,7 +2618,7 @@ namespace Chummer
                         {
                             foreach (XPathNavigator objXmlMetatype in _xmlBaseMetatypeDataNode.Select(
                                          "metatypes/metatype[category = " + objXmlCategory.Value.CleanXPath() + " and ("
-                                         + _objCharacter.Settings.BookXPath() + ")]"))
+                                         + await _objCharacter.Settings.BookXPathAsync(token: token) + ")]"))
                             {
                                 if (xmlBaseMetatypePriority.SelectSingleNode(
                                         "metatypes/metatype[name = "

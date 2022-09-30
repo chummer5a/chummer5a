@@ -208,7 +208,7 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
-            string strFilter = '(' + _objCharacter.Settings.BookXPath() + ')';
+            string strFilter = '(' + await _objCharacter.Settings.BookXPathAsync(token: token) + ')';
             if (!string.IsNullOrEmpty(_strLimitToPowers))
             {
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))

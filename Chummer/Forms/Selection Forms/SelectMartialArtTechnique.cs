@@ -179,7 +179,7 @@ namespace Chummer
         /// </summary>
         private async ValueTask RefreshTechniquesList(CancellationToken token = default)
         {
-            string strFilter = '(' + _objCharacter.Settings.BookXPath() + ')';
+            string strFilter = '(' + await _objCharacter.Settings.BookXPathAsync(token: token) + ')';
             string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token: token);
             if (!string.IsNullOrEmpty(strSearch))
                 strFilter += " and " + CommonFunctions.GenerateSearchXPath(strSearch);

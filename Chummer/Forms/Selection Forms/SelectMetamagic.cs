@@ -166,9 +166,9 @@ namespace Chummer
         /// </summary>
         private async ValueTask BuildMetamagicList(CancellationToken token = default)
         {
-            string strFilter = '(' + _objCharacter.Settings.BookXPath() + ')';
+            string strFilter = '(' + await _objCharacter.Settings.BookXPathAsync(token: token) + ')';
             // If the character has MAG enabled, filter the list based on Adept/Magician availability.
-            if (_objCharacter.MAGEnabled)
+            if (await _objCharacter.GetMAGEnabledAsync(token))
             {
                 bool blnIsMagician = await _objCharacter.GetMagicianEnabledAsync(token);
                 if (blnIsMagician != await _objCharacter.GetAdeptEnabledAsync(token))

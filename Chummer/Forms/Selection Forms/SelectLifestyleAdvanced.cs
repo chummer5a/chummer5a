@@ -383,7 +383,7 @@ namespace Chummer
                                                            out List<ListItem> lstLifestyles))
             {
                 using (XmlNodeList xmlLifestyleList
-                       = _xmlDocument.SelectNodes("/chummer/lifestyles/lifestyle[" + _objCharacter.Settings.BookXPath()
+                       = _xmlDocument.SelectNodes("/chummer/lifestyles/lifestyle[" + await _objCharacter.Settings.BookXPathAsync()
                                                   + ']'))
                 {
                     if (xmlLifestyleList?.Count > 0)
@@ -397,7 +397,7 @@ namespace Chummer
                                 (StyleType == LifestyleType.Advanced || objXmlLifestyle["slp"]?.InnerText == "remove")
                                 &&
                                 !strLifestyleName.Contains("Hospitalized") &&
-                                _objCharacter.Settings.BookEnabled(objXmlLifestyle["source"]?.InnerText))
+                                await _objCharacter.Settings.BookEnabledAsync(objXmlLifestyle["source"]?.InnerText))
                             {
                                 lstLifestyles.Add(new ListItem(strLifestyleName,
                                                                objXmlLifestyle["translate"]?.InnerText

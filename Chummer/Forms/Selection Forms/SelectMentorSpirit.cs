@@ -207,7 +207,7 @@ namespace Chummer
         {
             string strForceId = string.Empty;
 
-            string strFilter = '(' + _objCharacter.Settings.BookXPath() + ')';
+            string strFilter = '(' + await _objCharacter.Settings.BookXPathAsync() + ')';
             string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text);
             if (!string.IsNullOrEmpty(strSearch))
                 strFilter += " and " + CommonFunctions.GenerateSearchXPath(strSearch);

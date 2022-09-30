@@ -141,33 +141,37 @@ namespace Chummer.UI.Shared
         private async void tssLimitModifierNotes_Click(object sender, EventArgs e)
         {
             object objSelectedNodeTag = await treLimit.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag);
-            if (objSelectedNodeTag == null)
-                return;
-            if (objSelectedNodeTag is IHasNotes objNotes)
+            switch (objSelectedNodeTag)
             {
-                await WriteNotes(objNotes, await treLimit.DoThreadSafeFuncAsync(x => x.SelectedNode));
-            }
-            else
-            {
-                // the limit modifier has a source
-                foreach (Improvement objImprovement in _objCharacter.Improvements)
+                case null:
+                    return;
+                case IHasNotes objNotes:
+                    await WriteNotes(objNotes, await treLimit.DoThreadSafeFuncAsync(x => x.SelectedNode));
+                    break;
+                default:
                 {
-                    if (objImprovement.ImproveType != Improvement.ImprovementType.LimitModifier ||
-                        objImprovement.SourceName != objSelectedNodeTag.ToString())
-                        continue;
-                    using (ThreadSafeForm<EditNotes> frmItemNotes = await ThreadSafeForm<EditNotes>.GetAsync(() => new EditNotes(objImprovement.Notes, objImprovement.NotesColor)))
+                    // the limit modifier has a source
+                    foreach (Improvement objImprovement in _objCharacter.Improvements)
                     {
-                        if (await frmItemNotes.ShowDialogSafeAsync(_objCharacter) != DialogResult.OK)
+                        if (objImprovement.ImproveType != Improvement.ImprovementType.LimitModifier ||
+                            objImprovement.SourceName != objSelectedNodeTag.ToString())
                             continue;
+                        using (ThreadSafeForm<EditNotes> frmItemNotes = await ThreadSafeForm<EditNotes>.GetAsync(() => new EditNotes(objImprovement.Notes, objImprovement.NotesColor)))
+                        {
+                            if (await frmItemNotes.ShowDialogSafeAsync(_objCharacter) != DialogResult.OK)
+                                continue;
 
-                        objImprovement.Notes = frmItemNotes.MyForm.Notes;
+                            objImprovement.Notes = frmItemNotes.MyForm.Notes;
+                        }
+                        await treLimit.DoThreadSafeAsync(x =>
+                        {
+                            x.SelectedNode.ForeColor = objImprovement.PreferredColor;
+                            x.SelectedNode.ToolTipText = objImprovement.Notes.WordWrap();
+                        });
+                        MakeDirty?.Invoke(this, EventArgs.Empty);
                     }
-                    await treLimit.DoThreadSafeAsync(x =>
-                    {
-                        x.SelectedNode.ForeColor = objImprovement.PreferredColor;
-                        x.SelectedNode.ToolTipText = objImprovement.Notes.WordWrap();
-                    });
-                    MakeDirty?.Invoke(this, EventArgs.Empty);
+
+                    break;
                 }
             }
         }

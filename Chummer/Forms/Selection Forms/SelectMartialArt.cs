@@ -125,7 +125,7 @@ namespace Chummer
                                 XPathNavigator xmlTechniqueNode
                                     = _xmlBaseMartialArtsTechniquesNode.SelectSingleNode(
                                         "technique[name = " + strLoopTechniqueName.CleanXPath() + " and ("
-                                        + _objCharacter.Settings.BookXPath() + ")]");
+                                        + await _objCharacter.Settings.BookXPathAsync() + ")]");
                                 if (xmlTechniqueNode != null)
                                 {
                                     if (sbdTechniques.Length > 0)
@@ -233,7 +233,7 @@ namespace Chummer
         /// </summary>
         private async ValueTask RefreshArtList(CancellationToken token = default)
         {
-            string strFilter = '(' + _objCharacter.Settings.BookXPath() + ')';
+            string strFilter = '(' + await _objCharacter.Settings.BookXPathAsync(token: token) + ')';
             if (ShowQualities)
                 strFilter += " and isquality = " + bool.TrueString.CleanXPath();
             else
