@@ -17247,7 +17247,7 @@ namespace Chummer
                         , 5000.ToString(CharacterObjectSettings.NuyenFormat, GlobalSettings.CultureInfo)),
                     await LanguageManager.GetStringAsync("MessageTitle_ExtraNuyen", token: token), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
                     return false;
-                if (GlobalSettings.CreateBackupOnCareer && chkCharacterCreated.Checked)
+                if (GlobalSettings.CreateBackupOnCareer && await chkCharacterCreated.DoThreadSafeFuncAsync(x => x.Checked, token))
                 {
                     // Create a pre-Career Mode backup of the character.
                     // Make sure the backup directory exists.
@@ -17279,7 +17279,7 @@ namespace Chummer
                     strNewName += await LanguageManager.GetStringAsync("String_Space", token: token) + '('
                         + await LanguageManager.GetStringAsync("Title_CreateMode", token: token)
                         + ").chum5";
-                    if (CharacterObject?.FileName?.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase) == true)
+                    if (CharacterObject.FileName?.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase) == true)
                         strNewName += "lz";
                     strNewName = Path.Combine(Utils.GetStartupPath, "saves", "backup", strNewName);
 

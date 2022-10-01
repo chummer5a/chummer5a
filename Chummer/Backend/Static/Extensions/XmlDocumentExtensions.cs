@@ -159,6 +159,7 @@ namespace Chummer
         /// Method is slow, but the nagivator it creates is faster than that of an XmlDocument. Use accordingly.
         /// </summary>
         /// <param name="xmlDocument">The document from which a navigator should be spawned.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>An XPathNavigator of an XPathDocument copy of <paramref name="xmlDocument"/>.</returns>
         public static Task<XPathNavigator> GetFastNavigatorAsync(this XmlDocument xmlDocument, CancellationToken token = default)
         {

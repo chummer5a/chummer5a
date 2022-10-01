@@ -4884,7 +4884,7 @@ namespace Chummer
 
                                 objXmlCharacter = objXmlDocument.SelectSingleNode("/character");
                                 xmlCharacterNavigator =
-                                    objXmlDocument.GetFastNavigator().SelectSingleNode("/character");
+                                    (await objXmlDocument.GetFastNavigatorAsync(token)).SelectSingleNode("/character");
                                 return true;
                             }
 
@@ -4970,7 +4970,10 @@ namespace Chummer
                                         objXmlDocument.InnerXml =
                                             objXmlDocument.InnerXml.Replace("Corruptor", "Corrupter");
                                         xmlCharacterNavigator =
-                                            objXmlDocument.GetFastNavigator().SelectSingleNode("/character");
+                                            (blnSync
+                                                ? objXmlDocument.GetFastNavigator()
+                                                : await objXmlDocument.GetFastNavigatorAsync(token))
+                                            .SelectSingleNode("/character");
                                         if (xmlCharacterNavigator == null)
                                             return false;
                                     }
