@@ -5253,8 +5253,7 @@ namespace Chummer.Backend.Skills
                     {
                         if (objLoopImprovement.Minimum <= intTotalBaseRating
                             && (string.IsNullOrEmpty(objLoopImprovement.Condition)
-                                || (objLoopImprovement.Condition == "career") == blnCreated
-                                || (objLoopImprovement.Condition == "create") != blnCreated)
+                                || objLoopImprovement.Condition == "career")
                             && objLoopImprovement.Enabled && objLoopImprovement.ImprovedName == SkillCategory)
                         {
                             switch (objLoopImprovement.ImproveType)

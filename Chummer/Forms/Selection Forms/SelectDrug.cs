@@ -302,8 +302,7 @@ namespace Chummer
                     GlobalSettings.CultureInfo, _objCharacter);
                 await objSource.SetControlAsync(lblSource);
                 await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(objSource.ToString()));
-
-                Grade objForcedGrade = null;
+                
                 if (!string.IsNullOrEmpty(strForceGrade))
                 {
                     // Force the Drug to be a particular Grade.
@@ -312,17 +311,15 @@ namespace Chummer
                         if (x.Enabled)
                             x.Enabled = false;
                     });
-                    objForcedGrade = _lstGrades.Find(x => x.Name == strForceGrade);
+                    Grade objForcedGrade = _lstGrades.Find(x => x.Name == strForceGrade);
                     strForceGrade = objForcedGrade?.SourceId.ToString("D", GlobalSettings.InvariantCultureInfo);
                 }
                 else
                 {
                     await cboGrade.DoThreadSafeAsync(x => x.Enabled = !_blnLockGrade);
                     if (_blnLockGrade)
-                    {
-                        strForceGrade = _objForcedGrade?.SourceId.ToString("D", GlobalSettings.InvariantCultureInfo) ?? cboGrade.SelectedValue?.ToString();
-                        objForcedGrade = _objForcedGrade ?? _lstGrades.Find(x => x.SourceId.ToString("D", GlobalSettings.InvariantCultureInfo) == strForceGrade);
-                    }
+                        strForceGrade = _objForcedGrade?.SourceId.ToString("D", GlobalSettings.InvariantCultureInfo)
+                                        ?? cboGrade.SelectedValue?.ToString();
                 }
 
                 bool blnCanBlackMarketDiscount = _setBlackMarketMaps.Contains(xmlDrug.SelectSingleNode("category")?.Value);

@@ -17275,7 +17275,9 @@ namespace Chummer
                                 strNewName = Guid.NewGuid().ToString("N", GlobalSettings.InvariantCultureInfo);
                         }
                     }
-                    strNewName += await LanguageManager.GetStringAsync("String_Space", token: token) + '(' + await LanguageManager.GetStringAsync("Title_CreateMode", token: token) + ").chum5";
+
+                    strNewName += await LanguageManager.GetStringAsync("String_Space", token: token) + '('
+                        + await LanguageManager.GetStringAsync("Title_CreateMode", token: token) + ").chum5";
 
                     strNewName = Path.Combine(Utils.GetStartupPath, "saves", "backup", strNewName);
 

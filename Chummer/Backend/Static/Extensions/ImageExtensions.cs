@@ -43,7 +43,7 @@ namespace Chummer
         /// <param name="intQuality">Jpeg quality to use. Default is -1, which automatically sets quality based on image size down to 50 at worst (larger images get lower quality).</param>
         /// <returns>String of compressed image.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string CompressBase64String(this string strBase64String, int intQuality = -1)
+        public static string JpegCompressBase64String(this string strBase64String, int intQuality = -1)
         {
             if (string.IsNullOrEmpty(strBase64String))
                 return string.Empty;
@@ -61,7 +61,7 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>String of compressed image.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Task<string> CompressBase64StringAsync(this string strBase64String, int intQuality = -1, CancellationToken token = default)
+        public static Task<string> JpegCompressBase64StringAsync(this string strBase64String, int intQuality = -1, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             return string.IsNullOrEmpty(strBase64String) ? Task.FromResult(string.Empty) : GetImage();
@@ -252,9 +252,10 @@ namespace Chummer
                 Param = { [0] = new EncoderParameter(Encoder.Quality, ProcessJpegQualitySetting(bmpClone, intQuality)) }
             };
             token.ThrowIfCancellationRequested();
+            Image imgReturn;
             try
             {
-                return await Task.Run(() =>
+                imgReturn = await Task.Run(() =>
                 {
                     using (MemoryStream objImageStream = new MemoryStream())
                     {
@@ -269,6 +270,8 @@ namespace Chummer
             {
                 bmpClone.Dispose();
             }
+
+            return imgReturn;
         }
 
         /// <summary>
@@ -454,7 +457,15 @@ namespace Chummer
                     }
 
                     bmpClone.Save(objImageStream, eOverrideFormat);
-                    return Convert.ToBase64String(objImageStream.ToArray());
+                    byte[] achrData = objImageStream.ToPooledArray();
+                    try
+                    {
+                        return Convert.ToBase64String(achrData);
+                    }
+                    finally
+                    {
+                        ArrayPool<byte>.Shared.Return(achrData, true);
+                    }
                 }
             }
             finally
@@ -496,7 +507,15 @@ namespace Chummer
                 using (MemoryStream objImageStream = new MemoryStream())
                 {
                     bmpClone.Save(objImageStream, objCodecInfo, lstEncoderParameters);
-                    return Convert.ToBase64String(objImageStream.ToArray());
+                    byte[] achrData = objImageStream.ToPooledArray();
+                    try
+                    {
+                        return Convert.ToBase64String(achrData);
+                    }
+                    finally
+                    {
+                        ArrayPool<byte>.Shared.Return(achrData, true);
+                    }
                 }
             }
             finally
@@ -535,9 +554,10 @@ namespace Chummer
                 break;
             }
 
+            string strReturn;
             try
             {
-                return await Task.Run(async () =>
+                strReturn = await Task.Run(async () =>
                 {
                     using (MemoryStream objImageStream = new MemoryStream())
                     {
@@ -571,6 +591,8 @@ namespace Chummer
             {
                 bmpClone.Dispose();
             }
+
+            return strReturn;
         }
 
         /// <summary>
@@ -604,9 +626,10 @@ namespace Chummer
                 break;
             }
 
+            string strReturn;
             try
             {
-                return await Task.Run(async () =>
+                strReturn = await Task.Run(async () =>
                 {
                     using (MemoryStream objImageStream = new MemoryStream())
                     {
@@ -629,6 +652,8 @@ namespace Chummer
             {
                 bmpClone.Dispose();
             }
+
+            return strReturn;
         }
 
         /// <summary>
@@ -668,7 +693,15 @@ namespace Chummer
                 using (MemoryStream objImageStream = new MemoryStream())
                 {
                     bmpClone.Save(objImageStream, s_LzyJpegEncoder.Value, lstJpegParameters);
-                    return Convert.ToBase64String(objImageStream.ToArray());
+                    byte[] achrData = objImageStream.ToPooledArray();
+                    try
+                    {
+                        return Convert.ToBase64String(achrData);
+                    }
+                    finally
+                    {
+                        ArrayPool<byte>.Shared.Return(achrData, true);
+                    }
                 }
             }
             finally
@@ -712,9 +745,10 @@ namespace Chummer
                 Param = { [0] = new EncoderParameter(Encoder.Quality, ProcessJpegQualitySetting(bmpClone, intQuality)) }
             };
             token.ThrowIfCancellationRequested();
+            string strReturn;
             try
             {
-                return await Task.Run(async () =>
+                strReturn = await Task.Run(async () =>
                 {
                     using (MemoryStream objImageStream = new MemoryStream())
                     {
@@ -737,6 +771,8 @@ namespace Chummer
             {
                 bmpClone.Dispose();
             }
+
+            return strReturn;
         }
 
         /// <summary>
