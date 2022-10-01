@@ -1,3 +1,22 @@
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
+
 using System.IO;
 
 namespace SevenZip.Compression.RangeCoder
@@ -69,20 +88,20 @@ namespace SevenZip.Compression.RangeCoder
         {
             unchecked
             {
-                if ((uint) Low < 0xFF000000 || (uint) (Low >> 32) == 1)
+                if ((uint)Low < 0xFF000000 || (uint)(Low >> 32) == 1)
                 {
                     byte temp = _cache;
                     do
                     {
-                        Stream.WriteByte((byte) (temp + (Low >> 32)));
+                        Stream.WriteByte((byte)(temp + (Low >> 32)));
                         temp = 0xFF;
                     } while (--_cacheSize != 0);
 
-                    _cache = (byte) ((uint) Low >> 24);
+                    _cache = (byte)((uint)Low >> 24);
                 }
 
                 _cacheSize++;
-                Low = (uint) Low << 8;
+                Low = (uint)Low << 8;
             }
         }
 
@@ -152,7 +171,7 @@ namespace SevenZip.Compression.RangeCoder
             unchecked
             {
                 for (int i = 0; i < 5; i++)
-                    Code = (Code << 8) | (byte) Stream.ReadByte();
+                    Code = (Code << 8) | (byte)Stream.ReadByte();
             }
         }
 
@@ -173,7 +192,7 @@ namespace SevenZip.Compression.RangeCoder
             {
                 while (Range < kTopValue)
                 {
-                    Code = (Code << 8) | (byte) Stream.ReadByte();
+                    Code = (Code << 8) | (byte)Stream.ReadByte();
                     Range <<= 8;
                 }
             }
@@ -185,7 +204,7 @@ namespace SevenZip.Compression.RangeCoder
             {
                 if (Range < kTopValue)
                 {
-                    Code = (Code << 8) | (byte) Stream.ReadByte();
+                    Code = (Code << 8) | (byte)Stream.ReadByte();
                     Range <<= 8;
                 }
             }
@@ -230,7 +249,7 @@ namespace SevenZip.Compression.RangeCoder
 
                     if (range < kTopValue)
                     {
-                        code = (code << 8) | (byte) Stream.ReadByte();
+                        code = (code << 8) | (byte)Stream.ReadByte();
                         range <<= 8;
                     }
                 }

@@ -1,3 +1,22 @@
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
+
 namespace SevenZip.Compression.RangeCoder
 {
     internal struct BitEncoder
@@ -60,10 +79,10 @@ namespace SevenZip.Compression.RangeCoder
                 const int kNumBits = kNumBitModelTotalBits - kNumMoveReducingBits;
                 for (int i = kNumBits - 1; i >= 0; i--)
                 {
-                    uint start = (uint) 1 << (kNumBits - i - 1);
-                    uint end = (uint) 1 << (kNumBits - i);
+                    uint start = (uint)1 << (kNumBits - i - 1);
+                    uint end = (uint)1 << (kNumBits - i);
                     for (uint j = start; j < end; j++)
-                        ProbPrices[j] = ((uint) i << kNumBitPriceShiftBits) +
+                        ProbPrices[j] = ((uint)i << kNumBitPriceShiftBits) +
                                         (((end - j) << kNumBitPriceShiftBits) >> (kNumBits - i - 1));
                 }
             }
@@ -73,7 +92,7 @@ namespace SevenZip.Compression.RangeCoder
         {
             unchecked
             {
-                return ProbPrices[(((Prob - symbol) ^ -(int) symbol) & (kBitModelTotal - 1)) >> kNumMoveReducingBits];
+                return ProbPrices[(((Prob - symbol) ^ -(int)symbol) & (kBitModelTotal - 1)) >> kNumMoveReducingBits];
             }
         }
 
@@ -117,7 +136,7 @@ namespace SevenZip.Compression.RangeCoder
                     Prob += (kBitModelTotal - Prob) >> kNumMoveBits;
                     if (rangeDecoder.Range < Decoder.kTopValue)
                     {
-                        rangeDecoder.Code = (rangeDecoder.Code << 8) | (byte) rangeDecoder.Stream.ReadByte();
+                        rangeDecoder.Code = (rangeDecoder.Code << 8) | (byte)rangeDecoder.Stream.ReadByte();
                         rangeDecoder.Range <<= 8;
                     }
 
@@ -129,7 +148,7 @@ namespace SevenZip.Compression.RangeCoder
                 Prob -= Prob >> kNumMoveBits;
                 if (rangeDecoder.Range < Decoder.kTopValue)
                 {
-                    rangeDecoder.Code = (rangeDecoder.Code << 8) | (byte) rangeDecoder.Stream.ReadByte();
+                    rangeDecoder.Code = (rangeDecoder.Code << 8) | (byte)rangeDecoder.Stream.ReadByte();
                     rangeDecoder.Range <<= 8;
                 }
 

@@ -1,3 +1,21 @@
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
 // LzInWindow.cs
 
 using System.IO;
@@ -121,10 +139,10 @@ namespace SevenZip.Compression.LZ
             {
                 if (_streamEndWasReached)
                     if (_pos + index + limit > _streamPos)
-                        limit = _streamPos - (uint) (_pos + index);
+                        limit = _streamPos - (uint)(_pos + index);
                 distance++;
                 // Byte *pby = _buffer + (size_t)_pos + index;
-                uint pby = _bufferOffset + _pos + (uint) index;
+                uint pby = _bufferOffset + _pos + (uint)index;
 
                 uint i;
                 for (i = 0; i < limit && _bufferBase[pby + i] == _bufferBase[pby + i - distance]; i++)
@@ -142,10 +160,10 @@ namespace SevenZip.Compression.LZ
         {
             unchecked
             {
-                _bufferOffset += (uint) subValue;
-                _posLimit -= (uint) subValue;
-                _pos -= (uint) subValue;
-                _streamPos -= (uint) subValue;
+                _bufferOffset += (uint)subValue;
+                _posLimit -= (uint)subValue;
+                _pos -= (uint)subValue;
+                _streamPos -= (uint)subValue;
             }
         }
     }

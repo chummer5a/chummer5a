@@ -1,3 +1,21 @@
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
 // LzBinTree.cs
 
 using System;
@@ -152,12 +170,12 @@ namespace SevenZip.Compression.LZ
                 {
                     uint temp = CRC.Table[_bufferBase[cur]] ^ _bufferBase[cur + 1];
                     hash2Value = temp & (kHash2Size - 1);
-                    temp ^= (uint) _bufferBase[cur + 2] << 8;
+                    temp ^= (uint)_bufferBase[cur + 2] << 8;
                     hash3Value = temp & (kHash3Size - 1);
                     hashValue = (temp ^ (CRC.Table[_bufferBase[cur + 3]] << 5)) & _hashMask;
                 }
                 else
-                    hashValue = _bufferBase[cur] ^ ((uint) _bufferBase[cur + 1] << 8);
+                    hashValue = _bufferBase[cur] ^ ((uint)_bufferBase[cur + 1] << 8);
 
                 uint curMatch = _hash[kFixHashSize + hashValue];
                 if (HASH_ARRAY)
@@ -289,13 +307,13 @@ namespace SevenZip.Compression.LZ
                         uint temp = CRC.Table[_bufferBase[cur]] ^ _bufferBase[cur + 1];
                         uint hash2Value = temp & (kHash2Size - 1);
                         _hash[hash2Value] = _pos;
-                        temp ^= (uint) _bufferBase[cur + 2] << 8;
+                        temp ^= (uint)_bufferBase[cur + 2] << 8;
                         uint hash3Value = temp & (kHash3Size - 1);
                         _hash[kHash3Offset + hash3Value] = _pos;
                         hashValue = (temp ^ (CRC.Table[_bufferBase[cur + 3]] << 5)) & _hashMask;
                     }
                     else
-                        hashValue = _bufferBase[cur] ^ ((uint) _bufferBase[cur + 1] << 8);
+                        hashValue = _bufferBase[cur] ^ ((uint)_bufferBase[cur + 1] << 8);
 
                     uint curMatch = _hash[kFixHashSize + hashValue];
                     _hash[kFixHashSize + hashValue] = _pos;
@@ -379,7 +397,7 @@ namespace SevenZip.Compression.LZ
                 uint subValue = _pos - _cyclicBufferSize;
                 NormalizeLinks(_son, _cyclicBufferSize * 2, subValue);
                 NormalizeLinks(_hash, _hashSizeSum, subValue);
-                ReduceOffsets((int) subValue);
+                ReduceOffsets((int)subValue);
             }
         }
 
