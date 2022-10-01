@@ -136,8 +136,11 @@ namespace Chummer
             encoder.SetCoderProperties(propIDs, properties);
             encoder.WriteCoderProperties(objOutStream);
             long fileSize = eos || stdInMode ? -1 : objInStream.Length;
-            for (int i = 0; i < 8; i++)
-                objOutStream.WriteByte((byte)(fileSize >> (8 * i)));
+            unchecked
+            {
+                for (int i = 0; i < 8; i++)
+                    objOutStream.WriteByte((byte)(fileSize >> (8 * i)));
+            }
             encoder.Code(objInStream, objOutStream, -1, -1, null);
         }
 
@@ -253,12 +256,14 @@ namespace Chummer
             encoder.SetCoderProperties(propIDs, properties);
             encoder.WriteCoderProperties(objOutStream);
             long fileSize = eos || stdInMode ? -1 : objInStream.Length;
-            for (int i = 0; i < 8; i++)
+            unchecked
             {
-                token.ThrowIfCancellationRequested();
-                objOutStream.WriteByte((byte)(fileSize >> (8 * i)));
+                for (int i = 0; i < 8; i++)
+                {
+                    token.ThrowIfCancellationRequested();
+                    objOutStream.WriteByte((byte)(fileSize >> (8 * i)));
+                }
             }
-
             token.ThrowIfCancellationRequested();
             return Task.Run(() => encoder.Code(objInStream, objOutStream, -1, -1, null, token), token);
         }
@@ -271,16 +276,17 @@ namespace Chummer
             if (objInStream.Read(properties, 0, 5) != 5)
                 throw new Exception("input .lzma is too short");
             decoder.SetDecoderProperties(properties);
-
             long outSize = 0;
-            for (int i = 0; i < 8; i++)
+            unchecked
             {
-                int v = objInStream.ReadByte();
-                if (v < 0)
-                    throw new Exception("Can't Read 1");
-                outSize |= (long)(byte)v << (8 * i);
+                for (int i = 0; i < 8; i++)
+                {
+                    int v = objInStream.ReadByte();
+                    if (v < 0)
+                        throw new Exception("Can't Read 1");
+                    outSize |= (long)(byte)v << (8 * i);
+                }
             }
-
             long compressedSize = objInStream.Length - objInStream.Position;
 
             decoder.Code(objInStream, objOutStream, compressedSize, outSize, null);
@@ -297,16 +303,18 @@ namespace Chummer
                 throw new Exception("input .lzma is too short");
             decoder.SetDecoderProperties(properties);
             long outSize = 0;
-            for (int i = 0; i < 8; i++)
+            unchecked
             {
-                token.ThrowIfCancellationRequested();
-                int v = objInStream.ReadByte();
-                if (v < 0)
-                    throw new Exception("Can't Read 1");
-                token.ThrowIfCancellationRequested();
-                outSize |= (long)(byte)v << (8 * i);
+                for (int i = 0; i < 8; i++)
+                {
+                    token.ThrowIfCancellationRequested();
+                    int v = objInStream.ReadByte();
+                    if (v < 0)
+                        throw new Exception("Can't Read 1");
+                    token.ThrowIfCancellationRequested();
+                    outSize |= (long)(byte)v << (8 * i);
+                }
             }
-
             long compressedSize = objInStream.Length - objInStream.Position;
             token.ThrowIfCancellationRequested();
             await Task.Run(() => decoder.Code(objInStream, objOutStream, compressedSize, outSize, null, token), token);

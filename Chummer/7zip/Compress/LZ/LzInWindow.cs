@@ -107,23 +107,32 @@ namespace SevenZip.Compression.LZ
         }
 
         public byte GetIndexByte(int index)
-        { return _bufferBase[_bufferOffset + _pos + index]; }
+        {
+            unchecked
+            {
+                return _bufferBase[_bufferOffset + _pos + index];
+            }
+        }
 
         // index + limit have not to exceed _keepSizeAfter;
         public uint GetMatchLen(int index, uint distance, uint limit)
         {
-            if (_streamEndWasReached)
-                if (_pos + index + limit > _streamPos)
-                    limit = _streamPos - (uint)(_pos + index);
-            distance++;
-            // Byte *pby = _buffer + (size_t)_pos + index;
-            uint pby = _bufferOffset + _pos + (uint)index;
-
-            uint i;
-            for (i = 0; i < limit && _bufferBase[pby + i] == _bufferBase[pby + i - distance]; i++)
+            unchecked
             {
+                if (_streamEndWasReached)
+                    if (_pos + index + limit > _streamPos)
+                        limit = _streamPos - (uint) (_pos + index);
+                distance++;
+                // Byte *pby = _buffer + (size_t)_pos + index;
+                uint pby = _bufferOffset + _pos + (uint) index;
+
+                uint i;
+                for (i = 0; i < limit && _bufferBase[pby + i] == _bufferBase[pby + i - distance]; i++)
+                {
+                }
+
+                return i;
             }
-            return i;
         }
 
         public uint GetNumAvailableBytes()
@@ -131,10 +140,13 @@ namespace SevenZip.Compression.LZ
 
         public void ReduceOffsets(int subValue)
         {
-            _bufferOffset += (uint)subValue;
-            _posLimit -= (uint)subValue;
-            _pos -= (uint)subValue;
-            _streamPos -= (uint)subValue;
+            unchecked
+            {
+                _bufferOffset += (uint) subValue;
+                _posLimit -= (uint) subValue;
+                _pos -= (uint) subValue;
+                _streamPos -= (uint) subValue;
+            }
         }
     }
 }

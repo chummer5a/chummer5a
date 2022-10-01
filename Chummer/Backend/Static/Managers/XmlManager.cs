@@ -1135,12 +1135,19 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 if (!Directory.Exists(strLoopPath))
                     continue;
-                if (Directory.EnumerateFiles(strLoopPath,
-                                             "override_*_" + strFileName + ";override_" + strFileName
-                                             + ";custom_*_" + strFileName + ";custom_" + strFileName
-                                             + ";amend_*_" + strFileName + ";amend_" + strFileName,
-                                             SearchOption.AllDirectories).Any())
-                    yield return strLoopPath;
+                foreach (string strLoopFile in Directory.EnumerateFiles(strLoopPath, "*_" + strFileName,
+                                                                        SearchOption.AllDirectories))
+                {
+                    token.ThrowIfCancellationRequested();
+                    string strInnerFileName = Path.GetFileName(strLoopFile);
+                    if (strInnerFileName.StartsWith("override_", StringComparison.OrdinalIgnoreCase)
+                        || strInnerFileName.StartsWith("custom_", StringComparison.OrdinalIgnoreCase)
+                        || strInnerFileName.StartsWith("amend_", StringComparison.OrdinalIgnoreCase))
+                    {
+                        yield return strLoopPath;
+                        break;
+                    }
+                }
             }
         }
 
@@ -1150,14 +1157,16 @@ namespace Chummer
             bool blnReturn = false;
             XmlElement objDocElement = xmlDataDoc.DocumentElement;
             List<string> lstPossibleCustomFiles = new List<string>(Utils.BasicDataFileNames.Count);
-            lstPossibleCustomFiles.AddRange(Directory.EnumerateFiles(strLoopPath,
-                                                                     "override_*_" + strFileName + ";override_"
-                                                                     + strFileName
-                                                                     + ";custom_*_" + strFileName + ";custom_"
-                                                                     + strFileName
-                                                                     + ";amend_*_" + strFileName + ";amend_"
-                                                                     + strFileName,
-                                                                     eSearchOption));
+            foreach (string strFile in Directory.EnumerateFiles(strLoopPath, "*_" + strFileName, eSearchOption))
+            {
+                token.ThrowIfCancellationRequested();
+                string strLoopFileName = Path.GetFileName(strFile);
+                if (!strLoopFileName.StartsWith("override_", StringComparison.OrdinalIgnoreCase)
+                    && !strLoopFileName.StartsWith("custom_", StringComparison.OrdinalIgnoreCase)
+                    && !strLoopFileName.StartsWith("amend_", StringComparison.OrdinalIgnoreCase))
+                    continue;
+                lstPossibleCustomFiles.Add(strFile);
+            }
             foreach (string strFile in lstPossibleCustomFiles)
             {
                 token.ThrowIfCancellationRequested();
