@@ -1137,7 +1137,7 @@ namespace Chummer
                     continue;
                 if (Directory.EnumerateFiles(strLoopPath,
                                              "override_*_" + strFileName + ";override_" + strFileName
-                                             + ";custom_*_" + strFileName + "custom_" + strFileName
+                                             + ";custom_*_" + strFileName + ";custom_" + strFileName
                                              + ";amend_*_" + strFileName + ";amend_" + strFileName,
                                              SearchOption.AllDirectories).Any())
                     yield return strLoopPath;
@@ -1153,7 +1153,7 @@ namespace Chummer
             lstPossibleCustomFiles.AddRange(Directory.EnumerateFiles(strLoopPath,
                                                                      "override_*_" + strFileName + ";override_"
                                                                      + strFileName
-                                                                     + ";custom_*_" + strFileName + "custom_"
+                                                                     + ";custom_*_" + strFileName + ";custom_"
                                                                      + strFileName
                                                                      + ";amend_*_" + strFileName + ";amend_"
                                                                      + strFileName,
