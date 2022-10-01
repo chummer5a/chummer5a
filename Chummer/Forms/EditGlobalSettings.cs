@@ -1376,18 +1376,24 @@ namespace Chummer
                                                                   await LanguageManager.GetStringAsync(
                                                                       "String_Thorough_Option", token: token)));
 
-                string strOldSelected
-                    = await cboChum5zCompressionLevel.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token);
+                LzmaHelper.ChummerCompressionPreset eOldSelected
+                    = await cboChum5zCompressionLevel.DoThreadSafeFuncAsync(
+                        x => x.SelectedIndex >= 0
+                            ? (LzmaHelper.ChummerCompressionPreset) Enum.Parse(
+                                typeof(LzmaHelper.ChummerCompressionPreset),
+                                x.SelectedValue.ToString())
+                            : GlobalSettings.Chum5zCompressionLevel, token);
                 await cboChum5zCompressionLevel.PopulateWithListItemsAsync(lstChum5zCompressionLevelOptions, token);
-                if (!string.IsNullOrEmpty(strOldSelected))
+                await cboChum5zCompressionLevel.DoThreadSafeAsync(x =>
                 {
-                    await cboChum5zCompressionLevel.DoThreadSafeAsync(x =>
+                    x.SelectedValue = eOldSelected;
+                    if (x.SelectedIndex == -1 && lstChum5zCompressionLevelOptions.Count > 0)
                     {
-                        x.SelectedValue = strOldSelected;
+                        x.SelectedValue = GlobalSettings.DefaultChum5zCompressionLevel;
                         if (x.SelectedIndex == -1 && lstChum5zCompressionLevelOptions.Count > 0)
                             x.SelectedIndex = 0;
-                    }, token);
-                }
+                    }
+                }, token);
             }
         }
 

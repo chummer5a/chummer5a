@@ -1754,6 +1754,7 @@ namespace Chummer
             this.cboChum5zCompressionLevel.Size = new System.Drawing.Size(259, 21);
             this.cboChum5zCompressionLevel.TabIndex = 87;
             this.cboChum5zCompressionLevel.TooltipText = "";
+            this.cboChum5zCompressionLevel.SelectedIndexChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // gpbEditSourcebookInfo
             // 
