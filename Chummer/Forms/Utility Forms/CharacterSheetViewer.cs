@@ -51,6 +51,7 @@ namespace Chummer
         private CancellationTokenSource _objOutputGeneratorCancellationTokenSource;
         private readonly CancellationTokenSource _objGenericFormClosingCancellationTokenSource = new CancellationTokenSource();
         private readonly CancellationToken _objGenericToken;
+        private bool _blnSheetError;
         private Task _tskRefresher;
         private Task _tskOutputGenerator;
         private readonly string _strTempSheetFilePath = Path.Combine(Utils.GetTempPath(), Path.GetRandomFileName() + ".htm");
@@ -685,25 +686,39 @@ namespace Chummer
             CursorWait objCursorWait = await CursorWait.NewAsync(this, true, token);
             try
             {
-                await Task.WhenAll(this.DoThreadSafeAsync(x =>
-                                   {
-                                       x.tsPrintPreview.Enabled = false;
-                                       x.tsSaveAsHtml.Enabled = false;
-                                   }, token),
-                                   cmdPrint.DoThreadSafeAsync(x => x.Enabled = false, token),
-                                   cmdSaveAsPdf.DoThreadSafeAsync(x => x.Enabled = false, token));
-                token.ThrowIfCancellationRequested();
-                Character[] aobjCharacters = await _lstCharacters.ToArrayAsync(token);
-                token.ThrowIfCancellationRequested();
-                _objCharacterXml = aobjCharacters.Length > 0
-                    ? await CommonFunctions.GenerateCharactersExportXml(_objPrintCulture, _strPrintLanguage,
-                                                                        _objRefresherCancellationTokenSource.Token,
-                                                                        aobjCharacters)
-                    : null;
-                token.ThrowIfCancellationRequested();
-                await this.DoThreadSafeAsync(x => x.tsSaveAsXml.Enabled = _objCharacterXml != null, token);
-                token.ThrowIfCancellationRequested();
-                await RefreshSheet(token);
+                try
+                {
+                    await Task.WhenAll(this.DoThreadSafeAsync(x =>
+                                       {
+                                           x.tsPrintPreview.Enabled = false;
+                                           x.tsSaveAsHtml.Enabled = false;
+                                       }, token),
+                                       cmdPrint.DoThreadSafeAsync(x => x.Enabled = false, token),
+                                       cmdSaveAsPdf.DoThreadSafeAsync(x => x.Enabled = false, token));
+                    token.ThrowIfCancellationRequested();
+                    Character[] aobjCharacters = await _lstCharacters.ToArrayAsync(token);
+                    token.ThrowIfCancellationRequested();
+                    _objCharacterXml = aobjCharacters.Length > 0
+                        ? await CommonFunctions.GenerateCharactersExportXml(_objPrintCulture, _strPrintLanguage,
+                                                                            _objRefresherCancellationTokenSource.Token,
+                                                                            aobjCharacters)
+                        : null;
+                    token.ThrowIfCancellationRequested();
+                    await this.DoThreadSafeAsync(x => x.tsSaveAsXml.Enabled = _objCharacterXml != null, token);
+                }
+                finally
+                {
+                    await RefreshSheet(token);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+            catch
+            {
+                await this.DoThreadSafeAsync(x => x.tsSaveAsXml.Enabled = false, token);
+                throw;
             }
             finally
             {
@@ -720,6 +735,7 @@ namespace Chummer
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
             try
             {
+                _blnSheetError = true;
                 await Task.WhenAll(this.DoThreadSafeAsync(x =>
                                    {
                                        x.tsPrintPreview.Enabled = false;
@@ -727,19 +743,24 @@ namespace Chummer
                                    }, token),
                                    cmdPrint.DoThreadSafeAsync(x => x.Enabled = false, token),
                                    cmdSaveAsPdf.DoThreadSafeAsync(x => x.Enabled = false, token));
+                if (string.IsNullOrWhiteSpace(_objCharacterXml.OuterXml))
+                {
+                    await SetDocumentText(await LanguageManager.GetStringAsync("Message_Export_Error_Warning", token: token), token);
+                    return;
+                }
                 token.ThrowIfCancellationRequested();
                 await SetDocumentText(await LanguageManager.GetStringAsync("String_Generating_Sheet", token: token), token);
                 token.ThrowIfCancellationRequested();
                 string strXslPath = Path.Combine(Utils.GetStartupPath, "sheets", _strSelectedSheet + ".xsl");
                 if (!File.Exists(strXslPath))
                 {
+                    await SetDocumentText(await LanguageManager.GetStringAsync("Message_Export_Error_Warning", token: token), token);
                     string strReturn = "File not found when attempting to load " + _strSelectedSheet +
                                        Environment.NewLine;
                     Log.Debug(strReturn);
                     Program.ShowMessageBox(this, strReturn);
                     return;
                 }
-
                 token.ThrowIfCancellationRequested();
                 XslCompiledTransform objXslTransform;
                 try
@@ -749,6 +770,7 @@ namespace Chummer
                 catch (ArgumentException)
                 {
                     token.ThrowIfCancellationRequested();
+                    await SetDocumentText(await LanguageManager.GetStringAsync("Message_Export_Error_Warning", token: token), token);
                     string strReturn = "Last write time could not be fetched when attempting to load "
                                        + _strSelectedSheet +
                                        Environment.NewLine;
@@ -759,6 +781,7 @@ namespace Chummer
                 catch (PathTooLongException)
                 {
                     token.ThrowIfCancellationRequested();
+                    await SetDocumentText(await LanguageManager.GetStringAsync("Message_Export_Error_Warning", token: token), token);
                     string strReturn = "Last write time could not be fetched when attempting to load "
                                        + _strSelectedSheet +
                                        Environment.NewLine;
@@ -769,6 +792,7 @@ namespace Chummer
                 catch (UnauthorizedAccessException)
                 {
                     token.ThrowIfCancellationRequested();
+                    await SetDocumentText(await LanguageManager.GetStringAsync("Message_Export_Error_Warning", token: token), token);
                     string strReturn = "Last write time could not be fetched when attempting to load "
                                        + _strSelectedSheet +
                                        Environment.NewLine;
@@ -779,6 +803,7 @@ namespace Chummer
                 catch (XsltException ex)
                 {
                     token.ThrowIfCancellationRequested();
+                    await SetDocumentText(await LanguageManager.GetStringAsync("Message_Export_Error_Warning", token: token), token);
                     string strReturn = "Error attempting to load " + _strSelectedSheet + Environment.NewLine;
                     Log.Debug(strReturn);
                     Log.Error("ERROR Message = " + ex.Message);
@@ -820,7 +845,10 @@ namespace Chummer
 
                         // Delete any old versions of the file
                         if (!await Utils.SafeDeleteFileAsync(_strTempSheetFilePath, true, token: token))
+                        {
+                            await SetDocumentText(await LanguageManager.GetStringAsync("Message_Export_Error_Warning", token: token), token);
                             return;
+                        }
 
                         // Read in the resulting code and pass it to the browser.
                         using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
@@ -831,6 +859,7 @@ namespace Chummer
 
                         token.ThrowIfCancellationRequested();
                         await this.DoThreadSafeAsync(x => x.UseWaitCursor = true, token);
+                        _blnSheetError = false;
                         await webViewer.DoThreadSafeAsync(
                             x => x.Url = new Uri("file:///" + _strTempSheetFilePath), token);
                         token.ThrowIfCancellationRequested();
@@ -844,6 +873,7 @@ namespace Chummer
                             string strOutput = await objReader.ReadToEndAsync();
                             token.ThrowIfCancellationRequested();
                             await this.DoThreadSafeAsync(x => x.UseWaitCursor = true, token);
+                            _blnSheetError = false;
                             await webViewer.DoThreadSafeAsync(x => x.DocumentText = strOutput, token);
                             token.ThrowIfCancellationRequested();
                         }
@@ -865,11 +895,11 @@ namespace Chummer
                 {
                     await Task.WhenAll(this.DoThreadSafeAsync(x =>
                                        {
-                                           x.tsPrintPreview.Enabled = true;
-                                           x.tsSaveAsHtml.Enabled = true;
+                                           x.tsPrintPreview.Enabled = !_blnSheetError;
+                                           x.tsSaveAsHtml.Enabled = !_blnSheetError;
                                        }, _objGenericToken),
-                                       cmdPrint.DoThreadSafeAsync(x => x.Enabled = true, _objGenericToken),
-                                       cmdSaveAsPdf.DoThreadSafeAsync(x => x.Enabled = true, _objGenericToken));
+                                       cmdPrint.DoThreadSafeAsync(x => x.Enabled = !_blnSheetError, _objGenericToken),
+                                       cmdSaveAsPdf.DoThreadSafeAsync(x => x.Enabled = !_blnSheetError, _objGenericToken));
                 }
             }
             catch (OperationCanceledException)

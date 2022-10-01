@@ -47,6 +47,10 @@
       <text>Chummer5 encountered an error while saving the character.</text>
     </string>
     <string>
+      <key>Message_Export_Error_Warning</key>
+      <text>Chummer5 encountered an error while attempting to generate the necessary information for the character.</text>
+    </string>
+    <string>
       <key>Message_Prompt_Delete_Existing_File</key>
       <text>Chummer5 has detected that the following file already exists at this location that is outside of the Chummer base directory:\n{0}\n\nAre you sure you wish to remove the old file?</text>
     </string>

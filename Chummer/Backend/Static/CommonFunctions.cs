@@ -1556,6 +1556,11 @@ namespace Chummer
                             foreach (Character objCharacter in lstCharacters)
                             {
                                 await objCharacter.PrintToXmlTextWriter(objWriter, objCultureInfo, strLanguage, objToken).ConfigureAwait(false);
+                                if (objWriter.WriteState == WriteState.Error)
+                                {
+                                    Utils.BreakIfDebug();
+                                    throw new InvalidOperationException(nameof(objWriter));
+                                }
                             }
                         }
                         finally
@@ -1567,6 +1572,12 @@ namespace Chummer
                     finally
                     {
                         // Finish the document and flush the Writer and Stream.
+                        if (objWriter.WriteState == WriteState.Error)
+                        {
+                            objWriter.Close();
+                            throw new InvalidOperationException(nameof(objWriter));
+                        }
+
                         await objWriter.WriteEndDocumentAsync().ConfigureAwait(false);
                         await objWriter.FlushAsync().ConfigureAwait(false);
                     }

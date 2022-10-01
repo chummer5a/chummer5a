@@ -17,6 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
+using System;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -28,38 +29,65 @@ namespace Chummer
     {
         /// <inheritdoc cref="XmlWriter.WriteStartElementAsync"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Task WriteStartElementAsync(this XmlWriter objWriter, string localName, CancellationToken token = default)
+        public static async Task WriteStartElementAsync(this XmlWriter objWriter, string localName, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            return objWriter.WriteStartElementAsync(null, localName, null);
+            await objWriter.WriteStartElementAsync(null, localName, null);
+            if (objWriter.WriteState == WriteState.Error)
+            {
+                Utils.BreakIfDebug();
+                throw new InvalidOperationException(nameof(objWriter));
+            }
         }
 
         /// <inheritdoc cref="XmlWriter.WriteElementStringAsync"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Task WriteElementStringAsync(this XmlWriter objWriter, string localName, string value, CancellationToken token = default)
+        public static async Task WriteElementStringAsync(this XmlWriter objWriter, string localName, string value, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            return objWriter.WriteElementStringAsync(null, localName, null, value);
+            await objWriter.WriteElementStringAsync(null, localName, null, value);
+            if (objWriter.WriteState == WriteState.Error)
+            {
+                Utils.BreakIfDebug();
+                throw new InvalidOperationException(nameof(objWriter));
+            }
         }
 
         /// <inheritdoc cref="XmlWriter.WriteElementStringAsync"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Task WriteAttributeStringAsync(this XmlWriter objWriter, string localName, string value, CancellationToken token = default)
+        public static async Task WriteAttributeStringAsync(this XmlWriter objWriter, string localName, string value, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            return objWriter.WriteAttributeStringAsync(null, localName, null, value);
+            await objWriter.WriteAttributeStringAsync(null, localName, null, value);
+            if (objWriter.WriteState == WriteState.Error)
+            {
+                Utils.BreakIfDebug();
+                throw new InvalidOperationException(nameof(objWriter));
+            }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static XmlElementWriteHelper StartElement(this XmlWriter objWriter, string localName)
         {
-            return XmlElementWriteHelper.StartElement(objWriter, localName);
+            XmlElementWriteHelper objReturn = XmlElementWriteHelper.StartElement(objWriter, localName);
+            if (objWriter.WriteState == WriteState.Error)
+            {
+                Utils.BreakIfDebug();
+                throw new InvalidOperationException(nameof(objWriter));
+            }
+            return objReturn;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Task<XmlElementWriteHelper> StartElementAsync(this XmlWriter objWriter, string localName, CancellationToken token = default)
+        public static async Task<XmlElementWriteHelper> StartElementAsync(this XmlWriter objWriter, string localName, CancellationToken token = default)
         {
-            return XmlElementWriteHelper.StartElementAsync(objWriter, localName, token);
+            XmlElementWriteHelper objReturn = await XmlElementWriteHelper.StartElementAsync(objWriter, localName, token);
+            if (objWriter.WriteState == WriteState.Error)
+            {
+                Utils.BreakIfDebug();
+                throw new InvalidOperationException(nameof(objWriter));
+            }
+            return objReturn;
         }
     }
 }
