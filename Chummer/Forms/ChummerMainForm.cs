@@ -484,9 +484,14 @@ namespace Chummer
                                             List<string> lstOldAutosaves = new List<string>(10);
                                             DateTime objOldAutosaveTimeThreshold =
                                                 DateTime.UtcNow.Subtract(TimeSpan.FromDays(90));
-                                            foreach (string strAutosave in Directory.EnumerateFiles(
-                                                         Utils.GetAutosavesFolderPath,
-                                                         "*.chum5;*.chum5z", SearchOption.AllDirectories))
+                                            foreach (string strAutosave in Directory
+                                                                           .EnumerateFiles(
+                                                                               Utils.GetAutosavesFolderPath, "*.chum5",
+                                                                               SearchOption.AllDirectories)
+                                                                           .Concat(Directory.EnumerateFiles(
+                                                                               Utils.GetAutosavesFolderPath,
+                                                                               "*.chum5z",
+                                                                               SearchOption.AllDirectories)))
                                             {
                                                 FileInfo objAutosave;
                                                 try
@@ -2694,7 +2699,9 @@ namespace Chummer
                                 FileInfo objMostRecentAutosave = null;
                                 foreach (string strAutosave in Directory.EnumerateFiles(
                                              Utils.GetAutosavesFolderPath,
-                                             "*.chum5;*.chum5z", SearchOption.AllDirectories))
+                                             "*.chum5", SearchOption.AllDirectories).Concat(Directory.EnumerateFiles(
+                                             Utils.GetAutosavesFolderPath,
+                                             "*.chum5z", SearchOption.AllDirectories)))
                                 {
                                     FileInfo objAutosave;
                                     try

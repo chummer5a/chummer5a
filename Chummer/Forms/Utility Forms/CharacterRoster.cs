@@ -40,7 +40,8 @@ namespace Chummer
     {
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
 
-        private readonly FileSystemWatcher _watcherCharacterRosterFolder;
+        private readonly FileSystemWatcher _watcherCharacterRosterFolderRawSaves;
+        private readonly FileSystemWatcher _watcherCharacterRosterFolderCompressedSaves;
         private Task _tskMostRecentlyUsedsRefresh;
         private Task _tskWatchFolderRefresh;
         private CancellationTokenSource _objMostRecentlyUsedsRefreshCancellationTokenSource;
@@ -57,7 +58,8 @@ namespace Chummer
 
             if (!string.IsNullOrEmpty(GlobalSettings.CharacterRosterPath) && Directory.Exists(GlobalSettings.CharacterRosterPath))
             {
-                _watcherCharacterRosterFolder = new FileSystemWatcher(GlobalSettings.CharacterRosterPath, "*.chum5;*.chum5z");
+                _watcherCharacterRosterFolderRawSaves = new FileSystemWatcher(GlobalSettings.CharacterRosterPath, "*.chum5");
+                _watcherCharacterRosterFolderCompressedSaves = new FileSystemWatcher(GlobalSettings.CharacterRosterPath, "*.chum5z");
             }
         }
 
@@ -81,12 +83,16 @@ namespace Chummer
                     x.NodeMouseDoubleClick += treCharacterList_OnDefaultDoubleClick;
                 }, token);
                 OnMyMouseDown += OnDefaultMouseDown;
-                if (_watcherCharacterRosterFolder != null)
+                if (_watcherCharacterRosterFolderRawSaves != null)
                 {
-                    _watcherCharacterRosterFolder.Changed += RefreshSingleWatchNode;
-                    _watcherCharacterRosterFolder.Created += RefreshWatchList;
-                    _watcherCharacterRosterFolder.Deleted += DeleteSingleWatchNode;
-                    _watcherCharacterRosterFolder.Renamed += RefreshWatchList;
+                    _watcherCharacterRosterFolderRawSaves.Changed += RefreshSingleWatchNode;
+                    _watcherCharacterRosterFolderRawSaves.Created += RefreshWatchList;
+                    _watcherCharacterRosterFolderRawSaves.Deleted += DeleteSingleWatchNode;
+                    _watcherCharacterRosterFolderRawSaves.Renamed += RefreshWatchList;
+                    _watcherCharacterRosterFolderCompressedSaves.Changed += RefreshSingleWatchNode;
+                    _watcherCharacterRosterFolderCompressedSaves.Created += RefreshWatchList;
+                    _watcherCharacterRosterFolderCompressedSaves.Deleted += DeleteSingleWatchNode;
+                    _watcherCharacterRosterFolderCompressedSaves.Renamed += RefreshWatchList;
                 }
             }
             else
@@ -108,12 +114,16 @@ namespace Chummer
                 }, token);
                 OnMyMouseDown = null;
 
-                if (_watcherCharacterRosterFolder != null)
+                if (_watcherCharacterRosterFolderRawSaves != null)
                 {
-                    _watcherCharacterRosterFolder.Changed -= RefreshSingleWatchNode;
-                    _watcherCharacterRosterFolder.Created -= RefreshWatchList;
-                    _watcherCharacterRosterFolder.Deleted -= DeleteSingleWatchNode;
-                    _watcherCharacterRosterFolder.Renamed -= RefreshWatchList;
+                    _watcherCharacterRosterFolderRawSaves.Changed -= RefreshSingleWatchNode;
+                    _watcherCharacterRosterFolderRawSaves.Created -= RefreshWatchList;
+                    _watcherCharacterRosterFolderRawSaves.Deleted -= DeleteSingleWatchNode;
+                    _watcherCharacterRosterFolderRawSaves.Renamed -= RefreshWatchList;
+                    _watcherCharacterRosterFolderCompressedSaves.Changed -= RefreshSingleWatchNode;
+                    _watcherCharacterRosterFolderCompressedSaves.Created -= RefreshWatchList;
+                    _watcherCharacterRosterFolderCompressedSaves.Deleted -= DeleteSingleWatchNode;
+                    _watcherCharacterRosterFolderCompressedSaves.Renamed -= RefreshWatchList;
                 }
             }
 
@@ -1055,7 +1065,12 @@ namespace Chummer
             if (!string.IsNullOrEmpty(GlobalSettings.CharacterRosterPath) && Directory.Exists(GlobalSettings.CharacterRosterPath))
             {
                 dicWatch = new Dictionary<string, string>(byte.MaxValue);
-                foreach (string strFile in Directory.EnumerateFiles(GlobalSettings.CharacterRosterPath, "*.chum5;*.chum5z", SearchOption.AllDirectories))
+                foreach (string strFile in Directory
+                                           .EnumerateFiles(GlobalSettings.CharacterRosterPath, "*.chum5",
+                                                           SearchOption.AllDirectories)
+                                           .Concat(Directory.EnumerateFiles(
+                                                       GlobalSettings.CharacterRosterPath, "*.chum5z",
+                                                       SearchOption.AllDirectories)))
                 {
                     token.ThrowIfCancellationRequested();
 
@@ -1066,7 +1081,9 @@ namespace Chummer
                         continue;
                     }
 
-                    string strNewParent = objInfo.Directory.FullName.Replace(GlobalSettings.CharacterRosterPath + Path.DirectorySeparatorChar, string.Empty);
+                    string strNewParent
+                        = objInfo.Directory.FullName.Replace(
+                            GlobalSettings.CharacterRosterPath + Path.DirectorySeparatorChar, string.Empty);
                     dicWatch.Add(strFile, strNewParent);
                 }
             }

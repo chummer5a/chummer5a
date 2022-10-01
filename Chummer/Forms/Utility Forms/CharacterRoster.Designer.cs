@@ -19,7 +19,8 @@ namespace Chummer
             if (disposing)
             {
                 components?.Dispose();
-                _watcherCharacterRosterFolder?.Dispose();
+                _watcherCharacterRosterFolderRawSaves?.Dispose();
+                _watcherCharacterRosterFolderCompressedSaves?.Dispose();
                 _objMostRecentlyUsedsRefreshCancellationTokenSource?.Dispose();
                 _objWatchFolderRefreshCancellationTokenSource?.Dispose();
                 _objGenericFormClosingCancellationTokenSource.Dispose();
