@@ -48,7 +48,8 @@ namespace Chummer
         }
 
         public static void CompressToLzmaFile(this Stream objInStream, FileStream objOutStream,
-                                              SevenZipCompressionLevel eSevenZipCompressionLevel)
+                                              SevenZipCompressionLevel eSevenZipCompressionLevel,
+                                              Action<long, long> funcOnProgress = null)
         {
             // ReSharper disable RedundantArgumentDefaultValue
             switch (eSevenZipCompressionLevel)
@@ -84,7 +85,8 @@ namespace Chummer
         }
 
         public static void CompressToLzmaFile(this Stream objInStream, FileStream objOutStream,
-                                              ChummerCompressionPreset eChummerCompressionPreset)
+                                              ChummerCompressionPreset eChummerCompressionPreset,
+                                              Action<long, long> funcOnProgress = null)
         {
             // ReSharper disable RedundantArgumentDefaultValue
             switch (eChummerCompressionPreset)
@@ -110,7 +112,8 @@ namespace Chummer
         public static void CompressToLzmaFile(this Stream objInStream, FileStream objOutStream,
                                               int intCompressionLevel = Encoder.kDefaultDictionaryLogSize,
                                               int numFastBytes = (int)Encoder.kNumFastBytesDefault,
-                                              Encoder.EMatchFinderType mf = Encoder.EMatchFinderType.BT4)
+                                              Encoder.EMatchFinderType mf = Encoder.EMatchFinderType.BT4,
+                                              Action<long, long> funcOnProgress = null)
         {
             if (intCompressionLevel < 0 || intCompressionLevel > 30)
                 throw new ArgumentOutOfRangeException(nameof(intCompressionLevel));
@@ -159,11 +162,13 @@ namespace Chummer
                 for (int i = 0; i < 8; i++)
                     objOutStream.WriteByte((byte)(fileSize >> (8 * i)));
             }
-            encoder.Code(objInStream, objOutStream, -1, -1, null);
+            ICodeProgress funcProgress = funcOnProgress != null ? new DelegateCodeProgress(funcOnProgress) : null;
+            encoder.Code(objInStream, objOutStream, -1, -1, funcProgress);
         }
 
         public static Task CompressToLzmaFileAsync(this Stream objInStream, FileStream objOutStream,
                                                    SevenZipCompressionLevel eSevenZipCompressionLevel,
+                                                   Func<long, long, Task> funcOnProgress = null,
                                                    CancellationToken token = default)
         {
             // ReSharper disable RedundantArgumentDefaultValue
@@ -173,23 +178,23 @@ namespace Chummer
                     return objInStream.CopyToAsync(objOutStream, 81920, token);
 
                 case SevenZipCompressionLevel.Fastest:
-                    return CompressToLzmaFileAsync(objInStream, objOutStream, 8, 32, Encoder.EMatchFinderType.BT2,
+                    return CompressToLzmaFileAsync(objInStream, objOutStream, 8, 32, Encoder.EMatchFinderType.BT2, funcOnProgress,
                                                    token);
 
                 case SevenZipCompressionLevel.Fast:
-                    return CompressToLzmaFileAsync(objInStream, objOutStream, 22, 32, Encoder.EMatchFinderType.BT2,
+                    return CompressToLzmaFileAsync(objInStream, objOutStream, 22, 32, Encoder.EMatchFinderType.BT2, funcOnProgress,
                                                    token);
 
                 case SevenZipCompressionLevel.Normal:
-                    return CompressToLzmaFileAsync(objInStream, objOutStream, 24, 32, Encoder.EMatchFinderType.BT4,
+                    return CompressToLzmaFileAsync(objInStream, objOutStream, 24, 32, Encoder.EMatchFinderType.BT4, funcOnProgress,
                                                    token);
 
                 case SevenZipCompressionLevel.Maximum:
-                    return CompressToLzmaFileAsync(objInStream, objOutStream, 25, 64, Encoder.EMatchFinderType.BT4,
+                    return CompressToLzmaFileAsync(objInStream, objOutStream, 25, 64, Encoder.EMatchFinderType.BT4, funcOnProgress,
                                                    token);
 
                 case SevenZipCompressionLevel.Ultra:
-                    return CompressToLzmaFileAsync(objInStream, objOutStream, 26, 64, Encoder.EMatchFinderType.BT4,
+                    return CompressToLzmaFileAsync(objInStream, objOutStream, 26, 64, Encoder.EMatchFinderType.BT4, funcOnProgress,
                                                    token);
 
                 default:
@@ -200,21 +205,22 @@ namespace Chummer
 
         public static Task CompressToLzmaFileAsync(this Stream objInStream, FileStream objOutStream,
                                                    ChummerCompressionPreset eChummerCompressionPreset,
+                                                   Func<long, long, Task> funcOnProgress = null,
                                                    CancellationToken token = default)
         {
             // ReSharper disable RedundantArgumentDefaultValue
             switch (eChummerCompressionPreset)
             {
                 case ChummerCompressionPreset.Fast:
-                    return CompressToLzmaFileAsync(objInStream, objOutStream, 22, 32, Encoder.EMatchFinderType.BT2,
+                    return CompressToLzmaFileAsync(objInStream, objOutStream, 22, 32, Encoder.EMatchFinderType.BT2, funcOnProgress,
                                                    token);
 
                 case ChummerCompressionPreset.Balanced:
-                    return CompressToLzmaFileAsync(objInStream, objOutStream, 24, 64, Encoder.EMatchFinderType.BT4,
+                    return CompressToLzmaFileAsync(objInStream, objOutStream, 24, 64, Encoder.EMatchFinderType.BT4, funcOnProgress,
                                                    token);
 
                 case ChummerCompressionPreset.Thorough:
-                    return CompressToLzmaFileAsync(objInStream, objOutStream, 26, 128, Encoder.EMatchFinderType.BT4,
+                    return CompressToLzmaFileAsync(objInStream, objOutStream, 26, 128, Encoder.EMatchFinderType.BT4, funcOnProgress,
                                                    token);
 
                 default:
@@ -227,6 +233,7 @@ namespace Chummer
                                                    int intCompressionLevel = Encoder.kDefaultDictionaryLogSize,
                                                    int numFastBytes = (int)Encoder.kNumFastBytesDefault,
                                                    Encoder.EMatchFinderType mf = Encoder.EMatchFinderType.BT4,
+                                                   Func<long, long, Task> funcOnProgress = null,
                                                    CancellationToken token = default)
         {
             if (intCompressionLevel < 0 || intCompressionLevel > 30)
@@ -283,10 +290,11 @@ namespace Chummer
                 }
             }
             token.ThrowIfCancellationRequested();
-            return Task.Run(() => encoder.Code(objInStream, objOutStream, -1, -1, null, token), token);
+            IAsyncCodeProgress funcProgress = funcOnProgress != null ? new AsyncDelegateCodeProgress(funcOnProgress) : null;
+            return Task.Run(() => encoder.CodeAsync(objInStream, objOutStream, -1, -1, funcProgress, token), token);
         }
 
-        public static void DecompressLzmaFile(this FileStream objInStream, Stream objOutStream)
+        public static void DecompressLzmaFile(this FileStream objInStream, Stream objOutStream, Action<long, long> funcOnProgress = null)
         {
             Decoder decoder = s_LzyDecoder.Value;
 
@@ -306,11 +314,11 @@ namespace Chummer
                 }
             }
             long compressedSize = objInStream.Length - objInStream.Position;
-
-            decoder.Code(objInStream, objOutStream, compressedSize, outSize, null);
+            ICodeProgress funcProgress = funcOnProgress != null ? new DelegateCodeProgress(funcOnProgress) : null;
+            decoder.Code(objInStream, objOutStream, compressedSize, outSize, funcProgress);
         }
 
-        public static async Task DecompressLzmaFileAsync(this FileStream objInStream, Stream objOutStream,
+        public static async Task DecompressLzmaFileAsync(this FileStream objInStream, Stream objOutStream, Func<long, long, Task> funcOnProgress = null,
                                                          CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -335,7 +343,22 @@ namespace Chummer
             }
             long compressedSize = objInStream.Length - objInStream.Position;
             token.ThrowIfCancellationRequested();
-            await Task.Run(() => decoder.Code(objInStream, objOutStream, compressedSize, outSize, null, token), token);
+            IAsyncCodeProgress funcProgress = funcOnProgress != null ? new AsyncDelegateCodeProgress(funcOnProgress) : null;
+            await Task.Run(() => decoder.CodeAsync(objInStream, objOutStream, compressedSize, outSize, funcProgress, token), token);
+        }
+
+        private class DelegateCodeProgress : ICodeProgress
+        {
+            private readonly Action<long, long> handler;
+            public DelegateCodeProgress(Action<long, long> handler) => this.handler = handler;
+            public void SetProgress(long inSize, long outSize) => handler(inSize, outSize);
+        }
+
+        private class AsyncDelegateCodeProgress : IAsyncCodeProgress
+        {
+            private readonly Func<long, long, Task> handler;
+            public AsyncDelegateCodeProgress(Func<long, long, Task> handler) => this.handler = handler;
+            public Task SetProgressAsync(long inSize, long outSize, CancellationToken token = default) => handler(inSize, outSize);
         }
     }
 }

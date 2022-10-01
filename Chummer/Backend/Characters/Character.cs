@@ -4378,7 +4378,7 @@ namespace Chummer
                                 using (FileStream objFileStream = new FileStream(strFileName, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None))
                                 {
                                     await objStream.CompressToLzmaFileAsync(
-                                        objFileStream, GlobalSettings.Chum5zCompressionLevel, innerToken);
+                                        objFileStream, GlobalSettings.Chum5zCompressionLevel, token: innerToken);
                                 }
                             }
                         }

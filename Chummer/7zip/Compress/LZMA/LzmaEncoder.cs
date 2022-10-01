@@ -23,6 +23,7 @@ using SevenZip.Compression.RangeCoder;
 using System;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace SevenZip.Compression.LZMA
 {
@@ -1407,11 +1408,17 @@ namespace SevenZip.Compression.LZMA
         public void Code(Stream inStream, Stream outStream,
                          long inSize, long outSize, ICodeProgress progress)
         {
-            Code(inStream, outStream, inSize, outSize, progress, CancellationToken.None);
+            CodeCoreAsync(true, inStream, outStream, inSize, outSize, progress, null, CancellationToken.None).GetAwaiter().GetResult();
         }
 
-        public void Code(Stream inStream, Stream outStream,
-                         long inSize, long outSize, ICodeProgress progress, CancellationToken token)
+        public Task CodeAsync(Stream inStream, Stream outStream,
+                         long inSize, long outSize, IAsyncCodeProgress progress, CancellationToken token = default)
+        {
+            return CodeCoreAsync(false, inStream, outStream, inSize, outSize, null, progress, token);
+        }
+
+        private async Task CodeCoreAsync(bool blnSync, Stream inStream, Stream outStream,
+                         long inSize, long outSize, ICodeProgress progress, IAsyncCodeProgress progressAsync, CancellationToken token)
         {
             _needReleaseMFStream = false;
             try
@@ -1427,10 +1434,13 @@ namespace SevenZip.Compression.LZMA
                     if (finished)
                         return;
                     token.ThrowIfCancellationRequested();
-                    if (progress != null)
+                    if (blnSync)
                     {
-                        progress.SetProgress(processedInSize, processedOutSize);
-                        token.ThrowIfCancellationRequested();
+                        progress?.SetProgress(processedInSize, processedOutSize);
+                    }
+                    else if (progressAsync != null)
+                    {
+                        await progressAsync.SetProgressAsync(processedInSize, processedOutSize, token);
                     }
                 }
             }

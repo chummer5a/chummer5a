@@ -19,6 +19,8 @@
 // ICoder.h
 
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SevenZip
 {
@@ -54,7 +56,24 @@ namespace SevenZip
         /// output size. -1 if unknown.
         /// </param>
         void SetProgress(long inSize, long outSize);
-    };
+    }
+
+    public interface IAsyncCodeProgress
+    {
+        /// <summary>
+        /// (Asynchronous) Callback progress.
+        /// </summary>
+        /// <param name="inSize">
+        /// input size. -1 if unknown.
+        /// </param>
+        /// <param name="outSize">
+        /// output size. -1 if unknown.
+        /// </param>
+        /// <param name="token">
+        /// cancellation token to use for the callback.
+        /// </param>
+        Task SetProgressAsync(long inSize, long outSize, CancellationToken token = default);
+    }
 
     public interface ICoder
     {
@@ -81,6 +100,33 @@ namespace SevenZip
         /// </exception>
         void Code(System.IO.Stream inStream, System.IO.Stream outStream,
             long inSize, long outSize, ICodeProgress progress);
+
+        /// <summary>
+        /// Codes streams asynchronously.
+        /// </summary>
+        /// <param name="inStream">
+        /// input Stream.
+        /// </param>
+        /// <param name="outStream">
+        /// output Stream.
+        /// </param>
+        /// <param name="inSize">
+        /// input Size. -1 if unknown.
+        /// </param>
+        /// <param name="outSize">
+        /// output Size. -1 if unknown.
+        /// </param>
+        /// <param name="progress">
+        /// callback progress reference.
+        /// </param>
+        /// <param name="token">
+        /// cancellation token to use for the coding.
+        /// </param>
+        /// <exception cref="SevenZip.DataErrorException">
+        /// if input stream is not valid
+        /// </exception>
+        Task CodeAsync(System.IO.Stream inStream, System.IO.Stream outStream,
+                  long inSize, long outSize, IAsyncCodeProgress progress, CancellationToken token = default);
     };
 
     /*

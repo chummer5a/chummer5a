@@ -19,12 +19,14 @@
 // LzmaDecoder.cs
 
 using System;
+using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
+using SevenZip.Compression.LZ;
+using SevenZip.Compression.RangeCoder;
 
 namespace SevenZip.Compression.LZMA
 {
-    using RangeCoder;
-
     public class Decoder : ICoder, ISetDecoderProperties // ,System.IO.Stream
     {
         private class LenDecoder
@@ -62,18 +64,15 @@ namespace SevenZip.Compression.LZMA
             {
                 if (m_Choice.Decode(rangeDecoder) == 0)
                     return m_LowCoder[posState].Decode(rangeDecoder);
+                uint symbol = Base.kNumLowLenSymbols;
+                if (m_Choice2.Decode(rangeDecoder) == 0)
+                    symbol += m_MidCoder[posState].Decode(rangeDecoder);
                 else
                 {
-                    uint symbol = Base.kNumLowLenSymbols;
-                    if (m_Choice2.Decode(rangeDecoder) == 0)
-                        symbol += m_MidCoder[posState].Decode(rangeDecoder);
-                    else
-                    {
-                        symbol += Base.kNumMidLenSymbols;
-                        symbol += m_HighCoder.Decode(rangeDecoder);
-                    }
-                    return symbol;
+                    symbol += Base.kNumMidLenSymbols;
+                    symbol += m_HighCoder.Decode(rangeDecoder);
                 }
+                return symbol;
             }
         }
 
@@ -170,9 +169,9 @@ namespace SevenZip.Compression.LZMA
 
             public byte DecodeWithMatchByte(RangeCoder.Decoder rangeDecoder, uint pos, byte prevByte, byte matchByte)
             { return m_Coders[GetState(pos, prevByte)].DecodeWithMatchByte(rangeDecoder, matchByte); }
-        };
+        }
 
-        private LZ.OutWindow m_OutWindow = new LZ.OutWindow();
+        private OutWindow m_OutWindow = new OutWindow();
         private RangeCoder.Decoder m_RangeDecoder = new RangeCoder.Decoder();
 
         private BitDecoder[] m_IsMatchDecoders = new BitDecoder[Base.kNumStates << Base.kNumPosStatesBitsMax];
@@ -239,7 +238,7 @@ namespace SevenZip.Compression.LZMA
 
         private bool _solid;
 
-        private void Init(System.IO.Stream inStream, System.IO.Stream outStream)
+        private void Init(Stream inStream, Stream outStream)
         {
             m_RangeDecoder.Init(inStream);
             m_OutWindow.Init(outStream, _solid);
@@ -275,14 +274,20 @@ namespace SevenZip.Compression.LZMA
             m_PosAlignDecoder.Init();
         }
 
-        public void Code(System.IO.Stream inStream, System.IO.Stream outStream,
+        public void Code(Stream inStream, Stream outStream,
                          long inSize, long outSize, ICodeProgress progress)
         {
-            Code(inStream, outStream, inSize, outSize, progress, CancellationToken.None);
+            CodeCoreAsync(true, inStream, outStream, inSize, outSize, progress, null, CancellationToken.None).GetAwaiter().GetResult();
         }
 
-        public void Code(System.IO.Stream inStream, System.IO.Stream outStream,
-                         long inSize, long outSize, ICodeProgress progress, CancellationToken token)
+        public Task CodeAsync(Stream inStream, Stream outStream,
+                              long inSize, long outSize, IAsyncCodeProgress progress, CancellationToken token = default)
+        {
+            return CodeCoreAsync(false, inStream, outStream, inSize, outSize, null, progress, token);
+        }
+
+        private async Task CodeCoreAsync(bool blnSync, Stream inStream, Stream outStream,
+                                         long inSize, long outSize, ICodeProgress progress, IAsyncCodeProgress progressAsync, CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
             Init(inStream, outStream);
@@ -345,6 +350,14 @@ namespace SevenZip.Compression.LZMA
                                             token.ThrowIfCancellationRequested();
                                             m_OutWindow.PutByte(m_OutWindow.GetByte(rep0));
                                             nowPos64++;
+                                            if (blnSync)
+                                            {
+                                                progress?.SetProgress((long)outSize64, (long)nowPos64);
+                                            }
+                                            else if (progressAsync != null)
+                                            {
+                                                await progressAsync.SetProgressAsync((long)outSize64, (long)nowPos64, token);
+                                            }
                                             continue;
                                         }
                                     }
@@ -413,6 +426,14 @@ namespace SevenZip.Compression.LZMA
                                 nowPos64 += len;
                             }
                         }
+                        if (blnSync)
+                        {
+                            progress?.SetProgress((long)outSize64, (long)nowPos64);
+                        }
+                        else if (progressAsync != null)
+                        {
+                            await progressAsync.SetProgressAsync((long)outSize64, (long)nowPos64, token);
+                        }
                     }
                 }
             }
@@ -446,7 +467,7 @@ namespace SevenZip.Compression.LZMA
             SetPosBitsProperties(pb);
         }
 
-        public bool Train(System.IO.Stream stream)
+        public bool Train(Stream stream)
         {
             _solid = true;
             return m_OutWindow.Train(stream);

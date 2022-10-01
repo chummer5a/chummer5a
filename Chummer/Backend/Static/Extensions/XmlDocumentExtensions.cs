@@ -112,7 +112,7 @@ namespace Chummer
                     token.ThrowIfCancellationRequested();
                     using (MemoryStream objMemoryStream = new MemoryStream((int) objFileStream.Length))
                     {
-                        await objFileStream.DecompressLzmaFileAsync(objMemoryStream, token).ConfigureAwait(false);
+                        await objFileStream.DecompressLzmaFileAsync(objMemoryStream, token: token).ConfigureAwait(false);
                         token.ThrowIfCancellationRequested();
                         objMemoryStream.Seek(0, SeekOrigin.Begin);
                         token.ThrowIfCancellationRequested();
