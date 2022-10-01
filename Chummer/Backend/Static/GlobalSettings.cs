@@ -187,6 +187,8 @@ namespace Chummer
         public const string DefaultCharacterSettingDefaultValue = "223a11ff-80e0-428b-89a9-6ef1c243b8b6"; // GUID for built-in Standard option
         public const string DefaultMasterIndexSettingDefaultValue = "67e25032-2a4e-42ca-97fa-69f7f608236c"; // GUID for built-in Full House option
         public const DpiScalingMethod DefaultDpiScalingMethod = DpiScalingMethod.Zoom;
+        public const LzmaHelper.ChummerCompressionPreset DefaultChum5zCompressionLevel
+            = LzmaHelper.ChummerCompressionPreset.Balanced;
 
         private static DpiScalingMethod _eDpiScalingMethod = DefaultDpiScalingMethod;
 
@@ -208,6 +210,7 @@ namespace Chummer
         private static bool _blnPluginsEnabled;
         private static bool _blnAllowEasterEggs;
         private static bool _blnCustomDateTimeFormats;
+        private static LzmaHelper.ChummerCompressionPreset _eChum5zCompressionLevel = DefaultChum5zCompressionLevel; // Level of compression to use for .chum5z files
         private static string _strCustomDateFormat;
         private static string _strCustomTimeFormat;
         private static string _strDefaultCharacterSetting = DefaultCharacterSettingDefaultValue;
@@ -612,6 +615,19 @@ namespace Chummer
             LoadStringFromRegistry(ref _strCustomDateFormat, "customdateformat");
             LoadStringFromRegistry(ref _strCustomTimeFormat, "customtimeformat");
 
+            // Level of compression to use for .chum5z files
+            try
+            {
+                string strSaveCompressionLevel = DefaultChum5zCompressionLevel.ToString();
+                LoadStringFromRegistry(ref strSaveCompressionLevel, "chum5zcompressionlevel");
+                _eChum5zCompressionLevel = (LzmaHelper.ChummerCompressionPreset)Enum.Parse(typeof(LzmaHelper.ChummerCompressionPreset), strSaveCompressionLevel);
+            }
+            catch (Exception e)
+            {
+                Log.Warn(e);
+                _eChum5zCompressionLevel = DefaultChum5zCompressionLevel;
+            }
+
             // The quality at which images should be saved. int.MaxValue saves as Png, everything else saves as Jpeg, negative values save as Jpeg with automatic quality
             if (!LoadInt32FromRegistry(ref _intSavedImageQuality, "savedimagequality")
                 // In order to not throw off veteran users, PNG is the default for them instead of Jpeg with automatic compression
@@ -853,6 +869,7 @@ namespace Chummer
                     objRegistry.SetValue("customdateformat", CustomDateFormat);
                 if (CustomTimeFormat != null)
                     objRegistry.SetValue("customtimeformat", CustomTimeFormat);
+                objRegistry.SetValue("chum5zcompressionlevel", Chum5zCompressionLevel.ToString());
                 objRegistry.SetValue("savedimagequality", SavedImageQuality.ToString(InvariantCultureInfo));
 
                 //Save the Plugins-Dictionary
@@ -1949,6 +1966,12 @@ namespace Chummer
         public static MostRecentlyUsedCollection<string> FavoriteCharacters => s_LstFavoriteCharacters;
 
         public static MostRecentlyUsedCollection<string> MostRecentlyUsedCharacters => s_LstMostRecentlyUsedCharacters;
+
+        public static LzmaHelper.ChummerCompressionPreset Chum5zCompressionLevel
+        {
+            get => _eChum5zCompressionLevel;
+            set => _eChum5zCompressionLevel = value;
+        }
 
         public static bool CustomDateTimeFormats
         {

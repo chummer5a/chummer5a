@@ -535,7 +535,7 @@ namespace Chummer
                 return -intReturn;
             }
 
-            int intBackupReturn = string.CompareOrdinal(_objCharacter?.FileName ?? string.Empty, other._objCharacter?.FileName ?? string.Empty);
+            int intBackupReturn = string.Compare(_objCharacter?.FileName ?? string.Empty, other._objCharacter?.FileName ?? string.Empty, StringComparison.OrdinalIgnoreCase);
             if (intBackupReturn == 0)
             {
                 intBackupReturn = string.CompareOrdinal(_objCharacter?.CharacterName ?? string.Empty, other._objCharacter?.CharacterName ?? string.Empty);

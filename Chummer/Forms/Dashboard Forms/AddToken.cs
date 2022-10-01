@@ -49,8 +49,10 @@ namespace Chummer
         {
             using (OpenFileDialog dlgOpenFile = await this.DoThreadSafeFuncAsync(() => new OpenFileDialog()))
             {
-                dlgOpenFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|'
-                    + await LanguageManager.GetStringAsync("DialogFilter_All");
+                dlgOpenFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Chummer") + '|' +
+                                     await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|' +
+                                     await LanguageManager.GetStringAsync("DialogFilter_Chum5z") + '|' +
+                                     await LanguageManager.GetStringAsync("DialogFilter_All");
                 if (await this.DoThreadSafeFuncAsync(x => dlgOpenFile.ShowDialog(x)) != DialogResult.OK)
                     return;
                 await LoadCharacter(dlgOpenFile.FileName);
@@ -64,7 +66,7 @@ namespace Chummer
         /// <param name="token"></param>
         private async ValueTask LoadCharacter(string fileName, CancellationToken token = default)
         {
-            if (File.Exists(fileName) && fileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
+            if (File.Exists(fileName) && (fileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase) || fileName.EndsWith(".chum5z", StringComparison.OrdinalIgnoreCase)))
             {
                 Character objCharacter = new Character
                 {

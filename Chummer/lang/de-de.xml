@@ -7742,8 +7742,8 @@
 			<text>Alle Dateien (*.*)|*.*</text>
 		</string>
 		<string>
-			<key>DialogFilter_Chum5</key>
-			<text>Chummer5 Dateien (*.chum5)|*.chum5</text>
+			<key>DialogFilter_Chummer</key>
+			<text>Chummer5 Dateien (*.chum5;*.chum5z)|*.chum5;*.chum5z</text>
 		</string>
 		<string>
 			<key>DialogFilter_Exe</key>

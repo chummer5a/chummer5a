@@ -23,11 +23,9 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Xml;
 using System.Xml.Serialization;
 using System.Xml.XPath;
 using Newtonsoft.Json;
@@ -477,6 +475,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Syntactic sugar to call CopyFrom() asynchronously immediately after the constructor.
+        /// </summary>
+        public static Task<CharacterCache> CreateFromFileAsync(CharacterCache objExistingCache, CancellationToken token = default)
+        {
+            CharacterCache objReturn = new CharacterCache();
+            return objReturn.CopyFromAsync(objExistingCache, token).ContinueWith(x => objReturn, token);
+        }
+
+        /// <summary>
         /// Syntactic sugar to call LoadFromFile() synchronously immediately after the constructor.
         /// </summary>
         /// <param name="strFile"></param>
@@ -517,6 +524,39 @@ namespace Chummer
                 _strSettingsFile = objExistingCache.SettingsFile;
                 _imgMugshot?.Dispose();
                 _imgMugshot = objExistingCache.Mugshot.Clone() as Image;
+            }
+        }
+
+        public async Task CopyFromAsync(CharacterCache objExistingCache, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                using (await EnterReadLock.EnterAsync(objExistingCache.LockObject, token).ConfigureAwait(false))
+                {
+                    _strBackground = objExistingCache.Background;
+                    _strBuildMethod = objExistingCache.BuildMethod;
+                    _strCharacterAlias = objExistingCache.CharacterAlias;
+                    _strCharacterName = objExistingCache.CharacterName;
+                    _strCharacterNotes = objExistingCache.CharacterNotes;
+                    _strConcept = objExistingCache.Concept;
+                    _blnCreated = objExistingCache.Created;
+                    _strDescription = objExistingCache.Description;
+                    _strEssence = objExistingCache.Essence;
+                    _strGameNotes = objExistingCache.GameNotes;
+                    _strKarma = objExistingCache.Karma;
+                    _strFileName = objExistingCache.FileName;
+                    _strMetatype = objExistingCache.Metatype;
+                    _strMetavariant = objExistingCache.Metavariant;
+                    _strPlayerName = objExistingCache.PlayerName;
+                    _strSettingsFile = objExistingCache.SettingsFile;
+                    _imgMugshot?.Dispose();
+                    _imgMugshot = objExistingCache.Mugshot.Clone() as Image;
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -684,18 +724,27 @@ namespace Chummer
                     // If we run into any problems loading the character cache, fail out early.
                     try
                     {
-                        XPathDocument xmlDoc = blnSync ? LoadXPathDocument() : await Task.Run(LoadXPathDocument, token).ConfigureAwait(false);
+                        XPathDocument xmlDoc = blnSync ? LoadXPathDocument() : await Task.Run(LoadXPathDocumentAsync, token).ConfigureAwait(false);
 
                         XPathDocument LoadXPathDocument()
                         {
-                            using (StreamReader objStreamReader = new StreamReader(strFile, Encoding.UTF8, true))
-                            {
-                                using (XmlReader objXmlReader =
-                                    XmlReader.Create(objStreamReader, GlobalSettings.SafeXmlReaderSettings))
-                                {
-                                    return new XPathDocument(objXmlReader);
-                                }
-                            }
+                            if (strFile.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
+                                return XPathDocumentExtensions.LoadStandardFromFile(strFile);
+                            if (strFile.EndsWith(".chum5z", StringComparison.OrdinalIgnoreCase))
+                                return XPathDocumentExtensions.LoadStandardFromLzmaCompressedFile(strFile);
+                            Utils.BreakIfDebug();
+                            throw new InvalidOperationException();
+                        }
+
+                        Task<XPathDocument> LoadXPathDocumentAsync()
+                        {
+                            if (strFile.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
+                                return XPathDocumentExtensions.LoadStandardFromFileAsync(strFile, token: token);
+                            if (strFile.EndsWith(".chum5z", StringComparison.OrdinalIgnoreCase))
+                                return XPathDocumentExtensions.LoadStandardFromLzmaCompressedFileAsync(
+                                    strFile, token: token);
+                            Utils.BreakIfDebug();
+                            return Task.FromException<XPathDocument>(new InvalidOperationException());
                         }
 
                         xmlSourceNode = blnSync

@@ -2872,6 +2872,19 @@ namespace Chummer
                     return false;
                 }
             }
+            else if (!strFileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase) && !strFileName.EndsWith(".chum5z", StringComparison.OrdinalIgnoreCase))
+            {
+                strFileName = Path.GetFileNameWithoutExtension(strFileName) + ".chum5";
+                using (blnSync
+                           // ReSharper disable once MethodHasAsyncOverload
+                           ? EnterReadLock.Enter(LockObject, token)
+                           : await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                {
+                    if (!string.IsNullOrEmpty(FileName)
+                        && FileName.EndsWith(".chum5z", StringComparison.OrdinalIgnoreCase))
+                        strFileName += 'z';
+                }
+            }
 
             // ReSharper disable once MethodHasAsyncOverload
             using (blnSync ? EnterReadLock.Enter(LockObject, token) : await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
@@ -3591,7 +3604,7 @@ namespace Chummer
                             objWriter.Flush();
                         }
 
-                        objStream.Position = 0;
+                        objStream.Seek(0, SeekOrigin.Begin);
 
                         // Validate that the character can save properly. If there's no error, save the file to the listed file location.
                         try
@@ -3600,7 +3613,16 @@ namespace Chummer
                             using (XmlReader objXmlReader
                                    = XmlReader.Create(objStream, GlobalSettings.SafeXmlReaderSettings))
                                 objDoc.Load(objXmlReader);
-                            objDoc.Save(strFileName);
+                            if (strFileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
+                                objDoc.Save(strFileName);
+                            else
+                            {
+                                objStream.Seek(0, SeekOrigin.Begin);
+                                using (FileStream objFileStream = new FileStream(strFileName, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None))
+                                {
+                                    objStream.CompressToLzmaFile(objFileStream, GlobalSettings.Chum5zCompressionLevel);
+                                }
+                            }
                         }
                         catch (IOException e)
                         {
@@ -4348,7 +4370,17 @@ namespace Chummer
                             using (XmlReader objXmlReader
                                    = XmlReader.Create(objStream, GlobalSettings.SafeXmlReaderSettings))
                                 objDoc.Load(objXmlReader);
-                            objDoc.Save(strFileName);
+                            if (strFileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
+                                objDoc.Save(strFileName);
+                            else
+                            {
+                                objStream.Seek(0, SeekOrigin.Begin);
+                                using (FileStream objFileStream = new FileStream(strFileName, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None))
+                                {
+                                    await objStream.CompressToLzmaFileAsync(
+                                        objFileStream, GlobalSettings.Chum5zCompressionLevel, innerToken);
+                                }
+                            }
                         }
                         catch (IOException e)
                         {
@@ -4638,23 +4670,25 @@ namespace Chummer
         /// <summary>
         /// Load the Character from an XML file synchronously.
         /// </summary>
+        /// <param name="strFileName">Name of the file to load the character from. Leave empty if the character should be loaded from FileName.</param>
         /// <param name="frmLoadingForm">Instance of frmLoading to use to update with loading progress. frmLoading::PerformStep() is called 35 times within this method, so plan accordingly.</param>
         /// <param name="showWarnings">Whether warnings about book content and other character content should be loaded.</param>
         /// <param name="token">Cancellation token to use.</param>
-        public bool Load(LoadingBar frmLoadingForm = null, bool showWarnings = true, CancellationToken token = default)
+        public bool Load(string strFileName = "", LoadingBar frmLoadingForm = null, bool showWarnings = true, CancellationToken token = default)
         {
-            return LoadCoreAysnc(true, frmLoadingForm, showWarnings, token).ConfigureAwait(false).GetAwaiter().GetResult();
+            return LoadCoreAsync(true, strFileName, frmLoadingForm, showWarnings, token).ConfigureAwait(false).GetAwaiter().GetResult();
         }
 
         /// <summary>
         /// Load the Character from an XML file asynchronously.
         /// </summary>
+        /// <param name="strFileName">Name of the file to load the character from. Leave empty if the character should be loaded from FileName.</param>
         /// <param name="frmLoadingForm">Instance of frmLoading to use to update with loading progress. frmLoading::PerformStep() is called 35 times within this method, so plan accordingly.</param>
         /// <param name="showWarnings">Whether warnings about book content and other character content should be loaded.</param>
         /// <param name="token">Cancellation token to use.</param>
-        public Task<bool> LoadAsync(LoadingBar frmLoadingForm = null, bool showWarnings = true, CancellationToken token = default)
+        public Task<bool> LoadAsync(string strFileName = "", LoadingBar frmLoadingForm = null, bool showWarnings = true, CancellationToken token = default)
         {
-            return LoadCoreAysnc(false, frmLoadingForm, showWarnings, token);
+            return LoadCoreAsync(false, strFileName, frmLoadingForm, showWarnings, token);
         }
 
         public const int NumLoadingSections = 37;
@@ -4665,13 +4699,17 @@ namespace Chummer
         /// https://docs.microsoft.com/en-us/archive/msdn-magazine/2015/july/async-programming-brownfield-async-development
         /// </summary>
         /// <param name="blnSync">Flag for whether method should always use synchronous code or not.</param>
+        /// <param name="strFileName">Name of the file to load the character from. Leave empty if the character should be loaded from FileName.</param>
         /// <param name="frmLoadingForm">Instance of frmLoading to use to update with loading progress. frmLoading::PerformStep() is called NumLoadingSections times within this method, so plan accordingly.</param>
         /// <param name="showWarnings">Whether warnings about book content and other character content should be loaded.</param>
         /// <param name="token">Cancellation token to use.</param>
-        private async Task<bool> LoadCoreAysnc(bool blnSync, LoadingBar frmLoadingForm = null, bool showWarnings = true, CancellationToken token = default)
+        private async Task<bool> LoadCoreAsync(bool blnSync, string strFileName = "", LoadingBar frmLoadingForm = null, bool showWarnings = true, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (!File.Exists(_strFileName))
+            if (string.IsNullOrWhiteSpace(strFileName))
+                strFileName = FileName;
+            if (!File.Exists(strFileName) || (!strFileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase)
+                                              && !strFileName.EndsWith(".chum5z", StringComparison.OrdinalIgnoreCase)))
                 return false;
 
             IDisposable objLocker = null;
@@ -4689,10 +4727,10 @@ namespace Chummer
                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                            ? Timekeeper.StartSyncron("clsCharacter.Load", null,
                                                      CustomActivity.OperationType
-                                                                   .DependencyOperation, _strFileName)
+                                                                   .DependencyOperation, strFileName)
                            : await Timekeeper.StartSyncronAsync("clsCharacter.Load", null,
                                                      CustomActivity.OperationType
-                                                                   .DependencyOperation, _strFileName, token).ConfigureAwait(false))
+                                                                   .DependencyOperation, strFileName, token).ConfigureAwait(false))
                 {
                     try
                     {
@@ -4723,8 +4761,6 @@ namespace Chummer
                                    ? Timekeeper.StartSyncron("load_xml", loadActivity)
                                    : await Timekeeper.StartSyncronAsync("load_xml", loadActivity, token).ConfigureAwait(false))
                         {
-                            if (!File.Exists(_strFileName))
-                                return false;
                             bool blnKeepLoading = blnSync
                                 ? LoadSaveFileDocument()
                                 : await Task.Run(LoadSaveFileDocumentAsync, token).ConfigureAwait(false);
@@ -4736,7 +4772,13 @@ namespace Chummer
                                 {
                                     try
                                     {
-                                        objXmlDocument.LoadStandard(_strFileName, !blnErrorCaught);
+                                        if (strFileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
+                                            objXmlDocument.LoadStandard(strFileName, !blnErrorCaught);
+                                        else if (strFileName.EndsWith(".chum5z", StringComparison.OrdinalIgnoreCase))
+                                            objXmlDocument.LoadStandardFromLzmaCompressed(
+                                                strFileName, !blnErrorCaught);
+                                        else
+                                            throw new InvalidOperationException();
                                         blnErrorCaught = false;
                                     }
                                     catch (XmlException ex)
@@ -4791,7 +4833,14 @@ namespace Chummer
                                 {
                                     try
                                     {
-                                        objXmlDocument.LoadStandard(_strFileName, !blnErrorCaught);
+                                        if (strFileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
+                                            await objXmlDocument.LoadStandardAsync(
+                                                strFileName, !blnErrorCaught, token).ConfigureAwait(false);
+                                        else if (strFileName.EndsWith(".chum5z", StringComparison.OrdinalIgnoreCase))
+                                            await objXmlDocument.LoadStandardFromLzmaCompressedAsync(
+                                                strFileName, !blnErrorCaught, token).ConfigureAwait(false);
+                                        else
+                                            throw new InvalidOperationException();
                                         blnErrorCaught = false;
                                     }
                                     catch (XmlException ex)
@@ -4867,7 +4916,7 @@ namespace Chummer
                                        ? Timekeeper.StartSyncron("load_char_misc", loadActivity)
                                        : await Timekeeper.StartSyncronAsync("load_char_misc", loadActivity, token).ConfigureAwait(false))
                             {
-                                _dateFileLastWriteTime = File.GetLastWriteTimeUtc(_strFileName);
+                                _dateFileLastWriteTime = File.GetLastWriteTimeUtc(strFileName);
 
                                 xmlCharacterNavigator.TryGetBoolFieldQuickly("ignorerules", ref _blnIgnoreRules);
                                 xmlCharacterNavigator.TryGetBoolFieldQuickly("created", ref _blnCreated);
@@ -13081,13 +13130,27 @@ namespace Chummer
             }
             set
             {
+                string strNewValue = value;
+                if (!string.IsNullOrWhiteSpace(strNewValue) 
+                    && !strNewValue.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase) 
+                    && !strNewValue.EndsWith(".chum5z", StringComparison.OrdinalIgnoreCase))
+                {
+                    strNewValue = Path.GetFileNameWithoutExtension(strNewValue) + ".chum5";
+                    using (EnterReadLock.Enter(LockObject))
+                    {
+                        if (!string.IsNullOrWhiteSpace(_strFileName)
+                            && _strFileName.EndsWith(".chum5z", StringComparison.OrdinalIgnoreCase))
+                            strNewValue += 'z';
+                    }
+                }
+
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_strFileName == value)
+                    if (_strFileName == strNewValue)
                         return;
                     using (LockObject.EnterWriteLock())
                     {
-                        _strFileName = value;
+                        _strFileName = strNewValue;
                         OnPropertyChanged();
                     }
                 }

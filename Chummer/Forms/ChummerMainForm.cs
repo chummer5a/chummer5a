@@ -431,7 +431,9 @@ namespace Chummer
                         }
 
                         await this.DoThreadSafeAsync(x => x.Text = MainTitle);
-                        dlgOpenFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|' +
+                        dlgOpenFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Chummer") + '|' +
+                                             await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|' +
+                                             await LanguageManager.GetStringAsync("DialogFilter_Chum5z") + '|' +
                                              await LanguageManager.GetStringAsync("DialogFilter_All");
 
                         //this.toolsMenu.DropDownItems.Add("GM Dashboard").Click += this.dashboardToolStripMenuItem_Click;
@@ -484,7 +486,7 @@ namespace Chummer
                                                 DateTime.UtcNow.Subtract(TimeSpan.FromDays(90));
                                             foreach (string strAutosave in Directory.EnumerateFiles(
                                                          Utils.GetAutosavesFolderPath,
-                                                         "*.chum5", SearchOption.AllDirectories))
+                                                         "*.chum5;*.chum5z", SearchOption.AllDirectories))
                                             {
                                                 FileInfo objAutosave;
                                                 try
@@ -2692,7 +2694,7 @@ namespace Chummer
                                 FileInfo objMostRecentAutosave = null;
                                 foreach (string strAutosave in Directory.EnumerateFiles(
                                              Utils.GetAutosavesFolderPath,
-                                             "*.chum5", SearchOption.AllDirectories))
+                                             "*.chum5;*.chum5z", SearchOption.AllDirectories))
                                 {
                                     FileInfo objAutosave;
                                     try
@@ -2846,7 +2848,9 @@ namespace Chummer
                                             strArgs.Aggregate((j, k) => j + ' ' + k));
                                     }
 
-                                    if (Path.GetExtension(strArg) != ".chum5")
+                                    string strExtension = Path.GetExtension(strArg);
+                                    if (!string.Equals(strExtension, ".chum5", StringComparison.OrdinalIgnoreCase)
+                                        && !string.Equals(strExtension, ".chum5z", StringComparison.OrdinalIgnoreCase))
                                         Utils.BreakIfDebug();
                                     if (setFilesToLoad.Contains(strArg))
                                         continue;

@@ -244,8 +244,10 @@ namespace Chummer
             // Prompt the user to select a save file to associate with this Contact.
             using (OpenFileDialog dlgOpenFile = await this.DoThreadSafeFuncAsync(() => new OpenFileDialog()))
             {
-                dlgOpenFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|'
-                    + await LanguageManager.GetStringAsync("DialogFilter_All");
+                dlgOpenFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Chummer") + '|' +
+                                     await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|' +
+                                     await LanguageManager.GetStringAsync("DialogFilter_Chum5z") + '|' +
+                                     await LanguageManager.GetStringAsync("DialogFilter_All");
                 if (!string.IsNullOrEmpty(_objSpirit.FileName) && File.Exists(_objSpirit.FileName))
                 {
                     dlgOpenFile.InitialDirectory = Path.GetDirectoryName(_objSpirit.FileName);
@@ -580,15 +582,18 @@ namespace Chummer
                     string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token);
                     using (SaveFileDialog dlgSaveFile = await this.DoThreadSafeFuncAsync(() => new SaveFileDialog(), token: token))
                     {
-                        dlgSaveFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5", token: token) + '|'
-                            + await LanguageManager.GetStringAsync("DialogFilter_All", token: token);
+                        dlgSaveFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5", token: token) + '|' +
+                                             await LanguageManager.GetStringAsync("DialogFilter_Chum5z", token: token) + '|' +
+                                             await LanguageManager.GetStringAsync("DialogFilter_All", token: token);
                         dlgSaveFile.FileName = strCritterName + strSpace + '('
                                                + await LanguageManager.GetStringAsync(_objSpirit.RatingLabel, token: token) + strSpace
-                                               + _objSpirit.Force.ToString(GlobalSettings.InvariantCultureInfo)
-                                               + ").chum5";
+                                               + _objSpirit.Force.ToString(GlobalSettings.InvariantCultureInfo);
                         if (await this.DoThreadSafeFuncAsync(x => dlgSaveFile.ShowDialog(x), token: token) != DialogResult.OK)
                             return;
                         string strFileName = dlgSaveFile.FileName;
+                        if (!strFileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase)
+                            && !strFileName.EndsWith(".chum5z", StringComparison.OrdinalIgnoreCase))
+                            strFileName += ".chum5";
                         objCharacter.FileName = strFileName;
                     }
 

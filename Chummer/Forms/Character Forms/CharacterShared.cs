@@ -111,8 +111,9 @@ namespace Chummer
         {
             try
             {
-                dlgSaveFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5", token: GenericToken) + '|'
-                    + await LanguageManager.GetStringAsync("DialogFilter_All", token: GenericToken);
+                dlgSaveFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5", token: GenericToken) + '|' +
+                                     await LanguageManager.GetStringAsync("DialogFilter_Chum5z", token: GenericToken) + '|' +
+                                     await LanguageManager.GetStringAsync("DialogFilter_All", token: GenericToken);
             }
             catch (OperationCanceledException)
             {
@@ -329,16 +330,16 @@ namespace Chummer
                         }
                     }
 
-                    string strShowFileName = CharacterObject.FileName
-                                                            .SplitNoAlloc(
-                                                                Path.DirectorySeparatorChar,
-                                                                StringSplitOptions.RemoveEmptyEntries).LastOrDefault();
+                    string strShowFileName = Path.GetFileName(CharacterObject.FileName);
 
                     if (string.IsNullOrEmpty(strShowFileName))
-                        strShowFileName = CharacterObject.CharacterName + ".chum5";
-                    foreach (char invalidChar in Path.GetInvalidFileNameChars())
                     {
-                        strShowFileName = strShowFileName.Replace(invalidChar, '_');
+                        // Autosaves are always compressed
+                        strShowFileName = CharacterObject.CharacterName + ".chum5z";
+                        foreach (char invalidChar in Path.GetInvalidFileNameChars())
+                        {
+                            strShowFileName = strShowFileName.Replace(invalidChar, '_');
+                        }
                     }
 
                     string strFilePath = Path.Combine(strAutosavePath, strShowFileName);
@@ -8878,26 +8879,43 @@ namespace Chummer
                     }
 
                     string strOldFileName = CharacterObject.FileName;
-                    string strShowFileName = CharacterObject.FileName
-                                                            .SplitNoAlloc(
-                                                                Path.DirectorySeparatorChar,
-                                                                StringSplitOptions.RemoveEmptyEntries)
-                                                            .LastOrDefault();
-
+                    string strShowFileName = Path.GetFileName(CharacterObject.FileName);
                     if (string.IsNullOrEmpty(strShowFileName))
+                    {
                         strShowFileName = CharacterObject.CharacterName;
-                    dlgSaveFile.FileName = strShowFileName;
+                        foreach (char invalidChar in Path.GetInvalidFileNameChars())
+                        {
+                            strShowFileName = strShowFileName.Replace(invalidChar, '_');
+                        }
+                    }
 
+                    dlgSaveFile.FileName = strShowFileName;
                     if (await this.DoThreadSafeFuncAsync(x => dlgSaveFile.ShowDialog(x), token: token)
                         != DialogResult.OK)
                         return false;
 
-                    CharacterObject.FileName = dlgSaveFile.FileName;
-
-                    bool blnReturn = await SaveCharacter(false, blnDoCreated, token);
-                    if (!blnReturn)
+                    string strFileName = dlgSaveFile.FileName;
+                    if (!string.IsNullOrEmpty(strFileName)
+                        && !strFileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase)
+                        && !strFileName.EndsWith(".chum5z", StringComparison.OrdinalIgnoreCase))
+                    {
+                        strFileName += strShowFileName.EndsWith(".chum5z", StringComparison.OrdinalIgnoreCase)
+                            ? ".chum5z"
+                            : ".chum5";
+                    }
+                    CharacterObject.FileName = strFileName;
+                    try
+                    {
+                        bool blnReturn = await SaveCharacter(false, blnDoCreated, token);
+                        if (!blnReturn)
+                            CharacterObject.FileName = strOldFileName;
+                        return blnReturn;
+                    }
+                    catch
+                    {
                         CharacterObject.FileName = strOldFileName;
-                    return blnReturn;
+                        throw;
+                    }
                 }
                 finally
                 {

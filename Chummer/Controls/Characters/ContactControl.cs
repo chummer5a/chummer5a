@@ -465,8 +465,10 @@ namespace Chummer
             // Prompt the user to select a save file to associate with this Contact.
             using (OpenFileDialog dlgOpenFile = await this.DoThreadSafeFuncAsync(() => new OpenFileDialog()))
             {
-                dlgOpenFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|'
-                    + await LanguageManager.GetStringAsync("DialogFilter_All");
+                dlgOpenFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Chummer") + '|' +
+                                     await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|' +
+                                     await LanguageManager.GetStringAsync("DialogFilter_Chum5z") + '|' +
+                                     await LanguageManager.GetStringAsync("DialogFilter_All");
                 if (!string.IsNullOrEmpty(_objContact.FileName) && File.Exists(_objContact.FileName))
                 {
                     dlgOpenFile.InitialDirectory = Path.GetDirectoryName(_objContact.FileName);

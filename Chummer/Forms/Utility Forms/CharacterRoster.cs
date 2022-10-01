@@ -57,7 +57,7 @@ namespace Chummer
 
             if (!string.IsNullOrEmpty(GlobalSettings.CharacterRosterPath) && Directory.Exists(GlobalSettings.CharacterRosterPath))
             {
-                _watcherCharacterRosterFolder = new FileSystemWatcher(GlobalSettings.CharacterRosterPath, "*.chum5");
+                _watcherCharacterRosterFolder = new FileSystemWatcher(GlobalSettings.CharacterRosterPath, "*.chum5;*.chum5z");
             }
         }
 
@@ -1055,7 +1055,7 @@ namespace Chummer
             if (!string.IsNullOrEmpty(GlobalSettings.CharacterRosterPath) && Directory.Exists(GlobalSettings.CharacterRosterPath))
             {
                 dicWatch = new Dictionary<string, string>(byte.MaxValue);
-                foreach (string strFile in Directory.EnumerateFiles(GlobalSettings.CharacterRosterPath, "*.chum5", SearchOption.AllDirectories))
+                foreach (string strFile in Directory.EnumerateFiles(GlobalSettings.CharacterRosterPath, "*.chum5;*.chum5z", SearchOption.AllDirectories))
                 {
                     token.ThrowIfCancellationRequested();
 
@@ -2058,7 +2058,8 @@ namespace Chummer
                 string strTag = e.Node.Tag.ToString();
                 if (!string.IsNullOrEmpty(strTag))
                     e.Node.ContextMenuStrip = CreateContextMenuStrip(
-                        strTag.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase)
+                        (strTag.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase)
+                         || strTag.EndsWith(".chum5z", StringComparison.OrdinalIgnoreCase))
                         && Program.MainForm.OpenFormsWithCharacters.Any(
                             x => x.CharacterObjects.Any(y => y.FileName == strTag)));
                 else

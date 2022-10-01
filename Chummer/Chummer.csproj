@@ -295,6 +295,21 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="7zip\Common\CommandLineParser.cs" />
+    <Compile Include="7zip\Common\CRC.cs" />
+    <Compile Include="7zip\Common\InBuffer.cs" />
+    <Compile Include="7zip\Common\OutBuffer.cs" />
+    <Compile Include="7zip\Compress\LZMA\LzmaBase.cs" />
+    <Compile Include="7zip\Compress\LZMA\LzmaDecoder.cs" />
+    <Compile Include="7zip\Compress\LZMA\LzmaEncoder.cs" />
+    <Compile Include="7zip\Compress\LZ\IMatchFinder.cs" />
+    <Compile Include="7zip\Compress\LZ\LzBinTree.cs" />
+    <Compile Include="7zip\Compress\LZ\LzInWindow.cs" />
+    <Compile Include="7zip\Compress\LZ\LzOutWindow.cs" />
+    <Compile Include="7zip\Compress\RangeCoder\RangeCoder.cs" />
+    <Compile Include="7zip\Compress\RangeCoder\RangeCoderBit.cs" />
+    <Compile Include="7zip\Compress\RangeCoder\RangeCoderBitTree.cs" />
+    <Compile Include="7zip\ICoder.cs" />
     <Compile Include="Backend\Attributes\AttributeSection.cs" />
     <Compile Include="Backend\Datastructures\AvailabilityValue.cs" />
     <Compile Include="Backend\Datastructures\CachedBindingList.cs" />
@@ -333,6 +348,7 @@
     <Compile Include="Backend\Helpers\AsyncLock.cs" />
     <Compile Include="Backend\Helpers\CancellationTokenTaskSource.cs" />
     <Compile Include="Backend\Helpers\DebuggableSemaphoreSlim.cs" />
+    <Compile Include="Backend\Helpers\LzmaHelper.cs" />
     <Compile Include="Backend\Helpers\SafeDisposableObjectPool.cs" />
     <Compile Include="Backend\Helpers\SafeObjectPool.cs" />
     <Compile Include="Backend\Helpers\ThreadSafeForm.cs" />
@@ -379,6 +395,7 @@
     <Compile Include="Backend\Static\Extensions\WinFormsExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\XmlDocumentExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\XmlWriterExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\XPathDocumentExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\XPathNavigatorExtensions.cs" />
     <Compile Include="Backend\Improvements\ImprovementMethods.cs">
       <AutoGen>True</AutoGen>

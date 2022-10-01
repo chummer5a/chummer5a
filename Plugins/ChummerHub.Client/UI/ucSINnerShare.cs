@@ -185,7 +185,7 @@ namespace ChummerHub.Client.UI
                                         myState.StatusText = "Loading chummer file...";
                                         myState.CurrentProgress += 10;
                                         ReportProgress(myState.CurrentProgress, myState);
-                                        blnSuccess = await c.LoadAsync(frmLoadingForm, false);
+                                        blnSuccess = await c.LoadAsync(frmLoadingForm: frmLoadingForm, showWarnings: false);
                                     }
                                 }
 

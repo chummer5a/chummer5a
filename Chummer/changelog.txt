@@ -1,5 +1,6 @@
 Future Build 224
 Application Changes:
+- Added support for opening and saving characters in the form of compressed saves (chum5z) instead of uncompressed (chum5). The program has three different options for the compression level of saved chum5z files, and at the most thorough levels, savefile sizes can be decreased by around 50% or more.
 - Fixed certain texts in Dark Mode not properly switching to a white color.
 - The checkboxes for the list to set what cyberware and bioware grades are allowed at character creation no longer appears weird in dark mode on machines running Windows 10 or earlier.
 - Fixed various display issues with custom rating names for vehicle mods.
@@ -27,6 +28,13 @@ Changed/New Strings:
 - String_DamageTorpedo
 - Message_CharacterOptions_DesyncFromHashCode
 - MessageTitle_CharacterOptions_DesyncFromHashCode
+- DialogFilter_Chummer
+- DialogFilter_Chum5
+- DialogFilter_Chum5z
+- Label_Options_Chum5zCompressionLevel
+- String_Fast_Option
+- String_Balanced_Option
+- String_Thorough_Option
 
 Build 223
 Application Changes:

@@ -6628,8 +6628,8 @@
       <text>Chummer5 cannot access the file for writing. Please make sure it has permission to write to the location and that the file is not currently in use.</text>
     </string>
     <string>
-      <key>DialogFilter_Chum5</key>
-      <text>Chummer5 Files (*.chum5)|*.chum5</text>
+      <key>DialogFilter_Chummer</key>
+      <text>Chummer5 Files (*.chum5;*.chum5z)|*.chum5;*.chum5z</text>
     </string>
     <string>
       <key>DialogFilter_Xml</key>

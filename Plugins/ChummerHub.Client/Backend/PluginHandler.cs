@@ -1350,7 +1350,7 @@ namespace Chummer.Plugins
                 };
                 using (ThreadSafeForm<LoadingBar> frmLoadingForm = await Program.CreateAndShowProgressBarAsync(Path.GetFileName(fileToLoad), Character.NumLoadingSections))
                 {
-                    if (await objCharacter.LoadAsync(frmLoadingForm.MyForm, Settings.Default.IgnoreWarningsOnOpening))
+                    if (await objCharacter.LoadAsync(frmLoadingForm: frmLoadingForm.MyForm, showWarnings: Settings.Default.IgnoreWarningsOnOpening))
                         await Program.OpenCharacters.AddAsync(objCharacter);
                     else
                         return;

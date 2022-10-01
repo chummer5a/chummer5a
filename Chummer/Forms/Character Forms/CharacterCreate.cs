@@ -12138,13 +12138,13 @@ namespace Chummer
                     try
                     {
                         using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program.CreateAndShowProgressBarAsync(
-                                   Path.GetFileName(CharacterObject.FileName),
+                                   Path.GetFileName(strCharacterFile),
                                    Character.NumLoadingSections + 1, GenericToken).ConfigureAwait(false))
                         {
                             SkipUpdate = true;
                             try
                             {
-                                await CharacterObject.LoadAsync(frmLoadingBar.MyForm, token: GenericToken).ConfigureAwait(false);
+                                await CharacterObject.LoadAsync(frmLoadingForm: frmLoadingBar.MyForm, token: GenericToken).ConfigureAwait(false);
                                 await frmLoadingBar.MyForm.PerformStepAsync(
                                     await LanguageManager.GetStringAsync("String_UI", token: GenericToken).ConfigureAwait(false),
                                     token: GenericToken).ConfigureAwait(false);
@@ -17277,8 +17277,10 @@ namespace Chummer
                     }
 
                     strNewName += await LanguageManager.GetStringAsync("String_Space", token: token) + '('
-                        + await LanguageManager.GetStringAsync("Title_CreateMode", token: token) + ").chum5";
-
+                        + await LanguageManager.GetStringAsync("Title_CreateMode", token: token)
+                        + ").chum5";
+                    if (CharacterObject?.FileName?.EndsWith(".chum5z", StringComparison.OrdinalIgnoreCase) == true)
+                        strNewName += 'z';
                     strNewName = Path.Combine(Utils.GetStartupPath, "saves", "backup", strNewName);
 
                     CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);

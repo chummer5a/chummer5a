@@ -3844,8 +3844,10 @@ namespace Chummer
                 // Prompt the user to select a save file to possess.
                 using (OpenFileDialog dlgOpenFile = await this.DoThreadSafeFuncAsync(() => new OpenFileDialog(), GenericToken))
                 {
-                    dlgOpenFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|'
-                        + await LanguageManager.GetStringAsync("DialogFilter_All");
+                    dlgOpenFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Chummer") + '|' +
+                                         await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|' +
+                                         await LanguageManager.GetStringAsync("DialogFilter_Chum5z") + '|' +
+                                         await LanguageManager.GetStringAsync("DialogFilter_All");
                     if (await this.DoThreadSafeFuncAsync(x => dlgOpenFile.ShowDialog(x), GenericToken) != DialogResult.OK)
                         return;
                     strFileName = dlgOpenFile.FileName;
@@ -3865,7 +3867,7 @@ namespace Chummer
                                    = await Program.CreateAndShowProgressBarAsync(
                                        Path.GetFileName(objVessel.FileName), Character.NumLoadingSections * 2 + 7, GenericToken))
                             {
-                                bool blnSuccess = await objVessel.LoadAsync(frmLoadingBar.MyForm, token: GenericToken);
+                                bool blnSuccess = await objVessel.LoadAsync(frmLoadingForm: frmLoadingBar.MyForm, token: GenericToken);
                                 if (!blnSuccess)
                                 {
                                     Program.ShowMessageBox(this,
@@ -3892,7 +3894,7 @@ namespace Chummer
 
                                 // Load the Spirit's save file into a new Merge character.
                                 frmLoadingBar.MyForm.CharacterFile = objMerge.FileName;
-                                blnSuccess = await objMerge.LoadAsync(frmLoadingBar.MyForm, token: GenericToken);
+                                blnSuccess = await objMerge.LoadAsync(frmLoadingForm: frmLoadingBar.MyForm, token: GenericToken);
                                 if (!blnSuccess)
                                 {
                                     Program.ShowMessageBox(this,
@@ -4018,7 +4020,7 @@ namespace Chummer
                         string strShowFileName = Path.GetFileName(objMerge.FileName);
                         if (string.IsNullOrEmpty(strShowFileName))
                             strShowFileName = objMerge.CharacterName;
-                        strShowFileName = strShowFileName.TrimEndOnce(".chum5")
+                        strShowFileName = strShowFileName.TrimEndOnce(".chum5").TrimEndOnce(".chum5z")
                                           + await LanguageManager.GetStringAsync("String_Space") + '('
                                           + await LanguageManager.GetStringAsync("String_Possessed") + ')';
 
@@ -4139,7 +4141,7 @@ namespace Chummer
                                = await Program.CreateAndShowProgressBarAsync(
                                    objMerge.FileName, Character.NumLoadingSections + 1, GenericToken))
                         {
-                            await objMerge.LoadAsync(frmLoadingBar.MyForm, token: GenericToken);
+                            await objMerge.LoadAsync(frmLoadingForm: frmLoadingBar.MyForm, token: GenericToken);
                             await frmLoadingBar.MyForm.PerformStepAsync(
                                 await LanguageManager.GetStringAsync("String_UI"), token: GenericToken);
                             objMerge.Possessed = true;
@@ -4248,14 +4250,18 @@ namespace Chummer
                         }
 
                         // Now that everything is done, save the merged character and open them.
-                        string strShowFileName = objMerge.FileName
-                                                         .SplitNoAlloc(Path.DirectorySeparatorChar,
-                                                                       StringSplitOptions.RemoveEmptyEntries)
-                                                         .LastOrDefault();
+                        string strShowFileName = Path.GetFileName(objMerge.FileName);
 
                         if (string.IsNullOrEmpty(strShowFileName))
+                        {
                             strShowFileName = objMerge.CharacterName;
-                        strShowFileName = strShowFileName.TrimEndOnce(".chum5");
+                            foreach (char invalidChar in Path.GetInvalidFileNameChars())
+                            {
+                                strShowFileName = strShowFileName.Replace(invalidChar, '_');
+                            }
+                        }
+
+                        strShowFileName = strShowFileName.TrimEndOnce(".chum5").TrimEndOnce(".chum5z");
 
                         strShowFileName += await LanguageManager.GetStringAsync("String_Space") + '('
                             + await LanguageManager.GetStringAsync("String_Possessed") + ')';
@@ -16532,14 +16538,14 @@ namespace Chummer
                     try
                     {
                         using (ThreadSafeForm<LoadingBar> frmLoadingBar
-                               = await Program.CreateAndShowProgressBarAsync(Path.GetFileName(CharacterObject.FileName),
+                               = await Program.CreateAndShowProgressBarAsync(Path.GetFileName(strCharacterFile),
                                                                              Character.NumLoadingSections + 1,
                                                                              GenericToken).ConfigureAwait(false))
                         {
                             SkipUpdate = true;
                             try
                             {
-                                await CharacterObject.LoadAsync(frmLoadingBar.MyForm, token: GenericToken)
+                                await CharacterObject.LoadAsync(frmLoadingForm: frmLoadingBar.MyForm, token: GenericToken)
                                                      .ConfigureAwait(false);
                                 await frmLoadingBar.MyForm.PerformStepAsync(
                                     await LanguageManager.GetStringAsync("String_UI").ConfigureAwait(false),

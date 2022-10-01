@@ -8401,8 +8401,8 @@
       <text>Módulos de Vida são atualmente um sistema experimental com características limitadas; ele está presente exclusivamente para fins de teste. Veja https://github.com/chummer5a/chummer5a/issues/2000 para detalhes sobre os problemas existentes. Prossiga por sua conta e risca.\nVocê quer continuar?</text>
     </string>
     <string>
-      <key>DialogFilter_Chum5</key>
-      <text>Arquivos do Chummer5 (*.chum5)|*.chum5</text>
+      <key>DialogFilter_Chummer</key>
+      <text>Arquivos do Chummer5 (*.chum5;*.chum5z)|*.chum5;*.chum5z</text>
     </string>
     <string>
       <key>DialogFilter_Xml</key>

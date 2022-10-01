@@ -768,6 +768,7 @@ namespace Chummer
                         if (string.IsNullOrEmpty(strFileName)
                             || strFileName.EndsWith(".old", StringComparison.OrdinalIgnoreCase)
                             || strFileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase)
+                            || strFileName.EndsWith(".chum5z", StringComparison.OrdinalIgnoreCase)
                             || strFileName.StartsWith("custom_", StringComparison.OrdinalIgnoreCase)
                             || strFileName.StartsWith("override_", StringComparison.OrdinalIgnoreCase)
                             || strFileName.StartsWith("amend_", StringComparison.OrdinalIgnoreCase))
@@ -843,7 +844,8 @@ namespace Chummer
                         string strFileName = Path.GetFileName(strFileToDelete);
                         if (string.IsNullOrEmpty(strFileName)
                             || strFileName.EndsWith(".old", StringComparison.OrdinalIgnoreCase)
-                            || strFileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
+                            || strFileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase)
+                            || strFileName.EndsWith(".chum5z", StringComparison.OrdinalIgnoreCase))
                             continue;
                         string strFilePath = Path.GetDirectoryName(strFileToDelete).TrimStartOnce(_strAppPath);
                         if (!strFilePath.StartsWith("customdata", StringComparison.OrdinalIgnoreCase)

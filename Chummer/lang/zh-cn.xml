@@ -8113,8 +8113,8 @@
             <text>HTML 文件 (*.htm;*.html)|*.htm;*.html</text>
         </string>
         <string>
-            <key>DialogFilter_Chum5</key>
-            <text>Chummer5 文件 (*.chum5)|*.chum5</text>
+            <key>DialogFilter_Chummer</key>
+            <text>Chummer5 文件 (*.chum5;*.chum5z)|*.chum5;*.chum5z</text>
         </string>
         <string>
             <key>DialogFilter_Pdf</key>
