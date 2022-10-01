@@ -70,15 +70,15 @@
     <!-- Region File Dialog Filter Strings -->
     <string>
       <key>DialogFilter_Chummer</key>
-      <text>Chummer5 Files (*.chum5;*.chum5z)|*.chum5;*.chum5z</text>
+      <text>Chummer5 Files (*.chum5;*.chum5lz)|*.chum5;*.chum5lz</text>
     </string>
     <string>
       <key>DialogFilter_Chum5</key>
       <text>Raw Chummer5 Saves (*.chum5)|*.chum5</text>
     </string>
     <string>
-      <key>DialogFilter_Chum5z</key>
-      <text>Compressed Chummer5 Saves (*.chum5z)|*.chum5z</text>
+      <key>DialogFilter_Chum5lz</key>
+      <text>Compressed Chummer5 Saves (*.chum5lz)|*.chum5lz</text>
     </string>
     <string>
       <key>DialogFilter_Xml</key>
@@ -8055,8 +8055,8 @@
       <text>Available Plugins</text>
     </string>
     <string>
-      <key>Label_Options_Chum5zCompressionLevel</key>
-      <text>Chum5z Compression Level:</text>
+      <key>Label_Options_Chum5lzCompressionLevel</key>
+      <text>Chum5lz Compression Level:</text>
     </string>
     <string>
       <key>Label_Options_MugshotCompression</key>

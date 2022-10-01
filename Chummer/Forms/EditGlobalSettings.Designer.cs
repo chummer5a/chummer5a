@@ -126,7 +126,7 @@ namespace Chummer
             this.chkLiveUpdateCleanCharacterFiles = new Chummer.ColorableCheckBox(this.components);
             this.chkCreateBackupOnCareer = new Chummer.ColorableCheckBox(this.components);
             this.chkSaveCompressionLevel = new System.Windows.Forms.Label();
-            this.cboChum5zCompressionLevel = new Chummer.ElasticComboBox();
+            this.cboChum5lzCompressionLevel = new Chummer.ElasticComboBox();
             this.gpbEditSourcebookInfo = new System.Windows.Forms.GroupBox();
             this.lstGlobalSourcebookInfos = new System.Windows.Forms.ListBox();
             this.tabCustomDataDirectories = new System.Windows.Forms.TabPage();
@@ -510,7 +510,7 @@ namespace Chummer
             this.tlpGlobalOptions.Controls.Add(this.chkLiveUpdateCleanCharacterFiles, 0, 18);
             this.tlpGlobalOptions.Controls.Add(this.chkCreateBackupOnCareer, 0, 11);
             this.tlpGlobalOptions.Controls.Add(this.chkSaveCompressionLevel, 0, 12);
-            this.tlpGlobalOptions.Controls.Add(this.cboChum5zCompressionLevel, 1, 12);
+            this.tlpGlobalOptions.Controls.Add(this.cboChum5lzCompressionLevel, 1, 12);
             this.tlpGlobalOptions.Dock = System.Windows.Forms.DockStyle.Top;
             this.tlpGlobalOptions.Location = new System.Drawing.Point(303, 0);
             this.tlpGlobalOptions.Margin = new System.Windows.Forms.Padding(0);
@@ -1740,21 +1740,21 @@ namespace Chummer
             this.chkSaveCompressionLevel.Name = "chkSaveCompressionLevel";
             this.chkSaveCompressionLevel.Size = new System.Drawing.Size(140, 13);
             this.chkSaveCompressionLevel.TabIndex = 86;
-            this.chkSaveCompressionLevel.Tag = "Label_Options_Chum5zCompressionLevel";
-            this.chkSaveCompressionLevel.Text = "Chum5z Compression Level:";
+            this.chkSaveCompressionLevel.Tag = "Label_Options_Chum5lzCompressionLevel";
+            this.chkSaveCompressionLevel.Text = "Chum5lz Compression Level:";
             this.chkSaveCompressionLevel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // cboChum5zCompressionLevel
+            // cboChum5lzCompressionLevel
             // 
-            this.cboChum5zCompressionLevel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.cboChum5zCompressionLevel.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboChum5zCompressionLevel.FormattingEnabled = true;
-            this.cboChum5zCompressionLevel.Location = new System.Drawing.Point(179, 426);
-            this.cboChum5zCompressionLevel.Name = "cboChum5zCompressionLevel";
-            this.cboChum5zCompressionLevel.Size = new System.Drawing.Size(259, 21);
-            this.cboChum5zCompressionLevel.TabIndex = 87;
-            this.cboChum5zCompressionLevel.TooltipText = "";
-            this.cboChum5zCompressionLevel.SelectedIndexChanged += new System.EventHandler(this.OptionsChanged);
+            this.cboChum5lzCompressionLevel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboChum5lzCompressionLevel.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboChum5lzCompressionLevel.FormattingEnabled = true;
+            this.cboChum5lzCompressionLevel.Location = new System.Drawing.Point(179, 426);
+            this.cboChum5lzCompressionLevel.Name = "cboChum5lzCompressionLevel";
+            this.cboChum5lzCompressionLevel.Size = new System.Drawing.Size(259, 21);
+            this.cboChum5lzCompressionLevel.TabIndex = 87;
+            this.cboChum5lzCompressionLevel.TooltipText = "";
+            this.cboChum5lzCompressionLevel.SelectedIndexChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // gpbEditSourcebookInfo
             // 
@@ -2533,6 +2533,6 @@ namespace Chummer
         private Chummer.ElasticComboBox cboDefaultMasterIndexSetting;
         private ButtonWithToolTip bScanForPDFs;
         private System.Windows.Forms.Label chkSaveCompressionLevel;
-        private ElasticComboBox cboChum5zCompressionLevel;
+        private ElasticComboBox cboChum5lzCompressionLevel;
     }
 }

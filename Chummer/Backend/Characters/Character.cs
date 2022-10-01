@@ -2872,7 +2872,7 @@ namespace Chummer
                     return false;
                 }
             }
-            else if (!strFileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase) && !strFileName.EndsWith(".chum5z", StringComparison.OrdinalIgnoreCase))
+            else if (!strFileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase) && !strFileName.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
             {
                 strFileName = Path.GetFileNameWithoutExtension(strFileName) + ".chum5";
                 using (blnSync
@@ -2881,8 +2881,8 @@ namespace Chummer
                            : await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
                 {
                     if (!string.IsNullOrEmpty(FileName)
-                        && FileName.EndsWith(".chum5z", StringComparison.OrdinalIgnoreCase))
-                        strFileName += 'z';
+                        && FileName.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
+                        strFileName += "lz";
                 }
             }
 
@@ -3620,7 +3620,7 @@ namespace Chummer
                                 objStream.Seek(0, SeekOrigin.Begin);
                                 using (FileStream objFileStream = new FileStream(strFileName, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None))
                                 {
-                                    objStream.CompressToLzmaFile(objFileStream, GlobalSettings.Chum5zCompressionLevel);
+                                    objStream.CompressToLzmaFile(objFileStream, GlobalSettings.Chum5lzCompressionLevel);
                                 }
                             }
                         }
@@ -4378,7 +4378,7 @@ namespace Chummer
                                 using (FileStream objFileStream = new FileStream(strFileName, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None))
                                 {
                                     await objStream.CompressToLzmaFileAsync(
-                                        objFileStream, GlobalSettings.Chum5zCompressionLevel, token: innerToken);
+                                        objFileStream, GlobalSettings.Chum5lzCompressionLevel, token: innerToken);
                                 }
                             }
                         }
@@ -4709,7 +4709,7 @@ namespace Chummer
             if (string.IsNullOrWhiteSpace(strFileName))
                 strFileName = FileName;
             if (!File.Exists(strFileName) || (!strFileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase)
-                                              && !strFileName.EndsWith(".chum5z", StringComparison.OrdinalIgnoreCase)))
+                                              && !strFileName.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase)))
                 return false;
 
             IDisposable objLocker = null;
@@ -4774,7 +4774,7 @@ namespace Chummer
                                     {
                                         if (strFileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
                                             objXmlDocument.LoadStandard(strFileName, !blnErrorCaught);
-                                        else if (strFileName.EndsWith(".chum5z", StringComparison.OrdinalIgnoreCase))
+                                        else if (strFileName.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
                                             objXmlDocument.LoadStandardFromLzmaCompressed(
                                                 strFileName, !blnErrorCaught);
                                         else
@@ -4836,7 +4836,7 @@ namespace Chummer
                                         if (strFileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
                                             await objXmlDocument.LoadStandardAsync(
                                                 strFileName, !blnErrorCaught, token).ConfigureAwait(false);
-                                        else if (strFileName.EndsWith(".chum5z", StringComparison.OrdinalIgnoreCase))
+                                        else if (strFileName.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
                                             await objXmlDocument.LoadStandardFromLzmaCompressedAsync(
                                                 strFileName, !blnErrorCaught, token).ConfigureAwait(false);
                                         else
@@ -13133,14 +13133,14 @@ namespace Chummer
                 string strNewValue = value;
                 if (!string.IsNullOrWhiteSpace(strNewValue) 
                     && !strNewValue.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase) 
-                    && !strNewValue.EndsWith(".chum5z", StringComparison.OrdinalIgnoreCase))
+                    && !strNewValue.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
                 {
                     strNewValue = Path.GetFileNameWithoutExtension(strNewValue) + ".chum5";
                     using (EnterReadLock.Enter(LockObject))
                     {
                         if (!string.IsNullOrWhiteSpace(_strFileName)
-                            && _strFileName.EndsWith(".chum5z", StringComparison.OrdinalIgnoreCase))
-                            strNewValue += 'z';
+                            && _strFileName.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
+                            strNewValue += "lz";
                     }
                 }
 

@@ -8114,7 +8114,7 @@
         </string>
         <string>
             <key>DialogFilter_Chummer</key>
-            <text>Chummer5 文件 (*.chum5;*.chum5z)|*.chum5;*.chum5z</text>
+            <text>Chummer5 文件 (*.chum5;*.chum5lz)|*.chum5;*.chum5lz</text>
         </string>
         <string>
             <key>DialogFilter_Pdf</key>

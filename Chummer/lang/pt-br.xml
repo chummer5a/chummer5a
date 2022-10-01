@@ -8402,7 +8402,7 @@
     </string>
     <string>
       <key>DialogFilter_Chummer</key>
-      <text>Arquivos do Chummer5 (*.chum5;*.chum5z)|*.chum5;*.chum5z</text>
+      <text>Arquivos do Chummer5 (*.chum5;*.chum5lz)|*.chum5;*.chum5lz</text>
     </string>
     <string>
       <key>DialogFilter_Xml</key>

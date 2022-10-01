@@ -730,7 +730,7 @@ namespace Chummer
                         {
                             if (strFile.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
                                 return XPathDocumentExtensions.LoadStandardFromFile(strFile);
-                            if (strFile.EndsWith(".chum5z", StringComparison.OrdinalIgnoreCase))
+                            if (strFile.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
                                 return XPathDocumentExtensions.LoadStandardFromLzmaCompressedFile(strFile);
                             Utils.BreakIfDebug();
                             throw new InvalidOperationException();
@@ -740,7 +740,7 @@ namespace Chummer
                         {
                             if (strFile.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
                                 return XPathDocumentExtensions.LoadStandardFromFileAsync(strFile, token: token);
-                            if (strFile.EndsWith(".chum5z", StringComparison.OrdinalIgnoreCase))
+                            if (strFile.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
                                 return XPathDocumentExtensions.LoadStandardFromLzmaCompressedFileAsync(
                                     strFile, token: token);
                             Utils.BreakIfDebug();

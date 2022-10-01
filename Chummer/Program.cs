@@ -1058,16 +1058,15 @@ namespace Chummer
                 return null;
             Character objCharacter = null;
             if (File.Exists(strFileName) && (strFileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase)
-                                             || strFileName.EndsWith(".chum5z", StringComparison.OrdinalIgnoreCase)))
+                                             || strFileName.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase)))
             {
                 //Timekeeper.Start("loading");
                 string strAutosavesPath = Utils.GetAutosavesFolderPath;
                 if (string.IsNullOrEmpty(strNewName) && !blnClearFileName)
                 {
-                    string strNeedle = Path.GetFileNameWithoutExtension(strFileName);
                     objCharacter = blnSync
-                        ? OpenCharacters.FirstOrDefault(x => Path.GetFileNameWithoutExtension(x.FileName) == strNeedle)
-                        : await OpenCharacters.FirstOrDefaultAsync(x => Path.GetFileNameWithoutExtension(x.FileName) == strNeedle, token)
+                        ? OpenCharacters.FirstOrDefault(x => x.FileName == strFileName)
+                        : await OpenCharacters.FirstOrDefaultAsync(x => x.FileName == strFileName, token)
                                               .ConfigureAwait(false);
                     if (objCharacter != null)
                         return objCharacter;
@@ -1095,7 +1094,7 @@ namespace Chummer
                             }
                             else
                             {
-                                strAutosaveName = Path.Combine(strAutosavesPath, strAutosaveName) + ".chum5z";
+                                strAutosaveName = Path.Combine(strAutosavesPath, strAutosaveName) + ".chum5lz";
                                 if (File.Exists(strAutosaveName))
                                 {
                                     if (File.GetLastWriteTimeUtc(strAutosaveName)
@@ -1124,7 +1123,7 @@ namespace Chummer
                                 }
                                 else
                                 {
-                                    strAutosaveName = Path.Combine(strAutosavesPath, strAutosaveName) + ".chum5z";
+                                    strAutosaveName = Path.Combine(strAutosavesPath, strAutosaveName) + ".chum5lz";
                                     if (File.Exists(strAutosaveName))
                                     {
                                         if (File.GetLastWriteTimeUtc(strAutosaveName)

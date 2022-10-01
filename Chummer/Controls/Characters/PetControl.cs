@@ -176,7 +176,7 @@ namespace Chummer
             {
                 dlgOpenFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Chummer") + '|' +
                                      await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|' +
-                                     await LanguageManager.GetStringAsync("DialogFilter_Chum5z") + '|' +
+                                     await LanguageManager.GetStringAsync("DialogFilter_Chum5lz") + '|' +
                                      await LanguageManager.GetStringAsync("DialogFilter_All");
                 if (!string.IsNullOrEmpty(_objContact.FileName) && File.Exists(_objContact.FileName))
                 {

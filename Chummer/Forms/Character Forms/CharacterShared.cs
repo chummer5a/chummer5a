@@ -112,7 +112,7 @@ namespace Chummer
             try
             {
                 dlgSaveFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5", token: GenericToken) + '|' +
-                                     await LanguageManager.GetStringAsync("DialogFilter_Chum5z", token: GenericToken) + '|' +
+                                     await LanguageManager.GetStringAsync("DialogFilter_Chum5lz", token: GenericToken) + '|' +
                                      await LanguageManager.GetStringAsync("DialogFilter_All", token: GenericToken);
             }
             catch (OperationCanceledException)
@@ -335,7 +335,7 @@ namespace Chummer
                     if (string.IsNullOrEmpty(strShowFileName))
                     {
                         // Autosaves are always compressed
-                        strShowFileName = CharacterObject.CharacterName + ".chum5z";
+                        strShowFileName = CharacterObject.CharacterName + ".chum5lz";
                         foreach (char invalidChar in Path.GetInvalidFileNameChars())
                         {
                             strShowFileName = strShowFileName.Replace(invalidChar, '_');
@@ -8897,10 +8897,10 @@ namespace Chummer
                     string strFileName = dlgSaveFile.FileName;
                     if (!string.IsNullOrEmpty(strFileName)
                         && !strFileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase)
-                        && !strFileName.EndsWith(".chum5z", StringComparison.OrdinalIgnoreCase))
+                        && !strFileName.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
                     {
-                        strFileName += strShowFileName.EndsWith(".chum5z", StringComparison.OrdinalIgnoreCase)
-                            ? ".chum5z"
+                        strFileName += strShowFileName.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase)
+                            ? ".chum5lz"
                             : ".chum5";
                     }
                     CharacterObject.FileName = strFileName;

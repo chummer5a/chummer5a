@@ -246,7 +246,7 @@ namespace Chummer
             {
                 dlgOpenFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Chummer") + '|' +
                                      await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|' +
-                                     await LanguageManager.GetStringAsync("DialogFilter_Chum5z") + '|' +
+                                     await LanguageManager.GetStringAsync("DialogFilter_Chum5lz") + '|' +
                                      await LanguageManager.GetStringAsync("DialogFilter_All");
                 if (!string.IsNullOrEmpty(_objSpirit.FileName) && File.Exists(_objSpirit.FileName))
                 {
@@ -583,7 +583,7 @@ namespace Chummer
                     using (SaveFileDialog dlgSaveFile = await this.DoThreadSafeFuncAsync(() => new SaveFileDialog(), token: token))
                     {
                         dlgSaveFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5", token: token) + '|' +
-                                             await LanguageManager.GetStringAsync("DialogFilter_Chum5z", token: token) + '|' +
+                                             await LanguageManager.GetStringAsync("DialogFilter_Chum5lz", token: token) + '|' +
                                              await LanguageManager.GetStringAsync("DialogFilter_All", token: token);
                         dlgSaveFile.FileName = strCritterName + strSpace + '('
                                                + await LanguageManager.GetStringAsync(_objSpirit.RatingLabel, token: token) + strSpace
@@ -592,7 +592,7 @@ namespace Chummer
                             return;
                         string strFileName = dlgSaveFile.FileName;
                         if (!strFileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase)
-                            && !strFileName.EndsWith(".chum5z", StringComparison.OrdinalIgnoreCase))
+                            && !strFileName.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
                             strFileName += ".chum5";
                         objCharacter.FileName = strFileName;
                     }

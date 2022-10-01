@@ -43,7 +43,7 @@
     <!-- Region File Dialog Filter Strings -->
     <string>
       <key>DialogFilter_Chummer</key>
-      <text>Fichiers Chummer5 (*.chum5;*.chum5z)|*.chum5;*.chum5z</text>
+      <text>Fichiers Chummer5 (*.chum5;*.chum5lz)|*.chum5;*.chum5lz</text>
     </string>
     <string>
       <key>DialogFilter_Xml</key>

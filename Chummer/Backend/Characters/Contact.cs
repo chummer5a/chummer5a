@@ -1547,7 +1547,7 @@ namespace Chummer
             if (!blnError)
             {
                 string strFile = blnUseRelative ? Path.GetFullPath(RelativeFileName) : FileName;
-                if (strFile.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase) || strFile.EndsWith(".chum5z", StringComparison.OrdinalIgnoreCase))
+                if (strFile.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase) || strFile.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
                 {
                     _objLinkedCharacter = Program.OpenCharacters.Find(x => x.FileName == strFile);
                     if (_objLinkedCharacter == null)

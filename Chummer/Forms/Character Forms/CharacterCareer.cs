@@ -3846,7 +3846,7 @@ namespace Chummer
                 {
                     dlgOpenFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Chummer") + '|' +
                                          await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|' +
-                                         await LanguageManager.GetStringAsync("DialogFilter_Chum5z") + '|' +
+                                         await LanguageManager.GetStringAsync("DialogFilter_Chum5lz") + '|' +
                                          await LanguageManager.GetStringAsync("DialogFilter_All");
                     if (await this.DoThreadSafeFuncAsync(x => dlgOpenFile.ShowDialog(x), GenericToken) != DialogResult.OK)
                         return;
@@ -4020,7 +4020,7 @@ namespace Chummer
                         string strShowFileName = Path.GetFileName(objMerge.FileName);
                         if (string.IsNullOrEmpty(strShowFileName))
                             strShowFileName = objMerge.CharacterName;
-                        strShowFileName = strShowFileName.TrimEndOnce(".chum5").TrimEndOnce(".chum5z")
+                        strShowFileName = strShowFileName.TrimEndOnce(".chum5").TrimEndOnce(".chum5lz")
                                           + await LanguageManager.GetStringAsync("String_Space") + '('
                                           + await LanguageManager.GetStringAsync("String_Possessed") + ')';
 
@@ -4261,7 +4261,7 @@ namespace Chummer
                             }
                         }
 
-                        strShowFileName = strShowFileName.TrimEndOnce(".chum5").TrimEndOnce(".chum5z");
+                        strShowFileName = strShowFileName.TrimEndOnce(".chum5").TrimEndOnce(".chum5lz");
 
                         strShowFileName += await LanguageManager.GetStringAsync("String_Space") + '('
                             + await LanguageManager.GetStringAsync("String_Possessed") + ')';

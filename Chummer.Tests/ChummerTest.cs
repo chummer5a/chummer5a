@@ -213,7 +213,7 @@ namespace Chummer.Tests
 
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
         [TestMethod]
-        public void Test03_LoadThenSaveAsChum5z()
+        public void Test03_LoadThenSaveAsChum5lz()
         {
             Debug.WriteLine("Unit test initialized for: Test03_LoadThenSave()");
             foreach (Character objCharacter in GetTestCharacters())
@@ -221,12 +221,12 @@ namespace Chummer.Tests
                 string strFileName = Path.GetFileName(objCharacter.FileName) ?? LanguageManager.GetString("String_Unknown");
                 Debug.WriteLine("Checking " + strFileName);
                 string strDestination = Path.Combine(TestPathInfo.FullName, strFileName);
-                if (!strDestination.EndsWith(".chum5z", StringComparison.OrdinalIgnoreCase))
+                if (!strDestination.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
                 {
                     if (strDestination.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
-                        strDestination += 'z';
+                        strDestination += "lz";
                     else
-                        strDestination += ".chum5z";
+                        strDestination += ".chum5lz";
                 }
                 SaveCharacter(objCharacter, strDestination);
                 using (LoadCharacter(new FileInfo(strDestination)))
