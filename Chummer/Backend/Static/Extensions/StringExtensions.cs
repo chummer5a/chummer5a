@@ -1505,17 +1505,17 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strInput))
                 return string.Empty;
-            return strInput.IsRtf(token) ? Rtf.ToHtml(strInput) : strInput.CleanForHtml();
+            string strReturn = strInput.IsRtf(token) ? Rtf.ToHtml(strInput) : strInput.CleanForHtml();
+            return strReturn.CleanStylisticLigatures().NormalizeWhiteSpace().CleanOfInvalidUnicodeChars();
         }
-
-        public static Task<string> RtfToHtmlAsync(this string strInput, CancellationToken token = default)
+        
+        public static async Task<string> RtfToHtmlAsync(this string strInput, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            return string.IsNullOrEmpty(strInput) ? Task.FromResult(string.Empty) : InnerDo();
-            async Task<string> InnerDo()
-            {
-                return await strInput.IsRtfAsync(token).ConfigureAwait(false) ? Rtf.ToHtml(strInput) : strInput.CleanForHtml();
-            }
+            if (string.IsNullOrEmpty(strInput))
+                return string.Empty;
+            string strReturn = await strInput.IsRtfAsync(token) ? Rtf.ToHtml(strInput) : strInput.CleanForHtml();
+            return strReturn.CleanStylisticLigatures().NormalizeWhiteSpace().CleanOfInvalidUnicodeChars();
         }
 
         /// <summary>
