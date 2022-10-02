@@ -57,11 +57,11 @@ namespace Chummer
         [StructLayout(LayoutKind.Sequential, Pack = 4)]  // Pack=4 is important! So it works also for x64!
         internal struct MiniDumpExceptionInformation
         {
-            internal uint ThreadId;
+            internal readonly uint ThreadId;
             internal IntPtr ExceptionPointers;
 
             [MarshalAs(UnmanagedType.Bool)]
-            internal bool ClientPointers;
+            internal readonly bool ClientPointers;
         }
 
         [Flags]

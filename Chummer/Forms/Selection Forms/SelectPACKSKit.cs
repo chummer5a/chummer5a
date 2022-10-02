@@ -850,7 +850,7 @@ namespace Chummer
                 XmlDocument objXmlDocument = new XmlDocument { XmlResolver = null };
                 try
                 {
-                    objXmlDocument.LoadStandard(strFile);
+                    await objXmlDocument.LoadStandardAsync(strFile);
                 }
                 catch (IOException)
                 {

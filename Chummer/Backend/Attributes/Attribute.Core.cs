@@ -2864,7 +2864,7 @@ namespace Chummer.Backend.Attributes
                         //Edge can reduce the metatype minimum below zero.
                         int intBurnedEdge = -(await ImprovementManager
                                 .GetCachedImprovementListForValueOfAsync(
-                                    _objCharacter, Improvement.ImprovementType.Attribute, "EDG").ConfigureAwait(false))
+                                    _objCharacter, Improvement.ImprovementType.Attribute, "EDG", token: token).ConfigureAwait(false))
                             .Sum(x => x.ImproveSource == Improvement.ImprovementSource.BurnedEdge,
                                 x => x.Minimum * x.Rating) + 1;
                         await ImprovementManager.RemoveImprovementsAsync(_objCharacter, Improvement.ImprovementSource.BurnedEdge, token: token).ConfigureAwait(false);

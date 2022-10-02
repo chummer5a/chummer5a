@@ -750,7 +750,11 @@ namespace Chummer
                             // Load the base file and retrieve all of the child nodes.
                             try
                             {
-                                xmlScratchpad.LoadStandard(strPath);
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    xmlScratchpad.LoadStandard(strPath);
+                                else
+                                    await xmlScratchpad.LoadStandardAsync(strPath, token: token);
 
                                 if (xmlReturnDocElement != null)
                                 {

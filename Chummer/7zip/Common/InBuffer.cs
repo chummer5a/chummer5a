@@ -22,10 +22,10 @@ namespace SevenZip.Buffer
 {
     public class InBuffer
     {
-        private byte[] m_Buffer;
+        private readonly byte[] m_Buffer;
         private uint m_Pos;
         private uint m_Limit;
-        private uint m_BufferSize;
+        private readonly uint m_BufferSize;
         private System.IO.Stream m_Stream;
         private bool m_StreamWasExhausted;
         private ulong m_ProcessedSize;

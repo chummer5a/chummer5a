@@ -145,9 +145,9 @@ namespace SevenZip.Compression.LZ
 
         public uint GetMatches(uint[] distances)
         {
-            uint lenLimit;
             unchecked
             {
+                uint lenLimit;
                 if (_pos + _matchMaxLen <= _streamPos)
                     lenLimit = _matchMaxLen;
                 else
@@ -211,8 +211,8 @@ namespace SevenZip.Compression.LZ
                 uint ptr0 = (_cyclicBufferPos << 1) + 1;
                 uint ptr1 = _cyclicBufferPos << 1;
 
-                uint len0, len1;
-                len0 = len1 = kNumHashDirectBytes;
+                uint len1;
+                uint len0 = len1 = kNumHashDirectBytes;
 
                 if (kNumHashDirectBytes != 0 && curMatch > matchMinPos
                                              && _bufferBase[_bufferOffset + curMatch + kNumHashDirectBytes] !=
@@ -321,8 +321,8 @@ namespace SevenZip.Compression.LZ
                     uint ptr0 = (_cyclicBufferPos << 1) + 1;
                     uint ptr1 = _cyclicBufferPos << 1;
 
-                    uint len0, len1;
-                    len0 = len1 = kNumHashDirectBytes;
+                    uint len1;
+                    uint len0 = len1 = kNumHashDirectBytes;
 
                     uint count = _cutValue;
                     while (true)

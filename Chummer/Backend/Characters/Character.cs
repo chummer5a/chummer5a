@@ -4971,6 +4971,7 @@ namespace Chummer
                                             objXmlDocument.InnerXml.Replace("Corruptor", "Corrupter");
                                         xmlCharacterNavigator =
                                             (blnSync
+                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                 ? objXmlDocument.GetFastNavigator()
                                                 : await objXmlDocument.GetFastNavigatorAsync(token))
                                             .SelectSingleNode("/character");

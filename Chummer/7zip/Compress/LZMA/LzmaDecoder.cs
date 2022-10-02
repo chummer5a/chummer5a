@@ -33,9 +33,9 @@ namespace SevenZip.Compression.LZMA
         {
             private BitDecoder m_Choice;
             private BitDecoder m_Choice2;
-            private BitTreeDecoder[] m_LowCoder = new BitTreeDecoder[Base.kNumPosStatesMax];
-            private BitTreeDecoder[] m_MidCoder = new BitTreeDecoder[Base.kNumPosStatesMax];
-            private BitTreeDecoder m_HighCoder = new BitTreeDecoder(Base.kNumHighLenBits);
+            private readonly BitTreeDecoder[] m_LowCoder = new BitTreeDecoder[Base.kNumPosStatesMax];
+            private readonly BitTreeDecoder[] m_MidCoder = new BitTreeDecoder[Base.kNumPosStatesMax];
+            private readonly BitTreeDecoder m_HighCoder = new BitTreeDecoder(Base.kNumHighLenBits);
             private uint m_NumPosStates;
 
             public void Create(uint numPosStates)
@@ -171,25 +171,25 @@ namespace SevenZip.Compression.LZMA
             { return m_Coders[GetState(pos, prevByte)].DecodeWithMatchByte(rangeDecoder, matchByte); }
         }
 
-        private OutWindow m_OutWindow = new OutWindow();
-        private RangeCoder.Decoder m_RangeDecoder = new RangeCoder.Decoder();
+        private readonly OutWindow m_OutWindow = new OutWindow();
+        private readonly RangeCoder.Decoder m_RangeDecoder = new RangeCoder.Decoder();
 
-        private BitDecoder[] m_IsMatchDecoders = new BitDecoder[Base.kNumStates << Base.kNumPosStatesBitsMax];
-        private BitDecoder[] m_IsRepDecoders = new BitDecoder[Base.kNumStates];
-        private BitDecoder[] m_IsRepG0Decoders = new BitDecoder[Base.kNumStates];
-        private BitDecoder[] m_IsRepG1Decoders = new BitDecoder[Base.kNumStates];
-        private BitDecoder[] m_IsRepG2Decoders = new BitDecoder[Base.kNumStates];
-        private BitDecoder[] m_IsRep0LongDecoders = new BitDecoder[Base.kNumStates << Base.kNumPosStatesBitsMax];
+        private readonly BitDecoder[] m_IsMatchDecoders = new BitDecoder[Base.kNumStates << Base.kNumPosStatesBitsMax];
+        private readonly BitDecoder[] m_IsRepDecoders = new BitDecoder[Base.kNumStates];
+        private readonly BitDecoder[] m_IsRepG0Decoders = new BitDecoder[Base.kNumStates];
+        private readonly BitDecoder[] m_IsRepG1Decoders = new BitDecoder[Base.kNumStates];
+        private readonly BitDecoder[] m_IsRepG2Decoders = new BitDecoder[Base.kNumStates];
+        private readonly BitDecoder[] m_IsRep0LongDecoders = new BitDecoder[Base.kNumStates << Base.kNumPosStatesBitsMax];
 
-        private BitTreeDecoder[] m_PosSlotDecoder = new BitTreeDecoder[Base.kNumLenToPosStates];
-        private BitDecoder[] m_PosDecoders = new BitDecoder[Base.kNumFullDistances - Base.kEndPosModelIndex];
+        private readonly BitTreeDecoder[] m_PosSlotDecoder = new BitTreeDecoder[Base.kNumLenToPosStates];
+        private readonly BitDecoder[] m_PosDecoders = new BitDecoder[Base.kNumFullDistances - Base.kEndPosModelIndex];
 
-        private BitTreeDecoder m_PosAlignDecoder = new BitTreeDecoder(Base.kNumAlignBits);
+        private readonly BitTreeDecoder m_PosAlignDecoder = new BitTreeDecoder(Base.kNumAlignBits);
 
-        private LenDecoder m_LenDecoder = new LenDecoder();
-        private LenDecoder m_RepLenDecoder = new LenDecoder();
+        private readonly LenDecoder m_LenDecoder = new LenDecoder();
+        private readonly LenDecoder m_RepLenDecoder = new LenDecoder();
 
-        private LiteralDecoder m_LiteralDecoder = new LiteralDecoder();
+        private readonly LiteralDecoder m_LiteralDecoder = new LiteralDecoder();
 
         private uint m_DictionarySize;
         private uint m_DictionarySizeCheck;

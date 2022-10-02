@@ -34,12 +34,12 @@ namespace SevenZip.CommandLineParser
 
     public class SwitchForm
     {
-        public string IDString;
-        public SwitchType Type;
-        public bool Multi;
-        public int MinLen;
-        public int MaxLen;
-        public string PostCharSet;
+        public readonly string IDString;
+        public readonly SwitchType Type;
+        public readonly bool Multi;
+        public readonly int MinLen;
+        public readonly int MaxLen;
+        public readonly string PostCharSet;
 
         public SwitchForm(string idString, SwitchType type, bool multi,
             int minLen = 0, int maxLen = 0, string postCharSet = "")
@@ -57,7 +57,7 @@ namespace SevenZip.CommandLineParser
     {
         public bool ThereIs;
         public bool WithMinus;
-        public ArrayList PostStrings = new ArrayList();
+        public readonly ArrayList PostStrings = new ArrayList();
         public int PostCharIndex;
 
         public SwitchResult()
@@ -68,8 +68,8 @@ namespace SevenZip.CommandLineParser
 
     public class Parser
     {
-        public ArrayList NonSwitchStrings = new ArrayList();
-        private SwitchResult[] _switches;
+        public readonly ArrayList NonSwitchStrings = new ArrayList();
+        private readonly SwitchResult[] _switches;
 
         public Parser(int numSwitches)
         {
@@ -245,7 +245,7 @@ namespace SevenZip.CommandLineParser
                         numUsedChars++;
                     }
                 }
-                if (currentIndex == -1 && !charsSet.EmptyAllowed)
+                if (currentIndex == -1 && !CommandSubCharsSet.EmptyAllowed)
                     return false;
                 indices.Add(currentIndex);
             }
@@ -266,8 +266,8 @@ namespace SevenZip.CommandLineParser
 
     public class CommandForm
     {
-        public string IDString;
-        public bool PostStringMode;
+        public readonly string IDString;
+        public readonly bool PostStringMode;
 
         public CommandForm(string idString, bool postStringMode)
         {
@@ -278,7 +278,7 @@ namespace SevenZip.CommandLineParser
 
     internal class CommandSubCharsSet
     {
-        public string Chars = "";
-        public bool EmptyAllowed = false;
+        public readonly string Chars = string.Empty;
+        public const bool EmptyAllowed = false;
     }
 }
