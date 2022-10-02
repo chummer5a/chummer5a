@@ -953,6 +953,56 @@ namespace Chummer
             return strReturn;
         }
 
+        /// <summary>
+        /// Generates a name for the treenode based on values contained in the CharacterCache object.
+        /// </summary>
+        /// <param name="blnAddMarkerIfOpen">Whether to add an asterisk to the beginning of the name if the character is open.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns></returns>
+        public async ValueTask<string> CalculatedNameAsync(bool blnAddMarkerIfOpen = true, CancellationToken token = default)
+        {
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+            string strReturn;
+            if (!string.IsNullOrEmpty(ErrorText))
+            {
+                strReturn = Path.GetFileNameWithoutExtension(FileName) + strSpace + '(' + await LanguageManager.GetStringAsync("String_Error", token: token).ConfigureAwait(false) + ')';
+            }
+            else
+            {
+                strReturn = CharacterAlias;
+                if (string.IsNullOrEmpty(strReturn))
+                {
+                    strReturn = CharacterName;
+                    if (string.IsNullOrEmpty(strReturn))
+                        strReturn = await LanguageManager.GetStringAsync("String_UnnamedCharacter", token: token).ConfigureAwait(false);
+                }
+
+                string strBuildMethod = await LanguageManager.GetStringAsync("String_" + BuildMethod, false, token).ConfigureAwait(false);
+                if (string.IsNullOrEmpty(strBuildMethod))
+                    strBuildMethod = await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
+                strReturn += strSpace + '(' + strBuildMethod + strSpace + '-' + strSpace
+                             + await LanguageManager.GetStringAsync(Created ? "Title_CareerMode" : "Title_CreateMode", token: token).ConfigureAwait(false) + ')';
+            }
+
+            if (blnAddMarkerIfOpen && Program.MainForm != null)
+            {
+                string strMarker = string.Empty;
+                if (await Program.MainForm.OpenCharacterEditorForms.AnyAsync(
+                        x => !x.CharacterObject.IsDisposed && x.CharacterObject.FileName == FilePath, token).ConfigureAwait(false))
+                    strMarker += '*';
+                if (await Program.MainForm.OpenCharacterSheetViewers.AnyAsync(
+                        x => x.CharacterObjects.Any(y => !y.IsDisposed && y.FileName == FilePath), token).ConfigureAwait(false))
+                    strMarker += '^';
+                if (await Program.MainForm.OpenCharacterExportForms.AnyAsync(
+                        x => !x.CharacterObject.IsDisposed && x.CharacterObject.FileName == FilePath, token).ConfigureAwait(false))
+                    strMarker += '\'';
+                if (!string.IsNullOrEmpty(strMarker))
+                    strReturn = strMarker + strSpace + strReturn;
+            }
+
+            return strReturn;
+        }
+
         public void OnDefaultKeyDown(object sender, Tuple<KeyEventArgs, TreeNode> args)
         {
             if (args?.Item1.KeyCode == Keys.Delete)
