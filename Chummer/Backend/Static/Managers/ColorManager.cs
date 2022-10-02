@@ -1148,10 +1148,18 @@ namespace Chummer
             }
 
             token.ThrowIfCancellationRequested();
-            if (tssItem is ToolStripDropDownItem tssDropDownItem)
+            switch (tssItem)
             {
-                foreach (ToolStripItem tssDropDownChild in tssDropDownItem.DropDownItems)
-                    ApplyColorsRecursively(tssDropDownChild, blnLightMode, token);
+                case ToolStripDropDownItem tssDropDownItem:
+                    foreach (ToolStripItem tssDropDownChild in tssDropDownItem.DropDownItems)
+                        ApplyColorsRecursively(tssDropDownChild, blnLightMode, token);
+                    break;
+                case ColorableToolStripSeparator tssSeparator when objParent != null:
+                    objParent.DoThreadSafe(() => tssSeparator.DefaultColorScheme = blnLightMode);
+                    break;
+                case ColorableToolStripSeparator tssSeparator:
+                    tssSeparator.DefaultColorScheme = blnLightMode;
+                    break;
             }
         }
 
@@ -1664,10 +1672,18 @@ namespace Chummer
             }
 
             token.ThrowIfCancellationRequested();
-            if (tssItem is ToolStripDropDownItem tssDropDownItem)
+            switch (tssItem)
             {
-                foreach (ToolStripItem tssDropDownChild in tssDropDownItem.DropDownItems)
-                    await ApplyColorsRecursivelyAsync(tssDropDownChild, blnLightMode, token).ConfigureAwait(false);
+                case ToolStripDropDownItem tssDropDownItem:
+                    foreach (ToolStripItem tssDropDownChild in tssDropDownItem.DropDownItems)
+                        await ApplyColorsRecursivelyAsync(tssDropDownChild, blnLightMode, token).ConfigureAwait(false);
+                    break;
+                case ColorableToolStripSeparator tssSeparator when objParent != null:
+                    await objParent.DoThreadSafeAsync(() => tssSeparator.DefaultColorScheme = blnLightMode, token);
+                    break;
+                case ColorableToolStripSeparator tssSeparator:
+                    tssSeparator.DefaultColorScheme = blnLightMode;
+                    break;
             }
         }
 

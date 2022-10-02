@@ -403,6 +403,12 @@
       <DependentUpon>ImprovementMethods.tt</DependentUpon>
     </Compile>
     <Compile Include="Backend\Static\Managers\ImprovementManager.cs" />
+    <Compile Include="Controls\Shared\Components\ColorableToolStripSeparator.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\Shared\Components\ColorableToolStripSeparator.Designer.cs">
+      <DependentUpon>ColorableToolStripSeparator.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\Shared\ObservableCollectionDisplay.cs">
       <SubType>UserControl</SubType>
     </Compile>

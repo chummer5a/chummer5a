@@ -36,18 +36,18 @@ namespace Chummer.UI.Editors
             this.tsbItalic = new Chummer.DpiFriendlyToolStripButton(this.components);
             this.tsbUnderline = new Chummer.DpiFriendlyToolStripButton(this.components);
             this.tsbStrikeout = new Chummer.DpiFriendlyToolStripButton(this.components);
-            this.tss1 = new System.Windows.Forms.ToolStripSeparator();
+            this.tss1 = new Chummer.ColorableToolStripSeparator(this.components);
             this.tsbFont = new Chummer.DpiFriendlyToolStripButton(this.components);
             this.tsbForeColor = new Chummer.DpiFriendlyToolStripButton(this.components);
             this.tsbBackColor = new Chummer.DpiFriendlyToolStripButton(this.components);
-            this.tss2 = new System.Windows.Forms.ToolStripSeparator();
+            this.tss2 = new Chummer.ColorableToolStripSeparator(this.components);
             this.tsbSuperscript = new Chummer.DpiFriendlyToolStripButton(this.components);
             this.tsbSubscript = new Chummer.DpiFriendlyToolStripButton(this.components);
-            this.tss3 = new System.Windows.Forms.ToolStripSeparator();
+            this.tss3 = new Chummer.ColorableToolStripSeparator(this.components);
             this.tsbAlignLeft = new Chummer.DpiFriendlyToolStripButton(this.components);
             this.tsbAlignCenter = new Chummer.DpiFriendlyToolStripButton(this.components);
             this.tsbAlignRight = new Chummer.DpiFriendlyToolStripButton(this.components);
-            this.tss4 = new System.Windows.Forms.ToolStripSeparator();
+            this.tss4 = new Chummer.ColorableToolStripSeparator(this.components);
             this.tsbUnorderedList = new Chummer.DpiFriendlyToolStripButton(this.components);
             this.tsbIncreaseIndent = new Chummer.DpiFriendlyToolStripButton(this.components);
             this.tsbDecreaseIndent = new Chummer.DpiFriendlyToolStripButton(this.components);
@@ -431,12 +431,12 @@ namespace Chummer.UI.Editors
 
         #endregion
         private System.Windows.Forms.ToolStrip tsControls;
-        private System.Windows.Forms.ToolStripSeparator tss3;
-        private System.Windows.Forms.ToolStripSeparator tss4;
+        private Chummer.ColorableToolStripSeparator tss3;
+        private Chummer.ColorableToolStripSeparator tss4;
         private Chummer.BufferedTableLayoutPanel tlpMain;
-        private System.Windows.Forms.ToolStripSeparator tss1;
+        private Chummer.ColorableToolStripSeparator tss1;
         private System.Windows.Forms.RichTextBox rtbContent;
-        private System.Windows.Forms.ToolStripSeparator tss2;
+        private Chummer.ColorableToolStripSeparator tss2;
         private DpiFriendlyToolStripButton tsbBold;
         private DpiFriendlyToolStripButton tsbItalic;
         private DpiFriendlyToolStripButton tsbUnderline;

@@ -312,9 +312,9 @@ namespace Chummer
             this.mnuCreateFile = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuFileSave = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
             this.mnuFileSaveAs = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tssFileMenu1 = new System.Windows.Forms.ToolStripSeparator();
+            this.tssFileMenu1 = new Chummer.ColorableToolStripSeparator(this.components);
             this.mnuFileClose = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tssFileMenu2 = new System.Windows.Forms.ToolStripSeparator();
+            this.tssFileMenu2 = new Chummer.ColorableToolStripSeparator(this.components);
             this.mnuFilePrint = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
             this.mnuFileExport = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
             this.mnuCreateEdit = new System.Windows.Forms.ToolStripMenuItem();
@@ -333,7 +333,7 @@ namespace Chummer
             this.tsMain = new System.Windows.Forms.ToolStrip();
             this.tsbSave = new Chummer.DpiFriendlyToolStripButton(this.components);
             this.tsbPrint = new Chummer.DpiFriendlyToolStripButton(this.components);
-            this.tsbSeparator = new System.Windows.Forms.ToolStripSeparator();
+            this.tsbSeparator = new Chummer.ColorableToolStripSeparator(this.components);
             this.tsbCopy = new Chummer.DpiFriendlyToolStripButton(this.components);
             this.cmsGear = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsGearAddAsPlugin = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
@@ -22733,7 +22733,7 @@ namespace Chummer
         private System.Windows.Forms.ToolStripStatusLabel tslEssence;
         private System.Windows.Forms.ToolStripStatusLabel tslNuyenLabel;
         private System.Windows.Forms.ToolStripStatusLabel tslNuyen;
-        private System.Windows.Forms.ToolStripSeparator tssFileMenu1;
+        private Chummer.ColorableToolStripSeparator tssFileMenu1;
         private System.Windows.Forms.ContextMenuStrip cmsVehicleGear;
         private System.Windows.Forms.ToolStripProgressBar pgbProgress;
         private System.Windows.Forms.ContextMenuStrip cmsAmmoExpense;
@@ -22788,7 +22788,7 @@ namespace Chummer
         private System.Windows.Forms.SplitContainer splitMain;
         private System.Windows.Forms.ContextMenuStrip cmsBioware;
         private System.Windows.Forms.ContextMenuStrip cmsAdvancedLifestyle;
-        private System.Windows.Forms.ToolStripSeparator tssFileMenu2;
+        private Chummer.ColorableToolStripSeparator tssFileMenu2;
         private System.Windows.Forms.ContextMenuStrip cmsGearLocation;
         private System.Windows.Forms.Label lblCareerNuyen;
         private System.Windows.Forms.Label lblCareerNuyenLabel;
@@ -22801,7 +22801,7 @@ namespace Chummer
         private System.Windows.Forms.ContextMenuStrip cmsVehicleCyberwareGear;
         private System.Windows.Forms.ContextMenuStrip cmsWeaponAccessoryGear;
         private System.Windows.Forms.ContextMenuStrip cmsVehicleLocation;
-        private System.Windows.Forms.ToolStripSeparator tsbSeparator;
+        private Chummer.ColorableToolStripSeparator tsbSeparator;
         private System.Windows.Forms.ToolStripMenuItem mnuCreateEdit;
         private System.Windows.Forms.ContextMenuStrip cmsVehicleWeaponAccessory;
         private System.Windows.Forms.ContextMenuStrip cmsVehicleWeaponAccessoryGear;
