@@ -82,59 +82,55 @@ namespace Chummer
             SetProcessDPI(GlobalSettings.DpiScalingMethodSetting);
             if (IsMainThread)
                 SetThreadDPI(GlobalSettings.DpiScalingMethodSetting);
-
+            
             using (GlobalChummerMutex = new Mutex(false, @"Global\" + ChummerGuid, out bool blnIsNewInstance))
             {
+                bool blnReleaseMutex = false;
                 try
                 {
-                    try
+                    if (blnIsNewInstance)
+                        blnReleaseMutex = Utils.RunOnMainThread(() => GlobalChummerMutex.WaitOne(TimeSpan.FromSeconds(2), false));
+                    // Chummer instance already exists, so switch to it instead of opening a new instance
+                    if (!blnIsNewInstance || !blnReleaseMutex)
                     {
-                        // Chummer instance already exists, so switch to it instead of opening a new instance
-                        if (!blnIsNewInstance || !GlobalChummerMutex.WaitOne(TimeSpan.FromSeconds(2), false))
+                        // Try to get the main chummer process by fetching the Chummer process with the earliest start time
+                        Process objMainChummerProcess = MyProcess;
+                        foreach (Process objLoopProcess in Process.GetProcessesByName(MyProcess.ProcessName))
                         {
-                            // Try to get the main chummer process by fetching the Chummer process with the earliest start time
-                            Process objMainChummerProcess = MyProcess;
-                            foreach (Process objLoopProcess in Process.GetProcessesByName(MyProcess.ProcessName))
-                            {
-                                if (objLoopProcess.StartTime.Ticks < objMainChummerProcess.StartTime.Ticks)
-                                    objMainChummerProcess = objLoopProcess;
-                            }
-
-                            if (objMainChummerProcess != MyProcess)
-                            {
-                                NativeMethods.SendMessage(objMainChummerProcess.MainWindowHandle,
-                                                          NativeMethods.WM_SHOWME, 0, IntPtr.Zero);
-
-                                string strCommandLineArgumentsJoined =
-                                    string.Join("<>", Environment.GetCommandLineArgs());
-                                NativeMethods.CopyDataStruct objData = default;
-                                IntPtr ptrCommandLineArguments = IntPtr.Zero;
-                                try
-                                {
-                                    // Allocate memory for the data and copy
-                                    objData = NativeMethods.CopyDataFromString(CommandLineArgsDataTypeId, strCommandLineArgumentsJoined);
-                                    ptrCommandLineArguments = Marshal.AllocCoTaskMem(Marshal.SizeOf(objData));
-                                    Marshal.StructureToPtr(objData, ptrCommandLineArguments, false);
-                                    // Send the message
-                                    NativeMethods.SendMessage(objMainChummerProcess.MainWindowHandle,
-                                                              NativeMethods.WM_COPYDATA, 0, ptrCommandLineArguments);
-                                }
-                                finally
-                                {
-                                    // Free the allocated memory after the control has been returned
-                                    if (ptrCommandLineArguments != IntPtr.Zero)
-                                        Marshal.FreeCoTaskMem(ptrCommandLineArguments);
-                                    if (objData.lpData != IntPtr.Zero)
-                                        Marshal.FreeHGlobal(objData.lpData);
-                                }
-                            }
-
-                            return;
+                            if (objLoopProcess.StartTime.Ticks < objMainChummerProcess.StartTime.Ticks)
+                                objMainChummerProcess = objLoopProcess;
                         }
-                    }
-                    catch (AbandonedMutexException e)
-                    {
-                        Log.Info(e);
+
+                        if (objMainChummerProcess != MyProcess)
+                        {
+                            NativeMethods.SendMessage(objMainChummerProcess.MainWindowHandle,
+                                                      NativeMethods.WM_SHOWME, 0, IntPtr.Zero);
+
+                            string strCommandLineArgumentsJoined =
+                                string.Join("<>", Environment.GetCommandLineArgs());
+                            NativeMethods.CopyDataStruct objData = default;
+                            IntPtr ptrCommandLineArguments = IntPtr.Zero;
+                            try
+                            {
+                                // Allocate memory for the data and copy
+                                objData = NativeMethods.CopyDataFromString(CommandLineArgsDataTypeId, strCommandLineArgumentsJoined);
+                                ptrCommandLineArguments = Marshal.AllocCoTaskMem(Marshal.SizeOf(objData));
+                                Marshal.StructureToPtr(objData, ptrCommandLineArguments, false);
+                                // Send the message
+                                NativeMethods.SendMessage(objMainChummerProcess.MainWindowHandle,
+                                                          NativeMethods.WM_COPYDATA, 0, ptrCommandLineArguments);
+                            }
+                            finally
+                            {
+                                // Free the allocated memory after the control has been returned
+                                if (ptrCommandLineArguments != IntPtr.Zero)
+                                    Marshal.FreeCoTaskMem(ptrCommandLineArguments);
+                                if (objData.lpData != IntPtr.Zero)
+                                    Marshal.FreeHGlobal(objData.lpData);
+                            }
+                        }
+
+                        return;
                     }
 
                     //for some fun try out this command line parameter: chummer://plugin:SINners:Load:5ff55b9d-7d1c-4067-a2f5-774127346f4e
@@ -569,7 +565,8 @@ namespace Chummer
                 }
                 finally
                 {
-                    GlobalChummerMutex.ReleaseMutex();
+                    if (blnReleaseMutex)
+                        Utils.RunOnMainThread(() => GlobalChummerMutex.ReleaseMutex());
                 }
             }
         }
