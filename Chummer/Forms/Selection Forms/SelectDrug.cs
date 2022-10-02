@@ -768,7 +768,7 @@ namespace Chummer
                     string strGradeNameCleaned = objCurrentGrade.Name.CleanXPath();
                     sbdFilter.Append(" and (not(forcegrade) or forcegrade = \"None\" or forcegrade = ")
                              .Append(strGradeNameCleaned).Append(") and (not(bannedgrades[grade = ")
-                             .Append(strGradeNameCleaned).Append("])");
+                             .Append(strGradeNameCleaned).Append("]))");
                 }
 
                 string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token: token);
