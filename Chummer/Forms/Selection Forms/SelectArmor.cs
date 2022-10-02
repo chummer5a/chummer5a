@@ -55,6 +55,11 @@ namespace Chummer
 
         public SelectArmor(Character objCharacter)
         {
+            Disposed += (sender, args) =>
+            {
+                Utils.ListItemListPool.Return(_lstCategory);
+                Utils.StringHashSetPool.Return(_setBlackMarketMaps);
+            };
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();

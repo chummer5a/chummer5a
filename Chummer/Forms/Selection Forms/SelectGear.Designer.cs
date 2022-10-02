@@ -13,13 +13,9 @@ namespace Chummer
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
+            if (disposing && (components != null))
             {
-                components?.Dispose();
-                Utils.ListItemListPool.Return(_lstCategory);
-                Utils.StringHashSetPool.Return(_setAllowedCategories);
-                Utils.StringHashSetPool.Return(_setAllowedNames);
-                Utils.StringHashSetPool.Return(_setBlackMarketMaps);
+                components.Dispose();
             }
             base.Dispose(disposing);
         }

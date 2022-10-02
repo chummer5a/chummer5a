@@ -29,7 +29,6 @@ namespace Chummer.UI.Shared
 {
     public partial class LimitTabUserControl : UserControl
     {
-        private bool _blnDisposeCharacterOnDispose;
         private Character _objCharacter;
 
         public event EventHandler MakeDirty;
@@ -75,8 +74,8 @@ namespace Chummer.UI.Shared
                 _objCharacter = frmParent.CharacterObject;
             else
             {
-                _blnDisposeCharacterOnDispose = true;
                 _objCharacter = new Character();
+                Disposed += (sender, args) => _objCharacter.Dispose();
                 Utils.BreakIfDebug();
             }
 

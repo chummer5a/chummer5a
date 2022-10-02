@@ -61,6 +61,8 @@ namespace Chummer.UI.Attributes
 
             InitializeComponent();
 
+            Disposed += (sender, args) => UnbindAttributeControl();
+
             SuspendLayout();
             //Display
             lblName.DoOneWayDataBinding("Text", _dataSource, nameof(CharacterAttrib.DisplayNameFormatted));

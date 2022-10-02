@@ -63,6 +63,13 @@ namespace Chummer
         public ExportCharacter(Character objCharacter)
         {
             _objGenericToken = _objGenericFormClosingCancellationTokenSource.Token;
+            Disposed += (sender, args) =>
+            {
+                _objGenericFormClosingCancellationTokenSource.Dispose();
+                _dicCache.Dispose();
+                _objXmlGeneratorCancellationTokenSource?.Dispose();
+                _objCharacterXmlGeneratorCancellationTokenSource?.Dispose();
+            };
             _objCharacter = objCharacter;
             Program.MainForm.OpenCharacterExportForms.Add(this);
             InitializeComponent();

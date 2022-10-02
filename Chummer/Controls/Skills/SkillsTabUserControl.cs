@@ -36,8 +36,6 @@ namespace Chummer.UI.Skills
 {
     public partial class SkillsTabUserControl : UserControl
     {
-        private bool _blnDisposeCharacterOnDispose;
-
         public event PropertyChangedEventHandler MakeDirtyWithCharacterUpdate;
 
         private BindingListDisplay<Skill> _lstActiveSkills;
@@ -47,6 +45,9 @@ namespace Chummer.UI.Skills
         public SkillsTabUserControl()
         {
             InitializeComponent();
+
+            Disposed += (sender, args) => UnbindSkillsTabUserControl();
+
             lblGroupKarma.Margin = new Padding(
                 lblGroupKarma.Margin.Left,
                 lblGroupKarma.Margin.Top,
@@ -100,8 +101,8 @@ namespace Chummer.UI.Skills
                 _objCharacter = frmParent.CharacterObject;
             else
             {
-                _blnDisposeCharacterOnDispose = true;
                 _objCharacter = new Character();
+                await this.DoThreadSafeAsync(x => x.Disposed += (sender, args) => _objCharacter.Dispose(), token);
                 Utils.BreakIfDebug();
             }
 
@@ -125,11 +126,11 @@ namespace Chummer.UI.Skills
                     "/chummer/skills/skill[exotic = "
                     + bool.TrueString.CleanXPath()
                     + ']') != null;
-            await this.DoThreadSafeAsync(() =>
+            await this.DoThreadSafeAsync(x =>
             {
                 Stopwatch swDisplays = Stopwatch.StartNew();
                 Stopwatch parts = Stopwatch.StartNew();
-                SuspendLayout();
+                x.SuspendLayout();
                 try
                 {
                     _lstActiveSkills
@@ -137,6 +138,7 @@ namespace Chummer.UI.Skills
                         {
                             Dock = DockStyle.Fill
                         };
+                    x.Disposed += (sender, args) => _lstActiveSkills.Dispose();
 
                     Control MakeActiveSkill(Skill arg)
                     {
@@ -145,11 +147,11 @@ namespace Chummer.UI.Skills
                         return objSkillControl;
                     }
 
-                    RefreshSkillLabels();
+                    x.RefreshSkillLabels();
 
                     swDisplays.TaskEnd("_lstActiveSkills");
 
-                    tlpActiveSkills.Controls.Add(_lstActiveSkills, 0, 2);
+                    x.tlpActiveSkills.Controls.Add(_lstActiveSkills, 0, 2);
                     tlpActiveSkills.SetColumnSpan(_lstActiveSkills, 5);
 
                     swDisplays.TaskEnd("_lstActiveSkills add");
@@ -160,7 +162,8 @@ namespace Chummer.UI.Skills
                     {
                         Dock = DockStyle.Fill
                     };
-                    RefreshKnowledgeSkillLabels();
+                    x.Disposed += (sender, args) => _lstKnowledgeSkills.Dispose();
+                    x.RefreshKnowledgeSkillLabels();
 
                     swDisplays.TaskEnd("_lstKnowledgeSkills");
 
@@ -176,8 +179,9 @@ namespace Chummer.UI.Skills
                         {
                             Dock = DockStyle.Fill
                         };
+                        x.Disposed += (sender, args) => _lstSkillGroups.Dispose();
                         _lstSkillGroups.Filter(
-                            x => x.SkillList.Any(y => _objCharacter.SkillsSection.HasActiveSkill(y.DictionaryKey)),
+                            z => z.SkillList.Any(y => _objCharacter.SkillsSection.HasActiveSkill(y.DictionaryKey)),
                             true);
                         _lstSkillGroups.Sort(new SkillGroupSorter(SkillsSection.CompareSkillGroups));
                         RefreshSkillGroupLabels();
@@ -300,7 +304,7 @@ namespace Chummer.UI.Skills
                 }
                 finally
                 {
-                    ResumeLayout(true);
+                    x.ResumeLayout(true);
                 }
             }, token: token);
             sw.Stop();

@@ -47,6 +47,7 @@ namespace Chummer
 
         public CreateWeaponMount(Vehicle objVehicle, Character objCharacter, WeaponMount objWeaponMount = null)
         {
+            Disposed += (sender, args) => Utils.StringHashSetPool.Return(_setBlackMarketMaps);
             _objVehicle = objVehicle;
             _objMount = objWeaponMount;
             _objCharacter = objCharacter;

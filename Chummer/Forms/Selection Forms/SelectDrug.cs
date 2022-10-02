@@ -46,7 +46,7 @@ namespace Chummer
         private static string _sStrSelectGrade = string.Empty;
         private string _strOldSelectedGrade = string.Empty;
         private bool _blnOldGradeEnabled = true;
-        private readonly HashSet<string> _setDisallowedGrades = new HashSet<string>();
+        private readonly HashSet<string> _setDisallowedGrades = Utils.StringHashSetPool.Get();
         private string _strForceGrade = string.Empty;
         private readonly HashSet<string> _setBlackMarketMaps = Utils.StringHashSetPool.Get();
         private readonly XPathNavigator _xmlBaseDrugDataNode;
@@ -55,6 +55,11 @@ namespace Chummer
 
         public SelectDrug(Character objCharacter)
         {
+            Disposed += (sender, args) =>
+            {
+                Utils.StringHashSetPool.Return(_setBlackMarketMaps);
+                Utils.StringHashSetPool.Return(_setDisallowedGrades);
+            };
             InitializeComponent();
 
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));

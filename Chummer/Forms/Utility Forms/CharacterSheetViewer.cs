@@ -62,6 +62,13 @@ namespace Chummer
 
         public CharacterSheetViewer(CancellationToken token = default)
         {
+            Disposed += (sender, args) =>
+            {
+                _objGenericFormClosingCancellationTokenSource.Dispose();
+                _lstCharacters.Dispose();
+                _objRefresherCancellationTokenSource?.Dispose();
+                _objOutputGeneratorCancellationTokenSource?.Dispose();
+            };
             Program.MainForm.OpenCharacterSheetViewers.Add(this);
             _objGenericToken = _objGenericFormClosingCancellationTokenSource.Token;
             if (_strSelectedSheet.StartsWith("Shadowrun 4", StringComparison.Ordinal))

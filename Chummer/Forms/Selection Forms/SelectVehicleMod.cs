@@ -53,6 +53,11 @@ namespace Chummer
 
         public SelectVehicleMod(Character objCharacter, Vehicle objVehicle, IEnumerable<VehicleMod> lstExistingMods = null)
         {
+            Disposed += (sender, args) =>
+            {
+                Utils.ListItemListPool.Return(_lstCategory);
+                Utils.StringHashSetPool.Return(_setBlackMarketMaps);
+            };
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();

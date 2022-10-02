@@ -15,17 +15,10 @@ namespace Chummer.UI.Skills
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
+            if (disposing && (components != null))
             {
-                components?.Dispose();
-                _lstActiveSkills?.Dispose();
-                _lstSkillGroups?.Dispose();
-                _lstKnowledgeSkills?.Dispose();
-                UnbindSkillsTabUserControl();
-                if (_blnDisposeCharacterOnDispose)
-                    _objCharacter?.Dispose();
+                components.Dispose();
             }
-
             base.Dispose(disposing);
         }
 

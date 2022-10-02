@@ -78,6 +78,13 @@ namespace Chummer
             }
             _objCharacterSettings = new CharacterSettings(_objReferenceCharacterSettings);
             _objCharacterSettings.PropertyChanged += SettingsChanged;
+            Disposed += (sender, args) =>
+            {
+                _objCharacterSettings.PropertyChanged -= SettingsChanged;
+                _objCharacterSettings.Dispose();
+                Utils.ListItemListPool.Return(_lstSettings);
+                Utils.StringHashSetPool.Return(_setPermanentSourcebooks);
+            };
         }
 
         private async void EditCharacterSettings_Load(object sender, EventArgs e)

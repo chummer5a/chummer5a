@@ -71,6 +71,17 @@ namespace Chummer.Controls.Shared
                 _indexComparer = new IndexComparer(Contents);
                 _comparison = _comparison ?? _indexComparer;
                 Contents.ListChanged += ContentsChanged;
+                Disposed += (sender, args) =>
+                {
+                    try
+                    {
+                        Contents.ListChanged -= ContentsChanged;
+                    }
+                    catch (ObjectDisposedException)
+                    {
+                        //swallow this
+                    }
+                };
                 ComputeDisplayIndex();
                 LoadScreenContent();
                 BindingListDisplay_SizeChanged(null, null);
@@ -85,6 +96,7 @@ namespace Chummer.Controls.Shared
         private void BindingListDisplay_Load(object sender, EventArgs e)
         {
             Application.Idle += ApplicationOnIdle;
+            Disposed += (o, args) => Application.Idle -= ApplicationOnIdle;
         }
 
         /// <summary>

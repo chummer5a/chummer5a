@@ -60,6 +60,24 @@ namespace Chummer
             {
                 _watcherCharacterRosterFolderRawSaves = new FileSystemWatcher(GlobalSettings.CharacterRosterPath, "*.chum5");
                 _watcherCharacterRosterFolderCompressedSaves = new FileSystemWatcher(GlobalSettings.CharacterRosterPath, "*.chum5lz");
+
+                Disposed += (sender, args) =>
+                {
+                    _objGenericFormClosingCancellationTokenSource.Dispose();
+                    _watcherCharacterRosterFolderRawSaves.Dispose();
+                    _watcherCharacterRosterFolderCompressedSaves.Dispose();
+                    _objMostRecentlyUsedsRefreshCancellationTokenSource?.Dispose();
+                    _objWatchFolderRefreshCancellationTokenSource?.Dispose();
+                };
+            }
+            else
+            {
+                Disposed += (sender, args) =>
+                {
+                    _objGenericFormClosingCancellationTokenSource.Dispose();
+                    _objMostRecentlyUsedsRefreshCancellationTokenSource?.Dispose();
+                    _objWatchFolderRefreshCancellationTokenSource?.Dispose();
+                };
             }
         }
 

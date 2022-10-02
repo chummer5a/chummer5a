@@ -47,6 +47,7 @@ namespace Chummer
 
         public SelectAIProgram(Character objCharacter, bool blnAdvancedProgramAllowed = true, bool blnInherentProgram = false)
         {
+            Disposed += (sender, args) => Utils.ListItemListPool.Return(_lstCategory);
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();

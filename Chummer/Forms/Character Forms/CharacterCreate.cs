@@ -18929,7 +18929,9 @@ namespace Chummer
                 {
                     if (_objStoryBuilder == null)
                     {
-                        _objStoryBuilder = new StoryBuilder(CharacterObject);
+                        StoryBuilder objBuilder = new StoryBuilder(CharacterObject);
+                        Disposed += (o, args) => objBuilder.Dispose();
+                        _objStoryBuilder = objBuilder;
                         await btnCreateBackstory.DoThreadSafeAsync(x => x.Enabled = false, token: GenericToken);
                     }
 

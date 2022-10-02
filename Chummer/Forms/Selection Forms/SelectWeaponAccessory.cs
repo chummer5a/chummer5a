@@ -53,6 +53,7 @@ namespace Chummer
         {
             if (objCharacter == null)
                 throw new ArgumentNullException(nameof(objCharacter));
+            Disposed += (sender, args) => Utils.StringHashSetPool.Return(_setBlackMarketMaps);
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();

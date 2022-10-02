@@ -52,10 +52,16 @@ namespace Chummer
 
             using (Graphics g = CreateGraphics())
             {
-                _eyeballCenter = new Point((int)(95 * g.DpiX / 96.0f), (int)(15 * g.DpiY / 96.0f));
-                _mouthCenter = new Point((int)(100 * g.DpiX / 96.0f), (int)(50 * g.DpiY / 96.0f));
-                _thickPen = new Pen(Color.Black, (int)(3 * g.DpiY / 96.0f));
+                _eyeballCenter = new Point((int) (95 * g.DpiX / 96.0f), (int) (15 * g.DpiY / 96.0f));
+                _mouthCenter = new Point((int) (100 * g.DpiX / 96.0f), (int) (50 * g.DpiY / 96.0f));
+                _thickPen = new Pen(Color.Black, (int) (3 * g.DpiY / 96.0f));
             }
+
+            Disposed += (sender, args) =>
+            {
+                _thickPen.Dispose();
+                _myToolTip.Dispose();
+            };
 
             Paint += panel1_Paint;
 

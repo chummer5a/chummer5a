@@ -64,6 +64,7 @@ namespace Chummer.UI.Skills
                 return;
             _objSkill = objSkill;
             InitializeComponent();
+            Disposed += (sender, args) => UnbindKnowledgeSkillControl();
             SuspendLayout();
             tlpMain.SuspendLayout();
             tlpMiddle.SuspendLayout();

@@ -35,6 +35,11 @@ namespace Chummer
         {
             InitializeComponent();
             _sbdOutputBuilder = Utils.StringBuilderPool.Get();
+            Disposed += (sender, args) =>
+            {
+                _objCharacter.Dispose();
+                Utils.StringBuilderPool.Return(_sbdOutputBuilder);
+            };
         }
 
         private bool _blnAddExceptionInfoToErrors;

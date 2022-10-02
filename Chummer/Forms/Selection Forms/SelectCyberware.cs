@@ -56,7 +56,7 @@ namespace Chummer
         private string _strSelectedCategory = string.Empty;
         private string _strOldSelectedGrade = string.Empty;
         private bool _blnOldGradeEnabled = true;
-        private readonly HashSet<string> _setDisallowedGrades = new HashSet<string>();
+        private readonly HashSet<string> _setDisallowedGrades = Utils.StringHashSetPool.Get();
         private string _strForceGrade = string.Empty;
         private readonly object _objParentObject;
         private readonly XPathNavigator _objParentNode;
@@ -73,6 +73,11 @@ namespace Chummer
 
         public SelectCyberware(Character objCharacter, Improvement.ImprovementSource objWareSource, object objParentNode = null)
         {
+            Disposed += (sender, args) =>
+            {
+                Utils.StringHashSetPool.Return(_setBlackMarketMaps);
+                Utils.StringHashSetPool.Return(_setDisallowedGrades);
+            };
             InitializeComponent();
 
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));

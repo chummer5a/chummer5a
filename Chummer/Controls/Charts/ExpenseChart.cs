@@ -31,7 +31,6 @@ namespace Chummer.UI.Charts
 {
     public partial class ExpenseChart : UserControl
     {
-        private bool _blnDisposeCharacterOnDispose;
         private Character _objCharacter;
         private readonly LineSeries _objMainSeries;
         private readonly Axis _objYAxis;
@@ -78,8 +77,8 @@ namespace Chummer.UI.Charts
                 _objCharacter = frmParent.CharacterObject;
             else
             {
-                _blnDisposeCharacterOnDispose = true;
                 _objCharacter = new Character();
+                Disposed += (o, args) => _objCharacter.Dispose();
                 Utils.BreakIfDebug();
             }
             if (NuyenMode)

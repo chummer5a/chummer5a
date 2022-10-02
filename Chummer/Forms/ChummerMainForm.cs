@@ -78,6 +78,14 @@ namespace Chummer
             this.TranslateWinForm();
             _strCurrentVersion = Utils.CurrentChummerVersion.ToString(3);
 
+            Disposed += (sender, args) =>
+            {
+                _lstOpenCharacterEditorForms.Dispose();
+                _lstOpenCharacterSheetViewers.Dispose();
+                _lstOpenCharacterExportForms.Dispose();
+                _lstCharactersToReopen.Dispose();
+            };
+
             _lstOpenCharacterEditorForms.BeforeClearCollectionChanged += OpenCharacterEditorFormsOnBeforeClearCollectionChanged;
             _lstOpenCharacterEditorForms.CollectionChanged += OpenCharacterEditorFormsOnCollectionChanged;
             _lstOpenCharacterSheetViewers.BeforeClearCollectionChanged += OpenCharacterSheetViewersOnBeforeClearCollectionChanged;
@@ -621,7 +629,12 @@ namespace Chummer
                                 {
                                     await frmLoadingBar.MyForm.PerformStepAsync(
                                         await LanguageManager.GetStringAsync("String_Chummy"));
-                                    _mascotChummy = await this.DoThreadSafeFuncAsync(() => new Chummy(null));
+                                    _mascotChummy = await this.DoThreadSafeFuncAsync(x =>
+                                    {
+                                        Chummy objReturn = new Chummy(null);
+                                        x.Disposed += (o, args) => objReturn.Dispose();
+                                        return objReturn;
+                                    });
                                     await _mascotChummy.DoThreadSafeAsync(x => x.Show(this));
                                 }
 
@@ -976,7 +989,12 @@ namespace Chummer
                         await this.DoThreadSafeAsync(x => x.Text = strNewText, token);
                         if (GlobalSettings.AutomaticUpdate && _frmUpdate == null)
                         {
-                            _frmUpdate = await this.DoThreadSafeFuncAsync(() => new ChummerUpdater(), token);
+                            _frmUpdate = await this.DoThreadSafeFuncAsync(() =>
+                            {
+                                ChummerUpdater objReturn = new ChummerUpdater();
+                                x.Disposed += (o, args) => objReturn.Dispose();
+                                return objReturn;
+                            }, token);
                             await _frmUpdate.DoThreadSafeAsync(x =>
                             {
                                 x.FormClosed += ResetChummerUpdater;
@@ -1066,7 +1084,12 @@ namespace Chummer
             // Only a single instance of the updater can be open, so either find the current instance and focus on it, or create a new one.
             if (_frmUpdate == null)
             {
-                _frmUpdate = await this.DoThreadSafeFuncAsync(() => new ChummerUpdater());
+                _frmUpdate = await this.DoThreadSafeFuncAsync(x =>
+                {
+                    ChummerUpdater objReturn = new ChummerUpdater();
+                    x.Disposed += (o, args) => objReturn.Dispose();
+                    return objReturn;
+                });
                 await _frmUpdate.DoThreadSafeAsync(x =>
                 {
                     x.FormClosed += ResetChummerUpdater;
@@ -1702,7 +1725,12 @@ namespace Chummer
                 // Only a single instance of the Dice Roller window is allowed, so either find the existing one and focus on it, or create a new one.
                 if (RollerWindow == null)
                 {
-                    RollerWindow = await this.DoThreadSafeFuncAsync(() => new DiceRoller(this));
+                    RollerWindow = await this.DoThreadSafeFuncAsync(x =>
+                    {
+                        DiceRoller objReturn = new DiceRoller(this);
+                        x.Disposed += (o, args) => objReturn.Dispose();
+                        return objReturn;
+                    });
                     await RollerWindow.DoThreadSafeAsync(x => x.Show());
                 }
                 else
@@ -2636,7 +2664,12 @@ namespace Chummer
             {
                 if (RollerWindow == null)
                 {
-                    RollerWindow = await this.DoThreadSafeFuncAsync(() => new DiceRoller(this, objCharacter?.Qualities, intDice), token);
+                    RollerWindow = await this.DoThreadSafeFuncAsync(x =>
+                    {
+                        DiceRoller objReturn = new DiceRoller(this, objCharacter?.Qualities, intDice);
+                        x.Disposed += (o, args) => objReturn.Dispose();
+                        return objReturn;
+                    }, token);
                     await RollerWindow.DoThreadSafeAsync(x => x.Show(), token);
                 }
                 else

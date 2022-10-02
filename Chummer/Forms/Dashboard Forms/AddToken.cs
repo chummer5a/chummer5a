@@ -30,8 +30,7 @@ namespace Chummer
     {
         // used when the user has filled out the information
         private readonly InitiativeUserControl parentControl;
-
-        private bool _blnCharacterAdded;
+        
         private Character _character;
 
         public AddToken(InitiativeUserControl init)
@@ -91,16 +90,21 @@ namespace Chummer
                     if (_character != null)
                     {
                         await _character.DisposeAsync();
-                        _blnCharacterAdded = false;
                     }
 
                     _character = objCharacter;
+                    Disposed += OnDisposed;
                 }
                 finally
                 {
                     await objCursorWait.DisposeAsync();
                 }
             }
+        }
+
+        private void OnDisposed(object sender, EventArgs e)
+        {
+            _character?.Dispose();
         }
 
         /// <summary>
@@ -150,7 +154,7 @@ namespace Chummer
             else
                 _character.InitRoll = int.MinValue;
 
-            _blnCharacterAdded = true;
+            Disposed -= OnDisposed;
             await parentControl.AddToken(_character);
             await this.DoThreadSafeAsync(x => x.Close());
         }

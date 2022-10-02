@@ -13,11 +13,9 @@ namespace Chummer
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
+            if (disposing && (components != null))
             {
-                components?.Dispose();
-                _frmPrintView?.Dispose();
-                _objGenericCancellationTokenSource?.Dispose();
+                components.Dispose();
             }
             base.Dispose(disposing);
         }

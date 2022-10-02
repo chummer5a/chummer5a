@@ -36,6 +36,7 @@ namespace Chummer
 
         public SelectSpellCategory(Character objCharacter)
         {
+            Disposed += (sender, args) => Utils.StringHashSetPool.Return(_setExcludeCategories);
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();

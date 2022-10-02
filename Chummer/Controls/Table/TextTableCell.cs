@@ -30,6 +30,7 @@ namespace Chummer.UI.Table
         {
             InitializeComponent();
             _lblText = new Label();
+            components.Add(_lblText);
             ContentField = _lblText;
             Controls.Add(_lblText);
             _lblText.AutoSize = true;

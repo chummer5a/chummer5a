@@ -43,6 +43,7 @@ namespace Chummer
 
         public SelectMartialArtTechnique(Character objCharacter, MartialArt objMartialArt)
         {
+            Disposed += (sender, args) => Utils.StringHashSetPool.Return(_setAllowedTechniques);
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();

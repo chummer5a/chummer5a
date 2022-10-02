@@ -80,6 +80,7 @@ namespace Chummer.UI.Skills
             if (_objAttributeActive != null)
                 _objAttributeActive.PropertyChanged += Attribute_PropertyChanged;
             InitializeComponent();
+            Disposed += (sender, args) => UnbindSkillControl();
             SuspendLayout();
             pnlAttributes.SuspendLayout();
             tlpMain.SuspendLayout();
@@ -91,6 +92,11 @@ namespace Chummer.UI.Skills
                 _fntItalicName = new Font(_fntNormalName, FontStyle.Italic);
                 _fntNormal = btnAttribute.Font;
                 _fntItalic = new Font(_fntNormal, FontStyle.Italic);
+                Disposed += (sender, args) =>
+                {
+                    _fntItalicName.Dispose();
+                    _fntItalic.Dispose();
+                };
 
                 if (!_objSkill.Default)
                     lblName.Font = _fntItalicName;

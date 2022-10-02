@@ -50,6 +50,7 @@ namespace Chummer
 
         public SelectSpell(Character objCharacter)
         {
+            Disposed += (sender, args) => Utils.ListItemListPool.Return(_lstCategory);
             _objCharacter = objCharacter;
             InitializeComponent();
             this.UpdateLightDarkMode();

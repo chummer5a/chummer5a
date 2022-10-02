@@ -46,6 +46,9 @@ namespace Chummer
         {
             _objSpirit = objSpirit;
             InitializeComponent();
+
+            Disposed += (sender, args) => UnbindSpiritControl();
+
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
             foreach (ToolStripItem tssItem in cmsSpirit.Items)

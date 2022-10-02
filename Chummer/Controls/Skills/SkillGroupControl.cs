@@ -45,6 +45,7 @@ namespace Chummer.UI.Skills
                 return;
             _skillGroup = skillGroup;
             InitializeComponent();
+            Disposed += (sender, args) => UnbindSkillGroupControl();
             //This is apparently a factor 30 faster than placed in load. NFI why
             Stopwatch sw = Stopwatch.StartNew();
             SuspendLayout();

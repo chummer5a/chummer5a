@@ -52,6 +52,9 @@ namespace Chummer
             _objContact = objContact ?? throw new ArgumentNullException(nameof(objContact));
 
             InitializeComponent();
+
+            Disposed += (sender, args) => UnbindContactControl();
+
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
 

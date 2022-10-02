@@ -57,6 +57,7 @@ namespace Chummer
 
         public SelectLifestyleQuality(Character objCharacter, string strSelectedLifestyle, IReadOnlyCollection<LifestyleQuality> lstExistingQualities)
         {
+            Disposed += (sender, args) => Utils.ListItemListPool.Return(_lstCategory);
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();

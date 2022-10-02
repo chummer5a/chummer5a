@@ -216,6 +216,7 @@ namespace Chummer.UI.Table
             _defaultFilter = item => true;
             _filter = _defaultFilter;
             InitializeComponent();
+            Disposed += (sender, args) => DisposeAll();
         }
 
         private void ItemPropertyChanged(int intIndex, T objItem, string strProperty)

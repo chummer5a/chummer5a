@@ -72,6 +72,17 @@ namespace Chummer.Controls.Shared
                 _indexComparer = new IndexComparer(Contents);
                 _comparison = _comparison ?? _indexComparer;
                 Contents.CollectionChanged += OnCollectionChanged;
+                Disposed += (sender, args) =>
+                {
+                    try
+                    {
+                        Contents.CollectionChanged -= OnCollectionChanged;
+                    }
+                    catch (ObjectDisposedException)
+                    {
+                        //swallow this
+                    }
+                };
                 ComputeDisplayIndex();
                 LoadScreenContent();
                 ObservableCollectionDisplay_SizeChanged(null, null);
@@ -86,6 +97,7 @@ namespace Chummer.Controls.Shared
         private void ObservableCollectionDisplay_Load(object sender, EventArgs e)
         {
             Application.Idle += ApplicationOnIdle;
+            Disposed += (o, args) => Application.Idle -= ApplicationOnIdle;
         }
 
         /// <summary>

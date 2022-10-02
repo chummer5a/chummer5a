@@ -39,6 +39,7 @@ namespace Chummer
 
         public PrintMultipleCharacters()
         {
+            Disposed += (sender, args) => _objGenericCancellationTokenSource.Dispose();
             _objGenericToken = _objGenericCancellationTokenSource.Token;
             InitializeComponent();
             this.UpdateLightDarkMode();
@@ -266,7 +267,12 @@ namespace Chummer
 
                     if (_frmPrintView == null)
                     {
-                        _frmPrintView = await this.DoThreadSafeFuncAsync(() => new CharacterSheetViewer(), token);
+                        _frmPrintView = await this.DoThreadSafeFuncAsync(x =>
+                        {
+                            CharacterSheetViewer objReturn = new CharacterSheetViewer();
+                            x.Disposed += (sender, args) => objReturn.Dispose();
+                            return objReturn;
+                        }, token);
                         await _frmPrintView.SetSelectedSheet("Game Master Summary", token);
                         await _frmPrintView.SetCharacters(token, _aobjCharacters);
                         await _frmPrintView.DoThreadSafeAsync(x => x.Show(), token);

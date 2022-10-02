@@ -44,6 +44,7 @@ namespace Chummer
 
         public SelectArmorMod(Character objCharacter, Armor objParentNode = null)
         {
+            Disposed += (sender, args) => Utils.StringHashSetPool.Return(_setBlackMarketMaps);
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();

@@ -44,6 +44,9 @@ namespace Chummer
         {
             _objContact = objContact;
             InitializeComponent();
+
+            Disposed += (sender, args) => UnbindPetControl();
+
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
             foreach (ToolStripItem tssItem in cmsContact.Items)

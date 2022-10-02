@@ -37,12 +37,14 @@ namespace Chummer.UI.Powers
 {
     public partial class PowersTabUserControl : UserControl
     {
-        private bool _blnDisposeCharacterOnDispose;
         private TableView<Power> _table;
 
         public PowersTabUserControl()
         {
             InitializeComponent();
+
+            Disposed += (sender, args) => UnbindPowersTabUserControl();
+
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
 
@@ -84,8 +86,8 @@ namespace Chummer.UI.Powers
                 _objCharacter = frmParent.CharacterObject;
             else
             {
-                _blnDisposeCharacterOnDispose = true;
                 _objCharacter = new Character();
+                Disposed += (sender, args) => _objCharacter.Dispose();
                 Utils.BreakIfDebug();
             }
 
@@ -293,6 +295,7 @@ namespace Chummer.UI.Powers
                 Dock = DockStyle.Top,
                 ToolTip = _tipTooltip
             });
+            Disposed += (sender, args) => _table.Dispose();
             // create columns
             TableColumn<Power> nameColumn = this.DoThreadSafeFunc(
                 () => new TableColumn<Power>(() => new TextTableCell())

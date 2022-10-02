@@ -47,6 +47,7 @@ namespace Chummer
 
         public SelectQuality(Character objCharacter)
         {
+            Disposed += (sender, args) => Utils.ListItemListPool.Return(_lstCategory);
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();

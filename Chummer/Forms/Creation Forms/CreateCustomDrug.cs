@@ -43,6 +43,7 @@ namespace Chummer
 
         public CreateCustomDrug(Character objCharacter, Drug objDrug = null)
         {
+            Disposed += (sender, args) => Utils.ListItemListPool.Return(_lstGrade);
             if (objDrug == null)
             {
                 objDrug = new Drug(objCharacter);
