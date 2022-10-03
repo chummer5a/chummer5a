@@ -24,6 +24,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.XPath;
+using Microsoft.VisualStudio.Threading;
 
 namespace Chummer
 {
@@ -354,7 +355,7 @@ namespace Chummer
 
             try
             {
-                Lazy<ValueTask<string>> strBestMatchNewSettingsKey = new Lazy<ValueTask<string>>(async () =>
+                AsyncLazy<string> strBestMatchNewSettingsKey = new AsyncLazy<string>(async () =>
                 {
                     int intBestScore = int.MinValue;
                     string strReturn = string.Empty;
@@ -376,7 +377,7 @@ namespace Chummer
                 await Program.OpenCharacters.ForEachAsync(async objCharacter =>
                 {
                     if (await objCharacter.GetSettingsKeyAsync(token).ConfigureAwait(false) == strKeyToDelete)
-                        await objCharacter.SetSettingsKeyAsync(await strBestMatchNewSettingsKey.Value.ConfigureAwait(false), token).ConfigureAwait(false);
+                        await objCharacter.SetSettingsKeyAsync(await strBestMatchNewSettingsKey.GetValueAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
                 }, token: token).ConfigureAwait(false);
             }
             finally

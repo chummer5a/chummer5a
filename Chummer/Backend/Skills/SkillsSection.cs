@@ -29,6 +29,8 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.XPath;
 using Chummer.Annotations;
+using Microsoft.VisualStudio.Threading;
+using IAsyncDisposable = System.IAsyncDisposable;
 
 namespace Chummer.Backend.Skills
 {
@@ -530,10 +532,10 @@ namespace Chummer.Backend.Skills
                 if (setSkillsToRemove.Count == 0)
                     return;
 
-                Lazy<Task<string>> strKnowledgeSkillTypeToUse = null;
+                AsyncLazy<string> strKnowledgeSkillTypeToUse = null;
                 if (blnCreateKnowledge)
                 {
-                    strKnowledgeSkillTypeToUse = new Lazy<Task<string>>(async () =>
+                    strKnowledgeSkillTypeToUse = new AsyncLazy<string>(async () =>
                     {
                         XPathNavigator xmlCategories = await (await _objCharacter.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false))
                                                              .SelectSingleNodeAndCacheExpressionAsync(
@@ -563,7 +565,7 @@ namespace Chummer.Backend.Skills
                         {
                             KnowledgeSkill objNewKnowledgeSkill = new KnowledgeSkill(_objCharacter)
                             {
-                                Type = await strKnowledgeSkillTypeToUse.Value.ConfigureAwait(false),
+                                Type = await strKnowledgeSkillTypeToUse.GetValueAsync(token).ConfigureAwait(false),
                                 WritableName = objSkill.Name,
                                 Base = objSkill.Base,
                                 Karma = objSkill.Karma
