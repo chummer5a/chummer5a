@@ -47,11 +47,11 @@ namespace Chummer
             this.lblMinimum = new System.Windows.Forms.Label();
             this.lblCostLabel = new System.Windows.Forms.Label();
             this.lblCost = new System.Windows.Forms.Label();
-            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.tlpLeft = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.tlpRight = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.tlpTopRight = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpLeft = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpRight = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpTopRight = new System.Windows.Forms.TableLayoutPanel();
             this.tlpMain.SuspendLayout();
             this.tlpButtons.SuspendLayout();
             this.tlpLeft.SuspendLayout();
@@ -453,10 +453,10 @@ namespace Chummer
         private System.Windows.Forms.Label lblMinimum;
         private System.Windows.Forms.Label lblCostLabel;
         private System.Windows.Forms.Label lblCost;
-        private Chummer.BufferedTableLayoutPanel tlpMain;
-        private BufferedTableLayoutPanel tlpButtons;
-        private BufferedTableLayoutPanel tlpRight;
-        private BufferedTableLayoutPanel tlpLeft;
-        private BufferedTableLayoutPanel tlpTopRight;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
+        private System.Windows.Forms.TableLayoutPanel tlpButtons;
+        private System.Windows.Forms.TableLayoutPanel tlpRight;
+        private System.Windows.Forms.TableLayoutPanel tlpLeft;
+        private System.Windows.Forms.TableLayoutPanel tlpTopRight;
     }
 }

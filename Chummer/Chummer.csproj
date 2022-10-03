@@ -566,12 +566,6 @@
     <Compile Include="Backend\Helpers\Application Insights\DropUserdataTelemetryProcessor.cs" />
     <Compile Include="Backend\Helpers\Application Insights\TranslateExceptionTelemetryProcessor.cs" />
     <Compile Include="Backend\Helpers\Application Insights\UploadObjectAsMetric.cs" />
-    <Compile Include="Controls\Shared\Components\BufferedTableLayoutPanel.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\Shared\Components\BufferedTableLayoutPanel.Designer.cs">
-      <DependentUpon>BufferedTableLayoutPanel.cs</DependentUpon>
-    </Compile>
     <Compile Include="Backend\Helpers\CenterableMessageBox.cs" />
     <Compile Include="Controls\Shared\Components\ColorableCheckBox.cs">
       <SubType>Component</SubType>

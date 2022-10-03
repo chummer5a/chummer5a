@@ -34,7 +34,7 @@ namespace Chummer
             this.txtOutput = new System.Windows.Forms.TextBox();
             this.pgbProgress = new System.Windows.Forms.ProgressBar();
             this.chkAddExceptionInfoToErrors = new Chummer.ColorableCheckBox();
-            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.tlpMain.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -153,6 +153,6 @@ namespace Chummer
         private System.Windows.Forms.TextBox txtOutput;
         private System.Windows.Forms.ProgressBar pgbProgress;
         private Chummer.ColorableCheckBox chkAddExceptionInfoToErrors;
-        private BufferedTableLayoutPanel tlpMain;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
     }
 }

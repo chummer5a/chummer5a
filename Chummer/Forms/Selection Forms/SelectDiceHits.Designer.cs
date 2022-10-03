@@ -32,8 +32,8 @@
             this.nudDiceResult = new Chummer.NumericUpDownEx();
             this.lblDice = new System.Windows.Forms.Label();
             this.lblDescription = new System.Windows.Forms.Label();
-            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
             this.cmdCancel = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.cmdRoll = new System.Windows.Forms.Button();
@@ -200,8 +200,8 @@
         private Chummer.NumericUpDownEx nudDiceResult;
         private System.Windows.Forms.Label lblDice;
         private System.Windows.Forms.Label lblDescription;
-        private Chummer.BufferedTableLayoutPanel tlpMain;
-        private BufferedTableLayoutPanel tlpButtons;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
+        private System.Windows.Forms.TableLayoutPanel tlpButtons;
         private System.Windows.Forms.Button cmdCancel;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button cmdRoll;

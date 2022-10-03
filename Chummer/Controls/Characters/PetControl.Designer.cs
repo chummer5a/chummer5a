@@ -38,7 +38,7 @@ namespace Chummer
             this.lblName = new System.Windows.Forms.Label();
             this.lblMetatypeLabel = new System.Windows.Forms.Label();
             this.cboMetatype = new Chummer.ElasticComboBox();
-            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.cmdNotes = new Chummer.ButtonWithToolTip(this.components);
             this.cmdLink = new Chummer.ButtonWithToolTip(this.components);
             this.cmsContact.SuspendLayout();
@@ -258,7 +258,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblName;
         private System.Windows.Forms.Label lblMetatypeLabel;
         private ElasticComboBox cboMetatype;
-        private BufferedTableLayoutPanel tlpMain;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
         private DpiFriendlyToolStripMenuItem tsContactOpen;
         private DpiFriendlyToolStripMenuItem tsRemoveCharacter;
         private DpiFriendlyToolStripMenuItem tsAttachCharacter;

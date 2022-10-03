@@ -60,17 +60,17 @@ namespace Chummer
             this.lblVehicleCapacity = new System.Windows.Forms.Label();
             this.lblVehicleCapacityLabel = new System.Windows.Forms.Label();
             this.chkHideOverAvailLimit = new Chummer.ColorableCheckBox(this.components);
-            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.chkShowOnlyAffordItems = new Chummer.ColorableCheckBox(this.components);
-            this.tableLayoutPanel2 = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.cboCategory = new Chummer.ElasticComboBox();
-            this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.tlpRight = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpRight = new System.Windows.Forms.TableLayoutPanel();
             this.flpCheckBoxes = new System.Windows.Forms.FlowLayoutPanel();
             this.flpMarkup = new System.Windows.Forms.FlowLayoutPanel();
             this.flpRating = new System.Windows.Forms.FlowLayoutPanel();
             this.lblRatingNALabel = new System.Windows.Forms.Label();
-            this.tlpTopRight = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpTopRight = new System.Windows.Forms.TableLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)(this.nudRating)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudMarkup)).BeginInit();
             this.tlpMain.SuspendLayout();
@@ -775,16 +775,16 @@ namespace Chummer
         private System.Windows.Forms.Label lblVehicleCapacity;
         private System.Windows.Forms.Label lblVehicleCapacityLabel;
         private Chummer.ColorableCheckBox chkHideOverAvailLimit;
-        private Chummer.BufferedTableLayoutPanel tlpMain;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
         private Chummer.ColorableCheckBox chkShowOnlyAffordItems;
         private System.Windows.Forms.FlowLayoutPanel flpRating;
         private System.Windows.Forms.Label lblRatingNALabel;
         private ElasticComboBox cboCategory;
         private System.Windows.Forms.FlowLayoutPanel flpMarkup;
         private System.Windows.Forms.FlowLayoutPanel flpCheckBoxes;
-        private BufferedTableLayoutPanel tlpButtons;
-        private BufferedTableLayoutPanel tableLayoutPanel2;
-        private BufferedTableLayoutPanel tlpRight;
-        private BufferedTableLayoutPanel tlpTopRight;
+        private System.Windows.Forms.TableLayoutPanel tlpButtons;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
+        private System.Windows.Forms.TableLayoutPanel tlpRight;
+        private System.Windows.Forms.TableLayoutPanel tlpTopRight;
     }
 }

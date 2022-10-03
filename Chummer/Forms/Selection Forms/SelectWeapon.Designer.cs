@@ -37,12 +37,12 @@ namespace Chummer
             this.tmrSearch = new System.Windows.Forms.Timer(this.components);
             this.cmdOK = new System.Windows.Forms.Button();
             this.cmdCancel = new System.Windows.Forms.Button();
-            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabListView = new System.Windows.Forms.TabPage();
-            this.tlpWeapon = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpWeapon = new System.Windows.Forms.TableLayoutPanel();
             this.lstWeapon = new System.Windows.Forms.ListBox();
-            this.tlpRight = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpRight = new System.Windows.Forms.TableLayoutPanel();
             this.lblWeaponConceal = new System.Windows.Forms.Label();
             this.lblSourceLabel = new System.Windows.Forms.Label();
             this.lblWeaponDamageLabel = new System.Windows.Forms.Label();
@@ -74,7 +74,7 @@ namespace Chummer
             this.lblWeaponAccuracyLabel = new System.Windows.Forms.Label();
             this.lblWeaponAccuracy = new System.Windows.Forms.Label();
             this.lblWeaponAP = new System.Windows.Forms.Label();
-            this.tlpBottomRight = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpBottomRight = new System.Windows.Forms.TableLayoutPanel();
             this.chkHideOverAvailLimit = new Chummer.ColorableCheckBox(this.components);
             this.chkShowOnlyAffordItems = new Chummer.ColorableCheckBox(this.components);
             this.gpbIncludedAccessories = new System.Windows.Forms.GroupBox();
@@ -101,7 +101,7 @@ namespace Chummer
             this.cboCategory = new Chummer.ElasticComboBox();
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.lblSearchLabel = new System.Windows.Forms.Label();
-            this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
             this.cmdOKAdd = new System.Windows.Forms.Button();
             this.tlpMain.SuspendLayout();
             this.tabControl.SuspendLayout();
@@ -1191,9 +1191,9 @@ namespace Chummer
         private System.Windows.Forms.ListBox lstWeapon;
         private System.Windows.Forms.Timer tmrSearch;
         private Chummer.ColorableCheckBox chkHideOverAvailLimit;
-        private Chummer.BufferedTableLayoutPanel tlpWeapon;
+        private System.Windows.Forms.TableLayoutPanel tlpWeapon;
         private Chummer.ColorableCheckBox chkShowOnlyAffordItems;
-        private Chummer.BufferedTableLayoutPanel tlpMain;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
         private System.Windows.Forms.FlowLayoutPanel flpMarkup;
         private System.Windows.Forms.FlowLayoutPanel flpCheckBoxes;
         private System.Windows.Forms.GroupBox gpbIncludedAccessories;
@@ -1215,8 +1215,8 @@ namespace Chummer
         private DataGridViewTextBoxColumnTranslated Label_Avail;
         private DataGridViewTextBoxColumnTranslated Label_Source;
         private DataGridViewTextBoxColumnTranslated dgvc_Cost;
-        private BufferedTableLayoutPanel tlpButtons;
-        private BufferedTableLayoutPanel tlpRight;
-        private BufferedTableLayoutPanel tlpBottomRight;
+        private System.Windows.Forms.TableLayoutPanel tlpButtons;
+        private System.Windows.Forms.TableLayoutPanel tlpRight;
+        private System.Windows.Forms.TableLayoutPanel tlpBottomRight;
     }
 }

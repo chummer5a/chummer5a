@@ -29,14 +29,14 @@ namespace Chummer.Forms
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.imgIcon = new System.Windows.Forms.PictureBox();
-            this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
             this.cmdButton3 = new System.Windows.Forms.Button();
             this.cmdButton2 = new System.Windows.Forms.Button();
             this.cmdButton1 = new System.Windows.Forms.Button();
             this.txtText = new System.Windows.Forms.TextBox();
-            this.tlpTop = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpTop = new System.Windows.Forms.TableLayoutPanel();
             this.tlpMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imgIcon)).BeginInit();
             this.tlpButtons.SuspendLayout();
@@ -190,13 +190,13 @@ namespace Chummer.Forms
 
         #endregion
 
-        private BufferedTableLayoutPanel tlpMain;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
         private System.Windows.Forms.PictureBox imgIcon;
         private System.Windows.Forms.Button cmdButton1;
         private System.Windows.Forms.Button cmdButton2;
         private System.Windows.Forms.Button cmdButton3;
-        private BufferedTableLayoutPanel tlpButtons;
+        private System.Windows.Forms.TableLayoutPanel tlpButtons;
         private System.Windows.Forms.TextBox txtText;
-        private BufferedTableLayoutPanel tlpTop;
+        private System.Windows.Forms.TableLayoutPanel tlpTop;
     }
 }

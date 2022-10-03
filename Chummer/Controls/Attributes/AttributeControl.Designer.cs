@@ -33,7 +33,7 @@ namespace Chummer.UI.Attributes
             this.flpRight = new System.Windows.Forms.FlowLayoutPanel();
             this.lblLimits = new Chummer.LabelWithToolTip();
             this.lblValue = new Chummer.LabelWithToolTip();
-            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.flpRight.SuspendLayout();
             this.tlpMain.SuspendLayout();
             this.SuspendLayout();
@@ -142,6 +142,6 @@ namespace Chummer.UI.Attributes
         private LabelWithToolTip lblName;
         private LabelWithToolTip lblLimits;
         private System.Windows.Forms.FlowLayoutPanel flpRight;
-        private BufferedTableLayoutPanel tlpMain;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
     }
 }

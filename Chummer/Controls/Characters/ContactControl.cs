@@ -1087,7 +1087,7 @@ namespace Chummer
             }
         }
 
-        private BufferedTableLayoutPanel tlpStatBlock;
+        private TableLayoutPanel tlpStatBlock;
         private Label lblHobbiesVice;
         private Label lblPreferredPayment;
         private Label lblPersonalLife;
@@ -1227,7 +1227,7 @@ namespace Chummer
                         TextAlign = ContentAlignment.MiddleRight
                     };
 
-                    x.tlpStatBlock = new BufferedTableLayoutPanel(components)
+                    x.tlpStatBlock = new TableLayoutPanel
                     {
                         AutoSize = true,
                         AutoSizeMode = AutoSizeMode.GrowAndShrink,
@@ -1450,7 +1450,7 @@ namespace Chummer
                         TextAlign = ContentAlignment.MiddleRight
                     };
 
-                    x.tlpStatBlock = new BufferedTableLayoutPanel(components)
+                    x.tlpStatBlock = new TableLayoutPanel
                     {
                         AutoSize = true,
                         AutoSizeMode = AutoSizeMode.GrowAndShrink,

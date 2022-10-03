@@ -44,9 +44,9 @@ namespace Chummer
             this.nudReach = new Chummer.NumericUpDownEx();
             this.lblReach = new System.Windows.Forms.Label();
             this.cboDVType = new Chummer.ElasticComboBox();
-            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.flpDV = new System.Windows.Forms.FlowLayoutPanel();
-            this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)(this.nudDVMod)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudAP)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudReach)).BeginInit();
@@ -368,8 +368,8 @@ namespace Chummer
         private Chummer.NumericUpDownEx nudReach;
         private System.Windows.Forms.Label lblReach;
         private ElasticComboBox cboDVType;
-        private BufferedTableLayoutPanel tlpMain;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
         private System.Windows.Forms.FlowLayoutPanel flpDV;
-        private BufferedTableLayoutPanel tlpButtons;
+        private System.Windows.Forms.TableLayoutPanel tlpButtons;
     }
 }

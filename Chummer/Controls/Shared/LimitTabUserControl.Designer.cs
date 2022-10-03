@@ -32,9 +32,9 @@ namespace Chummer.UI.Shared
             this.treLimit = new System.Windows.Forms.TreeView();
             this.cmdAddLimitModifier = new System.Windows.Forms.Button();
             this.cmdDeleteLimitModifier = new System.Windows.Forms.Button();
-            this.tlpParent = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.tlpRight = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpParent = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpRight = new System.Windows.Forms.TableLayoutPanel();
             this.lblAstral = new Chummer.LabelWithToolTip();
             this.lblPhysicalLimitLabel = new System.Windows.Forms.Label();
             this.lblSocial = new Chummer.LabelWithToolTip();
@@ -350,7 +350,7 @@ namespace Chummer.UI.Shared
         private System.Windows.Forms.TreeView treLimit;
         private System.Windows.Forms.Button cmdAddLimitModifier;
         private System.Windows.Forms.Button cmdDeleteLimitModifier;
-        private Chummer.BufferedTableLayoutPanel tlpParent;
+        private System.Windows.Forms.TableLayoutPanel tlpParent;
         private System.Windows.Forms.Label lblMentalLimitLabel;
         private System.Windows.Forms.Label lblSocialLimitLabel;
         private System.Windows.Forms.Label lblPhysicalLimitLabel;
@@ -361,8 +361,8 @@ namespace Chummer.UI.Shared
         private System.Windows.Forms.Label lblAstralLabel;
         private System.Windows.Forms.ContextMenuStrip cmsLimitModifier;
         private System.Windows.Forms.ContextMenuStrip cmsLimitModifierNotesOnly;
-        private BufferedTableLayoutPanel tlpButtons;
-        private BufferedTableLayoutPanel tlpRight;
+        private System.Windows.Forms.TableLayoutPanel tlpButtons;
+        private System.Windows.Forms.TableLayoutPanel tlpRight;
         private DpiFriendlyToolStripMenuItem tssLimitModifierEdit;
         private DpiFriendlyToolStripMenuItem tssLimitModifierNotes;
         private DpiFriendlyToolStripMenuItem tssLimitModifierNotesOnlyNotes;

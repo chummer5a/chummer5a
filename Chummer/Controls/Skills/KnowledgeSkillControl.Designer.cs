@@ -33,11 +33,11 @@ namespace Chummer.UI.Skills
             this.cmdDelete = new System.Windows.Forms.Button();
             this.cboName = new Chummer.ElasticComboBox();
             this.cboType = new Chummer.ElasticComboBox();
-            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.tlpLeft = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpLeft = new System.Windows.Forms.TableLayoutPanel();
             this.lblName = new System.Windows.Forms.Label();
-            this.tlpMiddle = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.tlpRight = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMiddle = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpRight = new System.Windows.Forms.TableLayoutPanel();
             this.tlpMain.SuspendLayout();
             this.tlpLeft.SuspendLayout();
             this.tlpMiddle.SuspendLayout();
@@ -219,10 +219,10 @@ namespace Chummer.UI.Skills
         private System.Windows.Forms.Button cmdDelete;
         private ElasticComboBox cboName;
         private ElasticComboBox cboType;
-        private BufferedTableLayoutPanel tlpMain;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
         private System.Windows.Forms.Label lblName;
-        private BufferedTableLayoutPanel tlpLeft;
-        private Chummer.BufferedTableLayoutPanel tlpMiddle;
-        private Chummer.BufferedTableLayoutPanel tlpRight;
+        private System.Windows.Forms.TableLayoutPanel tlpLeft;
+        private System.Windows.Forms.TableLayoutPanel tlpMiddle;
+        private System.Windows.Forms.TableLayoutPanel tlpRight;
     }
 }

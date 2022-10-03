@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -217,7 +218,7 @@ namespace Chummer
                     }
                 }
                 string strFile = blnUseRelative ? Path.GetFullPath(_objSpirit.RelativeFileName) : _objSpirit.FileName;
-                System.Diagnostics.Process.Start(strFile);
+                Process.Start(strFile);
             }
         }
 

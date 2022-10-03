@@ -76,11 +76,11 @@ namespace Chummer
             this.lblBonusLP = new System.Windows.Forms.Label();
             this.nudBonusLP = new Chummer.NumericUpDownEx();
             this.chkBonusLPRandomize = new Chummer.ColorableCheckBox(this.components);
-            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.treLifestyleQualities = new System.Windows.Forms.TreeView();
-            this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.tlpQualityButtons = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.tlpRight = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpQualityButtons = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpRight = new System.Windows.Forms.TableLayoutPanel();
             this.lblComforts = new System.Windows.Forms.Label();
             this.lblArea = new System.Windows.Forms.Label();
             this.lblSecurity = new System.Windows.Forms.Label();
@@ -90,7 +90,7 @@ namespace Chummer
             this.cboDistrict = new Chummer.ElasticComboBox();
             this.lblCity = new System.Windows.Forms.Label();
             this.cboCity = new Chummer.ElasticComboBox();
-            this.tlpLifestyleQuality = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpLifestyleQuality = new System.Windows.Forms.TableLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)(this.nudPercentage)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudRoommates)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudSecurity)).BeginInit();
@@ -1088,17 +1088,17 @@ namespace Chummer
         private Label lblComforts;
         private Label lblArea;
         private Label lblSecurity;
-        private BufferedTableLayoutPanel tlpMain;
-        private BufferedTableLayoutPanel tlpButtons;
-        private BufferedTableLayoutPanel tlpQualityButtons;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
+        private System.Windows.Forms.TableLayoutPanel tlpButtons;
+        private System.Windows.Forms.TableLayoutPanel tlpQualityButtons;
         private Label lblCity;
         private Label lblDistrict;
         private Label lblBorough;
         private ElasticComboBox cboCity;
         private ElasticComboBox cboDistrict;
         private ElasticComboBox cboBorough;
-        private BufferedTableLayoutPanel tlpRight;
+        private System.Windows.Forms.TableLayoutPanel tlpRight;
         private TreeView treLifestyleQualities;
-        private BufferedTableLayoutPanel tlpLifestyleQuality;
+        private System.Windows.Forms.TableLayoutPanel tlpLifestyleQuality;
     }
 }

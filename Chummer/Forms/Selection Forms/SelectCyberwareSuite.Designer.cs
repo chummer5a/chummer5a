@@ -39,9 +39,9 @@ namespace Chummer
             this.lblCost = new System.Windows.Forms.Label();
             this.lblCostLabel = new System.Windows.Forms.Label();
             this.lblCyberware = new System.Windows.Forms.Label();
-            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.tlpRight = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpRight = new System.Windows.Forms.TableLayoutPanel();
             this.gpbCyberware = new System.Windows.Forms.GroupBox();
             this.pnlCyberware = new System.Windows.Forms.Panel();
             this.tlpMain.SuspendLayout();
@@ -304,9 +304,9 @@ namespace Chummer
         private System.Windows.Forms.Label lblCost;
         private System.Windows.Forms.Label lblCostLabel;
         private System.Windows.Forms.Label lblCyberware;
-        private Chummer.BufferedTableLayoutPanel tlpMain;
-        private BufferedTableLayoutPanel tlpButtons;
-        private BufferedTableLayoutPanel tlpRight;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
+        private System.Windows.Forms.TableLayoutPanel tlpButtons;
+        private System.Windows.Forms.TableLayoutPanel tlpRight;
         private System.Windows.Forms.GroupBox gpbCyberware;
         private System.Windows.Forms.Panel pnlCyberware;
     }

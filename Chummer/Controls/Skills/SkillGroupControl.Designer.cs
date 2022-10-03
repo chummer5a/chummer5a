@@ -30,7 +30,7 @@ namespace Chummer.UI.Skills
         {
             this.components = new System.ComponentModel.Container();
             this.lblName = new Chummer.LabelWithToolTip();
-            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.tlpMain.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -89,6 +89,6 @@ namespace Chummer.UI.Skills
         #endregion
 
         private LabelWithToolTip lblName;
-        private BufferedTableLayoutPanel tlpMain;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
     }
 }

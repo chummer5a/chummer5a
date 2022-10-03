@@ -45,9 +45,9 @@ namespace Chummer
             this.lblSourceLabel = new System.Windows.Forms.Label();
             this.nudRoommates = new Chummer.NumericUpDownEx();
             this.lblRoommates = new System.Windows.Forms.Label();
-            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.tlpRight = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpRight = new System.Windows.Forms.TableLayoutPanel();
             this.chkTrustFund = new Chummer.ColorableCheckBox(this.components);
             this.lblBorough = new System.Windows.Forms.Label();
             this.lblDistrict = new System.Windows.Forms.Label();
@@ -532,16 +532,16 @@ namespace Chummer
         private System.Windows.Forms.Label lblSourceLabel;
         private Chummer.NumericUpDownEx nudRoommates;
         private System.Windows.Forms.Label lblRoommates;
-        private Chummer.BufferedTableLayoutPanel tlpMain;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
         private Chummer.ColorableCheckBox chkPrimaryTenant;
-        private BufferedTableLayoutPanel tlpButtons;
+        private System.Windows.Forms.TableLayoutPanel tlpButtons;
         private System.Windows.Forms.Label lblCity;
         private System.Windows.Forms.Label lblDistrict;
         private System.Windows.Forms.Label lblBorough;
         private ElasticComboBox cboCity;
         private ElasticComboBox cboDistrict;
         private ElasticComboBox cboBorough;
-        private BufferedTableLayoutPanel tlpRight;
+        private System.Windows.Forms.TableLayoutPanel tlpRight;
         private ColorableCheckBox chkTrustFund;
     }
 }

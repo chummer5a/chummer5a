@@ -42,10 +42,10 @@ namespace Chummer
             this.nudPercent = new Chummer.NumericUpDownEx();
             this.lblPercent = new System.Windows.Forms.Label();
             this.chkKarmaNuyenExchange = new Chummer.ColorableCheckBox(this.components);
-            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.flpAmount = new System.Windows.Forms.FlowLayoutPanel();
             this.chkForceCareerVisible = new Chummer.ColorableCheckBox(this.components);
-            this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)(this.nudAmount)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudPercent)).BeginInit();
             this.tlpMain.SuspendLayout();
@@ -352,9 +352,9 @@ namespace Chummer
         private Chummer.NumericUpDownEx nudPercent;
         private System.Windows.Forms.Label lblPercent;
         private Chummer.ColorableCheckBox chkKarmaNuyenExchange;
-        private Chummer.BufferedTableLayoutPanel tlpMain;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
         private System.Windows.Forms.FlowLayoutPanel flpAmount;
         private Chummer.ColorableCheckBox chkForceCareerVisible;
-        private BufferedTableLayoutPanel tlpButtons;
+        private System.Windows.Forms.TableLayoutPanel tlpButtons;
     }
 }

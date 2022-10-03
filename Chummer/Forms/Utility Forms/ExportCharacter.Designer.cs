@@ -34,10 +34,10 @@ namespace Chummer
             this.cboXSLT = new Chummer.ElasticComboBox();
             this.cmdExportClose = new System.Windows.Forms.Button();
             this.dlgSaveFile = new System.Windows.Forms.SaveFileDialog();
-            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.cboLanguage = new Chummer.ElasticComboBox();
             this.imgSheetLanguageFlag = new System.Windows.Forms.PictureBox();
-            this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
             this.cmdExport = new System.Windows.Forms.Button();
             this.txtText = new System.Windows.Forms.TextBox();
             this.tlpMain.SuspendLayout();
@@ -219,8 +219,8 @@ namespace Chummer
         private ElasticComboBox cboXSLT;
         private System.Windows.Forms.Button cmdExportClose;
         internal System.Windows.Forms.SaveFileDialog dlgSaveFile;
-        private Chummer.BufferedTableLayoutPanel tlpMain;
-        private BufferedTableLayoutPanel tlpButtons;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
+        private System.Windows.Forms.TableLayoutPanel tlpButtons;
         private System.Windows.Forms.TextBox txtText;
         private System.Windows.Forms.PictureBox imgSheetLanguageFlag;
         private ElasticComboBox cboLanguage;

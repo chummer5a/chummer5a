@@ -36,7 +36,7 @@ namespace Chummer
             this.cmdRollDice = new System.Windows.Forms.Button();
             this.cboMethod = new Chummer.ElasticComboBox();
             this.cmdReroll = new System.Windows.Forms.Button();
-            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.lblResultsLabel = new System.Windows.Forms.Label();
             this.nudGremlins = new Chummer.NumericUpDownEx();
             this.lblGremlins = new System.Windows.Forms.Label();
@@ -45,7 +45,7 @@ namespace Chummer
             this.lblThreshold = new System.Windows.Forms.Label();
             this.chkCinematicGameplay = new Chummer.ColorableCheckBox(this.components);
             this.chkRushJob = new Chummer.ColorableCheckBox(this.components);
-            this.tlpTopBar = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpTopBar = new System.Windows.Forms.TableLayoutPanel();
             this.flpRollParameters = new System.Windows.Forms.FlowLayoutPanel();
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
             this.flpRollControls = new System.Windows.Forms.FlowLayoutPanel();
@@ -55,7 +55,7 @@ namespace Chummer
             this.lblResults = new System.Windows.Forms.Label();
             this.lstResults = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.bufferedTableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.bufferedTableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)(this.nudDice)).BeginInit();
             this.tlpMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudGremlins)).BeginInit();
@@ -502,7 +502,7 @@ namespace Chummer
         private System.Windows.Forms.Button cmdRollDice;
         private ElasticComboBox cboMethod;
         private System.Windows.Forms.Button cmdReroll;
-        private Chummer.BufferedTableLayoutPanel tlpMain;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
         private System.Windows.Forms.Label lblResults;
         private System.Windows.Forms.Label lblResultsLabel;
         private Chummer.NumericUpDownEx nudGremlins;
@@ -513,7 +513,7 @@ namespace Chummer
         private Chummer.ColorableCheckBox chkBubbleDie;
         private Chummer.ColorableCheckBox chkCinematicGameplay;
         private Chummer.ColorableCheckBox chkRushJob;
-        private Chummer.BufferedTableLayoutPanel tlpTopBar;
+        private System.Windows.Forms.TableLayoutPanel tlpTopBar;
         private System.Windows.Forms.FlowLayoutPanel flpRollParameters;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
         private System.Windows.Forms.FlowLayoutPanel flpRollControls;
@@ -521,6 +521,6 @@ namespace Chummer
         private System.Windows.Forms.Panel pnlResults;
         private System.Windows.Forms.ListView lstResults;
         private System.Windows.Forms.ColumnHeader columnHeader1;
-        private BufferedTableLayoutPanel bufferedTableLayoutPanel1;
+        private System.Windows.Forms.TableLayoutPanel bufferedTableLayoutPanel1;
     }
 }

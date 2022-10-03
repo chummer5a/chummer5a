@@ -64,12 +64,12 @@ namespace Chummer
             this.txtName = new System.Windows.Forms.TextBox();
             this.chkArea = new Chummer.ColorableCheckBox(this.components);
             this.chkLimited = new Chummer.ColorableCheckBox(this.components);
-            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.flpRestrictedTarget = new System.Windows.Forms.FlowLayoutPanel();
             this.flpDV = new System.Windows.Forms.FlowLayoutPanel();
             this.flpModifiers = new System.Windows.Forms.FlowLayoutPanel();
             this.flpModifier3 = new System.Windows.Forms.FlowLayoutPanel();
-            this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)(this.nudNumberOfEffects)).BeginInit();
             this.tlpMain.SuspendLayout();
             this.flpRestrictedTarget.SuspendLayout();
@@ -730,11 +730,11 @@ namespace Chummer
         private System.Windows.Forms.TextBox txtName;
         private Chummer.ColorableCheckBox chkArea;
         private Chummer.ColorableCheckBox chkLimited;
-        private Chummer.BufferedTableLayoutPanel tlpMain;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
         private System.Windows.Forms.FlowLayoutPanel flpRestrictedTarget;
         private System.Windows.Forms.FlowLayoutPanel flpDV;
         private System.Windows.Forms.FlowLayoutPanel flpModifiers;
         private System.Windows.Forms.FlowLayoutPanel flpModifier3;
-        private BufferedTableLayoutPanel tlpButtons;
+        private System.Windows.Forms.TableLayoutPanel tlpButtons;
     }
 }

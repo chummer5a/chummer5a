@@ -39,8 +39,8 @@ namespace Chummer
             this.txtCondition = new System.Windows.Forms.TextBox();
             this.cboLimit = new Chummer.ElasticComboBox();
             this.lblLimit = new System.Windows.Forms.Label();
-            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)(this.nudBonus)).BeginInit();
             this.tlpMain.SuspendLayout();
             this.tlpButtons.SuspendLayout();
@@ -259,7 +259,7 @@ namespace Chummer
         private System.Windows.Forms.TextBox txtCondition;
         private ElasticComboBox cboLimit;
         internal System.Windows.Forms.Label lblLimit;
-        private Chummer.BufferedTableLayoutPanel tlpMain;
-        private BufferedTableLayoutPanel tlpButtons;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
+        private System.Windows.Forms.TableLayoutPanel tlpButtons;
     }
 }

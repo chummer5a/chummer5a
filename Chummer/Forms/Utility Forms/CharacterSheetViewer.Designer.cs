@@ -38,13 +38,13 @@ namespace Chummer
             this.cmsPrintButton = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsPrintPreview = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
             this.dlgSaveFile = new System.Windows.Forms.SaveFileDialog();
-            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.webViewer = new System.Windows.Forms.WebBrowser();
             this.cboXSLT = new Chummer.ElasticComboBox();
             this.cboLanguage = new Chummer.ElasticComboBox();
             this.lblCharacterSheet = new System.Windows.Forms.Label();
             this.imgSheetLanguageFlag = new System.Windows.Forms.PictureBox();
-            this.bufferedTableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.bufferedTableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.cmdSaveAsPdf = new Chummer.SplitButton();
             this.cmdPrint = new Chummer.SplitButton();
             this.cmsSaveButton.SuspendLayout();
@@ -296,12 +296,12 @@ namespace Chummer
         private SplitButton cmdSaveAsPdf;
         private System.Windows.Forms.WebBrowser webViewer;
         private ElasticComboBox cboLanguage;
-        private Chummer.BufferedTableLayoutPanel tlpMain;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
         private System.Windows.Forms.PictureBox imgSheetLanguageFlag;
         private DpiFriendlyToolStripMenuItem tsSaveAsXml;
         internal DpiFriendlyToolStripMenuItem tsSaveAsHtml;
         private DpiFriendlyToolStripMenuItem tsPrintPreview;
-        private BufferedTableLayoutPanel bufferedTableLayoutPanel1;
+        private System.Windows.Forms.TableLayoutPanel bufferedTableLayoutPanel1;
     }
 
 }

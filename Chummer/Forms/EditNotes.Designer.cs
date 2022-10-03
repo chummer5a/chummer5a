@@ -29,10 +29,10 @@ namespace Chummer
 		private void InitializeComponent()
 		{
             this.components = new System.ComponentModel.Container();
-            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.txtNotes = new System.Windows.Forms.TextBox();
             this.btnColorSelect = new Chummer.DpiFriendlyImagedButton(this.components);
-            this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.dlgColor = new System.Windows.Forms.ColorDialog();
@@ -177,11 +177,11 @@ namespace Chummer
 
         #endregion
 
-        private BufferedTableLayoutPanel tlpMain;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
         private System.Windows.Forms.TextBox txtNotes;
         private DpiFriendlyImagedButton btnColorSelect;
         private System.Windows.Forms.ColorDialog dlgColor;
-        private BufferedTableLayoutPanel tlpButtons;
+        private System.Windows.Forms.TableLayoutPanel tlpButtons;
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.Button btnCancel;
     }

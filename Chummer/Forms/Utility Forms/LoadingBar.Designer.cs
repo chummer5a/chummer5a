@@ -31,7 +31,7 @@ namespace Chummer
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LoadingBar));
-            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.lblLoadingInfo = new System.Windows.Forms.Label();
             this.pgbLoadingProgress = new System.Windows.Forms.ProgressBar();
             this.tlpMain.SuspendLayout();
@@ -108,7 +108,7 @@ namespace Chummer
 
         #endregion
 
-        private Chummer.BufferedTableLayoutPanel tlpMain;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
         private System.Windows.Forms.Label lblLoadingInfo;
         private System.Windows.Forms.ProgressBar pgbLoadingProgress;
     }

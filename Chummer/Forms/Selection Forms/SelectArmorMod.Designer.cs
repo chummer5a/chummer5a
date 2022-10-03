@@ -55,15 +55,15 @@ namespace Chummer
             this.lblTestLabel = new System.Windows.Forms.Label();
             this.chkBlackMarketDiscount = new Chummer.ColorableCheckBox(this.components);
             this.chkHideOverAvailLimit = new Chummer.ColorableCheckBox(this.components);
-            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.chkShowOnlyAffordItems = new Chummer.ColorableCheckBox(this.components);
-            this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.tlpRight = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpRight = new System.Windows.Forms.TableLayoutPanel();
             this.flpCheckBoxes = new System.Windows.Forms.FlowLayoutPanel();
             this.flpRating = new System.Windows.Forms.FlowLayoutPanel();
             this.lblRatingNALabel = new System.Windows.Forms.Label();
             this.flpMarkup = new System.Windows.Forms.FlowLayoutPanel();
-            this.tlpTopRight = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpTopRight = new System.Windows.Forms.TableLayoutPanel();
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.lblSearchLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.nudRating)).BeginInit();
@@ -664,7 +664,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblTestLabel;
         private Chummer.ColorableCheckBox chkBlackMarketDiscount;
         private Chummer.ColorableCheckBox chkHideOverAvailLimit;
-        private Chummer.BufferedTableLayoutPanel tlpMain;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
         private Chummer.ColorableCheckBox chkShowOnlyAffordItems;
         private System.Windows.Forms.FlowLayoutPanel flpRating;
         private System.Windows.Forms.Label lblRatingNALabel;
@@ -672,8 +672,8 @@ namespace Chummer
         private System.Windows.Forms.Label lblSearchLabel;
         private System.Windows.Forms.FlowLayoutPanel flpCheckBoxes;
         private System.Windows.Forms.FlowLayoutPanel flpMarkup;
-        private BufferedTableLayoutPanel tlpButtons;
-        private BufferedTableLayoutPanel tlpRight;
-        private BufferedTableLayoutPanel tlpTopRight;
+        private System.Windows.Forms.TableLayoutPanel tlpButtons;
+        private System.Windows.Forms.TableLayoutPanel tlpRight;
+        private System.Windows.Forms.TableLayoutPanel tlpTopRight;
     }
 }

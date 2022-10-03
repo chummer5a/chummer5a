@@ -61,10 +61,10 @@ namespace Chummer
             this.chkBlackMarketDiscount = new Chummer.ColorableCheckBox(this.components);
             this.chkHideOverAvailLimit = new Chummer.ColorableCheckBox(this.components);
             this.chkShowOnlyAffordItems = new Chummer.ColorableCheckBox(this.components);
-            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.tlpLeft = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.tlpRight = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpLeft = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpRight = new System.Windows.Forms.TableLayoutPanel();
             this.flpCheckBoxes = new System.Windows.Forms.FlowLayoutPanel();
             this.flpQty = new System.Windows.Forms.FlowLayoutPanel();
             this.flpRating = new System.Windows.Forms.FlowLayoutPanel();
@@ -72,7 +72,7 @@ namespace Chummer
             this.lblCapacityLabel = new System.Windows.Forms.Label();
             this.flpMarkup = new System.Windows.Forms.FlowLayoutPanel();
             this.lblMarkupPercentLabel = new System.Windows.Forms.Label();
-            this.tlpTopRight = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpTopRight = new System.Windows.Forms.TableLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)(this.nudRating)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudGearQty)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudMarkup)).BeginInit();
@@ -840,7 +840,7 @@ namespace Chummer
         private Chummer.ColorableCheckBox chkBlackMarketDiscount;
         private Chummer.ColorableCheckBox chkHideOverAvailLimit;
         private Chummer.ColorableCheckBox chkShowOnlyAffordItems;
-        private Chummer.BufferedTableLayoutPanel tlpMain;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
         private System.Windows.Forms.Label lblCapacityLabel;
         private System.Windows.Forms.Label lblMarkupPercentLabel;
         private System.Windows.Forms.FlowLayoutPanel flpRating;
@@ -848,9 +848,9 @@ namespace Chummer
         private System.Windows.Forms.FlowLayoutPanel flpQty;
         private System.Windows.Forms.FlowLayoutPanel flpMarkup;
         private System.Windows.Forms.FlowLayoutPanel flpCheckBoxes;
-        private BufferedTableLayoutPanel tlpButtons;
-        private BufferedTableLayoutPanel tlpRight;
-        private BufferedTableLayoutPanel tlpLeft;
-        private BufferedTableLayoutPanel tlpTopRight;
+        private System.Windows.Forms.TableLayoutPanel tlpButtons;
+        private System.Windows.Forms.TableLayoutPanel tlpRight;
+        private System.Windows.Forms.TableLayoutPanel tlpLeft;
+        private System.Windows.Forms.TableLayoutPanel tlpTopRight;
     }
 }

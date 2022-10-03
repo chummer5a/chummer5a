@@ -37,9 +37,9 @@ namespace Chummer
             this.txtContactLocation = new System.Windows.Forms.TextBox();
             this.cmdExpand = new Chummer.DpiFriendlyImagedButton(this.components);
             this.lblQuickStats = new System.Windows.Forms.Label();
-            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.cmdDelete = new Chummer.DpiFriendlyImagedButton(this.components);
-            this.tlpComboBoxes = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpComboBoxes = new System.Windows.Forms.TableLayoutPanel();
             this.lblContactArchtypeLabel = new System.Windows.Forms.Label();
             this.lblContactLocationLabel = new System.Windows.Forms.Label();
             this.lblContactNameLabel = new System.Windows.Forms.Label();
@@ -342,8 +342,8 @@ namespace Chummer
         private System.Windows.Forms.TextBox txtContactLocation;
         private DpiFriendlyImagedButton cmdExpand;
         private System.Windows.Forms.Label lblQuickStats;
-        private BufferedTableLayoutPanel tlpMain;
-        private BufferedTableLayoutPanel tlpComboBoxes;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
+        private System.Windows.Forms.TableLayoutPanel tlpComboBoxes;
         private System.Windows.Forms.Label lblContactNameLabel;
         private System.Windows.Forms.Label lblContactLocationLabel;
         private System.Windows.Forms.Label lblContactArchtypeLabel;

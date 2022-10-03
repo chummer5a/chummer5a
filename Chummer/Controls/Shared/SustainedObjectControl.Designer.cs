@@ -29,7 +29,7 @@ namespace Chummer
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.bufferedTableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.bufferedTableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.lblSustainedSpell = new System.Windows.Forms.Label();
             this.lblNetHits = new System.Windows.Forms.Label();
             this.nudNetHits = new Chummer.NumericUpDownEx();
@@ -222,7 +222,7 @@ namespace Chummer
 
         #endregion
 
-        private BufferedTableLayoutPanel bufferedTableLayoutPanel1;
+        private System.Windows.Forms.TableLayoutPanel bufferedTableLayoutPanel1;
         private ColorableCheckBox chkSelfSustained;
         private NumericUpDownEx nudForce;
         private System.Windows.Forms.Button cmdDelete;

@@ -42,7 +42,7 @@ namespace Chummer
             this.tsCreateCharacter = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
             this.txtCritterName = new System.Windows.Forms.TextBox();
             this.chkFettered = new Chummer.ColorableCheckBox(this.components);
-            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.cmdNotes = new Chummer.ButtonWithToolTip(this.components);
             this.cmdLink = new Chummer.ButtonWithToolTip(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.nudServices)).BeginInit();
@@ -373,7 +373,7 @@ namespace Chummer
         private System.Windows.Forms.ContextMenuStrip cmsSpirit;
         private System.Windows.Forms.TextBox txtCritterName;
         private Chummer.ColorableCheckBox chkFettered;
-        private BufferedTableLayoutPanel tlpMain;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
         private DpiFriendlyToolStripMenuItem tsContactOpen;
         private DpiFriendlyToolStripMenuItem tsRemoveCharacter;
         private DpiFriendlyToolStripMenuItem tsAttachCharacter;

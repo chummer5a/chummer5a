@@ -36,19 +36,19 @@ namespace Chummer
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MasterIndex));
-            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.tlpRight = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpRight = new System.Windows.Forms.TableLayoutPanel();
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.lblSearch = new System.Windows.Forms.Label();
             this.lblSourceLabel = new System.Windows.Forms.Label();
             this.lblSource = new Chummer.LabelWithToolTip();
             this.lblSourceClickReminder = new System.Windows.Forms.Label();
             this.txtNotes = new System.Windows.Forms.TextBox();
-            this.tlpTopLeft = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpTopLeft = new System.Windows.Forms.TableLayoutPanel();
             this.lblFile = new System.Windows.Forms.Label();
             this.cboFile = new Chummer.ElasticComboBox();
             this.lstItems = new System.Windows.Forms.ListBox();
-            this.tlpGameplayOption = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpGameplayOption = new System.Windows.Forms.TableLayoutPanel();
             this.cmdEditCharacterSetting = new Chummer.ButtonWithToolTip(this.components);
             this.lblCharacterSetting = new System.Windows.Forms.Label();
             this.cboCharacterSetting = new Chummer.ElasticComboBox();
@@ -330,11 +330,11 @@ namespace Chummer
 
         #endregion
 
-        private BufferedTableLayoutPanel tlpMain;
-        private BufferedTableLayoutPanel tlpRight;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
+        private System.Windows.Forms.TableLayoutPanel tlpRight;
         private System.Windows.Forms.TextBox txtSearch;
         private System.Windows.Forms.Label lblSearch;
-        private BufferedTableLayoutPanel tlpTopLeft;
+        private System.Windows.Forms.TableLayoutPanel tlpTopLeft;
         private System.Windows.Forms.Label lblFile;
         private ElasticComboBox cboFile;
         private System.Windows.Forms.ListBox lstItems;
@@ -342,7 +342,7 @@ namespace Chummer
         private LabelWithToolTip lblSource;
         private System.Windows.Forms.Label lblSourceClickReminder;
         private System.Windows.Forms.TextBox txtNotes;
-        private BufferedTableLayoutPanel tlpGameplayOption;
+        private System.Windows.Forms.TableLayoutPanel tlpGameplayOption;
         private System.Windows.Forms.Label lblCharacterSetting;
         private ButtonWithToolTip cmdEditCharacterSetting;
         private ElasticComboBox cboCharacterSetting;

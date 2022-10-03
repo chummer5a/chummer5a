@@ -34,19 +34,19 @@ namespace Chummer
             this.lblCategory = new System.Windows.Forms.Label();
             this.cboCategory = new Chummer.ElasticComboBox();
             this.lstAIPrograms = new System.Windows.Forms.ListBox();
-            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.chkLimitList = new Chummer.ColorableCheckBox(this.components);
-            this.tlpLeft = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpLeft = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
             this.cmdCancel = new System.Windows.Forms.Button();
             this.cmdOKAdd = new System.Windows.Forms.Button();
             this.cmdOK = new System.Windows.Forms.Button();
-            this.tlpRight = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpRight = new System.Windows.Forms.TableLayoutPanel();
             this.lblSourceLabel = new System.Windows.Forms.Label();
             this.lblSource = new System.Windows.Forms.Label();
             this.lblRequiresProgram = new System.Windows.Forms.Label();
             this.lblRequiresProgramLabel = new System.Windows.Forms.Label();
-            this.tlpTopRight = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpTopRight = new System.Windows.Forms.TableLayoutPanel();
             this.lblSearchLabel = new System.Windows.Forms.Label();
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.tlpMain.SuspendLayout();
@@ -362,12 +362,12 @@ namespace Chummer
         private System.Windows.Forms.Label lblCategory;
         private ElasticComboBox cboCategory;
         private System.Windows.Forms.ListBox lstAIPrograms;
-        private Chummer.BufferedTableLayoutPanel tlpMain;
-        private BufferedTableLayoutPanel tlpButtons;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
+        private System.Windows.Forms.TableLayoutPanel tlpButtons;
         private System.Windows.Forms.Button cmdCancel;
         private System.Windows.Forms.Button cmdOKAdd;
         private System.Windows.Forms.Button cmdOK;
-        private BufferedTableLayoutPanel tlpRight;
+        private System.Windows.Forms.TableLayoutPanel tlpRight;
         private ColorableCheckBox chkLimitList;
         private System.Windows.Forms.Label lblSourceLabel;
         private System.Windows.Forms.Label lblSource;
@@ -375,7 +375,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblRequiresProgramLabel;
         private System.Windows.Forms.Label lblSearchLabel;
         private System.Windows.Forms.TextBox txtSearch;
-        private BufferedTableLayoutPanel tlpLeft;
-        private BufferedTableLayoutPanel tlpTopRight;
+        private System.Windows.Forms.TableLayoutPanel tlpLeft;
+        private System.Windows.Forms.TableLayoutPanel tlpTopRight;
     }
 }

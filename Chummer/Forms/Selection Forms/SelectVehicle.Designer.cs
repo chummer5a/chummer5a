@@ -39,12 +39,12 @@ namespace Chummer
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tabViews = new System.Windows.Forms.TabControl();
             this.tabListView = new System.Windows.Forms.TabPage();
-            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.chkHideOverAvailLimit = new Chummer.ColorableCheckBox(this.components);
             this.chkShowOnlyAffordItems = new Chummer.ColorableCheckBox(this.components);
-            this.tlpLeft = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpLeft = new System.Windows.Forms.TableLayoutPanel();
             this.lstVehicle = new System.Windows.Forms.ListBox();
-            this.tlpRight = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpRight = new System.Windows.Forms.TableLayoutPanel();
             this.lblSource = new System.Windows.Forms.Label();
             this.lblVehicleHandlingLabel = new System.Windows.Forms.Label();
             this.lblVehicleCost = new System.Windows.Forms.Label();
@@ -100,11 +100,11 @@ namespace Chummer
             this.Label_Avail = new Chummer.DataGridViewTextBoxColumnTranslated();
             this.Label_Source = new Chummer.DataGridViewTextBoxColumnTranslated();
             this.dgvc_Cost = new Chummer.DataGridViewTextBoxColumnTranslated();
-            this.tlpBase = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpBase = new System.Windows.Forms.TableLayoutPanel();
             this.lblSearchLabel = new System.Windows.Forms.Label();
             this.cboCategory = new Chummer.ElasticComboBox();
             this.txtSearch = new System.Windows.Forms.TextBox();
-            this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
             this.cmdCancel = new System.Windows.Forms.Button();
             this.cmdOKAdd = new System.Windows.Forms.Button();
             this.cmdOK = new System.Windows.Forms.Button();
@@ -1195,22 +1195,22 @@ namespace Chummer
         #endregion
 
         private System.Windows.Forms.TabControl tabViews;
-        private BufferedTableLayoutPanel tlpBase;
+        private System.Windows.Forms.TableLayoutPanel tlpBase;
         private System.Windows.Forms.Label lblSearchLabel;
         private ElasticComboBox cboCategory;
         private System.Windows.Forms.TextBox txtSearch;
         private System.Windows.Forms.Label lblCategory;
         private System.Windows.Forms.TabPage tabListView;
-        private BufferedTableLayoutPanel tlpMain;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
         private ColorableCheckBox chkHideOverAvailLimit;
         private ColorableCheckBox chkShowOnlyAffordItems;
-        private BufferedTableLayoutPanel tlpLeft;
+        private System.Windows.Forms.TableLayoutPanel tlpLeft;
         private System.Windows.Forms.ListBox lstVehicle;
-        private BufferedTableLayoutPanel tlpButtons;
+        private System.Windows.Forms.TableLayoutPanel tlpButtons;
         private System.Windows.Forms.Button cmdCancel;
         private System.Windows.Forms.Button cmdOKAdd;
         private System.Windows.Forms.Button cmdOK;
-        private BufferedTableLayoutPanel tlpRight;
+        private System.Windows.Forms.TableLayoutPanel tlpRight;
         private System.Windows.Forms.Label lblSource;
         private System.Windows.Forms.Label lblVehicleHandlingLabel;
         private System.Windows.Forms.Label lblVehicleCost;

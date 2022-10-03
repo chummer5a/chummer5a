@@ -38,10 +38,10 @@ namespace Chummer
             this.label1 = new System.Windows.Forms.Label();
             this.treContents = new System.Windows.Forms.TreeView();
             this.cmdDelete = new System.Windows.Forms.Button();
-            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.tlpLeft = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.tlpRight = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpLeft = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpRight = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
             this.tlpMain.SuspendLayout();
             this.tlpLeft.SuspendLayout();
             this.tlpRight.SuspendLayout();
@@ -283,9 +283,9 @@ namespace Chummer
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TreeView treContents;
         private System.Windows.Forms.Button cmdDelete;
-        private Chummer.BufferedTableLayoutPanel tlpMain;
-        private Chummer.BufferedTableLayoutPanel tlpLeft;
-        private Chummer.BufferedTableLayoutPanel tlpRight;
-        private BufferedTableLayoutPanel tlpButtons;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
+        private System.Windows.Forms.TableLayoutPanel tlpLeft;
+        private System.Windows.Forms.TableLayoutPanel tlpRight;
+        private System.Windows.Forms.TableLayoutPanel tlpButtons;
     }
 }

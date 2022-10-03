@@ -29,12 +29,12 @@ namespace Chummer
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.btnNext = new System.Windows.Forms.Button();
             this.btnSort = new System.Windows.Forms.Button();
             this.btnDelay = new System.Windows.Forms.Button();
             this.chkBoxChummer = new System.Windows.Forms.CheckedListBox();
-            this.tlpLeft = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpLeft = new System.Windows.Forms.TableLayoutPanel();
             this.lblRound = new System.Windows.Forms.Label();
             this.btnReset = new System.Windows.Forms.Button();
             this.btnAdd = new System.Windows.Forms.Button();
@@ -54,7 +54,7 @@ namespace Chummer
             this.btnAdd10Init = new System.Windows.Forms.Button();
             this.cboManeuvers = new Chummer.ElasticComboBox();
             this.btnApplyInterrupt = new System.Windows.Forms.Button();
-            this.tlpRight = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpRight = new System.Windows.Forms.TableLayoutPanel();
             this.tlpMain.SuspendLayout();
             this.tlpLeft.SuspendLayout();
             this.tlpRight.SuspendLayout();
@@ -467,13 +467,13 @@ namespace Chummer
 
         #endregion
 
-        private Chummer.BufferedTableLayoutPanel tlpMain;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
         private System.Windows.Forms.Button btnNext;
         private System.Windows.Forms.Button btnSort;
         private System.Windows.Forms.Button btnDelay;
         private System.Windows.Forms.CheckedListBox chkBoxChummer;
-        private BufferedTableLayoutPanel tlpLeft;
-        private BufferedTableLayoutPanel tlpRight;
+        private System.Windows.Forms.TableLayoutPanel tlpLeft;
+        private System.Windows.Forms.TableLayoutPanel tlpRight;
         private System.Windows.Forms.Button btnApplyInterrupt;
         private ElasticComboBox cboManeuvers;
         private System.Windows.Forms.Button btnAdd10Init;

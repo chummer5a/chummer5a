@@ -34,7 +34,7 @@ namespace Chummer.UI.Powers
             this.lblPowerPoints = new System.Windows.Forms.Label();
             this.lblPowerPointsLabel = new System.Windows.Forms.Label();
             this._tipTooltip = new System.Windows.Forms.ToolTip(this.components);
-            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.pnlPowers = new System.Windows.Forms.Panel();
             this.tlpMain.SuspendLayout();
             this.SuspendLayout();
@@ -159,7 +159,7 @@ namespace Chummer.UI.Powers
         private System.Windows.Forms.Label lblPowerPoints;
         private System.Windows.Forms.Label lblPowerPointsLabel;
         private System.Windows.Forms.ToolTip _tipTooltip;
-        private BufferedTableLayoutPanel tlpMain;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
         private System.Windows.Forms.Panel pnlPowers;
     }
 }

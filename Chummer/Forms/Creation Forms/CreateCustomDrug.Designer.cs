@@ -47,9 +47,9 @@ namespace Chummer
             this.txtDrugName = new System.Windows.Forms.TextBox();
             this.lblGrade = new System.Windows.Forms.Label();
             this.cboGrade = new Chummer.ElasticComboBox();
-            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.tlpMiddle = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.bufferedTableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpMiddle = new System.Windows.Forms.TableLayoutPanel();
+            this.bufferedTableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.tlpMain.SuspendLayout();
             this.tlpMiddle.SuspendLayout();
             this.bufferedTableLayoutPanel1.SuspendLayout();
@@ -331,8 +331,8 @@ namespace Chummer
         private System.Windows.Forms.TextBox txtDrugName;
 		private System.Windows.Forms.Label lblGrade;
 		private ElasticComboBox cboGrade;
-        private Chummer.BufferedTableLayoutPanel tlpMain;
-        private Chummer.BufferedTableLayoutPanel tlpMiddle;
-        private BufferedTableLayoutPanel bufferedTableLayoutPanel1;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
+        private System.Windows.Forms.TableLayoutPanel tlpMiddle;
+        private System.Windows.Forms.TableLayoutPanel bufferedTableLayoutPanel1;
     }
 }

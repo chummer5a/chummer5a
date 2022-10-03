@@ -42,17 +42,17 @@ namespace Chummer
             this.cboChoice1 = new Chummer.ElasticComboBox();
             this.cboChoice2 = new Chummer.ElasticComboBox();
             this.cmdCancel = new System.Windows.Forms.Button();
-            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.tlpRight = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpRight = new System.Windows.Forms.TableLayoutPanel();
             this.lblBonusText1 = new System.Windows.Forms.Label();
             this.lblBonusText2 = new System.Windows.Forms.Label();
             this.lblBonus2 = new System.Windows.Forms.Label();
             this.lblBonus1 = new System.Windows.Forms.Label();
-            this.tlpTopRight = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpTopRight = new System.Windows.Forms.TableLayoutPanel();
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.lblSearchLabel = new System.Windows.Forms.Label();
-            this.tlpBottomRight = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpBottomRight = new System.Windows.Forms.TableLayoutPanel();
             this.tlpMain.SuspendLayout();
             this.tlpButtons.SuspendLayout();
             this.tlpRight.SuspendLayout();
@@ -439,16 +439,16 @@ namespace Chummer
         private ElasticComboBox cboChoice1;
         private ElasticComboBox cboChoice2;
         private System.Windows.Forms.Button cmdCancel;
-        private Chummer.BufferedTableLayoutPanel tlpMain;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
         private System.Windows.Forms.Label lblSearchLabel;
         private System.Windows.Forms.TextBox txtSearch;
-        private BufferedTableLayoutPanel tlpButtons;
+        private System.Windows.Forms.TableLayoutPanel tlpButtons;
         private System.Windows.Forms.Label lblBonus1;
         private System.Windows.Forms.Label lblBonusText1;
         private System.Windows.Forms.Label lblBonusText2;
         private System.Windows.Forms.Label lblBonus2;
-        private BufferedTableLayoutPanel tlpRight;
-        private BufferedTableLayoutPanel tlpTopRight;
-        private BufferedTableLayoutPanel tlpBottomRight;
+        private System.Windows.Forms.TableLayoutPanel tlpRight;
+        private System.Windows.Forms.TableLayoutPanel tlpTopRight;
+        private System.Windows.Forms.TableLayoutPanel tlpBottomRight;
     }
 }

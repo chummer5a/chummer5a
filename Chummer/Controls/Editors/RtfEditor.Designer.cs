@@ -51,7 +51,7 @@ namespace Chummer.UI.Editors
             this.tsbUnorderedList = new Chummer.DpiFriendlyToolStripButton(this.components);
             this.tsbIncreaseIndent = new Chummer.DpiFriendlyToolStripButton(this.components);
             this.tsbDecreaseIndent = new Chummer.DpiFriendlyToolStripButton(this.components);
-            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.rtbContent = new System.Windows.Forms.RichTextBox();
             this.tsControls.SuspendLayout();
             this.tlpMain.SuspendLayout();
@@ -433,7 +433,7 @@ namespace Chummer.UI.Editors
         private System.Windows.Forms.ToolStrip tsControls;
         private Chummer.ColorableToolStripSeparator tss3;
         private Chummer.ColorableToolStripSeparator tss4;
-        private Chummer.BufferedTableLayoutPanel tlpMain;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
         private Chummer.ColorableToolStripSeparator tss1;
         private System.Windows.Forms.RichTextBox rtbContent;
         private Chummer.ColorableToolStripSeparator tss2;

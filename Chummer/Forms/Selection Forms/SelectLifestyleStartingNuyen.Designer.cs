@@ -30,7 +30,7 @@ namespace Chummer
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SelectLifestyleStartingNuyen));
-            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.lblResult = new System.Windows.Forms.Label();
             this.lblDice = new System.Windows.Forms.Label();
             this.lblSelectLifestyle = new System.Windows.Forms.Label();
@@ -38,7 +38,7 @@ namespace Chummer
             this.nudDiceResult = new Chummer.NumericUpDownEx();
             this.cboSelectLifestyle = new Chummer.ElasticComboBox();
             this.lblDescription = new System.Windows.Forms.Label();
-            this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
             this.cmdCancel = new System.Windows.Forms.Button();
             this.cmdOK = new System.Windows.Forms.Button();
             this.tlpMain.SuspendLayout();
@@ -252,11 +252,11 @@ namespace Chummer
         private System.Windows.Forms.Label lblDice;
         private System.Windows.Forms.Label lblResult;
         private Chummer.NumericUpDownEx nudDiceResult;
-        private Chummer.BufferedTableLayoutPanel tlpMain;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
         private ElasticComboBox cboSelectLifestyle;
         private System.Windows.Forms.Label lblSelectLifestyle;
         private System.Windows.Forms.Button cmdRoll;
-        private BufferedTableLayoutPanel tlpButtons;
+        private System.Windows.Forms.TableLayoutPanel tlpButtons;
         private System.Windows.Forms.Button cmdCancel;
         private System.Windows.Forms.Button cmdOK;
     }

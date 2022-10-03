@@ -431,7 +431,7 @@ namespace Chummer
 
         public override Size GetPreferredSize(Size proposedSize)
         {
-            if (Disposing || IsDisposed)
+            if (!IsHandleCreated || Disposing || IsDisposed || Parent?.Disposing == true || Parent?.IsDisposed == true)
                 return default;
             Size preferredSize = base.GetPreferredSize(proposedSize);
 

@@ -31,17 +31,17 @@ namespace Chummer
             this.components = new System.ComponentModel.Container();
             this.cmdOK = new System.Windows.Forms.Button();
             this.cmdCancel = new System.Windows.Forms.Button();
-            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.chkHideOverAvailLimit = new Chummer.ColorableCheckBox(this.components);
             this.chkHideBannedGrades = new Chummer.ColorableCheckBox(this.components);
             this.chkShowOnlyAffordItems = new Chummer.ColorableCheckBox(this.components);
-            this.tlpLeft = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpLeft = new System.Windows.Forms.TableLayoutPanel();
             this.cboGrade = new Chummer.ElasticComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.lstDrug = new System.Windows.Forms.ListBox();
-            this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
             this.cmdOKAdd = new System.Windows.Forms.Button();
-            this.tlpRight = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpRight = new System.Windows.Forms.TableLayoutPanel();
             this.lblCyberwareNotes = new System.Windows.Forms.Label();
             this.lblAvailLabel = new System.Windows.Forms.Label();
             this.lblCyberwareNotesLabel = new System.Windows.Forms.Label();
@@ -63,7 +63,7 @@ namespace Chummer
             this.flpRating = new System.Windows.Forms.FlowLayoutPanel();
             this.nudRating = new Chummer.NumericUpDownEx();
             this.lblRatingNALabel = new System.Windows.Forms.Label();
-            this.tlpTopRight = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpTopRight = new System.Windows.Forms.TableLayoutPanel();
             this.lblSearchLabel = new System.Windows.Forms.Label();
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.tlpMain.SuspendLayout();
@@ -701,7 +701,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblMarkupPercentLabel;
         private Chummer.ColorableCheckBox chkHideOverAvailLimit;
         private Chummer.ColorableCheckBox chkHideBannedGrades;
-        private Chummer.BufferedTableLayoutPanel tlpMain;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
         private Chummer.ColorableCheckBox chkShowOnlyAffordItems;
         private System.Windows.Forms.Label lblRatingNALabel;
         private System.Windows.Forms.Button cmdOK;
@@ -709,10 +709,10 @@ namespace Chummer
         private System.Windows.Forms.Button cmdCancel;
         private System.Windows.Forms.FlowLayoutPanel flpMarkup;
         private System.Windows.Forms.FlowLayoutPanel flpCheckBoxes;
-        private BufferedTableLayoutPanel tlpButtons;
-        private BufferedTableLayoutPanel tlpLeft;
-        private BufferedTableLayoutPanel tlpRight;
+        private System.Windows.Forms.TableLayoutPanel tlpButtons;
+        private System.Windows.Forms.TableLayoutPanel tlpLeft;
+        private System.Windows.Forms.TableLayoutPanel tlpRight;
         private System.Windows.Forms.FlowLayoutPanel flpRating;
-        private BufferedTableLayoutPanel tlpTopRight;
+        private System.Windows.Forms.TableLayoutPanel tlpTopRight;
     }
 }

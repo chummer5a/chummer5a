@@ -60,9 +60,9 @@ namespace Chummer
             this.lblFilePathLabel = new System.Windows.Forms.Label();
             this.lblSettings = new System.Windows.Forms.Label();
             this.lblSettingsLabel = new System.Windows.Forms.Label();
-            this.tlpRight = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpRight = new System.Windows.Forms.TableLayoutPanel();
             this.picMugshot = new System.Windows.Forms.PictureBox();
-            this.tlpCharacterRoster = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpCharacterRoster = new System.Windows.Forms.TableLayoutPanel();
             this.treCharacterList = new System.Windows.Forms.TreeView();
             this.tabCharacterText.SuspendLayout();
             this.panCharacterBio.SuspendLayout();
@@ -551,7 +551,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblFilePathLabel;
         private System.Windows.Forms.TabPage panGameNotes;
       
-        private Chummer.BufferedTableLayoutPanel tlpRight;
+        private System.Windows.Forms.TableLayoutPanel tlpRight;
         private System.Windows.Forms.Label lblSettings;
         private System.Windows.Forms.Label lblSettingsLabel;
         private System.Windows.Forms.PictureBox picMugshot;
@@ -560,7 +560,7 @@ namespace Chummer
         private System.Windows.Forms.TextBox txtCharacterBackground;
         private System.Windows.Forms.TextBox txtCharacterNotes;
         private System.Windows.Forms.TextBox txtGameNotes;
-        private BufferedTableLayoutPanel tlpCharacterRoster;
+        private System.Windows.Forms.TableLayoutPanel tlpCharacterRoster;
         public System.Windows.Forms.TreeView treCharacterList;
     }
 }

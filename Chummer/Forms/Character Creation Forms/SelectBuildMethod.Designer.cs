@@ -35,10 +35,10 @@ namespace Chummer
             this.lblKarmaLabel = new System.Windows.Forms.Label();
             this.lblDescription = new System.Windows.Forms.Label();
             this.lblMaxNuyenLabel = new System.Windows.Forms.Label();
-            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.cmdEditCharacterSetting = new Chummer.ButtonWithToolTip(this.components);
             this.lblCharacterSetting = new System.Windows.Forms.Label();
-            this.tlpSummary = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpSummary = new System.Windows.Forms.TableLayoutPanel();
             this.lblBuildMethodLabel = new System.Windows.Forms.Label();
             this.lblBuildMethod = new System.Windows.Forms.Label();
             this.lblBuildMethodParamLabel = new System.Windows.Forms.Label();
@@ -54,7 +54,7 @@ namespace Chummer
             this.gpbCustomData = new System.Windows.Forms.GroupBox();
             this.pnlCustomData = new System.Windows.Forms.Panel();
             this.lblCustomData = new System.Windows.Forms.Label();
-            this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
             this.cmdCancel = new System.Windows.Forms.Button();
             this.cmdOK = new System.Windows.Forms.Button();
             this.cboBuildMethod = new Chummer.ElasticComboBox();
@@ -563,14 +563,14 @@ namespace Chummer
         private System.Windows.Forms.Label lblKarmaLabel;
         private System.Windows.Forms.Label lblDescription;
         private System.Windows.Forms.Label lblMaxNuyenLabel;
-        private Chummer.BufferedTableLayoutPanel tlpMain;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
         private System.Windows.Forms.Label lblBuildMethodParamLabel;
         private ButtonWithToolTip cmdEditCharacterSetting;
         private System.Windows.Forms.Label lblCharacterSetting;
         private System.Windows.Forms.Button cmdOK;
         private System.Windows.Forms.Button cmdCancel;
         private ElasticComboBox cboBuildMethod;
-        private BufferedTableLayoutPanel tlpSummary;
+        private System.Windows.Forms.TableLayoutPanel tlpSummary;
         private System.Windows.Forms.Label lblBuildMethodLabel;
         private System.Windows.Forms.Label lblBuildMethod;
         private System.Windows.Forms.Label lblBuildMethodParam;
@@ -584,7 +584,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblQualityKarma;
         private System.Windows.Forms.Label lblBooks;
         private System.Windows.Forms.Label lblCustomData;
-        private BufferedTableLayoutPanel tlpButtons;
+        private System.Windows.Forms.TableLayoutPanel tlpButtons;
         private System.Windows.Forms.Panel pnlBooks;
         private System.Windows.Forms.Panel pnlCustomData;
         private System.Windows.Forms.GroupBox gpbBooks;

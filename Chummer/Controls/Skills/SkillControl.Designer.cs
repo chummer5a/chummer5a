@@ -35,12 +35,12 @@ namespace Chummer.UI.Skills
             this.components = new System.ComponentModel.Container();
             this.cmsSkillLabel = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsSkillLabelNotes = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.lblName = new Chummer.LabelWithToolTip();
             this.pnlAttributes = new System.Windows.Forms.Panel();
             this.btnAttribute = new System.Windows.Forms.Button();
             this.lblModifiedRating = new Chummer.LabelWithToolTip();
-            this.tlpRight = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpRight = new System.Windows.Forms.TableLayoutPanel();
             this.cmsSkillLabel.SuspendLayout();
             this.tlpMain.SuspendLayout();
             this.pnlAttributes.SuspendLayout();
@@ -195,10 +195,10 @@ namespace Chummer.UI.Skills
         private LabelWithToolTip lblName;
         private System.Windows.Forms.Button btnAttribute;
         private ContextMenuStrip cmsSkillLabel;
-        private BufferedTableLayoutPanel tlpMain;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
         private Panel pnlAttributes;
         private LabelWithToolTip lblModifiedRating;
-        private BufferedTableLayoutPanel tlpRight;
+        private System.Windows.Forms.TableLayoutPanel tlpRight;
         private DpiFriendlyToolStripMenuItem tsSkillLabelNotes;
     }
 }

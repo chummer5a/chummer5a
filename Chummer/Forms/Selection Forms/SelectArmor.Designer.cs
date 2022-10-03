@@ -57,11 +57,11 @@ namespace Chummer
             this.Cost = new Chummer.DataGridViewTextBoxColumnTranslated();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabListDetail = new System.Windows.Forms.TabPage();
-            this.tlpListDetail = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpListDetail = new System.Windows.Forms.TableLayoutPanel();
             this.lstArmor = new System.Windows.Forms.ListBox();
             this.chkHideOverAvailLimit = new Chummer.ColorableCheckBox(this.components);
             this.chkShowOnlyAffordItems = new Chummer.ColorableCheckBox(this.components);
-            this.bufferedTableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.bufferedTableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.lblCapacityLabel = new System.Windows.Forms.Label();
             this.lblSource = new System.Windows.Forms.Label();
             this.lblCapacity = new System.Windows.Forms.Label();
@@ -94,8 +94,8 @@ namespace Chummer
             this.dataGridViewTextBoxColumnTranslated5 = new Chummer.DataGridViewTextBoxColumnTranslated();
             this.dataGridViewTextBoxColumnTranslated6 = new Chummer.DataGridViewTextBoxColumnTranslated();
             this.dataGridViewTextBoxColumnTranslated7 = new Chummer.DataGridViewTextBoxColumnTranslated();
-            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)(this.dgvArmor)).BeginInit();
             this.tabControl.SuspendLayout();
             this.tabListDetail.SuspendLayout();
@@ -1024,13 +1024,13 @@ namespace Chummer
         private DataGridViewTextBoxColumnTranslated dataGridViewTextBoxColumnTranslated5;
         private DataGridViewTextBoxColumnTranslated dataGridViewTextBoxColumnTranslated6;
         private DataGridViewTextBoxColumnTranslated dataGridViewTextBoxColumnTranslated7;
-        private BufferedTableLayoutPanel tlpListDetail;
-        private BufferedTableLayoutPanel tlpMain;
+        private System.Windows.Forms.TableLayoutPanel tlpListDetail;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
         private FlowLayoutPanel flpCheckBoxes;
         private FlowLayoutPanel flpMarkup;
-        private BufferedTableLayoutPanel tlpButtons;
+        private System.Windows.Forms.TableLayoutPanel tlpButtons;
         private ColorableCheckBox chkHideOverAvailLimit;
         private ColorableCheckBox chkShowOnlyAffordItems;
-        private BufferedTableLayoutPanel bufferedTableLayoutPanel1;
+        private System.Windows.Forms.TableLayoutPanel bufferedTableLayoutPanel1;
     }
 }
