@@ -305,7 +305,7 @@ namespace Chummer
                             {
                                 foreach (XmlNode objXmlPowerNode in xmlPowersNode.ChildNodes)
                                 {
-                                    await PrintPowerInfo(objWriter, xmlSpiritPowersBaseChummerNode, xmlCritterPowersBaseChummerNode, objXmlPowerNode, strLanguageToPrint).ConfigureAwait(false);
+                                    await PrintPowerInfo(objWriter, xmlSpiritPowersBaseChummerNode, xmlCritterPowersBaseChummerNode, objXmlPowerNode, strLanguageToPrint, token).ConfigureAwait(false);
                                 }
                             }
                             finally
@@ -324,7 +324,7 @@ namespace Chummer
                             {
                                 foreach (XmlNode objXmlPowerNode in xmlPowersNode.ChildNodes)
                                 {
-                                    await PrintPowerInfo(objWriter, xmlSpiritPowersBaseChummerNode, xmlCritterPowersBaseChummerNode, objXmlPowerNode, strLanguageToPrint).ConfigureAwait(false);
+                                    await PrintPowerInfo(objWriter, xmlSpiritPowersBaseChummerNode, xmlCritterPowersBaseChummerNode, objXmlPowerNode, strLanguageToPrint, token).ConfigureAwait(false);
                                 }
                             }
                             finally
@@ -391,7 +391,7 @@ namespace Chummer
                             {
                                 foreach (XmlNode objXmlPowerNode in xmlPowersNode.ChildNodes)
                                 {
-                                    await PrintPowerInfo(objWriter, xmlSpiritPowersBaseChummerNode, xmlCritterPowersBaseChummerNode, objXmlPowerNode, strLanguageToPrint).ConfigureAwait(false);
+                                    await PrintPowerInfo(objWriter, xmlSpiritPowersBaseChummerNode, xmlCritterPowersBaseChummerNode, objXmlPowerNode, strLanguageToPrint, token).ConfigureAwait(false);
                                 }
                             }
                             finally
@@ -425,14 +425,14 @@ namespace Chummer
             }
         }
 
-        private async ValueTask PrintPowerInfo(XmlWriter objWriter, XPathNavigator xmlSpiritPowersBaseChummerNode, XPathNavigator xmlCritterPowersBaseChummerNode, XmlNode xmlPowerEntryNode, string strLanguageToPrint = "")
+        private async ValueTask PrintPowerInfo(XmlWriter objWriter, XPathNavigator xmlSpiritPowersBaseChummerNode, XPathNavigator xmlCritterPowersBaseChummerNode, XmlNode xmlPowerEntryNode, string strLanguageToPrint = "", CancellationToken token = default)
         {
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdExtra))
             {
                 string strSelect = xmlPowerEntryNode.SelectSingleNode("@select")?.Value;
                 if (!string.IsNullOrEmpty(strSelect))
-                    sbdExtra.Append(await CharacterObject.TranslateExtraAsync(strSelect, strLanguageToPrint).ConfigureAwait(false));
+                    sbdExtra.Append(await CharacterObject.TranslateExtraAsync(strSelect, strLanguageToPrint, token: token).ConfigureAwait(false));
                 string strSource = string.Empty;
                 string strPage = string.Empty;
                 string strPowerName = xmlPowerEntryNode.InnerText;
@@ -459,7 +459,7 @@ namespace Chummer
                         objXmlPowerNode.TryGetStringFieldQuickly("page", ref strPage);
 
                     objXmlPowerNode.TryGetStringFieldQuickly("name", ref strEnglishName);
-                    string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguageToPrint).ConfigureAwait(false);
+                    string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguageToPrint, token: token).ConfigureAwait(false);
                     bool blnExtrasAdded = false;
                     foreach (string strLoopExtra in strPowerName.TrimStartOnce(strEnglishName).Trim().TrimStartOnce('(')
                                                                 .TrimEndOnce(')')
@@ -467,7 +467,7 @@ namespace Chummer
                                                                     ',', StringSplitOptions.RemoveEmptyEntries))
                     {
                         blnExtrasAdded = true;
-                        sbdExtra.Append(await CharacterObject.TranslateExtraAsync(strLoopExtra, strLanguageToPrint).ConfigureAwait(false)).Append(',')
+                        sbdExtra.Append(await CharacterObject.TranslateExtraAsync(strLoopExtra, strLanguageToPrint, token: token).ConfigureAwait(false)).Append(',')
                                 .Append(strSpace);
                     }
 
@@ -484,61 +484,61 @@ namespace Chummer
                                                                                + "]/@translate")?.Value
                                   ?? strEnglishCategory;
 
-                    switch ((await objXmlPowerNode.SelectSingleNodeAndCacheExpressionAsync("type").ConfigureAwait(false))?.Value)
+                    switch ((await objXmlPowerNode.SelectSingleNodeAndCacheExpressionAsync("type", token: token).ConfigureAwait(false))?.Value)
                     {
                         case "M":
-                            strDisplayType = await LanguageManager.GetStringAsync("String_SpellTypeMana", strLanguageToPrint).ConfigureAwait(false);
+                            strDisplayType = await LanguageManager.GetStringAsync("String_SpellTypeMana", strLanguageToPrint, token: token).ConfigureAwait(false);
                             break;
 
                         case "P":
-                            strDisplayType = await LanguageManager.GetStringAsync("String_SpellTypePhysical", strLanguageToPrint).ConfigureAwait(false);
+                            strDisplayType = await LanguageManager.GetStringAsync("String_SpellTypePhysical", strLanguageToPrint, token: token).ConfigureAwait(false);
                             break;
                     }
 
-                    switch ((await objXmlPowerNode.SelectSingleNodeAndCacheExpressionAsync("action").ConfigureAwait(false))?.Value)
+                    switch ((await objXmlPowerNode.SelectSingleNodeAndCacheExpressionAsync("action", token: token).ConfigureAwait(false))?.Value)
                     {
                         case "Auto":
-                            strDisplayAction = await LanguageManager.GetStringAsync("String_ActionAutomatic", strLanguageToPrint).ConfigureAwait(false);
+                            strDisplayAction = await LanguageManager.GetStringAsync("String_ActionAutomatic", strLanguageToPrint, token: token).ConfigureAwait(false);
                             break;
 
                         case "Free":
-                            strDisplayAction = await LanguageManager.GetStringAsync("String_ActionFree", strLanguageToPrint).ConfigureAwait(false);
+                            strDisplayAction = await LanguageManager.GetStringAsync("String_ActionFree", strLanguageToPrint, token: token).ConfigureAwait(false);
                             break;
 
                         case "Simple":
-                            strDisplayAction = await LanguageManager.GetStringAsync("String_ActionSimple", strLanguageToPrint).ConfigureAwait(false);
+                            strDisplayAction = await LanguageManager.GetStringAsync("String_ActionSimple", strLanguageToPrint, token: token).ConfigureAwait(false);
                             break;
 
                         case "Complex":
-                            strDisplayAction = await LanguageManager.GetStringAsync("String_ActionComplex", strLanguageToPrint).ConfigureAwait(false);
+                            strDisplayAction = await LanguageManager.GetStringAsync("String_ActionComplex", strLanguageToPrint, token: token).ConfigureAwait(false);
                             break;
 
                         case "Special":
                             strDisplayAction
-                                = await LanguageManager.GetStringAsync("String_SpellDurationSpecial", strLanguageToPrint).ConfigureAwait(false);
+                                = await LanguageManager.GetStringAsync("String_SpellDurationSpecial", strLanguageToPrint, token: token).ConfigureAwait(false);
                             break;
                     }
 
-                    switch ((await objXmlPowerNode.SelectSingleNodeAndCacheExpressionAsync("duration").ConfigureAwait(false))?.Value)
+                    switch ((await objXmlPowerNode.SelectSingleNodeAndCacheExpressionAsync("duration", token: token).ConfigureAwait(false))?.Value)
                     {
                         case "Instant":
                             strDisplayDuration
-                                = await LanguageManager.GetStringAsync("String_SpellDurationInstantLong", strLanguageToPrint).ConfigureAwait(false);
+                                = await LanguageManager.GetStringAsync("String_SpellDurationInstantLong", strLanguageToPrint, token: token).ConfigureAwait(false);
                             break;
 
                         case "Sustained":
                             strDisplayDuration
-                                = await LanguageManager.GetStringAsync("String_SpellDurationSustained", strLanguageToPrint).ConfigureAwait(false);
+                                = await LanguageManager.GetStringAsync("String_SpellDurationSustained", strLanguageToPrint, token: token).ConfigureAwait(false);
                             break;
 
                         case "Always":
                             strDisplayDuration
-                                = await LanguageManager.GetStringAsync("String_SpellDurationAlways", strLanguageToPrint).ConfigureAwait(false);
+                                = await LanguageManager.GetStringAsync("String_SpellDurationAlways", strLanguageToPrint, token: token).ConfigureAwait(false);
                             break;
 
                         case "Special":
                             strDisplayDuration
-                                = await LanguageManager.GetStringAsync("String_SpellDurationSpecial", strLanguageToPrint).ConfigureAwait(false);
+                                = await LanguageManager.GetStringAsync("String_SpellDurationSpecial", strLanguageToPrint, token: token).ConfigureAwait(false);
                             break;
                     }
 
@@ -550,60 +550,60 @@ namespace Chummer
                                                 .CheapReplaceAsync(
                                                     "Self",
                                                     () => LanguageManager.GetStringAsync(
-                                                        "String_SpellRangeSelf", strLanguageToPrint))
+                                                        "String_SpellRangeSelf", strLanguageToPrint, token: token), token: token)
                                                 .CheapReplaceAsync(
                                                     "Special",
                                                     () => LanguageManager.GetStringAsync(
-                                                        "String_SpellDurationSpecial", strLanguageToPrint))
+                                                        "String_SpellDurationSpecial", strLanguageToPrint, token: token), token: token)
                                                 .CheapReplaceAsync(
                                                     "LOS",
                                                     () => LanguageManager.GetStringAsync(
-                                                        "String_SpellRangeLineOfSight", strLanguageToPrint))
+                                                        "String_SpellRangeLineOfSight", strLanguageToPrint, token: token), token: token)
                                                 .CheapReplaceAsync(
                                                     "LOI",
                                                     () => LanguageManager.GetStringAsync(
-                                                        "String_SpellRangeLineOfInfluence", strLanguageToPrint))
+                                                        "String_SpellRangeLineOfInfluence", strLanguageToPrint, token: token), token: token)
                                                 .CheapReplaceAsync(
                                                     "Touch",
                                                     () => LanguageManager.GetStringAsync(
                                                         "String_SpellRangeTouch",
-                                                        strLanguageToPrint)) // Short form to remain export-friendly
+                                                        strLanguageToPrint, token: token), token: token) // Short form to remain export-friendly
                                                 .CheapReplaceAsync(
                                                     "T",
                                                     () => LanguageManager.GetStringAsync(
-                                                        "String_SpellRangeTouch", strLanguageToPrint))
+                                                        "String_SpellRangeTouch", strLanguageToPrint, token: token), token: token)
                                                 .CheapReplaceAsync(
                                                     "(A)",
                                                     async () => '(' + await LanguageManager.GetStringAsync(
-                                                        "String_SpellRangeArea", strLanguageToPrint).ConfigureAwait(false) + ')')
+                                                        "String_SpellRangeArea", strLanguageToPrint, token: token).ConfigureAwait(false) + ')', token: token)
                                                 .CheapReplaceAsync(
                                                     "MAG",
                                                     () => LanguageManager.GetStringAsync(
-                                                        "String_AttributeMAGShort", strLanguageToPrint)).ConfigureAwait(false);
+                                                        "String_AttributeMAGShort", strLanguageToPrint, token: token), token: token).ConfigureAwait(false);
                     }
                 }
 
                 if (string.IsNullOrEmpty(strDisplayType))
-                    strDisplayType = await LanguageManager.GetStringAsync("String_None", strLanguageToPrint).ConfigureAwait(false);
+                    strDisplayType = await LanguageManager.GetStringAsync("String_None", strLanguageToPrint, token: token).ConfigureAwait(false);
                 if (string.IsNullOrEmpty(strDisplayAction))
-                    strDisplayAction = await LanguageManager.GetStringAsync("String_None", strLanguageToPrint).ConfigureAwait(false);
+                    strDisplayAction = await LanguageManager.GetStringAsync("String_None", strLanguageToPrint, token: token).ConfigureAwait(false);
 
                 // <critterpower>
-                XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("critterpower").ConfigureAwait(false);
+                XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("critterpower", token: token).ConfigureAwait(false);
                 try
                 {
-                    await objWriter.WriteElementStringAsync("name", strPowerName).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("name_english", strEnglishName).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("extra", sbdExtra.ToString()).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("category", strCategory).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("category_english", strEnglishCategory).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("type", strDisplayType).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("action", strDisplayAction).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("range", strDisplayRange).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("duration", strDisplayDuration).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("name", strPowerName, token: token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("name_english", strEnglishName, token: token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("extra", sbdExtra.ToString(), token: token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("category", strCategory, token: token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("category_english", strEnglishCategory, token: token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("type", strDisplayType, token: token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("action", strDisplayAction, token: token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("range", strDisplayRange, token: token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("duration", strDisplayDuration, token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync(
-                        "source", await CharacterObject.LanguageBookShortAsync(strSource, strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("page", strPage).ConfigureAwait(false);
+                        "source", await CharacterObject.LanguageBookShortAsync(strSource, strLanguageToPrint, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("page", strPage, token: token).ConfigureAwait(false);
                 }
                 finally
                 {

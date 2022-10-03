@@ -8653,7 +8653,7 @@ namespace Chummer
                     // <tradition />
                     if (MagicTradition.Type != TraditionType.None)
                     {
-                        await MagicTradition.Print(objWriter, objCulture, strLanguageToPrint).ConfigureAwait(false);
+                        await MagicTradition.Print(objWriter, objCulture, strLanguageToPrint, token).ConfigureAwait(false);
                     }
 
                     // <attributes>
@@ -9020,7 +9020,7 @@ namespace Chummer
                         {
                             if (objLimitModifier.Limit == "Physical")
                             {
-                                await objLimitModifier.Print(objWriter, objCulture, strLanguageToPrint).ConfigureAwait(false);
+                                await objLimitModifier.Print(objWriter, objCulture, strLanguageToPrint, token).ConfigureAwait(false);
                             }
                         }, token).ConfigureAwait(false);
 
@@ -9070,7 +9070,7 @@ namespace Chummer
                         {
                             if (objLimitModifier.Limit == "Mental")
                             {
-                                await objLimitModifier.Print(objWriter, objCulture, strLanguageToPrint).ConfigureAwait(false);
+                                await objLimitModifier.Print(objWriter, objCulture, strLanguageToPrint, token).ConfigureAwait(false);
                             }
                         }, token).ConfigureAwait(false);
 
@@ -9120,7 +9120,7 @@ namespace Chummer
                         {
                             if (objLimitModifier.Limit == "Social")
                             {
-                                await objLimitModifier.Print(objWriter, objCulture, strLanguageToPrint).ConfigureAwait(false);
+                                await objLimitModifier.Print(objWriter, objCulture, strLanguageToPrint, token).ConfigureAwait(false);
                             }
                         }, token).ConfigureAwait(false);
 
@@ -9168,7 +9168,7 @@ namespace Chummer
                     {
                         foreach (MentorSpirit objMentorSpirit in MentorSpirits)
                         {
-                            await objMentorSpirit.Print(objWriter, strLanguageToPrint).ConfigureAwait(false);
+                            await objMentorSpirit.Print(objWriter, strLanguageToPrint, token).ConfigureAwait(false);
                         }
                     }
                     finally
@@ -9183,7 +9183,7 @@ namespace Chummer
                     {
                         foreach (Spell objSpell in Spells)
                         {
-                            await objSpell.Print(objWriter, objCulture, strLanguageToPrint).ConfigureAwait(false);
+                            await objSpell.Print(objWriter, objCulture, strLanguageToPrint, token).ConfigureAwait(false);
                         }
                     }
                     finally
@@ -9198,7 +9198,7 @@ namespace Chummer
                     {
                         foreach (Power objPower in Powers)
                         {
-                            await objPower.Print(objWriter, objCulture, strLanguageToPrint).ConfigureAwait(false);
+                            await objPower.Print(objWriter, objCulture, strLanguageToPrint, token).ConfigureAwait(false);
                         }
                     }
                     finally
@@ -9228,7 +9228,7 @@ namespace Chummer
                     {
                         foreach (ComplexForm objComplexForm in ComplexForms)
                         {
-                            await objComplexForm.Print(objWriter, strLanguageToPrint).ConfigureAwait(false);
+                            await objComplexForm.Print(objWriter, strLanguageToPrint, token).ConfigureAwait(false);
                         }
                     }
                     finally
@@ -9243,7 +9243,7 @@ namespace Chummer
                     {
                         foreach (AIProgram objProgram in AIPrograms)
                         {
-                            await objProgram.Print(objWriter, strLanguageToPrint).ConfigureAwait(false);
+                            await objProgram.Print(objWriter, strLanguageToPrint, token).ConfigureAwait(false);
                         }
                     }
                     finally
@@ -9258,7 +9258,7 @@ namespace Chummer
                     {
                         foreach (MartialArt objMartialArt in MartialArts)
                         {
-                            await objMartialArt.Print(objWriter, objCulture, strLanguageToPrint).ConfigureAwait(false);
+                            await objMartialArt.Print(objWriter, objCulture, strLanguageToPrint, token).ConfigureAwait(false);
                         }
                     }
                     finally
@@ -9273,7 +9273,7 @@ namespace Chummer
                     {
                         foreach (Armor objArmor in Armor)
                         {
-                            await objArmor.Print(objWriter, objCulture, strLanguageToPrint).ConfigureAwait(false);
+                            await objArmor.Print(objWriter, objCulture, strLanguageToPrint, token).ConfigureAwait(false);
                         }
                     }
                     finally
@@ -9288,7 +9288,7 @@ namespace Chummer
                     {
                         foreach (Weapon objWeapon in Weapons)
                         {
-                            await objWeapon.Print(objWriter, objCulture, strLanguageToPrint).ConfigureAwait(false);
+                            await objWeapon.Print(objWriter, objCulture, strLanguageToPrint, token).ConfigureAwait(false);
                         }
                     }
                     finally
@@ -9338,7 +9338,7 @@ namespace Chummer
                                             + objQuality.Extra;
                             if (strQualitiesToPrint.TryGetValue(strKey, out int intLoopRating))
                             {
-                                await objQuality.Print(objWriter, intLoopRating, objCulture, strLanguageToPrint).ConfigureAwait(false);
+                                await objQuality.Print(objWriter, intLoopRating, objCulture, strLanguageToPrint, token).ConfigureAwait(false);
                                 strQualitiesToPrint.Remove(strKey);
                             }
                         }
@@ -9355,7 +9355,7 @@ namespace Chummer
                     {
                         foreach (Lifestyle objLifestyle in Lifestyles)
                         {
-                            await objLifestyle.Print(objWriter, objCulture, strLanguageToPrint).ConfigureAwait(false);
+                            await objLifestyle.Print(objWriter, objCulture, strLanguageToPrint, token).ConfigureAwait(false);
                         }
                     }
                     finally
@@ -9370,7 +9370,7 @@ namespace Chummer
                     {
                         foreach (Gear objGear in Gear)
                         {
-                            await objGear.Print(objWriter, objCulture, strLanguageToPrint).ConfigureAwait(false);
+                            await objGear.Print(objWriter, objCulture, strLanguageToPrint, token).ConfigureAwait(false);
                         }
                     }
                     finally
@@ -9385,7 +9385,7 @@ namespace Chummer
                     {
                         foreach (Drug objDrug in Drugs)
                         {
-                            await objDrug.Print(objWriter, objCulture, strLanguageToPrint).ConfigureAwait(false);
+                            await objDrug.Print(objWriter, objCulture, strLanguageToPrint, token).ConfigureAwait(false);
                         }
                     }
                     finally
@@ -9400,7 +9400,7 @@ namespace Chummer
                     {
                         foreach (Vehicle objVehicle in Vehicles)
                         {
-                            await objVehicle.Print(objWriter, objCulture, strLanguageToPrint).ConfigureAwait(false);
+                            await objVehicle.Print(objWriter, objCulture, strLanguageToPrint, token).ConfigureAwait(false);
                         }
                     }
                     finally
@@ -9415,7 +9415,7 @@ namespace Chummer
                     {
                         foreach (InitiationGrade objGrade in InitiationGrades)
                         {
-                            await objGrade.Print(objWriter, objCulture).ConfigureAwait(false);
+                            await objGrade.Print(objWriter, objCulture, token).ConfigureAwait(false);
 
                             //TODO: Probably better to integrate this into the main print method, but eh.
                             // <metamagics>
@@ -9425,7 +9425,7 @@ namespace Chummer
                                 foreach (Metamagic objMetamagic in Metamagics)
                                 {
                                     if (objMetamagic.Grade == objGrade.Grade)
-                                        await objMetamagic.Print(objWriter, objCulture, strLanguageToPrint).ConfigureAwait(false);
+                                        await objMetamagic.Print(objWriter, objCulture, strLanguageToPrint, token).ConfigureAwait(false);
                                 }
                             }
                             finally
@@ -9441,7 +9441,7 @@ namespace Chummer
                                 foreach (Art objArt in Arts)
                                 {
                                     if (objArt.Grade == objGrade.Grade)
-                                        await objArt.Print(objWriter, strLanguageToPrint).ConfigureAwait(false);
+                                        await objArt.Print(objWriter, strLanguageToPrint, token).ConfigureAwait(false);
                                 }
                             }
                             finally
@@ -9457,7 +9457,7 @@ namespace Chummer
                                 foreach (Enhancement objEnhancement in Enhancements)
                                 {
                                     if (objEnhancement.Grade == objGrade.Grade)
-                                        await objEnhancement.Print(objWriter, strLanguageToPrint).ConfigureAwait(false);
+                                        await objEnhancement.Print(objWriter, strLanguageToPrint, token).ConfigureAwait(false);
                                 }
                             }
                             finally
@@ -9479,7 +9479,7 @@ namespace Chummer
                     {
                         foreach (Metamagic objMetamagic in Metamagics)
                         {
-                            await objMetamagic.Print(objWriter, objCulture, strLanguageToPrint).ConfigureAwait(false);
+                            await objMetamagic.Print(objWriter, objCulture, strLanguageToPrint, token).ConfigureAwait(false);
                         }
                     }
                     finally
@@ -9494,7 +9494,7 @@ namespace Chummer
                     {
                         foreach (Art objArt in Arts)
                         {
-                            await objArt.Print(objWriter, strLanguageToPrint).ConfigureAwait(false);
+                            await objArt.Print(objWriter, strLanguageToPrint, token).ConfigureAwait(false);
                         }
                     }
                     finally
@@ -9509,7 +9509,7 @@ namespace Chummer
                     {
                         foreach (Enhancement objEnhancement in Enhancements)
                         {
-                            await objEnhancement.Print(objWriter, strLanguageToPrint).ConfigureAwait(false);
+                            await objEnhancement.Print(objWriter, strLanguageToPrint, token).ConfigureAwait(false);
                         }
                     }
                     finally
@@ -9524,7 +9524,7 @@ namespace Chummer
                     {
                         foreach (CritterPower objPower in CritterPowers)
                         {
-                            await objPower.Print(objWriter, strLanguageToPrint).ConfigureAwait(false);
+                            await objPower.Print(objWriter, strLanguageToPrint, token).ConfigureAwait(false);
                         }
                     }
                     finally
@@ -9539,7 +9539,7 @@ namespace Chummer
                     {
                         foreach (SustainedObject objSustained in SustainedCollection)
                         {
-                            await objSustained.Print(objWriter, objCulture, strLanguageToPrint).ConfigureAwait(false);
+                            await objSustained.Print(objWriter, objCulture, strLanguageToPrint, token).ConfigureAwait(false);
                         }
                     }
                     finally
@@ -9591,7 +9591,7 @@ namespace Chummer
                     try
                     {
                         foreach (CalendarWeek objWeek in Calendar)
-                            await objWeek.Print(objWriter, objCulture, GlobalSettings.PrintNotes).ConfigureAwait(false);
+                            await objWeek.Print(objWriter, objCulture, GlobalSettings.PrintNotes, token).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -9607,7 +9607,7 @@ namespace Chummer
                         try
                         {
                             foreach (ExpenseLogEntry objExpense in ExpenseEntries.Reverse())
-                                await objExpense.Print(objWriter, objCulture, strLanguageToPrint).ConfigureAwait(false);
+                                await objExpense.Print(objWriter, objCulture, strLanguageToPrint, token).ConfigureAwait(false);
                         }
                         finally
                         {

@@ -123,20 +123,28 @@ namespace Chummer
         /// <param name="objWriter">XmlTextWriter to write with</param>
         /// <param name="objCulture">Culture in which to print</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
-        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
         {
             if (objWriter == null)
                 return;
             // <limitmodifier>
-            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("limitmodifier").ConfigureAwait(false);
+            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("limitmodifier", token: token).ConfigureAwait(false);
             try
             {
-                await objWriter.WriteElementStringAsync("guid", InternalId).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("name", await DisplayNameAsync(objCulture, strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("name_english", Name).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("condition", await _objCharacter.TranslateExtraAsync(Condition, strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("guid", InternalId, token: token).ConfigureAwait(false);
+                await objWriter
+                      .WriteElementStringAsync(
+                          "name", await DisplayNameAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false),
+                          token: token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("name_english", Name, token: token).ConfigureAwait(false);
+                await objWriter
+                      .WriteElementStringAsync("condition",
+                                               await _objCharacter
+                                                     .TranslateExtraAsync(Condition, strLanguageToPrint, token: token)
+                                                     .ConfigureAwait(false), token: token).ConfigureAwait(false);
                 if (GlobalSettings.PrintNotes)
-                    await objWriter.WriteElementStringAsync("notes", Notes).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("notes", Notes, token: token).ConfigureAwait(false);
             }
             finally
             {

@@ -24,6 +24,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using Chummer.Annotations;
@@ -115,20 +116,21 @@ namespace Chummer
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="objCulture">Culture in which to print numbers.</param>
         /// <param name="blnPrintNotes">Whether to print notes attached to the CalendarWeek.</param>
-        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, bool blnPrintNotes = true)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, bool blnPrintNotes = true, CancellationToken token = default)
         {
             if (objWriter == null)
                 return;
             // <week>
-            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("week").ConfigureAwait(false);
+            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("week", token: token).ConfigureAwait(false);
             try
             {
-                await objWriter.WriteElementStringAsync("guid", InternalId).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("year", Year.ToString(objCulture)).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("month", Month.ToString(objCulture)).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("week", MonthWeek.ToString(objCulture)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("guid", InternalId, token: token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("year", Year.ToString(objCulture), token: token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("month", Month.ToString(objCulture), token: token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("week", MonthWeek.ToString(objCulture), token: token).ConfigureAwait(false);
                 if (blnPrintNotes)
-                    await objWriter.WriteElementStringAsync("notes", Notes).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("notes", Notes, token: token).ConfigureAwait(false);
             }
             finally
             {

@@ -449,41 +449,42 @@ namespace Chummer.Backend.Equipment
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="objCulture">Culture in which to print.</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
-        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
         {
             if (!AllowPrint || objWriter == null)
                 return;
             // <quality>
-            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("quality").ConfigureAwait(false);
+            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("quality", token).ConfigureAwait(false);
             try
             {
-                await objWriter.WriteElementStringAsync("guid", InternalId).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("sourceid", SourceIDString).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("name", await DisplayNameShortAsync(strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("fullname", await DisplayNameAsync(strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("formattedname", await FormattedDisplayNameAsync(objCulture, strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("extra", await _objCharacter.TranslateExtraAsync(Extra, strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("lp", LP.ToString(objCulture)).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("cost", Cost.ToString(_objCharacter.Settings.NuyenFormat, objCulture)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("guid", InternalId, token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("sourceid", SourceIDString, token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("name", await DisplayNameShortAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("fullname", await DisplayNameAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("formattedname", await FormattedDisplayNameAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("extra", await _objCharacter.TranslateExtraAsync(Extra, strLanguageToPrint, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("lp", LP.ToString(objCulture), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("cost", Cost.ToString(_objCharacter.Settings.NuyenFormat, objCulture), token).ConfigureAwait(false);
                 string strLifestyleQualityType = Type.ToString();
                 if (!strLanguageToPrint.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 {
-                    XPathNavigator objNode = (await _objCharacter.LoadDataXPathAsync("lifestyles.xml", strLanguageToPrint).ConfigureAwait(false))
+                    XPathNavigator objNode = (await _objCharacter.LoadDataXPathAsync("lifestyles.xml", strLanguageToPrint, token: token).ConfigureAwait(false))
                         .SelectSingleNode("/chummer/categories/category[. = " + strLifestyleQualityType.CleanXPath() + ']');
                     if (objNode != null)
-                        strLifestyleQualityType = (await objNode.SelectSingleNodeAndCacheExpressionAsync("@translate").ConfigureAwait(false))?.Value ?? strLifestyleQualityType;
+                        strLifestyleQualityType = (await objNode.SelectSingleNodeAndCacheExpressionAsync("@translate", token).ConfigureAwait(false))?.Value ?? strLifestyleQualityType;
                 }
 
-                await objWriter.WriteElementStringAsync("lifestylequalitytype", strLifestyleQualityType).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("lifestylequalitytype_english", Type.ToString()).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("lifestylequalitysource", OriginSource.ToString()).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("free", Free.ToString()).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("freebylifestyle", FreeByLifestyle.ToString()).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("isfreegrid", IsFreeGrid.ToString()).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("lifestylequalitytype", strLifestyleQualityType, token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("lifestylequalitytype_english", Type.ToString(), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("lifestylequalitysource", OriginSource.ToString(), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("free", Free.ToString(), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("freebylifestyle", FreeByLifestyle.ToString(), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("isfreegrid", IsFreeGrid.ToString(), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
                 if (GlobalSettings.PrintNotes)
-                    await objWriter.WriteElementStringAsync("notes", Notes).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("notes", Notes, token).ConfigureAwait(false);
             }
             finally
             {

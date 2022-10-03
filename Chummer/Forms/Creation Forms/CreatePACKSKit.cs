@@ -86,7 +86,7 @@ namespace Chummer
                 try
                 {
                     objXmlCurrentDocument = new XmlDocument { XmlResolver = null };
-                    objXmlCurrentDocument.LoadStandard(strPath);
+                    await objXmlCurrentDocument.LoadStandardAsync(strPath);
                 }
                 catch (IOException ex)
                 {

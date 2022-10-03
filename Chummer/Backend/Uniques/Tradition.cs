@@ -356,34 +356,79 @@ namespace Chummer.Backend.Uniques
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="objCulture">Culture in which to print.</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
-        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
         {
             if (objWriter == null)
                 return;
             // <tradition>
-            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("tradition").ConfigureAwait(false);
+            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("tradition", token).ConfigureAwait(false);
             try
             {
-                await objWriter.WriteElementStringAsync("guid", InternalId).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("sourceid", SourceIDString).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("istechnomancertradition", (Type == TraditionType.RES).ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("name", await DisplayNameShortAsync(strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("fullname", await DisplayNameAsync(strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("name_english", Name).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("extra", await _objCharacter.TranslateExtraAsync(Extra, strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("guid", InternalId, token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("sourceid", SourceIDString, token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("istechnomancertradition",
+                                                        (Type == TraditionType.RES).ToString(
+                                                            GlobalSettings.InvariantCultureInfo), token)
+                               .ConfigureAwait(false);
+                await objWriter
+                      .WriteElementStringAsync(
+                          "name", await DisplayNameShortAsync(strLanguageToPrint, token).ConfigureAwait(false), token)
+                      .ConfigureAwait(false);
+                await objWriter
+                      .WriteElementStringAsync(
+                          "fullname", await DisplayNameAsync(strLanguageToPrint, token).ConfigureAwait(false), token)
+                      .ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("name_english", Name, token).ConfigureAwait(false);
+                await objWriter
+                      .WriteElementStringAsync(
+                          "extra",
+                          await _objCharacter.TranslateExtraAsync(Extra, strLanguageToPrint, token: token)
+                                             .ConfigureAwait(false), token).ConfigureAwait(false);
                 if (Type == TraditionType.MAG)
                 {
-                    await objWriter.WriteElementStringAsync("spiritcombat", await DisplaySpiritCombatMethodAsync(strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("spiritdetection", await DisplaySpiritDetectionMethodAsync(strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("spirithealth", await DisplaySpiritHealthMethodAsync(strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("spiritillusion", await DisplaySpiritIllusionMethodAsync(strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("spiritmanipulation", await DisplaySpiritManipulationMethodAsync(strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("spiritform", await DisplaySpiritFormAsync(strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
+                    await objWriter
+                          .WriteElementStringAsync("spiritcombat",
+                                                   await DisplaySpiritCombatMethodAsync(strLanguageToPrint, token)
+                                                       .ConfigureAwait(false), token).ConfigureAwait(false);
+                    await objWriter
+                          .WriteElementStringAsync("spiritdetection",
+                                                   await DisplaySpiritDetectionMethodAsync(strLanguageToPrint, token)
+                                                       .ConfigureAwait(false), token).ConfigureAwait(false);
+                    await objWriter
+                          .WriteElementStringAsync("spirithealth",
+                                                   await DisplaySpiritHealthMethodAsync(strLanguageToPrint, token)
+                                                       .ConfigureAwait(false), token).ConfigureAwait(false);
+                    await objWriter
+                          .WriteElementStringAsync("spiritillusion",
+                                                   await DisplaySpiritIllusionMethodAsync(strLanguageToPrint, token)
+                                                       .ConfigureAwait(false), token).ConfigureAwait(false);
+                    await objWriter
+                          .WriteElementStringAsync("spiritmanipulation",
+                                                   await DisplaySpiritManipulationMethodAsync(strLanguageToPrint, token)
+                                                       .ConfigureAwait(false), token).ConfigureAwait(false);
+                    await objWriter
+                          .WriteElementStringAsync("spiritform",
+                                                   await DisplaySpiritFormAsync(strLanguageToPrint, token)
+                                                       .ConfigureAwait(false), token).ConfigureAwait(false);
                 }
-                await objWriter.WriteElementStringAsync("drainattributes", await DisplayDrainExpressionMethodAsync(objCulture, strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("drainvalue", DrainValue.ToString(objCulture)).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
+
+                await objWriter
+                      .WriteElementStringAsync("drainattributes",
+                                               await DisplayDrainExpressionMethodAsync(
+                                                   objCulture, strLanguageToPrint, token).ConfigureAwait(false), token)
+                      .ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("drainvalue", DrainValue.ToString(objCulture), token)
+                               .ConfigureAwait(false);
+                await objWriter
+                      .WriteElementStringAsync(
+                          "source",
+                          await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint, token)
+                                             .ConfigureAwait(false), token).ConfigureAwait(false);
+                await objWriter
+                      .WriteElementStringAsync(
+                          "page", await DisplayPageAsync(strLanguageToPrint, token).ConfigureAwait(false), token)
+                      .ConfigureAwait(false);
             }
             finally
             {

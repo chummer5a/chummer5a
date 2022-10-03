@@ -156,20 +156,30 @@ namespace Chummer
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="objCulture">Culture in which to print numbers.</param>
         /// <param name="strLanguageToPrint">Language in which to print.</param>
-        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
         {
             if (objWriter == null)
                 return;
             // <sustainedobject>
-            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("sustainedobject").ConfigureAwait(false);
+            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("sustainedobject", token).ConfigureAwait(false);
             try
             {
-                await objWriter.WriteElementStringAsync("name", await DisplayNameShortAsync(strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("fullname", await DisplayNameAsync(strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("name_english", Name).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("force", Force.ToString(objCulture)).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("nethits", NetHits.ToString(objCulture)).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("self", SelfSustained.ToString(objCulture)).ConfigureAwait(false);
+                await objWriter
+                      .WriteElementStringAsync(
+                          "name", await DisplayNameShortAsync(strLanguageToPrint, token).ConfigureAwait(false), token)
+                      .ConfigureAwait(false);
+                await objWriter
+                      .WriteElementStringAsync(
+                          "fullname", await DisplayNameAsync(strLanguageToPrint, token).ConfigureAwait(false), token)
+                      .ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("name_english", Name, token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("force", Force.ToString(objCulture), token)
+                               .ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("nethits", NetHits.ToString(objCulture), token)
+                               .ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("self", SelfSustained.ToString(objCulture), token)
+                               .ConfigureAwait(false);
             }
             finally
             {

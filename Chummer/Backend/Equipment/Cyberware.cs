@@ -2008,7 +2008,7 @@ namespace Chummer.Backend.Equipment
                     {
                         foreach (Gear objGear in GearChildren)
                         {
-                            await objGear.Print(objWriter, objCulture, strLanguageToPrint).ConfigureAwait(false);
+                            await objGear.Print(objWriter, objCulture, strLanguageToPrint, token).ConfigureAwait(false);
                         }
                     }
                     finally

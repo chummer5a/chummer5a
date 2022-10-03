@@ -485,13 +485,13 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteStartElement("weapons");
             foreach (Weapon objWeapon in Weapons)
             {
-                await objWeapon.Print(objWriter, objCulture, strLanguageToPrint).ConfigureAwait(false);
+                await objWeapon.Print(objWriter, objCulture, strLanguageToPrint, token).ConfigureAwait(false);
             }
             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
             objWriter.WriteStartElement("mods");
             foreach (VehicleMod objVehicleMod in Mods)
             {
-                await objVehicleMod.Print(objWriter, objCulture, strLanguageToPrint).ConfigureAwait(false);
+                await objVehicleMod.Print(objWriter, objCulture, strLanguageToPrint, token).ConfigureAwait(false);
             }
             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
             if (GlobalSettings.PrintNotes)

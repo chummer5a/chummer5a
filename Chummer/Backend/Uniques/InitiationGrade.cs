@@ -22,6 +22,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
@@ -139,22 +140,23 @@ namespace Chummer
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="objCulture">Culture in which to print</param>
-        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, CancellationToken token = default)
         {
             if (objWriter == null)
                 return;
             // <initiationgrade>
-            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("initiationgrade").ConfigureAwait(false);
+            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("initiationgrade", token).ConfigureAwait(false);
             try
             {
-                await objWriter.WriteElementStringAsync("guid", InternalId).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("grade", Grade.ToString(objCulture)).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("group", Group.ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("ordeal", Ordeal.ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("schooling", Schooling.ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("technomancer", Technomancer.ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("guid", InternalId, token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("grade", Grade.ToString(objCulture), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("group", Group.ToString(GlobalSettings.InvariantCultureInfo), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("ordeal", Ordeal.ToString(GlobalSettings.InvariantCultureInfo), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("schooling", Schooling.ToString(GlobalSettings.InvariantCultureInfo), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("technomancer", Technomancer.ToString(GlobalSettings.InvariantCultureInfo), token).ConfigureAwait(false);
                 if (GlobalSettings.PrintNotes)
-                    await objWriter.WriteElementStringAsync("notes", Notes).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("notes", Notes, token).ConfigureAwait(false);
             }
             finally
             {

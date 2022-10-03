@@ -96,7 +96,7 @@ namespace Chummer
             {
                 try
                 {
-                    objXmlCurrentDocument.LoadStandard(strPath);
+                    await objXmlCurrentDocument.LoadStandardAsync(strPath);
                 }
                 catch (IOException ex)
                 {

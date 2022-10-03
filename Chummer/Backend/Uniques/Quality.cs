@@ -486,46 +486,47 @@ namespace Chummer
         /// <param name="intRating">Pre-calculated rating of the quality for printing.</param>
         /// <param name="objCulture">Culture in which to print.</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
-        public async ValueTask Print(XmlWriter objWriter, int intRating, CultureInfo objCulture, string strLanguageToPrint)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async ValueTask Print(XmlWriter objWriter, int intRating, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
         {
             if (!AllowPrint || objWriter == null)
                 return;
 
             // <quality>
-            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("quality").ConfigureAwait(false);
+            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("quality", token: token).ConfigureAwait(false);
             try
             {
-                await objWriter.WriteElementStringAsync("guid", InternalId).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("sourceid", SourceIDString).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("name", await DisplayNameShortAsync(strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("name_english", Name).ConfigureAwait(false);
-                string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguageToPrint).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("guid", InternalId, token: token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("sourceid", SourceIDString, token: token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("name", await DisplayNameShortAsync(strLanguageToPrint, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("name_english", Name, token: token).ConfigureAwait(false);
+                string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguageToPrint, token: token).ConfigureAwait(false);
                 string strRatingString = string.Empty;
                 if (intRating > 1)
                     strRatingString = strSpace + intRating.ToString(objCulture);
                 string strSourceName = string.Empty;
                 if (!string.IsNullOrWhiteSpace(SourceName))
-                    strSourceName = strSpace + '(' + await GetSourceNameAsync(strLanguageToPrint).ConfigureAwait(false) + ')';
+                    strSourceName = strSpace + '(' + await GetSourceNameAsync(strLanguageToPrint, token).ConfigureAwait(false) + ')';
                 await objWriter.WriteElementStringAsync(
-                    "extra", await _objCharacter.TranslateExtraAsync(Extra, strLanguageToPrint).ConfigureAwait(false) + strRatingString + strSourceName).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("bp", BP.ToString(objCulture)).ConfigureAwait(false);
+                    "extra", await _objCharacter.TranslateExtraAsync(Extra, strLanguageToPrint, token: token).ConfigureAwait(false) + strRatingString + strSourceName, token: token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("bp", BP.ToString(objCulture), token: token).ConfigureAwait(false);
                 string strQualityType = Type.ToString();
                 if (!strLanguageToPrint.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 {
                     strQualityType =
-                        (await _objCharacter.LoadDataXPathAsync("qualities.xml", strLanguageToPrint).ConfigureAwait(false))
+                        (await _objCharacter.LoadDataXPathAsync("qualities.xml", strLanguageToPrint, token: token).ConfigureAwait(false))
                         .SelectSingleNode("/chummer/categories/category[. = " + strQualityType.CleanXPath()
                                                                               + "]/@translate")
                         ?.Value ?? strQualityType;
                 }
 
-                await objWriter.WriteElementStringAsync("qualitytype", strQualityType).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("qualitytype_english", Type.ToString()).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("qualitysource", OriginSource.ToString()).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("qualitytype", strQualityType, token: token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("qualitytype_english", Type.ToString(), token: token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("qualitysource", OriginSource.ToString(), token: token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                 if (GlobalSettings.PrintNotes)
-                    await objWriter.WriteElementStringAsync("notes", Notes).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("notes", Notes, token: token).ConfigureAwait(false);
             }
             finally
             {

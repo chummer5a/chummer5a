@@ -495,17 +495,18 @@ namespace Chummer.Backend.Equipment
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="objCulture">Culture in which to print.</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
-        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
         {
             if (objWriter == null)
                 return;
             objWriter.WriteStartElement("mod");
             objWriter.WriteElementString("guid", InternalId);
             objWriter.WriteElementString("sourceid", SourceIDString);
-            objWriter.WriteElementString("name", await DisplayNameShortAsync(strLanguageToPrint).ConfigureAwait(false));
+            objWriter.WriteElementString("name", await DisplayNameShortAsync(strLanguageToPrint, token).ConfigureAwait(false));
             objWriter.WriteElementString("name_english", Name);
-            objWriter.WriteElementString("fullname", await DisplayNameAsync(objCulture, strLanguageToPrint).ConfigureAwait(false));
-            objWriter.WriteElementString("category", await DisplayCategoryAsync(strLanguageToPrint).ConfigureAwait(false));
+            objWriter.WriteElementString("fullname", await DisplayNameAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false));
+            objWriter.WriteElementString("category", await DisplayCategoryAsync(strLanguageToPrint, token).ConfigureAwait(false));
             objWriter.WriteElementString("category_english", Category);
             objWriter.WriteElementString("limit", Limit);
             objWriter.WriteElementString("slots", Slots);
@@ -514,17 +515,17 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("avail", TotalAvail(objCulture, strLanguageToPrint));
             objWriter.WriteElementString("cost", TotalCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
             objWriter.WriteElementString("owncost", OwnCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
-            objWriter.WriteElementString("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint).ConfigureAwait(false));
+            objWriter.WriteElementString("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint, token).ConfigureAwait(false));
             objWriter.WriteElementString("wirelesson", WirelessOn.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("page", await DisplayPageAsync(strLanguageToPrint).ConfigureAwait(false));
+            objWriter.WriteElementString("page", await DisplayPageAsync(strLanguageToPrint, token).ConfigureAwait(false));
             objWriter.WriteElementString("included", IncludedInVehicle.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteStartElement("weapons");
             foreach (Weapon objWeapon in Weapons)
-                await objWeapon.Print(objWriter, objCulture, strLanguageToPrint).ConfigureAwait(false);
+                await objWeapon.Print(objWriter, objCulture, strLanguageToPrint, token).ConfigureAwait(false);
             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
             objWriter.WriteStartElement("cyberwares");
             foreach (Cyberware objCyberware in Cyberware)
-                await objCyberware.Print(objWriter, objCulture, strLanguageToPrint).ConfigureAwait(false);
+                await objCyberware.Print(objWriter, objCulture, strLanguageToPrint, token).ConfigureAwait(false);
             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
             if (GlobalSettings.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);

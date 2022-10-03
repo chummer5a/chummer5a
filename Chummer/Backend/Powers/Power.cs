@@ -368,36 +368,37 @@ namespace Chummer
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="objCulture">Culture in which to print.</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
-        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
         {
             if (objWriter == null)
                 return;
 
             // <power>
-            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("power").ConfigureAwait(false);
+            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("power", token).ConfigureAwait(false);
             try
             {
-                await objWriter.WriteElementStringAsync("guid", InternalId).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("sourceid", SourceIDString).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("name", await DisplayNameShortAsync(strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("fullname", await DisplayNameAsync(strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("extra", await CharacterObject.TranslateExtraAsync(Extra, strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("pointsperlevel", PointsPerLevel.ToString(objCulture)).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("adeptway", AdeptWayDiscount.ToString(objCulture)).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("rating", LevelsEnabled ? TotalRating.ToString(objCulture) : "0").ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("totalpoints", PowerPoints.ToString(objCulture)).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("action", await DisplayActionMethodAsync(strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("source", await CharacterObject.LanguageBookShortAsync(Source, strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("guid", InternalId, token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("sourceid", SourceIDString, token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("name", await DisplayNameShortAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("fullname", await DisplayNameAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("extra", await CharacterObject.TranslateExtraAsync(Extra, strLanguageToPrint, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("pointsperlevel", PointsPerLevel.ToString(objCulture), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("adeptway", AdeptWayDiscount.ToString(objCulture), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("rating", LevelsEnabled ? TotalRating.ToString(objCulture) : "0", token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("totalpoints", PowerPoints.ToString(objCulture), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("action", await DisplayActionMethodAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("source", await CharacterObject.LanguageBookShortAsync(Source, strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
                 if (GlobalSettings.PrintNotes)
-                    await objWriter.WriteElementStringAsync("notes", Notes).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("notes", Notes, token).ConfigureAwait(false);
                 // <enhancements>
-                XmlElementWriteHelper objEnhancementsElement = await objWriter.StartElementAsync("enhancements").ConfigureAwait(false);
+                XmlElementWriteHelper objEnhancementsElement = await objWriter.StartElementAsync("enhancements", token).ConfigureAwait(false);
                 try
                 {
                     foreach (Enhancement objEnhancement in Enhancements)
                     {
-                        await objEnhancement.Print(objWriter, strLanguageToPrint).ConfigureAwait(false);
+                        await objEnhancement.Print(objWriter, strLanguageToPrint, token).ConfigureAwait(false);
                     }
                 }
                 finally

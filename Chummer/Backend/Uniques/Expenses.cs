@@ -341,22 +341,23 @@ namespace Chummer
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="objCulture">Culture in which to print numbers.</param>
         /// <param name="strLanguageToPrint">Language in which to print.</param>
-        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
         {
             if (objWriter == null)
                 return;
             if (Amount != 0 || GlobalSettings.PrintFreeExpenses)
             {
                 // <expense>
-                XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("expense").ConfigureAwait(false);
+                XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("expense", token: token).ConfigureAwait(false);
                 try
                 {
-                    await objWriter.WriteElementStringAsync("guid", InternalId).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("date", Date.ToString(objCulture)).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("amount", Amount.ToString(Type == ExpenseType.Nuyen ? _objCharacter.Settings.NuyenFormat : "#,0.##", objCulture)).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("reason", await DisplayReasonAsync(strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("type", Type.ToString()).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("refund", Refund.ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("guid", InternalId, token: token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("date", Date.ToString(objCulture), token: token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("amount", Amount.ToString(Type == ExpenseType.Nuyen ? _objCharacter.Settings.NuyenFormat : "#,0.##", objCulture), token: token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("reason", await DisplayReasonAsync(strLanguageToPrint, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("type", Type.ToString(), token: token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("refund", Refund.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                 }
                 finally
                 {

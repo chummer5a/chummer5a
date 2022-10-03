@@ -190,40 +190,41 @@ namespace Chummer.Backend.Equipment
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="objCulture">Culture in which to print.</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
-        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
         {
             if (objWriter == null)
                 return;
             // <drug>
-            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("drug").ConfigureAwait(false);
+            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("drug", token).ConfigureAwait(false);
             try
             {
-                await objWriter.WriteElementStringAsync("guid", InternalId).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("sourceid", SourceIDString).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("name", await DisplayNameShortAsync(strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("name_english", Name).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("category", await DisplayCategoryAsync(strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("category_english", Category).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("guid", InternalId, token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("sourceid", SourceIDString, token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("name", await DisplayNameShortAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("name_english", Name, token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("category", await DisplayCategoryAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("category_english", Category, token).ConfigureAwait(false);
                 if (Grade != null)
-                    await objWriter.WriteElementStringAsync("grade", await Grade.DisplayNameAsync(strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("qty", Quantity.ToString("#,0.##", objCulture)).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("addictionthreshold", AddictionThreshold.ToString(objCulture)).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("addictionrating", AddictionRating.ToString(objCulture)).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("initiative", Initiative.ToString(objCulture)).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("initiativedice", InitiativeDice.ToString(objCulture)).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("speed", Speed.ToString(objCulture)).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("duration", Duration.ToString(objCulture)).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("crashdamage", CrashDamage.ToString(objCulture)).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("grade", await Grade.DisplayNameAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("qty", Quantity.ToString("#,0.##", objCulture), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("addictionthreshold", AddictionThreshold.ToString(objCulture), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("addictionrating", AddictionRating.ToString(objCulture), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("initiative", Initiative.ToString(objCulture), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("initiativedice", InitiativeDice.ToString(objCulture), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("speed", Speed.ToString(objCulture), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("duration", Duration.ToString(objCulture), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("crashdamage", CrashDamage.ToString(objCulture), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync(
-                    "avail", TotalAvail(GlobalSettings.CultureInfo, strLanguageToPrint)).ConfigureAwait(false);
+                    "avail", TotalAvail(GlobalSettings.CultureInfo, strLanguageToPrint), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("avail_english",
                                                         TotalAvail(GlobalSettings.CultureInfo,
-                                                                   GlobalSettings.DefaultLanguage)).ConfigureAwait(false);
+                                                                   GlobalSettings.DefaultLanguage), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync(
-                    "cost", TotalCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture)).ConfigureAwait(false);
+                    "cost", TotalCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture), token).ConfigureAwait(false);
 
                 // <attributes>
-                XmlElementWriteHelper objAttributesElement = await objWriter.StartElementAsync("attributes").ConfigureAwait(false);
+                XmlElementWriteHelper objAttributesElement = await objWriter.StartElementAsync("attributes", token).ConfigureAwait(false);
                 try
                 {
                     foreach (KeyValuePair<string, decimal> objAttribute in Attributes)
@@ -231,17 +232,17 @@ namespace Chummer.Backend.Equipment
                         if (objAttribute.Value != 0)
                         {
                             // <attribute>
-                            XmlElementWriteHelper objAttributeElement = await objWriter.StartElementAsync("attribute").ConfigureAwait(false);
+                            XmlElementWriteHelper objAttributeElement = await objWriter.StartElementAsync("attribute", token).ConfigureAwait(false);
                             try
                             {
                                 await objWriter.WriteElementStringAsync(
                                     "name",
                                     await LanguageManager.GetStringAsync(
                                         "String_Attribute" + objAttribute.Key + "Short",
-                                        strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
-                                await objWriter.WriteElementStringAsync("name_english", objAttribute.Key).ConfigureAwait(false);
+                                        strLanguageToPrint, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
+                                await objWriter.WriteElementStringAsync("name_english", objAttribute.Key, token).ConfigureAwait(false);
                                 await objWriter.WriteElementStringAsync(
-                                    "value", objAttribute.Value.ToString("+#.#;-#.#", objCulture)).ConfigureAwait(false);
+                                    "value", objAttribute.Value.ToString("+#.#;-#.#", objCulture), token).ConfigureAwait(false);
                             }
                             finally
                             {
@@ -258,7 +259,7 @@ namespace Chummer.Backend.Equipment
                 }
 
                 // <limits>
-                XmlElementWriteHelper objLimitsElement = await objWriter.StartElementAsync("limits").ConfigureAwait(false);
+                XmlElementWriteHelper objLimitsElement = await objWriter.StartElementAsync("limits", token).ConfigureAwait(false);
                 try
                 {
                     foreach (KeyValuePair<string, int> objLimit in Limits)
@@ -266,15 +267,15 @@ namespace Chummer.Backend.Equipment
                         if (objLimit.Value != 0)
                         {
                             // <limit>
-                            XmlElementWriteHelper objLimitElement = await objWriter.StartElementAsync("limit").ConfigureAwait(false);
+                            XmlElementWriteHelper objLimitElement = await objWriter.StartElementAsync("limit", token).ConfigureAwait(false);
                             try
                             {
                                 await objWriter.WriteElementStringAsync(
                                     "name",
-                                    await LanguageManager.GetStringAsync("Node_" + objLimit.Key, strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
-                                await objWriter.WriteElementStringAsync("name_english", objLimit.Key).ConfigureAwait(false);
+                                    await LanguageManager.GetStringAsync("Node_" + objLimit.Key, strLanguageToPrint, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
+                                await objWriter.WriteElementStringAsync("name_english", objLimit.Key, token).ConfigureAwait(false);
                                 await objWriter.WriteElementStringAsync(
-                                    "value", objLimit.Value.ToString("+#;-#", objCulture)).ConfigureAwait(false);
+                                    "value", objLimit.Value.ToString("+#;-#", objCulture), token).ConfigureAwait(false);
                             }
                             finally
                             {
@@ -291,18 +292,18 @@ namespace Chummer.Backend.Equipment
                 }
 
                 // <qualities>
-                XmlElementWriteHelper objQualitiesElement = await objWriter.StartElementAsync("qualities").ConfigureAwait(false);
+                XmlElementWriteHelper objQualitiesElement = await objWriter.StartElementAsync("qualities", token).ConfigureAwait(false);
                 try
                 {
                     foreach (string strQualityText in Qualities.Select(x => x.InnerText))
                     {
                         // <quality>
-                        XmlElementWriteHelper objQualityElement = await objWriter.StartElementAsync("quality").ConfigureAwait(false);
+                        XmlElementWriteHelper objQualityElement = await objWriter.StartElementAsync("quality", token).ConfigureAwait(false);
                         try
                         {
                             await objWriter.WriteElementStringAsync(
-                                "name", await _objCharacter.TranslateExtraAsync(strQualityText, strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
-                            await objWriter.WriteElementStringAsync("name_english", strQualityText).ConfigureAwait(false);
+                                "name", await _objCharacter.TranslateExtraAsync(strQualityText, strLanguageToPrint, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
+                            await objWriter.WriteElementStringAsync("name_english", strQualityText, token).ConfigureAwait(false);
                         }
                         finally
                         {
@@ -318,18 +319,18 @@ namespace Chummer.Backend.Equipment
                 }
 
                 // <infos>
-                XmlElementWriteHelper objInfosElement = await objWriter.StartElementAsync("infos").ConfigureAwait(false);
+                XmlElementWriteHelper objInfosElement = await objWriter.StartElementAsync("infos", token).ConfigureAwait(false);
                 try
                 {
                     foreach (string strInfo in Infos)
                     {
                         // <info>
-                        XmlElementWriteHelper objInfoElement = await objWriter.StartElementAsync("info").ConfigureAwait(false);
+                        XmlElementWriteHelper objInfoElement = await objWriter.StartElementAsync("info", token).ConfigureAwait(false);
                         try
                         {
                             await objWriter.WriteElementStringAsync(
-                                "name", await _objCharacter.TranslateExtraAsync(strInfo, strLanguageToPrint).ConfigureAwait(false)).ConfigureAwait(false);
-                            await objWriter.WriteElementStringAsync("name_english", strInfo).ConfigureAwait(false);
+                                "name", await _objCharacter.TranslateExtraAsync(strInfo, strLanguageToPrint, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
+                            await objWriter.WriteElementStringAsync("name_english", strInfo, token).ConfigureAwait(false);
                         }
                         finally
                         {
@@ -345,7 +346,7 @@ namespace Chummer.Backend.Equipment
                 }
 
                 if (GlobalSettings.PrintNotes)
-                    await objWriter.WriteElementStringAsync("notes", Notes).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("notes", Notes, token).ConfigureAwait(false);
             }
             finally
             {
