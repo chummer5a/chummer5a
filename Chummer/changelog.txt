@@ -24,6 +24,7 @@ Data Changes:
 - Fixed the vehicle mods on the Maersk Shipyards Wavecutter MPAC. Existing characters with this vehicle will need to re-add it to seen its changes.
 - Fixed the name, ammo capacity type, and built-in accessories of the Wuxing-Armtech PTL-02.
 - Numinous Perception has been added as an example Perception specialization based on page 314 of the core rulebook.
+- Flamethrower propely has the Elemental descriptor.
 
 Changed/New Strings:
 - Checkbox_Options_UncappedArmorAccessoryBonuses
