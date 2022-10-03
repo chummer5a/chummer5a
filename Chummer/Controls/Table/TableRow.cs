@@ -38,7 +38,7 @@ namespace Chummer.UI.Table
 
         private async void OnLoad(object sender, EventArgs eventArgs)
         {
-            await UpdateAsync(Index, Selected);
+            await UpdateAsync(Index, Selected).ConfigureAwait(false);
         }
 
         protected virtual void DoLayout()
@@ -61,12 +61,13 @@ namespace Chummer.UI.Table
         {
             if (blnSelected)
             {
-                await ColorManager.GetHighlightAsync(token).ContinueWith(y => this.DoThreadSafeAsync(x => x.BackColor = y.Result, token: token), token).Unwrap();
+                Color objHighlightColor = await ColorManager.GetHighlightAsync(token).ConfigureAwait(false);
+                await this.DoThreadSafeAsync(x => x.BackColor = objHighlightColor, token: token).ConfigureAwait(false);
             }
             else
             {
-                Color objColor = (intIndex & 1) == 0 ? await ColorManager.GetControlLightestAsync(token) : await ColorManager.GetControlAsync(token);
-                await this.DoThreadSafeAsync(x => x.BackColor = objColor, token: token);
+                Color objColor = (intIndex & 1) == 0 ? await ColorManager.GetControlLightestAsync(token).ConfigureAwait(false) : await ColorManager.GetControlAsync(token).ConfigureAwait(false);
+                await this.DoThreadSafeAsync(x => x.BackColor = objColor, token: token).ConfigureAwait(false);
             }
         }
 

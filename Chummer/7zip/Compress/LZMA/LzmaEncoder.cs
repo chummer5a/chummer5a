@@ -1136,7 +1136,7 @@ namespace SevenZip.Compression.LZMA
             }
         }
 
-        private bool ChangePair(uint smallDist, uint bigDist)
+        private static bool ChangePair(uint smallDist, uint bigDist)
         {
             const int kDif = 7;
             unchecked
@@ -1155,12 +1155,12 @@ namespace SevenZip.Compression.LZMA
                 _isMatch[(_state.Index << Base.kNumPosStatesBitsMax) + posState].Encode(_rangeEncoder, 1);
                 _isRep[_state.Index].Encode(_rangeEncoder, 0);
                 _state.UpdateMatch();
-                uint len = Base.kMatchMinLen;
+                const uint len = Base.kMatchMinLen;
                 _lenEncoder.Encode(_rangeEncoder, len - Base.kMatchMinLen, posState);
-                uint posSlot = (1 << Base.kNumPosSlotBits) - 1;
+                const uint posSlot = (1 << Base.kNumPosSlotBits) - 1;
                 uint lenToPosState = Base.GetLenToPosState(len);
                 _posSlotEncoder[lenToPosState].Encode(_rangeEncoder, posSlot);
-                int footerBits = 30;
+                const int footerBits = 30;
                 uint posReduced = ((uint)1 << footerBits) - 1;
                 _rangeEncoder.EncodeDirectBits(posReduced >> Base.kNumAlignBits, footerBits - Base.kNumAlignBits);
                 _posAlignEncoder.ReverseEncode(_rangeEncoder, posReduced & Base.kAlignMask);
@@ -1443,16 +1443,16 @@ namespace SevenZip.Compression.LZMA
         }
 
         private const int kPropSize = 5;
-        private readonly byte[] properties = new byte[kPropSize];
+        private readonly byte[] myProperties = new byte[kPropSize];
 
         public void WriteCoderProperties(Stream outStream)
         {
             unchecked
             {
-                properties[0] = (byte)((_posStateBits * 5 + _numLiteralPosStateBits) * 9 + _numLiteralContextBits);
+                myProperties[0] = (byte)((_posStateBits * 5 + _numLiteralPosStateBits) * 9 + _numLiteralContextBits);
                 for (int i = 0; i < 4; i++)
-                    properties[1 + i] = (byte)((_dictionarySize >> (8 * i)) & 0xFF);
-                outStream.Write(properties, 0, kPropSize);
+                    myProperties[1 + i] = (byte)((_dictionarySize >> (8 * i)) & 0xFF);
+                outStream.Write(myProperties, 0, kPropSize);
             }
         }
 
@@ -1503,11 +1503,11 @@ namespace SevenZip.Compression.LZMA
             _alignPriceCount = 0;
         }
 
-        public void SetCoderProperties(CoderPropID[] propIDs, object[] propertiesArgs)
+        public void SetCoderProperties(CoderPropID[] propIDs, object[] properties)
         {
-            for (uint i = 0; i < propertiesArgs.Length; i++)
+            for (uint i = 0; i < properties.Length; i++)
             {
-                object prop = propertiesArgs[i];
+                object prop = properties[i];
                 switch (propIDs[i])
                 {
                     case CoderPropID.NumFastBytes:

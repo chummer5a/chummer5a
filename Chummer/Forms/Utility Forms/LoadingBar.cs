@@ -88,14 +88,13 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (this.IsNullOrDisposed())
                 return;
-            await LanguageManager.GetStringAsync("String_Initializing", token: token)
-                                 .ContinueWith(y => lblLoadingInfo.DoThreadSafeAsync(x => x.Text = y.Result, token),
-                                               token).Unwrap();
+            string strTemp = await LanguageManager.GetStringAsync("String_Initializing", token: token).ConfigureAwait(false);
+            await lblLoadingInfo.DoThreadSafeAsync(x => x.Text = strTemp, token).ConfigureAwait(false);
             await pgbLoadingProgress.DoThreadSafeAsync(x =>
             {
                 x.Value = 0;
                 x.Maximum = intMaxProgressBarValue + 1;
-            }, token);
+            }, token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -176,41 +175,41 @@ namespace Chummer
             {
                 case ProgressBarTextPatterns.Saving:
                     if (string.IsNullOrEmpty(strStepName))
-                        strNewText = await LanguageManager.GetStringAsync("String_Saving", token: token);
+                        strNewText = await LanguageManager.GetStringAsync("String_Saving", token: token).ConfigureAwait(false);
                     else
                         strNewText = string.Format(GlobalSettings.CultureInfo,
-                                                   await LanguageManager.GetStringAsync("String_Saving_Pattern", token: token),
+                                                   await LanguageManager.GetStringAsync("String_Saving_Pattern", token: token).ConfigureAwait(false),
                                                    strStepName);
                     break;
                 case ProgressBarTextPatterns.Loading:
                     if (string.IsNullOrEmpty(strStepName))
-                        strNewText = await LanguageManager.GetStringAsync("String_Loading", token: token);
+                        strNewText = await LanguageManager.GetStringAsync("String_Loading", token: token).ConfigureAwait(false);
                     else
                         strNewText = string.Format(GlobalSettings.CultureInfo,
-                                                   await LanguageManager.GetStringAsync("String_Loading_Pattern", token: token),
+                                                   await LanguageManager.GetStringAsync("String_Loading_Pattern", token: token).ConfigureAwait(false),
                                                    strStepName);
                     break;
                 case ProgressBarTextPatterns.Scanning:
                     if (string.IsNullOrEmpty(strStepName))
-                        strNewText = await LanguageManager.GetStringAsync("String_Scanning", token: token);
+                        strNewText = await LanguageManager.GetStringAsync("String_Scanning", token: token).ConfigureAwait(false);
                     else
                         strNewText = string.Format(GlobalSettings.CultureInfo,
-                                                   await LanguageManager.GetStringAsync("String_Scanning_Pattern", token: token),
+                                                   await LanguageManager.GetStringAsync("String_Scanning_Pattern", token: token).ConfigureAwait(false),
                                                    strStepName);
                     break;
                 case ProgressBarTextPatterns.Initializing:
                     if (string.IsNullOrEmpty(strStepName))
-                        strNewText = await LanguageManager.GetStringAsync("String_Initializing", token: token);
+                        strNewText = await LanguageManager.GetStringAsync("String_Initializing", token: token).ConfigureAwait(false);
                     else
                         strNewText = string.Format(GlobalSettings.CultureInfo,
-                                                   await LanguageManager.GetStringAsync("String_Initializing_Pattern", token: token),
+                                                   await LanguageManager.GetStringAsync("String_Initializing_Pattern", token: token).ConfigureAwait(false),
                                                    strStepName);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(eUseTextPattern), eUseTextPattern, null);
             }
 
-            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token);
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
             await pgbLoadingProgress.DoThreadSafeAsync(x =>
             {
                 int intLoadingMaximum = x.Maximum;
@@ -220,8 +219,8 @@ namespace Chummer
                                                GlobalSettings.CultureInfo)
                                            + '/' + (intLoadingMaximum - 1).ToString(GlobalSettings.CultureInfo) + ')';
                 x.PerformStep();
-            }, token);
-            await lblLoadingInfo.DoThreadSafeAsync(x => x.Text = strNewText, token);
+            }, token).ConfigureAwait(false);
+            await lblLoadingInfo.DoThreadSafeAsync(x => x.Text = strNewText, token).ConfigureAwait(false);
         }
     }
 }

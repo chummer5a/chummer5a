@@ -124,20 +124,14 @@ namespace Chummer
                         await lblBonusText2.DoThreadSafeAsync(x => x.Visible = false);
                     }
 
-                    await cboChoice1.DoThreadSafeFuncAsync(x => x.Visible)
-                                    .ContinueWith(y => lblChoice1.DoThreadSafeAsync(x => x.Visible = y.Result))
-                                    .Unwrap();
-                    await cboChoice2.DoThreadSafeFuncAsync(x => x.Visible)
-                                    .ContinueWith(
-                                        y => lblChoice2.DoThreadSafeAsync(x => x.Visible = y.Result))
-                                    .Unwrap();
-                    await lblBonusText1.DoThreadSafeFuncAsync(x => x.Visible)
-                                       .ContinueWith(
-                                           y => lblBonus1.DoThreadSafeAsync(x => x.Visible = y.Result))
-                                       .Unwrap();
-                    await lblBonusText2.DoThreadSafeFuncAsync(x => x.Visible)
-                                       .ContinueWith(y => lblBonus2.DoThreadSafeAsync(x => x.Visible = y.Result))
-                                       .Unwrap();
+                    bool blnTemp = await cboChoice1.DoThreadSafeFuncAsync(x => x.Visible);
+                    await lblChoice1.DoThreadSafeAsync(x => x.Visible = blnTemp);
+                    blnTemp = await cboChoice2.DoThreadSafeFuncAsync(x => x.Visible);
+                    await lblChoice2.DoThreadSafeAsync(x => x.Visible = blnTemp);
+                    blnTemp = await lblBonusText1.DoThreadSafeFuncAsync(x => x.Visible);
+                    await lblBonus1.DoThreadSafeAsync(x => x.Visible = blnTemp);
+                    blnTemp = await lblBonusText2.DoThreadSafeFuncAsync(x => x.Visible);
+                    await lblBonus2.DoThreadSafeAsync(x => x.Visible = blnTemp);
 
                     // Get the information for the selected Mentor.
                     string strUnknown = await LanguageManager.GetStringAsync("String_Unknown");

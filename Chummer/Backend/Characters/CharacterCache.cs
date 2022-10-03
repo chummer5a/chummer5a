@@ -477,10 +477,11 @@ namespace Chummer
         /// <summary>
         /// Syntactic sugar to call CopyFrom() asynchronously immediately after the constructor.
         /// </summary>
-        public static Task<CharacterCache> CreateFromFileAsync(CharacterCache objExistingCache, CancellationToken token = default)
+        public static async Task<CharacterCache> CreateFromFileAsync(CharacterCache objExistingCache, CancellationToken token = default)
         {
             CharacterCache objReturn = new CharacterCache();
-            return objReturn.CopyFromAsync(objExistingCache, token).ContinueWith(x => objReturn, token);
+            await objReturn.CopyFromAsync(objExistingCache, token);
+            return objReturn;
         }
 
         /// <summary>
@@ -495,10 +496,11 @@ namespace Chummer
         /// <summary>
         /// Syntactic sugar to call LoadFromFile() asynchronously immediately after the constructor.
         /// </summary>
-        public static Task<CharacterCache> CreateFromFileAsync(string strFile, CancellationToken token = default)
+        public static async Task<CharacterCache> CreateFromFileAsync(string strFile, CancellationToken token = default)
         {
             CharacterCache objReturn = new CharacterCache();
-            return objReturn.LoadFromFileAsync(strFile, token).ContinueWith(x => objReturn, token);
+            await objReturn.LoadFromFileAsync(strFile, token);
+            return objReturn;
         }
 
         public void CopyFrom(CharacterCache objExistingCache)

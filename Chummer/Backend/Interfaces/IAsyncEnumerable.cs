@@ -6565,13 +6565,14 @@ namespace Chummer
                         {
                             token.ThrowIfCancellationRequested();
                             T objCurrent = objEnumerator.Current;
-                            lstTasks.Add(Task.Run(() => objFuncToRunWithPossibleTerminate.Invoke(objCurrent), objToken).ContinueWith(
-                                             async x =>
-                                             {
-                                                 if (await x.ConfigureAwait(false))
-                                                     // ReSharper disable once AccessToDisposedClosure
-                                                     objSource.Cancel(false);
-                                             }, objToken).Unwrap());
+                            lstTasks.Add(DoLoopTask());
+                            async Task DoLoopTask()
+                            {
+                                bool blnReturn = await Task.Run(() => objFuncToRunWithPossibleTerminate.Invoke(objCurrent), objToken).ConfigureAwait(false);
+                                if (blnReturn)
+                                    // ReSharper disable once AccessToDisposedClosure
+                                    objSource.Cancel(false);
+                            }
                             blnMoveNext = objEnumerator.MoveNext();
                         }
 
@@ -6623,13 +6624,14 @@ namespace Chummer
                         {
                             token.ThrowIfCancellationRequested();
                             T objCurrent = objEnumerator.Current;
-                            lstTasks.Add(Task.Run(() => objFuncToRunWithPossibleTerminate.Invoke(objCurrent), objToken).ContinueWith(
-                                             async x =>
-                                             {
-                                                 if (await x.ConfigureAwait(false))
-                                                     // ReSharper disable once AccessToDisposedClosure
-                                                     objSource.Cancel(false);
-                                             }, objToken).Unwrap());
+                            lstTasks.Add(DoLoopTask());
+                            async Task DoLoopTask()
+                            {
+                                bool blnReturn = await Task.Run(() => objFuncToRunWithPossibleTerminate.Invoke(objCurrent), objToken).ConfigureAwait(false);
+                                if (blnReturn)
+                                    // ReSharper disable once AccessToDisposedClosure
+                                    objSource.Cancel(false);
+                            }
                             blnMoveNext = objEnumerator.MoveNext();
                         }
 

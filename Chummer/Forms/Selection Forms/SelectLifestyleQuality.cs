@@ -109,8 +109,10 @@ namespace Chummer
 
             // Change the BP Label to Karma if the character is being built with Karma instead (or is in Career Mode).
             if (_objCharacter.Created || !_objCharacter.EffectiveBuildMethodUsesPriorityTables)
-                await LanguageManager.GetStringAsync("Label_LP")
-                                     .ContinueWith(y => lblBPLabel.DoThreadSafeAsync(x => x.Text = y.Result)).Unwrap();
+            {
+                string strTemp = await LanguageManager.GetStringAsync("Label_LP");
+                await lblBPLabel.DoThreadSafeAsync(x => x.Text = strTemp);
+            }
 
             _blnLoading = false;
 

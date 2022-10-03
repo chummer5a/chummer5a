@@ -899,10 +899,8 @@ namespace Chummer
             CursorWait objCursorWait = await CursorWait.NewAsync(this);
             try
             {
-                await chkPossessionBased.DoThreadSafeFuncAsync(x => x.Checked)
-                                        .ContinueWith(
-                                            y => cboPossessionMethod.DoThreadSafeAsync(x => x.Enabled = y.Result))
-                                        .Unwrap();
+                bool blnTemp = await chkPossessionBased.DoThreadSafeFuncAsync(x => x.Checked);
+                await cboPossessionMethod.DoThreadSafeAsync(x => x.Enabled = blnTemp);
             }
             finally
             {

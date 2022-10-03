@@ -83,7 +83,7 @@ namespace Chummer
             {
                 _objCharacter.PropertyChanged += ObjCharacterOnPropertyChanged;
                 _objCharacter.SettingsPropertyChanged += ObjCharacterOnSettingsPropertyChanged;
-                await LanguageManager.PopulateSheetLanguageListAsync(cboLanguage, GlobalSettings.DefaultCharacterSheet, _objCharacter.Yield(), _objExportCulture, token: _objGenericToken);
+                await LanguageManager.PopulateSheetLanguageListAsync(cboLanguage, GlobalSettings.DefaultCharacterSheet, _objCharacter.Yield(), _objExportCulture, token: _objGenericToken).ConfigureAwait(false);
                 using (new FetchSafelyFromPool<List<ListItem>>(
                            Utils.ListItemListPool, out List<ListItem> lstExportMethods))
                 {
@@ -99,20 +99,20 @@ namespace Chummer
                         }
                     }
                     lstExportMethods.Sort();
-                    lstExportMethods.Insert(0, new ListItem("JSON", string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_Export_Blank", token: _objGenericToken), "JSON")));
+                    lstExportMethods.Insert(0, new ListItem("JSON", string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_Export_Blank", token: _objGenericToken).ConfigureAwait(false), "JSON")));
 
-                    await cboXSLT.PopulateWithListItemsAsync(lstExportMethods, _objGenericToken);
+                    await cboXSLT.PopulateWithListItemsAsync(lstExportMethods, _objGenericToken).ConfigureAwait(false);
                     await cboXSLT.DoThreadSafeAsync(x =>
                     {
                         if (x.Items.Count > 0)
                             x.SelectedIndex = 0;
-                    }, _objGenericToken);
+                    }, _objGenericToken).ConfigureAwait(false);
                 }
 
                 _blnLoading = false;
                 await Task.WhenAll(
                     UpdateWindowTitleAsync(_objGenericToken),
-                    DoLanguageUpdate(_objGenericToken));
+                    DoLanguageUpdate(_objGenericToken)).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -125,7 +125,7 @@ namespace Chummer
             try
             {
                 if (e.PropertyName == nameof(CharacterSettings.Name))
-                    await UpdateWindowTitleAsync(_objGenericToken);
+                    await UpdateWindowTitleAsync(_objGenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -138,7 +138,7 @@ namespace Chummer
             try
             {
                 if (e.PropertyName == nameof(Character.CharacterName) || e.PropertyName == nameof(Character.Created))
-                    await UpdateWindowTitleAsync(_objGenericToken);
+                    await UpdateWindowTitleAsync(_objGenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -166,7 +166,7 @@ namespace Chummer
 
             try
             {
-                await _tskXmlGenerator;
+                await _tskXmlGenerator.ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -174,7 +174,7 @@ namespace Chummer
             }
             try
             {
-                await _tskCharacterXmlGenerator;
+                await _tskCharacterXmlGenerator.ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -187,7 +187,7 @@ namespace Chummer
         {
             try
             {
-                await DoExport(_objGenericToken);
+                await DoExport(_objGenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -199,12 +199,12 @@ namespace Chummer
         {
             try
             {
-                await DoExport(_objGenericToken);
+                await DoExport(_objGenericToken).ConfigureAwait(false);
                 await this.DoThreadSafeAsync(x =>
                 {
                     x.DialogResult = DialogResult.OK;
                     x.Close();
-                }, _objGenericToken);
+                }, _objGenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -217,21 +217,21 @@ namespace Chummer
             if (string.IsNullOrEmpty(_strXslt))
                 return;
 
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
                 if (_strXslt == "JSON")
                 {
-                    await ExportJson(token: token);
+                    await ExportJson(token: token).ConfigureAwait(false);
                 }
                 else
                 {
-                    await ExportNormal(token: token);
+                    await ExportNormal(token: token).ConfigureAwait(false);
                 }
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -239,7 +239,7 @@ namespace Chummer
         {
             try
             {
-                await DoLanguageUpdate(_objGenericToken);
+                await DoLanguageUpdate(_objGenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -251,7 +251,7 @@ namespace Chummer
         {
             try
             {
-                await DoXsltUpdate(_objGenericToken);
+                await DoXsltUpdate(_objGenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -264,7 +264,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (!_blnLoading)
             {
-                _strExportLanguage = await cboLanguage.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token) ?? GlobalSettings.Language;
+                _strExportLanguage = await cboLanguage.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false) ?? GlobalSettings.Language;
                 try
                 {
                     _objExportCulture = CultureInfo.GetCultureInfo(_strExportLanguage);
@@ -284,7 +284,7 @@ namespace Chummer
                                                                            _strExportLanguage.Substring(3, 2))
                                                                        : FlagImageGetter.GetFlagFromCountryCode(
                                                                            _strExportLanguage.Substring(3, 2)), token),
-                    DoXsltUpdate(token));
+                    DoXsltUpdate(token)).ConfigureAwait(false);
                 token.ThrowIfCancellationRequested();
             }
         }
@@ -296,22 +296,22 @@ namespace Chummer
             {
                 if (_objCharacterXml != null)
                 {
-                    _strXslt = await cboXSLT.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token);
+                    _strXslt = await cboXSLT.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false);
                     if (!string.IsNullOrEmpty(_strXslt))
                     {
-                        CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+                        CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
                         try
                         {
                             token.ThrowIfCancellationRequested();
-                            string strText = await LanguageManager.GetStringAsync("String_Generating_Data", token: token);
-                            await txtText.DoThreadSafeAsync(x => x.Text = strText, token);
+                            string strText = await LanguageManager.GetStringAsync("String_Generating_Data", token: token).ConfigureAwait(false);
+                            await txtText.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
                             (bool blnSuccess, Tuple<string, string> strBoxText)
                                 = await _dicCache.TryGetValueAsync(
-                                    new Tuple<string, string>(_strExportLanguage, _strXslt), token);
+                                    new Tuple<string, string>(_strExportLanguage, _strXslt), token).ConfigureAwait(false);
                             token.ThrowIfCancellationRequested();
                             if (blnSuccess)
                             {
-                                await txtText.DoThreadSafeAsync(x => x.Text = strBoxText.Item2, token);
+                                await txtText.DoThreadSafeAsync(x => x.Text = strBoxText.Item2, token).ConfigureAwait(false);
                             }
                             else
                             {
@@ -339,7 +339,7 @@ namespace Chummer
                                 try
                                 {
                                     if (_tskXmlGenerator?.IsCompleted == false)
-                                        await _tskXmlGenerator;
+                                        await _tskXmlGenerator.ConfigureAwait(false);
                                 }
                                 catch (OperationCanceledException)
                                 {
@@ -360,7 +360,7 @@ namespace Chummer
                         }
                         finally
                         {
-                            await objCursorWait.DisposeAsync();
+                            await objCursorWait.DisposeAsync().ConfigureAwait(false);
                         }
                     }
                 }
@@ -391,7 +391,7 @@ namespace Chummer
                     try
                     {
                         if (_tskCharacterXmlGenerator?.IsCompleted == false)
-                            await _tskCharacterXmlGenerator;
+                            await _tskCharacterXmlGenerator.ConfigureAwait(false);
                     }
                     catch (OperationCanceledException)
                     {
@@ -432,27 +432,25 @@ namespace Chummer
         private async Task GenerateCharacterXml(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
+                string strGeneratingData = await LanguageManager.GetStringAsync("String_Generating_Data", token: token).ConfigureAwait(false);
                 await Task.WhenAll(cmdExport.DoThreadSafeAsync(x => x.Enabled = false, token),
                                    cmdExportClose.DoThreadSafeAsync(x => x.Enabled = false, token),
-                                   LanguageManager.GetStringAsync("String_Generating_Data", token: token)
-                                                  .ContinueWith(
-                                                      y => txtText.DoThreadSafeAsync(x => x.Text = y.Result, token),
-                                                      token).Unwrap());
+                                   txtText.DoThreadSafeAsync(x => x.Text = strGeneratingData, token)).ConfigureAwait(false);
                 token.ThrowIfCancellationRequested();
                 using (token.Register(() => _objCharacterXmlGeneratorCancellationTokenSource.Cancel(false)))
                     _objCharacterXml = await _objCharacter.GenerateExportXml(_objExportCulture, _strExportLanguage,
                                                                              _objCharacterXmlGeneratorCancellationTokenSource
-                                                                                 .Token);
+                                                                                 .Token).ConfigureAwait(false);
                 token.ThrowIfCancellationRequested();
                 if (_objCharacterXml != null)
-                    await DoXsltUpdate(token);
+                    await DoXsltUpdate(token).ConfigureAwait(false);
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -461,13 +459,13 @@ namespace Chummer
         /// </summary>
         protected async Task UpdateWindowTitleAsync(CancellationToken token = default)
         {
-            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token);
-            string strTitle = await LanguageManager.GetStringAsync("Title_ExportCharacter", token: token) + ':' + strSpace
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+            string strTitle = await LanguageManager.GetStringAsync("Title_ExportCharacter", token: token).ConfigureAwait(false) + ':' + strSpace
                               + CharacterObject.CharacterName + strSpace + '-' + strSpace
                               + await LanguageManager.GetStringAsync(
-                                  CharacterObject.Created ? "Title_CareerMode" : "Title_CreateNewCharacter", token: token) + strSpace
+                                  CharacterObject.Created ? "Title_CareerMode" : "Title_CreateNewCharacter", token: token).ConfigureAwait(false) + strSpace
                               + '(' + CharacterObject.Settings.Name + ')';
-            await this.DoThreadSafeAsync(x => x.Text = strTitle, token);
+            await this.DoThreadSafeAsync(x => x.Text = strTitle, token).ConfigureAwait(false);
         }
 
         #region XML
@@ -484,7 +482,7 @@ namespace Chummer
                 using (StreamReader objFile = new StreamReader(exportSheetPath, Encoding.UTF8, true))
                 {
                     string strLine;
-                    while ((strLine = await objFile.ReadLineAsync()) != null)
+                    while ((strLine = await objFile.ReadLineAsync().ConfigureAwait(false)) != null)
                     {
                         token.ThrowIfCancellationRequested();
                         if (strLine.StartsWith("<!-- ext:", StringComparison.Ordinal))
@@ -494,15 +492,15 @@ namespace Chummer
 
                 string strExtensionLower = strExtension.ToLowerInvariant();
                 if (strExtension.Equals("XML", StringComparison.OrdinalIgnoreCase))
-                    dlgSaveFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Xml", token: token);
+                    dlgSaveFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Xml", token: token).ConfigureAwait(false);
                 else if (strExtension.Equals("JSON", StringComparison.OrdinalIgnoreCase))
-                    dlgSaveFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Json", token: token);
+                    dlgSaveFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Json", token: token).ConfigureAwait(false);
                 else if (strExtension.Equals("HTM", StringComparison.OrdinalIgnoreCase) || strExtension.Equals("HTML", StringComparison.OrdinalIgnoreCase))
-                    dlgSaveFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Html", token: token);
+                    dlgSaveFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Html", token: token).ConfigureAwait(false);
                 else
                     dlgSaveFile.Filter = strExtension.ToUpper(GlobalSettings.CultureInfo) + "|*." + strExtensionLower;
-                dlgSaveFile.Title = await LanguageManager.GetStringAsync("Button_Viewer_SaveAsHtml", token: token);
-                if (await this.DoThreadSafeFuncAsync(x => dlgSaveFile.ShowDialog(x), token) != DialogResult.OK)
+                dlgSaveFile.Title = await LanguageManager.GetStringAsync("Button_Viewer_SaveAsHtml", token: token).ConfigureAwait(false);
+                if (await this.DoThreadSafeFuncAsync(x => dlgSaveFile.ShowDialog(x), token).ConfigureAwait(false) != DialogResult.OK)
                     return;
                 strSaveFile = dlgSaveFile.FileName;
                 if (string.IsNullOrEmpty(strSaveFile))
@@ -516,7 +514,7 @@ namespace Chummer
                 return;
             
             (bool blnSuccess, Tuple<string, string> strBoxText)
-                = await _dicCache.TryGetValueAsync(new Tuple<string, string>(_strExportLanguage, _strXslt), token);
+                = await _dicCache.TryGetValueAsync(new Tuple<string, string>(_strExportLanguage, _strXslt), token).ConfigureAwait(false);
             File.WriteAllText(strSaveFile, // Change this to a proper path.
                               blnSuccess
                                   ? strBoxText.Item1
@@ -527,11 +525,11 @@ namespace Chummer
         private async Task GenerateXml(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
-                await cmdExport.DoThreadSafeAsync(x => x.Enabled = false, token);
-                await cmdExportClose.DoThreadSafeAsync(x => x.Enabled = false, token);
+                await cmdExport.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
+                await cmdExportClose.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
                 try
                 {
                     token.ThrowIfCancellationRequested();
@@ -542,7 +540,7 @@ namespace Chummer
                     {
                         objXslTransform
                             = await XslManager
-                                .GetTransformForFileAsync(exportSheetPath, token); // Use the path for the export sheet.
+                                    .GetTransformForFileAsync(exportSheetPath, token).ConfigureAwait(false); // Use the path for the export sheet.
                     }
                     catch (ArgumentException)
                     {
@@ -550,7 +548,7 @@ namespace Chummer
                         string strReturn = "Last write time could not be fetched when attempting to load " + _strXslt +
                                            Environment.NewLine;
                         Log.Debug(strReturn);
-                        await SetTextToWorkerResult(strReturn, token);
+                        await SetTextToWorkerResult(strReturn, token).ConfigureAwait(false);
                         return;
                     }
                     catch (PathTooLongException)
@@ -559,7 +557,7 @@ namespace Chummer
                         string strReturn = "Last write time could not be fetched when attempting to load " + _strXslt +
                                            Environment.NewLine;
                         Log.Debug(strReturn);
-                        await SetTextToWorkerResult(strReturn, token);
+                        await SetTextToWorkerResult(strReturn, token).ConfigureAwait(false);
                         return;
                     }
                     catch (UnauthorizedAccessException)
@@ -568,7 +566,7 @@ namespace Chummer
                         string strReturn = "Last write time could not be fetched when attempting to load " + _strXslt +
                                            Environment.NewLine;
                         Log.Debug(strReturn);
-                        await SetTextToWorkerResult(strReturn, token);
+                        await SetTextToWorkerResult(strReturn, token).ConfigureAwait(false);
                         return;
                     }
                     catch (XsltException ex)
@@ -578,7 +576,7 @@ namespace Chummer
                         Log.Debug(strReturn);
                         Log.Error("ERROR Message = " + ex.Message);
                         strReturn += ex.Message;
-                        await SetTextToWorkerResult(strReturn, token);
+                        await SetTextToWorkerResult(strReturn, token).ConfigureAwait(false);
                         return;
                     }
 
@@ -599,7 +597,7 @@ namespace Chummer
                                    : Utils.GetXslTransformXmlWriter(objStream))
                         {
                             token.ThrowIfCancellationRequested();
-                            await Task.Run(() => objXslTransform.Transform(_objCharacterXml, objWriter), token);
+                            await Task.Run(() => objXslTransform.Transform(_objCharacterXml, objWriter), token).ConfigureAwait(false);
                         }
 
                         token.ThrowIfCancellationRequested();
@@ -607,48 +605,48 @@ namespace Chummer
 
                         // Read in the resulting code and pass it to the browser.
                         using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
-                            strText = await objReader.ReadToEndAsync();
+                            strText = await objReader.ReadToEndAsync().ConfigureAwait(false);
                     }
 
                     token.ThrowIfCancellationRequested();
-                    await SetTextToWorkerResult(strText, token);
+                    await SetTextToWorkerResult(strText, token).ConfigureAwait(false);
                 }
                 finally
                 {
-                    await cmdExport.DoThreadSafeAsync(x => x.Enabled = true, token);
-                    await cmdExportClose.DoThreadSafeAsync(x => x.Enabled = true, token);
+                    await cmdExport.DoThreadSafeAsync(x => x.Enabled = true, token).ConfigureAwait(false);
+                    await cmdExportClose.DoThreadSafeAsync(x => x.Enabled = true, token).ConfigureAwait(false);
                 }
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
         private async Task GenerateJson(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
-                await cmdExport.DoThreadSafeAsync(x => x.Enabled = false, token);
-                await cmdExportClose.DoThreadSafeAsync(x => x.Enabled = false, token);
+                await cmdExport.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
+                await cmdExportClose.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
                 try
                 {
                     token.ThrowIfCancellationRequested();
                     string strText = JsonConvert.SerializeXmlNode(_objCharacterXml, Formatting.Indented);
                     token.ThrowIfCancellationRequested();
-                    await SetTextToWorkerResult(strText, token);
+                    await SetTextToWorkerResult(strText, token).ConfigureAwait(false);
                 }
                 finally
                 {
-                    await cmdExport.DoThreadSafeAsync(x => x.Enabled = true, token);
-                    await cmdExportClose.DoThreadSafeAsync(x => x.Enabled = true, token);
+                    await cmdExport.DoThreadSafeAsync(x => x.Enabled = true, token).ConfigureAwait(false);
+                    await cmdExportClose.DoThreadSafeAsync(x => x.Enabled = true, token).ConfigureAwait(false);
                 }
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -687,9 +685,9 @@ namespace Chummer
             string strSaveFile = destination;
             if (string.IsNullOrEmpty(strSaveFile))
             {
-                dlgSaveFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Json", token: token) + '|' + await LanguageManager.GetStringAsync("DialogFilter_All", token: token);
-                dlgSaveFile.Title = await LanguageManager.GetStringAsync("Button_Export_SaveJsonAs", token: token);
-                if (await this.DoThreadSafeFuncAsync(x => dlgSaveFile.ShowDialog(x), token) != DialogResult.OK)
+                dlgSaveFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Json", token: token).ConfigureAwait(false) + '|' + await LanguageManager.GetStringAsync("DialogFilter_All", token: token).ConfigureAwait(false);
+                dlgSaveFile.Title = await LanguageManager.GetStringAsync("Button_Export_SaveJsonAs", token: token).ConfigureAwait(false);
+                if (await this.DoThreadSafeFuncAsync(x => dlgSaveFile.ShowDialog(x), token).ConfigureAwait(false) != DialogResult.OK)
                     return;
                 strSaveFile = dlgSaveFile.FileName;
                 if (string.IsNullOrWhiteSpace(strSaveFile))
@@ -701,7 +699,7 @@ namespace Chummer
                 return;
 
             (bool blnSuccess, Tuple<string, string> strBoxText)
-                = await _dicCache.TryGetValueAsync(new Tuple<string, string>(_strExportLanguage, _strXslt), token);
+                = await _dicCache.TryGetValueAsync(new Tuple<string, string>(_strExportLanguage, _strXslt), token).ConfigureAwait(false);
             File.WriteAllText(strSaveFile, // Change this to a proper path.
                               blnSuccess
                                   ? strBoxText.Item1

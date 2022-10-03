@@ -212,10 +212,11 @@ namespace Chummer
         /// <param name="objCharacter"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        public static Task<DialogResult> ShowDialogSafeAsync(this Form frmForm, Character objCharacter, CancellationToken token = default)
+        public static async Task<DialogResult> ShowDialogSafeAsync(this Form frmForm, Character objCharacter, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            return Program.GetFormForDialogAsync(objCharacter, token).ContinueWith(async x => await frmForm.ShowDialogSafeAsync(await x.ConfigureAwait(false), token).ConfigureAwait(false), token).Unwrap();
+            Form frmFormForDialog = await Program.GetFormForDialogAsync(objCharacter, token).ConfigureAwait(false);
+            return await frmForm.ShowDialogSafeAsync(frmFormForDialog, token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -1600,22 +1601,16 @@ namespace Chummer
                     IntPtr _ = objControl.Handle; // accessing Handle forces its creation
                 }
             }, token).ConfigureAwait(false);
-            await funcAsyncDataGetter.Invoke(objDataSource)
-                                     .ContinueWith(
-                                         x => objControl.DoThreadSafeAsync(
-                                             y => funcControlSetter.Invoke(y, x.Result), objGetterToken),
-                                         objGetterToken).Unwrap().ConfigureAwait(false);
+            T3 objData = await funcAsyncDataGetter.Invoke(objDataSource).ConfigureAwait(false);
+            await objControl.DoThreadSafeAsync(x => funcControlSetter.Invoke(x, objData), objGetterToken).ConfigureAwait(false);
             objDataSource.PropertyChanged += OnPropertyChangedAsync;
             await Utils.RunOnMainThreadAsync(() => objControl.Disposed += (o, args) => objDataSource.PropertyChanged -= OnPropertyChangedAsync, token).ConfigureAwait(false);
             async void OnPropertyChangedAsync(object sender, PropertyChangedEventArgs e)
             {
                 if (e.PropertyName == strDataMember && !objGetterToken.IsCancellationRequested)
                 {
-                    await funcAsyncDataGetter.Invoke(objDataSource)
-                                             .ContinueWith(
-                                                 x => objControl.DoThreadSafeAsync(
-                                                     y => funcControlSetter.Invoke(y, x.Result), objGetterToken),
-                                                 objGetterToken).Unwrap().ConfigureAwait(false);
+                    T3 objInnerData = await funcAsyncDataGetter.Invoke(objDataSource).ConfigureAwait(false);
+                    await objControl.DoThreadSafeAsync(y => funcControlSetter.Invoke(y, objInnerData), token: objGetterToken).ConfigureAwait(false);
                 }
             }
         }

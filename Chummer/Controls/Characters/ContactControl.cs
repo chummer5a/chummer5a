@@ -69,39 +69,39 @@ namespace Chummer
         {
             if (this.IsNullOrDisposed())
                 return;
-            await LoadContactList();
+            await LoadContactList().ConfigureAwait(false);
 
-            await DoDataBindings();
+            await DoDataBindings().ConfigureAwait(false);
 
             if (_objContact.IsEnemy)
             {
                 if (cmdLink != null)
                 {
                     string strText = !string.IsNullOrEmpty(_objContact.FileName)
-                        ? await LanguageManager.GetStringAsync("Tip_Enemy_OpenLinkedEnemy")
-                        : await LanguageManager.GetStringAsync("Tip_Enemy_LinkEnemy");
-                    await cmdLink.SetToolTipTextAsync(strText);
+                        ? await LanguageManager.GetStringAsync("Tip_Enemy_OpenLinkedEnemy").ConfigureAwait(false)
+                        : await LanguageManager.GetStringAsync("Tip_Enemy_LinkEnemy").ConfigureAwait(false);
+                    await cmdLink.SetToolTipTextAsync(strText).ConfigureAwait(false);
                 }
 
-                string strTooltip = await LanguageManager.GetStringAsync("Tip_Enemy_EditNotes");
+                string strTooltip = await LanguageManager.GetStringAsync("Tip_Enemy_EditNotes").ConfigureAwait(false);
                 if (!string.IsNullOrEmpty(_objContact.Notes))
                     strTooltip += Environment.NewLine + Environment.NewLine + _objContact.Notes;
-                await cmdNotes.SetToolTipTextAsync(strTooltip.WordWrap());
+                await cmdNotes.SetToolTipTextAsync(strTooltip.WordWrap()).ConfigureAwait(false);
             }
             else
             {
                 if (cmdLink != null)
                 {
                     string strText = !string.IsNullOrEmpty(_objContact.FileName)
-                        ? await LanguageManager.GetStringAsync("Tip_Contact_OpenLinkedContact")
-                        : await LanguageManager.GetStringAsync("Tip_Contact_LinkContact");
-                    await cmdLink.SetToolTipTextAsync(strText);
+                        ? await LanguageManager.GetStringAsync("Tip_Contact_OpenLinkedContact").ConfigureAwait(false)
+                        : await LanguageManager.GetStringAsync("Tip_Contact_LinkContact").ConfigureAwait(false);
+                    await cmdLink.SetToolTipTextAsync(strText).ConfigureAwait(false);
                 }
 
-                string strTooltip = await LanguageManager.GetStringAsync("Tip_Contact_EditNotes");
+                string strTooltip = await LanguageManager.GetStringAsync("Tip_Contact_EditNotes").ConfigureAwait(false);
                 if (!string.IsNullOrEmpty(_objContact.Notes))
                     strTooltip += Environment.NewLine + Environment.NewLine + _objContact.Notes;
-                await cmdNotes.SetToolTipTextAsync(strTooltip.WordWrap());
+                await cmdNotes.SetToolTipTextAsync(strTooltip.WordWrap()).ConfigureAwait(false);
             }
 
             _blnLoading = false;
@@ -145,7 +145,7 @@ namespace Chummer
 
         private async void cmdExpand_Click(object sender, EventArgs e)
         {
-            await SetExpandedAsync(!await GetExpandedAsync());
+            await SetExpandedAsync(!await GetExpandedAsync().ConfigureAwait(false)).ConfigureAwait(false);
         }
 
         private void cboContactRole_TextChanged(object sender, EventArgs e)
@@ -173,18 +173,18 @@ namespace Chummer
         {
             if (_blnLoading || !_blnStatBlockIsLoaded)
                 return;
-            string strNew = await cboMetatype.DoThreadSafeFuncAsync(x => x.Text);
-            string strOld = await _objContact.GetDisplayMetatypeAsync();
+            string strNew = await cboMetatype.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false);
+            string strOld = await _objContact.GetDisplayMetatypeAsync().ConfigureAwait(false);
             if (strOld == strNew)
                 return;
-            await _objContact.SetDisplayMetatypeAsync(strNew);
-            strOld = await _objContact.GetDisplayMetatypeAsync();
+            await _objContact.SetDisplayMetatypeAsync(strNew).ConfigureAwait(false);
+            strOld = await _objContact.GetDisplayMetatypeAsync().ConfigureAwait(false);
             if (strOld != strNew)
             {
                 _blnLoading = true;
                 try
                 {
-                    await cboMetatype.DoThreadSafeAsync(x => x.Text = strOld);
+                    await cboMetatype.DoThreadSafeAsync(x => x.Text = strOld).ConfigureAwait(false);
                 }
                 finally
                 {
@@ -199,19 +199,19 @@ namespace Chummer
         {
             if (_blnLoading || !_blnStatBlockIsLoaded)
                 return;
-            string strNew = await cboGender.DoThreadSafeFuncAsync(x => x.Text);
-            string strOld = await _objContact.GetDisplayGenderAsync();
+            string strNew = await cboGender.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false);
+            string strOld = await _objContact.GetDisplayGenderAsync().ConfigureAwait(false);
             if (strOld == strNew)
                 return;
-            await _objContact.SetDisplayGenderAsync(strNew);
-            strOld = await _objContact.GetDisplayGenderAsync();
+            await _objContact.SetDisplayGenderAsync(strNew).ConfigureAwait(false);
+            strOld = await _objContact.GetDisplayGenderAsync().ConfigureAwait(false);
             if (strOld != strNew)
             {
                 bool blnOld = _blnLoading;
                 try
                 {
                     _blnLoading = true;
-                    await cboGender.DoThreadSafeAsync(x => x.Text = strOld);
+                    await cboGender.DoThreadSafeAsync(x => x.Text = strOld).ConfigureAwait(false);
                 }
                 finally
                 {
@@ -226,19 +226,19 @@ namespace Chummer
         {
             if (_blnLoading || !_blnStatBlockIsLoaded)
                 return;
-            string strNew = await cboAge.DoThreadSafeFuncAsync(x => x.Text);
-            string strOld = await _objContact.GetDisplayAgeAsync();
+            string strNew = await cboAge.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false);
+            string strOld = await _objContact.GetDisplayAgeAsync().ConfigureAwait(false);
             if (strOld == strNew)
                 return;
-            await _objContact.SetDisplayAgeAsync(strNew);
-            strOld = await _objContact.GetDisplayAgeAsync();
+            await _objContact.SetDisplayAgeAsync(strNew).ConfigureAwait(false);
+            strOld = await _objContact.GetDisplayAgeAsync().ConfigureAwait(false);
             if (strOld != strNew)
             {
                 bool blnOld = _blnLoading;
                 try
                 {
                     _blnLoading = true;
-                    await cboAge.DoThreadSafeAsync(x => x.Text = strOld);
+                    await cboAge.DoThreadSafeAsync(x => x.Text = strOld).ConfigureAwait(false);
                 }
                 finally
                 {
@@ -253,19 +253,19 @@ namespace Chummer
         {
             if (_blnLoading || !_blnStatBlockIsLoaded)
                 return;
-            string strNew = await cboPersonalLife.DoThreadSafeFuncAsync(x => x.Text);
-            string strOld = await _objContact.GetDisplayPersonalLifeAsync();
+            string strNew = await cboPersonalLife.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false);
+            string strOld = await _objContact.GetDisplayPersonalLifeAsync().ConfigureAwait(false);
             if (strOld == strNew)
                 return;
-            await _objContact.SetDisplayPersonalLifeAsync(strNew);
-            strOld = await _objContact.GetDisplayPersonalLifeAsync();
+            await _objContact.SetDisplayPersonalLifeAsync(strNew).ConfigureAwait(false);
+            strOld = await _objContact.GetDisplayPersonalLifeAsync().ConfigureAwait(false);
             if (strOld != strNew)
             {
                 bool blnOld = _blnLoading;
                 try
                 {
                     _blnLoading = true;
-                    await cboPersonalLife.DoThreadSafeAsync(x => x.Text = strOld);
+                    await cboPersonalLife.DoThreadSafeAsync(x => x.Text = strOld).ConfigureAwait(false);
                 }
                 finally
                 {
@@ -280,19 +280,19 @@ namespace Chummer
         {
             if (_blnLoading || !_blnStatBlockIsLoaded)
                 return;
-            string strNew = await cboType.DoThreadSafeFuncAsync(x => x.Text);
-            string strOld = await _objContact.GetDisplayTypeAsync();
+            string strNew = await cboType.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false);
+            string strOld = await _objContact.GetDisplayTypeAsync().ConfigureAwait(false);
             if (strOld == strNew)
                 return;
-            await _objContact.SetDisplayTypeAsync(strNew);
-            strOld = await _objContact.GetDisplayTypeAsync();
+            await _objContact.SetDisplayTypeAsync(strNew).ConfigureAwait(false);
+            strOld = await _objContact.GetDisplayTypeAsync().ConfigureAwait(false);
             if (strOld != strNew)
             {
                 bool blnOld = _blnLoading;
                 try
                 {
                     _blnLoading = true;
-                    await cboType.DoThreadSafeAsync(x => x.Text = strOld);
+                    await cboType.DoThreadSafeAsync(x => x.Text = strOld).ConfigureAwait(false);
                 }
                 finally
                 {
@@ -307,19 +307,19 @@ namespace Chummer
         {
             if (_blnLoading || !_blnStatBlockIsLoaded)
                 return;
-            string strNew = await cboPreferredPayment.DoThreadSafeFuncAsync(x => x.Text);
-            string strOld = await _objContact.GetDisplayPreferredPaymentAsync();
+            string strNew = await cboPreferredPayment.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false);
+            string strOld = await _objContact.GetDisplayPreferredPaymentAsync().ConfigureAwait(false);
             if (strOld == strNew)
                 return;
-            await _objContact.SetDisplayPreferredPaymentAsync(strNew);
-            strOld = await _objContact.GetDisplayPreferredPaymentAsync();
+            await _objContact.SetDisplayPreferredPaymentAsync(strNew).ConfigureAwait(false);
+            strOld = await _objContact.GetDisplayPreferredPaymentAsync().ConfigureAwait(false);
             if (strOld != strNew)
             {
                 bool blnOld = _blnLoading;
                 try
                 {
                     _blnLoading = true;
-                    await cboPreferredPayment.DoThreadSafeAsync(x => x.Text = strOld);
+                    await cboPreferredPayment.DoThreadSafeAsync(x => x.Text = strOld).ConfigureAwait(false);
                 }
                 finally
                 {
@@ -334,19 +334,19 @@ namespace Chummer
         {
             if (_blnLoading || !_blnStatBlockIsLoaded)
                 return;
-            string strNew = await cboHobbiesVice.DoThreadSafeFuncAsync(x => x.Text);
-            string strOld = await _objContact.GetDisplayHobbiesViceAsync();
+            string strNew = await cboHobbiesVice.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false);
+            string strOld = await _objContact.GetDisplayHobbiesViceAsync().ConfigureAwait(false);
             if (strOld == strNew)
                 return;
-            await _objContact.SetDisplayHobbiesViceAsync(strNew);
-            strOld = await _objContact.GetDisplayHobbiesViceAsync();
+            await _objContact.SetDisplayHobbiesViceAsync(strNew).ConfigureAwait(false);
+            strOld = await _objContact.GetDisplayHobbiesViceAsync().ConfigureAwait(false);
             if (strOld != strNew)
             {
                 bool blnOld = _blnLoading;
                 try
                 {
                     _blnLoading = true;
-                    await cboHobbiesVice.DoThreadSafeAsync(x => x.Text = strOld);
+                    await cboHobbiesVice.DoThreadSafeAsync(x => x.Text = strOld).ConfigureAwait(false);
                 }
                 finally
                 {
@@ -361,19 +361,19 @@ namespace Chummer
         {
             if (_blnLoading || !_blnStatBlockIsLoaded)
                 return;
-            string strNew = await cboContactRole.DoThreadSafeFuncAsync(x => x.Text);
-            string strOld = await _objContact.GetDisplayRoleAsync();
+            string strNew = await cboContactRole.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false);
+            string strOld = await _objContact.GetDisplayRoleAsync().ConfigureAwait(false);
             if (strOld == strNew)
                 return;
-            await _objContact.SetDisplayRoleAsync(strNew);
-            strOld = await _objContact.GetDisplayRoleAsync();
+            await _objContact.SetDisplayRoleAsync(strNew).ConfigureAwait(false);
+            strOld = await _objContact.GetDisplayRoleAsync().ConfigureAwait(false);
             if (strOld != strNew)
             {
                 bool blnOld = _blnLoading;
                 try
                 {
                     _blnLoading = true;
-                    await cboContactRole.DoThreadSafeAsync(x => x.Text = strOld);
+                    await cboContactRole.DoThreadSafeAsync(x => x.Text = strOld).ConfigureAwait(false);
                 }
                 finally
                 {
@@ -407,27 +407,27 @@ namespace Chummer
         {
             if (_objContact.LinkedCharacter != null)
             {
-                Character objOpenCharacter = await Program.OpenCharacters.ContainsAsync(_objContact.LinkedCharacter)
+                Character objOpenCharacter = await Program.OpenCharacters.ContainsAsync(_objContact.LinkedCharacter).ConfigureAwait(false)
                     ? _objContact.LinkedCharacter
                     : null;
-                CursorWait objCursorWait = await CursorWait.NewAsync(ParentForm);
+                CursorWait objCursorWait = await CursorWait.NewAsync(ParentForm).ConfigureAwait(false);
                 try
                 {
                     if (objOpenCharacter == null)
                     {
                         using (ThreadSafeForm<LoadingBar> frmLoadingBar
                                = await Program.CreateAndShowProgressBarAsync(
-                                   _objContact.LinkedCharacter.FileName, Character.NumLoadingSections))
+                                   _objContact.LinkedCharacter.FileName, Character.NumLoadingSections).ConfigureAwait(false))
                             objOpenCharacter = await Program.LoadCharacterAsync(
-                                _objContact.LinkedCharacter.FileName, frmLoadingBar: frmLoadingBar.MyForm);
+                                _objContact.LinkedCharacter.FileName, frmLoadingBar: frmLoadingBar.MyForm).ConfigureAwait(false);
                     }
 
-                    if (!await Program.SwitchToOpenCharacter(objOpenCharacter))
-                        await Program.OpenCharacter(objOpenCharacter);
+                    if (!await Program.SwitchToOpenCharacter(objOpenCharacter).ConfigureAwait(false))
+                        await Program.OpenCharacter(objOpenCharacter).ConfigureAwait(false);
                 }
                 finally
                 {
-                    await objCursorWait.DisposeAsync();
+                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             else
@@ -450,9 +450,9 @@ namespace Chummer
                     {
                         Program.ShowMessageBox(
                             string.Format(GlobalSettings.CultureInfo,
-                                          await LanguageManager.GetStringAsync("Message_FileNotFound"),
+                                          await LanguageManager.GetStringAsync("Message_FileNotFound").ConfigureAwait(false),
                                           _objContact.FileName),
-                            await LanguageManager.GetStringAsync("MessageTitle_FileNotFound"), MessageBoxButtons.OK,
+                            await LanguageManager.GetStringAsync("MessageTitle_FileNotFound").ConfigureAwait(false), MessageBoxButtons.OK,
                             MessageBoxIcon.Error);
                         return;
                     }
@@ -466,27 +466,27 @@ namespace Chummer
         private async void tsAttachCharacter_Click(object sender, EventArgs e)
         {
             // Prompt the user to select a save file to associate with this Contact.
-            using (OpenFileDialog dlgOpenFile = await this.DoThreadSafeFuncAsync(() => new OpenFileDialog()))
+            using (OpenFileDialog dlgOpenFile = await this.DoThreadSafeFuncAsync(() => new OpenFileDialog()).ConfigureAwait(false))
             {
-                dlgOpenFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Chummer") + '|' +
-                                     await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|' +
-                                     await LanguageManager.GetStringAsync("DialogFilter_Chum5lz") + '|' +
-                                     await LanguageManager.GetStringAsync("DialogFilter_All");
+                dlgOpenFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Chummer").ConfigureAwait(false) + '|' +
+                                     await LanguageManager.GetStringAsync("DialogFilter_Chum5").ConfigureAwait(false) + '|' +
+                                     await LanguageManager.GetStringAsync("DialogFilter_Chum5lz").ConfigureAwait(false) + '|' +
+                                     await LanguageManager.GetStringAsync("DialogFilter_All").ConfigureAwait(false);
                 if (!string.IsNullOrEmpty(_objContact.FileName) && File.Exists(_objContact.FileName))
                 {
                     dlgOpenFile.InitialDirectory = Path.GetDirectoryName(_objContact.FileName);
                     dlgOpenFile.FileName = Path.GetFileName(_objContact.FileName);
                 }
 
-                if (await this.DoThreadSafeFuncAsync(x => dlgOpenFile.ShowDialog(x)) != DialogResult.OK)
+                if (await this.DoThreadSafeFuncAsync(x => dlgOpenFile.ShowDialog(x)).ConfigureAwait(false) != DialogResult.OK)
                     return;
                 _objContact.FileName = dlgOpenFile.FileName;
                 if (cmdLink != null)
                 {
                     string strText = _objContact.IsEnemy
-                        ? await LanguageManager.GetStringAsync("Tip_Enemy_OpenFile")
-                        : await LanguageManager.GetStringAsync("Tip_Contact_OpenFile");
-                    await cmdLink.SetToolTipTextAsync(strText);
+                        ? await LanguageManager.GetStringAsync("Tip_Enemy_OpenFile").ConfigureAwait(false)
+                        : await LanguageManager.GetStringAsync("Tip_Contact_OpenFile").ConfigureAwait(false);
+                    await cmdLink.SetToolTipTextAsync(strText).ConfigureAwait(false);
                 }
             }
 
@@ -502,8 +502,8 @@ namespace Chummer
         private async void tsRemoveCharacter_Click(object sender, EventArgs e)
         {
             // Remove the file association from the Contact.
-            if (Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_RemoveCharacterAssociation"),
-                                       await LanguageManager.GetStringAsync("MessageTitle_RemoveCharacterAssociation"),
+            if (Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_RemoveCharacterAssociation").ConfigureAwait(false),
+                                       await LanguageManager.GetStringAsync("MessageTitle_RemoveCharacterAssociation").ConfigureAwait(false),
                                        MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
                 _objContact.FileName = string.Empty;
@@ -511,9 +511,9 @@ namespace Chummer
                 if (cmdLink != null)
                 {
                     string strText = _objContact.IsEnemy
-                        ? await LanguageManager.GetStringAsync("Tip_Enemy_LinkFile")
-                        : await LanguageManager.GetStringAsync("Tip_Contact_LinkFile");
-                    await cmdLink.SetToolTipTextAsync(strText);
+                        ? await LanguageManager.GetStringAsync("Tip_Enemy_LinkFile").ConfigureAwait(false)
+                        : await LanguageManager.GetStringAsync("Tip_Contact_LinkFile").ConfigureAwait(false);
+                    await cmdLink.SetToolTipTextAsync(strText).ConfigureAwait(false);
                 }
 
                 ContactDetailChanged?.Invoke(this, new TextEventArgs("File"));
@@ -524,9 +524,9 @@ namespace Chummer
         {
             using (ThreadSafeForm<EditNotes> frmContactNotes
                    = await ThreadSafeForm<EditNotes>.GetAsync(
-                       () => new EditNotes(_objContact.Notes, _objContact.NotesColor)))
+                       () => new EditNotes(_objContact.Notes, _objContact.NotesColor)).ConfigureAwait(false))
             {
-                if (await frmContactNotes.ShowDialogSafeAsync(this) != DialogResult.OK)
+                if (await frmContactNotes.ShowDialogSafeAsync(this).ConfigureAwait(false) != DialogResult.OK)
                     return;
                 _objContact.Notes = frmContactNotes.MyForm.Notes;
             }
@@ -534,10 +534,10 @@ namespace Chummer
             string strTooltip
                 = await LanguageManager.GetStringAsync(_objContact.IsEnemy
                                                            ? "Tip_Enemy_EditNotes"
-                                                           : "Tip_Contact_EditNotes");
+                                                           : "Tip_Contact_EditNotes").ConfigureAwait(false);
             if (!string.IsNullOrEmpty(_objContact.Notes))
                 strTooltip += Environment.NewLine + Environment.NewLine + _objContact.Notes;
-            await cmdNotes.SetToolTipTextAsync(strTooltip.WordWrap());
+            await cmdNotes.SetToolTipTextAsync(strTooltip.WordWrap()).ConfigureAwait(false);
             ContactDetailChanged?.Invoke(this, new TextEventArgs("Notes"));
         }
 
@@ -615,7 +615,7 @@ namespace Chummer
         public async ValueTask<bool> GetExpandedAsync(CancellationToken token = default)
         {
             if (tlpStatBlock != null)
-                return await tlpStatBlock.DoThreadSafeFuncAsync(x => x.Visible, token);
+                return await tlpStatBlock.DoThreadSafeFuncAsync(x => x.Visible, token).ConfigureAwait(false);
             return false;
         }
 
@@ -625,45 +625,42 @@ namespace Chummer
             {
                 x.ImageDpi96 = value ? Resources.toggle : Resources.toggle_expand;
                 x.ImageDpi192 = value ? Resources.toggle1 : Resources.toggle_expand1;
-            }, token);
+            }, token).ConfigureAwait(false);
             if (value && (tlpStatBlock == null || !_blnStatBlockIsLoaded))
             {
                 // Create second row and statblock only on the first expansion to save on handles and load times
-                await CreateSecondRowAsync(token);
-                await CreateStatBlockAsync(token);
+                await CreateSecondRowAsync(token).ConfigureAwait(false);
+                await CreateStatBlockAsync(token).ConfigureAwait(false);
                 _blnStatBlockIsLoaded = true;
             }
 
-            using (await CursorWait.NewAsync(this, token: token))
+            using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
-                await this.DoThreadSafeAsync(x => x.SuspendLayout(), token);
+                await this.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
                 try
                 {
-                    await lblConnection.DoThreadSafeAsync(x => x.Visible = value, token);
-                    await lblLoyalty.DoThreadSafeAsync(x => x.Visible = value, token);
-                    await nudConnection.DoThreadSafeAsync(x => x.Visible = value, token);
-                    await nudLoyalty.DoThreadSafeAsync(x => x.Visible = value, token);
-                    await chkGroup.DoThreadSafeAsync(x => x.Visible = value, token);
+                    await lblConnection.DoThreadSafeAsync(x => x.Visible = value, token).ConfigureAwait(false);
+                    await lblLoyalty.DoThreadSafeAsync(x => x.Visible = value, token).ConfigureAwait(false);
+                    await nudConnection.DoThreadSafeAsync(x => x.Visible = value, token).ConfigureAwait(false);
+                    await nudLoyalty.DoThreadSafeAsync(x => x.Visible = value, token).ConfigureAwait(false);
+                    await chkGroup.DoThreadSafeAsync(x => x.Visible = value, token).ConfigureAwait(false);
                     //We don't actually pay for contacts in play so everyone is free
                     //Don't present a useless field
                     if (value && _objContact != null)
                     {
-                        await _objContact.CharacterObject.GetCreatedAsync(token).AsTask()
-                                         .ContinueWith(
-                                             x => chkFree.DoThreadSafeAsync(
-                                                 y => y.Visible = !x.Result, token: token), token)
-                                         .Unwrap();
+                        bool blnCreated = await _objContact.CharacterObject.GetCreatedAsync(token).ConfigureAwait(false);
+                        await chkFree.DoThreadSafeAsync(x => x.Visible = !blnCreated, token: token).ConfigureAwait(false);
                     }
                     else
-                        await chkFree.DoThreadSafeAsync(x => x.Visible = false, token);
-                    await chkBlackmail.DoThreadSafeAsync(x => x.Visible = value, token);
-                    await chkFamily.DoThreadSafeAsync(x => x.Visible = value, token);
-                    await cmdLink.DoThreadSafeAsync(x => x.Visible = value, token);
-                    await tlpStatBlock.DoThreadSafeAsync(x => x.Visible = value, token);
+                        await chkFree.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
+                    await chkBlackmail.DoThreadSafeAsync(x => x.Visible = value, token).ConfigureAwait(false);
+                    await chkFamily.DoThreadSafeAsync(x => x.Visible = value, token).ConfigureAwait(false);
+                    await cmdLink.DoThreadSafeAsync(x => x.Visible = value, token).ConfigureAwait(false);
+                    await tlpStatBlock.DoThreadSafeAsync(x => x.Visible = value, token).ConfigureAwait(false);
                 }
                 finally
                 {
-                    await this.DoThreadSafeAsync(x => x.ResumeLayout(), token);
+                    await this.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
                 }
             }
         }
@@ -678,7 +675,7 @@ namespace Chummer
             {
                 string strContactRole = _objContact.DisplayRole;
                 if (!string.IsNullOrEmpty(strContactRole))
-                    await cboContactRole.DoThreadSafeAsync(x => x.Text = strContactRole, token: token);
+                    await cboContactRole.DoThreadSafeAsync(x => x.Text = strContactRole, token: token).ConfigureAwait(false);
                 return;
             }
 
@@ -692,13 +689,13 @@ namespace Chummer
             //            ContactProfession.Add(new ListItem(strName, xmlNode.Attributes?["translate"]?.InnerText ?? strName));
             //        }
 
-            await cboContactRole.PopulateWithListItemsAsync(Contact.ContactArchetypes(_objContact.CharacterObject), token: token);
+            await cboContactRole.PopulateWithListItemsAsync(Contact.ContactArchetypes(_objContact.CharacterObject), token: token).ConfigureAwait(false);
             await cboContactRole.DoThreadSafeAsync(x =>
             {
                 x.SelectedValue = _objContact.Role;
                 if (x.SelectedIndex < 0)
                     x.Text = _objContact.DisplayRole;
-            }, token: token);
+            }, token: token).ConfigureAwait(false);
         }
 
         private async ValueTask DoDataBindings(CancellationToken token = default)
@@ -706,7 +703,7 @@ namespace Chummer
             await lblQuickStats.RegisterOneWayAsyncDataBinding((x, y) => x.Text = y, _objContact,
                                                                nameof(Contact.QuickText),
                                                                // ReSharper disable once MethodSupportsCancellation
-                                                               x => x.GetQuickTextAsync().AsTask(), token: token);
+                                                               x => x.GetQuickTextAsync().AsTask(), token: token).ConfigureAwait(false);
             txtContactName.DoDataBinding("Text", _objContact, nameof(_objContact.Name));
             txtContactLocation.DoDataBinding("Text", _objContact, nameof(_objContact.Location));
             cmdDelete.DoOneWayDataBinding("Visible", _objContact, nameof(_objContact.NotReadOnly));
@@ -897,7 +894,7 @@ namespace Chummer
 
         private async ValueTask CreateSecondRowAsync(CancellationToken token = default)
         {
-            using (await CursorWait.NewAsync(this, token: token))
+            using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
                 await this.DoThreadSafeAsync(x =>
                 {
@@ -999,15 +996,15 @@ namespace Chummer
                     x.chkBlackmail.CheckedChanged += chkBlackmail_CheckedChanged;
                     x.chkFamily.CheckedChanged += chkFamily_CheckedChanged;
                     x.cmdLink.Click += cmdLink_Click;
-                }, token);
+                }, token).ConfigureAwait(false);
                 if (_objContact != null)
                 {
                     //We don't actually pay for contacts in play so everyone is free
                     //Don't present a useless field
                     if (_objContact.CharacterObject != null)
-                        await chkFree.DoThreadSafeAsync(x => x.Visible = !_objContact.CharacterObject.Created, token);
+                        await chkFree.DoThreadSafeAsync(x => x.Visible = !_objContact.CharacterObject.Created, token).ConfigureAwait(false);
                     else
-                        await chkFree.DoThreadSafeAsync(x => x.Visible = false, token);
+                        await chkFree.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
                     await this.DoThreadSafeAsync(x =>
                     {
                         x.chkGroup.DoDataBinding("Checked", x._objContact, nameof(Contact.IsGroup));
@@ -1020,38 +1017,38 @@ namespace Chummer
                         x.nudLoyalty.DoDataBinding("Value", x._objContact, nameof(Contact.Loyalty));
                         x.nudConnection.DoDataBinding("Value", x._objContact, nameof(Contact.Connection));
                         x.nudConnection.DoOneWayDataBinding("Enabled", x._objContact, nameof(Contact.NotReadOnly));
-                    }, token: token);
+                    }, token: token).ConfigureAwait(false);
                     await chkGroup.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = y, _objContact,
                                                                   nameof(Contact.GroupEnabled),
                                                                   // ReSharper disable once MethodSupportsCancellation
-                                                                  x => x.GetGroupEnabledAsync().AsTask(), token: token);
+                                                                  x => x.GetGroupEnabledAsync().AsTask(), token: token).ConfigureAwait(false);
                     await chkFree.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = y, _objContact,
                                                                  nameof(Contact.FreeEnabled),
                                                                  // ReSharper disable once MethodSupportsCancellation
-                                                                 x => x.GetFreeEnabledAsync().AsTask(), token: token);
+                                                                 x => x.GetFreeEnabledAsync().AsTask(), token: token).ConfigureAwait(false);
                     await nudLoyalty.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = y, _objContact,
                                                                     nameof(Contact.LoyaltyEnabled),
                                                                     // ReSharper disable once MethodSupportsCancellation
-                                                                    x => x.GetLoyaltyEnabledAsync().AsTask(), token: token);
+                                                                    x => x.GetLoyaltyEnabledAsync().AsTask(), token: token).ConfigureAwait(false);
                     await nudConnection.RegisterOneWayAsyncDataBinding((x, y) => x.Maximum = y, _objContact,
                                                                        nameof(Contact.ConnectionMaximum),
                                                                        // ReSharper disable once MethodSupportsCancellation
-                                                                       x => x.GetConnectionMaximumAsync().AsTask(), token: token);
+                                                                       x => x.GetConnectionMaximumAsync().AsTask(), token: token).ConfigureAwait(false);
                     string strToolTipText;
                     if (_objContact.IsEnemy)
                     {
                         strToolTipText = !string.IsNullOrEmpty(_objContact.FileName)
-                            ? await LanguageManager.GetStringAsync("Tip_Enemy_OpenLinkedEnemy", token: token)
-                            : await LanguageManager.GetStringAsync("Tip_Enemy_LinkEnemy", token: token);
+                            ? await LanguageManager.GetStringAsync("Tip_Enemy_OpenLinkedEnemy", token: token).ConfigureAwait(false)
+                            : await LanguageManager.GetStringAsync("Tip_Enemy_LinkEnemy", token: token).ConfigureAwait(false);
                     }
                     else
                     {
                         strToolTipText = !string.IsNullOrEmpty(_objContact.FileName)
-                            ? await LanguageManager.GetStringAsync("Tip_Contact_OpenLinkedContact", token: token)
-                            : await LanguageManager.GetStringAsync("Tip_Contact_LinkContact", token: token);
+                            ? await LanguageManager.GetStringAsync("Tip_Contact_OpenLinkedContact", token: token).ConfigureAwait(false)
+                            : await LanguageManager.GetStringAsync("Tip_Contact_LinkContact", token: token).ConfigureAwait(false);
                     }
 
-                    await cmdLink.DoThreadSafeAsync(x => x.ToolTipText = strToolTipText, token);
+                    await cmdLink.DoThreadSafeAsync(x => x.ToolTipText = strToolTipText, token).ConfigureAwait(false);
                 }
 
                 await this.DoThreadSafeAsync(x =>
@@ -1083,7 +1080,7 @@ namespace Chummer
                     {
                         x.ResumeLayout(true);
                     }
-                }, token);
+                }, token).ConfigureAwait(false);
             }
         }
 
@@ -1331,7 +1328,7 @@ namespace Chummer
         /// </summary>
         private async ValueTask CreateStatBlockAsync(CancellationToken token = default)
         {
-            using (await CursorWait.NewAsync(this, token: token))
+            using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
                 await this.DoThreadSafeAsync(x =>
                 {
@@ -1342,11 +1339,11 @@ namespace Chummer
                         Name = "cboMetatype"
                     };
                     x.cboGender = new ElasticComboBox
-                    { Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboGender" };
+                        { Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboGender" };
                     x.cboAge = new ElasticComboBox
-                    { Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboAge" };
+                        { Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboAge" };
                     x.cboType = new ElasticComboBox
-                    { Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboType" };
+                        { Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboType" };
                     x.cboPersonalLife = new ElasticComboBox
                     {
                         Anchor = AnchorStyles.Left | AnchorStyles.Right,
@@ -1365,9 +1362,9 @@ namespace Chummer
                         FormattingEnabled = true,
                         Name = "cboHobbiesVice"
                     };
-                }, token);
+                }, token).ConfigureAwait(false);
 
-                await LoadStatBlockListsAsync(token);
+                await LoadStatBlockListsAsync(token).ConfigureAwait(false);
 
                 await this.DoThreadSafeAsync(x =>
                 {
@@ -1481,9 +1478,9 @@ namespace Chummer
                     x.tlpStatBlock.Controls.Add(x.cboPreferredPayment, 3, 1);
                     x.tlpStatBlock.Controls.Add(x.lblHobbiesVice, 2, 2);
                     x.tlpStatBlock.Controls.Add(x.cboHobbiesVice, 3, 2);
-                }, token);
-                await tlpStatBlock.TranslateWinFormAsync(token: token);
-                await tlpStatBlock.UpdateLightDarkModeAsync(token: token);
+                }, token).ConfigureAwait(false);
+                await tlpStatBlock.TranslateWinFormAsync(token: token).ConfigureAwait(false);
+                await tlpStatBlock.UpdateLightDarkModeAsync(token: token).ConfigureAwait(false);
                 await this.DoThreadSafeAsync(x =>
                 {
                     x.SuspendLayout();
@@ -1504,14 +1501,14 @@ namespace Chummer
                     {
                         x.ResumeLayout();
                     }
-                }, token: token);
+                }, token: token).ConfigureAwait(false);
 
                 // Need these as separate instead of as simple data bindings so that we don't get annoying live partial translations
                 if (_objContact != null)
                 {
-                    string strMetatype = await _objContact.GetMetatypeAsync(token);
-                    string strGender = await _objContact.GetGenderAsync(token);
-                    string strAge = await _objContact.GetAgeAsync(token);
+                    string strMetatype = await _objContact.GetMetatypeAsync(token).ConfigureAwait(false);
+                    string strGender = await _objContact.GetGenderAsync(token).ConfigureAwait(false);
+                    string strAge = await _objContact.GetAgeAsync(token).ConfigureAwait(false);
                     string strPersonalLife = _objContact.PersonalLife;
                     string strType = _objContact.Type;
                     string strPreferredPayment = _objContact.PreferredPayment;
@@ -1525,35 +1522,48 @@ namespace Chummer
                         x.cboType.SelectedValue = strType;
                         x.cboPreferredPayment.SelectedValue = strPreferredPayment;
                         x.cboHobbiesVice.SelectedValue = strHobbiesVice;
-                    }, token: token);
-                    if (await this.DoThreadSafeFuncAsync(x => x.cboMetatype.SelectedIndex, token: token) < 0)
-                        await _objContact.GetDisplayMetatypeAsync(token)
-                                         .ContinueWith(x => this.DoThreadSafeAsync(y => y.cboMetatype.Text = x.Result, token: token), token)
-                                         .Unwrap();
-                    if (await this.DoThreadSafeFuncAsync(x => x.cboGender.SelectedIndex, token: token) < 0)
-                        await _objContact.GetDisplayGenderAsync(token)
-                                         .ContinueWith(x => this.DoThreadSafeAsync(y => y.cboGender.Text = x.Result, token: token), token)
-                                         .Unwrap();
-                    if (await this.DoThreadSafeFuncAsync(x => x.cboAge.SelectedIndex, token: token) < 0)
-                        await _objContact.GetDisplayAgeAsync(token)
-                                         .ContinueWith(x => this.DoThreadSafeAsync(y => y.cboAge.Text = x.Result, token: token), token)
-                                         .Unwrap();
-                    if (await this.DoThreadSafeFuncAsync(x => x.cboPersonalLife.SelectedIndex, token: token) < 0)
-                        await _objContact.GetDisplayPersonalLifeAsync(token)
-                                         .ContinueWith(x => this.DoThreadSafeAsync(y => y.cboPersonalLife.Text = x.Result, token: token), token)
-                                         .Unwrap();
-                    if (await this.DoThreadSafeFuncAsync(x => x.cboType.SelectedIndex, token: token) < 0)
-                        await _objContact.GetDisplayTypeAsync(token)
-                                         .ContinueWith(x => this.DoThreadSafeAsync(y => y.cboType.Text = x.Result, token: token), token)
-                                         .Unwrap();
-                    if (await this.DoThreadSafeFuncAsync(x => x.cboPreferredPayment.SelectedIndex, token: token) < 0)
-                        await _objContact.GetDisplayPreferredPaymentAsync(token)
-                                         .ContinueWith(x => this.DoThreadSafeAsync(y => y.cboPreferredPayment.Text = x.Result, token: token), token)
-                                         .Unwrap();
-                    if (await this.DoThreadSafeFuncAsync(x => x.cboHobbiesVice.SelectedIndex, token: token) < 0)
-                        await _objContact.GetDisplayHobbiesViceAsync(token)
-                                         .ContinueWith(x => this.DoThreadSafeAsync(y => y.cboHobbiesVice.Text = x.Result, token: token), token)
-                                         .Unwrap();
+                    }, token: token).ConfigureAwait(false);
+                    if (await cboMetatype.DoThreadSafeFuncAsync(x => x.SelectedIndex, token: token).ConfigureAwait(false) < 0)
+                    {
+                        string strTemp = await _objContact.GetDisplayMetatypeAsync(token).ConfigureAwait(false);
+                        await cboMetatype.DoThreadSafeAsync(x => x.Text = strTemp, token: token).ConfigureAwait(false);
+                    }
+
+                    if (await cboGender.DoThreadSafeFuncAsync(x => x.SelectedIndex, token: token).ConfigureAwait(false) < 0)
+                    {
+                        string strTemp = await _objContact.GetDisplayGenderAsync(token).ConfigureAwait(false);
+                        await cboGender.DoThreadSafeAsync(x => x.Text = strTemp, token: token).ConfigureAwait(false);
+                    }
+
+                    if (await cboAge.DoThreadSafeFuncAsync(x => x.SelectedIndex, token: token).ConfigureAwait(false) < 0)
+                    {
+                        string strTemp = await _objContact.GetDisplayAgeAsync(token).ConfigureAwait(false);
+                        await cboAge.DoThreadSafeAsync(x => x.Text = strTemp, token: token).ConfigureAwait(false);
+                    }
+
+                    if (await cboPersonalLife.DoThreadSafeFuncAsync(x => x.SelectedIndex, token: token).ConfigureAwait(false) < 0)
+                    {
+                        string strTemp = await _objContact.GetDisplayPersonalLifeAsync(token).ConfigureAwait(false);
+                        await cboPersonalLife.DoThreadSafeAsync(x => x.Text = strTemp, token: token).ConfigureAwait(false);
+                    }
+
+                    if (await cboType.DoThreadSafeFuncAsync(x => x.SelectedIndex, token: token).ConfigureAwait(false) < 0)
+                    {
+                        string strTemp = await _objContact.GetDisplayTypeAsync(token).ConfigureAwait(false);
+                        await cboType.DoThreadSafeAsync(x => x.Text = strTemp, token: token).ConfigureAwait(false);
+                    }
+
+                    if (await cboPreferredPayment.DoThreadSafeFuncAsync(x => x.SelectedIndex, token: token).ConfigureAwait(false) < 0)
+                    {
+                        string strTemp = await _objContact.GetDisplayTypeAsync(token).ConfigureAwait(false);
+                        await cboPreferredPayment.DoThreadSafeAsync(x => x.Text = strTemp, token: token).ConfigureAwait(false);
+                    }
+
+                    if (await cboHobbiesVice.DoThreadSafeFuncAsync(x => x.SelectedIndex, token: token).ConfigureAwait(false) < 0)
+                    {
+                        string strTemp = await _objContact.GetDisplayTypeAsync(token).ConfigureAwait(false);
+                        await cboHobbiesVice.DoThreadSafeAsync(x => x.Text = strTemp, token: token).ConfigureAwait(false);
+                    }
                 }
 
                 // Need these as separate instead of as simple data bindings so that we don't get annoying live partial translations
@@ -1573,7 +1583,7 @@ namespace Chummer
                     x.cboPersonalLife.Leave += UpdatePersonalLife;
                     x.cboPreferredPayment.Leave += UpdatePreferredPayment;
                     x.cboHobbiesVice.Leave += UpdateHobbiesVice;
-                }, token);
+                }, token).ConfigureAwait(false);
             }
         }
 
@@ -1724,83 +1734,83 @@ namespace Chummer
                 lstPreferredPayments.Add(ListItem.Blank);
                 lstHobbiesVices.Add(ListItem.Blank);
 
-                XPathNavigator xmlContactsBaseNode = await (await _objContact.CharacterObject.LoadDataXPathAsync("contacts.xml", token: token))
-                    .SelectSingleNodeAndCacheExpressionAsync("/chummer", token);
+                XPathNavigator xmlContactsBaseNode = await (await _objContact.CharacterObject.LoadDataXPathAsync("contacts.xml", token: token).ConfigureAwait(false))
+                                                           .SelectSingleNodeAndCacheExpressionAsync("/chummer", token).ConfigureAwait(false);
                 if (xmlContactsBaseNode != null)
                 {
-                    foreach (XPathNavigator xmlNode in await xmlContactsBaseNode.SelectAndCacheExpressionAsync("genders/gender", token))
+                    foreach (XPathNavigator xmlNode in await xmlContactsBaseNode.SelectAndCacheExpressionAsync("genders/gender", token).ConfigureAwait(false))
                     {
                         string strName = xmlNode.Value;
                         lstGenders.Add(new ListItem(
                                            strName,
-                                           (await xmlNode.SelectSingleNodeAndCacheExpressionAsync("@translate", token))?.Value ?? strName));
+                                           (await xmlNode.SelectSingleNodeAndCacheExpressionAsync("@translate", token).ConfigureAwait(false))?.Value ?? strName));
                     }
 
-                    foreach (XPathNavigator xmlNode in await xmlContactsBaseNode.SelectAndCacheExpressionAsync("ages/age", token))
+                    foreach (XPathNavigator xmlNode in await xmlContactsBaseNode.SelectAndCacheExpressionAsync("ages/age", token).ConfigureAwait(false))
                     {
                         string strName = xmlNode.Value;
                         lstAges.Add(new ListItem(
                                         strName,
-                                        (await xmlNode.SelectSingleNodeAndCacheExpressionAsync("@translate", token))?.Value ?? strName));
+                                        (await xmlNode.SelectSingleNodeAndCacheExpressionAsync("@translate", token).ConfigureAwait(false))?.Value ?? strName));
                     }
 
                     foreach (XPathNavigator xmlNode in await xmlContactsBaseNode.SelectAndCacheExpressionAsync(
-                                 "personallives/personallife", token))
+                                 "personallives/personallife", token).ConfigureAwait(false))
                     {
                         string strName = xmlNode.Value;
                         lstPersonalLives.Add(new ListItem(
                                                  strName,
-                                                 (await xmlNode.SelectSingleNodeAndCacheExpressionAsync("@translate", token))?.Value
+                                                 (await xmlNode.SelectSingleNodeAndCacheExpressionAsync("@translate", token).ConfigureAwait(false))?.Value
                                                  ?? strName));
                     }
 
-                    foreach (XPathNavigator xmlNode in await xmlContactsBaseNode.SelectAndCacheExpressionAsync("types/type", token))
+                    foreach (XPathNavigator xmlNode in await xmlContactsBaseNode.SelectAndCacheExpressionAsync("types/type", token).ConfigureAwait(false))
                     {
                         string strName = xmlNode.Value;
                         lstTypes.Add(new ListItem(
                                          strName,
-                                         (await xmlNode.SelectSingleNodeAndCacheExpressionAsync("@translate", token))?.Value ?? strName));
+                                         (await xmlNode.SelectSingleNodeAndCacheExpressionAsync("@translate", token).ConfigureAwait(false))?.Value ?? strName));
                     }
 
                     foreach (XPathNavigator xmlNode in await xmlContactsBaseNode.SelectAndCacheExpressionAsync(
-                                 "preferredpayments/preferredpayment", token))
+                                 "preferredpayments/preferredpayment", token).ConfigureAwait(false))
                     {
                         string strName = xmlNode.Value;
                         lstPreferredPayments.Add(new ListItem(
                                                      strName,
-                                                     (await xmlNode.SelectSingleNodeAndCacheExpressionAsync("@translate", token))?.Value
+                                                     (await xmlNode.SelectSingleNodeAndCacheExpressionAsync("@translate", token).ConfigureAwait(false))?.Value
                                                      ?? strName));
                     }
 
                     foreach (XPathNavigator xmlNode in await xmlContactsBaseNode.SelectAndCacheExpressionAsync(
-                                 "hobbiesvices/hobbyvice", token))
+                                 "hobbiesvices/hobbyvice", token).ConfigureAwait(false))
                     {
                         string strName = xmlNode.Value;
                         lstHobbiesVices.Add(new ListItem(
                                                 strName,
-                                                (await xmlNode.SelectSingleNodeAndCacheExpressionAsync("@translate", token))?.Value
+                                                (await xmlNode.SelectSingleNodeAndCacheExpressionAsync("@translate", token).ConfigureAwait(false))?.Value
                                                 ?? strName));
                     }
                 }
 
-                string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token);
-                foreach (XPathNavigator xmlMetatypeNode in await (await _objContact.CharacterObject.LoadDataXPathAsync("metatypes.xml", token: token))
-                             .SelectAndCacheExpressionAsync(
-                                 "/chummer/metatypes/metatype", token))
+                string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+                foreach (XPathNavigator xmlMetatypeNode in await (await _objContact.CharacterObject.LoadDataXPathAsync("metatypes.xml", token: token).ConfigureAwait(false))
+                                                                 .SelectAndCacheExpressionAsync(
+                                                                     "/chummer/metatypes/metatype", token).ConfigureAwait(false))
                 {
-                    string strName = (await xmlMetatypeNode.SelectSingleNodeAndCacheExpressionAsync("name", token))?.Value;
-                    string strMetatypeDisplay = (await xmlMetatypeNode.SelectSingleNodeAndCacheExpressionAsync("translate", token))?.Value
+                    string strName = (await xmlMetatypeNode.SelectSingleNodeAndCacheExpressionAsync("name", token).ConfigureAwait(false))?.Value;
+                    string strMetatypeDisplay = (await xmlMetatypeNode.SelectSingleNodeAndCacheExpressionAsync("translate", token).ConfigureAwait(false))?.Value
                                                 ?? strName;
                     lstMetatypes.Add(new ListItem(strName, strMetatypeDisplay));
                     XPathNodeIterator xmlMetavariantsList
-                        = await xmlMetatypeNode.SelectAndCacheExpressionAsync("metavariants/metavariant", token);
+                        = await xmlMetatypeNode.SelectAndCacheExpressionAsync("metavariants/metavariant", token).ConfigureAwait(false);
                     if (xmlMetavariantsList.Count > 0)
                     {
                         string strMetavariantFormat = strMetatypeDisplay + strSpace + "({0})";
                         foreach (XPathNavigator objXmlMetavariantNode in xmlMetavariantsList)
                         {
                             string strMetavariantName
-                                = (await objXmlMetavariantNode.SelectSingleNodeAndCacheExpressionAsync("name", token))?.Value
+                                = (await objXmlMetavariantNode.SelectSingleNodeAndCacheExpressionAsync("name", token).ConfigureAwait(false))?.Value
                                   ?? string.Empty;
                             if (lstMetatypes.All(
                                     x => strMetavariantName.Equals(x.Value.ToString(),
@@ -1809,7 +1819,7 @@ namespace Chummer
                                                               string.Format(
                                                                   GlobalSettings.CultureInfo, strMetavariantFormat,
                                                                   (await objXmlMetavariantNode
-                                                                      .SelectSingleNodeAndCacheExpressionAsync("translate", token))
+                                                                         .SelectSingleNodeAndCacheExpressionAsync("translate", token).ConfigureAwait(false))
                                                                       ?.Value ?? strMetavariantName)));
                         }
                     }
@@ -1823,13 +1833,13 @@ namespace Chummer
                 lstHobbiesVices.Sort(CompareListItems.CompareNames);
                 lstPreferredPayments.Sort(CompareListItems.CompareNames);
 
-                await cboMetatype.PopulateWithListItemsAsync(lstMetatypes, token);
-                await cboGender.PopulateWithListItemsAsync(lstGenders, token);
-                await cboAge.PopulateWithListItemsAsync(lstAges, token);
-                await cboPersonalLife.PopulateWithListItemsAsync(lstPersonalLives, token);
-                await cboType.PopulateWithListItemsAsync(lstTypes, token);
-                await cboPreferredPayment.PopulateWithListItemsAsync(lstPreferredPayments, token);
-                await cboHobbiesVice.PopulateWithListItemsAsync(lstHobbiesVices, token);
+                await cboMetatype.PopulateWithListItemsAsync(lstMetatypes, token).ConfigureAwait(false);
+                await cboGender.PopulateWithListItemsAsync(lstGenders, token).ConfigureAwait(false);
+                await cboAge.PopulateWithListItemsAsync(lstAges, token).ConfigureAwait(false);
+                await cboPersonalLife.PopulateWithListItemsAsync(lstPersonalLives, token).ConfigureAwait(false);
+                await cboType.PopulateWithListItemsAsync(lstTypes, token).ConfigureAwait(false);
+                await cboPreferredPayment.PopulateWithListItemsAsync(lstPreferredPayments, token).ConfigureAwait(false);
+                await cboHobbiesVice.PopulateWithListItemsAsync(lstHobbiesVices, token).ConfigureAwait(false);
             }
         }
 

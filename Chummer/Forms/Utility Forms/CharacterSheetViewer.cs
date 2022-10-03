@@ -117,29 +117,29 @@ namespace Chummer
             {
                 // Populate the XSLT list with all of the XSL files found in the sheets directory.
                 await LanguageManager.PopulateSheetLanguageListAsync(cboLanguage, _strSelectedSheet, _lstCharacters,
-                                                                     token: _objGenericToken);
-                await PopulateXsltList(_objGenericToken);
+                                                                     token: _objGenericToken).ConfigureAwait(false);
+                await PopulateXsltList(_objGenericToken).ConfigureAwait(false);
 
-                await cboXSLT.DoThreadSafeAsync(x => x.SelectedValue = _strSelectedSheet, _objGenericToken);
+                await cboXSLT.DoThreadSafeAsync(x => x.SelectedValue = _strSelectedSheet, _objGenericToken).ConfigureAwait(false);
                 // If the desired sheet was not found, fall back to the Shadowrun 5 sheet.
-                if (await cboXSLT.DoThreadSafeFuncAsync(x => x.SelectedIndex, _objGenericToken) == -1)
+                if (await cboXSLT.DoThreadSafeFuncAsync(x => x.SelectedIndex, _objGenericToken).ConfigureAwait(false) == -1)
                 {
                     string strLanguage
-                        = await cboLanguage.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), _objGenericToken);
+                        = await cboLanguage.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), _objGenericToken).ConfigureAwait(false);
                     int intNameIndex;
                     if (string.IsNullOrEmpty(strLanguage)
                         || strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                         intNameIndex
                             = await cboXSLT.DoThreadSafeFuncAsync(
-                                x => x.FindStringExact(GlobalSettings.DefaultCharacterSheet), _objGenericToken);
+                                x => x.FindStringExact(GlobalSettings.DefaultCharacterSheet), _objGenericToken).ConfigureAwait(false);
                     else
                         intNameIndex = await cboXSLT.DoThreadSafeFuncAsync(
                             x => x.FindStringExact(GlobalSettings.DefaultCharacterSheet.Substring(
                                                        GlobalSettings.DefaultLanguage.LastIndexOf(
-                                                           Path.DirectorySeparatorChar) + 1)), _objGenericToken);
+                                                           Path.DirectorySeparatorChar) + 1)), _objGenericToken).ConfigureAwait(false);
                     if (intNameIndex != -1)
-                        await cboXSLT.DoThreadSafeAsync(x => x.SelectedIndex = intNameIndex, _objGenericToken);
-                    else if (await cboXSLT.DoThreadSafeFuncAsync(x => x.Items.Count > 0, _objGenericToken))
+                        await cboXSLT.DoThreadSafeAsync(x => x.SelectedIndex = intNameIndex, _objGenericToken).ConfigureAwait(false);
+                    else if (await cboXSLT.DoThreadSafeFuncAsync(x => x.Items.Count > 0, _objGenericToken).ConfigureAwait(false))
                     {
                         if (string.IsNullOrEmpty(strLanguage)
                             || strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
@@ -155,7 +155,7 @@ namespace Chummer
                                 x.SelectedIndex = 0;
                                 _strSelectedSheet = x.SelectedValue?.ToString();
                             }
-                        }, _objGenericToken);
+                        }, _objGenericToken).ConfigureAwait(false);
                     }
                 }
             }
@@ -170,8 +170,8 @@ namespace Chummer
             }
             try
             {
-                await SetDocumentText(await LanguageManager.GetStringAsync("String_Loading_Characters", token: _objGenericToken),
-                                      _objGenericToken);
+                await SetDocumentText(await LanguageManager.GetStringAsync("String_Loading_Characters", token: _objGenericToken).ConfigureAwait(false),
+                                      _objGenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -185,23 +185,35 @@ namespace Chummer
         private async Task UpdateWindowTitleAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
+            string strTitle;
             if (_lstCharacters.Count == 0)
             {
-                await LanguageManager.GetStringAsync("Title_CharacterViewer", token: token)
-                                     .ContinueWith(y => this.DoThreadSafeAsync(x => x.Text = y.Result, token), token)
-                                     .Unwrap();
-                return;
+                strTitle = await LanguageManager.GetStringAsync("Title_CharacterViewer", token: token).ConfigureAwait(false);
             }
-            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token);
-            string strCreate = await LanguageManager.GetStringAsync("Title_CreateNewCharacter", token: token);
-            string strCareer = await LanguageManager.GetStringAsync("Title_CareerMode", token: token);
-            StringBuilder sbdTitle = new StringBuilder(await LanguageManager.GetStringAsync("Title_CharacterViewer", token: token) + ':' + strSpace);
-            sbdTitle.AppendJoin(',' + strSpace,
-                                _lstCharacters.Select(x => x.CharacterName + strSpace + '-' + strSpace
-                                                           + (x.Created ? strCareer : strCreate) + strSpace + '('
-                                                           + x.Settings.Name + ')'));
-            string strTitle = sbdTitle.ToString();
-            await this.DoThreadSafeAsync(x => x.Text = strTitle, token);
+            else
+            {
+                string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token)
+                                                       .ConfigureAwait(false);
+                string strCreate = await LanguageManager.GetStringAsync("Title_CreateNewCharacter", token: token)
+                                                        .ConfigureAwait(false);
+                string strCareer = await LanguageManager.GetStringAsync("Title_CareerMode", token: token)
+                                                        .ConfigureAwait(false);
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdTitle))
+                {
+                    sbdTitle
+                        .Append(await LanguageManager.GetStringAsync("Title_CharacterViewer", token: token)
+                                                     .ConfigureAwait(false)).Append(':').Append(strSpace).AppendJoin(
+                            ',' + strSpace,
+                            _lstCharacters.Select(async x => x.CharacterName + strSpace + '-' + strSpace
+                                                             + (await x.GetCreatedAsync(token).ConfigureAwait(false)
+                                                                 ? strCareer
+                                                                 : strCreate) + strSpace + '('
+                                                             + (await x.GetSettingsAsync(token).ConfigureAwait(false))
+                                                             .Name + ')'));
+                    strTitle = sbdTitle.ToString();
+                }
+            }
+            await this.DoThreadSafeAsync(x => x.Text = strTitle, token).ConfigureAwait(false);
         }
 
         private async void cboXSLT_SelectedIndexChanged(object sender, EventArgs e)
@@ -211,8 +223,8 @@ namespace Chummer
             {
                 try
                 {
-                    _strSelectedSheet = await cboXSLT.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString() ?? string.Empty, _objGenericToken);
-                    await RefreshSheet(_objGenericToken);
+                    _strSelectedSheet = await cboXSLT.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString() ?? string.Empty, _objGenericToken).ConfigureAwait(false);
+                    await RefreshSheet(_objGenericToken).ConfigureAwait(false);
                 }
                 catch (OperationCanceledException)
                 {
@@ -236,9 +248,9 @@ namespace Chummer
             try
             {
                 // Save the generated output as HTML.
-                dlgSaveFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Html", token: _objGenericToken) + '|' + await LanguageManager.GetStringAsync("DialogFilter_All", token: _objGenericToken);
-                dlgSaveFile.Title = await LanguageManager.GetStringAsync("Button_Viewer_SaveAsHtml", token: _objGenericToken);
-                if (await this.DoThreadSafeFuncAsync(x => dlgSaveFile.ShowDialog(x), token: _objGenericToken) != DialogResult.OK)
+                dlgSaveFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Html", token: _objGenericToken).ConfigureAwait(false) + '|' + await LanguageManager.GetStringAsync("DialogFilter_All", token: _objGenericToken).ConfigureAwait(false);
+                dlgSaveFile.Title = await LanguageManager.GetStringAsync("Button_Viewer_SaveAsHtml", token: _objGenericToken).ConfigureAwait(false);
+                if (await this.DoThreadSafeFuncAsync(x => dlgSaveFile.ShowDialog(x), token: _objGenericToken).ConfigureAwait(false) != DialogResult.OK)
                     return;
                 string strSaveFile = dlgSaveFile.FileName;
 
@@ -250,7 +262,7 @@ namespace Chummer
                     strSaveFile += ".htm";
 
                 using (StreamWriter objWriter = new StreamWriter(strSaveFile, false, Encoding.UTF8))
-                    await objWriter.WriteAsync(await webViewer.DoThreadSafeFuncAsync(x => x.DocumentText, _objGenericToken));
+                    await objWriter.WriteAsync(await webViewer.DoThreadSafeFuncAsync(x => x.DocumentText, _objGenericToken).ConfigureAwait(false)).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -263,9 +275,9 @@ namespace Chummer
             try
             {
                 // Save the printout XML generated by the character.
-                dlgSaveFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Xml", token: _objGenericToken) + '|' + await LanguageManager.GetStringAsync("DialogFilter_All", token: _objGenericToken);
-                dlgSaveFile.Title = await LanguageManager.GetStringAsync("Button_Viewer_SaveAsXml", token: _objGenericToken);
-                if (await this.DoThreadSafeFuncAsync(x => dlgSaveFile.ShowDialog(x), _objGenericToken) != DialogResult.OK)
+                dlgSaveFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Xml", token: _objGenericToken).ConfigureAwait(false) + '|' + await LanguageManager.GetStringAsync("DialogFilter_All", token: _objGenericToken).ConfigureAwait(false);
+                dlgSaveFile.Title = await LanguageManager.GetStringAsync("Button_Viewer_SaveAsXml", token: _objGenericToken).ConfigureAwait(false);
+                if (await this.DoThreadSafeFuncAsync(x => dlgSaveFile.ShowDialog(x), _objGenericToken).ConfigureAwait(false) != DialogResult.OK)
                     return;
                 string strSaveFile = dlgSaveFile.FileName;
 
@@ -281,11 +293,11 @@ namespace Chummer
                 }
                 catch (XmlException)
                 {
-                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_Save_Error_Warning", token: _objGenericToken));
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_Save_Error_Warning", token: _objGenericToken).ConfigureAwait(false));
                 }
                 catch (UnauthorizedAccessException)
                 {
-                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_Save_Error_Warning", token: _objGenericToken));
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_Save_Error_Warning", token: _objGenericToken).ConfigureAwait(false));
                 }
             }
             catch (OperationCanceledException)
@@ -318,11 +330,11 @@ namespace Chummer
 
             // Remove the mugshots directory when the form closes.
             // ReSharper disable once MethodSupportsCancellation
-            await Utils.SafeDeleteDirectoryAsync(Path.Combine(Utils.GetStartupPath, "mugshots"), token: CancellationToken.None);
+            await Utils.SafeDeleteDirectoryAsync(Path.Combine(Utils.GetStartupPath, "mugshots"), token: CancellationToken.None).ConfigureAwait(false);
 
             try
             {
-                await _tskRefresher;
+                await _tskRefresher.ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -330,7 +342,7 @@ namespace Chummer
             }
             try
             {
-                await _tskOutputGenerator;
+                await _tskOutputGenerator.ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -343,7 +355,7 @@ namespace Chummer
         {
             try
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken);
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
                 try
                 {
                     string strPdfPrinter = string.Empty;
@@ -371,29 +383,29 @@ namespace Chummer
                     {
                         DialogResult ePdfPrinterDialogResult = Program.ShowMessageBox(this,
                             string.Format(GlobalSettings.CultureInfo,
-                                          await LanguageManager.GetStringAsync("Message_Viewer_FoundPDFPrinter", token: _objGenericToken),
+                                          await LanguageManager.GetStringAsync("Message_Viewer_FoundPDFPrinter", token: _objGenericToken).ConfigureAwait(false),
                                           strPdfPrinter),
-                            await LanguageManager.GetStringAsync("MessageTitle_Viewer_FoundPDFPrinter", token: _objGenericToken),
+                            await LanguageManager.GetStringAsync("MessageTitle_Viewer_FoundPDFPrinter", token: _objGenericToken).ConfigureAwait(false),
                             MessageBoxButtons.YesNoCancel, MessageBoxIcon.Information);
                         switch (ePdfPrinterDialogResult)
                         {
                             case DialogResult.Cancel:
-                            case DialogResult.Yes when await DoPdfPrinterShortcut(strPdfPrinter, _objGenericToken):
+                            case DialogResult.Yes when await DoPdfPrinterShortcut(strPdfPrinter, _objGenericToken).ConfigureAwait(false):
                                 return;
 
                             case DialogResult.Yes:
                                 Program.ShowMessageBox(this,
                                                        await LanguageManager.GetStringAsync(
-                                                           "Message_Viewer_PDFPrinterError", token: _objGenericToken));
+                                                           "Message_Viewer_PDFPrinterError", token: _objGenericToken).ConfigureAwait(false));
                                 break;
                         }
                     }
 
                     // Save the generated output as PDF.
-                    dlgSaveFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Pdf", token: _objGenericToken) + '|' +
-                                             await LanguageManager.GetStringAsync("DialogFilter_All", token: _objGenericToken);
-                    dlgSaveFile.Title = await LanguageManager.GetStringAsync("Button_Viewer_SaveAsPdf", token: _objGenericToken);
-                    if (await this.DoThreadSafeFuncAsync(x => dlgSaveFile.ShowDialog(x), _objGenericToken) != DialogResult.OK)
+                    dlgSaveFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Pdf", token: _objGenericToken).ConfigureAwait(false) + '|' +
+                                             await LanguageManager.GetStringAsync("DialogFilter_All", token: _objGenericToken).ConfigureAwait(false);
+                    dlgSaveFile.Title = await LanguageManager.GetStringAsync("Button_Viewer_SaveAsPdf", token: _objGenericToken).ConfigureAwait(false);
+                    if (await this.DoThreadSafeFuncAsync(x => dlgSaveFile.ShowDialog(x), _objGenericToken).ConfigureAwait(false) != DialogResult.OK)
                         return;
                     string strSaveFile = dlgSaveFile.FileName;
 
@@ -408,16 +420,16 @@ namespace Chummer
                         Program.ShowMessageBox(this,
                                                string.Format(GlobalSettings.CultureInfo,
                                                              await LanguageManager.GetStringAsync(
-                                                                 "Message_File_Cannot_Be_Accessed", token: _objGenericToken), strSaveFile));
+                                                                 "Message_File_Cannot_Be_Accessed", token: _objGenericToken).ConfigureAwait(false), strSaveFile));
                         return;
                     }
 
-                    if (!await Utils.SafeDeleteFileAsync(strSaveFile, true, token: _objGenericToken))
+                    if (!await Utils.SafeDeleteFileAsync(strSaveFile, true, token: _objGenericToken).ConfigureAwait(false))
                     {
                         Program.ShowMessageBox(this,
                                                string.Format(GlobalSettings.CultureInfo,
                                                              await LanguageManager.GetStringAsync(
-                                                                 "Message_File_Cannot_Be_Accessed", token: _objGenericToken), strSaveFile));
+                                                                 "Message_File_Cannot_Be_Accessed", token: _objGenericToken).ConfigureAwait(false), strSaveFile));
                         return;
                     }
 
@@ -443,7 +455,7 @@ namespace Chummer
                         PdfConvertEnvironment objPdfConvertEnvironment = new PdfConvertEnvironment
                             {WkHtmlToPdfPath = Path.Combine(Utils.GetStartupPath, "wkhtmltopdf.exe")};
                         PdfOutput objPdfOutput = new PdfOutput {OutputFilePath = strSaveFile};
-                        await PdfConvert.ConvertHtmlToPdfAsync(objPdfDocument, objPdfConvertEnvironment, objPdfOutput);
+                        await PdfConvert.ConvertHtmlToPdfAsync(objPdfDocument, objPdfConvertEnvironment, objPdfOutput).ConfigureAwait(false);
 
                         if (!string.IsNullOrWhiteSpace(GlobalSettings.PdfAppPath))
                         {
@@ -468,7 +480,7 @@ namespace Chummer
                 }
                 finally
                 {
-                    await objCursorWait.DisposeAsync();
+                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -502,10 +514,10 @@ namespace Chummer
                         = strOldSelected.Substring(strOldSelected.LastIndexOf(Path.DirectorySeparatorChar) + 1);
                 try
                 {
-                    await PopulateXsltList(_objGenericToken);
+                    await PopulateXsltList(_objGenericToken).ConfigureAwait(false);
 
                     string strNewLanguage
-                        = (await cboLanguage.DoThreadSafeFuncAsync(x => x.SelectedValue, token: _objGenericToken))
+                        = (await cboLanguage.DoThreadSafeFuncAsync(x => x.SelectedValue, token: _objGenericToken).ConfigureAwait(false))
                         ?.ToString() ?? strOldSelected;
                     if (strNewLanguage == strOldSelected)
                     {
@@ -545,7 +557,7 @@ namespace Chummer
                                 }
                             }
                         }
-                    }, _objGenericToken);
+                    }, _objGenericToken).ConfigureAwait(false);
                 }
                 catch (OperationCanceledException)
                 {
@@ -559,7 +571,7 @@ namespace Chummer
                 
                 try
                 {
-                    await RefreshCharacters(_objGenericToken);
+                    await RefreshCharacters(_objGenericToken).ConfigureAwait(false);
                 }
                 catch (OperationCanceledException)
                 {
@@ -577,13 +589,13 @@ namespace Chummer
         /// </summary>
         private async ValueTask SetDocumentText(string strText, CancellationToken token = default)
         {
-            int intHeight = await webViewer.DoThreadSafeFuncAsync(x => x.Height, token);
+            int intHeight = await webViewer.DoThreadSafeFuncAsync(x => x.Height, token).ConfigureAwait(false);
             string strDocumentText
                 = "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\"><head><meta http-equiv=\"x - ua - compatible\" content=\"IE = Edge\"/><meta charset = \"UTF-8\" /></head><body style=\"width:100%;height:" +
                   intHeight.ToString(GlobalSettings.InvariantCultureInfo) +
                   ";text-align:center;vertical-align:middle;font-family:segoe, tahoma,'trebuchet ms',arial;font-size:9pt;\">" +
                   strText.CleanForHtml() + "</body></html>";
-            await webViewer.DoThreadSafeAsync(x => x.DocumentText = strDocumentText, token);
+            await webViewer.DoThreadSafeAsync(x => x.DocumentText = strDocumentText, token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -622,7 +634,7 @@ namespace Chummer
             try
             {
                 if (_tskRefresher?.IsCompleted == false)
-                    await _tskRefresher;
+                    await _tskRefresher.ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -667,7 +679,7 @@ namespace Chummer
             try
             {
                 if (_tskOutputGenerator?.IsCompleted == false)
-                    await _tskOutputGenerator;
+                    await _tskOutputGenerator.ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -690,7 +702,7 @@ namespace Chummer
         private async Task RefreshCharacterXml(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, true, token);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, true, token).ConfigureAwait(false);
             try
             {
                 try
@@ -701,21 +713,21 @@ namespace Chummer
                                            x.tsSaveAsHtml.Enabled = false;
                                        }, token),
                                        cmdPrint.DoThreadSafeAsync(x => x.Enabled = false, token),
-                                       cmdSaveAsPdf.DoThreadSafeAsync(x => x.Enabled = false, token));
+                                       cmdSaveAsPdf.DoThreadSafeAsync(x => x.Enabled = false, token)).ConfigureAwait(false);
                     token.ThrowIfCancellationRequested();
-                    Character[] aobjCharacters = await _lstCharacters.ToArrayAsync(token);
+                    Character[] aobjCharacters = await _lstCharacters.ToArrayAsync(token).ConfigureAwait(false);
                     token.ThrowIfCancellationRequested();
                     _objCharacterXml = aobjCharacters.Length > 0
                         ? await CommonFunctions.GenerateCharactersExportXml(_objPrintCulture, _strPrintLanguage,
                                                                             _objRefresherCancellationTokenSource.Token,
-                                                                            aobjCharacters)
+                                                                            aobjCharacters).ConfigureAwait(false)
                         : null;
                     token.ThrowIfCancellationRequested();
-                    await this.DoThreadSafeAsync(x => x.tsSaveAsXml.Enabled = _objCharacterXml != null, token);
+                    await this.DoThreadSafeAsync(x => x.tsSaveAsXml.Enabled = _objCharacterXml != null, token).ConfigureAwait(false);
                 }
                 finally
                 {
-                    await RefreshSheet(token);
+                    await RefreshSheet(token).ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -724,12 +736,12 @@ namespace Chummer
             }
             catch
             {
-                await this.DoThreadSafeAsync(x => x.tsSaveAsXml.Enabled = false, token);
+                await this.DoThreadSafeAsync(x => x.tsSaveAsXml.Enabled = false, token).ConfigureAwait(false);
                 throw;
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -739,7 +751,7 @@ namespace Chummer
         private async Task AsyncGenerateOutput(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
                 _blnSheetError = true;
@@ -749,19 +761,19 @@ namespace Chummer
                                        x.tsSaveAsHtml.Enabled = false;
                                    }, token),
                                    cmdPrint.DoThreadSafeAsync(x => x.Enabled = false, token),
-                                   cmdSaveAsPdf.DoThreadSafeAsync(x => x.Enabled = false, token));
+                                   cmdSaveAsPdf.DoThreadSafeAsync(x => x.Enabled = false, token)).ConfigureAwait(false);
                 if (string.IsNullOrWhiteSpace(_objCharacterXml.OuterXml))
                 {
-                    await SetDocumentText(await LanguageManager.GetStringAsync("Message_Export_Error_Warning", token: token), token);
+                    await SetDocumentText(await LanguageManager.GetStringAsync("Message_Export_Error_Warning", token: token).ConfigureAwait(false), token).ConfigureAwait(false);
                     return;
                 }
                 token.ThrowIfCancellationRequested();
-                await SetDocumentText(await LanguageManager.GetStringAsync("String_Generating_Sheet", token: token), token);
+                await SetDocumentText(await LanguageManager.GetStringAsync("String_Generating_Sheet", token: token).ConfigureAwait(false), token).ConfigureAwait(false);
                 token.ThrowIfCancellationRequested();
                 string strXslPath = Path.Combine(Utils.GetStartupPath, "sheets", _strSelectedSheet + ".xsl");
                 if (!File.Exists(strXslPath))
                 {
-                    await SetDocumentText(await LanguageManager.GetStringAsync("Message_Export_Error_Warning", token: token), token);
+                    await SetDocumentText(await LanguageManager.GetStringAsync("Message_Export_Error_Warning", token: token).ConfigureAwait(false), token).ConfigureAwait(false);
                     string strReturn = "File not found when attempting to load " + _strSelectedSheet +
                                        Environment.NewLine;
                     Log.Debug(strReturn);
@@ -772,12 +784,12 @@ namespace Chummer
                 XslCompiledTransform objXslTransform;
                 try
                 {
-                    objXslTransform = await XslManager.GetTransformForFileAsync(strXslPath, token);
+                    objXslTransform = await XslManager.GetTransformForFileAsync(strXslPath, token).ConfigureAwait(false);
                 }
                 catch (ArgumentException)
                 {
                     token.ThrowIfCancellationRequested();
-                    await SetDocumentText(await LanguageManager.GetStringAsync("Message_Export_Error_Warning", token: token), token);
+                    await SetDocumentText(await LanguageManager.GetStringAsync("Message_Export_Error_Warning", token: token).ConfigureAwait(false), token).ConfigureAwait(false);
                     string strReturn = "Last write time could not be fetched when attempting to load "
                                        + _strSelectedSheet +
                                        Environment.NewLine;
@@ -788,7 +800,7 @@ namespace Chummer
                 catch (PathTooLongException)
                 {
                     token.ThrowIfCancellationRequested();
-                    await SetDocumentText(await LanguageManager.GetStringAsync("Message_Export_Error_Warning", token: token), token);
+                    await SetDocumentText(await LanguageManager.GetStringAsync("Message_Export_Error_Warning", token: token).ConfigureAwait(false), token).ConfigureAwait(false);
                     string strReturn = "Last write time could not be fetched when attempting to load "
                                        + _strSelectedSheet +
                                        Environment.NewLine;
@@ -799,7 +811,7 @@ namespace Chummer
                 catch (UnauthorizedAccessException)
                 {
                     token.ThrowIfCancellationRequested();
-                    await SetDocumentText(await LanguageManager.GetStringAsync("Message_Export_Error_Warning", token: token), token);
+                    await SetDocumentText(await LanguageManager.GetStringAsync("Message_Export_Error_Warning", token: token).ConfigureAwait(false), token).ConfigureAwait(false);
                     string strReturn = "Last write time could not be fetched when attempting to load "
                                        + _strSelectedSheet +
                                        Environment.NewLine;
@@ -810,7 +822,7 @@ namespace Chummer
                 catch (XsltException ex)
                 {
                     token.ThrowIfCancellationRequested();
-                    await SetDocumentText(await LanguageManager.GetStringAsync("Message_Export_Error_Warning", token: token), token);
+                    await SetDocumentText(await LanguageManager.GetStringAsync("Message_Export_Error_Warning", token: token).ConfigureAwait(false), token).ConfigureAwait(false);
                     string strReturn = "Error attempting to load " + _strSelectedSheet + Environment.NewLine;
                     Log.Debug(strReturn);
                     Log.Error("ERROR Message = " + ex.Message);
@@ -835,7 +847,7 @@ namespace Chummer
                                : Utils.GetXslTransformXmlWriter(objStream))
                     {
                         token.ThrowIfCancellationRequested();
-                        await Task.Run(() => objXslTransform.Transform(_objCharacterXml, objWriter), token);
+                        await Task.Run(() => objXslTransform.Transform(_objCharacterXml, objWriter), token).ConfigureAwait(false);
                     }
 
                     token.ThrowIfCancellationRequested();
@@ -851,24 +863,24 @@ namespace Chummer
                         // The DocumentStream method fails when using Wine, so we'll instead dump everything out a temporary HTML file, have the WebBrowser load that, then delete the temporary file.
 
                         // Delete any old versions of the file
-                        if (!await Utils.SafeDeleteFileAsync(_strTempSheetFilePath, true, token: token))
+                        if (!await Utils.SafeDeleteFileAsync(_strTempSheetFilePath, true, token: token).ConfigureAwait(false))
                         {
-                            await SetDocumentText(await LanguageManager.GetStringAsync("Message_Export_Error_Warning", token: token), token);
+                            await SetDocumentText(await LanguageManager.GetStringAsync("Message_Export_Error_Warning", token: token).ConfigureAwait(false), token).ConfigureAwait(false);
                             return;
                         }
 
                         // Read in the resulting code and pass it to the browser.
                         using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
                         {
-                            string strOutput = await objReader.ReadToEndAsync();
+                            string strOutput = await objReader.ReadToEndAsync().ConfigureAwait(false);
                             File.WriteAllText(_strTempSheetFilePath, strOutput);
                         }
 
                         token.ThrowIfCancellationRequested();
-                        await this.DoThreadSafeAsync(x => x.UseWaitCursor = true, token);
+                        await this.DoThreadSafeAsync(x => x.UseWaitCursor = true, token).ConfigureAwait(false);
                         _blnSheetError = false;
                         await webViewer.DoThreadSafeAsync(
-                            x => x.Url = new Uri("file:///" + _strTempSheetFilePath), token);
+                            x => x.Url = new Uri("file:///" + _strTempSheetFilePath), token).ConfigureAwait(false);
                         token.ThrowIfCancellationRequested();
                     }
                     else
@@ -877,11 +889,11 @@ namespace Chummer
                         // Populate the browser using DocumentText (DocumentStream would cause issues due to stream disposal).
                         using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
                         {
-                            string strOutput = await objReader.ReadToEndAsync();
+                            string strOutput = await objReader.ReadToEndAsync().ConfigureAwait(false);
                             token.ThrowIfCancellationRequested();
-                            await this.DoThreadSafeAsync(x => x.UseWaitCursor = true, token);
+                            await this.DoThreadSafeAsync(x => x.UseWaitCursor = true, token).ConfigureAwait(false);
                             _blnSheetError = false;
-                            await webViewer.DoThreadSafeAsync(x => x.DocumentText = strOutput, token);
+                            await webViewer.DoThreadSafeAsync(x => x.DocumentText = strOutput, token).ConfigureAwait(false);
                             token.ThrowIfCancellationRequested();
                         }
                     }
@@ -889,7 +901,7 @@ namespace Chummer
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -897,7 +909,7 @@ namespace Chummer
         {
             try
             {
-                await this.DoThreadSafeAsync(x => x.UseWaitCursor = false, _objGenericToken);
+                await this.DoThreadSafeAsync(x => x.UseWaitCursor = false, _objGenericToken).ConfigureAwait(false);
                 if (_tskOutputGenerator?.IsCompleted == true && _tskRefresher?.IsCompleted == true)
                 {
                     await Task.WhenAll(this.DoThreadSafeAsync(x =>
@@ -906,7 +918,7 @@ namespace Chummer
                                            x.tsSaveAsHtml.Enabled = !_blnSheetError;
                                        }, _objGenericToken),
                                        cmdPrint.DoThreadSafeAsync(x => x.Enabled = !_blnSheetError, _objGenericToken),
-                                       cmdSaveAsPdf.DoThreadSafeAsync(x => x.Enabled = !_blnSheetError, _objGenericToken));
+                                       cmdSaveAsPdf.DoThreadSafeAsync(x => x.Enabled = !_blnSheetError, _objGenericToken)).ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -963,7 +975,7 @@ namespace Chummer
                 {
                     // There is also no way to silently have it print to a PDF, so we have to show the print dialog
                     // and have the user click through, though the PDF printer will be temporarily set as their default
-                    await webViewer.DoThreadSafeAsync(x => x.ShowPrintDialog(), token);
+                    await webViewer.DoThreadSafeAsync(x => x.ShowPrintDialog(), token).ConfigureAwait(false);
                 }
             }
             catch
@@ -1014,11 +1026,11 @@ namespace Chummer
         private async ValueTask PopulateXsltList(CancellationToken token = default)
         {
             List<ListItem> lstFiles = await XmlManager.GetXslFilesFromLocalDirectoryAsync(
-                await cboLanguage.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token)
-                ?? GlobalSettings.DefaultLanguage, _lstCharacters, true, token);
+                await cboLanguage.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false)
+                ?? GlobalSettings.DefaultLanguage, _lstCharacters, true, token).ConfigureAwait(false);
             try
             {
-                await cboXSLT.PopulateWithListItemsAsync(lstFiles, token);
+                await cboXSLT.PopulateWithListItemsAsync(lstFiles, token).ConfigureAwait(false);
             }
             finally
             {
@@ -1041,7 +1053,7 @@ namespace Chummer
         public async Task SetCharacters(CancellationToken token = default, params Character[] lstCharacters)
         {
             token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker = await _lstCharacters.LockObject.EnterWriteLockAsync(token);
+            IAsyncDisposable objLocker = await _lstCharacters.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
@@ -1050,9 +1062,9 @@ namespace Chummer
                     objCharacter.PropertyChanged -= ObjCharacterOnPropertyChanged;
                     objCharacter.SettingsPropertyChanged -= ObjCharacterOnSettingsPropertyChanged;
                 }
-                await _lstCharacters.ClearAsync(token);
+                await _lstCharacters.ClearAsync(token).ConfigureAwait(false);
                 if (lstCharacters != null)
-                    await _lstCharacters.AddRangeAsync(lstCharacters, token);
+                    await _lstCharacters.AddRangeAsync(lstCharacters, token).ConfigureAwait(false);
                 foreach (Character objCharacter in _lstCharacters)
                 {
                     objCharacter.PropertyChanged += ObjCharacterOnPropertyChanged;
@@ -1061,10 +1073,10 @@ namespace Chummer
             }
             finally
             {
-                await objLocker.DisposeAsync();
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
 
-            await UpdateWindowTitleAsync(token);
+            await UpdateWindowTitleAsync(token).ConfigureAwait(false);
 
             token.ThrowIfCancellationRequested();
             bool blnOldLoading = _blnLoading;
@@ -1072,9 +1084,9 @@ namespace Chummer
             {
                 _blnLoading = true;
                 // Populate the XSLT list with all of the XSL files found in the sheets directory.
-                await LanguageManager.PopulateSheetLanguageListAsync(cboLanguage, _strSelectedSheet, _lstCharacters, token: token);
-                await PopulateXsltList(token);
-                await RefreshCharacters(token);
+                await LanguageManager.PopulateSheetLanguageListAsync(cboLanguage, _strSelectedSheet, _lstCharacters, token: token).ConfigureAwait(false);
+                await PopulateXsltList(token).ConfigureAwait(false);
+                await RefreshCharacters(token).ConfigureAwait(false);
             }
             finally
             {
@@ -1087,7 +1099,7 @@ namespace Chummer
             try
             {
                 if (e.PropertyName == nameof(CharacterSettings.Name))
-                    await UpdateWindowTitleAsync(_objGenericToken);
+                    await UpdateWindowTitleAsync(_objGenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -1100,8 +1112,8 @@ namespace Chummer
             try
             {
                 if (e.PropertyName == nameof(Character.CharacterName) || e.PropertyName == nameof(Character.Created))
-                    await UpdateWindowTitleAsync(_objGenericToken);
-                await RefreshCharacters(_objGenericToken);
+                    await UpdateWindowTitleAsync(_objGenericToken).ConfigureAwait(false);
+                await RefreshCharacters(_objGenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {

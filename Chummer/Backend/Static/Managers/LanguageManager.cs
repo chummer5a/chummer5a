@@ -662,9 +662,10 @@ namespace Chummer
         /// <param name="strLanguage">Language from which the string should be retrieved.</param>
         /// <param name="token">CancellationToken to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Task<char> GetCharAsync(string strKey, string strLanguage, CancellationToken token = default)
+        public static async Task<char> GetCharAsync(string strKey, string strLanguage, CancellationToken token = default)
         {
-            return GetStringCoreAsync(false, strKey, strLanguage, false, token).ContinueWith(x => string.IsNullOrWhiteSpace(x.Result) ? default : x.Result[0], token);
+            string strResult = await GetStringCoreAsync(false, strKey, strLanguage, false, token).ConfigureAwait(false);
+            return string.IsNullOrWhiteSpace(strResult) ? default : strResult[0];
         }
 
         /// <summary>
