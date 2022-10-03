@@ -978,18 +978,18 @@ namespace Chummer
                     token.ThrowIfCancellationRequested();
                     if (Utils.GitUpdateAvailable > 0)
                     {
-                        string strSpace = await LanguageManager.GetStringAsync("String_Space");
+                        string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token);
                         string strNewText = Application.ProductName + strSpace + '-' + strSpace +
-                                            await LanguageManager.GetStringAsync("String_Version")
+                                            await LanguageManager.GetStringAsync("String_Version", token: token)
                                             + strSpace + _strCurrentVersion + strSpace + '-' + strSpace
                                             + string.Format(GlobalSettings.CultureInfo,
                                                             await LanguageManager.GetStringAsync(
-                                                                "String_Update_Available"),
+                                                                "String_Update_Available", token: token),
                                                             Utils.CachedGitVersion);
                         await this.DoThreadSafeAsync(x => x.Text = strNewText, token);
                         if (GlobalSettings.AutomaticUpdate && _frmUpdate == null)
                         {
-                            _frmUpdate = await this.DoThreadSafeFuncAsync(() =>
+                            _frmUpdate = await this.DoThreadSafeFuncAsync(x =>
                             {
                                 ChummerUpdater objReturn = new ChummerUpdater();
                                 x.Disposed += (o, args) => objReturn.Dispose();
@@ -1851,9 +1851,11 @@ namespace Chummer
                 objTemp.Dispose();
             }
 #endif
+            // ReSharper disable MethodSupportsCancellation
             await Task.WhenAll(_lstOpenCharacterEditorForms.ClearAsync().AsTask(),
                                _lstOpenCharacterExportForms.ClearAsync().AsTask(),
                                _lstOpenCharacterSheetViewers.ClearAsync().AsTask());
+            // ReSharper restore MethodSupportsCancellation
             Properties.Settings.Default.WindowState = WindowState;
             if (WindowState == FormWindowState.Normal)
             {
