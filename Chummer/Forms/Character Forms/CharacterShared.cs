@@ -1391,18 +1391,23 @@ namespace Chummer
                 if (notifyCollectionChangedEventArgs == null ||
                     notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
                 {
+                    (string strSelectedId, TreeNodeCollection lstRootNodes) = await treMetamagic.DoThreadSafeFuncAsync(
+                        x =>
+                        {
+                            string strReturn =
+                                (x.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
+                            TreeNodeCollection lstReturn = x.Nodes;
+                            lstReturn.Clear();
+                            return new Tuple<string, TreeNodeCollection>(strReturn, lstReturn);
+                        }, token);
+
+                    foreach (InitiationGrade objGrade in CharacterObject.InitiationGrades)
+                    {
+                        await AddToTree(objGrade);
+                    }
+
                     await treMetamagic.DoThreadSafeAsync(x =>
                     {
-                        string strSelectedId =
-                            (x.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
-                        TreeNodeCollection lstRootNodes = x.Nodes;
-                        lstRootNodes.Clear();
-
-                        foreach (InitiationGrade objGrade in CharacterObject.InitiationGrades)
-                        {
-                            AddToTree(objGrade);
-                        }
-
                         int intOffset = lstRootNodes.Count;
                         foreach (Metamagic objMetamagic in CharacterObject.Metamagics)
                         {
