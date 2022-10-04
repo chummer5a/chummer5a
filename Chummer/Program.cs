@@ -40,6 +40,7 @@ using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.ApplicationInsights.Metrics;
 using Microsoft.ApplicationInsights.NLogTarget;
+using Microsoft.VisualStudio.Threading;
 using NLog;
 using NLog.Config;
 
@@ -56,6 +57,8 @@ namespace Chummer
         public static readonly Process MyProcess = s_objMyProcess.Value;
 
         public static SynchronizationContext MySynchronizationContext { get; private set; }
+
+        public static JoinableTaskContext MyJoinableTaskContext { get; private set; }
 
         [CLSCompliant(false)]
         public static TelemetryClient ChummerTelemetryClient { get; } = new TelemetryClient();
@@ -576,7 +579,11 @@ namespace Chummer
             if (IsMainThread)
             {
                 using (new DummyForm()) // New Form needs to be created (or Application.Run() called) before Synchronization.Current is set
+                {
                     MySynchronizationContext = SynchronizationContext.Current;
+                    MyJoinableTaskContext
+                        = new JoinableTaskContext(Thread.CurrentThread, SynchronizationContext.Current);
+                }
             }
         }
 
@@ -1015,7 +1022,7 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         public static Character LoadCharacter(string strFileName, string strNewName = "", bool blnClearFileName = false, bool blnShowErrors = true, LoadingBar frmLoadingBar = null, CancellationToken token = default)
         {
-            return LoadCharacterCoreAsync(true, strFileName, strNewName, blnClearFileName, blnShowErrors, frmLoadingBar, token).ConfigureAwait(false).GetAwaiter().GetResult();
+            return Utils.JoinableTaskFactory.Run(() => LoadCharacterCoreAsync(true, strFileName, strNewName, blnClearFileName, blnShowErrors, frmLoadingBar, token));
         }
 
         /// <summary>

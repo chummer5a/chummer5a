@@ -2511,7 +2511,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string CalculatedDamage(CultureInfo objCulture, string strLanguage)
         {
-            return CalculatedDamageCoreAsync(true, objCulture, strLanguage).ConfigureAwait(false).GetAwaiter().GetResult();
+            return Utils.JoinableTaskFactory.Run(() => CalculatedDamageCoreAsync(true, objCulture, strLanguage));
         }
 
         /// <summary>
@@ -3184,7 +3184,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string CalculatedAmmo(CultureInfo objCulture, string strLanguage)
         {
-            return CalculatedAmmoCoreAsync(true, objCulture, strLanguage).ConfigureAwait(false).GetAwaiter().GetResult();
+            return Utils.JoinableTaskFactory.Run(() => CalculatedAmmoCoreAsync(true, objCulture, strLanguage));
         }
 
         /// <summary>
@@ -3475,7 +3475,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string CalculatedMode(string strLanguage)
         {
-            return CalculatedModeCoreAsync(true, strLanguage).ConfigureAwait(false).GetAwaiter().GetResult();
+            return Utils.JoinableTaskFactory.Run(() => CalculatedModeCoreAsync(true, strLanguage));
         }
 
         /// <summary>
@@ -3955,7 +3955,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string TotalAP(CultureInfo objCulture, string strLanguage)
         {
-            return TotalAPCoreAsync(true, objCulture, strLanguage).ConfigureAwait(false).GetAwaiter().GetResult();
+            return Utils.JoinableTaskFactory.Run(() => TotalAPCoreAsync(true, objCulture, strLanguage));
         }
 
         /// <summary>
@@ -4165,7 +4165,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string TotalRC(CultureInfo objCulture, string strLanguage, bool blnRefreshRCToolTip = false)
         {
-            return TotalRCCoreAsync(true, objCulture, strLanguage, blnRefreshRCToolTip).ConfigureAwait(false).GetAwaiter().GetResult();
+            return Utils.JoinableTaskFactory.Run(() => TotalRCCoreAsync(true, objCulture, strLanguage, blnRefreshRCToolTip));
         }
 
         /// <summary>

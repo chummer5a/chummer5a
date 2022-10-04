@@ -38,8 +38,10 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using Microsoft.Extensions.ObjectPool;
+using Microsoft.VisualStudio.Threading;
 using Microsoft.Win32;
 using NLog;
+using IAsyncDisposable = System.IAsyncDisposable;
 
 namespace Chummer
 {
@@ -319,6 +321,11 @@ namespace Chummer
 
         public static string GetSettingsFolderPath => s_strGetSettingsFolderPath.Value;
 
+        private static readonly Lazy<JoinableTaskFactory> s_objJoinableTaskFactory
+            = new Lazy<JoinableTaskFactory>(() => new JoinableTaskFactory(Program.MyJoinableTaskContext));
+
+        public static JoinableTaskFactory JoinableTaskFactory => s_objJoinableTaskFactory.Value;
+
         private static readonly Lazy<string[]> s_astrBasicDataFileNames = new Lazy<string[]>(() =>
         {
             List<string> lstFiles = new List<string>(byte.MaxValue);
@@ -429,8 +436,7 @@ namespace Chummer
         /// <returns>True if file does not exist or deletion was successful. False if deletion was unsuccessful.</returns>
         public static bool SafeDeleteFile(string strPath, bool blnShowUnauthorizedAccess = false, int intTimeout = DefaultSleepDuration * 60, CancellationToken token = default)
         {
-            return SafeDeleteFileCoreAsync(true, strPath, blnShowUnauthorizedAccess, intTimeout, token).ConfigureAwait(false).GetAwaiter()
-                .GetResult();
+            return JoinableTaskFactory.Run(() => SafeDeleteFileCoreAsync(true, strPath, blnShowUnauthorizedAccess, intTimeout, token));
         }
 
         /// <summary>
@@ -554,8 +560,7 @@ namespace Chummer
         /// <returns>True if directory does not exist or deletion was successful. False if deletion was unsuccessful.</returns>
         public static bool SafeDeleteDirectory(string strPath, bool blnShowUnauthorizedAccess = false, int intTimeout = DefaultSleepDuration * 60, CancellationToken token = default)
         {
-            return SafeDeleteDirectoryCoreAsync(true, strPath, blnShowUnauthorizedAccess, intTimeout, token).ConfigureAwait(false).GetAwaiter()
-                .GetResult();
+            return JoinableTaskFactory.Run(() => SafeDeleteDirectoryCoreAsync(true, strPath, blnShowUnauthorizedAccess, intTimeout, token));
         }
 
         /// <summary>
@@ -691,8 +696,9 @@ namespace Chummer
         /// <returns>True if directory does not exist or deletion was successful. False if deletion was unsuccessful.</returns>
         public static bool SafeClearDirectory(string strPath, string strSearchPattern = "*", bool blnRecursive = true, bool blnShowUnauthorizedAccess = false, int intTimeout = DefaultSleepDuration * 60, CancellationToken token = default)
         {
-            return SafeClearDirectoryCoreAsync(true, strPath, strSearchPattern, blnRecursive, blnShowUnauthorizedAccess,
-                intTimeout, token).ConfigureAwait(false).GetAwaiter().GetResult();
+            return JoinableTaskFactory.Run(() => SafeClearDirectoryCoreAsync(
+                                               true, strPath, strSearchPattern, blnRecursive, blnShowUnauthorizedAccess,
+                                               intTimeout, token));
         }
 
         /// <summary>

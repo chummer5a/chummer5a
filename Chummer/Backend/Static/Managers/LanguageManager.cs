@@ -110,7 +110,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void TranslateWinForm(this Control objObject, string strIntoLanguage = "", bool blnDoResumeLayout = true, CancellationToken token = default)
         {
-            TranslateWinFormCoreAsync(true, objObject, strIntoLanguage, blnDoResumeLayout, token).ConfigureAwait(false).GetAwaiter().GetResult();
+            Utils.JoinableTaskFactory.Run(() => TranslateWinFormCoreAsync(true, objObject, strIntoLanguage, blnDoResumeLayout, token));
         }
 
         /// <summary>
@@ -196,7 +196,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool LoadLanguage(string strLanguage, CancellationToken token = default)
         {
-            return LoadLanguageCoreAsync(true, strLanguage, token).ConfigureAwait(false).GetAwaiter().GetResult();
+            return Utils.JoinableTaskFactory.Run(() => LoadLanguageCoreAsync(true, strLanguage, token));
         }
 
         /// <summary>
@@ -589,7 +589,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string GetString(string strKey, string strLanguage = "", bool blnReturnError = true, CancellationToken token = default)
         {
-            return GetStringCoreAsync(true, strKey, strLanguage, blnReturnError, token).ConfigureAwait(false).GetAwaiter().GetResult();
+            return Utils.JoinableTaskFactory.Run(() => GetStringCoreAsync(true, strKey, strLanguage, blnReturnError, token));
         }
 
         /// <summary>
@@ -639,7 +639,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static char GetChar(string strKey, string strLanguage, CancellationToken token = default)
         {
-            string strReturn = GetStringCoreAsync(true, strKey, strLanguage, false, token).ConfigureAwait(false).GetAwaiter().GetResult();
+            string strReturn = Utils.JoinableTaskFactory.Run(() => GetStringCoreAsync(true, strKey, strLanguage, false, token));
             return string.IsNullOrWhiteSpace(strReturn) ? default : strReturn[0];
         }
 
@@ -849,7 +849,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static XPathDocument GetDataDocument(string strLanguage, CancellationToken token = default)
         {
-            return GetDataDocumentCoreAsync(true, strLanguage, token).ConfigureAwait(false).GetAwaiter().GetResult();
+            return Utils.JoinableTaskFactory.Run(() => GetDataDocumentCoreAsync(true, strLanguage, token));
         }
 
         /// <summary>
@@ -1138,7 +1138,7 @@ namespace Chummer
         {
             return string.IsNullOrWhiteSpace(strExtra)
                 ? string.Empty
-                : TranslateExtraCoreAsync(true, strExtra, strIntoLanguage, objCharacter, strPreferFile, token).ConfigureAwait(false).GetAwaiter().GetResult();
+                : Utils.JoinableTaskFactory.Run(() => TranslateExtraCoreAsync(true, strExtra, strIntoLanguage, objCharacter, strPreferFile, token));
             /*
             // This task can normally end up locking up the UI thread because of the Parallel.Foreach call, so we manually schedule it and intermittently do events while waiting for it
             // Because of how ubiquitous this method is, setting it to async so that we can await this instead would require a massive overhaul.
@@ -1515,7 +1515,7 @@ namespace Chummer
         {
             return string.IsNullOrWhiteSpace(strExtra)
                 ? string.Empty
-                : ReverseTranslateExtraCoreAsync(true, strExtra, strFromLanguage, objCharacter, strPreferFile, token).ConfigureAwait(false).GetAwaiter().GetResult();
+                : Utils.JoinableTaskFactory.Run(() => ReverseTranslateExtraCoreAsync(true, strExtra, strFromLanguage, objCharacter, strPreferFile, token));
             /*
             // This task can normally end up locking up the UI thread because of the Parallel.Foreach call, so we manually schedule it and intermittently do events while waiting for it
             // Because of how ubiquitous this method is, setting it to async so that we can await this instead would require a massive overhaul.
