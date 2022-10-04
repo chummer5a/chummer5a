@@ -216,23 +216,34 @@ namespace Chummer.Tests
         public void Test03_LoadThenSaveAsChum5lz()
         {
             Debug.WriteLine("Unit test initialized for: Test03_LoadThenSave()");
-            foreach (Character objCharacter in GetTestCharacters())
+            LzmaHelper.ChummerCompressionPreset eOldSetting = GlobalSettings.Chum5lzCompressionLevel;
+            try
             {
-                string strFileName = Path.GetFileName(objCharacter.FileName) ?? LanguageManager.GetString("String_Unknown");
-                Debug.WriteLine("Checking " + strFileName);
-                string strDestination = Path.Combine(TestPathInfo.FullName, strFileName);
-                if (!strDestination.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
+                GlobalSettings.Chum5lzCompressionLevel = LzmaHelper.ChummerCompressionPreset.Fast;
+                foreach (Character objCharacter in GetTestCharacters())
                 {
-                    if (strDestination.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
-                        strDestination += "lz";
-                    else
-                        strDestination += ".chum5lz";
+                    string strFileName = Path.GetFileName(objCharacter.FileName)
+                                         ?? LanguageManager.GetString("String_Unknown");
+                    Debug.WriteLine("Checking " + strFileName);
+                    string strDestination = Path.Combine(TestPathInfo.FullName, strFileName);
+                    if (!strDestination.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
+                    {
+                        if (strDestination.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
+                            strDestination += "lz";
+                        else
+                            strDestination += ".chum5lz";
+                    }
+
+                    SaveCharacter(objCharacter, strDestination);
+                    using (LoadCharacter(new FileInfo(strDestination)))
+                    {
+                        // Assert on failed load will already happen inside LoadCharacter
+                    }
                 }
-                SaveCharacter(objCharacter, strDestination);
-                using (LoadCharacter(new FileInfo(strDestination)))
-                {
-                    // Assert on failed load will already happen inside LoadCharacter
-                }
+            }
+            finally
+            {
+                GlobalSettings.Chum5lzCompressionLevel = eOldSetting;
             }
         }
 
