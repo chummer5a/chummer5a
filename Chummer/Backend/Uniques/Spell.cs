@@ -323,6 +323,9 @@ namespace Chummer
                       .WriteElementStringAsync("alchemy", Alchemical.ToString(GlobalSettings.InvariantCultureInfo),
                                                token).ConfigureAwait(false);
                 await objWriter
+                    .WriteElementStringAsync("limited", Limited.ToString(GlobalSettings.InvariantCultureInfo),
+                        token).ConfigureAwait(false);
+                await objWriter
                       .WriteElementStringAsync("barehandedadept",
                                                BarehandedAdept.ToString(GlobalSettings.InvariantCultureInfo), token)
                       .ConfigureAwait(false);

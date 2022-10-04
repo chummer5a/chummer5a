@@ -365,11 +365,13 @@
   <xsl:variable name="lang.SocialLimit"    select="string('Soziales Limit')" />
 
   <!-- spell types list -->
+  <xsl:variable name="lang.Alchemical"    select="string('Alchemistisch')" />
   <xsl:variable name="lang.CombatSpells"    select="string('Kampfzauber')" />
   <xsl:variable name="lang.DetectionSpells"  select="string('Wahrnehmungszauber')" />
   <xsl:variable name="lang.Enchantments"    select="string('Verzauberungen')" />
   <xsl:variable name="lang.HealthSpells"     select="string('Heilzauber')" />
   <xsl:variable name="lang.IllusionSpells"   select="string('Illusionszauber')" />
+  <xsl:variable name="lang.Limited"    select="string('Begrenzt')" />
   <xsl:variable name="lang.ManipulationSpells" select="string('Manipulationszauber')" />
   <xsl:variable name="lang.Rituals"      select="string('Rituale')" />
 
