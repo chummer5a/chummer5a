@@ -25,6 +25,7 @@ Data Changes:
 - Fixed the name, ammo capacity type, and built-in accessories of the Wuxing-Armtech PTL-02.
 - Numinous Perception has been added as an example Perception specialization based on page 314 of the core rulebook.
 - Flamethrower propely has the Elemental descriptor.
+- Added a custom dataset that fixes the stats on the Nitama Sporter to match those found on Run & Gun p. 205 instead of the copy error statblock found on p. 31 (where it's obvious that most of the table is just a repeat of the Fichetti Executive Action from a page before).
 
 Changed/New Strings:
 - Checkbox_Options_UncappedArmorAccessoryBonuses
