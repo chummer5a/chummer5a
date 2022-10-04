@@ -3499,7 +3499,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                if (_nodWeaponBonus == null)
+                if (_nodFlechetteWeaponBonus == null)
                     return string.Empty;
                 // Use the apreplace value if applicable.
                 // Use the ap bonus if available, otherwise use 0.
