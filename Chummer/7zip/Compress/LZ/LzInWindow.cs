@@ -18,10 +18,12 @@
  */
 // LzInWindow.cs
 
+using System;
 using System.IO;
 
 namespace SevenZip.Compression.LZ
 {
+    [CLSCompliant(false)]
     public class InWindow
     {
         public byte[] _bufferBase; // pointer to buffer with data
@@ -30,9 +32,9 @@ namespace SevenZip.Compression.LZ
         private bool _streamEndWasReached; // if (true) then _streamPos shows real end of stream
 
         private uint _pointerToLastSafePosition;
-
+        
         public uint _bufferOffset;
-
+        
         public uint _blockSize; // Size of Allocated memory block
         public uint _pos; // offset (from _buffer) of curent byte
         private uint _keepSizeBefore; // how many BYTEs must be kept in buffer before _pos
@@ -83,6 +85,7 @@ namespace SevenZip.Compression.LZ
         private void Free()
         { _bufferBase = null; }
 
+        [CLSCompliant(false)]
         public void Create(uint keepSizeBefore, uint keepSizeAfter, uint keepSizeReserve)
         {
             _keepSizeBefore = keepSizeBefore;
@@ -133,6 +136,7 @@ namespace SevenZip.Compression.LZ
         }
 
         // index + limit have not to exceed _keepSizeAfter;
+        [CLSCompliant(false)]
         public uint GetMatchLen(int index, uint distance, uint limit)
         {
             unchecked
