@@ -764,32 +764,43 @@ namespace Chummer
                                    cmdSaveAsPdf.DoThreadSafeAsync(x => x.Enabled = false, token)).ConfigureAwait(false);
                 if (string.IsNullOrWhiteSpace(_objCharacterXml.OuterXml))
                 {
-                    await SetDocumentText(await LanguageManager.GetStringAsync("Message_Export_Error_Warning", token: token).ConfigureAwait(false), token).ConfigureAwait(false);
+                    await SetDocumentText(
+                        await LanguageManager.GetStringAsync("Message_Export_Error_Warning", token: token)
+                                             .ConfigureAwait(false), token).ConfigureAwait(false);
                     return;
                 }
+
                 token.ThrowIfCancellationRequested();
-                await SetDocumentText(await LanguageManager.GetStringAsync("String_Generating_Sheet", token: token).ConfigureAwait(false), token).ConfigureAwait(false);
+                await SetDocumentText(
+                    await LanguageManager.GetStringAsync("String_Generating_Sheet", token: token).ConfigureAwait(false),
+                    token).ConfigureAwait(false);
                 token.ThrowIfCancellationRequested();
                 string strXslPath = Path.Combine(Utils.GetStartupPath, "sheets", _strSelectedSheet + ".xsl");
                 if (!File.Exists(strXslPath))
                 {
-                    await SetDocumentText(await LanguageManager.GetStringAsync("Message_Export_Error_Warning", token: token).ConfigureAwait(false), token).ConfigureAwait(false);
+                    await SetDocumentText(
+                        await LanguageManager.GetStringAsync("Message_Export_Error_Warning", token: token)
+                                             .ConfigureAwait(false), token).ConfigureAwait(false);
                     string strReturn = "File not found when attempting to load " + _strSelectedSheet +
                                        Environment.NewLine;
                     Log.Debug(strReturn);
                     Program.ShowMessageBox(this, strReturn);
                     return;
                 }
+
                 token.ThrowIfCancellationRequested();
                 XslCompiledTransform objXslTransform;
                 try
                 {
-                    objXslTransform = await XslManager.GetTransformForFileAsync(strXslPath, token).ConfigureAwait(false);
+                    objXslTransform
+                        = await XslManager.GetTransformForFileAsync(strXslPath, token).ConfigureAwait(false);
                 }
                 catch (ArgumentException)
                 {
                     token.ThrowIfCancellationRequested();
-                    await SetDocumentText(await LanguageManager.GetStringAsync("Message_Export_Error_Warning", token: token).ConfigureAwait(false), token).ConfigureAwait(false);
+                    await SetDocumentText(
+                        await LanguageManager.GetStringAsync("Message_Export_Error_Warning", token: token)
+                                             .ConfigureAwait(false), token).ConfigureAwait(false);
                     string strReturn = "Last write time could not be fetched when attempting to load "
                                        + _strSelectedSheet +
                                        Environment.NewLine;
@@ -800,7 +811,9 @@ namespace Chummer
                 catch (PathTooLongException)
                 {
                     token.ThrowIfCancellationRequested();
-                    await SetDocumentText(await LanguageManager.GetStringAsync("Message_Export_Error_Warning", token: token).ConfigureAwait(false), token).ConfigureAwait(false);
+                    await SetDocumentText(
+                        await LanguageManager.GetStringAsync("Message_Export_Error_Warning", token: token)
+                                             .ConfigureAwait(false), token).ConfigureAwait(false);
                     string strReturn = "Last write time could not be fetched when attempting to load "
                                        + _strSelectedSheet +
                                        Environment.NewLine;
@@ -811,7 +824,9 @@ namespace Chummer
                 catch (UnauthorizedAccessException)
                 {
                     token.ThrowIfCancellationRequested();
-                    await SetDocumentText(await LanguageManager.GetStringAsync("Message_Export_Error_Warning", token: token).ConfigureAwait(false), token).ConfigureAwait(false);
+                    await SetDocumentText(
+                        await LanguageManager.GetStringAsync("Message_Export_Error_Warning", token: token)
+                                             .ConfigureAwait(false), token).ConfigureAwait(false);
                     string strReturn = "Last write time could not be fetched when attempting to load "
                                        + _strSelectedSheet +
                                        Environment.NewLine;
@@ -822,7 +837,9 @@ namespace Chummer
                 catch (XsltException ex)
                 {
                     token.ThrowIfCancellationRequested();
-                    await SetDocumentText(await LanguageManager.GetStringAsync("Message_Export_Error_Warning", token: token).ConfigureAwait(false), token).ConfigureAwait(false);
+                    await SetDocumentText(
+                        await LanguageManager.GetStringAsync("Message_Export_Error_Warning", token: token)
+                                             .ConfigureAwait(false), token).ConfigureAwait(false);
                     string strReturn = "Error attempting to load " + _strSelectedSheet + Environment.NewLine;
                     Log.Debug(strReturn);
                     Log.Error("ERROR Message = " + ex.Message);
@@ -840,63 +857,73 @@ namespace Chummer
                     objSettings.ConformanceLevel = ConformanceLevel.Fragment;
                 }
 
-                using (MemoryStream objStream = new MemoryStream())
+                if (GlobalSettings.PrintToFileFirst)
                 {
-                    using (XmlWriter objWriter = objSettings != null
-                               ? XmlWriter.Create(objStream, objSettings)
-                               : Utils.GetXslTransformXmlWriter(objStream))
+                    // The DocumentStream method fails when using Wine, so we'll instead dump everything out a temporary HTML file, have the WebBrowser load that, then delete the temporary file.
+
+                    // Delete any old versions of the file
+                    if (!await Utils.SafeDeleteFileAsync(_strTempSheetFilePath, true, token: token)
+                                    .ConfigureAwait(false))
                     {
-                        token.ThrowIfCancellationRequested();
-                        await Task.Run(() => objXslTransform.Transform(_objCharacterXml, objWriter), token).ConfigureAwait(false);
+                        await SetDocumentText(
+                            await LanguageManager.GetStringAsync("Message_Export_Error_Warning", token: token)
+                                                 .ConfigureAwait(false), token).ConfigureAwait(false);
+                        return;
                     }
+                }
 
-                    token.ThrowIfCancellationRequested();
-
-                    objStream.Position = 0;
-
-                    // This reads from a static file, outputs to an HTML file, then has the browser read from that file. For debugging purposes.
-                    //objXSLTransform.Transform("D:\\temp\\print.xml", "D:\\temp\\output.htm");
-                    //webBrowser1.Navigate("D:\\temp\\output.htm");
-
-                    if (GlobalSettings.PrintToFileFirst)
+                string strOutput = await Task.Run(async () =>
+                {
+                    using (MemoryStream objStream = new MemoryStream())
                     {
-                        // The DocumentStream method fails when using Wine, so we'll instead dump everything out a temporary HTML file, have the WebBrowser load that, then delete the temporary file.
-
-                        // Delete any old versions of the file
-                        if (!await Utils.SafeDeleteFileAsync(_strTempSheetFilePath, true, token: token).ConfigureAwait(false))
+                        using (XmlWriter objWriter = objSettings != null
+                                   ? XmlWriter.Create(objStream, objSettings)
+                                   : Utils.GetXslTransformXmlWriter(objStream))
                         {
-                            await SetDocumentText(await LanguageManager.GetStringAsync("Message_Export_Error_Warning", token: token).ConfigureAwait(false), token).ConfigureAwait(false);
-                            return;
+                            token.ThrowIfCancellationRequested();
+                            objXslTransform.Transform(_objCharacterXml, objWriter);
                         }
+
+                        token.ThrowIfCancellationRequested();
+
+                        objStream.Position = 0;
 
                         // Read in the resulting code and pass it to the browser.
-                        using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
+                        using (StreamReader objReader
+                               = new StreamReader(objStream, Encoding.UTF8, true))
                         {
-                            string strOutput = await objReader.ReadToEndAsync().ConfigureAwait(false);
-                            File.WriteAllText(_strTempSheetFilePath, strOutput);
+                            return await objReader.ReadToEndAsync()
+                                                  .ConfigureAwait(false);
                         }
+                    }
+                }, token).ConfigureAwait(false);
 
-                        token.ThrowIfCancellationRequested();
-                        await this.DoThreadSafeAsync(x => x.UseWaitCursor = true, token).ConfigureAwait(false);
-                        _blnSheetError = false;
-                        await webViewer.DoThreadSafeAsync(
-                            x => x.Url = new Uri("file:///" + _strTempSheetFilePath), token).ConfigureAwait(false);
-                        token.ThrowIfCancellationRequested();
-                    }
-                    else
-                    {
-                        token.ThrowIfCancellationRequested();
-                        // Populate the browser using DocumentText (DocumentStream would cause issues due to stream disposal).
-                        using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
-                        {
-                            string strOutput = await objReader.ReadToEndAsync().ConfigureAwait(false);
-                            token.ThrowIfCancellationRequested();
-                            await this.DoThreadSafeAsync(x => x.UseWaitCursor = true, token).ConfigureAwait(false);
-                            _blnSheetError = false;
-                            await webViewer.DoThreadSafeAsync(x => x.DocumentText = strOutput, token).ConfigureAwait(false);
-                            token.ThrowIfCancellationRequested();
-                        }
-                    }
+                token.ThrowIfCancellationRequested();
+
+                _blnSheetError = false;
+
+                // This reads from a static file, outputs to an HTML file, then has the browser read from that file. For debugging purposes.
+                //objXSLTransform.Transform("D:\\temp\\print.xml", "D:\\temp\\output.htm");
+                //webBrowser1.Navigate("D:\\temp\\output.htm");
+
+                if (GlobalSettings.PrintToFileFirst)
+                {
+                    // The DocumentStream method fails when using Wine, so we'll instead dump everything out a temporary HTML file, have the WebBrowser load that, then delete the temporary file.
+
+                    // Read in the resulting code and pass it to the browser.
+                    File.WriteAllText(_strTempSheetFilePath, strOutput);
+                    token.ThrowIfCancellationRequested();
+                    await this.DoThreadSafeAsync(x => x.UseWaitCursor = true, token).ConfigureAwait(false);
+                    await webViewer.DoThreadSafeAsync(
+                        x => x.Url = new Uri("file:///" + _strTempSheetFilePath), token).ConfigureAwait(false);
+                    token.ThrowIfCancellationRequested();
+                }
+                else
+                {
+                    // Populate the browser using DocumentText (DocumentStream would cause issues due to stream disposal).
+                    await this.DoThreadSafeAsync(x => x.UseWaitCursor = true, token).ConfigureAwait(false);
+                    await webViewer.DoThreadSafeAsync(x => x.DocumentText = strOutput, token).ConfigureAwait(false);
+                    token.ThrowIfCancellationRequested();
                 }
             }
             finally

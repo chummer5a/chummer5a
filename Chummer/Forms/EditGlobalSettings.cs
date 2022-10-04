@@ -539,94 +539,130 @@ namespace Chummer
         private async void cmdAddCustomDirectory_Click(object sender, EventArgs e)
         {
             // Prompt the user to select a save file to associate with this Contact.
-            using (FolderBrowserDialog dlgSelectFolder = await this.DoThreadSafeFuncAsync(() => new FolderBrowserDialog()).ConfigureAwait(false))
+            string strSelectedPath = string.Empty;
+            DialogResult eResult = await this.DoThreadSafeFuncAsync(x =>
             {
-                dlgSelectFolder.SelectedPath = Utils.GetStartupPath;
-                if (await this.DoThreadSafeFuncAsync(x => dlgSelectFolder.ShowDialog(x)).ConfigureAwait(false) != DialogResult.OK)
-                    return;
-                string strDescription
-                    = await LanguageManager.GetStringAsync("String_CustomItem_SelectText", _strSelectedLanguage).ConfigureAwait(false);
-                using (ThreadSafeForm<SelectText> frmSelectCustomDirectoryName =
-                       await ThreadSafeForm<SelectText>.GetAsync(() => new SelectText
-                       {
-                           Description = strDescription
-                       }).ConfigureAwait(false))
+                using (FolderBrowserDialog dlgSelectFolder = new FolderBrowserDialog())
                 {
-                    if (await frmSelectCustomDirectoryName.ShowDialogSafeAsync(this).ConfigureAwait(false) != DialogResult.OK)
-                        return;
-                    CustomDataDirectoryInfo objNewCustomDataDirectory = new CustomDataDirectoryInfo(frmSelectCustomDirectoryName.MyForm.SelectedValue, dlgSelectFolder.SelectedPath);
-                    if (objNewCustomDataDirectory.XmlException != default)
-                    {
-                        Program.ShowMessageBox(this,
-                            string.Format(_objSelectedCultureInfo, await LanguageManager.GetStringAsync("Message_FailedLoad", _strSelectedLanguage).ConfigureAwait(false),
-                                objNewCustomDataDirectory.XmlException.Message),
-                            string.Format(_objSelectedCultureInfo,
-                                await LanguageManager.GetStringAsync("MessageTitle_FailedLoad", _strSelectedLanguage).ConfigureAwait(false) +
-                                await LanguageManager.GetStringAsync("String_Space", _strSelectedLanguage).ConfigureAwait(false) + objNewCustomDataDirectory.Name + Path.DirectorySeparatorChar + "manifest.xml"),
-                            MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return;
-                    }
+                    dlgSelectFolder.SelectedPath = Utils.GetStartupPath;
+                    DialogResult eReturn = dlgSelectFolder.ShowDialog(x);
+                    strSelectedPath = dlgSelectFolder.SelectedPath;
+                    return eReturn;
+                }
+            });
 
-                    string strDirectoryPath = objNewCustomDataDirectory.DirectoryPath;
-                    if (_setCustomDataDirectoryInfos.Any(x => x.DirectoryPath == strDirectoryPath))
-                    {
-                        Program.ShowMessageBox(this,
-                            string.Format(
-                                await LanguageManager.GetStringAsync("Message_Duplicate_CustomDataDirectoryPath",
-                                                                     _strSelectedLanguage).ConfigureAwait(false), objNewCustomDataDirectory.Name),
-                            await LanguageManager.GetStringAsync("MessageTitle_Duplicate_CustomDataDirectoryPath",
-                                                                 _strSelectedLanguage).ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return;
-                    }
+            if (eResult != DialogResult.OK)
+                return;
 
-                    if (_setCustomDataDirectoryInfos.Contains(objNewCustomDataDirectory))
+            string strDescription
+                = await LanguageManager.GetStringAsync("String_CustomItem_SelectText", _strSelectedLanguage)
+                                       .ConfigureAwait(false);
+            using (ThreadSafeForm<SelectText> frmSelectCustomDirectoryName =
+                   await ThreadSafeForm<SelectText>.GetAsync(() => new SelectText
+                   {
+                       Description = strDescription
+                   }).ConfigureAwait(false))
+            {
+                if (await frmSelectCustomDirectoryName.ShowDialogSafeAsync(this).ConfigureAwait(false)
+                    != DialogResult.OK)
+                    return;
+                CustomDataDirectoryInfo objNewCustomDataDirectory
+                    = new CustomDataDirectoryInfo(frmSelectCustomDirectoryName.MyForm.SelectedValue, strSelectedPath);
+                if (objNewCustomDataDirectory.XmlException != default)
+                {
+                    Program.ShowMessageBox(this,
+                                           string.Format(_objSelectedCultureInfo,
+                                                         await LanguageManager
+                                                               .GetStringAsync(
+                                                                   "Message_FailedLoad", _strSelectedLanguage)
+                                                               .ConfigureAwait(false),
+                                                         objNewCustomDataDirectory.XmlException.Message),
+                                           string.Format(_objSelectedCultureInfo,
+                                                         await LanguageManager
+                                                               .GetStringAsync(
+                                                                   "MessageTitle_FailedLoad", _strSelectedLanguage)
+                                                               .ConfigureAwait(false) +
+                                                         await LanguageManager
+                                                               .GetStringAsync("String_Space", _strSelectedLanguage)
+                                                               .ConfigureAwait(false) + objNewCustomDataDirectory.Name
+                                                         + Path.DirectorySeparatorChar + "manifest.xml"),
+                                           MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                string strDirectoryPath = objNewCustomDataDirectory.DirectoryPath;
+                if (_setCustomDataDirectoryInfos.Any(x => x.DirectoryPath == strDirectoryPath))
+                {
+                    Program.ShowMessageBox(this,
+                                           string.Format(
+                                               await LanguageManager.GetStringAsync(
+                                                   "Message_Duplicate_CustomDataDirectoryPath",
+                                                   _strSelectedLanguage).ConfigureAwait(false),
+                                               objNewCustomDataDirectory.Name),
+                                           await LanguageManager.GetStringAsync(
+                                               "MessageTitle_Duplicate_CustomDataDirectoryPath",
+                                               _strSelectedLanguage).ConfigureAwait(false), MessageBoxButtons.OK,
+                                           MessageBoxIcon.Error);
+                    return;
+                }
+
+                if (_setCustomDataDirectoryInfos.Contains(objNewCustomDataDirectory))
+                {
+                    CustomDataDirectoryInfo objExistingInfo
+                        = _setCustomDataDirectoryInfos.FirstOrDefault(x => x.Equals(objNewCustomDataDirectory));
+                    if (objExistingInfo != null)
                     {
-                        CustomDataDirectoryInfo objExistingInfo = _setCustomDataDirectoryInfos.FirstOrDefault(x => x.Equals(objNewCustomDataDirectory));
-                        if (objExistingInfo != null)
+                        if (objNewCustomDataDirectory.HasManifest)
                         {
-                            if (objNewCustomDataDirectory.HasManifest)
+                            if (objExistingInfo.HasManifest)
                             {
-                                if (objExistingInfo.HasManifest)
-                                {
-                                    Program.ShowMessageBox(
-                                        string.Format(
-                                            await LanguageManager.GetStringAsync(
-                                                "Message_Duplicate_CustomDataDirectory").ConfigureAwait(false),
-                                            objExistingInfo.Name, objNewCustomDataDirectory.Name),
+                                Program.ShowMessageBox(
+                                    string.Format(
                                         await LanguageManager.GetStringAsync(
-                                            "MessageTitle_Duplicate_CustomDataDirectory").ConfigureAwait(false),
-                                        MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                    return;
-                                }
+                                            "Message_Duplicate_CustomDataDirectory").ConfigureAwait(false),
+                                        objExistingInfo.Name, objNewCustomDataDirectory.Name),
+                                    await LanguageManager.GetStringAsync(
+                                        "MessageTitle_Duplicate_CustomDataDirectory").ConfigureAwait(false),
+                                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                return;
+                            }
 
-                                _setCustomDataDirectoryInfos.Remove(objExistingInfo);
-                                do
-                                {
-                                    objExistingInfo.RandomizeGuid();
-                                } while (objExistingInfo.Equals(objNewCustomDataDirectory) || _setCustomDataDirectoryInfos.Contains(objExistingInfo));
-                                _setCustomDataDirectoryInfos.Add(objExistingInfo);
-                            }
-                            else
+                            _setCustomDataDirectoryInfos.Remove(objExistingInfo);
+                            do
                             {
-                                do
-                                {
-                                    objNewCustomDataDirectory.RandomizeGuid();
-                                } while (_setCustomDataDirectoryInfos.Contains(objNewCustomDataDirectory));
-                            }
+                                objExistingInfo.RandomizeGuid();
+                            } while (objExistingInfo.Equals(objNewCustomDataDirectory)
+                                     || _setCustomDataDirectoryInfos.Contains(objExistingInfo));
+
+                            _setCustomDataDirectoryInfos.Add(objExistingInfo);
+                        }
+                        else
+                        {
+                            do
+                            {
+                                objNewCustomDataDirectory.RandomizeGuid();
+                            } while (_setCustomDataDirectoryInfos.Contains(objNewCustomDataDirectory));
                         }
                     }
-                    if (_setCustomDataDirectoryInfos.Any(x =>
-                        objNewCustomDataDirectory.CharacterSettingsSaveKey.Equals(x.CharacterSettingsSaveKey,
-                            StringComparison.OrdinalIgnoreCase)) && Program.ShowMessageBox(this,
-                        string.Format(
-                            await LanguageManager.GetStringAsync("Message_Duplicate_CustomDataDirectoryName",
-                                                                 _strSelectedLanguage).ConfigureAwait(false), objNewCustomDataDirectory.Name),
-                        await LanguageManager.GetStringAsync("MessageTitle_Duplicate_CustomDataDirectoryName",
-                                                             _strSelectedLanguage).ConfigureAwait(false), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
-                        return;
-                    _setCustomDataDirectoryInfos.Add(objNewCustomDataDirectory);
-                    await PopulateCustomDataDirectoryListBox().ConfigureAwait(false);
                 }
+
+                if (_setCustomDataDirectoryInfos.Any(x =>
+                                                         objNewCustomDataDirectory.CharacterSettingsSaveKey.Equals(
+                                                             x.CharacterSettingsSaveKey,
+                                                             StringComparison.OrdinalIgnoreCase))
+                    && Program.ShowMessageBox(this,
+                                              string.Format(
+                                                  await LanguageManager.GetStringAsync(
+                                                      "Message_Duplicate_CustomDataDirectoryName",
+                                                      _strSelectedLanguage).ConfigureAwait(false),
+                                                  objNewCustomDataDirectory.Name),
+                                              await LanguageManager.GetStringAsync(
+                                                  "MessageTitle_Duplicate_CustomDataDirectoryName",
+                                                  _strSelectedLanguage).ConfigureAwait(false), MessageBoxButtons.YesNo,
+                                              MessageBoxIcon.Warning) != DialogResult.Yes)
+                    return;
+                _setCustomDataDirectoryInfos.Add(objNewCustomDataDirectory);
+                await PopulateCustomDataDirectoryListBox().ConfigureAwait(false);
             }
         }
 
@@ -933,22 +969,29 @@ namespace Chummer
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
-                string strNewFileName;
-                using (OpenFileDialog dlgOpenFile = await this.DoThreadSafeFuncAsync(() => new OpenFileDialog(), token: token).ConfigureAwait(false))
+                string strNewFileName = string.Empty;
+                string strFilter
+                    = await LanguageManager.GetStringAsync("DialogFilter_Pdf", token: token).ConfigureAwait(false) + '|'
+                    +
+                    await LanguageManager.GetStringAsync("DialogFilter_All", token: token).ConfigureAwait(false);
+                DialogResult eResult = await this.DoThreadSafeFuncAsync(x =>
                 {
-                    dlgOpenFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Pdf", token: token).ConfigureAwait(false) + '|' +
-                                         await LanguageManager.GetStringAsync("DialogFilter_All", token: token).ConfigureAwait(false);
-                    if (!string.IsNullOrEmpty(txtPDFLocation.Text) && File.Exists(txtPDFLocation.Text))
+                    using (OpenFileDialog dlgOpenFile = new OpenFileDialog())
                     {
-                        dlgOpenFile.InitialDirectory = Path.GetDirectoryName(txtPDFLocation.Text);
-                        dlgOpenFile.FileName = Path.GetFileName(txtPDFLocation.Text);
+                        dlgOpenFile.Filter = strFilter;
+                        if (!string.IsNullOrEmpty(txtPDFLocation.Text) && File.Exists(txtPDFLocation.Text))
+                        {
+                            dlgOpenFile.InitialDirectory = Path.GetDirectoryName(txtPDFLocation.Text);
+                            dlgOpenFile.FileName = Path.GetFileName(txtPDFLocation.Text);
+                        }
+                        DialogResult eReturn = dlgOpenFile.ShowDialog(x);
+                        strNewFileName = dlgOpenFile.FileName;
+                        return eReturn;
                     }
+                }, token: token);
 
-                    if (await this.DoThreadSafeFuncAsync(x => dlgOpenFile.ShowDialog(x), token: token).ConfigureAwait(false) != DialogResult.OK)
-                        return;
-
-                    strNewFileName = dlgOpenFile.FileName;
-                }
+                if (eResult != DialogResult.OK)
+                    return;
 
                 try
                 {
@@ -984,22 +1027,30 @@ namespace Chummer
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
-                using (OpenFileDialog dlgOpenFile = await this.DoThreadSafeFuncAsync(() => new OpenFileDialog(), token).ConfigureAwait(false))
+                string strFileName = string.Empty;
+                string strFilter
+                    = await LanguageManager.GetStringAsync("DialogFilter_Exe", token: token).ConfigureAwait(false) + '|'
+                    +
+                    await LanguageManager.GetStringAsync("DialogFilter_All", token: token).ConfigureAwait(false);
+                DialogResult eResult = await this.DoThreadSafeFuncAsync(x =>
                 {
-                    dlgOpenFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Exe", token: token).ConfigureAwait(false) + '|' +
-                                         await LanguageManager.GetStringAsync("DialogFilter_All", token: token).ConfigureAwait(false);
-                    string strPdfAppPath = await txtPDFAppPath.DoThreadSafeFuncAsync(x => x.Text, token).ConfigureAwait(false);
-                    if (!string.IsNullOrEmpty(strPdfAppPath) && File.Exists(strPdfAppPath))
+                    using (OpenFileDialog dlgOpenFile = new OpenFileDialog())
                     {
-                        dlgOpenFile.InitialDirectory = Path.GetDirectoryName(strPdfAppPath);
-                        dlgOpenFile.FileName = Path.GetFileName(strPdfAppPath);
+                        dlgOpenFile.Filter = strFilter;
+                        if (!string.IsNullOrEmpty(txtPDFAppPath.Text) && File.Exists(txtPDFAppPath.Text))
+                        {
+                            dlgOpenFile.InitialDirectory = Path.GetDirectoryName(txtPDFAppPath.Text);
+                            dlgOpenFile.FileName = Path.GetFileName(txtPDFAppPath.Text);
+                        }
+                        DialogResult eReturn = dlgOpenFile.ShowDialog(x);
+                        strFileName = dlgOpenFile.FileName;
+                        return eReturn;
                     }
+                }, token: token);
 
-                    if (await this.DoThreadSafeFuncAsync(x => dlgOpenFile.ShowDialog(x), token).ConfigureAwait(false) != DialogResult.OK)
-                        return;
-                    string strFileName = dlgOpenFile.FileName;
-                    await txtPDFAppPath.DoThreadSafeAsync(x => x.Text = strFileName, token).ConfigureAwait(false);
-                }
+                if (eResult != DialogResult.OK)
+                    return;
+                await txtPDFAppPath.DoThreadSafeAsync(x => x.Text = strFileName, token).ConfigureAwait(false);
             }
             finally
             {
@@ -1898,54 +1949,65 @@ namespace Chummer
             {
                 Task<XPathNavigator> tskLoadBooks
                     = XmlManager.LoadXPathAsync("books.xml", strLanguage: _strSelectedLanguage);
-                using (FolderBrowserDialog dlgSelectFolder = await this.DoThreadSafeFuncAsync(() => new FolderBrowserDialog()).ConfigureAwait(false))
+                string strSelectedPath = string.Empty;
+                DialogResult eResult = await this.DoThreadSafeFuncAsync(x =>
                 {
-                    dlgSelectFolder.ShowNewFolderButton = false;
-                    if (await this.DoThreadSafeFuncAsync(x => dlgSelectFolder.ShowDialog(x)).ConfigureAwait(false) != DialogResult.OK)
-                        return;
-                    if (string.IsNullOrWhiteSpace(dlgSelectFolder.SelectedPath))
-                        return;
-                    Stopwatch sw = new Stopwatch();
-                    sw.Start();
-                    XPathNavigator books = await tskLoadBooks.ConfigureAwait(false);
-                    string[] astrFiles = Directory.GetFiles(dlgSelectFolder.SelectedPath, "*.pdf");
-                    XPathNodeIterator matches = books.Select("/chummer/books/book/matches/match[language = "
-                                                             + _strSelectedLanguage.CleanXPath() + ']');
-                    using (ThreadSafeForm<LoadingBar> frmLoadingBar
-                           = await Program.CreateAndShowProgressBarAsync(dlgSelectFolder.SelectedPath, astrFiles.Length).ConfigureAwait(false))
+                    using (FolderBrowserDialog dlgSelectFolder = new FolderBrowserDialog())
                     {
-                        List<SourcebookInfo> list = await ScanFilesForPDFTexts(astrFiles, matches, frmLoadingBar.MyForm).ConfigureAwait(false);
-                        sw.Stop();
-                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                      out StringBuilder sbdFeedback))
-                        {
-                            sbdFeedback.AppendLine().AppendLine()
-                                       .AppendLine("-------------------------------------------------------------")
-                                       .AppendFormat(GlobalSettings.InvariantCultureInfo,
-                                                     "Scan for PDFs in Folder {0} completed in {1}ms.{2}{3} sourcebook(s) was/were found:",
-                                                     dlgSelectFolder.SelectedPath, sw.ElapsedMilliseconds, Environment.NewLine,
-                                                     list.Count).AppendLine().AppendLine();
-                            foreach (SourcebookInfo sourcebook in list)
-                            {
-                                sbdFeedback.AppendFormat(GlobalSettings.InvariantCultureInfo,
-                                                         "{0} with Offset {1} path: {2}", sourcebook.Code,
-                                                         sourcebook.Offset, sourcebook.Path).AppendLine();
-                            }
+                        dlgSelectFolder.ShowNewFolderButton = false;
+                        DialogResult eReturn = dlgSelectFolder.ShowDialog(x);
+                        strSelectedPath = dlgSelectFolder.SelectedPath;
+                        return eReturn;
+                    }
+                });
 
-                            sbdFeedback.AppendLine()
-                                       .AppendLine("-------------------------------------------------------------");
-                            Log.Info(sbdFeedback.ToString());
+                if (eResult != DialogResult.OK || string.IsNullOrWhiteSpace(strSelectedPath))
+                    return;
+
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
+                XPathNavigator books = await tskLoadBooks.ConfigureAwait(false);
+                string[] astrFiles = Directory.GetFiles(strSelectedPath, "*.pdf");
+                XPathNodeIterator matches = books.Select("/chummer/books/book/matches/match[language = "
+                                                         + _strSelectedLanguage.CleanXPath() + ']');
+                using (ThreadSafeForm<LoadingBar> frmLoadingBar
+                       = await Program.CreateAndShowProgressBarAsync(strSelectedPath, astrFiles.Length)
+                                      .ConfigureAwait(false))
+                {
+                    List<SourcebookInfo> list = await ScanFilesForPDFTexts(astrFiles, matches, frmLoadingBar.MyForm)
+                        .ConfigureAwait(false);
+                    sw.Stop();
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                  out StringBuilder sbdFeedback))
+                    {
+                        sbdFeedback.AppendLine().AppendLine()
+                                   .AppendLine("-------------------------------------------------------------")
+                                   .AppendFormat(GlobalSettings.InvariantCultureInfo,
+                                                 "Scan for PDFs in Folder {0} completed in {1}ms.{2}{3} sourcebook(s) was/were found:",
+                                                 strSelectedPath, sw.ElapsedMilliseconds, Environment.NewLine,
+                                                 list.Count).AppendLine().AppendLine();
+                        foreach (SourcebookInfo sourcebook in list)
+                        {
+                            sbdFeedback.AppendFormat(GlobalSettings.InvariantCultureInfo,
+                                                     "{0} with Offset {1} path: {2}", sourcebook.Code,
+                                                     sourcebook.Offset, sourcebook.Path).AppendLine();
                         }
 
-                        string message = string.Format(_objSelectedCultureInfo,
-                                                       await LanguageManager.GetStringAsync(
-                                                           "Message_FoundPDFsInFolder", _strSelectedLanguage).ConfigureAwait(false),
-                                                       list.Count, dlgSelectFolder.SelectedPath);
-                        string title
-                            = await LanguageManager.GetStringAsync("MessageTitle_FoundPDFsInFolder",
-                                                                   _strSelectedLanguage).ConfigureAwait(false);
-                        Program.ShowMessageBox(message, title, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        sbdFeedback.AppendLine()
+                                   .AppendLine("-------------------------------------------------------------");
+                        Log.Info(sbdFeedback.ToString());
                     }
+
+                    string message = string.Format(_objSelectedCultureInfo,
+                                                   await LanguageManager.GetStringAsync(
+                                                                            "Message_FoundPDFsInFolder",
+                                                                            _strSelectedLanguage)
+                                                                        .ConfigureAwait(false),
+                                                   list.Count, strSelectedPath);
+                    string title
+                        = await LanguageManager.GetStringAsync("MessageTitle_FoundPDFsInFolder",
+                                                               _strSelectedLanguage).ConfigureAwait(false);
+                    Program.ShowMessageBox(message, title, MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
             finally

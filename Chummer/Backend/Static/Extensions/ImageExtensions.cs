@@ -252,10 +252,10 @@ namespace Chummer
                 Param = { [0] = new EncoderParameter(Encoder.Quality, ProcessJpegQualitySetting(bmpClone, intQuality)) }
             };
             token.ThrowIfCancellationRequested();
-            Image imgReturn;
-            try
+
+            Image imgReturn = await Task.Run(() =>
             {
-                imgReturn = await Task.Run(() =>
+                try
                 {
                     using (MemoryStream objImageStream = new MemoryStream())
                     {
@@ -264,12 +264,12 @@ namespace Chummer
                         objImageStream.Position = 0;
                         return Image.FromStream(objImageStream, true);
                     }
-                }, token).ConfigureAwait(false);
-            }
-            finally
-            {
-                bmpClone.Dispose();
-            }
+                }
+                finally
+                {
+                    bmpClone.Dispose();
+                }
+            }, token).ConfigureAwait(false);
 
             return imgReturn;
         }
@@ -554,10 +554,9 @@ namespace Chummer
                 break;
             }
 
-            string strReturn;
-            try
+            string strReturn = await Task.Run(async () =>
             {
-                strReturn = await Task.Run(async () =>
+                try
                 {
                     using (MemoryStream objImageStream = new MemoryStream())
                     {
@@ -585,12 +584,13 @@ namespace Chummer
                             ArrayPool<byte>.Shared.Return(achrData, true);
                         }
                     }
-                }, token).ConfigureAwait(false);
-            }
-            finally
-            {
-                bmpClone.Dispose();
-            }
+                }
+                finally
+                {
+                    bmpClone.Dispose();
+                }
+            }, token).ConfigureAwait(false);
+            
 
             return strReturn;
         }
@@ -626,10 +626,9 @@ namespace Chummer
                 break;
             }
 
-            string strReturn;
-            try
+            string strReturn = await Task.Run(async () =>
             {
-                strReturn = await Task.Run(async () =>
+                try
                 {
                     using (MemoryStream objImageStream = new MemoryStream())
                     {
@@ -646,12 +645,12 @@ namespace Chummer
                             ArrayPool<byte>.Shared.Return(achrData, true);
                         }
                     }
-                }, token).ConfigureAwait(false);
-            }
-            finally
-            {
-                bmpClone.Dispose();
-            }
+                }
+                finally
+                {
+                    bmpClone.Dispose();
+                }
+            }, token).ConfigureAwait(false);
 
             return strReturn;
         }
@@ -745,10 +744,9 @@ namespace Chummer
                 Param = { [0] = new EncoderParameter(Encoder.Quality, ProcessJpegQualitySetting(bmpClone, intQuality)) }
             };
             token.ThrowIfCancellationRequested();
-            string strReturn;
-            try
+            string strReturn = await Task.Run(async () =>
             {
-                strReturn = await Task.Run(async () =>
+                try
                 {
                     using (MemoryStream objImageStream = new MemoryStream())
                     {
@@ -765,12 +763,13 @@ namespace Chummer
                             ArrayPool<byte>.Shared.Return(achrData, true);
                         }
                     }
-                }, token).ConfigureAwait(false);
-            }
-            finally
-            {
-                bmpClone.Dispose();
-            }
+                }
+                finally
+                {
+                    bmpClone.Dispose();
+                }
+            }, token).ConfigureAwait(false);
+            
 
             return strReturn;
         }
