@@ -122,7 +122,7 @@ namespace SimpleHttpServer.RouteHandlers
         }
 
 
-        private static IDictionary<string, string> _mappings = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase)
+        private static readonly IDictionary<string, string> _mappings = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase)
         {
 
         #region Big freaking list of mime types

@@ -1159,7 +1159,7 @@ namespace SevenZip.Compression.LZMA
                 uint lenToPosState = Base.GetLenToPosState(len);
                 _posSlotEncoder[lenToPosState].Encode(_rangeEncoder, posSlot);
                 const int footerBits = 30;
-                uint posReduced = ((uint)1 << footerBits) - 1;
+                const uint posReduced = ((uint)1 << footerBits) - 1;
                 _rangeEncoder.EncodeDirectBits(posReduced >> Base.kNumAlignBits, footerBits - Base.kNumAlignBits);
                 _posAlignEncoder.ReverseEncode(_rangeEncoder, posReduced & Base.kAlignMask);
             }

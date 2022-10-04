@@ -15,10 +15,10 @@ namespace SimpleHttpServer
     {
         #region Fields
 
-        private int Port;
+        private readonly int Port;
         private TcpListener Listener;
-        private HttpProcessor Processor;
-        private bool IsActive = true;
+        private readonly HttpProcessor Processor;
+        private readonly bool IsActive = true;
 
         #endregion
 

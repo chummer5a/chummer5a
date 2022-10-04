@@ -17192,33 +17192,33 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
 
-            int intBuildPoints = await CalculateBP(false, token);
+            int intBuildPoints = await CalculateBP(false, token).ConfigureAwait(false);
 
-            if (await CheckCharacterValidity(true, intBuildPoints, token))
+            if (await CheckCharacterValidity(true, intBuildPoints, token).ConfigureAwait(false))
             {
                 // See if the character has any Karma remaining.
                 if (intBuildPoints > CharacterObjectSettings.KarmaCarryover)
                 {
                     if (!CharacterObject.EffectiveBuildMethodUsesPriorityTables)
                     {
-                        if (Program.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_NoExtraKarma", token: token), intBuildPoints.ToString(GlobalSettings.CultureInfo)),
-                                await LanguageManager.GetStringAsync("MessageTitle_ExtraKarma", token: token), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
+                        if (Program.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_NoExtraKarma", token: token).ConfigureAwait(false), intBuildPoints.ToString(GlobalSettings.CultureInfo)),
+                                await LanguageManager.GetStringAsync("MessageTitle_ExtraKarma", token: token).ConfigureAwait(false), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
                             return false;
                     }
-                    else if (Program.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_ExtraKarma", token: token)
+                    else if (Program.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_ExtraKarma", token: token).ConfigureAwait(false)
                             , intBuildPoints.ToString(GlobalSettings.CultureInfo)
                             , CharacterObjectSettings.KarmaCarryover.ToString(GlobalSettings.CultureInfo)),
-                        await LanguageManager.GetStringAsync("MessageTitle_ExtraKarma", token: token), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
+                        await LanguageManager.GetStringAsync("MessageTitle_ExtraKarma", token: token).ConfigureAwait(false), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
                     {
                         return false;
                     }
                 }
-                if (CharacterObject.Nuyen > 5000 && Program.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_ExtraNuyen", token: token)
+                if (CharacterObject.Nuyen > 5000 && Program.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_ExtraNuyen", token: token).ConfigureAwait(false)
                         , CharacterObject.Nuyen.ToString(CharacterObjectSettings.NuyenFormat, GlobalSettings.CultureInfo)
                         , 5000.ToString(CharacterObjectSettings.NuyenFormat, GlobalSettings.CultureInfo)),
-                    await LanguageManager.GetStringAsync("MessageTitle_ExtraNuyen", token: token), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
+                    await LanguageManager.GetStringAsync("MessageTitle_ExtraNuyen", token: token).ConfigureAwait(false), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
                     return false;
-                if (GlobalSettings.CreateBackupOnCareer && await chkCharacterCreated.DoThreadSafeFuncAsync(x => x.Checked, token))
+                if (GlobalSettings.CreateBackupOnCareer && await chkCharacterCreated.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false))
                 {
                     // Create a pre-Career Mode backup of the character.
                     // Make sure the backup directory exists.
@@ -17230,7 +17230,7 @@ namespace Chummer
                         }
                         catch (UnauthorizedAccessException)
                         {
-                            Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning", token: token));
+                            Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning", token: token).ConfigureAwait(false));
                             return false;
                         }
                     }
@@ -17247,28 +17247,28 @@ namespace Chummer
                         }
                     }
 
-                    strNewName += await LanguageManager.GetStringAsync("String_Space", token: token) + '('
-                        + await LanguageManager.GetStringAsync("Title_CreateMode", token: token)
+                    strNewName += await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '('
+                        + await LanguageManager.GetStringAsync("Title_CreateMode", token: token).ConfigureAwait(false)
                         + ").chum5";
                     if (CharacterObject.FileName?.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase) == true)
                         strNewName += "lz";
                     strNewName = Path.Combine(Utils.GetStartupPath, "saves", "backup", strNewName);
 
-                    CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+                    CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
                     try
                     {
-                        using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program.CreateAndShowProgressBarAsync(token: token))
+                        using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program.CreateAndShowProgressBarAsync(token: token).ConfigureAwait(false))
                         {
                             await frmLoadingBar.MyForm.PerformStepAsync(CharacterObject.CharacterName,
                                                                         LoadingBar.ProgressBarTextPatterns.Saving,
-                                                                        token);
-                            if (!await CharacterObject.SaveAsync(strNewName, token: token))
+                                                                        token).ConfigureAwait(false);
+                            if (!await CharacterObject.SaveAsync(strNewName, token: token).ConfigureAwait(false))
                                 return false;
                         }
                     }
                     finally
                     {
-                        await objCursorWait.DisposeAsync();
+                        await objCursorWait.DisposeAsync().ConfigureAwait(false);
                     }
                 }
 
@@ -17279,21 +17279,21 @@ namespace Chummer
                     if (CharacterObject.Lifestyles.Count == 0)
                     {
                         Lifestyle objLifestyle = new Lifestyle(CharacterObject);
-                        XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("lifestyles.xml", token: token);
+                        XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("lifestyles.xml", token: token).ConfigureAwait(false);
                         XmlNode objXmlLifestyle
                             = objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"Street\"]");
 
                         objLifestyle.Create(objXmlLifestyle);
 
-                        await CharacterObject.Lifestyles.AddAsync(objLifestyle, token);
+                        await CharacterObject.Lifestyles.AddAsync(objLifestyle, token).ConfigureAwait(false);
                     }
 
                     decimal decStartingNuyen;
                     using (ThreadSafeForm<SelectLifestyleStartingNuyen> frmStartingNuyen
                            = await ThreadSafeForm<SelectLifestyleStartingNuyen>.GetAsync(
-                               () => new SelectLifestyleStartingNuyen(CharacterObject), token))
+                               () => new SelectLifestyleStartingNuyen(CharacterObject), token).ConfigureAwait(false))
                     {
-                        if (await frmStartingNuyen.ShowDialogSafeAsync(this, token) != DialogResult.OK)
+                        if (await frmStartingNuyen.ShowDialogSafeAsync(this, token).ConfigureAwait(false) != DialogResult.OK)
                             return false;
                         decStartingNuyen = frmStartingNuyen.MyForm.StartingNuyen;
                     }
@@ -17310,9 +17310,9 @@ namespace Chummer
                     if (intBuildPoints > CharacterObjectSettings.KarmaCarryover)
                         await CharacterObject.SetKarmaAsync(CharacterObject.EffectiveBuildMethodUsesPriorityTables
                                                                 ? CharacterObjectSettings.KarmaCarryover
-                                                                : 0);
+                                                                : 0, token).ConfigureAwait(false);
                     else
-                        await CharacterObject.SetKarmaAsync(intBuildPoints);
+                        await CharacterObject.SetKarmaAsync(intBuildPoints, token).ConfigureAwait(false);
 
                     return true;
                 }
