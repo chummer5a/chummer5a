@@ -5156,7 +5156,7 @@ namespace Chummer.Backend.Skills
 
                     await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token).ConfigureAwait(false);
 
-                    CharacterObject.Karma -= price;
+                    await CharacterObject.DecreaseKarmaAsync(price, token).ConfigureAwait(false);
                 }
 
                 ++Karma;
@@ -5235,11 +5235,11 @@ namespace Chummer.Backend.Skills
 
         public async ValueTask AddSpecialization(string strName, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
                 SkillSpecialization nspec = new SkillSpecialization(CharacterObject, strName);
-                bool blnCreated = await CharacterObject.GetCreatedAsync(token);
+                bool blnCreated = await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false);
                 if (blnCreated)
                 {
                     int intPrice = IsKnowledgeSkill
@@ -5247,7 +5247,7 @@ namespace Chummer.Backend.Skills
                         : CharacterObject.Settings.KarmaSpecialization;
 
                     decimal decExtraSpecCost = 0;
-                    int intTotalBaseRating = await GetTotalBaseRatingAsync(token);
+                    int intTotalBaseRating = await GetTotalBaseRatingAsync(token).ConfigureAwait(false);
                     decimal decSpecCostMultiplier = 1.0m;
                     foreach (Improvement objLoopImprovement in CharacterObject.Improvements)
                     {
@@ -5274,27 +5274,27 @@ namespace Chummer.Backend.Skills
                     else
                         intPrice += decExtraSpecCost.StandardRound(); //Spec
 
-                    if (intPrice > CharacterObject.Karma)
+                    if (intPrice > await CharacterObject.GetKarmaAsync(token))
                         return;
 
-                    string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token);
-                    string strUpgradeText = await LanguageManager.GetStringAsync("String_ExpenseLearnSpecialization", token: token) + strSpace
+                    string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+                    string strUpgradeText = await LanguageManager.GetStringAsync("String_ExpenseLearnSpecialization", token: token).ConfigureAwait(false) + strSpace
                         + CurrentDisplayName + strSpace + '(' + strName + ')';
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                     objExpense.Create(intPrice * -1, strUpgradeText, ExpenseType.Karma, DateTime.Now);
                     objExpense.Undo =
                         new ExpenseUndo().CreateKarma(KarmaExpenseType.AddSpecialization, nspec.InternalId);
 
-                    await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token);
+                    await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token).ConfigureAwait(false);
 
-                    CharacterObject.Karma -= intPrice;
+                    await CharacterObject.DecreaseKarmaAsync(intPrice, token).ConfigureAwait(false);
                 }
 
-                await Specializations.AddAsync(nspec, token);
+                await Specializations.AddAsync(nspec, token).ConfigureAwait(false);
             }
             finally
             {
-                await objLocker.DisposeAsync();
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

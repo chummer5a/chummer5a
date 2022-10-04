@@ -1434,16 +1434,16 @@ namespace Chummer
                     if (objCache != null)
                     {
                         string strUnknown = await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
-                        string strTemp = await objCache.Description.RtfToPlainTextAsync(token).ConfigureAwait(false);
-                        await txtCharacterBio.DoThreadSafeAsync(x => x.Text = strTemp, token).ConfigureAwait(false);
-                        strTemp = await objCache.Background.RtfToPlainTextAsync(token).ConfigureAwait(false);
-                        await txtCharacterBackground.DoThreadSafeAsync(x => x.Text = strTemp, token).ConfigureAwait(false);
-                        strTemp = await objCache.CharacterNotes.RtfToPlainTextAsync(token).ConfigureAwait(false);
-                        await txtCharacterNotes.DoThreadSafeAsync(x => x.Text = strTemp, token).ConfigureAwait(false);
-                        strTemp = await objCache.GameNotes.RtfToPlainTextAsync(token).ConfigureAwait(false);
-                        await txtGameNotes.DoThreadSafeAsync(x => x.Text = strTemp, token).ConfigureAwait(false);
-                        strTemp = await objCache.Concept.RtfToPlainTextAsync(token).ConfigureAwait(false);
-                        await txtCharacterConcept.DoThreadSafeAsync(x => x.Text = strTemp, token).ConfigureAwait(false);
+                        string strTemp1 = await objCache.Description.RtfToPlainTextAsync(token).ConfigureAwait(false);
+                        await txtCharacterBio.DoThreadSafeAsync(x => x.Text = strTemp1, token).ConfigureAwait(false);
+                        string strTemp2 = await objCache.Background.RtfToPlainTextAsync(token).ConfigureAwait(false);
+                        await txtCharacterBackground.DoThreadSafeAsync(x => x.Text = strTemp2, token).ConfigureAwait(false);
+                        string strTemp3 = await objCache.CharacterNotes.RtfToPlainTextAsync(token).ConfigureAwait(false);
+                        await txtCharacterNotes.DoThreadSafeAsync(x => x.Text = strTemp3, token).ConfigureAwait(false);
+                        string strTemp4 = await objCache.GameNotes.RtfToPlainTextAsync(token).ConfigureAwait(false);
+                        await txtGameNotes.DoThreadSafeAsync(x => x.Text = strTemp4, token).ConfigureAwait(false);
+                        string strTemp5 = await objCache.Concept.RtfToPlainTextAsync(token).ConfigureAwait(false);
+                        await txtCharacterConcept.DoThreadSafeAsync(x => x.Text = strTemp5, token).ConfigureAwait(false);
                         string strText = objCache.Karma;
                         if (string.IsNullOrEmpty(strText) || strText == 0.ToString(GlobalSettings.CultureInfo))
                             strText = await LanguageManager.GetStringAsync("String_None", token: token).ConfigureAwait(false);
@@ -1525,7 +1525,7 @@ namespace Chummer
                         }
                         else
                         {
-                            strTemp = await LanguageManager.GetStringAsync("String_MetatypeLoadError", token: token).ConfigureAwait(false);
+                            string strTemp = await LanguageManager.GetStringAsync("String_MetatypeLoadError", token: token).ConfigureAwait(false);
                             await lblMetatype.DoThreadSafeAsync(x => x.Text = strTemp, token).ConfigureAwait(false);
                         }
 

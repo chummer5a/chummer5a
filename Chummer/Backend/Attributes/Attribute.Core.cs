@@ -2458,7 +2458,7 @@ namespace Chummer.Backend.Attributes
                         if (_intCachedCanUpgradeCareer < 0) // Second check in case another task already set this
                         {
                             _intCachedCanUpgradeCareer =
-                                _objCharacter.Karma >= await GetUpgradeKarmaCostAsync(token).ConfigureAwait(false)
+                                await _objCharacter.GetKarmaAsync(token) >= await GetUpgradeKarmaCostAsync(token).ConfigureAwait(false)
                                 && await GetTotalMaximumAsync(token).ConfigureAwait(false) >
                                 await GetValueAsync(token).ConfigureAwait(false)
                                     ? 1
@@ -2799,8 +2799,8 @@ namespace Chummer.Backend.Attributes
 
                         await _objCharacter.ExpenseEntries.AddWithSortAsync(objExpense, token: token)
                             .ConfigureAwait(false);
-
-                        _objCharacter.Karma -= intPrice;
+                        
+                        await _objCharacter.DecreaseKarmaAsync(intPrice, token);
 
                         // Undo burned Edge if possible first
                         if (Abbrev == "EDG")

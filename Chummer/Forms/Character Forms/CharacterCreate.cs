@@ -4255,9 +4255,9 @@ namespace Chummer
             }
         }
 
-        private void cmdAddMartialArt_Click(object sender, EventArgs e)
+        private async void cmdAddMartialArt_Click(object sender, EventArgs e)
         {
-            MartialArt.Purchase(CharacterObject);
+            await MartialArt.Purchase(CharacterObject);
         }
 
         private void cmdDeleteMartialArt_Click(object sender, EventArgs e)
@@ -14094,10 +14094,11 @@ namespace Chummer
                 try
                 {
                     // If the character was built with Karma, record their staring Karma amount (if any).
-                    if (CharacterObject.Karma != 0)
+                    int intKarma = await CharacterObject.GetKarmaAsync(GenericToken);
+                    if (intKarma != 0)
                     {
                         ExpenseLogEntry objKarma = new ExpenseLogEntry(CharacterObject);
-                        objKarma.Create(CharacterObject.Karma,
+                        objKarma.Create(intKarma,
                                         await LanguageManager.GetStringAsync(
                                             "Label_SelectBP_StartingKarma", token: token),
                                         ExpenseType.Karma, DateTime.Now);
@@ -17307,11 +17308,11 @@ namespace Chummer
                     CharacterObject.Nuyen += decStartingNuyen;
                     // See if the character has any Karma remaining.
                     if (intBuildPoints > CharacterObjectSettings.KarmaCarryover)
-                        CharacterObject.Karma = CharacterObject.EffectiveBuildMethodUsesPriorityTables
-                            ? CharacterObjectSettings.KarmaCarryover
-                            : 0;
+                        await CharacterObject.SetKarmaAsync(CharacterObject.EffectiveBuildMethodUsesPriorityTables
+                                                                ? CharacterObjectSettings.KarmaCarryover
+                                                                : 0);
                     else
-                        CharacterObject.Karma = intBuildPoints;
+                        await CharacterObject.SetKarmaAsync(intBuildPoints);
 
                     return true;
                 }

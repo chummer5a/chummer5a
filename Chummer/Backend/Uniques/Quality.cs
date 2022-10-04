@@ -1500,8 +1500,10 @@ namespace Chummer
         /// <param name="objOldQuality">Old quality that's being removed.</param>
         /// <param name="objXmlQuality">XML entry for the new quality.</param>
         /// <param name="intNewQualityRating">Rating of the new quality to add. All of the old quality's ratings will be removed</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns></returns>
-        public bool Swap(Quality objOldQuality, XmlNode objXmlQuality, int intNewQualityRating)
+        public async ValueTask<bool> Swap(Quality objOldQuality, XmlNode objXmlQuality, int intNewQualityRating,
+                                          CancellationToken token = default)
         {
             if (objOldQuality == null)
                 throw new ArgumentNullException(nameof(objOldQuality));
@@ -1509,24 +1511,31 @@ namespace Chummer
             Create(objXmlQuality, QualitySource.Selected, lstWeapons);
 
             bool blnAddItem = true;
-            int intKarmaCost = (BP * intNewQualityRating - objOldQuality.BP * objOldQuality.Levels) * _objCharacter.Settings.KarmaQuality;
+            int intKarmaCost = (BP * intNewQualityRating - objOldQuality.BP * objOldQuality.Levels)
+                               * _objCharacter.Settings.KarmaQuality;
 
             // Make sure the character has enough Karma to pay for the Quality.
             if (Type == QualityType.Positive)
             {
-                if (_objCharacter.Created && !_objCharacter.Settings.DontDoubleQualityPurchases)
+                if (await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false) && !_objCharacter.Settings.DontDoubleQualityPurchases)
                 {
                     intKarmaCost *= 2;
                 }
-                if (intKarmaCost > _objCharacter.Karma)
+
+                if (intKarmaCost > await _objCharacter.GetKarmaAsync(token).ConfigureAwait(false))
                 {
-                    Program.ShowMessageBox(LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_NotEnoughKarma", token: token).ConfigureAwait(false),
+                                           await LanguageManager.GetStringAsync(
+                                               "MessageTitle_NotEnoughKarma", token: token).ConfigureAwait(false), MessageBoxButtons.OK,
+                                           MessageBoxIcon.Information);
                     blnAddItem = false;
                 }
 
-                if (blnAddItem && !CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_QualitySwap")
-                    , objOldQuality.DisplayNameShort(GlobalSettings.Language)
-                    , DisplayNameShort(GlobalSettings.Language))))
+                if (blnAddItem && !await CommonFunctions.ConfirmKarmaExpenseAsync(
+                        string.Format(GlobalSettings.CultureInfo,
+                                      await LanguageManager.GetStringAsync("Message_QualitySwap", token: token).ConfigureAwait(false)
+                                      , await objOldQuality.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false)
+                                      , await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false)), token).ConfigureAwait(false))
                 {
                     blnAddItem = false;
                 }
@@ -1540,16 +1549,24 @@ namespace Chummer
                 {
                     intKarmaCost *= 2;
                 }
+
                 // This should only happen when a character is trading up to a less-costly Quality.
                 if (intKarmaCost > 0)
                 {
-                    if (intKarmaCost > _objCharacter.Karma)
+                    if (intKarmaCost > await _objCharacter.GetKarmaAsync(token))
                     {
-                        Program.ShowMessageBox(LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        Program.ShowMessageBox(
+                            await LanguageManager.GetStringAsync("Message_NotEnoughKarma", token: token).ConfigureAwait(false),
+                            await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma", token: token).ConfigureAwait(false),
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
                         blnAddItem = false;
                     }
 
-                    if (blnAddItem && !CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_QualitySwap"), objOldQuality.DisplayNameShort(GlobalSettings.Language), DisplayNameShort(GlobalSettings.Language))))
+                    if (blnAddItem && !await CommonFunctions.ConfirmKarmaExpenseAsync(
+                            string.Format(GlobalSettings.CultureInfo,
+                                          await LanguageManager.GetStringAsync("Message_QualitySwap", token: token).ConfigureAwait(false),
+                                          await objOldQuality.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
+                                          await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false)), token).ConfigureAwait(false))
                     {
                         blnAddItem = false;
                     }
@@ -1568,19 +1585,19 @@ namespace Chummer
             objOldQuality.DeleteQuality(true);
 
             // Add the new Quality to the character.
-            _objCharacter.Qualities.Add(this);
+            await _objCharacter.Qualities.AddAsync(this, token).ConfigureAwait(false);
 
             for (int i = 2; i <= intNewQualityRating; ++i)
             {
                 Quality objNewQualityLevel = new Quality(_objCharacter);
                 objNewQualityLevel.Create(objXmlQuality, QualitySource.Selected, lstWeapons, _strExtra, _strSourceName);
-                _objCharacter.Qualities.Add(objNewQualityLevel);
+                await _objCharacter.Qualities.AddAsync(objNewQualityLevel, token).ConfigureAwait(false);
             }
 
             // Add any created Weapons to the character.
             foreach (Weapon objWeapon in lstWeapons)
             {
-                _objCharacter.Weapons.Add(objWeapon);
+                await _objCharacter.Weapons.AddAsync(objWeapon, token).ConfigureAwait(false);
             }
 
             if (_objCharacter.Created)
@@ -1588,12 +1605,16 @@ namespace Chummer
                 // Create the Karma expense.
                 ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                 objExpense.Create(intKarmaCost * -1,
-                    string.Format(GlobalSettings.CultureInfo,
-                        LanguageManager.GetString(Type == QualityType.Positive ? "String_ExpenseSwapPositiveQuality" : "String_ExpenseSwapNegativeQuality")
-                        , objOldQuality.CurrentDisplayName
-                        , CurrentDisplayName), ExpenseType.Karma, DateTime.Now);
-                _objCharacter.ExpenseEntries.AddWithSort(objExpense);
-                _objCharacter.Karma -= intKarmaCost;
+                                  string.Format(GlobalSettings.CultureInfo,
+                                                await LanguageManager.GetStringAsync(
+                                                    Type == QualityType.Positive
+                                                        ? "String_ExpenseSwapPositiveQuality"
+                                                        : "String_ExpenseSwapNegativeQuality", token: token).ConfigureAwait(false)
+                                                , await objOldQuality.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)
+                                                , await GetCurrentDisplayNameAsync(token).ConfigureAwait(false)), ExpenseType.Karma,
+                                  DateTime.Now);
+                await _objCharacter.ExpenseEntries.AddWithSortAsync(objExpense, token: token).ConfigureAwait(false);
+                await _objCharacter.DecreaseKarmaAsync(intKarmaCost, token).ConfigureAwait(false);
             }
 
             return true;

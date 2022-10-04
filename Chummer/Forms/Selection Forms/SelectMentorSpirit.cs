@@ -19,7 +19,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.XPath;
 
@@ -51,13 +50,13 @@ namespace Chummer
         {
             if (_blnSkipRefresh)
                 return;
-            await this.DoThreadSafeAsync(x => x.SuspendLayout());
+            await this.DoThreadSafeAsync(x => x.SuspendLayout()).ConfigureAwait(false);
             try
             {
                 XPathNavigator objXmlMentor = null;
                 if (lstMentor.SelectedIndex >= 0)
                 {
-                    string strSelectedId = await lstMentor.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
+                    string strSelectedId = await lstMentor.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()).ConfigureAwait(false);
                     if (!string.IsNullOrEmpty(strSelectedId))
                         objXmlMentor =
                             _xmlBaseMentorSpiritDataNode.SelectSingleNode("mentors/mentor[id = " +
@@ -67,16 +66,16 @@ namespace Chummer
                 if (objXmlMentor != null)
                 {
                     // If the Mentor offers a choice of bonuses, build the list and let the user select one.
-                    XPathNavigator xmlChoices = await objXmlMentor.SelectSingleNodeAndCacheExpressionAsync("choices");
+                    XPathNavigator xmlChoices = await objXmlMentor.SelectSingleNodeAndCacheExpressionAsync("choices").ConfigureAwait(false);
                     if (xmlChoices != null)
                     {
                         using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstChoice1))
                         using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                                        out List<ListItem> lstChoice2))
                         {
-                            foreach (XPathNavigator objChoice in await xmlChoices.SelectAndCacheExpressionAsync("choice"))
+                            foreach (XPathNavigator objChoice in await xmlChoices.SelectAndCacheExpressionAsync("choice").ConfigureAwait(false))
                             {
-                                string strName = (await objChoice.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value
+                                string strName = (await objChoice.SelectSingleNodeAndCacheExpressionAsync("name").ConfigureAwait(false))?.Value
                                                  ?? string.Empty;
                                 if ((_objCharacter.AdeptEnabled ||
                                      !strName.StartsWith("Adept:", StringComparison.Ordinal)) &&
@@ -86,92 +85,90 @@ namespace Chummer
                                     if (objChoice.SelectSingleNode("@set")?.Value == "2")
                                         lstChoice2.Add(new ListItem(strName,
                                                                     (await objChoice.SelectSingleNodeAndCacheExpressionAsync(
-                                                                        "translate"))?.Value ?? strName));
+                                                                        "translate").ConfigureAwait(false))?.Value ?? strName));
                                     else
                                         lstChoice1.Add(new ListItem(strName,
                                                                     (await objChoice.SelectSingleNodeAndCacheExpressionAsync(
-                                                                        "translate"))?.Value ?? strName));
+                                                                        "translate").ConfigureAwait(false))?.Value ?? strName));
                                 }
                             }
 
                             //If there is only a single option, show it as a label.
                             //If there are more, show the drop down menu
                             if (lstChoice1.Count > 0)
-                                await cboChoice1.PopulateWithListItemsAsync(lstChoice1);
-                            await cboChoice1.DoThreadSafeAsync(x => x.Visible = lstChoice1.Count > 1);
+                                await cboChoice1.PopulateWithListItemsAsync(lstChoice1).ConfigureAwait(false);
+                            await cboChoice1.DoThreadSafeAsync(x => x.Visible = lstChoice1.Count > 1).ConfigureAwait(false);
                             await lblBonusText1.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = lstChoice1.Count == 1;
                                 if (lstChoice1.Count == 1)
                                     x.Text = lstChoice1[0].Name;
-                            });
+                            }).ConfigureAwait(false);
                             if (lstChoice2.Count > 0)
-                                await cboChoice2.PopulateWithListItemsAsync(lstChoice2);
-                            await cboChoice2.DoThreadSafeAsync(x => x.Visible = lstChoice2.Count > 1);
+                                await cboChoice2.PopulateWithListItemsAsync(lstChoice2).ConfigureAwait(false);
+                            await cboChoice2.DoThreadSafeAsync(x => x.Visible = lstChoice2.Count > 1).ConfigureAwait(false);
                             await lblBonusText2.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = lstChoice2.Count == 1;
                                 if (lstChoice2.Count == 1)
                                     x.Text = lstChoice2[0].Name;
-                            });
+                            }).ConfigureAwait(false);
                         }
                     }
                     else
                     {
-                        await cboChoice1.DoThreadSafeAsync(x => x.Visible = false);
-                        await cboChoice2.DoThreadSafeAsync(x => x.Visible = false);
-                        await lblBonusText1.DoThreadSafeAsync(x => x.Visible = false);
-                        await lblBonusText2.DoThreadSafeAsync(x => x.Visible = false);
+                        await cboChoice1.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);
+                        await cboChoice2.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);
+                        await lblBonusText1.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);
+                        await lblBonusText2.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);
                     }
 
-                    bool blnTemp = await cboChoice1.DoThreadSafeFuncAsync(x => x.Visible);
-                    await lblChoice1.DoThreadSafeAsync(x => x.Visible = blnTemp);
-                    blnTemp = await cboChoice2.DoThreadSafeFuncAsync(x => x.Visible);
-                    await lblChoice2.DoThreadSafeAsync(x => x.Visible = blnTemp);
-                    blnTemp = await lblBonusText1.DoThreadSafeFuncAsync(x => x.Visible);
-                    await lblBonus1.DoThreadSafeAsync(x => x.Visible = blnTemp);
-                    blnTemp = await lblBonusText2.DoThreadSafeFuncAsync(x => x.Visible);
-                    await lblBonus2.DoThreadSafeAsync(x => x.Visible = blnTemp);
+                    bool blnTemp = await cboChoice1.DoThreadSafeFuncAsync(x => x.Visible).ConfigureAwait(false);
+                    await lblChoice1.DoThreadSafeAsync(x => x.Visible = blnTemp).ConfigureAwait(false);
+                    bool blnTemp2 = await cboChoice2.DoThreadSafeFuncAsync(x => x.Visible).ConfigureAwait(false);
+                    await lblChoice2.DoThreadSafeAsync(x => x.Visible = blnTemp2).ConfigureAwait(false);
+                    bool blnTemp3 = await lblBonusText1.DoThreadSafeFuncAsync(x => x.Visible).ConfigureAwait(false);
+                    await lblBonus1.DoThreadSafeAsync(x => x.Visible = blnTemp3).ConfigureAwait(false);
+                    bool blnTemp4 = await lblBonusText2.DoThreadSafeFuncAsync(x => x.Visible).ConfigureAwait(false);
+                    await lblBonus2.DoThreadSafeAsync(x => x.Visible = blnTemp4).ConfigureAwait(false);
 
                     // Get the information for the selected Mentor.
-                    string strUnknown = await LanguageManager.GetStringAsync("String_Unknown");
+                    string strUnknown = await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
                     string strAdvantage = objXmlMentor.SelectSingleNode("altadvantage")?.Value ??
                                           objXmlMentor.SelectSingleNode("advantage")?.Value ??
                                           strUnknown;
-                    await lblAdvantage.DoThreadSafeAsync(x => x.Text = strAdvantage);
-                    await lblAdvantageLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strAdvantage));
+                    await lblAdvantage.DoThreadSafeAsync(x => x.Text = strAdvantage).ConfigureAwait(false);
+                    await lblAdvantageLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strAdvantage)).ConfigureAwait(false);
                     string strDisadvantage = objXmlMentor.SelectSingleNode("altdisadvantage")?.Value ??
                                              objXmlMentor.SelectSingleNode("disadvantage")?.Value ??
                                              strUnknown;
-                    await lblDisadvantage.DoThreadSafeAsync(x => x.Text = strDisadvantage);
-                    await lblDisadvantageLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strDisadvantage));
+                    await lblDisadvantage.DoThreadSafeAsync(x => x.Text = strDisadvantage).ConfigureAwait(false);
+                    await lblDisadvantageLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strDisadvantage)).ConfigureAwait(false);
 
                     string strSource = objXmlMentor.SelectSingleNode("source")?.Value ??
-                                       await LanguageManager.GetStringAsync("String_Unknown");
-                    string strPage = (await objXmlMentor.SelectSingleNodeAndCacheExpressionAsync("altpage"))?.Value ??
+                                       await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
+                    string strPage = (await objXmlMentor.SelectSingleNodeAndCacheExpressionAsync("altpage").ConfigureAwait(false))?.Value ??
                                      objXmlMentor.SelectSingleNode("page")?.Value ??
-                                     await LanguageManager.GetStringAsync("String_Unknown");
+                                     await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
                     SourceString objSourceString = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language,
-                        GlobalSettings.CultureInfo, _objCharacter);
-                    await objSourceString.SetControlAsync(lblSource);
-                    await lblSource.DoThreadSafeFuncAsync(x => x.Text)
-                                   .ContinueWith(
-                                       y => lblSourceLabel.DoThreadSafeAsync(
-                                           x => x.Visible = !string.IsNullOrEmpty(y.Result))).Unwrap();
-                    await cmdOK.DoThreadSafeAsync(x => x.Enabled = true);
-                    await tlpRight.DoThreadSafeAsync(x => x.Visible = true);
-                    await tlpBottomRight.DoThreadSafeAsync(x => x.Visible = true);
+                        GlobalSettings.CultureInfo, _objCharacter).ConfigureAwait(false);
+                    await objSourceString.SetControlAsync(lblSource).ConfigureAwait(false);
+                    bool blnSourceEmpty = string.IsNullOrEmpty(await lblSource.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false));
+                    await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = !blnSourceEmpty).ConfigureAwait(false);
+                    await cmdOK.DoThreadSafeAsync(x => x.Enabled = true).ConfigureAwait(false);
+                    await tlpRight.DoThreadSafeAsync(x => x.Visible = true).ConfigureAwait(false);
+                    await tlpBottomRight.DoThreadSafeAsync(x => x.Visible = true).ConfigureAwait(false);
                 }
                 else
                 {
-                    await tlpRight.DoThreadSafeAsync(x => x.Visible = false);
-                    await tlpBottomRight.DoThreadSafeAsync(x => x.Visible = false);
-                    await cmdOK.DoThreadSafeAsync(x => x.Enabled = false);
+                    await tlpRight.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);
+                    await tlpBottomRight.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);
+                    await cmdOK.DoThreadSafeAsync(x => x.Enabled = false).ConfigureAwait(false);
                 }
             }
             finally
             {
-                await this.DoThreadSafeAsync(x => x.ResumeLayout());
+                await this.DoThreadSafeAsync(x => x.ResumeLayout()).ConfigureAwait(false);
             }
         }
 
@@ -201,8 +198,8 @@ namespace Chummer
         {
             string strForceId = string.Empty;
 
-            string strFilter = '(' + await _objCharacter.Settings.BookXPathAsync() + ')';
-            string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text);
+            string strFilter = '(' + await _objCharacter.Settings.BookXPathAsync().ConfigureAwait(false) + ')';
+            string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false);
             if (!string.IsNullOrEmpty(strSearch))
                 strFilter += " and " + CommonFunctions.GenerateSearchXPath(strSearch);
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstMentors))
@@ -212,20 +209,20 @@ namespace Chummer
                 {
                     if (!objXmlMentor.RequirementsMet(_objCharacter)) continue;
 
-                    string strName = (await objXmlMentor.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value
-                                     ?? await LanguageManager.GetStringAsync("String_Unknown");
-                    string strId = (await objXmlMentor.SelectSingleNodeAndCacheExpressionAsync("id"))?.Value ?? string.Empty;
+                    string strName = (await objXmlMentor.SelectSingleNodeAndCacheExpressionAsync("name").ConfigureAwait(false))?.Value
+                                     ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
+                    string strId = (await objXmlMentor.SelectSingleNodeAndCacheExpressionAsync("id").ConfigureAwait(false))?.Value ?? string.Empty;
                     if (strName == _strForceMentor)
                         strForceId = strId;
                     lstMentors.Add(new ListItem(
                                        strId,
-                                       (await objXmlMentor.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value ?? strName));
+                                       (await objXmlMentor.SelectSingleNodeAndCacheExpressionAsync("translate").ConfigureAwait(false))?.Value ?? strName));
                 }
 
                 lstMentors.Sort(CompareListItems.CompareNames);
-                string strOldSelected = await lstMentor.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
+                string strOldSelected = await lstMentor.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()).ConfigureAwait(false);
                 _blnSkipRefresh = true;
-                await lstMentor.PopulateWithListItemsAsync(lstMentors);
+                await lstMentor.PopulateWithListItemsAsync(lstMentors).ConfigureAwait(false);
                 _blnSkipRefresh = false;
                 await lstMentor.DoThreadSafeAsync(x =>
                 {
@@ -238,13 +235,13 @@ namespace Chummer
                         x.SelectedValue = strForceId;
                         x.Enabled = false;
                     }
-                });
+                }).ConfigureAwait(false);
             }
         }
 
         private async void OpenSourceFromLabel(object sender, EventArgs e)
         {
-            await CommonFunctions.OpenPdfFromControl(sender);
+            await CommonFunctions.OpenPdfFromControl(sender).ConfigureAwait(false);
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)

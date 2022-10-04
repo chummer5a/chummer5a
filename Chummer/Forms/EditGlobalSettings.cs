@@ -1164,12 +1164,12 @@ namespace Chummer
                 return x.TextLength > 0;
             }, token).ConfigureAwait(false);
             await cmdRemovePDFAppPath.DoThreadSafeAsync(x => x.Enabled = blnEnabled, token).ConfigureAwait(false);
-            blnEnabled = await txtCharacterRosterPath.DoThreadSafeFuncAsync(x =>
+            bool blnEnabled2 = await txtCharacterRosterPath.DoThreadSafeFuncAsync(x =>
             {
                 x.Text = GlobalSettings.CharacterRosterPath;
                 return x.TextLength > 0;
             }, token).ConfigureAwait(false);
-            await cmdRemoveCharacterRoster.DoThreadSafeAsync(x => x.Enabled = blnEnabled, token).ConfigureAwait(false);
+            await cmdRemoveCharacterRoster.DoThreadSafeAsync(x => x.Enabled = blnEnabled2, token).ConfigureAwait(false);
             await chkHideMasterIndex.DoThreadSafeAsync(x => x.Checked = GlobalSettings.HideMasterIndex, token).ConfigureAwait(false);
             await chkHideCharacterRoster.DoThreadSafeAsync(x => x.Checked = GlobalSettings.HideCharacterRoster, token).ConfigureAwait(false);
             await chkCreateBackupOnCareer.DoThreadSafeAsync(x => x.Checked = GlobalSettings.CreateBackupOnCareer, token).ConfigureAwait(false);

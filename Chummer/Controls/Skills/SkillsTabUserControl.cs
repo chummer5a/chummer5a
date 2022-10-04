@@ -820,7 +820,7 @@ namespace Chummer.UI.Skills
             using (await EnterReadLock.EnterAsync(objSkill.LockObject))
             {
                 // Karma check needs to come after the skill is created to make sure bonus-based modifiers (e.g. JoAT) get applied properly (since they can potentially trigger off of the specific exotic skill target)
-                if (await _objCharacter.GetCreatedAsync() && objSkill.UpgradeKarmaCost > _objCharacter.Karma)
+                if (await _objCharacter.GetCreatedAsync() && objSkill.UpgradeKarmaCost > await _objCharacter.GetKarmaAsync())
                 {
                     Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_NotEnoughKarma"));
                     await _objCharacter.SkillsSection.Skills.RemoveAsync(objSkill);

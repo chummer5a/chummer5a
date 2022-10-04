@@ -243,7 +243,7 @@ namespace Chummer.UI.Attributes
                 int intUpgradeKarmaCost = await objAttribute.GetUpgradeKarmaCostAsync();
 
                 if (intUpgradeKarmaCost == -1) return; //TODO: more descriptive
-                if (intUpgradeKarmaCost > _objCharacter.Karma)
+                if (intUpgradeKarmaCost > await _objCharacter.GetKarmaAsync())
                 {
                     Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_NotEnoughKarma"),
                         await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"),

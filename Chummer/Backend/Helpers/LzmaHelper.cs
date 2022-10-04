@@ -300,7 +300,7 @@ namespace Chummer
 
             byte[] properties = new byte[5];
             if (objInStream.Read(properties, 0, 5) != 5)
-                throw new Exception("input .lzma is too short");
+                throw new ArgumentException("input .lzma is too short");
             decoder.SetDecoderProperties(properties);
             long outSize = 0;
             unchecked
@@ -309,7 +309,7 @@ namespace Chummer
                 {
                     int v = objInStream.ReadByte();
                     if (v < 0)
-                        throw new Exception("Can't Read 1");
+                        throw new ArgumentException("Can't Read 1");
                     outSize |= (long)(byte)v << (8 * i);
                 }
             }
@@ -326,7 +326,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             byte[] properties = new byte[5];
             if (await objInStream.ReadAsync(properties, 0, 5, token) != 5)
-                throw new Exception("input .lzma is too short");
+                throw new ArgumentException("input .lzma is too short");
             decoder.SetDecoderProperties(properties);
             long outSize = 0;
             unchecked
@@ -336,7 +336,7 @@ namespace Chummer
                     token.ThrowIfCancellationRequested();
                     int v = objInStream.ReadByte();
                     if (v < 0)
-                        throw new Exception("Can't Read 1");
+                        throw new ArgumentException("Can't Read 1");
                     token.ThrowIfCancellationRequested();
                     outSize |= (long)(byte)v << (8 * i);
                 }

@@ -8571,7 +8571,7 @@ namespace Chummer
                     // <spelllimit />
                     await objWriter.WriteElementStringAsync("spelllimit", FreeSpells.ToString(objCulture), token: token).ConfigureAwait(false);
                     // <karma />
-                    await objWriter.WriteElementStringAsync("karma", Karma.ToString(objCulture), token: token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("karma", (await GetKarmaAsync(token)).ToString(objCulture), token: token).ConfigureAwait(false);
                     // <totalkarma />
                     await objWriter.WriteElementStringAsync("totalkarma", CareerKarma.ToString(objCulture), token: token).ConfigureAwait(false);
                     // <special />
@@ -11959,18 +11959,18 @@ namespace Chummer
 
                         intTemp = 0;
                         // This is where "Talent" qualities like Adept and Technomancer get added in
-                        await (await GetQualitiesAsync(token).ConfigureAwait(false)).ForEachAsync(async objQuality =>
-                        {
-                            if (objQuality.OriginSource == QualitySource.Heritage)
+                        intTemp += await (await GetQualitiesAsync(token).ConfigureAwait(false)).SumAsync(
+                            objQuality => objQuality.OriginSource == QualitySource.Heritage, async objQuality =>
                             {
-                                XPathNavigator xmlQualityNode = await objQuality.GetNodeXPathAsync(token: token).ConfigureAwait(false);
+                                XPathNavigator xmlQualityNode
+                                    = await objQuality.GetNodeXPathAsync(token: token).ConfigureAwait(false);
                                 if (xmlQualityNode == null)
-                                    return;
+                                    return 0;
                                 int intLoopKarma = 0;
                                 if (xmlQualityNode.TryGetInt32FieldQuickly("karma", ref intLoopKarma))
-                                    intTemp += intLoopKarma;
-                            }
-                        }, token).ConfigureAwait(false);
+                                    return intLoopKarma;
+                                return 0;
+                            }, token).ConfigureAwait(false);
 
                         if (intTemp != 0)
                         {
@@ -15127,6 +15127,34 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Karma.
+        /// </summary>
+        public async ValueTask IncreaseKarmaAsync(int value, CancellationToken token = default)
+        {
+            if (value == 0)
+                return;
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                _intKarma += value;
+                OnPropertyChanged(nameof(Karma));
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Karma.
+        /// </summary>
+        public async ValueTask DecreaseKarmaAsync(int value, CancellationToken token = default)
+        {
+            if (value != 0)
+                await IncreaseKarmaAsync(-value, token);
+        }
+
         public string DisplayKarma
         {
             get
@@ -15529,25 +15557,25 @@ namespace Chummer
                                                                    strImprovedName: strCategory, token: token).ConfigureAwait(false);
 
                 bool blnCreated = await GetCreatedAsync(token).ConfigureAwait(false);
-                await Improvements.ForEachAsync(objLoopImprovement =>
-                {
-                    if (objLoopImprovement.ImproveType != Improvement.ImprovementType.NewSpellKarmaCost)
-                        return;
-                    if (!objLoopImprovement.Enabled)
-                        return;
-                    switch (objLoopImprovement.Condition)
+                decReturn += await Improvements.SumAsync(
+                    x => x.ImproveType != Improvement.ImprovementType.NewSpellKarmaCost && x.Enabled,
+                    objLoopImprovement =>
                     {
-                        case "career":
-                            if (blnCreated)
-                                decReturn += objLoopImprovement.Value;
-                            break;
+                        switch (objLoopImprovement.Condition)
+                        {
+                            case "career":
+                                if (blnCreated)
+                                    return objLoopImprovement.Value;
+                                break;
 
-                        case "create":
-                            if (!blnCreated)
-                                decReturn += objLoopImprovement.Value;
-                            break;
-                    }
-                }, token).ConfigureAwait(false);
+                            case "create":
+                                if (!blnCreated)
+                                    return objLoopImprovement.Value;
+                                break;
+                        }
+
+                        return 0;
+                    }, token).ConfigureAwait(false);
 
                 // Unconditional modifiers first (which can be cached)
                 decimal decMultiplier = 1.0m;
@@ -15625,13 +15653,13 @@ namespace Chummer
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
                 decimal decReturn = await (await GetSettingsAsync(token).ConfigureAwait(false)).GetKarmaNewComplexFormAsync(token).ConfigureAwait(false);
-
+                bool blnCreated = await GetCreatedAsync(token).ConfigureAwait(false);
                 decimal decMultiplier = 1.0m;
-                await (await GetImprovementsAsync(token).ConfigureAwait(false)).ForEachAsync(async objLoopImprovement =>
+                await (await GetImprovementsAsync(token).ConfigureAwait(false)).ForEachAsync(objLoopImprovement =>
                 {
                     if ((string.IsNullOrEmpty(objLoopImprovement.Condition)
-                         || (objLoopImprovement.Condition == "career") == await GetCreatedAsync(token).ConfigureAwait(false)
-                         || (objLoopImprovement.Condition == "create") != await GetCreatedAsync(token).ConfigureAwait(false))
+                         || (objLoopImprovement.Condition == "career") == blnCreated
+                         || (objLoopImprovement.Condition == "create") != blnCreated)
                         && objLoopImprovement.Enabled)
                     {
                         switch (objLoopImprovement.ImproveType)
@@ -15695,13 +15723,13 @@ namespace Chummer
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
                 decimal decReturn = await (await GetSettingsAsync(token).ConfigureAwait(false)).GetKarmaNewAIProgramAsync(token).ConfigureAwait(false);
-
+                bool blnCreated = await GetCreatedAsync(token).ConfigureAwait(false);
                 decimal decMultiplier = 1.0m;
-                await (await GetImprovementsAsync(token).ConfigureAwait(false)).ForEachAsync(async objLoopImprovement =>
+                await (await GetImprovementsAsync(token).ConfigureAwait(false)).ForEachAsync(objLoopImprovement =>
                 {
                     if ((!string.IsNullOrEmpty(objLoopImprovement.Condition)
-                         && (objLoopImprovement.Condition == "career") != await GetCreatedAsync(token).ConfigureAwait(false)
-                         && (objLoopImprovement.Condition == "create") == await GetCreatedAsync(token).ConfigureAwait(false))
+                         && (objLoopImprovement.Condition == "career") != blnCreated
+                         && (objLoopImprovement.Condition == "create") == blnCreated)
                         || !objLoopImprovement.Enabled)
                         return;
 
@@ -15765,13 +15793,13 @@ namespace Chummer
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
                 decimal decReturn = await (await GetSettingsAsync(token).ConfigureAwait(false)).GetKarmaNewAIAdvancedProgramAsync(token).ConfigureAwait(false);
-
+                bool blnCreated = await GetCreatedAsync(token).ConfigureAwait(false);
                 decimal decMultiplier = 1.0m;
-                await (await GetImprovementsAsync(token).ConfigureAwait(false)).ForEachAsync(async objLoopImprovement =>
+                await (await GetImprovementsAsync(token).ConfigureAwait(false)).ForEachAsync(objLoopImprovement =>
                 {
                     if ((!string.IsNullOrEmpty(objLoopImprovement.Condition)
-                         && (objLoopImprovement.Condition == "career") != await GetCreatedAsync(token).ConfigureAwait(false)
-                         && (objLoopImprovement.Condition == "create") == await GetCreatedAsync(token).ConfigureAwait(false))
+                         && (objLoopImprovement.Condition == "career") != blnCreated
+                         && (objLoopImprovement.Condition == "create") == blnCreated)
                         || !objLoopImprovement.Enabled)
                         return;
 

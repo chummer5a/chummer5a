@@ -477,7 +477,7 @@ namespace Chummer
                     dlgOpenFile.InitialDirectory = Path.GetDirectoryName(_objContact.FileName);
                     dlgOpenFile.FileName = Path.GetFileName(_objContact.FileName);
                 }
-
+                
                 if (await this.DoThreadSafeFuncAsync(x => dlgOpenFile.ShowDialog(x)).ConfigureAwait(false) != DialogResult.OK)
                     return;
                 _objContact.FileName = dlgOpenFile.FileName;

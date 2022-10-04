@@ -62,7 +62,7 @@ namespace Chummer.Backend.Skills
 
         public async ValueTask DisposeAsync()
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
             try
             {
                 if (_objCharacter != null)
@@ -76,9 +76,9 @@ namespace Chummer.Backend.Skills
             }
             finally
             {
-                await objLocker.DisposeAsync();
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
-            await LockObject.DisposeAsync();
+            await LockObject.DisposeAsync().ConfigureAwait(false);
         }
 
         public int Base
@@ -721,9 +721,9 @@ namespace Chummer.Backend.Skills
                     objExpense.Create(intPrice * -1, strUpgradetext, ExpenseType.Karma, DateTime.Now);
                     objExpense.Undo = new ExpenseUndo().CreateKarma(KarmaExpenseType.ImproveSkillGroup, InternalId);
 
-                    CharacterObject.ExpenseEntries.AddWithSort(objExpense);
+                    await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token).ConfigureAwait(false);
 
-                    CharacterObject.Karma -= intPrice;
+                    await CharacterObject.DecreaseKarmaAsync(intPrice, token).ConfigureAwait(false);
                 }
 
                 ++Karma;
@@ -864,7 +864,7 @@ namespace Chummer.Backend.Skills
         {
             if (objWriter == null)
                 return;
-            using (await EnterReadLock.EnterAsync(LockObject, token))
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
                 // <skillgroup>
                 XmlElementWriteHelper objBaseElement =

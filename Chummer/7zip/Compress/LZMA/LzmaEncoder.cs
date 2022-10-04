@@ -18,12 +18,12 @@
  */
 // LzmaEncoder.cs
 
-using SevenZip.Compression.LZ;
-using SevenZip.Compression.RangeCoder;
 using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using SevenZip.Compression.LZ;
+using SevenZip.Compression.RangeCoder;
 
 namespace SevenZip.Compression.LZMA
 {
@@ -1256,7 +1256,7 @@ namespace SevenZip.Compression.LZMA
                             if (pos == 0)
                             {
                                 _isRepG0[_state.Index].Encode(_rangeEncoder, 0);
-                                _isRep0Long[complexState].Encode(_rangeEncoder, len == 1 ? (uint) 0 : (uint) 1);
+                                _isRep0Long[complexState].Encode(_rangeEncoder, len == 1 ? 0 : (uint) 1);
                             }
                             else
                             {

@@ -4494,8 +4494,9 @@ namespace Chummer
                     (bool blnCanTouchOnlySpellBeFree, bool blnCanGenericSpellBeFree)
                         = await CharacterObject.AllowFreeSpellsAsync(GenericToken);
                     int intSpellKarmaCost = await CharacterObject.SpellKarmaCostAsync("Spells", GenericToken);
+                    int intKarma = await CharacterObject.GetKarmaAsync(GenericToken);
                     // Make sure the character has enough Karma before letting them select a Spell.
-                    if (CharacterObject.Karma < intSpellKarmaCost
+                    if (intKarma < intSpellKarmaCost
                         && !(blnCanTouchOnlySpellBeFree || blnCanGenericSpellBeFree))
                     {
                         Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma"),
@@ -4508,7 +4509,7 @@ namespace Chummer
                     using (ThreadSafeForm<SelectSpell> frmPickSpell = await ThreadSafeForm<SelectSpell>.GetAsync(
                                () => new SelectSpell(CharacterObject)
                                {
-                                   FreeOnly = CharacterObject.Karma < intSpellKarmaCost &&
+                                   FreeOnly = intKarma < intSpellKarmaCost &&
                                               (blnCanTouchOnlySpellBeFree || blnCanGenericSpellBeFree)
                                }, GenericToken))
                     {
@@ -4541,7 +4542,7 @@ namespace Chummer
                         objSpell.FreeBonus = frmPickSpell.MyForm.FreeBonus;
                         if (!objSpell.FreeBonus)
                         {
-                            if (CharacterObject.Karma < intSpellKarmaCost)
+                            if (await CharacterObject.GetKarmaAsync(GenericToken) < intSpellKarmaCost)
                             {
                                 objSpell.Dispose();
                                 Program.ShowMessageBox(
@@ -4554,7 +4555,7 @@ namespace Chummer
                             if (!await CommonFunctions.ConfirmKarmaExpenseAsync(string.Format(GlobalSettings.CultureInfo,
                                     await LanguageManager.GetStringAsync(
                                         "Message_ConfirmKarmaExpenseSpend")
-                                    , objSpell.CurrentDisplayName
+                                    , await objSpell.GetCurrentDisplayNameAsync(GenericToken)
                                     , intSpellKarmaCost.ToString(GlobalSettings.CultureInfo))))
                             {
                                 objSpell.Dispose();
@@ -4562,8 +4563,9 @@ namespace Chummer
                             }
                         }
                         // Barehanded Adept
-                        else if (CharacterObject.AdeptEnabled && !CharacterObject.MagicianEnabled
-                                                              && (objSpell.Range == "T" || objSpell.Range == "T (A)"))
+                        else if (await CharacterObject.GetAdeptEnabledAsync(GenericToken)
+                                 && !await CharacterObject.GetMagicianEnabledAsync(GenericToken)
+                                 && (objSpell.Range == "T" || objSpell.Range == "T (A)"))
                         {
                             objSpell.BarehandedAdept = true;
                         }
@@ -4575,10 +4577,11 @@ namespace Chummer
                             ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                             objExpense.Create(-intSpellKarmaCost,
                                               await LanguageManager.GetStringAsync("String_ExpenseLearnSpell")
-                                              + await LanguageManager.GetStringAsync("String_Space") + objSpell.Name,
+                                              + await LanguageManager.GetStringAsync("String_Space")
+                                              + await objSpell.GetCurrentDisplayNameShortAsync(GenericToken),
                                               ExpenseType.Karma, DateTime.Now);
                             await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken);
-                            CharacterObject.Karma -= intSpellKarmaCost;
+                            await CharacterObject.DecreaseKarmaAsync(intSpellKarmaCost, GenericToken);
 
                             ExpenseUndo objUndo = new ExpenseUndo();
                             objUndo.CreateKarma(KarmaExpenseType.AddSpell, objSpell.InternalId);
@@ -4686,7 +4689,7 @@ namespace Chummer
                     int intComplexFormKarmaCost = CharacterObject.ComplexFormKarmaCost;
 
                     // Make sure the character has enough Karma before letting them select a Complex Form.
-                    if (CharacterObject.Karma < intComplexFormKarmaCost)
+                    if (await CharacterObject.GetKarmaAsync(GenericToken) < intComplexFormKarmaCost)
                     {
                         Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma"),
                                                await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"),
@@ -4737,9 +4740,9 @@ namespace Chummer
                     objExpense.Create(intComplexFormKarmaCost * -1,
                                       await LanguageManager.GetStringAsync("String_ExpenseLearnComplexForm")
                                       + await LanguageManager.GetStringAsync("String_Space")
-                                      + objComplexForm.CurrentDisplayNameShort, ExpenseType.Karma, DateTime.Now);
+                                      + await objComplexForm.GetCurrentDisplayNameShortAsync(GenericToken), ExpenseType.Karma, DateTime.Now);
                     await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken);
-                    CharacterObject.Karma -= intComplexFormKarmaCost;
+                    await CharacterObject.DecreaseKarmaAsync(intComplexFormKarmaCost, GenericToken);
 
                     ExpenseUndo objUndo = new ExpenseUndo();
                     objUndo.CreateKarma(KarmaExpenseType.AddComplexForm, objComplexForm.InternalId);
@@ -5129,9 +5132,9 @@ namespace Chummer
             }
         }
 
-        private void cmdAddMartialArt_Click(object sender, EventArgs e)
+        private async void cmdAddMartialArt_Click(object sender, EventArgs e)
         {
-            MartialArt.Purchase(CharacterObject);
+            await MartialArt.Purchase(CharacterObject);
         }
 
         private void cmdDeleteMartialArt_Click(object sender, EventArgs e)
@@ -5289,7 +5292,7 @@ namespace Chummer
                         = ((CharacterObjectSettings.KarmaInitiationFlat + (CharacterObject.InitiateGrade + 1)
                             * CharacterObjectSettings.KarmaInitiation) * decMultiplier).StandardRound();
 
-                    if (intKarmaExpense > CharacterObject.Karma)
+                    if (intKarmaExpense > await CharacterObject.GetKarmaAsync(GenericToken))
                     {
                         Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma"),
                                                await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"),
@@ -5339,8 +5342,8 @@ namespace Chummer
                                       + strSpace + "->" + strSpace
                                       + (CharacterObject.InitiateGrade + 1).ToString(GlobalSettings.CultureInfo),
                                       ExpenseType.Karma, DateTime.Now);
-                    await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense);
-                    CharacterObject.Karma -= intKarmaExpense;
+                    await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken);
+                    await CharacterObject.DecreaseKarmaAsync(intKarmaExpense, GenericToken);
 
                     // Create the Initiate Grade object.
                     InitiationGrade objGrade = new InitiationGrade(CharacterObject);
@@ -5409,7 +5412,7 @@ namespace Chummer
                         = ((CharacterObjectSettings.KarmaInitiationFlat + (CharacterObject.SubmersionGrade + 1)
                             * CharacterObjectSettings.KarmaInitiation) * decMultiplier).StandardRound();
 
-                    if (intKarmaExpense > CharacterObject.Karma)
+                    if (intKarmaExpense > await CharacterObject.GetKarmaAsync(GenericToken))
                     {
                         Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma"),
                                                await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"),
@@ -5437,8 +5440,8 @@ namespace Chummer
                                       + strSpace + "->" + strSpace
                                       + (CharacterObject.SubmersionGrade + 1).ToString(GlobalSettings.CultureInfo),
                                       ExpenseType.Karma, DateTime.Now);
-                    await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense);
-                    CharacterObject.Karma -= intKarmaExpense;
+                    await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken);
+                    await CharacterObject.DecreaseKarmaAsync(intKarmaExpense, GenericToken);
 
                     // Create the Initiate Grade object.
                     InitiationGrade objGrade = new InitiationGrade(CharacterObject);
@@ -5500,7 +5503,7 @@ namespace Chummer
                     objExpense.Undo = objUndo;
 
                     // Adjust the character's Karma total.
-                    CharacterObject.Karma += frmNewExpense.MyForm.Amount.ToInt32();
+                    await CharacterObject.IncreaseKarmaAsync(frmNewExpense.MyForm.Amount.ToInt32(), GenericToken);
 
                     if (frmNewExpense.MyForm.KarmaNuyenExchange)
                     {
@@ -5510,7 +5513,7 @@ namespace Chummer
                                           frmNewExpense.MyForm.Reason, ExpenseType.Nuyen,
                                           frmNewExpense.MyForm.SelectedDate);
                         objExpense.ForceCareerVisible = frmNewExpense.MyForm.ForceCareerVisible;
-                        await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense);
+                        await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken);
 
                         objUndo = new ExpenseUndo();
                         objUndo.CreateNuyen(NuyenExpenseType.ManualSubtract, string.Empty);
@@ -5542,7 +5545,7 @@ namespace Chummer
                         return;
 
                     // Make sure the Karma expense would not put the character's remaining Karma amount below 0.
-                    if (CharacterObject.Karma - frmNewExpense.MyForm.Amount < 0)
+                    if (await CharacterObject.GetKarmaAsync(GenericToken) < frmNewExpense.MyForm.Amount)
                     {
                         Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma"),
                                                await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"),
@@ -5555,14 +5558,14 @@ namespace Chummer
                     objExpense.Create(frmNewExpense.MyForm.Amount * -1, frmNewExpense.MyForm.Reason, ExpenseType.Karma,
                                       frmNewExpense.MyForm.SelectedDate, frmNewExpense.MyForm.Refund);
                     objExpense.ForceCareerVisible = frmNewExpense.MyForm.ForceCareerVisible;
-                    await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense);
+                    await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken);
 
                     ExpenseUndo objUndo = new ExpenseUndo();
                     objUndo.CreateKarma(KarmaExpenseType.ManualSubtract, string.Empty);
                     objExpense.Undo = objUndo;
 
                     // Adjust the character's Karma total.
-                    CharacterObject.Karma -= frmNewExpense.MyForm.Amount.ToInt32();
+                    await CharacterObject.DecreaseKarmaAsync(frmNewExpense.MyForm.Amount.ToInt32(), GenericToken);
 
                     if (frmNewExpense.MyForm.KarmaNuyenExchange)
                     {
@@ -5572,7 +5575,7 @@ namespace Chummer
                                           frmNewExpense.MyForm.Reason, ExpenseType.Nuyen,
                                           frmNewExpense.MyForm.SelectedDate);
                         objExpense.ForceCareerVisible = frmNewExpense.MyForm.ForceCareerVisible;
-                        await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense);
+                        await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken);
 
                         objUndo = new ExpenseUndo();
                         objUndo.CreateNuyen(NuyenExpenseType.ManualSubtract, string.Empty);
@@ -5627,14 +5630,14 @@ namespace Chummer
                         objExpense.Create(-intAmount, frmNewExpense.MyForm.Reason, ExpenseType.Karma,
                                           frmNewExpense.MyForm.SelectedDate, frmNewExpense.MyForm.Refund);
                         objExpense.ForceCareerVisible = frmNewExpense.MyForm.ForceCareerVisible;
-                        await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense);
+                        await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken);
 
                         objUndo = new ExpenseUndo();
                         objUndo.CreateKarma(KarmaExpenseType.ManualSubtract, string.Empty);
                         objExpense.Undo = objUndo;
 
                         // Adjust the character's Karma total.
-                        CharacterObject.Karma -= intAmount;
+                        await CharacterObject.DecreaseKarmaAsync(intAmount, GenericToken);
                     }
                 }
             }
@@ -5684,14 +5687,14 @@ namespace Chummer
                         int intAmount = (frmNewExpense.MyForm.Amount / CharacterObjectSettings.NuyenPerBPWftP).ToInt32();
                         objExpense.Create(intAmount, frmNewExpense.MyForm.Reason, ExpenseType.Karma, frmNewExpense.MyForm.SelectedDate, frmNewExpense.MyForm.Refund);
                         objExpense.ForceCareerVisible = frmNewExpense.MyForm.ForceCareerVisible;
-                        await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense);
+                        await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken);
 
                         objUndo = new ExpenseUndo();
                         objUndo.CreateKarma(KarmaExpenseType.ManualSubtract, string.Empty);
                         objExpense.Undo = objUndo;
 
                         // Adjust the character's Karma total.
-                        CharacterObject.Karma += intAmount;
+                        await CharacterObject.IncreaseKarmaAsync(intAmount, GenericToken);
                     }
                 }
             }
@@ -5770,7 +5773,7 @@ namespace Chummer
                         if (objPower.InternalId.IsEmptyGuid())
                             continue;
 
-                        if (objPower.Karma > CharacterObject.Karma)
+                        if (objPower.Karma > await CharacterObject.GetKarmaAsync(GenericToken))
                         {
                             Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                             continue;
@@ -5782,15 +5785,19 @@ namespace Chummer
                             continue;
 
                         ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                        objExpense.Create(objPower.Karma * -1, await LanguageManager.GetStringAsync("String_ExpensePurchaseCritterPower") + await LanguageManager.GetStringAsync("String_Space") + objPower.CurrentDisplayNameShort, ExpenseType.Karma,
-                            DateTime.Now);
-                        await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense);
+                        objExpense.Create(objPower.Karma * -1,
+                                          await LanguageManager.GetStringAsync("String_ExpensePurchaseCritterPower")
+                                          + await LanguageManager.GetStringAsync("String_Space")
+                                          + await objPower.GetCurrentDisplayNameShortAsync(GenericToken),
+                                          ExpenseType.Karma,
+                                          DateTime.Now);
+                        await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken);
 
                         ExpenseUndo objUndo = new ExpenseUndo();
                         objUndo.CreateKarma(KarmaExpenseType.AddCritterPower, objPower.InternalId);
                         objExpense.Undo = objUndo;
 
-                        CharacterObject.Karma -= objPower.Karma;
+                        await CharacterObject.DecreaseKarmaAsync(objPower.Karma, GenericToken);
                         await CharacterObject.CritterPowers.AddAsync(objPower);
                     }
                 }
@@ -6459,7 +6466,7 @@ namespace Chummer
                         {
                             if (!blnFreeCost)
                             {
-                                if (intKarmaCost > CharacterObject.Karma &&
+                                if (intKarmaCost > await CharacterObject.GetKarmaAsync(GenericToken) &&
                                     objXmlQuality["stagedpurchase"]?.InnerText != bool.TrueString)
                                 {
                                     Program.ShowMessageBox(this,
@@ -6504,11 +6511,11 @@ namespace Chummer
                                 // Create the Karma expense.
                                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                                 objExpense.Create(intKarmaCost * -1,
-                                                  await LanguageManager.GetStringAsync("String_ExpenseAddPositiveQuality") +
-                                                  await LanguageManager.GetStringAsync("String_Space") +
-                                                  objQuality.CurrentDisplayNameShort, ExpenseType.Karma, DateTime.Now);
-                                await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense);
-                                CharacterObject.Karma -= intKarmaCost;
+                                                  await LanguageManager.GetStringAsync("String_ExpenseAddPositiveQuality", token: GenericToken) +
+                                                  await LanguageManager.GetStringAsync("String_Space", token: GenericToken) +
+                                                  await objQuality.GetCurrentDisplayNameShortAsync(GenericToken), ExpenseType.Karma, DateTime.Now);
+                                await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken);
+                                await CharacterObject.DecreaseKarmaAsync(intKarmaCost, GenericToken);
 
                                 ExpenseUndo objUndo = new ExpenseUndo();
                                 objUndo.CreateKarma(KarmaExpenseType.AddQuality, objQuality.InternalId);
@@ -6520,22 +6527,22 @@ namespace Chummer
                             // Create a Karma Expense for the Negative Quality.
                             ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                             objExpense.Create(0,
-                                              await LanguageManager.GetStringAsync("String_ExpenseAddNegativeQuality") +
-                                              await LanguageManager.GetStringAsync("String_Space") +
-                                              objQuality.CurrentDisplayNameShort, ExpenseType.Karma, DateTime.Now);
-                            await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense);
+                                              await LanguageManager.GetStringAsync("String_ExpenseAddNegativeQuality", token: GenericToken) +
+                                              await LanguageManager.GetStringAsync("String_Space", token: GenericToken) +
+                                              objQuality.GetCurrentDisplayNameShortAsync(GenericToken), ExpenseType.Karma, DateTime.Now);
+                            await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken);
 
                             ExpenseUndo objUndo = new ExpenseUndo();
                             objUndo.CreateKarma(KarmaExpenseType.AddQuality, objQuality.InternalId);
                             objExpense.Undo = objUndo;
                         }
 
-                        await CharacterObject.Qualities.AddAsync(objQuality);
+                        await CharacterObject.Qualities.AddAsync(objQuality, GenericToken);
 
                         // Add any created Weapons to the character.
                         foreach (Weapon objWeapon in lstWeapons)
                         {
-                            await CharacterObject.Weapons.AddAsync(objWeapon);
+                            await CharacterObject.Weapons.AddAsync(objWeapon, GenericToken);
                         }
                     }
                 }
@@ -6622,7 +6629,7 @@ namespace Chummer
                 {
                     Quality objNewQuality = new Quality(CharacterObject);
 
-                    objNewQuality.Swap(objQuality, objXmlQuality, intRatingToAdd);
+                    await objNewQuality.Swap(objQuality, objXmlQuality, intRatingToAdd, GenericToken);
                 }
             }
             catch (OperationCanceledException)
@@ -6687,10 +6694,10 @@ namespace Chummer
 
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                     objExpense.Create(intKarmaCost, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_ExpenseSwapPositiveQuality", token: token)
-                        , objSelectedQuality.CurrentDisplayNameShort
+                        , await objSelectedQuality.GetCurrentDisplayNameShortAsync(token)
                         , await LanguageManager.GetStringAsync("String_Karma", token: token)), ExpenseType.Karma, DateTime.Now, true);
                     await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token);
-                    CharacterObject.Karma += intKarmaCost;
+                    await CharacterObject.IncreaseKarmaAsync(intKarmaCost, token);
 
                     ExpenseUndo objUndo = new ExpenseUndo();
                     objUndo.CreateKarma(KarmaExpenseType.RemoveQuality, objSelectedQuality.SourceIDString);
@@ -6713,7 +6720,7 @@ namespace Chummer
                 int intTotalKarmaCost = intKarmaCost;
                 if (blnCompleteDelete)
                     intTotalKarmaCost *= objSelectedQuality.Levels;
-                if (intTotalKarmaCost > CharacterObject.Karma)
+                if (intTotalKarmaCost > await CharacterObject.GetKarmaAsync(token))
                 {
                     Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma", token: token), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma", token: token), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return false;
@@ -6729,7 +6736,7 @@ namespace Chummer
                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                 objExpense.Create(-intTotalKarmaCost, await LanguageManager.GetStringAsync("String_ExpenseRemoveNegativeQuality", token: token) + await LanguageManager.GetStringAsync("String_Space", token: token) + objSelectedQuality.CurrentDisplayNameShort, ExpenseType.Karma, DateTime.Now);
                 await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token);
-                CharacterObject.Karma -= intTotalKarmaCost;
+                await CharacterObject.DecreaseKarmaAsync(intTotalKarmaCost, token);
 
                 ExpenseUndo objUndo = new ExpenseUndo();
                 objUndo.CreateKarma(KarmaExpenseType.RemoveQuality, objSelectedQuality.SourceIDString);
@@ -6865,7 +6872,7 @@ namespace Chummer
                     {
                         if (!blnFreeCost)
                         {
-                            if (intKarmaCost > CharacterObject.Karma && !objSelectedQuality.StagedPurchase)
+                            if (intKarmaCost > await CharacterObject.GetKarmaAsync(GenericToken) && !objSelectedQuality.StagedPurchase)
                             {
                                 Program.ShowMessageBox(
                                     this,
@@ -6934,9 +6941,9 @@ namespace Chummer
                                           await LanguageManager.GetStringAsync(
                                               "String_ExpenseAddPositiveQuality", token: GenericToken)
                                           + await LanguageManager.GetStringAsync("String_Space", token: GenericToken)
-                                          + objQuality.CurrentDisplayNameShort, ExpenseType.Karma, DateTime.Now);
-                        await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense);
-                        CharacterObject.Karma -= intKarmaCost;
+                                          + await objQuality.GetCurrentDisplayNameShortAsync(GenericToken), ExpenseType.Karma, DateTime.Now);
+                        await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken);
+                        await CharacterObject.DecreaseKarmaAsync(intKarmaCost, GenericToken);
 
                         ExpenseUndo objUndo = new ExpenseUndo();
                         objUndo.CreateKarma(KarmaExpenseType.AddQuality, objQuality.InternalId);
@@ -7705,7 +7712,7 @@ namespace Chummer
                 }
 
                 // Make sure the character has enough Karma to improve the CharacterAttribute.
-                if (intKarmaCost > CharacterObject.Karma)
+                if (intKarmaCost > await CharacterObject.GetKarmaAsync(GenericToken))
                 {
                     Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma"),
                                            await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"),
@@ -7724,11 +7731,11 @@ namespace Chummer
                 // Create the Karma expense.
                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                 objExpense.Create(intKarmaCost * -1,
-                                  await LanguageManager.GetStringAsync("String_ExpenseQuickenMetamagic")
-                                  + await LanguageManager.GetStringAsync("String_Space") + strSelectedSpell,
+                                  await LanguageManager.GetStringAsync("String_ExpenseQuickenMetamagic", token: GenericToken)
+                                  + await LanguageManager.GetStringAsync("String_Space", token: GenericToken) + strSelectedSpell,
                                   ExpenseType.Karma, DateTime.Now);
-                await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense);
-                CharacterObject.Karma -= intKarmaCost;
+                await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken);
+                await CharacterObject.DecreaseKarmaAsync(intKarmaCost, GenericToken);
 
                 ExpenseUndo objUndo = new ExpenseUndo();
                 objUndo.CreateKarma(KarmaExpenseType.QuickeningMetamagic, string.Empty);
@@ -8913,12 +8920,12 @@ namespace Chummer
                             // Create the Expense Log Entry.
                             ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                             objExpense.Create(karmaCost * -1,
-                                              await LanguageManager.GetStringAsync("String_ExpenseLearnTechnique")
-                                              + await LanguageManager.GetStringAsync("String_Space")
-                                              + objTechnique.CurrentDisplayName,
+                                              await LanguageManager.GetStringAsync("String_ExpenseLearnTechnique", token: GenericToken)
+                                              + await LanguageManager.GetStringAsync("String_Space", token: GenericToken)
+                                              + await objTechnique.GetCurrentDisplayNameAsync(GenericToken),
                                               ExpenseType.Karma, DateTime.Now);
-                            await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense);
-                            CharacterObject.Karma -= karmaCost;
+                            await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken);
+                            await CharacterObject.DecreaseKarmaAsync(karmaCost, GenericToken);
 
                             ExpenseUndo objUndo = new ExpenseUndo();
                             objUndo.CreateKarma(KarmaExpenseType.AddMartialArtTechnique, objTechnique.InternalId);
@@ -10243,8 +10250,8 @@ namespace Chummer
                 }
 
                 // Refund the Karma amount and remove the Expense Entry.
-                CharacterObject.Karma -= objExpense.Amount.ToInt32();
-                await CharacterObject.ExpenseEntries.RemoveAsync(objExpense);
+                await CharacterObject.DecreaseKarmaAsync(objExpense.Amount.ToInt32(), GenericToken);
+                await CharacterObject.ExpenseEntries.RemoveAsync(objExpense, GenericToken);
 
                 await cboTradition.DoThreadSafeAsync(x =>
                 {
@@ -11233,9 +11240,9 @@ namespace Chummer
         {
             try
             {
-                int intSpellKarmaCost = await CharacterObject.SpellKarmaCostAsync("Spells");
+                int intSpellKarmaCost = await CharacterObject.SpellKarmaCostAsync("Spells", GenericToken);
                 // Make sure the character has enough Karma before letting them select a Spell.
-                if (CharacterObject.Karma < intSpellKarmaCost)
+                if (await CharacterObject.GetKarmaAsync(GenericToken) < intSpellKarmaCost)
                 {
                     Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma"),
                                            await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"),
@@ -11257,14 +11264,14 @@ namespace Chummer
                     Spell objSpell = frmSpell.MyForm.SelectedSpell;
                     if (objSpell.Alchemical)
                     {
-                        intSpellKarmaCost = await CharacterObject.SpellKarmaCostAsync("Preparations");
+                        intSpellKarmaCost = await CharacterObject.SpellKarmaCostAsync("Preparations", GenericToken);
                     }
                     else if (objSpell.Category == "Rituals")
                     {
-                        intSpellKarmaCost = await CharacterObject.SpellKarmaCostAsync("Rituals");
+                        intSpellKarmaCost = await CharacterObject.SpellKarmaCostAsync("Rituals", GenericToken);
                     }
 
-                    if (CharacterObject.Karma < intSpellKarmaCost)
+                    if (await CharacterObject.GetKarmaAsync(GenericToken) < intSpellKarmaCost)
                     {
                         objSpell.Dispose();
                         Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma"),
@@ -11276,7 +11283,7 @@ namespace Chummer
                     if (!await CommonFunctions.ConfirmKarmaExpenseAsync(string.Format(GlobalSettings.CultureInfo,
                             await LanguageManager.GetStringAsync(
                                 "Message_ConfirmKarmaExpenseSpend")
-                            , objSpell.CurrentDisplayName
+                            , await objSpell.GetCurrentDisplayNameAsync(GenericToken)
                             , intSpellKarmaCost.ToString(GlobalSettings.CultureInfo))))
                     {
                         objSpell.Dispose();
@@ -11289,10 +11296,11 @@ namespace Chummer
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                     objExpense.Create(intSpellKarmaCost * -1,
                                       await LanguageManager.GetStringAsync("String_ExpenseLearnSpell")
-                                      + await LanguageManager.GetStringAsync("String_Space") + objSpell.Name,
+                                      + await LanguageManager.GetStringAsync("String_Space")
+                                      + await objSpell.GetCurrentDisplayNameShortAsync(GenericToken),
                                       ExpenseType.Karma, DateTime.Now);
-                    await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense);
-                    CharacterObject.Karma -= intSpellKarmaCost;
+                    await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken);
+                    await CharacterObject.DecreaseKarmaAsync(intSpellKarmaCost, GenericToken);
 
                     ExpenseUndo objUndo = new ExpenseUndo();
                     objUndo.CreateKarma(KarmaExpenseType.AddSpell, objSpell.InternalId);
@@ -14609,7 +14617,7 @@ namespace Chummer
                     }
 
                     int intKarmaExpense = await objFocus.BindingKarmaCostAsync(GenericToken);
-                    if (intKarmaExpense > CharacterObject.Karma)
+                    if (intKarmaExpense > await CharacterObject.GetKarmaAsync(GenericToken))
                     {
                         Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma"),
                                                await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"),
@@ -14627,7 +14635,7 @@ namespace Chummer
                                 "Message_ConfirmKarmaExpenseFocus")
                             , intKarmaExpense.ToString(
                                 GlobalSettings.CultureInfo)
-                            , objSelectedFocus.CurrentDisplayNameShort)))
+                            , await objSelectedFocus.GetCurrentDisplayNameAsync(GenericToken))))
                     {
                         // Clear created improvements
                         objSelectedFocus.ChangeEquippedStatus(false);
@@ -14642,9 +14650,9 @@ namespace Chummer
                     objExpense.Create(intKarmaExpense * -1,
                                       await LanguageManager.GetStringAsync("String_ExpenseBound")
                                       + await LanguageManager.GetStringAsync("String_Space")
-                                      + objSelectedFocus.CurrentDisplayNameShort, ExpenseType.Karma, DateTime.Now);
+                                      + await objSelectedFocus.GetCurrentDisplayNameAsync(GenericToken), ExpenseType.Karma, DateTime.Now);
                     await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken);
-                    CharacterObject.Karma -= intKarmaExpense;
+                    await CharacterObject.DecreaseKarmaAsync(intKarmaExpense, GenericToken);
 
                     ExpenseUndo objUndo = new ExpenseUndo();
                     objUndo.CreateKarma(KarmaExpenseType.BindFocus, objSelectedFocus.InternalId);
@@ -14722,7 +14730,7 @@ namespace Chummer
                     }
 
                     int intKarmaExpense = objStackedFocus.BindingCost;
-                    if (intKarmaExpense > CharacterObject.Karma)
+                    if (intKarmaExpense > await CharacterObject.GetKarmaAsync(GenericToken))
                     {
                         Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma"),
                                                await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"),
@@ -14740,7 +14748,7 @@ namespace Chummer
                                 "Message_ConfirmKarmaExpenseFocus")
                             , intKarmaExpense.ToString(
                                 GlobalSettings.CultureInfo)
-                            , await LanguageManager.GetStringAsync("String_StackedFocus") + await LanguageManager.GetStringAsync("String_Space") + objStackedFocus.CurrentDisplayName)))
+                            , await LanguageManager.GetStringAsync("String_StackedFocus") + await LanguageManager.GetStringAsync("String_Space") + objStackedFocus.GetCurrentDisplayNameAsync(GenericToken))))
                     {
                         // Clear created improvements
                         objStackGear.ChangeEquippedStatus(false);
@@ -14757,9 +14765,9 @@ namespace Chummer
                                       + await LanguageManager.GetStringAsync("String_Space")
                                       + await LanguageManager.GetStringAsync("String_StackedFocus")
                                       + await LanguageManager.GetStringAsync("String_Space")
-                                      + objStackedFocus.CurrentDisplayName, ExpenseType.Karma, DateTime.Now);
+                                      + await objStackedFocus.GetCurrentDisplayNameAsync(GenericToken), ExpenseType.Karma, DateTime.Now);
                     await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken);
-                    CharacterObject.Karma -= intKarmaExpense;
+                    await CharacterObject.DecreaseKarmaAsync(intKarmaExpense, GenericToken);
 
                     ExpenseUndo objUndo = new ExpenseUndo();
                     objUndo.CreateKarma(KarmaExpenseType.BindFocus, objStackedFocus.InternalId);
@@ -15142,7 +15150,7 @@ namespace Chummer
                     {
                         int intKarmaExpense = CharacterObjectSettings.KarmaJoinGroup;
 
-                        if (intKarmaExpense > CharacterObject.Karma)
+                        if (intKarmaExpense > await CharacterObject.GetKarmaAsync(GenericToken))
                         {
                             Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma"),
                                                    await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"),
@@ -15194,7 +15202,7 @@ namespace Chummer
                         ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                         objExpense.Create(intKarmaExpense * -1, strExpense, ExpenseType.Karma, DateTime.Now);
                         await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken);
-                        CharacterObject.Karma -= intKarmaExpense;
+                        await CharacterObject.DecreaseKarmaAsync(intKarmaExpense, GenericToken);
 
                         ExpenseUndo objUndo = new ExpenseUndo();
                         objUndo.CreateKarma(KarmaExpenseType.JoinGroup, string.Empty);
@@ -15204,7 +15212,7 @@ namespace Chummer
                     {
                         int intKarmaExpense = CharacterObjectSettings.KarmaLeaveGroup;
 
-                        if (intKarmaExpense > CharacterObject.Karma)
+                        if (intKarmaExpense > await CharacterObject.GetKarmaAsync(GenericToken))
                         {
                             Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma"),
                                                    await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"),
@@ -15257,7 +15265,7 @@ namespace Chummer
                         ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                         objExpense.Create(intKarmaExpense * -1, strExpense, ExpenseType.Karma, DateTime.Now);
                         await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken);
-                        CharacterObject.Karma -= intKarmaExpense;
+                        await CharacterObject.DecreaseKarmaAsync(intKarmaExpense, GenericToken);
 
                         ExpenseUndo objUndo = new ExpenseUndo();
                         objUndo.CreateKarma(KarmaExpenseType.LeaveGroup, string.Empty);
@@ -15378,119 +15386,143 @@ namespace Chummer
 
         private async void lstKarma_DoubleClick(object sender, EventArgs e)
         {
-            ListViewItem objItem = await lstKarma.DoThreadSafeFuncAsync(x => x.SelectedItems.Count > 0 ? lstKarma.SelectedItems[0] : null);
-            if (objItem == null)
+            try
             {
-                return;
-            }
-
-            // Find the selected Karma Expense.
-            ExpenseLogEntry objExpense = (objItem.SubItems[3] as ListViewItemWithValue.ListViewSubItemWithValue)?.Value as ExpenseLogEntry
-                                         ?? new ExpenseLogEntry(CharacterObject);
-
-            // If this is a manual entry, let the player modify the amount.
-            int intOldAmount = objExpense.Amount.ToInt32();
-            bool blnAllowEdit = objExpense.Undo != null && (objExpense.Undo.KarmaType == KarmaExpenseType.ManualAdd ||
-                                                            objExpense.Undo.KarmaType ==
-                                                            KarmaExpenseType.ManualSubtract);
-
-            bool blnDoRepopulateList;
-            using (ThreadSafeForm<CreateExpense> frmEditExpense = await ThreadSafeForm<CreateExpense>.GetAsync(
-                       () => new CreateExpense(CharacterObjectSettings)
-                       {
-                           Reason = objExpense.Reason,
-                           Amount = objExpense.Amount,
-                           Refund = objExpense.Refund,
-                           SelectedDate = objExpense.Date,
-                           ForceCareerVisible = objExpense.ForceCareerVisible,
-                           IsInEditMode = true
-                       }))
-            {
-                frmEditExpense.MyForm.LockFields(blnAllowEdit);
-
-                if (await frmEditExpense.ShowDialogSafeAsync(this) == DialogResult.Cancel)
-                    return;
-
-                // If this is a manual entry, update the character's Karma total.
-                int intNewAmount = frmEditExpense.MyForm.Amount.ToInt32();
-                if (blnAllowEdit && intOldAmount != intNewAmount)
+                ListViewItem objItem
+                    = await lstKarma.DoThreadSafeFuncAsync(
+                        x => x.SelectedItems.Count > 0 ? lstKarma.SelectedItems[0] : null, GenericToken);
+                if (objItem == null)
                 {
-                    objExpense.Amount = intNewAmount;
-                    CharacterObject.Karma += intNewAmount - intOldAmount;
-                    blnDoRepopulateList = true;
+                    return;
                 }
-                else
-                    blnDoRepopulateList = intNewAmount != 0 || await chkShowFreeKarma.DoThreadSafeFuncAsync(x => x.Checked);
 
-                // Rename the Expense.
-                objExpense.Reason = frmEditExpense.MyForm.Reason;
-                objExpense.Date = frmEditExpense.MyForm.SelectedDate;
+                // Find the selected Karma Expense.
+                ExpenseLogEntry objExpense
+                    = (objItem.SubItems[3] as ListViewItemWithValue.ListViewSubItemWithValue)?.Value as ExpenseLogEntry
+                      ?? new ExpenseLogEntry(CharacterObject);
+
+                // If this is a manual entry, let the player modify the amount.
+                int intOldAmount = objExpense.Amount.ToInt32();
+                bool blnAllowEdit = objExpense.Undo != null
+                                    && (objExpense.Undo.KarmaType == KarmaExpenseType.ManualAdd ||
+                                        objExpense.Undo.KarmaType ==
+                                        KarmaExpenseType.ManualSubtract);
+
+                bool blnDoRepopulateList;
+                using (ThreadSafeForm<CreateExpense> frmEditExpense = await ThreadSafeForm<CreateExpense>.GetAsync(
+                           () => new CreateExpense(CharacterObjectSettings)
+                           {
+                               Reason = objExpense.Reason,
+                               Amount = objExpense.Amount,
+                               Refund = objExpense.Refund,
+                               SelectedDate = objExpense.Date,
+                               ForceCareerVisible = objExpense.ForceCareerVisible,
+                               IsInEditMode = true
+                           }, GenericToken))
+                {
+                    frmEditExpense.MyForm.LockFields(blnAllowEdit);
+
+                    if (await frmEditExpense.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                        return;
+
+                    // If this is a manual entry, update the character's Karma total.
+                    int intNewAmount = frmEditExpense.MyForm.Amount.ToInt32();
+                    if (blnAllowEdit && intOldAmount != intNewAmount)
+                    {
+                        objExpense.Amount = intNewAmount;
+                        await CharacterObject.IncreaseKarmaAsync(intNewAmount - intOldAmount, GenericToken);
+                        blnDoRepopulateList = true;
+                    }
+                    else
+                        blnDoRepopulateList = intNewAmount != 0
+                                              || await chkShowFreeKarma.DoThreadSafeFuncAsync(x => x.Checked, GenericToken);
+
+                    // Rename the Expense.
+                    objExpense.Reason = frmEditExpense.MyForm.Reason;
+                    objExpense.Date = frmEditExpense.MyForm.SelectedDate;
+                }
+
+                if (blnDoRepopulateList)
+                    await RepopulateKarmaExpenseList(GenericToken);
+
+                await RequestCharacterUpdate();
+                await SetDirty(true);
             }
-
-            if (blnDoRepopulateList)
-                await RepopulateKarmaExpenseList();
-
-            await RequestCharacterUpdate();
-            await SetDirty(true);
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void lstNuyen_DoubleClick(object sender, EventArgs e)
         {
-            ListViewItem objItem = await lstNuyen.DoThreadSafeFuncAsync(x => x.SelectedItems.Count > 0 ? lstNuyen.SelectedItems[0] : null);
-            if (objItem == null)
+            try
             {
-                return;
-            }
-
-            // Find the selected Nuyen Expense.
-            ExpenseLogEntry objExpense = (objItem.SubItems[3] as ListViewItemWithValue.ListViewSubItemWithValue)?.Value as ExpenseLogEntry
-                                         ?? new ExpenseLogEntry(CharacterObject);
-
-            // If this is a manual entry, let the player modify the amount.
-            decimal decOldAmount = objExpense.Amount;
-            bool blnAllowEdit = objExpense.Undo != null && (objExpense.Undo.NuyenType == NuyenExpenseType.ManualAdd ||
-                                                            objExpense.Undo.NuyenType ==
-                                                            NuyenExpenseType.ManualSubtract);
-
-            bool blnDoRepopulateList;
-            using (ThreadSafeForm<CreateExpense> frmEditExpense = await ThreadSafeForm<CreateExpense>.GetAsync(
-                       () => new CreateExpense(CharacterObjectSettings)
-                       {
-                           Mode = ExpenseType.Nuyen,
-                           Reason = objExpense.Reason,
-                           Amount = objExpense.Amount,
-                           Refund = objExpense.Refund,
-                           SelectedDate = objExpense.Date,
-                           ForceCareerVisible = objExpense.ForceCareerVisible,
-                           IsInEditMode = true
-                       }))
-            {
-                frmEditExpense.MyForm.LockFields(blnAllowEdit);
-
-                if (await frmEditExpense.ShowDialogSafeAsync(this) == DialogResult.Cancel)
-                    return;
-
-                // If this is a manual entry, update the character's Karma total.
-                decimal decNewAmount = frmEditExpense.MyForm.Amount;
-                if (blnAllowEdit && decOldAmount != decNewAmount)
+                ListViewItem objItem
+                    = await lstNuyen.DoThreadSafeFuncAsync(
+                        x => x.SelectedItems.Count > 0 ? lstNuyen.SelectedItems[0] : null, GenericToken);
+                if (objItem == null)
                 {
-                    objExpense.Amount = decNewAmount;
-                    CharacterObject.Nuyen += decNewAmount - decOldAmount;
-                    blnDoRepopulateList = true;
+                    return;
                 }
-                else
-                    blnDoRepopulateList = decNewAmount != 0 || await chkShowFreeNuyen.DoThreadSafeFuncAsync(x => x.Checked);
 
-                // Rename the Expense.
-                objExpense.Reason = frmEditExpense.MyForm.Reason;
-                objExpense.Date = frmEditExpense.MyForm.SelectedDate;
+                // Find the selected Nuyen Expense.
+                ExpenseLogEntry objExpense
+                    = (objItem.SubItems[3] as ListViewItemWithValue.ListViewSubItemWithValue)?.Value as ExpenseLogEntry
+                      ?? new ExpenseLogEntry(CharacterObject);
+
+                // If this is a manual entry, let the player modify the amount.
+                decimal decOldAmount = objExpense.Amount;
+                bool blnAllowEdit = objExpense.Undo != null
+                                    && (objExpense.Undo.NuyenType == NuyenExpenseType.ManualAdd ||
+                                        objExpense.Undo.NuyenType ==
+                                        NuyenExpenseType.ManualSubtract);
+
+                bool blnDoRepopulateList;
+                using (ThreadSafeForm<CreateExpense> frmEditExpense = await ThreadSafeForm<CreateExpense>.GetAsync(
+                           () => new CreateExpense(CharacterObjectSettings)
+                           {
+                               Mode = ExpenseType.Nuyen,
+                               Reason = objExpense.Reason,
+                               Amount = objExpense.Amount,
+                               Refund = objExpense.Refund,
+                               SelectedDate = objExpense.Date,
+                               ForceCareerVisible = objExpense.ForceCareerVisible,
+                               IsInEditMode = true
+                           }, GenericToken))
+                {
+                    frmEditExpense.MyForm.LockFields(blnAllowEdit);
+
+                    if (await frmEditExpense.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                        return;
+
+                    // If this is a manual entry, update the character's Karma total.
+                    decimal decNewAmount = frmEditExpense.MyForm.Amount;
+                    if (blnAllowEdit && decOldAmount != decNewAmount)
+                    {
+                        objExpense.Amount = decNewAmount;
+                        CharacterObject.Nuyen += decNewAmount - decOldAmount;
+                        blnDoRepopulateList = true;
+                    }
+                    else
+                        blnDoRepopulateList = decNewAmount != 0
+                                              || await chkShowFreeNuyen.DoThreadSafeFuncAsync(x => x.Checked, GenericToken);
+
+                    // Rename the Expense.
+                    objExpense.Reason = frmEditExpense.MyForm.Reason;
+                    objExpense.Date = frmEditExpense.MyForm.SelectedDate;
+                }
+
+                if (blnDoRepopulateList)
+                    await RepopulateNuyenExpenseList(GenericToken);
+
+                await RequestCharacterUpdate();
+                await SetDirty(true);
             }
-
-            if (blnDoRepopulateList)
-                await RepopulateNuyenExpenseList();
-
-            await RequestCharacterUpdate();
-            await SetDirty(true);
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private void lstKarma_ColumnClick(object sender, ColumnClickEventArgs e)
@@ -21267,7 +21299,7 @@ namespace Chummer
             {
                 // Make sure the character has enough Karma to improve the CharacterAttribute.
                 int intKarmaCost = CharacterObjectSettings.KarmaMysticAdeptPowerPoint;
-                if (intKarmaCost > CharacterObject.Karma)
+                if (intKarmaCost > await CharacterObject.GetKarmaAsync(GenericToken))
                 {
                     Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma"),
                                            await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"),
@@ -21298,7 +21330,7 @@ namespace Chummer
                 objExpense.Create(intKarmaCost * -1, await LanguageManager.GetStringAsync("String_PowerPoint"),
                                   ExpenseType.Karma, DateTime.Now);
                 await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken);
-                CharacterObject.Karma -= intKarmaCost;
+                await CharacterObject.DecreaseKarmaAsync(intKarmaCost, GenericToken);
 
                 ExpenseUndo objUndo = new ExpenseUndo();
                 objUndo.CreateKarma(KarmaExpenseType.AddPowerPoint, string.Empty);
@@ -21328,7 +21360,7 @@ namespace Chummer
                       await CharacterObject.Spells.AnyAsync(objSpell => objSpell.Grade == objGrade.Grade, GenericToken);
 
                 // Additional Metamagics beyond the standard 1 per Grade cost additional Karma, so ask if the user wants to spend the additional Karma.
-                if (blnPayWithKarma && CharacterObject.Karma < CharacterObjectSettings.KarmaMetamagic)
+                if (blnPayWithKarma && await CharacterObject.GetKarmaAsync(GenericToken) < CharacterObjectSettings.KarmaMetamagic)
                 {
                     // Make sure the Karma expense would not put them over the limit.
                     Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma"),
@@ -21409,7 +21441,7 @@ namespace Chummer
                         objExpense.Undo = objUndo;
 
                         // Adjust the character's Karma total.
-                        CharacterObject.Karma -= CharacterObjectSettings.KarmaMetamagic;
+                        await CharacterObject.DecreaseKarmaAsync(CharacterObjectSettings.KarmaMetamagic, GenericToken);
                     }
                 }
             }
@@ -21510,11 +21542,11 @@ namespace Chummer
                         blnPayWithKarma = true;
                 }
 
-                int intSpellKarmaCost = await CharacterObject.SpellKarmaCostAsync("Enchantments");
+                int intSpellKarmaCost = await CharacterObject.SpellKarmaCostAsync("Enchantments", GenericToken);
 
                 if (blnPayWithKarma)
                 {
-                    if (CharacterObject.Karma < intSpellKarmaCost)
+                    if (await CharacterObject.GetKarmaAsync(GenericToken) < intSpellKarmaCost)
                     {
                         // Make sure the Karma expense would not put them over the limit.
                         Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma"),
@@ -21557,7 +21589,7 @@ namespace Chummer
                     return;
                 }
 
-                await CharacterObject.Spells.AddAsync(objNewSpell);
+                await CharacterObject.Spells.AddAsync(objNewSpell, GenericToken);
 
                 if (blnPayWithKarma)
                 {
@@ -21566,7 +21598,7 @@ namespace Chummer
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                     objExpense.Create(-intSpellKarmaCost,
                                       strType + await LanguageManager.GetStringAsync("String_Space")
-                                              + objNewSpell.CurrentDisplayNameShort, ExpenseType.Karma, DateTime.Now);
+                                              + objNewSpell.GetCurrentDisplayNameShortAsync(GenericToken), ExpenseType.Karma, DateTime.Now);
                     await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken);
 
                     ExpenseUndo objUndo = new ExpenseUndo();
@@ -21574,7 +21606,7 @@ namespace Chummer
                     objExpense.Undo = objUndo;
 
                     // Adjust the character's Karma total.
-                    CharacterObject.Karma -= intSpellKarmaCost;
+                    await CharacterObject.DecreaseKarmaAsync(intSpellKarmaCost, GenericToken);
                 }
             }
             catch (OperationCanceledException)
@@ -21603,7 +21635,7 @@ namespace Chummer
                 int intSpellKarmaCost = await CharacterObject.SpellKarmaCostAsync("Rituals", GenericToken);
                 if (blnPayWithKarma)
                 {
-                    if (CharacterObject.Karma < intSpellKarmaCost)
+                    if (await CharacterObject.GetKarmaAsync(GenericToken) < intSpellKarmaCost)
                     {
                         // Make sure the Karma expense would not put them over the limit.
                         Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma"),
@@ -21663,7 +21695,7 @@ namespace Chummer
                     objExpense.Undo = objUndo;
 
                     // Adjust the character's Karma total.
-                    CharacterObject.Karma -= intSpellKarmaCost;
+                    await CharacterObject.DecreaseKarmaAsync(intSpellKarmaCost, GenericToken);
                 }
             }
             catch (OperationCanceledException)
@@ -21694,7 +21726,7 @@ namespace Chummer
 
                 int intGrade = objGrade.Grade;
 
-                if (CharacterObject.Karma < CharacterObjectSettings.KarmaEnhancement)
+                if (await CharacterObject.GetKarmaAsync(GenericToken) < CharacterObjectSettings.KarmaEnhancement)
                 {
                     // Make sure the Karma expense would not put them over the limit.
                     Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma"),
@@ -21767,7 +21799,7 @@ namespace Chummer
                 objExpense.Undo = objUndo;
 
                 // Adjust the character's Karma total.
-                CharacterObject.Karma -= CharacterObjectSettings.KarmaEnhancement;
+                await CharacterObject.DecreaseKarmaAsync(CharacterObjectSettings.KarmaEnhancement, GenericToken);
             }
             catch (OperationCanceledException)
             {
@@ -21968,8 +22000,8 @@ namespace Chummer
                 do
                 {
                     // Make sure the character has enough Karma before letting them select a Spell.
-                    if (CharacterObject.Karma < intNewAIProgramCost
-                        && CharacterObject.Karma < intNewAIAdvancedProgramCost)
+                    int intKarma = await CharacterObject.GetKarmaAsync(GenericToken);
+                    if (intKarma < Math.Min(intNewAIProgramCost, intNewAIAdvancedProgramCost))
                     {
                         Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma"),
                                                await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"),
@@ -21981,7 +22013,7 @@ namespace Chummer
                     using (ThreadSafeForm<SelectAIProgram> frmPickProgram
                            = await ThreadSafeForm<SelectAIProgram>.GetAsync(
                                () => new SelectAIProgram(CharacterObject,
-                                                         CharacterObject.Karma >= intNewAIAdvancedProgramCost),
+                                                         intKarma >= intNewAIAdvancedProgramCost),
                                GenericToken))
                     {
                         // Make sure the dialogue window was not canceled.
@@ -22026,7 +22058,7 @@ namespace Chummer
                         if (!await CommonFunctions.ConfirmKarmaExpenseAsync(string.Format(GlobalSettings.CultureInfo,
                                 await LanguageManager.GetStringAsync(
                                     "Message_ConfirmKarmaExpenseSpend")
-                                , objProgram.CurrentDisplayNameShort
+                                , await objProgram.GetCurrentDisplayNameShortAsync(GenericToken)
                                 , (boolIsAdvancedProgram ? intNewAIAdvancedProgramCost : intNewAIProgramCost).ToString(GlobalSettings.CultureInfo))))
                             continue;
 
@@ -22037,11 +22069,11 @@ namespace Chummer
                         objExpense.Create(
                             (boolIsAdvancedProgram ? intNewAIAdvancedProgramCost : intNewAIProgramCost) * -1,
                             await LanguageManager.GetStringAsync("String_ExpenseLearnProgram")
-                            + await LanguageManager.GetStringAsync("String_Space") + objProgram.Name,
+                            + await LanguageManager.GetStringAsync("String_Space")
+                            + await objProgram.GetCurrentDisplayNameShortAsync(GenericToken),
                             ExpenseType.Karma, DateTime.Now);
                         await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken);
-                        CharacterObject.Karma
-                            -= boolIsAdvancedProgram ? intNewAIAdvancedProgramCost : intNewAIProgramCost;
+                        await CharacterObject.DecreaseKarmaAsync(boolIsAdvancedProgram ? intNewAIAdvancedProgramCost : intNewAIProgramCost, GenericToken);
 
                         ExpenseUndo objUndo = new ExpenseUndo();
                         objUndo.CreateKarma(
