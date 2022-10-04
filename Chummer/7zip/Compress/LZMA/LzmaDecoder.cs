@@ -29,7 +29,7 @@ namespace SevenZip.Compression.LZMA
 {
     public class Decoder : ICoder, ISetDecoderProperties // ,System.IO.Stream
     {
-        private class LenDecoder
+        private sealed class LenDecoder
         {
             private BitDecoder m_Choice;
             private BitDecoder m_Choice2;
@@ -76,7 +76,7 @@ namespace SevenZip.Compression.LZMA
             }
         }
 
-        private class LiteralDecoder
+        private sealed class LiteralDecoder
         {
             private struct Decoder2
             {

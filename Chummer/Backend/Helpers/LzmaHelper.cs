@@ -347,14 +347,14 @@ namespace Chummer
             await Task.Run(() => decoder.CodeAsync(objInStream, objOutStream, compressedSize, outSize, funcProgress, token), token);
         }
 
-        private class DelegateCodeProgress : ICodeProgress
+        private sealed class DelegateCodeProgress : ICodeProgress
         {
             private readonly Action<long, long> handler;
             public DelegateCodeProgress(Action<long, long> handler) => this.handler = handler;
             public void SetProgress(long inSize, long outSize) => handler(inSize, outSize);
         }
 
-        private class AsyncDelegateCodeProgress : IAsyncCodeProgress
+        private sealed class AsyncDelegateCodeProgress : IAsyncCodeProgress
         {
             private readonly Func<long, long, Task> handler;
             public AsyncDelegateCodeProgress(Func<long, long, Task> handler) => this.handler = handler;

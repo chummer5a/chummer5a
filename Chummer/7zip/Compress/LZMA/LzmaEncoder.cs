@@ -95,7 +95,7 @@ namespace SevenZip.Compression.LZMA
         public const int kDefaultDictionaryLogSize = 22;
         public const uint kNumFastBytesDefault = 0x20;
 
-        private class LiteralEncoder
+        private sealed class LiteralEncoder
         {
             public struct Encoder2
             {
@@ -334,7 +334,7 @@ namespace SevenZip.Compression.LZMA
 
         private const uint kNumOpts = 1 << 12;
 
-        private class Optimal
+        private sealed class Optimal
         {
             public Base.State State;
 
@@ -943,21 +943,19 @@ namespace SevenZip.Compression.LZMA
                                                              (state2.Index << Base.kNumPosStatesBitsMax) + posStateNext]
                                                          .GetPrice1() +
                                                      _isRep[state2.Index].GetPrice1();
+                            uint offset = cur + 1 + lenTest2;
+                            while (lenEnd < offset)
+                                _optimum[++lenEnd].Price = kIfinityPrice;
+                            uint curAndLenPrice = nextRepMatchPrice + GetRepPrice(
+                                0, lenTest2, state2, posStateNext);
+                            Optimal optimum = _optimum[offset];
+                            if (curAndLenPrice < optimum.Price)
                             {
-                                uint offset = cur + 1 + lenTest2;
-                                while (lenEnd < offset)
-                                    _optimum[++lenEnd].Price = kIfinityPrice;
-                                uint curAndLenPrice = nextRepMatchPrice + GetRepPrice(
-                                    0, lenTest2, state2, posStateNext);
-                                Optimal optimum = _optimum[offset];
-                                if (curAndLenPrice < optimum.Price)
-                                {
-                                    optimum.Price = curAndLenPrice;
-                                    optimum.PosPrev = cur + 1;
-                                    optimum.BackPrev = 0;
-                                    optimum.Prev1IsChar = true;
-                                    optimum.Prev2 = false;
-                                }
+                                optimum.Price = curAndLenPrice;
+                                optimum.PosPrev = cur + 1;
+                                optimum.BackPrev = 0;
+                                optimum.Prev1IsChar = true;
+                                optimum.Prev2 = false;
                             }
                         }
                     }
