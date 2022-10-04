@@ -61,24 +61,27 @@ namespace SevenZip.Compression.LZ
 
         public bool Train(Stream stream)
         {
-            long len = stream.Length;
-            uint size = len < _windowSize ? (uint)len : _windowSize;
-            TrainSize = size;
-            stream.Position = len - size;
-            _streamPos = _pos = 0;
-            while (size > 0)
+            unchecked
             {
-                uint curSize = _windowSize - _pos;
-                if (size < curSize)
-                    curSize = size;
-                int numReadBytes = stream.Read(_buffer, (int)_pos, (int)curSize);
-                if (numReadBytes == 0)
-                    return false;
-                size -= (uint)numReadBytes;
-                _pos += (uint)numReadBytes;
-                _streamPos += (uint)numReadBytes;
-                if (_pos == _windowSize)
-                    _streamPos = _pos = 0;
+                long len = stream.Length;
+                uint size = len < _windowSize ? (uint) len : _windowSize;
+                TrainSize = size;
+                stream.Position = len - size;
+                _streamPos = _pos = 0;
+                while (size > 0)
+                {
+                    uint curSize = _windowSize - _pos;
+                    if (size < curSize)
+                        curSize = size;
+                    int numReadBytes = stream.Read(_buffer, (int) _pos, (int) curSize);
+                    if (numReadBytes == 0)
+                        return false;
+                    size -= (uint) numReadBytes;
+                    _pos += (uint) numReadBytes;
+                    _streamPos += (uint) numReadBytes;
+                    if (_pos == _windowSize)
+                        _streamPos = _pos = 0;
+                }
             }
             return true;
         }
@@ -103,16 +106,19 @@ namespace SevenZip.Compression.LZ
         [CLSCompliant(false)]
         public void CopyBlock(uint distance, uint len)
         {
-            uint pos = _pos - distance - 1;
-            if (pos >= _windowSize)
-                pos += _windowSize;
-            for (; len > 0; len--)
+            unchecked
             {
+                uint pos = _pos - distance - 1;
                 if (pos >= _windowSize)
-                    pos = 0;
-                _buffer[_pos++] = _buffer[pos++];
-                if (_pos >= _windowSize)
-                    Flush();
+                    pos += _windowSize;
+                for (; len > 0; len--)
+                {
+                    if (pos >= _windowSize)
+                        pos = 0;
+                    _buffer[_pos++] = _buffer[pos++];
+                    if (_pos >= _windowSize)
+                        Flush();
+                }
             }
         }
 
@@ -126,10 +132,13 @@ namespace SevenZip.Compression.LZ
         [CLSCompliant(false)]
         public byte GetByte(uint distance)
         {
-            uint pos = _pos - distance - 1;
-            if (pos >= _windowSize)
-                pos += _windowSize;
-            return _buffer[pos];
+            unchecked
+            {
+                uint pos = _pos - distance - 1;
+                if (pos >= _windowSize)
+                    pos += _windowSize;
+                return _buffer[pos];
+            }
         }
     }
 }

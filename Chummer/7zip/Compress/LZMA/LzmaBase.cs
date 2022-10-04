@@ -69,10 +69,13 @@ namespace SevenZip.Compression.LZMA
 
         public static uint GetLenToPosState(uint len)
         {
-            len -= kMatchMinLen;
-            if (len < kNumLenToPosStates)
-                return len;
-            return kNumLenToPosStates - 1;
+            unchecked
+            {
+                len -= kMatchMinLen;
+                if (len < kNumLenToPosStates)
+                    return len;
+                return kNumLenToPosStates - 1;
+            }
         }
 
         public const int kNumAlignBits = 4;
