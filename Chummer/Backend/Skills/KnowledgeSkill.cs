@@ -38,14 +38,31 @@ namespace Chummer.Backend.Skills
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (GlobalSettings.LiveCustomData || _dicCategoriesSkillMap == null)
+                    if (GlobalSettings.LiveCustomData)
                     {
-                        EnterReadLock objLocker = GlobalSettings.LiveCustomData ? default : EnterReadLock.Enter(LockObject);
-                        try
+                        XPathNodeIterator lstXmlSkills = CharacterObject.LoadDataXPath("skills.xml")
+                                                                        .SelectAndCacheExpression(
+                                                                            "/chummer/knowledgeskills/skill");
+                        Dictionary<string, string> dicReturn = new Dictionary<string, string>(lstXmlSkills.Count);
+                        foreach (XPathNavigator objXmlSkill in lstXmlSkills)
+                        {
+                            string strCategory = objXmlSkill.SelectSingleNodeAndCacheExpression("category")?.Value;
+                            if (!string.IsNullOrWhiteSpace(strCategory))
+                            {
+                                dicReturn[strCategory] =
+                                    objXmlSkill.SelectSingleNodeAndCacheExpression("attribute")?.Value;
+                            }
+                        }
+
+                        return _dicCategoriesSkillMap = new ReadOnlyDictionary<string, string>(dicReturn);
+                    }
+                    if (_dicCategoriesSkillMap == null)
+                    {
+                        using (EnterReadLock.Enter(LockObject))
                         {
                             XPathNodeIterator lstXmlSkills = CharacterObject.LoadDataXPath("skills.xml")
-                                .SelectAndCacheExpression(
-                                    "/chummer/knowledgeskills/skill");
+                                                                            .SelectAndCacheExpression(
+                                                                                "/chummer/knowledgeskills/skill");
                             Dictionary<string, string> dicReturn = new Dictionary<string, string>(lstXmlSkills.Count);
                             foreach (XPathNavigator objXmlSkill in lstXmlSkills)
                             {
@@ -58,11 +75,6 @@ namespace Chummer.Backend.Skills
                             }
 
                             return _dicCategoriesSkillMap = new ReadOnlyDictionary<string, string>(dicReturn);
-                        }
-                        finally
-                        {
-                            if (objLocker != default)
-                                objLocker.Dispose();
                         }
                     }
 
