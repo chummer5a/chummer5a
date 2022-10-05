@@ -2539,12 +2539,12 @@ namespace Chummer.Backend.Equipment
                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                     ProcessAttributesInXPath(sbdDamage, Damage);
                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                    sbdDamage.CheapReplace("{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                    sbdDamage.CheapReplace(Damage, "{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
                 }
                 else
                 {
                     await ProcessAttributesInXPathAsync(sbdDamage, Damage, token: token);
-                    await sbdDamage.CheapReplaceAsync(
+                    await sbdDamage.CheapReplaceAsync(Damage,
                         "{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo), token: token);
                 }
 
@@ -4063,7 +4063,7 @@ namespace Chummer.Backend.Equipment
                 }
                 else
                 {
-                    await sbdAP.CheapReplaceAsync("{Rating}", strAP,
+                    await sbdAP.CheapReplaceAsync(strAP, "{Rating}",
                                                   () => Rating.ToString(GlobalSettings.InvariantCultureInfo), token: token);
                     await ProcessAttributesInXPathAsync(sbdAP, strAP, token: token);
                 }
@@ -4677,7 +4677,7 @@ namespace Chummer.Backend.Equipment
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAccuracy))
             {
                 sbdAccuracy.Append(strAccuracy);
-                await sbdAccuracy.CheapReplaceAsync("{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo), token: token);
+                await sbdAccuracy.CheapReplaceAsync(strAccuracy, "{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo), token: token);
                 await ProcessAttributesInXPathAsync(sbdAccuracy, strAccuracy, token: token);
                 Func<string> funcPhysicalLimitString = () =>
                     _objCharacter.LimitPhysical.ToString(GlobalSettings.InvariantCultureInfo);
