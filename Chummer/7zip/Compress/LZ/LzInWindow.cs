@@ -18,10 +18,12 @@
  */
 // LzInWindow.cs
 
+using System;
 using System.IO;
 
 namespace SevenZip.Compression.LZ
 {
+    [CLSCompliant(false)]
     public class InWindow
     {
         public byte[] _bufferBase; // pointer to buffer with data
@@ -30,9 +32,9 @@ namespace SevenZip.Compression.LZ
         private bool _streamEndWasReached; // if (true) then _streamPos shows real end of stream
 
         private uint _pointerToLastSafePosition;
-
+        
         public uint _bufferOffset;
-
+        
         public uint _blockSize; // Size of Allocated memory block
         public uint _pos; // offset (from _buffer) of curent byte
         private uint _keepSizeBefore; // how many BYTEs must be kept in buffer before _pos
@@ -41,48 +43,56 @@ namespace SevenZip.Compression.LZ
 
         public void MoveBlock()
         {
-            uint offset = _bufferOffset + _pos - _keepSizeBefore;
-            // we need one additional byte, since MovePos moves on 1 byte.
-            if (offset > 0)
-                offset--;
+            unchecked
+            {
+                uint offset = _bufferOffset + _pos - _keepSizeBefore;
+                // we need one additional byte, since MovePos moves on 1 byte.
+                if (offset > 0)
+                    offset--;
 
-            uint numBytes = _bufferOffset + _streamPos - offset;
+                uint numBytes = _bufferOffset + _streamPos - offset;
 
-            // check negative offset ????
-            for (uint i = 0; i < numBytes; i++)
-                _bufferBase[i] = _bufferBase[offset + i];
-            _bufferOffset -= offset;
+                // check negative offset ????
+                for (uint i = 0; i < numBytes; i++)
+                    _bufferBase[i] = _bufferBase[offset + i];
+                _bufferOffset -= offset;
+            }
         }
 
         public virtual void ReadBlock()
         {
             if (_streamEndWasReached)
                 return;
-            while (true)
+            unchecked
             {
-                int size = (int)(0 - _bufferOffset + _blockSize - _streamPos);
-                if (size == 0)
-                    return;
-                int numReadBytes = _stream.Read(_bufferBase, (int)(_bufferOffset + _streamPos), size);
-                if (numReadBytes == 0)
+                while (true)
                 {
-                    _posLimit = _streamPos;
-                    uint pointerToPosition = _bufferOffset + _posLimit;
-                    if (pointerToPosition > _pointerToLastSafePosition)
-                        _posLimit = _pointerToLastSafePosition - _bufferOffset;
+                    int size = (int) (0 - _bufferOffset + _blockSize - _streamPos);
+                    if (size == 0)
+                        return;
+                    int numReadBytes = _stream.Read(_bufferBase, (int) (_bufferOffset + _streamPos), size);
+                    if (numReadBytes == 0)
+                    {
+                        _posLimit = _streamPos;
+                        uint pointerToPosition = _bufferOffset + _posLimit;
+                        if (pointerToPosition > _pointerToLastSafePosition)
+                            _posLimit = _pointerToLastSafePosition - _bufferOffset;
 
-                    _streamEndWasReached = true;
-                    return;
+                        _streamEndWasReached = true;
+                        return;
+                    }
+
+                    _streamPos += (uint) numReadBytes;
+                    if (_streamPos >= _pos + _keepSizeAfter)
+                        _posLimit = _streamPos - _keepSizeAfter;
                 }
-                _streamPos += (uint)numReadBytes;
-                if (_streamPos >= _pos + _keepSizeAfter)
-                    _posLimit = _streamPos - _keepSizeAfter;
             }
         }
 
         private void Free()
         { _bufferBase = null; }
 
+        [CLSCompliant(false)]
         public void Create(uint keepSizeBefore, uint keepSizeAfter, uint keepSizeReserve)
         {
             _keepSizeBefore = keepSizeBefore;
@@ -114,13 +124,16 @@ namespace SevenZip.Compression.LZ
 
         public void MovePos()
         {
-            _pos++;
-            if (_pos > _posLimit)
+            unchecked
             {
-                uint pointerToPosition = _bufferOffset + _pos;
-                if (pointerToPosition > _pointerToLastSafePosition)
-                    MoveBlock();
-                ReadBlock();
+                _pos++;
+                if (_pos > _posLimit)
+                {
+                    uint pointerToPosition = _bufferOffset + _pos;
+                    if (pointerToPosition > _pointerToLastSafePosition)
+                        MoveBlock();
+                    ReadBlock();
+                }
             }
         }
 
@@ -133,6 +146,7 @@ namespace SevenZip.Compression.LZ
         }
 
         // index + limit have not to exceed _keepSizeAfter;
+        [CLSCompliant(false)]
         public uint GetMatchLen(int index, uint distance, uint limit)
         {
             unchecked

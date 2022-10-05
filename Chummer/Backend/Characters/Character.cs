@@ -486,7 +486,7 @@ namespace Chummer
 
         public XmlNode GetNode(bool blnReturnMetatypeOnly, string strLanguage = "", CancellationToken token = default)
         {
-            return GetNodeCoreAsync(true, blnReturnMetatypeOnly, strLanguage, token).ConfigureAwait(false).GetAwaiter().GetResult();
+            return Utils.JoinableTaskFactory.Run(() => GetNodeCoreAsync(true, blnReturnMetatypeOnly, strLanguage, token));
         }
 
         public Task<XmlNode> GetNodeAsync(bool blnReturnMetatypeOnly, string strLanguage = "", CancellationToken token = default)
@@ -544,7 +544,7 @@ namespace Chummer
 
         public XPathNavigator GetNodeXPath(bool blnReturnMetatypeOnly, string strLanguage = "", CancellationToken token = default)
         {
-            return GetNodeXPathCoreAsync(true, blnReturnMetatypeOnly, strLanguage, token).ConfigureAwait(false).GetAwaiter().GetResult();
+            return Utils.JoinableTaskFactory.Run(() => GetNodeXPathCoreAsync(true, blnReturnMetatypeOnly, strLanguage, token));
         }
 
         public Task<XPathNavigator> GetNodeXPathAsync(bool blnReturnMetatypeOnly, string strLanguage = "", CancellationToken token = default)
@@ -2846,7 +2846,7 @@ namespace Chummer
         /// </summary>
         public bool Save(string strFileName = "", bool addToMRU = true, bool callOnSaveCallBack = true, CancellationToken token = default)
         {
-            return SaveCoreAsync(true, strFileName, addToMRU, callOnSaveCallBack, token).ConfigureAwait(false).GetAwaiter().GetResult();
+            return Utils.JoinableTaskFactory.Run(() => SaveCoreAsync(true, strFileName, addToMRU, callOnSaveCallBack, token));
         }
 
         /// <summary>
@@ -4455,13 +4455,8 @@ namespace Chummer
                         for (int i = 0; i < DoOnSaveCompletedAsync.Count; ++i)
                         {
                             Func<Character, CancellationToken, Task<bool>> funcLoopToRun = DoOnSaveCompletedAsync[i];
-                            Task<bool> tskLoopTask = funcLoopToRun?.Invoke(this, token) ?? Task.FromResult(true);
-                            if (tskLoopTask.Status == TaskStatus.Created)
-                                tskLoopTask.RunSynchronously();
-                            if (tskLoopTask.Exception != null)
-                                // ReSharper disable once PossibleNullReferenceException
-                                throw tskLoopTask.Exception;
-                            if (!tskLoopTask.GetAwaiter().GetResult())
+                            if (!Utils.JoinableTaskFactory.Run(
+                                    () => funcLoopToRun?.Invoke(this, token) ?? Task.FromResult(true)))
                                 blnErrorFree = false;
                         }
                     }
@@ -4676,7 +4671,7 @@ namespace Chummer
         /// <param name="token">Cancellation token to use.</param>
         public bool Load(string strFileName = "", LoadingBar frmLoadingForm = null, bool showWarnings = true, CancellationToken token = default)
         {
-            return LoadCoreAsync(true, strFileName, frmLoadingForm, showWarnings, token).ConfigureAwait(false).GetAwaiter().GetResult();
+            return Utils.JoinableTaskFactory.Run(() => LoadCoreAsync(true, strFileName, frmLoadingForm, showWarnings, token));
         }
 
         /// <summary>
@@ -8295,10 +8290,7 @@ namespace Chummer
 
                                 foreach (Func<CancellationToken, Task<bool>> funcToCall in PostLoadMethodsAsync)
                                 {
-                                    Task<bool> tskToCall = funcToCall.Invoke(token);
-                                    if (tskToCall.Status == TaskStatus.Created)
-                                        tskToCall.RunSynchronously();
-                                    if (!tskToCall.GetAwaiter().GetResult())
+                                    if (!Utils.JoinableTaskFactory.Run(() => funcToCall.Invoke(token)))
                                         return false;
                                 }
 
@@ -13344,7 +13336,7 @@ namespace Chummer
 
         public void SaveMugshots(XmlWriter objWriter, CancellationToken token = default)
         {
-            SaveMugshotsCore(true, objWriter, token).ConfigureAwait(false).GetAwaiter().GetResult();
+            Utils.JoinableTaskFactory.Run(() => SaveMugshotsCore(true, objWriter, token));
         }
 
         public Task SaveMugshotsAsync(XmlWriter objWriter, CancellationToken token = default)
@@ -30854,7 +30846,7 @@ namespace Chummer
         /// </summary>
         public bool LoadFromHeroLabFile(string strPorFile, string strCharacterId, string strSettingsKey = "")
         {
-            return LoadFromHeroLabFileCoreAsync(true, strPorFile, strCharacterId, strSettingsKey).ConfigureAwait(false).GetAwaiter().GetResult();
+            return Utils.JoinableTaskFactory.Run(() => LoadFromHeroLabFileCoreAsync(true, strPorFile, strCharacterId, strSettingsKey));
         }
 
         /// <summary>

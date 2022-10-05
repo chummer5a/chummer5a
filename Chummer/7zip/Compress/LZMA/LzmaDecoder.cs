@@ -29,7 +29,7 @@ namespace SevenZip.Compression.LZMA
 {
     public class Decoder : ICoder, ISetDecoderProperties // ,System.IO.Stream
     {
-        private class LenDecoder
+        private sealed class LenDecoder
         {
             private BitDecoder m_Choice;
             private BitDecoder m_Choice2;
@@ -76,7 +76,7 @@ namespace SevenZip.Compression.LZMA
             }
         }
 
-        private class LiteralDecoder
+        private sealed class LiteralDecoder
         {
             private struct Decoder2
             {
@@ -277,7 +277,7 @@ namespace SevenZip.Compression.LZMA
         public void Code(Stream inStream, Stream outStream,
                          long inSize, long outSize, ICodeProgress progress)
         {
-            CodeCoreAsync(true, inStream, outStream, inSize, outSize, progress, null, CancellationToken.None).GetAwaiter().GetResult();
+            Chummer.Utils.JoinableTaskFactory.Run(() => CodeCoreAsync(true, inStream, outStream, inSize, outSize, progress, null, CancellationToken.None));
         }
 
         public Task CodeAsync(Stream inStream, Stream outStream,

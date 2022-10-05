@@ -465,29 +465,38 @@ namespace Chummer
 
         private async void tsAttachCharacter_Click(object sender, EventArgs e)
         {
-            // Prompt the user to select a save file to associate with this Contact.
-            using (OpenFileDialog dlgOpenFile = await this.DoThreadSafeFuncAsync(() => new OpenFileDialog()).ConfigureAwait(false))
+            string strFilter = await LanguageManager.GetStringAsync("DialogFilter_Chummer").ConfigureAwait(false) + '|'
+                +
+                await LanguageManager.GetStringAsync("DialogFilter_Chum5").ConfigureAwait(false) + '|' +
+                await LanguageManager.GetStringAsync("DialogFilter_Chum5lz").ConfigureAwait(false) + '|' +
+                await LanguageManager.GetStringAsync("DialogFilter_All").ConfigureAwait(false);
+            string strFileName = string.Empty;
+            DialogResult eResult = await this.DoThreadSafeFuncAsync(x =>
             {
-                dlgOpenFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Chummer").ConfigureAwait(false) + '|' +
-                                     await LanguageManager.GetStringAsync("DialogFilter_Chum5").ConfigureAwait(false) + '|' +
-                                     await LanguageManager.GetStringAsync("DialogFilter_Chum5lz").ConfigureAwait(false) + '|' +
-                                     await LanguageManager.GetStringAsync("DialogFilter_All").ConfigureAwait(false);
-                if (!string.IsNullOrEmpty(_objContact.FileName) && File.Exists(_objContact.FileName))
+                // Prompt the user to select a save file to associate with this Contact.
+                using (OpenFileDialog dlgOpenFile = new OpenFileDialog())
                 {
-                    dlgOpenFile.InitialDirectory = Path.GetDirectoryName(_objContact.FileName);
-                    dlgOpenFile.FileName = Path.GetFileName(_objContact.FileName);
+                    dlgOpenFile.Filter = strFilter;
+                    if (!string.IsNullOrEmpty(_objContact.FileName) && File.Exists(_objContact.FileName))
+                    {
+                        dlgOpenFile.InitialDirectory = Path.GetDirectoryName(_objContact.FileName);
+                        dlgOpenFile.FileName = Path.GetFileName(_objContact.FileName);
+                    }
+
+                    DialogResult eReturn = dlgOpenFile.ShowDialog(x);
+                    strFileName = dlgOpenFile.FileName;
+                    return eReturn;
                 }
-                
-                if (await this.DoThreadSafeFuncAsync(x => dlgOpenFile.ShowDialog(x)).ConfigureAwait(false) != DialogResult.OK)
-                    return;
-                _objContact.FileName = dlgOpenFile.FileName;
-                if (cmdLink != null)
-                {
-                    string strText = _objContact.IsEnemy
-                        ? await LanguageManager.GetStringAsync("Tip_Enemy_OpenFile").ConfigureAwait(false)
-                        : await LanguageManager.GetStringAsync("Tip_Contact_OpenFile").ConfigureAwait(false);
-                    await cmdLink.SetToolTipTextAsync(strText).ConfigureAwait(false);
-                }
+            });
+            if (eResult != DialogResult.OK)
+                return;
+            _objContact.FileName = strFileName;
+            if (cmdLink != null)
+            {
+                string strText = _objContact.IsEnemy
+                    ? await LanguageManager.GetStringAsync("Tip_Enemy_OpenFile").ConfigureAwait(false)
+                    : await LanguageManager.GetStringAsync("Tip_Contact_OpenFile").ConfigureAwait(false);
+                await cmdLink.SetToolTipTextAsync(strText).ConfigureAwait(false);
             }
 
             // Set the relative path.

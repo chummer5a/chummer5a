@@ -74,7 +74,7 @@ namespace Chummer
         /// <inheritdoc />
         public bool Equals(EnterReadLock other)
         {
-            return _rwlMyLock.Equals(other._rwlMyLock);
+            return _rwlMyLock?.Equals(other._rwlMyLock) ?? other._rwlMyLock == null;
         }
 
         /// <inheritdoc />

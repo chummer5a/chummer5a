@@ -1189,7 +1189,7 @@ namespace Chummer.Backend.Attributes
         /// </summary>
         public int CalculatedTotalValue(bool blnIncludeCyberlimbs = true, CancellationToken token = default)
         {
-            return CalculatedTotalValueCore(true, blnIncludeCyberlimbs, token).ConfigureAwait(false).GetAwaiter().GetResult();
+            return Utils.JoinableTaskFactory.Run(() => CalculatedTotalValueCore(true, blnIncludeCyberlimbs, token));
         }
 
         /// <summary>

@@ -42,7 +42,7 @@ namespace Chummer
         /// <returns>The compiled Xsl transform of <paramref name="strXslFilePath"/>.</returns>
         public static XslCompiledTransform GetTransformForFile(string strXslFilePath)
         {
-            return GetTransformForFileCoreAsync(true, strXslFilePath).ConfigureAwait(false).GetAwaiter().GetResult();
+            return Utils.JoinableTaskFactory.Run(() => GetTransformForFileCoreAsync(true, strXslFilePath));
         }
 
         /// <summary>

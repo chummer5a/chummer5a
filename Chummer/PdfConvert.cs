@@ -138,7 +138,7 @@ namespace Codaxy.WkHtmlToPdf
 
         public static void ConvertHtmlToPdf(PdfDocument document, PdfConvertEnvironment environment, PdfOutput woutput)
         {
-            ConvertHtmlToPdfCoreAsync(true, document, environment, woutput).ConfigureAwait(false).GetAwaiter().GetResult();
+            Utils.JoinableTaskFactory.Run(() => ConvertHtmlToPdfCoreAsync(true, document, environment, woutput));
         }
 
         public static Task ConvertHtmlToPdfAsync(PdfDocument document, PdfConvertEnvironment environment, PdfOutput woutput)

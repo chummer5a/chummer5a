@@ -2511,7 +2511,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string CalculatedDamage(CultureInfo objCulture, string strLanguage)
         {
-            return CalculatedDamageCoreAsync(true, objCulture, strLanguage).ConfigureAwait(false).GetAwaiter().GetResult();
+            return Utils.JoinableTaskFactory.Run(() => CalculatedDamageCoreAsync(true, objCulture, strLanguage));
         }
 
         /// <summary>
@@ -2539,12 +2539,12 @@ namespace Chummer.Backend.Equipment
                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                     ProcessAttributesInXPath(sbdDamage, Damage);
                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                    sbdDamage.CheapReplace("{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                    sbdDamage.CheapReplace(Damage, "{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
                 }
                 else
                 {
                     await ProcessAttributesInXPathAsync(sbdDamage, Damage, token: token);
-                    await sbdDamage.CheapReplaceAsync(
+                    await sbdDamage.CheapReplaceAsync(Damage,
                         "{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo), token: token);
                 }
 
@@ -3184,7 +3184,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string CalculatedAmmo(CultureInfo objCulture, string strLanguage)
         {
-            return CalculatedAmmoCoreAsync(true, objCulture, strLanguage).ConfigureAwait(false).GetAwaiter().GetResult();
+            return Utils.JoinableTaskFactory.Run(() => CalculatedAmmoCoreAsync(true, objCulture, strLanguage));
         }
 
         /// <summary>
@@ -3475,7 +3475,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string CalculatedMode(string strLanguage)
         {
-            return CalculatedModeCoreAsync(true, strLanguage).ConfigureAwait(false).GetAwaiter().GetResult();
+            return Utils.JoinableTaskFactory.Run(() => CalculatedModeCoreAsync(true, strLanguage));
         }
 
         /// <summary>
@@ -3955,7 +3955,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string TotalAP(CultureInfo objCulture, string strLanguage)
         {
-            return TotalAPCoreAsync(true, objCulture, strLanguage).ConfigureAwait(false).GetAwaiter().GetResult();
+            return Utils.JoinableTaskFactory.Run(() => TotalAPCoreAsync(true, objCulture, strLanguage));
         }
 
         /// <summary>
@@ -4063,7 +4063,7 @@ namespace Chummer.Backend.Equipment
                 }
                 else
                 {
-                    await sbdAP.CheapReplaceAsync("{Rating}", strAP,
+                    await sbdAP.CheapReplaceAsync(strAP, "{Rating}",
                                                   () => Rating.ToString(GlobalSettings.InvariantCultureInfo), token: token);
                     await ProcessAttributesInXPathAsync(sbdAP, strAP, token: token);
                 }
@@ -4165,7 +4165,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string TotalRC(CultureInfo objCulture, string strLanguage, bool blnRefreshRCToolTip = false)
         {
-            return TotalRCCoreAsync(true, objCulture, strLanguage, blnRefreshRCToolTip).ConfigureAwait(false).GetAwaiter().GetResult();
+            return Utils.JoinableTaskFactory.Run(() => TotalRCCoreAsync(true, objCulture, strLanguage, blnRefreshRCToolTip));
         }
 
         /// <summary>
@@ -4677,7 +4677,7 @@ namespace Chummer.Backend.Equipment
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAccuracy))
             {
                 sbdAccuracy.Append(strAccuracy);
-                await sbdAccuracy.CheapReplaceAsync("{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo), token: token);
+                await sbdAccuracy.CheapReplaceAsync(strAccuracy, "{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo), token: token);
                 await ProcessAttributesInXPathAsync(sbdAccuracy, strAccuracy, token: token);
                 Func<string> funcPhysicalLimitString = () =>
                     _objCharacter.LimitPhysical.ToString(GlobalSettings.InvariantCultureInfo);

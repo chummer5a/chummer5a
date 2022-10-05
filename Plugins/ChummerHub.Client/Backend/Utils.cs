@@ -1156,7 +1156,7 @@ namespace ChummerHub.Client.Backend
                     }
                 }
                 await PluginHandler.MainForm.CharacterRoster.UpdateCharacter(objCache).ConfigureAwait(false);
-                treeViewEventArgs.Node.Text = objCache.CalculatedName();
+                treeViewEventArgs.Node.Text = await objCache.CalculatedNameAsync().ConfigureAwait(false);
             }
         }
 

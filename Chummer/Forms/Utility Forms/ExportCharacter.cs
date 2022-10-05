@@ -589,24 +589,26 @@ namespace Chummer
                         objSettings.ConformanceLevel = ConformanceLevel.Fragment;
                     }
 
-                    string strText;
-                    using (MemoryStream objStream = new MemoryStream())
+                    string strText = await Task.Run(async () =>
                     {
-                        using (XmlWriter objWriter = objSettings != null
-                                   ? XmlWriter.Create(objStream, objSettings)
-                                   : Utils.GetXslTransformXmlWriter(objStream))
+                        using (MemoryStream objStream = new MemoryStream())
                         {
+                            using (XmlWriter objWriter = objSettings != null
+                                       ? XmlWriter.Create(objStream, objSettings)
+                                       : Utils.GetXslTransformXmlWriter(objStream))
+                            {
+                                token.ThrowIfCancellationRequested();
+                                objXslTransform.Transform(_objCharacterXml, objWriter);
+                            }
+
                             token.ThrowIfCancellationRequested();
-                            await Task.Run(() => objXslTransform.Transform(_objCharacterXml, objWriter), token).ConfigureAwait(false);
+                            objStream.Position = 0;
+
+                            // Read in the resulting code and pass it to the browser.
+                            using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
+                                return await objReader.ReadToEndAsync().ConfigureAwait(false);
                         }
-
-                        token.ThrowIfCancellationRequested();
-                        objStream.Position = 0;
-
-                        // Read in the resulting code and pass it to the browser.
-                        using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
-                            strText = await objReader.ReadToEndAsync().ConfigureAwait(false);
-                    }
+                    }, token).ConfigureAwait(false);
 
                     token.ThrowIfCancellationRequested();
                     await SetTextToWorkerResult(strText, token).ConfigureAwait(false);

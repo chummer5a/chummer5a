@@ -209,7 +209,8 @@ namespace Chummer.Backend.Skills
                             = Task.Run(() => _objCharacter.ReverseTranslateExtraAsync(
                                            _strName, GlobalSettings.Language, "skills.xml"));
                     }
-                    _strName = _tskNameLoader.GetAwaiter().GetResult();
+
+                    _strName = Utils.JoinableTaskFactory.Run(() => _tskNameLoader);
                     _blnNameLoaded = true;
                 }
                 return _strName;

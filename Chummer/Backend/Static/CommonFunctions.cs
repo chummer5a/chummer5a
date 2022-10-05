@@ -1785,7 +1785,7 @@ namespace Chummer
         /// <returns></returns>
         public static string GetTextFromPdf(string strSource, string strText, Character objCharacter = null)
         {
-            return GetTextFromPdfCoreAsync(true, strSource, strText, objCharacter).ConfigureAwait(false).GetAwaiter().GetResult();
+            return Utils.JoinableTaskFactory.Run(() => GetTextFromPdfCoreAsync(true, strSource, strText, objCharacter));
         }
 
         /// <summary>
@@ -1874,7 +1874,7 @@ namespace Chummer
             int intBlockEndIndex = -1;
             int intExtraAllCapsInfo = 0;
             bool blnTitleWithColon = false; // it is either an uppercase title or title in a paragraph with a colon
-            string strReturn = blnSync ? FetchTexts().ConfigureAwait(false).GetAwaiter().GetResult() : await Task.Run(FetchTexts, token).ConfigureAwait(false);
+            string strReturn = blnSync ? Utils.JoinableTaskFactory.Run(FetchTexts) : await Task.Run(FetchTexts, token).ConfigureAwait(false);
 
             async Task<string> FetchTexts()
             {

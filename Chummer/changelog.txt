@@ -12,6 +12,7 @@ Application Changes:
 - The program now automatically detects cases where the settings file with which a currently-loading character was saved has the same name as a currently present settings file but differs from it in some way other than its build method. When this happens, a prompt will be shown to the user warning them of this mismatch and allowing them to modify character settings or cancel out of loading the character.
 - Fixed an assortment of crashes and weird behaviors caused by race conditions when modifying attributes, skills, or skill groups.
 - Invalid characters and font ligatures in characters' background, description, concept, notes, or game notes fields no longer causes them to be impossible to print. Fixes #4927.
+- When buying a vehicle mod, stats that scale off of the vehicle mod's rating are now shown to properly scale.
 - Exposed Limited spell property to the Print method to be used by character sheets.
 
 Data Changes:
@@ -27,6 +28,7 @@ Data Changes:
 - Numinous Perception has been added as an example Perception specialization based on page 314 of the core rulebook.
 - Flamethrower propely has the Elemental descriptor.
 - Core Character sheets now show Alchemical and Limited properties in spell names. Implements #4929.
+- Added a custom dataset that fixes the stats on the Nitama Sporter to match those found on Run & Gun p. 205 instead of the copy error statblock found on p. 31 (where it's obvious that most of the table is just a repeat of the Fichetti Executive Action from a page before).
 
 Changed/New Strings:
 - Checkbox_Options_UncappedArmorAccessoryBonuses

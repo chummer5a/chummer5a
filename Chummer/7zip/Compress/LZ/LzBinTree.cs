@@ -94,12 +94,15 @@ namespace SevenZip.Compression.LZ
         public new byte GetIndexByte(int index)
         { return base.GetIndexByte(index); }
 
+        [CLSCompliant(false)]
         public new uint GetMatchLen(int index, uint distance, uint limit)
         { return base.GetMatchLen(index, distance, limit); }
 
+        [CLSCompliant(false)]
         public new uint GetNumAvailableBytes()
         { return base.GetNumAvailableBytes(); }
 
+        [CLSCompliant(false)]
         public void Create(uint historySize, uint keepAddBufferBefore,
                 uint matchMaxLen, uint keepAddBufferAfter)
         {
@@ -143,6 +146,7 @@ namespace SevenZip.Compression.LZ
             }
         }
 
+        [CLSCompliant(false)]
         public uint GetMatches(uint[] distances)
         {
             unchecked
@@ -278,6 +282,7 @@ namespace SevenZip.Compression.LZ
             }
         }
 
+        [CLSCompliant(false)]
         public void Skip(uint num)
         {
             unchecked
@@ -401,6 +406,7 @@ namespace SevenZip.Compression.LZ
             }
         }
 
+        [CLSCompliant(false)]
         public void SetCutValue(uint cutValue)
         { _cutValue = cutValue; }
     }

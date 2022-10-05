@@ -475,6 +475,14 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Syntactic sugar to call LoadFromFile() synchronously immediately after the constructor.
+        /// </summary>
+        public CharacterCache(string strFile) : this()
+        {
+            LoadFromFile(strFile);
+        }
+
+        /// <summary>
         /// Syntactic sugar to call CopyFrom() asynchronously immediately after the constructor.
         /// </summary>
         public static async Task<CharacterCache> CreateFromFileAsync(CharacterCache objExistingCache, CancellationToken token = default)
@@ -482,15 +490,6 @@ namespace Chummer
             CharacterCache objReturn = new CharacterCache();
             await objReturn.CopyFromAsync(objExistingCache, token);
             return objReturn;
-        }
-
-        /// <summary>
-        /// Syntactic sugar to call LoadFromFile() synchronously immediately after the constructor.
-        /// </summary>
-        /// <param name="strFile"></param>
-        public CharacterCache(string strFile) : this()
-        {
-            LoadFromFile(strFile);
         }
 
         /// <summary>

@@ -314,7 +314,7 @@ namespace Chummer
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         public void Save(XmlWriter objWriter)
         {
-            SaveCoreAsync(true, objWriter).ConfigureAwait(false).GetAwaiter().GetResult();
+            Utils.JoinableTaskFactory.Run(() => SaveCoreAsync(true, objWriter));
         }
 
         /// <summary>
@@ -1720,7 +1720,7 @@ namespace Chummer
 
         public void SaveMugshots(XmlWriter objWriter, CancellationToken token = default)
         {
-            SaveMugshotsCore(true, objWriter, token).ConfigureAwait(false).GetAwaiter().GetResult();
+            Utils.JoinableTaskFactory.Run(() => SaveMugshotsCore(true, objWriter, token));
         }
 
         public Task SaveMugshotsAsync(XmlWriter objWriter, CancellationToken token = default)
