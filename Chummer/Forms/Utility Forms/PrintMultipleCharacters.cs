@@ -50,11 +50,11 @@ namespace Chummer
         {
             try
             {
-                dlgOpenFile.Title = await LanguageManager.GetStringAsync("Title_PrintMultiple", token: _objGenericToken);
-                dlgOpenFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Chummer", token: _objGenericToken) + '|' +
-                                     await LanguageManager.GetStringAsync("DialogFilter_Chum5", token: _objGenericToken) + '|' +
-                                     await LanguageManager.GetStringAsync("DialogFilter_Chum5lz", token: _objGenericToken) + '|' +
-                                     await LanguageManager.GetStringAsync("DialogFilter_All", token: _objGenericToken);
+                dlgOpenFile.Title = await LanguageManager.GetStringAsync("Title_PrintMultiple", token: _objGenericToken).ConfigureAwait(false);
+                dlgOpenFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Chummer", token: _objGenericToken).ConfigureAwait(false) + '|' +
+                                     await LanguageManager.GetStringAsync("DialogFilter_Chum5", token: _objGenericToken).ConfigureAwait(false) + '|' +
+                                     await LanguageManager.GetStringAsync("DialogFilter_Chum5lz", token: _objGenericToken).ConfigureAwait(false) + '|' +
+                                     await LanguageManager.GetStringAsync("DialogFilter_All", token: _objGenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -72,13 +72,13 @@ namespace Chummer
             }
             _objGenericCancellationTokenSource.Cancel(false);
             // ReSharper disable once MethodSupportsCancellation
-            await CleanUpOldCharacters();
+            await CleanUpOldCharacters().ConfigureAwait(false);
         }
 
         private async void cmdSelectCharacter_Click(object sender, EventArgs e)
         {
             // Add the selected Files to the list of characters to print.
-            if (await this.DoThreadSafeFuncAsync(x => dlgOpenFile.ShowDialog(x), token: _objGenericToken) != DialogResult.OK)
+            if (await this.DoThreadSafeFuncAsync(x => dlgOpenFile.ShowDialog(x), token: _objGenericToken).ConfigureAwait(false) != DialogResult.OK)
                 return;
             CancellationTokenSource objNewSource = new CancellationTokenSource();
             CancellationTokenSource objTemp = Interlocked.Exchange(ref _objPrinterCancellationTokenSource, objNewSource);
@@ -90,19 +90,18 @@ namespace Chummer
             try
             {
                 if (_tskPrinter?.IsCompleted == false)
-                    await Task.WhenAll(_tskPrinter, cmdPrint.DoThreadSafeAsync(x => x.Enabled = true, _objGenericToken),
-                                       prgProgress.DoThreadSafeAsync(x => x.Value = 0, _objGenericToken));
-                else
-                    await Task.WhenAll(cmdPrint.DoThreadSafeAsync(x => x.Enabled = true, _objGenericToken),
-                                       prgProgress.DoThreadSafeAsync(x => x.Value = 0, _objGenericToken));
+                    await _tskPrinter.ConfigureAwait(false);
+                await cmdPrint.DoThreadSafeAsync(x => x.Enabled = true, _objGenericToken).ConfigureAwait(false);
+                await prgProgress.DoThreadSafeAsync(x => x.Value = 0, _objGenericToken).ConfigureAwait(false);
+
                 foreach (string strFileName in dlgOpenFile.FileNames)
                 {
                     TreeNode objNode = new TreeNode
                     {
-                        Text = Path.GetFileName(strFileName) ?? await LanguageManager.GetStringAsync("String_Unknown", token: _objGenericToken),
+                        Text = Path.GetFileName(strFileName) ?? await LanguageManager.GetStringAsync("String_Unknown", token: _objGenericToken).ConfigureAwait(false),
                         Tag = strFileName
                     };
-                    await treCharacters.DoThreadSafeAsync(x => x.Nodes.Add(objNode), _objGenericToken);
+                    await treCharacters.DoThreadSafeAsync(x => x.Nodes.Add(objNode), _objGenericToken).ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -128,7 +127,7 @@ namespace Chummer
         {
             try
             {
-                if (await treCharacters.DoThreadSafeFuncAsync(x => x.SelectedNode, _objGenericToken) != null)
+                if (await treCharacters.DoThreadSafeFuncAsync(x => x.SelectedNode, _objGenericToken).ConfigureAwait(false) != null)
                 {
                     CancellationTokenSource objNewSource = new CancellationTokenSource();
                     CancellationTokenSource objTemp = Interlocked.Exchange(ref _objPrinterCancellationTokenSource, objNewSource);
@@ -140,12 +139,10 @@ namespace Chummer
                     try
                     {
                         if (_tskPrinter?.IsCompleted == false)
-                            await Task.WhenAll(_tskPrinter, cmdPrint.DoThreadSafeAsync(x => x.Enabled = true, _objGenericToken),
-                                               prgProgress.DoThreadSafeAsync(x => x.Value = 0, _objGenericToken));
-                        else
-                            await Task.WhenAll(cmdPrint.DoThreadSafeAsync(x => x.Enabled = true, _objGenericToken),
-                                               prgProgress.DoThreadSafeAsync(x => x.Value = 0, _objGenericToken));
-                        await treCharacters.DoThreadSafeAsync(x => x.SelectedNode.Remove(), _objGenericToken);
+                            await _tskPrinter.ConfigureAwait(false);
+                        await cmdPrint.DoThreadSafeAsync(x => x.Enabled = true, _objGenericToken).ConfigureAwait(false);
+                        await prgProgress.DoThreadSafeAsync(x => x.Value = 0, _objGenericToken).ConfigureAwait(false);
+                        await treCharacters.DoThreadSafeAsync(x => x.SelectedNode.Remove(), _objGenericToken).ConfigureAwait(false);
                     }
                     catch (OperationCanceledException)
                     {
@@ -189,11 +186,9 @@ namespace Chummer
             try
             {
                 if (_tskPrinter?.IsCompleted == false)
-                    await Task.WhenAll(_tskPrinter, cmdPrint.DoThreadSafeAsync(x => x.Enabled = true, _objGenericToken),
-                                       prgProgress.DoThreadSafeAsync(x => x.Value = 0, _objGenericToken));
-                else
-                    await Task.WhenAll(cmdPrint.DoThreadSafeAsync(x => x.Enabled = true, _objGenericToken),
-                                       prgProgress.DoThreadSafeAsync(x => x.Value = 0, _objGenericToken));
+                    await _tskPrinter.ConfigureAwait(false);
+                await cmdPrint.DoThreadSafeAsync(x => x.Enabled = true, _objGenericToken).ConfigureAwait(false);
+                await prgProgress.DoThreadSafeAsync(x => x.Value = 0, _objGenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -214,19 +209,19 @@ namespace Chummer
         private async Task DoPrint(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, true, token);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, true, token).ConfigureAwait(false);
             try
             {
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    int intNodesCount = await treCharacters.DoThreadSafeFuncAsync(x => x.Nodes.Count, token);
-                    await Task.WhenAll(cmdPrint.DoThreadSafeAsync(x => x.Enabled = false, token),
-                                       prgProgress.DoThreadSafeAsync(objBar =>
-                                       {
-                                           objBar.Value = 0;
-                                           objBar.Maximum = intNodesCount;
-                                       }, token));
+                    int intNodesCount = await treCharacters.DoThreadSafeFuncAsync(x => x.Nodes.Count, token).ConfigureAwait(false);
+                    await cmdPrint.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
+                    await prgProgress.DoThreadSafeAsync(objBar =>
+                    {
+                        objBar.Value = 0;
+                        objBar.Maximum = intNodesCount;
+                    }, token).ConfigureAwait(false);
                     token.ThrowIfCancellationRequested();
                     // Parallelized load because this is one major bottleneck.
                     Character[] lstCharacters = new Character[intNodesCount];
@@ -234,7 +229,7 @@ namespace Chummer
                     for (int i = 0; i < tskLoadingTasks.Length; ++i)
                     {
                         string strLoopFile
-                            = await treCharacters.DoThreadSafeFuncAsync(x => x.Nodes[i].Tag.ToString(), token);
+                            = await treCharacters.DoThreadSafeFuncAsync(x => x.Nodes[i].Tag.ToString(), token).ConfigureAwait(false);
                         tskLoadingTasks[i]
                             = Task.Run(() => InnerLoad(strLoopFile, token), token);
                     }
@@ -245,23 +240,23 @@ namespace Chummer
 
                         Character objReturn;
                         using (ThreadSafeForm<LoadingBar> frmLoadingBar
-                               = await Program.CreateAndShowProgressBarAsync(strLoopFile, Character.NumLoadingSections, token: innerToken))
+                               = await Program.CreateAndShowProgressBarAsync(strLoopFile, Character.NumLoadingSections, token: innerToken).ConfigureAwait(false))
                             objReturn = await Program.LoadCharacterAsync(
-                                strLoopFile, string.Empty, false, false, frmLoadingBar.MyForm, innerToken);
+                                strLoopFile, string.Empty, false, false, frmLoadingBar.MyForm, innerToken).ConfigureAwait(false);
                         bool blnLoadSuccessful = objReturn != null;
                         innerToken.ThrowIfCancellationRequested();
 
                         if (blnLoadSuccessful)
-                            await prgProgress.DoThreadSafeAsync(x => ++x.Value, innerToken);
+                            await prgProgress.DoThreadSafeAsync(x => ++x.Value, innerToken).ConfigureAwait(false);
                         return objReturn;
                     }
 
-                    await Task.WhenAll(tskLoadingTasks);
+                    await Task.WhenAll(tskLoadingTasks).ConfigureAwait(false);
                     token.ThrowIfCancellationRequested();
                     for (int i = 0; i < lstCharacters.Length; ++i)
-                        lstCharacters[i] = await tskLoadingTasks[i];
+                        lstCharacters[i] = await tskLoadingTasks[i].ConfigureAwait(false);
                     token.ThrowIfCancellationRequested();
-                    await CleanUpOldCharacters(token);
+                    await CleanUpOldCharacters(token).ConfigureAwait(false);
                     token.ThrowIfCancellationRequested();
                     _aobjCharacters = lstCharacters;
 
@@ -272,26 +267,26 @@ namespace Chummer
                             CharacterSheetViewer objReturn = new CharacterSheetViewer();
                             x.Disposed += (sender, args) => objReturn.Dispose();
                             return objReturn;
-                        }, token);
-                        await _frmPrintView.SetSelectedSheet("Game Master Summary", token);
-                        await _frmPrintView.SetCharacters(token, _aobjCharacters);
-                        await _frmPrintView.DoThreadSafeAsync(x => x.Show(), token);
+                        }, token).ConfigureAwait(false);
+                        await _frmPrintView.SetSelectedSheet("Game Master Summary", token).ConfigureAwait(false);
+                        await _frmPrintView.SetCharacters(token, _aobjCharacters).ConfigureAwait(false);
+                        await _frmPrintView.DoThreadSafeAsync(x => x.Show(), token).ConfigureAwait(false);
                     }
                     else
                     {
-                        await _frmPrintView.SetCharacters(token, _aobjCharacters);
-                        await _frmPrintView.DoThreadSafeAsync(x => x.Activate(), token);
+                        await _frmPrintView.SetCharacters(token, _aobjCharacters).ConfigureAwait(false);
+                        await _frmPrintView.DoThreadSafeAsync(x => x.Activate(), token).ConfigureAwait(false);
                     }
                 }
                 finally
                 {
-                    await Task.WhenAll(cmdPrint.DoThreadSafeAsync(x => x.Enabled = true, token),
-                                       prgProgress.DoThreadSafeAsync(x => x.Value = 0, token));
+                    await cmdPrint.DoThreadSafeAsync(x => x.Enabled = true, token).ConfigureAwait(false);
+                    await prgProgress.DoThreadSafeAsync(x => x.Value = 0, token).ConfigureAwait(false);
                 }
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -308,12 +303,12 @@ namespace Chummer
                 blnAnyChanges = false;
                 foreach (Character objCharacter in _aobjCharacters)
                 {
-                    if (!await Program.OpenCharacters.ContainsAsync(objCharacter, token: token)
-                        || await Program.OpenCharacters.AnyAsync(x => x.LinkedCharacters.Contains(objCharacter), token)
+                    if (!await Program.OpenCharacters.ContainsAsync(objCharacter, token: token).ConfigureAwait(false)
+                        || await Program.OpenCharacters.AnyAsync(x => x.LinkedCharacters.Contains(objCharacter), token).ConfigureAwait(false)
                         || Program.MainForm.OpenFormsWithCharacters.Any(x => x.CharacterObjects.Contains(objCharacter)))
                         continue;
                     blnAnyChanges = true;
-                    await Program.OpenCharacters.RemoveAsync(objCharacter, token: token);
+                    await Program.OpenCharacters.RemoveAsync(objCharacter, token: token).ConfigureAwait(false);
                     token.ThrowIfCancellationRequested();
                 }
             }

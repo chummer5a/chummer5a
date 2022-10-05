@@ -185,13 +185,13 @@ namespace Chummer
         /// </summary>
         /// <param name="source"></param>
         /// <param name="token"></param>
-        public Task SetControlAsync(Control source, CancellationToken token = default)
+        public async Task SetControlAsync(Control source, CancellationToken token = default)
         {
             if (source == null)
-                return Task.CompletedTask;
+                return;
             string strText = ToString();
-            return Task.WhenAll(source.DoThreadSafeAsync(x => x.Text = strText, token),
-                                source.SetToolTipAsync(LanguageBookTooltip, token));
+            await source.DoThreadSafeAsync(x => x.Text = strText, token);
+            await source.SetToolTipAsync(LanguageBookTooltip, token);
         }
 
         public bool Equals(SourceString other)

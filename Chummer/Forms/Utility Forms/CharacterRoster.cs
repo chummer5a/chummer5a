@@ -308,9 +308,12 @@ namespace Chummer
 
                     try
                     {
-                        await Task.WhenAll(_tskMostRecentlyUsedsRefresh, _tskWatchFolderRefresh,
-                                           Task.WhenAll(
-                                               Program.PluginLoader.MyActivePlugins.Select(x => RefreshPluginNodesAsync(x, _objGenericToken)))).ConfigureAwait(false);
+                        await Task.WhenAll(_tskMostRecentlyUsedsRefresh.Yield()
+                                                                       .Concat(_tskWatchFolderRefresh.Yield())
+                                                                       .Concat(Program.PluginLoader.MyActivePlugins
+                                                                                   .Select(x => RefreshPluginNodesAsync(
+                                                                                       x, _objGenericToken))))
+                                  .ConfigureAwait(false);
                     }
                     catch (OperationCanceledException)
                     {

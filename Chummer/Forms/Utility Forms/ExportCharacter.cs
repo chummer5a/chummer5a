@@ -110,9 +110,8 @@ namespace Chummer
                 }
 
                 _blnLoading = false;
-                await Task.WhenAll(
-                    UpdateWindowTitleAsync(_objGenericToken),
-                    DoLanguageUpdate(_objGenericToken)).ConfigureAwait(false);
+                await UpdateWindowTitleAsync(_objGenericToken).ConfigureAwait(false);
+                await DoLanguageUpdate(_objGenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -276,15 +275,15 @@ namespace Chummer
 
                 _objCharacterXml = null;
                 token.ThrowIfCancellationRequested();
-                await Task.WhenAll(
-                    imgSheetLanguageFlag.DoThreadSafeAsync(x =>
-                                                               x.Image
-                                                                   = Math.Min(x.Width, x.Height) >= 32
-                                                                       ? FlagImageGetter.GetFlagFromCountryCode192Dpi(
-                                                                           _strExportLanguage.Substring(3, 2))
-                                                                       : FlagImageGetter.GetFlagFromCountryCode(
-                                                                           _strExportLanguage.Substring(3, 2)), token),
-                    DoXsltUpdate(token)).ConfigureAwait(false);
+                await imgSheetLanguageFlag.DoThreadSafeAsync(x =>
+                                                                 x.Image
+                                                                     = Math.Min(x.Width, x.Height) >= 32
+                                                                         ? FlagImageGetter.GetFlagFromCountryCode192Dpi(
+                                                                             _strExportLanguage.Substring(3, 2))
+                                                                         : FlagImageGetter.GetFlagFromCountryCode(
+                                                                             _strExportLanguage.Substring(3, 2)),
+                                                             token).ConfigureAwait(false);
+                await DoXsltUpdate(token).ConfigureAwait(false);
                 token.ThrowIfCancellationRequested();
             }
         }
@@ -436,9 +435,9 @@ namespace Chummer
             try
             {
                 string strGeneratingData = await LanguageManager.GetStringAsync("String_Generating_Data", token: token).ConfigureAwait(false);
-                await Task.WhenAll(cmdExport.DoThreadSafeAsync(x => x.Enabled = false, token),
-                                   cmdExportClose.DoThreadSafeAsync(x => x.Enabled = false, token),
-                                   txtText.DoThreadSafeAsync(x => x.Text = strGeneratingData, token)).ConfigureAwait(false);
+                await cmdExport.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
+                await cmdExportClose.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
+                await txtText.DoThreadSafeAsync(x => x.Text = strGeneratingData, token).ConfigureAwait(false);
                 token.ThrowIfCancellationRequested();
                 using (token.Register(() => _objCharacterXmlGeneratorCancellationTokenSource.Cancel(false)))
                     _objCharacterXml = await _objCharacter.GenerateExportXml(_objExportCulture, _strExportLanguage,

@@ -707,13 +707,13 @@ namespace Chummer
             {
                 try
                 {
-                    await Task.WhenAll(this.DoThreadSafeAsync(x =>
-                                       {
-                                           x.tsPrintPreview.Enabled = false;
-                                           x.tsSaveAsHtml.Enabled = false;
-                                       }, token),
-                                       cmdPrint.DoThreadSafeAsync(x => x.Enabled = false, token),
-                                       cmdSaveAsPdf.DoThreadSafeAsync(x => x.Enabled = false, token)).ConfigureAwait(false);
+                    await this.DoThreadSafeAsync(x =>
+                    {
+                        x.tsPrintPreview.Enabled = false;
+                        x.tsSaveAsHtml.Enabled = false;
+                    }, token).ConfigureAwait(false);
+                    await cmdPrint.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
+                    await cmdSaveAsPdf.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
                     token.ThrowIfCancellationRequested();
                     Character[] aobjCharacters = await _lstCharacters.ToArrayAsync(token).ConfigureAwait(false);
                     token.ThrowIfCancellationRequested();
@@ -755,13 +755,13 @@ namespace Chummer
             try
             {
                 _blnSheetError = true;
-                await Task.WhenAll(this.DoThreadSafeAsync(x =>
-                                   {
-                                       x.tsPrintPreview.Enabled = false;
-                                       x.tsSaveAsHtml.Enabled = false;
-                                   }, token),
-                                   cmdPrint.DoThreadSafeAsync(x => x.Enabled = false, token),
-                                   cmdSaveAsPdf.DoThreadSafeAsync(x => x.Enabled = false, token)).ConfigureAwait(false);
+                await this.DoThreadSafeAsync(x =>
+                {
+                    x.tsPrintPreview.Enabled = false;
+                    x.tsSaveAsHtml.Enabled = false;
+                }, token).ConfigureAwait(false);
+                await cmdPrint.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
+                await cmdSaveAsPdf.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
                 if (string.IsNullOrWhiteSpace(_objCharacterXml.OuterXml))
                 {
                     await SetDocumentText(
@@ -939,13 +939,13 @@ namespace Chummer
                 await this.DoThreadSafeAsync(x => x.UseWaitCursor = false, _objGenericToken).ConfigureAwait(false);
                 if (_tskOutputGenerator?.IsCompleted == true && _tskRefresher?.IsCompleted == true)
                 {
-                    await Task.WhenAll(this.DoThreadSafeAsync(x =>
-                                       {
-                                           x.tsPrintPreview.Enabled = !_blnSheetError;
-                                           x.tsSaveAsHtml.Enabled = !_blnSheetError;
-                                       }, _objGenericToken),
-                                       cmdPrint.DoThreadSafeAsync(x => x.Enabled = !_blnSheetError, _objGenericToken),
-                                       cmdSaveAsPdf.DoThreadSafeAsync(x => x.Enabled = !_blnSheetError, _objGenericToken)).ConfigureAwait(false);
+                    await this.DoThreadSafeAsync(x =>
+                    {
+                        x.tsPrintPreview.Enabled = !_blnSheetError;
+                        x.tsSaveAsHtml.Enabled = !_blnSheetError;
+                    }, _objGenericToken).ConfigureAwait(false);
+                    await cmdPrint.DoThreadSafeAsync(x => x.Enabled = !_blnSheetError, _objGenericToken).ConfigureAwait(false);
+                    await cmdSaveAsPdf.DoThreadSafeAsync(x => x.Enabled = !_blnSheetError, _objGenericToken).ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)

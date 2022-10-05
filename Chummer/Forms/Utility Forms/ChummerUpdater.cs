@@ -548,10 +548,10 @@ namespace Chummer
                         .NormalizeWhiteSpace(),
                         _strExceptionString);
                 string strReconnect = await LanguageManager.GetStringAsync("Button_Reconnect", token: token).ConfigureAwait(false);
-                await Task.WhenAll(lblUpdaterStatus.DoThreadSafeAsync(x => x.Text = strText, token),
-                                   cmdUpdate.DoThreadSafeFuncAsync(x => x.Text = strReconnect, token),
-                                   cmdRestart.DoThreadSafeAsync(x => x.Enabled = false, token),
-                                   cmdCleanReinstall.DoThreadSafeAsync(x => x.Enabled = false, token)).ConfigureAwait(false);
+                await lblUpdaterStatus.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
+                await cmdUpdate.DoThreadSafeFuncAsync(x => x.Text = strReconnect, token).ConfigureAwait(false);
+                await cmdRestart.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
+                await cmdCleanReinstall.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
                 return;
             }
 
@@ -592,8 +592,8 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             string strUpdateString
                 = await LanguageManager.GetStringAsync(intResult > 0 ? "Button_Download" : "Button_Redownload", token: token).ConfigureAwait(false);
-            await Task.WhenAll(lblUpdaterStatus.DoThreadSafeAsync(x => x.Text = strStatusText, token),
-                               cmdUpdate.DoThreadSafeFuncAsync(x => x.Text = strUpdateString, token)).ConfigureAwait(false);
+            await lblUpdaterStatus.DoThreadSafeAsync(x => x.Text = strStatusText, token).ConfigureAwait(false);
+            await cmdUpdate.DoThreadSafeFuncAsync(x => x.Text = strUpdateString, token).ConfigureAwait(false);
             token.ThrowIfCancellationRequested();
         }
 
@@ -1071,10 +1071,10 @@ namespace Chummer
             {
                 Log.Debug("DownloadUpdates");
                 token.ThrowIfCancellationRequested();
-                await Task.WhenAll(cmdUpdate.DoThreadSafeAsync(x => x.Enabled = false, token),
-                                   cmdRestart.DoThreadSafeAsync(x => x.Enabled = false, token),
-                                   cmdCleanReinstall.DoThreadSafeAsync(x => x.Enabled = false, token),
-                                   Utils.SafeDeleteFileAsync(_strTempLatestVersionZipPath, !SilentMode, token: token)).ConfigureAwait(false);
+                await cmdUpdate.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
+                await cmdRestart.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
+                await cmdCleanReinstall.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
+                await Utils.SafeDeleteFileAsync(_strTempLatestVersionZipPath, !SilentMode, token: token).ConfigureAwait(false);
                 token.ThrowIfCancellationRequested();
                 try
                 {
@@ -1135,17 +1135,17 @@ namespace Chummer
             {
                 string strText1 = await LanguageManager.GetStringAsync("Button_Redownload", token: _objGenericToken).ConfigureAwait(false);
                 string strText2 = await LanguageManager.GetStringAsync("Button_Up_To_Date", token: _objGenericToken).ConfigureAwait(false);
-                await Task.WhenAll(cmdUpdate.DoThreadSafeAsync(x =>
-                                   {
-                                       x.Text = strText1;
-                                       x.Enabled = true;
-                                   }, _objGenericToken),
-                                   cmdRestart.DoThreadSafeAsync(x =>
-                                   {
-                                       if (_blnIsConnected && x.Text != strText2)
-                                           x.Enabled = true;
-                                   }, _objGenericToken),
-                                   cmdCleanReinstall.DoThreadSafeAsync(x => x.Enabled = true, _objGenericToken)).ConfigureAwait(false);
+                await cmdUpdate.DoThreadSafeAsync(x =>
+                {
+                    x.Text = strText1;
+                    x.Enabled = true;
+                }, _objGenericToken).ConfigureAwait(false);
+                await cmdRestart.DoThreadSafeAsync(x =>
+                {
+                    if (_blnIsConnected && x.Text != strText2)
+                        x.Enabled = true;
+                }, _objGenericToken).ConfigureAwait(false);
+                await cmdCleanReinstall.DoThreadSafeAsync(x => x.Enabled = true, _objGenericToken).ConfigureAwait(false);
                 Log.Info("wc_DownloadExeFileCompleted exit");
                 if (SilentMode)
                 {
