@@ -691,7 +691,7 @@ namespace Chummer
 
         public bool LoadFromFile(string strFile)
         {
-            return LoadFromFileCoreAsync(true, strFile).ConfigureAwait(false).GetAwaiter().GetResult();
+            return Utils.JoinableTaskFactory.Run(() => LoadFromFileCoreAsync(true, strFile));
         }
 
         public Task<bool> LoadFromFileAsync(string strFile, CancellationToken token = default)

@@ -875,17 +875,25 @@ namespace Chummer
                 Application.UseWaitCursor = false;
                 throw;
             }
+            string strFileName = GetStartupPath + Path.DirectorySeparatorChar + AppDomain.CurrentDomain.FriendlyName;
             // Sending restart command asynchronously to MySynchronizationContext so that tasks can properly clean up before restart
             Program.MySynchronizationContext.Post(x =>
             {
+                (string strMyFileName, string strMyArguments) = (Tuple<string, string>) x;
                 ProcessStartInfo objStartInfo = new ProcessStartInfo
                 {
-                    FileName = GetStartupPath + Path.DirectorySeparatorChar + AppDomain.CurrentDomain.FriendlyName,
-                    Arguments = (string)x
+                    FileName = strMyFileName,
+                    Arguments = strMyArguments
                 };
-                Application.Exit();
-                objStartInfo.Start();
-            }, strArguments);
+                try
+                {
+                    Application.Exit();
+                }
+                finally
+                {
+                    objStartInfo.Start();
+                }
+            }, new Tuple<string, string>(strFileName, strArguments));
         }
 
         /// <summary>
@@ -1114,6 +1122,7 @@ namespace Chummer
                 func.Invoke();
                 return;
             }
+            
             Program.MySynchronizationContext.Send(x =>
             {
                 Action funcToRun = (Action)x;
@@ -1178,6 +1187,25 @@ namespace Chummer
             return objReturn;
         }
 
+        /// <summary>
+        /// Run code on the main (UI) thread in a synchronous fashion.
+        /// </summary>
+        [Obsolete("BAD CODE. Use JoinableTaskFactory instead.")]
+        public static void RunOnMainThread(Func<Task> func, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            JoinableTaskFactory.Run(func);
+        }
+
+        /// <summary>
+        /// Run code on the main (UI) thread in a synchronous fashion.
+        /// </summary>
+        [Obsolete("BAD CODE. Use JoinableTaskFactory instead.")]
+        public static T RunOnMainThread<T>(Func<Task<T>> func, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return JoinableTaskFactory.Run(func);
+        }
         /// <summary>
         /// Run code on the main (UI) thread in an awaitable, asynchronous fashion.
         /// </summary>
@@ -1330,6 +1358,26 @@ namespace Chummer
                 }
             }, new Tuple<TaskCompletionSource<T>, CancellationToken>(tcs, token));
             return tcs.Task;
+        }
+
+        /// <summary>
+        /// Run code on the main (UI) thread in a synchronous fashion.
+        /// </summary>
+        [Obsolete("BAD CODE. Use JoinableTaskFactory instead.")]
+        public static async Task RunOnMainThreadAsync(Func<Task> func, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            await JoinableTaskFactory.RunAsync(func);
+        }
+
+        /// <summary>
+        /// Run code on the main (UI) thread in a synchronous fashion.
+        /// </summary>
+        [Obsolete("BAD CODE. Use JoinableTaskFactory instead.")]
+        public static async Task<T> RunOnMainThreadAsync<T>(Func<Task<T>> func, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return await JoinableTaskFactory.RunAsync(func);
         }
 
         /// <summary>

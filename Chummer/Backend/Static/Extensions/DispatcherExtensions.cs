@@ -48,6 +48,7 @@ namespace Chummer
                 {
                     funcToRun.Invoke();
                 }
+#if USE_INVOKE
                 else
                 {
                     // ReSharper disable once InlineTemporaryVariable
@@ -57,6 +58,10 @@ namespace Chummer
                     else
                         objDispatcherCopy.Dispatcher.Invoke(funcToRun);
                 }
+#else
+                else
+                    Utils.RunOnMainThread(() => funcToRun);
+#endif
             }
             catch (ObjectDisposedException) // e)
             {
@@ -103,6 +108,7 @@ namespace Chummer
                 {
                     funcToRun.Invoke(null);
                 }
+#if USE_INVOKE
                 else
                 {
                     // ReSharper disable once InlineTemporaryVariable
@@ -112,6 +118,10 @@ namespace Chummer
                     else
                         objDispatcherCopy.Dispatcher.Invoke(funcToRun, objDispatcherCopy);
                 }
+#else
+                else
+                    Utils.RunOnMainThread(() => funcToRun(objDispatcher));
+#endif
             }
             catch (ObjectDisposedException) // e)
             {
@@ -160,6 +170,7 @@ namespace Chummer
                 {
                     funcToRun.Invoke(token);
                 }
+#if USE_INVOKE
                 else
                 {
                     // ReSharper disable once InlineTemporaryVariable
@@ -175,6 +186,10 @@ namespace Chummer
                         objDispatcherCopy.Dispatcher.Invoke(funcToRun, token);
                     }
                 }
+#else
+                else
+                    Utils.RunOnMainThread(() => funcToRun(token), token);
+#endif
             }
             catch (ObjectDisposedException) // e)
             {
@@ -223,6 +238,7 @@ namespace Chummer
                 {
                     funcToRun.Invoke(null, token);
                 }
+#if USE_INVOKE
                 else
                 {
                     // ReSharper disable once InlineTemporaryVariable
@@ -238,6 +254,10 @@ namespace Chummer
                         objDispatcherCopy.Dispatcher.Invoke(funcToRun, objDispatcherCopy, token);
                     }
                 }
+#else
+                else
+                    Utils.RunOnMainThread(() => funcToRun(objDispatcher, token), token);
+#endif
             }
             catch (ObjectDisposedException) // e)
             {
@@ -286,6 +306,7 @@ namespace Chummer
                 {
                     funcToRun.Invoke();
                 }
+#if USE_INVOKE
                 else
                 {
                     // ReSharper disable once InlineTemporaryVariable
@@ -300,6 +321,10 @@ namespace Chummer
                         await objDispatcherCopy.Dispatcher.InvokeAsync(funcToRun, DispatcherPriority.Normal, token).Task.ConfigureAwait(false);
                     }
                 }
+#else
+                else
+                    await Utils.RunOnMainThreadAsync(funcToRun, token).ConfigureAwait(false);
+#endif
             }
             catch (ObjectDisposedException) // e)
             {
@@ -348,6 +373,7 @@ namespace Chummer
                 {
                     funcToRun.Invoke(null);
                 }
+#if USE_INVOKE
                 else
                 {
                     // ReSharper disable once InlineTemporaryVariable
@@ -369,6 +395,10 @@ namespace Chummer
                         await objDispatcherCopy.Dispatcher.BeginInvoke(funcToRun, objDispatcherCopy).Task.ConfigureAwait(false);
                     }
                 }
+#else
+                else
+                    await Utils.RunOnMainThreadAsync(() => funcToRun(objDispatcher), token).ConfigureAwait(false);
+#endif
             }
             catch (ObjectDisposedException) // e)
             {
@@ -417,6 +447,7 @@ namespace Chummer
                 {
                     funcToRun.Invoke(token);
                 }
+#if USE_INVOKE
                 else
                 {
                     // ReSharper disable once InlineTemporaryVariable
@@ -438,6 +469,10 @@ namespace Chummer
                         await objDispatcherCopy.Dispatcher.BeginInvoke(funcToRun, token).Task.ConfigureAwait(false);
                     }
                 }
+#else
+                else
+                    await Utils.RunOnMainThreadAsync(() => funcToRun(token), token).ConfigureAwait(false);
+#endif
             }
             catch (ObjectDisposedException) // e)
             {
@@ -486,6 +521,7 @@ namespace Chummer
                 {
                     funcToRun.Invoke(null, token);
                 }
+#if USE_INVOKE
                 else
                 {
                     // ReSharper disable once InlineTemporaryVariable
@@ -507,6 +543,10 @@ namespace Chummer
                         await objDispatcherCopy.Dispatcher.BeginInvoke(funcToRun, objDispatcherCopy, token).Task.ConfigureAwait(false);
                     }
                 }
+#else
+                else
+                    await Utils.RunOnMainThreadAsync(() => funcToRun(objDispatcher, token), token).ConfigureAwait(false);
+#endif
             }
             catch (ObjectDisposedException) // e)
             {
@@ -550,6 +590,7 @@ namespace Chummer
             T2 objReturn = default;
             try
             {
+#if USE_INVOKE
                 if (objDispatcher == null)
                     objReturn = funcToRun.Invoke();
                 else
@@ -559,6 +600,9 @@ namespace Chummer
                         ? funcToRun.Invoke()
                         : objDispatcherCopy.Dispatcher.Invoke(funcToRun);
                 }
+#else
+                objReturn = objDispatcher == null ? funcToRun.Invoke() : Utils.RunOnMainThread(funcToRun);
+#endif
             }
             catch (ObjectDisposedException) // e)
             {
@@ -604,6 +648,7 @@ namespace Chummer
             T2 objReturn = default;
             try
             {
+#if USE_INVOKE
                 if (objDispatcher == null)
                     objReturn = funcToRun.Invoke(null);
                 else
@@ -623,6 +668,9 @@ namespace Chummer
                         }
                     }
                 }
+#else
+                objReturn = objDispatcher == null ? funcToRun.Invoke(null) : Utils.RunOnMainThread(() => funcToRun(objDispatcher));
+#endif
             }
             catch (ObjectDisposedException) // e)
             {
@@ -670,6 +718,7 @@ namespace Chummer
             T2 objReturn = default;
             try
             {
+#if USE_INVOKE
                 if (objDispatcher == null)
                     objReturn = funcToRun.Invoke(token);
                 else
@@ -693,6 +742,9 @@ namespace Chummer
                         }
                     }
                 }
+#else
+                objReturn = objDispatcher == null ? funcToRun.Invoke(token) : Utils.RunOnMainThread(() => funcToRun(token));
+#endif
             }
             catch (ObjectDisposedException) // e)
             {
@@ -740,6 +792,7 @@ namespace Chummer
             T2 objReturn = default;
             try
             {
+#if USE_INVOKE
                 if (objDispatcher == null)
                     objReturn = funcToRun.Invoke(null, token);
                 else
@@ -763,6 +816,9 @@ namespace Chummer
                         }
                     }
                 }
+#else
+                objReturn = objDispatcher == null ? funcToRun.Invoke(null, token) : Utils.RunOnMainThread(() => funcToRun(objDispatcher, token));
+#endif
             }
             catch (ObjectDisposedException) // e)
             {
@@ -810,6 +866,7 @@ namespace Chummer
             T2 objReturn = default;
             try
             {
+#if USE_INVOKE
                 if (objDispatcher == null)
                     objReturn = funcToRun.Invoke();
                 else
@@ -826,6 +883,9 @@ namespace Chummer
                         objReturn = await objDispatcherCopy.Dispatcher.InvokeAsync(funcToRun, DispatcherPriority.Normal, token).Task.ConfigureAwait(false);
                     }
                 }
+#else
+                objReturn = objDispatcher == null ? funcToRun.Invoke() : await Utils.RunOnMainThreadAsync(funcToRun, token).ConfigureAwait(false);
+#endif
             }
             catch (ObjectDisposedException) // e)
             {
@@ -873,6 +933,7 @@ namespace Chummer
             T2 objReturn = default;
             try
             {
+#if USE_INVOKE
                 if (objDispatcher == null)
                     objReturn = funcToRun.Invoke(null);
                 else
@@ -906,6 +967,9 @@ namespace Chummer
                         }
                     }
                 }
+#else
+                objReturn = objDispatcher == null ? funcToRun.Invoke(null) : await Utils.RunOnMainThreadAsync(() => funcToRun(objDispatcher), token).ConfigureAwait(false);
+#endif
             }
             catch (ObjectDisposedException) // e)
             {
@@ -953,6 +1017,7 @@ namespace Chummer
             T2 objReturn = default;
             try
             {
+#if USE_INVOKE
                 if (objDispatcher == null)
                     objReturn = funcToRun.Invoke(token);
                 else
@@ -986,6 +1051,9 @@ namespace Chummer
                         }
                     }
                 }
+#else
+                objReturn = objDispatcher == null ? funcToRun.Invoke(token) : await Utils.RunOnMainThreadAsync(() => funcToRun(token), token).ConfigureAwait(false);
+#endif
             }
             catch (ObjectDisposedException) // e)
             {
@@ -1033,6 +1101,7 @@ namespace Chummer
             T2 objReturn = default;
             try
             {
+#if USE_INVOKE
                 if (objDispatcher == null)
                     objReturn = funcToRun.Invoke(null, token);
                 else
@@ -1066,6 +1135,9 @@ namespace Chummer
                         }
                     }
                 }
+#else
+                objReturn = objDispatcher == null ? funcToRun.Invoke(null, token) : await Utils.RunOnMainThreadAsync(() => funcToRun(objDispatcher, token), token).ConfigureAwait(false);
+#endif
             }
             catch (ObjectDisposedException) // e)
             {
