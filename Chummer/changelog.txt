@@ -14,6 +14,7 @@ Application Changes:
 - Invalid characters and font ligatures in characters' background, description, concept, notes, or game notes fields no longer causes them to be impossible to print. Fixes #4927.
 - When buying a vehicle mod, stats that scale off of the vehicle mod's rating are now shown to properly scale.
 - Exposed Limited spell property to the Print method to be used by character sheets.
+- SelectText nodes that use a custom xpath can now handle language keys directly instead of going through a text translation process.
 
 Data Changes:
 - Concealed and Regular vehicle armor mods now properly add to their parent's Armor. Fixes #4925.

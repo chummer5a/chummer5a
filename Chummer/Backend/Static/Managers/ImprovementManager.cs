@@ -2059,41 +2059,75 @@ namespace Chummer
                                     {
                                         foreach (XPathNavigator objNode in xmlDoc.Select(strXPath))
                                         {
-                                            string strName
-                                                = (blnSync
-                                                      // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                      ? objNode.SelectSingleNodeAndCacheExpression("name")
-                                                      : await objNode.SelectSingleNodeAndCacheExpressionAsync("name", token: token).ConfigureAwait(false))
-                                                  ?.Value
-                                                  ?? string.Empty;
-                                            if (string.IsNullOrWhiteSpace(strName))
+                                            // First check if we are using a list of language keys
+                                            string strKey = objNode.Name == "key" ? objNode.Value : string.Empty;
+                                            if (string.IsNullOrEmpty(strKey))
                                             {
-                                                // Assume that if we're not looking at something that has an XML node,
-                                                // we're looking at a direct xpath filter or something that has proper names
-                                                // like the lifemodule storybuilder macros.
-                                                string strValue = objNode.Value;
+                                                string strName
+                                                    = (blnSync
+                                                          // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                          ? objNode.SelectSingleNodeAndCacheExpression("name")
+                                                          : await objNode
+                                                                  .SelectSingleNodeAndCacheExpressionAsync(
+                                                                      "name", token: token).ConfigureAwait(false))
+                                                      ?.Value
+                                                      ?? string.Empty;
+                                                if (string.IsNullOrWhiteSpace(strName))
+                                                {
+                                                    // Assume that if we're not looking at something that has an XML node,
+                                                    // we're looking at a direct xpath filter or something that has proper names
+                                                    // like the lifemodule storybuilder macros.
+                                                    string strValue = objNode.Value;
+                                                    if (setUsedValues.Add(strValue))
+                                                        lstItems.Add(
+                                                            new ListItem(
+                                                                strValue,
+                                                                blnSync
+                                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                                    ? objCharacter.TranslateExtra(
+                                                                        strValue, strPreferFile: strXmlFile)
+                                                                    : await objCharacter.TranslateExtraAsync(
+                                                                        strValue, strPreferFile: strXmlFile,
+                                                                        token: token).ConfigureAwait(false)));
+                                                }
+                                                else if (setUsedValues.Add(strName))
+                                                {
+                                                    lstItems.Add(
+                                                        new ListItem(
+                                                            strName,
+                                                            blnSync
+                                                                // ReSharper disable once MethodHasAsyncOverload
+                                                                ? objCharacter.TranslateExtra(
+                                                                    strName, strPreferFile: strXmlFile)
+                                                                : await objCharacter.TranslateExtraAsync(
+                                                                        strName, strPreferFile: strXmlFile,
+                                                                        token: token)
+                                                                    .ConfigureAwait(false)));
+                                                }
+                                            }
+                                            else
+                                            {
+                                                string strValue
+                                                    = blnSync
+                                                        // ReSharper disable once MethodHasAsyncOverload
+                                                        ? LanguageManager.GetString(
+                                                            strKey, GlobalSettings.DefaultLanguage, token: token)
+                                                        : await LanguageManager
+                                                                .GetStringAsync(
+                                                                    strKey, GlobalSettings.DefaultLanguage,
+                                                                    token: token).ConfigureAwait(false);
                                                 if (setUsedValues.Add(strValue))
+                                                {
                                                     lstItems.Add(
                                                         new ListItem(
                                                             strValue,
                                                             blnSync
                                                                 // ReSharper disable once MethodHasAsyncOverload
-                                                                ? objCharacter.TranslateExtra(
-                                                                    strValue, strPreferFile: strXmlFile)
-                                                                : await objCharacter.TranslateExtraAsync(
-                                                                    strValue, strPreferFile: strXmlFile, token: token).ConfigureAwait(false)));
-                                            }
-                                            else if (setUsedValues.Add(strName))
-                                            {
-                                                lstItems.Add(
-                                                    new ListItem(
-                                                        strName,
-                                                        blnSync
-                                                            // ReSharper disable once MethodHasAsyncOverload
-                                                            ? objCharacter.TranslateExtra(
-                                                                strName, strPreferFile: strXmlFile)
-                                                            : await objCharacter.TranslateExtraAsync(
-                                                                strName, strPreferFile: strXmlFile, token: token).ConfigureAwait(false)));
+                                                                ? LanguageManager.GetString(strKey, token: token)
+                                                                : await LanguageManager
+                                                                        .GetStringAsync(strKey, token: token)
+                                                                        .ConfigureAwait(false)));
+                                                }
                                             }
                                         }
                                     }
