@@ -150,14 +150,6 @@ namespace Chummer
                         {
                             Directory.CreateDirectory(settingsDirectoryPath);
                         }
-                        catch (UnauthorizedAccessException ex)
-                        {
-                            string strMessage = LanguageManager.GetString("Message_Insufficient_Permissions_Warning",
-                                                                          GlobalSettings.Language, false);
-                            if (string.IsNullOrEmpty(strMessage))
-                                strMessage = ex.ToString();
-                            strPostErrorMessage = strMessage;
-                        }
                         catch (Exception ex)
                         {
                             strPostErrorMessage = ex.ToString();
@@ -165,25 +157,6 @@ namespace Chummer
                     }
 
                     IsMono = Type.GetType("Mono.Runtime") != null;
-                    // Delete old ProfileOptimization file because we don't want it anymore, instead we restart profiling for each newly generated assembly
-                    Utils.SafeDeleteFile(Path.Combine(Utils.GetStartupPath, "chummerprofile"));
-                    // We avoid weird issues with ProfileOptimization pointing JIT to the wrong place by checking for and removing all profile optimization files that
-                    // were made in an older version (i.e. an older assembly)
-                    string strProfileOptimizationName = "chummerprofile_" + Utils.CurrentChummerVersion + ".profile";
-                    foreach (string strProfileFile in Directory.GetFiles(Utils.GetStartupPath, "*.profile"))
-                    {
-                        if (!string.Equals(strProfileFile, strProfileOptimizationName,
-                                           StringComparison.OrdinalIgnoreCase))
-                            Utils.SafeDeleteFile(strProfileFile);
-                    }
-
-                    // Mono, non-Windows native stuff, and Win11 don't always play nice with ProfileOptimization, so it's better to just not bother with it when running under them
-                    if (!IsMono && Utils.HumanReadableOSVersion.StartsWith("Windows", StringComparison.OrdinalIgnoreCase)
-                                && !Utils.HumanReadableOSVersion.StartsWith("Windows 11", StringComparison.OrdinalIgnoreCase))
-                    {
-                        ProfileOptimization.SetProfileRoot(Utils.GetStartupPath);
-                        ProfileOptimization.StartProfile(strProfileOptimizationName);
-                    }
 
                     Stopwatch sw = Stopwatch.StartNew();
                     //If debugging and launched from other place (Bootstrap), launch debugger
@@ -265,6 +238,26 @@ namespace Chummer
                     Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException);
 
                     CreateSynchronizationContext();
+
+                    // Delete old ProfileOptimization file because we don't want it anymore, instead we restart profiling for each newly generated assembly
+                    Utils.SafeDeleteFile(Path.Combine(Utils.GetStartupPath, "chummerprofile"));
+                    // We avoid weird issues with ProfileOptimization pointing JIT to the wrong place by checking for and removing all profile optimization files that
+                    // were made in an older version (i.e. an older assembly)
+                    string strProfileOptimizationName = "chummerprofile_" + Utils.CurrentChummerVersion + ".profile";
+                    foreach (string strProfileFile in Directory.GetFiles(Utils.GetStartupPath, "*.profile"))
+                    {
+                        if (!string.Equals(strProfileFile, strProfileOptimizationName,
+                                           StringComparison.OrdinalIgnoreCase))
+                            Utils.SafeDeleteFile(strProfileFile);
+                    }
+
+                    // Mono, non-Windows native stuff, and Win11 don't always play nice with ProfileOptimization, so it's better to just not bother with it when running under them
+                    if (!IsMono && Utils.HumanReadableOSVersion.StartsWith("Windows", StringComparison.OrdinalIgnoreCase)
+                                && !Utils.HumanReadableOSVersion.StartsWith("Windows 11", StringComparison.OrdinalIgnoreCase))
+                    {
+                        ProfileOptimization.SetProfileRoot(Utils.GetStartupPath);
+                        ProfileOptimization.StartProfile(strProfileOptimizationName);
+                    }
 
                     if (!string.IsNullOrEmpty(LanguageManager.ManagerErrorMessage))
                     {
