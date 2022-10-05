@@ -15,6 +15,7 @@ Application Changes:
 - When buying a vehicle mod, stats that scale off of the vehicle mod's rating are now shown to properly scale.
 - Exposed Limited spell property to the Print method to be used by character sheets.
 - SelectText nodes that use a custom xpath can now handle language keys directly instead of going through a text translation process.
+- The extras language translator can now also automatically find and translate keyed language strings instead of just translate(d) nodes from the XML data.
 
 Data Changes:
 - Concealed and Regular vehicle armor mods now properly add to their parent's Armor. Fixes #4925.
