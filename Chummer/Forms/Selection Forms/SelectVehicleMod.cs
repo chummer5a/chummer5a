@@ -860,7 +860,7 @@ namespace Chummer
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdInput))
             {
                 sbdInput.Append(strInput);
-                await sbdInput.CheapReplaceAsync("Rating", strInput, () => nudRating.DoThreadSafeFuncAsync(x => x.Value.ToString(GlobalSettings.InvariantCultureInfo), token: token), token: token).ConfigureAwait(false);
+                await sbdInput.CheapReplaceAsync(strInput, "Rating", () => nudRating.DoThreadSafeFuncAsync(x => x.Value.ToString(GlobalSettings.InvariantCultureInfo), token: token), token: token).ConfigureAwait(false);
                 sbdInput.Replace("Vehicle Cost", _objVehicle.Cost);
                 sbdInput.Replace("Weapon Cost", 0.ToString(GlobalSettings.InvariantCultureInfo));
                 sbdInput.Replace("Total Cost", 0.ToString(GlobalSettings.InvariantCultureInfo));

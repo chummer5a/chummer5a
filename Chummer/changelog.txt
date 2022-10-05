@@ -12,6 +12,7 @@ Application Changes:
 - The program now automatically detects cases where the settings file with which a currently-loading character was saved has the same name as a currently present settings file but differs from it in some way other than its build method. When this happens, a prompt will be shown to the user warning them of this mismatch and allowing them to modify character settings or cancel out of loading the character.
 - Fixed an assortment of crashes and weird behaviors caused by race conditions when modifying attributes, skills, or skill groups.
 - Invalid characters and font ligatures in characters' background, description, concept, notes, or game notes fields no longer causes them to be impossible to print. Fixes #4927.
+- When buying a vehicle mod, stats that scale off of the vehicle mod's rating are now shown to properly scale.
 
 Data Changes:
 - Concealed and Regular vehicle armor mods now properly add to their parent's Armor. Fixes #4925.
