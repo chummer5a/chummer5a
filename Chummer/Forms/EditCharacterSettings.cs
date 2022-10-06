@@ -310,7 +310,7 @@ namespace Chummer
                     }
                 } while (string.IsNullOrWhiteSpace(strSelectedName));
 
-                string strBaseFileName = strSelectedName.FastEscape(Path.GetInvalidFileNameChars()).TrimEndOnce(".xml");
+                string strBaseFileName = strSelectedName.CleanForFileName().TrimEndOnce(".xml");
                 // Make sure our file name isn't too long, otherwise we run into problems on Windows
                 // We can assume that Chummer's startup path plus 16 is within the limit, otherwise the user would have had problems installing Chummer with its data files in the first place
                 int intStartupPathLimit = Utils.GetStartupPath.Length + 16;
@@ -1214,7 +1214,7 @@ namespace Chummer
                     }
                     else
                     {
-                        await treCustomDataDirectories.DoThreadSafeAsync(x => { x.ShowNodeToolTips = true; }, token).ConfigureAwait(false);
+                        await treCustomDataDirectories.DoThreadSafeAsync(x => x.ShowNodeToolTips = true, token).ConfigureAwait(false);
                     }
                 }
             }

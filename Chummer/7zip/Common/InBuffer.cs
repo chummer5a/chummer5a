@@ -18,6 +18,8 @@
  */
 // InBuffer.cs
 
+using System;
+
 namespace SevenZip.Buffer
 {
     public class InBuffer
@@ -30,6 +32,7 @@ namespace SevenZip.Buffer
         private bool m_StreamWasExhausted;
         private ulong m_ProcessedSize;
 
+        [CLSCompliant(false)]
         public InBuffer(uint bufferSize)
         {
             m_Buffer = new byte[bufferSize];
@@ -65,9 +68,8 @@ namespace SevenZip.Buffer
 
         public bool ReadByte(byte b) // check it
         {
-            if (m_Pos >= m_Limit)
-                if (!ReadBlock())
-                    return false;
+            if (m_Pos >= m_Limit && !ReadBlock())
+                return false;
             b = m_Buffer[m_Pos++];
             return true;
         }
@@ -75,12 +77,12 @@ namespace SevenZip.Buffer
         public byte ReadByte()
         {
             // return (byte)m_Stream.ReadByte();
-            if (m_Pos >= m_Limit)
-                if (!ReadBlock())
-                    return 0xFF;
+            if (m_Pos >= m_Limit && !ReadBlock())
+                return 0xFF;
             return m_Buffer[m_Pos++];
         }
 
+        [CLSCompliant(false)]
         public ulong GetProcessedSize()
         {
             return m_ProcessedSize + m_Pos;

@@ -1492,7 +1492,7 @@ namespace Chummer.Backend.Equipment
                     XmlElementWriteHelper objUnderbarrelElement = await objWriter.StartElementAsync("underbarrel", token).ConfigureAwait(false);
                     try
                     {
-                        await objUnderbarrel.Print(objWriter, objCulture, strLanguageToPrint).ConfigureAwait(false);
+                        await objUnderbarrel.Print(objWriter, objCulture, strLanguageToPrint, token: token).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -2625,16 +2625,16 @@ namespace Chummer.Backend.Equipment
                     // ReSharper disable MethodHasAsyncOverload
                     decImprove += ImprovementManager.ValueOf(_objCharacter,
                                                              Improvement.ImprovementType.WeaponCategoryDV,
-                                                             strImprovedName: strCategory);
+                                                             strImprovedName: strCategory, token: token);
                     if (!string.IsNullOrEmpty(strUseSkill) && strCategory != strUseSkill)
                         decImprove += ImprovementManager.ValueOf(_objCharacter,
                                                                  Improvement.ImprovementType.WeaponCategoryDV,
-                                                                 strImprovedName: strUseSkill);
+                                                                 strImprovedName: strUseSkill, token: token);
                     if (strCategory.StartsWith("Cyberware ", StringComparison.Ordinal))
                         decImprove += ImprovementManager.ValueOf(_objCharacter,
                                                                  Improvement.ImprovementType.WeaponCategoryDV,
                                                                  strImprovedName: strCategory.TrimStartOnce(
-                                                                     "Cyberware ", true));
+                                                                     "Cyberware ", true), token: token);
 
                     // If this is the Unarmed Attack Weapon and the character has the UnarmedDVPhysical Improvement, change the type to Physical.
                     // This should also add any UnarmedDV bonus which only applies to Unarmed Combat, not Unarmed Weapons.
@@ -2642,17 +2642,17 @@ namespace Chummer.Backend.Equipment
                     {
                         if (strDamageType == "S" && ImprovementManager
                                                     .GetCachedImprovementListForValueOf(
-                                                        _objCharacter, Improvement.ImprovementType.UnarmedDVPhysical)
+                                                        _objCharacter, Improvement.ImprovementType.UnarmedDVPhysical, token: token)
                                                     .Count > 0)
                             strDamageType = "P";
-                        decImprove += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.UnarmedDV);
+                        decImprove += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.UnarmedDV, token: token);
                     }
 
                     // This should also add any UnarmedDV bonus to Unarmed physical weapons if the option is enabled.
                     else if (strUseSkill == "Unarmed Combat"
                              && _objCharacter.Settings.UnarmedImprovementsApplyToWeapons)
                     {
-                        decImprove += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.UnarmedDV);
+                        decImprove += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.UnarmedDV, token: token);
                     }
                     // ReSharper restore MethodHasAsyncOverload
                 }
@@ -2831,7 +2831,7 @@ namespace Chummer.Backend.Equipment
                     {
                         (bool blnIsSuccess, object objProcess) = blnSync
                             // ReSharper disable once MethodHasAsyncOverload
-                            ? CommonFunctions.EvaluateInvariantXPath(strDamage)
+                            ? CommonFunctions.EvaluateInvariantXPath(strDamage, token)
                             : await CommonFunctions.EvaluateInvariantXPathAsync(strDamage, token);
                         if (blnIsSuccess)
                         {
@@ -2904,7 +2904,7 @@ namespace Chummer.Backend.Equipment
                     {
                         (bool blnIsSuccess, object objProcess) = blnSync
                             // ReSharper disable once MethodHasAsyncOverload
-                            ? CommonFunctions.EvaluateInvariantXPath(strDamage)
+                            ? CommonFunctions.EvaluateInvariantXPath(strDamage, token)
                             : await CommonFunctions.EvaluateInvariantXPathAsync(strDamage, token);
                         if (blnIsSuccess)
                         {
@@ -3093,7 +3093,7 @@ namespace Chummer.Backend.Equipment
             return strReturn;
         }
 
-        public string ReplaceStrings(string strInput, string strLanguage)
+        public static string ReplaceStrings(string strInput, string strLanguage)
         {
             return strLanguage == GlobalSettings.DefaultLanguage
                 ? strInput
@@ -3130,7 +3130,7 @@ namespace Chummer.Backend.Equipment
                       "(M)", () => LanguageManager.GetString("String_DamageMatrix", strLanguage));
         }
 
-        public async ValueTask<string> ReplaceStringsAsync(string strInput, string strLanguage, CancellationToken token = default)
+        public static async ValueTask<string> ReplaceStringsAsync(string strInput, string strLanguage, CancellationToken token = default)
         {
             return strLanguage == GlobalSettings.DefaultLanguage
                 ? strInput
@@ -3240,7 +3240,7 @@ namespace Chummer.Backend.Equipment
 
             string strSpace = blnSync
                 // ReSharper disable once MethodHasAsyncOverload
-                ? LanguageManager.GetString("String_Space", strLanguage)
+                ? LanguageManager.GetString("String_Space", strLanguage, token: token)
                 : await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token);
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
@@ -3294,7 +3294,7 @@ namespace Chummer.Backend.Equipment
                         strThisAmmo = strThisAmmo.Replace("/", " div ");
                         (bool blnIsSuccess, object objProcess) = blnSync
                             // ReSharper disable once MethodHasAsyncOverload
-                            ? CommonFunctions.EvaluateInvariantXPath(strThisAmmo)
+                            ? CommonFunctions.EvaluateInvariantXPath(strThisAmmo, token)
                             : await CommonFunctions.EvaluateInvariantXPathAsync(strThisAmmo, token);
                         if (blnIsSuccess)
                         {
@@ -3697,23 +3697,23 @@ namespace Chummer.Backend.Equipment
                     {
                         if (setModes.Contains("SS"))
                             // ReSharper disable once MethodHasAsyncOverload
-                            sbdReturn.Append(LanguageManager.GetString("String_ModeSingleShot", strLanguage))
+                            sbdReturn.Append(LanguageManager.GetString("String_ModeSingleShot", strLanguage, token: token))
                                      .Append('/');
                         if (setModes.Contains("SA"))
                             // ReSharper disable once MethodHasAsyncOverload
-                            sbdReturn.Append(LanguageManager.GetString("String_ModeSemiAutomatic", strLanguage))
+                            sbdReturn.Append(LanguageManager.GetString("String_ModeSemiAutomatic", strLanguage, token: token))
                                      .Append('/');
                         if (setModes.Contains("BF"))
                             // ReSharper disable once MethodHasAsyncOverload
-                            sbdReturn.Append(LanguageManager.GetString("String_ModeBurstFire", strLanguage))
+                            sbdReturn.Append(LanguageManager.GetString("String_ModeBurstFire", strLanguage, token: token))
                                      .Append('/');
                         if (setModes.Contains("FA"))
                             // ReSharper disable once MethodHasAsyncOverload
-                            sbdReturn.Append(LanguageManager.GetString("String_ModeFullAutomatic", strLanguage))
+                            sbdReturn.Append(LanguageManager.GetString("String_ModeFullAutomatic", strLanguage, token: token))
                                      .Append('/');
                         if (setModes.Contains("Special"))
                             // ReSharper disable once MethodHasAsyncOverload
-                            sbdReturn.Append(LanguageManager.GetString("String_ModeSpecial", strLanguage)).Append('/');
+                            sbdReturn.Append(LanguageManager.GetString("String_ModeSpecial", strLanguage, token: token)).Append('/');
                     }
                     else
                     {
@@ -4008,7 +4008,7 @@ namespace Chummer.Backend.Equipment
                     // Add any UnarmedAP bonus for the Unarmed Attack item.
                     intImprove += (blnSync
                             // ReSharper disable once MethodHasAsyncOverload
-                            ? ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.UnarmedAP)
+                            ? ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.UnarmedAP, token: token)
                             : await ImprovementManager.ValueOfAsync(
                                 _objCharacter, Improvement.ImprovementType.UnarmedAP, token: token))
                         .StandardRound();
@@ -4074,7 +4074,7 @@ namespace Chummer.Backend.Equipment
                     sbdAP.Replace("/", " div ");
                     (bool blnIsSuccess, object objProcess) = blnSync
                         // ReSharper disable once MethodHasAsyncOverload
-                        ? CommonFunctions.EvaluateInvariantXPath(sbdAP.ToString())
+                        ? CommonFunctions.EvaluateInvariantXPath(sbdAP.ToString(), token)
                         : await CommonFunctions.EvaluateInvariantXPathAsync(sbdAP.ToString(), token);
                     if (blnIsSuccess)
                         intAP = ((double)objProcess).StandardRound();
@@ -4183,7 +4183,7 @@ namespace Chummer.Backend.Equipment
         {
             string strSpace = blnSync
                 // ReSharper disable once MethodHasAsyncOverload
-                ? LanguageManager.GetString("String_Space", strLanguage)
+                ? LanguageManager.GetString("String_Space", strLanguage, token: token)
                 : await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token);
             string strRCBase = "0";
             string strRCFull;
@@ -4225,7 +4225,7 @@ namespace Chummer.Backend.Equipment
                     sbdRCTip.Append('+').Append(strSpace)
                             .Append(blnSync
                                         // ReSharper disable once MethodHasAsyncOverload
-                                        ? LanguageManager.GetString("Label_Base", strLanguage)
+                                        ? LanguageManager.GetString("Label_Base", strLanguage, token: token)
                                         : await LanguageManager.GetStringAsync("Label_Base", strLanguage, token: token))
                             .Append('(').Append(strRCBase).Append(')');
                 }
@@ -4358,7 +4358,7 @@ namespace Chummer.Backend.Equipment
                                 objCulture,
                                 blnSync
                                     // ReSharper disable once MethodHasAsyncOverload
-                                    ? LanguageManager.GetString("Tip_RecoilAccessories", strLanguage)
+                                    ? LanguageManager.GetString("Tip_RecoilAccessories", strLanguage, token: token)
                                     : await LanguageManager.GetStringAsync("Tip_RecoilAccessories", strLanguage, token: token),
                                 strGroup,
                                 intRecoil);
@@ -4445,8 +4445,8 @@ namespace Chummer.Backend.Equipment
 
                 if (Category == "Throwing Weapons" || Skill?.DictionaryKey == "Throwing Weapons")
                     intUseSTR += (blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowSTR)
+                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                            ? ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowSTR, token: token)
                             : await ImprovementManager.ValueOfAsync(_objCharacter,
                                                                     Improvement.ImprovementType.ThrowSTR, token: token))
                         .StandardRound();
@@ -6861,13 +6861,13 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public async ValueTask Unload(ICollection<Gear> lstGears, TreeView treGearView, CancellationToken token = default)
+        public Task Unload(ICollection<Gear> lstGears, TreeView treGearView, CancellationToken token = default)
         {
             Clip objClip = GetClip(ActiveAmmoSlot);
             Gear objAmmo = Unload(lstGears, objClip);
             if (objAmmo == null)
-                return;
-            await treGearView.DoThreadSafeAsync(x =>
+                return Task.CompletedTask;
+            return treGearView.DoThreadSafeAsync(x =>
             {
                 // Refresh the Gear tree.
                 TreeNode objSelectedNode = x.FindNode(objAmmo.InternalId);
@@ -6875,7 +6875,6 @@ namespace Chummer.Backend.Equipment
             }, token: token);
         }
 
-        /// <returns>Returns the gear with the unloaded ammo</returns>
         private static Gear Unload(ICollection<Gear> lstGears, Clip clipToUnload)
         {
             Gear objAmmo = clipToUnload.AmmoGear;

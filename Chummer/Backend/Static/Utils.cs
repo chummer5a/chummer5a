@@ -1653,7 +1653,7 @@ namespace Chummer
                 SafeSleep(token);
             if (objTask.Exception != null)
                 throw objTask.Exception;
-            return objTask.Result;
+            return objTask.GetAwaiter().GetResult();
         }
 
         /// <summary>
@@ -1675,7 +1675,7 @@ namespace Chummer
                 SafeSleep(token);
             if (objTask.Exception != null)
                 throw objTask.Exception;
-            return objTask.Result;
+            return objTask.GetAwaiter().GetResult();
         }
 
         /// <summary>
@@ -1707,7 +1707,7 @@ namespace Chummer
                 if (tskLoop.Exception != null)
                     throw tskLoop.Exception;
                 for (int j = 0; j < MaxParallelBatchSize; ++j)
-                    aobjReturn[i] = aobjTasks[j].Result;
+                    aobjReturn[i] = aobjTasks[j].GetAwaiter().GetResult();
                 intOffset += MaxParallelBatchSize;
                 intCounter = 0;
             }
@@ -1720,7 +1720,7 @@ namespace Chummer
                 if (objTask.Exception != null)
                     throw objTask.Exception;
                 for (int j = 0; j < intFinalBatchSize; ++j)
-                    aobjReturn[intOffset + j] = aobjTasks[j].Result;
+                    aobjReturn[intOffset + j] = aobjTasks[j].GetAwaiter().GetResult();
             }
             return aobjReturn;
         }
@@ -1742,14 +1742,14 @@ namespace Chummer
                     objSyncTask.RunSynchronously();
                 if (objSyncTask.Exception != null)
                     throw objSyncTask.Exception;
-                return objSyncTask.Result;
+                return objSyncTask.GetAwaiter().GetResult();
             }
             Task<T> objTask = Task.Run(funcToRun, token);
             while (!objTask.IsCompleted)
                 SafeSleep(token);
             if (objTask.Exception != null)
                 throw objTask.Exception;
-            return objTask.Result;
+            return objTask.GetAwaiter().GetResult();
         }
 
         /// <summary>
@@ -1769,14 +1769,14 @@ namespace Chummer
                     objSyncTask.RunSynchronously();
                 if (objSyncTask.Exception != null)
                     throw objSyncTask.Exception;
-                return objSyncTask.Result;
+                return objSyncTask.GetAwaiter().GetResult();
             }
             Task<T> objTask = Task.Run(() => funcToRun(token), token);
             while (!objTask.IsCompleted)
                 SafeSleep(token);
             if (objTask.Exception != null)
                 throw objTask.Exception;
-            return objTask.Result;
+            return objTask.GetAwaiter().GetResult();
         }
 
         /// <summary>
@@ -1801,7 +1801,7 @@ namespace Chummer
                         objSyncTask.RunSynchronously();
                     if (objSyncTask.Exception != null)
                         throw objSyncTask.Exception;
-                    aobjReturn[i] = objSyncTask.Result;
+                    aobjReturn[i] = objSyncTask.GetAwaiter().GetResult();
                 });
                 return aobjReturn;
             }
@@ -1820,7 +1820,7 @@ namespace Chummer
                 if (tskLoop.Exception != null)
                     throw tskLoop.Exception;
                 for (int j = 0; j < MaxParallelBatchSize; ++j)
-                    aobjReturn[i] = aobjTasks[j].Result;
+                    aobjReturn[i] = aobjTasks[j].GetAwaiter().GetResult();
                 intOffset += MaxParallelBatchSize;
                 intCounter = 0;
             }
@@ -1833,7 +1833,7 @@ namespace Chummer
                 if (objTask.Exception != null)
                     throw objTask.Exception;
                 for (int j = 0; j < intFinalBatchSize; ++j)
-                    aobjReturn[intOffset + j] = aobjTasks[j].Result;
+                    aobjReturn[intOffset + j] = aobjTasks[j].GetAwaiter().GetResult();
             }
             return aobjReturn;
         }
@@ -1860,7 +1860,7 @@ namespace Chummer
                         objSyncTask.RunSynchronously();
                     if (objSyncTask.Exception != null)
                         throw objSyncTask.Exception;
-                    aobjReturn[i] = objSyncTask.Result;
+                    aobjReturn[i] = objSyncTask.GetAwaiter().GetResult();
                 });
                 return aobjReturn;
             }
@@ -1879,7 +1879,7 @@ namespace Chummer
                 if (tskLoop.Exception != null)
                     throw tskLoop.Exception;
                 for (int j = 0; j < MaxParallelBatchSize; ++j)
-                    aobjReturn[i] = aobjTasks[j].Result;
+                    aobjReturn[i] = aobjTasks[j].GetAwaiter().GetResult();
                 intOffset += MaxParallelBatchSize;
                 intCounter = 0;
             }
@@ -1892,7 +1892,7 @@ namespace Chummer
                 if (objTask.Exception != null)
                     throw objTask.Exception;
                 for (int j = 0; j < intFinalBatchSize; ++j)
-                    aobjReturn[intOffset + j] = aobjTasks[j].Result;
+                    aobjReturn[intOffset + j] = aobjTasks[j].GetAwaiter().GetResult();
             }
             return aobjReturn;
         }
@@ -1916,7 +1916,7 @@ namespace Chummer
                         objSyncTask.RunSynchronously();
                     if (objSyncTask.Exception != null)
                         throw objSyncTask.Exception;
-                    aobjReturn[i] = objSyncTask.Result;
+                    aobjReturn[i] = objSyncTask.GetAwaiter().GetResult();
                 });
                 return aobjReturn;
             }
@@ -1934,7 +1934,7 @@ namespace Chummer
                 if (tskLoop.Exception != null)
                     throw tskLoop.Exception;
                 for (int j = 0; j < MaxParallelBatchSize; ++j)
-                    aobjReturn[i] = aobjTasks[j].Result;
+                    aobjReturn[i] = aobjTasks[j].GetAwaiter().GetResult();
                 intOffset += MaxParallelBatchSize;
                 intCounter = 0;
             }
@@ -1947,7 +1947,7 @@ namespace Chummer
                 if (objTask.Exception != null)
                     throw objTask.Exception;
                 for (int j = 0; j < intFinalBatchSize; ++j)
-                    aobjReturn[intOffset + j] = aobjTasks[j].Result;
+                    aobjReturn[intOffset + j] = aobjTasks[j].GetAwaiter().GetResult();
             }
             return aobjReturn;
         }

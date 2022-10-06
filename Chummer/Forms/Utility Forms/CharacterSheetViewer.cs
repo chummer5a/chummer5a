@@ -568,7 +568,7 @@ namespace Chummer
                 {
                     _blnLoading = false;
                 }
-                
+
                 try
                 {
                     await RefreshCharacters(_objGenericToken).ConfigureAwait(false);
@@ -857,19 +857,17 @@ namespace Chummer
                     objSettings.ConformanceLevel = ConformanceLevel.Fragment;
                 }
 
-                if (GlobalSettings.PrintToFileFirst)
+                // The DocumentStream method fails when using Wine, so we'll instead dump everything out a temporary HTML file, have the WebBrowser load that, then delete the temporary file.
+                // Delete any old versions of the file
+                if (GlobalSettings.PrintToFileFirst && !await Utils
+                                                              .SafeDeleteFileAsync(
+                                                                  _strTempSheetFilePath, true, token: token)
+                                                              .ConfigureAwait(false))
                 {
-                    // The DocumentStream method fails when using Wine, so we'll instead dump everything out a temporary HTML file, have the WebBrowser load that, then delete the temporary file.
-
-                    // Delete any old versions of the file
-                    if (!await Utils.SafeDeleteFileAsync(_strTempSheetFilePath, true, token: token)
-                                    .ConfigureAwait(false))
-                    {
-                        await SetDocumentText(
-                            await LanguageManager.GetStringAsync("Message_Export_Error_Warning", token: token)
-                                                 .ConfigureAwait(false), token).ConfigureAwait(false);
-                        return;
-                    }
+                    await SetDocumentText(
+                        await LanguageManager.GetStringAsync("Message_Export_Error_Warning", token: token)
+                                             .ConfigureAwait(false), token).ConfigureAwait(false);
+                    return;
                 }
 
                 string strOutput = await Task.Run(async () =>

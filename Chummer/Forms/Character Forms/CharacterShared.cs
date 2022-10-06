@@ -66,10 +66,8 @@ namespace Chummer
         {
             GenericToken = GenericCancellationTokenSource.Token;
             _objCharacter = objCharacter;
-            CancellationTokenRegistration objCancellationRegistration = GenericToken.Register(() =>
-            {
-                _objUpdateCharacterInfoCancellationTokenSource?.Cancel(false);
-            });
+            CancellationTokenRegistration objCancellationRegistration
+                = GenericToken.Register(() => _objUpdateCharacterInfoCancellationTokenSource?.Cancel(false));
             Disposed += (sender, args) => objCancellationRegistration.Dispose();
             _objCharacter.PropertyChanged += CharacterPropertyChanged;
             dlgSaveFile = new SaveFileDialog();
@@ -335,11 +333,7 @@ namespace Chummer
                     if (string.IsNullOrEmpty(strShowFileName))
                     {
                         // Autosaves are always compressed
-                        strShowFileName = CharacterObject.CharacterName + ".chum5lz";
-                        foreach (char invalidChar in Path.GetInvalidFileNameChars())
-                        {
-                            strShowFileName = strShowFileName.Replace(invalidChar, '_');
-                        }
+                        strShowFileName = CharacterObject.CharacterName.CleanForFileName() + ".chum5lz";
                     }
 
                     string strFilePath = Path.Combine(strAutosavePath, strShowFileName);
@@ -8640,7 +8634,7 @@ namespace Chummer
                     GenericToken.ThrowIfCancellationRequested();
                     if (_objUpdateCharacterInfoCancellationTokenSource != null)
                     {
-                        if (_objUpdateCharacterInfoCancellationTokenSource.IsCancellationRequested == false)
+                        if (!_objUpdateCharacterInfoCancellationTokenSource.IsCancellationRequested)
                         {
                             try
                             {
@@ -8887,11 +8881,7 @@ namespace Chummer
                     string strShowFileName = Path.GetFileName(CharacterObject.FileName);
                     if (string.IsNullOrEmpty(strShowFileName))
                     {
-                        strShowFileName = CharacterObject.CharacterName;
-                        foreach (char invalidChar in Path.GetInvalidFileNameChars())
-                        {
-                            strShowFileName = strShowFileName.Replace(invalidChar, '_');
-                        }
+                        strShowFileName = CharacterObject.CharacterName.CleanForFileName();
                     }
 
                     dlgSaveFile.FileName = strShowFileName;

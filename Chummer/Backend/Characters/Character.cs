@@ -4456,7 +4456,7 @@ namespace Chummer
                         {
                             Func<Character, CancellationToken, Task<bool>> funcLoopToRun = DoOnSaveCompletedAsync[i];
                             if (!Utils.JoinableTaskFactory.Run(
-                                    () => funcLoopToRun?.Invoke(this, token) ?? Task.FromResult(true)))
+                                    async () => funcLoopToRun == null || await funcLoopToRun.Invoke(this, token)))
                                 blnErrorFree = false;
                         }
                     }
@@ -13127,8 +13127,8 @@ namespace Chummer
             set
             {
                 string strNewValue = value;
-                if (!string.IsNullOrWhiteSpace(strNewValue) 
-                    && !strNewValue.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase) 
+                if (!string.IsNullOrWhiteSpace(strNewValue)
+                    && !strNewValue.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase)
                     && !strNewValue.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
                 {
                     strNewValue = Path.GetFileNameWithoutExtension(strNewValue) + ".chum5";
@@ -20349,7 +20349,7 @@ namespace Chummer
                 int intAverageStrength = Settings.UncappedArmorAccessoryBonuses
                     ? int.MaxValue
                     : await (await GetAttributeAsync("STR", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false);
-                
+
                 // Run through the list of Armor currently worn and look at armors that start with '+' since they stack with the highest Armor, but only up to STR.
                 Dictionary<Armor, int> dicArmorStackingValues
                     = lstArmorsToConsider.ToDictionary(x => x, y => 0);
@@ -20357,8 +20357,8 @@ namespace Chummer
                 foreach (Armor objArmor in lstArmorsToConsider)
                 {
                     if (!objArmor.ArmorValue.StartsWith('+')
-                        && !objArmor.ArmorValue.StartsWith('-') 
-                        && !objArmor.ArmorOverrideValue.StartsWith('+') 
+                        && !objArmor.ArmorValue.StartsWith('-')
+                        && !objArmor.ArmorOverrideValue.StartsWith('+')
                         && !objArmor.ArmorOverrideValue.StartsWith('-'))
                         continue;
                     string strCustomFitName = string.Empty;
@@ -22003,7 +22003,7 @@ namespace Chummer
                                     dicArmorStackingValues[objInnerArmor] = new Tuple<int, int>(intI + intLoopCustomFitStack, intJ);
                             }
                         }
-                        
+
                         if (objArmor.Encumbrance)
                             intNakedEncumbranceValue += intLoopStack;
                     }

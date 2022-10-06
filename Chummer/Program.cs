@@ -85,7 +85,7 @@ namespace Chummer
             SetProcessDPI(GlobalSettings.DpiScalingMethodSetting);
             if (IsMainThread)
                 SetThreadDPI(GlobalSettings.DpiScalingMethodSetting);
-            
+
             using (GlobalChummerMutex = new Mutex(false, @"Global\" + ChummerGuid, out bool blnIsNewInstance))
             {
                 bool blnReleaseMutex = false;

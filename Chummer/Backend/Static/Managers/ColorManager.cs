@@ -1063,7 +1063,7 @@ namespace Chummer
                           || objControl is Button || (objControl is Panel && !(objControl is SplitterPanel
                                                                                || objControl
                                                                                    .DoThreadSafeFunc(
-                                                                                       (x, y) => x.BackColor).A
+                                                                                       (x, y) => x.BackColor, token).A
                                                                                == byte.MaxValue))))
                     {
                         objControl.DoThreadSafe((x, y) =>

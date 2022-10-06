@@ -93,6 +93,7 @@ namespace SevenZip.Compression.LZMA
         }
 
         public const int kDefaultDictionaryLogSize = 22;
+        [CLSCompliant(false)]
         public const uint kNumFastBytesDefault = 0x20;
 
         private sealed class LiteralEncoder
@@ -1613,6 +1614,7 @@ namespace SevenZip.Compression.LZMA
 
         private uint _trainSize;
 
+        [CLSCompliant(false)]
         public void SetTrainSize(uint trainSize)
         {
             _trainSize = trainSize;

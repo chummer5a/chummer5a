@@ -18,6 +18,8 @@
  */
 // OutBuffer.cs
 
+using System;
+
 namespace SevenZip.Buffer
 {
     public class OutBuffer
@@ -68,6 +70,7 @@ namespace SevenZip.Buffer
             m_Pos = 0;
         }
 
+        [CLSCompliant(false)]
         public ulong GetProcessedSize()
         { return m_ProcessedSize + m_Pos; }
     }

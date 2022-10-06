@@ -1206,7 +1206,7 @@ namespace Chummer.Backend.Attributes
         private async Task<int> CalculatedTotalValueCore(bool blnSync, bool blnIncludeCyberlimbs = true, CancellationToken token = default)
         {
             // ReSharper disable once MethodHasAsyncOverload
-            using (blnSync ? EnterReadLock.Enter(LockObject) : await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (blnSync ? EnterReadLock.Enter(LockObject, token) : await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
                 // If we're looking at MAG and the character is a Cyberzombie, MAG is always 1, regardless of ESS penalties and bonuses.
                 if (_objCharacter.MetatypeCategory == "Cyberzombie" && (Abbrev == "MAG" || Abbrev == "MAGAdept"))
@@ -1607,13 +1607,13 @@ namespace Chummer.Backend.Attributes
             }
         }
 
-        public Task<string> DisplayNameLongAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayNameLongAsync(string strLanguage, CancellationToken token = default)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
                 return Abbrev == "MAGAdept"
-                    ? LanguageManager.MAGAdeptStringAsync(strLanguage, true, token)
-                    : LanguageManager.GetStringAsync("String_Attribute" + Abbrev + "Long", strLanguage, token: token);
+                    ? await LanguageManager.MAGAdeptStringAsync(strLanguage, true, token).ConfigureAwait(false)
+                    : await LanguageManager.GetStringAsync("String_Attribute" + Abbrev + "Long", strLanguage, token: token).ConfigureAwait(false);
             }
         }
 
@@ -2458,7 +2458,7 @@ namespace Chummer.Backend.Attributes
                         if (_intCachedCanUpgradeCareer < 0) // Second check in case another task already set this
                         {
                             _intCachedCanUpgradeCareer =
-                                await _objCharacter.GetKarmaAsync(token) >= await GetUpgradeKarmaCostAsync(token).ConfigureAwait(false)
+                                await _objCharacter.GetKarmaAsync(token).ConfigureAwait(false) >= await GetUpgradeKarmaCostAsync(token).ConfigureAwait(false)
                                 && await GetTotalMaximumAsync(token).ConfigureAwait(false) >
                                 await GetValueAsync(token).ConfigureAwait(false)
                                     ? 1
@@ -2800,7 +2800,7 @@ namespace Chummer.Backend.Attributes
                         await _objCharacter.ExpenseEntries.AddWithSortAsync(objExpense, token: token)
                             .ConfigureAwait(false);
                         
-                        await _objCharacter.DecreaseKarmaAsync(intPrice, token);
+                        await _objCharacter.DecreaseKarmaAsync(intPrice, token).ConfigureAwait(false);
 
                         // Undo burned Edge if possible first
                         if (Abbrev == "EDG")
@@ -2810,7 +2810,7 @@ namespace Chummer.Backend.Attributes
                                         _objCharacter, Improvement.ImprovementType.Attribute, "EDG", token: token)
                                     .ConfigureAwait(false))
                                 .Sum(x => x.ImproveSource == Improvement.ImprovementSource.BurnedEdge,
-                                    x => x.Minimum * x.Rating);
+                                    x => x.Minimum * x.Rating, token: token);
                             if (intBurnedEdge > 0)
                             {
                                 await ImprovementManager.RemoveImprovementsAsync(
@@ -2866,7 +2866,7 @@ namespace Chummer.Backend.Attributes
                                 .GetCachedImprovementListForValueOfAsync(
                                     _objCharacter, Improvement.ImprovementType.Attribute, "EDG", token: token).ConfigureAwait(false))
                             .Sum(x => x.ImproveSource == Improvement.ImprovementSource.BurnedEdge,
-                                x => x.Minimum * x.Rating) + 1;
+                                x => x.Minimum * x.Rating, token: token) + 1;
                         await ImprovementManager.RemoveImprovementsAsync(_objCharacter, Improvement.ImprovementSource.BurnedEdge, token: token).ConfigureAwait(false);
                         await ImprovementManager.CreateImprovementAsync(_objCharacter, "EDG",
                             Improvement.ImprovementSource.BurnedEdge,

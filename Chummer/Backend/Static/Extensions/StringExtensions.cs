@@ -20,6 +20,8 @@
 using System;
 using System.Buffers;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -1320,7 +1322,7 @@ namespace Chummer
         /// Escapes characters in a string that would cause confusion if the string were placed as HTML content
         /// </summary>
         /// <param name="strToClean">String to clean.</param>
-        /// <returns>Copy of input string with the characters "&", the greater than sign, and the lesser than sign escaped for HTML.</returns>
+        /// <returns>Copy of <paramref name="strToClean"/> with the characters "&", the greater than sign, and the lesser than sign escaped for HTML.</returns>
         public static string CleanForHtml(this string strToClean)
         {
             if (string.IsNullOrEmpty(strToClean))
@@ -1331,6 +1333,26 @@ namespace Chummer
                 .Replace("<", "&lt;")
                 .Replace(">", "&gt;");
             return s_RgxLineEndingsExpression.Replace(strReturn, "<br />");
+        }
+
+        private static readonly ReadOnlyCollection<char> s_achrPathInvalidPathChars
+            = Array.AsReadOnly(Path.GetInvalidPathChars());
+        private static readonly ReadOnlyCollection<char> s_achrPathInvalidFileNameChars
+            = Array.AsReadOnly(Path.GetInvalidFileNameChars());
+
+        /// <summary>
+        /// Replaces all the characters in a string that are invalid for file names with underscores.
+        /// </summary>
+        /// <param name="strToClean">String to clean.</param>
+        /// <param name="blnEscapeOnlyPathInvalidChars">If true, only characters that are invalid in path names will be replaced with underscores.</param>
+        /// <returns>Copy of <paramref name="strToClean"/> with all characters that are not valid for file names replaced with underscores.</returns>
+        public static string CleanForFileName(this string strToClean, bool blnEscapeOnlyPathInvalidChars = false)
+        {
+            if (string.IsNullOrEmpty(strToClean))
+                return string.Empty;
+            foreach (char invalidChar in blnEscapeOnlyPathInvalidChars ? s_achrPathInvalidPathChars : s_achrPathInvalidFileNameChars)
+                strToClean = strToClean.Replace(invalidChar, '_');
+            return strToClean;
         }
 
         /// <summary>
@@ -1508,7 +1530,7 @@ namespace Chummer
             string strReturn = strInput.IsRtf(token) ? Rtf.ToHtml(strInput) : strInput.CleanForHtml();
             return strReturn.CleanStylisticLigatures().NormalizeWhiteSpace().CleanOfInvalidUnicodeChars();
         }
-        
+
         public static async Task<string> RtfToHtmlAsync(this string strInput, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();

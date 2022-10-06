@@ -891,10 +891,13 @@ namespace Chummer
                         foreach (ZipArchiveEntry entry in archive.Entries)
                         {
                             token.ThrowIfCancellationRequested();
+                            string strFullName = entry.FullName;
                             // Skip directories because they already get handled with Directory.CreateDirectory
-                            if (entry.FullName.Length > 0 && entry.FullName[entry.FullName.Length - 1] == '/')
+                            if (strFullName.Length > 0 && strFullName[strFullName.Length - 1] == '/')
                                 continue;
-                            string strLoopPath = Path.Combine(_strAppPath, entry.FullName);
+                            string strLoopPath = Path.Combine(_strAppPath, strFullName);
+                            if (strLoopPath.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0)
+                                continue;
                             try
                             {
                                 string strLoopDirectory = Path.GetDirectoryName(strLoopPath);
@@ -1116,7 +1119,6 @@ namespace Chummer
                 if (int.TryParse(
                         (e.BytesReceived * 100 / e.TotalBytesToReceive).ToString(GlobalSettings.InvariantCultureInfo),
                         out int intTmp))
-
                     await pgbOverallProgress.DoThreadSafeAsync(x => x.Value = intTmp, _objGenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)

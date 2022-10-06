@@ -23,6 +23,7 @@ using System.IO;
 
 namespace SevenZip.Compression.LZ
 {
+    [CLSCompliant(false)]
     public class BinTree : InWindow, IMatchFinder
     {
         private uint _cyclicBufferPos;

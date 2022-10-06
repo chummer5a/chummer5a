@@ -298,8 +298,12 @@ namespace Chummer
                 {
                     IsFinishedLoading = false;
                     await _dicCachedNotes.ClearAsync(token).ConfigureAwait(false);
-                    foreach (MasterIndexEntry objExistingEntry in _lstItems.Select(x => x.Value))
-                        objExistingEntry.Dispose();
+                    foreach (object objUncastedExistingEntry in _lstItems.Select(x => x.Value))
+                    {
+                        if (objUncastedExistingEntry is MasterIndexEntry objExistingEntry)
+                            objExistingEntry.Dispose();
+                    }
+
                     _lstItems.Clear();
                     _lstFileNamesWithItems.Clear();
                     if (_objSelectedSetting == null)

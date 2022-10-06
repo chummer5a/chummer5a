@@ -4220,11 +4220,7 @@ namespace Chummer
 
                         if (string.IsNullOrEmpty(strShowFileName))
                         {
-                            strShowFileName = objMerge.CharacterName;
-                            foreach (char invalidChar in Path.GetInvalidFileNameChars())
-                            {
-                                strShowFileName = strShowFileName.Replace(invalidChar, '_');
-                            }
+                            strShowFileName = objMerge.CharacterName.CleanForFileName();
                         }
 
                         strShowFileName = strShowFileName.TrimEndOnce(".chum5").TrimEndOnce(".chum5lz");
