@@ -203,9 +203,15 @@ namespace Chummer
             return NextDouble();
         }
 
+        private int _intIsDisposed;
+
+        public bool IsDisposed => _intIsDisposed > 0;
+
         /// <inheritdoc />
         public void Dispose()
         {
+            if (Interlocked.CompareExchange(ref _intIsDisposed, 1, 0) > 0)
+                return;
             Utils.SemaphorePool.Return(ref _objLock);
         }
     }

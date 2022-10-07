@@ -9618,7 +9618,9 @@ namespace Chummer
 
         #endregion Create, Save, Load and Print Methods
 
-        public bool IsDisposed { get; private set; }
+        private int _intIsDisposed;
+
+        public bool IsDisposed => _intIsDisposed > 0;
 
         /// <summary>
         /// Remove stray event handlers and clear all info used by this character
@@ -9632,94 +9634,91 @@ namespace Chummer
                 || Program.OpenCharacters.Any(x => x.LinkedCharacters.Contains(this)))
                 return; // Do not actually dispose any characters who are still in the open characters list or required by a character who is
 
-            using (EnterReadLock.Enter(LockObject))
+            if (Interlocked.CompareExchange(ref _intIsDisposed, 1, 0) > 0)
+                return;
+
+            using (LockObject.EnterWriteLock()) // Wait for all pending locks to get freed before disposing
             {
-                if (IsDisposed)
-                    return;
-                using (LockObject.EnterWriteLock()) // Wait for all pending locks to get freed before disposing
-                {
-                    IsDisposed = true;
-                    ImprovementManager.ClearCachedValues(this);
-                    _lstLinkedCharacters.Clear(); // Clear this list because it relates to Contacts and Spirits disposal
-                    _lstLinkedCharacters.Dispose();
-                    foreach (Image imgMugshot in _lstMugshots)
-                        imgMugshot.Dispose();
-                    _lstMugshots.Dispose();
-                    foreach (Contact objContact in _lstContacts)
-                        objContact.Dispose();
-                    _lstContacts.Dispose();
-                    foreach (Spirit objSpirit in _lstSpirits)
-                        objSpirit.Dispose();
-                    _lstSpirits.Dispose();
-                    foreach (Armor objItem in _lstArmor)
-                        objItem.Dispose();
-                    _lstArmor.Dispose();
-                    foreach (Weapon objItem in _lstWeapons)
-                        objItem.Dispose();
-                    _lstWeapons.Dispose();
-                    foreach (Gear objItem in _lstGear)
-                        objItem.Dispose();
-                    _lstGear.Dispose();
-                    foreach (Cyberware objItem in _lstCyberware)
-                        objItem.Dispose();
-                    _lstCyberware.Dispose();
-                    foreach (Vehicle objItem in _lstVehicles)
-                        objItem.Dispose();
-                    _lstVehicles.Dispose();
-                    foreach (Lifestyle objItem in _lstLifestyles)
-                        objItem.Dispose();
-                    _lstLifestyles.Dispose();
-                    foreach (Spell objItem in _lstSpells)
-                        objItem.Dispose();
-                    _lstSpells.Dispose();
-                    foreach (MartialArt objItem in _lstMartialArts)
-                        objItem.Dispose();
-                    _lstMartialArts.Dispose();
-                    _lstComplexForms.Dispose();
-                    _lstAIPrograms.Dispose();
-                    _lstPowers.Dispose();
-                    _lstCritterPowers.Dispose();
-                    _lstFoci.Dispose();
-                    foreach (StackedFocus objItem in _lstStackedFoci)
-                        objItem.Dispose();
-                    _lstStackedFoci.Dispose();
-                    _lstMetamagics.Dispose();
-                    _lstArts.Dispose();
-                    _lstEnhancements.Dispose();
-                    _lstImprovements.Dispose();
-                    _lstInitiationGrades.Dispose();
-                    _lstInternalIdsNeedingReapplyImprovements.Dispose();
-                    _lstCalendar.Dispose();
-                    foreach (Drug objItem in _lstDrugs)
-                        objItem.Dispose();
-                    _lstDrugs.Dispose();
-                    _lstExpenseLog.Dispose();
-                    foreach (Location objItem in _lstArmorLocations)
-                        objItem.Dispose();
-                    _lstArmorLocations.Dispose();
-                    foreach (Location objItem in _lstGearLocations)
-                        objItem.Dispose();
-                    _lstGearLocations.Dispose();
-                    foreach (Location objItem in _lstWeaponLocations)
-                        objItem.Dispose();
-                    _lstWeaponLocations.Dispose();
-                    foreach (Location objItem in _lstVehicleLocations)
-                        objItem.Dispose();
-                    _lstVehicleLocations.Dispose();
-                    _lstImprovementGroups.Dispose();
-                    _lstPrioritySkills.Dispose();
-                    _objSkillsSection.Dispose();
-                    _objAttributeSection.Dispose();
-                    _quePostLoadMethods.Dispose();
-                    _quePostLoadMethodsAsync.Dispose();
-                    _setDoOnSaveCompleted.Dispose();
-                    _setDoOnSaveCompletedAsync.Dispose();
-                    if (_stkPushText.IsValueCreated)
-                        _stkPushText.Value.Dispose();
-                    if (!SettingsManager.LoadedCharacterSettings.ContainsKey(_objSettings.DictionaryKey))
-                        _objSettings.Dispose();
-                    _objCachedEssenceLock.Dispose();
-                }
+                ImprovementManager.ClearCachedValues(this);
+                _lstLinkedCharacters.Clear(); // Clear this list because it relates to Contacts and Spirits disposal
+                _lstLinkedCharacters.Dispose();
+                foreach (Image imgMugshot in _lstMugshots)
+                    imgMugshot.Dispose();
+                _lstMugshots.Dispose();
+                foreach (Contact objContact in _lstContacts)
+                    objContact.Dispose();
+                _lstContacts.Dispose();
+                foreach (Spirit objSpirit in _lstSpirits)
+                    objSpirit.Dispose();
+                _lstSpirits.Dispose();
+                foreach (Armor objItem in _lstArmor)
+                    objItem.Dispose();
+                _lstArmor.Dispose();
+                foreach (Weapon objItem in _lstWeapons)
+                    objItem.Dispose();
+                _lstWeapons.Dispose();
+                foreach (Gear objItem in _lstGear)
+                    objItem.Dispose();
+                _lstGear.Dispose();
+                foreach (Cyberware objItem in _lstCyberware)
+                    objItem.Dispose();
+                _lstCyberware.Dispose();
+                foreach (Vehicle objItem in _lstVehicles)
+                    objItem.Dispose();
+                _lstVehicles.Dispose();
+                foreach (Lifestyle objItem in _lstLifestyles)
+                    objItem.Dispose();
+                _lstLifestyles.Dispose();
+                foreach (Spell objItem in _lstSpells)
+                    objItem.Dispose();
+                _lstSpells.Dispose();
+                foreach (MartialArt objItem in _lstMartialArts)
+                    objItem.Dispose();
+                _lstMartialArts.Dispose();
+                _lstComplexForms.Dispose();
+                _lstAIPrograms.Dispose();
+                _lstPowers.Dispose();
+                _lstCritterPowers.Dispose();
+                _lstFoci.Dispose();
+                foreach (StackedFocus objItem in _lstStackedFoci)
+                    objItem.Dispose();
+                _lstStackedFoci.Dispose();
+                _lstMetamagics.Dispose();
+                _lstArts.Dispose();
+                _lstEnhancements.Dispose();
+                _lstImprovements.Dispose();
+                _lstInitiationGrades.Dispose();
+                _lstInternalIdsNeedingReapplyImprovements.Dispose();
+                _lstCalendar.Dispose();
+                foreach (Drug objItem in _lstDrugs)
+                    objItem.Dispose();
+                _lstDrugs.Dispose();
+                _lstExpenseLog.Dispose();
+                foreach (Location objItem in _lstArmorLocations)
+                    objItem.Dispose();
+                _lstArmorLocations.Dispose();
+                foreach (Location objItem in _lstGearLocations)
+                    objItem.Dispose();
+                _lstGearLocations.Dispose();
+                foreach (Location objItem in _lstWeaponLocations)
+                    objItem.Dispose();
+                _lstWeaponLocations.Dispose();
+                foreach (Location objItem in _lstVehicleLocations)
+                    objItem.Dispose();
+                _lstVehicleLocations.Dispose();
+                _lstImprovementGroups.Dispose();
+                _lstPrioritySkills.Dispose();
+                _objSkillsSection.Dispose();
+                _objAttributeSection.Dispose();
+                _quePostLoadMethods.Dispose();
+                _quePostLoadMethodsAsync.Dispose();
+                _setDoOnSaveCompleted.Dispose();
+                _setDoOnSaveCompletedAsync.Dispose();
+                if (_stkPushText.IsValueCreated)
+                    _stkPushText.Value.Dispose();
+                if (!SettingsManager.LoadedCharacterSettings.ContainsKey(_objSettings.DictionaryKey))
+                    _objSettings.Dispose();
+                _objCachedEssenceLock.Dispose();
             }
 
             LockObject.Dispose();
@@ -9737,99 +9736,99 @@ namespace Chummer
                 || await Program.OpenCharacters.AnyAsync(async x => await x.LinkedCharacters.ContainsAsync(this).ConfigureAwait(false)).ConfigureAwait(false))
                 return; // Do not actually dispose any characters who are still in the open characters list or required by a character who is
 
-            using (await EnterReadLock.EnterAsync(LockObject).ConfigureAwait(false))
+            if (Interlocked.CompareExchange(ref _intIsDisposed, 1, 0) > 0)
+                return;
+
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+            try
             {
-                if (IsDisposed)
-                    return;
-                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
-                try
-                {
-                    IsDisposed = true;
-                    await ImprovementManager.ClearCachedValuesAsync(this).ConfigureAwait(false);
-                    await _lstLinkedCharacters.ClearAsync().ConfigureAwait(false); // Clear this list because it relates to Contacts and Spirits disposal
-                    await _lstLinkedCharacters.DisposeAsync().ConfigureAwait(false);
-                    foreach (Image imgMugshot in _lstMugshots)
-                        imgMugshot.Dispose();
-                    await _lstMugshots.DisposeAsync().ConfigureAwait(false);
-                    foreach (Contact objContact in _lstContacts)
-                        objContact.Dispose();
-                    await _lstContacts.DisposeAsync().ConfigureAwait(false);
-                    foreach (Spirit objSpirit in _lstSpirits)
-                        objSpirit.Dispose();
-                    await _lstSpirits.DisposeAsync().ConfigureAwait(false);
-                    foreach (Armor objItem in _lstArmor)
-                        objItem.Dispose();
-                    await _lstArmor.DisposeAsync().ConfigureAwait(false);
-                    foreach (Weapon objItem in _lstWeapons)
-                        objItem.Dispose();
-                    await _lstWeapons.DisposeAsync().ConfigureAwait(false);
-                    foreach (Gear objItem in _lstGear)
-                        objItem.Dispose();
-                    await _lstGear.DisposeAsync().ConfigureAwait(false);
-                    foreach (Cyberware objItem in _lstCyberware)
-                        objItem.Dispose();
-                    await _lstCyberware.DisposeAsync().ConfigureAwait(false);
-                    foreach (Vehicle objItem in _lstVehicles)
-                        objItem.Dispose();
-                    await _lstVehicles.DisposeAsync().ConfigureAwait(false);
-                    foreach (Lifestyle objItem in _lstLifestyles)
-                        objItem.Dispose();
-                    await _lstLifestyles.DisposeAsync().ConfigureAwait(false);
-                    foreach (Spell objItem in _lstSpells)
-                        objItem.Dispose();
-                    await _lstSpells.DisposeAsync().ConfigureAwait(false);
-                    foreach (MartialArt objItem in _lstMartialArts)
-                        objItem.Dispose();
-                    await _lstMartialArts.DisposeAsync().ConfigureAwait(false);
-                    await _lstComplexForms.DisposeAsync().ConfigureAwait(false);
-                    await _lstAIPrograms.DisposeAsync().ConfigureAwait(false);
-                    await _lstPowers.DisposeAsync().ConfigureAwait(false);
-                    await _lstCritterPowers.DisposeAsync().ConfigureAwait(false);
-                    await _lstFoci.DisposeAsync().ConfigureAwait(false);
-                    foreach (StackedFocus objItem in _lstStackedFoci)
-                        objItem.Dispose();
-                    await _lstStackedFoci.DisposeAsync().ConfigureAwait(false);
-                    await _lstMetamagics.DisposeAsync().ConfigureAwait(false);
-                    await _lstArts.DisposeAsync().ConfigureAwait(false);
-                    await _lstEnhancements.DisposeAsync().ConfigureAwait(false);
-                    await _lstImprovements.DisposeAsync().ConfigureAwait(false);
-                    await _lstInitiationGrades.DisposeAsync().ConfigureAwait(false);
-                    await _lstInternalIdsNeedingReapplyImprovements.DisposeAsync().ConfigureAwait(false);
-                    await _lstCalendar.DisposeAsync().ConfigureAwait(false);
-                    foreach (Drug objItem in _lstDrugs)
-                        objItem.Dispose();
-                    await _lstDrugs.DisposeAsync().ConfigureAwait(false);
-                    await _lstExpenseLog.DisposeAsync().ConfigureAwait(false);
-                    foreach (Location objItem in _lstArmorLocations)
-                        objItem.Dispose();
-                    await _lstArmorLocations.DisposeAsync().ConfigureAwait(false);
-                    foreach (Location objItem in _lstGearLocations)
-                        objItem.Dispose();
-                    await _lstGearLocations.DisposeAsync().ConfigureAwait(false);
-                    foreach (Location objItem in _lstWeaponLocations)
-                        objItem.Dispose();
-                    await _lstWeaponLocations.DisposeAsync().ConfigureAwait(false);
-                    foreach (Location objItem in _lstVehicleLocations)
-                        objItem.Dispose();
-                    await _lstVehicleLocations.DisposeAsync().ConfigureAwait(false);
-                    await _lstImprovementGroups.DisposeAsync().ConfigureAwait(false);
-                    await _lstPrioritySkills.DisposeAsync().ConfigureAwait(false);
-                    await _objSkillsSection.DisposeAsync().ConfigureAwait(false);
-                    await _objAttributeSection.DisposeAsync().ConfigureAwait(false);
-                    await _quePostLoadMethods.DisposeAsync().ConfigureAwait(false);
-                    await _quePostLoadMethodsAsync.DisposeAsync().ConfigureAwait(false);
-                    await _setDoOnSaveCompleted.DisposeAsync().ConfigureAwait(false);
-                    await _setDoOnSaveCompletedAsync.DisposeAsync().ConfigureAwait(false);
-                    if (_stkPushText.IsValueCreated)
-                        await _stkPushText.Value.DisposeAsync().ConfigureAwait(false);
-                    if (!await (await SettingsManager.GetLoadedCharacterSettingsAsync().ConfigureAwait(false)).ContainsKeyAsync(_objSettings.DictionaryKey).ConfigureAwait(false))
-                        await _objSettings.DisposeAsync().ConfigureAwait(false);
-                    await _objCachedEssenceLock.DisposeAsync().ConfigureAwait(false);
-                }
-                finally
-                {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
-                }
+                await ImprovementManager.ClearCachedValuesAsync(this).ConfigureAwait(false);
+                await _lstLinkedCharacters.ClearAsync()
+                                          .ConfigureAwait(
+                                              false); // Clear this list because it relates to Contacts and Spirits disposal
+                await _lstLinkedCharacters.DisposeAsync().ConfigureAwait(false);
+                foreach (Image imgMugshot in _lstMugshots)
+                    imgMugshot.Dispose();
+                await _lstMugshots.DisposeAsync().ConfigureAwait(false);
+                foreach (Contact objContact in _lstContacts)
+                    objContact.Dispose();
+                await _lstContacts.DisposeAsync().ConfigureAwait(false);
+                foreach (Spirit objSpirit in _lstSpirits)
+                    objSpirit.Dispose();
+                await _lstSpirits.DisposeAsync().ConfigureAwait(false);
+                foreach (Armor objItem in _lstArmor)
+                    objItem.Dispose();
+                await _lstArmor.DisposeAsync().ConfigureAwait(false);
+                foreach (Weapon objItem in _lstWeapons)
+                    objItem.Dispose();
+                await _lstWeapons.DisposeAsync().ConfigureAwait(false);
+                foreach (Gear objItem in _lstGear)
+                    objItem.Dispose();
+                await _lstGear.DisposeAsync().ConfigureAwait(false);
+                foreach (Cyberware objItem in _lstCyberware)
+                    objItem.Dispose();
+                await _lstCyberware.DisposeAsync().ConfigureAwait(false);
+                foreach (Vehicle objItem in _lstVehicles)
+                    objItem.Dispose();
+                await _lstVehicles.DisposeAsync().ConfigureAwait(false);
+                foreach (Lifestyle objItem in _lstLifestyles)
+                    objItem.Dispose();
+                await _lstLifestyles.DisposeAsync().ConfigureAwait(false);
+                foreach (Spell objItem in _lstSpells)
+                    objItem.Dispose();
+                await _lstSpells.DisposeAsync().ConfigureAwait(false);
+                foreach (MartialArt objItem in _lstMartialArts)
+                    objItem.Dispose();
+                await _lstMartialArts.DisposeAsync().ConfigureAwait(false);
+                await _lstComplexForms.DisposeAsync().ConfigureAwait(false);
+                await _lstAIPrograms.DisposeAsync().ConfigureAwait(false);
+                await _lstPowers.DisposeAsync().ConfigureAwait(false);
+                await _lstCritterPowers.DisposeAsync().ConfigureAwait(false);
+                await _lstFoci.DisposeAsync().ConfigureAwait(false);
+                foreach (StackedFocus objItem in _lstStackedFoci)
+                    objItem.Dispose();
+                await _lstStackedFoci.DisposeAsync().ConfigureAwait(false);
+                await _lstMetamagics.DisposeAsync().ConfigureAwait(false);
+                await _lstArts.DisposeAsync().ConfigureAwait(false);
+                await _lstEnhancements.DisposeAsync().ConfigureAwait(false);
+                await _lstImprovements.DisposeAsync().ConfigureAwait(false);
+                await _lstInitiationGrades.DisposeAsync().ConfigureAwait(false);
+                await _lstInternalIdsNeedingReapplyImprovements.DisposeAsync().ConfigureAwait(false);
+                await _lstCalendar.DisposeAsync().ConfigureAwait(false);
+                foreach (Drug objItem in _lstDrugs)
+                    objItem.Dispose();
+                await _lstDrugs.DisposeAsync().ConfigureAwait(false);
+                await _lstExpenseLog.DisposeAsync().ConfigureAwait(false);
+                foreach (Location objItem in _lstArmorLocations)
+                    objItem.Dispose();
+                await _lstArmorLocations.DisposeAsync().ConfigureAwait(false);
+                foreach (Location objItem in _lstGearLocations)
+                    objItem.Dispose();
+                await _lstGearLocations.DisposeAsync().ConfigureAwait(false);
+                foreach (Location objItem in _lstWeaponLocations)
+                    objItem.Dispose();
+                await _lstWeaponLocations.DisposeAsync().ConfigureAwait(false);
+                foreach (Location objItem in _lstVehicleLocations)
+                    objItem.Dispose();
+                await _lstVehicleLocations.DisposeAsync().ConfigureAwait(false);
+                await _lstImprovementGroups.DisposeAsync().ConfigureAwait(false);
+                await _lstPrioritySkills.DisposeAsync().ConfigureAwait(false);
+                await _objSkillsSection.DisposeAsync().ConfigureAwait(false);
+                await _objAttributeSection.DisposeAsync().ConfigureAwait(false);
+                await _quePostLoadMethods.DisposeAsync().ConfigureAwait(false);
+                await _quePostLoadMethodsAsync.DisposeAsync().ConfigureAwait(false);
+                await _setDoOnSaveCompleted.DisposeAsync().ConfigureAwait(false);
+                await _setDoOnSaveCompletedAsync.DisposeAsync().ConfigureAwait(false);
+                if (_stkPushText.IsValueCreated)
+                    await _stkPushText.Value.DisposeAsync().ConfigureAwait(false);
+                if (!await (await SettingsManager.GetLoadedCharacterSettingsAsync().ConfigureAwait(false))
+                           .ContainsKeyAsync(_objSettings.DictionaryKey).ConfigureAwait(false))
+                    await _objSettings.DisposeAsync().ConfigureAwait(false);
+                await _objCachedEssenceLock.DisposeAsync().ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
 
             await LockObject.DisposeAsync().ConfigureAwait(false);

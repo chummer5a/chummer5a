@@ -35,7 +35,7 @@ namespace Chummer
     /// </summary>
     /// <typeparam name="TKey">Key to use for the dictionary.</typeparam>
     /// <typeparam name="TValue">Values to use for the dictionary.</typeparam>
-    public sealed class LockingDictionary<TKey, TValue> : IDictionary, IAsyncDictionary<TKey, TValue>, IAsyncReadOnlyDictionary<TKey, TValue>, IAsyncProducerConsumerCollection<KeyValuePair<TKey, TValue>>, IHasLockObject, ISerializable, IDeserializationCallback
+    public class LockingDictionary<TKey, TValue> : IDictionary, IAsyncDictionary<TKey, TValue>, IAsyncReadOnlyDictionary<TKey, TValue>, IAsyncProducerConsumerCollection<KeyValuePair<TKey, TValue>>, IHasLockObject, ISerializable, IDeserializationCallback
     {
         private readonly Dictionary<TKey, TValue> _dicData;
         public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
@@ -800,25 +800,43 @@ namespace Chummer
             }
         }
 
+        private int _intIsDisposed;
+
+        public bool IsDisposed => _intIsDisposed > 0;
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (Interlocked.CompareExchange(ref _intIsDisposed, 1, 0) > 0)
+                    return;
+                LockObject.Dispose();
+            }
+        }
+
         /// <inheritdoc />
         public void Dispose()
         {
-            if (IsDisposed)
-                return;
-            IsDisposed = true;
-            LockObject.Dispose();
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual async ValueTask DisposeAsync(bool disposing)
+        {
+            if (disposing)
+            {
+                if (Interlocked.CompareExchange(ref _intIsDisposed, 1, 0) > 0)
+                    return;
+                await LockObject.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         /// <inheritdoc />
         public async ValueTask DisposeAsync()
         {
-            if (IsDisposed)
-                return;
-            IsDisposed = true;
-            await LockObject.DisposeAsync().ConfigureAwait(false);
+            await DisposeAsync(true).ConfigureAwait(false);
+            GC.SuppressFinalize(this);
         }
-
-        public bool IsDisposed { get; private set; }
 
         /// <inheritdoc />
         public void GetObjectData(SerializationInfo info, StreamingContext context)

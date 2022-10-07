@@ -364,10 +364,16 @@ namespace Chummer
         /// <inheritdoc cref="ICollection.IsSynchronized" />
         public bool IsSynchronized => true;
 
+        private int _intIsDisposed;
+
+        public bool IsDisposed => _intIsDisposed > 0;
+
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)
             {
+                if (Interlocked.CompareExchange(ref _intIsDisposed, 1, 0) > 0)
+                    return;
                 LockObject.Dispose();
             }
         }
@@ -383,6 +389,8 @@ namespace Chummer
         {
             if (disposing)
             {
+                if (Interlocked.CompareExchange(ref _intIsDisposed, 1, 0) > 0)
+                    return;
                 await LockObject.DisposeAsync().ConfigureAwait(false);
             }
         }

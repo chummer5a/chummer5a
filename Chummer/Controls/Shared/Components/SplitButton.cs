@@ -431,12 +431,10 @@ namespace Chummer
 
         public override Size GetPreferredSize(Size proposedSize)
         {
-            if (!IsHandleCreated || Disposing || IsDisposed || Parent?.Disposing == true || Parent?.IsDisposed == true)
-                return default;
             Size preferredSize = base.GetPreferredSize(proposedSize);
 
             //autosize correctly for splitbuttons
-            if (_showSplit)
+            if (_showSplit && !Disposing && !IsDisposed)
             {
                 if (AutoSize)
                     return CalculateButtonAutoSize(preferredSize);

@@ -26,6 +26,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using Chummer;
 using Microsoft.Win32.SafeHandles;
 using Newtonsoft.Json;
@@ -367,14 +368,16 @@ namespace CrashHandler
 
         #region IDisposable Support
 
-        private bool _blnIsDisposed; // To detect redundant calls
+        private int _intIsDisposed;
+
+        public bool IsDisposed => _intIsDisposed > 0;
 
         private void Dispose(bool disposing)
         {
-            if (_blnIsDisposed)
-                return;
             if (disposing)
             {
+                if (Interlocked.CompareExchange(ref _intIsDisposed, 1, 0) > 0)
+                    return;
                 CrashLogWriter?.Close();
                 if (_blnDumpCreationSuccessful && File.Exists(CrashDumpLogName))
                 {
@@ -392,8 +395,6 @@ namespace CrashHandler
                     }
                 }
             }
-
-            _blnIsDisposed = true;
         }
 
         // Override destructor only if Dispose(bool disposing) above has code to free unmanaged resources.

@@ -31,7 +31,7 @@ namespace Chummer
     /// </summary>
     /// <typeparam name="TKey">Type used for unique keys in the internal dictionary</typeparam>
     /// <typeparam name="TValue">Type used for values in the internal dictionary</typeparam>
-    public sealed class LockingTypedOrderedDictionary<TKey, TValue> :
+    public class LockingTypedOrderedDictionary<TKey, TValue> :
         IAsyncDictionary<TKey, TValue>,
         IAsyncList<KeyValuePair<TKey, TValue>>,
         IDictionary,
@@ -1302,16 +1302,42 @@ namespace Chummer
             }
         }
 
-        /// <inheritdoc />
-        public void Dispose()
+        private int _intIsDisposed;
+
+        public bool IsDisposed => _intIsDisposed > 0;
+
+        protected virtual void Dispose(bool disposing)
         {
-            LockObject.Dispose();
+            if (disposing)
+            {
+                if (Interlocked.CompareExchange(ref _intIsDisposed, 1, 0) > 0)
+                    return;
+                LockObject.Dispose();
+            }
         }
 
         /// <inheritdoc />
-        public ValueTask DisposeAsync()
+        public void Dispose()
         {
-            return LockObject.DisposeAsync();
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual async ValueTask DisposeAsync(bool disposing)
+        {
+            if (disposing)
+            {
+                if (Interlocked.CompareExchange(ref _intIsDisposed, 1, 0) > 0)
+                    return;
+                await LockObject.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <inheritdoc />
+        public async ValueTask DisposeAsync()
+        {
+            await DisposeAsync(true).ConfigureAwait(false);
+            GC.SuppressFinalize(this);
         }
 
         /// <inheritdoc />

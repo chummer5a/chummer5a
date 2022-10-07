@@ -32,7 +32,7 @@ namespace Chummer
     /// Use ThreadSafeObservableCollection instead for classes without INotifyPropertyChanged.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public sealed class ThreadSafeBindingList<T> : IAsyncList<T>, IAsyncReadOnlyList<T>, IBindingList, ICancelAddNew, IRaiseItemChangedEvents, IHasLockObject, IAsyncProducerConsumerCollection<T> where T : INotifyPropertyChanged
+    public class ThreadSafeBindingList<T> : IAsyncList<T>, IAsyncReadOnlyList<T>, IBindingList, ICancelAddNew, IRaiseItemChangedEvents, IHasLockObject, IAsyncProducerConsumerCollection<T> where T : INotifyPropertyChanged
     {
         /// <inheritdoc />
         public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
@@ -635,16 +635,42 @@ namespace Chummer
                 return _lstData.ToArray();
         }
 
-        /// <inheritdoc />
-        public void Dispose()
+        private int _intIsDisposed;
+
+        public bool IsDisposed => _intIsDisposed > 0;
+
+        protected virtual void Dispose(bool disposing)
         {
-            LockObject.Dispose();
+            if (disposing)
+            {
+                if (Interlocked.CompareExchange(ref _intIsDisposed, 1, 0) > 0)
+                    return;
+                LockObject.Dispose();
+            }
         }
 
         /// <inheritdoc />
-        public ValueTask DisposeAsync()
+        public void Dispose()
         {
-            return LockObject.DisposeAsync();
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual async ValueTask DisposeAsync(bool disposing)
+        {
+            if (disposing)
+            {
+                if (Interlocked.CompareExchange(ref _intIsDisposed, 1, 0) > 0)
+                    return;
+                await LockObject.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <inheritdoc />
+        public async ValueTask DisposeAsync()
+        {
+            await DisposeAsync(true).ConfigureAwait(false);
+            GC.SuppressFinalize(this);
         }
 
         IEnumerator IEnumerable.GetEnumerator()

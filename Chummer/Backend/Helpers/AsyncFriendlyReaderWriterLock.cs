@@ -390,7 +390,7 @@ namespace Chummer
         /// <inheritdoc />
         public void Dispose()
         {
-            if (Interlocked.CompareExchange(ref _intDisposedStatus, 1, 0) != 0)
+            if (Interlocked.CompareExchange(ref _intDisposedStatus, 1, 0) > 0)
                 return;
 
             try
@@ -413,7 +413,7 @@ namespace Chummer
         /// <inheritdoc />
         public async ValueTask DisposeAsync()
         {
-            if (Interlocked.CompareExchange(ref _intDisposedStatus, 1, 0) != 0)
+            if (Interlocked.CompareExchange(ref _intDisposedStatus, 1, 0) > 0)
                 return;
 
             try

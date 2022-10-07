@@ -19,6 +19,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.DataContracts;
@@ -129,13 +130,13 @@ namespace Chummer
                 MyRequestTelemetry.Success = success;
         }
 
-        private bool _blnDisposed;
+        private int _intIsDisposed;
 
         protected override void Dispose(bool disposing)
         {
             if (!disposing)
                 return;
-            if (_blnDisposed)
+            if (Interlocked.CompareExchange(ref _intIsDisposed, 1, 0) > 0)
                 return;
 
             Timekeeper.Finish(OperationName);
@@ -158,14 +159,12 @@ namespace Chummer
                 default:
                     throw new NotImplementedException("Implement OperationType " + OperationName);
             }
-
-            _blnDisposed = true;
         }
 
         /// <inheritdoc />
         public async ValueTask DisposeAsync()
         {
-            if (_blnDisposed)
+            if (Interlocked.CompareExchange(ref _intIsDisposed, 1, 0) > 0)
                 return;
 
             await Timekeeper.FinishAsync(OperationName).ConfigureAwait(false);
@@ -188,8 +187,6 @@ namespace Chummer
                 default:
                     throw new NotImplementedException("Implement OperationType " + OperationName);
             }
-
-            _blnDisposed = true;
         }
     }
 }

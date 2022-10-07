@@ -704,7 +704,7 @@ namespace Chummer
             IDisposable objSyncLocker = null;
             IAsyncDisposable objLocker = null;
             if (blnSync)
-                objSyncLocker = LockObject.EnterWriteLock();
+                objSyncLocker = LockObject.EnterWriteLock(token);
             else
                 objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
@@ -717,7 +717,7 @@ namespace Chummer
                     xmlSourceNode = null;
                     strErrorText = blnSync
                         // ReSharper disable once MethodHasAsyncOverload
-                        ? LanguageManager.GetString("MessageTitle_FileNotFound")
+                        ? LanguageManager.GetString("MessageTitle_FileNotFound", token: token)
                         : await LanguageManager.GetStringAsync("MessageTitle_FileNotFound", token: token).ConfigureAwait(false);
                 }
                 else
@@ -816,9 +816,9 @@ namespace Chummer
                         {
                             string strTemp = blnSync
                                 // ReSharper disable once MethodHasAsyncOverload
-                                ? LanguageManager.GetString("MessageTitle_FileNotFound") +
+                                ? LanguageManager.GetString("MessageTitle_FileNotFound", token: token) +
                                   // ReSharper disable once MethodHasAsyncOverload
-                                  LanguageManager.GetString("String_Space")
+                                  LanguageManager.GetString("String_Space", token: token)
                                 : await LanguageManager.GetStringAsync("MessageTitle_FileNotFound", token: token).ConfigureAwait(false) +
                                   await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
                             _strSettingsFile = strTemp + '[' + strSettings + ']';
@@ -1021,18 +1021,17 @@ namespace Chummer
             }
         }
 
-        private bool _blnIsDisposed;
+        private int _intIsDisposed;
 
-        public bool IsDisposed => _blnIsDisposed;
+        public bool IsDisposed => _intIsDisposed > 0;
 
         /// <inheritdoc />
         public void Dispose()
         {
-            if (_blnIsDisposed)
+            if (Interlocked.CompareExchange(ref _intIsDisposed, 1, 0) > 0)
                 return;
             using (LockObject.EnterWriteLock())
             {
-                _blnIsDisposed = true;
                 _imgMugshot?.Dispose();
                 _tskRunningDownloadTask?.Dispose();
                 _dicMyPluginData.Dispose();
@@ -1043,12 +1042,11 @@ namespace Chummer
         /// <inheritdoc />
         public async ValueTask DisposeAsync()
         {
-            if (_blnIsDisposed)
+            if (Interlocked.CompareExchange(ref _intIsDisposed, 1, 0) > 0)
                 return;
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
             try
             {
-                _blnIsDisposed = true;
                 _imgMugshot?.Dispose();
                 _tskRunningDownloadTask?.Dispose();
                 await _dicMyPluginData.DisposeAsync().ConfigureAwait(false);

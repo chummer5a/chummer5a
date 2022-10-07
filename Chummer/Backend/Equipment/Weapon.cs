@@ -4445,7 +4445,7 @@ namespace Chummer.Backend.Equipment
 
                 if (Category == "Throwing Weapons" || Skill?.DictionaryKey == "Throwing Weapons")
                     intUseSTR += (blnSync
-                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                            // ReSharper disable once MethodHasAsyncOverload
                             ? ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowSTR, token: token)
                             : await ImprovementManager.ValueOfAsync(_objCharacter,
                                                                     Improvement.ImprovementType.ThrowSTR, token: token))

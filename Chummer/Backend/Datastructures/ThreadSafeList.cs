@@ -26,7 +26,7 @@ using System.Threading.Tasks;
 
 namespace Chummer
 {
-    public sealed class ThreadSafeList<T> : IAsyncList<T>, IAsyncReadOnlyList<T>, IList, IAsyncProducerConsumerCollection<T>, IHasLockObject
+    public class ThreadSafeList<T> : IAsyncList<T>, IAsyncReadOnlyList<T>, IList, IAsyncProducerConsumerCollection<T>, IHasLockObject
     {
         private readonly List<T> _lstData;
         public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
@@ -1059,16 +1059,42 @@ namespace Chummer
                 return _lstData.TrueForAll(await match.ConfigureAwait(false));
         }
 
-        /// <inheritdoc />
-        public void Dispose()
+        private int _intIsDisposed;
+
+        public bool IsDisposed => _intIsDisposed > 0;
+
+        protected virtual void Dispose(bool disposing)
         {
-            LockObject.Dispose();
+            if (disposing)
+            {
+                if (Interlocked.CompareExchange(ref _intIsDisposed, 1, 0) > 0)
+                    return;
+                LockObject.Dispose();
+            }
         }
 
         /// <inheritdoc />
-        public ValueTask DisposeAsync()
+        public void Dispose()
         {
-            return LockObject.DisposeAsync();
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual async ValueTask DisposeAsync(bool disposing)
+        {
+            if (disposing)
+            {
+                if (Interlocked.CompareExchange(ref _intIsDisposed, 1, 0) > 0)
+                    return;
+                await LockObject.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <inheritdoc />
+        public async ValueTask DisposeAsync()
+        {
+            await DisposeAsync(true).ConfigureAwait(false);
+            GC.SuppressFinalize(this);
         }
 
         IEnumerator IEnumerable.GetEnumerator()

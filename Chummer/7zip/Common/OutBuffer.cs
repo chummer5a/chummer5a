@@ -30,7 +30,7 @@ namespace SevenZip.Buffer
         private System.IO.Stream m_Stream;
         private ulong m_ProcessedSize;
 
-        [System.CLSCompliant(false)]
+        [CLSCompliant(false)]
         public OutBuffer(uint bufferSize)
         {
             m_Buffer = new byte[bufferSize];

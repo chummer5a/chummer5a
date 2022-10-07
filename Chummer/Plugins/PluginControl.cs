@@ -519,16 +519,14 @@ namespace Chummer.Plugins
             }
         }
 
-        private bool _blnDisposed;
+        private int _intIsDisposed;
 
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)
             {
-                if (_blnDisposed)
+                if (Interlocked.CompareExchange(ref _intIsDisposed, 1, 0) > 0)
                     return;
-
-                _blnDisposed = true;
 
                 foreach (IPlugin plugin in MyActivePlugins)
                     plugin.Dispose();
