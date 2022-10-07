@@ -16,6 +16,7 @@ Application Changes:
 - Exposed Limited spell property to the Print method to be used by character sheets.
 - SelectText nodes that use a custom xpath can now handle language keys directly instead of going through a text translation process.
 - The extras language translator can now also automatically find and translate keyed language strings instead of just translate(d) nodes from the XML data.
+- The dice roller form now properly says "1 Hit" instead of "1 Hits" when scoring only one hit.
 
 Data Changes:
 - Concealed and Regular vehicle armor mods now properly add to their parent's Armor. Fixes #4925.
@@ -45,6 +46,8 @@ Changed/New Strings:
 - String_Balanced_Option
 - String_Thorough_Option
 - Message_Export_Error_Warning
+- String_DiceRoller_Hit
+- String_DiceRoller_Glitch_Singular
 
 Build 223
 Application Changes:

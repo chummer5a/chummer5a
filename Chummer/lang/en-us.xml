@@ -6995,12 +6995,20 @@
       <text>Glitch with {0} Hits</text>
     </string>
     <string>
+      <key>String_DiceRoller_Glitch_Singular</key>
+      <text>Glitch with {0} Hit</text>
+    </string>
+    <string>
       <key>String_DiceRoller_CriticalGlitch</key>
       <text>Critical Glitch</text>
     </string>
     <string>
       <key>String_DiceRoller_Hits</key>
       <text>{0} Hits</text>
+    </string>
+    <string>
+      <key>String_DiceRoller_Hit</key>
+      <text>{0} Hit</text>
     </string>
     <string>
       <key>String_DiceRoller_Standard</key>

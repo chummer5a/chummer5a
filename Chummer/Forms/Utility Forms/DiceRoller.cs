@@ -155,7 +155,7 @@ namespace Chummer
                         }
 
                         sbdResults.AppendFormat(GlobalSettings.CultureInfo,
-                                                await LanguageManager.GetStringAsync("String_DiceRoller_Glitch"), intHitCount);
+                                                await LanguageManager.GetStringAsync(intHitCount == 1 ? "String_DiceRoller_Glitch_Singular" : "String_DiceRoller_Glitch"), intHitCount);
                         if (intThreshold > 0)
                             sbdResults.Append(')');
                     }
@@ -172,12 +172,12 @@ namespace Chummer
                                                                              ? "String_DiceRoller_Success"
                                                                              : "String_DiceRoller_Failure")).Append(strSpace)
                             .Append('(')
-                            .AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_DiceRoller_Hits"),
+                            .AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync(intHitCount == 1 ? "String_DiceRoller_Hit" : "String_DiceRoller_Hits"),
                                           intHitCount + ')');
                     }
                     else
                         sbdResults.AppendFormat(GlobalSettings.CultureInfo,
-                                                await LanguageManager.GetStringAsync("String_DiceRoller_Hits"), intHitCount);
+                                                await LanguageManager.GetStringAsync(intHitCount == 1 ? "String_DiceRoller_Hit" : "String_DiceRoller_Hits"), intHitCount);
                 }
 
                 sbdResults.AppendLine().AppendLine().Append(await LanguageManager.GetStringAsync("Label_DiceRoller_Sum"))
@@ -333,7 +333,7 @@ namespace Chummer
                         }
 
                         sbdResults.AppendFormat(GlobalSettings.CultureInfo,
-                                                await LanguageManager.GetStringAsync("String_DiceRoller_Glitch"), intHitCount);
+                                                await LanguageManager.GetStringAsync(intHitCount == 1 ? "String_DiceRoller_Glitch_Singular" : "String_DiceRoller_Glitch"), intHitCount);
                         if (intThreshold > 0)
                             sbdResults.Append(')');
                     }
@@ -350,12 +350,12 @@ namespace Chummer
                                                                              ? "String_DiceRoller_Success"
                                                                              : "String_DiceRoller_Failure")).Append(strSpace)
                             .Append('(')
-                            .AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_DiceRoller_Hits"),
+                            .AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync(intHitCount == 1 ? "String_DiceRoller_Hit" : "String_DiceRoller_Hits"),
                                           intHitCount).Append(')');
                     }
                     else
                         sbdResults.AppendFormat(GlobalSettings.CultureInfo,
-                                                await LanguageManager.GetStringAsync("String_DiceRoller_Hits"), intHitCount);
+                                                await LanguageManager.GetStringAsync(intHitCount == 1 ? "String_DiceRoller_Hit" : "String_DiceRoller_Hits"), intHitCount);
                 }
 
                 sbdResults.AppendLine().AppendLine().Append(await LanguageManager.GetStringAsync("Label_DiceRoller_Sum"))
