@@ -1,4 +1,4 @@
-Future Build 224
+Build 224
 Application Changes:
 - Added support for opening and saving characters in the form of compressed saves (chum5lz) instead of uncompressed (chum5). The program has three different options for the compression level of saved chum5lz files, and at the most thorough levels, savefile sizes can be decreased by up to around 90%.
 - Fixed certain texts in Dark Mode not properly switching to a white color.
