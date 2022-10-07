@@ -997,7 +997,7 @@ namespace Chummer
                     _strFileName = strNewFileName;
                 string strFilePath = Path.Combine(Utils.GetStartupPath, "settings", _strFileName);
                 using (FileStream objStream
-                       = new FileStream(strFilePath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
+                       = new FileStream(strFilePath, FileMode.Create, FileAccess.Write, FileShare.None))
                 {
                     using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
                     {
@@ -1688,10 +1688,7 @@ namespace Chummer
                 {
                     try
                     {
-                        using (StreamReader objStreamReader = new StreamReader(strFilePath, Encoding.UTF8, true))
-                        using (XmlReader objXmlReader
-                               = XmlReader.Create(objStreamReader, GlobalSettings.SafeXmlReaderSettings))
-                            objXmlDocument = new XPathDocument(objXmlReader);
+                        objXmlDocument = XPathDocumentExtensions.LoadStandardFromFile(strFilePath);
                     }
                     catch (IOException)
                     {
@@ -2127,9 +2124,7 @@ namespace Chummer
                             continue;
                         try
                         {
-                            using (StreamReader sr = new StreamReader(strMruCharacterFile, Encoding.UTF8, true))
-                            using (XmlReader objXmlReader = XmlReader.Create(sr, GlobalSettings.SafeXmlReaderSettings))
-                                objXmlDocument = new XPathDocument(objXmlReader);
+                            objXmlDocument = XPathDocumentExtensions.LoadStandardFromFile(strMruCharacterFile);
                         }
                         catch (XmlException)
                         {
@@ -2158,10 +2153,7 @@ namespace Chummer
                                 continue;
                             try
                             {
-                                using (StreamReader sr = new StreamReader(strMruCharacterFile, Encoding.UTF8, true))
-                                using (XmlReader objXmlReader
-                                       = XmlReader.Create(sr, GlobalSettings.SafeXmlReaderSettings))
-                                    objXmlDocument = new XPathDocument(objXmlReader);
+                                objXmlDocument = XPathDocumentExtensions.LoadStandardFromFile(strMruCharacterFile);
                             }
                             catch (XmlException)
                             {
@@ -2437,20 +2429,14 @@ namespace Chummer
             {
                 _strFileName = strFileName;
                 string strFilePath = Path.Combine(Utils.GetStartupPath, "settings", _strFileName);
-                XPathDocument objXmlDocument = null;
+                XPathDocument objXmlDocument;
                 // Make sure the settings file exists. If not, ask the user if they would like to use the default settings file instead. A character cannot be loaded without a settings file.
                 if (File.Exists(strFilePath))
                 {
                     try
                     {
-                        await Task.Run(() =>
-                        {
-                            using (StreamReader objStreamReader
-                                   = new StreamReader(strFilePath, Encoding.UTF8, true))
-                            using (XmlReader objXmlReader
-                                   = XmlReader.Create(objStreamReader, GlobalSettings.SafeXmlReaderSettings))
-                                objXmlDocument = new XPathDocument(objXmlReader);
-                        }, token).ConfigureAwait(false);
+                        objXmlDocument
+                            = await XPathDocumentExtensions.LoadStandardFromFileAsync(strFilePath, token: token).ConfigureAwait(false);
                     }
                     catch (IOException)
                     {
@@ -2897,9 +2883,7 @@ namespace Chummer
                             continue;
                         try
                         {
-                            using (StreamReader sr = new StreamReader(strMruCharacterFile, Encoding.UTF8, true))
-                            using (XmlReader objXmlReader = XmlReader.Create(sr, GlobalSettings.SafeXmlReaderSettings))
-                                objXmlDocument = new XPathDocument(objXmlReader);
+                            objXmlDocument = await XPathDocumentExtensions.LoadStandardFromFileAsync(strMruCharacterFile, token: token).ConfigureAwait(false);
                         }
                         catch (XmlException)
                         {
@@ -2928,10 +2912,9 @@ namespace Chummer
                                 continue;
                             try
                             {
-                                using (StreamReader sr = new StreamReader(strMruCharacterFile, Encoding.UTF8, true))
-                                using (XmlReader objXmlReader
-                                       = XmlReader.Create(sr, GlobalSettings.SafeXmlReaderSettings))
-                                    objXmlDocument = new XPathDocument(objXmlReader);
+                                objXmlDocument
+                                    = await XPathDocumentExtensions.LoadStandardFromFileAsync(
+                                        strMruCharacterFile, token: token).ConfigureAwait(false);
                             }
                             catch (XmlException)
                             {

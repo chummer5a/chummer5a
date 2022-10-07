@@ -228,8 +228,9 @@ namespace Chummer
                     Task<Character>[] tskLoadingTasks = new Task<Character>[intNodesCount];
                     for (int i = 0; i < tskLoadingTasks.Length; ++i)
                     {
+                        int i1 = i;
                         string strLoopFile
-                            = await treCharacters.DoThreadSafeFuncAsync(x => x.Nodes[i].Tag.ToString(), token).ConfigureAwait(false);
+                            = await treCharacters.DoThreadSafeFuncAsync(x => x.Nodes[i1].Tag.ToString(), token).ConfigureAwait(false);
                         tskLoadingTasks[i]
                             = Task.Run(() => InnerLoad(strLoopFile, token), token);
                     }

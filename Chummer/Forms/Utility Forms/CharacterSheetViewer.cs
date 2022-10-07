@@ -289,7 +289,9 @@ namespace Chummer
 
                 try
                 {
-                    _objCharacterXml.Save(strSaveFile);
+                    using (FileStream objFileStream
+                           = new FileStream(strSaveFile, FileMode.Create, FileAccess.Write, FileShare.None))
+                        _objCharacterXml.Save(objFileStream);
                 }
                 catch (XmlException)
                 {

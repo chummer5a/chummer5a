@@ -700,15 +700,14 @@ namespace Chummer
                 {
                     try
                     {
-                        using (FileStream zipToOpen = new FileStream(strBackupZipPath, FileMode.Create))
+                        using (FileStream zipToOpen = new FileStream(strBackupZipPath, FileMode.Create, FileAccess.Write, FileShare.None))
                         using (ZipArchive archive = new ZipArchive(zipToOpen, ZipArchiveMode.Create))
                         {
                             foreach (string file in Directory.GetFiles(_strAppPath))
                             {
                                 ZipArchiveEntry entry = archive.CreateEntry(Path.GetFileName(file));
                                 entry.LastWriteTime = File.GetLastWriteTime(file);
-                                using (FileStream fs = new FileStream(file, FileMode.Open, FileAccess.Read,
-                                                                      FileShare.ReadWrite))
+                                using (FileStream fs = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read))
                                 using (Stream stream = entry.Open())
                                 {
                                     //magic number default buffer size, no overload that is only stream+token

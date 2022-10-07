@@ -36,7 +36,8 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static XPathDocument LoadStandardFromFile(string strFileName, bool blnSafe = true)
         {
-            using (StreamReader objStreamReader = new StreamReader(strFileName, Encoding.UTF8, true))
+            using (FileStream objFileStream = new FileStream(strFileName, FileMode.Open, FileAccess.Read, FileShare.Read))
+            using (StreamReader objStreamReader = new StreamReader(objFileStream, Encoding.UTF8, true))
             using (XmlReader objReader = XmlReader.Create(objStreamReader,
                 blnSafe ? GlobalSettings.SafeXmlReaderSettings : GlobalSettings.UnSafeXmlReaderSettings))
                 return new XPathDocument(objReader);
@@ -53,16 +54,21 @@ namespace Chummer
         {
             return Task.Run(() =>
             {
-                using (StreamReader objStreamReader = new StreamReader(strFileName, Encoding.UTF8, true))
+                using (FileStream objFileStream
+                       = new FileStream(strFileName, FileMode.Open, FileAccess.Read, FileShare.Read))
                 {
                     token.ThrowIfCancellationRequested();
-                    using (XmlReader objReader = XmlReader.Create(objStreamReader,
-                                                                  blnSafe
-                                                                      ? GlobalSettings.SafeXmlReaderSettings
-                                                                      : GlobalSettings.UnSafeXmlReaderSettings))
+                    using (StreamReader objStreamReader = new StreamReader(objFileStream, Encoding.UTF8, true))
                     {
                         token.ThrowIfCancellationRequested();
-                        return new XPathDocument(objReader);
+                        using (XmlReader objReader = XmlReader.Create(objStreamReader,
+                                                                      blnSafe
+                                                                          ? GlobalSettings.SafeXmlReaderSettings
+                                                                          : GlobalSettings.UnSafeXmlReaderSettings))
+                        {
+                            token.ThrowIfCancellationRequested();
+                            return new XPathDocument(objReader);
+                        }
                     }
                 }
             }, token);
@@ -76,7 +82,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static XPathDocument LoadStandardFromLzmaCompressedFile(string strFileName, bool blnSafe = true)
         {
-            using (FileStream objFileStream = new FileStream(strFileName, FileMode.Open))
+            using (FileStream objFileStream = new FileStream(strFileName, FileMode.Open, FileAccess.Read, FileShare.Read))
             using (MemoryStream objMemoryStream = new MemoryStream((int)objFileStream.Length))
             {
                 objFileStream.DecompressLzmaFile(objMemoryStream);
@@ -102,7 +108,7 @@ namespace Chummer
         {
             return Task.Run(async () =>
             {
-                using (FileStream objFileStream = new FileStream(strFileName, FileMode.Open))
+                using (FileStream objFileStream = new FileStream(strFileName, FileMode.Open, FileAccess.Read, FileShare.Read))
                 {
                     token.ThrowIfCancellationRequested();
                     using (MemoryStream objMemoryStream = new MemoryStream((int)objFileStream.Length))

@@ -403,10 +403,10 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="List{T}.CopyTo(T[], int)" />
-        public async ValueTask CopyToAsync(T[] array, int arrayIndex, CancellationToken token = default)
+        public async ValueTask CopyToAsync(T[] array, int index, CancellationToken token = default)
         {
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
-                _lstData.CopyTo(array, arrayIndex);
+                _lstData.CopyTo(array, index);
         }
 
         /// <inheritdoc />

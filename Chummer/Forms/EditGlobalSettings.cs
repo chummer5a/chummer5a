@@ -744,7 +744,8 @@ namespace Chummer
             System.Collections.Specialized.NameValueCollection data
                 = new System.Collections.Specialized.NameValueCollection();
             string line;
-            using (StreamReader sr = new StreamReader(strFilePath, Encoding.UTF8, true))
+            using (FileStream objFileStream = new FileStream(strFilePath, FileMode.Open, FileAccess.Read, FileShare.Read))
+            using (StreamReader sr = new StreamReader(objFileStream, Encoding.UTF8, true))
             {
                 line = await sr.ReadToEndAsync().ConfigureAwait(false);
             }
@@ -1662,16 +1663,13 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstLanguages))
             {
-                foreach (string filePath in Directory.EnumerateFiles(Utils.GetLanguageFolderPath, "*.xml"))
+                foreach (string strFilePath in Directory.EnumerateFiles(Utils.GetLanguageFolderPath, "*.xml"))
                 {
                     token.ThrowIfCancellationRequested();
                     XPathDocument xmlDocument;
                     try
                     {
-                        using (StreamReader objStreamReader = new StreamReader(filePath, Encoding.UTF8, true))
-                        using (XmlReader objXmlReader
-                               = XmlReader.Create(objStreamReader, GlobalSettings.SafeXmlReaderSettings))
-                            xmlDocument = new XPathDocument(objXmlReader);
+                        xmlDocument = await XPathDocumentExtensions.LoadStandardFromFileAsync(strFilePath, token: token);
                     }
                     catch (IOException)
                     {
@@ -1684,6 +1682,9 @@ namespace Chummer
 
                     token.ThrowIfCancellationRequested();
 
+                    if (xmlDocument == null)
+                        continue;
+
                     XPathNavigator node = await xmlDocument.CreateNavigator()
                                                            .SelectSingleNodeAndCacheExpressionAsync("/chummer/name", token: token).ConfigureAwait(false);
                     if (node == null)
@@ -1691,7 +1692,7 @@ namespace Chummer
 
                     token.ThrowIfCancellationRequested();
 
-                    lstLanguages.Add(new ListItem(Path.GetFileNameWithoutExtension(filePath), node.Value));
+                    lstLanguages.Add(new ListItem(Path.GetFileNameWithoutExtension(strFilePath), node.Value));
                 }
                 token.ThrowIfCancellationRequested();
                 lstLanguages.Sort(CompareListItems.CompareNames);
@@ -1718,20 +1719,17 @@ namespace Chummer
                 using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                                out List<ListItem> lstSheetLanguages))
                 {
-                    foreach (string filePath in Directory.EnumerateFiles(Utils.GetLanguageFolderPath, "*.xml"))
+                    foreach (string strFilePath in Directory.EnumerateFiles(Utils.GetLanguageFolderPath, "*.xml"))
                     {
                         token.ThrowIfCancellationRequested();
-                        string strLanguageName = Path.GetFileNameWithoutExtension(filePath);
+                        string strLanguageName = Path.GetFileNameWithoutExtension(strFilePath);
                         if (!setLanguagesWithSheets.Contains(strLanguageName))
                             continue;
 
                         XPathDocument xmlDocument;
                         try
                         {
-                            using (StreamReader objStreamReader = new StreamReader(filePath, Encoding.UTF8, true))
-                            using (XmlReader objXmlReader
-                                   = XmlReader.Create(objStreamReader, GlobalSettings.SafeXmlReaderSettings))
-                                xmlDocument = new XPathDocument(objXmlReader);
+                            xmlDocument = await XPathDocumentExtensions.LoadStandardFromFileAsync(strFilePath, token: token);
                         }
                         catch (IOException)
                         {
@@ -1743,6 +1741,9 @@ namespace Chummer
                         }
 
                         token.ThrowIfCancellationRequested();
+
+                        if (xmlDocument == null)
+                            continue;
 
                         XPathNavigator node = await xmlDocument.CreateNavigator()
                                                                .SelectSingleNodeAndCacheExpressionAsync("/chummer/name", token: token).ConfigureAwait(false);

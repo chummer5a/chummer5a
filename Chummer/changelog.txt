@@ -1,3 +1,7 @@
+Future Build 225
+Application Changes:
+- Fixed some rare bugs and crashes that could occur when writing to a file that Chummer was simultaneously attempting to read in.
+
 Build 224
 Application Changes:
 - Added support for opening and saving characters in the form of compressed saves (chum5lz) instead of uncompressed (chum5). The program has three different options for the compression level of saved chum5lz files, and at the most thorough levels, savefile sizes can be decreased by up to around 90%.

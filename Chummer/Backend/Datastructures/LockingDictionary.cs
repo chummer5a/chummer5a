@@ -196,14 +196,14 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="ICollection.CopyTo" />
-        public async ValueTask CopyToAsync(KeyValuePair<TKey, TValue>[] array, int arrayIndex, CancellationToken token = default)
+        public async ValueTask CopyToAsync(KeyValuePair<TKey, TValue>[] array, int index, CancellationToken token = default)
         {
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
                 foreach (KeyValuePair<TKey, TValue> kvpItem in _dicData)
                 {
-                    array[arrayIndex] = kvpItem;
-                    ++arrayIndex;
+                    array[index] = kvpItem;
+                    ++index;
                 }
             }
         }

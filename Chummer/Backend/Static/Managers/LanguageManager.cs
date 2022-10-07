@@ -52,10 +52,7 @@ namespace Chummer
             {
                 try
                 {
-                    XPathDocument xmlEnglishDocument;
-                    using (StreamReader objStreamReader = new StreamReader(strFilePath, Encoding.UTF8, true))
-                    using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalSettings.SafeXmlReaderSettings))
-                        xmlEnglishDocument = new XPathDocument(objXmlReader);
+                    XPathDocument xmlEnglishDocument = XPathDocumentExtensions.LoadStandardFromFile(strFilePath);
                     XPathNodeIterator xmlStringList =
                         xmlEnglishDocument.CreateNavigator().SelectAndCacheExpression("/chummer/strings/string");
                     if (xmlStringList.Count > 0)
@@ -916,22 +913,18 @@ namespace Chummer
             {
                 // Potentially expensive checks that can (and therefore should) be parallelized.
                 await Task.WhenAll(
-                    Task.Run(() =>
+                    Task.Run(async () =>
                     {
                         // Load the English version.
                         string strFilePath
                             = Path.Combine(Utils.GetStartupPath, "lang", GlobalSettings.DefaultLanguage + ".xml");
                         try
                         {
-                            XPathDocument objEnglishDocument;
-                            using (StreamReader objStreamReader = new StreamReader(strFilePath, Encoding.UTF8, true))
-                            using (XmlReader objXmlReader
-                                   = XmlReader.Create(objStreamReader, GlobalSettings.SafeXmlReaderSettings))
-                                objEnglishDocument = new XPathDocument(objXmlReader);
-                            foreach (XPathNavigator objNode in objEnglishDocument.CreateNavigator()
-                                         .SelectAndCacheExpression("/chummer/strings/string"))
+                            XPathDocument objEnglishDocument = await XPathDocumentExtensions.LoadStandardFromFileAsync(strFilePath, token: token).ConfigureAwait(false);
+                            foreach (XPathNavigator objNode in await objEnglishDocument.CreateNavigator()
+                                         .SelectAndCacheExpressionAsync("/chummer/strings/string", token).ConfigureAwait(false))
                             {
-                                string strKey = objNode.SelectSingleNodeAndCacheExpression("key")?.Value;
+                                string strKey = (await objNode.SelectSingleNodeAndCacheExpressionAsync("key", token).ConfigureAwait(false))?.Value;
                                 if (!string.IsNullOrEmpty(strKey))
                                     setEnglishKeys.Add(strKey);
                             }
@@ -945,21 +938,17 @@ namespace Chummer
                             //swallow this
                         }
                     }, token),
-                    Task.Run(() =>
+                    Task.Run(async () =>
                     {
                         // Load the selected language version.
                         string strLangPath = Path.Combine(Utils.GetStartupPath, "lang", strLanguage + ".xml");
                         try
                         {
-                            XPathDocument objLanguageDocument;
-                            using (StreamReader objStreamReader = new StreamReader(strLangPath, Encoding.UTF8, true))
-                            using (XmlReader objXmlReader
-                                   = XmlReader.Create(objStreamReader, GlobalSettings.SafeXmlReaderSettings))
-                                objLanguageDocument = new XPathDocument(objXmlReader);
-                            foreach (XPathNavigator objNode in objLanguageDocument.CreateNavigator()
-                                         .SelectAndCacheExpression("/chummer/strings/string"))
+                            XPathDocument objLanguageDocument = await XPathDocumentExtensions.LoadStandardFromFileAsync(strLangPath, token: token).ConfigureAwait(false);
+                            foreach (XPathNavigator objNode in await objLanguageDocument.CreateNavigator()
+                                         .SelectAndCacheExpressionAsync("/chummer/strings/string", token).ConfigureAwait(false))
                             {
-                                string strKey = objNode.SelectSingleNodeAndCacheExpression("key")?.Value;
+                                string strKey = (await objNode.SelectSingleNodeAndCacheExpressionAsync("key", token).ConfigureAwait(false))?.Value;
                                 if (!string.IsNullOrEmpty(strKey))
                                     setLanguageKeys.Add(strKey);
                             }
@@ -2156,9 +2145,7 @@ namespace Chummer
                 XPathDocument xmlDocument;
                 try
                 {
-                    using (StreamReader objStreamReader = new StreamReader(filePath, Encoding.UTF8, true))
-                    using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalSettings.SafeXmlReaderSettings))
-                        xmlDocument = new XPathDocument(objXmlReader);
+                    xmlDocument = XPathDocumentExtensions.LoadStandardFromFile(filePath);
                 }
                 catch (IOException)
                 {
@@ -2200,9 +2187,7 @@ namespace Chummer
                 XPathDocument xmlDocument;
                 try
                 {
-                    using (StreamReader objStreamReader = new StreamReader(filePath, Encoding.UTF8, true))
-                    using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalSettings.SafeXmlReaderSettings))
-                        xmlDocument = new XPathDocument(objXmlReader);
+                    xmlDocument = await XPathDocumentExtensions.LoadStandardFromFileAsync(filePath, token: token).ConfigureAwait(false);
                 }
                 catch (IOException)
                 {
@@ -2257,9 +2242,7 @@ namespace Chummer
                     string strExtraMessage = string.Empty;
                     try
                     {
-                        using (StreamReader objStreamReader = new StreamReader(strFilePath, Encoding.UTF8, true))
-                        using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalSettings.SafeXmlReaderSettings))
-                            objLanguageDocument = new XPathDocument(objXmlReader);
+                        objLanguageDocument = XPathDocumentExtensions.LoadStandardFromFile(strFilePath);
                     }
                     catch (IOException ex)
                     {
@@ -2320,9 +2303,7 @@ namespace Chummer
                 {
                     try
                     {
-                        using (StreamReader objStreamReader = new StreamReader(strDataPath, Encoding.UTF8, true))
-                        using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalSettings.SafeXmlReaderSettings))
-                            DataDocument = new XPathDocument(objXmlReader);
+                        DataDocument = XPathDocumentExtensions.LoadStandardFromFile(strDataPath);
                     }
                     catch (IOException ex)
                     {

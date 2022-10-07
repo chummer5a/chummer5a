@@ -478,14 +478,21 @@ namespace Chummer
                 // Look for the file extension information.
                 string strExtension = "xml";
                 string exportSheetPath = Path.Combine(Utils.GetStartupPath, "export", _strXslt + ".xsl");
-                using (StreamReader objFile = new StreamReader(exportSheetPath, Encoding.UTF8, true))
+                using (FileStream objFileStream
+                       = new FileStream(exportSheetPath, FileMode.Open, FileAccess.Read, FileShare.Read))
                 {
-                    string strLine;
-                    while ((strLine = await objFile.ReadLineAsync().ConfigureAwait(false)) != null)
+                    token.ThrowIfCancellationRequested();
+                    using (StreamReader objFile = new StreamReader(objFileStream, Encoding.UTF8, true))
                     {
                         token.ThrowIfCancellationRequested();
-                        if (strLine.StartsWith("<!-- ext:", StringComparison.Ordinal))
-                            strExtension = strLine.TrimStartOnce("<!-- ext:", true).FastEscapeOnceFromEnd("-->").Trim();
+                        string strLine;
+                        while ((strLine = await objFile.ReadLineAsync().ConfigureAwait(false)) != null)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            if (strLine.StartsWith("<!-- ext:", StringComparison.Ordinal))
+                                strExtension = strLine.TrimStartOnce("<!-- ext:", true).FastEscapeOnceFromEnd("-->")
+                                                      .Trim();
+                        }
                     }
                 }
 

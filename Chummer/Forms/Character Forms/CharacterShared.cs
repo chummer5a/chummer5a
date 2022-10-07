@@ -7777,52 +7777,57 @@ namespace Chummer
 
         protected async ValueTask AddContactsFromFile(CancellationToken token = default)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
                 XPathDocument xmlDoc;
+                string strFileName = string.Empty;
+                string strFilter = await LanguageManager.GetStringAsync("DialogFilter_Xml", token: token)
+                                                        .ConfigureAwait(false) + '|' +
+                                   await LanguageManager.GetStringAsync("DialogFilter_All", token: token)
+                                                        .ConfigureAwait(false);
                 // Displays an OpenFileDialog so the user can select the XML to read.
-                using (OpenFileDialog dlgOpenFile = await this.DoThreadSafeFuncAsync(() => new OpenFileDialog(), token))
+                DialogResult eResult = await this.DoThreadSafeFuncAsync(x =>
                 {
-                    dlgOpenFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Xml", token: token) + '|' +
-                                         await LanguageManager.GetStringAsync("DialogFilter_All", token: token);
-                    // Show the Dialog.
-                    // If the user cancels out, return early.
-                    if (await this.DoThreadSafeFuncAsync(x => dlgOpenFile.ShowDialog(x), token) != DialogResult.OK)
-                        return;
-
-                    try
+                    using (OpenFileDialog dlgOpenFile = new OpenFileDialog())
                     {
-                        using (StreamReader objStreamReader =
-                               new StreamReader(dlgOpenFile.FileName, Encoding.UTF8, true))
-                        using (XmlReader objXmlReader =
-                               XmlReader.Create(objStreamReader, GlobalSettings.SafeXmlReaderSettings))
-                            xmlDoc = new XPathDocument(objXmlReader);
+                        dlgOpenFile.Filter = strFilter;
+                        // Show the Dialog.
+                        DialogResult eReturn = dlgOpenFile.ShowDialog(x);
+                        strFileName = dlgOpenFile.FileName;
+                        return eReturn;
                     }
-                    catch (IOException ex)
-                    {
-                        Program.ShowMessageBox(this, ex.ToString());
-                        return;
-                    }
-                    catch (XmlException ex)
-                    {
-                        Program.ShowMessageBox(this, ex.ToString());
-                        return;
-                    }
+                }, token);
+                // If the user cancels out, return early.
+                if (eResult != DialogResult.OK)
+                    return;
+                try
+                {
+                    xmlDoc = await XPathDocumentExtensions.LoadStandardFromFileAsync(strFileName, token: token).ConfigureAwait(false);
+                }
+                catch (IOException ex)
+                {
+                    Program.ShowMessageBox(this, ex.ToString());
+                    return;
+                }
+                catch (XmlException ex)
+                {
+                    Program.ShowMessageBox(this, ex.ToString());
+                    return;
                 }
 
                 foreach (XPathNavigator xmlContact in await xmlDoc.CreateNavigator()
                                                                   .SelectAndCacheExpressionAsync(
-                                                                      "/chummer/contacts/contact", token: token))
+                                                                      "/chummer/contacts/contact", token: token).ConfigureAwait(false))
                 {
                     Contact objContact = new Contact(CharacterObject);
                     objContact.Load(xmlContact);
-                    await CharacterObject.Contacts.AddAsync(objContact, token);
+                    await CharacterObject.Contacts.AddAsync(objContact, token).ConfigureAwait(false);
                 }
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 

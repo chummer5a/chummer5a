@@ -212,7 +212,8 @@ namespace Chummer.Backend
                 dump.AddFile(Path.Combine(Utils.GetStartupPath, "chummerlog.txt"));
 
                 string strJsonPath = Path.Combine(Utils.GetStartupPath, "latest_crash_json.txt");
-                using (StreamWriter objStreamWriter = new StreamWriter(strJsonPath))
+                using (FileStream objFileStream = new FileStream(strJsonPath, FileMode.Create, FileAccess.Write, FileShare.None))
+                using (StreamWriter objStreamWriter = new StreamWriter(objFileStream))
                 using (JsonWriter objJsonWriter = new JsonTextWriter(objStreamWriter))
                 {
                     dump.SerializeJson(objJsonWriter);

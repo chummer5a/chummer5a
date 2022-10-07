@@ -580,7 +580,9 @@ namespace Chummer.Tests
                 {
                     XmlDocument xmlDocument
                         = await objCharacter.GenerateExportXml(objExportCultureInfo, strExportLanguage);
-                    xmlDocument.Save(strPath);
+                    using (FileStream objFileStream
+                           = new FileStream(strPath, FileMode.Create, FileAccess.Write, FileShare.None))
+                        xmlDocument.Save(objFileStream);
                 }).GetAwaiter().GetResult(); // Need this wrapper to make unit test work
                 Debug.WriteLine("Character exported: " + objCharacter.Name + " to " + Path.GetFileName(strPath));
             }

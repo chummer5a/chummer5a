@@ -110,7 +110,7 @@ namespace Chummer
                 }
             }
 
-            using (FileStream objStream = new FileStream(strPath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
+            using (FileStream objStream = new FileStream(strPath, FileMode.Create, FileAccess.Write, FileShare.None))
             {
                 using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
                 {

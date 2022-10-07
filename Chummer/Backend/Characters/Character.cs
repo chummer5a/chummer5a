@@ -3609,17 +3609,18 @@ namespace Chummer
                         // Validate that the character can save properly. If there's no error, save the file to the listed file location.
                         try
                         {
-                            XmlDocument objDoc = new XmlDocument { XmlResolver = null };
+                            XmlDocument objDoc = new XmlDocument {XmlResolver = null};
                             using (XmlReader objXmlReader
                                    = XmlReader.Create(objStream, GlobalSettings.SafeXmlReaderSettings))
                                 objDoc.Load(objXmlReader);
-                            if (strFileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
-                                objDoc.Save(strFileName);
-                            else
+                            using (FileStream objFileStream
+                                   = new FileStream(strFileName, FileMode.Create, FileAccess.Write, FileShare.None))
                             {
-                                objStream.Seek(0, SeekOrigin.Begin);
-                                using (FileStream objFileStream = new FileStream(strFileName, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None))
+                                if (strFileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
+                                    objDoc.Save(objFileStream);
+                                else
                                 {
+                                    objStream.Seek(0, SeekOrigin.Begin);
                                     objStream.CompressToLzmaFile(objFileStream, GlobalSettings.Chum5lzCompressionLevel);
                                 }
                             }
@@ -3630,7 +3631,8 @@ namespace Chummer
                             if (Utils.IsUnitTest)
                                 throw;
                             // ReSharper disable once MethodHasAsyncOverload
-                            Program.ShowMessageBox(LanguageManager.GetString("Message_Save_Error_Warning", token: token));
+                            Program.ShowMessageBox(
+                                LanguageManager.GetString("Message_Save_Error_Warning", token: token));
                             blnErrorFree = false;
                         }
                         catch (XmlException ex)
@@ -3639,13 +3641,15 @@ namespace Chummer
                             if (Utils.IsUnitTest)
                                 throw;
                             // ReSharper disable once MethodHasAsyncOverload
-                            Program.ShowMessageBox(LanguageManager.GetString("Message_Save_Error_Warning", token: token));
+                            Program.ShowMessageBox(
+                                LanguageManager.GetString("Message_Save_Error_Warning", token: token));
                             blnErrorFree = false;
                         }
                         catch (UnauthorizedAccessException) when (!Utils.IsUnitTest)
                         {
                             // ReSharper disable once MethodHasAsyncOverload
-                            Program.ShowMessageBox(LanguageManager.GetString("Message_Save_Error_Warning", token: token));
+                            Program.ShowMessageBox(
+                                LanguageManager.GetString("Message_Save_Error_Warning", token: token));
                             blnErrorFree = false;
                         }
                     }
@@ -4370,13 +4374,14 @@ namespace Chummer
                             using (XmlReader objXmlReader
                                    = XmlReader.Create(objStream, GlobalSettings.SafeXmlReaderSettings))
                                 objDoc.Load(objXmlReader);
-                            if (strFileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
-                                objDoc.Save(strFileName);
-                            else
+                            using (FileStream objFileStream
+                                   = new FileStream(strFileName, FileMode.Create, FileAccess.Write, FileShare.None))
                             {
-                                objStream.Seek(0, SeekOrigin.Begin);
-                                using (FileStream objFileStream = new FileStream(strFileName, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None))
+                                if (strFileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
+                                    objDoc.Save(objFileStream);
+                                else
                                 {
+                                    objStream.Seek(0, SeekOrigin.Begin);
                                     await objStream.CompressToLzmaFileAsync(
                                         objFileStream, GlobalSettings.Chum5lzCompressionLevel, token: innerToken);
                                 }
@@ -30917,26 +30922,24 @@ namespace Chummer
                                             {
                                                 using (StreamReader objStreamReader =
                                                        new StreamReader(entry.Open(), true))
+                                                using (XmlReader objReader = XmlReader.Create(objStreamReader,
+                                                           GlobalSettings.SafeXmlReaderSettings))
                                                 {
-                                                    using (XmlReader objReader = XmlReader.Create(objStreamReader,
-                                                               GlobalSettings.SafeXmlReaderSettings))
+                                                    XPathDocument xmlSourceDoc = new XPathDocument(objReader);
+                                                    XPathNavigator objDummy = xmlSourceDoc.CreateNavigator();
+                                                    if (strEntryFullName.StartsWith("statblocks_xml",
+                                                            StringComparison.Ordinal))
                                                     {
-                                                        XPathDocument xmlSourceDoc = new XPathDocument(objReader);
-                                                        XPathNavigator objDummy = xmlSourceDoc.CreateNavigator();
-                                                        if (strEntryFullName.StartsWith("statblocks_xml",
-                                                                StringComparison.Ordinal))
-                                                        {
-                                                            if (objDummy.SelectSingleNode(
-                                                                    "/document/public/character[@name = " +
-                                                                    strCharacterId.CleanXPath() + ']') != null)
-                                                                xmlStatBlockDocument = objDummy;
-                                                        }
-                                                        else
-                                                        {
-                                                            strLeadsName = objDummy.SelectSingleNode(
-                                                                "/document/portfolio/hero[@heroname = " +
-                                                                strCharacterId.CleanXPath() + "]/@leadfile")?.Value;
-                                                        }
+                                                        if (objDummy.SelectSingleNode(
+                                                                "/document/public/character[@name = " +
+                                                                strCharacterId.CleanXPath() + ']') != null)
+                                                            xmlStatBlockDocument = objDummy;
+                                                    }
+                                                    else
+                                                    {
+                                                        strLeadsName = objDummy.SelectSingleNode(
+                                                            "/document/portfolio/hero[@heroname = " +
+                                                            strCharacterId.CleanXPath() + "]/@leadfile")?.Value;
                                                     }
                                                 }
                                             }
@@ -31008,13 +31011,11 @@ namespace Chummer
                                             {
                                                 using (StreamReader objStreamReader =
                                                        new StreamReader(entry.Open(), true))
+                                                using (XmlReader objReader = XmlReader.Create(objStreamReader,
+                                                           GlobalSettings.SafeXmlReaderSettings))
                                                 {
-                                                    using (XmlReader objReader = XmlReader.Create(objStreamReader,
-                                                               GlobalSettings.SafeXmlReaderSettings))
-                                                    {
-                                                        XPathDocument xmlSourceDoc = new XPathDocument(objReader);
-                                                        xmlLeadsDocument = xmlSourceDoc.CreateNavigator();
-                                                    }
+                                                    XPathDocument xmlSourceDoc = new XPathDocument(objReader);
+                                                    xmlLeadsDocument = xmlSourceDoc.CreateNavigator();
                                                 }
                                             }
                                             // If we run into any problems loading the character xml files, fail out early.

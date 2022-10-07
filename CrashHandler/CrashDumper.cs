@@ -327,7 +327,8 @@ namespace CrashHandler
         {
             Dictionary<string, object> parts;
 
-            using (StreamReader objStreamReader = new StreamReader(strJsonPath))
+            using (FileStream objFileStream = new FileStream(strJsonPath, FileMode.Open, FileAccess.Read, FileShare.Read))
+            using (StreamReader objStreamReader = new StreamReader(objFileStream))
             using (JsonReader objJsonReader = new JsonTextReader(objStreamReader))
             {
                 parts = JsonSerializer.CreateDefault().Deserialize<Dictionary<string, object>>(objJsonReader);

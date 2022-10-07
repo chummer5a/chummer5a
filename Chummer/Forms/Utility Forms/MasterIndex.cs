@@ -119,13 +119,11 @@ namespace Chummer
 
                 bool blnOldSkipRefresh = _blnSkipRefresh;
                 _blnSkipRefresh = true;
-                CharacterSettings objSettings;
-                bool blnSuccess;
                 
                 await cboCharacterSetting.PopulateWithListItemsAsync(lstCharacterSettings, token).ConfigureAwait(false);
                 if (!string.IsNullOrEmpty(strOldSettingKey))
                 {
-                    (blnSuccess, objSettings)
+                    (bool blnSuccess, CharacterSettings objSettings)
                         = await dicCharacterSettings.TryGetValueAsync(strOldSettingKey, token).ConfigureAwait(false);
                     if (blnSuccess)
                         await cboCharacterSetting.DoThreadSafeAsync(x => x.SelectedValue = objSettings, token).ConfigureAwait(false);
@@ -135,16 +133,16 @@ namespace Chummer
 
                 if (await cboCharacterSetting.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false) != -1)
                     return;
-                (blnSuccess, objSettings)
+                (bool blnSuccess2, CharacterSettings objSettings2)
                     = await dicCharacterSettings.TryGetValueAsync(GlobalSettings.DefaultMasterIndexSetting, token).ConfigureAwait(false);
-                if (blnSuccess)
-                    await cboCharacterSetting.DoThreadSafeAsync(x => x.SelectedValue = objSettings, token).ConfigureAwait(false);
+                if (blnSuccess2)
+                    await cboCharacterSetting.DoThreadSafeAsync(x => x.SelectedValue = objSettings2, token).ConfigureAwait(false);
                 else
                 {
-                    (blnSuccess, objSettings)
+                    (bool blnSuccess3, CharacterSettings objSettings3)
                         = await dicCharacterSettings.TryGetValueAsync(GlobalSettings.DefaultMasterIndexSettingDefaultValue, token).ConfigureAwait(false);
-                    if (blnSuccess)
-                        await cboCharacterSetting.DoThreadSafeAsync(x => x.SelectedValue = objSettings, token).ConfigureAwait(false);
+                    if (blnSuccess3)
+                        await cboCharacterSetting.DoThreadSafeAsync(x => x.SelectedValue = objSettings3, token).ConfigureAwait(false);
                 }
 
                 await cboCharacterSetting.DoThreadSafeAsync(x =>

@@ -754,7 +754,7 @@ namespace Chummer
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     xmlScratchpad.LoadStandard(strPath);
                                 else
-                                    await xmlScratchpad.LoadStandardAsync(strPath, token: token);
+                                    await xmlScratchpad.LoadStandardAsync(strPath, token: token).ConfigureAwait(false);
 
                                 if (xmlReturnDocElement != null)
                                 {
@@ -2175,9 +2175,7 @@ namespace Chummer
 
             try
             {
-                using (StreamReader objStreamReader = new StreamReader(strFilePath, Encoding.UTF8, true))
-                using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalSettings.SafeXmlReaderSettings))
-                    objLanguageDoc = new XPathDocument(objXmlReader);
+                objLanguageDoc = await XPathDocumentExtensions.LoadStandardFromFileAsync(strFilePath, token: token).ConfigureAwait(false);
             }
             catch (IOException ex)
             {
@@ -2196,7 +2194,7 @@ namespace Chummer
 
             string strLangPath = Path.Combine(Utils.GetLanguageFolderPath, "results_" + strLanguage + ".xml");
             using (FileStream objStream
-                   = new FileStream(strLangPath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
+                   = new FileStream(strLangPath, FileMode.Create, FileAccess.Write, FileShare.None))
             {
                 token.ThrowIfCancellationRequested();
                 using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))

@@ -20,7 +20,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -51,10 +50,7 @@ namespace Chummer
                     XPathDocument objXmlDocument;
                     try
                     {
-                        using (StreamReader objStreamReader = new StreamReader(strFileName, Encoding.UTF8, true))
-                        using (XmlReader objXmlReader
-                               = XmlReader.Create(objStreamReader, GlobalSettings.SafeXmlReaderSettings))
-                            objXmlDocument = new XPathDocument(objXmlReader);
+                        objXmlDocument = await XPathDocumentExtensions.LoadStandardFromFileAsync(strFileName);
                     }
                     catch (IOException)
                     {

@@ -117,18 +117,16 @@ namespace Chummer
                                 // If we run into any problems loading the character cache, fail out early.
                                 try
                                 {
-                                    using (StreamReader sr = new StreamReader(entry.Open(), true))
+                                    await Task.Run(() =>
                                     {
-                                        await Task.Run(() =>
-                                        {
-                                            XPathDocument xmlSourceDoc;
-                                            using (XmlReader objXmlReader
-                                                   = XmlReader.Create(sr, GlobalSettings.SafeXmlReaderSettings))
-                                                xmlSourceDoc = new XPathDocument(objXmlReader);
-                                            XPathNavigator objToAdd = xmlSourceDoc.CreateNavigator();
-                                            lstCharacterXmlStatblocks.Add(objToAdd);
-                                        }, token);
-                                    }
+                                        XPathDocument xmlSourceDoc;
+                                        using (StreamReader sr = new StreamReader(entry.Open(), true))
+                                        using (XmlReader objXmlReader
+                                               = XmlReader.Create(sr, GlobalSettings.SafeXmlReaderSettings))
+                                            xmlSourceDoc = new XPathDocument(objXmlReader);
+                                        XPathNavigator objToAdd = xmlSourceDoc.CreateNavigator();
+                                        lstCharacterXmlStatblocks.Add(objToAdd);
+                                    }, token);
                                 }
                                 // If we run into any problems loading the character cache, fail out early.
                                 catch (IOException)

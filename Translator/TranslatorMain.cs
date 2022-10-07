@@ -508,8 +508,14 @@ namespace Translator
                 cmdCancel.Enabled = false;
                 if (!blnWasCancelled && _objDataDocWithPath != null && _objStringsDocWithPath != null)
                 {
-                    _objStringsDocWithPath.Item1.Save(_objStringsDocWithPath.Item2);
-                    _objDataDocWithPath.Item1.Save(_objDataDocWithPath.Item2);
+                    using (FileStream objFileStream
+                           = new FileStream(_objStringsDocWithPath.Item2, FileMode.Create, FileAccess.Write,
+                                            FileShare.None))
+                        _objStringsDocWithPath.Item1.Save(objFileStream);
+                    using (FileStream objFileStream
+                           = new FileStream(_objDataDocWithPath.Item2, FileMode.Create, FileAccess.Write,
+                                            FileShare.None))
+                        _objDataDocWithPath.Item1.Save(objFileStream);
 
                     LoadLanguageList();
                     TranslateData frmOpenTranslate = new TranslateData(_strLanguageToLoad);

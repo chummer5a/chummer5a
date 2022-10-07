@@ -45,7 +45,8 @@ namespace Chummer
             try
             {
                 string strFile = Path.Combine(Utils.GetStartupPath, "chummerlog.txt");
-                using (StreamReader objStream = new StreamReader(strFile, Encoding.UTF8, true))
+                using (FileStream objFileStream = new FileStream(strFile, FileMode.Open, FileAccess.Read, FileShare.Read))
+                using (StreamReader objStream = new StreamReader(objFileStream, Encoding.UTF8, true))
                     report.AddData("chummerlog.txt", objStream.BaseStream);
             }
             catch (Exception ex)
@@ -64,7 +65,8 @@ namespace Chummer
                 string strName = Path.GetFileName(strSettingFile);
                 try
                 {
-                    using (StreamReader objStream = new StreamReader(strSettingFile, Encoding.UTF8, true))
+                    using (FileStream objFileStream = new FileStream(strSettingFile, FileMode.Open, FileAccess.Read, FileShare.Read))
+                    using (StreamReader objStream = new StreamReader(objFileStream, Encoding.UTF8, true))
                         report.AddData(strName, objStream.BaseStream);
                 }
                 catch (Exception ex)
