@@ -2439,6 +2439,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
+                int intArmor = Armor;
                 int intModArmor = 0;
 
                 // Add the Modification's Armor to the Vehicle's base Armor.
@@ -2447,24 +2448,22 @@ namespace Chummer.Backend.Equipment
                     if (objMod.IncludedInVehicle || !objMod.Equipped)
                         continue;
 
-                    intModArmor += ParseBonus(objMod.Bonus?["armor"]?.InnerText, objMod.Rating, Armor, "Armor");
+                    string strLoop = objMod.Bonus?["armor"]?.InnerText;
+                    intModArmor += ParseBonus(strLoop, objMod.Rating, Armor, "Armor");
+                    intArmor = Math.Max(intArmor, ParseBonus(strLoop, objMod.Rating, Armor, "Armor", false));
                     if (objMod.WirelessOn && objMod.WirelessBonus != null)
                     {
-                        intModArmor += ParseBonus(objMod.WirelessBonus?["armor"]?.InnerText, objMod.Rating, Armor, "Armor");
+                        strLoop = objMod.WirelessBonus?["armor"]?.InnerText;
+                        intModArmor += ParseBonus(strLoop, objMod.Rating, Armor, "Armor");
+                        intArmor = Math.Max(intArmor, ParseBonus(strLoop, objMod.Rating, Armor, "Armor", false));
                     }
                 }
-                // Rigger5 Drone Armor starts at 0. All other vehicles start with their base armor.
-                if (IsDrone && _objCharacter.Settings.DroneMods)
-                {
-                    if (intModArmor <= 0)
-                        intModArmor += Armor;
-                }
+
+
                 // Drones have no theoretical armor cap in the optional rules, otherwise, it's capped
-                else
-                {
-                    intModArmor = Math.Min(MaxArmor, intModArmor + Armor);
-                }
-                return intModArmor;
+                if (IsDrone && _objCharacter.Settings.DroneMods)
+                    return intModArmor + Armor;
+                return Math.Min(MaxArmor, intModArmor + Armor);
             }
         }
 
