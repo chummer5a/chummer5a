@@ -3,6 +3,7 @@ Application Changes:
 - Fixed some rare bugs and crashes that could occur when writing to a file that Chummer was simultaneously attempting to read in.
 - Trying to add an item with a weapon select entry that relies on selecting for weapon details no longer causes a crash. Fixes #4934.
 - Markup and Black Market Pipeline cost modifiers applied to a weapon mount now properly apply based on all options of the weapon mount instead of just its size. Fixes #4933.
+- Added the option to character settings to apply a custom post-processing effect (using Chummer's document-invariant XPath processor) to essence modifiers after they have all been collected but before they are applied to 'ware essence costs.
 
 Data Changes:
 - Added bonus nodes for Shooter (The Soldier) paragon's Compiling dice pool penalty and +1 limit for attack actions. Part of #4935.
@@ -11,6 +12,7 @@ Data Changes:
 
 Changed/New Strings:
 - LimitCondition_SoldierParagon
+- Label_Options_EssenceModifierPostExpression
 
 Build 224
 Application Changes:

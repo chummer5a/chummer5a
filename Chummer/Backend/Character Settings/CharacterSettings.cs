@@ -111,6 +111,7 @@ namespace Chummer
         private string _strChargenKarmaToNuyenExpression = "{Karma} * 2000 + {PriorityNuyen}";
         private string _strBoundSpiritExpression = "{CHA}";
         private string _strRegisteredSpriteExpression = "{LOG}";
+        private string _strEssenceModifierPostExpression = "{Modifier}";
         private string _strLiftLimitExpression = "{STR} * 15";
         private string _strCarryLimitExpression = "{STR} * 10";
         private string _strEncumbranceIntervalExpression = "15";
@@ -841,6 +842,7 @@ namespace Chummer
                 hashCode = (hashCode * 397) ^ (_strChargenKarmaToNuyenExpression?.GetHashCode() ?? 0);
                 hashCode = (hashCode * 397) ^ (_strBoundSpiritExpression?.GetHashCode() ?? 0);
                 hashCode = (hashCode * 397) ^ (_strRegisteredSpriteExpression?.GetHashCode() ?? 0);
+                hashCode = (hashCode * 397) ^ (_strEssenceModifierPostExpression?.GetHashCode() ?? 0);
                 hashCode = (hashCode * 397) ^ (_strLiftLimitExpression?.GetHashCode() ?? 0);
                 hashCode = (hashCode * 397) ^ (_strCarryLimitExpression?.GetHashCode() ?? 0);
                 hashCode = (hashCode * 397) ^ (_strEncumbranceIntervalExpression?.GetHashCode() ?? 0);
@@ -1070,6 +1072,8 @@ namespace Chummer
                         objWriter.WriteElementString("boundspiritexpression", _strBoundSpiritExpression);
                         // <compiledspriteexpression />
                         objWriter.WriteElementString("compiledspriteexpression", _strRegisteredSpriteExpression);
+                        // <essencemodifierpostexpression />
+                        objWriter.WriteElementString("essencemodifierpostexpression", _strEssenceModifierPostExpression);
                         // <liftlimitexpression />
                         objWriter.WriteElementString("liftlimitexpression", _strLiftLimitExpression);
                         // <carrylimitexpression />
@@ -1823,6 +1827,7 @@ namespace Chummer
                 // Various expressions used to determine certain character stats
                 objXmlNode.TryGetStringFieldQuickly("compiledspriteexpression", ref _strRegisteredSpriteExpression);
                 objXmlNode.TryGetStringFieldQuickly("boundspiritexpression", ref _strBoundSpiritExpression);
+                objXmlNode.TryGetStringFieldQuickly("essencemodifierpostexpression", ref _strEssenceModifierPostExpression);
                 objXmlNode.TryGetStringFieldQuickly("liftlimitexpression", ref _strLiftLimitExpression);
                 objXmlNode.TryGetStringFieldQuickly("carrylimitexpression", ref _strCarryLimitExpression);
                 objXmlNode.TryGetStringFieldQuickly("encumbranceintervalexpression",
@@ -2580,6 +2585,7 @@ namespace Chummer
                 // Various expressions used to determine certain character stats
                 objXmlNode.TryGetStringFieldQuickly("compiledspriteexpression", ref _strRegisteredSpriteExpression);
                 objXmlNode.TryGetStringFieldQuickly("boundspiritexpression", ref _strBoundSpiritExpression);
+                objXmlNode.TryGetStringFieldQuickly("essencemodifierpostexpression", ref _strEssenceModifierPostExpression);
                 objXmlNode.TryGetStringFieldQuickly("liftlimitexpression", ref _strLiftLimitExpression);
                 objXmlNode.TryGetStringFieldQuickly("carrylimitexpression", ref _strCarryLimitExpression);
                 objXmlNode.TryGetStringFieldQuickly("encumbranceintervalexpression",
@@ -4600,6 +4606,32 @@ namespace Chummer
                     using (LockObject.EnterWriteLock())
                     {
                         _strRegisteredSpriteExpression = strNewValue;
+                        OnPropertyChanged();
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// The XPath expression to use (if any) to modify Essence modifiers after they have all been collected
+        /// </summary>
+        public string EssenceModifierPostExpression
+        {
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _strEssenceModifierPostExpression;
+            }
+            set
+            {
+                string strNewValue = value.CleanXPath().Trim('\"');
+                using (EnterReadLock.Enter(LockObject))
+                {
+                    if (_strEssenceModifierPostExpression == strNewValue)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _strEssenceModifierPostExpression = strNewValue;
                         OnPropertyChanged();
                     }
                 }

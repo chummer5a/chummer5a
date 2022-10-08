@@ -912,7 +912,7 @@ namespace Chummer
                                 if (blnIsGeneware)
                                     decCharacterESSModifier -= (1 - GenetechEssMultiplier);
 
-                                if (_objCharacter.Settings.AllowCyberwareESSDiscounts)
+                                if ((await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).AllowCyberwareESSDiscounts)
                                 {
                                     decimal decDiscountModifier = await nudESSDiscount.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false) / 100.0m;
                                     decCharacterESSModifier *= (1.0m - decDiscountModifier);
@@ -921,6 +921,21 @@ namespace Chummer
                                 decCharacterESSModifier -= (1 - _decESSMultiplier);
 
                                 decCharacterESSModifier *= CharacterTotalESSMultiplier;
+
+                                string strPostModifierExpression
+                                    = (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false))
+                                    .EssenceModifierPostExpression;
+                                if (!string.IsNullOrEmpty(strPostModifierExpression) && strPostModifierExpression != "{Modifier}")
+                                {
+                                    (bool blnIsSuccess2, object objProcess2)
+                                        = await CommonFunctions.EvaluateInvariantXPathAsync(
+                                            strPostModifierExpression.Replace(
+                                                "{Modifier}",
+                                                decCharacterESSModifier.ToString(GlobalSettings.InvariantCultureInfo)),
+                                            token);
+                                    if (blnIsSuccess2)
+                                        decCharacterESSModifier = Convert.ToDecimal(objProcess2, GlobalSettings.InvariantCultureInfo);
+                                }
                             }
 
                             string strEss = objXmlCyberware.SelectSingleNode("ess")?.Value ?? string.Empty;

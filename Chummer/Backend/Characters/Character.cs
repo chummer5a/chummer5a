@@ -846,6 +846,7 @@ namespace Chummer
 
                 case nameof(CharacterSettings.EssenceFormat):
                 case nameof(CharacterSettings.DontRoundEssenceInternally):
+                case nameof(CharacterSettings.EssenceModifierPostExpression):
                     this.OnMultiplePropertyChanged(nameof(PrototypeTranshumanEssenceUsed), nameof(BiowareEssence),
                                                    nameof(CyberwareEssence), nameof(EssenceHole));
                     break;
@@ -28516,6 +28517,13 @@ namespace Chummer
                     lstPropertyChangedHolder.Add(nameof(RegisteredSpriteLimit));
                 if (Settings.EncumbranceIntervalExpression.Contains(strExpressionToFind))
                     lstPropertyChangedHolder.Add(nameof(EncumbranceInterval));
+                if (Settings.EssenceModifierPostExpression.Contains(strExpressionToFind))
+                {
+                    lstPropertyChangedHolder.Add(nameof(PrototypeTranshumanEssenceUsed));
+                    lstPropertyChangedHolder.Add(nameof(BiowareEssence));
+                    lstPropertyChangedHolder.Add(nameof(CyberwareEssence));
+                    lstPropertyChangedHolder.Add(nameof(EssenceHole));
+                }
             }
         }
 

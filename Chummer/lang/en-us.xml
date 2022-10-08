@@ -7923,6 +7923,10 @@
       <text>Number of decimal places to round Essence to:</text>
     </string>
     <string>
+      <key>Label_Options_EssenceModifierPostExpression</key>
+      <text>Post-Process Essence Modifiers as:</text>
+    </string>
+    <string>
       <key>Checkbox_Option_DontRoundEssenceInternally</key>
       <text>Only round Essence for display purposes, not for internal calculations</text>
     </string>

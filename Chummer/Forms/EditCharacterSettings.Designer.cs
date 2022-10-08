@@ -329,6 +329,7 @@ namespace Chummer
             this.chkSpecializationsBreakSkillGroups = new Chummer.ColorableCheckBox(this.components);
             this.gpbHouseRulesCombat = new System.Windows.Forms.GroupBox();
             this.tlpHouseRulesCombat = new System.Windows.Forms.TableLayoutPanel();
+            this.chkUncappedArmorAccessoryBonuses = new Chummer.ColorableCheckBox(this.components);
             this.chkNoArmorEncumbrance = new Chummer.ColorableCheckBox(this.components);
             this.chkUnarmedSkillImprovements = new Chummer.ColorableCheckBox(this.components);
             this.gpbHouseRulesMagicResonance = new System.Windows.Forms.GroupBox();
@@ -364,7 +365,8 @@ namespace Chummer
             this.cmdRestoreDefaults = new System.Windows.Forms.Button();
             this.cmdSave = new System.Windows.Forms.Button();
             this.cmdSaveAs = new System.Windows.Forms.Button();
-            this.chkUncappedArmorAccessoryBonuses = new Chummer.ColorableCheckBox(this.components);
+            this.lblEssenceModifierPostExpression = new System.Windows.Forms.Label();
+            this.txtEssenceModifierPostExpression = new System.Windows.Forms.TextBox();
             this.tlpOptions.SuspendLayout();
             this.tabOptions.SuspendLayout();
             this.tabBasicOptions.SuspendLayout();
@@ -1998,7 +2000,7 @@ namespace Chummer
             this.gpbBasicOptionsRounding.Controls.Add(this.tlpBasicOptionsRounding);
             this.gpbBasicOptionsRounding.Location = new System.Drawing.Point(394, 521);
             this.gpbBasicOptionsRounding.Name = "gpbBasicOptionsRounding";
-            this.gpbBasicOptionsRounding.Size = new System.Drawing.Size(361, 122);
+            this.gpbBasicOptionsRounding.Size = new System.Drawing.Size(373, 148);
             this.gpbBasicOptionsRounding.TabIndex = 1;
             this.gpbBasicOptionsRounding.TabStop = false;
             this.gpbBasicOptionsRounding.Tag = "Label_CharacterOptions_DecimalsAndRounding";
@@ -2008,32 +2010,36 @@ namespace Chummer
             // 
             this.tlpBasicOptionsRounding.AutoSize = true;
             this.tlpBasicOptionsRounding.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpBasicOptionsRounding.ColumnCount = 2;
+            this.tlpBasicOptionsRounding.ColumnCount = 3;
+            this.tlpBasicOptionsRounding.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpBasicOptionsRounding.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpBasicOptionsRounding.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpBasicOptionsRounding.Controls.Add(this.lblEssenceModifierPostExpression, 0, 4);
             this.tlpBasicOptionsRounding.Controls.Add(this.chkDontRoundEssenceInternally, 0, 3);
             this.tlpBasicOptionsRounding.Controls.Add(this.lblNuyenDecimalsMinimumLabel, 0, 0);
             this.tlpBasicOptionsRounding.Controls.Add(this.lblNuyenDecimalsMaximumLabel, 0, 1);
             this.tlpBasicOptionsRounding.Controls.Add(this.lblEssenceDecimals, 0, 2);
-            this.tlpBasicOptionsRounding.Controls.Add(this.nudNuyenDecimalsMinimum, 1, 0);
-            this.tlpBasicOptionsRounding.Controls.Add(this.nudNuyenDecimalsMaximum, 1, 1);
-            this.tlpBasicOptionsRounding.Controls.Add(this.nudEssenceDecimals, 1, 2);
+            this.tlpBasicOptionsRounding.Controls.Add(this.nudNuyenDecimalsMinimum, 2, 0);
+            this.tlpBasicOptionsRounding.Controls.Add(this.nudNuyenDecimalsMaximum, 2, 1);
+            this.tlpBasicOptionsRounding.Controls.Add(this.nudEssenceDecimals, 2, 2);
+            this.tlpBasicOptionsRounding.Controls.Add(this.txtEssenceModifierPostExpression, 1, 4);
             this.tlpBasicOptionsRounding.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpBasicOptionsRounding.Location = new System.Drawing.Point(3, 16);
             this.tlpBasicOptionsRounding.Name = "tlpBasicOptionsRounding";
-            this.tlpBasicOptionsRounding.RowCount = 4;
+            this.tlpBasicOptionsRounding.RowCount = 5;
             this.tlpBasicOptionsRounding.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpBasicOptionsRounding.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpBasicOptionsRounding.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpBasicOptionsRounding.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpBasicOptionsRounding.Size = new System.Drawing.Size(355, 103);
+            this.tlpBasicOptionsRounding.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpBasicOptionsRounding.Size = new System.Drawing.Size(367, 129);
             this.tlpBasicOptionsRounding.TabIndex = 0;
             // 
             // chkDontRoundEssenceInternally
             // 
             this.chkDontRoundEssenceInternally.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkDontRoundEssenceInternally.AutoSize = true;
-            this.tlpBasicOptionsRounding.SetColumnSpan(this.chkDontRoundEssenceInternally, 2);
+            this.tlpBasicOptionsRounding.SetColumnSpan(this.chkDontRoundEssenceInternally, 3);
             this.chkDontRoundEssenceInternally.DefaultColorScheme = true;
             this.chkDontRoundEssenceInternally.Location = new System.Drawing.Point(3, 82);
             this.chkDontRoundEssenceInternally.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
@@ -2048,7 +2054,8 @@ namespace Chummer
             // 
             this.lblNuyenDecimalsMinimumLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblNuyenDecimalsMinimumLabel.AutoSize = true;
-            this.lblNuyenDecimalsMinimumLabel.Location = new System.Drawing.Point(6, 6);
+            this.tlpBasicOptionsRounding.SetColumnSpan(this.lblNuyenDecimalsMinimumLabel, 2);
+            this.lblNuyenDecimalsMinimumLabel.Location = new System.Drawing.Point(68, 6);
             this.lblNuyenDecimalsMinimumLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblNuyenDecimalsMinimumLabel.Name = "lblNuyenDecimalsMinimumLabel";
             this.lblNuyenDecimalsMinimumLabel.Size = new System.Drawing.Size(255, 13);
@@ -2061,7 +2068,8 @@ namespace Chummer
             // 
             this.lblNuyenDecimalsMaximumLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblNuyenDecimalsMaximumLabel.AutoSize = true;
-            this.lblNuyenDecimalsMaximumLabel.Location = new System.Drawing.Point(3, 32);
+            this.tlpBasicOptionsRounding.SetColumnSpan(this.lblNuyenDecimalsMaximumLabel, 2);
+            this.lblNuyenDecimalsMaximumLabel.Location = new System.Drawing.Point(65, 32);
             this.lblNuyenDecimalsMaximumLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblNuyenDecimalsMaximumLabel.Name = "lblNuyenDecimalsMaximumLabel";
             this.lblNuyenDecimalsMaximumLabel.Size = new System.Drawing.Size(258, 13);
@@ -2074,7 +2082,8 @@ namespace Chummer
             // 
             this.lblEssenceDecimals.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblEssenceDecimals.AutoSize = true;
-            this.lblEssenceDecimals.Location = new System.Drawing.Point(31, 58);
+            this.tlpBasicOptionsRounding.SetColumnSpan(this.lblEssenceDecimals, 2);
+            this.lblEssenceDecimals.Location = new System.Drawing.Point(93, 58);
             this.lblEssenceDecimals.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblEssenceDecimals.Name = "lblEssenceDecimals";
             this.lblEssenceDecimals.Size = new System.Drawing.Size(230, 13);
@@ -2087,7 +2096,7 @@ namespace Chummer
             // 
             this.nudNuyenDecimalsMinimum.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.nudNuyenDecimalsMinimum.AutoSize = true;
-            this.nudNuyenDecimalsMinimum.Location = new System.Drawing.Point(267, 3);
+            this.nudNuyenDecimalsMinimum.Location = new System.Drawing.Point(329, 3);
             this.nudNuyenDecimalsMinimum.Maximum = new decimal(new int[] {
             28,
             0,
@@ -2106,7 +2115,7 @@ namespace Chummer
             // 
             this.nudNuyenDecimalsMaximum.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.nudNuyenDecimalsMaximum.AutoSize = true;
-            this.nudNuyenDecimalsMaximum.Location = new System.Drawing.Point(267, 29);
+            this.nudNuyenDecimalsMaximum.Location = new System.Drawing.Point(329, 29);
             this.nudNuyenDecimalsMaximum.Maximum = new decimal(new int[] {
             28,
             0,
@@ -2125,7 +2134,7 @@ namespace Chummer
             // 
             this.nudEssenceDecimals.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.nudEssenceDecimals.AutoSize = true;
-            this.nudEssenceDecimals.Location = new System.Drawing.Point(267, 55);
+            this.nudEssenceDecimals.Location = new System.Drawing.Point(329, 55);
             this.nudEssenceDecimals.Maximum = new decimal(new int[] {
             28,
             0,
@@ -2149,7 +2158,7 @@ namespace Chummer
             // 
             this.gpbBasicOptionsInitiativeDice.AutoSize = true;
             this.gpbBasicOptionsInitiativeDice.Controls.Add(this.tlpBasicOptionsInitiativeDice);
-            this.gpbBasicOptionsInitiativeDice.Location = new System.Drawing.Point(3, 674);
+            this.gpbBasicOptionsInitiativeDice.Location = new System.Drawing.Point(3, 675);
             this.gpbBasicOptionsInitiativeDice.Name = "gpbBasicOptionsInitiativeDice";
             this.gpbBasicOptionsInitiativeDice.Size = new System.Drawing.Size(239, 148);
             this.gpbBasicOptionsInitiativeDice.TabIndex = 6;
@@ -5371,6 +5380,20 @@ namespace Chummer
             this.tlpHouseRulesCombat.Size = new System.Drawing.Size(378, 75);
             this.tlpHouseRulesCombat.TabIndex = 0;
             // 
+            // chkUncappedArmorAccessoryBonuses
+            // 
+            this.chkUncappedArmorAccessoryBonuses.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkUncappedArmorAccessoryBonuses.AutoSize = true;
+            this.chkUncappedArmorAccessoryBonuses.DefaultColorScheme = true;
+            this.chkUncappedArmorAccessoryBonuses.Location = new System.Drawing.Point(3, 29);
+            this.chkUncappedArmorAccessoryBonuses.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkUncappedArmorAccessoryBonuses.Name = "chkUncappedArmorAccessoryBonuses";
+            this.chkUncappedArmorAccessoryBonuses.Size = new System.Drawing.Size(264, 17);
+            this.chkUncappedArmorAccessoryBonuses.TabIndex = 39;
+            this.chkUncappedArmorAccessoryBonuses.Tag = "Checkbox_Options_UncappedArmorAccessoryBonuses";
+            this.chkUncappedArmorAccessoryBonuses.Text = "No Cap on Armor Bonuses from Armor Accessories";
+            this.chkUncappedArmorAccessoryBonuses.UseVisualStyleBackColor = true;
+            // 
             // chkNoArmorEncumbrance
             // 
             this.chkNoArmorEncumbrance.Anchor = System.Windows.Forms.AnchorStyles.Left;
@@ -5912,19 +5935,29 @@ namespace Chummer
             this.cmdSaveAs.UseVisualStyleBackColor = true;
             this.cmdSaveAs.Click += new System.EventHandler(this.cmdSaveAs_Click);
             // 
-            // chkUncappedArmorAccessoryBonuses
+            // lblEssenceModifierPostExpression
             // 
-            this.chkUncappedArmorAccessoryBonuses.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.chkUncappedArmorAccessoryBonuses.AutoSize = true;
-            this.chkUncappedArmorAccessoryBonuses.DefaultColorScheme = true;
-            this.chkUncappedArmorAccessoryBonuses.Location = new System.Drawing.Point(3, 29);
-            this.chkUncappedArmorAccessoryBonuses.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chkUncappedArmorAccessoryBonuses.Name = "chkUncappedArmorAccessoryBonuses";
-            this.chkUncappedArmorAccessoryBonuses.Size = new System.Drawing.Size(264, 17);
-            this.chkUncappedArmorAccessoryBonuses.TabIndex = 39;
-            this.chkUncappedArmorAccessoryBonuses.Tag = "Checkbox_Options_UncappedArmorAccessoryBonuses";
-            this.chkUncappedArmorAccessoryBonuses.Text = "No Cap on Armor Bonuses from Armor Accessories";
-            this.chkUncappedArmorAccessoryBonuses.UseVisualStyleBackColor = true;
+            this.lblEssenceModifierPostExpression.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblEssenceModifierPostExpression.AutoSize = true;
+            this.lblEssenceModifierPostExpression.Location = new System.Drawing.Point(3, 109);
+            this.lblEssenceModifierPostExpression.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblEssenceModifierPostExpression.Name = "lblEssenceModifierPostExpression";
+            this.lblEssenceModifierPostExpression.Size = new System.Drawing.Size(175, 13);
+            this.lblEssenceModifierPostExpression.TabIndex = 35;
+            this.lblEssenceModifierPostExpression.Tag = "Label_Options_EssenceModifierPostExpression";
+            this.lblEssenceModifierPostExpression.Text = "Post-Process Essence Modifiers as:";
+            this.lblEssenceModifierPostExpression.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // txtEssenceModifierPostExpression
+            // 
+            this.txtEssenceModifierPostExpression.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.tlpBasicOptionsRounding.SetColumnSpan(this.txtEssenceModifierPostExpression, 2);
+            this.txtEssenceModifierPostExpression.Location = new System.Drawing.Point(184, 106);
+            this.txtEssenceModifierPostExpression.Name = "txtEssenceModifierPostExpression";
+            this.txtEssenceModifierPostExpression.Size = new System.Drawing.Size(180, 20);
+            this.txtEssenceModifierPostExpression.TabIndex = 36;
+            this.txtEssenceModifierPostExpression.Text = "{Modifier}";
+            this.txtEssenceModifierPostExpression.TextChanged += new System.EventHandler(this.txtEssenceModifierPostExpression_TextChanged);
             // 
             // EditCharacterSettings
             // 
@@ -6463,5 +6496,7 @@ namespace Chummer
         private NumericUpDownEx nudMaxKnowledgeSkillRating;
         private ColorableCheckBox chkSpecializationsBreakSkillGroups;
         private ColorableCheckBox chkUncappedArmorAccessoryBonuses;
+        private System.Windows.Forms.Label lblEssenceModifierPostExpression;
+        private System.Windows.Forms.TextBox txtEssenceModifierPostExpression;
     }
 }

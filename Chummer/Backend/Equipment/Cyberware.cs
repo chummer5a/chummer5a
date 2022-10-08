@@ -4395,7 +4395,28 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            decReturn *= Math.Max(0, decESSMultiplier * decTotalESSMultiplier);
+            decimal decTotalModifier = Math.Max(0, decESSMultiplier * decTotalESSMultiplier);
+            if (_objCharacter != null)
+            {
+                string strPostModifierExpression
+                    = (blnSync
+                        ? _objCharacter.Settings
+                        : await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false))
+                    .EssenceModifierPostExpression;
+                if (!string.IsNullOrEmpty(strPostModifierExpression) && strPostModifierExpression != "{Modifier}")
+                {
+                    (bool blnIsSuccess, object objProcess) = blnSync
+                        // ReSharper disable once MethodHasAsyncOverload
+                        ? CommonFunctions.EvaluateInvariantXPath(
+                            strPostModifierExpression.Replace("{Modifier}", decTotalModifier.ToString(GlobalSettings.InvariantCultureInfo)))
+                        : await CommonFunctions.EvaluateInvariantXPathAsync(
+                            strPostModifierExpression.Replace("{Modifier}", decTotalModifier.ToString(GlobalSettings.InvariantCultureInfo)), token);
+                    if (blnIsSuccess)
+                        decTotalModifier = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
+                }
+            }
+
+            decReturn *= decTotalModifier;
 
             if (_objCharacter?.Settings.DontRoundEssenceInternally == false)
                 decReturn = decimal.Round(decReturn, _objCharacter.Settings.EssenceDecimals, MidpointRounding.AwayFromZero);
