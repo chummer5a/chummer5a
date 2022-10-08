@@ -700,18 +700,26 @@ namespace Chummer
                 {
                     try
                     {
-                        using (FileStream zipToOpen = new FileStream(strBackupZipPath, FileMode.Create, FileAccess.Write, FileShare.None))
-                        using (ZipArchive archive = new ZipArchive(zipToOpen, ZipArchiveMode.Create))
+                        using (FileStream objZipFileStream = new FileStream(strBackupZipPath, FileMode.Create, FileAccess.Write, FileShare.None))
                         {
-                            foreach (string file in Directory.GetFiles(_strAppPath))
+                            token.ThrowIfCancellationRequested();
+                            using (ZipArchive zipNewArchive = new ZipArchive(objZipFileStream, ZipArchiveMode.Create))
                             {
-                                ZipArchiveEntry entry = archive.CreateEntry(Path.GetFileName(file));
-                                entry.LastWriteTime = File.GetLastWriteTime(file);
-                                using (FileStream fs = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read))
-                                using (Stream stream = entry.Open())
+                                token.ThrowIfCancellationRequested();
+                                foreach (string strFile in Directory.GetFiles(_strAppPath))
                                 {
-                                    //magic number default buffer size, no overload that is only stream+token
-                                    await fs.CopyToAsync(stream, 81920, token).ConfigureAwait(false);
+                                    token.ThrowIfCancellationRequested();
+                                    ZipArchiveEntry objEntry = zipNewArchive.CreateEntry(Path.GetFileName(strFile));
+                                    objEntry.LastWriteTime = File.GetLastWriteTime(strFile);
+                                    using (FileStream objFileStream = new FileStream(strFile, FileMode.Open, FileAccess.Read, FileShare.Read))
+                                    {
+                                        token.ThrowIfCancellationRequested();
+                                        using (Stream objStream = objEntry.Open())
+                                        {
+                                            //magic number default buffer size, no overload that is only stream+token
+                                            await objFileStream.CopyToAsync(objStream, 81920, token).ConfigureAwait(false);
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -884,13 +892,14 @@ namespace Chummer
                 Log.Info("Extracting downloaded archive into application path: " + strZipPath);
                 try
                 {
-                    using (ZipArchive archive
+                    using (ZipArchive zipArchive
                            = ZipFile.Open(strZipPath, ZipArchiveMode.Read, Encoding.GetEncoding(850)))
                     {
-                        foreach (ZipArchiveEntry entry in archive.Entries)
+                        token.ThrowIfCancellationRequested();
+                        foreach (ZipArchiveEntry objEntry in zipArchive.Entries)
                         {
                             token.ThrowIfCancellationRequested();
-                            string strFullName = entry.FullName;
+                            string strFullName = objEntry.FullName;
                             // Skip directories because they already get handled with Directory.CreateDirectory
                             if (strFullName.Length > 0 && strFullName[strFullName.Length - 1] == '/')
                                 continue;
@@ -914,7 +923,7 @@ namespace Chummer
                                     File.Move(strLoopPath, strLoopPath + ".old");
                                 }
 
-                                entry.ExtractToFile(strLoopPath, false);
+                                objEntry.ExtractToFile(strLoopPath, false);
                             }
                             catch (IOException)
                             {

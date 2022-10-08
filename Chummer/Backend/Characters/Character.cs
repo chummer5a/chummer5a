@@ -30902,9 +30902,11 @@ namespace Chummer
                             using (ZipArchive zipArchive = ZipFile.Open(strPorFile, ZipArchiveMode.Read,
                                                                         Encoding.GetEncoding(850)))
                             {
-                                foreach (ZipArchiveEntry entry in zipArchive.Entries)
+                                token.ThrowIfCancellationRequested();
+                                foreach (ZipArchiveEntry objEntry in zipArchive.Entries)
                                 {
-                                    string strEntryFullName = entry.FullName;
+                                    token.ThrowIfCancellationRequested();
+                                    string strEntryFullName = objEntry.FullName;
                                     string strKey = Path.GetFileName(strEntryFullName);
                                     if ((xmlStatBlockDocument == null && strEntryFullName.StartsWith(
                                             "statblocks_xml",
@@ -30920,26 +30922,37 @@ namespace Chummer
                                         {
                                             try
                                             {
-                                                using (StreamReader objStreamReader =
-                                                       new StreamReader(entry.Open(), true))
-                                                using (XmlReader objReader = XmlReader.Create(objStreamReader,
-                                                           GlobalSettings.SafeXmlReaderSettings))
+                                                if (blnSync)
+                                                    DoLoadStatblocks();
+                                                else
+                                                    await Task.Run(DoLoadStatblocks, token).ConfigureAwait(false);
+                                                void DoLoadStatblocks()
                                                 {
-                                                    XPathDocument xmlSourceDoc = new XPathDocument(objReader);
-                                                    XPathNavigator objDummy = xmlSourceDoc.CreateNavigator();
-                                                    if (strEntryFullName.StartsWith("statblocks_xml",
-                                                            StringComparison.Ordinal))
+                                                    using (StreamReader objStreamReader =
+                                                           new StreamReader(objEntry.Open(), true))
                                                     {
-                                                        if (objDummy.SelectSingleNode(
-                                                                "/document/public/character[@name = " +
-                                                                strCharacterId.CleanXPath() + ']') != null)
-                                                            xmlStatBlockDocument = objDummy;
-                                                    }
-                                                    else
-                                                    {
-                                                        strLeadsName = objDummy.SelectSingleNode(
-                                                            "/document/portfolio/hero[@heroname = " +
-                                                            strCharacterId.CleanXPath() + "]/@leadfile")?.Value;
+                                                        token.ThrowIfCancellationRequested();
+                                                        using (XmlReader objReader = XmlReader.Create(objStreamReader,
+                                                                   GlobalSettings.SafeXmlReaderSettings))
+                                                        {
+                                                            token.ThrowIfCancellationRequested();
+                                                            XPathDocument xmlSourceDoc = new XPathDocument(objReader);
+                                                            XPathNavigator objDummy = xmlSourceDoc.CreateNavigator();
+                                                            if (strEntryFullName.StartsWith("statblocks_xml",
+                                                                    StringComparison.Ordinal))
+                                                            {
+                                                                if (objDummy.SelectSingleNode(
+                                                                        "/document/public/character[@name = " +
+                                                                        strCharacterId.CleanXPath() + ']') != null)
+                                                                    xmlStatBlockDocument = objDummy;
+                                                            }
+                                                            else
+                                                            {
+                                                                strLeadsName = objDummy.SelectSingleNode(
+                                                                    "/document/portfolio/hero[@heroname = " +
+                                                                    strCharacterId.CleanXPath() + "]/@leadfile")?.Value;
+                                                            }
+                                                        }
                                                     }
                                                 }
                                             }
@@ -30960,15 +30973,16 @@ namespace Chummer
                                                  && !strKey.Contains('.'))
                                         {
                                             lstTextStatBlockLines = new List<string>(30);
-
                                             using (StreamReader objReader = File.OpenText(strEntryFullName))
                                             {
+                                                token.ThrowIfCancellationRequested();
                                                 string strLine;
                                                 while ((strLine = blnSync
                                                            // ReSharper disable once MethodHasAsyncOverload
                                                            ? objReader.ReadLine()
                                                            : await objReader.ReadLineAsync().ConfigureAwait(false)) != null)
                                                 {
+                                                    token.ThrowIfCancellationRequested();
                                                     // Trim away the newlines and empty spaces at the beginning and end of lines
                                                     strLine = strLine.Trim('\n', '\r', ' ').Trim();
 
@@ -30980,7 +30994,7 @@ namespace Chummer
                                     else if (strEntryFullName.StartsWith("images", StringComparison.Ordinal) &&
                                              strEntryFullName.Contains('.'))
                                     {
-                                        using (Bitmap bmpMugshot = new Bitmap(entry.Open(), true))
+                                        using (Bitmap bmpMugshot = new Bitmap(objEntry.Open(), true))
                                         {
                                             Bitmap bmpNewMugshot =
                                                 bmpMugshot.PixelFormat == PixelFormat.Format32bppPArgb
@@ -31001,21 +31015,33 @@ namespace Chummer
                                 if (!string.IsNullOrEmpty(strLeadsName))
                                 {
                                     // Need a second sweep for the Leads file
-                                    foreach (ZipArchiveEntry entry in zipArchive.Entries)
+                                    foreach (ZipArchiveEntry objEntry in zipArchive.Entries)
                                     {
-                                        string strEntryFullName = entry.FullName;
+                                        token.ThrowIfCancellationRequested();
+                                        string strEntryFullName = objEntry.FullName;
                                         if (strEntryFullName.EndsWith(strLeadsName,
                                                                       StringComparison.OrdinalIgnoreCase))
                                         {
                                             try
                                             {
-                                                using (StreamReader objStreamReader =
-                                                       new StreamReader(entry.Open(), true))
-                                                using (XmlReader objReader = XmlReader.Create(objStreamReader,
-                                                           GlobalSettings.SafeXmlReaderSettings))
+                                                if (blnSync)
+                                                    DoLoadLeads();
+                                                else
+                                                    await Task.Run(DoLoadLeads, token).ConfigureAwait(false);
+                                                void DoLoadLeads()
                                                 {
-                                                    XPathDocument xmlSourceDoc = new XPathDocument(objReader);
-                                                    xmlLeadsDocument = xmlSourceDoc.CreateNavigator();
+                                                    using (StreamReader objStreamReader =
+                                                           new StreamReader(objEntry.Open(), true))
+                                                    {
+                                                        token.ThrowIfCancellationRequested();
+                                                        using (XmlReader objReader = XmlReader.Create(objStreamReader,
+                                                                   GlobalSettings.SafeXmlReaderSettings))
+                                                        {
+                                                            token.ThrowIfCancellationRequested();
+                                                            XPathDocument xmlSourceDoc = new XPathDocument(objReader);
+                                                            xmlLeadsDocument = xmlSourceDoc.CreateNavigator();
+                                                        }
+                                                    }
                                                 }
                                             }
                                             // If we run into any problems loading the character xml files, fail out early.

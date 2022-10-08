@@ -108,9 +108,9 @@ namespace Chummer
                            = ZipFile.Open(strFile, ZipArchiveMode.Read, Encoding.GetEncoding(850)))
                     {
                         // NOTE: Cannot parallelize because ZipFile.Open creates one handle on the entire zip file that gets messed up if we try to get it to read multiple files at once
-                        foreach (ZipArchiveEntry entry in zipArchive.Entries)
+                        foreach (ZipArchiveEntry objEntry in zipArchive.Entries)
                         {
-                            string strEntryFullName = entry.FullName;
+                            string strEntryFullName = objEntry.FullName;
                             if (strEntryFullName.EndsWith(".xml", StringComparison.OrdinalIgnoreCase)
                                 && strEntryFullName.StartsWith("statblocks_xml", StringComparison.Ordinal))
                             {
@@ -120,7 +120,7 @@ namespace Chummer
                                     await Task.Run(() =>
                                     {
                                         XPathDocument xmlSourceDoc;
-                                        using (StreamReader sr = new StreamReader(entry.Open(), true))
+                                        using (StreamReader sr = new StreamReader(objEntry.Open(), true))
                                         using (XmlReader objXmlReader
                                                = XmlReader.Create(sr, GlobalSettings.SafeXmlReaderSettings))
                                             xmlSourceDoc = new XPathDocument(objXmlReader);
@@ -142,7 +142,7 @@ namespace Chummer
                                      && strEntryFullName.Contains('.'))
                             {
                                 string strKey = Path.GetFileName(strEntryFullName);
-                                using (Bitmap bmpMugshot = new Bitmap(entry.Open(), true))
+                                using (Bitmap bmpMugshot = new Bitmap(objEntry.Open(), true))
                                 {
                                     Bitmap bmpNewMugshot = bmpMugshot.PixelFormat == PixelFormat.Format32bppPArgb
                                         ? bmpMugshot.Clone() as Bitmap // Clone makes sure file handle is closed
