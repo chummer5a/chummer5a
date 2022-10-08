@@ -10696,6 +10696,10 @@
       <key>LimitCondition_SportsRivals</key>
       <text>Rivals of Sports Team</text>
     </string>
+    <string>
+      <key>LimitCondition_SoldierParagon</key>
+      <text>Only for attack actions</text>
+    </string>
     <!-- End Region -->
     <string>
       <key>String_CapacityRemaining</key>

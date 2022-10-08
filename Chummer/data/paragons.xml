@@ -41,6 +41,13 @@
       <category>Resonance</category>
       <advantage>+1 limit and +1 dice pool bonus for Edit actions.</advantage>
       <disadvantage>–1 limit and –1 dice for Snoop actions.</disadvantage>
+      <bonus>
+        <specificskill>
+          <name>Computer</name>
+          <bonus>1</bonus>
+          <condition>Edit File</condition>
+        </specificskill>
+      </bonus>
       <source>KC</source>
       <page>103</page>
     </mentor>
@@ -50,6 +57,13 @@
       <category>Resonance</category>
       <advantage>+1 limit and +1 dice pool bonus for Browse actions and digital legwork.</advantage>
       <disadvantage>–1 limit for Edit actions designed to destroy data.</disadvantage>
+      <bonus>
+        <specificskill>
+          <name>Computer</name>
+          <bonus>1</bonus>
+          <condition>Matrix Search</condition>
+        </specificskill>
+      </bonus>
       <source>KC</source>
       <page>177</page>
     </mentor>
@@ -105,8 +119,9 @@
             <firewall>1</firewall>
           </livingpersona>
           <specificskill>
-              <name>Cybercombat</name>
-              <bonus>1</bonus>
+            <name>Cybercombat</name>
+            <bonus>1</bonus>
+            <condition>Not against IC</condition>
           </specificskill>
         </bonus>
       <source>KC</source>
@@ -128,9 +143,18 @@
       <advantage>+1 bonus to dice pool and limit in cybercombat, +1 limit to all attack actions (physical and Matrix)</advantage>
       <disadvantage>–2 dice pool penalty and –1 limit when compiling sprites.</disadvantage>
       <bonus>
+        <limitmodifier>
+          <limit>Physical</limit>
+          <value>1</value>
+          <condition>LimitCondition_SoldierParagon</condition>
+        </limitmodifier>
         <specificskill>
           <name>Cybercombat</name>
           <bonus>1</bonus>
+        </specificskill>
+        <specificskill>
+          <name>Compiling</name>
+          <bonus>-2</bonus>
         </specificskill>
       </bonus>
       <source>KC</source>

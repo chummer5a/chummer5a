@@ -4,6 +4,14 @@ Application Changes:
 - Trying to add an item with a weapon select entry that relies on selecting for weapon details no longer causes a crash. Fixes #4934.
 - Markup and Black Market Pipeline cost modifiers applied to a weapon mount now properly apply based on all options of the weapon mount instead of just its size. Fixes #4933.
 
+Data Changes:
+- Added bonus nodes for Shooter (The Soldier) paragon's Compiling dice pool penalty and +1 limit for attack actions. Part of #4935.
+- Corrected the Cybercombat dice bonus of Intrusion Countermeasure (The Guardian) to be conditional because it is not granted against IC.
+- Added bonus nodes for Architect (The Builder) and Archivist (The Secret Keeper) paragons' dice bonuses for the Edit File and Matrix Search Computer actions respectively.
+
+Changed/New Strings:
+- LimitCondition_SoldierParagon
+
 Build 224
 Application Changes:
 - Added support for opening and saving characters in the form of compressed saves (chum5lz) instead of uncompressed (chum5). The program has three different options for the compression level of saved chum5lz files, and at the most thorough levels, savefile sizes can be decreased by up to around 90%.
