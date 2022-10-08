@@ -5706,7 +5706,7 @@ namespace Chummer
                         if (!blnIncludeUnarmed && objWeapon.Name == "Unarmed Attack")
                             continue;
                         if (!string.IsNullOrEmpty(strWeaponDetails)
-                            && objWeapon.GetNodeXPath()?.SelectSingleNode('[' + strWeaponDetails + ']') == null)
+                            && objWeapon.GetNodeXPath()?.SelectSingleNode("self::node()[" + strWeaponDetails + ']') == null)
                             continue;
                         lstWeapons.Add(new ListItem(objWeapon.InternalId,
                                                     objWeapon.DisplayNameShort(GlobalSettings.Language)));
@@ -5715,6 +5715,15 @@ namespace Chummer
                     if (string.IsNullOrWhiteSpace(LimitSelection)
                         || lstWeapons.Any(item => item.Name == LimitSelection))
                     {
+                        if (lstWeapons.Count == 0)
+                        {
+                            Program.ShowMessageBox(string.Format(GlobalSettings.CultureInfo,
+                                                                 LanguageManager.GetString(
+                                                                     "Message_Improvement_EmptySelectionListNamed"),
+                                                                 SourceName));
+                            throw new AbortedException();
+                        }
+
                         using (ThreadSafeForm<SelectItem> frmPickItem = ThreadSafeForm<SelectItem>.Get(() => new SelectItem
                         {
                             Description = string.Format(GlobalSettings.CultureInfo,
