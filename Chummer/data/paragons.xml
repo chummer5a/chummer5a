@@ -23,7 +23,6 @@
 
   <categories>
     <category>Resonance</category>
-    <category>Resonance</category>
   </categories>
   <mentors>
     <mentor>
@@ -143,11 +142,6 @@
       <advantage>+1 bonus to dice pool and limit in cybercombat, +1 limit to all attack actions (physical and Matrix)</advantage>
       <disadvantage>–2 dice pool penalty and –1 limit when compiling sprites.</disadvantage>
       <bonus>
-        <limitmodifier>
-          <limit>Physical</limit>
-          <value>1</value>
-          <condition>LimitCondition_SoldierParagon</condition>
-        </limitmodifier>
         <specificskill>
           <name>Cybercombat</name>
           <bonus>1</bonus>
@@ -156,6 +150,54 @@
           <name>Compiling</name>
           <bonus>-2</bonus>
         </specificskill>
+        <weaponskillaccuracy>
+          <name>Archery</name>
+          <value>1</value>
+        </weaponskillaccuracy>
+        <weaponskillaccuracy>
+          <name>Automatics</name>
+          <value>1</value>
+        </weaponskillaccuracy>
+        <weaponskillaccuracy>
+          <name>Blades</name>
+          <value>1</value>
+        </weaponskillaccuracy>
+        <weaponskillaccuracy>
+          <name>Clubs</name>
+          <value>1</value>
+        </weaponskillaccuracy>
+        <weaponskillaccuracy>
+          <name>Exotic Melee Weapon</name>
+          <value>1</value>
+        </weaponskillaccuracy>
+        <weaponskillaccuracy>
+          <name>Exotic Ranged Weapon</name>
+          <value>1</value>
+        </weaponskillaccuracy>
+        <weaponskillaccuracy>
+          <name>Gunnery</name>
+          <value>1</value>
+        </weaponskillaccuracy>
+        <weaponskillaccuracy>
+          <name>Heavy Weapons</name>
+          <value>1</value>
+        </weaponskillaccuracy>
+        <weaponskillaccuracy>
+          <name>Longarms</name>
+          <value>1</value>
+        </weaponskillaccuracy>
+        <weaponskillaccuracy>
+          <name>Pistols</name>
+          <value>1</value>
+        </weaponskillaccuracy>
+        <weaponskillaccuracy>
+          <name>Throwing Weapons</name>
+          <value>1</value>
+        </weaponskillaccuracy>
+        <weaponskillaccuracy>
+          <name>Unarmed Combat</name>
+          <value>1</value>
+        </weaponskillaccuracy>
       </bonus>
       <source>KC</source>
       <page>104</page>

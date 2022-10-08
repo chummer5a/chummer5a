@@ -6,7 +6,7 @@ Application Changes:
 - Added the option to character settings to apply a custom post-processing effect (using Chummer's document-invariant XPath processor) to essence modifiers after they have all been collected but before they are applied to 'ware essence costs.
 
 Data Changes:
-- Added bonus nodes for Shooter (The Soldier) paragon's Compiling dice pool penalty and +1 limit for attack actions. Part of #4935.
+- Added bonus nodes for Shooter (The Soldier) paragon's Compiling dice pool penalty and +1 limit for attack actions. Fixes #4935.
 - Corrected the Cybercombat dice bonus of Intrusion Countermeasure (The Guardian) to be conditional because it is not granted against IC.
 - Added bonus nodes for Architect (The Builder) and Archivist (The Secret Keeper) paragons' dice bonuses for the Edit File and Matrix Search Computer actions respectively.
 - Modified Cyberlimb Optimization so that if the selected skill for it is a skill that can be used with weapons, the +1 limit modifier will show up as part of those weapons' accuracy. Existing characters with this 'ware will need to either re-buy it or reapply improvements to see the effects. Part of #4841.
