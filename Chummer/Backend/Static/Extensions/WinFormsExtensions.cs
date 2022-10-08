@@ -1712,9 +1712,9 @@ namespace Chummer
             lsbThis?.DoThreadSafe(x => PopulateWithListItemsCore(x, lstItems, token));
         }
 
-        public static Task PopulateWithListItemsAsync(this ListBox lsbThis, IEnumerable<ListItem> lstItems, CancellationToken token = default)
+        public static Task PopulateWithListItemsAsync([NotNull] this ListBox lsbThis, IEnumerable<ListItem> lstItems, CancellationToken token = default)
         {
-            return lsbThis?.DoThreadSafeAsync(x => PopulateWithListItemsCore(x, lstItems, token), token) ?? Task.CompletedTask;
+            return lsbThis.DoThreadSafeAsync(x => PopulateWithListItemsCore(x, lstItems, token), token);
         }
 
         private static void PopulateWithListItemsCore(this ListBox lsbThis, IEnumerable<ListItem> lstItems, CancellationToken token = default)
@@ -1726,43 +1726,62 @@ namespace Chummer
             // Resetting bindings to prevent this though will also reset bindings to other properties, so that's not really an option
             // This means the code we use has to set the DataSources to new lists instead of the same one.
             List<ListItem> lstItemsToSet = null;
-            if (lstItems != null)
-            {
-                lstItemsToSet = Utils.ListItemListPool.Get();
-                lstItemsToSet.AddRange(lstItems);
-            }
-            lsbThis.BeginUpdate();
+            bool blnDoReturnList = false;
             try
             {
-                token.ThrowIfCancellationRequested();
-                if (!(lsbThis.DataSource is IEnumerable<ListItem> lstCurrentList))
+                if (lstItems != null)
                 {
-                    lsbThis.ValueMember = nameof(ListItem.Value);
-                    lsbThis.DisplayMember = nameof(ListItem.Name);
+                    lstItemsToSet = Utils.ListItemListPool.Get();
+                    blnDoReturnList = true;
+                    lstItemsToSet.AddRange(lstItems);
                 }
-                // Setting DataSource is slow because WinForms is old, so let's make sure we definitely need to do it
-                else if (lstItemsToSet != null && lstCurrentList.SequenceEqual(lstItemsToSet))
-                    return;
 
-                token.ThrowIfCancellationRequested();
-                List<ListItem> lstOldItems = null;
-                if (lsbThis.DataSource != null)
+                lsbThis.BeginUpdate();
+                try
                 {
-                    lstOldItems
-                        = lsbThis
-                                .DataSource as
-                            List<ListItem>; // If the old DataSource is a List<ListItem>, make sure we can return it to the pool
-                    lsbThis.BindingContext = new BindingContext();
+                    token.ThrowIfCancellationRequested();
+                    if (!(lsbThis.DataSource is IEnumerable<ListItem> lstCurrentList))
+                    {
+                        lsbThis.ValueMember = nameof(ListItem.Value);
+                        lsbThis.DisplayMember = nameof(ListItem.Name);
+                    }
+                    // Setting DataSource is slow because WinForms is old, so let's make sure we definitely need to do it
+                    else if (lstItemsToSet != null && lstCurrentList.SequenceEqual(lstItemsToSet))
+                        return;
+
+                    token.ThrowIfCancellationRequested();
+                    List<ListItem> lstOldItems = null;
+                    if (lsbThis.DataSource != null)
+                    {
+                        lstOldItems
+                            = lsbThis
+                                    .DataSource as
+                                List<ListItem>; // If the old DataSource is a List<ListItem>, make sure we can return it to the pool
+                        lsbThis.BindingContext = new BindingContext();
+                    }
+                    else
+                    {
+                        lsbThis.Disposed += (sender, args) =>
+                        {
+                            if (lsbThis.DataSource is List<ListItem> lstInnerToReturn)
+                                Utils.ListItemListPool.Return(lstInnerToReturn);
+                        };
+                    }
+                    
+                    blnDoReturnList = false;
+                    lsbThis.DataSource = lstItemsToSet;
+                    if (lstOldItems != null)
+                        Utils.ListItemListPool.Return(lstOldItems);
                 }
-                token.ThrowIfCancellationRequested();
-                lsbThis.DataSource = lstItemsToSet;
-                token.ThrowIfCancellationRequested();
-                if (lstOldItems != null)
-                    Utils.ListItemListPool.Return(lstOldItems);
+                finally
+                {
+                    lsbThis.EndUpdate();
+                }
             }
             finally
             {
-                lsbThis.EndUpdate();
+                if (blnDoReturnList)
+                    Utils.ListItemListPool.Return(lstItemsToSet);
             }
         }
 
@@ -1771,9 +1790,9 @@ namespace Chummer
             cboThis?.DoThreadSafe(x => PopulateWithListItemsCore(x, lstItems, token));
         }
 
-        public static Task PopulateWithListItemsAsync(this ComboBox cboThis, IEnumerable<ListItem> lstItems, CancellationToken token = default)
+        public static Task PopulateWithListItemsAsync([NotNull] this ComboBox cboThis, IEnumerable<ListItem> lstItems, CancellationToken token = default)
         {
-            return cboThis?.DoThreadSafeAsync(x => PopulateWithListItemsCore(x, lstItems, token), token) ?? Task.CompletedTask;
+            return cboThis.DoThreadSafeAsync(x => PopulateWithListItemsCore(x, lstItems, token), token);
         }
 
         private static void PopulateWithListItemsCore(this ComboBox cboThis, IEnumerable<ListItem> lstItems, CancellationToken token = default)
@@ -1785,43 +1804,62 @@ namespace Chummer
             // Resetting bindings to prevent this though will also reset bindings to other properties, so that's not really an option
             // This means the code we use has to set the DataSources to new lists instead of the same one.
             List<ListItem> lstItemsToSet = null;
-            if (lstItems != null)
-            {
-                lstItemsToSet = Utils.ListItemListPool.Get();
-                lstItemsToSet.AddRange(lstItems);
-            }
-            cboThis.BeginUpdate();
+            bool blnDoReturnList = false;
             try
             {
-                token.ThrowIfCancellationRequested();
-                if (!(cboThis.DataSource is IEnumerable<ListItem> lstCurrentList))
+                if (lstItems != null)
                 {
-                    cboThis.ValueMember = nameof(ListItem.Value);
-                    cboThis.DisplayMember = nameof(ListItem.Name);
+                    lstItemsToSet = Utils.ListItemListPool.Get();
+                    blnDoReturnList = true;
+                    lstItemsToSet.AddRange(lstItems);
                 }
-                // Setting DataSource is slow because WinForms is old, so let's make sure we definitely need to do it
-                else if (lstItemsToSet != null && lstCurrentList.SequenceEqual(lstItemsToSet))
-                    return;
 
-                token.ThrowIfCancellationRequested();
-                List<ListItem> lstOldItems = null;
-                if (cboThis.DataSource != null)
+                cboThis.BeginUpdate();
+                try
                 {
-                    lstOldItems
-                        = cboThis
-                                .DataSource as
-                            List<ListItem>; // If the old DataSource is a List<ListItem>, make sure we can return it to the pool
-                    cboThis.BindingContext = new BindingContext();
+                    token.ThrowIfCancellationRequested();
+                    if (!(cboThis.DataSource is IEnumerable<ListItem> lstCurrentList))
+                    {
+                        cboThis.ValueMember = nameof(ListItem.Value);
+                        cboThis.DisplayMember = nameof(ListItem.Name);
+                    }
+                    // Setting DataSource is slow because WinForms is old, so let's make sure we definitely need to do it
+                    else if (lstItemsToSet != null && lstCurrentList.SequenceEqual(lstItemsToSet))
+                        return;
+
+                    token.ThrowIfCancellationRequested();
+                    List<ListItem> lstOldItems = null;
+                    if (cboThis.DataSource != null)
+                    {
+                        lstOldItems
+                            = cboThis
+                                    .DataSource as
+                                List<ListItem>; // If the old DataSource is a List<ListItem>, make sure we can return it to the pool
+                        cboThis.BindingContext = new BindingContext();
+                    }
+                    else
+                    {
+                        cboThis.Disposed += (sender, args) =>
+                        {
+                            if (cboThis.DataSource is List<ListItem> lstInnerToReturn)
+                                Utils.ListItemListPool.Return(lstInnerToReturn);
+                        };
+                    }
+                    
+                    blnDoReturnList = false;
+                    cboThis.DataSource = lstItemsToSet;
+                    if (lstOldItems != null)
+                        Utils.ListItemListPool.Return(lstOldItems);
                 }
-                token.ThrowIfCancellationRequested();
-                cboThis.DataSource = lstItemsToSet;
-                token.ThrowIfCancellationRequested();
-                if (lstOldItems != null)
-                    Utils.ListItemListPool.Return(lstOldItems);
+                finally
+                {
+                    cboThis.EndUpdate();
+                }
             }
             finally
             {
-                cboThis.EndUpdate();
+                if (blnDoReturnList)
+                    Utils.ListItemListPool.Return(lstItemsToSet);
             }
         }
 
@@ -1830,9 +1868,9 @@ namespace Chummer
             cboThis?.DoThreadSafe(x => PopulateWithListItemsCore(x, lstItems, token));
         }
 
-        public static Task PopulateWithListItemsAsync(this ElasticComboBox cboThis, IEnumerable<ListItem> lstItems, CancellationToken token = default)
+        public static Task PopulateWithListItemsAsync([NotNull] this ElasticComboBox cboThis, IEnumerable<ListItem> lstItems, CancellationToken token = default)
         {
-            return cboThis?.DoThreadSafeAsync(x => PopulateWithListItemsCore(x, lstItems, token), token) ?? Task.CompletedTask;
+            return cboThis.DoThreadSafeAsync(x => PopulateWithListItemsCore(x, lstItems, token), token);
         }
 
         private static void PopulateWithListItemsCore(this ElasticComboBox cboThis, IEnumerable<ListItem> lstItems, CancellationToken token = default)
@@ -1844,43 +1882,62 @@ namespace Chummer
             // Resetting bindings to prevent this though will also reset bindings to other properties, so that's not really an option
             // This means the code we use has to set the DataSources to new lists instead of the same one.
             List<ListItem> lstItemsToSet = null;
-            if (lstItems != null)
-            {
-                lstItemsToSet = Utils.ListItemListPool.Get();
-                lstItemsToSet.AddRange(lstItems);
-            }
-            cboThis.BeginUpdate();
+            bool blnDoReturnList = false;
             try
             {
-                token.ThrowIfCancellationRequested();
-                if (!(cboThis.DataSource is IEnumerable<ListItem> lstCurrentList))
+                if (lstItems != null)
                 {
-                    cboThis.ValueMember = nameof(ListItem.Value);
-                    cboThis.DisplayMember = nameof(ListItem.Name);
+                    lstItemsToSet = Utils.ListItemListPool.Get();
+                    blnDoReturnList = true;
+                    lstItemsToSet.AddRange(lstItems);
                 }
-                // Setting DataSource is slow because WinForms is old, so let's make sure we definitely need to do it
-                else if (lstItemsToSet != null && lstCurrentList.SequenceEqual(lstItemsToSet))
-                    return;
 
-                token.ThrowIfCancellationRequested();
-                List<ListItem> lstOldItems = null;
-                if (cboThis.DataSource != null)
+                cboThis.BeginUpdate();
+                try
                 {
-                    lstOldItems
-                        = cboThis
-                                .DataSource as
-                            List<ListItem>; // If the old DataSource is a List<ListItem>, make sure we can return it to the pool
-                    cboThis.BindingContext = new BindingContext();
+                    token.ThrowIfCancellationRequested();
+                    if (!(cboThis.DataSource is IEnumerable<ListItem> lstCurrentList))
+                    {
+                        cboThis.ValueMember = nameof(ListItem.Value);
+                        cboThis.DisplayMember = nameof(ListItem.Name);
+                    }
+                    // Setting DataSource is slow because WinForms is old, so let's make sure we definitely need to do it
+                    else if (lstItemsToSet != null && lstCurrentList.SequenceEqual(lstItemsToSet))
+                        return;
+
+                    token.ThrowIfCancellationRequested();
+                    List<ListItem> lstOldItems = null;
+                    if (cboThis.DataSource != null)
+                    {
+                        lstOldItems
+                            = cboThis
+                                    .DataSource as
+                                List<ListItem>; // If the old DataSource is a List<ListItem>, make sure we can return it to the pool
+                        cboThis.BindingContext = new BindingContext();
+                    }
+                    else
+                    {
+                        cboThis.Disposed += (sender, args) =>
+                        {
+                            if (cboThis.DataSource is List<ListItem> lstInnerToReturn)
+                                Utils.ListItemListPool.Return(lstInnerToReturn);
+                        };
+                    }
+                    
+                    blnDoReturnList = false;
+                    cboThis.DataSource = lstItemsToSet;
+                    if (lstOldItems != null)
+                        Utils.ListItemListPool.Return(lstOldItems);
                 }
-                token.ThrowIfCancellationRequested();
-                cboThis.DataSource = lstItemsToSet;
-                token.ThrowIfCancellationRequested();
-                if (lstOldItems != null)
-                    Utils.ListItemListPool.Return(lstOldItems);
+                finally
+                {
+                    cboThis.EndUpdate();
+                }
             }
             finally
             {
-                cboThis.EndUpdate();
+                if (blnDoReturnList)
+                    Utils.ListItemListPool.Return(lstItemsToSet);
             }
         }
 
