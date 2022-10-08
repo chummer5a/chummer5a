@@ -502,8 +502,9 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Create a weapon mount using names instead of IDs, because user readability is important and untrustworthy.
         /// </summary>
-        /// <param name="xmlNode"></param>
-        public void CreateByName(XmlNode xmlNode)
+        /// <param name="xmlNode">XmlNode to create the object from.</param>
+        /// <param name="decMarkup">Discount or markup that applies to the base cost of the mod.</param>
+        public void CreateByName(XmlNode xmlNode, decimal decMarkup = 0)
         {
             if (xmlNode == null)
                 throw new ArgumentNullException(nameof(xmlNode));
@@ -514,7 +515,7 @@ namespace Chummer.Backend.Equipment
             XmlNode xmlDataNode = xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[name = " + strSize.CleanXPath() + " and category = \"Size\"]");
             if (xmlDataNode != null)
             {
-                Create(xmlDataNode);
+                Create(xmlDataNode, decMarkup);
 
                 string strFlexibility = xmlNode["flexibility"]?.InnerText;
                 if (!string.IsNullOrEmpty(strFlexibility))
@@ -980,10 +981,23 @@ namespace Chummer.Backend.Equipment
                 if (!IncludedInVehicle)
                 {
                     cost += OwnCost;
+                    decimal decOptionCost = 0;
+                    if (!FreeCost)
+                    {
+                        decOptionCost = WeaponMountOptions.Sum(w => w.TotalCost);
+                        if (DiscountCost)
+                            decOptionCost *= 0.9m;
+
+                        // Apply a markup if applicable.
+                        if (_decMarkup != 0)
+                        {
+                            decOptionCost *= 1 + (_decMarkup / 100.0m);
+                        }
+                    }
+                    cost += decOptionCost;
                 }
 
-                return cost + Weapons.Sum(w => w.TotalCost) + WeaponMountOptions.Sum(w => w.TotalCost)
-                       + Mods.Sum(m => m.TotalCost);
+                return cost + Weapons.Sum(w => w.TotalCost) + Mods.Sum(m => m.TotalCost);
             }
         }
 
@@ -999,7 +1013,20 @@ namespace Chummer.Backend.Equipment
             {
                 if (!IncludedInVehicle)
                     d += OwnCost;
-                d += WeaponMountOptions.Sum(w => w.TotalCost);
+                decimal decOptionCost = 0;
+                if (!FreeCost)
+                {
+                    decOptionCost = WeaponMountOptions.Sum(w => w.TotalCost);
+                    if (DiscountCost)
+                        decOptionCost *= 0.9m;
+
+                    // Apply a markup if applicable.
+                    if (_decMarkup != 0)
+                    {
+                        decOptionCost *= 1 + (_decMarkup / 100.0m);
+                    }
+                }
+                d += decOptionCost;
             }
 
             d += Weapons.Sum(w => w.CalculatedStolenTotalCost(blnStolen)) + Mods.Sum(m => m.CalculatedStolenTotalCost(blnStolen));
