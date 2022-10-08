@@ -16633,13 +16633,17 @@ namespace Chummer
                                                                               .KnowledgeSkillPointsRemain);
                         await CharacterObject.SkillsSection.Skills.ForEachAsync(async objSkill =>
                         {
-                            if (objSkill.Specializations.Count <= 1)
+                            if (await objSkill.Specializations.GetCountAsync(token) < 1)
                                 return;
-                            sbdMessage.AppendLine().Append(objSkill.CurrentDisplayName)
-                                      .Append(await LanguageManager.GetStringAsync("String_Space", token: token)).Append('(')
-                                      .AppendJoin(',' + await LanguageManager.GetStringAsync("String_Space", token: token),
-                                                  objSkill.Specializations.Select(x => x.CurrentDisplayName))
-                                      .Append(')');
+                            (await sbdMessage.AppendLine().Append(await objSkill.GetCurrentDisplayNameAsync(token))
+                                             .Append(await LanguageManager.GetStringAsync("String_Space", token: token))
+                                             .Append('(')
+                                             .AppendJoinAsync(
+                                                 ',' + await LanguageManager.GetStringAsync(
+                                                     "String_Space", token: token),
+                                                 objSkill.Specializations.Select(
+                                                     x => x.GetCurrentDisplayNameAsync(token).AsTask())))
+                                .Append(')');
                         }, token);
                     }
 

@@ -226,11 +226,11 @@ namespace Chummer
                                 "/chummer/skills/skill[exotic = " + bool.TrueString.CleanXPath()
                                                                   + " and name = " + objExoticSkill.Name.CleanXPath()
                                                                   + ']');
-                            lstSkills.Add(new ListItem(objExoticSkill.DictionaryKey,
+                            lstSkills.Add(new ListItem(await objExoticSkill.GetDictionaryKeyAsync(),
                                                        ((await objXmlSkill.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
-                                                        ?? objExoticSkill.CurrentDisplayName)
+                                                        ?? await objExoticSkill.GetCurrentDisplayNameAsync())
                                                        + await LanguageManager.GetStringAsync("String_Space") + '('
-                                                       + objExoticSkill.CurrentDisplaySpecialization + ')'));
+                                                       + await objExoticSkill.GetCurrentDisplaySpecializationAsync() + ')'));
                         }
                     }
                 }

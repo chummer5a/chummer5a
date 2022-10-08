@@ -3052,6 +3052,7 @@ namespace Chummer
                                 // ReSharper disable once AccessToDisposedClosure
                                 = Task.Run(
                                     () => Program.LoadCharacterAsync(CharacterObject.FileName, strNewName, true,
+                                                                     // ReSharper disable once AccessToDisposedClosure
                                                                      frmLoadingBar: frmLoadingBar.MyForm,
                                                                      token: GenericToken), GenericToken);
                         }

@@ -250,30 +250,30 @@ namespace Chummer
                             await cboSkill1.DoThreadSafeAsync(x => x.SelectedValue = strSkill).ConfigureAwait(false);
                         }
 
-                        strSkill = _lstPrioritySkills.ElementAtOrDefault(1);
-                        if (!string.IsNullOrEmpty(strSkill))
+                        string strSkill2 = _lstPrioritySkills.ElementAtOrDefault(1);
+                        if (!string.IsNullOrEmpty(strSkill2))
                         {
-                            if (ExoticSkill.IsExoticSkillName(strSkill))
+                            if (ExoticSkill.IsExoticSkillName(strSkill2))
                             {
-                                int intParenthesesIndex = strSkill.IndexOf(" (", StringComparison.OrdinalIgnoreCase);
+                                int intParenthesesIndex = strSkill2.IndexOf(" (", StringComparison.OrdinalIgnoreCase);
                                 if (intParenthesesIndex > 0)
-                                    strSkill = strSkill.Substring(0, intParenthesesIndex);
+                                    strSkill2 = strSkill2.Substring(0, intParenthesesIndex);
                             }
 
-                            await cboSkill2.DoThreadSafeAsync(x => x.SelectedValue = strSkill).ConfigureAwait(false);
+                            await cboSkill2.DoThreadSafeAsync(x => x.SelectedValue = strSkill2).ConfigureAwait(false);
                         }
 
-                        strSkill = _lstPrioritySkills.ElementAtOrDefault(2);
-                        if (!string.IsNullOrEmpty(strSkill))
+                        string strSkill3 = _lstPrioritySkills.ElementAtOrDefault(2);
+                        if (!string.IsNullOrEmpty(strSkill3))
                         {
-                            if (ExoticSkill.IsExoticSkillName(strSkill))
+                            if (ExoticSkill.IsExoticSkillName(strSkill3))
                             {
-                                int intParenthesesIndex = strSkill.IndexOf(" (", StringComparison.OrdinalIgnoreCase);
+                                int intParenthesesIndex = strSkill3.IndexOf(" (", StringComparison.OrdinalIgnoreCase);
                                 if (intParenthesesIndex > 0)
-                                    strSkill = strSkill.Substring(0, intParenthesesIndex);
+                                    strSkill3 = strSkill3.Substring(0, intParenthesesIndex);
                             }
 
-                            await cboSkill3.DoThreadSafeAsync(x => x.SelectedValue = strSkill).ConfigureAwait(false);
+                            await cboSkill3.DoThreadSafeAsync(x => x.SelectedValue = strSkill3).ConfigureAwait(false);
                         }
 
                         await ProcessTalentsIndexChanged().ConfigureAwait(false);
@@ -432,28 +432,49 @@ namespace Chummer
             await cboSkill3.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
             await lblMetatypeSkillSelection.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
 
-            string strSelectedTalents = await cboTalents.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false);
+            string strSelectedTalents = await cboTalents.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token)
+                                                        .ConfigureAwait(false);
             if (!string.IsNullOrEmpty(strSelectedTalents))
             {
                 XPathNavigator xmlTalentNode = null;
-                XPathNodeIterator xmlBaseTalentPriorityList = _xmlBasePriorityDataNode.Select("priorities/priority[category = \"Talent\" and value = " + (await cboTalent.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false) ?? string.Empty).CleanXPath() + " and (not(prioritytable) or prioritytable = " + _objCharacter.Settings.PriorityTable.CleanXPath() + ")]");
+                XPathNodeIterator xmlBaseTalentPriorityList = _xmlBasePriorityDataNode.Select(
+                    "priorities/priority[category = \"Talent\" and value = "
+                    + (await cboTalent.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token)
+                                      .ConfigureAwait(false) ?? string.Empty).CleanXPath()
+                    + " and (not(prioritytable) or prioritytable = " + _objCharacter.Settings.PriorityTable.CleanXPath()
+                    + ")]");
                 foreach (XPathNavigator xmlBaseTalentPriority in xmlBaseTalentPriorityList)
                 {
-                    if (xmlBaseTalentPriorityList.Count == 1 || await xmlBaseTalentPriority.SelectSingleNodeAndCacheExpressionAsync("prioritytable", token).ConfigureAwait(false) != null)
+                    if (xmlBaseTalentPriorityList.Count == 1 || await xmlBaseTalentPriority
+                                                                      .SelectSingleNodeAndCacheExpressionAsync(
+                                                                          "prioritytable", token).ConfigureAwait(false)
+                        != null)
                     {
-                        xmlTalentNode = xmlBaseTalentPriority.SelectSingleNode("talents/talent[value = " + strSelectedTalents.CleanXPath() + ']');
+                        xmlTalentNode
+                            = xmlBaseTalentPriority.SelectSingleNode(
+                                "talents/talent[value = " + strSelectedTalents.CleanXPath() + ']');
                         break;
                     }
                 }
 
                 if (xmlTalentNode != null)
                 {
-                    string strSkillCount = (await xmlTalentNode.SelectSingleNodeAndCacheExpressionAsync("skillqty", token).ConfigureAwait(false))?.Value ?? (await xmlTalentNode.SelectSingleNodeAndCacheExpressionAsync("skillgroupqty", token).ConfigureAwait(false))?.Value ?? string.Empty;
+                    string strSkillCount
+                        = (await xmlTalentNode.SelectSingleNodeAndCacheExpressionAsync("skillqty", token)
+                                              .ConfigureAwait(false))?.Value
+                          ?? (await xmlTalentNode.SelectSingleNodeAndCacheExpressionAsync("skillgroupqty", token)
+                                                 .ConfigureAwait(false))?.Value ?? string.Empty;
                     if (!string.IsNullOrEmpty(strSkillCount) && int.TryParse(strSkillCount, out int intSkillCount))
                     {
-                        XPathNavigator xmlSkillTypeNode = await xmlTalentNode.SelectSingleNodeAndCacheExpressionAsync("skilltype", token).ConfigureAwait(false) ?? await xmlTalentNode.SelectSingleNodeAndCacheExpressionAsync("skillgrouptype", token).ConfigureAwait(false);
+                        XPathNavigator xmlSkillTypeNode
+                            = await xmlTalentNode.SelectSingleNodeAndCacheExpressionAsync("skilltype", token)
+                                                 .ConfigureAwait(false) ?? await xmlTalentNode
+                                .SelectSingleNodeAndCacheExpressionAsync("skillgrouptype", token).ConfigureAwait(false);
                         string strSkillType = xmlSkillTypeNode?.Value ?? string.Empty;
-                        XPathNodeIterator objNodeList = await xmlTalentNode.SelectAndCacheExpressionAsync("skillgroupchoices/skillgroup", token).ConfigureAwait(false);
+                        XPathNodeIterator objNodeList = await xmlTalentNode
+                                                              .SelectAndCacheExpressionAsync(
+                                                                  "skillgroupchoices/skillgroup", token)
+                                                              .ConfigureAwait(false);
                         XPathNodeIterator xmlSkillsList;
                         switch (strSkillType)
                         {
@@ -474,13 +495,18 @@ namespace Chummer
                                 break;
 
                             case "specific":
-                                xmlSkillsList = BuildSkillList(await xmlTalentNode.SelectAndCacheExpressionAsync("skillchoices/skill", token).ConfigureAwait(false));
+                                xmlSkillsList
+                                    = BuildSkillList(await xmlTalentNode
+                                                           .SelectAndCacheExpressionAsync("skillchoices/skill", token)
+                                                           .ConfigureAwait(false));
                                 break;
 
                             case "xpath":
                                 xmlSkillsList = GetActiveSkillList(
                                     xmlSkillTypeNode != null
-                                        ? (await xmlSkillTypeNode.SelectSingleNodeAndCacheExpressionAsync("@xpath", token).ConfigureAwait(false))
+                                        ? (await xmlSkillTypeNode
+                                                 .SelectSingleNodeAndCacheExpressionAsync("@xpath", token)
+                                                 .ConfigureAwait(false))
                                         ?.Value
                                         : null);
                                 strSkillType = "active";
@@ -502,119 +528,185 @@ namespace Chummer
                                     {
                                         string strInnerText = objXmlSkill.Value;
                                         lstSkills.Add(new ListItem(strInnerText,
-                                                                   (await objXmlSkill.SelectSingleNodeAndCacheExpressionAsync(
-                                                                       "@translate", token).ConfigureAwait(false))?.Value ?? strInnerText));
+                                                                   (await objXmlSkill
+                                                                          .SelectSingleNodeAndCacheExpressionAsync(
+                                                                              "@translate", token)
+                                                                          .ConfigureAwait(false))?.Value
+                                                                   ?? strInnerText));
                                     }
                                 }
                                 else
                                 {
                                     foreach (XPathNavigator objXmlSkill in xmlSkillsList)
                                     {
-                                        string strName = (await objXmlSkill.SelectSingleNodeAndCacheExpressionAsync("name", token).ConfigureAwait(false))?.Value
-                                                         ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
+                                        string strName
+                                            = (await objXmlSkill.SelectSingleNodeAndCacheExpressionAsync("name", token)
+                                                                .ConfigureAwait(false))?.Value
+                                              ?? await LanguageManager.GetStringAsync("String_Unknown", token: token)
+                                                                      .ConfigureAwait(false);
                                         lstSkills.Add(
                                             new ListItem(
                                                 strName,
-                                                (await objXmlSkill.SelectSingleNodeAndCacheExpressionAsync("translate", token).ConfigureAwait(false))?.Value
+                                                (await objXmlSkill
+                                                       .SelectSingleNodeAndCacheExpressionAsync("translate", token)
+                                                       .ConfigureAwait(false))?.Value
                                                 ?? strName));
                                     }
                                 }
 
                                 lstSkills.Sort(CompareListItems.CompareNames);
                                 bool blnOldLoading = _blnLoading;
-                                int intOldSelectedIndex = await cboSkill1.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false);
-                                int intOldDataSourceSize = await cboSkill1.DoThreadSafeFuncAsync(x => x.Items.Count, token).ConfigureAwait(false);
+                                int intOldSelectedIndex = await cboSkill1
+                                                                .DoThreadSafeFuncAsync(x => x.SelectedIndex, token)
+                                                                .ConfigureAwait(false);
+                                int intOldDataSourceSize = await cboSkill1
+                                                                 .DoThreadSafeFuncAsync(x => x.Items.Count, token)
+                                                                 .ConfigureAwait(false);
                                 await cboSkill1.PopulateWithListItemsAsync(lstSkills, token).ConfigureAwait(false);
                                 await cboSkill1.DoThreadSafeAsync(x =>
                                 {
                                     x.Visible = true;
                                     x.Enabled = lstSkills.Count > 1;
                                 }, token).ConfigureAwait(false);
-                                if (intOldDataSourceSize == cboSkill1.Items.Count)
+                                if (intOldDataSourceSize == lstSkills.Count)
                                 {
                                     _blnLoading = true;
-                                    await cboSkill1.DoThreadSafeAsync(x => x.SelectedIndex = intOldSelectedIndex, token).ConfigureAwait(false);
+                                    await cboSkill1.DoThreadSafeAsync(x => x.SelectedIndex = intOldSelectedIndex, token)
+                                                   .ConfigureAwait(false);
                                     _blnLoading = blnOldLoading;
                                 }
 
                                 if (intSkillCount > 1)
                                 {
-                                    intOldSelectedIndex = await cboSkill2.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false);
-                                    intOldDataSourceSize = await cboSkill2.DoThreadSafeFuncAsync(x => x.Items.Count, token).ConfigureAwait(false);
+                                    int intOldSelectedIndex2 = await cboSkill2
+                                                                     .DoThreadSafeFuncAsync(x => x.SelectedIndex, token)
+                                                                     .ConfigureAwait(false);
+                                    int intOldDataSourceSize2 = await cboSkill2
+                                                                      .DoThreadSafeFuncAsync(x => x.Items.Count, token)
+                                                                      .ConfigureAwait(false);
                                     await cboSkill2.PopulateWithListItemsAsync(lstSkills, token).ConfigureAwait(false);
                                     await cboSkill2.DoThreadSafeAsync(x =>
                                     {
                                         x.Visible = true;
                                         x.Enabled = lstSkills.Count > 2;
                                     }, token).ConfigureAwait(false);
-                                    if (intOldDataSourceSize == cboSkill2.Items.Count)
+                                    if (intOldDataSourceSize2 == lstSkills.Count)
                                     {
                                         _blnLoading = true;
-                                        await cboSkill2.DoThreadSafeAsync(x => x.SelectedIndex = intOldSelectedIndex, token).ConfigureAwait(false);
+                                        await cboSkill2
+                                              .DoThreadSafeAsync(x => x.SelectedIndex = intOldSelectedIndex2, token)
+                                              .ConfigureAwait(false);
                                         _blnLoading = blnOldLoading;
                                     }
 
-                                    if (await cboSkill2.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false) == await cboSkill1.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false)
+                                    if (await cboSkill2.DoThreadSafeFuncAsync(x => x.SelectedIndex, token)
+                                                       .ConfigureAwait(false) == await cboSkill1
+                                            .DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false)
                                         && !ExoticSkill.IsExoticSkillName(
-                                            await cboSkill2.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false)))
+                                            await cboSkill2
+                                                  .DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token)
+                                                  .ConfigureAwait(false)))
                                     {
-                                        if (await cboSkill2.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false) + 1 >= await cboSkill2.DoThreadSafeFuncAsync(x => x.Items.Count, token).ConfigureAwait(false))
-                                            await cboSkill2.DoThreadSafeAsync(x => x.SelectedIndex = 0, token).ConfigureAwait(false);
+                                        if (await cboSkill2.DoThreadSafeFuncAsync(x => x.SelectedIndex, token)
+                                                           .ConfigureAwait(false) + 1
+                                            >= await cboSkill2.DoThreadSafeFuncAsync(x => x.Items.Count, token)
+                                                              .ConfigureAwait(false))
+                                            await cboSkill2.DoThreadSafeAsync(x => x.SelectedIndex = 0, token)
+                                                           .ConfigureAwait(false);
                                         else
                                         {
                                             int intSkill1Index
-                                                = await cboSkill1.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false);
-                                            await cboSkill2.DoThreadSafeAsync(x => x.SelectedIndex = intSkill1Index + 1, token).ConfigureAwait(false);
+                                                = await cboSkill1.DoThreadSafeFuncAsync(x => x.SelectedIndex, token)
+                                                                 .ConfigureAwait(false);
+                                            await cboSkill2
+                                                  .DoThreadSafeAsync(x => x.SelectedIndex = intSkill1Index + 1, token)
+                                                  .ConfigureAwait(false);
                                         }
                                     }
 
                                     if (intSkillCount > 2)
                                     {
-                                        intOldSelectedIndex = await cboSkill3.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false);
-                                        intOldDataSourceSize = await cboSkill3.DoThreadSafeFuncAsync(x => x.Items.Count, token).ConfigureAwait(false);
-                                        await cboSkill3.PopulateWithListItemsAsync(lstSkills, token).ConfigureAwait(false);
+                                        int intOldSelectedIndex3 = await cboSkill3
+                                                                         .DoThreadSafeFuncAsync(
+                                                                             x => x.SelectedIndex, token)
+                                                                         .ConfigureAwait(false);
+                                        int intOldDataSourceSize3 = await cboSkill3
+                                                                          .DoThreadSafeFuncAsync(
+                                                                              x => x.Items.Count, token)
+                                                                          .ConfigureAwait(false);
+                                        await cboSkill3.PopulateWithListItemsAsync(lstSkills, token)
+                                                       .ConfigureAwait(false);
                                         await cboSkill3.DoThreadSafeAsync(x =>
                                         {
                                             x.Visible = true;
                                             x.Enabled = lstSkills.Count > 3;
                                         }, token).ConfigureAwait(false);
-                                        if (intOldDataSourceSize == cboSkill3.Items.Count)
+                                        if (intOldDataSourceSize3 == lstSkills.Count)
                                         {
                                             _blnLoading = true;
-                                            await cboSkill3.DoThreadSafeAsync(x => x.SelectedIndex = intOldSelectedIndex, token).ConfigureAwait(false);
+                                            await cboSkill3
+                                                  .DoThreadSafeAsync(x => x.SelectedIndex = intOldSelectedIndex3, token)
+                                                  .ConfigureAwait(false);
                                             _blnLoading = blnOldLoading;
                                         }
 
-                                        if ((await cboSkill3.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false) == await cboSkill1.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false) ||
-                                             await cboSkill3.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false) == await cboSkill2.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false)) &&
-                                            !ExoticSkill.IsExoticSkillName(await cboSkill3.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false)))
+                                        if ((await cboSkill3.DoThreadSafeFuncAsync(x => x.SelectedIndex, token)
+                                                            .ConfigureAwait(false)
+                                             == await cboSkill1.DoThreadSafeFuncAsync(x => x.SelectedIndex, token)
+                                                               .ConfigureAwait(false) ||
+                                             await cboSkill3.DoThreadSafeFuncAsync(x => x.SelectedIndex, token)
+                                                            .ConfigureAwait(false)
+                                             == await cboSkill2.DoThreadSafeFuncAsync(x => x.SelectedIndex, token)
+                                                               .ConfigureAwait(false)) &&
+                                            !ExoticSkill.IsExoticSkillName(
+                                                await cboSkill3
+                                                      .DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token)
+                                                      .ConfigureAwait(false)))
                                         {
-                                            int intNewIndex = await cboSkill3.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false);
+                                            int intNewIndex = await cboSkill3
+                                                                    .DoThreadSafeFuncAsync(x => x.SelectedIndex, token)
+                                                                    .ConfigureAwait(false);
                                             do
                                             {
                                                 ++intNewIndex;
-                                                if (intNewIndex >= await cboSkill3.DoThreadSafeFuncAsync(x => x.Items.Count, token).ConfigureAwait(false))
+                                                if (intNewIndex >= lstSkills.Count)
                                                     intNewIndex = 0;
-                                            } while ((intNewIndex == await cboSkill1.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false)
-                                                      || intNewIndex == await cboSkill2.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false))
-                                                     && intNewIndex != await cboSkill3.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false) &&
-                                                     !ExoticSkill.IsExoticSkillName(
-                                                         ((ListItem) await cboSkill3.DoThreadSafeFuncAsync(x => x.Items[intNewIndex], token).ConfigureAwait(false)).Value.ToString()));
+                                            } while ((intNewIndex == await cboSkill1
+                                                                           .DoThreadSafeFuncAsync(
+                                                                               x => x.SelectedIndex, token)
+                                                                           .ConfigureAwait(false)
+                                                      || intNewIndex == await cboSkill2
+                                                                              .DoThreadSafeFuncAsync(
+                                                                                  x => x.SelectedIndex, token)
+                                                                              .ConfigureAwait(false))
+                                                     && intNewIndex != await cboSkill3
+                                                                             .DoThreadSafeFuncAsync(
+                                                                                 x => x.SelectedIndex, token)
+                                                                             .ConfigureAwait(false)
+                                                     && !ExoticSkill.IsExoticSkillName(
+                                                         lstSkills[intNewIndex].Value.ToString()));
 
-                                            await cboSkill3.DoThreadSafeAsync(x => x.SelectedIndex = intNewIndex, token).ConfigureAwait(false);
+                                            await cboSkill3.DoThreadSafeAsync(x => x.SelectedIndex = intNewIndex, token)
+                                                           .ConfigureAwait(false);
                                         }
                                     }
                                 }
 
                                 string strMetamagicSkillSelection = string.Format(
-                                    GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_MetamagicSkillBase", token: token).ConfigureAwait(false),
-                                    await LanguageManager.GetStringAsync("String_MetamagicSkills", token: token).ConfigureAwait(false));
+                                    GlobalSettings.CultureInfo,
+                                    await LanguageManager.GetStringAsync("String_MetamagicSkillBase", token: token)
+                                                         .ConfigureAwait(false),
+                                    await LanguageManager.GetStringAsync("String_MetamagicSkills", token: token)
+                                                         .ConfigureAwait(false));
                                 // strSkillType can have the following values: magic, resonance, matrix, active, specific, grouped
                                 // So the language file should contain each of those like String_MetamagicSkillType_magic
-                                string strSkillVal = (await xmlTalentNode.SelectSingleNodeAndCacheExpressionAsync("skillval", token).ConfigureAwait(false))?.Value
-                                                     ?? (await xmlTalentNode
-                                                               .SelectSingleNodeAndCacheExpressionAsync("skillgroupval", token).ConfigureAwait(false))
-                                                        ?.Value;
+                                string strSkillVal
+                                    = (await xmlTalentNode.SelectSingleNodeAndCacheExpressionAsync("skillval", token)
+                                                          .ConfigureAwait(false))?.Value
+                                      ?? (await xmlTalentNode
+                                                .SelectSingleNodeAndCacheExpressionAsync("skillgroupval", token)
+                                                .ConfigureAwait(false))
+                                      ?.Value;
                                 string strMetamagicSkillType = await LanguageManager.GetStringAsync(
                                     "String_MetamagicSkillType_" + strSkillType, token: token).ConfigureAwait(false);
                                 await lblMetatypeSkillSelection.DoThreadSafeAsync(x =>
@@ -628,18 +720,37 @@ namespace Chummer
 
                         int intSpecialAttribPoints = 0;
 
-                        string strSelectedMetatype = await lstMetatypes.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false);
+                        string strSelectedMetatype = await lstMetatypes
+                                                           .DoThreadSafeFuncAsync(
+                                                               x => x.SelectedValue?.ToString(), token)
+                                                           .ConfigureAwait(false);
                         if (!string.IsNullOrEmpty(strSelectedMetatype))
                         {
-                            string strSelectedMetavariant = await cboMetavariant.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false);
-                            XPathNodeIterator xmlBaseMetatypePriorityList = _xmlBasePriorityDataNode.Select("priorities/priority[category = \"Heritage\" and value = " + (await cboHeritage.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false) ?? string.Empty).CleanXPath() + " and (not(prioritytable) or prioritytable = " + _objCharacter.Settings.PriorityTable.CleanXPath() + ")]");
+                            string strSelectedMetavariant = await cboMetavariant
+                                                                  .DoThreadSafeFuncAsync(
+                                                                      x => x.SelectedValue?.ToString(), token)
+                                                                  .ConfigureAwait(false);
+                            XPathNodeIterator xmlBaseMetatypePriorityList = _xmlBasePriorityDataNode.Select(
+                                "priorities/priority[category = \"Heritage\" and value = "
+                                + (await cboHeritage.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token)
+                                                    .ConfigureAwait(false) ?? string.Empty).CleanXPath()
+                                + " and (not(prioritytable) or prioritytable = "
+                                + _objCharacter.Settings.PriorityTable.CleanXPath() + ")]");
                             foreach (XPathNavigator xmlBaseMetatypePriority in xmlBaseMetatypePriorityList)
                             {
-                                if (xmlBaseMetatypePriorityList.Count == 1 || await xmlBaseMetatypePriority.SelectSingleNodeAndCacheExpressionAsync("prioritytable", token).ConfigureAwait(false) != null)
+                                if (xmlBaseMetatypePriorityList.Count == 1 || await xmlBaseMetatypePriority
+                                        .SelectSingleNodeAndCacheExpressionAsync("prioritytable", token)
+                                        .ConfigureAwait(false) != null)
                                 {
-                                    XPathNavigator objXmlMetatypePriorityNode = xmlBaseMetatypePriority.SelectSingleNode("metatypes/metatype[name = " + strSelectedMetatype.CleanXPath() + ']');
-                                    if (!string.IsNullOrEmpty(strSelectedMetavariant) && strSelectedMetavariant != "None")
-                                        objXmlMetatypePriorityNode = objXmlMetatypePriorityNode?.SelectSingleNode("metavariants/metavariant[name = " + strSelectedMetavariant.CleanXPath() + ']');
+                                    XPathNavigator objXmlMetatypePriorityNode
+                                        = xmlBaseMetatypePriority.SelectSingleNode(
+                                            "metatypes/metatype[name = " + strSelectedMetatype.CleanXPath() + ']');
+                                    if (!string.IsNullOrEmpty(strSelectedMetavariant)
+                                        && strSelectedMetavariant != "None")
+                                        objXmlMetatypePriorityNode
+                                            = objXmlMetatypePriorityNode?.SelectSingleNode(
+                                                "metavariants/metavariant[name = " + strSelectedMetavariant.CleanXPath()
+                                                + ']');
                                     if (objXmlMetatypePriorityNode != null && int.TryParse(
                                             (await objXmlMetatypePriorityNode.SelectSingleNodeAndCacheExpressionAsync(
                                                 "value", token).ConfigureAwait(false))?.Value, out int intTemp))
@@ -649,10 +760,16 @@ namespace Chummer
                             }
                         }
 
-                        if (int.TryParse((await xmlTalentNode.SelectSingleNodeAndCacheExpressionAsync("specialattribpoints", token).ConfigureAwait(false))?.Value, out int intTalentSpecialAttribPoints))
+                        if (int.TryParse(
+                                (await xmlTalentNode
+                                       .SelectSingleNodeAndCacheExpressionAsync("specialattribpoints", token)
+                                       .ConfigureAwait(false))?.Value, out int intTalentSpecialAttribPoints))
                             intSpecialAttribPoints += intTalentSpecialAttribPoints;
 
-                        await lblSpecialAttributes.DoThreadSafeAsync(x => x.Text = intSpecialAttribPoints.ToString(GlobalSettings.CultureInfo), token).ConfigureAwait(false);
+                        await lblSpecialAttributes
+                              .DoThreadSafeAsync(
+                                  x => x.Text = intSpecialAttribPoints.ToString(GlobalSettings.CultureInfo), token)
+                              .ConfigureAwait(false);
                     }
                 }
             }
@@ -660,6 +777,7 @@ namespace Chummer
             {
                 await cboTalents.DoThreadSafeAsync(x => x.SelectedIndex = 0, token).ConfigureAwait(false);
             }
+
             if (_objCharacter.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
             {
                 await SumToTen(true, token).ConfigureAwait(false);
@@ -1759,21 +1877,21 @@ namespace Chummer
                 if (lstCurrentPriorities.Count == 0) // Just in case
                     return;
 
-                strMissing = lstCurrentPriorities[0];
+                string strLoopMissing = lstCurrentPriorities[0];
 
                 // Find the combo with the same value as this one and change it to the missing value.
                 //_blnInitializing = true;
                 strMyName = await comboBox.DoThreadSafeFuncAsync(x => x.Name, token).ConfigureAwait(false);
                 if (strHeritageSelected == strComboBoxSelected && strMyName != await cboHeritage.DoThreadSafeFuncAsync(x => x.Name, token).ConfigureAwait(false))
-                    await cboHeritage.DoThreadSafeAsync(x => x.SelectedValue = strMissing, token).ConfigureAwait(false);
+                    await cboHeritage.DoThreadSafeAsync(x => x.SelectedValue = strLoopMissing, token).ConfigureAwait(false);
                 else if (strAttributesSelected == strComboBoxSelected && strMyName != await cboAttributes.DoThreadSafeFuncAsync(x => x.Name, token).ConfigureAwait(false))
-                    await cboAttributes.DoThreadSafeAsync(x => x.SelectedValue = strMissing, token).ConfigureAwait(false);
+                    await cboAttributes.DoThreadSafeAsync(x => x.SelectedValue = strLoopMissing, token).ConfigureAwait(false);
                 else if (strTalentSelected == strComboBoxSelected && strMyName != await cboTalent.DoThreadSafeFuncAsync(x => x.Name, token).ConfigureAwait(false))
-                    await cboTalent.DoThreadSafeAsync(x => x.SelectedValue = strMissing, token).ConfigureAwait(false);
+                    await cboTalent.DoThreadSafeAsync(x => x.SelectedValue = strLoopMissing, token).ConfigureAwait(false);
                 else if (strSkillsSelected == strComboBoxSelected && strMyName != await cboSkills.DoThreadSafeFuncAsync(x => x.Name, token).ConfigureAwait(false))
-                    await cboSkills.DoThreadSafeAsync(x => x.SelectedValue = strMissing, token).ConfigureAwait(false);
+                    await cboSkills.DoThreadSafeAsync(x => x.SelectedValue = strLoopMissing, token).ConfigureAwait(false);
                 else if (strResourcesSelected == strComboBoxSelected && strMyName != await cboResources.DoThreadSafeFuncAsync(x => x.Name, token).ConfigureAwait(false))
-                    await cboResources.DoThreadSafeAsync(x => x.SelectedValue = strMissing, token).ConfigureAwait(false);
+                    await cboResources.DoThreadSafeAsync(x => x.SelectedValue = strLoopMissing, token).ConfigureAwait(false);
             } while (lstCurrentPriorities.Count > 1);
         }
 
@@ -1852,55 +1970,55 @@ namespace Chummer
                 string strAug = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("bodaug", token).ConfigureAwait(false))?.Value
                                 ?? 0.ToString(GlobalSettings.CultureInfo);
                 await lblBOD.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug), token).ConfigureAwait(false);
-                strMin = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("agimin", token).ConfigureAwait(false))?.Value
+                string strMin2 = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("agimin", token).ConfigureAwait(false))?.Value
+                                 ?? 0.ToString(GlobalSettings.CultureInfo);
+                string strMax2 = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("agimax", token).ConfigureAwait(false))?.Value
+                                 ?? 0.ToString(GlobalSettings.CultureInfo);
+                string strAug2 = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("agiaug", token).ConfigureAwait(false))?.Value
+                                 ?? 0.ToString(GlobalSettings.CultureInfo);
+                await lblAGI.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin2, strMax2, strAug2), token).ConfigureAwait(false);
+                string strMin3 = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("reamin", token).ConfigureAwait(false))?.Value
+                                 ?? 0.ToString(GlobalSettings.CultureInfo);
+                string strMax3 = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("reamax", token).ConfigureAwait(false))?.Value
+                                 ?? 0.ToString(GlobalSettings.CultureInfo);
+                string strAug3 = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("reaaug", token).ConfigureAwait(false))?.Value
+                                 ?? 0.ToString(GlobalSettings.CultureInfo);
+                await lblREA.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin3, strMax3, strAug3), token).ConfigureAwait(false);
+                string strMin4 = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("strmin", token).ConfigureAwait(false))?.Value
+                                 ?? 0.ToString(GlobalSettings.CultureInfo);
+                string strMax4 = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("strmax", token).ConfigureAwait(false))?.Value
+                                 ?? 0.ToString(GlobalSettings.CultureInfo);
+                string strAug4 = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("straug", token).ConfigureAwait(false))?.Value
                                 ?? 0.ToString(GlobalSettings.CultureInfo);
-                strMax = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("agimax", token).ConfigureAwait(false))?.Value
+                await lblSTR.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin4, strMax4, strAug4), token).ConfigureAwait(false);
+                string strMin5 = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("chamin", token).ConfigureAwait(false))?.Value
                                 ?? 0.ToString(GlobalSettings.CultureInfo);
-                strAug = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("agiaug", token).ConfigureAwait(false))?.Value
-                                ?? 0.ToString(GlobalSettings.CultureInfo);
-                await lblAGI.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug), token).ConfigureAwait(false);
-                strMin = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("reamin", token).ConfigureAwait(false))?.Value
-                         ?? 0.ToString(GlobalSettings.CultureInfo);
-                strMax = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("reamax", token).ConfigureAwait(false))?.Value
-                         ?? 0.ToString(GlobalSettings.CultureInfo);
-                strAug = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("reaaug", token).ConfigureAwait(false))?.Value
-                         ?? 0.ToString(GlobalSettings.CultureInfo);
-                await lblREA.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug), token).ConfigureAwait(false);
-                strMin = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("strmin", token).ConfigureAwait(false))?.Value
-                         ?? 0.ToString(GlobalSettings.CultureInfo);
-                strMax = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("strmax", token).ConfigureAwait(false))?.Value
-                         ?? 0.ToString(GlobalSettings.CultureInfo);
-                strAug = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("straug", token).ConfigureAwait(false))?.Value
-                         ?? 0.ToString(GlobalSettings.CultureInfo);
-                await lblSTR.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug), token).ConfigureAwait(false);
-                strMin = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("chamin", token).ConfigureAwait(false))?.Value
-                         ?? 0.ToString(GlobalSettings.CultureInfo);
-                strMax = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("chamax", token).ConfigureAwait(false))?.Value
-                         ?? 0.ToString(GlobalSettings.CultureInfo);
-                strAug = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("chaaug", token).ConfigureAwait(false))?.Value
-                         ?? 0.ToString(GlobalSettings.CultureInfo);
-                await lblCHA.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug), token).ConfigureAwait(false);
-                strMin = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("intmin", token).ConfigureAwait(false))?.Value
-                         ?? 0.ToString(GlobalSettings.CultureInfo);
-                strMax = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("intmax", token).ConfigureAwait(false))?.Value
-                         ?? 0.ToString(GlobalSettings.CultureInfo);
-                strAug = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("intaug", token).ConfigureAwait(false))?.Value
-                         ?? 0.ToString(GlobalSettings.CultureInfo);
-                await lblINT.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug), token).ConfigureAwait(false);
-                strMin = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("logmin", token).ConfigureAwait(false))?.Value
-                         ?? 0.ToString(GlobalSettings.CultureInfo);
-                strMax = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("logmax", token).ConfigureAwait(false))?.Value
-                         ?? 0.ToString(GlobalSettings.CultureInfo);
-                strAug = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("logaug", token).ConfigureAwait(false))?.Value
-                         ?? 0.ToString(GlobalSettings.CultureInfo);
-                await lblLOG.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug), token).ConfigureAwait(false);
-                strMin = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("wilmin", token).ConfigureAwait(false))?.Value
-                         ?? 0.ToString(GlobalSettings.CultureInfo);
-                strMax = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("wilmax", token).ConfigureAwait(false))?.Value
-                         ?? 0.ToString(GlobalSettings.CultureInfo);
-                strAug = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("wilaug", token).ConfigureAwait(false))?.Value
-                         ?? 0.ToString(GlobalSettings.CultureInfo);
-                await lblWIL.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug), token).ConfigureAwait(false);
+                string strMax5 = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("chamax", token).ConfigureAwait(false))?.Value
+                                 ?? 0.ToString(GlobalSettings.CultureInfo);
+                string strAug5 = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("chaaug", token).ConfigureAwait(false))?.Value
+                                 ?? 0.ToString(GlobalSettings.CultureInfo);
+                await lblCHA.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin5, strMax5, strAug5), token).ConfigureAwait(false);
+                string strMin6 = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("intmin", token).ConfigureAwait(false))?.Value
+                                 ?? 0.ToString(GlobalSettings.CultureInfo);
+                string strMax6 = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("intmax", token).ConfigureAwait(false))?.Value
+                                 ?? 0.ToString(GlobalSettings.CultureInfo);
+                string strAug6 = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("intaug", token).ConfigureAwait(false))?.Value
+                                 ?? 0.ToString(GlobalSettings.CultureInfo);
+                await lblINT.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin6, strMax6, strAug6), token).ConfigureAwait(false);
+                string strMin7 = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("logmin", token).ConfigureAwait(false))?.Value
+                                 ?? 0.ToString(GlobalSettings.CultureInfo);
+                string strMax7 = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("logmax", token).ConfigureAwait(false))?.Value
+                                 ?? 0.ToString(GlobalSettings.CultureInfo);
+                string strAug7 = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("logaug", token).ConfigureAwait(false))?.Value
+                                 ?? 0.ToString(GlobalSettings.CultureInfo);
+                await lblLOG.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin7, strMax7, strAug7), token).ConfigureAwait(false);
+                string strMin8 = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("wilmin", token).ConfigureAwait(false))?.Value
+                                 ?? 0.ToString(GlobalSettings.CultureInfo);
+                string strMax8 = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("wilmax", token).ConfigureAwait(false))?.Value
+                                 ?? 0.ToString(GlobalSettings.CultureInfo);
+                string strAug8 = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("wilaug", token).ConfigureAwait(false))?.Value
+                                 ?? 0.ToString(GlobalSettings.CultureInfo);
+                await lblWIL.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin8, strMax8, strAug8), token).ConfigureAwait(false);
 
                 string strKarmaText
                     = (await objXmlMetavariantPriorityNode.SelectSingleNodeAndCacheExpressionAsync("karma", token).ConfigureAwait(false))
@@ -2046,55 +2164,55 @@ namespace Chummer
                 string strAug = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("bodaug", token).ConfigureAwait(false))?.Value
                                 ?? 0.ToString(GlobalSettings.CultureInfo);
                 await lblBOD.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug), token).ConfigureAwait(false);
-                strMin = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("agimin", token).ConfigureAwait(false))?.Value
+                string strMin2 = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("agimin", token).ConfigureAwait(false))?.Value
                                 ?? 0.ToString(GlobalSettings.CultureInfo);
-                strMax = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("agimax", token).ConfigureAwait(false))?.Value
+                string strMax2 = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("agimax", token).ConfigureAwait(false))?.Value
                                 ?? 0.ToString(GlobalSettings.CultureInfo);
-                strAug = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("agiaug", token).ConfigureAwait(false))?.Value
+                string strAug2 = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("agiaug", token).ConfigureAwait(false))?.Value
                                 ?? 0.ToString(GlobalSettings.CultureInfo);
-                await lblAGI.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug), token).ConfigureAwait(false);
-                strMin = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("reamin", token).ConfigureAwait(false))?.Value
-                         ?? 0.ToString(GlobalSettings.CultureInfo);
-                strMax = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("reamax", token).ConfigureAwait(false))?.Value
-                         ?? 0.ToString(GlobalSettings.CultureInfo);
-                strAug = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("reaaug", token).ConfigureAwait(false))?.Value
-                         ?? 0.ToString(GlobalSettings.CultureInfo);
-                await lblREA.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug), token).ConfigureAwait(false);
-                strMin = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("strmin", token).ConfigureAwait(false))?.Value
-                         ?? 0.ToString(GlobalSettings.CultureInfo);
-                strMax = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("strmax", token).ConfigureAwait(false))?.Value
-                         ?? 0.ToString(GlobalSettings.CultureInfo);
-                strAug = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("straug", token).ConfigureAwait(false))?.Value
-                         ?? 0.ToString(GlobalSettings.CultureInfo);
-                await lblSTR.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug), token).ConfigureAwait(false);
-                strMin = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("chamin", token).ConfigureAwait(false))?.Value
-                         ?? 0.ToString(GlobalSettings.CultureInfo);
-                strMax = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("chamax", token).ConfigureAwait(false))?.Value
-                         ?? 0.ToString(GlobalSettings.CultureInfo);
-                strAug = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("chaaug", token).ConfigureAwait(false))?.Value
-                         ?? 0.ToString(GlobalSettings.CultureInfo);
-                await lblCHA.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug), token).ConfigureAwait(false);
-                strMin = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("intmin", token).ConfigureAwait(false))?.Value
-                         ?? 0.ToString(GlobalSettings.CultureInfo);
-                strMax = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("intmax", token).ConfigureAwait(false))?.Value
-                         ?? 0.ToString(GlobalSettings.CultureInfo);
-                strAug = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("intaug", token).ConfigureAwait(false))?.Value
-                         ?? 0.ToString(GlobalSettings.CultureInfo);
-                await lblINT.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug), token).ConfigureAwait(false);
-                strMin = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("logmin", token).ConfigureAwait(false))?.Value
-                         ?? 0.ToString(GlobalSettings.CultureInfo);
-                strMax = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("logmax", token).ConfigureAwait(false))?.Value
-                         ?? 0.ToString(GlobalSettings.CultureInfo);
-                strAug = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("logaug", token).ConfigureAwait(false))?.Value
-                         ?? 0.ToString(GlobalSettings.CultureInfo);
-                await lblLOG.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug), token).ConfigureAwait(false);
-                strMin = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("wilmin", token).ConfigureAwait(false))?.Value
-                         ?? 0.ToString(GlobalSettings.CultureInfo);
-                strMax = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("wilmax", token).ConfigureAwait(false))?.Value
-                         ?? 0.ToString(GlobalSettings.CultureInfo);
-                strAug = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("wilaug", token).ConfigureAwait(false))?.Value
-                         ?? 0.ToString(GlobalSettings.CultureInfo);
-                await lblWIL.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug), token).ConfigureAwait(false);
+                await lblAGI.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin2, strMax2, strAug2), token).ConfigureAwait(false);
+                string strMin3 = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("reamin", token).ConfigureAwait(false))?.Value
+                                ?? 0.ToString(GlobalSettings.CultureInfo);
+                string strMax3 = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("reamax", token).ConfigureAwait(false))?.Value
+                                ?? 0.ToString(GlobalSettings.CultureInfo);
+                string strAug3 = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("reaaug", token).ConfigureAwait(false))?.Value
+                                ?? 0.ToString(GlobalSettings.CultureInfo);
+                await lblREA.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin3, strMax3, strAug3), token).ConfigureAwait(false);
+                string strMin4 = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("strmin", token).ConfigureAwait(false))?.Value
+                                ?? 0.ToString(GlobalSettings.CultureInfo);
+                string strMax4 = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("strmax", token).ConfigureAwait(false))?.Value
+                                ?? 0.ToString(GlobalSettings.CultureInfo);
+                string strAug4 = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("straug", token).ConfigureAwait(false))?.Value
+                                ?? 0.ToString(GlobalSettings.CultureInfo);
+                await lblSTR.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin4, strMax4, strAug4), token).ConfigureAwait(false);
+                string strMin5 = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("chamin", token).ConfigureAwait(false))?.Value
+                                ?? 0.ToString(GlobalSettings.CultureInfo);
+                string strMax5 = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("chamax", token).ConfigureAwait(false))?.Value
+                                ?? 0.ToString(GlobalSettings.CultureInfo);
+                string strAug5 = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("chaaug", token).ConfigureAwait(false))?.Value
+                                ?? 0.ToString(GlobalSettings.CultureInfo);
+                await lblCHA.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin5, strMax5, strAug5), token).ConfigureAwait(false);
+                string strMin6 = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("intmin", token).ConfigureAwait(false))?.Value
+                                ?? 0.ToString(GlobalSettings.CultureInfo);
+                string strMax6 = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("intmax", token).ConfigureAwait(false))?.Value
+                                ?? 0.ToString(GlobalSettings.CultureInfo);
+                string strAug6 = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("intaug", token).ConfigureAwait(false))?.Value
+                                ?? 0.ToString(GlobalSettings.CultureInfo);
+                await lblINT.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin6, strMax6, strAug6), token).ConfigureAwait(false);
+                string strMin7 = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("logmin", token).ConfigureAwait(false))?.Value
+                                ?? 0.ToString(GlobalSettings.CultureInfo);
+                string strMax7 = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("logmax", token).ConfigureAwait(false))?.Value
+                                ?? 0.ToString(GlobalSettings.CultureInfo);
+                string strAug7 = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("logaug", token).ConfigureAwait(false))?.Value
+                                ?? 0.ToString(GlobalSettings.CultureInfo);
+                await lblLOG.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin7, strMax7, strAug7), token).ConfigureAwait(false);
+                string strMin8 = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("wilmin", token).ConfigureAwait(false))?.Value
+                                ?? 0.ToString(GlobalSettings.CultureInfo);
+                string strMax8 = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("wilmax", token).ConfigureAwait(false))?.Value
+                                ?? 0.ToString(GlobalSettings.CultureInfo);
+                string strAug8 = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("wilaug", token).ConfigureAwait(false))?.Value
+                                ?? 0.ToString(GlobalSettings.CultureInfo);
+                await lblWIL.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin8, strMax8, strAug8), token).ConfigureAwait(false);
 
                 string strKarmaText
                     = (await objXmlMetatypePriorityNode.SelectSingleNodeAndCacheExpressionAsync("karma", token).ConfigureAwait(false))?.Value
@@ -2273,28 +2391,28 @@ namespace Chummer
 
             bool blnVisible = await lblBOD.DoThreadSafeFuncAsync(x => !string.IsNullOrEmpty(x.Text), token).ConfigureAwait(false);
             await lblBODLabel.DoThreadSafeAsync(x => x.Visible = blnVisible, token).ConfigureAwait(false);
-            blnVisible = await lblAGI.DoThreadSafeFuncAsync(x => !string.IsNullOrEmpty(x.Text), token).ConfigureAwait(false);
-            await lblAGILabel.DoThreadSafeAsync(x => x.Visible = blnVisible, token).ConfigureAwait(false);
-            blnVisible = await lblREA.DoThreadSafeFuncAsync(x => !string.IsNullOrEmpty(x.Text), token).ConfigureAwait(false);
-            await lblREALabel.DoThreadSafeAsync(x => x.Visible = blnVisible, token).ConfigureAwait(false);
-            blnVisible = await lblSTR.DoThreadSafeFuncAsync(x => !string.IsNullOrEmpty(x.Text), token).ConfigureAwait(false);
-            await lblSTRLabel.DoThreadSafeAsync(x => x.Visible = blnVisible, token).ConfigureAwait(false);
-            blnVisible = await lblCHA.DoThreadSafeFuncAsync(x => !string.IsNullOrEmpty(x.Text), token).ConfigureAwait(false);
-            await lblCHALabel.DoThreadSafeAsync(x => x.Visible = blnVisible, token).ConfigureAwait(false);
-            blnVisible = await lblINT.DoThreadSafeFuncAsync(x => !string.IsNullOrEmpty(x.Text), token).ConfigureAwait(false);
-            await lblINTLabel.DoThreadSafeAsync(x => x.Visible = blnVisible, token).ConfigureAwait(false);
-            blnVisible = await lblLOG.DoThreadSafeFuncAsync(x => !string.IsNullOrEmpty(x.Text), token).ConfigureAwait(false);
-            await lblLOGLabel.DoThreadSafeAsync(x => x.Visible = blnVisible, token).ConfigureAwait(false);
-            blnVisible = await lblWIL.DoThreadSafeFuncAsync(x => !string.IsNullOrEmpty(x.Text), token).ConfigureAwait(false);
-            await lblWILLabel.DoThreadSafeAsync(x => x.Visible = blnVisible, token).ConfigureAwait(false);
-            blnVisible = await lblSpecialAttributes.DoThreadSafeFuncAsync(x => !string.IsNullOrEmpty(x.Text), token).ConfigureAwait(false);
-            await lblSpecialAttributesLabel.DoThreadSafeAsync(x => x.Visible = blnVisible, token).ConfigureAwait(false);
-            blnVisible = await lblMetavariantQualities.DoThreadSafeFuncAsync(x => !string.IsNullOrEmpty(x.Text), token).ConfigureAwait(false);
-            await lblMetavariantQualitiesLabel.DoThreadSafeAsync(x => x.Visible = blnVisible, token).ConfigureAwait(false);
-            blnVisible = await lblMetavariantKarma.DoThreadSafeFuncAsync(x => !string.IsNullOrEmpty(x.Text), token).ConfigureAwait(false);
-            await lblMetavariantKarmaLabel.DoThreadSafeAsync(x => x.Visible = blnVisible, token).ConfigureAwait(false);
-            blnVisible = await lblSourceLabel.DoThreadSafeFuncAsync(x => !string.IsNullOrEmpty(x.Text), token).ConfigureAwait(false);
-            await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = blnVisible, token).ConfigureAwait(false);
+            bool blnVisible2 = await lblAGI.DoThreadSafeFuncAsync(x => !string.IsNullOrEmpty(x.Text), token).ConfigureAwait(false);
+            await lblAGILabel.DoThreadSafeAsync(x => x.Visible = blnVisible2, token).ConfigureAwait(false);
+            bool blnVisible3 = await lblREA.DoThreadSafeFuncAsync(x => !string.IsNullOrEmpty(x.Text), token).ConfigureAwait(false);
+            await lblREALabel.DoThreadSafeAsync(x => x.Visible = blnVisible3, token).ConfigureAwait(false);
+            bool blnVisible4 = await lblSTR.DoThreadSafeFuncAsync(x => !string.IsNullOrEmpty(x.Text), token).ConfigureAwait(false);
+            await lblSTRLabel.DoThreadSafeAsync(x => x.Visible = blnVisible4, token).ConfigureAwait(false);
+            bool blnVisible5 = await lblCHA.DoThreadSafeFuncAsync(x => !string.IsNullOrEmpty(x.Text), token).ConfigureAwait(false);
+            await lblCHALabel.DoThreadSafeAsync(x => x.Visible = blnVisible5, token).ConfigureAwait(false);
+            bool blnVisible6 = await lblINT.DoThreadSafeFuncAsync(x => !string.IsNullOrEmpty(x.Text), token).ConfigureAwait(false);
+            await lblINTLabel.DoThreadSafeAsync(x => x.Visible = blnVisible6, token).ConfigureAwait(false);
+            bool blnVisible7 = await lblLOG.DoThreadSafeFuncAsync(x => !string.IsNullOrEmpty(x.Text), token).ConfigureAwait(false);
+            await lblLOGLabel.DoThreadSafeAsync(x => x.Visible = blnVisible7, token).ConfigureAwait(false);
+            bool blnVisible8 = await lblWIL.DoThreadSafeFuncAsync(x => !string.IsNullOrEmpty(x.Text), token).ConfigureAwait(false);
+            await lblWILLabel.DoThreadSafeAsync(x => x.Visible = blnVisible8, token).ConfigureAwait(false);
+            bool blnVisible9 = await lblSpecialAttributes.DoThreadSafeFuncAsync(x => !string.IsNullOrEmpty(x.Text), token).ConfigureAwait(false);
+            await lblSpecialAttributesLabel.DoThreadSafeAsync(x => x.Visible = blnVisible9, token).ConfigureAwait(false);
+            bool blnVisible10 = await lblMetavariantQualities.DoThreadSafeFuncAsync(x => !string.IsNullOrEmpty(x.Text), token).ConfigureAwait(false);
+            await lblMetavariantQualitiesLabel.DoThreadSafeAsync(x => x.Visible = blnVisible10, token).ConfigureAwait(false);
+            bool blnVisible11 = await lblMetavariantKarma.DoThreadSafeFuncAsync(x => !string.IsNullOrEmpty(x.Text), token).ConfigureAwait(false);
+            await lblMetavariantKarmaLabel.DoThreadSafeAsync(x => x.Visible = blnVisible11, token).ConfigureAwait(false);
+            bool blnVisible12 = await lblSourceLabel.DoThreadSafeFuncAsync(x => !string.IsNullOrEmpty(x.Text), token).ConfigureAwait(false);
+            await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = blnVisible12, token).ConfigureAwait(false);
         }
 
         private async ValueTask PopulateTalents(CancellationToken token = default)

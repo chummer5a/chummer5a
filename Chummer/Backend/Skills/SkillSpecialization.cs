@@ -136,7 +136,7 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// Skill Specialization's name.
         /// </summary>
-        public async Task<string> DisplayNameAsync(string strLanguage, CancellationToken token = default)
+        public async ValueTask<string> DisplayNameAsync(string strLanguage, CancellationToken token = default)
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
@@ -148,6 +148,9 @@ namespace Chummer.Backend.Skills
         /// The name of the object as it should be displayed in lists in the program's current language.
         /// </summary>
         public string CurrentDisplayName => DisplayName(GlobalSettings.Language);
+
+        public ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default) =>
+            DisplayNameAsync(GlobalSettings.Language, token);
 
         /// <summary>
         /// The Skill to which this specialization belongs

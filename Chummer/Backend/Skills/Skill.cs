@@ -2023,6 +2023,31 @@ namespace Chummer.Backend.Skills
             }
         }
 
+        public async ValueTask<string> GetDefaultAttributeAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                return _strDefaultAttribute;
+        }
+
+        public async ValueTask SetDefaultAttributeAsync(string value, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                if (_strDefaultAttribute == value)
+                    return;
+                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    _strDefaultAttribute = value;
+                    OnPropertyChanged(nameof(DefaultAttribute));
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+        }
+
         /// <summary>
         /// The translated abbreviation of the linked attribute.
         /// </summary>
@@ -2502,10 +2527,10 @@ namespace Chummer.Backend.Skills
             {
                 return _strDictionaryKey = _strDictionaryKey
                                            ?? (IsExoticSkill
-                                               ? Name + " (" +
+                                               ? await GetNameAsync(token).ConfigureAwait(false) + " (" +
                                                  await DisplaySpecializationAsync(GlobalSettings.DefaultLanguage, token)
                                                      .ConfigureAwait(false) + ')'
-                                               : Name);
+                                               : await GetNameAsync(token).ConfigureAwait(false));
             }
         }
 
@@ -2532,7 +2557,35 @@ namespace Chummer.Backend.Skills
                     }
                 }
             }
-        } //I
+        }
+
+        public async ValueTask<string> GetNameAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                return _strName;
+        }
+
+        public async ValueTask SetNameAsync(string value, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                if (value == _strName)
+                    return;
+                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    _strName = value;
+                    _strDictionaryKey = null;
+                    _intCachedFreeBase = int.MinValue;
+                    _intCachedFreeKarma = int.MinValue;
+                    OnPropertyChanged(nameof(Name));
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+        }
 
         //TODO RENAME DESCRIPTIVE
         private Guid _guidInternalId = Guid.NewGuid();
@@ -2609,6 +2662,44 @@ namespace Chummer.Backend.Skills
             }
         }
 
+        /// <summary>
+        /// The ID for this skill. This is persistent for active skills over
+        /// multiple characters, ?and predefined knowledge skills,? but not
+        /// for skills where the user supplies a name (Exotic and Knowledge)
+        /// </summary>
+        public async ValueTask<Guid> GetSkillIdAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                return _guidSkillId;
+        }
+
+        /// <summary>
+        /// The ID for this skill. This is persistent for active skills over
+        /// multiple characters, ?and predefined knowledge skills,? but not
+        /// for skills where the user supplies a name (Exotic and Knowledge)
+        /// </summary>
+        public async ValueTask SetSkillIdAsync(Guid value, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                if (_guidSkillId == value)
+                    return;
+                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    _guidSkillId = value;
+                    _objCachedMyXmlNode = null;
+                    _objCachedMyXPathNode = null;
+                    _blnRecalculateCachedSuggestedSpecializations = true;
+                    OnPropertyChanged(nameof(SkillId));
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+        }
+
         public string SkillGroup { get; } = string.Empty;
 
         public virtual string SkillCategory { get; } = string.Empty;
@@ -2673,6 +2764,67 @@ namespace Chummer.Backend.Skills
             }
         }
 
+        // ReSharper disable once InconsistentNaming
+        public async ValueTask<IReadOnlyList<ListItem>> GetCGLSpecializationsAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                if (_blnRecalculateCachedSuggestedSpecializations)
+                {
+                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        if (_blnRecalculateCachedSuggestedSpecializations) // Just in case
+                        {
+                            _blnRecalculateCachedSuggestedSpecializations = false;
+                            if (_lstCachedSuggestedSpecializations == null)
+                                _lstCachedSuggestedSpecializations = Utils.ListItemListPool.Get();
+                            else
+                                _lstCachedSuggestedSpecializations.Clear();
+                            XPathNodeIterator xmlSpecList =
+                                (await this.GetNodeXPathAsync(GlobalSettings.Language, token: token).ConfigureAwait(false))?.Select("specs/spec");
+                            if (xmlSpecList?.Count > 0)
+                            {
+                                foreach (XPathNavigator xmlSpecNode in xmlSpecList)
+                                {
+                                    string strInnerText = xmlSpecNode.Value;
+                                    if (string.IsNullOrEmpty(strInnerText))
+                                        continue;
+                                    _lstCachedSuggestedSpecializations.Add(
+                                        new ListItem(strInnerText,
+                                                     xmlSpecNode.SelectSingleNode("@translate")?.Value
+                                                     ?? strInnerText));
+                                }
+                            }
+
+                            foreach (string strSpecializationName in (await ImprovementManager
+                                                                            .GetCachedImprovementListForValueOfAsync(
+                                                                                CharacterObject,
+                                                                                Improvement.ImprovementType
+                                                                                    .SkillSpecializationOption,
+                                                                                await GetDictionaryKeyAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false)).Select(x => x.UniqueName))
+                            {
+                                if (_lstCachedSuggestedSpecializations.Any(
+                                        y => y.Value?.ToString() == strSpecializationName))
+                                    continue;
+                                _lstCachedSuggestedSpecializations.Add(
+                                    new ListItem(strSpecializationName,
+                                                 await CharacterObject.TranslateExtraAsync(strSpecializationName, token: token).ConfigureAwait(false)));
+                            }
+
+                            _lstCachedSuggestedSpecializations.Sort(CompareListItems.CompareNames);
+                        }
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                    }
+                }
+
+                return _lstCachedSuggestedSpecializations;
+            }
+        }
+
         private readonly Dictionary<string, string> _dicCachedStringSpec = new Dictionary<string, string>();
 
         public virtual string DisplaySpecialization(string strLanguage)
@@ -2696,7 +2848,7 @@ namespace Chummer.Backend.Skills
                 if (_dicCachedStringSpec.TryGetValue(strLanguage, out string strReturn))
                     return strReturn;
                 strReturn = await StringExtensions
-                    .JoinAsync(", ", Specializations.Select(x => x.DisplayNameAsync(strLanguage, token)), token)
+                    .JoinAsync(", ", Specializations.Select(x => x.DisplayNameAsync(strLanguage, token).AsTask()), token)
                     .ConfigureAwait(false);
 
                 _dicCachedStringSpec.Add(strLanguage, strReturn);
@@ -2705,14 +2857,9 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        public string CurrentDisplaySpecialization
-        {
-            get
-            {
-                using (EnterReadLock.Enter(LockObject))
-                    return DisplaySpecialization(GlobalSettings.Language);
-            }
-        }
+        public string CurrentDisplaySpecialization => DisplaySpecialization(GlobalSettings.Language);
+
+        public ValueTask<string> GetCurrentDisplaySpecializationAsync(CancellationToken token = default) => DisplaySpecializationAsync(GlobalSettings.Language, token);
 
         private readonly ThreadSafeObservableCollection<SkillSpecialization> _lstSpecializations = new ThreadSafeObservableCollection<SkillSpecialization>();
 
@@ -2779,6 +2926,74 @@ namespace Chummer.Backend.Skills
             }
         }
 
+        public async ValueTask<string> GetTopMostDisplaySpecializationAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                if (IsExoticSkill)
+                {
+                    return await ((ExoticSkill) this).DisplaySpecificAsync(GlobalSettings.Language, token).ConfigureAwait(false);
+                }
+
+                SkillSpecialization objSpec = await Specializations.FirstOrDefaultAsync(x => !x.Free, token: token).ConfigureAwait(false);
+                return objSpec != null ? await objSpec.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) : string.Empty;
+            }
+        }
+
+        public async ValueTask SetTopMostDisplaySpecializationAsync(string value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    await Specializations.RemoveAllAsync(x => !x.Free, token: token).ConfigureAwait(false);
+                    return;
+                }
+
+                IAsyncDisposable objLocker2 = await Specializations.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    int intIndexToReplace = await Specializations.FindIndexAsync(x => !x.Free, token).ConfigureAwait(false);
+                    if (intIndexToReplace < 0)
+                    {
+                        await Specializations.AddWithSortAsync(new SkillSpecialization(CharacterObject, value),
+                                                               (x, y) =>
+                                                               {
+                                                                   if (x.Free != y.Free)
+                                                                       return x.Free ? 1 : -1;
+                                                                   if (x.Expertise != y.Expertise)
+                                                                       return x.Expertise ? 1 : -1;
+                                                                   return 0;
+                                                               }, token: token).ConfigureAwait(false);
+                        return;
+                    }
+
+                    await Specializations.SetValueAtAsync(intIndexToReplace,
+                                                          new SkillSpecialization(CharacterObject, value), token).ConfigureAwait(false);
+                    // For safety's, remove all non-free specializations after the one we are replacing.
+                    intIndexToReplace
+                        = await Specializations.FindIndexAsync(intIndexToReplace + 1, x => !x.Free, token: token).ConfigureAwait(false);
+                    if (intIndexToReplace > 0)
+                        Utils.BreakIfDebug(); // This shouldn't happen under normal operations because chargen can only ever have one player-picked specialization at a time
+                    while (intIndexToReplace > 0)
+                    {
+                        await Specializations.RemoveAtAsync(intIndexToReplace, token).ConfigureAwait(false);
+                        intIndexToReplace
+                            = await Specializations.FindIndexAsync(intIndexToReplace + 1, x => !x.Free, token).ConfigureAwait(false);
+                    }
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         public bool HasSpecialization(string strSpecialization)
         {
             using (EnterReadLock.Enter(LockObject))
@@ -2805,7 +3020,7 @@ namespace Chummer.Backend.Skills
                 }
 
                 return await Specializations.AnyAsync(
-                               x => x.Name == strSpecialization || x.CurrentDisplayName == strSpecialization,
+                               async x => x.Name == strSpecialization || await x.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) == strSpecialization,
                                token: token)
                            .ConfigureAwait(false)
                        && (await ImprovementManager.GetCachedImprovementListForValueOfAsync(
@@ -2843,7 +3058,7 @@ namespace Chummer.Backend.Skills
                 return await HasSpecializationAsync(strSpecialization, token).ConfigureAwait(false)
                     ? await Specializations
                         .FirstOrDefaultAsync(
-                            x => x.Name == strSpecialization || x.CurrentDisplayName == strSpecialization, token: token)
+                            async x => x.Name == strSpecialization || await x.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) == strSpecialization, token: token)
                         .ConfigureAwait(false)
                     : null;
             }
@@ -3719,14 +3934,10 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        public string CurrentDisplayName
-        {
-            get
-            {
-                using (EnterReadLock.Enter(LockObject))
-                    return DisplayName(GlobalSettings.Language);
-            }
-        }
+        public string CurrentDisplayName => DisplayName(GlobalSettings.Language);
+
+        public ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default) =>
+            DisplayNameAsync(GlobalSettings.Language, token);
 
         public string CurrentDisplayCategory
         {
@@ -5125,6 +5336,126 @@ namespace Chummer.Backend.Skills
             }
         }
 
+        /// <summary>
+        /// Karma price to upgrade. Returns negative if impossible
+        /// </summary>
+        /// <returns>Price in karma</returns>
+        public virtual async ValueTask<int> GetUpgradeKarmaCostAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                int intTotalBaseRating = await GetTotalBaseRatingAsync(token).ConfigureAwait(false);
+                if (intTotalBaseRating >= await GetRatingMaximumAsync(token).ConfigureAwait(false))
+                {
+                    return -1;
+                }
+
+                int upgrade = 0;
+                int intOptionsCost;
+                CharacterSettings objSettings = await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false);
+                if (intTotalBaseRating == 0)
+                {
+                    intOptionsCost = objSettings.KarmaNewActiveSkill;
+                    upgrade += intOptionsCost;
+                }
+                else
+                {
+                    intOptionsCost = objSettings.KarmaImproveActiveSkill;
+                    upgrade += (intTotalBaseRating + 1) * intOptionsCost;
+                }
+
+                int intSkillGroupCostAdjustment = 0;
+                if (objSettings.CompensateSkillGroupKarmaDifference && SkillGroupObject != null)
+                {
+                    int intSkillGroupUpper = int.MaxValue;
+                    foreach (Skill objSkillGroupMember in SkillGroupObject.SkillList)
+                    {
+                        if (objSkillGroupMember != this && await objSkillGroupMember.GetEnabledAsync(token).ConfigureAwait(false))
+                        {
+                            int intLoopTotalBaseRating = await objSkillGroupMember.GetTotalBaseRatingAsync(token).ConfigureAwait(false);
+                            if (intLoopTotalBaseRating < intSkillGroupUpper)
+                                intSkillGroupUpper = intLoopTotalBaseRating;
+                        }
+                    }
+
+                    if (intSkillGroupUpper != int.MaxValue && intSkillGroupUpper > intTotalBaseRating)
+                    {
+                        int intGroupCost;
+                        int intNakedSkillCost = await SkillGroupObject.SkillList.CountAsync(async x => x == this || await x.GetEnabledAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
+                        if (intTotalBaseRating == 0)
+                        {
+                            intGroupCost = objSettings.KarmaNewSkillGroup;
+                            intNakedSkillCost *= objSettings.KarmaNewActiveSkill;
+                        }
+                        else
+                        {
+                            intGroupCost = (intTotalBaseRating + 1) *
+                                           objSettings.KarmaImproveSkillGroup;
+                            intNakedSkillCost *= (intTotalBaseRating + 1) *
+                                                 objSettings.KarmaImproveActiveSkill;
+                        }
+
+                        intSkillGroupCostAdjustment = intGroupCost - intNakedSkillCost;
+                        upgrade += intSkillGroupCostAdjustment;
+                    }
+                }
+
+                decimal decMultiplier = 1.0m;
+                decimal decExtra = 0;
+                bool blnCreated = await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false);
+                string strDictionaryKey = await GetDictionaryKeyAsync(token).ConfigureAwait(false);
+                await (await CharacterObject.GetImprovementsAsync(token).ConfigureAwait(false)).ForEachAsync(
+                    objLoopImprovement =>
+                    {
+                        if ((objLoopImprovement.Maximum == 0 || intTotalBaseRating + 1 <= objLoopImprovement.Maximum) &&
+                            objLoopImprovement.Minimum <= intTotalBaseRating + 1 &&
+                            (string.IsNullOrEmpty(objLoopImprovement.Condition) ||
+                             (objLoopImprovement.Condition == "career") == blnCreated ||
+                             (objLoopImprovement.Condition == "create") != blnCreated) &&
+                            objLoopImprovement.Enabled)
+                        {
+                            if (objLoopImprovement.ImprovedName == strDictionaryKey ||
+                                string.IsNullOrEmpty(objLoopImprovement.ImprovedName))
+                            {
+                                switch (objLoopImprovement.ImproveType)
+                                {
+                                    case Improvement.ImprovementType.ActiveSkillKarmaCost:
+                                        decExtra += objLoopImprovement.Value;
+                                        break;
+
+                                    case Improvement.ImprovementType.ActiveSkillKarmaCostMultiplier:
+                                        decMultiplier *= objLoopImprovement.Value / 100.0m;
+                                        break;
+                                }
+                            }
+                            else if (objLoopImprovement.ImprovedName == SkillCategory)
+                            {
+                                switch (objLoopImprovement.ImproveType)
+                                {
+                                    case Improvement.ImprovementType.SkillCategoryKarmaCost:
+                                        decExtra += objLoopImprovement.Value;
+                                        break;
+
+                                    case Improvement.ImprovementType.SkillCategoryKarmaCostMultiplier:
+                                        decMultiplier *= objLoopImprovement.Value / 100.0m;
+                                        break;
+                                }
+                            }
+                        }
+                    }, token: token).ConfigureAwait(false);
+
+                if (decMultiplier != 1.0m)
+                    upgrade = (upgrade * decMultiplier + decExtra).StandardRound();
+                else
+                    upgrade += decExtra.StandardRound();
+
+                int intMinCost = Math.Min(1, intOptionsCost);
+                if (upgrade < intMinCost + intSkillGroupCostAdjustment)
+                    upgrade = intMinCost + intSkillGroupCostAdjustment;
+                return upgrade;
+            }
+        }
+
         public async ValueTask Upgrade(CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
@@ -5135,7 +5466,7 @@ namespace Chummer.Backend.Skills
                     if (!CanUpgradeCareer)
                         return;
 
-                    int price = UpgradeKarmaCost;
+                    int price = await GetUpgradeKarmaCostAsync(token).ConfigureAwait(false);
                     int intTotalBaseRating = await GetTotalBaseRatingAsync(token).ConfigureAwait(false);
                     //If data file contains {4} this crashes but...
                     string upgradetext =
@@ -5143,7 +5474,7 @@ namespace Chummer.Backend.Skills
                             await LanguageManager.GetStringAsync(IsKnowledgeSkill
                                 ? "String_ExpenseKnowledgeSkill"
                                 : "String_ExpenseActiveSkill", token: token).ConfigureAwait(false),
-                            CurrentDisplayName,
+                            await GetCurrentDisplayNameAsync(token).ConfigureAwait(false),
                             intTotalBaseRating,
                             intTotalBaseRating + 1,
                             await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false));
@@ -5274,12 +5605,12 @@ namespace Chummer.Backend.Skills
                     else
                         intPrice += decExtraSpecCost.StandardRound(); //Spec
 
-                    if (intPrice > await CharacterObject.GetKarmaAsync(token))
+                    if (intPrice > await CharacterObject.GetKarmaAsync(token).ConfigureAwait(false))
                         return;
 
                     string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
                     string strUpgradeText = await LanguageManager.GetStringAsync("String_ExpenseLearnSpecialization", token: token).ConfigureAwait(false) + strSpace
-                        + CurrentDisplayName + strSpace + '(' + strName + ')';
+                        + await GetCurrentDisplayNameAsync(token).ConfigureAwait(false) + strSpace + '(' + strName + ')';
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                     objExpense.Create(intPrice * -1, strUpgradeText, ExpenseType.Karma, DateTime.Now);
                     objExpense.Undo =
@@ -5585,6 +5916,34 @@ namespace Chummer.Backend.Skills
                             string.Format(GlobalSettings.CultureInfo, "{0}{1}{0}{2}{3}{0}{4}{0}({5})", strSpace, '+',
                                 LanguageManager.GetString("String_ExpenseSpecialization"),
                                 LanguageManager.GetString("String_Colon"), strValidSpec, intSpecBonus);
+                }
+
+                return strReturn;
+            }
+        }
+
+        /// <summary>
+        /// Dicepool of the skill, formatted for use in tooltips by other objects.
+        /// </summary>
+        /// <param name="intPool">Dicepool to use. In most </param>
+        /// <param name="strValidSpec">A specialization to check for. If not empty, will be checked for and added to the string.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async ValueTask<string> FormattedDicePoolAsync(int intPool, string strValidSpec = "", CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+                string strReturn = string.Format(GlobalSettings.CultureInfo, "{0}{1}({2})", await GetCurrentDisplayNameAsync(token).ConfigureAwait(false),
+                                                 strSpace, intPool);
+                // Add any Specialization bonus if applicable.
+                if (!string.IsNullOrWhiteSpace(strValidSpec))
+                {
+                    int intSpecBonus = await GetSpecializationBonusAsync(strValidSpec, token).ConfigureAwait(false);
+                    if (intSpecBonus != 0)
+                        strReturn +=
+                            string.Format(GlobalSettings.CultureInfo, "{0}{1}{0}{2}{3}{0}{4}{0}({5})", strSpace, '+',
+                                          await LanguageManager.GetStringAsync("String_ExpenseSpecialization", token: token).ConfigureAwait(false),
+                                          await LanguageManager.GetStringAsync("String_Colon", token: token).ConfigureAwait(false), strValidSpec, intSpecBonus);
                 }
 
                 return strReturn;

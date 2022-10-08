@@ -34,4 +34,135 @@ namespace Chummer
 
         ValueTask<IReadOnlyCollection<TValue>> GetReadOnlyValuesAsync(CancellationToken token = default);
     }
+
+    public static class AsyncReadOnlyDictionaryExtensions
+    {
+        public static async ValueTask<bool> EqualsByValueAsync(
+            this IAsyncReadOnlyDictionary<object, IComparable> dicLeft,
+            IAsyncDictionary<object, IComparable> dicRight, CancellationToken token = default)
+        {
+            if (await dicLeft.GetCountAsync(token).ConfigureAwait(false)
+                != await dicRight.GetCountAsync(token).ConfigureAwait(false))
+                return false;
+            IEnumerator<KeyValuePair<object, IComparable>> objLeftEnumerator
+                = await dicLeft.GetEnumeratorAsync(token).ConfigureAwait(false);
+            while (objLeftEnumerator.MoveNext())
+            {
+                object objKey = objLeftEnumerator.Current.Key;
+                if (!await dicRight.ContainsKeyAsync(objKey, token).ConfigureAwait(false))
+                    return false;
+            }
+
+            IEnumerator<KeyValuePair<object, IComparable>> objRightEnumerator
+                = await dicRight.GetEnumeratorAsync(token).ConfigureAwait(false);
+            while (objRightEnumerator.MoveNext())
+            {
+                object objKey = objRightEnumerator.Current.Key;
+                (bool blnContains, IComparable objValue)
+                    = await dicLeft.TryGetValueAsync(objKey, token).ConfigureAwait(false);
+                if (!blnContains)
+                    return false;
+                if (!objValue.Equals(objRightEnumerator.Current.Value))
+                    return false;
+            }
+
+            return true;
+        }
+
+        public static async ValueTask<bool> EqualsByValueAsync(
+            this IAsyncReadOnlyDictionary<object, IComparable> dicLeft,
+            IAsyncReadOnlyDictionary<object, IComparable> dicRight, CancellationToken token = default)
+        {
+            if (await dicLeft.GetCountAsync(token).ConfigureAwait(false)
+                != await dicRight.GetCountAsync(token).ConfigureAwait(false))
+                return false;
+            IEnumerator<KeyValuePair<object, IComparable>> objLeftEnumerator
+                = await dicLeft.GetEnumeratorAsync(token).ConfigureAwait(false);
+            while (objLeftEnumerator.MoveNext())
+            {
+                object objKey = objLeftEnumerator.Current.Key;
+                if (!await dicRight.ContainsKeyAsync(objKey, token).ConfigureAwait(false))
+                    return false;
+            }
+
+            IEnumerator<KeyValuePair<object, IComparable>> objRightEnumerator
+                = await dicRight.GetEnumeratorAsync(token).ConfigureAwait(false);
+            while (objRightEnumerator.MoveNext())
+            {
+                object objKey = objRightEnumerator.Current.Key;
+                (bool blnContains, IComparable objValue)
+                    = await dicLeft.TryGetValueAsync(objKey, token).ConfigureAwait(false);
+                if (!blnContains)
+                    return false;
+                if (!objValue.Equals(objRightEnumerator.Current.Value))
+                    return false;
+            }
+
+            return true;
+        }
+
+        public static async ValueTask<bool> EqualsByValueAsync(
+            this IAsyncReadOnlyDictionary<object, IComparable> dicLeft,
+            IDictionary<object, IComparable> dicRight, CancellationToken token = default)
+        {
+            if (await dicLeft.GetCountAsync(token).ConfigureAwait(false) != dicRight.Count)
+                return false;
+            IEnumerator<KeyValuePair<object, IComparable>> objLeftEnumerator
+                = await dicLeft.GetEnumeratorAsync(token).ConfigureAwait(false);
+            while (objLeftEnumerator.MoveNext())
+            {
+                object objKey = objLeftEnumerator.Current.Key;
+                if (!dicRight.ContainsKey(objKey))
+                    return false;
+            }
+
+            using (IEnumerator<KeyValuePair<object, IComparable>> objRightEnumerator = dicRight.GetEnumerator())
+            {
+                while (objRightEnumerator.MoveNext())
+                {
+                    object objKey = objRightEnumerator.Current.Key;
+                    (bool blnContains, IComparable objValue)
+                        = await dicLeft.TryGetValueAsync(objKey, token).ConfigureAwait(false);
+                    if (!blnContains)
+                        return false;
+                    if (!objValue.Equals(objRightEnumerator.Current.Value))
+                        return false;
+                }
+            }
+
+            return true;
+        }
+
+        public static async ValueTask<bool> EqualsByValueAsync(
+            this IAsyncReadOnlyDictionary<object, IComparable> dicLeft,
+            IReadOnlyDictionary<object, IComparable> dicRight, CancellationToken token = default)
+        {
+            if (await dicLeft.GetCountAsync(token).ConfigureAwait(false) != dicRight.Count)
+                return false;
+            IEnumerator<KeyValuePair<object, IComparable>> objLeftEnumerator
+                = await dicLeft.GetEnumeratorAsync(token).ConfigureAwait(false);
+            while (objLeftEnumerator.MoveNext())
+            {
+                object objKey = objLeftEnumerator.Current.Key;
+                if (!dicRight.ContainsKey(objKey))
+                    return false;
+            }
+
+            using (IEnumerator<KeyValuePair<object, IComparable>> objRightEnumerator = dicRight.GetEnumerator())
+            {
+                while (objRightEnumerator.MoveNext())
+                {
+                    object objKey = objRightEnumerator.Current.Key;
+                    (bool blnContains, IComparable objValue)
+                        = await dicLeft.TryGetValueAsync(objKey, token).ConfigureAwait(false);
+                    if (!blnContains)
+                        return false;
+                    if (!objValue.Equals(objRightEnumerator.Current.Value))
+                        return false;
+                }
+            }
+
+            return true;
+        }
+    }
 }

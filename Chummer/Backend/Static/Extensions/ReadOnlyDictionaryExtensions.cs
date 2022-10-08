@@ -42,29 +42,5 @@ namespace Chummer
             return dicLeft.Keys.All(dicRight.ContainsKey) &&
                    dicRight.Keys.All(x => dicLeft.ContainsKey(x) && dicRight[x].Equals(dicLeft[x]));
         }
-
-        public static async ValueTask<bool> EqualsByValueAsync(this IAsyncReadOnlyDictionary<object, IComparable> dicLeft, IAsyncReadOnlyDictionary<object, IComparable> dicRight, CancellationToken token = default)
-        {
-            if (await dicLeft.GetCountAsync(token).ConfigureAwait(false) != await dicRight.GetCountAsync(token).ConfigureAwait(false))
-                return false;
-            IEnumerator<KeyValuePair<object, IComparable>> objLeftEnumerator = await dicLeft.GetEnumeratorAsync(token).ConfigureAwait(false);
-            while (objLeftEnumerator.MoveNext())
-            {
-                object objKey = objLeftEnumerator.Current.Key;
-                if (!await dicRight.ContainsKeyAsync(objKey, token).ConfigureAwait(false))
-                    return false;
-            }
-            IEnumerator<KeyValuePair<object, IComparable>> objRightEnumerator = await dicRight.GetEnumeratorAsync(token).ConfigureAwait(false);
-            while (objRightEnumerator.MoveNext())
-            {
-                object objKey = objRightEnumerator.Current.Key;
-                (bool blnContains, IComparable objValue) = await dicLeft.TryGetValueAsync(objKey, token).ConfigureAwait(false);
-                if (!blnContains)
-                    return false;
-                if (!objValue.Equals(objRightEnumerator.Current.Value))
-                    return false;
-            }
-            return true;
-        }
     }
 }

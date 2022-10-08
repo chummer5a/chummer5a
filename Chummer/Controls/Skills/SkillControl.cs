@@ -312,8 +312,14 @@ namespace Chummer.UI.Skills
 
                         // Hacky way of fixing a weird UI issue caused by items of a combobox only being populated from the DataSource after the combobox is added
                         _blnUpdatingSpec = true;
-                        cboSpec.Text = objSkill.CurrentDisplaySpecialization;
-                        _blnUpdatingSpec = false;
+                        try
+                        {
+                            cboSpec.Text = objSkill.CurrentDisplaySpecialization;
+                        }
+                        finally
+                        {
+                            _blnUpdatingSpec = false;
+                        }
                     }
                 }
 
@@ -357,13 +363,13 @@ namespace Chummer.UI.Skills
                     blnUpdateAll = true;
                     goto case nameof(Skill.DisplayPool);
                 case nameof(Skill.DisplayPool):
-                    await RefreshPoolTooltipAndDisplayAsync();
+                    await RefreshPoolTooltipAndDisplayAsync().ConfigureAwait(false);
                     if (blnUpdateAll)
                         goto case nameof(Skill.Default);
                     break;
 
                 case nameof(Skill.Default):
-                    await lblName.DoThreadSafeAsync(x => x.Font = !_objSkill.Default ? _fntItalicName : _fntNormalName);
+                    await lblName.DoThreadSafeAsync(x => x.Font = !_objSkill.Default ? _fntItalicName : _fntNormalName).ConfigureAwait(false);
                     if (blnUpdateAll)
                         goto case nameof(Skill.DefaultAttribute);
                     break;
@@ -371,12 +377,12 @@ namespace Chummer.UI.Skills
                 case nameof(Skill.DefaultAttribute):
                     if (cboSelectAttribute != null)
                     {
-                        await cboSelectAttribute.DoThreadSafeAsync(x => x.SelectedValue = _objSkill.AttributeObject.Abbrev);
-                        await DoSelectAttributeClosed();
+                        await cboSelectAttribute.DoThreadSafeAsync(x => x.SelectedValue = _objSkill.AttributeObject.Abbrev).ConfigureAwait(false);
+                        await DoSelectAttributeClosed().ConfigureAwait(false);
                     }
                     else
                     {
-                        await SetAttributeActiveAsync(_objSkill.AttributeObject);
+                        await SetAttributeActiveAsync(_objSkill.AttributeObject).ConfigureAwait(false);
                     }
                     if (blnUpdateAll)
                         goto case nameof(Skill.TopMostDisplaySpecialization);
@@ -385,11 +391,11 @@ namespace Chummer.UI.Skills
                 case nameof(Skill.TopMostDisplaySpecialization):
                     if (cboSpec != null && !_blnUpdatingSpec)
                     {
-                        string strDisplaySpec = _objSkill.TopMostDisplaySpecialization;
+                        string strDisplaySpec = await _objSkill.GetTopMostDisplaySpecializationAsync().ConfigureAwait(false);
                         _blnUpdatingSpec = true;
                         try
                         {
-                            await cboSpec.DoThreadSafeAsync(x => x.Text = strDisplaySpec);
+                            await cboSpec.DoThreadSafeAsync(x => x.Text = strDisplaySpec).ConfigureAwait(false);
                         }
                         finally
                         {
@@ -401,14 +407,14 @@ namespace Chummer.UI.Skills
                     break;
 
                 case nameof(Skill.CGLSpecializations):
-                    if (cboSpec?.Visible == true)
+                    if (cboSpec != null && await cboSpec.DoThreadSafeFuncAsync(x => x.Visible).ConfigureAwait(false))
                     {
-                        string strOldSpec = cboSpec.Text;
-                        IReadOnlyList<ListItem> lstSpecializations = _objSkill.CGLSpecializations;
+                        string strOldSpec = await cboSpec.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false);
+                        IReadOnlyList<ListItem> lstSpecializations = await _objSkill.GetCGLSpecializationsAsync().ConfigureAwait(false);
                         _blnUpdatingSpec = true;
                         try
                         {
-                            await cboSpec.PopulateWithListItemsAsync(lstSpecializations);
+                            await cboSpec.PopulateWithListItemsAsync(lstSpecializations).ConfigureAwait(false);
                             await cboSpec.DoThreadSafeAsync(x =>
                             {
                                 if (string.IsNullOrEmpty(strOldSpec))
@@ -419,7 +425,7 @@ namespace Chummer.UI.Skills
                                     if (x.SelectedIndex == -1)
                                         x.Text = strOldSpec;
                                 }
-                            });
+                            }).ConfigureAwait(false);
                         }
                         finally
                         {
@@ -432,8 +438,8 @@ namespace Chummer.UI.Skills
 
                 case nameof(Skill.Specializations):
                     {
-                        if (await Program.GetFormForDialogAsync(_objSkill.CharacterObject) is CharacterShared frmParent)
-                            await frmParent.RequestCharacterUpdate();
+                        if (await Program.GetFormForDialogAsync(_objSkill.CharacterObject).ConfigureAwait(false) is CharacterShared frmParent)
+                            await frmParent.RequestCharacterUpdate().ConfigureAwait(false);
                         break;
                     }
             }
@@ -449,34 +455,37 @@ namespace Chummer.UI.Skills
                 case null:
                 case nameof(CharacterAttrib.Abbrev):
                 case nameof(CharacterAttrib.TotalValue):
-                    await RefreshPoolTooltipAndDisplayAsync();
+                    await RefreshPoolTooltipAndDisplayAsync().ConfigureAwait(false);
                     break;
             }
         }
 
         private async void btnCareerIncrease_Click(object sender, EventArgs e)
         {
-            using (await EnterReadLock.EnterAsync(_objSkill.LockObject))
+            using (await EnterReadLock.EnterAsync(_objSkill.LockObject).ConfigureAwait(false))
             {
                 string confirmstring = string.Format(GlobalSettings.CultureInfo,
-                    await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpense"),
-                    _objSkill.CurrentDisplayName, _objSkill.Rating + 1, _objSkill.UpgradeKarmaCost);
+                                                     await LanguageManager.GetStringAsync(
+                                                         "Message_ConfirmKarmaExpense").ConfigureAwait(false),
+                                                     await _objSkill.GetCurrentDisplayNameAsync().ConfigureAwait(false),
+                                                     await _objSkill.GetRatingAsync().ConfigureAwait(false) + 1,
+                                                     await _objSkill.GetUpgradeKarmaCostAsync().ConfigureAwait(false));
 
-                if (!await CommonFunctions.ConfirmKarmaExpenseAsync(confirmstring))
+                if (!await CommonFunctions.ConfirmKarmaExpenseAsync(confirmstring).ConfigureAwait(false))
                     return;
 
-                await _objSkill.Upgrade();
+                await _objSkill.Upgrade().ConfigureAwait(false);
             }
         }
 
         private async void btnAddSpec_Click(object sender, EventArgs e)
         {
-            using (await EnterReadLock.EnterAsync(_objSkill.LockObject))
+            using (await EnterReadLock.EnterAsync(_objSkill.LockObject).ConfigureAwait(false))
             {
                 int price = _objSkill.CharacterObject.Settings.KarmaSpecialization;
 
                 decimal decExtraSpecCost = 0;
-                int intTotalBaseRating = await _objSkill.GetTotalBaseRatingAsync();
+                int intTotalBaseRating = await _objSkill.GetTotalBaseRatingAsync().ConfigureAwait(false);
                 decimal decSpecCostMultiplier = 1.0m;
                 foreach (Improvement objLoopImprovement in _objSkill.CharacterObject.Improvements)
                 {
@@ -506,17 +515,17 @@ namespace Chummer.UI.Skills
                     price += decExtraSpecCost.StandardRound(); //Spec
 
                 string confirmstring = string.Format(GlobalSettings.CultureInfo,
-                    await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpenseSkillSpecialization"), price);
+                    await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpenseSkillSpecialization").ConfigureAwait(false), price);
 
-                if (!await CommonFunctions.ConfirmKarmaExpenseAsync(confirmstring))
+                if (!await CommonFunctions.ConfirmKarmaExpenseAsync(confirmstring).ConfigureAwait(false))
                     return;
 
                 using (ThreadSafeForm<SelectSpec> selectForm =
-                       await ThreadSafeForm<SelectSpec>.GetAsync(() => new SelectSpec(_objSkill)))
+                       await ThreadSafeForm<SelectSpec>.GetAsync(() => new SelectSpec(_objSkill)).ConfigureAwait(false))
                 {
-                    if (await selectForm.ShowDialogSafeAsync(_objSkill.CharacterObject) != DialogResult.OK)
+                    if (await selectForm.ShowDialogSafeAsync(_objSkill.CharacterObject).ConfigureAwait(false) != DialogResult.OK)
                         return;
-                    await _objSkill.AddSpecialization(selectForm.MyForm.SelectedItem);
+                    await _objSkill.AddSpecialization(selectForm.MyForm.SelectedItem).ConfigureAwait(false);
                 }
             }
         }
@@ -533,19 +542,19 @@ namespace Chummer.UI.Skills
 
         private async void cboSelectAttribute_Closed(object sender, EventArgs e)
         {
-            await DoSelectAttributeClosed();
+            await DoSelectAttributeClosed().ConfigureAwait(false);
         }
 
         private async ValueTask DoSelectAttributeClosed(CancellationToken token = default)
         {
-            await btnAttribute.DoThreadSafeAsync(x => x.Visible = true, token: token);
-            await cboSelectAttribute.DoThreadSafeAsync(x => x.Visible = false, token: token);
+            await btnAttribute.DoThreadSafeAsync(x => x.Visible = true, token: token).ConfigureAwait(false);
+            await cboSelectAttribute.DoThreadSafeAsync(x => x.Visible = false, token: token).ConfigureAwait(false);
             await SetAttributeActiveAsync(
                 await _objSkill.CharacterObject.GetAttributeAsync(
-                    (string)await cboSelectAttribute.DoThreadSafeFuncAsync(x => x.SelectedValue, token: token),
-                    token: token), token);
-            string strText = await cboSelectAttribute.DoThreadSafeFuncAsync(x => x.Text, token: token);
-            await btnAttribute.DoThreadSafeAsync(x => x.Text = strText, token: token);
+                    (string)await cboSelectAttribute.DoThreadSafeFuncAsync(x => x.SelectedValue, token: token).ConfigureAwait(false),
+                    token: token).ConfigureAwait(false), token).ConfigureAwait(false);
+            string strText = await cboSelectAttribute.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false);
+            await btnAttribute.DoThreadSafeAsync(x => x.Text = strText, token: token).ConfigureAwait(false);
         }
 
         private CharacterAttrib AttributeActive
@@ -579,8 +588,8 @@ namespace Chummer.UI.Skills
                 _objAttributeActive.PropertyChanged += Attribute_PropertyChanged;
             await btnAttribute.DoThreadSafeAsync(x => x.Font = _objAttributeActive == _objSkill.AttributeObject
                                                      ? _fntNormal
-                                                     : _fntItalic, token);
-            await RefreshPoolTooltipAndDisplayAsync(token);
+                                                     : _fntItalic, token).ConfigureAwait(false);
+            await RefreshPoolTooltipAndDisplayAsync(token).ConfigureAwait(false);
             CustomAttributeChanged?.Invoke(this, EventArgs.Empty);
         }
 
@@ -605,32 +614,32 @@ namespace Chummer.UI.Skills
             {
                 x.SelectedValue = _objSkill.AttributeObject.Abbrev;
                 x.Visible = false;
-            }, token: token);
+            }, token: token).ConfigureAwait(false);
             await SetAttributeActiveAsync(
                 await _objSkill.CharacterObject.GetAttributeAsync(
-                    (string)await cboSelectAttribute.DoThreadSafeFuncAsync(x => x.SelectedValue, token: token), token: token), token);
-            string strText = await cboSelectAttribute.DoThreadSafeFuncAsync(x => x.Text, token: token);
+                    (string)await cboSelectAttribute.DoThreadSafeFuncAsync(x => x.SelectedValue, token: token).ConfigureAwait(false), token: token).ConfigureAwait(false), token).ConfigureAwait(false);
+            string strText = await cboSelectAttribute.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false);
             await btnAttribute.DoThreadSafeAsync(x =>
             {
                 x.Visible = true;
                 x.Text = strText;
-            }, token: token);
+            }, token: token).ConfigureAwait(false);
         }
 
         private async void cmdDelete_Click(object sender, EventArgs e)
         {
             if (!_objSkill.AllowDelete)
                 return;
-            if (!await CommonFunctions.ConfirmDeleteAsync(await LanguageManager.GetStringAsync(_objSkill.IsExoticSkill ? "Message_DeleteExoticSkill" : "Message_DeleteSkill")))
+            if (!await CommonFunctions.ConfirmDeleteAsync(await LanguageManager.GetStringAsync(_objSkill.IsExoticSkill ? "Message_DeleteExoticSkill" : "Message_DeleteSkill").ConfigureAwait(false)).ConfigureAwait(false))
                 return;
-            await _objSkill.CharacterObject.SkillsSection.Skills.RemoveAsync(_objSkill);
+            await _objSkill.CharacterObject.SkillsSection.Skills.RemoveAsync(_objSkill).ConfigureAwait(false);
         }
 
         private async void tsSkillLabelNotes_Click(object sender, EventArgs e)
         {
-            using (ThreadSafeForm<EditNotes> frmItemNotes = await ThreadSafeForm<EditNotes>.GetAsync(() => new EditNotes(_objSkill.Notes, _objSkill.NotesColor)))
+            using (ThreadSafeForm<EditNotes> frmItemNotes = await ThreadSafeForm<EditNotes>.GetAsync(() => new EditNotes(_objSkill.Notes, _objSkill.NotesColor)).ConfigureAwait(false))
             {
-                if (await frmItemNotes.ShowDialogSafeAsync(_objSkill.CharacterObject) != DialogResult.OK)
+                if (await frmItemNotes.ShowDialogSafeAsync(_objSkill.CharacterObject).ConfigureAwait(false) != DialogResult.OK)
                     return;
                 _objSkill.Notes = frmItemNotes.MyForm.Notes;
             }
@@ -638,15 +647,15 @@ namespace Chummer.UI.Skills
 
         private async void lblName_Click(object sender, EventArgs e)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(ParentForm);
+            CursorWait objCursorWait = await CursorWait.NewAsync(ParentForm).ConfigureAwait(false);
             try
             {
-                await CommonFunctions.OpenPdf(_objSkill.Source + ' ' + await _objSkill.DisplayPageAsync(GlobalSettings.Language),
-                                              _objSkill.CharacterObject);
+                await CommonFunctions.OpenPdf(_objSkill.Source + ' ' + await _objSkill.DisplayPageAsync(GlobalSettings.Language).ConfigureAwait(false),
+                                              _objSkill.CharacterObject).ConfigureAwait(false);
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -746,13 +755,13 @@ namespace Chummer.UI.Skills
         /// </summary>
         private async Task RefreshPoolTooltipAndDisplayAsync(CancellationToken token = default)
         {
-            string backgroundCalcPool = await _objSkill.DisplayOtherAttributeAsync(AttributeActive.Abbrev, token);
-            string backgroundCalcTooltip = await _objSkill.CompileDicepoolTooltipAsync(AttributeActive.Abbrev, token: token);
+            string backgroundCalcPool = await _objSkill.DisplayOtherAttributeAsync(AttributeActive.Abbrev, token).ConfigureAwait(false);
+            string backgroundCalcTooltip = await _objSkill.CompileDicepoolTooltipAsync(AttributeActive.Abbrev, token: token).ConfigureAwait(false);
             await lblModifiedRating.DoThreadSafeAsync(x =>
             {
                 x.Text = backgroundCalcPool;
                 x.ToolTipText = backgroundCalcTooltip;
-            }, token: token);
+            }, token: token).ConfigureAwait(false);
         }
 
         // Hacky solutions to data binding causing cursor to reset whenever the user is typing something in: have text changes start a timer, and have a 1s delay in the timer update fire the text update
@@ -767,12 +776,19 @@ namespace Chummer.UI.Skills
             _tmrSpecChangeTimer.Start();
         }
 
-        private void SpecChangeTimer_Tick(object sender, EventArgs e)
+        private async void SpecChangeTimer_Tick(object sender, EventArgs e)
         {
             _tmrSpecChangeTimer.Stop();
             _blnUpdatingSpec = true;
-            _objSkill.TopMostDisplaySpecialization = cboSpec.Text;
-            _blnUpdatingSpec = false;
+            try
+            {
+                string strSpec = await cboSpec.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false);
+                await _objSkill.SetTopMostDisplaySpecializationAsync(strSpec).ConfigureAwait(false);
+            }
+            finally
+            {
+                _blnUpdatingSpec = false;
+            }
         }
     }
 }

@@ -458,7 +458,7 @@ namespace Chummer
                             foreach (KnowledgeSkill objKnowledgeSkill in _objCharacter.SkillsSection.KnowledgeSkills)
                             {
                                 lstDropdownItems.Add(
-                                    new ListItem(objKnowledgeSkill.Name, objKnowledgeSkill.CurrentDisplayName));
+                                    new ListItem(objKnowledgeSkill.Name, await objKnowledgeSkill.GetCurrentDisplayNameAsync()));
                                 setProcessedSkillNames.Add(objKnowledgeSkill.Name);
                             }
 

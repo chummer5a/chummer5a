@@ -200,16 +200,17 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdTitle))
                 {
-                    sbdTitle
-                        .Append(await LanguageManager.GetStringAsync("Title_CharacterViewer", token: token)
-                                                     .ConfigureAwait(false)).Append(':').Append(strSpace).AppendJoin(
-                            ',' + strSpace,
-                            _lstCharacters.Select(async x => x.CharacterName + strSpace + '-' + strSpace
-                                                             + (await x.GetCreatedAsync(token).ConfigureAwait(false)
-                                                                 ? strCareer
-                                                                 : strCreate) + strSpace + '('
-                                                             + (await x.GetSettingsAsync(token).ConfigureAwait(false))
-                                                             .Name + ')'));
+                    await sbdTitle
+                          .Append(await LanguageManager.GetStringAsync("Title_CharacterViewer", token: token)
+                                                       .ConfigureAwait(false)).Append(':').Append(strSpace)
+                          .AppendJoinAsync(
+                              ',' + strSpace,
+                              _lstCharacters.Select(async x => x.CharacterName + strSpace + '-' + strSpace
+                                                               + (await x.GetCreatedAsync(token).ConfigureAwait(false)
+                                                                   ? strCareer
+                                                                   : strCreate) + strSpace + '('
+                                                               + (await x.GetSettingsAsync(token).ConfigureAwait(false))
+                                                               .Name + ')'), token: token);
                     strTitle = sbdTitle.ToString();
                 }
             }

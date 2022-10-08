@@ -808,19 +808,23 @@ namespace Chummer.UI.Skills
         private async void btnExotic_Click(object sender, EventArgs e)
         {
             ExoticSkill objSkill;
-            using (ThreadSafeForm<SelectExoticSkill> frmPickExoticSkill = await ThreadSafeForm<SelectExoticSkill>.GetAsync(() => new SelectExoticSkill(_objCharacter)))
+            using (ThreadSafeForm<SelectExoticSkill> frmPickExoticSkill
+                   = await ThreadSafeForm<SelectExoticSkill>.GetAsync(() => new SelectExoticSkill(_objCharacter)))
             {
                 if (await frmPickExoticSkill.ShowDialogSafeAsync(_objCharacter) != DialogResult.OK)
                     return;
 
-                objSkill = await _objCharacter.SkillsSection.AddExoticSkillAsync(frmPickExoticSkill.MyForm.SelectedExoticSkill,
+                objSkill = await _objCharacter.SkillsSection.AddExoticSkillAsync(
+                    frmPickExoticSkill.MyForm.SelectedExoticSkill,
                     frmPickExoticSkill.MyForm.SelectedExoticSkillSpecialisation);
             }
 
             using (await EnterReadLock.EnterAsync(objSkill.LockObject))
             {
                 // Karma check needs to come after the skill is created to make sure bonus-based modifiers (e.g. JoAT) get applied properly (since they can potentially trigger off of the specific exotic skill target)
-                if (await _objCharacter.GetCreatedAsync() && objSkill.UpgradeKarmaCost > await _objCharacter.GetKarmaAsync())
+                if (await _objCharacter.GetCreatedAsync()
+                    && await objSkill.GetUpgradeKarmaCostAsync().ConfigureAwait(false)
+                    > await _objCharacter.GetKarmaAsync())
                 {
                     Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_NotEnoughKarma"));
                     await _objCharacter.SkillsSection.Skills.RemoveAsync(objSkill);

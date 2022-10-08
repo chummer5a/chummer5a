@@ -565,11 +565,12 @@ namespace Chummer.Backend.Skills
                         {
                             KnowledgeSkill objNewKnowledgeSkill = new KnowledgeSkill(_objCharacter)
                             {
-                                Type = await strKnowledgeSkillTypeToUse.GetValueAsync(token).ConfigureAwait(false),
-                                WritableName = objSkill.Name,
                                 Base = objSkill.Base,
                                 Karma = objSkill.Karma
                             };
+                            await objNewKnowledgeSkill.SetTypeAsync(
+                                await strKnowledgeSkillTypeToUse.GetValueAsync(token).ConfigureAwait(false), token);
+                            await objNewKnowledgeSkill.SetWriteableNameAsync(await objSkill.GetNameAsync(token), token);
                             await objNewKnowledgeSkill.Specializations.AddRangeAsync(objSkill.Specializations, token: token).ConfigureAwait(false);
                             await (await GetKnowledgeSkillsAsync(token).ConfigureAwait(false)).AddWithSortAsync(objNewKnowledgeSkill, (x, y) =>
                             {

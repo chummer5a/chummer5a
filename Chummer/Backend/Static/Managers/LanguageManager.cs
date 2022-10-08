@@ -1601,6 +1601,7 @@ namespace Chummer
                                         if (string.IsNullOrEmpty(strFound))
                                             return;
                                         strInnerReturn = strFound;
+                                        // ReSharper disable once AccessToDisposedClosure
                                         objCancellationTokenSource.Cancel(false);
                                     });
                                     if (!string.IsNullOrEmpty(strInnerReturn))
@@ -2053,6 +2054,7 @@ namespace Chummer
                             if (string.IsNullOrEmpty(strFound))
                                 return;
                             strInnerReturn = strFound;
+                            // ReSharper disable once AccessToDisposedClosure
                             objCancellationTokenSource.Cancel(false);
                         });
                         if (!string.IsNullOrEmpty(strInnerReturn))
