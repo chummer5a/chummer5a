@@ -14132,8 +14132,8 @@ namespace Chummer
                                 CharacterObject, objOldAttribute.Abbrev,
                                 CharacterAttrib.AttributeCategory
                                                .Shapeshifter);
-                            AttributeSection.CopyAttribute(objOldAttribute, objNewAttribute, strMetavariantXPath,
-                                                           xmlDoc);
+                            await AttributeSection.CopyAttributeAsync(objOldAttribute, objNewAttribute, strMetavariantXPath,
+                                                                      xmlDoc, token);
                             lstAttributesToAdd.Add(objNewAttribute);
                         }
 

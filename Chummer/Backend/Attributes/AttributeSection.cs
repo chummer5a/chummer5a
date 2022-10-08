@@ -1000,10 +1000,11 @@ namespace Chummer.Backend.Attributes
             catch (XPathException) { intAugValue = 1; }
             catch (OverflowException) { intAugValue = 1; }
             catch (InvalidCastException) { intAugValue = 1; }
-
-            objNewAttribute.Base = objCharacterNode.SelectSingleNodeAndCacheExpression("base")?.ValueAsInt ?? 0;
-            objNewAttribute.Karma = objCharacterNode.SelectSingleNodeAndCacheExpression("base")?.ValueAsInt ?? 0;
-            objNewAttribute.AssignLimits(intMinValue, intMaxValue, intAugValue);
+            
+            objNewAttribute.AssignBaseKarmaLimits(
+                objCharacterNode.SelectSingleNodeAndCacheExpression("base")?.ValueAsInt ?? 0,
+                objCharacterNode.SelectSingleNodeAndCacheExpression("base")?.ValueAsInt ?? 0, intMinValue, intMaxValue,
+                intAugValue);
             return objNewAttribute;
         }
 
@@ -1113,25 +1114,54 @@ namespace Chummer.Backend.Attributes
         {
             if (objSource == null || objTarget == null)
                 return;
-            string strSourceAbbrev = objSource.Abbrev.ToLowerInvariant();
-            if (strSourceAbbrev == "magadept")
-                strSourceAbbrev = "mag";
-            XmlNode node = !string.IsNullOrEmpty(strMetavariantXPath) ? xmlDoc?.SelectSingleNode(strMetavariantXPath) : null;
-            if (node != null)
+            using (EnterReadLock.Enter(objSource.LockObject))
             {
-                int.TryParse(node[strSourceAbbrev + "min"]?.InnerText, NumberStyles.Any,
-                             GlobalSettings.InvariantCultureInfo, out int intMinimum);
-                int.TryParse(node[strSourceAbbrev + "max"]?.InnerText, NumberStyles.Any,
-                             GlobalSettings.InvariantCultureInfo, out int intMaximum);
-                int.TryParse(node[strSourceAbbrev + "aug"]?.InnerText, NumberStyles.Any,
-                             GlobalSettings.InvariantCultureInfo, out int intAugmentedMaximum);
-                intMaximum = Math.Max(intMaximum, intMinimum);
-                intAugmentedMaximum = Math.Max(intAugmentedMaximum, intMaximum);
-                objTarget.AssignLimits(intMinimum, intMaximum, intAugmentedMaximum);
+                string strSourceAbbrev = objSource.Abbrev.ToLowerInvariant();
+                if (strSourceAbbrev == "magadept")
+                    strSourceAbbrev = "mag";
+                XmlNode node = !string.IsNullOrEmpty(strMetavariantXPath)
+                    ? xmlDoc?.SelectSingleNode(strMetavariantXPath)
+                    : null;
+                if (node != null)
+                {
+                    int.TryParse(node[strSourceAbbrev + "min"]?.InnerText, NumberStyles.Any,
+                                 GlobalSettings.InvariantCultureInfo, out int intMinimum);
+                    int.TryParse(node[strSourceAbbrev + "max"]?.InnerText, NumberStyles.Any,
+                                 GlobalSettings.InvariantCultureInfo, out int intMaximum);
+                    int.TryParse(node[strSourceAbbrev + "aug"]?.InnerText, NumberStyles.Any,
+                                 GlobalSettings.InvariantCultureInfo, out int intAugmentedMaximum);
+                    intMaximum = Math.Max(intMaximum, intMinimum);
+                    intAugmentedMaximum = Math.Max(intAugmentedMaximum, intMaximum);
+                    objTarget.AssignBaseKarmaLimits(objSource.Base, objSource.Karma, intMinimum, intMaximum, intAugmentedMaximum);
+                }
             }
+        }
 
-            objTarget.Base = objSource.Base;
-            objTarget.Karma = objSource.Karma;
+        public static async ValueTask CopyAttributeAsync(CharacterAttrib objSource, CharacterAttrib objTarget, string strMetavariantXPath, XmlDocument xmlDoc, CancellationToken token = default)
+        {
+            if (objSource == null || objTarget == null)
+                return;
+            using (await EnterReadLock.EnterAsync(objSource.LockObject, token))
+            {
+                string strSourceAbbrev = objSource.Abbrev.ToLowerInvariant();
+                if (strSourceAbbrev == "magadept")
+                    strSourceAbbrev = "mag";
+                XmlNode node = !string.IsNullOrEmpty(strMetavariantXPath)
+                    ? xmlDoc?.SelectSingleNode(strMetavariantXPath)
+                    : null;
+                if (node != null)
+                {
+                    int.TryParse(node[strSourceAbbrev + "min"]?.InnerText, NumberStyles.Any,
+                                 GlobalSettings.InvariantCultureInfo, out int intMinimum);
+                    int.TryParse(node[strSourceAbbrev + "max"]?.InnerText, NumberStyles.Any,
+                                 GlobalSettings.InvariantCultureInfo, out int intMaximum);
+                    int.TryParse(node[strSourceAbbrev + "aug"]?.InnerText, NumberStyles.Any,
+                                 GlobalSettings.InvariantCultureInfo, out int intAugmentedMaximum);
+                    intMaximum = Math.Max(intMaximum, intMinimum);
+                    intAugmentedMaximum = Math.Max(intAugmentedMaximum, intMaximum);
+                    await objTarget.AssignBaseKarmaLimitsAsync(objSource.Base, objSource.Karma, intMinimum, intMaximum, intAugmentedMaximum, token);
+                }
+            }
         }
 
         public string ProcessAttributesInXPath(string strInput, IReadOnlyDictionary<string, int> dicValueOverrides = null, CancellationToken token = default)

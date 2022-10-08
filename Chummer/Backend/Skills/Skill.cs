@@ -5609,6 +5609,8 @@ namespace Chummer.Backend.Skills
                 CharacterObject.AttributeSection.PropertyChanged -= OnAttributeSectionChanged;
                 CharacterObject.AttributeSection.Attributes.CollectionChanged -= OnAttributesCollectionChanged;
 
+                if (AttributeObject != null)
+                    AttributeObject.PropertyChanged -= OnLinkedAttributeChanged;
                 if (SkillGroupObject != null)
                     SkillGroupObject.PropertyChanged -= OnSkillGroupChanged;
                 _lstSpecializations.Dispose();
@@ -5638,6 +5640,8 @@ namespace Chummer.Backend.Skills
                 CharacterObject.AttributeSection.PropertyChanged -= OnAttributeSectionChanged;
                 CharacterObject.AttributeSection.Attributes.CollectionChanged -= OnAttributesCollectionChanged;
 
+                if (AttributeObject != null)
+                    AttributeObject.PropertyChanged -= OnLinkedAttributeChanged;
                 if (SkillGroupObject != null)
                     SkillGroupObject.PropertyChanged -= OnSkillGroupChanged;
                 await _lstSpecializations.DisposeAsync().ConfigureAwait(false);

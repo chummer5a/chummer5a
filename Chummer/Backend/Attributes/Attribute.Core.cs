@@ -1700,13 +1700,155 @@ namespace Chummer.Backend.Attributes
         /// <param name="intAug">Metatype's maximum augmented value for the CharacterAttribute.</param>
         public void AssignLimits(int intMin, int intMax, int intAug)
         {
-            using (LockObject.EnterWriteLock())
+            using (EnterReadLock.Enter(LockObject))
             {
-                _intMetatypeMin = intMin;
-                _intMetatypeMax = intMax;
-                _intMetatypeAugMax = intAug;
-                this.OnMultiplePropertyChanged(nameof(RawMetatypeMinimum), nameof(RawMetatypeMaximum),
-                    nameof(RawMetatypeAugmentedMaximum));
+                bool blnMinChanged = _intMetatypeMin != intMin;
+                bool blnMaxChanged = _intMetatypeMax != intMax;
+                bool blnAugMaxChanged = _intMetatypeAugMax != intAug;
+                if (!blnMinChanged && !blnMaxChanged && !blnAugMaxChanged)
+                    return;
+                using (LockObject.EnterWriteLock())
+                {
+                    _intMetatypeMin = intMin;
+                    _intMetatypeMax = intMax;
+                    _intMetatypeAugMax = intAug;
+                    List<string> lstProperties = new List<string>(3);
+                    if (blnMinChanged)
+                        lstProperties.Add(nameof(RawMetatypeMinimum));
+                    if (blnMaxChanged)
+                        lstProperties.Add(nameof(RawMetatypeMaximum));
+                    if (blnAugMaxChanged)
+                        lstProperties.Add(nameof(RawMetatypeAugmentedMaximum));
+                    OnMultiplePropertyChanged(lstProperties);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Set the minimum, maximum, and augmented values for the CharacterAttribute based on string values from the Metatype XML file.
+        /// </summary>
+        /// <param name="intMin">Metatype's minimum value for the CharacterAttribute.</param>
+        /// <param name="intMax">Metatype's maximum value for the CharacterAttribute.</param>
+        /// <param name="intAug">Metatype's maximum augmented value for the CharacterAttribute.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async ValueTask AssignLimitsAsync(int intMin, int intMax, int intAug, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+            {
+                bool blnMinChanged = _intMetatypeMin != intMin;
+                bool blnMaxChanged = _intMetatypeMax != intMax;
+                bool blnAugMaxChanged = _intMetatypeAugMax != intAug;
+                if (!blnMinChanged && !blnMaxChanged && !blnAugMaxChanged)
+                    return;
+                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    _intMetatypeMin = intMin;
+                    _intMetatypeMax = intMax;
+                    _intMetatypeAugMax = intAug;
+                    List<string> lstProperties = new List<string>(3);
+                    if (blnMinChanged)
+                        lstProperties.Add(nameof(RawMetatypeMinimum));
+                    if (blnMaxChanged)
+                        lstProperties.Add(nameof(RawMetatypeMaximum));
+                    if (blnAugMaxChanged)
+                        lstProperties.Add(nameof(RawMetatypeAugmentedMaximum));
+                    OnMultiplePropertyChanged(lstProperties);
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Set the base, karma, minimum, maximum, and augmented values for the CharacterAttribute all at once, the last three based on string values from the Metatype XML file.
+        /// </summary>
+        /// <param name="intBase">Base value to use.</param>
+        /// <param name="intKarma">Karma value to use.</param>
+        /// <param name="intMin">Metatype's minimum value for the CharacterAttribute.</param>
+        /// <param name="intMax">Metatype's maximum value for the CharacterAttribute.</param>
+        /// <param name="intAug">Metatype's maximum augmented value for the CharacterAttribute.</param>
+        public void AssignBaseKarmaLimits(int intBase, int intKarma, int intMin, int intMax, int intAug)
+        {
+            using (EnterReadLock.Enter(LockObject))
+            {
+                bool blnBaseChanged = _intBase != intBase;
+                bool blnKarmaChanged = _intKarma != intKarma;
+                bool blnMinChanged = _intMetatypeMin != intMin;
+                bool blnMaxChanged = _intMetatypeMax != intMax;
+                bool blnAugMaxChanged = _intMetatypeAugMax != intAug;
+                if (!blnBaseChanged && !blnKarmaChanged && !blnMinChanged && !blnMaxChanged && !blnAugMaxChanged)
+                    return;
+                using (LockObject.EnterWriteLock())
+                {
+                    _intBase = intBase;
+                    _intKarma = intKarma;
+                    _intMetatypeMin = intMin;
+                    _intMetatypeMax = intMax;
+                    _intMetatypeAugMax = intAug;
+                    List<string> lstProperties = new List<string>(5);
+                    if (blnBaseChanged)
+                        lstProperties.Add(nameof(Base));
+                    if (blnKarmaChanged)
+                        lstProperties.Add(nameof(Karma));
+                    if (blnMinChanged)
+                        lstProperties.Add(nameof(RawMetatypeMinimum));
+                    if (blnMaxChanged)
+                        lstProperties.Add(nameof(RawMetatypeMaximum));
+                    if (blnAugMaxChanged)
+                        lstProperties.Add(nameof(RawMetatypeAugmentedMaximum));
+                    OnMultiplePropertyChanged(lstProperties);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Set the minimum, maximum, and augmented values for the CharacterAttribute all at once, the last three based on string values from the Metatype XML file.
+        /// </summary>
+        /// <param name="intBase">Base value to use.</param>
+        /// <param name="intKarma">Karma value to use.</param>
+        /// <param name="intMin">Metatype's minimum value for the CharacterAttribute.</param>
+        /// <param name="intMax">Metatype's maximum value for the CharacterAttribute.</param>
+        /// <param name="intAug">Metatype's maximum augmented value for the CharacterAttribute.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async ValueTask AssignBaseKarmaLimitsAsync(int intBase, int intKarma, int intMin, int intMax, int intAug, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+            {
+                bool blnBaseChanged = _intBase != intBase;
+                bool blnKarmaChanged = _intKarma != intKarma;
+                bool blnMinChanged = _intMetatypeMin != intMin;
+                bool blnMaxChanged = _intMetatypeMax != intMax;
+                bool blnAugMaxChanged = _intMetatypeAugMax != intAug;
+                if (!blnBaseChanged && !blnKarmaChanged && !blnMinChanged && !blnMaxChanged && !blnAugMaxChanged)
+                    return;
+                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    _intBase = intBase;
+                    _intKarma = intKarma;
+                    _intMetatypeMin = intMin;
+                    _intMetatypeMax = intMax;
+                    _intMetatypeAugMax = intAug;
+                    List<string> lstProperties = new List<string>(5);
+                    if (blnBaseChanged)
+                        lstProperties.Add(nameof(Base));
+                    if (blnKarmaChanged)
+                        lstProperties.Add(nameof(Karma));
+                    if (blnMinChanged)
+                        lstProperties.Add(nameof(RawMetatypeMinimum));
+                    if (blnMaxChanged)
+                        lstProperties.Add(nameof(RawMetatypeMaximum));
+                    if (blnAugMaxChanged)
+                        lstProperties.Add(nameof(RawMetatypeAugmentedMaximum));
+                    OnMultiplePropertyChanged(lstProperties);
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
             }
         }
 

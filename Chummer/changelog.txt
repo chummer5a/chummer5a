@@ -1,5 +1,6 @@
 Future Build 225
 Application Changes:
+- Attempting to reassign or reapply priorities or metatypes that give access to special attributes and/or skills linked to special attributes no longer causes Chummer to crash.
 - Fixed some rare bugs and crashes that could occur when writing to a file that Chummer was simultaneously attempting to read in.
 - Trying to add an item with a weapon select entry that relies on selecting for weapon details no longer causes a crash. Fixes #4934.
 - Markup and Black Market Pipeline cost modifiers applied to a weapon mount now properly apply based on all options of the weapon mount instead of just its size. Fixes #4933.

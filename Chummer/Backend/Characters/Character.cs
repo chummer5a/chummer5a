@@ -2758,12 +2758,12 @@ namespace Chummer
                 if (DEPEnabled || strSelectedMetatypeCategory?.EndsWith("Sprite", StringComparison.Ordinal) == true ||
                     strSelectedMetatypeCategory?.EndsWith("Sprites", StringComparison.Ordinal) == true)
                 {
-                    BOD.AssignLimits(0, 0, 0);
-                    AGI.AssignLimits(0, 0, 0);
-                    REA.AssignLimits(0, 0, 0);
-                    STR.AssignLimits(0, 0, 0);
-                    MAG.AssignLimits(0, 0, 0);
-                    MAGAdept.AssignLimits(0, 0, 0);
+                    BOD.AssignBaseKarmaLimits(0, 0, 0, 0, 0);
+                    AGI.AssignBaseKarmaLimits(0, 0, 0, 0, 0);
+                    REA.AssignBaseKarmaLimits(0, 0, 0, 0, 0);
+                    STR.AssignBaseKarmaLimits(0, 0, 0, 0, 0);
+                    MAG.AssignBaseKarmaLimits(0, 0, 0, 0, 0);
+                    MAGAdept.AssignBaseKarmaLimits(0, 0, 0, 0, 0);
                 }
 
                 if (strSelectedMetatypeCategory == "Spirits")
@@ -27768,22 +27768,18 @@ namespace Chummer
                                 {
                                     if (intMagMaxReduction >= MAG.TotalMaximum)
                                     {
-                                        MAG.Base = MAGAdept.Base;
-                                        MAG.Karma = MAGAdept.Karma;
-                                        MAG.AssignLimits(MAGAdept.RawMetatypeMinimum, MAGAdept.RawMetatypeMaximum,
-                                            MAGAdept.RawMetatypeAugmentedMaximum);
-                                        MAGAdept.Base = 0;
-                                        MAGAdept.Karma = 0;
-                                        MAGAdept.AssignLimits(0, 0, 0);
+                                        MAG.AssignBaseKarmaLimits(MAGAdept.Base, MAGAdept.Karma,
+                                                                  MAGAdept.RawMetatypeMinimum,
+                                                                  MAGAdept.RawMetatypeMaximum,
+                                                                  MAGAdept.RawMetatypeAugmentedMaximum);
+                                        MAGAdept.AssignBaseKarmaLimits(0, 0, 0, 0, 0);
 
                                         MagicianEnabled = false;
                                     }
 
                                     if (intMagMaxReduction >= MAGAdept.TotalMaximum)
                                     {
-                                        MAGAdept.Base = 0;
-                                        MAGAdept.Karma = 0;
-                                        MAGAdept.AssignLimits(0, 0, 0);
+                                        MAGAdept.AssignBaseKarmaLimits(0, 0, 0, 0, 0);
 
                                         AdeptEnabled = false;
                                     }
@@ -27793,9 +27789,7 @@ namespace Chummer
                                 }
                                 else if (intMagMaxReduction >= MAG.TotalMaximum)
                                 {
-                                    MAG.Base = 0;
-                                    MAG.Karma = 0;
-                                    MAG.AssignLimits(0, 0, 0);
+                                    MAG.AssignBaseKarmaLimits(0, 0, 0, 0, 0);
 
                                     MagicianEnabled = false;
                                     AdeptEnabled = false;
@@ -27806,22 +27800,18 @@ namespace Chummer
                             {
                                 if (MAG.TotalMaximum < 1)
                                 {
-                                    MAG.Base = MAGAdept.Base;
-                                    MAG.Karma = MAGAdept.Karma;
-                                    MAG.AssignLimits(MAGAdept.RawMetatypeMinimum, MAGAdept.RawMetatypeMaximum,
-                                        MAGAdept.RawMetatypeAugmentedMaximum);
-                                    MAGAdept.Base = 0;
-                                    MAGAdept.Karma = 0;
-                                    MAGAdept.AssignLimits(0, 0, 0);
+                                    MAG.AssignBaseKarmaLimits(MAGAdept.Base, MAGAdept.Karma,
+                                                              MAGAdept.RawMetatypeMinimum,
+                                                              MAGAdept.RawMetatypeMaximum,
+                                                              MAGAdept.RawMetatypeAugmentedMaximum);
+                                    MAGAdept.AssignBaseKarmaLimits(0, 0, 0, 0, 0);
 
                                     MagicianEnabled = false;
                                 }
 
                                 if (MAGAdept.TotalMaximum < 1)
                                 {
-                                    MAGAdept.Base = 0;
-                                    MAGAdept.Karma = 0;
-                                    MAGAdept.AssignLimits(0, 0, 0);
+                                    MAGAdept.AssignBaseKarmaLimits(0, 0, 0, 0, 0);
 
                                     AdeptEnabled = false;
                                 }
@@ -27831,9 +27821,7 @@ namespace Chummer
                             }
                             else if (MAG.TotalMaximum < 1)
                             {
-                                MAG.Base = 0;
-                                MAG.Karma = 0;
-                                MAG.AssignLimits(0, 0, 0);
+                                MAG.AssignBaseKarmaLimits(0, 0, 0, 0, 0);
 
                                 MagicianEnabled = false;
                                 AdeptEnabled = false;
@@ -27847,9 +27835,7 @@ namespace Chummer
                                 || !Settings.SpecialKarmaCostBasedOnShownValue
                                 && RES.TotalMaximum < 1))
                         {
-                            RES.Base = 0;
-                            RES.Karma = 0;
-                            RES.AssignLimits(0, 0, 0);
+                            RES.AssignBaseKarmaLimits(0, 0, 0, 0, 0);
 
                             RESEnabled = false;
                             TechnomancerEnabled = false;
@@ -28349,22 +28335,21 @@ namespace Chummer
                                 {
                                     if (intMagMaxReduction >= await MAG.GetTotalMaximumAsync(token).ConfigureAwait(false))
                                     {
-                                        MAG.Base = MAGAdept.Base;
-                                        MAG.Karma = MAGAdept.Karma;
-                                        MAG.AssignLimits(MAGAdept.RawMetatypeMinimum, MAGAdept.RawMetatypeMaximum,
-                                                         MAGAdept.RawMetatypeAugmentedMaximum);
-                                        MAGAdept.Base = 0;
-                                        MAGAdept.Karma = 0;
-                                        MAGAdept.AssignLimits(0, 0, 0);
+                                        await MAG.AssignBaseKarmaLimitsAsync(
+                                                     MAGAdept.Base, MAGAdept.Karma, MAGAdept.RawMetatypeMinimum,
+                                                     MAGAdept.RawMetatypeMaximum, MAGAdept.RawMetatypeAugmentedMaximum,
+                                                     token)
+                                                 .ConfigureAwait(false);
+                                        await MAGAdept.AssignBaseKarmaLimitsAsync(0, 0, 0, 0, 0, token)
+                                                      .ConfigureAwait(false);
 
                                         MagicianEnabled = false;
                                     }
 
                                     if (intMagMaxReduction >= await MAGAdept.GetTotalMaximumAsync(token).ConfigureAwait(false))
                                     {
-                                        MAGAdept.Base = 0;
-                                        MAGAdept.Karma = 0;
-                                        MAGAdept.AssignLimits(0, 0, 0);
+                                        await MAGAdept.AssignBaseKarmaLimitsAsync(0, 0, 0, 0, 0, token)
+                                                      .ConfigureAwait(false);
 
                                         AdeptEnabled = false;
                                     }
@@ -28374,9 +28359,7 @@ namespace Chummer
                                 }
                                 else if (intMagMaxReduction >= await MAG.GetTotalMaximumAsync(token).ConfigureAwait(false))
                                 {
-                                    MAG.Base = 0;
-                                    MAG.Karma = 0;
-                                    MAG.AssignLimits(0, 0, 0);
+                                    await MAG.AssignBaseKarmaLimitsAsync(0, 0, 0, 0, 0, token).ConfigureAwait(false);
 
                                     MagicianEnabled = false;
                                     AdeptEnabled = false;
@@ -28387,22 +28370,21 @@ namespace Chummer
                             {
                                 if (await MAG.GetTotalMaximumAsync(token).ConfigureAwait(false) < 1)
                                 {
-                                    MAG.Base = MAGAdept.Base;
-                                    MAG.Karma = MAGAdept.Karma;
-                                    MAG.AssignLimits(MAGAdept.RawMetatypeMinimum, MAGAdept.RawMetatypeMaximum,
-                                                     MAGAdept.RawMetatypeAugmentedMaximum);
-                                    MAGAdept.Base = 0;
-                                    MAGAdept.Karma = 0;
-                                    MAGAdept.AssignLimits(0, 0, 0);
+                                    await MAG.AssignBaseKarmaLimitsAsync(
+                                                 MAGAdept.Base, MAGAdept.Karma, MAGAdept.RawMetatypeMinimum,
+                                                 MAGAdept.RawMetatypeMaximum, MAGAdept.RawMetatypeAugmentedMaximum,
+                                                 token)
+                                             .ConfigureAwait(false);
+                                    await MAGAdept.AssignBaseKarmaLimitsAsync(0, 0, 0, 0, 0, token)
+                                                  .ConfigureAwait(false);
 
                                     MagicianEnabled = false;
                                 }
 
                                 if (await MAGAdept.GetTotalMaximumAsync(token).ConfigureAwait(false) < 1)
                                 {
-                                    MAGAdept.Base = 0;
-                                    MAGAdept.Karma = 0;
-                                    MAGAdept.AssignLimits(0, 0, 0);
+                                    await MAGAdept.AssignBaseKarmaLimitsAsync(0, 0, 0, 0, 0, token)
+                                                  .ConfigureAwait(false);
 
                                     AdeptEnabled = false;
                                 }
@@ -28412,9 +28394,7 @@ namespace Chummer
                             }
                             else if (await MAG.GetTotalMaximumAsync(token).ConfigureAwait(false) < 1)
                             {
-                                MAG.Base = 0;
-                                MAG.Karma = 0;
-                                MAG.AssignLimits(0, 0, 0);
+                                await MAG.AssignBaseKarmaLimitsAsync(0, 0, 0, 0, 0, token).ConfigureAwait(false);
 
                                 MagicianEnabled = false;
                                 AdeptEnabled = false;
@@ -28430,9 +28410,7 @@ namespace Chummer
                                 || !Settings.SpecialKarmaCostBasedOnShownValue
                                 && intResTotalMaximum < 1)
                             {
-                                RES.Base = 0;
-                                RES.Karma = 0;
-                                RES.AssignLimits(0, 0, 0);
+                                await RES.AssignBaseKarmaLimitsAsync(0, 0, 0, 0, 0, token).ConfigureAwait(false);
 
                                 RESEnabled = false;
                                 TechnomancerEnabled = false;
@@ -34159,8 +34137,7 @@ namespace Chummer
                 RESEnabled = false;
 
                 // Gain MAG that is permanently set to 1.
-                MAGEnabled = true;
-                MAG.AssignLimits(1, 1, 1);
+                await MAG.AssignBaseKarmaLimitsAsync(0, 0, 1, 1, 1, token);
 
                 // Add the Cyberzombie Lifestyle if it is not already taken.
                 if (Lifestyles.All(x => x.BaseLifestyle != "Cyberzombie Lifestyle Addition"))

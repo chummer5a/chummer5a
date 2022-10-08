@@ -109,24 +109,24 @@ namespace Chummer
 
         private async void SelectMetatypePriority_Load(object sender, EventArgs e)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
             try
             {
-                await this.DoThreadSafeAsync(x => x.SuspendLayout());
+                await this.DoThreadSafeAsync(x => x.SuspendLayout()).ConfigureAwait(false);
                 try
                 {
                     if (_objCharacter.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
                     {
-                        await lblSumtoTen.DoThreadSafeAsync(x => x.Visible = true);
+                        await lblSumtoTen.DoThreadSafeAsync(x => x.Visible = true).ConfigureAwait(false);
                     }
 
                     // Populate the Priority Category list.
                     XPathNavigator xmlBasePrioritiesNode
-                        = await _xmlBasePriorityDataNode.SelectSingleNodeAndCacheExpressionAsync("priorities");
+                        = await _xmlBasePriorityDataNode.SelectSingleNodeAndCacheExpressionAsync("priorities").ConfigureAwait(false);
                     if (xmlBasePrioritiesNode != null)
                     {
                         foreach (XPathNavigator objXmlPriorityCategory in await _xmlBasePriorityDataNode
-                                     .SelectAndCacheExpressionAsync("categories/category"))
+                                     .SelectAndCacheExpressionAsync("categories/category").ConfigureAwait(false))
                         {
                             XPathNodeIterator objItems = xmlBasePrioritiesNode.Select(
                                 "priority[category = " + objXmlPriorityCategory.Value.CleanXPath()
@@ -148,20 +148,20 @@ namespace Chummer
                                     foreach (XPathNavigator objXmlPriority in objItems)
                                     {
                                         string strValue
-                                            = (await objXmlPriority.SelectSingleNodeAndCacheExpressionAsync("value"))
+                                            = (await objXmlPriority.SelectSingleNodeAndCacheExpressionAsync("value").ConfigureAwait(false))
                                             ?.Value;
                                         if (!string.IsNullOrEmpty(strValue) && _lstPriorities.Contains(strValue))
                                         {
                                             lstItems.Add(new ListItem(
                                                              strValue,
                                                              (await objXmlPriority
-                                                                 .SelectSingleNodeAndCacheExpressionAsync(
-                                                                     "translate"))
+                                                                    .SelectSingleNodeAndCacheExpressionAsync(
+                                                                        "translate").ConfigureAwait(false))
                                                              ?.Value ??
                                                              (await objXmlPriority
-                                                                 .SelectSingleNodeAndCacheExpressionAsync(
-                                                                     "name"))?.Value ??
-                                                             await LanguageManager.GetStringAsync("String_Unknown")));
+                                                                    .SelectSingleNodeAndCacheExpressionAsync(
+                                                                        "name").ConfigureAwait(false))?.Value ??
+                                                             await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false)));
                                         }
                                     }
 
@@ -169,23 +169,23 @@ namespace Chummer
                                     switch (objXmlPriorityCategory.Value)
                                     {
                                         case "Heritage":
-                                            await cboHeritage.PopulateWithListItemsAsync(lstItems);
+                                            await cboHeritage.PopulateWithListItemsAsync(lstItems).ConfigureAwait(false);
                                             break;
 
                                         case "Talent":
-                                            await cboTalent.PopulateWithListItemsAsync(lstItems);
+                                            await cboTalent.PopulateWithListItemsAsync(lstItems).ConfigureAwait(false);
                                             break;
 
                                         case "Attributes":
-                                            await cboAttributes.PopulateWithListItemsAsync(lstItems);
+                                            await cboAttributes.PopulateWithListItemsAsync(lstItems).ConfigureAwait(false);
                                             break;
 
                                         case "Skills":
-                                            await cboSkills.PopulateWithListItemsAsync(lstItems);
+                                            await cboSkills.PopulateWithListItemsAsync(lstItems).ConfigureAwait(false);
                                             break;
 
                                         case "Resources":
-                                            await cboResources.PopulateWithListItemsAsync(lstItems);
+                                            await cboResources.PopulateWithListItemsAsync(lstItems).ConfigureAwait(false);
                                             break;
                                     }
                                 }
@@ -200,34 +200,34 @@ namespace Chummer
                         await cboAttributes.DoThreadSafeAsync(x => x.SelectedIndex
                                                                   = x.FindString(_objCharacter.AttributesPriority[0]
                                                                       .ToString(GlobalSettings
-                                                                          .InvariantCultureInfo)));
+                                                                          .InvariantCultureInfo))).ConfigureAwait(false);
                         //Heritage (Metatype)
                         await cboHeritage.DoThreadSafeAsync(x => x.SelectedIndex
                                                                 = x.FindString(_objCharacter.MetatypePriority[0]
                                                                                    .ToString(GlobalSettings
-                                                                                       .InvariantCultureInfo)));
+                                                                                       .InvariantCultureInfo))).ConfigureAwait(false);
                         //Resources
                         await cboResources.DoThreadSafeAsync(x => x.SelectedIndex
                                                                  = x.FindString(_objCharacter.ResourcesPriority[0]
                                                                      .ToString(GlobalSettings
-                                                                                   .InvariantCultureInfo)));
+                                                                                   .InvariantCultureInfo))).ConfigureAwait(false);
                         //Skills
                         await cboSkills.DoThreadSafeAsync(x => x.SelectedIndex
                                                               = x.FindString(_objCharacter.SkillsPriority[0]
                                                                                  .ToString(GlobalSettings
-                                                                                     .InvariantCultureInfo)));
+                                                                                     .InvariantCultureInfo))).ConfigureAwait(false);
                         //Magical/Resonance Talent
                         await cboTalent.DoThreadSafeAsync(x => x.SelectedIndex
                                                               = x.FindString(_objCharacter.SpecialPriority[0]
                                                                                  .ToString(
                                                                                      GlobalSettings
-                                                                                         .InvariantCultureInfo)));
+                                                                                         .InvariantCultureInfo))).ConfigureAwait(false);
 
-                        await LoadMetatypes();
-                        await PopulateMetatypes();
-                        await PopulateMetavariants();
-                        await PopulateTalents();
-                        await RefreshSelectedMetatype();
+                        await LoadMetatypes().ConfigureAwait(false);
+                        await PopulateMetatypes().ConfigureAwait(false);
+                        await PopulateMetavariants().ConfigureAwait(false);
+                        await PopulateTalents().ConfigureAwait(false);
+                        await RefreshSelectedMetatype().ConfigureAwait(false);
 
                         //Magical/Resonance Type
                         await cboTalents.DoThreadSafeAsync(x =>
@@ -235,7 +235,7 @@ namespace Chummer
                             x.SelectedValue = _objCharacter.TalentPriority;
                             if (x.SelectedIndex == -1 && x.Items.Count > 1)
                                 x.SelectedIndex = 0;
-                        });
+                        }).ConfigureAwait(false);
                         //Selected Magical Bonus Skill
                         string strSkill = _lstPrioritySkills.ElementAtOrDefault(0);
                         if (!string.IsNullOrEmpty(strSkill))
@@ -247,7 +247,7 @@ namespace Chummer
                                     strSkill = strSkill.Substring(0, intParenthesesIndex);
                             }
 
-                            await cboSkill1.DoThreadSafeAsync(x => x.SelectedValue = strSkill);
+                            await cboSkill1.DoThreadSafeAsync(x => x.SelectedValue = strSkill).ConfigureAwait(false);
                         }
 
                         strSkill = _lstPrioritySkills.ElementAtOrDefault(1);
@@ -260,7 +260,7 @@ namespace Chummer
                                     strSkill = strSkill.Substring(0, intParenthesesIndex);
                             }
 
-                            await cboSkill2.DoThreadSafeAsync(x => x.SelectedValue = strSkill);
+                            await cboSkill2.DoThreadSafeAsync(x => x.SelectedValue = strSkill).ConfigureAwait(false);
                         }
 
                         strSkill = _lstPrioritySkills.ElementAtOrDefault(2);
@@ -273,51 +273,51 @@ namespace Chummer
                                     strSkill = strSkill.Substring(0, intParenthesesIndex);
                             }
 
-                            await cboSkill3.DoThreadSafeAsync(x => x.SelectedValue = strSkill);
+                            await cboSkill3.DoThreadSafeAsync(x => x.SelectedValue = strSkill).ConfigureAwait(false);
                         }
 
-                        await ProcessTalentsIndexChanged();
+                        await ProcessTalentsIndexChanged().ConfigureAwait(false);
 
                         switch (_objCharacter.EffectiveBuildMethod)
                         {
                             case CharacterBuildMethod.Priority:
-                                await ManagePriorityItems(cboHeritage);
-                                await ManagePriorityItems(cboAttributes);
-                                await ManagePriorityItems(cboTalent);
-                                await ManagePriorityItems(cboSkills);
-                                await ManagePriorityItems(cboResources);
+                                await ManagePriorityItems(cboHeritage).ConfigureAwait(false);
+                                await ManagePriorityItems(cboAttributes).ConfigureAwait(false);
+                                await ManagePriorityItems(cboTalent).ConfigureAwait(false);
+                                await ManagePriorityItems(cboSkills).ConfigureAwait(false);
+                                await ManagePriorityItems(cboResources).ConfigureAwait(false);
                                 break;
 
                             case CharacterBuildMethod.SumtoTen:
-                                await SumToTen();
+                                await SumToTen().ConfigureAwait(false);
                                 break;
                         }
                     }
                     else
                     {
-                        await cboHeritage.DoThreadSafeAsync(x => x.SelectedIndex = 0);
-                        await cboTalent.DoThreadSafeAsync(x => x.SelectedIndex = 0);
-                        await cboAttributes.DoThreadSafeAsync(x => x.SelectedIndex = 0);
-                        await cboSkills.DoThreadSafeAsync(x => x.SelectedIndex = 0);
-                        await cboResources.DoThreadSafeAsync(x => x.SelectedIndex = 0);
-                        await ManagePriorityItems(cboHeritage, true);
-                        await ManagePriorityItems(cboAttributes, true);
-                        await ManagePriorityItems(cboTalent, true);
-                        await ManagePriorityItems(cboSkills, true);
-                        await ManagePriorityItems(cboResources, true);
-                        await LoadMetatypes();
-                        await PopulateMetatypes();
-                        await PopulateMetavariants();
-                        await PopulateTalents();
-                        await RefreshSelectedMetatype();
+                        await cboHeritage.DoThreadSafeAsync(x => x.SelectedIndex = 0).ConfigureAwait(false);
+                        await cboTalent.DoThreadSafeAsync(x => x.SelectedIndex = 0).ConfigureAwait(false);
+                        await cboAttributes.DoThreadSafeAsync(x => x.SelectedIndex = 0).ConfigureAwait(false);
+                        await cboSkills.DoThreadSafeAsync(x => x.SelectedIndex = 0).ConfigureAwait(false);
+                        await cboResources.DoThreadSafeAsync(x => x.SelectedIndex = 0).ConfigureAwait(false);
+                        await ManagePriorityItems(cboHeritage, true).ConfigureAwait(false);
+                        await ManagePriorityItems(cboAttributes, true).ConfigureAwait(false);
+                        await ManagePriorityItems(cboTalent, true).ConfigureAwait(false);
+                        await ManagePriorityItems(cboSkills, true).ConfigureAwait(false);
+                        await ManagePriorityItems(cboResources, true).ConfigureAwait(false);
+                        await LoadMetatypes().ConfigureAwait(false);
+                        await PopulateMetatypes().ConfigureAwait(false);
+                        await PopulateMetavariants().ConfigureAwait(false);
+                        await PopulateTalents().ConfigureAwait(false);
+                        await RefreshSelectedMetatype().ConfigureAwait(false);
                         if (_objCharacter.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
-                            await SumToTen();
+                            await SumToTen().ConfigureAwait(false);
                     }
 
                     // Set up possession boxes
                     // Add Possession and Inhabitation to the list of Critter Tradition variations.
                     await chkPossessionBased.SetToolTipAsync(
-                        await LanguageManager.GetStringAsync("Tip_Metatype_PossessionTradition"));
+                        await LanguageManager.GetStringAsync("Tip_Metatype_PossessionTradition").ConfigureAwait(false)).ConfigureAwait(false);
 
                     using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                                    out List<ListItem> lstMethods))
@@ -341,19 +341,19 @@ namespace Chummer
                                                                                x.Value.ToString(),
                                                                                StringComparison.OrdinalIgnoreCase)));
 
-                        await cboPossessionMethod.PopulateWithListItemsAsync(lstMethods);
+                        await cboPossessionMethod.PopulateWithListItemsAsync(lstMethods).ConfigureAwait(false);
                     }
 
                     _blnLoading = false;
                 }
                 finally
                 {
-                    await this.DoThreadSafeAsync(x => x.ResumeLayout());
+                    await this.DoThreadSafeAsync(x => x.ResumeLayout()).ConfigureAwait(false);
                 }
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -365,81 +365,81 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
             try
             {
-                await this.DoThreadSafeAsync(x => x.SuspendLayout());
+                await this.DoThreadSafeAsync(x => x.SuspendLayout()).ConfigureAwait(false);
                 try
                 {
                     if (_objCharacter.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
                     {
-                        await SumToTen();
+                        await SumToTen().ConfigureAwait(false);
                     }
 
-                    await PopulateMetavariants();
-                    await RefreshSelectedMetatype();
-                    await PopulateTalents();
+                    await PopulateMetavariants().ConfigureAwait(false);
+                    await RefreshSelectedMetatype().ConfigureAwait(false);
+                    await PopulateTalents().ConfigureAwait(false);
                 }
                 finally
                 {
-                    await this.DoThreadSafeAsync(x => x.ResumeLayout());
+                    await this.DoThreadSafeAsync(x => x.ResumeLayout()).ConfigureAwait(false);
                 }
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
         private async void cmdOK_Click(object sender, EventArgs e)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
             try
             {
-                await MetatypeSelected();
+                await MetatypeSelected().ConfigureAwait(false);
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
         private async void cboTalents_SelectedIndexChanged(object sender, EventArgs e)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
             try
             {
-                await this.DoThreadSafeAsync(x => x.SuspendLayout());
+                await this.DoThreadSafeAsync(x => x.SuspendLayout()).ConfigureAwait(false);
                 try
                 {
-                    await ProcessTalentsIndexChanged();
+                    await ProcessTalentsIndexChanged().ConfigureAwait(false);
                 }
                 finally
                 {
-                    await this.DoThreadSafeAsync(x => x.ResumeLayout());
+                    await this.DoThreadSafeAsync(x => x.ResumeLayout()).ConfigureAwait(false);
                 }
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
         private async ValueTask ProcessTalentsIndexChanged(CancellationToken token = default)
         {
-            await cboSkill1.DoThreadSafeAsync(x => x.Visible = false, token);
-            await cboSkill2.DoThreadSafeAsync(x => x.Visible = false, token);
-            await cboSkill3.DoThreadSafeAsync(x => x.Visible = false, token);
-            await lblMetatypeSkillSelection.DoThreadSafeAsync(x => x.Visible = false, token);
+            await cboSkill1.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
+            await cboSkill2.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
+            await cboSkill3.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
+            await lblMetatypeSkillSelection.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
 
-            string strSelectedTalents = await cboTalents.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token);
+            string strSelectedTalents = await cboTalents.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false);
             if (!string.IsNullOrEmpty(strSelectedTalents))
             {
                 XPathNavigator xmlTalentNode = null;
-                XPathNodeIterator xmlBaseTalentPriorityList = _xmlBasePriorityDataNode.Select("priorities/priority[category = \"Talent\" and value = " + (await cboTalent.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token) ?? string.Empty).CleanXPath() + " and (not(prioritytable) or prioritytable = " + _objCharacter.Settings.PriorityTable.CleanXPath() + ")]");
+                XPathNodeIterator xmlBaseTalentPriorityList = _xmlBasePriorityDataNode.Select("priorities/priority[category = \"Talent\" and value = " + (await cboTalent.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false) ?? string.Empty).CleanXPath() + " and (not(prioritytable) or prioritytable = " + _objCharacter.Settings.PriorityTable.CleanXPath() + ")]");
                 foreach (XPathNavigator xmlBaseTalentPriority in xmlBaseTalentPriorityList)
                 {
-                    if (xmlBaseTalentPriorityList.Count == 1 || await xmlBaseTalentPriority.SelectSingleNodeAndCacheExpressionAsync("prioritytable", token) != null)
+                    if (xmlBaseTalentPriorityList.Count == 1 || await xmlBaseTalentPriority.SelectSingleNodeAndCacheExpressionAsync("prioritytable", token).ConfigureAwait(false) != null)
                     {
                         xmlTalentNode = xmlBaseTalentPriority.SelectSingleNode("talents/talent[value = " + strSelectedTalents.CleanXPath() + ']');
                         break;
@@ -448,12 +448,12 @@ namespace Chummer
 
                 if (xmlTalentNode != null)
                 {
-                    string strSkillCount = (await xmlTalentNode.SelectSingleNodeAndCacheExpressionAsync("skillqty", token))?.Value ?? (await xmlTalentNode.SelectSingleNodeAndCacheExpressionAsync("skillgroupqty", token))?.Value ?? string.Empty;
+                    string strSkillCount = (await xmlTalentNode.SelectSingleNodeAndCacheExpressionAsync("skillqty", token).ConfigureAwait(false))?.Value ?? (await xmlTalentNode.SelectSingleNodeAndCacheExpressionAsync("skillgroupqty", token).ConfigureAwait(false))?.Value ?? string.Empty;
                     if (!string.IsNullOrEmpty(strSkillCount) && int.TryParse(strSkillCount, out int intSkillCount))
                     {
-                        XPathNavigator xmlSkillTypeNode = await xmlTalentNode.SelectSingleNodeAndCacheExpressionAsync("skilltype", token) ?? await xmlTalentNode.SelectSingleNodeAndCacheExpressionAsync("skillgrouptype", token);
+                        XPathNavigator xmlSkillTypeNode = await xmlTalentNode.SelectSingleNodeAndCacheExpressionAsync("skilltype", token).ConfigureAwait(false) ?? await xmlTalentNode.SelectSingleNodeAndCacheExpressionAsync("skillgrouptype", token).ConfigureAwait(false);
                         string strSkillType = xmlSkillTypeNode?.Value ?? string.Empty;
-                        XPathNodeIterator objNodeList = await xmlTalentNode.SelectAndCacheExpressionAsync("skillgroupchoices/skillgroup", token);
+                        XPathNodeIterator objNodeList = await xmlTalentNode.SelectAndCacheExpressionAsync("skillgroupchoices/skillgroup", token).ConfigureAwait(false);
                         XPathNodeIterator xmlSkillsList;
                         switch (strSkillType)
                         {
@@ -474,13 +474,13 @@ namespace Chummer
                                 break;
 
                             case "specific":
-                                xmlSkillsList = BuildSkillList(await xmlTalentNode.SelectAndCacheExpressionAsync("skillchoices/skill", token));
+                                xmlSkillsList = BuildSkillList(await xmlTalentNode.SelectAndCacheExpressionAsync("skillchoices/skill", token).ConfigureAwait(false));
                                 break;
 
                             case "xpath":
                                 xmlSkillsList = GetActiveSkillList(
                                     xmlSkillTypeNode != null
-                                        ? (await xmlSkillTypeNode.SelectSingleNodeAndCacheExpressionAsync("@xpath", token))
+                                        ? (await xmlSkillTypeNode.SelectSingleNodeAndCacheExpressionAsync("@xpath", token).ConfigureAwait(false))
                                         ?.Value
                                         : null);
                                 strSkillType = "active";
@@ -503,166 +503,166 @@ namespace Chummer
                                         string strInnerText = objXmlSkill.Value;
                                         lstSkills.Add(new ListItem(strInnerText,
                                                                    (await objXmlSkill.SelectSingleNodeAndCacheExpressionAsync(
-                                                                       "@translate", token))?.Value ?? strInnerText));
+                                                                       "@translate", token).ConfigureAwait(false))?.Value ?? strInnerText));
                                     }
                                 }
                                 else
                                 {
                                     foreach (XPathNavigator objXmlSkill in xmlSkillsList)
                                     {
-                                        string strName = (await objXmlSkill.SelectSingleNodeAndCacheExpressionAsync("name", token))?.Value
-                                                         ?? await LanguageManager.GetStringAsync("String_Unknown", token: token);
+                                        string strName = (await objXmlSkill.SelectSingleNodeAndCacheExpressionAsync("name", token).ConfigureAwait(false))?.Value
+                                                         ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
                                         lstSkills.Add(
                                             new ListItem(
                                                 strName,
-                                                (await objXmlSkill.SelectSingleNodeAndCacheExpressionAsync("translate", token))?.Value
+                                                (await objXmlSkill.SelectSingleNodeAndCacheExpressionAsync("translate", token).ConfigureAwait(false))?.Value
                                                 ?? strName));
                                     }
                                 }
 
                                 lstSkills.Sort(CompareListItems.CompareNames);
                                 bool blnOldLoading = _blnLoading;
-                                int intOldSelectedIndex = await cboSkill1.DoThreadSafeFuncAsync(x => x.SelectedIndex, token);
-                                int intOldDataSourceSize = await cboSkill1.DoThreadSafeFuncAsync(x => x.Items.Count, token);
-                                await cboSkill1.PopulateWithListItemsAsync(lstSkills, token);
+                                int intOldSelectedIndex = await cboSkill1.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false);
+                                int intOldDataSourceSize = await cboSkill1.DoThreadSafeFuncAsync(x => x.Items.Count, token).ConfigureAwait(false);
+                                await cboSkill1.PopulateWithListItemsAsync(lstSkills, token).ConfigureAwait(false);
                                 await cboSkill1.DoThreadSafeAsync(x =>
                                 {
                                     x.Visible = true;
                                     x.Enabled = lstSkills.Count > 1;
-                                }, token);
+                                }, token).ConfigureAwait(false);
                                 if (intOldDataSourceSize == cboSkill1.Items.Count)
                                 {
                                     _blnLoading = true;
-                                    await cboSkill1.DoThreadSafeAsync(x => x.SelectedIndex = intOldSelectedIndex, token);
+                                    await cboSkill1.DoThreadSafeAsync(x => x.SelectedIndex = intOldSelectedIndex, token).ConfigureAwait(false);
                                     _blnLoading = blnOldLoading;
                                 }
 
                                 if (intSkillCount > 1)
                                 {
-                                    intOldSelectedIndex = await cboSkill2.DoThreadSafeFuncAsync(x => x.SelectedIndex, token);
-                                    intOldDataSourceSize = await cboSkill2.DoThreadSafeFuncAsync(x => x.Items.Count, token);
-                                    await cboSkill2.PopulateWithListItemsAsync(lstSkills, token);
+                                    intOldSelectedIndex = await cboSkill2.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false);
+                                    intOldDataSourceSize = await cboSkill2.DoThreadSafeFuncAsync(x => x.Items.Count, token).ConfigureAwait(false);
+                                    await cboSkill2.PopulateWithListItemsAsync(lstSkills, token).ConfigureAwait(false);
                                     await cboSkill2.DoThreadSafeAsync(x =>
                                     {
                                         x.Visible = true;
                                         x.Enabled = lstSkills.Count > 2;
-                                    }, token);
+                                    }, token).ConfigureAwait(false);
                                     if (intOldDataSourceSize == cboSkill2.Items.Count)
                                     {
                                         _blnLoading = true;
-                                        await cboSkill2.DoThreadSafeAsync(x => x.SelectedIndex = intOldSelectedIndex, token);
+                                        await cboSkill2.DoThreadSafeAsync(x => x.SelectedIndex = intOldSelectedIndex, token).ConfigureAwait(false);
                                         _blnLoading = blnOldLoading;
                                     }
 
-                                    if (await cboSkill2.DoThreadSafeFuncAsync(x => x.SelectedIndex, token) == await cboSkill1.DoThreadSafeFuncAsync(x => x.SelectedIndex, token)
+                                    if (await cboSkill2.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false) == await cboSkill1.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false)
                                         && !ExoticSkill.IsExoticSkillName(
-                                            await cboSkill2.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token)))
+                                            await cboSkill2.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false)))
                                     {
-                                        if (await cboSkill2.DoThreadSafeFuncAsync(x => x.SelectedIndex, token) + 1 >= await cboSkill2.DoThreadSafeFuncAsync(x => x.Items.Count, token))
-                                            await cboSkill2.DoThreadSafeAsync(x => x.SelectedIndex = 0, token);
+                                        if (await cboSkill2.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false) + 1 >= await cboSkill2.DoThreadSafeFuncAsync(x => x.Items.Count, token).ConfigureAwait(false))
+                                            await cboSkill2.DoThreadSafeAsync(x => x.SelectedIndex = 0, token).ConfigureAwait(false);
                                         else
                                         {
                                             int intSkill1Index
-                                                = await cboSkill1.DoThreadSafeFuncAsync(x => x.SelectedIndex, token);
-                                            await cboSkill2.DoThreadSafeAsync(x => x.SelectedIndex = intSkill1Index + 1, token);
+                                                = await cboSkill1.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false);
+                                            await cboSkill2.DoThreadSafeAsync(x => x.SelectedIndex = intSkill1Index + 1, token).ConfigureAwait(false);
                                         }
                                     }
 
                                     if (intSkillCount > 2)
                                     {
-                                        intOldSelectedIndex = await cboSkill3.DoThreadSafeFuncAsync(x => x.SelectedIndex, token);
-                                        intOldDataSourceSize = await cboSkill3.DoThreadSafeFuncAsync(x => x.Items.Count, token);
-                                        await cboSkill3.PopulateWithListItemsAsync(lstSkills, token);
+                                        intOldSelectedIndex = await cboSkill3.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false);
+                                        intOldDataSourceSize = await cboSkill3.DoThreadSafeFuncAsync(x => x.Items.Count, token).ConfigureAwait(false);
+                                        await cboSkill3.PopulateWithListItemsAsync(lstSkills, token).ConfigureAwait(false);
                                         await cboSkill3.DoThreadSafeAsync(x =>
                                         {
                                             x.Visible = true;
                                             x.Enabled = lstSkills.Count > 3;
-                                        }, token);
+                                        }, token).ConfigureAwait(false);
                                         if (intOldDataSourceSize == cboSkill3.Items.Count)
                                         {
                                             _blnLoading = true;
-                                            await cboSkill3.DoThreadSafeAsync(x => x.SelectedIndex = intOldSelectedIndex, token);
+                                            await cboSkill3.DoThreadSafeAsync(x => x.SelectedIndex = intOldSelectedIndex, token).ConfigureAwait(false);
                                             _blnLoading = blnOldLoading;
                                         }
 
-                                        if ((await cboSkill3.DoThreadSafeFuncAsync(x => x.SelectedIndex, token) == await cboSkill1.DoThreadSafeFuncAsync(x => x.SelectedIndex, token) ||
-                                             await cboSkill3.DoThreadSafeFuncAsync(x => x.SelectedIndex, token) == await cboSkill2.DoThreadSafeFuncAsync(x => x.SelectedIndex, token)) &&
-                                            !ExoticSkill.IsExoticSkillName(await cboSkill3.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token)))
+                                        if ((await cboSkill3.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false) == await cboSkill1.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false) ||
+                                             await cboSkill3.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false) == await cboSkill2.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false)) &&
+                                            !ExoticSkill.IsExoticSkillName(await cboSkill3.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false)))
                                         {
-                                            int intNewIndex = await cboSkill3.DoThreadSafeFuncAsync(x => x.SelectedIndex, token);
+                                            int intNewIndex = await cboSkill3.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false);
                                             do
                                             {
                                                 ++intNewIndex;
-                                                if (intNewIndex >= await cboSkill3.DoThreadSafeFuncAsync(x => x.Items.Count, token))
+                                                if (intNewIndex >= await cboSkill3.DoThreadSafeFuncAsync(x => x.Items.Count, token).ConfigureAwait(false))
                                                     intNewIndex = 0;
-                                            } while ((intNewIndex == await cboSkill1.DoThreadSafeFuncAsync(x => x.SelectedIndex, token)
-                                                      || intNewIndex == await cboSkill2.DoThreadSafeFuncAsync(x => x.SelectedIndex, token))
-                                                     && intNewIndex != await cboSkill3.DoThreadSafeFuncAsync(x => x.SelectedIndex, token) &&
+                                            } while ((intNewIndex == await cboSkill1.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false)
+                                                      || intNewIndex == await cboSkill2.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false))
+                                                     && intNewIndex != await cboSkill3.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false) &&
                                                      !ExoticSkill.IsExoticSkillName(
-                                                         ((ListItem) await cboSkill3.DoThreadSafeFuncAsync(x => x.Items[intNewIndex], token)).Value.ToString()));
+                                                         ((ListItem) await cboSkill3.DoThreadSafeFuncAsync(x => x.Items[intNewIndex], token).ConfigureAwait(false)).Value.ToString()));
 
-                                            await cboSkill3.DoThreadSafeAsync(x => x.SelectedIndex = intNewIndex, token);
+                                            await cboSkill3.DoThreadSafeAsync(x => x.SelectedIndex = intNewIndex, token).ConfigureAwait(false);
                                         }
                                     }
                                 }
 
                                 string strMetamagicSkillSelection = string.Format(
-                                    GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_MetamagicSkillBase", token: token),
-                                    await LanguageManager.GetStringAsync("String_MetamagicSkills", token: token));
+                                    GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_MetamagicSkillBase", token: token).ConfigureAwait(false),
+                                    await LanguageManager.GetStringAsync("String_MetamagicSkills", token: token).ConfigureAwait(false));
                                 // strSkillType can have the following values: magic, resonance, matrix, active, specific, grouped
                                 // So the language file should contain each of those like String_MetamagicSkillType_magic
-                                string strSkillVal = (await xmlTalentNode.SelectSingleNodeAndCacheExpressionAsync("skillval", token))?.Value
+                                string strSkillVal = (await xmlTalentNode.SelectSingleNodeAndCacheExpressionAsync("skillval", token).ConfigureAwait(false))?.Value
                                                      ?? (await xmlTalentNode
-                                                         .SelectSingleNodeAndCacheExpressionAsync("skillgroupval", token))
+                                                               .SelectSingleNodeAndCacheExpressionAsync("skillgroupval", token).ConfigureAwait(false))
                                                         ?.Value;
                                 string strMetamagicSkillType = await LanguageManager.GetStringAsync(
-                                    "String_MetamagicSkillType_" + strSkillType, token: token);
+                                    "String_MetamagicSkillType_" + strSkillType, token: token).ConfigureAwait(false);
                                 await lblMetatypeSkillSelection.DoThreadSafeAsync(x =>
                                 {
                                     x.Text = string.Format(GlobalSettings.CultureInfo, strMetamagicSkillSelection,
                                                            strSkillCount, strMetamagicSkillType, strSkillVal);
                                     x.Visible = true;
-                                }, token);
+                                }, token).ConfigureAwait(false);
                             }
                         }
 
                         int intSpecialAttribPoints = 0;
 
-                        string strSelectedMetatype = await lstMetatypes.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token);
+                        string strSelectedMetatype = await lstMetatypes.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false);
                         if (!string.IsNullOrEmpty(strSelectedMetatype))
                         {
-                            string strSelectedMetavariant = await cboMetavariant.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token);
-                            XPathNodeIterator xmlBaseMetatypePriorityList = _xmlBasePriorityDataNode.Select("priorities/priority[category = \"Heritage\" and value = " + (await cboHeritage.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token) ?? string.Empty).CleanXPath() + " and (not(prioritytable) or prioritytable = " + _objCharacter.Settings.PriorityTable.CleanXPath() + ")]");
+                            string strSelectedMetavariant = await cboMetavariant.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false);
+                            XPathNodeIterator xmlBaseMetatypePriorityList = _xmlBasePriorityDataNode.Select("priorities/priority[category = \"Heritage\" and value = " + (await cboHeritage.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false) ?? string.Empty).CleanXPath() + " and (not(prioritytable) or prioritytable = " + _objCharacter.Settings.PriorityTable.CleanXPath() + ")]");
                             foreach (XPathNavigator xmlBaseMetatypePriority in xmlBaseMetatypePriorityList)
                             {
-                                if (xmlBaseMetatypePriorityList.Count == 1 || await xmlBaseMetatypePriority.SelectSingleNodeAndCacheExpressionAsync("prioritytable", token) != null)
+                                if (xmlBaseMetatypePriorityList.Count == 1 || await xmlBaseMetatypePriority.SelectSingleNodeAndCacheExpressionAsync("prioritytable", token).ConfigureAwait(false) != null)
                                 {
                                     XPathNavigator objXmlMetatypePriorityNode = xmlBaseMetatypePriority.SelectSingleNode("metatypes/metatype[name = " + strSelectedMetatype.CleanXPath() + ']');
                                     if (!string.IsNullOrEmpty(strSelectedMetavariant) && strSelectedMetavariant != "None")
                                         objXmlMetatypePriorityNode = objXmlMetatypePriorityNode?.SelectSingleNode("metavariants/metavariant[name = " + strSelectedMetavariant.CleanXPath() + ']');
                                     if (objXmlMetatypePriorityNode != null && int.TryParse(
                                             (await objXmlMetatypePriorityNode.SelectSingleNodeAndCacheExpressionAsync(
-                                                "value", token))?.Value, out int intTemp))
+                                                "value", token).ConfigureAwait(false))?.Value, out int intTemp))
                                         intSpecialAttribPoints += intTemp;
                                     break;
                                 }
                             }
                         }
 
-                        if (int.TryParse((await xmlTalentNode.SelectSingleNodeAndCacheExpressionAsync("specialattribpoints", token))?.Value, out int intTalentSpecialAttribPoints))
+                        if (int.TryParse((await xmlTalentNode.SelectSingleNodeAndCacheExpressionAsync("specialattribpoints", token).ConfigureAwait(false))?.Value, out int intTalentSpecialAttribPoints))
                             intSpecialAttribPoints += intTalentSpecialAttribPoints;
 
-                        await lblSpecialAttributes.DoThreadSafeAsync(x => x.Text = intSpecialAttribPoints.ToString(GlobalSettings.CultureInfo), token);
+                        await lblSpecialAttributes.DoThreadSafeAsync(x => x.Text = intSpecialAttribPoints.ToString(GlobalSettings.CultureInfo), token).ConfigureAwait(false);
                     }
                 }
             }
             else
             {
-                await cboTalents.DoThreadSafeAsync(x => x.SelectedIndex = 0, token);
+                await cboTalents.DoThreadSafeAsync(x => x.SelectedIndex = 0, token).ConfigureAwait(false);
             }
             if (_objCharacter.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
             {
-                await SumToTen(true, token);
+                await SumToTen(true, token).ConfigureAwait(false);
             }
         }
 
@@ -670,27 +670,27 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
             try
             {
-                await this.DoThreadSafeAsync(x => x.SuspendLayout());
+                await this.DoThreadSafeAsync(x => x.SuspendLayout()).ConfigureAwait(false);
                 try
                 {
-                    await RefreshSelectedMetatype();
-                    await PopulateTalents();
+                    await RefreshSelectedMetatype().ConfigureAwait(false);
+                    await PopulateTalents().ConfigureAwait(false);
                     if (_objCharacter.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
                     {
-                        await SumToTen();
+                        await SumToTen().ConfigureAwait(false);
                     }
                 }
                 finally
                 {
-                    await this.DoThreadSafeAsync(x => x.ResumeLayout());
+                    await this.DoThreadSafeAsync(x => x.ResumeLayout()).ConfigureAwait(false);
                 }
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -704,26 +704,26 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
             try
             {
-                await this.DoThreadSafeAsync(x => x.SuspendLayout());
+                await this.DoThreadSafeAsync(x => x.SuspendLayout()).ConfigureAwait(false);
                 try
                 {
-                    await PopulateMetatypes();
+                    await PopulateMetatypes().ConfigureAwait(false);
                     if (_objCharacter.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
                     {
-                        await SumToTen();
+                        await SumToTen().ConfigureAwait(false);
                     }
                 }
                 finally
                 {
-                    await this.DoThreadSafeAsync(x => x.ResumeLayout());
+                    await this.DoThreadSafeAsync(x => x.ResumeLayout()).ConfigureAwait(false);
                 }
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -731,36 +731,36 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
             try
             {
-                await this.DoThreadSafeAsync(x => x.SuspendLayout());
+                await this.DoThreadSafeAsync(x => x.SuspendLayout()).ConfigureAwait(false);
                 try
                 {
                     switch (_objCharacter.EffectiveBuildMethod)
                     {
                         case CharacterBuildMethod.Priority:
-                            await ManagePriorityItems(cboHeritage);
+                            await ManagePriorityItems(cboHeritage).ConfigureAwait(false);
                             break;
 
                         case CharacterBuildMethod.SumtoTen:
-                            await SumToTen();
+                            await SumToTen().ConfigureAwait(false);
                             break;
                     }
 
-                    await LoadMetatypes();
-                    await PopulateMetatypes();
-                    await PopulateMetavariants();
-                    await RefreshSelectedMetatype();
+                    await LoadMetatypes().ConfigureAwait(false);
+                    await PopulateMetatypes().ConfigureAwait(false);
+                    await PopulateMetavariants().ConfigureAwait(false);
+                    await RefreshSelectedMetatype().ConfigureAwait(false);
                 }
                 finally
                 {
-                    await this.DoThreadSafeAsync(x => x.ResumeLayout());
+                    await this.DoThreadSafeAsync(x => x.ResumeLayout()).ConfigureAwait(false);
                 }
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -768,33 +768,33 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
             try
             {
-                await this.DoThreadSafeAsync(x => x.SuspendLayout());
+                await this.DoThreadSafeAsync(x => x.SuspendLayout()).ConfigureAwait(false);
                 try
                 {
                     switch (_objCharacter.EffectiveBuildMethod)
                     {
                         case CharacterBuildMethod.Priority:
-                            await ManagePriorityItems(cboTalent);
+                            await ManagePriorityItems(cboTalent).ConfigureAwait(false);
                             break;
 
                         case CharacterBuildMethod.SumtoTen:
-                            await SumToTen();
+                            await SumToTen().ConfigureAwait(false);
                             break;
                     }
 
-                    await PopulateTalents();
+                    await PopulateTalents().ConfigureAwait(false);
                 }
                 finally
                 {
-                    await this.DoThreadSafeAsync(x => x.ResumeLayout());
+                    await this.DoThreadSafeAsync(x => x.ResumeLayout()).ConfigureAwait(false);
                 }
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -802,31 +802,31 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
             try
             {
-                await this.DoThreadSafeAsync(x => x.SuspendLayout());
+                await this.DoThreadSafeAsync(x => x.SuspendLayout()).ConfigureAwait(false);
                 try
                 {
                     switch (_objCharacter.EffectiveBuildMethod)
                     {
                         case CharacterBuildMethod.Priority:
-                            await ManagePriorityItems(cboAttributes);
+                            await ManagePriorityItems(cboAttributes).ConfigureAwait(false);
                             break;
 
                         case CharacterBuildMethod.SumtoTen:
-                            await SumToTen();
+                            await SumToTen().ConfigureAwait(false);
                             break;
                     }
                 }
                 finally
                 {
-                    await this.DoThreadSafeAsync(x => x.ResumeLayout());
+                    await this.DoThreadSafeAsync(x => x.ResumeLayout()).ConfigureAwait(false);
                 }
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -834,31 +834,31 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
             try
             {
-                await this.DoThreadSafeAsync(x => x.SuspendLayout());
+                await this.DoThreadSafeAsync(x => x.SuspendLayout()).ConfigureAwait(false);
                 try
                 {
                     switch (_objCharacter.EffectiveBuildMethod)
                     {
                         case CharacterBuildMethod.Priority:
-                            await ManagePriorityItems(cboSkills);
+                            await ManagePriorityItems(cboSkills).ConfigureAwait(false);
                             break;
 
                         case CharacterBuildMethod.SumtoTen:
-                            await SumToTen();
+                            await SumToTen().ConfigureAwait(false);
                             break;
                     }
                 }
                 finally
                 {
-                    await this.DoThreadSafeAsync(x => x.ResumeLayout());
+                    await this.DoThreadSafeAsync(x => x.ResumeLayout()).ConfigureAwait(false);
                 }
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -866,45 +866,45 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
             try
             {
-                await this.DoThreadSafeAsync(x => x.SuspendLayout());
+                await this.DoThreadSafeAsync(x => x.SuspendLayout()).ConfigureAwait(false);
                 try
                 {
                     switch (_objCharacter.EffectiveBuildMethod)
                     {
                         case CharacterBuildMethod.Priority:
-                            await ManagePriorityItems(cboResources);
+                            await ManagePriorityItems(cboResources).ConfigureAwait(false);
                             break;
 
                         case CharacterBuildMethod.SumtoTen:
-                            await SumToTen();
+                            await SumToTen().ConfigureAwait(false);
                             break;
                     }
                 }
                 finally
                 {
-                    await this.DoThreadSafeAsync(x => x.ResumeLayout());
+                    await this.DoThreadSafeAsync(x => x.ResumeLayout()).ConfigureAwait(false);
                 }
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
         private async void chkPossessionBased_CheckedChanged(object sender, EventArgs e)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
             try
             {
-                bool blnTemp = await chkPossessionBased.DoThreadSafeFuncAsync(x => x.Checked);
-                await cboPossessionMethod.DoThreadSafeAsync(x => x.Enabled = blnTemp);
+                bool blnTemp = await chkPossessionBased.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false);
+                await cboPossessionMethod.DoThreadSafeAsync(x => x.Enabled = blnTemp).ConfigureAwait(false);
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -917,624 +917,714 @@ namespace Chummer
         /// </summary>
         private async ValueTask MetatypeSelected(CancellationToken token = default)
         {
-            if (_objCharacter.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
+            using (await EnterReadLock.EnterAsync(_objCharacter.LockObject, token))
             {
-                int intSumToTen = await SumToTen(false, token);
-                if (intSumToTen != _objCharacter.Settings.SumtoTen)
+                if (_objCharacter.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
                 {
-                    Program.ShowMessageBox(string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_SumtoTen", token: token),
-                        _objCharacter.Settings.SumtoTen.ToString(GlobalSettings.CultureInfo), intSumToTen.ToString(GlobalSettings.CultureInfo)));
-                    return;
-                }
-            }
-            if (await cboTalents.DoThreadSafeFuncAsync(x => x.SelectedIndex, token) == -1)
-            {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_Metatype_SelectTalent", token: token), await LanguageManager.GetStringAsync("MessageTitle_Metatype_SelectTalent", token: token), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            string strSkill1 = await cboSkill1.DoThreadSafeFuncAsync(x => x.Visible ? x.SelectedValue?.ToString() : string.Empty, token);
-            string strSkill2 = await cboSkill2.DoThreadSafeFuncAsync(x => x.Visible ? x.SelectedValue?.ToString() : string.Empty, token);
-            string strSkill3 = await cboSkill3.DoThreadSafeFuncAsync(x => x.Visible ? x.SelectedValue?.ToString() : string.Empty, token);
-
-            if ((await cboSkill1.DoThreadSafeFuncAsync(x => x.Visible, token) && string.IsNullOrEmpty(strSkill1))
-                || (await cboSkill2.DoThreadSafeFuncAsync(x => x.Visible, token) && string.IsNullOrEmpty(strSkill2))
-                || (await cboSkill3.DoThreadSafeFuncAsync(x => x.Visible, token) && string.IsNullOrEmpty(strSkill3)))
-            {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_Metatype_SelectSkill", token: token), await LanguageManager.GetStringAsync("MessageTitle_Metatype_SelectSkill", token: token), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            if (ExoticSkill.IsExoticSkillName(strSkill1))
-            {
-                using (ThreadSafeForm<SelectExoticSkill> frmSelectExotic =
-                       await ThreadSafeForm<SelectExoticSkill>.GetAsync(() => new SelectExoticSkill(_objCharacter),
-                           token))
-                {
-                    frmSelectExotic.MyForm.ForceSkill(strSkill1);
-                    if (await frmSelectExotic.ShowDialogSafeAsync(this, token) != DialogResult.OK)
+                    int intSumToTen = await SumToTen(false, token).ConfigureAwait(false);
+                    if (intSumToTen != _objCharacter.Settings.SumtoTen)
+                    {
+                        Program.ShowMessageBox(string.Format(GlobalSettings.CultureInfo,
+                                                             await LanguageManager.GetStringAsync(
+                                                                 "Message_SumtoTen", token: token).ConfigureAwait(false),
+                                                             _objCharacter.Settings.SumtoTen.ToString(
+                                                                 GlobalSettings.CultureInfo),
+                                                             intSumToTen.ToString(GlobalSettings.CultureInfo)));
                         return;
-                    strSkill1 += " (" + frmSelectExotic.MyForm.SelectedExoticSkillSpecialisation + ')';
+                    }
                 }
-            }
-            if (ExoticSkill.IsExoticSkillName(strSkill2))
-            {
-                using (ThreadSafeForm<SelectExoticSkill> frmSelectExotic =
-                       await ThreadSafeForm<SelectExoticSkill>.GetAsync(() => new SelectExoticSkill(_objCharacter),
-                           token))
-                {
-                    frmSelectExotic.MyForm.ForceSkill(strSkill2);
-                    if (await frmSelectExotic.ShowDialogSafeAsync(this, token) != DialogResult.OK)
-                        return;
-                    strSkill2 += " (" + frmSelectExotic.MyForm.SelectedExoticSkillSpecialisation + ')';
-                }
-            }
-            if (ExoticSkill.IsExoticSkillName(strSkill3))
-            {
-                using (ThreadSafeForm<SelectExoticSkill> frmSelectExotic =
-                       await ThreadSafeForm<SelectExoticSkill>.GetAsync(() => new SelectExoticSkill(_objCharacter),
-                           token))
-                {
-                    frmSelectExotic.MyForm.ForceSkill(strSkill3);
-                    if (await frmSelectExotic.ShowDialogSafeAsync(this, token) != DialogResult.OK)
-                        return;
-                    strSkill3 += " (" + frmSelectExotic.MyForm.SelectedExoticSkillSpecialisation + ')';
-                }
-            }
 
-            if ((!string.IsNullOrEmpty(strSkill1) && (strSkill1 == strSkill2 || strSkill1 == strSkill3))
-                || (!string.IsNullOrEmpty(strSkill2) && strSkill2 == strSkill3))
-            {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_Metatype_Duplicate", token: token), await LanguageManager.GetStringAsync("MessageTitle_Metatype_Duplicate", token: token), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            string strSelectedMetatype = await lstMetatypes.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token);
-            if (!string.IsNullOrEmpty(strSelectedMetatype))
-            {
-                XmlNode objXmlMetatype
-                    = _xmlMetatypeDocumentMetatypesNode.SelectSingleNode(
-                        "metatype[name = " + strSelectedMetatype.CleanXPath() + ']');
-                if (objXmlMetatype == null)
+                if (await cboTalents.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false) == -1)
                 {
                     Program.ShowMessageBox(
-                        this, await LanguageManager.GetStringAsync("Message_Metatype_SelectMetatype", token: token),
-                        await LanguageManager.GetStringAsync("MessageTitle_Metatype_SelectMetatype", token: token),
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Information);
+                        this, await LanguageManager.GetStringAsync("Message_Metatype_SelectTalent", token: token).ConfigureAwait(false),
+                        await LanguageManager.GetStringAsync("MessageTitle_Metatype_SelectTalent", token: token).ConfigureAwait(false),
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
 
-                strSelectedMetatype = objXmlMetatype["id"]?.InnerText ?? Guid.Empty.ToString("D");
+                string strSkill1
+                    = await cboSkill1.DoThreadSafeFuncAsync(x => x.Visible ? x.SelectedValue?.ToString() : string.Empty,
+                                                            token).ConfigureAwait(false);
+                string strSkill2
+                    = await cboSkill2.DoThreadSafeFuncAsync(x => x.Visible ? x.SelectedValue?.ToString() : string.Empty,
+                                                            token).ConfigureAwait(false);
+                string strSkill3
+                    = await cboSkill3.DoThreadSafeFuncAsync(x => x.Visible ? x.SelectedValue?.ToString() : string.Empty,
+                                                            token).ConfigureAwait(false);
 
-                // Clear out all priority-only qualities that the character bought normally (relevant when switching from Karma to Priority/Sum-to-Ten)
-                for (int i = _objCharacter.Qualities.Count - 1; i >= 0; --i)
+                if ((await cboSkill1.DoThreadSafeFuncAsync(x => x.Visible, token).ConfigureAwait(false) && string.IsNullOrEmpty(strSkill1))
+                    || (await cboSkill2.DoThreadSafeFuncAsync(x => x.Visible, token).ConfigureAwait(false) && string.IsNullOrEmpty(strSkill2))
+                    || (await cboSkill3.DoThreadSafeFuncAsync(x => x.Visible, token).ConfigureAwait(false)
+                        && string.IsNullOrEmpty(strSkill3)))
                 {
-                    if (i >= _objCharacter.Qualities.Count)
-                        continue;
-                    Quality objQuality = _objCharacter.Qualities[i];
-                    if (objQuality.OriginSource == QualitySource.Selected
-                        && (await objQuality.GetNodeXPathAsync(token: token))?.SelectSingleNode("onlyprioritygiven") != null)
-                        objQuality.DeleteQuality();
+                    Program.ShowMessageBox(
+                        this, await LanguageManager.GetStringAsync("Message_Metatype_SelectSkill", token: token).ConfigureAwait(false),
+                        await LanguageManager.GetStringAsync("MessageTitle_Metatype_SelectSkill", token: token).ConfigureAwait(false),
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
                 }
 
-                string strSelectedMetavariant = await cboMetavariant.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token);
-                string strSelectedMetatypeCategory = await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token);
-
-                // If this is a Shapeshifter, a Metavariant must be selected. Default to Human if None is selected.
-                if (strSelectedMetatypeCategory == "Shapeshifter" && strSelectedMetavariant == "None")
-                    strSelectedMetavariant = "Human";
-                XmlNode objXmlMetavariant
-                    = objXmlMetatype.SelectSingleNode("metavariants/metavariant[name = "
-                                                      + strSelectedMetavariant.CleanXPath() + ']');
-                strSelectedMetavariant = objXmlMetavariant?["id"]?.InnerText ?? Guid.Empty.ToString();
-                int intForce = await nudForce.DoThreadSafeFuncAsync(x => x.Visible ? x.ValueAsInt : 0, token);
-
-                if (_objCharacter.MetatypeGuid.ToString("D", GlobalSettings.InvariantCultureInfo) !=
-                    strSelectedMetatype
-                    || _objCharacter.MetavariantGuid.ToString("D", GlobalSettings.InvariantCultureInfo) !=
-                    strSelectedMetavariant)
+                if (ExoticSkill.IsExoticSkillName(strSkill1))
                 {
-                    // Remove qualities that require the old metatype
-                    List<Quality> lstQualitiesToCheck = new List<Quality>(_objCharacter.Qualities.Count);
-                    foreach (Quality objQuality in _objCharacter.Qualities)
+                    using (ThreadSafeForm<SelectExoticSkill> frmSelectExotic =
+                           await ThreadSafeForm<SelectExoticSkill>.GetAsync(() => new SelectExoticSkill(_objCharacter),
+                                                                            token).ConfigureAwait(false))
                     {
-                        if (objQuality.OriginSource == QualitySource.Improvement
-                            || objQuality.OriginSource == QualitySource.Heritage
-                            || objQuality.OriginSource == QualitySource.Metatype
-                            || objQuality.OriginSource == QualitySource.MetatypeRemovable
-                            || objQuality.OriginSource == QualitySource.MetatypeRemovedAtChargen)
-                            continue;
-                        XPathNavigator xmlRestrictionNode
-                            = (await objQuality.GetNodeXPathAsync(token: token))?.SelectSingleNode("required");
-                        if (xmlRestrictionNode != null &&
-                            (xmlRestrictionNode.SelectSingleNode(".//metatype") != null
-                             || xmlRestrictionNode.SelectSingleNode(".//metavariant") != null))
+                        frmSelectExotic.MyForm.ForceSkill(strSkill1);
+                        if (await frmSelectExotic.ShowDialogSafeAsync(this, token).ConfigureAwait(false) != DialogResult.OK)
+                            return;
+                        strSkill1 += " (" + frmSelectExotic.MyForm.SelectedExoticSkillSpecialisation + ')';
+                    }
+                }
+
+                if (ExoticSkill.IsExoticSkillName(strSkill2))
+                {
+                    using (ThreadSafeForm<SelectExoticSkill> frmSelectExotic =
+                           await ThreadSafeForm<SelectExoticSkill>.GetAsync(() => new SelectExoticSkill(_objCharacter),
+                                                                            token).ConfigureAwait(false))
+                    {
+                        frmSelectExotic.MyForm.ForceSkill(strSkill2);
+                        if (await frmSelectExotic.ShowDialogSafeAsync(this, token).ConfigureAwait(false) != DialogResult.OK)
+                            return;
+                        strSkill2 += " (" + frmSelectExotic.MyForm.SelectedExoticSkillSpecialisation + ')';
+                    }
+                }
+
+                if (ExoticSkill.IsExoticSkillName(strSkill3))
+                {
+                    using (ThreadSafeForm<SelectExoticSkill> frmSelectExotic =
+                           await ThreadSafeForm<SelectExoticSkill>.GetAsync(() => new SelectExoticSkill(_objCharacter),
+                                                                            token).ConfigureAwait(false))
+                    {
+                        frmSelectExotic.MyForm.ForceSkill(strSkill3);
+                        if (await frmSelectExotic.ShowDialogSafeAsync(this, token).ConfigureAwait(false) != DialogResult.OK)
+                            return;
+                        strSkill3 += " (" + frmSelectExotic.MyForm.SelectedExoticSkillSpecialisation + ')';
+                    }
+                }
+
+                if ((!string.IsNullOrEmpty(strSkill1) && (strSkill1 == strSkill2 || strSkill1 == strSkill3))
+                    || (!string.IsNullOrEmpty(strSkill2) && strSkill2 == strSkill3))
+                {
+                    Program.ShowMessageBox(
+                        this, await LanguageManager.GetStringAsync("Message_Metatype_Duplicate", token: token).ConfigureAwait(false),
+                        await LanguageManager.GetStringAsync("MessageTitle_Metatype_Duplicate", token: token).ConfigureAwait(false),
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                string strSelectedMetatype
+                    = await lstMetatypes.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false);
+                if (!string.IsNullOrEmpty(strSelectedMetatype))
+                {
+                    XmlNode objXmlMetatype
+                        = _xmlMetatypeDocumentMetatypesNode.SelectSingleNode(
+                            "metatype[name = " + strSelectedMetatype.CleanXPath() + ']');
+                    if (objXmlMetatype == null)
+                    {
+                        Program.ShowMessageBox(
+                            this, await LanguageManager.GetStringAsync("Message_Metatype_SelectMetatype", token: token).ConfigureAwait(false),
+                            await LanguageManager.GetStringAsync("MessageTitle_Metatype_SelectMetatype", token: token).ConfigureAwait(false),
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Information);
+                        return;
+                    }
+
+                    strSelectedMetatype = objXmlMetatype["id"]?.InnerText ?? Guid.Empty.ToString("D");
+
+                    IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        // Clear out all priority-only qualities that the character bought normally (relevant when switching from Karma to Priority/Sum-to-Ten)
+                        for (int i = _objCharacter.Qualities.Count - 1; i >= 0; --i)
                         {
-                            lstQualitiesToCheck.Add(objQuality);
+                            if (i >= _objCharacter.Qualities.Count)
+                                continue;
+                            Quality objQuality = _objCharacter.Qualities[i];
+                            if (objQuality.OriginSource == QualitySource.Selected
+                                && (await objQuality.GetNodeXPathAsync(token: token).ConfigureAwait(false))?.SelectSingleNode(
+                                    "onlyprioritygiven")
+                                != null)
+                                objQuality.DeleteQuality();
                         }
-                        else
+
+                        string strSelectedMetavariant
+                            = await cboMetavariant.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token).ConfigureAwait(false);
+                        string strSelectedMetatypeCategory
+                            = await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false);
+
+                        // If this is a Shapeshifter, a Metavariant must be selected. Default to Human if None is selected.
+                        if (strSelectedMetatypeCategory == "Shapeshifter" && strSelectedMetavariant == "None")
+                            strSelectedMetavariant = "Human";
+                        XmlNode objXmlMetavariant
+                            = objXmlMetatype.SelectSingleNode("metavariants/metavariant[name = "
+                                                              + strSelectedMetavariant.CleanXPath() + ']');
+                        strSelectedMetavariant = objXmlMetavariant?["id"]?.InnerText ?? Guid.Empty.ToString();
+                        int intForce = await nudForce.DoThreadSafeFuncAsync(x => x.Visible ? x.ValueAsInt : 0, token).ConfigureAwait(false);
+
+                        if (_objCharacter.MetatypeGuid.ToString("D", GlobalSettings.InvariantCultureInfo) !=
+                            strSelectedMetatype
+                            || _objCharacter.MetavariantGuid.ToString("D", GlobalSettings.InvariantCultureInfo) !=
+                            strSelectedMetavariant)
                         {
-                            xmlRestrictionNode = (await objQuality.GetNodeXPathAsync(token: token))?.SelectSingleNode("forbidden");
-                            if (xmlRestrictionNode != null &&
-                                (xmlRestrictionNode.SelectSingleNode(".//metatype") != null
-                                 || xmlRestrictionNode.SelectSingleNode(".//metavariant") != null))
+                            // Remove qualities that require the old metatype
+                            List<Quality> lstQualitiesToCheck = new List<Quality>(_objCharacter.Qualities.Count);
+                            foreach (Quality objQuality in _objCharacter.Qualities)
                             {
-                                lstQualitiesToCheck.Add(objQuality);
-                            }
-                        }
-                    }
-
-                    _objCharacter.Create(strSelectedMetatypeCategory, strSelectedMetatype,
-                                         strSelectedMetavariant, objXmlMetatype, intForce,
-                                         _xmlQualityDocumentQualitiesNode,
-                                         _xmlCritterPowerDocumentPowersNode, null,
-                                         await chkPossessionBased.DoThreadSafeFuncAsync(x => x.Checked, token)
-                                             ? await cboPossessionMethod.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token)
-                                             : string.Empty, token);
-                    foreach (Quality objQuality in lstQualitiesToCheck)
-                    {
-                        // Set strIgnoreQuality to quality's name to make sure limit counts are not an issue
-                        if ((await objQuality.GetNodeXPathAsync(token: token))?.RequirementsMet(
-                                _objCharacter, strIgnoreQuality: objQuality.Name) == false)
-                        {
-                            objQuality.DeleteQuality();
-                        }
-                    }
-                }
-
-                string strOldSpecialPriority = _objCharacter.SpecialPriority;
-                string strOldTalentPriority = _objCharacter.TalentPriority;
-
-                // begin priority based character settings
-                // Load the Priority information.
-
-                // Set the character priority selections
-                _objCharacter.MetatypeBP = Convert.ToInt32(await lblMetavariantKarma.DoThreadSafeFuncAsync(x => x.Text, token), GlobalSettings.CultureInfo);
-                _objCharacter.MetatypePriority = await cboHeritage.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token);
-                _objCharacter.AttributesPriority = await cboAttributes.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token);
-                _objCharacter.SpecialPriority = await cboTalent.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token);
-                _objCharacter.SkillsPriority = await cboSkills.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token);
-                _objCharacter.ResourcesPriority = await cboResources.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token);
-                _objCharacter.TalentPriority = await cboTalents.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token);
-                await _objCharacter.PriorityBonusSkillList.ClearAsync(token);
-                if (!string.IsNullOrEmpty(strSkill1))
-                    await _objCharacter.PriorityBonusSkillList.AddAsync(strSkill1, token: token);
-                if (!string.IsNullOrEmpty(strSkill2))
-                    await _objCharacter.PriorityBonusSkillList.AddAsync(strSkill2, token: token);
-                if (!string.IsNullOrEmpty(strSkill3))
-                    await _objCharacter.PriorityBonusSkillList.AddAsync(strSkill3, token: token);
-
-                // Set starting nuyen
-                XPathNodeIterator xmlResourcesPriorityList = _xmlBasePriorityDataNode.Select(
-                    "priorities/priority[category = \"Resources\" and value = "
-                    + _objCharacter.ResourcesPriority.CleanXPath() +
-                    " and (not(prioritytable) or prioritytable = " + _objCharacter.Settings.PriorityTable.CleanXPath()
-                    + ")]");
-                foreach (XPathNavigator xmlResourcesPriority in xmlResourcesPriorityList)
-                {
-                    if (xmlResourcesPriorityList.Count == 1 ||
-                        (await xmlResourcesPriority.SelectSingleNodeAndCacheExpressionAsync("prioritytable", token) != null &&
-                         await xmlResourcesPriority.SelectSingleNodeAndCacheExpressionAsync("gameplayoption", token) != null))
-                    {
-                        decimal decResources = 0;
-                        if (xmlResourcesPriority.TryGetDecFieldQuickly("resources", ref decResources))
-                            _objCharacter.StartingNuyen = _objCharacter.Nuyen = decResources;
-                        break;
-                    }
-                }
-
-                switch (await cboTalents.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token))
-                {
-                    case "Aspected Magician":
-                    case "Enchanter":
-                        await _objCharacter.PushText.PushAsync(strSkill1, token);
-                        break;
-                }
-
-                XmlNode charNode =
-                    strSelectedMetatypeCategory == "Shapeshifter" || strSelectedMetavariant == Guid.Empty.ToString()
-                        ? objXmlMetatype
-                        : objXmlMetavariant ?? objXmlMetatype;
-
-                int intSpecialAttribPoints = 0;
-                bool boolHalveAttributePriorityPoints = charNode.NodeExists("halveattributepoints");
-                if (strOldSpecialPriority != _objCharacter.SpecialPriority
-                    || strOldTalentPriority != _objCharacter.SpecialPriority)
-                {
-                    List<Quality> lstOldPriorityQualities
-                        = await (await _objCharacter.GetQualitiesAsync(token)).ToListAsync(
-                            x => x.OriginSource == QualitySource.Heritage, token: token);
-                    List<Weapon> lstWeapons = new List<Weapon>(1);
-                    bool blnRemoveFreeSkills = true;
-                    XPathNodeIterator xmlBaseTalentPriorityList = _xmlBasePriorityDataNode.Select(
-                        "priorities/priority[category = \"Talent\" and value = "
-                        + _objCharacter.SpecialPriority.CleanXPath() +
-                        " and (not(prioritytable) or prioritytable = "
-                        + _objCharacter.Settings.PriorityTable.CleanXPath() + ")]");
-                    foreach (XPathNavigator xmlBaseTalentPriority in xmlBaseTalentPriorityList)
-                    {
-                        if (xmlBaseTalentPriorityList.Count == 1
-                            || await xmlBaseTalentPriority.SelectSingleNodeAndCacheExpressionAsync("gameplayoption", token)
-                            != null)
-                        {
-                            XPathNavigator xmlTalentPriorityNode
-                                = xmlBaseTalentPriority.SelectSingleNode(
-                                    "talents/talent[value = " + _objCharacter.TalentPriority.CleanXPath() + ']');
-
-                            if (xmlTalentPriorityNode != null)
-                            {
-                                // Create the Qualities that come with the Talent.
-                                foreach (XPathNavigator objXmlQualityItem in await xmlTalentPriorityNode
-                                             .SelectAndCacheExpressionAsync("qualities/quality", token))
+                                if (objQuality.OriginSource == QualitySource.Improvement
+                                    || objQuality.OriginSource == QualitySource.Heritage
+                                    || objQuality.OriginSource == QualitySource.Metatype
+                                    || objQuality.OriginSource == QualitySource.MetatypeRemovable
+                                    || objQuality.OriginSource == QualitySource.MetatypeRemovedAtChargen)
+                                    continue;
+                                XPathNavigator xmlRestrictionNode
+                                    = (await objQuality.GetNodeXPathAsync(token: token).ConfigureAwait(false))?.SelectSingleNode("required");
+                                if (xmlRestrictionNode != null &&
+                                    (xmlRestrictionNode.SelectSingleNode(".//metatype") != null
+                                     || xmlRestrictionNode.SelectSingleNode(".//metavariant") != null))
                                 {
-                                    XmlNode objXmlQuality
-                                        = _xmlQualityDocumentQualitiesNode.SelectSingleNode(
-                                            "quality[name = " + objXmlQualityItem.Value.CleanXPath() + ']');
-                                    Quality objQuality = new Quality(_objCharacter);
-                                    string strForceValue
-                                        = (await objXmlQualityItem.SelectSingleNodeAndCacheExpressionAsync("@select", token))
-                                        ?.Value ?? string.Empty;
-                                    objQuality.Create(objXmlQuality, QualitySource.Heritage, lstWeapons, strForceValue);
-                                    Quality objExistingQuality = lstOldPriorityQualities.Find(
-                                        x => x.SourceIDString == objQuality.SourceIDString
-                                             && x.Extra == objQuality.Extra && x.Type == objQuality.Type);
-                                    if (objExistingQuality != null)
-                                    {
-                                        lstOldPriorityQualities.Remove(objExistingQuality);
-                                        objQuality.DeleteQuality();
-                                    }
-                                    else
-                                        await _objCharacter.Qualities.AddAsync(objQuality, token: token);
+                                    lstQualitiesToCheck.Add(objQuality);
                                 }
+                                else
+                                {
+                                    xmlRestrictionNode
+                                        = (await objQuality.GetNodeXPathAsync(token: token).ConfigureAwait(false))?.SelectSingleNode(
+                                            "forbidden");
+                                    if (xmlRestrictionNode != null &&
+                                        (xmlRestrictionNode.SelectSingleNode(".//metatype") != null
+                                         || xmlRestrictionNode.SelectSingleNode(".//metavariant") != null))
+                                    {
+                                        lstQualitiesToCheck.Add(objQuality);
+                                    }
+                                }
+                            }
 
-                                foreach (Quality objQuality in lstOldPriorityQualities)
+                            _objCharacter.Create(strSelectedMetatypeCategory, strSelectedMetatype,
+                                                 strSelectedMetavariant, objXmlMetatype, intForce,
+                                                 _xmlQualityDocumentQualitiesNode,
+                                                 _xmlCritterPowerDocumentPowersNode, null,
+                                                 await chkPossessionBased.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false)
+                                                     ? await cboPossessionMethod.DoThreadSafeFuncAsync(
+                                                         x => x.SelectedValue?.ToString(), token).ConfigureAwait(false)
+                                                     : string.Empty, token);
+                            foreach (Quality objQuality in lstQualitiesToCheck)
+                            {
+                                // Set strIgnoreQuality to quality's name to make sure limit counts are not an issue
+                                if ((await objQuality.GetNodeXPathAsync(token: token).ConfigureAwait(false))?.RequirementsMet(
+                                        _objCharacter, strIgnoreQuality: objQuality.Name) == false)
                                 {
                                     objQuality.DeleteQuality();
                                 }
+                            }
+                        }
 
-                                // Set starting magic
-                                int intTemp = 1;
-                                int intMax = 0;
-                                if (!xmlTalentPriorityNode.TryGetInt32FieldQuickly("magic", ref intTemp))
-                                    intTemp = 1;
-                                if (!xmlTalentPriorityNode.TryGetInt32FieldQuickly("maxmagic", ref intMax))
-                                    intMax = Math.Max(await CommonFunctions.ExpressionToIntAsync(
-                                        charNode["magmax"]?.InnerText, intForce, token: token), intTemp);
-                                _objCharacter.MAG.AssignLimits(intTemp, intMax, intMax);
-                                _objCharacter.FreeSpells
-                                    = xmlTalentPriorityNode.TryGetInt32FieldQuickly("spells", ref intTemp)
-                                        ? intTemp
-                                        : 0;
-                                // Set starting resonance
-                                if (!xmlTalentPriorityNode.TryGetInt32FieldQuickly("resonance", ref intTemp))
-                                    intTemp = 1;
-                                if (!xmlTalentPriorityNode.TryGetInt32FieldQuickly("maxresonance", ref intMax))
-                                    intMax = Math.Max(await CommonFunctions.ExpressionToIntAsync(
-                                        charNode["resmax"]?.InnerText, intForce, token: token), intTemp);
-                                _objCharacter.RES.AssignLimits(intTemp, intMax, intMax);
-                                _objCharacter.CFPLimit
-                                    = xmlTalentPriorityNode.TryGetInt32FieldQuickly("cfp", ref intTemp) ? intTemp : 0;
-                                // Set starting depth
-                                if (!xmlTalentPriorityNode.TryGetInt32FieldQuickly("depth", ref intTemp))
-                                    intTemp = 1;
-                                if (!xmlTalentPriorityNode.TryGetInt32FieldQuickly("maxdepth", ref intMax))
-                                    intMax = Math.Max(await CommonFunctions.ExpressionToIntAsync(
-                                        charNode["depmax"]?.InnerText, intForce, token: token), intTemp);
-                                _objCharacter.DEP.AssignLimits(intTemp, intMax, intMax);
-                                _objCharacter.AINormalProgramLimit
-                                    = xmlTalentPriorityNode.TryGetInt32FieldQuickly("ainormalprogramlimit", ref intTemp)
-                                        ? intTemp
-                                        : 0;
-                                _objCharacter.AIAdvancedProgramLimit
-                                    = xmlTalentPriorityNode.TryGetInt32FieldQuickly(
-                                        "aiadvancedprogramlimit", ref intTemp)
-                                        ? intTemp
-                                        : 0;
+                        string strOldSpecialPriority = _objCharacter.SpecialPriority;
+                        string strOldTalentPriority = _objCharacter.TalentPriority;
 
-                                // Set Free Skills/Skill Groups
-                                int intFreeLevels = 0;
-                                Improvement.ImprovementType eType = Improvement.ImprovementType.SkillBase;
-                                XPathNavigator objTalentSkillValNode
-                                    = await xmlTalentPriorityNode.SelectSingleNodeAndCacheExpressionAsync("skillval", token);
-                                if (objTalentSkillValNode == null
-                                    || !int.TryParse(objTalentSkillValNode.Value, out intFreeLevels))
+                        // begin priority based character settings
+                        // Load the Priority information.
+
+                        // Set the character priority selections
+                        _objCharacter.MetatypeBP
+                            = Convert.ToInt32(await lblMetavariantKarma.DoThreadSafeFuncAsync(x => x.Text, token).ConfigureAwait(false),
+                                              GlobalSettings.CultureInfo);
+                        _objCharacter.MetatypePriority
+                            = await cboHeritage.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token).ConfigureAwait(false);
+                        _objCharacter.AttributesPriority
+                            = await cboAttributes.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token).ConfigureAwait(false);
+                        _objCharacter.SpecialPriority
+                            = await cboTalent.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token).ConfigureAwait(false);
+                        _objCharacter.SkillsPriority
+                            = await cboSkills.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token).ConfigureAwait(false);
+                        _objCharacter.ResourcesPriority
+                            = await cboResources.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token).ConfigureAwait(false);
+                        _objCharacter.TalentPriority
+                            = await cboTalents.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token).ConfigureAwait(false);
+                        await _objCharacter.PriorityBonusSkillList.ClearAsync(token).ConfigureAwait(false);
+                        if (!string.IsNullOrEmpty(strSkill1))
+                            await _objCharacter.PriorityBonusSkillList.AddAsync(strSkill1, token: token).ConfigureAwait(false);
+                        if (!string.IsNullOrEmpty(strSkill2))
+                            await _objCharacter.PriorityBonusSkillList.AddAsync(strSkill2, token: token).ConfigureAwait(false);
+                        if (!string.IsNullOrEmpty(strSkill3))
+                            await _objCharacter.PriorityBonusSkillList.AddAsync(strSkill3, token: token).ConfigureAwait(false);
+
+                        // Set starting nuyen
+                        XPathNodeIterator xmlResourcesPriorityList = _xmlBasePriorityDataNode.Select(
+                            "priorities/priority[category = \"Resources\" and value = "
+                            + _objCharacter.ResourcesPriority.CleanXPath() +
+                            " and (not(prioritytable) or prioritytable = "
+                            + _objCharacter.Settings.PriorityTable.CleanXPath()
+                            + ")]");
+                        foreach (XPathNavigator xmlResourcesPriority in xmlResourcesPriorityList)
+                        {
+                            if (xmlResourcesPriorityList.Count == 1 ||
+                                (await xmlResourcesPriority.SelectSingleNodeAndCacheExpressionAsync(
+                                     "prioritytable", token).ConfigureAwait(false)
+                                 != null &&
+                                 await xmlResourcesPriority.SelectSingleNodeAndCacheExpressionAsync(
+                                     "gameplayoption", token).ConfigureAwait(false)
+                                 != null))
+                            {
+                                decimal decResources = 0;
+                                if (xmlResourcesPriority.TryGetDecFieldQuickly("resources", ref decResources))
+                                    _objCharacter.StartingNuyen = _objCharacter.Nuyen = decResources;
+                                break;
+                            }
+                        }
+
+                        switch (await cboTalents.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false))
+                        {
+                            case "Aspected Magician":
+                            case "Enchanter":
+                                await _objCharacter.PushText.PushAsync(strSkill1, token).ConfigureAwait(false);
+                                break;
+                        }
+
+                        XmlNode charNode =
+                            strSelectedMetatypeCategory == "Shapeshifter"
+                            || strSelectedMetavariant == Guid.Empty.ToString()
+                                ? objXmlMetatype
+                                : objXmlMetavariant ?? objXmlMetatype;
+
+                        int intSpecialAttribPoints = 0;
+                        bool boolHalveAttributePriorityPoints = charNode.NodeExists("halveattributepoints");
+                        if (strOldSpecialPriority != _objCharacter.SpecialPriority
+                            || strOldTalentPriority != _objCharacter.SpecialPriority)
+                        {
+                            List<Quality> lstOldPriorityQualities
+                                = await (await _objCharacter.GetQualitiesAsync(token).ConfigureAwait(false)).ToListAsync(
+                                    x => x.OriginSource == QualitySource.Heritage, token: token).ConfigureAwait(false);
+                            List<Weapon> lstWeapons = new List<Weapon>(1);
+                            bool blnRemoveFreeSkills = true;
+                            XPathNodeIterator xmlBaseTalentPriorityList = _xmlBasePriorityDataNode.Select(
+                                "priorities/priority[category = \"Talent\" and value = "
+                                + _objCharacter.SpecialPriority.CleanXPath() +
+                                " and (not(prioritytable) or prioritytable = "
+                                + _objCharacter.Settings.PriorityTable.CleanXPath() + ")]");
+                            foreach (XPathNavigator xmlBaseTalentPriority in xmlBaseTalentPriorityList)
+                            {
+                                if (xmlBaseTalentPriorityList.Count == 1
+                                    || await xmlBaseTalentPriority.SelectSingleNodeAndCacheExpressionAsync(
+                                        "gameplayoption", token).ConfigureAwait(false)
+                                    != null)
                                 {
-                                    objTalentSkillValNode
-                                        = await xmlTalentPriorityNode.SelectSingleNodeAndCacheExpressionAsync(
-                                            "skillgroupval", token);
-                                    if (objTalentSkillValNode != null
-                                        && int.TryParse(objTalentSkillValNode.Value, out intFreeLevels))
+                                    XPathNavigator xmlTalentPriorityNode
+                                        = xmlBaseTalentPriority.SelectSingleNode(
+                                            "talents/talent[value = " + _objCharacter.TalentPriority.CleanXPath()
+                                                                      + ']');
+
+                                    if (xmlTalentPriorityNode != null)
                                     {
-                                        eType = Improvement.ImprovementType.SkillGroupBase;
+                                        // Create the Qualities that come with the Talent.
+                                        foreach (XPathNavigator objXmlQualityItem in await xmlTalentPriorityNode
+                                                     .SelectAndCacheExpressionAsync("qualities/quality", token).ConfigureAwait(false))
+                                        {
+                                            XmlNode objXmlQuality
+                                                = _xmlQualityDocumentQualitiesNode.SelectSingleNode(
+                                                    "quality[name = " + objXmlQualityItem.Value.CleanXPath() + ']');
+                                            Quality objQuality = new Quality(_objCharacter);
+                                            string strForceValue
+                                                = (await objXmlQualityItem.SelectSingleNodeAndCacheExpressionAsync(
+                                                    "@select", token).ConfigureAwait(false))
+                                                ?.Value ?? string.Empty;
+                                            objQuality.Create(objXmlQuality, QualitySource.Heritage, lstWeapons,
+                                                              strForceValue);
+                                            Quality objExistingQuality = lstOldPriorityQualities.Find(
+                                                x => x.SourceIDString == objQuality.SourceIDString
+                                                     && x.Extra == objQuality.Extra && x.Type == objQuality.Type);
+                                            if (objExistingQuality != null)
+                                            {
+                                                lstOldPriorityQualities.Remove(objExistingQuality);
+                                                objQuality.DeleteQuality();
+                                            }
+                                            else
+                                                await _objCharacter.Qualities.AddAsync(objQuality, token: token).ConfigureAwait(false);
+                                        }
+
+                                        foreach (Quality objQuality in lstOldPriorityQualities)
+                                        {
+                                            objQuality.DeleteQuality();
+                                        }
+
+                                        // Set starting magic
+                                        int intTemp = 1;
+                                        int intMax = 0;
+                                        if (!xmlTalentPriorityNode.TryGetInt32FieldQuickly("magic", ref intTemp))
+                                            intTemp = 1;
+                                        if (!xmlTalentPriorityNode.TryGetInt32FieldQuickly("maxmagic", ref intMax))
+                                            intMax = Math.Max(await CommonFunctions.ExpressionToIntAsync(
+                                                                  charNode["magmax"]?.InnerText, intForce,
+                                                                  token: token).ConfigureAwait(false),
+                                                              intTemp);
+                                        await _objCharacter.MAG.AssignLimitsAsync(intTemp, intMax, intMax, token).ConfigureAwait(false);
+                                        _objCharacter.FreeSpells
+                                            = xmlTalentPriorityNode.TryGetInt32FieldQuickly("spells", ref intTemp)
+                                                ? intTemp
+                                                : 0;
+                                        // Set starting resonance
+                                        if (!xmlTalentPriorityNode.TryGetInt32FieldQuickly("resonance", ref intTemp))
+                                            intTemp = 1;
+                                        if (!xmlTalentPriorityNode.TryGetInt32FieldQuickly("maxresonance", ref intMax))
+                                            intMax = Math.Max(await CommonFunctions.ExpressionToIntAsync(
+                                                                  charNode["resmax"]?.InnerText, intForce,
+                                                                  token: token).ConfigureAwait(false),
+                                                              intTemp);
+                                        await _objCharacter.RES.AssignLimitsAsync(intTemp, intMax, intMax, token).ConfigureAwait(false);
+                                        _objCharacter.CFPLimit
+                                            = xmlTalentPriorityNode.TryGetInt32FieldQuickly("cfp", ref intTemp)
+                                                ? intTemp
+                                                : 0;
+                                        // Set starting depth
+                                        if (!xmlTalentPriorityNode.TryGetInt32FieldQuickly("depth", ref intTemp))
+                                            intTemp = 1;
+                                        if (!xmlTalentPriorityNode.TryGetInt32FieldQuickly("maxdepth", ref intMax))
+                                            intMax = Math.Max(await CommonFunctions.ExpressionToIntAsync(
+                                                                  charNode["depmax"]?.InnerText, intForce,
+                                                                  token: token).ConfigureAwait(false),
+                                                              intTemp);
+                                        await _objCharacter.DEP.AssignLimitsAsync(intTemp, intMax, intMax, token).ConfigureAwait(false);
+                                        _objCharacter.AINormalProgramLimit
+                                            = xmlTalentPriorityNode.TryGetInt32FieldQuickly(
+                                                "ainormalprogramlimit", ref intTemp)
+                                                ? intTemp
+                                                : 0;
+                                        _objCharacter.AIAdvancedProgramLimit
+                                            = xmlTalentPriorityNode.TryGetInt32FieldQuickly(
+                                                "aiadvancedprogramlimit", ref intTemp)
+                                                ? intTemp
+                                                : 0;
+
+                                        // Set Free Skills/Skill Groups
+                                        int intFreeLevels = 0;
+                                        Improvement.ImprovementType eType = Improvement.ImprovementType.SkillBase;
+                                        XPathNavigator objTalentSkillValNode
+                                            = await xmlTalentPriorityNode.SelectSingleNodeAndCacheExpressionAsync(
+                                                "skillval", token).ConfigureAwait(false);
+                                        if (objTalentSkillValNode == null
+                                            || !int.TryParse(objTalentSkillValNode.Value, out intFreeLevels))
+                                        {
+                                            objTalentSkillValNode
+                                                = await xmlTalentPriorityNode.SelectSingleNodeAndCacheExpressionAsync(
+                                                    "skillgroupval", token).ConfigureAwait(false);
+                                            if (objTalentSkillValNode != null
+                                                && int.TryParse(objTalentSkillValNode.Value, out intFreeLevels))
+                                            {
+                                                eType = Improvement.ImprovementType.SkillGroupBase;
+                                            }
+                                        }
+
+                                        blnRemoveFreeSkills = false;
+                                        await AddFreeSkills(intFreeLevels, eType, strSkill1, strSkill2, strSkill3,
+                                                            token).ConfigureAwait(false);
+
+                                        if (int.TryParse(
+                                                (await xmlTalentPriorityNode.SelectSingleNodeAndCacheExpressionAsync(
+                                                    "specialattribpoints", token).ConfigureAwait(false))?.Value,
+                                                out int intTalentSpecialAttribPoints))
+                                            intSpecialAttribPoints += intTalentSpecialAttribPoints;
+                                    }
+
+                                    break;
+                                }
+                            }
+
+                            if (blnRemoveFreeSkills)
+                                await ImprovementManager.RemoveImprovementsAsync(
+                                    _objCharacter,
+                                    await (await _objCharacter.GetImprovementsAsync(token).ConfigureAwait(false)).ToListAsync(
+                                        x => x.ImproveSource == Improvement.ImprovementSource.Heritage
+                                             && (x.ImproveType == Improvement.ImprovementType.SkillBase
+                                                 || x.ImproveType == Improvement.ImprovementType.SkillGroupBase),
+                                        token).ConfigureAwait(false),
+                                    token: token).ConfigureAwait(false);
+                            // Add any created Weapons to the character.
+                            foreach (Weapon objWeapon in lstWeapons)
+                                await _objCharacter.Weapons.AddAsync(objWeapon, token: token).ConfigureAwait(false);
+                        }
+
+                        // Set Special Attributes
+
+                        XPathNodeIterator xmlBaseMetatypePriorityList = _xmlBasePriorityDataNode.Select(
+                            "priorities/priority[category = \"Heritage\" and value = "
+                            + _objCharacter.MetatypePriority.CleanXPath()
+                            + " and (not(prioritytable) or prioritytable = "
+                            + _objCharacter.Settings.PriorityTable.CleanXPath() + ")]");
+                        foreach (XPathNavigator xmlBaseMetatypePriority in xmlBaseMetatypePriorityList)
+                        {
+                            if (xmlBaseMetatypePriorityList.Count == 1
+                                || await xmlBaseMetatypePriority.SelectSingleNodeAndCacheExpressionAsync(
+                                    "prioritytable", token).ConfigureAwait(false)
+                                != null)
+                            {
+                                XPathNavigator objXmlMetatypePriorityNode
+                                    = xmlBaseMetatypePriority.SelectSingleNode(
+                                        "metatypes/metatype[name = " + _objCharacter.Metatype.CleanXPath() + ']');
+                                if (strSelectedMetavariant != Guid.Empty.ToString())
+                                    objXmlMetatypePriorityNode = objXmlMetatypePriorityNode?.SelectSingleNode(
+                                        "metavariants/metavariant[name = " + _objCharacter.Metavariant.CleanXPath()
+                                                                           + ']');
+                                if (objXmlMetatypePriorityNode != null && int.TryParse(
+                                        (await objXmlMetatypePriorityNode.SelectSingleNodeAndCacheExpressionAsync(
+                                            "value", token).ConfigureAwait(false))
+                                        ?.Value, out int intTemp))
+                                    intSpecialAttribPoints += intTemp;
+                                break;
+                            }
+                        }
+
+                        _objCharacter.Special = intSpecialAttribPoints;
+                        _objCharacter.TotalSpecial = _objCharacter.Special;
+
+                        // Set Attributes
+                        XPathNodeIterator objXmlAttributesPriorityList = _xmlBasePriorityDataNode.Select(
+                            "priorities/priority[category = \"Attributes\" and value = "
+                            + _objCharacter.AttributesPriority.CleanXPath() +
+                            " and (not(prioritytable) or prioritytable = "
+                            + _objCharacter.Settings.PriorityTable.CleanXPath()
+                            + ")]");
+                        foreach (XPathNavigator objXmlAttributesPriority in objXmlAttributesPriorityList)
+                        {
+                            if (objXmlAttributesPriorityList.Count == 1 ||
+                                (await objXmlAttributesPriority.SelectSingleNodeAndCacheExpressionAsync(
+                                     "prioritytable", token).ConfigureAwait(false) != null
+                                 &&
+                                 await objXmlAttributesPriority.SelectSingleNodeAndCacheExpressionAsync(
+                                     "gameplayoption", token).ConfigureAwait(false)
+                                 != null))
+                            {
+                                int intAttributes = 0;
+                                objXmlAttributesPriority.TryGetInt32FieldQuickly("attributes", ref intAttributes);
+                                if (boolHalveAttributePriorityPoints)
+                                    intAttributes /= 2;
+                                _objCharacter.TotalAttributes = _objCharacter.Attributes = intAttributes;
+                                break;
+                            }
+                        }
+
+                        // Set Skills and Skill Groups
+                        XPathNodeIterator objXmlSkillsPriorityList = _xmlBasePriorityDataNode.Select(
+                            "priorities/priority[category = \"Skills\" and value = "
+                            + _objCharacter.SkillsPriority.CleanXPath()
+                            +
+                            " and (not(prioritytable) or prioritytable = "
+                            + _objCharacter.Settings.PriorityTable
+                                           .CleanXPath() + ")]");
+                        foreach (XPathNavigator objXmlSkillsPriority in objXmlSkillsPriorityList)
+                        {
+                            if (objXmlSkillsPriorityList.Count == 1 ||
+                                (await objXmlSkillsPriority.SelectSingleNodeAndCacheExpressionAsync(
+                                     "prioritytable", token).ConfigureAwait(false)
+                                 != null &&
+                                 await objXmlSkillsPriority.SelectSingleNodeAndCacheExpressionAsync(
+                                     "gameplayoption", token).ConfigureAwait(false)
+                                 != null))
+                            {
+                                int intTemp = 0;
+                                if (objXmlSkillsPriority.TryGetInt32FieldQuickly("skills", ref intTemp))
+                                    _objCharacter.SkillsSection.SkillPointsMaximum = intTemp;
+                                if (objXmlSkillsPriority.TryGetInt32FieldQuickly("skillgroups", ref intTemp))
+                                    _objCharacter.SkillsSection.SkillGroupPointsMaximum = intTemp;
+                                break;
+                            }
+                        }
+
+                        // Sprites can never have Physical Attributes
+                        if (await _objCharacter.GetDEPEnabledAsync(token).ConfigureAwait(false)
+                            || _objCharacter.Metatype.EndsWith("Sprite", StringComparison.Ordinal))
+                        {
+                            await _objCharacter.BOD.AssignBaseKarmaLimitsAsync(0, 0, 0, 0, 0, token).ConfigureAwait(false);
+                            await _objCharacter.AGI.AssignBaseKarmaLimitsAsync(0, 0, 0, 0, 0, token).ConfigureAwait(false);
+                            await _objCharacter.REA.AssignBaseKarmaLimitsAsync(0, 0, 0, 0, 0, token).ConfigureAwait(false);
+                            await _objCharacter.STR.AssignBaseKarmaLimitsAsync(0, 0, 0, 0, 0, token).ConfigureAwait(false);
+                            await _objCharacter.MAG.AssignBaseKarmaLimitsAsync(0, 0, 0, 0, 0, token).ConfigureAwait(false);
+                            await _objCharacter.MAGAdept.AssignBaseKarmaLimitsAsync(0, 0, 0, 0, 0, token).ConfigureAwait(false);
+                        }
+
+                        // Set free contact points
+                        _objCharacter.OnPropertyChanged(nameof(Character.ContactPoints));
+
+                        // If we suspect the character converted from Karma to Priority/Sum-to-Ten, try to convert their Attributes, Skills, and Skill Groups to using points as efficiently as possible
+                        bool blnDoSwitch = false;
+                        foreach (CharacterAttrib objAttribute in _objCharacter.AttributeSection.AttributeList)
+                        {
+                            if (objAttribute.Base > 0)
+                            {
+                                blnDoSwitch = false;
+                                break;
+                            }
+
+                            if (objAttribute.Karma > 0)
+                                blnDoSwitch = true;
+                        }
+
+                        if (blnDoSwitch)
+                        {
+                            int intPointsSpent = 0;
+                            while (intPointsSpent < _objCharacter.TotalAttributes)
+                            {
+                                CharacterAttrib objAttributeToShift = null;
+                                foreach (CharacterAttrib objAttribute in _objCharacter.AttributeSection.AttributeList)
+                                {
+                                    if (objAttribute.Karma > 0 && (objAttributeToShift == null
+                                                                   || objAttributeToShift.Value < objAttribute.Value))
+                                    {
+                                        objAttributeToShift = objAttribute;
                                     }
                                 }
 
-                                blnRemoveFreeSkills = false;
-                                await AddFreeSkills(intFreeLevels, eType, strSkill1, strSkill2, strSkill3, token);
-
-                                if (int.TryParse(
-                                        (await xmlTalentPriorityNode.SelectSingleNodeAndCacheExpressionAsync(
-                                            "specialattribpoints", token))?.Value, out int intTalentSpecialAttribPoints))
-                                    intSpecialAttribPoints += intTalentSpecialAttribPoints;
-                            }
-
-                            break;
-                        }
-                    }
-
-                    if (blnRemoveFreeSkills)
-                        await ImprovementManager.RemoveImprovementsAsync(
-                            _objCharacter,
-                            await (await _objCharacter.GetImprovementsAsync(token)).ToListAsync(
-                                x => x.ImproveSource == Improvement.ImprovementSource.Heritage
-                                     && (x.ImproveType == Improvement.ImprovementType.SkillBase
-                                         || x.ImproveType == Improvement.ImprovementType.SkillGroupBase), token),
-                            token: token);
-                    // Add any created Weapons to the character.
-                    foreach (Weapon objWeapon in lstWeapons)
-                        await _objCharacter.Weapons.AddAsync(objWeapon, token: token);
-                }
-
-                // Set Special Attributes
-
-                XPathNodeIterator xmlBaseMetatypePriorityList = _xmlBasePriorityDataNode.Select(
-                    "priorities/priority[category = \"Heritage\" and value = "
-                    + _objCharacter.MetatypePriority.CleanXPath()
-                    + " and (not(prioritytable) or prioritytable = "
-                    + _objCharacter.Settings.PriorityTable.CleanXPath() + ")]");
-                foreach (XPathNavigator xmlBaseMetatypePriority in xmlBaseMetatypePriorityList)
-                {
-                    if (xmlBaseMetatypePriorityList.Count == 1
-                        || await xmlBaseMetatypePriority.SelectSingleNodeAndCacheExpressionAsync("prioritytable", token)
-                        != null)
-                    {
-                        XPathNavigator objXmlMetatypePriorityNode
-                            = xmlBaseMetatypePriority.SelectSingleNode(
-                                "metatypes/metatype[name = " + _objCharacter.Metatype.CleanXPath() + ']');
-                        if (strSelectedMetavariant != Guid.Empty.ToString())
-                            objXmlMetatypePriorityNode = objXmlMetatypePriorityNode?.SelectSingleNode(
-                                "metavariants/metavariant[name = " + _objCharacter.Metavariant.CleanXPath() + ']');
-                        if (objXmlMetatypePriorityNode != null && int.TryParse(
-                                (await objXmlMetatypePriorityNode.SelectSingleNodeAndCacheExpressionAsync("value", token))
-                                ?.Value, out int intTemp))
-                            intSpecialAttribPoints += intTemp;
-                        break;
-                    }
-                }
-
-                _objCharacter.Special = intSpecialAttribPoints;
-                _objCharacter.TotalSpecial = _objCharacter.Special;
-
-                // Set Attributes
-                XPathNodeIterator objXmlAttributesPriorityList = _xmlBasePriorityDataNode.Select(
-                    "priorities/priority[category = \"Attributes\" and value = "
-                    + _objCharacter.AttributesPriority.CleanXPath() +
-                    " and (not(prioritytable) or prioritytable = " + _objCharacter.Settings.PriorityTable.CleanXPath()
-                    + ")]");
-                foreach (XPathNavigator objXmlAttributesPriority in objXmlAttributesPriorityList)
-                {
-                    if (objXmlAttributesPriorityList.Count == 1 ||
-                        (await objXmlAttributesPriority.SelectSingleNodeAndCacheExpressionAsync("prioritytable", token) != null
-                         &&
-                         await objXmlAttributesPriority.SelectSingleNodeAndCacheExpressionAsync("gameplayoption", token)
-                         != null))
-                    {
-                        int intAttributes = 0;
-                        objXmlAttributesPriority.TryGetInt32FieldQuickly("attributes", ref intAttributes);
-                        if (boolHalveAttributePriorityPoints)
-                            intAttributes /= 2;
-                        _objCharacter.TotalAttributes = _objCharacter.Attributes = intAttributes;
-                        break;
-                    }
-                }
-
-                // Set Skills and Skill Groups
-                XPathNodeIterator objXmlSkillsPriorityList = _xmlBasePriorityDataNode.Select(
-                    "priorities/priority[category = \"Skills\" and value = " + _objCharacter.SkillsPriority.CleanXPath()
-                                                                             +
-                                                                             " and (not(prioritytable) or prioritytable = "
-                                                                             + _objCharacter.Settings.PriorityTable
-                                                                                 .CleanXPath() + ")]");
-                foreach (XPathNavigator objXmlSkillsPriority in objXmlSkillsPriorityList)
-                {
-                    if (objXmlSkillsPriorityList.Count == 1 ||
-                        (await objXmlSkillsPriority.SelectSingleNodeAndCacheExpressionAsync("prioritytable", token) != null &&
-                         await objXmlSkillsPriority.SelectSingleNodeAndCacheExpressionAsync("gameplayoption", token) != null))
-                    {
-                        int intTemp = 0;
-                        if (objXmlSkillsPriority.TryGetInt32FieldQuickly("skills", ref intTemp))
-                            _objCharacter.SkillsSection.SkillPointsMaximum = intTemp;
-                        if (objXmlSkillsPriority.TryGetInt32FieldQuickly("skillgroups", ref intTemp))
-                            _objCharacter.SkillsSection.SkillGroupPointsMaximum = intTemp;
-                        break;
-                    }
-                }
-
-                // Sprites can never have Physical Attributes
-                if (_objCharacter.DEPEnabled || _objCharacter.Metatype.EndsWith("Sprite", StringComparison.Ordinal))
-                {
-                    _objCharacter.BOD.AssignLimits(0, 0, 0);
-                    _objCharacter.AGI.AssignLimits(0, 0, 0);
-                    _objCharacter.REA.AssignLimits(0, 0, 0);
-                    _objCharacter.STR.AssignLimits(0, 0, 0);
-                    _objCharacter.MAG.AssignLimits(0, 0, 0);
-                    _objCharacter.MAGAdept.AssignLimits(0, 0, 0);
-                }
-
-                // Set free contact points
-                _objCharacter.OnPropertyChanged(nameof(Character.ContactPoints));
-
-                // If we suspect the character converted from Karma to Priority/Sum-to-Ten, try to convert their Attributes, Skills, and Skill Groups to using points as efficiently as possible
-                bool blnDoSwitch = false;
-                foreach (CharacterAttrib objAttribute in _objCharacter.AttributeSection.AttributeList)
-                {
-                    if (objAttribute.Base > 0)
-                    {
-                        blnDoSwitch = false;
-                        break;
-                    }
-
-                    if (objAttribute.Karma > 0)
-                        blnDoSwitch = true;
-                }
-
-                if (blnDoSwitch)
-                {
-                    int intPointsSpent = 0;
-                    while (intPointsSpent < _objCharacter.TotalAttributes)
-                    {
-                        CharacterAttrib objAttributeToShift = null;
-                        foreach (CharacterAttrib objAttribute in _objCharacter.AttributeSection.AttributeList)
-                        {
-                            if (objAttribute.Karma > 0 && (objAttributeToShift == null
-                                                           || objAttributeToShift.Value < objAttribute.Value))
-                            {
-                                objAttributeToShift = objAttribute;
+                                if (objAttributeToShift == null)
+                                    break;
+                                int intKarma = Math.Min(objAttributeToShift.Karma,
+                                                        _objCharacter.TotalAttributes - intPointsSpent);
+                                objAttributeToShift.Karma -= intKarma;
+                                objAttributeToShift.Base += intKarma;
+                                intPointsSpent += intKarma;
                             }
                         }
 
-                        if (objAttributeToShift == null)
-                            break;
-                        int intKarma = Math.Min(objAttributeToShift.Karma,
-                                                _objCharacter.TotalAttributes - intPointsSpent);
-                        objAttributeToShift.Karma -= intKarma;
-                        objAttributeToShift.Base += intKarma;
-                        intPointsSpent += intKarma;
-                    }
-                }
-
-                blnDoSwitch = false;
-                foreach (CharacterAttrib objAttribute in _objCharacter.AttributeSection.SpecialAttributeList)
-                {
-                    if (objAttribute.Base > 0)
-                    {
                         blnDoSwitch = false;
-                        break;
-                    }
-
-                    if (objAttribute.Karma > 0)
-                        blnDoSwitch = true;
-                }
-
-                if (blnDoSwitch)
-                {
-                    int intPointsSpent = 0;
-                    while (intPointsSpent < _objCharacter.TotalSpecial)
-                    {
-                        CharacterAttrib objAttributeToShift = null;
                         foreach (CharacterAttrib objAttribute in _objCharacter.AttributeSection.SpecialAttributeList)
                         {
-                            if (objAttribute.Karma > 0 && (objAttributeToShift == null
-                                                           || objAttributeToShift.Value < objAttribute.Value))
+                            if (objAttribute.Base > 0)
                             {
-                                objAttributeToShift = objAttribute;
+                                blnDoSwitch = false;
+                                break;
+                            }
+
+                            if (objAttribute.Karma > 0)
+                                blnDoSwitch = true;
+                        }
+
+                        if (blnDoSwitch)
+                        {
+                            int intPointsSpent = 0;
+                            while (intPointsSpent < _objCharacter.TotalSpecial)
+                            {
+                                CharacterAttrib objAttributeToShift = null;
+                                foreach (CharacterAttrib objAttribute in
+                                         _objCharacter.AttributeSection.SpecialAttributeList)
+                                {
+                                    if (objAttribute.Karma > 0 && (objAttributeToShift == null
+                                                                   || objAttributeToShift.Value < objAttribute.Value))
+                                    {
+                                        objAttributeToShift = objAttribute;
+                                    }
+                                }
+
+                                if (objAttributeToShift == null)
+                                    break;
+                                int intKarma = Math.Min(objAttributeToShift.Karma,
+                                                        _objCharacter.TotalSpecial - intPointsSpent);
+                                objAttributeToShift.Karma -= intKarma;
+                                objAttributeToShift.Base += intKarma;
+                                intPointsSpent += intKarma;
                             }
                         }
 
-                        if (objAttributeToShift == null)
-                            break;
-                        int intKarma = Math.Min(objAttributeToShift.Karma, _objCharacter.TotalSpecial - intPointsSpent);
-                        objAttributeToShift.Karma -= intKarma;
-                        objAttributeToShift.Base += intKarma;
-                        intPointsSpent += intKarma;
-                    }
-                }
-
-                blnDoSwitch = false;
-                foreach (SkillGroup objGroup in _objCharacter.SkillsSection.SkillGroups)
-                {
-                    if (objGroup.Base > 0)
-                    {
                         blnDoSwitch = false;
-                        break;
-                    }
-
-                    if (objGroup.Karma > 0)
-                        blnDoSwitch = true;
-                }
-
-                if (blnDoSwitch)
-                {
-                    int intPointsSpent = 0;
-                    while (intPointsSpent < _objCharacter.SkillsSection.SkillGroupPointsMaximum)
-                    {
-                        SkillGroup objGroupToShift = null;
                         foreach (SkillGroup objGroup in _objCharacter.SkillsSection.SkillGroups)
                         {
-                            if (objGroup.Karma > 0
-                                && (objGroupToShift == null || objGroupToShift.Rating < objGroup.Rating))
+                            if (objGroup.Base > 0)
                             {
-                                objGroupToShift = objGroup;
+                                blnDoSwitch = false;
+                                break;
+                            }
+
+                            if (objGroup.Karma > 0)
+                                blnDoSwitch = true;
+                        }
+
+                        if (blnDoSwitch)
+                        {
+                            int intPointsSpent = 0;
+                            while (intPointsSpent < _objCharacter.SkillsSection.SkillGroupPointsMaximum)
+                            {
+                                SkillGroup objGroupToShift = null;
+                                foreach (SkillGroup objGroup in _objCharacter.SkillsSection.SkillGroups)
+                                {
+                                    if (objGroup.Karma > 0
+                                        && (objGroupToShift == null || objGroupToShift.Rating < objGroup.Rating))
+                                    {
+                                        objGroupToShift = objGroup;
+                                    }
+                                }
+
+                                if (objGroupToShift == null)
+                                    break;
+                                int intKarma = Math.Min(objGroupToShift.Karma,
+                                                        _objCharacter.SkillsSection.SkillGroupPointsMaximum
+                                                        - intPointsSpent);
+                                objGroupToShift.Karma -= intKarma;
+                                objGroupToShift.Base += intKarma;
+                                intPointsSpent += intKarma;
                             }
                         }
 
-                        if (objGroupToShift == null)
-                            break;
-                        int intKarma = Math.Min(objGroupToShift.Karma,
-                                                _objCharacter.SkillsSection.SkillGroupPointsMaximum - intPointsSpent);
-                        objGroupToShift.Karma -= intKarma;
-                        objGroupToShift.Base += intKarma;
-                        intPointsSpent += intKarma;
-                    }
-                }
-
-                blnDoSwitch = false;
-                foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
-                {
-                    if (objSkill.Base > 0)
-                    {
                         blnDoSwitch = false;
-                        break;
-                    }
-
-                    if (objSkill.Karma > 0)
-                        blnDoSwitch = true;
-                }
-
-                if (blnDoSwitch)
-                {
-                    int intPointsSpent = 0;
-                    while (intPointsSpent < _objCharacter.SkillsSection.SkillGroupPointsMaximum)
-                    {
-                        Skill objSkillToShift = null;
                         foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
                         {
-                            if (objSkill.Karma > 0
-                                && (objSkillToShift == null || objSkillToShift.Rating < objSkill.Rating))
+                            if (objSkill.Base > 0)
                             {
-                                objSkillToShift = objSkill;
+                                blnDoSwitch = false;
+                                break;
                             }
+
+                            if (objSkill.Karma > 0)
+                                blnDoSwitch = true;
                         }
 
-                        if (objSkillToShift == null)
-                            break;
-                        int intKarma = Math.Min(objSkillToShift.Karma,
-                                                _objCharacter.SkillsSection.SkillGroupPointsMaximum - intPointsSpent);
-                        objSkillToShift.Karma -= intKarma;
-                        objSkillToShift.Base += intKarma;
-                        intPointsSpent += intKarma;
-                    }
-                }
+                        if (blnDoSwitch)
+                        {
+                            int intPointsSpent = 0;
+                            while (intPointsSpent < _objCharacter.SkillsSection.SkillGroupPointsMaximum)
+                            {
+                                Skill objSkillToShift = null;
+                                foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
+                                {
+                                    if (objSkill.Karma > 0
+                                        && (objSkillToShift == null || objSkillToShift.Rating < objSkill.Rating))
+                                    {
+                                        objSkillToShift = objSkill;
+                                    }
+                                }
 
-                await this.DoThreadSafeAsync(x =>
+                                if (objSkillToShift == null)
+                                    break;
+                                int intKarma = Math.Min(objSkillToShift.Karma,
+                                                        _objCharacter.SkillsSection.SkillGroupPointsMaximum
+                                                        - intPointsSpent);
+                                objSkillToShift.Karma -= intKarma;
+                                objSkillToShift.Base += intKarma;
+                                intPointsSpent += intKarma;
+                            }
+                        }
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                    }
+
+                    await this.DoThreadSafeAsync(x =>
+                    {
+                        x.DialogResult = DialogResult.OK;
+                        x.Close();
+                    }, token).ConfigureAwait(false);
+                }
+                else
                 {
-                    x.DialogResult = DialogResult.OK;
-                    x.Close();
-                }, token);
-            }
-            else
-            {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_Metatype_SelectMetatype", token: token),
-                                       await LanguageManager.GetStringAsync("MessageTitle_Metatype_SelectMetatype", token: token),
-                                       MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    Program.ShowMessageBox(
+                        this, await LanguageManager.GetStringAsync("Message_Metatype_SelectMetatype", token: token).ConfigureAwait(false),
+                        await LanguageManager.GetStringAsync("MessageTitle_Metatype_SelectMetatype", token: token).ConfigureAwait(false),
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
             }
         }
 
         private async ValueTask AddFreeSkills(int intFreeLevels, Improvement.ImprovementType type, string strSkill1, string strSkill2, string strSkill3, CancellationToken token = default)
         {
             List<Improvement> lstOldFreeSkillImprovements
-                = await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter, type, token: token);
+                = await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter, type, token: token).ConfigureAwait(false);
             lstOldFreeSkillImprovements.RemoveAll(x => x.ImproveSource != Improvement.ImprovementSource.Heritage);
             if (intFreeLevels != 0)
             {
@@ -1547,9 +1637,9 @@ namespace Chummer
                     else
                     {
                         blnCommit = true;
-                        await AddExoticSkillIfNecessary(strSkill1);
+                        await AddExoticSkillIfNecessary(strSkill1).ConfigureAwait(false);
                         await ImprovementManager.CreateImprovementAsync(_objCharacter, strSkill1, Improvement.ImprovementSource.Heritage, string.Empty,
-                                                                        type, string.Empty, intFreeLevels, token: token);
+                                                                        type, string.Empty, intFreeLevels, token: token).ConfigureAwait(false);
                     }
                 }
 
@@ -1561,9 +1651,9 @@ namespace Chummer
                     else
                     {
                         blnCommit = true;
-                        await AddExoticSkillIfNecessary(strSkill2);
+                        await AddExoticSkillIfNecessary(strSkill2).ConfigureAwait(false);
                         await ImprovementManager.CreateImprovementAsync(_objCharacter, strSkill2, Improvement.ImprovementSource.Heritage, string.Empty,
-                                                                        type, string.Empty, intFreeLevels, token: token);
+                                                                        type, string.Empty, intFreeLevels, token: token).ConfigureAwait(false);
                     }
                 }
 
@@ -1575,22 +1665,22 @@ namespace Chummer
                     else
                     {
                         blnCommit = true;
-                        await AddExoticSkillIfNecessary(strSkill3);
+                        await AddExoticSkillIfNecessary(strSkill3).ConfigureAwait(false);
                         await ImprovementManager.CreateImprovementAsync(_objCharacter, strSkill3, Improvement.ImprovementSource.Heritage, string.Empty,
-                                                                        type, string.Empty, intFreeLevels, token: token);
+                                                                        type, string.Empty, intFreeLevels, token: token).ConfigureAwait(false);
                     }
                 }
 
                 if (lstOldFreeSkillImprovements.Count > 0)
-                    await ImprovementManager.RemoveImprovementsAsync(_objCharacter, lstOldFreeSkillImprovements, token: token);
+                    await ImprovementManager.RemoveImprovementsAsync(_objCharacter, lstOldFreeSkillImprovements, token: token).ConfigureAwait(false);
                 if (blnCommit)
-                    await ImprovementManager.CommitAsync(_objCharacter, token);
+                    await ImprovementManager.CommitAsync(_objCharacter, token).ConfigureAwait(false);
 
                 async ValueTask AddExoticSkillIfNecessary(string strDictionaryKey)
                 {
                     // Add exotic skills if we are increasing their base level
                     if (!ExoticSkill.IsExoticSkillName(strDictionaryKey) ||
-                        await _objCharacter.SkillsSection.GetActiveSkillAsync(strDictionaryKey, token) != null)
+                        await _objCharacter.SkillsSection.GetActiveSkillAsync(strDictionaryKey, token).ConfigureAwait(false) != null)
                         return;
                     string strSkillName = strDictionaryKey;
                     string strSkillSpecific = string.Empty;
@@ -1600,11 +1690,11 @@ namespace Chummer
                         strSkillSpecific = strSkillName.Substring(intParenthesesIndex + 2, strSkillName.Length - intParenthesesIndex - 3);
                         strSkillName = strSkillName.Substring(0, intParenthesesIndex);
                     }
-                    await _objCharacter.SkillsSection.AddExoticSkillAsync(strSkillName, strSkillSpecific, token);
+                    await _objCharacter.SkillsSection.AddExoticSkillAsync(strSkillName, strSkillSpecific, token).ConfigureAwait(false);
                 }
             }
             else
-                await ImprovementManager.RemoveImprovementsAsync(_objCharacter, lstOldFreeSkillImprovements, token: token);
+                await ImprovementManager.RemoveImprovementsAsync(_objCharacter, lstOldFreeSkillImprovements, token: token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -1616,11 +1706,11 @@ namespace Chummer
             if (!blnForce && _objCharacter.EffectiveBuildMethod != CharacterBuildMethod.Priority)
                 return;
             List<string> lstCurrentPriorities = new List<string>(_lstPriorities);
-            string strHeritageSelected = await cboHeritage.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token);
-            string strAttributesSelected = await cboAttributes.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token);
-            string strTalentSelected = await cboTalent.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token);
-            string strSkillsSelected = await cboSkills.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token);
-            string strResourcesSelected = await cboResources.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token);
+            string strHeritageSelected = await cboHeritage.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token).ConfigureAwait(false);
+            string strAttributesSelected = await cboAttributes.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token).ConfigureAwait(false);
+            string strTalentSelected = await cboTalent.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token).ConfigureAwait(false);
+            string strSkillsSelected = await cboSkills.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token).ConfigureAwait(false);
+            string strResourcesSelected = await cboResources.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token).ConfigureAwait(false);
 
             // Discover which priority rating is not currently assigned
             lstCurrentPriorities.Remove(strHeritageSelected);
@@ -1636,17 +1726,17 @@ namespace Chummer
 
             // Find the combo with the same value as this one and change it to the missing value.
             //_blnInitializing = true;
-            string strMyName = await comboBox.DoThreadSafeFuncAsync(x => x.Name, token);
-            if (strHeritageSelected == strComboBoxSelected && strMyName != await cboHeritage.DoThreadSafeFuncAsync(x => x.Name, token))
-                await cboHeritage.DoThreadSafeAsync(x => x.SelectedValue = strMissing, token);
-            else if (strAttributesSelected == strComboBoxSelected && strMyName != await cboAttributes.DoThreadSafeFuncAsync(x => x.Name, token))
-                await cboAttributes.DoThreadSafeAsync(x => x.SelectedValue = strMissing, token);
-            else if (strTalentSelected == strComboBoxSelected && strMyName != await cboTalent.DoThreadSafeFuncAsync(x => x.Name, token))
-                await cboTalent.DoThreadSafeAsync(x => x.SelectedValue = strMissing, token);
-            else if (strSkillsSelected == strComboBoxSelected && strMyName != await cboSkills.DoThreadSafeFuncAsync(x => x.Name, token))
-                await cboSkills.DoThreadSafeAsync(x => x.SelectedValue = strMissing, token);
-            else if (strResourcesSelected == strComboBoxSelected && strMyName != await cboResources.DoThreadSafeFuncAsync(x => x.Name, token))
-                await cboResources.DoThreadSafeAsync(x => x.SelectedValue = strMissing, token);
+            string strMyName = await comboBox.DoThreadSafeFuncAsync(x => x.Name, token).ConfigureAwait(false);
+            if (strHeritageSelected == strComboBoxSelected && strMyName != await cboHeritage.DoThreadSafeFuncAsync(x => x.Name, token).ConfigureAwait(false))
+                await cboHeritage.DoThreadSafeAsync(x => x.SelectedValue = strMissing, token).ConfigureAwait(false);
+            else if (strAttributesSelected == strComboBoxSelected && strMyName != await cboAttributes.DoThreadSafeFuncAsync(x => x.Name, token).ConfigureAwait(false))
+                await cboAttributes.DoThreadSafeAsync(x => x.SelectedValue = strMissing, token).ConfigureAwait(false);
+            else if (strTalentSelected == strComboBoxSelected && strMyName != await cboTalent.DoThreadSafeFuncAsync(x => x.Name, token).ConfigureAwait(false))
+                await cboTalent.DoThreadSafeAsync(x => x.SelectedValue = strMissing, token).ConfigureAwait(false);
+            else if (strSkillsSelected == strComboBoxSelected && strMyName != await cboSkills.DoThreadSafeFuncAsync(x => x.Name, token).ConfigureAwait(false))
+                await cboSkills.DoThreadSafeAsync(x => x.SelectedValue = strMissing, token).ConfigureAwait(false);
+            else if (strResourcesSelected == strComboBoxSelected && strMyName != await cboResources.DoThreadSafeFuncAsync(x => x.Name, token).ConfigureAwait(false))
+                await cboResources.DoThreadSafeAsync(x => x.SelectedValue = strMissing, token).ConfigureAwait(false);
 
             if (lstCurrentPriorities.Count <= 1)
                 return;
@@ -1654,11 +1744,11 @@ namespace Chummer
             {
                 lstCurrentPriorities.Clear();
                 lstCurrentPriorities.AddRange(_lstPriorities);
-                strHeritageSelected = await cboHeritage.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token);
-                strAttributesSelected = await cboAttributes.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token);
-                strTalentSelected = await cboTalent.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token);
-                strSkillsSelected = await cboSkills.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token);
-                strResourcesSelected = await cboResources.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token);
+                strHeritageSelected = await cboHeritage.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token).ConfigureAwait(false);
+                strAttributesSelected = await cboAttributes.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token).ConfigureAwait(false);
+                strTalentSelected = await cboTalent.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token).ConfigureAwait(false);
+                strSkillsSelected = await cboSkills.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token).ConfigureAwait(false);
+                strResourcesSelected = await cboResources.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token).ConfigureAwait(false);
 
                 // Discover which priority rating is not currently assigned
                 lstCurrentPriorities.Remove(strHeritageSelected);
@@ -1673,41 +1763,41 @@ namespace Chummer
 
                 // Find the combo with the same value as this one and change it to the missing value.
                 //_blnInitializing = true;
-                strMyName = await comboBox.DoThreadSafeFuncAsync(x => x.Name, token);
-                if (strHeritageSelected == strComboBoxSelected && strMyName != await cboHeritage.DoThreadSafeFuncAsync(x => x.Name, token))
-                    await cboHeritage.DoThreadSafeAsync(x => x.SelectedValue = strMissing, token);
-                else if (strAttributesSelected == strComboBoxSelected && strMyName != await cboAttributes.DoThreadSafeFuncAsync(x => x.Name, token))
-                    await cboAttributes.DoThreadSafeAsync(x => x.SelectedValue = strMissing, token);
-                else if (strTalentSelected == strComboBoxSelected && strMyName != await cboTalent.DoThreadSafeFuncAsync(x => x.Name, token))
-                    await cboTalent.DoThreadSafeAsync(x => x.SelectedValue = strMissing, token);
-                else if (strSkillsSelected == strComboBoxSelected && strMyName != await cboSkills.DoThreadSafeFuncAsync(x => x.Name, token))
-                    await cboSkills.DoThreadSafeAsync(x => x.SelectedValue = strMissing, token);
-                else if (strResourcesSelected == strComboBoxSelected && strMyName != await cboResources.DoThreadSafeFuncAsync(x => x.Name, token))
-                    await cboResources.DoThreadSafeAsync(x => x.SelectedValue = strMissing, token);
+                strMyName = await comboBox.DoThreadSafeFuncAsync(x => x.Name, token).ConfigureAwait(false);
+                if (strHeritageSelected == strComboBoxSelected && strMyName != await cboHeritage.DoThreadSafeFuncAsync(x => x.Name, token).ConfigureAwait(false))
+                    await cboHeritage.DoThreadSafeAsync(x => x.SelectedValue = strMissing, token).ConfigureAwait(false);
+                else if (strAttributesSelected == strComboBoxSelected && strMyName != await cboAttributes.DoThreadSafeFuncAsync(x => x.Name, token).ConfigureAwait(false))
+                    await cboAttributes.DoThreadSafeAsync(x => x.SelectedValue = strMissing, token).ConfigureAwait(false);
+                else if (strTalentSelected == strComboBoxSelected && strMyName != await cboTalent.DoThreadSafeFuncAsync(x => x.Name, token).ConfigureAwait(false))
+                    await cboTalent.DoThreadSafeAsync(x => x.SelectedValue = strMissing, token).ConfigureAwait(false);
+                else if (strSkillsSelected == strComboBoxSelected && strMyName != await cboSkills.DoThreadSafeFuncAsync(x => x.Name, token).ConfigureAwait(false))
+                    await cboSkills.DoThreadSafeAsync(x => x.SelectedValue = strMissing, token).ConfigureAwait(false);
+                else if (strResourcesSelected == strComboBoxSelected && strMyName != await cboResources.DoThreadSafeFuncAsync(x => x.Name, token).ConfigureAwait(false))
+                    await cboResources.DoThreadSafeAsync(x => x.SelectedValue = strMissing, token).ConfigureAwait(false);
             } while (lstCurrentPriorities.Count > 1);
         }
 
         private async ValueTask<int> SumToTen(bool blnDoUIUpdate = true, CancellationToken token = default)
         {
-            int value = _dicSumtoTenValues[await cboHeritage.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token)];
-            value += _dicSumtoTenValues[await cboAttributes.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token)];
-            value += _dicSumtoTenValues[await cboTalent.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token)];
-            value += _dicSumtoTenValues[await cboSkills.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token)];
-            value += _dicSumtoTenValues[await cboResources.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token)];
+            int value = _dicSumtoTenValues[await cboHeritage.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token).ConfigureAwait(false)];
+            value += _dicSumtoTenValues[await cboAttributes.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token).ConfigureAwait(false)];
+            value += _dicSumtoTenValues[await cboTalent.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token).ConfigureAwait(false)];
+            value += _dicSumtoTenValues[await cboSkills.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token).ConfigureAwait(false)];
+            value += _dicSumtoTenValues[await cboResources.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token).ConfigureAwait(false)];
 
             if (blnDoUIUpdate)
                 await lblSumtoTen.DoThreadSafeAsync(x => x.Text = value.ToString(GlobalSettings.CultureInfo) + '/'
-                                                        + _objCharacter.Settings.SumtoTen.ToString(GlobalSettings.CultureInfo), token);
+                                                        + _objCharacter.Settings.SumtoTen.ToString(GlobalSettings.CultureInfo), token).ConfigureAwait(false);
 
             return value;
         }
 
         private async ValueTask RefreshSelectedMetatype(CancellationToken token = default)
         {
-            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token);
-            string strSelectedMetatype = await lstMetatypes.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token);
-            string strSelectedMetavariant = await cboMetavariant.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token);
-            string strSelectedHeritage = await cboHeritage.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token);
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+            string strSelectedMetatype = await lstMetatypes.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false);
+            string strSelectedMetavariant = await cboMetavariant.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false);
+            string strSelectedHeritage = await cboHeritage.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false);
 
             XPathNavigator objXmlMetatype
                 = _xmlBaseMetatypeDataNode.SelectSingleNode(
@@ -1727,7 +1817,7 @@ namespace Chummer
             foreach (XPathNavigator xmlBaseMetatypePriority in xmlBaseMetatypePriorityList)
             {
                 if (xmlBaseMetatypePriorityList.Count == 1
-                    || await xmlBaseMetatypePriority.SelectSingleNodeAndCacheExpressionAsync("prioritytable", token)
+                    || await xmlBaseMetatypePriority.SelectSingleNodeAndCacheExpressionAsync("prioritytable", token).ConfigureAwait(false)
                     != null)
                 {
                     objXmlMetatypePriorityNode
@@ -1746,110 +1836,110 @@ namespace Chummer
             {
                 if (objXmlMetavariantPriorityNode == null)
                 {
-                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("String_NotSupported", token: token),
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("String_NotSupported", token: token).ConfigureAwait(false),
                                            Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    await cmdOK.DoThreadSafeAsync(x => x.Enabled = false, token);
+                    await cmdOK.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
                 }
                 else
                 {
-                    await cmdOK.DoThreadSafeAsync(x => x.Enabled = true, token);
+                    await cmdOK.DoThreadSafeAsync(x => x.Enabled = true, token).ConfigureAwait(false);
                 }
 
-                string strMin = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("bodmin", token))?.Value
+                string strMin = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("bodmin", token).ConfigureAwait(false))?.Value
                                 ?? 0.ToString(GlobalSettings.CultureInfo);
-                string strMax = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("bodmax", token))?.Value
+                string strMax = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("bodmax", token).ConfigureAwait(false))?.Value
                                 ?? 0.ToString(GlobalSettings.CultureInfo);
-                string strAug = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("bodaug", token))?.Value
+                string strAug = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("bodaug", token).ConfigureAwait(false))?.Value
                                 ?? 0.ToString(GlobalSettings.CultureInfo);
-                await lblBOD.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug), token);
-                strMin = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("agimin", token))?.Value
+                await lblBOD.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug), token).ConfigureAwait(false);
+                strMin = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("agimin", token).ConfigureAwait(false))?.Value
                                 ?? 0.ToString(GlobalSettings.CultureInfo);
-                strMax = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("agimax", token))?.Value
+                strMax = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("agimax", token).ConfigureAwait(false))?.Value
                                 ?? 0.ToString(GlobalSettings.CultureInfo);
-                strAug = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("agiaug", token))?.Value
+                strAug = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("agiaug", token).ConfigureAwait(false))?.Value
                                 ?? 0.ToString(GlobalSettings.CultureInfo);
-                await lblAGI.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug), token);
-                strMin = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("reamin", token))?.Value
+                await lblAGI.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug), token).ConfigureAwait(false);
+                strMin = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("reamin", token).ConfigureAwait(false))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
-                strMax = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("reamax", token))?.Value
+                strMax = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("reamax", token).ConfigureAwait(false))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
-                strAug = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("reaaug", token))?.Value
+                strAug = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("reaaug", token).ConfigureAwait(false))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
-                await lblREA.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug), token);
-                strMin = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("strmin", token))?.Value
+                await lblREA.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug), token).ConfigureAwait(false);
+                strMin = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("strmin", token).ConfigureAwait(false))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
-                strMax = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("strmax", token))?.Value
+                strMax = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("strmax", token).ConfigureAwait(false))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
-                strAug = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("straug", token))?.Value
+                strAug = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("straug", token).ConfigureAwait(false))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
-                await lblSTR.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug), token);
-                strMin = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("chamin", token))?.Value
+                await lblSTR.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug), token).ConfigureAwait(false);
+                strMin = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("chamin", token).ConfigureAwait(false))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
-                strMax = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("chamax", token))?.Value
+                strMax = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("chamax", token).ConfigureAwait(false))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
-                strAug = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("chaaug", token))?.Value
+                strAug = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("chaaug", token).ConfigureAwait(false))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
-                await lblCHA.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug), token);
-                strMin = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("intmin", token))?.Value
+                await lblCHA.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug), token).ConfigureAwait(false);
+                strMin = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("intmin", token).ConfigureAwait(false))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
-                strMax = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("intmax", token))?.Value
+                strMax = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("intmax", token).ConfigureAwait(false))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
-                strAug = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("intaug", token))?.Value
+                strAug = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("intaug", token).ConfigureAwait(false))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
-                await lblINT.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug), token);
-                strMin = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("logmin", token))?.Value
+                await lblINT.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug), token).ConfigureAwait(false);
+                strMin = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("logmin", token).ConfigureAwait(false))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
-                strMax = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("logmax", token))?.Value
+                strMax = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("logmax", token).ConfigureAwait(false))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
-                strAug = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("logaug", token))?.Value
+                strAug = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("logaug", token).ConfigureAwait(false))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
-                await lblLOG.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug), token);
-                strMin = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("wilmin", token))?.Value
+                await lblLOG.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug), token).ConfigureAwait(false);
+                strMin = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("wilmin", token).ConfigureAwait(false))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
-                strMax = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("wilmax", token))?.Value
+                strMax = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("wilmax", token).ConfigureAwait(false))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
-                strAug = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("wilaug", token))?.Value
+                strAug = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("wilaug", token).ConfigureAwait(false))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
-                await lblWIL.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug), token);
+                await lblWIL.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug), token).ConfigureAwait(false);
 
                 string strKarmaText
-                    = (await objXmlMetavariantPriorityNode.SelectSingleNodeAndCacheExpressionAsync("karma", token))
+                    = (await objXmlMetavariantPriorityNode.SelectSingleNodeAndCacheExpressionAsync("karma", token).ConfigureAwait(false))
                       ?.Value
                       ?? 0.ToString(GlobalSettings.CultureInfo);
-                await lblMetavariantKarma.DoThreadSafeAsync(x => x.Text = strKarmaText, token);
+                await lblMetavariantKarma.DoThreadSafeAsync(x => x.Text = strKarmaText, token).ConfigureAwait(false);
 
-                string strSource = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("source", token))
+                string strSource = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("source", token).ConfigureAwait(false))
                     ?.Value;
                 if (!string.IsNullOrEmpty(strSource))
                 {
                     string strPage
-                        = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("altpage", token))?.Value
-                          ?? (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("page", token))?.Value;
+                        = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("altpage", token).ConfigureAwait(false))?.Value
+                          ?? (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("page", token).ConfigureAwait(false))?.Value;
                     if (!string.IsNullOrEmpty(strPage))
                     {
                         SourceString objSource = await SourceString.GetSourceStringAsync(
                             strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo,
-                            _objCharacter, token);
-                        await lblSource.DoThreadSafeAsync(x => x.Text = objSource.ToString(), token);
-                        await lblSource.SetToolTipAsync(objSource.LanguageBookTooltip, token);
+                            _objCharacter, token).ConfigureAwait(false);
+                        await lblSource.DoThreadSafeAsync(x => x.Text = objSource.ToString(), token).ConfigureAwait(false);
+                        await lblSource.SetToolTipAsync(objSource.LanguageBookTooltip, token).ConfigureAwait(false);
                     }
                     else
                     {
-                        string strUnknown = await LanguageManager.GetStringAsync("String_Unknown", token: token);
-                        await lblSource.DoThreadSafeAsync(x => x.Text = strUnknown, token);
-                        await lblSource.SetToolTipAsync(strUnknown, token);
+                        string strUnknown = await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
+                        await lblSource.DoThreadSafeAsync(x => x.Text = strUnknown, token).ConfigureAwait(false);
+                        await lblSource.SetToolTipAsync(strUnknown, token).ConfigureAwait(false);
                     }
                 }
                 else
                 {
-                    string strUnknown = await LanguageManager.GetStringAsync("String_Unknown", token: token);
-                    await lblSource.DoThreadSafeAsync(x => x.Text = strUnknown, token);
-                    await lblSource.SetToolTipAsync(strUnknown, token);
+                    string strUnknown = await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
+                    await lblSource.DoThreadSafeAsync(x => x.Text = strUnknown, token).ConfigureAwait(false);
+                    await lblSource.SetToolTipAsync(strUnknown, token).ConfigureAwait(false);
                 }
 
                 // Set the special attributes label.
                 if (objXmlMetavariantPriorityNode == null || !int.TryParse(
-                        (await objXmlMetavariantPriorityNode.SelectSingleNodeAndCacheExpressionAsync("value", token))
+                        (await objXmlMetavariantPriorityNode.SelectSingleNodeAndCacheExpressionAsync("value", token).ConfigureAwait(false))
                         ?.Value,
                         NumberStyles.Any,
                         GlobalSettings.InvariantCultureInfo, out int intSpecialAttribPoints))
@@ -1857,34 +1947,34 @@ namespace Chummer
 
                 XPathNodeIterator xmlBaseTalentPriorityList = _xmlBasePriorityDataNode.Select(
                     "priorities/priority[category = \"Talent\" and value = "
-                    + (await cboTalent.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token) ?? string.Empty).CleanXPath()
+                    + (await cboTalent.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false) ?? string.Empty).CleanXPath()
                     + " and (not(prioritytable) or prioritytable = "
                     + _objCharacter.Settings.PriorityTable.CleanXPath() + ")]");
                 foreach (XPathNavigator xmlBaseTalentPriority in xmlBaseTalentPriorityList)
                 {
                     if (xmlBaseTalentPriorityList.Count == 1
-                        || await xmlBaseTalentPriority.SelectSingleNodeAndCacheExpressionAsync("prioritytable", token)
+                        || await xmlBaseTalentPriority.SelectSingleNodeAndCacheExpressionAsync("prioritytable", token).ConfigureAwait(false)
                         != null)
                     {
                         XPathNavigator objXmlTalentsNode = xmlBaseTalentPriority.SelectSingleNode(
                             "talents/talent[value = "
-                            + (await cboTalents.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token) ?? string.Empty).CleanXPath() + ']');
+                            + (await cboTalents.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false) ?? string.Empty).CleanXPath() + ']');
                         if (objXmlTalentsNode != null
                             && int.TryParse(
                                 (await objXmlTalentsNode.SelectSingleNodeAndCacheExpressionAsync(
-                                    "specialattribpoints", token))
+                                    "specialattribpoints", token).ConfigureAwait(false))
                                 ?.Value, out int intTemp))
                             intSpecialAttribPoints += intTemp;
                         break;
                     }
                 }
 
-                await lblSpecialAttributes.DoThreadSafeAsync(x => x.Text = intSpecialAttribPoints.ToString(GlobalSettings.CultureInfo), token);
+                await lblSpecialAttributes.DoThreadSafeAsync(x => x.Text = intSpecialAttribPoints.ToString(GlobalSettings.CultureInfo), token).ConfigureAwait(false);
 
                 Dictionary<string, int> dicQualities = new Dictionary<string, int>(5);
                 // Build a list of the Metavariant's Qualities.
                 foreach (XPathNavigator objXmlQuality in await objXmlMetavariant.SelectAndCacheExpressionAsync(
-                             "qualities/*/quality", token))
+                             "qualities/*/quality", token).ConfigureAwait(false))
                 {
                     string strQuality;
                     if (!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
@@ -1897,17 +1987,17 @@ namespace Chummer
                                      ?? objXmlQuality.Value;
 
                         string strSelect
-                            = (await objXmlQuality.SelectSingleNodeAndCacheExpressionAsync("@select", token))
+                            = (await objXmlQuality.SelectSingleNodeAndCacheExpressionAsync("@select", token).ConfigureAwait(false))
                             ?.Value;
                         if (!string.IsNullOrEmpty(strSelect))
-                            strQuality += strSpace + '(' + await _objCharacter.TranslateExtraAsync(strSelect, token: token)
+                            strQuality += strSpace + '(' + await _objCharacter.TranslateExtraAsync(strSelect, token: token).ConfigureAwait(false)
                                           + ')';
                     }
                     else
                     {
                         strQuality = objXmlQuality.Value;
                         string strSelect
-                            = (await objXmlQuality.SelectSingleNodeAndCacheExpressionAsync("@select", token))
+                            = (await objXmlQuality.SelectSingleNodeAndCacheExpressionAsync("@select", token).ConfigureAwait(false))
                             ?.Value;
                         if (!string.IsNullOrEmpty(strSelect))
                             strQuality += strSpace + '(' + strSelect + ')';
@@ -1937,84 +2027,84 @@ namespace Chummer
                         }
 
                         sbdQualities.Length -= 2;
-                        await lblMetavariantQualities.DoThreadSafeAsync(x => x.Text = sbdQualities.ToString(), token);
+                        await lblMetavariantQualities.DoThreadSafeAsync(x => x.Text = sbdQualities.ToString(), token).ConfigureAwait(false);
                     }
                 }
                 else
                 {
-                    string strNone = await LanguageManager.GetStringAsync("String_None", token: token);
-                    await lblMetavariantQualities.DoThreadSafeAsync(x => x.Text = strNone, token);
+                    string strNone = await LanguageManager.GetStringAsync("String_None", token: token).ConfigureAwait(false);
+                    await lblMetavariantQualities.DoThreadSafeAsync(x => x.Text = strNone, token).ConfigureAwait(false);
                 }
             }
             else if (objXmlMetatype != null)
             {
-                await cmdOK.DoThreadSafeAsync(x => x.Enabled = true, token);
-                string strMin = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("bodmin", token))?.Value
+                await cmdOK.DoThreadSafeAsync(x => x.Enabled = true, token).ConfigureAwait(false);
+                string strMin = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("bodmin", token).ConfigureAwait(false))?.Value
                                 ?? 0.ToString(GlobalSettings.CultureInfo);
-                string strMax = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("bodmax", token))?.Value
+                string strMax = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("bodmax", token).ConfigureAwait(false))?.Value
                                 ?? 0.ToString(GlobalSettings.CultureInfo);
-                string strAug = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("bodaug", token))?.Value
+                string strAug = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("bodaug", token).ConfigureAwait(false))?.Value
                                 ?? 0.ToString(GlobalSettings.CultureInfo);
-                await lblBOD.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug), token);
-                strMin = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("agimin", token))?.Value
+                await lblBOD.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug), token).ConfigureAwait(false);
+                strMin = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("agimin", token).ConfigureAwait(false))?.Value
                                 ?? 0.ToString(GlobalSettings.CultureInfo);
-                strMax = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("agimax", token))?.Value
+                strMax = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("agimax", token).ConfigureAwait(false))?.Value
                                 ?? 0.ToString(GlobalSettings.CultureInfo);
-                strAug = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("agiaug", token))?.Value
+                strAug = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("agiaug", token).ConfigureAwait(false))?.Value
                                 ?? 0.ToString(GlobalSettings.CultureInfo);
-                await lblAGI.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug), token);
-                strMin = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("reamin", token))?.Value
+                await lblAGI.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug), token).ConfigureAwait(false);
+                strMin = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("reamin", token).ConfigureAwait(false))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
-                strMax = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("reamax", token))?.Value
+                strMax = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("reamax", token).ConfigureAwait(false))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
-                strAug = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("reaaug", token))?.Value
+                strAug = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("reaaug", token).ConfigureAwait(false))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
-                await lblREA.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug), token);
-                strMin = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("strmin", token))?.Value
+                await lblREA.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug), token).ConfigureAwait(false);
+                strMin = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("strmin", token).ConfigureAwait(false))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
-                strMax = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("strmax", token))?.Value
+                strMax = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("strmax", token).ConfigureAwait(false))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
-                strAug = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("straug", token))?.Value
+                strAug = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("straug", token).ConfigureAwait(false))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
-                await lblSTR.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug), token);
-                strMin = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("chamin", token))?.Value
+                await lblSTR.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug), token).ConfigureAwait(false);
+                strMin = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("chamin", token).ConfigureAwait(false))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
-                strMax = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("chamax", token))?.Value
+                strMax = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("chamax", token).ConfigureAwait(false))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
-                strAug = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("chaaug", token))?.Value
+                strAug = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("chaaug", token).ConfigureAwait(false))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
-                await lblCHA.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug), token);
-                strMin = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("intmin", token))?.Value
+                await lblCHA.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug), token).ConfigureAwait(false);
+                strMin = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("intmin", token).ConfigureAwait(false))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
-                strMax = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("intmax", token))?.Value
+                strMax = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("intmax", token).ConfigureAwait(false))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
-                strAug = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("intaug", token))?.Value
+                strAug = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("intaug", token).ConfigureAwait(false))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
-                await lblINT.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug), token);
-                strMin = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("logmin", token))?.Value
+                await lblINT.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug), token).ConfigureAwait(false);
+                strMin = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("logmin", token).ConfigureAwait(false))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
-                strMax = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("logmax", token))?.Value
+                strMax = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("logmax", token).ConfigureAwait(false))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
-                strAug = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("logaug", token))?.Value
+                strAug = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("logaug", token).ConfigureAwait(false))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
-                await lblLOG.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug), token);
-                strMin = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("wilmin", token))?.Value
+                await lblLOG.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug), token).ConfigureAwait(false);
+                strMin = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("wilmin", token).ConfigureAwait(false))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
-                strMax = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("wilmax", token))?.Value
+                strMax = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("wilmax", token).ConfigureAwait(false))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
-                strAug = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("wilaug", token))?.Value
+                strAug = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("wilaug", token).ConfigureAwait(false))?.Value
                          ?? 0.ToString(GlobalSettings.CultureInfo);
-                await lblWIL.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug), token);
+                await lblWIL.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug), token).ConfigureAwait(false);
 
                 string strKarmaText
-                    = (await objXmlMetatypePriorityNode.SelectSingleNodeAndCacheExpressionAsync("karma", token))?.Value
+                    = (await objXmlMetatypePriorityNode.SelectSingleNodeAndCacheExpressionAsync("karma", token).ConfigureAwait(false))?.Value
                       ?? 0.ToString(GlobalSettings.CultureInfo);
-                await lblMetavariantKarma.DoThreadSafeAsync(x => x.Text = strKarmaText, token);
+                await lblMetavariantKarma.DoThreadSafeAsync(x => x.Text = strKarmaText, token).ConfigureAwait(false);
 
                 Dictionary<string, int> dicQualities = new Dictionary<string, int>(5);
                 // Build a list of the Metatype's Qualities.
                 foreach (XPathNavigator xmlQuality in await objXmlMetatype.SelectAndCacheExpressionAsync(
-                             "qualities/*/quality", token))
+                             "qualities/*/quality", token).ConfigureAwait(false))
                 {
                     string strQuality;
                     if (!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
@@ -2023,20 +2113,20 @@ namespace Chummer
                         XPathNavigator objQuality
                             = _xmlBaseQualityDataNode.SelectSingleNode(
                                 "qualities/quality[name = " + xmlQuality.Value.CleanXPath() + ']');
-                        strQuality = (await objQuality.SelectSingleNodeAndCacheExpressionAsync("translate", token))
+                        strQuality = (await objQuality.SelectSingleNodeAndCacheExpressionAsync("translate", token).ConfigureAwait(false))
                                      ?.Value
                                      ?? xmlQuality.Value;
 
-                        string strSelect = (await xmlQuality.SelectSingleNodeAndCacheExpressionAsync("@select", token))
+                        string strSelect = (await xmlQuality.SelectSingleNodeAndCacheExpressionAsync("@select", token).ConfigureAwait(false))
                             ?.Value;
                         if (!string.IsNullOrEmpty(strSelect))
-                            strQuality += strSpace + '(' + await _objCharacter.TranslateExtraAsync(strSelect, token: token)
+                            strQuality += strSpace + '(' + await _objCharacter.TranslateExtraAsync(strSelect, token: token).ConfigureAwait(false)
                                           + ')';
                     }
                     else
                     {
                         strQuality = xmlQuality.Value;
-                        string strSelect = (await xmlQuality.SelectSingleNodeAndCacheExpressionAsync("@select", token))
+                        string strSelect = (await xmlQuality.SelectSingleNodeAndCacheExpressionAsync("@select", token).ConfigureAwait(false))
                             ?.Value;
                         if (!string.IsNullOrEmpty(strSelect))
                             strQuality += strSpace + '(' + strSelect + ')';
@@ -2066,46 +2156,46 @@ namespace Chummer
                         }
 
                         sbdQualities.Length -= 2;
-                        await lblMetavariantQualities.DoThreadSafeAsync(x => x.Text = sbdQualities.ToString(), token);
+                        await lblMetavariantQualities.DoThreadSafeAsync(x => x.Text = sbdQualities.ToString(), token).ConfigureAwait(false);
                     }
                 }
                 else
                 {
-                    string strNone = await LanguageManager.GetStringAsync("String_None", token: token);
-                    await lblMetavariantQualities.DoThreadSafeAsync(x => x.Text = strNone, token);
+                    string strNone = await LanguageManager.GetStringAsync("String_None", token: token).ConfigureAwait(false);
+                    await lblMetavariantQualities.DoThreadSafeAsync(x => x.Text = strNone, token).ConfigureAwait(false);
                 }
 
-                string strSource = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("source", token))
+                string strSource = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("source", token).ConfigureAwait(false))
                     ?.Value;
                 if (!string.IsNullOrEmpty(strSource))
                 {
                     string strPage
-                        = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("altpage", token))?.Value
-                          ?? (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("page", token))?.Value;
+                        = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("altpage", token).ConfigureAwait(false))?.Value
+                          ?? (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("page", token).ConfigureAwait(false))?.Value;
                     if (!string.IsNullOrEmpty(strPage))
                     {
                         SourceString objSource = await SourceString.GetSourceStringAsync(
                             strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo,
-                            _objCharacter, token);
-                        await objSource.SetControlAsync(lblSource, token);
+                            _objCharacter, token).ConfigureAwait(false);
+                        await objSource.SetControlAsync(lblSource, token).ConfigureAwait(false);
                     }
                     else
                     {
-                        string strUnknown = await LanguageManager.GetStringAsync("String_Unknown", token: token);
-                        await lblSource.DoThreadSafeAsync(x => x.Text = strUnknown, token);
-                        await lblSource.SetToolTipAsync(strUnknown, token);
+                        string strUnknown = await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
+                        await lblSource.DoThreadSafeAsync(x => x.Text = strUnknown, token).ConfigureAwait(false);
+                        await lblSource.SetToolTipAsync(strUnknown, token).ConfigureAwait(false);
                     }
                 }
                 else
                 {
-                    string strUnknown = await LanguageManager.GetStringAsync("String_Unknown", token: token);
-                    await lblSource.DoThreadSafeAsync(x => x.Text = strUnknown, token);
-                    await lblSource.SetToolTipAsync(strUnknown, token);
+                    string strUnknown = await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
+                    await lblSource.DoThreadSafeAsync(x => x.Text = strUnknown, token).ConfigureAwait(false);
+                    await lblSource.SetToolTipAsync(strUnknown, token).ConfigureAwait(false);
                 }
 
                 // Set the special attributes label.
                 if (!int.TryParse(
-                        (await objXmlMetatypePriorityNode.SelectSingleNodeAndCacheExpressionAsync("value", token))
+                        (await objXmlMetatypePriorityNode.SelectSingleNodeAndCacheExpressionAsync("value", token).ConfigureAwait(false))
                         ?.Value,
                         NumberStyles.Any,
                         GlobalSettings.InvariantCultureInfo, out int intSpecialAttribPoints))
@@ -2113,98 +2203,98 @@ namespace Chummer
 
                 XPathNodeIterator xmlBaseTalentPriorityList = _xmlBasePriorityDataNode.Select(
                     "priorities/priority[category = \"Talent\" and value = "
-                    + (await cboTalent.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token) ?? string.Empty).CleanXPath()
+                    + (await cboTalent.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false) ?? string.Empty).CleanXPath()
                     + " and (not(prioritytable) or prioritytable = "
                     + _objCharacter.Settings.PriorityTable.CleanXPath() + ")]");
                 foreach (XPathNavigator xmlBaseTalentPriority in xmlBaseTalentPriorityList)
                 {
                     if (xmlBaseTalentPriorityList.Count == 1
-                        || await xmlBaseTalentPriority.SelectSingleNodeAndCacheExpressionAsync("prioritytable", token)
+                        || await xmlBaseTalentPriority.SelectSingleNodeAndCacheExpressionAsync("prioritytable", token).ConfigureAwait(false)
                         != null)
                     {
                         XPathNavigator objXmlTalentsNode = xmlBaseTalentPriority.SelectSingleNode(
                             "talents/talent[value = "
-                            + (await cboTalents.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token) ?? string.Empty).CleanXPath() + ']');
+                            + (await cboTalents.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false) ?? string.Empty).CleanXPath() + ']');
                         if (objXmlTalentsNode != null
                             && int.TryParse(
                                 (await objXmlTalentsNode.SelectSingleNodeAndCacheExpressionAsync(
-                                    "specialattribpoints", token))
+                                    "specialattribpoints", token).ConfigureAwait(false))
                                 ?.Value, out int intTemp))
                             intSpecialAttribPoints += intTemp;
                         break;
                     }
                 }
 
-                await lblSpecialAttributes.DoThreadSafeAsync(x => x.Text = intSpecialAttribPoints.ToString(GlobalSettings.CultureInfo), token);
+                await lblSpecialAttributes.DoThreadSafeAsync(x => x.Text = intSpecialAttribPoints.ToString(GlobalSettings.CultureInfo), token).ConfigureAwait(false);
             }
             else
             {
-                await lblBOD.DoThreadSafeAsync(x => x.Text = string.Empty, token);
-                await lblAGI.DoThreadSafeAsync(x => x.Text = string.Empty, token);
-                await lblREA.DoThreadSafeAsync(x => x.Text = string.Empty, token);
-                await lblSTR.DoThreadSafeAsync(x => x.Text = string.Empty, token);
-                await lblCHA.DoThreadSafeAsync(x => x.Text = string.Empty, token);
-                await lblINT.DoThreadSafeAsync(x => x.Text = string.Empty, token);
-                await lblLOG.DoThreadSafeAsync(x => x.Text = string.Empty, token);
-                await lblWIL.DoThreadSafeAsync(x => x.Text = string.Empty, token);
+                await lblBOD.DoThreadSafeAsync(x => x.Text = string.Empty, token).ConfigureAwait(false);
+                await lblAGI.DoThreadSafeAsync(x => x.Text = string.Empty, token).ConfigureAwait(false);
+                await lblREA.DoThreadSafeAsync(x => x.Text = string.Empty, token).ConfigureAwait(false);
+                await lblSTR.DoThreadSafeAsync(x => x.Text = string.Empty, token).ConfigureAwait(false);
+                await lblCHA.DoThreadSafeAsync(x => x.Text = string.Empty, token).ConfigureAwait(false);
+                await lblINT.DoThreadSafeAsync(x => x.Text = string.Empty, token).ConfigureAwait(false);
+                await lblLOG.DoThreadSafeAsync(x => x.Text = string.Empty, token).ConfigureAwait(false);
+                await lblWIL.DoThreadSafeAsync(x => x.Text = string.Empty, token).ConfigureAwait(false);
 
                 int intSpecialAttribPoints = 0;
                 XPathNodeIterator xmlBaseTalentPriorityList = _xmlBasePriorityDataNode.Select(
                     "priorities/priority[category = \"Talent\" and value = "
-                    + (await cboTalent.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token) ?? string.Empty).CleanXPath()
+                    + (await cboTalent.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false) ?? string.Empty).CleanXPath()
                     + " and (not(prioritytable) or prioritytable = "
                     + _objCharacter.Settings.PriorityTable.CleanXPath() + ")]");
                 foreach (XPathNavigator xmlBaseTalentPriority in xmlBaseTalentPriorityList)
                 {
                     if (xmlBaseTalentPriorityList.Count == 1
-                        || await xmlBaseTalentPriority.SelectSingleNodeAndCacheExpressionAsync("prioritytable", token)
+                        || await xmlBaseTalentPriority.SelectSingleNodeAndCacheExpressionAsync("prioritytable", token).ConfigureAwait(false)
                         != null)
                     {
                         XPathNavigator objXmlTalentsNode = xmlBaseTalentPriority.SelectSingleNode(
                             "talents/talent[value = "
-                            + (await cboTalents.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token) ?? string.Empty).CleanXPath() + ']');
+                            + (await cboTalents.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false) ?? string.Empty).CleanXPath() + ']');
                         if (objXmlTalentsNode != null
                             && int.TryParse(
                                 (await objXmlTalentsNode.SelectSingleNodeAndCacheExpressionAsync(
-                                    "specialattribpoints", token))
+                                    "specialattribpoints", token).ConfigureAwait(false))
                                 ?.Value, out int intTemp))
                             intSpecialAttribPoints += intTemp;
                         break;
                     }
                 }
 
-                await lblSpecialAttributes.DoThreadSafeAsync(x => x.Text = intSpecialAttribPoints.ToString(GlobalSettings.CultureInfo), token);
+                await lblSpecialAttributes.DoThreadSafeAsync(x => x.Text = intSpecialAttribPoints.ToString(GlobalSettings.CultureInfo), token).ConfigureAwait(false);
 
-                await lblMetavariantQualities.DoThreadSafeAsync(x => x.Text = string.Empty, token);
-                await lblMetavariantKarma.DoThreadSafeAsync(x => x.Text = string.Empty, token);
-                await lblSource.DoThreadSafeAsync(x => x.Text = string.Empty, token);
-                await cmdOK.DoThreadSafeAsync(x => x.Enabled = false, token);
+                await lblMetavariantQualities.DoThreadSafeAsync(x => x.Text = string.Empty, token).ConfigureAwait(false);
+                await lblMetavariantKarma.DoThreadSafeAsync(x => x.Text = string.Empty, token).ConfigureAwait(false);
+                await lblSource.DoThreadSafeAsync(x => x.Text = string.Empty, token).ConfigureAwait(false);
+                await cmdOK.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
             }
 
-            bool blnVisible = await lblBOD.DoThreadSafeFuncAsync(x => !string.IsNullOrEmpty(x.Text), token);
-            await lblBODLabel.DoThreadSafeAsync(x => x.Visible = blnVisible, token);
-            blnVisible = await lblAGI.DoThreadSafeFuncAsync(x => !string.IsNullOrEmpty(x.Text), token);
-            await lblAGILabel.DoThreadSafeAsync(x => x.Visible = blnVisible, token);
-            blnVisible = await lblREA.DoThreadSafeFuncAsync(x => !string.IsNullOrEmpty(x.Text), token);
-            await lblREALabel.DoThreadSafeAsync(x => x.Visible = blnVisible, token);
-            blnVisible = await lblSTR.DoThreadSafeFuncAsync(x => !string.IsNullOrEmpty(x.Text), token);
-            await lblSTRLabel.DoThreadSafeAsync(x => x.Visible = blnVisible, token);
-            blnVisible = await lblCHA.DoThreadSafeFuncAsync(x => !string.IsNullOrEmpty(x.Text), token);
-            await lblCHALabel.DoThreadSafeAsync(x => x.Visible = blnVisible, token);
-            blnVisible = await lblINT.DoThreadSafeFuncAsync(x => !string.IsNullOrEmpty(x.Text), token);
-            await lblINTLabel.DoThreadSafeAsync(x => x.Visible = blnVisible, token);
-            blnVisible = await lblLOG.DoThreadSafeFuncAsync(x => !string.IsNullOrEmpty(x.Text), token);
-            await lblLOGLabel.DoThreadSafeAsync(x => x.Visible = blnVisible, token);
-            blnVisible = await lblWIL.DoThreadSafeFuncAsync(x => !string.IsNullOrEmpty(x.Text), token);
-            await lblWILLabel.DoThreadSafeAsync(x => x.Visible = blnVisible, token);
-            blnVisible = await lblSpecialAttributes.DoThreadSafeFuncAsync(x => !string.IsNullOrEmpty(x.Text), token);
-            await lblSpecialAttributesLabel.DoThreadSafeAsync(x => x.Visible = blnVisible, token);
-            blnVisible = await lblMetavariantQualities.DoThreadSafeFuncAsync(x => !string.IsNullOrEmpty(x.Text), token);
-            await lblMetavariantQualitiesLabel.DoThreadSafeAsync(x => x.Visible = blnVisible, token);
-            blnVisible = await lblMetavariantKarma.DoThreadSafeFuncAsync(x => !string.IsNullOrEmpty(x.Text), token);
-            await lblMetavariantKarmaLabel.DoThreadSafeAsync(x => x.Visible = blnVisible, token);
-            blnVisible = await lblSourceLabel.DoThreadSafeFuncAsync(x => !string.IsNullOrEmpty(x.Text), token);
-            await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = blnVisible, token);
+            bool blnVisible = await lblBOD.DoThreadSafeFuncAsync(x => !string.IsNullOrEmpty(x.Text), token).ConfigureAwait(false);
+            await lblBODLabel.DoThreadSafeAsync(x => x.Visible = blnVisible, token).ConfigureAwait(false);
+            blnVisible = await lblAGI.DoThreadSafeFuncAsync(x => !string.IsNullOrEmpty(x.Text), token).ConfigureAwait(false);
+            await lblAGILabel.DoThreadSafeAsync(x => x.Visible = blnVisible, token).ConfigureAwait(false);
+            blnVisible = await lblREA.DoThreadSafeFuncAsync(x => !string.IsNullOrEmpty(x.Text), token).ConfigureAwait(false);
+            await lblREALabel.DoThreadSafeAsync(x => x.Visible = blnVisible, token).ConfigureAwait(false);
+            blnVisible = await lblSTR.DoThreadSafeFuncAsync(x => !string.IsNullOrEmpty(x.Text), token).ConfigureAwait(false);
+            await lblSTRLabel.DoThreadSafeAsync(x => x.Visible = blnVisible, token).ConfigureAwait(false);
+            blnVisible = await lblCHA.DoThreadSafeFuncAsync(x => !string.IsNullOrEmpty(x.Text), token).ConfigureAwait(false);
+            await lblCHALabel.DoThreadSafeAsync(x => x.Visible = blnVisible, token).ConfigureAwait(false);
+            blnVisible = await lblINT.DoThreadSafeFuncAsync(x => !string.IsNullOrEmpty(x.Text), token).ConfigureAwait(false);
+            await lblINTLabel.DoThreadSafeAsync(x => x.Visible = blnVisible, token).ConfigureAwait(false);
+            blnVisible = await lblLOG.DoThreadSafeFuncAsync(x => !string.IsNullOrEmpty(x.Text), token).ConfigureAwait(false);
+            await lblLOGLabel.DoThreadSafeAsync(x => x.Visible = blnVisible, token).ConfigureAwait(false);
+            blnVisible = await lblWIL.DoThreadSafeFuncAsync(x => !string.IsNullOrEmpty(x.Text), token).ConfigureAwait(false);
+            await lblWILLabel.DoThreadSafeAsync(x => x.Visible = blnVisible, token).ConfigureAwait(false);
+            blnVisible = await lblSpecialAttributes.DoThreadSafeFuncAsync(x => !string.IsNullOrEmpty(x.Text), token).ConfigureAwait(false);
+            await lblSpecialAttributesLabel.DoThreadSafeAsync(x => x.Visible = blnVisible, token).ConfigureAwait(false);
+            blnVisible = await lblMetavariantQualities.DoThreadSafeFuncAsync(x => !string.IsNullOrEmpty(x.Text), token).ConfigureAwait(false);
+            await lblMetavariantQualitiesLabel.DoThreadSafeAsync(x => x.Visible = blnVisible, token).ConfigureAwait(false);
+            blnVisible = await lblMetavariantKarma.DoThreadSafeFuncAsync(x => !string.IsNullOrEmpty(x.Text), token).ConfigureAwait(false);
+            await lblMetavariantKarmaLabel.DoThreadSafeAsync(x => x.Visible = blnVisible, token).ConfigureAwait(false);
+            blnVisible = await lblSourceLabel.DoThreadSafeFuncAsync(x => !string.IsNullOrEmpty(x.Text), token).ConfigureAwait(false);
+            await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = blnVisible, token).ConfigureAwait(false);
         }
 
         private async ValueTask PopulateTalents(CancellationToken token = default)
@@ -2215,28 +2305,28 @@ namespace Chummer
                 // Populate the Priority Category list.
                 XPathNodeIterator xmlBaseTalentPriorityList = _xmlBasePriorityDataNode.Select(
                     "priorities/priority[category = \"Talent\" and value = "
-                    + (await cboTalent.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token) ?? string.Empty).CleanXPath()
+                    + (await cboTalent.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false) ?? string.Empty).CleanXPath()
                     + " and (not(prioritytable) or prioritytable = " + _objCharacter.Settings.PriorityTable.CleanXPath()
                     + ")]");
                 foreach (XPathNavigator xmlBaseTalentPriority in xmlBaseTalentPriorityList)
                 {
                     if (xmlBaseTalentPriorityList.Count == 1
-                        || await xmlBaseTalentPriority.SelectSingleNodeAndCacheExpressionAsync("prioritytable", token) != null)
+                        || await xmlBaseTalentPriority.SelectSingleNodeAndCacheExpressionAsync("prioritytable", token).ConfigureAwait(false) != null)
                     {
                         foreach (XPathNavigator objXmlPriorityTalent in await xmlBaseTalentPriority.SelectAndCacheExpressionAsync(
-                                     "talents/talent", token))
+                                     "talents/talent", token).ConfigureAwait(false))
                         {
                             XPathNavigator xmlQualitiesNode
-                                = await objXmlPriorityTalent.SelectSingleNodeAndCacheExpressionAsync("qualities", token);
+                                = await objXmlPriorityTalent.SelectSingleNodeAndCacheExpressionAsync("qualities", token).ConfigureAwait(false);
                             if (xmlQualitiesNode != null)
                             {
                                 bool blnFoundUnavailableQuality = false;
 
                                 foreach (XPathNavigator xmlQuality in await xmlQualitiesNode.SelectAndCacheExpressionAsync(
-                                             "quality", token))
+                                             "quality", token).ConfigureAwait(false))
                                 {
                                     if (_xmlBaseQualityDataNode.SelectSingleNode(
-                                            "qualities/quality[" + await _objCharacter.Settings.BookXPathAsync(token: token) + " and name = "
+                                            "qualities/quality[" + await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false) + " and name = "
                                             + xmlQuality.Value.CleanXPath() + ']') == null)
                                     {
                                         blnFoundUnavailableQuality = true;
@@ -2249,14 +2339,14 @@ namespace Chummer
                             }
 
                             XPathNavigator xmlForbiddenNode
-                                = await objXmlPriorityTalent.SelectSingleNodeAndCacheExpressionAsync("forbidden", token);
+                                = await objXmlPriorityTalent.SelectSingleNodeAndCacheExpressionAsync("forbidden", token).ConfigureAwait(false);
                             if (xmlForbiddenNode != null)
                             {
                                 bool blnRequirementForbidden = false;
 
                                 // Loop through the oneof requirements.
                                 XPathNodeIterator objXmlForbiddenList
-                                    = await xmlForbiddenNode.SelectAndCacheExpressionAsync("oneof", token);
+                                    = await xmlForbiddenNode.SelectAndCacheExpressionAsync("oneof", token).ConfigureAwait(false);
                                 foreach (XPathNavigator objXmlOneOf in objXmlForbiddenList)
                                 {
                                     XPathNodeIterator objXmlOneOfList
@@ -2269,7 +2359,7 @@ namespace Chummer
                                             case "metatype":
                                             {
                                                 // Check the Metatype restriction.
-                                                if (objXmlForbidden.Value == await lstMetatypes.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token))
+                                                if (objXmlForbidden.Value == await lstMetatypes.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false))
                                                 {
                                                     blnRequirementForbidden = true;
                                                     goto EndForbiddenLoop;
@@ -2281,7 +2371,7 @@ namespace Chummer
                                             case "metatypecategory":
                                             {
                                                 // Check the Metatype Category restriction.
-                                                if (objXmlForbidden.Value == await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token))
+                                                if (objXmlForbidden.Value == await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false))
                                                 {
                                                     blnRequirementForbidden = true;
                                                     goto EndForbiddenLoop;
@@ -2289,7 +2379,7 @@ namespace Chummer
 
                                                 break;
                                             }
-                                            case "metavariant" when objXmlForbidden.Value == await cboMetavariant.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token):
+                                            case "metavariant" when objXmlForbidden.Value == await cboMetavariant.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false):
                                                 blnRequirementForbidden = true;
                                                 goto EndForbiddenLoop;
                                         }
@@ -2302,14 +2392,14 @@ namespace Chummer
                             }
 
                             XPathNavigator xmlRequiredNode
-                                = await objXmlPriorityTalent.SelectSingleNodeAndCacheExpressionAsync("required", token);
+                                = await objXmlPriorityTalent.SelectSingleNodeAndCacheExpressionAsync("required", token).ConfigureAwait(false);
                             if (xmlRequiredNode != null)
                             {
                                 bool blnRequirementMet = false;
 
                                 // Loop through the oneof requirements.
                                 XPathNodeIterator objXmlForbiddenList
-                                    = await xmlRequiredNode.SelectAndCacheExpressionAsync("oneof", token);
+                                    = await xmlRequiredNode.SelectAndCacheExpressionAsync("oneof", token).ConfigureAwait(false);
                                 foreach (XPathNavigator objXmlOneOf in objXmlForbiddenList)
                                 {
                                     XPathNodeIterator objXmlOneOfList
@@ -2322,7 +2412,7 @@ namespace Chummer
                                             case "metatype":
                                             {
                                                 // Check the Metatype restriction.
-                                                if (objXmlRequired.Value == await lstMetatypes.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token))
+                                                if (objXmlRequired.Value == await lstMetatypes.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false))
                                                 {
                                                     blnRequirementMet = true;
                                                     goto EndRequiredLoop;
@@ -2334,7 +2424,7 @@ namespace Chummer
                                             case "metatypecategory":
                                             {
                                                 // Check the Metatype Category restriction.
-                                                if (objXmlRequired.Value == await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token))
+                                                if (objXmlRequired.Value == await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false))
                                                 {
                                                     blnRequirementMet = true;
                                                     goto EndRequiredLoop;
@@ -2342,7 +2432,7 @@ namespace Chummer
 
                                                 break;
                                             }
-                                            case "metavariant" when objXmlRequired.Value == await cboMetavariant.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token):
+                                            case "metavariant" when objXmlRequired.Value == await cboMetavariant.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false):
                                                 blnRequirementMet = true;
                                                 goto EndRequiredLoop;
                                         }
@@ -2355,11 +2445,11 @@ namespace Chummer
                             }
 
                             lstTalent.Add(new ListItem(
-                                              (await objXmlPriorityTalent.SelectSingleNodeAndCacheExpressionAsync("value", token))?.Value,
-                                              (await objXmlPriorityTalent.SelectSingleNodeAndCacheExpressionAsync("translate", token))
+                                              (await objXmlPriorityTalent.SelectSingleNodeAndCacheExpressionAsync("value", token).ConfigureAwait(false))?.Value,
+                                              (await objXmlPriorityTalent.SelectSingleNodeAndCacheExpressionAsync("translate", token).ConfigureAwait(false))
                                                                   ?.Value ??
-                                              (await objXmlPriorityTalent.SelectSingleNodeAndCacheExpressionAsync("name", token))?.Value ??
-                                              await LanguageManager.GetStringAsync("String_Unknown", token: token)));
+                                              (await objXmlPriorityTalent.SelectSingleNodeAndCacheExpressionAsync("name", token).ConfigureAwait(false))?.Value ??
+                                              await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false)));
                         }
 
                         break;
@@ -2367,29 +2457,29 @@ namespace Chummer
                 }
 
                 lstTalent.Sort(CompareListItems.CompareNames);
-                int intOldSelectedIndex = await cboTalents.DoThreadSafeFuncAsync(x => x.SelectedIndex, token);
-                int intOldDataSourceSize = await cboTalents.DoThreadSafeFuncAsync(x => x.Items.Count, token);
-                await cboTalents.PopulateWithListItemsAsync(lstTalent, token);
-                if (intOldDataSourceSize == await cboTalents.DoThreadSafeFuncAsync(x => x.Items.Count, token))
+                int intOldSelectedIndex = await cboTalents.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false);
+                int intOldDataSourceSize = await cboTalents.DoThreadSafeFuncAsync(x => x.Items.Count, token).ConfigureAwait(false);
+                await cboTalents.PopulateWithListItemsAsync(lstTalent, token).ConfigureAwait(false);
+                if (intOldDataSourceSize == await cboTalents.DoThreadSafeFuncAsync(x => x.Items.Count, token).ConfigureAwait(false))
                 {
                     bool blnOldLoading = _blnLoading;
                     _blnLoading = true;
-                    await cboTalents.DoThreadSafeAsync(x => x.SelectedIndex = intOldSelectedIndex, token);
+                    await cboTalents.DoThreadSafeAsync(x => x.SelectedIndex = intOldSelectedIndex, token).ConfigureAwait(false);
                     _blnLoading = blnOldLoading;
                 }
 
-                await cboTalents.DoThreadSafeAsync(x => x.Enabled = x.Items.Count > 1, token);
+                await cboTalents.DoThreadSafeAsync(x => x.Enabled = x.Items.Count > 1, token).ConfigureAwait(false);
             }
         }
 
         private async ValueTask PopulateMetavariants(CancellationToken token = default)
         {
-            string strSelectedMetatype = await lstMetatypes.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token);
+            string strSelectedMetatype = await lstMetatypes.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false);
 
             // Don't attempt to do anything if nothing is selected.
             if (!string.IsNullOrEmpty(strSelectedMetatype))
             {
-                string strSelectedHeritage = await cboHeritage.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token);
+                string strSelectedHeritage = await cboHeritage.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false);
 
                 XPathNavigator objXmlMetatype = _xmlBaseMetatypeDataNode.SelectSingleNode("metatypes/metatype[name = " + strSelectedMetatype.CleanXPath() + ']');
                 XPathNavigator objXmlMetatypeBP = null;
@@ -2397,7 +2487,7 @@ namespace Chummer
                     + " and (not(prioritytable) or prioritytable = " + _objCharacter.Settings.PriorityTable.CleanXPath() + ")]");
                 foreach (XPathNavigator xmlBaseMetatypePriority in xmlBaseMetatypePriorityList)
                 {
-                    if (xmlBaseMetatypePriorityList.Count == 1 || await xmlBaseMetatypePriority.SelectSingleNodeAndCacheExpressionAsync("prioritytable", token) != null)
+                    if (xmlBaseMetatypePriorityList.Count == 1 || await xmlBaseMetatypePriority.SelectSingleNodeAndCacheExpressionAsync("prioritytable", token).ConfigureAwait(false) != null)
                     {
                         objXmlMetatypeBP = xmlBaseMetatypePriority.SelectSingleNode("metatypes/metatype[name = " + strSelectedMetatype.CleanXPath() + ']');
                         break;
@@ -2409,30 +2499,30 @@ namespace Chummer
                     using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                                    out List<ListItem> lstMetavariants))
                     {
-                        lstMetavariants.Add(new ListItem(Guid.Empty, await LanguageManager.GetStringAsync("String_None", token: token)));
+                        lstMetavariants.Add(new ListItem(Guid.Empty, await LanguageManager.GetStringAsync("String_None", token: token).ConfigureAwait(false)));
                         // Retrieve the list of Metavariants for the selected Metatype.
                         foreach (XPathNavigator objXmlMetavariant in objXmlMetatype.Select(
-                                     "metavariants/metavariant[" + await _objCharacter.Settings.BookXPathAsync(token: token) + ']'))
+                                     "metavariants/metavariant[" + await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false) + ']'))
                         {
-                            string strName = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("name", token))?.Value
-                                             ?? await LanguageManager.GetStringAsync("String_Unknown", token: token);
+                            string strName = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("name", token).ConfigureAwait(false))?.Value
+                                             ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
                             if (objXmlMetatypeBP.SelectSingleNode(
                                     "metavariants/metavariant[name = " + strName.CleanXPath() + ']') != null)
                             {
                                 lstMetavariants.Add(new ListItem(
                                                         strName,
                                                         (await objXmlMetavariant
-                                                            .SelectSingleNodeAndCacheExpressionAsync("translate", token))?.Value
+                                                               .SelectSingleNodeAndCacheExpressionAsync("translate", token).ConfigureAwait(false))?.Value
                                                         ?? strName));
                             }
                         }
 
                         string strOldSelectedValue
-                            = await cboMetavariant.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token) ?? _objCharacter.Metavariant;
+                            = await cboMetavariant.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false) ?? _objCharacter.Metavariant;
                         bool blnOldLoading = _blnLoading;
                         _blnLoading = true;
-                        await cboMetavariant.PopulateWithListItemsAsync(lstMetavariants, token);
-                        await cboMetavariant.DoThreadSafeAsync(x => x.Enabled = lstMetavariants.Count > 1, token);
+                        await cboMetavariant.PopulateWithListItemsAsync(lstMetavariants, token).ConfigureAwait(false);
+                        await cboMetavariant.DoThreadSafeAsync(x => x.Enabled = lstMetavariants.Count > 1, token).ConfigureAwait(false);
                         _blnLoading = blnOldLoading;
                         await cboMetavariant.DoThreadSafeAsync(x =>
                         {
@@ -2440,69 +2530,69 @@ namespace Chummer
                                 x.SelectedValue = strOldSelectedValue;
                             if (x.SelectedIndex == -1)
                                 x.SelectedIndex = 0;
-                        }, token);
+                        }, token).ConfigureAwait(false);
 
                         // If the Metatype has Force enabled, show the Force NUD.
-                        string strEssMax = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("essmax", token))?.Value
+                        string strEssMax = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("essmax", token).ConfigureAwait(false))?.Value
                                            ?? string.Empty;
                         int intPos = strEssMax.IndexOf("D6", StringComparison.Ordinal);
-                        if (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("forcecreature", token) != null || intPos != -1)
+                        if (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("forcecreature", token).ConfigureAwait(false) != null || intPos != -1)
                         {
                             if (intPos != -1)
                             {
-                                string strD6 = await LanguageManager.GetStringAsync("String_D6", token: token);
+                                string strD6 = await LanguageManager.GetStringAsync("String_D6", token: token).ConfigureAwait(false);
                                 if (intPos > 0)
                                 {
                                     --intPos;
                                     await lblForceLabel.DoThreadSafeAsync(x => x.Text = strEssMax.Substring(intPos, 3)
-                                                                              .Replace("D6", strD6), token);
+                                                                              .Replace("D6", strD6), token).ConfigureAwait(false);
                                     await nudForce.DoThreadSafeAsync(x => x.Maximum
                                                                          = Convert.ToInt32(
                                                                              strEssMax[intPos],
-                                                                             GlobalSettings.InvariantCultureInfo) * 6, token);
+                                                                             GlobalSettings.InvariantCultureInfo) * 6, token).ConfigureAwait(false);
                                 }
                                 else
                                 {
-                                    await lblForceLabel.DoThreadSafeAsync(x => x.Text = 1.ToString(GlobalSettings.CultureInfo) + strD6, token);
-                                    await nudForce.DoThreadSafeAsync(x => x.Maximum = 6, token);
+                                    await lblForceLabel.DoThreadSafeAsync(x => x.Text = 1.ToString(GlobalSettings.CultureInfo) + strD6, token).ConfigureAwait(false);
+                                    await nudForce.DoThreadSafeAsync(x => x.Maximum = 6, token).ConfigureAwait(false);
                                 }
                             }
                             else
                             {
                                 lblForceLabel.Text = await LanguageManager.GetStringAsync(
-                                    await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("forceislevels", token) != null
+                                    await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("forceislevels", token).ConfigureAwait(false) != null
                                         ? "String_Level"
-                                        : "String_Force", token: token);
-                                await nudForce.DoThreadSafeAsync(x => x.Maximum = 100, token);
+                                        : "String_Force", token: token).ConfigureAwait(false);
+                                await nudForce.DoThreadSafeAsync(x => x.Maximum = 100, token).ConfigureAwait(false);
                             }
 
-                            await lblForceLabel.DoThreadSafeAsync(x => x.Visible = true, token);
-                            await nudForce.DoThreadSafeAsync(x => x.Visible = true, token);
+                            await lblForceLabel.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
+                            await nudForce.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
                         }
                         else
                         {
-                            await lblForceLabel.DoThreadSafeAsync(x => x.Visible = false, token);
-                            await nudForce.DoThreadSafeAsync(x => x.Visible = false, token);
+                            await lblForceLabel.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
+                            await nudForce.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
                         }
                     }
                 }
                 else
                 {
-                    await cboMetavariant.PopulateWithListItemsAsync(new ListItem("None", await LanguageManager.GetStringAsync("String_None", token: token)).Yield(), token);
-                    await cboMetavariant.DoThreadSafeAsync(x => x.Enabled = false, token);
+                    await cboMetavariant.PopulateWithListItemsAsync(new ListItem("None", await LanguageManager.GetStringAsync("String_None", token: token).ConfigureAwait(false)).Yield(), token).ConfigureAwait(false);
+                    await cboMetavariant.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
 
-                    await lblForceLabel.DoThreadSafeAsync(x => x.Visible = false, token);
-                    await nudForce.DoThreadSafeAsync(x => x.Visible = false, token);
+                    await lblForceLabel.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
+                    await nudForce.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
                 }
             }
             else
             {
                 // Clear the Metavariant list if nothing is currently selected.
-                await cboMetavariant.PopulateWithListItemsAsync(new ListItem("None", await LanguageManager.GetStringAsync("String_None", token: token)).Yield(), token);
-                await cboMetavariant.DoThreadSafeAsync(x => x.Enabled = false, token);
+                await cboMetavariant.PopulateWithListItemsAsync(new ListItem("None", await LanguageManager.GetStringAsync("String_None", token: token).ConfigureAwait(false)).Yield(), token).ConfigureAwait(false);
+                await cboMetavariant.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
 
-                await lblForceLabel.DoThreadSafeAsync(x => x.Visible = false, token);
-                await nudForce.DoThreadSafeAsync(x => x.Visible = false, token);
+                await lblForceLabel.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
+                await nudForce.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
             }
         }
 
@@ -2511,34 +2601,34 @@ namespace Chummer
         /// </summary>
         private async ValueTask PopulateMetatypes(CancellationToken token = default)
         {
-            string strSelectedCategory = await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token);
+            string strSelectedCategory = await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false);
             if (!string.IsNullOrEmpty(strSelectedCategory))
             {
                 using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstMetatype))
                 {
                     XPathNodeIterator xmlBaseMetatypePriorityList = _xmlBasePriorityDataNode.Select(
                         "priorities/priority[category = \"Heritage\" and value = "
-                        + (await cboHeritage.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token) ?? string.Empty).CleanXPath()
+                        + (await cboHeritage.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false) ?? string.Empty).CleanXPath()
                         + " and (not(prioritytable) or prioritytable = "
                         + _objCharacter.Settings.PriorityTable.CleanXPath() + ")]");
                     foreach (XPathNavigator xmlBaseMetatypePriority in xmlBaseMetatypePriorityList)
                     {
                         if (xmlBaseMetatypePriorityList.Count == 1
-                            || await xmlBaseMetatypePriority.SelectSingleNodeAndCacheExpressionAsync("prioritytable", token) != null)
+                            || await xmlBaseMetatypePriority.SelectSingleNodeAndCacheExpressionAsync("prioritytable", token).ConfigureAwait(false) != null)
                         {
                             foreach (XPathNavigator objXmlMetatype in _xmlBaseMetatypeDataNode.Select(
-                                         "metatypes/metatype[(" + await _objCharacter.Settings.BookXPathAsync(token: token)
+                                         "metatypes/metatype[(" + await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false)
                                                                 + ") and category = " + strSelectedCategory.CleanXPath()
                                                                 + ']'))
                             {
-                                string strName = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("name", token))?.Value;
+                                string strName = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("name", token).ConfigureAwait(false))?.Value;
                                 if (!string.IsNullOrEmpty(strName)
                                     && xmlBaseMetatypePriority.SelectSingleNode(
                                         "metatypes/metatype[name = " + strName.CleanXPath() + ']') != null)
                                 {
                                     lstMetatype.Add(new ListItem(
                                                         strName,
-                                                        (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("translate", token))
+                                                        (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("translate", token).ConfigureAwait(false))
                                                                       ?.Value ?? strName));
                                 }
                             }
@@ -2548,10 +2638,10 @@ namespace Chummer
                     }
 
                     lstMetatype.Sort(CompareListItems.CompareNames);
-                    string strOldSelectedValue = await lstMetatypes.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token) ?? _objCharacter.Metatype;
+                    string strOldSelectedValue = await lstMetatypes.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false) ?? _objCharacter.Metatype;
                     bool blnOldLoading = _blnLoading;
                     _blnLoading = true;
-                    await lstMetatypes.PopulateWithListItemsAsync(lstMetatype, token);
+                    await lstMetatypes.PopulateWithListItemsAsync(lstMetatype, token).ConfigureAwait(false);
                     _blnLoading = blnOldLoading;
                     await lstMetatypes.DoThreadSafeAsync(x =>
                     {
@@ -2559,18 +2649,18 @@ namespace Chummer
                             x.SelectedValue = strOldSelectedValue;
                         if (x.SelectedIndex == -1 && lstMetatype.Count > 0)
                             x.SelectedIndex = 0;
-                    }, token);
+                    }, token).ConfigureAwait(false);
                 }
 
                 if (strSelectedCategory.EndsWith("Spirits", StringComparison.Ordinal))
                 {
-                    if (!await chkPossessionBased.DoThreadSafeFuncAsync(x => x.Visible, token) && !string.IsNullOrEmpty(_strCurrentPossessionMethod))
+                    if (!await chkPossessionBased.DoThreadSafeFuncAsync(x => x.Visible, token).ConfigureAwait(false) && !string.IsNullOrEmpty(_strCurrentPossessionMethod))
                     {
-                        await chkPossessionBased.DoThreadSafeAsync(x => x.Checked = true, token);
-                        await cboPossessionMethod.DoThreadSafeAsync(x => x.SelectedValue = _strCurrentPossessionMethod, token);
+                        await chkPossessionBased.DoThreadSafeAsync(x => x.Checked = true, token).ConfigureAwait(false);
+                        await cboPossessionMethod.DoThreadSafeAsync(x => x.SelectedValue = _strCurrentPossessionMethod, token).ConfigureAwait(false);
                     }
-                    await chkPossessionBased.DoThreadSafeAsync(x => x.Visible = true, token);
-                    await cboPossessionMethod.DoThreadSafeAsync(x => x.Visible = false, token);
+                    await chkPossessionBased.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
+                    await cboPossessionMethod.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
                 }
                 else
                 {
@@ -2578,19 +2668,19 @@ namespace Chummer
                     {
                         x.Visible = false;
                         x.Checked = false;
-                    }, token);
-                    await cboPossessionMethod.DoThreadSafeAsync(x => x.Visible = false, token);
+                    }, token).ConfigureAwait(false);
+                    await cboPossessionMethod.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
                 }
             }
             else
             {
-                await lstMetatypes.DoThreadSafeAsync(x => x.DataSource = null, token);
+                await lstMetatypes.DoThreadSafeAsync(x => x.DataSource = null, token).ConfigureAwait(false);
                 await chkPossessionBased.DoThreadSafeAsync(x =>
                 {
                     x.Visible = false;
                     x.Checked = false;
-                }, token);
-                await cboPossessionMethod.DoThreadSafeAsync(x => x.Visible = false, token);
+                }, token).ConfigureAwait(false);
+                await cboPossessionMethod.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
             }
         }
 
@@ -2601,26 +2691,26 @@ namespace Chummer
                                                             out HashSet<string> setRemoveCategories))
             {
                 foreach (XPathNavigator objXmlCategory in await _xmlBaseMetatypeDataNode.SelectAndCacheExpressionAsync(
-                             "categories/category", token))
+                             "categories/category", token).ConfigureAwait(false))
                 {
                     XPathNodeIterator xmlBaseMetatypePriorityList = _xmlBasePriorityDataNode.Select(
                         "priorities/priority[category = \"Heritage\" and value = "
-                        + (await cboHeritage.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token) ?? string.Empty).CleanXPath()
+                        + (await cboHeritage.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false) ?? string.Empty).CleanXPath()
                         + " and (not(prioritytable) or prioritytable = "
                         + _objCharacter.Settings.PriorityTable.CleanXPath() + ")]");
                     bool blnRemoveCategory = true;
                     foreach (XPathNavigator xmlBaseMetatypePriority in xmlBaseMetatypePriorityList)
                     {
                         if (xmlBaseMetatypePriorityList.Count == 1
-                            || await xmlBaseMetatypePriority.SelectSingleNodeAndCacheExpressionAsync("prioritytable", token) != null)
+                            || await xmlBaseMetatypePriority.SelectSingleNodeAndCacheExpressionAsync("prioritytable", token).ConfigureAwait(false) != null)
                         {
                             foreach (XPathNavigator objXmlMetatype in _xmlBaseMetatypeDataNode.Select(
                                          "metatypes/metatype[category = " + objXmlCategory.Value.CleanXPath() + " and ("
-                                         + await _objCharacter.Settings.BookXPathAsync(token: token) + ")]"))
+                                         + await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false) + ")]"))
                             {
                                 if (xmlBaseMetatypePriority.SelectSingleNode(
                                         "metatypes/metatype[name = "
-                                        + ((await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("name", token))?.Value
+                                        + ((await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("name", token).ConfigureAwait(false))?.Value
                                            ?? string.Empty).CleanXPath() + ']') != null)
                                 {
                                     blnRemoveCategory = false;
@@ -2641,7 +2731,7 @@ namespace Chummer
                 using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstCategory))
                 {
                     foreach (XPathNavigator objXmlCategory in await _xmlBaseMetatypeDataNode.SelectAndCacheExpressionAsync(
-                                 "categories/category", token))
+                                 "categories/category", token).ConfigureAwait(false))
                     {
                         string strInnerText = objXmlCategory.Value;
 
@@ -2651,16 +2741,16 @@ namespace Chummer
                             lstCategory.All(objItem => objItem.Value.ToString() != strInnerText))
                         {
                             lstCategory.Add(new ListItem(strInnerText,
-                                                         (await objXmlCategory.SelectSingleNodeAndCacheExpressionAsync("@translate", token))
+                                                         (await objXmlCategory.SelectSingleNodeAndCacheExpressionAsync("@translate", token).ConfigureAwait(false))
                                                                        ?.Value ?? strInnerText));
                         }
                     }
 
                     lstCategory.Sort(CompareListItems.CompareNames);
-                    string strOldSelected = await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token) ?? _objCharacter.MetatypeCategory;
+                    string strOldSelected = await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false) ?? _objCharacter.MetatypeCategory;
                     bool blnOldLoading = _blnLoading;
                     _blnLoading = true;
-                    await cboCategory.PopulateWithListItemsAsync(lstCategory, token);
+                    await cboCategory.PopulateWithListItemsAsync(lstCategory, token).ConfigureAwait(false);
                     _blnLoading = blnOldLoading;
                     await cboCategory.DoThreadSafeAsync(x =>
                     {
@@ -2668,7 +2758,7 @@ namespace Chummer
                             x.SelectedValue = strOldSelected;
                         if (x.SelectedIndex == -1 && lstCategory.Count > 0)
                             x.SelectedIndex = 0;
-                    }, token);
+                    }, token).ConfigureAwait(false);
                 }
             }
         }
@@ -2739,7 +2829,7 @@ namespace Chummer
 
         private async void OpenSourceFromLabel(object sender, EventArgs e)
         {
-            await CommonFunctions.OpenPdfFromControl(sender);
+            await CommonFunctions.OpenPdfFromControl(sender).ConfigureAwait(false);
         }
 
         #endregion Custom Methods
