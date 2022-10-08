@@ -194,6 +194,7 @@ namespace Chummer
 
                     void HandleCrash(object o, UnhandledExceptionEventArgs exa)
                     {
+                        DateTime datCrashDateTime = DateTime.UtcNow;
                         if (!(exa.ExceptionObject is Exception ex))
                             return;
                         try
@@ -227,7 +228,7 @@ namespace Chummer
                         }
 
                         Utils.BreakIfDebug();
-                        CrashHandler.WebMiniDumpHandler(ex);
+                        CrashHandler.WebMiniDumpHandler(ex, datCrashDateTime);
                     }
 
                     if (!Utils.IsUnitTest)

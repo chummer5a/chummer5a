@@ -42,16 +42,20 @@ namespace Chummer
 
             //Log.IsLoggerEnabled = false; //Make sure log object is not used
 
-            try
+            string strChummerLog = Path.Combine(Utils.GetStartupPath, "chummerlog.txt");
+            if (File.Exists(strChummerLog))
             {
-                string strFile = Path.Combine(Utils.GetStartupPath, "chummerlog.txt");
-                using (FileStream objFileStream = new FileStream(strFile, FileMode.Open, FileAccess.Read, FileShare.Read))
-                using (StreamReader objStream = new StreamReader(objFileStream, Encoding.UTF8, true))
-                    report.AddData("chummerlog.txt", objStream.BaseStream);
-            }
-            catch (Exception ex)
-            {
-                report.AddData("chummerlog.txt", ex.ToString());
+                try
+                {
+                    using (FileStream objFileStream
+                           = new FileStream(strChummerLog, FileMode.Open, FileAccess.Read, FileShare.Read))
+                    using (StreamReader objStream = new StreamReader(objFileStream, Encoding.UTF8, true))
+                        report.AddData("chummerlog.txt", objStream.BaseStream);
+                }
+                catch (Exception ex)
+                {
+                    report.AddData("chummerlog.txt", ex.ToString());
+                }
             }
 
             //Considering doing some magic with

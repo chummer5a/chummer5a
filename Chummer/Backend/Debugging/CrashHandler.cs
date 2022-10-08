@@ -25,6 +25,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
+using System.Text;
 using System.Windows.Forms;
 using Microsoft.Win32;
 using Newtonsoft.Json;
@@ -172,7 +173,7 @@ namespace Chummer.Backend
                 string strContents;
                 try
                 {
-                    strContents = File.ReadAllText(strFileName);
+                    strContents = File.ReadAllText(strFileName, Encoding.UTF8);
                 }
                 catch (Exception e)
                 {
@@ -199,7 +200,7 @@ namespace Chummer.Backend
             }
         }
 
-        public static void WebMiniDumpHandler(Exception ex)
+        public static void WebMiniDumpHandler(Exception ex, DateTime datCrashDateTime)
         {
             try
             {
@@ -209,9 +210,11 @@ namespace Chummer.Backend
                     dump.AddFile(strSettingFile);
                 }
 
-                dump.AddFile(Path.Combine(Utils.GetStartupPath, "chummerlog.txt"));
+                string strChummerLog = Path.Combine(Utils.GetStartupPath, "chummerlog.txt");
+                if (File.Exists(strChummerLog))
+                    dump.AddFile(strChummerLog);
 
-                string strJsonPath = Path.Combine(Utils.GetStartupPath, "latest_crash_json.txt");
+                string strJsonPath = Path.Combine(Utils.GetStartupPath, "chummer_crash_" + datCrashDateTime.ToFileTimeUtc() + ".json");
                 using (FileStream objFileStream = new FileStream(strJsonPath, FileMode.Create, FileAccess.Write, FileShare.None))
                 using (StreamWriter objStreamWriter = new StreamWriter(objFileStream))
                 using (JsonWriter objJsonWriter = new JsonTextWriter(objStreamWriter))
@@ -221,10 +224,10 @@ namespace Chummer.Backend
 
 #if DEBUG
                 using (Process crashHandler
-                       = Process.Start(Path.Combine(Utils.GetStartupPath, "CrashHandler.exe"), "crash \"" + strJsonPath + "\" --debug"))
+                       = Process.Start(Path.Combine(Utils.GetStartupPath, "CrashHandler.exe"), "crash \"" + strJsonPath + "\" \"" + datCrashDateTime.ToString(GlobalSettings.InvariantCultureInfo) + "\" --debug"))
 #else
                 using (Process crashHandler
-                       = Process.Start(Path.Combine(Utils.GetStartupPath, "CrashHandler.exe"), "crash \"" + strJsonPath + "\""))
+                       = Process.Start(Path.Combine(Utils.GetStartupPath, "CrashHandler.exe"), "crash \"" + strJsonPath + "\" \"" + datCrashDateTime.ToString(GlobalSettings.InvariantCultureInfo) + "\""))
 #endif
                     crashHandler?.WaitForExit();
             }
