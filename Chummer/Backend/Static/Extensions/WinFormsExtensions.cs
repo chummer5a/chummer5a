@@ -1767,7 +1767,7 @@ namespace Chummer
                                 Utils.ListItemListPool.Return(lstInnerToReturn);
                         };
                     }
-                    
+
                     blnDoReturnList = false;
                     lsbThis.DataSource = lstItemsToSet;
                     if (lstOldItems != null)
@@ -1845,7 +1845,7 @@ namespace Chummer
                                 Utils.ListItemListPool.Return(lstInnerToReturn);
                         };
                     }
-                    
+
                     blnDoReturnList = false;
                     cboThis.DataSource = lstItemsToSet;
                     if (lstOldItems != null)
@@ -1923,7 +1923,7 @@ namespace Chummer
                                 Utils.ListItemListPool.Return(lstInnerToReturn);
                         };
                     }
-                    
+
                     blnDoReturnList = false;
                     cboThis.DataSource = lstItemsToSet;
                     if (lstOldItems != null)

@@ -6526,7 +6526,7 @@ namespace Chummer
                             objExpense.Create(0,
                                               await LanguageManager.GetStringAsync("String_ExpenseAddNegativeQuality", token: GenericToken) +
                                               await LanguageManager.GetStringAsync("String_Space", token: GenericToken) +
-                                              objQuality.GetCurrentDisplayNameShortAsync(GenericToken), ExpenseType.Karma, DateTime.Now);
+                                              await objQuality.GetCurrentDisplayNameShortAsync(GenericToken), ExpenseType.Karma, DateTime.Now);
                             await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken);
 
                             ExpenseUndo objUndo = new ExpenseUndo();
@@ -14740,12 +14740,13 @@ namespace Chummer
                         return;
                     }
 
-                    if (!await CommonFunctions.ConfirmKarmaExpenseAsync(string.Format(GlobalSettings.CultureInfo,
-                            await LanguageManager.GetStringAsync(
-                                "Message_ConfirmKarmaExpenseFocus")
-                            , intKarmaExpense.ToString(
-                                GlobalSettings.CultureInfo)
-                            , await LanguageManager.GetStringAsync("String_StackedFocus") + await LanguageManager.GetStringAsync("String_Space") + objStackedFocus.GetCurrentDisplayNameAsync(GenericToken))))
+                    if (!await CommonFunctions.ConfirmKarmaExpenseAsync(
+                            string.Format(GlobalSettings.CultureInfo,
+                                          await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpenseFocus"),
+                                          intKarmaExpense.ToString(GlobalSettings.CultureInfo),
+                                          await LanguageManager.GetStringAsync("String_StackedFocus")
+                                          + await LanguageManager.GetStringAsync("String_Space")
+                                          + await objStackedFocus.GetCurrentDisplayNameAsync(GenericToken))))
                     {
                         // Clear created improvements
                         objStackGear.ChangeEquippedStatus(false);
