@@ -15554,8 +15554,8 @@ namespace Chummer
                                                                    strImprovedName: strCategory, token: token).ConfigureAwait(false);
 
                 bool blnCreated = await GetCreatedAsync(token).ConfigureAwait(false);
-                decReturn += await Improvements.SumAsync(
-                    x => x.ImproveType != Improvement.ImprovementType.NewSpellKarmaCost && x.Enabled,
+                decReturn += await (await GetImprovementsAsync(token).ConfigureAwait(false)).SumAsync(
+                    x => x.ImproveType == Improvement.ImprovementType.NewSpellKarmaCost && x.Enabled,
                     objLoopImprovement =>
                     {
                         switch (objLoopImprovement.Condition)
@@ -15584,9 +15584,8 @@ namespace Chummer
 
                 await (await GetImprovementsAsync(token).ConfigureAwait(false)).ForEachAsync(objLoopImprovement =>
                 {
-                    if (objLoopImprovement.ImproveType != Improvement.ImprovementType.NewSpellKarmaCostMultiplier)
-                        return;
-                    if (!objLoopImprovement.Enabled)
+                    if (objLoopImprovement.ImproveType != Improvement.ImprovementType.NewSpellKarmaCostMultiplier
+                        || !objLoopImprovement.Enabled)
                         return;
                     switch (objLoopImprovement.Condition)
                     {
@@ -15654,21 +15653,20 @@ namespace Chummer
                 decimal decMultiplier = 1.0m;
                 await (await GetImprovementsAsync(token).ConfigureAwait(false)).ForEachAsync(objLoopImprovement =>
                 {
-                    if ((string.IsNullOrEmpty(objLoopImprovement.Condition)
-                         || (objLoopImprovement.Condition == "career") == blnCreated
-                         || (objLoopImprovement.Condition == "create") != blnCreated)
-                        && objLoopImprovement.Enabled)
+                    if ((!string.IsNullOrEmpty(objLoopImprovement.Condition)
+                         && (objLoopImprovement.Condition == "career") != blnCreated
+                         && (objLoopImprovement.Condition == "create") == blnCreated)
+                        || !objLoopImprovement.Enabled)
+                        return;
+                    switch (objLoopImprovement.ImproveType)
                     {
-                        switch (objLoopImprovement.ImproveType)
-                        {
-                            case Improvement.ImprovementType.NewComplexFormKarmaCost:
-                                decReturn += objLoopImprovement.Value;
-                                break;
+                        case Improvement.ImprovementType.NewComplexFormKarmaCost:
+                            decReturn += objLoopImprovement.Value;
+                            break;
 
-                            case Improvement.ImprovementType.NewComplexFormKarmaCostMultiplier:
-                                decMultiplier *= objLoopImprovement.Value / 100.0m;
-                                break;
-                        }
+                        case Improvement.ImprovementType.NewComplexFormKarmaCostMultiplier:
+                            decMultiplier *= objLoopImprovement.Value / 100.0m;
+                            break;
                     }
                 }, token).ConfigureAwait(false);
 

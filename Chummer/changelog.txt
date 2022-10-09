@@ -7,6 +7,7 @@ Application Changes:
 - Added the option to character settings to apply a custom post-processing effect (using Chummer's document-invariant XPath processor) to essence modifiers after they have all been collected but before they are applied to 'ware essence costs.
 - Fixed up various irregularities from dropdown box items that would creep in as Chummer open for longer and longer.
 - Vehicle mods that override a vehicle's armor, e.g. armor mods under the drone modding rules of Rigger 5.0, now work properly.
+- The karma cost of learning new spells is no longer much higher than it should be.
 
 Data Changes:
 - Added bonus nodes for Shooter (The Soldier) paragon's Compiling dice pool penalty and +1 limit for attack actions. Fixes #4935.
