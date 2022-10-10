@@ -31,7 +31,8 @@ namespace Chummer
 {
     public partial class CreateCustomDrug : Form
     {
-        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
+        private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
+        private static Logger Log => s_ObjLogger.Value;
         private readonly Dictionary<string, DrugComponent> _dicDrugComponents = new Dictionary<string, DrugComponent>();
         private readonly List<DrugNodeData> _lstSelectedDrugComponents;
         private readonly List<ListItem> _lstGrade = Utils.ListItemListPool.Get();

@@ -29,7 +29,8 @@ namespace Chummer
 {
     public static class Timekeeper
     {
-        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
+        private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
+        private static Logger Log => s_ObjLogger.Value;
         private static readonly Stopwatch s_Time = new Stopwatch();
         private static readonly LockingDictionary<string, TimeSpan> s_DictionaryStarts = new LockingDictionary<string, TimeSpan>();
         private static readonly LockingDictionary<string, Tuple<TimeSpan, int>> s_DictionaryStatistics = new LockingDictionary<string, Tuple<TimeSpan, int>>();

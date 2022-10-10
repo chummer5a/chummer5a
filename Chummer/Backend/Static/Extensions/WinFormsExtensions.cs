@@ -37,7 +37,8 @@ namespace Chummer
 {
     public static class WinFormsExtensions
     {
-        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
+        private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
+        private static Logger Log => s_ObjLogger.Value;
 
         #region Forms Extensions
 

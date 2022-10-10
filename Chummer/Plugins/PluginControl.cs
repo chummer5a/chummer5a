@@ -73,7 +73,8 @@ namespace Chummer.Plugins
 
     public class PluginControl : IDisposable
     {
-        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
+        private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
+        private static Logger Log => s_ObjLogger.Value;
         private static CompositionContainer _container;
         public static CompositionContainer Container => _container;
         public string PathToPlugins { get; set; }

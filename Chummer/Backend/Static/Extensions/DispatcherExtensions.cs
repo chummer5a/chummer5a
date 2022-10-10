@@ -29,7 +29,8 @@ namespace Chummer
 {
     public static class DispatcherExtensions
     {
-        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
+        private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
+        private static Logger Log => s_ObjLogger.Value;
 
         /// <summary>
         /// Runs code on a DispatcherObject (i.e. any WPF control) in a thread-safe manner and waits for it to complete.

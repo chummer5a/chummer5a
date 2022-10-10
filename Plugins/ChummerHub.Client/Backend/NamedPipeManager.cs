@@ -31,7 +31,8 @@ namespace ChummerHub.Client.Backend
     /// </summary>
     public class NamedPipeManager : IDisposable
     {
-        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
+        private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
+        private static Logger Log => s_ObjLogger.Value;
         public string NamedPipeName { get; }
         public event Action<string> ReceiveString;
 

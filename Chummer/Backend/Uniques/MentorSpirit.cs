@@ -32,7 +32,8 @@ namespace Chummer
     [DebuggerDisplay("{DisplayNameShort(GlobalSettings.DefaultLanguage)}")]
     public class MentorSpirit : IHasInternalId, IHasName, IHasXmlDataNode, IHasSource
     {
-        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
+        private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
+        private static Logger Log => s_ObjLogger.Value;
         private Guid _guiID;
         private string _strName = string.Empty;
         private string _strAdvantage = string.Empty;

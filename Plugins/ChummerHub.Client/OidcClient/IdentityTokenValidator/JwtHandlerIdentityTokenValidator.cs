@@ -16,13 +16,14 @@ namespace IdentityModel.OidcClient
     public class JwtHandlerIdentityTokenValidator : IIdentityTokenValidator
     {
 
-        private static readonly Logger s_Logger = LogManager.GetCurrentClassLogger();
+        private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
+        private static Logger Log => s_ObjLogger.Value;
         /// <inheritdoc />
         public Task<IdentityTokenValidationResult> ValidateAsync(string identityToken, OidcClientOptions options, CancellationToken cancellationToken = default)
         {
             //var logger = options.LoggerFactory.CreateLogger<JwtHandlerIdentityTokenValidator>();
          
-            s_Logger.Trace("Validate");
+            Log.Trace("Validate");
             
             // setup general validation parameters
             TokenValidationParameters parameters = new TokenValidationParameters
@@ -65,7 +66,7 @@ namespace IdentityModel.OidcClient
                     });
                 }
 
-                s_Logger.Info("Identity token is not signed. This is allowed by configuration.");
+                Log.Info("Identity token is not signed. This is allowed by configuration.");
                 parameters.RequireSignedTokens = false;
             }
             else
@@ -80,12 +81,12 @@ namespace IdentityModel.OidcClient
                 }
             }
 
-            TokenValidationResult result = ValidateSignature(identityToken, handler, parameters, options, s_Logger);
+            TokenValidationResult result = ValidateSignature(identityToken, handler, parameters, options, Log);
             if (!result.IsValid)
             {
                 if (result.Exception is SecurityTokenSignatureKeyNotFoundException)
                 {
-                    s_Logger.Warn("Key for validating token signature cannot be found. Refreshing keyset.");
+                    Log.Warn("Key for validating token signature cannot be found. Refreshing keyset.");
 
                     return Task.FromResult(new IdentityTokenValidationResult
                     {

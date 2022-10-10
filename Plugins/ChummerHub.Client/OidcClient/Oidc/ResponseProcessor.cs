@@ -18,7 +18,8 @@ namespace IdentityModel.OidcClient
     internal class ResponseProcessor
     {
         private readonly OidcClientOptions _options;
-        private readonly Logger _logger = LogManager.GetCurrentClassLogger(); 
+        private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
+        private static Logger Log => s_ObjLogger.Value;
         private readonly CryptoHelper _crypto;
         private readonly Func<CancellationToken, Task> _refreshKeysAsync;
 
@@ -26,7 +27,7 @@ namespace IdentityModel.OidcClient
         {
             _options = options;
             _refreshKeysAsync = refreshKeysAsync;
-            //_logger = options.LoggerFactory.CreateLogger<ResponseProcessor>();
+            //Log = options.LoggerFactory.CreateLogger<ResponseProcessor>();
             
             _crypto = new CryptoHelper(options);
         }
@@ -37,7 +38,7 @@ namespace IdentityModel.OidcClient
             Parameters backChannelParameters, 
             CancellationToken cancellationToken = default)
         {
-            _logger.Trace("ProcessResponseAsync");
+            Log.Trace("ProcessResponseAsync");
 
             //////////////////////////////////////////////////////
             // validate common front-channel parameters
@@ -67,7 +68,7 @@ namespace IdentityModel.OidcClient
             Parameters backChannelParameters, 
             CancellationToken cancellationToken)
         {
-            _logger.Trace("ProcessCodeFlowResponseAsync");
+            Log.Trace("ProcessCodeFlowResponseAsync");
 
             //////////////////////////////////////////////////////
             // process back-channel response
@@ -101,7 +102,7 @@ namespace IdentityModel.OidcClient
 
         internal async Task<TokenResponseValidationResult> ValidateTokenResponseAsync(TokenResponse response, AuthorizeState state, bool requireIdentityToken, CancellationToken cancellationToken = default)
         {
-            _logger.Trace("ValidateTokenResponse");
+            Log.Trace("ValidateTokenResponse");
 
             // token response must contain an access token
             if (response.AccessToken.IsMissing())
@@ -177,7 +178,7 @@ namespace IdentityModel.OidcClient
 
         private async Task<TokenResponse> RedeemCodeAsync(string code, AuthorizeState state, Parameters backChannelParameters, CancellationToken cancellationToken)
         {
-            _logger.Trace("RedeemCodeAsync");
+            Log.Trace("RedeemCodeAsync");
 
             HttpClient client = _options.CreateClient();
             TokenResponse tokenResult = await client.RequestAuthorizationCodeTokenAsync(new AuthorizationCodeTokenRequest

@@ -25,7 +25,8 @@ namespace SimpleHttpServer
 
         private readonly List<Route> _routes = new List<Route>();
 
-        private static readonly Logger s_LOG = LogManager.GetCurrentClassLogger();
+        private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
+        private static Logger Log => s_ObjLogger.Value;
 
         #endregion
 
@@ -51,7 +52,7 @@ namespace SimpleHttpServer
                     Settings.Default.Save();
                 }
 
-                s_LOG.Info("{0} {1}", response.StatusCode, request.Url);
+                Log.Info("{0} {1}", response.StatusCode, request.Url);
                 // build a default response for errors
                 if (response.Content == null)
                 {
@@ -179,13 +180,13 @@ namespace SimpleHttpServer
                 }
                 catch (Exception ex)
                 {
-                    s_LOG.Error(ex);
+                    Log.Error(ex);
                     return HttpBuilder.InternalServerError();
                 }
             }
             catch(Exception ex2)
             {
-                s_LOG.Error(ex2);
+                Log.Error(ex2);
                 return HttpBuilder.InternalServerError();
             }
         }

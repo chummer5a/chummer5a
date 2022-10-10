@@ -34,7 +34,8 @@ namespace Chummer
         private static readonly Lazy<ImageCodecInfo> s_LzyJpegEncoder =
             new Lazy<ImageCodecInfo>(() => GetEncoder(ImageFormat.Jpeg));
 
-        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
+        private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
+        private static Logger Log => s_ObjLogger.Value;
 
         /// <summary>
         /// Takes a Base64 String that is meant to represent an Image and turns it into a Base64 String that is meant to represent a JPEG

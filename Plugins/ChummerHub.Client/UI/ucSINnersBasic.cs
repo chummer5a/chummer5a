@@ -32,7 +32,8 @@ namespace ChummerHub.Client.UI
 {
     public partial class ucSINnersBasic : UserControl
     {
-        private readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
+        private static Logger Log => s_ObjLogger.Value;
         private ucSINnersUserControl myUC { get; set; }
 
         public ucSINnersBasic()

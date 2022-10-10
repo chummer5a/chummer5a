@@ -37,7 +37,8 @@ namespace Chummer
 {
     public static class ImprovementManager
     {
-        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
+        private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
+        private static Logger Log => s_ObjLogger.Value;
 
         // String that will be used to limit the selection in Pick forms.
         private static string _strLimitSelection = string.Empty;

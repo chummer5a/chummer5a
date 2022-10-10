@@ -35,7 +35,8 @@ namespace Chummer
 {
     public partial class ChummerUpdater : Form
     {
-        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
+        private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
+        private static Logger Log => s_ObjLogger.Value;
         private bool _blnSilentMode;
         private bool _blnSilentModeUpdateWasDenied;
         private string _strDownloadFile = string.Empty;

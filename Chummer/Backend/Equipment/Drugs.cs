@@ -36,7 +36,8 @@ namespace Chummer.Backend.Equipment
 {
     public sealed class Drug : IHasName, IHasXmlDataNode, ICanSort, IHasStolenProperty, ICanRemove, IDisposable
     {
-        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
+        private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
+        private static Logger Log => s_ObjLogger.Value;
         private Guid _guiSourceID = Guid.Empty;
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -1459,7 +1460,8 @@ namespace Chummer.Backend.Equipment
     /// </summary>
     public class DrugComponent : IHasName, IHasInternalId, IHasXmlDataNode
     {
-        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
+        private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
+        private static Logger Log => s_ObjLogger.Value;
         private Guid _guidId;
         private Guid _guiSourceID;
         private string _strName;

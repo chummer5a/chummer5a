@@ -44,7 +44,8 @@ namespace Chummer
     public sealed partial class ChummerMainForm : Form
     {
         private bool _blnAbleToReceiveData;
-        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
+        private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
+        private static Logger Log => s_ObjLogger.Value;
         private ChummerUpdater _frmUpdate;
         private readonly ThreadSafeObservableCollection<CharacterShared> _lstOpenCharacterEditorForms
             = new ThreadSafeObservableCollection<CharacterShared>();

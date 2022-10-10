@@ -22,7 +22,8 @@ namespace SimpleHttpServer
 
         #endregion
 
-        private static readonly Logger log = LogManager.GetCurrentClassLogger();
+        private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
+        private static Logger Log => s_ObjLogger.Value;
 
         #region Public Methods
         public HttpServer(int port, List<Route> routes)
@@ -58,7 +59,7 @@ namespace SimpleHttpServer
             }
             catch(Exception e)
             {
-                log.Error(e);
+                Log.Error(e);
             }
             
         }

@@ -35,7 +35,8 @@ namespace Chummer
 {
     public partial class EditCharacterSettings : Form
     {
-        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
+        private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
+        private static Logger Log => s_ObjLogger.Value;
         private readonly CharacterSettings _objCharacterSettings;
         private CharacterSettings _objReferenceCharacterSettings;
         private readonly List<ListItem> _lstSettings = Utils.ListItemListPool.Get();

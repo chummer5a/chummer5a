@@ -256,7 +256,8 @@ namespace Chummer
         private static readonly HashSet<string> s_SetDataDirectories = new HashSet<string>(Utils.GetDataFolderPath.Yield());
         private static readonly Dictionary<string, HashSet<string>> s_DicPathsWithCustomFiles = new Dictionary<string, HashSet<string>>();
 
-        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
+        private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
+        private static Logger Log => s_ObjLogger.Value;
 
         #region Methods
 

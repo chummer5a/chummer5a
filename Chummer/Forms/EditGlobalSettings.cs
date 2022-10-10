@@ -39,7 +39,8 @@ namespace Chummer
 {
     public partial class EditGlobalSettings : Form
     {
-        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
+        private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
+        private static Logger Log => s_ObjLogger.Value;
 
         // List of custom data directories possible to be added to a character
         private readonly HashSet<CustomDataDirectoryInfo> _setCustomDataDirectoryInfos;

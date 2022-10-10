@@ -31,8 +31,9 @@ namespace SamplePlugin
 {
     public class MySamplePlugin : IPlugin
     {
-        //Just use NLog, like we all do... or don'T and implement your own logging...
-        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
+        //Just use NLog, like we all do... or don't and implement your own logging...
+        private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
+        private static Logger Log => s_ObjLogger.Value;
 
         //If you want this plugin NOT to be visible with the default "SamplePlugin.MySamplePlugin"
         public override string ToString()

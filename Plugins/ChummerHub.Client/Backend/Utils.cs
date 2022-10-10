@@ -49,7 +49,8 @@ namespace ChummerHub.Client.Backend
 {
     public static class StaticUtils
     {
-        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
+        private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
+        private static Logger Log => s_ObjLogger.Value;
 
         public static Type GetListType(object someList)
         {
@@ -467,7 +468,8 @@ namespace ChummerHub.Client.Backend
 
     public class Utils
     {
-        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
+        private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
+        private static Logger Log => s_ObjLogger.Value;
 
         public Utils()
         {

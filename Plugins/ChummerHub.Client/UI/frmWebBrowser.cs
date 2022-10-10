@@ -30,7 +30,8 @@ namespace ChummerHub.Client.UI
 {
     public partial class frmWebBrowser : Form
     {
-        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
+        private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
+        private static Logger Log => s_ObjLogger.Value;
         public frmWebBrowser()
         {
             InitializeComponent();

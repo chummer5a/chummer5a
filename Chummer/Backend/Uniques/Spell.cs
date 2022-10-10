@@ -42,7 +42,8 @@ namespace Chummer
     [DebuggerDisplay("{DisplayName(GlobalSettings.DefaultLanguage)}")]
     public sealed class Spell : IHasInternalId, IHasName, IHasXmlDataNode, IHasNotes, ICanRemove, IHasSource, IDisposable
     {
-        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
+        private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
+        private static Logger Log => s_ObjLogger.Value;
         private Guid _guiID;
         private Guid _guiSourceID = Guid.Empty;
         private string _strName = string.Empty;

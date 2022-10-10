@@ -17,7 +17,8 @@ namespace IdentityModel.OidcClient
     internal class AuthorizeClient
     {
         private readonly CryptoHelper _crypto;
-        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
+        private static Logger Log => s_ObjLogger.Value;
         private readonly OidcClientOptions _options;
 
         /// <summary>
@@ -27,14 +28,14 @@ namespace IdentityModel.OidcClient
         public AuthorizeClient(OidcClientOptions options)
         {
             _options = options;
-            //_logger = options.LoggerFactory.CreateLogger<AuthorizeClient>();
+            //Log = options.LoggerFactory.CreateLogger<AuthorizeClient>();
             _crypto = new CryptoHelper(options);
         }
 
         public async Task<AuthorizeResult> AuthorizeAsync(AuthorizeRequest request,
             CancellationToken cancellationToken = default)
         {
-            _logger.Trace("AuthorizeAsync");
+            Log.Trace("AuthorizeAsync");
 
             if (_options.Browser == null)
             {
@@ -87,7 +88,7 @@ namespace IdentityModel.OidcClient
 
         public AuthorizeState CreateAuthorizeState(Parameters frontChannelParameters)
         {
-            _logger.Trace("CreateAuthorizeStateAsync");
+            Log.Trace("CreateAuthorizeStateAsync");
 
             CryptoHelper.Pkce pkce = _crypto.CreatePkceData();
 
@@ -100,7 +101,7 @@ namespace IdentityModel.OidcClient
 
             state.StartUrl = CreateAuthorizeUrl(state.State, pkce.CodeChallenge, frontChannelParameters);
 
-            _logger.Debug(LogSerializer.Serialize(state));
+            Log.Debug(LogSerializer.Serialize(state));
 
             return state;
         }
@@ -108,7 +109,7 @@ namespace IdentityModel.OidcClient
         internal string CreateAuthorizeUrl(string state, string codeChallenge,
             Parameters frontChannelParameters)
         {
-            _logger.Trace("CreateAuthorizeUrl");
+            Log.Trace("CreateAuthorizeUrl");
 
             Parameters parameters = CreateAuthorizeParameters(state, codeChallenge, frontChannelParameters);
             RequestUrl request = new RequestUrl(_options.ProviderInformation.AuthorizeEndpoint);
@@ -118,7 +119,7 @@ namespace IdentityModel.OidcClient
 
         internal string CreateEndSessionUrl(string endpoint, LogoutRequest request)
         {
-            _logger.Trace("CreateEndSessionUrl");
+            Log.Trace("CreateEndSessionUrl");
 
             return new RequestUrl(endpoint).CreateEndSessionUrl(
                 idTokenHint: request.IdTokenHint,
@@ -131,7 +132,7 @@ namespace IdentityModel.OidcClient
             string codeChallenge,
             Parameters frontChannelParameters)
         {
-            _logger.Trace("CreateAuthorizeParameters");
+            Log.Trace("CreateAuthorizeParameters");
 
             Parameters parameters = new Parameters
             {

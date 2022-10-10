@@ -40,7 +40,8 @@ namespace Chummer
 {
     public partial class CharacterSheetViewer : Form, IHasCharacterObjects
     {
-        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
+        private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
+        private static Logger Log => s_ObjLogger.Value;
         private readonly ThreadSafeList<Character> _lstCharacters = new ThreadSafeList<Character>();
         private XmlDocument _objCharacterXml = new XmlDocument { XmlResolver = null };
         private string _strSelectedSheet = GlobalSettings.DefaultCharacterSheet;

@@ -46,7 +46,8 @@ namespace Chummer
     public partial class CharacterCreate : CharacterShared
     {
         private static readonly TelemetryClient TelemetryClient = new TelemetryClient();
-        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
+        private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
+        private static Logger Log => s_ObjLogger.Value;
 
         private bool _blnReapplyImprovements;
         private bool _blnFreestyle;
