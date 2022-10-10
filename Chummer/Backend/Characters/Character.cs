@@ -320,7 +320,7 @@ namespace Chummer
             AttributeSection.PropertyChanged += AttributeSectionOnPropertyChanged;
 
             _objSkillsSection = new SkillsSection(this);
-            SkillsSection.Reset();
+            SkillsSection.Reset(true);
 
             _lstCyberware.CollectionChanged += CyberwareOnCollectionChanged;
             _lstArmor.CollectionChanged += ArmorOnCollectionChanged;
@@ -449,7 +449,7 @@ namespace Chummer
 
         private async void SustainableOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (SustainedCollection.Count == 0)
+            if (SustainedCollection.Count == 0 || IsLoading)
                 return;
             switch (e.Action)
             {
@@ -1029,7 +1029,7 @@ namespace Chummer
 
         private void AttributeSectionOnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(AttributeSection.AttributeCategory))
+            if (e.PropertyName == nameof(AttributeSection.AttributeCategory) || IsLoading)
             {
                 this.OnMultiplePropertyChanged(nameof(CurrentWalkingRateString),
                                                nameof(CurrentRunningRateString),
@@ -1039,7 +1039,7 @@ namespace Chummer
 
         private void ContactsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (e.Action != NotifyCollectionChangedAction.Move)
+            if (e.Action != NotifyCollectionChangedAction.Move || IsLoading)
             {
                 this.OnMultiplePropertyChanged(nameof(NegativeQualityKarma),
                                                nameof(NegativeQualityLimitKarma),
@@ -1507,6 +1507,8 @@ namespace Chummer
 
         private void ExpenseLogOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            if (e.Action == NotifyCollectionChangedAction.Move || IsLoading)
+                return;
             using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
                                                             out HashSet<string> setPropertiesToRefresh))
             {
@@ -1574,7 +1576,7 @@ namespace Chummer
 
         private async void GearOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (e.Action == NotifyCollectionChangedAction.Move)
+            if (e.Action == NotifyCollectionChangedAction.Move || IsLoading)
                 return;
             bool blnDoEncumbranceRefresh = false;
             using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>>(
@@ -1720,7 +1722,7 @@ namespace Chummer
 
         private async void WeaponsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (e.Action == NotifyCollectionChangedAction.Move)
+            if (e.Action == NotifyCollectionChangedAction.Move || IsLoading)
                 return;
             bool blnDoEncumbranceRefresh = false;
             using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>>(
@@ -1866,7 +1868,7 @@ namespace Chummer
 
         private async void ArmorOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (e.Action == NotifyCollectionChangedAction.Move)
+            if (e.Action == NotifyCollectionChangedAction.Move || IsLoading)
                 return;
             bool blnDoEquippedArmorRefresh = false;
             bool blnDoArmorEncumbranceRefresh = false;
@@ -2037,7 +2039,7 @@ namespace Chummer
 
         private async void CyberwareOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (e.Action == NotifyCollectionChangedAction.Move)
+            if (e.Action == NotifyCollectionChangedAction.Move || IsLoading)
                 return;
             bool blnDoEncumbranceRefresh = false;
             bool blnDoCyberlimbAttributesRefresh = false;
@@ -2234,6 +2236,8 @@ namespace Chummer
 
         private async void SustainedObjectsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            if (e.Action == NotifyCollectionChangedAction.Move || IsLoading)
+                return;
             bool blnDoRefreshPenalties = false;
             switch (e.Action)
             {
@@ -2251,9 +2255,6 @@ namespace Chummer
                     blnDoRefreshPenalties =
                         e.OldItems.OfType<SustainedObject>().Any(objItem => objItem.HasSustainingPenalty) ||
                         e.NewItems.OfType<SustainedObject>().Any(objItem => objItem.HasSustainingPenalty);
-                    break;
-
-                case NotifyCollectionChangedAction.Move:
                     break;
 
                 case NotifyCollectionChangedAction.Reset:
@@ -4945,7 +4946,7 @@ namespace Chummer
 
                                 if (blnSync)
                                     // ReSharper disable once MethodHasAsyncOverload
-                                    ResetCharacter(token);
+                                    ResetCharacter();
                                 else
                                     await ResetCharacterAsync(token).ConfigureAwait(false);
 
@@ -6431,7 +6432,10 @@ namespace Chummer
                                        ? Timekeeper.StartSyncron("load_char_attributes", loadActivity)
                                        : await Timekeeper.StartSyncronAsync("load_char_attributes", loadActivity, token).ConfigureAwait(false))
                             {
-                                AttributeSection.Load(objXmlCharacter, token);
+                                if (blnSync)
+                                    AttributeSection.Load(objXmlCharacter, token);
+                                else
+                                    await AttributeSection.LoadAsync(objXmlCharacter, token).ConfigureAwait(false);
                             }
 
                             if (frmLoadingForm != null)
@@ -6588,13 +6592,24 @@ namespace Chummer
                                 _oldSkillGroupBackup = objXmlCharacter.SelectSingleNode("skillgroups")?.Clone();
 
                                 XmlNode objSkillNode = objXmlCharacter.SelectSingleNode("newskills");
-                                if (objSkillNode != null)
+                                if (blnSync)
                                 {
-                                    SkillsSection.Load(objSkillNode, false, loadActivity);
+                                    if (objSkillNode != null)
+                                    {
+                                        SkillsSection.Load(objSkillNode, false, loadActivity);
+                                    }
+                                    else
+                                    {
+                                        SkillsSection.Load(objXmlCharacter, true, loadActivity);
+                                    }
+                                }
+                                else if (objSkillNode != null)
+                                {
+                                    await SkillsSection.LoadAsync(objSkillNode, false, loadActivity).ConfigureAwait(false);
                                 }
                                 else
                                 {
-                                    SkillsSection.Load(objXmlCharacter, true, loadActivity);
+                                    await SkillsSection.LoadAsync(objXmlCharacter, true, loadActivity).ConfigureAwait(false);
                                 }
 
                                 //Timekeeper.Finish("load_char_skills");
@@ -9864,9 +9879,9 @@ namespace Chummer
         /// <summary>
         /// Reset all of the Character information and start from scratch.
         /// </summary>
-        public void ResetCharacter(CancellationToken token = default)
+        public void ResetCharacter()
         {
-            using (LockObject.EnterWriteLock(token))
+            using (LockObject.EnterWriteLock())
             {
                 _intFreeSpells = 0;
                 _intCFPLimit = 0;
@@ -9898,7 +9913,7 @@ namespace Chummer
                 _intCurrentLiftCarryHits = 0;
                 _decCachedBiowareEssence = decimal.MinValue;
                 _decCachedCyberwareEssence = decimal.MinValue;
-                ResetCachedEssence(token);
+                ResetCachedEssence();
                 _decCachedEssenceHole = decimal.MinValue;
                 _decCachedPowerPointsUsed = decimal.MinValue;
                 _decCachedPrototypeTranshumanEssenceUsed = decimal.MinValue;
@@ -9929,7 +9944,8 @@ namespace Chummer
                 _blnCritterEnabled = false;
 
                 // Reset Attributes.
-                AttributeSection.Reset(token: token);
+                AttributeSection.Reset();
+                SkillsSection.Reset();
                 _blnMAGEnabled = false;
                 _blnRESEnabled = false;
                 _blnDEPEnabled = false;
@@ -10000,7 +10016,6 @@ namespace Chummer
                 _lstCalendar.Clear();
                 _lstDrugs.Clear();
 
-                SkillsSection.Reset();
                 LoadAsDirty = false;
             }
         }
@@ -10075,6 +10090,7 @@ namespace Chummer
 
                 // Reset Attributes.
                 await AttributeSection.ResetAsync(token: token).ConfigureAwait(false);
+                await SkillsSection.ResetAsync(token: token).ConfigureAwait(false);
                 _blnMAGEnabled = false;
                 _blnRESEnabled = false;
                 _blnDEPEnabled = false;
@@ -10144,8 +10160,6 @@ namespace Chummer
                 await _lstQualities.ClearAsync(token).ConfigureAwait(false);
                 await _lstCalendar.ClearAsync(token).ConfigureAwait(false);
                 await _lstDrugs.ClearAsync(token).ConfigureAwait(false);
-
-                await SkillsSection.ResetAsync(token).ConfigureAwait(false);
                 LoadAsDirty = false;
             }
             finally
@@ -31183,7 +31197,7 @@ namespace Chummer
 
                                 if (blnSync)
                                     // ReSharper disable once MethodHasAsyncOverload
-                                    ResetCharacter(token);
+                                    ResetCharacter();
                                 else
                                     await ResetCharacterAsync(token).ConfigureAwait(false);
 

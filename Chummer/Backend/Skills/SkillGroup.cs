@@ -842,6 +842,22 @@ namespace Chummer.Backend.Skills
             }
         }
 
+        public async ValueTask RemoveAsync(Skill skill, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                if (!_lstAffectedSkills.Remove(skill))
+                    return;
+                skill.PropertyChanged -= SkillOnPropertyChanged;
+                OnPropertyChanged(nameof(SkillList));
+            }
+            finally
+            {
+                await objLocker.DisposeAsync();
+            }
+        }
+
         internal void WriteTo(XmlWriter writer)
         {
             if (writer == null)

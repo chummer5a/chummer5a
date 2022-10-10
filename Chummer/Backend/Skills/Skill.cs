@@ -5959,6 +5959,22 @@ namespace Chummer.Backend.Skills
             Dispose();
         }
 
+        public async ValueTask RemoveAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                SkillGroup objGroup = SkillGroupObject;
+                if (objGroup != null)
+                    await objGroup.RemoveAsync(this, token);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync();
+            }
+            await DisposeAsync().ConfigureAwait(false);
+        }
+
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)

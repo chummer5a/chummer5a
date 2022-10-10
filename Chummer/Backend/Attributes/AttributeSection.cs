@@ -131,11 +131,11 @@ namespace Chummer.Backend.Attributes
             }
         }
 
-        private void InitializeAttributesList(CancellationToken token = default)
+        private void InitializeAttributesList()
         {
-            using (EnterReadLock.Enter(_objCharacter.LockObject, token))
+            using (EnterReadLock.Enter(_objCharacter.LockObject))
             {
-                using (_objAttributesInitializerLock.EnterWriteLock(token))
+                using (_objAttributesInitializerLock.EnterWriteLock())
                 {
                     _blnAttributesInitialized = true;
 
@@ -296,109 +296,129 @@ namespace Chummer.Backend.Attributes
 
         private void SpecialAttributeListOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (_blnLoading)
-                return;
-            foreach (CharacterAttrib objAttribute in e.OldItems)
+            using (EnterReadLock.Enter(LockObject))
             {
-                objAttribute.Dispose();
-                if (_dicBindings.TryGetValue(objAttribute.Abbrev, out BindingSource objBindingSource))
-                    objBindingSource.DataSource = GetAttributeByName(objAttribute.Abbrev);
+                if (_blnLoading)
+                    return;
+                foreach (CharacterAttrib objAttribute in e.OldItems)
+                {
+                    objAttribute.Dispose();
+                    if (_dicBindings.TryGetValue(objAttribute.Abbrev, out BindingSource objBindingSource))
+                        objBindingSource.DataSource = GetAttributeByName(objAttribute.Abbrev);
+                }
             }
         }
 
         private void AttributeListOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (_blnLoading)
-                return;
-            foreach (CharacterAttrib objAttribute in e.OldItems)
+            using (EnterReadLock.Enter(LockObject))
             {
-                objAttribute.Dispose();
-                if (_dicBindings.TryGetValue(objAttribute.Abbrev, out BindingSource objBindingSource))
-                    objBindingSource.DataSource = GetAttributeByName(objAttribute.Abbrev);
+                if (_blnLoading)
+                    return;
+                foreach (CharacterAttrib objAttribute in e.OldItems)
+                {
+                    objAttribute.Dispose();
+                    if (_dicBindings.TryGetValue(objAttribute.Abbrev, out BindingSource objBindingSource))
+                        objBindingSource.DataSource = GetAttributeByName(objAttribute.Abbrev);
+                }
             }
         }
 
         private void AttributeListOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (_blnLoading)
-                return;
-            switch (e.Action)
+            using (EnterReadLock.Enter(LockObject))
             {
-                case NotifyCollectionChangedAction.Add:
-                    foreach (CharacterAttrib objAttribute in e.NewItems)
-                    {
-                        if (_dicBindings.TryGetValue(objAttribute.Abbrev, out BindingSource objBindingSource))
-                            objBindingSource.DataSource = GetAttributeByName(objAttribute.Abbrev);
-                    }
-                    break;
+                if (_blnLoading)
+                    return;
+                switch (e.Action)
+                {
+                    case NotifyCollectionChangedAction.Add:
+                        foreach (CharacterAttrib objAttribute in e.NewItems)
+                        {
+                            if (_dicBindings.TryGetValue(objAttribute.Abbrev, out BindingSource objBindingSource))
+                                objBindingSource.DataSource = GetAttributeByName(objAttribute.Abbrev);
+                        }
 
-                case NotifyCollectionChangedAction.Remove:
-                    foreach (CharacterAttrib objAttribute in e.OldItems)
-                    {
-                        objAttribute.Dispose();
-                        if (_dicBindings.TryGetValue(objAttribute.Abbrev, out BindingSource objBindingSource))
-                            objBindingSource.DataSource = GetAttributeByName(objAttribute.Abbrev);
-                    }
-                    break;
+                        break;
 
-                case NotifyCollectionChangedAction.Replace:
-                    HashSet<CharacterAttrib> setNewAttribs = e.NewItems.OfType<CharacterAttrib>().ToHashSet();
-                    foreach (CharacterAttrib objAttribute in e.OldItems)
-                    {
-                        if (setNewAttribs.Contains(objAttribute))
-                            continue;
-                        objAttribute.Dispose();
-                        if (_dicBindings.TryGetValue(objAttribute.Abbrev, out BindingSource objBindingSource))
-                            objBindingSource.DataSource = GetAttributeByName(objAttribute.Abbrev);
-                    }
-                    foreach (CharacterAttrib objAttribute in setNewAttribs)
-                    {
-                        if (_dicBindings.TryGetValue(objAttribute.Abbrev, out BindingSource objBindingSource))
-                            objBindingSource.DataSource = GetAttributeByName(objAttribute.Abbrev);
-                    }
-                    break;
+                    case NotifyCollectionChangedAction.Remove:
+                        foreach (CharacterAttrib objAttribute in e.OldItems)
+                        {
+                            objAttribute.Dispose();
+                            if (_dicBindings.TryGetValue(objAttribute.Abbrev, out BindingSource objBindingSource))
+                                objBindingSource.DataSource = GetAttributeByName(objAttribute.Abbrev);
+                        }
+
+                        break;
+
+                    case NotifyCollectionChangedAction.Replace:
+                        HashSet<CharacterAttrib> setNewAttribs = e.NewItems.OfType<CharacterAttrib>().ToHashSet();
+                        foreach (CharacterAttrib objAttribute in e.OldItems)
+                        {
+                            if (setNewAttribs.Contains(objAttribute))
+                                continue;
+                            objAttribute.Dispose();
+                            if (_dicBindings.TryGetValue(objAttribute.Abbrev, out BindingSource objBindingSource))
+                                objBindingSource.DataSource = GetAttributeByName(objAttribute.Abbrev);
+                        }
+
+                        foreach (CharacterAttrib objAttribute in setNewAttribs)
+                        {
+                            if (_dicBindings.TryGetValue(objAttribute.Abbrev, out BindingSource objBindingSource))
+                                objBindingSource.DataSource = GetAttributeByName(objAttribute.Abbrev);
+                        }
+
+                        break;
+                }
             }
         }
 
         private void SpecialAttributeListOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (_blnLoading)
-                return;
-            switch (e.Action)
+            using (EnterReadLock.Enter(LockObject))
             {
-                case NotifyCollectionChangedAction.Add:
-                    foreach (CharacterAttrib objAttribute in e.NewItems)
-                    {
-                        if (_dicBindings.TryGetValue(objAttribute.Abbrev, out BindingSource objBindingSource))
-                            objBindingSource.DataSource = GetAttributeByName(objAttribute.Abbrev);
-                    }
-                    break;
+                if (_blnLoading)
+                    return;
+                switch (e.Action)
+                {
+                    case NotifyCollectionChangedAction.Add:
+                        foreach (CharacterAttrib objAttribute in e.NewItems)
+                        {
+                            if (_dicBindings.TryGetValue(objAttribute.Abbrev, out BindingSource objBindingSource))
+                                objBindingSource.DataSource = GetAttributeByName(objAttribute.Abbrev);
+                        }
 
-                case NotifyCollectionChangedAction.Remove:
-                    foreach (CharacterAttrib objAttribute in e.OldItems)
-                    {
-                        objAttribute.Dispose();
-                        if (_dicBindings.TryGetValue(objAttribute.Abbrev, out BindingSource objBindingSource))
-                            objBindingSource.DataSource = GetAttributeByName(objAttribute.Abbrev);
-                    }
-                    break;
+                        break;
 
-                case NotifyCollectionChangedAction.Replace:
-                    HashSet<CharacterAttrib> setNewAttribs = e.NewItems.OfType<CharacterAttrib>().ToHashSet();
-                    foreach (CharacterAttrib objAttribute in e.OldItems)
-                    {
-                        if (setNewAttribs.Contains(objAttribute))
-                            continue;
-                        objAttribute.Dispose();
-                        if (_dicBindings.TryGetValue(objAttribute.Abbrev, out BindingSource objBindingSource))
-                            objBindingSource.DataSource = GetAttributeByName(objAttribute.Abbrev);
-                    }
-                    foreach (CharacterAttrib objAttribute in setNewAttribs)
-                    {
-                        if (_dicBindings.TryGetValue(objAttribute.Abbrev, out BindingSource objBindingSource))
-                            objBindingSource.DataSource = GetAttributeByName(objAttribute.Abbrev);
-                    }
-                    break;
+                    case NotifyCollectionChangedAction.Remove:
+                        foreach (CharacterAttrib objAttribute in e.OldItems)
+                        {
+                            objAttribute.Dispose();
+                            if (_dicBindings.TryGetValue(objAttribute.Abbrev, out BindingSource objBindingSource))
+                                objBindingSource.DataSource = GetAttributeByName(objAttribute.Abbrev);
+                        }
+
+                        break;
+
+                    case NotifyCollectionChangedAction.Replace:
+                        HashSet<CharacterAttrib> setNewAttribs = e.NewItems.OfType<CharacterAttrib>().ToHashSet();
+                        foreach (CharacterAttrib objAttribute in e.OldItems)
+                        {
+                            if (setNewAttribs.Contains(objAttribute))
+                                continue;
+                            objAttribute.Dispose();
+                            if (_dicBindings.TryGetValue(objAttribute.Abbrev, out BindingSource objBindingSource))
+                                objBindingSource.DataSource = GetAttributeByName(objAttribute.Abbrev);
+                        }
+
+                        foreach (CharacterAttrib objAttribute in setNewAttribs)
+                        {
+                            if (_dicBindings.TryGetValue(objAttribute.Abbrev, out BindingSource objBindingSource))
+                                objBindingSource.DataSource = GetAttributeByName(objAttribute.Abbrev);
+                        }
+
+                        break;
+                }
             }
         }
 
@@ -621,8 +641,8 @@ namespace Chummer.Backend.Attributes
                             _objCharacter.DEP.Karma = Math.Min(intOldDEPKarma, _objCharacter.DEP.KarmaMaximum);
                         }
 
-                        InitializeAttributesList(token);
-                        ResetBindings(token);
+                        InitializeAttributesList();
+                        ResetBindings();
 
                         //Timekeeper.Finish("create_char_attrib");
                     }
@@ -636,22 +656,56 @@ namespace Chummer.Backend.Attributes
 
         public void Load(XmlNode xmlSavedCharacterNode, CancellationToken token = default)
         {
+            Utils.JoinableTaskFactory.RunAsync(() => LoadCoreAsync(true, xmlSavedCharacterNode, token));
+        }
+
+        public Task LoadAsync(XmlNode xmlSavedCharacterNode, CancellationToken token = default)
+        {
+            return LoadCoreAsync(false, xmlSavedCharacterNode, token);
+        }
+
+        private async Task LoadCoreAsync(bool blnSync, XmlNode xmlSavedCharacterNode, CancellationToken token = default)
+        {
             if (xmlSavedCharacterNode == null)
                 return;
-            using (LockObject.EnterWriteLock(token))
+            IDisposable objLocker = null;
+            IAsyncDisposable objLockerAsync = null;
+            if (blnSync)
+                // ReSharper disable once MethodHasAsyncOverload
+                objLocker = LockObject.EnterWriteLock(token);
+            else
+                objLockerAsync = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
             {
                 bool blnOldLoading = _blnLoading;
                 try
                 {
                     _blnLoading = true;
                     //Timekeeper.Start("load_char_attrib");
-                    AttributeList.Clear();
-                    SpecialAttributeList.Clear();
-                    XPathNavigator xmlCharNode = _objCharacter.GetNodeXPath(token);
+                    if (blnSync)
+                    {
+                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                        AttributeList.Clear();
+                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                        SpecialAttributeList.Clear();
+                    }
+                    else
+                    {
+                        await AttributeList.ClearAsync(token).ConfigureAwait(false);
+                        await SpecialAttributeList.ClearAsync(token).ConfigureAwait(false);
+                    }
+
+                    XPathNavigator xmlCharNode = blnSync
+                        // ReSharper disable once MethodHasAsyncOverload
+                        ? _objCharacter.GetNodeXPath(token)
+                        : await _objCharacter.GetNodeXPathAsync(token).ConfigureAwait(false);
                     // We only want to remake attributes for shifters in career mode, because they only get their second set of attributes when exporting from create mode into career mode
                     XPathNavigator xmlCharNodeAnimalForm =
                         _objCharacter.MetatypeCategory == "Shapeshifter" && _objCharacter.Created
-                            ? _objCharacter.GetNodeXPath(true, token: token)
+                            ? (blnSync
+                                // ReSharper disable once MethodHasAsyncOverload
+                                ? _objCharacter.GetNodeXPath(true, token: token)
+                                : await _objCharacter.GetNodeXPathAsync(true, token: token).ConfigureAwait(false))
                             : null;
                     foreach (string strAttribute in AttributeStrings)
                     {
@@ -670,30 +724,64 @@ namespace Chummer.Backend.Attributes
                                 case CharacterAttrib.AttributeCategory.Special:
                                     objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
                                                                        CharacterAttrib.AttributeCategory.Special);
-                                    objAttribute = RemakeAttribute(objAttribute, xmlCharNode, token);
-                                    SpecialAttributeList.Add(objAttribute);
+                                    if (blnSync)
+                                    {
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                        objAttribute = RemakeAttribute(objAttribute, xmlCharNode);
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                        SpecialAttributeList.Add(objAttribute);
+                                    }
+                                    else
+                                    {
+                                        objAttribute = await RemakeAttributeAsync(objAttribute, xmlCharNode, token).ConfigureAwait(false);
+                                        await SpecialAttributeList.AddAsync(objAttribute, token).ConfigureAwait(false);
+                                    }
+
                                     break;
 
                                 case CharacterAttrib.AttributeCategory.Standard:
                                     objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
                                                                        CharacterAttrib.AttributeCategory.Standard);
-                                    objAttribute = RemakeAttribute(objAttribute, xmlCharNode, token);
-                                    AttributeList.Add(objAttribute);
+                                    if (blnSync)
+                                    {
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                        objAttribute = RemakeAttribute(objAttribute, xmlCharNode);
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                        AttributeList.Add(objAttribute);
+                                    }
+                                    else
+                                    {
+                                        objAttribute = await RemakeAttributeAsync(objAttribute, xmlCharNode, token).ConfigureAwait(false);
+                                        await AttributeList.AddAsync(objAttribute, token).ConfigureAwait(false);
+                                    }
+
                                     break;
                             }
 
-                            if (xmlCharNodeAnimalForm == null) continue;
+                            if (xmlCharNodeAnimalForm == null)
+                                continue;
                             objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
                                                                CharacterAttrib.AttributeCategory.Shapeshifter);
-                            objAttribute = RemakeAttribute(objAttribute, xmlCharNodeAnimalForm, token);
+                            objAttribute = blnSync
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                ? RemakeAttribute(objAttribute, xmlCharNodeAnimalForm)
+                                : await RemakeAttributeAsync(objAttribute, xmlCharNodeAnimalForm, token).ConfigureAwait(false);
                             switch (CharacterAttrib.ConvertToAttributeCategory(objAttribute.Abbrev))
                             {
                                 case CharacterAttrib.AttributeCategory.Special:
-                                    SpecialAttributeList.Add(objAttribute);
+                                    if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                        SpecialAttributeList.Add(objAttribute);
+                                    else
+                                        await SpecialAttributeList.AddAsync(objAttribute, token).ConfigureAwait(false);
                                     break;
 
                                 case CharacterAttrib.AttributeCategory.Standard:
-                                    AttributeList.Add(objAttribute);
+                                    if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                        AttributeList.Add(objAttribute);
+                                    else
+                                        await AttributeList.AddAsync(objAttribute, token).ConfigureAwait(false);
                                     break;
                             }
                         }
@@ -708,27 +796,47 @@ namespace Chummer.Backend.Attributes
                                         objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
                                                                            CharacterAttrib.AttributeCategory.Special);
                                         objAttribute.Load(xmlAttributeNode);
-                                        SpecialAttributeList.Add(objAttribute);
+                                        if (blnSync)
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                            SpecialAttributeList.Add(objAttribute);
+                                        else
+                                            await SpecialAttributeList.AddAsync(objAttribute, token).ConfigureAwait(false);
                                         break;
 
                                     case CharacterAttrib.AttributeCategory.Standard:
                                         objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
                                                                            CharacterAttrib.AttributeCategory.Standard);
                                         objAttribute.Load(xmlAttributeNode);
-                                        AttributeList.Add(objAttribute);
+                                        if (blnSync)
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                            AttributeList.Add(objAttribute);
+                                        else
+                                            await AttributeList.AddAsync(objAttribute, token).ConfigureAwait(false);
                                         break;
                                 }
                             }
                         }
                     }
 
-                    ResetBindings(token);
+                    if (blnSync)
+                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                        ResetBindings();
+                    else
+                        await ResetBindingsAsync(token).ConfigureAwait(false);
                 }
                 finally
                 {
                     _blnLoading = blnOldLoading;
                 }
                 //Timekeeper.Finish("load_char_attrib");
+            }
+            finally
+            {
+                if (blnSync)
+                    // ReSharper disable once MethodHasAsyncOverload
+                    objLocker.Dispose();
+                else
+                    await objLockerAsync.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -763,14 +871,14 @@ namespace Chummer.Backend.Attributes
                                 case CharacterAttrib.AttributeCategory.Special:
                                     objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
                                                                        CharacterAttrib.AttributeCategory.Special);
-                                    objAttribute = RemakeAttribute(objAttribute, xmlCharNode, token);
+                                    objAttribute = RemakeAttribute(objAttribute, xmlCharNode);
                                     SpecialAttributeList.Add(objAttribute);
                                     break;
 
                                 case CharacterAttrib.AttributeCategory.Standard:
                                     objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
                                                                        CharacterAttrib.AttributeCategory.Standard);
-                                    objAttribute = RemakeAttribute(objAttribute, xmlCharNode, token);
+                                    objAttribute = RemakeAttribute(objAttribute, xmlCharNode);
                                     AttributeList.Add(objAttribute);
                                     break;
                             }
@@ -782,7 +890,7 @@ namespace Chummer.Backend.Attributes
                                     case CharacterAttrib.AttributeCategory.Special:
                                         objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
                                                                            CharacterAttrib.AttributeCategory.Special);
-                                        objAttribute = RemakeAttribute(objAttribute, xmlCharNodeAnimalForm, token);
+                                        objAttribute = RemakeAttribute(objAttribute, xmlCharNodeAnimalForm);
                                         SpecialAttributeList.Add(objAttribute);
                                         break;
 
@@ -790,7 +898,7 @@ namespace Chummer.Backend.Attributes
                                         objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
                                                                            CharacterAttrib.AttributeCategory
                                                                                .Shapeshifter);
-                                        objAttribute = RemakeAttribute(objAttribute, xmlCharNodeAnimalForm, token);
+                                        objAttribute = RemakeAttribute(objAttribute, xmlCharNodeAnimalForm);
                                         AttributeList.Add(objAttribute);
                                         break;
                                 }
@@ -809,7 +917,7 @@ namespace Chummer.Backend.Attributes
                             if (xmlAttributeBaseNode != null &&
                                 int.TryParse(xmlAttributeBaseNode.Value, out int intHeroLabAttributeBaseValue))
                             {
-                                int intAttributeMinimumValue = GetAttributeByName(strAttribute, token).MetatypeMinimum;
+                                int intAttributeMinimumValue = GetAttributeByName(strAttribute).MetatypeMinimum;
                                 if (intHeroLabAttributeBaseValue == intAttributeMinimumValue) continue;
                                 if (objAttribute != null)
                                     objAttribute.Karma = intHeroLabAttributeBaseValue - intAttributeMinimumValue;
@@ -942,7 +1050,7 @@ namespace Chummer.Backend.Attributes
                             }
                         }
 
-                        ResetBindings(token);
+                        ResetBindings();
                     }
                     finally
                     {
@@ -953,7 +1061,7 @@ namespace Chummer.Backend.Attributes
             }
         }
 
-        private static CharacterAttrib RemakeAttribute(CharacterAttrib objNewAttribute, XPathNavigator objCharacterNode, CancellationToken token = default)
+        private static CharacterAttrib RemakeAttribute(CharacterAttrib objNewAttribute, XPathNavigator objCharacterNode)
         {
             if (objNewAttribute == null)
                 return null;
@@ -971,7 +1079,7 @@ namespace Chummer.Backend.Attributes
             {
                 (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(
                     objCharacterNode.SelectSingleNode(strAttributeLower + "min")?.Value.Replace("/", " div ")
-                                    .Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1", token);
+                                    .Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1");
                 if (blnIsSuccess)
                     intMinValue = ((double)objProcess).StandardRound();
             }
@@ -982,7 +1090,7 @@ namespace Chummer.Backend.Attributes
             {
                 (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(
                     objCharacterNode.SelectSingleNode(strAttributeLower + "max")?.Value.Replace("/", " div ")
-                                    .Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1", token);
+                                    .Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1");
                 if (blnIsSuccess)
                     intMaxValue = ((double)objProcess).StandardRound();
             }
@@ -993,7 +1101,7 @@ namespace Chummer.Backend.Attributes
             {
                 (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(
                     objCharacterNode.SelectSingleNode(strAttributeLower + "aug")?.Value.Replace("/", " div ")
-                                    .Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1", token);
+                                    .Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1");
                 if (blnIsSuccess)
                     intAugValue = ((double)objProcess).StandardRound();
             }
@@ -1005,6 +1113,61 @@ namespace Chummer.Backend.Attributes
                 objCharacterNode.SelectSingleNodeAndCacheExpression("base")?.ValueAsInt ?? 0,
                 objCharacterNode.SelectSingleNodeAndCacheExpression("base")?.ValueAsInt ?? 0, intMinValue, intMaxValue,
                 intAugValue);
+            return objNewAttribute;
+        }
+
+        private static async ValueTask<CharacterAttrib> RemakeAttributeAsync(CharacterAttrib objNewAttribute, XPathNavigator objCharacterNode, CancellationToken token = default)
+        {
+            if (objNewAttribute == null)
+                return null;
+            if (objCharacterNode == null)
+                throw new ArgumentNullException(nameof(objCharacterNode));
+            string strAttributeLower = objNewAttribute.Abbrev.ToLowerInvariant();
+            if (strAttributeLower == "magadept")
+                strAttributeLower = "mag";
+            int intMinValue = 1;
+            int intMaxValue = 1;
+            int intAugValue = 1;
+
+            // This statement is wrapped in a try/catch since trying 1 div 2 results in an error with XSLT.
+            try
+            {
+                (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(
+                    objCharacterNode.SelectSingleNode(strAttributeLower + "min")?.Value.Replace("/", " div ")
+                                    .Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1", token);
+                if (blnIsSuccess)
+                    intMinValue = ((double)objProcess).StandardRound();
+            }
+            catch (XPathException) { intMinValue = 1; }
+            catch (OverflowException) { intMinValue = 1; }
+            catch (InvalidCastException) { intMinValue = 1; }
+            try
+            {
+                (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(
+                    objCharacterNode.SelectSingleNode(strAttributeLower + "max")?.Value.Replace("/", " div ")
+                                    .Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1", token);
+                if (blnIsSuccess)
+                    intMaxValue = ((double)objProcess).StandardRound();
+            }
+            catch (XPathException) { intMaxValue = 1; }
+            catch (OverflowException) { intMaxValue = 1; }
+            catch (InvalidCastException) { intMaxValue = 1; }
+            try
+            {
+                (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(
+                    objCharacterNode.SelectSingleNode(strAttributeLower + "aug")?.Value.Replace("/", " div ")
+                                    .Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1", token);
+                if (blnIsSuccess)
+                    intAugValue = ((double)objProcess).StandardRound();
+            }
+            catch (XPathException) { intAugValue = 1; }
+            catch (OverflowException) { intAugValue = 1; }
+            catch (InvalidCastException) { intAugValue = 1; }
+
+            await objNewAttribute.AssignBaseKarmaLimitsAsync(
+                (await objCharacterNode.SelectSingleNodeAndCacheExpressionAsync("base", token))?.ValueAsInt ?? 0,
+                (await objCharacterNode.SelectSingleNodeAndCacheExpressionAsync("base", token))?.ValueAsInt ?? 0, intMinValue, intMaxValue,
+                intAugValue, token);
             return objNewAttribute;
         }
 
@@ -1055,9 +1218,9 @@ namespace Chummer.Backend.Attributes
 
         #region Methods
 
-        public CharacterAttrib GetAttributeByName(string abbrev, CancellationToken token = default)
+        public CharacterAttrib GetAttributeByName(string abbrev)
         {
-            using (EnterReadLock.Enter(LockObject, token))
+            using (EnterReadLock.Enter(LockObject))
             {
                 bool blnGetShifterAttribute = _objCharacter.MetatypeCategory == "Shapeshifter" && _objCharacter.Created
                     && AttributeCategory == CharacterAttrib.AttributeCategory.Shapeshifter;
@@ -1578,9 +1741,9 @@ namespace Chummer.Backend.Attributes
             }
         }
 
-        internal void Reset(bool blnFirstTime = false, CancellationToken token = default)
+        internal void Reset(bool blnFirstTime = false)
         {
-            using (LockObject.EnterWriteLock(token))
+            using (LockObject.EnterWriteLock())
             {
                 bool blnOldLoading = !blnFirstTime && _blnLoading;
                 try
@@ -1618,7 +1781,7 @@ namespace Chummer.Backend.Attributes
                         }
                     }
 
-                    ResetBindings(token);
+                    ResetBindings();
                 }
                 finally
                 {
@@ -1704,14 +1867,14 @@ namespace Chummer.Backend.Attributes
         /// Reset the databindings for all character attributes.
         /// This method is used to support hot-swapping attributes for shapeshifters.
         /// </summary>
-        public void ResetBindings(CancellationToken token = default)
+        public void ResetBindings()
         {
-            using (_objCharacter.LockObject.EnterWriteLock(token))
-            using (LockObject.EnterWriteLock(token))
+            using (_objCharacter.LockObject.EnterWriteLock())
+            using (LockObject.EnterWriteLock())
             {
                 foreach (KeyValuePair<string, BindingSource> objBindingEntry in _dicBindings)
                 {
-                    objBindingEntry.Value.DataSource = GetAttributeByName(objBindingEntry.Key, token);
+                    objBindingEntry.Value.DataSource = GetAttributeByName(objBindingEntry.Key);
                 }
                 _objCharacter.RefreshAttributeBindings();
                 foreach (KeyValuePair<string, BindingSource> objBindingEntry in _dicBindings)

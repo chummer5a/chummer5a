@@ -36,6 +36,7 @@ namespace Chummer.Backend.Skills
 {
     public sealed class SkillsSection : INotifyMultiplePropertyChanged, IHasLockObject
     {
+        private bool _blnLoading = true;
         private readonly Character _objCharacter;
         private readonly LockingDictionary<Guid, Skill> _dicSkillBackups = new LockingDictionary<Guid, Skill>();
 
@@ -54,14 +55,21 @@ namespace Chummer.Backend.Skills
 
         private void SkillGroupsOnBeforeRemove(object sender, RemovingOldEventArgs e)
         {
-            using (LockObject.EnterWriteLock())
-                SkillGroups[e.OldIndex].Dispose();
+            using (EnterReadLock.Enter(LockObject))
+            {
+                if (_blnLoading)
+                    return;
+                using (LockObject.EnterWriteLock())
+                    SkillGroups[e.OldIndex].Dispose();
+            }
         }
 
         private void SkillsOnBeforeRemove(object sender, RemovingOldEventArgs e)
         {
             using (EnterReadLock.Enter(LockObject))
             {
+                if (_blnLoading)
+                    return;
                 Skill objSkill = Skills[e.OldIndex];
                 using (LockObject.EnterWriteLock())
                 {
@@ -76,6 +84,8 @@ namespace Chummer.Backend.Skills
         {
             using (EnterReadLock.Enter(LockObject))
             {
+                if (_blnLoading)
+                    return;
                 KnowledgeSkill objSkill = KnowledgeSkills[e.OldIndex];
                 using (LockObject.EnterWriteLock())
                 {
@@ -90,6 +100,8 @@ namespace Chummer.Backend.Skills
         {
             using (EnterReadLock.Enter(LockObject))
             {
+                if (_blnLoading)
+                    return;
                 KnowledgeSkill objSkill = KnowsoftSkills[e.OldIndex];
                 if (!_dicSkillBackups.Values.Contains(objSkill) && !KnowledgeSkills.Contains(objSkill))
                 {
@@ -100,108 +112,129 @@ namespace Chummer.Backend.Skills
 
         private void SkillsOnListChanged(object sender, ListChangedEventArgs e)
         {
-            using (LockObject.EnterWriteLock())
+            using (EnterReadLock.Enter(LockObject))
             {
-                switch (e.ListChangedType)
+                if (_blnLoading)
+                    return;
+                using (LockObject.EnterWriteLock())
                 {
-                    case ListChangedType.Reset:
-                        _dicSkills.Clear();
-                        foreach (Skill objSkill in _lstSkills)
-                        {
-                            if (!_dicSkills.ContainsKey(objSkill.DictionaryKey))
-                                _dicSkills.Add(objSkill.DictionaryKey, objSkill);
-                        }
+                    switch (e.ListChangedType)
+                    {
+                        case ListChangedType.Reset:
+                            _dicSkills.Clear();
+                            foreach (Skill objSkill in _lstSkills)
+                            {
+                                if (!_dicSkills.ContainsKey(objSkill.DictionaryKey))
+                                    _dicSkills.Add(objSkill.DictionaryKey, objSkill);
+                            }
 
-                        break;
+                            break;
 
-                    case ListChangedType.ItemAdded:
-                        Skill objNewSkill = _lstSkills[e.NewIndex];
-                        if (!_dicSkills.ContainsKey(objNewSkill.DictionaryKey))
-                            _dicSkills.Add(objNewSkill.DictionaryKey, objNewSkill);
-                        break;
+                        case ListChangedType.ItemAdded:
+                            Skill objNewSkill = _lstSkills[e.NewIndex];
+                            if (!_dicSkills.ContainsKey(objNewSkill.DictionaryKey))
+                                _dicSkills.Add(objNewSkill.DictionaryKey, objNewSkill);
+                            break;
+                    }
                 }
             }
         }
 
         private void KnowledgeSkillsOnListChanged(object sender, ListChangedEventArgs e)
         {
-            switch (e.ListChangedType)
+            using (EnterReadLock.Enter(LockObject))
             {
-                case ListChangedType.Reset:
-                    using (LockObject.EnterWriteLock())
-                    {
-                        foreach (KnowledgeSkill objKnoSkill in KnowledgeSkills)
-                            objKnoSkill.PropertyChanged += OnKnowledgeSkillPropertyChanged;
-                    }
-                    goto case ListChangedType.ItemDeleted;
-                case ListChangedType.ItemAdded:
-                    using (LockObject.EnterWriteLock())
-                        KnowledgeSkills[e.NewIndex].PropertyChanged += OnKnowledgeSkillPropertyChanged;
-                    goto case ListChangedType.ItemDeleted;
-                case ListChangedType.ItemDeleted:
-                    this.OnMultiplePropertyChanged(nameof(KnowledgeSkillRanksSum), nameof(HasAvailableNativeLanguageSlots));
-                    break;
+                if (_blnLoading)
+                    return;
+                switch (e.ListChangedType)
+                {
+                    case ListChangedType.Reset:
+                        using (LockObject.EnterWriteLock())
+                        {
+                            foreach (KnowledgeSkill objKnoSkill in KnowledgeSkills)
+                                objKnoSkill.PropertyChanged += OnKnowledgeSkillPropertyChanged;
+                        }
+
+                        goto case ListChangedType.ItemDeleted;
+                    case ListChangedType.ItemAdded:
+                        using (LockObject.EnterWriteLock())
+                            KnowledgeSkills[e.NewIndex].PropertyChanged += OnKnowledgeSkillPropertyChanged;
+                        goto case ListChangedType.ItemDeleted;
+                    case ListChangedType.ItemDeleted:
+                        this.OnMultiplePropertyChanged(nameof(KnowledgeSkillRanksSum),
+                                                       nameof(HasAvailableNativeLanguageSlots));
+                        break;
+                }
             }
         }
 
         private void OnKnowledgeSkillPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            switch (e.PropertyName)
+            using (EnterReadLock.Enter(LockObject))
             {
-                case nameof(KnowledgeSkill.CurrentSpCost):
-                    OnPropertyChanged(nameof(KnowledgeSkillRanksSum));
-                    break;
+                if (_blnLoading)
+                    return;
+                switch (e.PropertyName)
+                {
+                    case nameof(KnowledgeSkill.CurrentSpCost):
+                        OnPropertyChanged(nameof(KnowledgeSkillRanksSum));
+                        break;
 
-                case nameof(KnowledgeSkill.IsNativeLanguage):
-                    OnPropertyChanged(nameof(HasAvailableNativeLanguageSlots));
-                    break;
+                    case nameof(KnowledgeSkill.IsNativeLanguage):
+                        OnPropertyChanged(nameof(HasAvailableNativeLanguageSlots));
+                        break;
+                }
             }
         }
 
         private void OnCharacterPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e?.PropertyName == nameof(Character.EffectiveBuildMethodUsesPriorityTables))
-                OnPropertyChanged(nameof(SkillPointsSpentOnKnoskills));
+            using (EnterReadLock.Enter(LockObject))
+            {
+                if (_blnLoading)
+                    return;
+                if (e?.PropertyName == nameof(Character.EffectiveBuildMethodUsesPriorityTables))
+                    OnPropertyChanged(nameof(SkillPointsSpentOnKnoskills));
+            }
         }
 
         private void OnCharacterSettingsPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            switch (e?.PropertyName)
+            using (EnterReadLock.Enter(LockObject))
             {
-                case nameof(CharacterSettings.KnowledgePointsExpression):
-                    OnPropertyChanged(nameof(KnowledgeSkillPoints));
-                    break;
+                if (_blnLoading)
+                    return;
+                switch (e?.PropertyName)
+                {
+                    case nameof(CharacterSettings.KnowledgePointsExpression):
+                        OnPropertyChanged(nameof(KnowledgeSkillPoints));
+                        break;
 
-                case nameof(CharacterSettings.MaxSkillRatingCreate):
+                    case nameof(CharacterSettings.MaxSkillRatingCreate):
                     {
-                        using (EnterReadLock.Enter(LockObject))
+                        if (!_objCharacter.Created && !_objCharacter.IgnoreRules)
                         {
-                            if (!_objCharacter.Created && !_objCharacter.IgnoreRules)
-                            {
-                                foreach (Skill objSkill in Skills)
-                                    objSkill.OnPropertyChanged(nameof(Skill.RatingMaximum));
-                                foreach (Skill objSkill in _dicSkillBackups.Values.Where(x => !x.IsKnowledgeSkill))
-                                    objSkill.OnPropertyChanged(nameof(Skill.RatingMaximum));
-                            }
+                            foreach (Skill objSkill in Skills)
+                                objSkill.OnPropertyChanged(nameof(Skill.RatingMaximum));
+                            foreach (Skill objSkill in _dicSkillBackups.Values.Where(x => !x.IsKnowledgeSkill))
+                                objSkill.OnPropertyChanged(nameof(Skill.RatingMaximum));
                         }
 
                         break;
                     }
-                case nameof(CharacterSettings.MaxKnowledgeSkillRatingCreate):
+                    case nameof(CharacterSettings.MaxKnowledgeSkillRatingCreate):
                     {
-                        using (EnterReadLock.Enter(LockObject))
+                        if (!_objCharacter.Created && !_objCharacter.IgnoreRules)
                         {
-                            if (!_objCharacter.Created && !_objCharacter.IgnoreRules)
-                            {
-                                foreach (KnowledgeSkill objSkill in KnowledgeSkills)
-                                    objSkill.OnPropertyChanged(nameof(Skill.RatingMaximum));
-                                foreach (Skill objSkill in _dicSkillBackups.Values.Where(x => x.IsKnowledgeSkill))
-                                    objSkill.OnPropertyChanged(nameof(Skill.RatingMaximum));
-                            }
+                            foreach (KnowledgeSkill objSkill in KnowledgeSkills)
+                                objSkill.OnPropertyChanged(nameof(Skill.RatingMaximum));
+                            foreach (Skill objSkill in _dicSkillBackups.Values.Where(x => x.IsKnowledgeSkill))
+                                objSkill.OnPropertyChanged(nameof(Skill.RatingMaximum));
                         }
 
                         break;
                     }
+                }
             }
         }
 
@@ -609,276 +642,504 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        internal void Load(XmlNode xmlSkillNode, bool blnLegacy, CustomActivity parentActivity)
+        internal void Load(XmlNode xmlSkillNode, bool blnLegacy, CustomActivity parentActivity, CancellationToken token = default)
+        {
+            Utils.JoinableTaskFactory.RunAsync(() => LoadCoreAsync(true, xmlSkillNode, blnLegacy, parentActivity, token));
+        }
+
+        internal Task LoadAsync(XmlNode xmlSkillNode, bool blnLegacy, CustomActivity parentActivity, CancellationToken token = default)
+        {
+            return LoadCoreAsync(false, xmlSkillNode, blnLegacy, parentActivity, token);
+        }
+
+        private async Task LoadCoreAsync(bool blnSync, XmlNode xmlSkillNode, bool blnLegacy, CustomActivity parentActivity, CancellationToken token = default)
         {
             if (xmlSkillNode == null)
                 return;
-            using (LockObject.EnterWriteLock())
+            IDisposable objLocker = null;
+            IAsyncDisposable objLockerAsync = null;
+            if (blnSync)
+                // ReSharper disable once MethodHasAsyncOverload
+                objLocker = LockObject.EnterWriteLock(token);
+            else
+                objLockerAsync = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
             {
-                using (CustomActivity opLoadCharSkills
-                       = Timekeeper.StartSyncron("load_char_skills_skillnode", parentActivity))
+                bool blnOldLoading = _blnLoading;
+                try
                 {
-                    if (!blnLegacy)
+                    _blnLoading = true;
+                    using (CustomActivity opLoadCharSkills = blnSync
+                               // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                               ? Timekeeper.StartSyncron("load_char_skills_skillnode", parentActivity)
+                               : await Timekeeper.StartSyncronAsync("load_char_skills_skillnode", parentActivity,
+                                                                    token).ConfigureAwait(false))
                     {
-                        using (_ = Timekeeper.StartSyncron("load_char_skills_groups", opLoadCharSkills))
+                        if (!blnLegacy)
                         {
-                            using (XmlNodeList xmlGroupsList = xmlSkillNode.SelectNodes("groups/group"))
+                            using (_ = blnSync
+                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                       ? Timekeeper.StartSyncron("load_char_skills_groups", opLoadCharSkills)
+                                       : await Timekeeper.StartSyncronAsync(
+                                           "load_char_skills_groups", opLoadCharSkills, token).ConfigureAwait(false))
                             {
-                                if (xmlGroupsList?.Count > 0)
+                                using (XmlNodeList xmlGroupsList = xmlSkillNode.SelectNodes("groups/group"))
                                 {
-                                    foreach (XmlNode xmlNode in xmlGroupsList)
+                                    if (xmlGroupsList?.Count > 0)
                                     {
-                                        string strName = xmlNode["name"]?.InnerText;
-                                        SkillGroup objGroup = null;
-                                        if (!string.IsNullOrEmpty(strName))
-                                            objGroup = SkillGroups.FirstOrDefault(x => x.Name == strName);
-                                        if (objGroup == null)
+                                        foreach (XmlNode xmlNode in xmlGroupsList)
                                         {
-                                            objGroup = new SkillGroup(_objCharacter, strName);
-                                            objGroup.Load(xmlNode);
-                                            SkillGroups.AddWithSort(objGroup, CompareSkillGroups,
-                                                                    (objExistingSkillGroup, objNewSkillGroup) =>
-                                                                    {
-                                                                        foreach (Skill x in objExistingSkillGroup
-                                                                            .SkillList
-                                                                            .Where(x => !objExistingSkillGroup
-                                                                                .SkillList.Contains(x)))
-                                                                            objExistingSkillGroup.Add(x);
-                                                                        objNewSkillGroup.Dispose();
-                                                                    });
+                                            string strName = xmlNode["name"]?.InnerText;
+                                            SkillGroup objGroup = null;
+                                            if (!string.IsNullOrEmpty(strName))
+                                                objGroup = blnSync
+                                                    ? SkillGroups.FirstOrDefault(x => x.Name == strName)
+                                                    : await SkillGroups.FirstOrDefaultAsync(
+                                                        x => x.Name == strName, token: token).ConfigureAwait(false);
+                                            if (objGroup == null)
+                                            {
+                                                objGroup = new SkillGroup(_objCharacter, strName);
+                                                objGroup.Load(xmlNode);
+                                                if (blnSync)
+                                                {
+                                                    SkillGroups.AddWithSort(objGroup, CompareSkillGroups,
+                                                                            (objExistingSkillGroup, objNewSkillGroup) =>
+                                                                            {
+                                                                                foreach
+                                                                                    (Skill x in objExistingSkillGroup
+                                                                                        .SkillList
+                                                                                        .Where(
+                                                                                            x => !objExistingSkillGroup
+                                                                                                .SkillList.Contains(x)))
+                                                                                    objExistingSkillGroup.Add(x);
+                                                                                objNewSkillGroup.Dispose();
+                                                                            });
+                                                }
+                                                else
+                                                {
+                                                    await SkillGroups.AddWithSortAsync(objGroup, CompareSkillGroups,
+                                                        (objExistingSkillGroup, objNewSkillGroup) =>
+                                                        {
+                                                            foreach (Skill x in objExistingSkillGroup
+                                                                         .SkillList
+                                                                         .Where(x => !objExistingSkillGroup
+                                                                             .SkillList.Contains(x)))
+                                                                objExistingSkillGroup.Add(x);
+                                                            objNewSkillGroup.Dispose();
+                                                        }, token: token).ConfigureAwait(false);
+                                                }
+                                            }
+                                            else
+                                                objGroup.Load(xmlNode);
                                         }
-                                        else
-                                            objGroup.Load(xmlNode);
                                     }
                                 }
+
+                                //Timekeeper.Finish("load_char_skills_groups");
                             }
 
-                            //Timekeeper.Finish("load_char_skills_groups");
-                        }
+                            using (_ = blnSync
+                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                       ? Timekeeper.StartSyncron("load_char_skills_normal", opLoadCharSkills)
+                                       : await Timekeeper.StartSyncronAsync(
+                                           "load_char_skills_normal", opLoadCharSkills, token).ConfigureAwait(false))
+                            {
+                                //Load skills. Because sorting a BindingList is complicated we use a temporary normal list
+                                List<Skill> lstNewSkills;
+                                using (XmlNodeList xmlSkillsList = xmlSkillNode.SelectNodes("skills/skill"))
+                                {
+                                    lstNewSkills = new List<Skill>(xmlSkillsList?.Count ?? 0);
+                                    if (xmlSkillsList?.Count > 0)
+                                    {
+                                        foreach (XmlNode xmlNode in xmlSkillsList)
+                                        {
+                                            Skill objSkill = Skill.Load(_objCharacter, xmlNode);
+                                            if (objSkill != null)
+                                            {
+                                                if (blnSync)
+                                                {
+                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                    if (!Skills.Contains(objSkill))
+                                                        lstNewSkills.Add(objSkill);
+                                                }
+                                                else if (!await Skills.ContainsAsync(objSkill, token).ConfigureAwait(false))
+                                                    lstNewSkills.Add(objSkill);
+                                            }
+                                        }
+                                    }
+                                }
 
-                        using (_ = Timekeeper.StartSyncron("load_char_skills_normal", opLoadCharSkills))
+                                if (lstNewSkills.Count > 0)
+                                {
+                                    lstNewSkills.Sort(CompareSkills);
+
+                                    if (blnSync)
+                                    {
+                                        foreach (Skill objSkill in lstNewSkills)
+                                        {
+                                            Skills.AddWithSort(objSkill, CompareSkills, MergeSkills);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        foreach (Skill objSkill in lstNewSkills)
+                                        {
+                                            await Skills.AddWithSortAsync(
+                                                objSkill, CompareSkills, MergeSkills, token: token).ConfigureAwait(false);
+                                        }
+                                    }
+                                }
+
+                                // TODO: Skill groups don't refresh their CanIncrease property correctly when the last of their skills is being added, as the total base rating will be zero. Call this here to force a refresh.
+                                foreach (SkillGroup g in SkillGroups.ToList())
+                                {
+                                    g.OnPropertyChanged(nameof(SkillGroup.SkillList));
+                                }
+
+                                //Timekeeper.Finish("load_char_skills_normal");
+                            }
+
+                            using (_ = blnSync
+                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                       ? Timekeeper.StartSyncron("load_char_skills_kno", opLoadCharSkills)
+                                       : await Timekeeper.StartSyncronAsync(
+                                           "load_char_skills_kno", opLoadCharSkills, token).ConfigureAwait(false))
+                            {
+                                using (XmlNodeList xmlSkillsList = xmlSkillNode.SelectNodes("knoskills/skill"))
+                                {
+                                    if (xmlSkillsList != null)
+                                    {
+                                        foreach (XmlNode xmlNode in xmlSkillsList)
+                                        {
+                                            Skill objUncastSkill = Skill.Load(_objCharacter, xmlNode);
+                                            if (objUncastSkill is KnowledgeSkill objSkill)
+                                            {
+                                                if (blnSync)
+                                                {
+                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                    if (!KnowledgeSkills.Contains(objSkill))
+                                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                        KnowledgeSkills.Add(objSkill);
+                                                }
+                                                else if (!await KnowledgeSkills.ContainsAsync(objSkill, token).ConfigureAwait(false))
+                                                    await KnowledgeSkills.AddAsync(objSkill, token).ConfigureAwait(false);
+                                            }
+                                            else
+                                            {
+                                                Utils
+                                                    .BreakIfDebug(); // Somehow, a non-knowledge skill got into a knowledge skill block
+                                                if (blnSync)
+                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                    objUncastSkill.Remove();
+                                                else
+                                                    await objUncastSkill.RemoveAsync(token).ConfigureAwait(false);
+                                            }
+                                        }
+                                    }
+                                }
+
+                                // Legacy sweep for native language skills
+                                if (_objCharacter.LastSavedVersion <= new Version(5, 212, 72))
+                                {
+                                    if (blnSync)
+                                    {
+                                        if (_objCharacter.Created && !KnowledgeSkills.Any(x => x.IsNativeLanguage))
+                                        {
+                                            KnowledgeSkill objEnglishSkill = new KnowledgeSkill(_objCharacter)
+                                            {
+                                                WritableName = "English",
+                                                IsNativeLanguage = true
+                                            };
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                            KnowledgeSkills.Add(objEnglishSkill);
+                                        }
+                                    }
+                                    else if (await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false)
+                                             && !await KnowledgeSkills.AnyAsync(x => x.IsNativeLanguage, token).ConfigureAwait(false))
+                                    {
+                                        KnowledgeSkill objEnglishSkill = new KnowledgeSkill(_objCharacter);
+                                        await objEnglishSkill.SetWriteableNameAsync("English", token).ConfigureAwait(false);
+                                        objEnglishSkill.IsNativeLanguage = true;
+                                        await KnowledgeSkills.AddAsync(objEnglishSkill, token).ConfigureAwait(false);
+                                    }
+                                }
+                                //Timekeeper.Finish("load_char_skills_kno");
+                            }
+
+                            using (_ = blnSync
+                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                       ? Timekeeper.StartSyncron("load_char_knowsoft_buffer", opLoadCharSkills)
+                                       : await Timekeeper.StartSyncronAsync(
+                                           "load_char_knowsoft_buffer", opLoadCharSkills, token).ConfigureAwait(false))
+                            {
+                                // Knowsoft Buffer.
+                                using (XmlNodeList xmlSkillsList
+                                       = xmlSkillNode.SelectNodes("skilljackknowledgeskills/skill"))
+                                {
+                                    if (xmlSkillsList != null)
+                                    {
+                                        foreach (XmlNode xmlNode in xmlSkillsList)
+                                        {
+                                            string strName = string.Empty;
+                                            if (xmlNode.TryGetStringFieldQuickly("name", ref strName))
+                                            {
+                                                KnowledgeSkill objSkill
+                                                    = new KnowledgeSkill(_objCharacter, strName, false);
+                                                if (blnSync)
+                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                    KnowsoftSkills.Add(objSkill);
+                                                else
+                                                    await KnowsoftSkills.AddAsync(objSkill, token).ConfigureAwait(false);
+                                            }
+                                        }
+                                    }
+                                }
+
+                                //Timekeeper.Finish("load_char_knowsoft_buffer");
+                            }
+                        }
+                        else
                         {
-                            //Load skills. Because sorting a BindingList is complicated we use a temporary normal list
-                            List<Skill> lstNewSkills;
+                            List<Skill> lstTempSkillList;
                             using (XmlNodeList xmlSkillsList = xmlSkillNode.SelectNodes("skills/skill"))
                             {
-                                lstNewSkills = new List<Skill>(xmlSkillsList?.Count ?? 0);
+                                lstTempSkillList = new List<Skill>(xmlSkillsList?.Count ?? 0);
                                 if (xmlSkillsList?.Count > 0)
                                 {
                                     foreach (XmlNode xmlNode in xmlSkillsList)
                                     {
-                                        Skill objSkill = Skill.Load(_objCharacter, xmlNode);
-                                        if (objSkill != null && !Skills.Contains(objSkill))
-                                            lstNewSkills.Add(objSkill);
+                                        Skill objSkill = Skill.LegacyLoad(_objCharacter, xmlNode);
+                                        if (objSkill != null)
+                                            lstTempSkillList.Add(objSkill);
                                     }
                                 }
                             }
 
-                            if (lstNewSkills.Count > 0)
+                            if (lstTempSkillList.Count > 0)
                             {
-                                lstNewSkills.Sort(CompareSkills);
+                                List<Skill> lstUnsortedSkills = new List<Skill>(lstTempSkillList.Count);
 
-                                foreach (Skill objSkill in lstNewSkills)
+                                //Variable/Anon method as to not clutter anywhere else. Not sure if clever or stupid
+                                bool OldSkillFilter(Skill skill)
                                 {
-                                    Skills.AddWithSort(objSkill, CompareSkills, MergeSkills);
+                                    if (skill.Rating > 0)
+                                        return true;
+
+                                    if (skill.SkillCategory == "Resonance Active" && !_objCharacter.RESEnabled)
+                                        return false;
+
+                                    //This could be more fine grained, but frankly i don't care
+                                    return skill.SkillCategory != "Magical Active" || _objCharacter.MAGEnabled;
                                 }
-                            }
 
-                            // TODO: Skill groups don't refresh their CanIncrease property correctly when the last of their skills is being added, as the total basse rating will be zero. Call this here to force a refresh.
-                            foreach (SkillGroup g in SkillGroups.ToList())
-                            {
-                                g.OnPropertyChanged(nameof(SkillGroup.SkillList));
-                            }
-
-                            //Timekeeper.Finish("load_char_skills_normal");
-                        }
-
-                        using (_ = Timekeeper.StartSyncron("load_char_skills_kno", opLoadCharSkills))
-                        {
-                            using (XmlNodeList xmlSkillsList = xmlSkillNode.SelectNodes("knoskills/skill"))
-                            {
-                                if (xmlSkillsList != null)
+                                async ValueTask<bool> OldSkillFilterAsync(Skill skill)
                                 {
-                                    foreach (XmlNode xmlNode in xmlSkillsList)
+                                    if (await skill.GetRatingAsync(token).ConfigureAwait(false) > 0)
+                                        return true;
+
+                                    if (skill.SkillCategory == "Resonance Active"
+                                        && !await _objCharacter.GetRESEnabledAsync(token).ConfigureAwait(false))
+                                        return false;
+
+                                    //This could be more fine grained, but frankly i don't care
+                                    return skill.SkillCategory != "Magical Active"
+                                           || await _objCharacter.GetMAGEnabledAsync(token).ConfigureAwait(false);
+                                }
+
+                                foreach (Skill objSkill in lstTempSkillList)
+                                {
+                                    if (objSkill is KnowledgeSkill objKnoSkill)
                                     {
-                                        Skill objUncastSkill = Skill.Load(_objCharacter, xmlNode);
-                                        if (objUncastSkill is KnowledgeSkill objSkill)
-                                        {
-                                            if (!KnowledgeSkills.Contains(objSkill))
-                                                KnowledgeSkills.Add(objSkill);
-                                        }
+                                        if (blnSync)
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                            KnowledgeSkills.Add(objKnoSkill);
                                         else
+                                            await KnowledgeSkills.AddAsync(objKnoSkill, token).ConfigureAwait(false);
+                                    }
+                                    else if (blnSync)
+                                    {
+                                        if (OldSkillFilter(objSkill))
                                         {
-                                            Utils.BreakIfDebug(); // Somehow, a non-knowledge skill got into a knowledge skill block
-                                            objUncastSkill.Remove();
+                                            lstUnsortedSkills.Add(objSkill);
                                         }
                                     }
-                                }
-                            }
-
-                            // Legacy sweep for native language skills
-                            if (_objCharacter.LastSavedVersion <= new Version(5, 212, 72) && _objCharacter.Created
-                                && !KnowledgeSkills.Any(x => x.IsNativeLanguage))
-                            {
-                                KnowledgeSkill objEnglishSkill = new KnowledgeSkill(_objCharacter)
-                                {
-                                    WritableName = "English",
-                                    IsNativeLanguage = true
-                                };
-                                KnowledgeSkills.Add(objEnglishSkill);
-                            }
-                            //Timekeeper.Finish("load_char_skills_kno");
-                        }
-
-                        using (_ = Timekeeper.StartSyncron("load_char_knowsoft_buffer", opLoadCharSkills))
-                        {
-                            // Knowsoft Buffer.
-                            using (XmlNodeList xmlSkillsList
-                                   = xmlSkillNode.SelectNodes("skilljackknowledgeskills/skill"))
-                            {
-                                if (xmlSkillsList != null)
-                                {
-                                    foreach (XmlNode xmlNode in xmlSkillsList)
+                                    else if (await OldSkillFilterAsync(objSkill).ConfigureAwait(false))
                                     {
-                                        string strName = string.Empty;
-                                        if (xmlNode.TryGetStringFieldQuickly("name", ref strName))
-                                            KnowsoftSkills.Add(new KnowledgeSkill(_objCharacter, strName, false));
-                                    }
-                                }
-                            }
-
-                            //Timekeeper.Finish("load_char_knowsoft_buffer");
-                        }
-                    }
-                    else
-                    {
-                        List<Skill> lstTempSkillList;
-                        using (XmlNodeList xmlSkillsList = xmlSkillNode.SelectNodes("skills/skill"))
-                        {
-                            lstTempSkillList = new List<Skill>(xmlSkillsList?.Count ?? 0);
-                            if (xmlSkillsList?.Count > 0)
-                            {
-                                foreach (XmlNode xmlNode in xmlSkillsList)
-                                {
-                                    Skill objSkill = Skill.LegacyLoad(_objCharacter, xmlNode);
-                                    if (objSkill != null)
-                                        lstTempSkillList.Add(objSkill);
-                                }
-                            }
-                        }
-
-                        if (lstTempSkillList.Count > 0)
-                        {
-                            List<Skill> lstUnsortedSkills = new List<Skill>(lstTempSkillList.Count);
-
-                            //Variable/Anon method as to not clutter anywhere else. Not sure if clever or stupid
-                            bool OldSkillFilter(Skill skill)
-                            {
-                                if (skill.Rating > 0)
-                                    return true;
-
-                                if (skill.SkillCategory == "Resonance Active" && !_objCharacter.RESEnabled)
-                                    return false;
-
-                                //This could be more fine grained, but frankly i don't care
-                                return skill.SkillCategory != "Magical Active" || _objCharacter.MAGEnabled;
-                            }
-
-                            foreach (Skill objSkill in lstTempSkillList)
-                            {
-                                if (objSkill is KnowledgeSkill objKnoSkill)
-                                {
-                                    KnowledgeSkills.Add(objKnoSkill);
-                                }
-                                else if (OldSkillFilter(objSkill))
-                                {
-                                    lstUnsortedSkills.Add(objSkill);
-                                }
-                            }
-
-                            lstUnsortedSkills.Sort(CompareSkills);
-
-                            foreach (Skill objSkill in lstUnsortedSkills)
-                            {
-                                if (objSkill.SkillId != Guid.Empty && !objSkill.IsExoticSkill)
-                                {
-                                    Skill objExistingSkill = Skills.FirstOrDefault(x => x.SkillId == objSkill.SkillId);
-                                    if (objExistingSkill != null)
-                                    {
-                                        MergeSkills(objExistingSkill, objSkill);
-                                        continue;
+                                        lstUnsortedSkills.Add(objSkill);
                                     }
                                 }
 
-                                Skills.Add(objSkill);
+                                lstUnsortedSkills.Sort(CompareSkills);
+
+                                foreach (Skill objSkill in lstUnsortedSkills)
+                                {
+                                    if (objSkill.SkillId != Guid.Empty && !objSkill.IsExoticSkill)
+                                    {
+                                        Skill objExistingSkill
+                                            = Skills.FirstOrDefault(x => x.SkillId == objSkill.SkillId);
+                                        if (objExistingSkill != null)
+                                        {
+                                            if (blnSync)
+                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                MergeSkills(objExistingSkill, objSkill);
+                                            else
+                                                await MergeSkillsAsync(objExistingSkill, objSkill, token).ConfigureAwait(false);
+                                            continue;
+                                        }
+                                    }
+
+                                    if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                        Skills.Add(objSkill);
+                                    else
+                                        await Skills.AddAsync(objSkill, token).ConfigureAwait(false);
+                                }
+
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    UpdateUndoList(xmlSkillNode.OwnerDocument);
+                                else
+                                    await UpdateUndoListAsync(xmlSkillNode.OwnerDocument, token).ConfigureAwait(false);
                             }
-
-                            UpdateUndoList(xmlSkillNode.OwnerDocument);
-                        }
-                    }
-
-                    XPathNavigator skillsDocXPath = _objCharacter.LoadDataXPath("skills.xml");
-                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
-                                                                    out HashSet<string>
-                                                                        setSkillGuids))
-                    {
-                        foreach (XPathNavigator node in skillsDocXPath.Select(
-                                     "/chummer/skills/skill[not(exotic) and (" + _objCharacter.Settings.BookXPath()
-                                                                               + ')'
-                                                                               + SkillFilter(FilterOption.NonSpecial)
-                                                                               + ']'))
-                        {
-                            string strName = node.SelectSingleNodeAndCacheExpression("name")?.Value;
-                            if (!string.IsNullOrEmpty(strName))
-                                setSkillGuids.Add(strName);
                         }
 
-                        XmlDocument skillsDoc = _objCharacter.LoadData("skills.xml");
-                        foreach (string skillId in setSkillGuids.Where(s => Skills.All(skill => skill.Name != s)))
+                        XPathNavigator skillsDocXPath = blnSync
+                            // ReSharper disable once MethodHasAsyncOverload
+                            ? _objCharacter.LoadDataXPath("skills.xml")
+                            : await _objCharacter.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false);
+                        using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                        out HashSet<string>
+                                                                            setSkillGuids))
                         {
-                            XmlNode objXmlSkillNode
-                                = skillsDoc.SelectSingleNode(
-                                    "/chummer/skills/skill[name = " + skillId.CleanXPath() + ']');
-                            if (objXmlSkillNode != null)
+                            foreach (XPathNavigator node in skillsDocXPath.Select(
+                                         "/chummer/skills/skill[not(exotic) and ("
+                                         + (blnSync
+                                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                             ? _objCharacter.Settings.BookXPath()
+                                             : await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false)) + ')'
+                                         + SkillFilter(FilterOption.NonSpecial) + ']'))
                             {
-                                Skill objSkill = Skill.FromData(objXmlSkillNode, _objCharacter, false);
-                                Skills.Add(objSkill);
+                                string strName
+                                    = (blnSync
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                        ? node.SelectSingleNodeAndCacheExpression("name")
+                                        : await node.SelectSingleNodeAndCacheExpressionAsync("name", token).ConfigureAwait(false))?.Value;
+                                if (!string.IsNullOrEmpty(strName))
+                                    setSkillGuids.Add(strName);
                             }
-                        }
-                    }
-                    //This might give subtle bugs in the future,
-                    //but right now it needs to be run once when upgrading or it might crash.
-                    //As some didn't they crashed on loading skills.
-                    //After this have run, it won't (for the crash i'm aware)
-                    //TODO: Move it to the other side of the if someday?
 
-                    if (!_objCharacter.Created)
-                    {
-                        // zero out any skillgroups whose skills did not make the final cut
-                        foreach (SkillGroup objSkillGroup in SkillGroups)
-                        {
-                            if (!objSkillGroup.SkillList.Any(x => _dicSkills.ContainsKey(x.DictionaryKey)))
+                            XmlDocument skillsDoc = blnSync
+                                // ReSharper disable once MethodHasAsyncOverload
+                                ? _objCharacter.LoadData("skills.xml")
+                                : await _objCharacter.LoadDataAsync("skills.xml", token: token).ConfigureAwait(false);
+                            foreach (string skillId in setSkillGuids.Where(s => Skills.All(skill => skill.Name != s)))
                             {
-                                objSkillGroup.Base = 0;
-                                objSkillGroup.Karma = 0;
+                                XmlNode objXmlSkillNode
+                                    = skillsDoc.SelectSingleNode(
+                                        "/chummer/skills/skill[name = " + skillId.CleanXPath() + ']');
+                                if (objXmlSkillNode != null)
+                                {
+                                    Skill objSkill = Skill.FromData(objXmlSkillNode, _objCharacter, false);
+                                    if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                        Skills.Add(objSkill);
+                                    else
+                                        await Skills.AddAsync(objSkill, token).ConfigureAwait(false);
+                                }
                             }
                         }
+
+                        if (blnSync)
+                        {
+                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                            _dicSkills.Clear();
+                            foreach (Skill objSkill in Skills)
+                            {
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                if (!_dicSkills.ContainsKey(objSkill.DictionaryKey))
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    _dicSkills.Add(objSkill.DictionaryKey, objSkill);
+                            }
+
+                            foreach (KnowledgeSkill objKnoSkill in KnowledgeSkills)
+                                objKnoSkill.PropertyChanged += OnKnowledgeSkillPropertyChanged;
+                        }
+                        else
+                        {
+                            await _dicSkills.ClearAsync(token).ConfigureAwait(false);
+                            foreach (Skill objSkill in Skills)
+                            {
+                                if (!await _dicSkills.ContainsKeyAsync(objSkill.DictionaryKey, token).ConfigureAwait(false))
+                                    await _dicSkills.AddAsync(objSkill.DictionaryKey, objSkill, token).ConfigureAwait(false);
+                            }
+
+                            await KnowledgeSkills.ForEachAsync(
+                                objKnoSkill => objKnoSkill.PropertyChanged += OnKnowledgeSkillPropertyChanged, token).ConfigureAwait(false);
+                        }
+
+                        //This might give subtle bugs in the future,
+                        //but right now it needs to be run once when upgrading or it might crash.
+                        //As some didn't they crashed on loading skills.
+                        //After this have run, it won't (for the crash i'm aware)
+                        //TODO: Move it to the other side of the if someday?
+
+                        if (blnSync)
+                        {
+                            if (!_objCharacter.Created)
+                            {
+                                // zero out any skillgroups whose skills did not make the final cut
+                                foreach (SkillGroup objSkillGroup in SkillGroups)
+                                {
+                                    if (!objSkillGroup.SkillList.Any(x => _dicSkills.ContainsKey(x.DictionaryKey)))
+                                    {
+                                        objSkillGroup.Base = 0;
+                                        objSkillGroup.Karma = 0;
+                                    }
+                                }
+                            }
+                        }
+                        else if (!await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
+                        {
+                            // zero out any skillgroups whose skills did not make the final cut
+                            await SkillGroups.ForEachAsync(async objSkillGroup =>
+                            {
+                                if (!await objSkillGroup.SkillList.AnyAsync(
+                                        async x => await _dicSkills.ContainsKeyAsync(
+                                            await x.GetDictionaryKeyAsync(token).ConfigureAwait(false), token).ConfigureAwait(false), token: token).ConfigureAwait(false))
+                                {
+                                    objSkillGroup.Base = 0;
+                                    objSkillGroup.Karma = 0;
+                                }
+                            }, token).ConfigureAwait(false);
+                        }
+
+                        //Workaround for probably breaking compability between earlier beta builds
+                        if (xmlSkillNode["skillptsmax"] == null)
+                        {
+                            xmlSkillNode = xmlSkillNode.OwnerDocument?["character"];
+                        }
+
+                        int intTmp = 0;
+                        if (xmlSkillNode.TryGetInt32FieldQuickly("skillptsmax", ref intTmp))
+                            SkillPointsMaximum = intTmp;
+                        if (xmlSkillNode.TryGetInt32FieldQuickly("skillgrpsmax", ref intTmp))
+                            SkillGroupPointsMaximum = intTmp;
+
+                        //Timekeeper.Finish("load_char_skills");
                     }
-
-                    //Workaround for probably breaking compability between earlier beta builds
-                    if (xmlSkillNode["skillptsmax"] == null)
-                    {
-                        xmlSkillNode = xmlSkillNode.OwnerDocument?["character"];
-                    }
-
-                    int intTmp = 0;
-                    if (xmlSkillNode.TryGetInt32FieldQuickly("skillptsmax", ref intTmp))
-                        SkillPointsMaximum = intTmp;
-                    if (xmlSkillNode.TryGetInt32FieldQuickly("skillgrpsmax", ref intTmp))
-                        SkillGroupPointsMaximum = intTmp;
-
-                    //Timekeeper.Finish("load_char_skills");
                 }
+                finally
+                {
+                    _blnLoading = blnOldLoading;
+                }
+            }
+            finally
+            {
+                if (blnSync)
+                    // ReSharper disable once MethodHasAsyncOverload
+                    objLocker.Dispose();
+                else
+                    await objLockerAsync.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -886,244 +1147,254 @@ namespace Chummer.Backend.Skills
         {
             using (LockObject.EnterWriteLock())
             {
-                using (_ = Timekeeper.StartSyncron("load_char_skills_groups", parentActivity))
+                bool blnOldLoading = _blnLoading;
+                try
                 {
-                    foreach (XPathNavigator xmlNode in xmlSkillNode.SelectAndCacheExpression("groups/skill"))
+                    _blnLoading = true;
+                    using (_ = Timekeeper.StartSyncron("load_char_skills_groups", parentActivity))
                     {
-                        SkillGroup objGroup = new SkillGroup(_objCharacter);
-                        objGroup.LoadFromHeroLab(xmlNode);
-                        SkillGroups.AddWithSort(objGroup, CompareSkillGroups,
-                                                (objExistingSkillGroup, objNewSkillGroup) =>
-                                                {
-                                                    foreach (Skill x in objExistingSkillGroup.SkillList
-                                                                 .Where(x => !objExistingSkillGroup
-                                                                              .SkillList.Contains(x)))
-                                                        objExistingSkillGroup.Add(x);
-                                                    objNewSkillGroup.Dispose();
-                                                });
-                    }
-
-                    //Timekeeper.Finish("load_char_skills_groups");
-                }
-
-                using (_ = Timekeeper.StartSyncron("load_char_skills", parentActivity))
-                {
-                    List<Skill> lstTempSkillList = new List<Skill>(Skills.Count);
-                    foreach (XPathNavigator xmlNode in xmlSkillNode.SelectAndCacheExpression("active/skill"))
-                    {
-                        Skill objSkill = Skill.LoadFromHeroLab(_objCharacter, xmlNode, false);
-                        if (objSkill != null)
-                            lstTempSkillList.Add(objSkill);
-                    }
-
-                    foreach (XPathNavigator xmlNode in xmlSkillNode.SelectAndCacheExpression("knowledge/skill"))
-                    {
-                        Skill objSkill = Skill.LoadFromHeroLab(_objCharacter, xmlNode, true);
-                        if (objSkill != null)
-                            lstTempSkillList.Add(objSkill);
-                    }
-
-                    foreach (XPathNavigator xmlNode in xmlSkillNode.SelectAndCacheExpression("language/skill"))
-                    {
-                        Skill objSkill = Skill.LoadFromHeroLab(_objCharacter, xmlNode, true, "Language");
-                        if (objSkill != null)
-                            lstTempSkillList.Add(objSkill);
-                    }
-
-                    List<Skill> lstUnsortedSkills = new List<Skill>(lstTempSkillList.Count);
-
-                    //Variable/Anon method as to not clutter anywhere else. Not sure if clever or stupid
-                    bool OldSkillFilter(Skill skill)
-                    {
-                        if (skill.Rating > 0)
-                            return true;
-
-                        if (skill.SkillCategory == "Resonance Active" && !_objCharacter.RESEnabled)
-                            return false;
-
-                        //This could be more fine grained, but frankly i don't care
-                        return skill.SkillCategory != "Magical Active" || _objCharacter.MAGEnabled;
-                    }
-
-                    foreach (Skill objSkill in lstTempSkillList)
-                    {
-                        if (objSkill is KnowledgeSkill objKnoSkill)
+                        foreach (XPathNavigator xmlNode in xmlSkillNode.SelectAndCacheExpression("groups/skill"))
                         {
-                            KnowledgeSkills.Add(objKnoSkill);
+                            SkillGroup objGroup = new SkillGroup(_objCharacter);
+                            objGroup.LoadFromHeroLab(xmlNode);
+                            SkillGroups.AddWithSort(objGroup, CompareSkillGroups,
+                                                    (objExistingSkillGroup, objNewSkillGroup) =>
+                                                    {
+                                                        foreach (Skill x in objExistingSkillGroup.SkillList
+                                                                     .Where(x => !objExistingSkillGroup
+                                                                                .SkillList.Contains(x)))
+                                                            objExistingSkillGroup.Add(x);
+                                                        objNewSkillGroup.Dispose();
+                                                    });
                         }
-                        else if (OldSkillFilter(objSkill))
-                        {
-                            lstUnsortedSkills.Add(objSkill);
-                        }
+
+                        //Timekeeper.Finish("load_char_skills_groups");
                     }
 
-                    lstUnsortedSkills.Sort(CompareSkills);
-
-                    foreach (Skill objSkill in lstUnsortedSkills)
+                    using (_ = Timekeeper.StartSyncron("load_char_skills", parentActivity))
                     {
-                        if (objSkill.SkillId != Guid.Empty && !objSkill.IsExoticSkill)
+                        List<Skill> lstTempSkillList = new List<Skill>(Skills.Count);
+                        foreach (XPathNavigator xmlNode in xmlSkillNode.SelectAndCacheExpression("active/skill"))
                         {
-                            Skill objExistingSkill = Skills.FirstOrDefault(x => x.SkillId == objSkill.SkillId);
-                            if (objExistingSkill != null)
+                            Skill objSkill = Skill.LoadFromHeroLab(_objCharacter, xmlNode, false);
+                            if (objSkill != null)
+                                lstTempSkillList.Add(objSkill);
+                        }
+
+                        foreach (XPathNavigator xmlNode in xmlSkillNode.SelectAndCacheExpression("knowledge/skill"))
+                        {
+                            Skill objSkill = Skill.LoadFromHeroLab(_objCharacter, xmlNode, true);
+                            if (objSkill != null)
+                                lstTempSkillList.Add(objSkill);
+                        }
+
+                        foreach (XPathNavigator xmlNode in xmlSkillNode.SelectAndCacheExpression("language/skill"))
+                        {
+                            Skill objSkill = Skill.LoadFromHeroLab(_objCharacter, xmlNode, true, "Language");
+                            if (objSkill != null)
+                                lstTempSkillList.Add(objSkill);
+                        }
+
+                        List<Skill> lstUnsortedSkills = new List<Skill>(lstTempSkillList.Count);
+
+                        //Variable/Anon method as to not clutter anywhere else. Not sure if clever or stupid
+                        bool OldSkillFilter(Skill skill)
+                        {
+                            if (skill.Rating > 0)
+                                return true;
+
+                            if (skill.SkillCategory == "Resonance Active" && !_objCharacter.RESEnabled)
+                                return false;
+
+                            //This could be more fine grained, but frankly i don't care
+                            return skill.SkillCategory != "Magical Active" || _objCharacter.MAGEnabled;
+                        }
+
+                        foreach (Skill objSkill in lstTempSkillList)
+                        {
+                            if (objSkill is KnowledgeSkill objKnoSkill)
                             {
-                                MergeSkills(objExistingSkill, objSkill);
-                                continue;
+                                KnowledgeSkills.Add(objKnoSkill);
+                            }
+                            else if (OldSkillFilter(objSkill))
+                            {
+                                lstUnsortedSkills.Add(objSkill);
                             }
                         }
 
-                        Skills.AddWithSort(objSkill, CompareSkills, MergeSkills);
-                    }
+                        lstUnsortedSkills.Sort(CompareSkills);
 
-                    //This might give subtle bugs in the future,
-                    //but right now it needs to be run once when upgrading or it might crash.
-                    //As some didn't they crashed on loading skills.
-                    //After this have run, it won't (for the crash i'm aware)
-                    //TODO: Move it to the other side of the if someday?
-
-                    if (!_objCharacter.Created)
-                    {
-                        // zero out any skillgroups whose skills did not make the final cut
-                        foreach (SkillGroup objSkillGroup in SkillGroups)
+                        foreach (Skill objSkill in lstUnsortedSkills)
                         {
-                            if (!objSkillGroup.SkillList.Any(x => _dicSkills.ContainsKey(x.DictionaryKey)))
+                            if (objSkill.SkillId != Guid.Empty && !objSkill.IsExoticSkill)
                             {
-                                objSkillGroup.Base = 0;
-                                objSkillGroup.Karma = 0;
+                                Skill objExistingSkill = Skills.FirstOrDefault(x => x.SkillId == objSkill.SkillId);
+                                if (objExistingSkill != null)
+                                {
+                                    MergeSkills(objExistingSkill, objSkill);
+                                    continue;
+                                }
                             }
+
+                            Skills.AddWithSort(objSkill, CompareSkills, MergeSkills);
                         }
 
-                        if (_objCharacter.EffectiveBuildMethodUsesPriorityTables)
+                        //This might give subtle bugs in the future,
+                        //but right now it needs to be run once when upgrading or it might crash.
+                        //As some didn't they crashed on loading skills.
+                        //After this have run, it won't (for the crash i'm aware)
+                        //TODO: Move it to the other side of the if someday?
+
+                        if (!_objCharacter.Created)
                         {
-                            // Allocate Skill Points
-                            int intSkillPointCount = SkillPointsMaximum;
-                            Skill objSkillToPutPointsInto;
+                            // zero out any skillgroups whose skills did not make the final cut
+                            foreach (SkillGroup objSkillGroup in SkillGroups)
+                            {
+                                if (!objSkillGroup.SkillList.Any(x => _dicSkills.ContainsKey(x.DictionaryKey)))
+                                {
+                                    objSkillGroup.Base = 0;
+                                    objSkillGroup.Karma = 0;
+                                }
+                            }
+
+                            if (_objCharacter.EffectiveBuildMethodUsesPriorityTables)
+                            {
+                                // Allocate Skill Points
+                                int intSkillPointCount = SkillPointsMaximum;
+                                Skill objSkillToPutPointsInto;
+
+                                // First loop through skills where costs can be 100% covered with points
+                                do
+                                {
+                                    objSkillToPutPointsInto = null;
+                                    int intSkillToPutPointsIntoTotalKarmaCost = 0;
+                                    foreach (Skill objLoopSkill in Skills)
+                                    {
+                                        if (objLoopSkill.Karma == 0)
+                                            continue;
+                                        // Put points into the attribute with the highest total karma cost.
+                                        // In case of ties, pick the one that would need more points to cover it (the other one will hopefully get picked up at a later cycle)
+                                        int intLoopTotalKarmaCost = objLoopSkill.CurrentKarmaCost;
+                                        if (objSkillToPutPointsInto == null
+                                            || (objLoopSkill.Karma <= intSkillPointCount
+                                                && (intLoopTotalKarmaCost > intSkillToPutPointsIntoTotalKarmaCost
+                                                    || (intLoopTotalKarmaCost == intSkillToPutPointsIntoTotalKarmaCost
+                                                        && objLoopSkill.Karma > objSkillToPutPointsInto.Karma))))
+                                        {
+                                            objSkillToPutPointsInto = objLoopSkill;
+                                            intSkillToPutPointsIntoTotalKarmaCost = intLoopTotalKarmaCost;
+                                        }
+                                    }
+
+                                    if (objSkillToPutPointsInto != null)
+                                    {
+                                        objSkillToPutPointsInto.Base = objSkillToPutPointsInto.Karma;
+                                        intSkillPointCount -= objSkillToPutPointsInto.Karma;
+                                        objSkillToPutPointsInto.Karma = 0;
+                                    }
+                                } while (objSkillToPutPointsInto != null && intSkillPointCount > 0);
+
+                                // If any points left over, then put them all into the attribute with the highest karma cost
+                                if (intSkillPointCount > 0 && Skills.Any(x => x.Karma != 0))
+                                {
+                                    int intHighestTotalKarmaCost = 0;
+                                    foreach (Skill objLoopSkill in Skills)
+                                    {
+                                        if (objLoopSkill.Karma == 0)
+                                            continue;
+                                        // Put points into the attribute with the highest total karma cost.
+                                        // In case of ties, pick the one that would need more points to cover it (the other one will hopefully get picked up at a later cycle)
+                                        int intLoopTotalKarmaCost = objLoopSkill.CurrentKarmaCost;
+                                        if (objSkillToPutPointsInto == null
+                                            || intLoopTotalKarmaCost > intHighestTotalKarmaCost
+                                            || (intLoopTotalKarmaCost == intHighestTotalKarmaCost
+                                                && objLoopSkill.Karma > objSkillToPutPointsInto.Karma))
+                                        {
+                                            objSkillToPutPointsInto = objLoopSkill;
+                                            intHighestTotalKarmaCost = intLoopTotalKarmaCost;
+                                        }
+                                    }
+
+                                    if (objSkillToPutPointsInto != null)
+                                    {
+                                        objSkillToPutPointsInto.Base = intSkillPointCount;
+                                        objSkillToPutPointsInto.Karma -= intSkillPointCount;
+                                    }
+                                }
+                            }
+
+                            // Allocate Knowledge Skill Points
+                            int intKnowledgeSkillPointCount = KnowledgeSkillPoints;
+                            Skill objKnowledgeSkillToPutPointsInto;
 
                             // First loop through skills where costs can be 100% covered with points
                             do
                             {
-                                objSkillToPutPointsInto = null;
-                                int intSkillToPutPointsIntoTotalKarmaCost = 0;
-                                foreach (Skill objLoopSkill in Skills)
+                                objKnowledgeSkillToPutPointsInto = null;
+                                int intKnowledgeSkillToPutPointsIntoTotalKarmaCost = 0;
+                                foreach (KnowledgeSkill objLoopKnowledgeSkill in KnowledgeSkills)
                                 {
-                                    if (objLoopSkill.Karma == 0)
+                                    if (objLoopKnowledgeSkill.Karma == 0)
                                         continue;
                                     // Put points into the attribute with the highest total karma cost.
                                     // In case of ties, pick the one that would need more points to cover it (the other one will hopefully get picked up at a later cycle)
-                                    int intLoopTotalKarmaCost = objLoopSkill.CurrentKarmaCost;
-                                    if (objSkillToPutPointsInto == null
-                                        || (objLoopSkill.Karma <= intSkillPointCount
-                                            && (intLoopTotalKarmaCost > intSkillToPutPointsIntoTotalKarmaCost
-                                                || (intLoopTotalKarmaCost == intSkillToPutPointsIntoTotalKarmaCost
-                                                    && objLoopSkill.Karma > objSkillToPutPointsInto.Karma))))
+                                    int intLoopTotalKarmaCost = objLoopKnowledgeSkill.CurrentKarmaCost;
+                                    if (objKnowledgeSkillToPutPointsInto == null
+                                        || (objLoopKnowledgeSkill.Karma <= intKnowledgeSkillPointCount
+                                            && (intLoopTotalKarmaCost > intKnowledgeSkillToPutPointsIntoTotalKarmaCost
+                                                || (intLoopTotalKarmaCost
+                                                    == intKnowledgeSkillToPutPointsIntoTotalKarmaCost
+                                                    && objLoopKnowledgeSkill.Karma
+                                                    > objKnowledgeSkillToPutPointsInto.Karma))))
                                     {
-                                        objSkillToPutPointsInto = objLoopSkill;
-                                        intSkillToPutPointsIntoTotalKarmaCost = intLoopTotalKarmaCost;
+                                        objKnowledgeSkillToPutPointsInto = objLoopKnowledgeSkill;
+                                        intKnowledgeSkillToPutPointsIntoTotalKarmaCost = intLoopTotalKarmaCost;
                                     }
                                 }
 
-                                if (objSkillToPutPointsInto != null)
+                                if (objKnowledgeSkillToPutPointsInto != null)
                                 {
-                                    objSkillToPutPointsInto.Base = objSkillToPutPointsInto.Karma;
-                                    intSkillPointCount -= objSkillToPutPointsInto.Karma;
-                                    objSkillToPutPointsInto.Karma = 0;
+                                    objKnowledgeSkillToPutPointsInto.Base = objKnowledgeSkillToPutPointsInto.Karma;
+                                    intKnowledgeSkillPointCount -= objKnowledgeSkillToPutPointsInto.Karma;
+                                    objKnowledgeSkillToPutPointsInto.Karma = 0;
                                 }
-                            } while (objSkillToPutPointsInto != null && intSkillPointCount > 0);
+                            } while (objKnowledgeSkillToPutPointsInto != null && intKnowledgeSkillPointCount > 0);
 
                             // If any points left over, then put them all into the attribute with the highest karma cost
-                            if (intSkillPointCount > 0 && Skills.Any(x => x.Karma != 0))
+                            if (intKnowledgeSkillPointCount > 0 && KnowledgeSkills.Any(x => x.Karma != 0))
                             {
                                 int intHighestTotalKarmaCost = 0;
-                                foreach (Skill objLoopSkill in Skills)
+                                foreach (KnowledgeSkill objLoopKnowledgeSkill in KnowledgeSkills)
                                 {
-                                    if (objLoopSkill.Karma == 0)
+                                    if (objLoopKnowledgeSkill.Karma == 0)
                                         continue;
                                     // Put points into the attribute with the highest total karma cost.
                                     // In case of ties, pick the one that would need more points to cover it (the other one will hopefully get picked up at a later cycle)
-                                    int intLoopTotalKarmaCost = objLoopSkill.CurrentKarmaCost;
-                                    if (objSkillToPutPointsInto == null
+                                    int intLoopTotalKarmaCost = objLoopKnowledgeSkill.CurrentKarmaCost;
+                                    if (objKnowledgeSkillToPutPointsInto == null
                                         || intLoopTotalKarmaCost > intHighestTotalKarmaCost
                                         || (intLoopTotalKarmaCost == intHighestTotalKarmaCost
-                                            && objLoopSkill.Karma > objSkillToPutPointsInto.Karma))
+                                            && objLoopKnowledgeSkill.Karma > objKnowledgeSkillToPutPointsInto.Karma))
                                     {
-                                        objSkillToPutPointsInto = objLoopSkill;
+                                        objKnowledgeSkillToPutPointsInto = objLoopKnowledgeSkill;
                                         intHighestTotalKarmaCost = intLoopTotalKarmaCost;
                                     }
                                 }
 
-                                if (objSkillToPutPointsInto != null)
+                                if (objKnowledgeSkillToPutPointsInto != null)
                                 {
-                                    objSkillToPutPointsInto.Base = intSkillPointCount;
-                                    objSkillToPutPointsInto.Karma -= intSkillPointCount;
+                                    objKnowledgeSkillToPutPointsInto.Base = intKnowledgeSkillPointCount;
+                                    objKnowledgeSkillToPutPointsInto.Karma -= intKnowledgeSkillPointCount;
                                 }
                             }
                         }
 
-                        // Allocate Knowledge Skill Points
-                        int intKnowledgeSkillPointCount = KnowledgeSkillPoints;
-                        Skill objKnowledgeSkillToPutPointsInto;
-
-                        // First loop through skills where costs can be 100% covered with points
-                        do
-                        {
-                            objKnowledgeSkillToPutPointsInto = null;
-                            int intKnowledgeSkillToPutPointsIntoTotalKarmaCost = 0;
-                            foreach (KnowledgeSkill objLoopKnowledgeSkill in KnowledgeSkills)
-                            {
-                                if (objLoopKnowledgeSkill.Karma == 0)
-                                    continue;
-                                // Put points into the attribute with the highest total karma cost.
-                                // In case of ties, pick the one that would need more points to cover it (the other one will hopefully get picked up at a later cycle)
-                                int intLoopTotalKarmaCost = objLoopKnowledgeSkill.CurrentKarmaCost;
-                                if (objKnowledgeSkillToPutPointsInto == null
-                                    || (objLoopKnowledgeSkill.Karma <= intKnowledgeSkillPointCount
-                                        && (intLoopTotalKarmaCost > intKnowledgeSkillToPutPointsIntoTotalKarmaCost
-                                            || (intLoopTotalKarmaCost == intKnowledgeSkillToPutPointsIntoTotalKarmaCost
-                                                && objLoopKnowledgeSkill.Karma
-                                                > objKnowledgeSkillToPutPointsInto.Karma))))
-                                {
-                                    objKnowledgeSkillToPutPointsInto = objLoopKnowledgeSkill;
-                                    intKnowledgeSkillToPutPointsIntoTotalKarmaCost = intLoopTotalKarmaCost;
-                                }
-                            }
-
-                            if (objKnowledgeSkillToPutPointsInto != null)
-                            {
-                                objKnowledgeSkillToPutPointsInto.Base = objKnowledgeSkillToPutPointsInto.Karma;
-                                intKnowledgeSkillPointCount -= objKnowledgeSkillToPutPointsInto.Karma;
-                                objKnowledgeSkillToPutPointsInto.Karma = 0;
-                            }
-                        } while (objKnowledgeSkillToPutPointsInto != null && intKnowledgeSkillPointCount > 0);
-
-                        // If any points left over, then put them all into the attribute with the highest karma cost
-                        if (intKnowledgeSkillPointCount > 0 && KnowledgeSkills.Any(x => x.Karma != 0))
-                        {
-                            int intHighestTotalKarmaCost = 0;
-                            foreach (KnowledgeSkill objLoopKnowledgeSkill in KnowledgeSkills)
-                            {
-                                if (objLoopKnowledgeSkill.Karma == 0)
-                                    continue;
-                                // Put points into the attribute with the highest total karma cost.
-                                // In case of ties, pick the one that would need more points to cover it (the other one will hopefully get picked up at a later cycle)
-                                int intLoopTotalKarmaCost = objLoopKnowledgeSkill.CurrentKarmaCost;
-                                if (objKnowledgeSkillToPutPointsInto == null
-                                    || intLoopTotalKarmaCost > intHighestTotalKarmaCost
-                                    || (intLoopTotalKarmaCost == intHighestTotalKarmaCost
-                                        && objLoopKnowledgeSkill.Karma > objKnowledgeSkillToPutPointsInto.Karma))
-                                {
-                                    objKnowledgeSkillToPutPointsInto = objLoopKnowledgeSkill;
-                                    intHighestTotalKarmaCost = intLoopTotalKarmaCost;
-                                }
-                            }
-
-                            if (objKnowledgeSkillToPutPointsInto != null)
-                            {
-                                objKnowledgeSkillToPutPointsInto.Base = intKnowledgeSkillPointCount;
-                                objKnowledgeSkillToPutPointsInto.Karma -= intKnowledgeSkillPointCount;
-                            }
-                        }
+                        //Timekeeper.Finish("load_char_skills");
                     }
-
-                    //Timekeeper.Finish("load_char_skills");
+                }
+                finally
+                {
+                    _blnLoading = blnOldLoading;
                 }
             }
         }
@@ -1197,6 +1468,74 @@ namespace Chummer.Backend.Skills
             }
         }
 
+        private async ValueTask UpdateUndoListAsync(XmlDocument xmlSkillOwnerDocument, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                //Hacky way of converting Expense entries to guid based skill identification
+                //specs already did?
+                //First create dictionary mapping name=>guid
+                using (LockingDictionary<string, Guid> dicGroups = new LockingDictionary<string, Guid>())
+                using (LockingDictionary<string, Guid> dicSkills = new LockingDictionary<string, Guid>())
+                {
+                    // Potentially expensive checks that can (and therefore should) be parallelized. Normally, this would just be a Parallel.Invoke,
+                    // but we want to allow UI messages to happen, just in case this is called on the Main Thread and another thread wants to show a message box.
+                    // Not using async-await because this is trivial code and I do not want to infect everything that calls this with async as well.
+                    await Task.WhenAll(
+                        Task.Run(() => SkillGroups.ForEachParallelAsync(x =>
+                        {
+                            // ReSharper disable once AccessToDisposedClosure
+                            if (x.Rating > 0 && !dicGroups.ContainsKey(x.Name))
+                                // ReSharper disable once AccessToDisposedClosure
+                                dicGroups.TryAdd(x.Name, x.Id);
+                        }, token: token), token),
+                        Task.Run(() => Skills.ForEachParallelAsync(x =>
+                        {
+                            if (x.TotalBaseRating > 0)
+                                // ReSharper disable once AccessToDisposedClosure
+                                dicSkills.TryAdd(x.Name, x.Id);
+                        }, token: token), token),
+                                 // ReSharper disable once AccessToDisposedClosure
+                        Task.Run(() => KnowledgeSkills.ForEachParallelAsync(x => dicSkills.TryAdd(x.Name, x.Id), token: token), token));
+                    UpdateUndoSpecific(
+                        dicSkills,
+                        EnumerableExtensions.ToEnumerable(KarmaExpenseType.AddSkill, KarmaExpenseType.ImproveSkill));
+                    UpdateUndoSpecific(dicGroups, KarmaExpenseType.ImproveSkillGroup.Yield());
+
+                    void UpdateUndoSpecific(IReadOnlyDictionary<string, Guid> map,
+                                            IEnumerable<KarmaExpenseType> typesRequiringConverting)
+                    {
+                        //Build a crazy xpath to get everything we want to convert
+
+                        string strXPath = "/character/expenses/expense[type = \'Karma\']/undo[" +
+                                          string.Join(
+                                              " or ",
+                                              typesRequiringConverting.Select(
+                                                  x => "karmatype = " + x.ToString().CleanXPath())) +
+                                          "]/objectid";
+
+                        //Find everything
+                        XmlNodeList lstNodesToChange = xmlSkillOwnerDocument.SelectNodes(strXPath);
+                        if (lstNodesToChange != null)
+                        {
+                            for (int i = 0; i < lstNodesToChange.Count; i++)
+                            {
+                                lstNodesToChange[i].InnerText
+                                    = map.TryGetValue(lstNodesToChange[i].InnerText, out Guid guidLoop)
+                                        ? guidLoop.ToString("D", GlobalSettings.InvariantCultureInfo)
+                                        : StringExtensions.EmptyGuid;
+                            }
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync();
+            }
+        }
+
         internal void Save(XmlWriter objWriter)
         {
             using (EnterReadLock.Enter(LockObject))
@@ -1250,34 +1589,76 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        internal void Reset()
+        internal void Reset(bool blnFirstTime = false)
         {
             using (LockObject.EnterWriteLock())
             {
-                _dicSkills.Clear();
-                _lstSkills.Clear();
-                KnowledgeSkills.Clear();
-                KnowsoftSkills.Clear();
-                SkillGroups.Clear();
-                SkillPointsMaximum = 0;
-                SkillGroupPointsMaximum = 0;
-                _blnSkillsInitialized = false;
+                bool blnOldLoading = !blnFirstTime && _blnLoading;
+                try
+                {
+                    _blnLoading = true;
+                    foreach (Skill objSkill in _dicSkillBackups.Values)
+                        objSkill.Remove();
+                    foreach (Skill objSkill in _lstSkills)
+                        objSkill.Remove();
+                    foreach (KnowledgeSkill objSkill in KnowledgeSkills)
+                    {
+                        objSkill.PropertyChanged -= OnKnowledgeSkillPropertyChanged;
+                        objSkill.Remove();
+                    }
+                    foreach (SkillGroup objGroup in SkillGroups)
+                        objGroup.Dispose();
+                    _dicSkillBackups.Clear();
+                    _dicSkills.Clear();
+                    _lstSkills.Clear();
+                    KnowledgeSkills.Clear();
+                    KnowsoftSkills.Clear();
+                    SkillGroups.Clear();
+                    SkillPointsMaximum = 0;
+                    SkillGroupPointsMaximum = 0;
+                    _blnSkillsInitialized = false;
+                }
+                finally
+                {
+                    _blnLoading = blnOldLoading;
+                }
             }
         }
 
-        internal async ValueTask ResetAsync(CancellationToken token = default)
+        internal async ValueTask ResetAsync(bool blnFirstTime = false, CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
-                await _dicSkills.ClearAsync(token).ConfigureAwait(false);
-                await _lstSkills.ClearAsync(token).ConfigureAwait(false);
-                await KnowledgeSkills.ClearAsync(token).ConfigureAwait(false);
-                await KnowsoftSkills.ClearAsync(token).ConfigureAwait(false);
-                await SkillGroups.ClearAsync(token).ConfigureAwait(false);
-                SkillPointsMaximum = 0;
-                SkillGroupPointsMaximum = 0;
-                _blnSkillsInitialized = false;
+                bool blnOldLoading = !blnFirstTime && _blnLoading;
+                try
+                {
+                    _blnLoading = true;
+                    foreach (Skill objSkill in await _dicSkillBackups.GetValuesAsync(token).ConfigureAwait(false))
+                        await objSkill.DisposeAsync().ConfigureAwait(false);
+                    foreach (Skill objSkill in _lstSkills)
+                        await objSkill.RemoveAsync(token);
+                    foreach (KnowledgeSkill objSkill in KnowledgeSkills)
+                    {
+                        objSkill.PropertyChanged -= OnKnowledgeSkillPropertyChanged;
+                        await objSkill.RemoveAsync(token);
+                    }
+                    foreach (SkillGroup objGroup in SkillGroups)
+                        await objGroup.DisposeAsync();
+                    await _dicSkillBackups.ClearAsync(token).ConfigureAwait(false);
+                    await _dicSkills.ClearAsync(token).ConfigureAwait(false);
+                    await _lstSkills.ClearAsync(token).ConfigureAwait(false);
+                    await KnowledgeSkills.ClearAsync(token).ConfigureAwait(false);
+                    await KnowsoftSkills.ClearAsync(token).ConfigureAwait(false);
+                    await SkillGroups.ClearAsync(token).ConfigureAwait(false);
+                    SkillPointsMaximum = 0;
+                    SkillGroupPointsMaximum = 0;
+                    _blnSkillsInitialized = false;
+                }
+                finally
+                {
+                    _blnLoading = blnOldLoading;
+                }
             }
             finally
             {
@@ -1824,7 +2205,7 @@ namespace Chummer.Backend.Skills
             objExistingSkill.Notes += objNewSkill.Notes;
             objExistingSkill.NotesColor = objNewSkill.NotesColor;
             await objExistingSkill.Specializations.AddAsyncRangeWithSortAsync(objNewSkill.Specializations, CompareSpecializations, token: token).ConfigureAwait(false);
-            objNewSkill.Remove();
+            await objNewSkill.RemoveAsync(token);
         }
 
         private List<ListItem> _lstDefaultKnowledgeSkills;
@@ -2110,6 +2491,8 @@ namespace Chummer.Backend.Skills
             {
                 _objCharacter.PropertyChanged -= OnCharacterPropertyChanged;
                 _objCharacter.Settings.PropertyChanged -= OnCharacterSettingsPropertyChanged;
+                foreach (Skill objSkill in _dicSkillBackups.Values)
+                    objSkill.Dispose();
                 _dicSkillBackups.Clear();
                 foreach (Skill objSkill in _lstSkills)
                     objSkill.Dispose();
@@ -2141,6 +2524,8 @@ namespace Chummer.Backend.Skills
             {
                 _objCharacter.PropertyChanged -= OnCharacterPropertyChanged;
                 _objCharacter.Settings.PropertyChanged -= OnCharacterSettingsPropertyChanged;
+                foreach (Skill objSkill in await _dicSkillBackups.GetValuesAsync().ConfigureAwait(false))
+                    await objSkill.DisposeAsync().ConfigureAwait(false);
                 await _dicSkillBackups.ClearAsync().ConfigureAwait(false);
                 foreach (Skill objSkill in _lstSkills)
                     await objSkill.DisposeAsync().ConfigureAwait(false);
