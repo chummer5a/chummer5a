@@ -21,7 +21,7 @@ using System.Windows.Forms;
 
 namespace Chummer
 {
-    public sealed class LabelWithToolTip : Label
+    public class LabelWithToolTip : Label
     {
         private readonly int _intToolTipWrap;
 
@@ -57,7 +57,6 @@ namespace Chummer
         {
             _objToolTip = objToolTip;
             _intToolTipWrap = intToolTipWrap;
-            DoubleBuffered = true;
         }
 
         protected override void Dispose(bool disposing)

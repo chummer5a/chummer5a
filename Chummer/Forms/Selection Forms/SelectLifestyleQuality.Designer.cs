@@ -37,10 +37,10 @@ namespace Chummer
             this.cmdOKAdd = new System.Windows.Forms.Button();
             this.cmdCancel = new System.Windows.Forms.Button();
             this.cmdOK = new System.Windows.Forms.Button();
-            this.chkLimitList = new Chummer.ColorableCheckBox(this.components);
+            this.chkLimitList = new Chummer.ColorableCheckBox();
             this.lblBP = new System.Windows.Forms.Label();
             this.lblBPLabel = new System.Windows.Forms.Label();
-            this.chkFree = new Chummer.ColorableCheckBox(this.components);
+            this.chkFree = new Chummer.ColorableCheckBox();
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.lblSearchLabel = new System.Windows.Forms.Label();
             this.lblMinimumLabel = new System.Windows.Forms.Label();

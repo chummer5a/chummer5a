@@ -19,64 +19,49 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
 namespace Chummer
 {
-    public partial class DpiFriendlyToolStripMenuItem : ToolStripMenuItem
+    public class DpiFriendlyToolStripMenuItem : ToolStripMenuItem
     {
         public DpiFriendlyToolStripMenuItem()
         {
-            InitializeComponent();
         }
 
         public DpiFriendlyToolStripMenuItem(string strText) : base(strText)
         {
-            InitializeComponent();
         }
 
         public DpiFriendlyToolStripMenuItem(Image objImage) : base(objImage)
         {
-            InitializeComponent();
             RefreshImage();
         }
 
         public DpiFriendlyToolStripMenuItem(string strText, Image objImage) : base(strText, objImage)
         {
-            InitializeComponent();
             RefreshImage();
         }
 
         public DpiFriendlyToolStripMenuItem(string strText, Image objImage, EventHandler funcOnClick) : base(strText, objImage, funcOnClick)
         {
-            InitializeComponent();
             RefreshImage();
         }
 
         public DpiFriendlyToolStripMenuItem(string strText, Image objImage, EventHandler funcOnClick, Keys objShortcutKeys) : base(strText, objImage, funcOnClick, objShortcutKeys)
         {
-            InitializeComponent();
             RefreshImage();
         }
 
         public DpiFriendlyToolStripMenuItem(string strText, Image objImage, EventHandler funcOnClick, string strName) : base(strText, objImage, funcOnClick, strName)
         {
-            InitializeComponent();
             RefreshImage();
         }
 
         public DpiFriendlyToolStripMenuItem(string strText, Image objImage, params ToolStripItem[] aobjDropDownItems) : base(strText, objImage, aobjDropDownItems)
         {
-            InitializeComponent();
             RefreshImage();
-        }
-
-        public DpiFriendlyToolStripMenuItem(IContainer container)
-        {
-            container.Add(this);
-            InitializeComponent();
         }
 
         public void RefreshImage()

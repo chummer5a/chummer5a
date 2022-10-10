@@ -32,9 +32,9 @@ namespace Chummer
             this.cmdOK = new System.Windows.Forms.Button();
             this.cmdCancel = new System.Windows.Forms.Button();
             this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
-            this.chkHideOverAvailLimit = new Chummer.ColorableCheckBox(this.components);
-            this.chkHideBannedGrades = new Chummer.ColorableCheckBox(this.components);
-            this.chkShowOnlyAffordItems = new Chummer.ColorableCheckBox(this.components);
+            this.chkHideOverAvailLimit = new Chummer.ColorableCheckBox();
+            this.chkHideBannedGrades = new Chummer.ColorableCheckBox();
+            this.chkShowOnlyAffordItems = new Chummer.ColorableCheckBox();
             this.tlpLeft = new System.Windows.Forms.TableLayoutPanel();
             this.cboGrade = new Chummer.ElasticComboBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -54,8 +54,8 @@ namespace Chummer
             this.lblCostLabel = new System.Windows.Forms.Label();
             this.lblCost = new System.Windows.Forms.Label();
             this.flpCheckBoxes = new System.Windows.Forms.FlowLayoutPanel();
-            this.chkFree = new Chummer.ColorableCheckBox(this.components);
-            this.chkBlackMarketDiscount = new Chummer.ColorableCheckBox(this.components);
+            this.chkFree = new Chummer.ColorableCheckBox();
+            this.chkBlackMarketDiscount = new Chummer.ColorableCheckBox();
             this.lblMarkupLabel = new System.Windows.Forms.Label();
             this.flpMarkup = new System.Windows.Forms.FlowLayoutPanel();
             this.nudMarkup = new Chummer.NumericUpDownEx();

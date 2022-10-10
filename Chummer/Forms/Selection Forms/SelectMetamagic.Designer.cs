@@ -34,7 +34,7 @@ namespace Chummer
             this.lstMetamagic = new System.Windows.Forms.ListBox();
             this.lblSource = new System.Windows.Forms.Label();
             this.lblSourceLabel = new System.Windows.Forms.Label();
-            this.chkLimitList = new Chummer.ColorableCheckBox(this.components);
+            this.chkLimitList = new Chummer.ColorableCheckBox();
             this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
             this.tlpTopRight = new System.Windows.Forms.TableLayoutPanel();

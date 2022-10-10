@@ -33,10 +33,10 @@ namespace Chummer
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CharacterSheetViewer));
             this.cmsSaveButton = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsSaveAsXml = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tsSaveAsHtml = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.tsSaveAsXml = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsSaveAsHtml = new Chummer.DpiFriendlyToolStripMenuItem();
             this.cmsPrintButton = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsPrintPreview = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.tsPrintPreview = new Chummer.DpiFriendlyToolStripMenuItem();
             this.dlgSaveFile = new System.Windows.Forms.SaveFileDialog();
             this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.webViewer = new System.Windows.Forms.WebBrowser();

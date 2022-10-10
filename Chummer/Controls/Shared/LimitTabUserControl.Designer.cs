@@ -45,9 +45,9 @@ namespace Chummer.UI.Shared
             this.lblMental = new Chummer.LabelWithToolTip();
             this.cmsLimitModifier = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.cmsLimitModifierNotesOnly = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tssLimitModifierEdit = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tssLimitModifierNotes = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tssLimitModifierNotesOnlyNotes = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.tssLimitModifierEdit = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tssLimitModifierNotes = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tssLimitModifierNotesOnlyNotes = new Chummer.DpiFriendlyToolStripMenuItem();
             this.tlpParent.SuspendLayout();
             this.tlpButtons.SuspendLayout();
             this.tlpRight.SuspendLayout();

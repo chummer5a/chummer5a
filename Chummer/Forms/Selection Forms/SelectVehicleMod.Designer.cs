@@ -47,7 +47,7 @@ namespace Chummer
             this.cmdOKAdd = new System.Windows.Forms.Button();
             this.lblSource = new System.Windows.Forms.Label();
             this.lblSourceLabel = new System.Windows.Forms.Label();
-            this.chkFreeItem = new Chummer.ColorableCheckBox(this.components);
+            this.chkFreeItem = new Chummer.ColorableCheckBox();
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.lblSearchLabel = new System.Windows.Forms.Label();
             this.nudMarkup = new Chummer.NumericUpDownEx();
@@ -55,13 +55,13 @@ namespace Chummer
             this.lblMarkupPercentLabel = new System.Windows.Forms.Label();
             this.lblTest = new System.Windows.Forms.Label();
             this.lblTestLabel = new System.Windows.Forms.Label();
-            this.chkBlackMarketDiscount = new Chummer.ColorableCheckBox(this.components);
+            this.chkBlackMarketDiscount = new Chummer.ColorableCheckBox();
             this.label1 = new System.Windows.Forms.Label();
             this.lblVehicleCapacity = new System.Windows.Forms.Label();
             this.lblVehicleCapacityLabel = new System.Windows.Forms.Label();
-            this.chkHideOverAvailLimit = new Chummer.ColorableCheckBox(this.components);
+            this.chkHideOverAvailLimit = new Chummer.ColorableCheckBox();
             this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
-            this.chkShowOnlyAffordItems = new Chummer.ColorableCheckBox(this.components);
+            this.chkShowOnlyAffordItems = new Chummer.ColorableCheckBox();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.cboCategory = new Chummer.ElasticComboBox();
             this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();

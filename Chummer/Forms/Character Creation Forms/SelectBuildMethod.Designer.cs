@@ -29,14 +29,14 @@ namespace Chummer
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.chkIgnoreRules = new Chummer.ColorableCheckBox(this.components);
+            this.chkIgnoreRules = new Chummer.ColorableCheckBox();
             this.lblMaxAvailLabel = new System.Windows.Forms.Label();
             this.cboCharacterSetting = new Chummer.ElasticComboBox();
             this.lblKarmaLabel = new System.Windows.Forms.Label();
             this.lblDescription = new System.Windows.Forms.Label();
             this.lblMaxNuyenLabel = new System.Windows.Forms.Label();
             this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
-            this.cmdEditCharacterSetting = new Chummer.ButtonWithToolTip(this.components);
+            this.cmdEditCharacterSetting = new Chummer.ButtonWithToolTip();
             this.lblCharacterSetting = new System.Windows.Forms.Label();
             this.tlpSummary = new System.Windows.Forms.TableLayoutPanel();
             this.lblBuildMethodLabel = new System.Windows.Forms.Label();

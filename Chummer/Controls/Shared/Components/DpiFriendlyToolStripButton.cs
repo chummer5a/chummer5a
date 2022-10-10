@@ -19,52 +19,39 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
 namespace Chummer
 {
-    public partial class DpiFriendlyToolStripButton : ToolStripButton
+    public class DpiFriendlyToolStripButton : ToolStripButton
     {
         public DpiFriendlyToolStripButton()
         {
-            InitializeComponent();
         }
 
         public DpiFriendlyToolStripButton(string strText) : base(strText)
         {
-            InitializeComponent();
         }
 
         public DpiFriendlyToolStripButton(Image objImage) : base(objImage)
         {
-            InitializeComponent();
             RefreshImage();
         }
 
         public DpiFriendlyToolStripButton(string strText, Image objImage) : base(strText, objImage)
         {
-            InitializeComponent();
             RefreshImage();
         }
 
         public DpiFriendlyToolStripButton(string strText, Image objImage, EventHandler funcOnClick) : base(strText, objImage, funcOnClick)
         {
-            InitializeComponent();
             RefreshImage();
         }
 
         public DpiFriendlyToolStripButton(string strText, Image objImage, EventHandler funcOnClick, string strName) : base(strText, objImage, funcOnClick, strName)
         {
-            InitializeComponent();
             RefreshImage();
-        }
-
-        public DpiFriendlyToolStripButton(IContainer container)
-        {
-            container.Add(this);
-            InitializeComponent();
         }
 
         public void RefreshImage()

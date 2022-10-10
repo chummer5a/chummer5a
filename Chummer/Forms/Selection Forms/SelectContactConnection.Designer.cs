@@ -44,7 +44,7 @@ namespace Chummer
             this.lblGroupNameLabel = new System.Windows.Forms.Label();
             this.txtGroupName = new System.Windows.Forms.TextBox();
             this.cmdChangeColour = new System.Windows.Forms.Button();
-            this.chkFreeContact = new Chummer.ColorableCheckBox(this.components);
+            this.chkFreeContact = new Chummer.ColorableCheckBox();
             this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
             this.tlpMain.SuspendLayout();

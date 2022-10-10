@@ -29,20 +29,20 @@ namespace Chummer
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.chkAttributes = new Chummer.ColorableCheckBox(this.components);
-            this.chkQualities = new Chummer.ColorableCheckBox(this.components);
-            this.chkStartingNuyen = new Chummer.ColorableCheckBox(this.components);
-            this.chkActiveSkills = new Chummer.ColorableCheckBox(this.components);
-            this.chkKnowledgeSkills = new Chummer.ColorableCheckBox(this.components);
-            this.chkMartialArts = new Chummer.ColorableCheckBox(this.components);
-            this.chkSpells = new Chummer.ColorableCheckBox(this.components);
-            this.chkComplexForms = new Chummer.ColorableCheckBox(this.components);
-            this.chkCyberware = new Chummer.ColorableCheckBox(this.components);
-            this.chkLifestyle = new Chummer.ColorableCheckBox(this.components);
-            this.chkArmor = new Chummer.ColorableCheckBox(this.components);
-            this.chkWeapons = new Chummer.ColorableCheckBox(this.components);
-            this.chkGear = new Chummer.ColorableCheckBox(this.components);
-            this.chkVehicles = new Chummer.ColorableCheckBox(this.components);
+            this.chkAttributes = new Chummer.ColorableCheckBox();
+            this.chkQualities = new Chummer.ColorableCheckBox();
+            this.chkStartingNuyen = new Chummer.ColorableCheckBox();
+            this.chkActiveSkills = new Chummer.ColorableCheckBox();
+            this.chkKnowledgeSkills = new Chummer.ColorableCheckBox();
+            this.chkMartialArts = new Chummer.ColorableCheckBox();
+            this.chkSpells = new Chummer.ColorableCheckBox();
+            this.chkComplexForms = new Chummer.ColorableCheckBox();
+            this.chkCyberware = new Chummer.ColorableCheckBox();
+            this.chkLifestyle = new Chummer.ColorableCheckBox();
+            this.chkArmor = new Chummer.ColorableCheckBox();
+            this.chkWeapons = new Chummer.ColorableCheckBox();
+            this.chkGear = new Chummer.ColorableCheckBox();
+            this.chkVehicles = new Chummer.ColorableCheckBox();
             this.lblNameLabel = new System.Windows.Forms.Label();
             this.txtName = new System.Windows.Forms.TextBox();
             this.txtFileName = new System.Windows.Forms.TextBox();

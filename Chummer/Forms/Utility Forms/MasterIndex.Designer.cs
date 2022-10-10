@@ -16,12 +16,6 @@ namespace Chummer
             if (disposing && (components != null))
             {
                 components.Dispose();
-                _dicCachedNotes?.Dispose();
-                foreach (ListItem objExistingItem in _lstItems)
-                    ((MasterIndexEntry)objExistingItem.Value).Dispose();
-                Utils.ListItemListPool.Return(_lstFileNamesWithItems);
-                Utils.ListItemListPool.Return(_lstItems);
-                _objGenericFormClosingCancellationTokenSource.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -49,7 +43,7 @@ namespace Chummer
             this.cboFile = new Chummer.ElasticComboBox();
             this.lstItems = new System.Windows.Forms.ListBox();
             this.tlpGameplayOption = new System.Windows.Forms.TableLayoutPanel();
-            this.cmdEditCharacterSetting = new Chummer.ButtonWithToolTip(this.components);
+            this.cmdEditCharacterSetting = new Chummer.ButtonWithToolTip();
             this.lblCharacterSetting = new System.Windows.Forms.Label();
             this.cboCharacterSetting = new Chummer.ElasticComboBox();
             this.tlpMain.SuspendLayout();

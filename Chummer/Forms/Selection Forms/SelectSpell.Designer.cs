@@ -49,10 +49,10 @@ namespace Chummer
             this.cmdOKAdd = new System.Windows.Forms.Button();
             this.lblSource = new System.Windows.Forms.Label();
             this.lblSourceLabel = new System.Windows.Forms.Label();
-            this.chkLimited = new Chummer.ColorableCheckBox(this.components);
-            this.chkExtended = new Chummer.ColorableCheckBox(this.components);
-            this.chkAlchemical = new Chummer.ColorableCheckBox(this.components);
-            this.chkFreeBonus = new Chummer.ColorableCheckBox(this.components);
+            this.chkLimited = new Chummer.ColorableCheckBox();
+            this.chkExtended = new Chummer.ColorableCheckBox();
+            this.chkAlchemical = new Chummer.ColorableCheckBox();
+            this.chkFreeBonus = new Chummer.ColorableCheckBox();
             this.lblCategory = new System.Windows.Forms.Label();
             this.cboCategory = new Chummer.ElasticComboBox();
             this.tlpMain = new System.Windows.Forms.TableLayoutPanel();

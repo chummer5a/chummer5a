@@ -89,6 +89,15 @@ namespace Chummer
         public MasterIndex()
         {
             _objGenericToken = _objGenericFormClosingCancellationTokenSource.Token;
+            Disposed += (sender, args) =>
+            {
+                _dicCachedNotes.Dispose();
+                foreach (ListItem objExistingItem in _lstItems)
+                    ((MasterIndexEntry) objExistingItem.Value).Dispose();
+                Utils.ListItemListPool.Return(_lstFileNamesWithItems);
+                Utils.ListItemListPool.Return(_lstItems);
+                _objGenericFormClosingCancellationTokenSource.Dispose();
+            };
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();

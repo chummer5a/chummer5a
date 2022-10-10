@@ -137,7 +137,7 @@ namespace Chummer.UI.Skills
                         Text = "00",
                         TextAlign = ContentAlignment.MiddleRight
                     };
-                    btnCareerIncrease = new ButtonWithToolTip(components)
+                    btnCareerIncrease = new ButtonWithToolTip
                     {
                         Anchor = AnchorStyles.Right,
                         AutoSize = true,
@@ -158,7 +158,7 @@ namespace Chummer.UI.Skills
                     tlpMain.Controls.Add(lblCareerRating, 2, 0);
                     tlpMain.Controls.Add(btnCareerIncrease, 3, 0);
 
-                    btnAddSpec = new ButtonWithToolTip(components)
+                    btnAddSpec = new ButtonWithToolTip
                     {
                         Anchor = AnchorStyles.Right,
                         AutoSize = true,
@@ -294,7 +294,7 @@ namespace Chummer.UI.Skills
                         _blnUpdatingSpec = false;
                         _tmrSpecChangeTimer = new Timer { Interval = 1000 };
                         _tmrSpecChangeTimer.Tick += SpecChangeTimer_Tick;
-                        chkKarma = new ColorableCheckBox(components)
+                        chkKarma = new ColorableCheckBox
                         {
                             Anchor = AnchorStyles.Left,
                             AutoSize = true,

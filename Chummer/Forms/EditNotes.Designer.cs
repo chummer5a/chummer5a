@@ -31,7 +31,7 @@ namespace Chummer
             this.components = new System.ComponentModel.Container();
             this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.txtNotes = new System.Windows.Forms.TextBox();
-            this.btnColorSelect = new Chummer.DpiFriendlyImagedButton(this.components);
+            this.btnColorSelect = new Chummer.DpiFriendlyImagedButton();
             this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();

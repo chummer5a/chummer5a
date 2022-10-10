@@ -48,11 +48,11 @@ namespace Chummer
             this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
             this.tlpRight = new System.Windows.Forms.TableLayoutPanel();
-            this.chkTrustFund = new Chummer.ColorableCheckBox(this.components);
+            this.chkTrustFund = new Chummer.ColorableCheckBox();
             this.lblBorough = new System.Windows.Forms.Label();
             this.lblDistrict = new System.Windows.Forms.Label();
             this.lblCity = new System.Windows.Forms.Label();
-            this.chkPrimaryTenant = new Chummer.ColorableCheckBox(this.components);
+            this.chkPrimaryTenant = new Chummer.ColorableCheckBox();
             this.cboCity = new Chummer.ElasticComboBox();
             this.cboDistrict = new Chummer.ElasticComboBox();
             this.cboBorough = new Chummer.ElasticComboBox();

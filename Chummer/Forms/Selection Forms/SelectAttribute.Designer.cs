@@ -33,7 +33,7 @@ namespace Chummer
             this.cboAttribute = new Chummer.ElasticComboBox();
             this.lblDescription = new System.Windows.Forms.Label();
             this.cmdCancel = new System.Windows.Forms.Button();
-            this.chkDoNotAffectMetatypeMaximum = new Chummer.ColorableCheckBox(this.components);
+            this.chkDoNotAffectMetatypeMaximum = new Chummer.ColorableCheckBox();
             this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
             this.tlpMain.SuspendLayout();

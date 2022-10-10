@@ -67,7 +67,7 @@ namespace Chummer.UI.Skills
                         Name = "lblGroupRating",
                         TextAlign = ContentAlignment.MiddleRight
                     };
-                    btnCareerIncrease = new ButtonWithToolTip(components)
+                    btnCareerIncrease = new ButtonWithToolTip
                     {
                         Anchor = AnchorStyles.Right,
                         AutoSize = true,

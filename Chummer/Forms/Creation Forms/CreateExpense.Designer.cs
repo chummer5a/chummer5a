@@ -36,15 +36,15 @@ namespace Chummer
             this.txtDescription = new System.Windows.Forms.TextBox();
             this.cmdCancel = new System.Windows.Forms.Button();
             this.cmdOK = new System.Windows.Forms.Button();
-            this.chkRefund = new Chummer.ColorableCheckBox(this.components);
+            this.chkRefund = new Chummer.ColorableCheckBox();
             this.datDate = new System.Windows.Forms.DateTimePicker();
             this.lblDateLabel = new System.Windows.Forms.Label();
             this.nudPercent = new Chummer.NumericUpDownEx();
             this.lblPercent = new System.Windows.Forms.Label();
-            this.chkKarmaNuyenExchange = new Chummer.ColorableCheckBox(this.components);
+            this.chkKarmaNuyenExchange = new Chummer.ColorableCheckBox();
             this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.flpAmount = new System.Windows.Forms.FlowLayoutPanel();
-            this.chkForceCareerVisible = new Chummer.ColorableCheckBox(this.components);
+            this.chkForceCareerVisible = new Chummer.ColorableCheckBox();
             this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)(this.nudAmount)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudPercent)).BeginInit();

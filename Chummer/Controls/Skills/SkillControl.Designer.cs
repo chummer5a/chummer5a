@@ -34,7 +34,7 @@ namespace Chummer.UI.Skills
         {
             this.components = new System.ComponentModel.Container();
             this.cmsSkillLabel = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsSkillLabelNotes = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.tsSkillLabelNotes = new Chummer.DpiFriendlyToolStripMenuItem();
             this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.lblName = new Chummer.LabelWithToolTip();
             this.pnlAttributes = new System.Windows.Forms.Panel();

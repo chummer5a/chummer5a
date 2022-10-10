@@ -42,7 +42,7 @@ namespace Chummer
             this.cmdOKAdd = new System.Windows.Forms.Button();
             this.lblSource = new System.Windows.Forms.Label();
             this.lblSourceLabel = new System.Windows.Forms.Label();
-            this.chkFreeItem = new Chummer.ColorableCheckBox(this.components);
+            this.chkFreeItem = new Chummer.ColorableCheckBox();
             this.nudMarkup = new Chummer.NumericUpDownEx();
             this.lblMarkupLabel = new System.Windows.Forms.Label();
             this.lblMarkupPercentLabel = new System.Windows.Forms.Label();
@@ -51,12 +51,12 @@ namespace Chummer
             this.nudRating = new Chummer.NumericUpDownEx();
             this.lblRatingLabel = new System.Windows.Forms.Label();
             this.cboMount = new Chummer.ElasticComboBox();
-            this.chkBlackMarketDiscount = new Chummer.ColorableCheckBox(this.components);
+            this.chkBlackMarketDiscount = new Chummer.ColorableCheckBox();
             this.cboExtraMount = new Chummer.ElasticComboBox();
             this.lblExtraMountLabel = new System.Windows.Forms.Label();
-            this.chkHideOverAvailLimit = new Chummer.ColorableCheckBox(this.components);
+            this.chkHideOverAvailLimit = new Chummer.ColorableCheckBox();
             this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
-            this.chkShowOnlyAffordItems = new Chummer.ColorableCheckBox(this.components);
+            this.chkShowOnlyAffordItems = new Chummer.ColorableCheckBox();
             this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
             this.tlpRight = new System.Windows.Forms.TableLayoutPanel();
             this.flpCheckBoxes = new System.Windows.Forms.FlowLayoutPanel();

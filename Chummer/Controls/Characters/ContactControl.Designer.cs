@@ -29,21 +29,21 @@ namespace Chummer
         {
             this.components = new System.ComponentModel.Container();
             this.cmsContact = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsContactOpen = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tsRemoveCharacter = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tsAttachCharacter = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.tsContactOpen = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsRemoveCharacter = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsAttachCharacter = new Chummer.DpiFriendlyToolStripMenuItem();
             this.cboContactRole = new Chummer.ElasticComboBox();
             this.txtContactName = new System.Windows.Forms.TextBox();
             this.txtContactLocation = new System.Windows.Forms.TextBox();
-            this.cmdExpand = new Chummer.DpiFriendlyImagedButton(this.components);
+            this.cmdExpand = new Chummer.DpiFriendlyImagedButton();
             this.lblQuickStats = new System.Windows.Forms.Label();
             this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
-            this.cmdDelete = new Chummer.DpiFriendlyImagedButton(this.components);
+            this.cmdDelete = new Chummer.DpiFriendlyImagedButton();
             this.tlpComboBoxes = new System.Windows.Forms.TableLayoutPanel();
             this.lblContactArchtypeLabel = new System.Windows.Forms.Label();
             this.lblContactLocationLabel = new System.Windows.Forms.Label();
             this.lblContactNameLabel = new System.Windows.Forms.Label();
-            this.cmdNotes = new Chummer.ButtonWithToolTip(this.components);
+            this.cmdNotes = new Chummer.ButtonWithToolTip();
             this.cmsContact.SuspendLayout();
             this.tlpMain.SuspendLayout();
             this.tlpComboBoxes.SuspendLayout();

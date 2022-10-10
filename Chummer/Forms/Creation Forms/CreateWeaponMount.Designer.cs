@@ -45,7 +45,7 @@ namespace Chummer
             this.lblCost = new System.Windows.Forms.Label();
             this.lblSlots = new System.Windows.Forms.Label();
             this.lblSlotsLabel = new System.Windows.Forms.Label();
-            this.chkFreeItem = new Chummer.ColorableCheckBox(this.components);
+            this.chkFreeItem = new Chummer.ColorableCheckBox();
             this.nudMarkup = new Chummer.NumericUpDownEx();
             this.lblMarkupPercentLabel = new System.Windows.Forms.Label();
             this.lblMarkupLabel = new System.Windows.Forms.Label();
@@ -60,7 +60,7 @@ namespace Chummer
             this.tlpRight = new System.Windows.Forms.TableLayoutPanel();
             this.flpMarkup = new System.Windows.Forms.FlowLayoutPanel();
             this.flpCheckBoxes = new System.Windows.Forms.FlowLayoutPanel();
-            this.chkBlackMarketDiscount = new Chummer.ColorableCheckBox(this.components);
+            this.chkBlackMarketDiscount = new Chummer.ColorableCheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.nudMarkup)).BeginInit();
             this.tlpMain.SuspendLayout();
             this.tlpTopButtons.SuspendLayout();

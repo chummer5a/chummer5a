@@ -61,7 +61,7 @@ namespace Chummer
             this.lblKarma = new System.Windows.Forms.Label();
             this.lblBODLabel = new System.Windows.Forms.Label();
             this.tlpSpirits = new System.Windows.Forms.TableLayoutPanel();
-            this.chkPossessionBased = new Chummer.ColorableCheckBox(this.components);
+            this.chkPossessionBased = new Chummer.ColorableCheckBox();
             this.cboPossessionMethod = new Chummer.ElasticComboBox();
             this.lblForceLabel = new System.Windows.Forms.Label();
             this.nudForce = new Chummer.NumericUpDownEx();

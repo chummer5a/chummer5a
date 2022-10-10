@@ -35,7 +35,7 @@ namespace Chummer
             this.cboCategory = new Chummer.ElasticComboBox();
             this.lstAIPrograms = new System.Windows.Forms.ListBox();
             this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
-            this.chkLimitList = new Chummer.ColorableCheckBox(this.components);
+            this.chkLimitList = new Chummer.ColorableCheckBox();
             this.tlpLeft = new System.Windows.Forms.TableLayoutPanel();
             this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
             this.cmdCancel = new System.Windows.Forms.Button();

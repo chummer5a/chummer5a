@@ -16100,7 +16100,7 @@ namespace Chummer
                                 for (int i = intMax + 1; i <= intConditionMax + intOverflow; i++)
                                 {
                                     DpiFriendlyCheckBoxDisguisedAsButton cb
-                                        = new DpiFriendlyCheckBoxDisguisedAsButton(components)
+                                        = new DpiFriendlyCheckBoxDisguisedAsButton
                                         {
                                             Tag = i,
                                             Appearance = objMaxCheckBox.Appearance,

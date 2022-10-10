@@ -35,7 +35,7 @@ namespace Chummer
             this.nudNetHits = new Chummer.NumericUpDownEx();
             this.lblForce = new System.Windows.Forms.Label();
             this.nudForce = new Chummer.NumericUpDownEx();
-            this.chkSelfSustained = new Chummer.ColorableCheckBox(this.components);
+            this.chkSelfSustained = new Chummer.ColorableCheckBox();
             this.cmdDelete = new System.Windows.Forms.Button();
             this.lblSelfSustained = new System.Windows.Forms.Label();
             this.bufferedTableLayoutPanel1.SuspendLayout();

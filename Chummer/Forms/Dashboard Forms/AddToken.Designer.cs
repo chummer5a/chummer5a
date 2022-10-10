@@ -38,7 +38,7 @@ namespace Chummer
             this.lbld6 = new System.Windows.Forms.Label();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
-            this.chkAutoRollInit = new Chummer.ColorableCheckBox(this.components);
+            this.chkAutoRollInit = new Chummer.ColorableCheckBox();
             this.nudInitStart = new Chummer.NumericUpDownEx();
             this.lblStartingInit = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.nudInit)).BeginInit();

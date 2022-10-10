@@ -23,7 +23,7 @@ using System.Windows.Forms;
 
 namespace Chummer
 {
-    public sealed class ButtonWithToolTip : DpiFriendlyImagedButton
+    public class ButtonWithToolTip : DpiFriendlyImagedButton
     {
         private readonly int _intToolTipWrap;
 
@@ -63,18 +63,6 @@ namespace Chummer
         {
             _objToolTip = objToolTip;
             _intToolTipWrap = intToolTipWrap;
-            DoubleBuffered = true;
-        }
-
-        public ButtonWithToolTip(IContainer container) : this(container, ToolTipFactory.ToolTip)
-        {
-        }
-
-        public ButtonWithToolTip(IContainer container, ToolTip objToolTip, int intToolTipWrap = -1) : base(container)
-        {
-            _objToolTip = objToolTip;
-            _intToolTipWrap = intToolTipWrap;
-            DoubleBuffered = true;
         }
 
         protected override void Dispose(bool disposing)

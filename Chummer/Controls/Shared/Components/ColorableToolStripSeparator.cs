@@ -18,23 +18,16 @@
  */
 
 using System;
-using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
 namespace Chummer
 {
-    public partial class ColorableToolStripSeparator : ToolStripSeparator
+    public class ColorableToolStripSeparator : ToolStripSeparator
     {
-        public ColorableToolStripSeparator() : this(null)
-        {
-        }
-
-        public ColorableToolStripSeparator(IContainer container)
+        public ColorableToolStripSeparator()
         {
             Disposed += OnDisposed;
-            container?.Add(this);
-            InitializeComponent();
         }
 
         private void OnDisposed(object sender, EventArgs e)

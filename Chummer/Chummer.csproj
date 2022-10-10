@@ -421,9 +421,6 @@
     <Compile Include="Controls\Shared\Components\ColorableToolStripSeparator.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\Shared\Components\ColorableToolStripSeparator.Designer.cs">
-      <DependentUpon>ColorableToolStripSeparator.cs</DependentUpon>
-    </Compile>
     <Compile Include="Controls\Shared\ObservableCollectionDisplay.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -517,14 +514,8 @@
     <Compile Include="Controls\Shared\Components\DpiFriendlyCheckBoxDisguisedAsButton.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\Shared\Components\DpiFriendlyCheckBoxDisguisedAsButton.Designer.cs">
-      <DependentUpon>DpiFriendlyCheckBoxDisguisedAsButton.cs</DependentUpon>
-    </Compile>
     <Compile Include="Controls\Shared\Components\DpiFriendlyImagedButton.cs">
       <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\Shared\Components\DpiFriendlyImagedButton.Designer.cs">
-      <DependentUpon>DpiFriendlyImagedButton.cs</DependentUpon>
     </Compile>
     <Compile Include="Backend\Helpers\EnterReadLock.cs" />
     <Compile Include="Backend\Helpers\FetchSafelyFromPool.cs" />
@@ -585,23 +576,14 @@
     <Compile Include="Controls\Shared\Components\ColorableCheckBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\Shared\Components\ColorableCheckBox.Designer.cs">
-      <DependentUpon>ColorableCheckBox.cs</DependentUpon>
-    </Compile>
     <Compile Include="Backend\Helpers\CursorWait.cs" />
     <Compile Include="Backend\Helpers\DataGridViewTextBoxColumnTranslated.cs" />
     <Compile Include="Backend\Helpers\DiceRollerListViewItem.cs" />
     <Compile Include="Controls\Shared\Components\DpiFriendlyToolStripButton.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\Shared\Components\DpiFriendlyToolStripButton.Designer.cs">
-      <DependentUpon>DpiFriendlyToolStripButton.cs</DependentUpon>
-    </Compile>
     <Compile Include="Controls\Shared\Components\DpiFriendlyToolStripMenuItem.cs">
       <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\Shared\Components\DpiFriendlyToolStripMenuItem.Designer.cs">
-      <DependentUpon>DpiFriendlyToolStripMenuItem.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\Shared\Components\ElasticComboBox.cs">
       <SubType>Component</SubType>

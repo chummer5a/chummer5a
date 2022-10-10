@@ -39,11 +39,11 @@ namespace Chummer
             this.cmdOK = new System.Windows.Forms.Button();
             this.lblBP = new Chummer.LabelWithToolTip();
             this.lblBPLabel = new System.Windows.Forms.Label();
-            this.chkFree = new Chummer.ColorableCheckBox(this.components);
-            this.chkMetagenic = new Chummer.ColorableCheckBox(this.components);
+            this.chkFree = new Chummer.ColorableCheckBox();
+            this.chkMetagenic = new Chummer.ColorableCheckBox();
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.lblSearchLabel = new System.Windows.Forms.Label();
-            this.chkNotMetagenic = new Chummer.ColorableCheckBox(this.components);
+            this.chkNotMetagenic = new Chummer.ColorableCheckBox();
             this.nudMinimumBP = new Chummer.NumericUpDownEx();
             this.nudValueBP = new Chummer.NumericUpDownEx();
             this.nudMaximumBP = new Chummer.NumericUpDownEx();
@@ -54,7 +54,7 @@ namespace Chummer
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
             this.tlpLowerRight = new System.Windows.Forms.TableLayoutPanel();
-            this.chkLimitList = new Chummer.ColorableCheckBox(this.components);
+            this.chkLimitList = new Chummer.ColorableCheckBox();
             this.gpbKarmaFilter = new System.Windows.Forms.GroupBox();
             this.tlpKarmaFilter = new System.Windows.Forms.TableLayoutPanel();
             this.tlpRight = new System.Windows.Forms.TableLayoutPanel();

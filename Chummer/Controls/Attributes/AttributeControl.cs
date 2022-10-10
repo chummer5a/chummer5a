@@ -71,7 +71,7 @@ namespace Chummer.UI.Attributes
             lblValue.DoOneWayDataBinding("ToolTipText", _dataSource, nameof(CharacterAttrib.ToolTip));
             if (_objCharacter.Created)
             {
-                cmdImproveATT = new ButtonWithToolTip(components)
+                cmdImproveATT = new ButtonWithToolTip
                 {
                     Anchor = AnchorStyles.Right,
                     AutoSize = true,
@@ -89,7 +89,7 @@ namespace Chummer.UI.Attributes
                 flpRight.Controls.Add(cmdImproveATT);
                 if (AttributeName == "EDG")
                 {
-                    cmdBurnEdge = new ButtonWithToolTip(components)
+                    cmdBurnEdge = new ButtonWithToolTip
                     {
                         Anchor = AnchorStyles.Right,
                         AutoSize = true,

@@ -34,7 +34,7 @@ namespace Chummer
             this.cboSpec = new Chummer.ElasticComboBox();
             this.lblAmmoLabel = new System.Windows.Forms.Label();
             this.lblDescription = new System.Windows.Forms.Label();
-            this.chkKarma = new Chummer.ColorableCheckBox(this.components);
+            this.chkKarma = new Chummer.ColorableCheckBox();
             this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
             this.tlpMain.SuspendLayout();

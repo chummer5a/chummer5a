@@ -22,7 +22,7 @@ using System.Windows.Forms;
 
 namespace Chummer
 {
-    public sealed class ElasticComboBox : ComboBox
+    public class ElasticComboBox : ComboBox
     {
         private readonly int _intToolTipWrap;
 
@@ -51,7 +51,6 @@ namespace Chummer
         {
             _objToolTip = objToolTip;
             _intToolTipWrap = intToolTipWrap;
-            DoubleBuffered = true;
             SelectedIndexChanged += ClearUnintendedHighlight;
             Resize += ClearUnintendedHighlight;
         }

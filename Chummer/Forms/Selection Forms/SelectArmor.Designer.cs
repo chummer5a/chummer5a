@@ -59,8 +59,8 @@ namespace Chummer
             this.tabListDetail = new System.Windows.Forms.TabPage();
             this.tlpListDetail = new System.Windows.Forms.TableLayoutPanel();
             this.lstArmor = new System.Windows.Forms.ListBox();
-            this.chkHideOverAvailLimit = new Chummer.ColorableCheckBox(this.components);
-            this.chkShowOnlyAffordItems = new Chummer.ColorableCheckBox(this.components);
+            this.chkHideOverAvailLimit = new Chummer.ColorableCheckBox();
+            this.chkShowOnlyAffordItems = new Chummer.ColorableCheckBox();
             this.bufferedTableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.lblCapacityLabel = new System.Windows.Forms.Label();
             this.lblSource = new System.Windows.Forms.Label();
@@ -70,8 +70,8 @@ namespace Chummer
             this.lblArmorValue = new System.Windows.Forms.Label();
             this.lblRatingLabel = new System.Windows.Forms.Label();
             this.flpCheckBoxes = new System.Windows.Forms.FlowLayoutPanel();
-            this.chkFreeItem = new Chummer.ColorableCheckBox(this.components);
-            this.chkBlackMarketDiscount = new Chummer.ColorableCheckBox(this.components);
+            this.chkFreeItem = new Chummer.ColorableCheckBox();
+            this.chkBlackMarketDiscount = new Chummer.ColorableCheckBox();
             this.flpMarkup = new System.Windows.Forms.FlowLayoutPanel();
             this.nudMarkup = new Chummer.NumericUpDownEx();
             this.lblMarkupPercentLabel = new System.Windows.Forms.Label();

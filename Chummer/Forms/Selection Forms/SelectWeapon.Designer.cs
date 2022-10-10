@@ -55,8 +55,8 @@ namespace Chummer
             this.lblMarkupPercentLabel = new System.Windows.Forms.Label();
             this.lblMarkupLabel = new System.Windows.Forms.Label();
             this.flpCheckBoxes = new System.Windows.Forms.FlowLayoutPanel();
-            this.chkFreeItem = new Chummer.ColorableCheckBox(this.components);
-            this.chkBlackMarketDiscount = new Chummer.ColorableCheckBox(this.components);
+            this.chkFreeItem = new Chummer.ColorableCheckBox();
+            this.chkBlackMarketDiscount = new Chummer.ColorableCheckBox();
             this.lblWeaponMode = new System.Windows.Forms.Label();
             this.lblWeaponCost = new System.Windows.Forms.Label();
             this.lblWeaponCostLabel = new System.Windows.Forms.Label();
@@ -75,8 +75,8 @@ namespace Chummer
             this.lblWeaponAccuracy = new System.Windows.Forms.Label();
             this.lblWeaponAP = new System.Windows.Forms.Label();
             this.tlpBottomRight = new System.Windows.Forms.TableLayoutPanel();
-            this.chkHideOverAvailLimit = new Chummer.ColorableCheckBox(this.components);
-            this.chkShowOnlyAffordItems = new Chummer.ColorableCheckBox(this.components);
+            this.chkHideOverAvailLimit = new Chummer.ColorableCheckBox();
+            this.chkShowOnlyAffordItems = new Chummer.ColorableCheckBox();
             this.gpbIncludedAccessories = new System.Windows.Forms.GroupBox();
             this.pnlIncludedAccessories = new System.Windows.Forms.Panel();
             this.lblIncludedAccessories = new System.Windows.Forms.Label();

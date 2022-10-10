@@ -102,7 +102,7 @@ namespace Chummer.UI.Skills
                         Text = "00",
                         TextAlign = ContentAlignment.MiddleCenter
                     };
-                    btnCareerIncrease = new ButtonWithToolTip(components)
+                    btnCareerIncrease = new ButtonWithToolTip
                     {
                         Anchor = AnchorStyles.Right,
                         AutoSize = true,
@@ -135,7 +135,7 @@ namespace Chummer.UI.Skills
                         Text = "[SPEC]",
                         TextAlign = ContentAlignment.MiddleLeft
                     };
-                    btnAddSpec = new ButtonWithToolTip(components)
+                    btnAddSpec = new ButtonWithToolTip
                     {
                         Anchor = AnchorStyles.Right,
                         AutoSize = true,
@@ -192,7 +192,7 @@ namespace Chummer.UI.Skills
                     tlpMain.Controls.Add(nudSkill, 1, 0);
                     tlpMain.Controls.Add(nudKarma, 2, 0);
 
-                    chkNativeLanguage = new ColorableCheckBox(components)
+                    chkNativeLanguage = new ColorableCheckBox
                     {
                         Anchor = AnchorStyles.Left,
                         AutoSize = true,
@@ -212,7 +212,7 @@ namespace Chummer.UI.Skills
                         Name = "cboSpec",
                         TabStop = false
                     };
-                    chkKarma = new ColorableCheckBox(components)
+                    chkKarma = new ColorableCheckBox
                     {
                         Anchor = AnchorStyles.Left,
                         AutoSize = true,

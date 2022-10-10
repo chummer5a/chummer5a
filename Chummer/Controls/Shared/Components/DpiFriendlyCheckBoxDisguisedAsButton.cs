@@ -19,27 +19,16 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
 namespace Chummer
 {
-    public partial class DpiFriendlyCheckBoxDisguisedAsButton : CheckBox
+    public class DpiFriendlyCheckBoxDisguisedAsButton : CheckBox
     {
         public DpiFriendlyCheckBoxDisguisedAsButton()
         {
-            InitializeComponent();
-            Appearance = Appearance.Button;
-            UseVisualStyleBackColor = true;
-        }
-
-        public DpiFriendlyCheckBoxDisguisedAsButton(IContainer container)
-        {
-            container.Add(this);
-
-            InitializeComponent();
             Appearance = Appearance.Button;
             UseVisualStyleBackColor = true;
         }

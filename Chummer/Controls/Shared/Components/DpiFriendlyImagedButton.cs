@@ -19,25 +19,16 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
 namespace Chummer
 {
-    public partial class DpiFriendlyImagedButton : Button
+    public class DpiFriendlyImagedButton : Button
     {
         public DpiFriendlyImagedButton()
         {
-            InitializeComponent();
-        }
-
-        public DpiFriendlyImagedButton(IContainer container)
-        {
-            container.Add(this);
-
-            InitializeComponent();
         }
 
         public void RefreshImage()

@@ -46,12 +46,12 @@ namespace Chummer
             this.lblSelect = new System.Windows.Forms.Label();
             this.txtSelect = new System.Windows.Forms.TextBox();
             this.cmdChangeSelection = new System.Windows.Forms.Button();
-            this.chkApplyToRating = new Chummer.ColorableCheckBox(this.components);
-            this.chkFree = new Chummer.ColorableCheckBox(this.components);
+            this.chkApplyToRating = new Chummer.ColorableCheckBox();
+            this.chkFree = new Chummer.ColorableCheckBox();
             this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.txtTranslateSelection = new System.Windows.Forms.TextBox();
             this.flpSelectValue = new System.Windows.Forms.FlowLayoutPanel();
-            this.chkIgnoreLimits = new Chummer.ColorableCheckBox(this.components);
+            this.chkIgnoreLimits = new Chummer.ColorableCheckBox();
             this.txtHelp = new System.Windows.Forms.TextBox();
             this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)(this.nudVal)).BeginInit();

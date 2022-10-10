@@ -774,7 +774,7 @@ namespace Chummer
                         Name = "nudLoyalty",
                         Value = new decimal(new[] { 1, 0, 0, 0 })
                     };
-                    x.chkFree = new ColorableCheckBox(x.components)
+                    x.chkFree = new ColorableCheckBox
                     {
                         Anchor = AnchorStyles.Left,
                         AutoSize = true,
@@ -784,7 +784,7 @@ namespace Chummer
                         Text = "Free",
                         UseVisualStyleBackColor = true
                     };
-                    x.chkGroup = new ColorableCheckBox(x.components)
+                    x.chkGroup = new ColorableCheckBox
                     {
                         Anchor = AnchorStyles.Left,
                         AutoSize = true,
@@ -794,7 +794,7 @@ namespace Chummer
                         Text = "Group",
                         UseVisualStyleBackColor = true
                     };
-                    x.chkBlackmail = new ColorableCheckBox(x.components)
+                    x.chkBlackmail = new ColorableCheckBox
                     {
                         Anchor = AnchorStyles.Left,
                         AutoSize = true,
@@ -804,7 +804,7 @@ namespace Chummer
                         Text = "Blackmail",
                         UseVisualStyleBackColor = true
                     };
-                    x.chkFamily = new ColorableCheckBox(x.components)
+                    x.chkFamily = new ColorableCheckBox
                     {
                         Anchor = AnchorStyles.Left,
                         AutoSize = true,
@@ -814,7 +814,7 @@ namespace Chummer
                         Text = "Family",
                         UseVisualStyleBackColor = true
                     };
-                    x.cmdLink = new ButtonWithToolTip(x.components)
+                    x.cmdLink = new ButtonWithToolTip
                     {
                         Anchor = AnchorStyles.Right,
                         AutoSize = true,
@@ -943,7 +943,7 @@ namespace Chummer
                         Name = "nudLoyalty",
                         Value = new decimal(new[] { 1, 0, 0, 0 })
                     };
-                    x.chkFree = new ColorableCheckBox(x.components)
+                    x.chkFree = new ColorableCheckBox
                     {
                         Anchor = AnchorStyles.Left,
                         AutoSize = true,
@@ -953,7 +953,7 @@ namespace Chummer
                         Text = "Free",
                         UseVisualStyleBackColor = true
                     };
-                    x.chkGroup = new ColorableCheckBox(x.components)
+                    x.chkGroup = new ColorableCheckBox
                     {
                         Anchor = AnchorStyles.Left,
                         AutoSize = true,
@@ -963,7 +963,7 @@ namespace Chummer
                         Text = "Group",
                         UseVisualStyleBackColor = true
                     };
-                    x.chkBlackmail = new ColorableCheckBox(x.components)
+                    x.chkBlackmail = new ColorableCheckBox
                     {
                         Anchor = AnchorStyles.Left,
                         AutoSize = true,
@@ -973,7 +973,7 @@ namespace Chummer
                         Text = "Blackmail",
                         UseVisualStyleBackColor = true
                     };
-                    x.chkFamily = new ColorableCheckBox(x.components)
+                    x.chkFamily = new ColorableCheckBox
                     {
                         Anchor = AnchorStyles.Left,
                         AutoSize = true,
@@ -983,7 +983,7 @@ namespace Chummer
                         Text = "Family",
                         UseVisualStyleBackColor = true
                     };
-                    x.cmdLink = new ButtonWithToolTip(x.components)
+                    x.cmdLink = new ButtonWithToolTip
                     {
                         Anchor = AnchorStyles.Right,
                         AutoSize = true,
