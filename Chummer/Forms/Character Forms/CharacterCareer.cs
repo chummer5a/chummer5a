@@ -3715,7 +3715,7 @@ namespace Chummer
                         foreach (Gear objGear in CharacterObject.Gear)
                         {
                             await objGear.ReaddImprovements(treGear, sbdOutdatedItems, lstInternalIdFilter);
-                            objGear.RefreshWirelessBonuses();
+                            await objGear.RefreshWirelessBonusesAsync(token);
                         }
 
                         // Refresh Weapons Gear
@@ -12972,12 +12972,12 @@ namespace Chummer
                             // Add the Gear's Improvements to the character.
                             if (objParentArmor.Equipped && objParentMod?.Equipped != false)
                             {
-                                objGear.ChangeEquippedStatus(true);
+                                await objGear.ChangeEquippedStatusAsync(true, token: GenericToken);
                             }
                         }
                         else
                         {
-                            objGear.ChangeEquippedStatus(false);
+                            await objGear.ChangeEquippedStatusAsync(false, token: GenericToken);
                         }
 
                         break;
@@ -13071,7 +13071,7 @@ namespace Chummer
                     case Gear objGear:
                         // Find the selected Gear.
                         objGear.Equipped = blnChecked;
-                        objGear.ChangeEquippedStatus(blnChecked);
+                        await objGear.ChangeEquippedStatusAsync(blnChecked, token: GenericToken);
                         break;
 
                     case WeaponAccessory objAccessory:
@@ -13186,7 +13186,7 @@ namespace Chummer
                     return;
                 bool blnChecked = await chkGearEquipped.DoThreadSafeFuncAsync(x => x.Checked, GenericToken);
                 objSelectedGear.Equipped = blnChecked;
-                objSelectedGear.ChangeEquippedStatus(blnChecked);
+                await objSelectedGear.ChangeEquippedStatusAsync(blnChecked, token: GenericToken);
 
                 await RequestCharacterUpdate();
                 await SetDirty(true);
@@ -13397,7 +13397,7 @@ namespace Chummer
                 foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
                 {
                     foreach (Gear objGear in objAccessory.GearChildren)
-                        objGear.ChangeEquippedStatus(false);
+                        await objGear.ChangeEquippedStatusAsync(false, token: GenericToken);
                 }
 
                 if (objWeapon.UnderbarrelWeapons.Count > 0)
@@ -13407,7 +13407,7 @@ namespace Chummer
                         foreach (WeaponAccessory objAccessory in objUnderbarrelWeapon.WeaponAccessories)
                         {
                             foreach (Gear objGear in objAccessory.GearChildren)
-                                objGear.ChangeEquippedStatus(false);
+                                await objGear.ChangeEquippedStatusAsync(false, token: GenericToken);
                         }
                     }
                 }
@@ -14585,12 +14585,12 @@ namespace Chummer
                             if (!await ImprovementManager.CreateImprovementsAsync(
                                     CharacterObject, Improvement.ImprovementSource.Gear, objSelectedFocus.InternalId,
                                     objSelectedFocus.Bonus, objSelectedFocus.Rating,
-                                    objSelectedFocus.CurrentDisplayNameShort))
+                                    await objSelectedFocus.GetCurrentDisplayNameShortAsync(GenericToken)))
                             {
                                 // Clear created improvements
-                                objSelectedFocus.ChangeEquippedStatus(false);
+                                await objSelectedFocus.ChangeEquippedStatusAsync(false, token: GenericToken);
                                 if (blnOldEquipped)
-                                    objSelectedFocus.ChangeEquippedStatus(true);
+                                    await objSelectedFocus.ChangeEquippedStatusAsync(true, token: GenericToken);
                                 e.Cancel = true;
                                 return;
                             }
@@ -14603,12 +14603,12 @@ namespace Chummer
                                                             CharacterObject, Improvement.ImprovementSource.Gear,
                                                             objSelectedFocus.InternalId, objSelectedFocus.WirelessBonus,
                                                             objSelectedFocus.Rating,
-                                                            objSelectedFocus.CurrentDisplayNameShort))
+                                                            await objSelectedFocus.GetCurrentDisplayNameShortAsync(GenericToken)))
                         {
                             // Clear created improvements
-                            objSelectedFocus.ChangeEquippedStatus(false);
+                            await objSelectedFocus.ChangeEquippedStatusAsync(false, token: GenericToken);
                             if (blnOldEquipped)
-                                objSelectedFocus.ChangeEquippedStatus(true);
+                                await objSelectedFocus.ChangeEquippedStatusAsync(true, token: GenericToken);
                             e.Cancel = true;
                             return;
                         }
@@ -14621,9 +14621,9 @@ namespace Chummer
                                                await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"),
                                                MessageBoxButtons.OK, MessageBoxIcon.Information);
                         // Clear created improvements
-                        objSelectedFocus.ChangeEquippedStatus(false);
+                        await objSelectedFocus.ChangeEquippedStatusAsync(false, token: GenericToken);
                         if (blnOldEquipped)
-                            objSelectedFocus.ChangeEquippedStatus(true);
+                            await objSelectedFocus.ChangeEquippedStatusAsync(true, token: GenericToken);
                         e.Cancel = true;
                         return;
                     }
@@ -14636,9 +14636,9 @@ namespace Chummer
                             , await objSelectedFocus.GetCurrentDisplayNameAsync(GenericToken))))
                     {
                         // Clear created improvements
-                        objSelectedFocus.ChangeEquippedStatus(false);
+                        await objSelectedFocus.ChangeEquippedStatusAsync(false, token: GenericToken);
                         if (blnOldEquipped)
-                            objSelectedFocus.ChangeEquippedStatus(true);
+                            await objSelectedFocus.ChangeEquippedStatusAsync(true, token: GenericToken);
                         e.Cancel = true;
                         return;
                     }
@@ -14656,15 +14656,15 @@ namespace Chummer
                     objUndo.CreateKarma(KarmaExpenseType.BindFocus, objSelectedFocus.InternalId);
                     objExpense.Undo = objUndo;
 
-                    await CharacterObject.Foci.AddAsync(objFocus);
+                    await CharacterObject.Foci.AddAsync(objFocus, GenericToken);
                     objSelectedFocus.Bonded = true;
                     if (!blnOldEquipped)
                     {
-                        objSelectedFocus.ChangeEquippedStatus(false);
+                        await objSelectedFocus.ChangeEquippedStatusAsync(false, token: GenericToken);
                     }
 
-                    await treViewToUse.DoThreadSafeFuncAsync(() => e.Node.Text = objSelectedFocus.CurrentDisplayName,
-                                                             GenericToken);
+                    string strName = await objSelectedFocus.GetCurrentDisplayNameAsync(GenericToken);
+                    await treViewToUse.DoThreadSafeFuncAsync(() => e.Node.Text = strName, GenericToken);
                 }
                 else
                 {
@@ -14720,10 +14720,10 @@ namespace Chummer
                     {
                         // Clear created improvements
                         foreach (Gear objGear in objStackedFocus.Gear)
-                            objGear.ChangeEquippedStatus(false);
+                            await objGear.ChangeEquippedStatusAsync(false, token: GenericToken);
                         if (blnOldEquipped)
                             foreach (Gear objGear in objStackedFocus.Gear)
-                                objGear.ChangeEquippedStatus(true);
+                                await objGear.ChangeEquippedStatusAsync(true, token: GenericToken);
                         return;
                     }
 
@@ -14734,9 +14734,9 @@ namespace Chummer
                                                await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"),
                                                MessageBoxButtons.OK, MessageBoxIcon.Information);
                         // Clear created improvements
-                        objStackGear.ChangeEquippedStatus(false);
+                        await objStackGear.ChangeEquippedStatusAsync(false, token: GenericToken);
                         if (blnOldEquipped)
-                            objStackGear.ChangeEquippedStatus(true);
+                            await objStackGear.ChangeEquippedStatusAsync(true, token: GenericToken);
                         e.Cancel = true;
                         return;
                     }
@@ -14750,9 +14750,9 @@ namespace Chummer
                                           + await objStackedFocus.GetCurrentDisplayNameAsync(GenericToken))))
                     {
                         // Clear created improvements
-                        objStackGear.ChangeEquippedStatus(false);
+                        await objStackGear.ChangeEquippedStatusAsync(false, token: GenericToken);
                         if (blnOldEquipped)
-                            objStackGear.ChangeEquippedStatus(true);
+                            await objStackGear.ChangeEquippedStatusAsync(true, token: GenericToken);
                         e.Cancel = true;
                         return;
                     }
@@ -19327,9 +19327,10 @@ namespace Chummer
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                   out StringBuilder sbdQualities))
                     {
-                        sbdQualities.AppendJoin(',' + Environment.NewLine,
-                                                objLifestyle.LifestyleQualities.Select(
-                                                    r => r.CurrentFormattedDisplayName));
+                        await sbdQualities.AppendJoinAsync(',' + Environment.NewLine,
+                                                           objLifestyle.LifestyleQualities.Select(
+                                                               r => r.GetCurrentFormattedDisplayNameAsync(token)
+                                                                     .AsTask()), token);
                         foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(
                                      CharacterObject, Improvement.ImprovementType.LifestyleCost, token: token))
                         {

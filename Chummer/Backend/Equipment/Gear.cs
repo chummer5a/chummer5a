@@ -3188,7 +3188,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The name of the object as it should appear on printouts (translated name only).
         /// </summary>
-        public async Task<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
+        public async ValueTask<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
@@ -3222,8 +3222,6 @@ namespace Chummer.Backend.Equipment
                 return decQuantityToUse.ToString("#,0.00", objCulture);
             return !blnBlankOnOneQuantity || Quantity != 1.0m ? decQuantityToUse.ToString("#,0.##", objCulture) : string.Empty;
         }
-
-        public string CurrentDisplayNameShort => DisplayNameShort(GlobalSettings.Language);
 
         /// <summary>
         /// The name of the object as it should be displayed in lists. Qty Name (Rating) (Extra).
@@ -3275,6 +3273,10 @@ namespace Chummer.Backend.Equipment
                                       + ')';
             return strReturn;
         }
+
+        public string CurrentDisplayNameShort => DisplayNameShort(GlobalSettings.Language);
+
+        public ValueTask<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default) => DisplayNameShortAsync(GlobalSettings.Language, token: token);
 
         public string CurrentDisplayName => DisplayName(GlobalSettings.CultureInfo, GlobalSettings.Language);
 
@@ -3606,6 +3608,8 @@ namespace Chummer.Backend.Equipment
         /// <param name="blnSkipEncumbranceOnPropertyChanged">Whether we should skip notifying our character that they should re-check their encumbrance. Set to `true` if this is a batch operation and there is going to be a refresh later anyway.</param>
         public void ChangeEquippedStatus(bool blnEquipped, bool blnSkipEncumbranceOnPropertyChanged = false)
         {
+            if (_objCharacter?.IsLoading != false)
+                return;
             if (blnEquipped)
             {
                 // Add any Improvements from the Gear.
@@ -3672,10 +3676,89 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Change the Equipped status of a piece of Gear and all of its children.
+        /// </summary>
+        /// <param name="blnEquipped">Whether or not the Gear should be marked as Equipped.</param>
+        /// <param name="blnSkipEncumbranceOnPropertyChanged">Whether we should skip notifying our character that they should re-check their encumbrance. Set to `true` if this is a batch operation and there is going to be a refresh later anyway.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async ValueTask ChangeEquippedStatusAsync(bool blnEquipped, bool blnSkipEncumbranceOnPropertyChanged = false, CancellationToken token = default)
+        {
+            if (_objCharacter?.IsLoading != false)
+                return;
+            if (blnEquipped)
+            {
+                // Add any Improvements from the Gear.
+                if (Category != "Stacked Focus")
+                {
+                    if (!Category.EndsWith("Foci", StringComparison.Ordinal) || Bonded)
+                    {
+                        ImprovementManager.EnableImprovements(_objCharacter,
+                                                              await _objCharacter.Improvements.ToListAsync(x =>
+                                                                  x.ImproveSource == Improvement.ImprovementSource
+                                                                      .Gear && x.SourceName == InternalId, token: token));
+                    }
+                }
+                else
+                {
+                    // Stacked Foci need to be handled a little differently.
+                    await _objCharacter.StackedFoci.ForEachAsync(async objStack =>
+                    {
+                        if (objStack.GearId == InternalId && objStack.Bonded)
+                        {
+                            string strStackInternalId = objStack.InternalId;
+                            ImprovementManager.EnableImprovements(_objCharacter,
+                                                                  await _objCharacter.Improvements.ToListAsync(x =>
+                                                                          x.ImproveSource
+                                                                          == Improvement.ImprovementSource.StackedFocus
+                                                                          &&
+                                                                          x.SourceName == strStackInternalId,
+                                                                      token: token));
+                        }
+                    }, token);
+                }
+            }
+            else
+            {
+                // Remove any Improvements from the Gear.
+                if (Category != "Stacked Focus")
+                    ImprovementManager.DisableImprovements(_objCharacter,
+                                                           await _objCharacter.Improvements.ToListAsync(x =>
+                                                               x.ImproveSource == Improvement.ImprovementSource.Gear
+                                                               && x.SourceName == InternalId, token: token));
+                else
+                {
+                    // Stacked Foci need to be handled a little differently.
+                    await _objCharacter.StackedFoci.ForEachAsync(async objStack =>
+                    {
+                        if (objStack.GearId == InternalId)
+                        {
+                            string strStackInternalId = objStack.InternalId;
+                            ImprovementManager.DisableImprovements(_objCharacter,
+                                                                   await _objCharacter.Improvements.ToListAsync(x =>
+                                                                           x.ImproveSource
+                                                                           == Improvement.ImprovementSource.StackedFocus
+                                                                           &&
+                                                                           x.SourceName == strStackInternalId,
+                                                                       token: token));
+                        }
+                    }, token);
+                }
+            }
+
+            foreach (Gear objGear in Children)
+                await objGear.ChangeEquippedStatusAsync(blnEquipped, true);
+
+            if (!blnSkipEncumbranceOnPropertyChanged)
+                _objCharacter?.OnPropertyChanged(nameof(Character.TotalCarriedWeight));
+        }
+
+        /// <summary>
         /// Toggle the Wireless Bonus for this gear.
         /// </summary>
         public void RefreshWirelessBonuses()
         {
+            if (_objCharacter?.IsLoading != false)
+                return;
             if (!string.IsNullOrEmpty(WirelessBonus?.InnerText))
             {
                 if (WirelessOn && Equipped && (Parent as IHasWirelessBonus)?.WirelessOn != false)
@@ -3717,6 +3800,60 @@ namespace Chummer.Backend.Equipment
 
             foreach (Gear objGear in Children)
                 objGear.RefreshWirelessBonuses();
+        }
+
+        /// <summary>
+        /// Toggle the Wireless Bonus for this gear.
+        /// </summary>
+        public async ValueTask RefreshWirelessBonusesAsync(CancellationToken token = default)
+        {
+            if (_objCharacter?.IsLoading != false)
+                return;
+            if (!string.IsNullOrEmpty(WirelessBonus?.InnerText))
+            {
+                if (WirelessOn && Equipped && (Parent as IHasWirelessBonus)?.WirelessOn != false)
+                {
+                    if (WirelessBonus.SelectSingleNode("@mode")?.Value == "replace")
+                    {
+                        ImprovementManager.DisableImprovements(_objCharacter,
+                                                               await _objCharacter.Improvements.ToListAsync(x =>
+                                                                   x.ImproveSource
+                                                                   == Improvement.ImprovementSource
+                                                                       .Gear &&
+                                                                   x.SourceName == InternalId, token: token));
+                    }
+
+                    await ImprovementManager.CreateImprovementsAsync(_objCharacter, Improvement.ImprovementSource.Gear,
+                                                                     InternalId + "Wireless", WirelessBonus, Rating,
+                                                                     await GetCurrentDisplayNameShortAsync(token),
+                                                                     token: token);
+
+                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(_strExtra))
+                        _strExtra = ImprovementManager.SelectedValue;
+                }
+                else
+                {
+                    if (WirelessBonus.SelectSingleNode("@mode")?.Value == "replace")
+                    {
+                        ImprovementManager.EnableImprovements(_objCharacter,
+                                                              await _objCharacter.Improvements.ToListAsync(x =>
+                                                                  x.ImproveSource == Improvement.ImprovementSource
+                                                                      .Gear &&
+                                                                  x.SourceName == InternalId, token: token));
+                    }
+
+                    string strSourceNameToRemove = InternalId + "Wireless";
+                    await ImprovementManager.RemoveImprovementsAsync(_objCharacter,
+                                                                     await _objCharacter.Improvements.ToListAsync(x =>
+                                                                             x.ImproveSource
+                                                                             == Improvement.ImprovementSource.Gear &&
+                                                                             x.SourceName == strSourceNameToRemove,
+                                                                         token), token: token);
+                }
+            }
+
+            foreach (Gear objGear in Children)
+                await objGear.RefreshWirelessBonusesAsync(token);
         }
 
         /// <summary>

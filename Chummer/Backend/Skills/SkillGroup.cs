@@ -790,24 +790,24 @@ namespace Chummer.Backend.Skills
 
                 SkillGroup objSkillGroup =
                     await objSkill.CharacterObject.SkillsSection.SkillGroups
-                        .FindAsync(x => x.Name == objSkill.SkillGroup, token).ConfigureAwait(false);
+                                  .FindAsync(x => x.Name == objSkill.SkillGroup, token).ConfigureAwait(false);
                 if (objSkillGroup != null)
                 {
                     if (!objSkillGroup.SkillList.Contains(objSkill))
-                        objSkillGroup.Add(objSkill);
+                        await objSkillGroup.AddAsync(objSkill, token).ConfigureAwait(false);
                 }
                 else
                 {
                     objSkillGroup = new SkillGroup(objSkill.CharacterObject, objSkill.SkillGroup);
-                    objSkillGroup.Add(objSkill);
+                    await objSkillGroup.AddAsync(objSkill, token).ConfigureAwait(false);
                     await objSkill.CharacterObject.SkillsSection.SkillGroups.AddWithSortAsync(objSkillGroup,
                         SkillsSection.CompareSkillGroups,
-                        (objExistingSkillGroup, objNewSkillGroup) =>
+                        async (objExistingSkillGroup, objNewSkillGroup) =>
                         {
                             foreach (Skill x in objExistingSkillGroup.SkillList.Where(x =>
                                          !objExistingSkillGroup.SkillList.Contains(x)))
-                                objExistingSkillGroup.Add(x);
-                            objNewSkillGroup.Dispose();
+                                await objExistingSkillGroup.AddAsync(x, token).ConfigureAwait(false);
+                            await objNewSkillGroup.DisposeAsync().ConfigureAwait(false);
                         }, token: token).ConfigureAwait(false);
                 }
 
@@ -826,7 +826,34 @@ namespace Chummer.Backend.Skills
                 {
                     _lstAffectedSkills.Add(skill);
                     skill.PropertyChanged += SkillOnPropertyChanged;
-                    OnPropertyChanged(nameof(SkillList));
+                    if (_objCharacter?.SkillsSection?.IsLoading != true)
+                        OnPropertyChanged(nameof(SkillList));
+                }
+            }
+        }
+
+        public async ValueTask AddAsync(Skill skill, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                // Do not add duplicate skills that we are still in the process of loading
+                if (await _lstAffectedSkills
+                          .AnyAsync(
+                              async x => await x.GetSkillIdAsync(token).ConfigureAwait(false)
+                                         == await skill.GetSkillIdAsync(token).ConfigureAwait(false), token: token)
+                          .ConfigureAwait(false))
+                    return;
+                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    _lstAffectedSkills.Add(skill);
+                    skill.PropertyChanged += SkillOnPropertyChanged;
+                    if (_objCharacter?.SkillsSection?.IsLoading != true)
+                        OnPropertyChanged(nameof(SkillList));
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
         }
@@ -838,7 +865,8 @@ namespace Chummer.Backend.Skills
                 if (!_lstAffectedSkills.Remove(skill))
                     return;
                 skill.PropertyChanged -= SkillOnPropertyChanged;
-                OnPropertyChanged(nameof(SkillList));
+                if (_objCharacter?.SkillsSection?.IsLoading != true)
+                    OnPropertyChanged(nameof(SkillList));
             }
         }
 
@@ -850,11 +878,12 @@ namespace Chummer.Backend.Skills
                 if (!_lstAffectedSkills.Remove(skill))
                     return;
                 skill.PropertyChanged -= SkillOnPropertyChanged;
-                OnPropertyChanged(nameof(SkillList));
+                if (_objCharacter?.SkillsSection?.IsLoading != true)
+                    OnPropertyChanged(nameof(SkillList));
             }
             finally
             {
-                await objLocker.DisposeAsync();
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

@@ -715,6 +715,8 @@ namespace Chummer.Backend.Equipment
 
         public string CurrentFormattedDisplayName => FormattedDisplayName(GlobalSettings.CultureInfo, GlobalSettings.Language);
 
+        public ValueTask<string> GetCurrentFormattedDisplayNameAsync(CancellationToken token = default) => FormattedDisplayNameAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
+
         /// <summary>
         ///     Whether or not the LifestyleQuality appears on the printouts.
         /// </summary>

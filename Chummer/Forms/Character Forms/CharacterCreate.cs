@@ -3202,7 +3202,7 @@ namespace Chummer
                         foreach (Gear objGear in CharacterObject.Gear)
                         {
                             await objGear.ReaddImprovements(treGear, sbdOutdatedItems, lstInternalIdFilter);
-                            objGear.RefreshWirelessBonuses();
+                            await objGear.RefreshWirelessBonusesAsync(token);
                         }
 
                         // Refresh Weapons Gear
@@ -8520,21 +8520,29 @@ namespace Chummer
                         // See if a Bonus node exists.
                         if (objGear.Bonus != null || objGear.WirelessOn && objGear.WirelessBonus != null)
                         {
-                            await ImprovementManager.RemoveImprovementsAsync(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId);
+                            await ImprovementManager.RemoveImprovementsAsync(
+                                CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId);
                             if (!string.IsNullOrEmpty(objGear.Extra))
                             {
                                 ImprovementManager.ForcedValue = objGear.Extra.TrimEndOnce(", Hacked");
                             }
+
                             if (objGear.Bonus != null)
-                                await ImprovementManager.CreateImprovementsAsync(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.Bonus, objGear.Rating, objGear.CurrentDisplayNameShort);
+                                await ImprovementManager.CreateImprovementsAsync(
+                                    CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId,
+                                    objGear.Bonus, objGear.Rating, await objGear.GetCurrentDisplayNameShortAsync(GenericToken));
                             if (objGear.WirelessOn && objGear.WirelessBonus != null)
-                                await ImprovementManager.CreateImprovementsAsync(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.WirelessBonus, objGear.Rating, objGear.CurrentDisplayNameShort);
+                                await ImprovementManager.CreateImprovementsAsync(
+                                    CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId,
+                                    objGear.WirelessBonus, objGear.Rating,
+                                    await objGear.GetCurrentDisplayNameShortAsync(GenericToken));
 
                             if (!objGear.Equipped)
-                                objGear.ChangeEquippedStatus(false);
+                                await objGear.ChangeEquippedStatusAsync(false, token: GenericToken);
                         }
 
-                        await treCyberware.DoThreadSafeAsync(x => x.SelectedNode.Text = objGear.CurrentDisplayName, GenericToken);
+                        string strName = await objGear.GetCurrentDisplayNameAsync(GenericToken);
+                        await treCyberware.DoThreadSafeAsync(x => x.SelectedNode.Text = strName, GenericToken);
                         break;
                     }
                 }
@@ -8885,21 +8893,30 @@ namespace Chummer
 
                 if (objGear.Bonus != null || objGear.WirelessOn && objGear.WirelessBonus != null)
                 {
-                    await ImprovementManager.RemoveImprovementsAsync(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId);
+                    await ImprovementManager.RemoveImprovementsAsync(CharacterObject,
+                                                                     Improvement.ImprovementSource.Gear,
+                                                                     objGear.InternalId);
                     if (!string.IsNullOrEmpty(objGear.Extra))
                     {
                         ImprovementManager.ForcedValue = objGear.Extra.TrimEndOnce(", Hacked");
                     }
-                    if (objGear.Bonded || (objGear.Category != "Foci" && objGear.Category != "Metamagic Foci" && objGear.Category != "Stacked Focus"))
+
+                    if (objGear.Bonded || (objGear.Category != "Foci" && objGear.Category != "Metamagic Foci"
+                                                                      && objGear.Category != "Stacked Focus"))
                     {
                         if (objGear.Bonus != null)
-                            await ImprovementManager.CreateImprovementsAsync(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.Bonus, objGear.Rating, objGear.CurrentDisplayNameShort);
+                            await ImprovementManager.CreateImprovementsAsync(
+                                CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.Bonus,
+                                objGear.Rating, await objGear.GetCurrentDisplayNameShortAsync(GenericToken));
                         if (objGear.WirelessOn && objGear.WirelessBonus != null)
-                            await ImprovementManager.CreateImprovementsAsync(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.WirelessBonus, objGear.Rating, objGear.CurrentDisplayNameShort);
+                            await ImprovementManager.CreateImprovementsAsync(
+                                CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId,
+                                objGear.WirelessBonus, objGear.Rating,
+                                await objGear.GetCurrentDisplayNameShortAsync(GenericToken));
                     }
 
                     if (!objGear.Equipped)
-                        objGear.ChangeEquippedStatus(false);
+                        await objGear.ChangeEquippedStatusAsync(false, token: GenericToken);
                 }
 
                 await RequestCharacterUpdate();
@@ -8985,12 +9002,12 @@ namespace Chummer
                             // Add the Gear's Improvements to the character.
                             if (objParentArmor.Equipped && objParentMod?.Equipped != false)
                             {
-                                objGear.ChangeEquippedStatus(true);
+                                await objGear.ChangeEquippedStatusAsync(true, token: GenericToken);
                             }
                         }
                         else
                         {
-                            objGear.ChangeEquippedStatus(false);
+                            await objGear.ChangeEquippedStatusAsync(false, token: GenericToken);
                         }
 
                         break;
@@ -9030,7 +9047,7 @@ namespace Chummer
                     case Gear objGear:
                         // Find the selected Gear.
                         objGear.Equipped = blnChecked;
-                        objGear.ChangeEquippedStatus(blnChecked);
+                        await objGear.ChangeEquippedStatusAsync(blnChecked, token: GenericToken);
                         break;
 
                     case WeaponAccessory objAccessory:
@@ -9142,7 +9159,7 @@ namespace Chummer
                     return;
                 bool blnChecked = await chkGearEquipped.DoThreadSafeFuncAsync(x => x.Checked, GenericToken);
                 objSelectedGear.Equipped = blnChecked;
-                objSelectedGear.ChangeEquippedStatus(blnChecked);
+                await objSelectedGear.ChangeEquippedStatusAsync(blnChecked, token: GenericToken);
 
                 await RequestCharacterUpdate();
                 await SetDirty(true);
@@ -10028,11 +10045,11 @@ namespace Chummer
                             if (!await ImprovementManager.CreateImprovementsAsync(
                                     CharacterObject, Improvement.ImprovementSource.Gear, objSelectedFocus.InternalId,
                                     objSelectedFocus.Bonus, objSelectedFocus.Rating,
-                                    objSelectedFocus.CurrentDisplayNameShort))
+                                    await objSelectedFocus.GetCurrentDisplayNameShortAsync(GenericToken)))
                             {
                                 // Clear created improvements
-                                objSelectedFocus.ChangeEquippedStatus(false);
-                                objSelectedFocus.ChangeEquippedStatus(true);
+                                await objSelectedFocus.ChangeEquippedStatusAsync(false, token: GenericToken);
+                                await objSelectedFocus.ChangeEquippedStatusAsync(true, token: GenericToken);
                                 e.Cancel = true;
                                 return;
                             }
@@ -10045,17 +10062,18 @@ namespace Chummer
                             && !await ImprovementManager.CreateImprovementsAsync(
                                 CharacterObject, Improvement.ImprovementSource.Gear, objSelectedFocus.InternalId,
                                 objSelectedFocus.WirelessBonus, objSelectedFocus.Rating,
-                                objSelectedFocus.CurrentDisplayNameShort))
+                                await objSelectedFocus.GetCurrentDisplayNameShortAsync(GenericToken)))
                         {
                             // Clear created improvements
-                            objSelectedFocus.ChangeEquippedStatus(false);
-                            objSelectedFocus.ChangeEquippedStatus(true);
+                            await objSelectedFocus.ChangeEquippedStatusAsync(false, token: GenericToken);
+                            await objSelectedFocus.ChangeEquippedStatusAsync(true, token: GenericToken);
                             e.Cancel = true;
                             return;
                         }
                     }
-
-                    e.Node.Text = objSelectedFocus.CurrentDisplayName;
+                    
+                    string strName = await objSelectedFocus.GetCurrentDisplayNameAsync(GenericToken);
+                    await treViewToUse.DoThreadSafeFuncAsync(() => e.Node.Text = strName, GenericToken);
                     await CharacterObject.Foci.AddAsync(objFocus);
                     objSelectedFocus.Bonded = true;
                 }
@@ -10080,11 +10098,11 @@ namespace Chummer
                                     if (!await ImprovementManager.CreateImprovementsAsync(
                                             CharacterObject, Improvement.ImprovementSource.StackedFocus,
                                             objStack.InternalId, objGear.Bonus, objGear.Rating,
-                                            objGear.CurrentDisplayNameShort))
+                                            await objGear.GetCurrentDisplayNameShortAsync(GenericToken)))
                                     {
                                         // Clear created improvements
-                                        objStackGear.ChangeEquippedStatus(false);
-                                        objStackGear.ChangeEquippedStatus(true);
+                                        await objStackGear.ChangeEquippedStatusAsync(false, token: GenericToken);
+                                        await objStackGear.ChangeEquippedStatusAsync(true, token: GenericToken);
                                         e.Cancel = true;
                                         return;
                                     }
@@ -10097,11 +10115,11 @@ namespace Chummer
                                     && !await ImprovementManager.CreateImprovementsAsync(
                                         CharacterObject, Improvement.ImprovementSource.StackedFocus,
                                         objStack.InternalId, objGear.WirelessBonus, objGear.Rating,
-                                        objGear.CurrentDisplayNameShort))
+                                        await objGear.GetCurrentDisplayNameShortAsync(GenericToken)))
                                 {
                                     // Clear created improvements
-                                    objStackGear.ChangeEquippedStatus(false);
-                                    objStackGear.ChangeEquippedStatus(true);
+                                    await objStackGear.ChangeEquippedStatusAsync(false, token: GenericToken);
+                                    await objStackGear.ChangeEquippedStatusAsync(true, token: GenericToken);
                                     e.Cancel = true;
                                     return;
                                 }
@@ -10109,8 +10127,8 @@ namespace Chummer
                         }
 
                         objStack.Bonded = true;
-                        await treViewToUse.DoThreadSafeAsync(x => x.SelectedNode.Text = objStackGear.CurrentDisplayName,
-                                                             GenericToken);
+                        string strName = await objStackGear.GetCurrentDisplayNameAsync(GenericToken);
+                        await treViewToUse.DoThreadSafeAsync(x => x.SelectedNode.Text = strName, GenericToken);
                     }
                 }
 
@@ -10185,8 +10203,8 @@ namespace Chummer
                             objGear.Rating
                                 = await nudArmorRating.DoThreadSafeFuncAsync(x => x.ValueAsInt, GenericToken);
 
-                        await treArmor.DoThreadSafeAsync(x => x.SelectedNode.Text = objGear.CurrentDisplayName,
-                                                         GenericToken);
+                        string strName = await objGear.GetCurrentDisplayNameAsync(GenericToken);
+                        await treArmor.DoThreadSafeAsync(x => x.SelectedNode.Text = strName, GenericToken);
 
                         // See if a Bonus node exists.
                         if (objGear.Bonus?.InnerXml.Contains("Rating") == true || objGear.WirelessOn
@@ -10198,14 +10216,14 @@ namespace Chummer
                             if (objGear.Bonus != null)
                                 await ImprovementManager.CreateImprovementsAsync(
                                     CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId,
-                                    objGear.Bonus, objGear.Rating, objGear.CurrentDisplayNameShort);
+                                    objGear.Bonus, objGear.Rating, await objGear.GetCurrentDisplayNameShortAsync(GenericToken));
                             if (objGear.WirelessOn && objGear.WirelessBonus != null)
                                 await ImprovementManager.CreateImprovementsAsync(
                                     CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId,
-                                    objGear.WirelessBonus, objGear.Rating, objGear.CurrentDisplayNameShort);
+                                    objGear.WirelessBonus, objGear.Rating, await objGear.GetCurrentDisplayNameShortAsync(GenericToken));
 
                             if (!objGear.Equipped)
-                                objGear.ChangeEquippedStatus(false);
+                                await objGear.ChangeEquippedStatusAsync(false);
                         }
 
                         break;
@@ -14930,9 +14948,10 @@ namespace Chummer
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                   out StringBuilder sbdQualities))
                     {
-                        sbdQualities.AppendJoin(',' + Environment.NewLine,
-                                                objLifestyle.LifestyleQualities.Select(
-                                                    r => r.CurrentFormattedDisplayName));
+                        await sbdQualities.AppendJoinAsync(',' + Environment.NewLine,
+                                                           objLifestyle.LifestyleQualities.Select(
+                                                               r => r.GetCurrentFormattedDisplayNameAsync(token).AsTask()),
+                                                           token);
                         foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(
                                      CharacterObject, Improvement.ImprovementType.LifestyleCost, token: token))
                         {
@@ -16643,7 +16662,7 @@ namespace Chummer
                                                  ',' + await LanguageManager.GetStringAsync(
                                                      "String_Space", token: token),
                                                  objSkill.Specializations.Select(
-                                                     x => x.GetCurrentDisplayNameAsync(token).AsTask())))
+                                                     x => x.GetCurrentDisplayNameAsync(token).AsTask()), token))
                                 .Append(')');
                         }, token);
                     }

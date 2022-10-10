@@ -652,7 +652,8 @@ namespace Chummer.Backend.Skills
             return LoadCoreAsync(false, xmlSkillNode, blnLegacy, parentActivity, token);
         }
 
-        private async Task LoadCoreAsync(bool blnSync, XmlNode xmlSkillNode, bool blnLegacy, CustomActivity parentActivity, CancellationToken token = default)
+        private async Task LoadCoreAsync(bool blnSync, XmlNode xmlSkillNode, bool blnLegacy,
+                                         CustomActivity parentActivity, CancellationToken token = default)
         {
             if (xmlSkillNode == null)
                 return;
@@ -718,14 +719,15 @@ namespace Chummer.Backend.Skills
                                                 else
                                                 {
                                                     await SkillGroups.AddWithSortAsync(objGroup, CompareSkillGroups,
-                                                        (objExistingSkillGroup, objNewSkillGroup) =>
+                                                        async (objExistingSkillGroup, objNewSkillGroup) =>
                                                         {
                                                             foreach (Skill x in objExistingSkillGroup
                                                                          .SkillList
                                                                          .Where(x => !objExistingSkillGroup
                                                                              .SkillList.Contains(x)))
-                                                                objExistingSkillGroup.Add(x);
-                                                            objNewSkillGroup.Dispose();
+                                                                await objExistingSkillGroup.AddAsync(x, token)
+                                                                    .ConfigureAwait(false);
+                                                            await objNewSkillGroup.DisposeAsync().ConfigureAwait(false);
                                                         }, token: token).ConfigureAwait(false);
                                                 }
                                             }
@@ -762,7 +764,8 @@ namespace Chummer.Backend.Skills
                                                     if (!Skills.Contains(objSkill))
                                                         lstNewSkills.Add(objSkill);
                                                 }
-                                                else if (!await Skills.ContainsAsync(objSkill, token).ConfigureAwait(false))
+                                                else if (!await Skills.ContainsAsync(objSkill, token)
+                                                                      .ConfigureAwait(false))
                                                     lstNewSkills.Add(objSkill);
                                             }
                                         }
@@ -785,7 +788,8 @@ namespace Chummer.Backend.Skills
                                         foreach (Skill objSkill in lstNewSkills)
                                         {
                                             await Skills.AddWithSortAsync(
-                                                objSkill, CompareSkills, MergeSkills, token: token).ConfigureAwait(false);
+                                                objSkill, CompareSkills, (x, y) => MergeSkillsAsync(x, y, token),
+                                                token: token).ConfigureAwait(false);
                                         }
                                     }
                                 }
@@ -821,8 +825,10 @@ namespace Chummer.Backend.Skills
                                                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                         KnowledgeSkills.Add(objSkill);
                                                 }
-                                                else if (!await KnowledgeSkills.ContainsAsync(objSkill, token).ConfigureAwait(false))
-                                                    await KnowledgeSkills.AddAsync(objSkill, token).ConfigureAwait(false);
+                                                else if (!await KnowledgeSkills.ContainsAsync(objSkill, token)
+                                                                               .ConfigureAwait(false))
+                                                    await KnowledgeSkills.AddAsync(objSkill, token)
+                                                                         .ConfigureAwait(false);
                                             }
                                             else
                                             {
@@ -855,10 +861,12 @@ namespace Chummer.Backend.Skills
                                         }
                                     }
                                     else if (await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false)
-                                             && !await KnowledgeSkills.AnyAsync(x => x.IsNativeLanguage, token).ConfigureAwait(false))
+                                             && !await KnowledgeSkills.AnyAsync(x => x.IsNativeLanguage, token)
+                                                                      .ConfigureAwait(false))
                                     {
                                         KnowledgeSkill objEnglishSkill = new KnowledgeSkill(_objCharacter);
-                                        await objEnglishSkill.SetWriteableNameAsync("English", token).ConfigureAwait(false);
+                                        await objEnglishSkill.SetWriteableNameAsync("English", token)
+                                                             .ConfigureAwait(false);
                                         objEnglishSkill.IsNativeLanguage = true;
                                         await KnowledgeSkills.AddAsync(objEnglishSkill, token).ConfigureAwait(false);
                                     }
@@ -889,7 +897,8 @@ namespace Chummer.Backend.Skills
                                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                     KnowsoftSkills.Add(objSkill);
                                                 else
-                                                    await KnowsoftSkills.AddAsync(objSkill, token).ConfigureAwait(false);
+                                                    await KnowsoftSkills.AddAsync(objSkill, token)
+                                                                        .ConfigureAwait(false);
                                             }
                                         }
                                     }
@@ -983,7 +992,8 @@ namespace Chummer.Backend.Skills
                                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                 MergeSkills(objExistingSkill, objSkill);
                                             else
-                                                await MergeSkillsAsync(objExistingSkill, objSkill, token).ConfigureAwait(false);
+                                                await MergeSkillsAsync(objExistingSkill, objSkill, token)
+                                                    .ConfigureAwait(false);
                                             continue;
                                         }
                                     }
@@ -1016,14 +1026,16 @@ namespace Chummer.Backend.Skills
                                          + (blnSync
                                              // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                              ? _objCharacter.Settings.BookXPath()
-                                             : await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false)) + ')'
+                                             : await _objCharacter.Settings.BookXPathAsync(token: token)
+                                                                  .ConfigureAwait(false)) + ')'
                                          + SkillFilter(FilterOption.NonSpecial) + ']'))
                             {
                                 string strName
                                     = (blnSync
                                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         ? node.SelectSingleNodeAndCacheExpression("name")
-                                        : await node.SelectSingleNodeAndCacheExpressionAsync("name", token).ConfigureAwait(false))?.Value;
+                                        : await node.SelectSingleNodeAndCacheExpressionAsync("name", token)
+                                                    .ConfigureAwait(false))?.Value;
                                 if (!string.IsNullOrEmpty(strName))
                                     setSkillGuids.Add(strName);
                             }
@@ -1069,12 +1081,17 @@ namespace Chummer.Backend.Skills
                             await _dicSkills.ClearAsync(token).ConfigureAwait(false);
                             foreach (Skill objSkill in Skills)
                             {
-                                if (!await _dicSkills.ContainsKeyAsync(objSkill.DictionaryKey, token).ConfigureAwait(false))
-                                    await _dicSkills.AddAsync(objSkill.DictionaryKey, objSkill, token).ConfigureAwait(false);
+                                if (!await _dicSkills.ContainsKeyAsync(objSkill.DictionaryKey, token)
+                                                     .ConfigureAwait(false))
+                                    await _dicSkills.AddAsync(objSkill.DictionaryKey, objSkill, token)
+                                                    .ConfigureAwait(false);
                             }
 
                             await KnowledgeSkills.ForEachAsync(
-                                objKnoSkill => objKnoSkill.PropertyChanged += OnKnowledgeSkillPropertyChanged, token).ConfigureAwait(false);
+                                                     objKnoSkill =>
+                                                         objKnoSkill.PropertyChanged += OnKnowledgeSkillPropertyChanged,
+                                                     token)
+                                                 .ConfigureAwait(false);
                         }
 
                         //This might give subtle bugs in the future,
@@ -1105,7 +1122,10 @@ namespace Chummer.Backend.Skills
                             {
                                 if (!await objSkillGroup.SkillList.AnyAsync(
                                         async x => await _dicSkills.ContainsKeyAsync(
-                                            await x.GetDictionaryKeyAsync(token).ConfigureAwait(false), token).ConfigureAwait(false), token: token).ConfigureAwait(false))
+                                                                       await x.GetDictionaryKeyAsync(token)
+                                                                              .ConfigureAwait(false), token)
+                                                                   .ConfigureAwait(false), token: token)
+                                    .ConfigureAwait(false))
                                 {
                                     objSkillGroup.Base = 0;
                                     objSkillGroup.Karma = 0;
@@ -2314,6 +2334,8 @@ namespace Chummer.Backend.Skills
             Name,
             XPath
         }
+
+        internal bool IsLoading => _blnLoading;
 
         internal void ForcePropertyChangedNotificationAll(string strName)
         {

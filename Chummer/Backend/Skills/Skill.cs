@@ -86,16 +86,49 @@ namespace Chummer.Backend.Skills
                 if (objImprovementOverride != null)
                     strAttributeString = objImprovementOverride.ImprovedName;
                 CharacterAttrib objNewAttribute = CharacterObject.GetAttribute(strAttributeString);
-                if (AttributeObject == objNewAttribute)
+                if (_objAttribute == objNewAttribute)
                     return;
-                if (AttributeObject != null)
-                    AttributeObject.PropertyChanged -= OnLinkedAttributeChanged;
+                if (_objAttribute != null)
+                    _objAttribute.PropertyChanged -= OnLinkedAttributeChanged;
                 if (objNewAttribute != null)
                     objNewAttribute.PropertyChanged += OnLinkedAttributeChanged;
-                AttributeObject = objNewAttribute;
+                _objAttribute = objNewAttribute;
             }
+            if (CharacterObject?.SkillsSection?.IsLoading != true)
+                this.OnMultiplePropertyChanged(nameof(AttributeModifiers), nameof(Enabled));
+        }
 
-            this.OnMultiplePropertyChanged(nameof(AttributeModifiers), nameof(Enabled));
+        private async ValueTask RecacheAttributeAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                string strAttributeString = DefaultAttribute;
+                string strDictionaryKey = await GetDictionaryKeyAsync(token).ConfigureAwait(false);
+                Improvement objImprovementOverride = (await ImprovementManager
+                                                            .GetCachedImprovementListForValueOfAsync(
+                                                                CharacterObject,
+                                                                Improvement.ImprovementType.SwapSkillAttribute,
+                                                                token: token).ConfigureAwait(false))
+                    .Find(x => x.Target == strDictionaryKey);
+                if (objImprovementOverride != null)
+                    strAttributeString = objImprovementOverride.ImprovedName;
+                CharacterAttrib objNewAttribute
+                    = await CharacterObject.GetAttributeAsync(strAttributeString, token: token).ConfigureAwait(false);
+                if (_objAttribute == objNewAttribute)
+                    return;
+                if (_objAttribute != null)
+                    _objAttribute.PropertyChanged -= OnLinkedAttributeChanged;
+                if (objNewAttribute != null)
+                    objNewAttribute.PropertyChanged += OnLinkedAttributeChanged;
+                _objAttribute = objNewAttribute;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+            if (CharacterObject?.SkillsSection?.IsLoading != true)
+                this.OnMultiplePropertyChanged(nameof(AttributeModifiers), nameof(Enabled));
         }
 
         private string _strName = string.Empty; //English name of this skill
@@ -642,48 +675,55 @@ namespace Chummer.Backend.Skills
             Specializations.BeforeClearCollectionChanged += SpecializationsOnBeforeClearCollectionChanged;
         }
 
-        private void OnAttributesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async void OnAttributesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            switch (e.Action)
+            using (await EnterReadLock.EnterAsync(LockObject).ConfigureAwait(false))
             {
-                case NotifyCollectionChangedAction.Add:
+                switch (e.Action)
+                {
+                    case NotifyCollectionChangedAction.Add:
                     {
                         if (e.NewItems.OfType<CharacterAttrib>().Any(x => x.Abbrev == Attribute))
                         {
-                            RecacheAttribute();
+                            await RecacheAttributeAsync().ConfigureAwait(false);
                         }
+
                         break;
                     }
-                case NotifyCollectionChangedAction.Remove:
+                    case NotifyCollectionChangedAction.Remove:
                     {
                         if (e.OldItems.OfType<CharacterAttrib>().Any(x => x.Abbrev == Attribute))
                         {
-                            RecacheAttribute();
+                            await RecacheAttributeAsync().ConfigureAwait(false);
                         }
+
                         break;
                     }
-                case NotifyCollectionChangedAction.Replace:
+                    case NotifyCollectionChangedAction.Replace:
                     {
                         if (e.OldItems.OfType<CharacterAttrib>().Any(x => x.Abbrev == Attribute)
                             || e.NewItems.OfType<CharacterAttrib>().Any(x => x.Abbrev == Attribute))
                         {
-                            RecacheAttribute();
+                            await RecacheAttributeAsync().ConfigureAwait(false);
                         }
+
                         break;
                     }
-                case NotifyCollectionChangedAction.Reset:
+                    case NotifyCollectionChangedAction.Reset:
                     {
-                        RecacheAttribute();
+                        await RecacheAttributeAsync().ConfigureAwait(false);
                         break;
                     }
+                }
             }
         }
 
-        private void OnAttributeSectionChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnAttributeSectionChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName != nameof(AttributeSection.AttributeCategory))
                 return;
-            RecacheAttribute();
+            using (await EnterReadLock.EnterAsync(LockObject).ConfigureAwait(false))
+                await RecacheAttributeAsync().ConfigureAwait(false);
         }
 
         //load from data
@@ -2017,7 +2057,10 @@ namespace Chummer.Backend.Skills
                     using (LockObject.EnterWriteLock())
                     {
                         _strDefaultAttribute = value;
-                        OnPropertyChanged();
+                        if (CharacterObject?.SkillsSection?.IsLoading != true)
+                            OnPropertyChanged();
+                        else
+                            RecacheAttribute();
                     }
                 }
             }
@@ -2039,7 +2082,10 @@ namespace Chummer.Backend.Skills
                 try
                 {
                     _strDefaultAttribute = value;
-                    OnPropertyChanged(nameof(DefaultAttribute));
+                    if (CharacterObject?.SkillsSection?.IsLoading != true)
+                        OnPropertyChanged(nameof(DefaultAttribute));
+                    else
+                        await RecacheAttributeAsync(token).ConfigureAwait(false);
                 }
                 finally
                 {
@@ -4175,8 +4221,13 @@ namespace Chummer.Backend.Skills
                 if (_objCachedMyXPathNode != null && strLanguage == _strCachedXPathNodeLanguage
                                                   && !GlobalSettings.LiveCustomData)
                     return _objCachedMyXPathNode;
-                IDisposable objLockerSync = blnSync ? LockObject.EnterWriteLock(token) : null;
-                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                IDisposable objLocker = null;
+                IAsyncDisposable objLockerAsync = null;
+                if (blnSync)
+                    // ReSharper disable once MethodHasAsyncOverload
+                    objLocker = LockObject.EnterWriteLock(token);
+                else
+                    objLockerAsync = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     if (_objCachedMyXPathNode != null && strLanguage == _strCachedXPathNodeLanguage
@@ -4204,9 +4255,11 @@ namespace Chummer.Backend.Skills
                 }
                 finally
                 {
-                    if (objLocker != null)
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                    objLockerSync?.Dispose();
+                    if (blnSync)
+                        // ReSharper disable once MethodHasAsyncOverload
+                        objLocker.Dispose();
+                    else
+                        await objLockerAsync.DisposeAsync().ConfigureAwait(false);
                 }
             }
         }
@@ -5966,11 +6019,11 @@ namespace Chummer.Backend.Skills
             {
                 SkillGroup objGroup = SkillGroupObject;
                 if (objGroup != null)
-                    await objGroup.RemoveAsync(this, token);
+                    await objGroup.RemoveAsync(this, token).ConfigureAwait(false);
             }
             finally
             {
-                await objLocker.DisposeAsync();
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
             await DisposeAsync().ConfigureAwait(false);
         }

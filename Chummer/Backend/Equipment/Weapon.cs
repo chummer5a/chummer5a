@@ -244,8 +244,8 @@ namespace Chummer.Backend.Equipment
 
             if (blnRecreateInternalClip)
                 RecreateInternalClip();
-            if (blnDoEncumbranceRefresh)
-                _objCharacter?.OnPropertyChanged(nameof(Character.TotalCarriedWeight));
+            if (blnDoEncumbranceRefresh && _objCharacter?.IsLoading == false)
+                _objCharacter.OnPropertyChanged(nameof(Character.TotalCarriedWeight));
         }
 
         private void ChildrenOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -294,8 +294,8 @@ namespace Chummer.Backend.Equipment
             }
 
             this.RefreshMatrixAttributeArray(_objCharacter);
-            if (blnDoEncumbranceRefresh)
-                _objCharacter?.OnPropertyChanged(nameof(Character.TotalCarriedWeight));
+            if (blnDoEncumbranceRefresh && _objCharacter?.IsLoading == false)
+                _objCharacter.OnPropertyChanged(nameof(Character.TotalCarriedWeight));
         }
 
         /// <summary>

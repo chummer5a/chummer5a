@@ -82,7 +82,7 @@ namespace Chummer.Backend.Equipment
         public Task<string> DisplayAmmoNameAsync(string strLanguage = "", CancellationToken token = default)
         {
             return AmmoGear != null
-                ? AmmoGear.DisplayNameShortAsync(strLanguage, token)
+                ? AmmoGear.DisplayNameShortAsync(strLanguage, token).AsTask()
                 : LanguageManager.GetStringAsync("String_MountInternal", strLanguage, token: token);
         }
 

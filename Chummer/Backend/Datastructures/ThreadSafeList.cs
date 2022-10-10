@@ -619,6 +619,12 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="List{T}.ForEach" />
+        public Task ForEachAsync(Func<T, Task> action, CancellationToken token = default)
+        {
+            return AsyncEnumerableExtensions.ForEachAsync(this, action, token);
+        }
+
+        /// <inheritdoc cref="List{T}.ForEach" />
         public async ValueTask ForEachAsync(Task<Action<T>> action, CancellationToken token = default)
         {
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))

@@ -4945,7 +4945,7 @@ namespace Chummer
                                 xmlCharacterNavigator.TryGetBoolFieldQuickly("created", ref _blnCreated);
 
                                 if (blnSync)
-                                    // ReSharper disable once MethodHasAsyncOverload
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     ResetCharacter();
                                 else
                                     await ResetCharacterAsync(token).ConfigureAwait(false);
@@ -6433,6 +6433,7 @@ namespace Chummer
                                        : await Timekeeper.StartSyncronAsync("load_char_attributes", loadActivity, token).ConfigureAwait(false))
                             {
                                 if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
                                     AttributeSection.Load(objXmlCharacter, token);
                                 else
                                     await AttributeSection.LoadAsync(objXmlCharacter, token).ConfigureAwait(false);
@@ -6596,20 +6597,22 @@ namespace Chummer
                                 {
                                     if (objSkillNode != null)
                                     {
-                                        SkillsSection.Load(objSkillNode, false, loadActivity);
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        SkillsSection.Load(objSkillNode, false, loadActivity, token);
                                     }
                                     else
                                     {
-                                        SkillsSection.Load(objXmlCharacter, true, loadActivity);
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        SkillsSection.Load(objXmlCharacter, true, loadActivity, token);
                                     }
                                 }
                                 else if (objSkillNode != null)
                                 {
-                                    await SkillsSection.LoadAsync(objSkillNode, false, loadActivity).ConfigureAwait(false);
+                                    await SkillsSection.LoadAsync(objSkillNode, false, loadActivity, token).ConfigureAwait(false);
                                 }
                                 else
                                 {
-                                    await SkillsSection.LoadAsync(objXmlCharacter, true, loadActivity).ConfigureAwait(false);
+                                    await SkillsSection.LoadAsync(objXmlCharacter, true, loadActivity, token).ConfigureAwait(false);
                                 }
 
                                 //Timekeeper.Finish("load_char_skills");
@@ -31196,7 +31199,7 @@ namespace Chummer
                                 }
 
                                 if (blnSync)
-                                    // ReSharper disable once MethodHasAsyncOverload
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     ResetCharacter();
                                 else
                                     await ResetCharacterAsync(token).ConfigureAwait(false);
