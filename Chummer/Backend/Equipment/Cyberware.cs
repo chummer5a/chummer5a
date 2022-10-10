@@ -2852,6 +2852,204 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Toggle the Wireless Bonus for this weapon accessory.
+        /// </summary>
+        public async ValueTask RefreshWirelessBonusesAsync(CancellationToken token = default)
+        {
+            if (!string.IsNullOrEmpty(WirelessBonus?.InnerText) || !string.IsNullOrEmpty(WirelessPairBonus?.InnerText))
+            {
+                if (WirelessOn && ParentVehicle == null && IsModularCurrentlyEquipped && Parent?.WirelessOn != false)
+                {
+                    if (!string.IsNullOrEmpty(WirelessBonus?.InnerText))
+                    {
+                        if (WirelessBonus?.SelectSingleNode("@mode")?.Value == "replace")
+                        {
+                            ImprovementManager.DisableImprovements(_objCharacter,
+                                                                   await _objCharacter.Improvements.ToListAsync(
+                                                                       x => x.ImproveSource == SourceType
+                                                                            && x.SourceName == InternalId,
+                                                                       token: token).ConfigureAwait(false));
+                        }
+
+                        string strSourceNameToUse = InternalId + "Wireless";
+                        await ImprovementManager.RemoveImprovementsAsync(
+                            _objCharacter,
+                            await _objCharacter.Improvements.ToListAsync(
+                                x => x.ImproveSource == SourceType && x.SourceName == strSourceNameToUse, token: token).ConfigureAwait(false),
+                            token: token).ConfigureAwait(false);
+                        await ImprovementManager.CreateImprovementsAsync(
+                            _objCharacter, _eImprovementSource, strSourceNameToUse, WirelessBonus,
+                            await GetRatingAsync(token).ConfigureAwait(false),
+                            await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+
+                        if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(_strExtra))
+                            _strExtra = ImprovementManager.SelectedValue;
+                    }
+
+                    if (!string.IsNullOrEmpty(WirelessPairBonus?.InnerText))
+                    {
+                        // This cyberware should not be included in the count to make things easier.
+                        List<Cyberware> lstPairableCyberwares = _objCharacter.Cyberware.DeepWhere(x => x.Children,
+                            x => x != this && IncludeWirelessPair.Contains(x.Name) && x.Extra == Extra &&
+                                 x.IsModularCurrentlyEquipped && x.WirelessOn).ToList();
+                        int intCount = lstPairableCyberwares.Count;
+                        // Need to use slightly different logic if this cyberware has a location (Left or Right) and only pairs with itself because Lefts can only be paired with Rights and Rights only with Lefts
+                        if (!string.IsNullOrEmpty(Location) && IncludeWirelessPair.All(x => x == Name))
+                        {
+                            intCount = 0;
+                            foreach (Cyberware objPairableCyberware in lstPairableCyberwares)
+                            {
+                                if (objPairableCyberware.Location != Location)
+                                    // We have found a cyberware with which this one could be paired, so increase count by 1
+                                    ++intCount;
+                                else
+                                    // We have found a cyberware that would serve as a pair to another cyberware instead of this one, so decrease count by 1
+                                    --intCount;
+                            }
+
+                            // If we have at least one cyberware with which we could pair, set count to 1 so that it passes the modulus to add the PairBonus. Otherwise, set to 0 so it doesn't pass.
+                            intCount = intCount > 0 ? 1 : 0;
+                        }
+
+                        if (intCount % 2 == 1)
+                        {
+                            if (WirelessPairBonus?.SelectSingleNode("@mode")?.Value == "replace")
+                            {
+                                ImprovementManager.DisableImprovements(_objCharacter,
+                                                                       await _objCharacter.Improvements.ToListAsync(
+                                                                           x => x.ImproveSource == SourceType
+                                                                               && x.SourceName == InternalId,
+                                                                           token: token).ConfigureAwait(false));
+                            }
+
+                            string strSourceNameToUse = InternalId + "WirelessPair";
+                            await ImprovementManager.RemoveImprovementsAsync(_objCharacter,
+                                                                             await _objCharacter.Improvements
+                                                                                 .ToListAsync(
+                                                                                     x => x.ImproveSource == SourceType
+                                                                                         && x.SourceName
+                                                                                         == strSourceNameToUse,
+                                                                                     token: token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                            await ImprovementManager.CreateImprovementsAsync(
+                                _objCharacter, SourceType, strSourceNameToUse, WirelessPairBonus,
+                                await GetRatingAsync(token).ConfigureAwait(false),
+                                await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                        }
+
+                        foreach (Cyberware objLoopCyberware in lstPairableCyberwares)
+                        {
+                            await ImprovementManager.RemoveImprovementsAsync(_objCharacter, objLoopCyberware.SourceType,
+                                                                             objLoopCyberware.InternalId
+                                                                             + "WirelessPair", token).ConfigureAwait(false);
+                            if (objLoopCyberware.WirelessPairBonus?.SelectSingleNode("@mode")?.Value == "replace")
+                            {
+                                ImprovementManager.DisableImprovements(_objCharacter,
+                                                                       await _objCharacter.Improvements.ToListAsync(
+                                                                           x => x.ImproveSource
+                                                                               == objLoopCyberware.SourceType
+                                                                               && x.SourceName
+                                                                               == objLoopCyberware.InternalId,
+                                                                           token: token).ConfigureAwait(false));
+                            }
+
+                            // Go down the list and create pair bonuses for every second item
+                            if (intCount > 0 && intCount % 2 == 1)
+                            {
+                                await ImprovementManager.CreateImprovementsAsync(
+                                    _objCharacter, objLoopCyberware.SourceType,
+                                    objLoopCyberware.InternalId + "WirelessPair",
+                                    objLoopCyberware.WirelessPairBonus, await objLoopCyberware.GetRatingAsync(token).ConfigureAwait(false),
+                                    await objLoopCyberware.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                            }
+
+                            --intCount;
+                        }
+                    }
+                }
+                else
+                {
+                    if (!string.IsNullOrEmpty(WirelessBonus?.InnerText))
+                    {
+                        if (WirelessBonus.SelectSingleNode("@mode")?.Value == "replace")
+                        {
+                            ImprovementManager.EnableImprovements(_objCharacter,
+                                                                  await _objCharacter.Improvements.ToListAsync(
+                                                                      x => x.ImproveSource == SourceType
+                                                                           && x.SourceName == InternalId,
+                                                                      token: token).ConfigureAwait(false));
+                        }
+
+                        string strSourceNameToRemove = InternalId + "Wireless";
+                        await ImprovementManager.RemoveImprovementsAsync(_objCharacter,
+                                                                         await _objCharacter.Improvements.ToListAsync(
+                                                                             x => x.ImproveSource == SourceType
+                                                                                 && x.SourceName
+                                                                                 == strSourceNameToRemove,
+                                                                             token: token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                    }
+
+                    if (!string.IsNullOrEmpty(WirelessPairBonus?.InnerText))
+                    {
+                        await ImprovementManager.RemoveImprovementsAsync(
+                            _objCharacter, SourceType, InternalId + "WirelessPair", token).ConfigureAwait(false);
+                        // This cyberware should not be included in the count to make things easier (we want to get the same number regardless of whether we call this before or after the actual equipping).
+                        List<Cyberware> lstPairableCyberwares = _objCharacter.Cyberware.DeepWhere(x => x.Children,
+                            x => x != this && IncludeWirelessPair.Contains(x.Name) && x.Extra == Extra &&
+                                 x.IsModularCurrentlyEquipped && WirelessOn).ToList();
+                        int intCount = lstPairableCyberwares.Count;
+                        // Need to use slightly different logic if this cyberware has a location (Left or Right) and only pairs with itself because Lefts can only be paired with Rights and Rights only with Lefts
+                        if (!string.IsNullOrEmpty(Location) && IncludeWirelessPair.All(x => x == Name))
+                        {
+                            int intMatchLocationCount = 0;
+                            int intNotMatchLocationCount = 0;
+                            foreach (Cyberware objPairableCyberware in lstPairableCyberwares)
+                            {
+                                if (objPairableCyberware.Location != Location)
+                                    ++intNotMatchLocationCount;
+                                else
+                                    ++intMatchLocationCount;
+                            }
+
+                            // Set the count to the total number of cyberwares in matching pairs, which would mean 2x the number of whichever location contains the fewest members (since every single one of theirs would have a pair)
+                            intCount = Math.Min(intMatchLocationCount, intNotMatchLocationCount) * 2;
+                        }
+
+                        if (WirelessPairBonus.SelectSingleNode("@mode")?.Value == "replace")
+                        {
+                            ImprovementManager.EnableImprovements(_objCharacter,
+                                                                  await _objCharacter.Improvements.ToListAsync(
+                                                                      x => x.ImproveSource == SourceType
+                                                                           && x.SourceName == InternalId, token: token).ConfigureAwait(false));
+                        }
+
+                        foreach (Cyberware objLoopCyberware in lstPairableCyberwares)
+                        {
+                            await ImprovementManager.RemoveImprovementsAsync(_objCharacter, objLoopCyberware.SourceType,
+                                                                             objLoopCyberware.InternalId
+                                                                             + "WirelessPair", token).ConfigureAwait(false);
+                            // Go down the list and create pair bonuses for every second item
+                            if (intCount > 0 && intCount % 2 == 0)
+                            {
+                                await ImprovementManager.CreateImprovementsAsync(
+                                    _objCharacter, objLoopCyberware.SourceType,
+                                    objLoopCyberware.InternalId + "WirelessPair",
+                                    objLoopCyberware.WirelessPairBonus, await objLoopCyberware.GetRatingAsync(token).ConfigureAwait(false),
+                                    await objLoopCyberware.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                            }
+
+                            --intCount;
+                        }
+                    }
+                }
+            }
+
+            foreach (Cyberware objCyberware in Children)
+                await objCyberware.RefreshWirelessBonusesAsync(token).ConfigureAwait(false);
+            foreach (Gear objGear in GearChildren)
+                await objGear.RefreshWirelessBonusesAsync(token).ConfigureAwait(false);
+        }
+
+        /// <summary>
         /// Used by our sorting algorithm to remember which order the user moves things to
         /// </summary>
         public int SortOrder
@@ -3114,12 +3312,12 @@ namespace Chummer.Backend.Equipment
             }
 
             foreach (Gear objChildGear in GearChildren)
-                objChildGear.ChangeEquippedStatus(blnEquip, true);
+                await objChildGear.ChangeEquippedStatusAsync(blnEquip, true, token);
 
             foreach (Cyberware objChild in Children)
                 await objChild.ChangeModularEquipAsync(blnEquip, true, token);
 
-            RefreshWirelessBonuses();
+            await RefreshWirelessBonusesAsync(token);
 
             if (!blnSkipEncumbranceOnPropertyChanged && ParentVehicle == null)
                 _objCharacter?.OnPropertyChanged(nameof(Character.TotalCarriedWeight));
