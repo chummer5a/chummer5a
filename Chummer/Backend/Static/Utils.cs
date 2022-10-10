@@ -1538,6 +1538,29 @@ namespace Chummer
             SafeSleep(objTimeSpan.Milliseconds, token, blnForceDoEvents);
         }
 
+        /// <summary>
+        /// Syntactic sugar for Thread.Sleep done in a way that makes sure the application will run queued up events afterwards.
+        /// This means that this method can (in theory) be put in a loop without it ever causing the UI thread to get locked.
+        /// </summary>
+        /// <param name="objTimeSpan">Duration to wait. If 0 or less milliseconds, DefaultSleepDuration is used instead.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Task SafeSleepAsync(TimeSpan objTimeSpan)
+        {
+            return SafeSleepAsync(objTimeSpan.Milliseconds);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for Thread.Sleep done in a way that makes sure the application will run queued up events afterwards.
+        /// This means that this method can (in theory) be put in a loop without it ever causing the UI thread to get locked.
+        /// </summary>
+        /// <param name="objTimeSpan">Duration to wait. If 0 or less milliseconds, DefaultSleepDuration is used instead.</param>
+        /// <param name="token">Cancellation token to use.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Task SafeSleepAsync(TimeSpan objTimeSpan, CancellationToken token)
+        {
+            return SafeSleepAsync(objTimeSpan.Milliseconds, token);
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DoEventsSafe(bool blnForceDoEvents = false)
         {

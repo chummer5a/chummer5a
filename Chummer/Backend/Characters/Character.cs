@@ -4450,21 +4450,40 @@ namespace Chummer
                     // Cannot use foreach or LINQ because we need to be able to allow queued functions to add onto the queue
                     if (blnSync)
                     {
-                        // ReSharper disable once ForCanBeConvertedToForeach
-                        for (int i = 0; i < DoOnSaveCompleted.Count; ++i)
+                        List<Func<bool>> lstToRun = new List<Func<bool>>(DoOnSaveCompleted.Count);
+                        List<Func<Task<bool>>> lstToRunAsync = new List<Func<Task<bool>>>(DoOnSaveCompletedAsync.Count);
+                        int i = 0;
+                        int j = 0;
+                        while (i < DoOnSaveCompleted.Count || j < DoOnSaveCompletedAsync.Count)
                         {
-                            Func<Character, bool> funcLoopToRun = DoOnSaveCompleted[i];
-                            if (funcLoopToRun?.Invoke(this) != true)
-                                blnErrorFree = false;
-                        }
+                            while (i < DoOnSaveCompleted.Count)
+                            {
+                                lstToRun.Clear();
+                                for (; i < DoOnSaveCompleted.Count; ++i)
+                                {
+                                    Func<Character, bool> funcLoopToRun = DoOnSaveCompleted[i];
+                                    if (funcLoopToRun != null)
+                                        lstToRun.Add(() => funcLoopToRun(this));
+                                }
 
-                        // ReSharper disable once ForCanBeConvertedToForeach
-                        for (int i = 0; i < DoOnSaveCompletedAsync.Count; ++i)
-                        {
-                            Func<Character, CancellationToken, Task<bool>> funcLoopToRun = DoOnSaveCompletedAsync[i];
-                            if (!Utils.JoinableTaskFactory.Run(
-                                    async () => funcLoopToRun == null || await funcLoopToRun.Invoke(this, token)))
-                                blnErrorFree = false;
+                                bool[] ablnTemp = Utils.RunWithoutThreadLock(lstToRun.ToArray());
+                                if (blnErrorFree && ablnTemp.FirstMatching(false) >= 0)
+                                    blnErrorFree = false;
+                            }
+                            while (j < DoOnSaveCompletedAsync.Count)
+                            {
+                                lstToRunAsync.Clear();
+                                for (; j < DoOnSaveCompletedAsync.Count; ++j)
+                                {
+                                    Func<Character, CancellationToken, Task<bool>> funcLoopToRun = DoOnSaveCompletedAsync[j];
+                                    if (funcLoopToRun != null)
+                                        lstToRunAsync.Add(() => funcLoopToRun(this, token));
+                                }
+
+                                bool[] ablnTemp = Utils.RunWithoutThreadLock(lstToRunAsync.ToArray());
+                                if (blnErrorFree && ablnTemp.FirstMatching(false) >= 0)
+                                    blnErrorFree = false;
+                            }
                         }
                     }
                     else
@@ -4499,6 +4518,7 @@ namespace Chummer
                                             if (!await tskLoop.ConfigureAwait(false))
                                                 blnErrorFree = false;
                                         }
+
                                         lstDoOnSaveCompletedAsync.Clear();
                                         intCounter = 0;
                                     }
