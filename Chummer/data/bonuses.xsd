@@ -393,8 +393,10 @@
       <xs:element name="erased" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="essencemax" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="essencepenalty" type="xs:string" minOccurs="0" maxOccurs="1" />
-      <xs:element name="essencepenaltyt100" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="essencepenaltydeponlyt100" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="essencepenaltymagonlyt100" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="essencepenaltyresonlyt100" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="essencepenaltyt100" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="excon" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="fadingresist" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="fadingvalue" minOccurs="0" maxOccurs="unbounded">
@@ -1177,6 +1179,8 @@
       <xs:element name="sociallimit" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="softweave" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="sonicresist" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="specialattburnmultiplier" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="specialatttotalburnmultiplier" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="specialmodificationlimit" type="xs:integer" minOccurs="0" maxOccurs="1" />
       <xs:element name="specificattribute" minOccurs="0" maxOccurs="unbounded">
         <xs:complexType>

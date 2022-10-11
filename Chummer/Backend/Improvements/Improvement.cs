@@ -220,6 +220,10 @@ namespace Chummer
             EssencePenalty,
             EssencePenaltyT100,
             EssencePenaltyMAGOnlyT100,
+            EssencePenaltyRESOnlyT100,
+            EssencePenaltyDEPOnlyT100,
+            SpecialAttBurn,
+            SpecialAttTotalBurnMultiplier,
             FreeSpellsATT,
             FreeSpells,
             DrainValue,
@@ -2037,6 +2041,10 @@ namespace Chummer
                 case ImprovementType.EssencePenalty:
                 case ImprovementType.EssencePenaltyT100:
                 case ImprovementType.EssencePenaltyMAGOnlyT100:
+                case ImprovementType.EssencePenaltyRESOnlyT100:
+                case ImprovementType.EssencePenaltyDEPOnlyT100:
+                case ImprovementType.SpecialAttBurn:
+                case ImprovementType.SpecialAttTotalBurnMultiplier:
                 case ImprovementType.CyborgEssence:
                 case ImprovementType.CyberwareEssCost:
                 case ImprovementType.CyberwareTotalEssMultiplier:

@@ -5423,6 +5423,54 @@ namespace Chummer
                 ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
+        // Check for Maximum Essence which will permanently modify the character's Maximum Essence value for the purposes of affecting RES rating (input value is 100x the actual value, so essence penalty of -0.25 would be input as "25").
+        public void essencepenaltyresonlyt100(XmlNode bonusNode)
+        {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
+            Log.Trace("essencepenaltyresonlyt100" + Environment.NewLine
+                                                  + "essencepenaltyresonlyt100 = " + bonusNode.OuterXml);
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.EssencePenaltyRESOnlyT100, _strUnique,
+                              ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
+        }
+
+        // Check for Maximum Essence which will permanently modify the character's Maximum Essence value for the purposes of affecting DEP rating (input value is 100x the actual value, so essence penalty of -0.25 would be input as "25").
+        public void essencepenaltydeponlyt100(XmlNode bonusNode)
+        {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
+            Log.Trace("essencepenaltydeponlyt100" + Environment.NewLine
+                                                  + "essencepenaltydeponlyt100 = " + bonusNode.OuterXml);
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.EssencePenaltyDEPOnlyT100, _strUnique,
+                              ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
+        }
+
+        // Check for special attribute burn modifiers that stack additively.
+        public void specialattburnmultiplier(XmlNode bonusNode)
+        {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
+            Log.Trace("specialattburnmultiplier" + Environment.NewLine
+                                             + "specialattburnmultiplier = " + bonusNode.OuterXml
+            );
+
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialAttBurn, _strUnique,
+                              ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
+        }
+
+        // Check for special attribute burn modifiers that stack multiplicatively.
+        public void specialatttotalburnmultiplier(XmlNode bonusNode)
+        {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
+            Log.Trace("specialatttotalburnmultiplier" + Environment.NewLine
+                                                  + "specialatttotalburnmultiplier = " + bonusNode.OuterXml
+            );
+
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialAttTotalBurnMultiplier, _strUnique,
+                              ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
+        }
+
         // Check for Maximum Essence which will permanently modify the character's Maximum Essence value.
         public void essencemax(XmlNode bonusNode)
         {

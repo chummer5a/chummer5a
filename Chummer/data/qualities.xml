@@ -18798,7 +18798,9 @@
       <name>Resonant Burnout</name>
       <karma>-15</karma>
       <category>Negative</category>
-      <bonus />
+      <bonus>
+        <specialattburnmultiplier>20</specialattburnmultiplier>
+      </bonus>
       <required>
         <oneof>
           <quality>Technomancer</quality>

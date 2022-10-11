@@ -1,4 +1,4 @@
-<#@ template debug="false" hostspecific="true" language="C#" #><#@ output extension=".cs" #><#@ assembly name="EnvDTE" #><#@ import namespace="System.IO" #><#@ import namespace="System.Collections.Generic" #><#@ import namespace="EnvDTE" #>/*  This file is part of Chummer5a.
+<#@ template debug="false" hostspecific="true" language="C#" #><#@ output extension=".cs" #><#@ import namespace="System.IO" #><#@ import namespace="System.Collections.Generic" #><#@ import namespace="EnvDTE" #>/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by

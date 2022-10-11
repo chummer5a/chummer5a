@@ -16175,7 +16175,7 @@ namespace Chummer
                             if (Created)
                             {
                                 ResetCachedEssence();
-                                EssenceAtSpecialStart = Essence(true);
+                                EssenceAtSpecialStart = Essence(true, "MAG");
                             }
                             // EssenceAtSpecialStart needs to be calculated by assuming that the character took the MAG-enabling quality with the highest essence penalty first, as that would be the most optimal
                             else
@@ -16800,7 +16800,7 @@ namespace Chummer
                             if (Created)
                             {
                                 ResetCachedEssence();
-                                EssenceAtSpecialStart = Essence();
+                                EssenceAtSpecialStart = Essence(true, "RES");
                             }
                             // EssenceAtSpecialStart needs to be calculated by assuming that the character took the RES-enabling quality with the highest essence penalty first, as that would be the most optimal
                             else
@@ -16951,6 +16951,7 @@ namespace Chummer
                                                 break;
 
                                             case Improvement.ImprovementType.EssencePenaltyT100:
+                                            case Improvement.ImprovementType.EssencePenaltyRESOnlyT100:
                                                 decLoopEssencePenalty += objImprovement.Value / 100.0m;
                                                 break;
                                         }
@@ -17078,7 +17079,7 @@ namespace Chummer
                             if (Created)
                             {
                                 ResetCachedEssence();
-                                EssenceAtSpecialStart = Essence();
+                                EssenceAtSpecialStart = Essence(true, "DEP");
                             }
                             // EssenceAtSpecialStart needs to be calculated by assuming that the character took the DEP-enabling quality with the highest essence penalty first, as that would be the most optimal
                             else
@@ -17229,6 +17230,7 @@ namespace Chummer
                                                 break;
 
                                             case Improvement.ImprovementType.EssencePenaltyT100:
+                                            case Improvement.ImprovementType.EssencePenaltyDEPOnlyT100:
                                                 decLoopEssencePenalty += objImprovement.Value / 100.0m;
                                                 break;
                                         }
@@ -17548,34 +17550,73 @@ namespace Chummer
         /// <summary>
         /// Character's Essence.
         /// </summary>
-        /// <param name="blnForMAGPenalty">Whether fetched Essence is to be used to calculate the penalty MAG should receive from lost Essence (true) or not (false).</param>
+        /// <param name="blnAttributeSpecific">Whether fetched Essence is to be used to calculate the penalty that a specific attribute should receive from lost Essence (true) or not (false).</param>
+        /// <param name="strAttribute">If <paramref name="blnAttributeSpecific"/> is true, the abbreviation of the attribute to use.</param>
         /// <param name="token">CancellationToken to listen to.</param>
-        public decimal Essence(bool blnForMAGPenalty = false, CancellationToken token = default)
+        public decimal Essence(bool blnAttributeSpecific = false, string strAttribute = "", CancellationToken token = default)
         {
-            if (blnForMAGPenalty)
-                return EssenceForMagPenalty(token);
             using (EnterReadLock.Enter(LockObject, token))
             {
-                using (EnterReadLock.Enter(_objCachedEssenceLock, token))
+                decimal decExtraEss = 0.0m;
+                IDisposable objLocker = null;
+                if (blnAttributeSpecific)
                 {
-                    if (_decCachedEssence != decimal.MinValue)
+                    switch (strAttribute)
+                    {
+                        case "MAG":
+                        case "MAGAdept":
+                            decExtraEss = ImprovementManager.ValueOf(
+                                          this, Improvement.ImprovementType.EssencePenaltyMAGOnlyT100,
+                                          token: token)
+                                      / 100.0m;
+                            break;
+                        case "RES":
+                            decExtraEss = ImprovementManager.ValueOf(
+                                              this, Improvement.ImprovementType.EssencePenaltyRESOnlyT100,
+                                              token: token)
+                                          / 100.0m;
+                            break;
+                        case "DEP":
+                            decExtraEss = ImprovementManager.ValueOf(
+                                              this, Improvement.ImprovementType.EssencePenaltyDEPOnlyT100,
+                                              token: token)
+                                          / 100.0m;
+                            break;
+                    }
+                    if (decExtraEss == 0)
+                        return Essence(token: token);
+                }
+                else
+                    objLocker = EnterReadLock.Enter(_objCachedEssenceLock, token);
+
+                try
+                {
+                    if (_decCachedEssence != decimal.MinValue && !blnAttributeSpecific)
                         return _decCachedEssence;
-                    using (_objCachedEssenceLock.EnterWriteLock(token))
+                    IDisposable objWriteLocker = null;
+                    if (!blnAttributeSpecific)
+                        objWriteLocker = _objCachedEssenceLock.EnterWriteLock(token);
+                    try
                     {
                         // Another check in case this was already cached in between requesting the lock and obtaining the lock
-                        if (_decCachedEssence != decimal.MinValue)
+                        if (_decCachedEssence != decimal.MinValue && !blnAttributeSpecific)
                             return _decCachedEssence;
                         // If the character has a fixed Essence Improvement, permanently fix their Essence at its value.
                         if (ImprovementManager
-                            .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.CyborgEssence, token: token).Count
+                            .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.CyborgEssence,
+                                                                token: token).Count
                             > 0)
                         {
-                            return _decCachedEssence = 0.1m;
+                            if (!blnAttributeSpecific)
+                                _decCachedEssence = 0.1m;
+                            return 0.1m;
                         }
 
-                        decimal decESS = ESS.MetatypeMaximum;
-                        decESS += ImprovementManager.ValueOf(this, Improvement.ImprovementType.EssencePenalty, token: token);
-                        decESS += ImprovementManager.ValueOf(this, Improvement.ImprovementType.EssencePenaltyT100, token: token)
+                        decimal decESS = ESS.MetatypeMaximum + decExtraEss;
+                        decESS += ImprovementManager.ValueOf(this, Improvement.ImprovementType.EssencePenalty,
+                                                             token: token);
+                        decESS += ImprovementManager.ValueOf(this, Improvement.ImprovementType.EssencePenaltyT100,
+                                                             token: token)
                                   / 100.0m;
 
                         // Run through all of the pieces of Cyberware and include their Essence cost.
@@ -17584,8 +17625,18 @@ namespace Chummer
                         //1781 Essence is not printing
                         //ESS.Base = Convert.ToInt32(decESS); -- Disabled because this messes up Character Validity, and it really shouldn't be what "Base" of an attribute is supposed to be (it's supposed to be extra levels gained)
 
-                        return _decCachedEssence = decESS;
+                        if (!blnAttributeSpecific)
+                            _decCachedEssence = decESS;
+                        return decESS;
                     }
+                    finally
+                    {
+                        objWriteLocker?.Dispose();
+                    }
+                }
+                finally
+                {
+                    objLocker?.Dispose();
                 }
             }
         }
@@ -17593,121 +17644,107 @@ namespace Chummer
         /// <summary>
         /// Character's Essence.
         /// </summary>
-        /// <param name="blnForMAGPenalty">Whether fetched Essence is to be used to calculate the penalty MAG should receive from lost Essence (true) or not (false).</param>
+        /// <param name="blnAttributeSpecific">Whether fetched Essence is to be used to calculate the penalty that a specific attribute should receive from lost Essence (true) or not (false).</param>
+        /// <param name="strAttribute">If <paramref name="blnAttributeSpecific"/> is true, the abbreviation of the attribute to use.</param>
         /// <param name="token">CancellationToken to listen to.</param>
-        public async ValueTask<decimal> EssenceAsync(bool blnForMAGPenalty = false, CancellationToken token = default)
+        public async ValueTask<decimal> EssenceAsync(bool blnAttributeSpecific = false, string strAttribute = "", CancellationToken token = default)
         {
-            if (blnForMAGPenalty)
-                return await EssenceForMagPenaltyAsync(token: token).ConfigureAwait(false);
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                using (await EnterReadLock.EnterAsync(_objCachedEssenceLock, token).ConfigureAwait(false))
+                decimal decExtraEss = 0.0m;
+                IDisposable objLocker = null;
+                if (blnAttributeSpecific)
                 {
-                    if (_decCachedEssence != decimal.MinValue)
-                        return _decCachedEssence;
-                    IAsyncDisposable objLocker = await _objCachedEssenceLock.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    switch (strAttribute)
+                    {
+                        case "MAG":
+                        case "MAGAdept":
+                            decExtraEss = await ImprovementManager.ValueOfAsync(
+                                              this, Improvement.ImprovementType.EssencePenaltyMAGOnlyT100,
+                                              token: token).ConfigureAwait(false)
+                                          / 100.0m;
+                            break;
+                        case "RES":
+                            decExtraEss = await ImprovementManager.ValueOfAsync(
+                                              this, Improvement.ImprovementType.EssencePenaltyRESOnlyT100,
+                                              token: token).ConfigureAwait(false)
+                                          / 100.0m;
+                            break;
+                        case "DEP":
+                            decExtraEss = await ImprovementManager.ValueOfAsync(
+                                              this, Improvement.ImprovementType.EssencePenaltyDEPOnlyT100,
+                                              token: token).ConfigureAwait(false)
+                                          / 100.0m;
+                            break;
+                    }
+                    if (decExtraEss == 0)
+                        return await EssenceAsync(token: token).ConfigureAwait(false);
+                }
+                else
+                    objLocker = await EnterReadLock.EnterAsync(_objCachedEssenceLock, token).ConfigureAwait(false);
+
+                try
+                {
+                    IAsyncDisposable objWriteLocker = null;
+                    if (!blnAttributeSpecific)
+                    {
+                        if (_decCachedEssence != decimal.MinValue)
+                            return _decCachedEssence;
+                        objWriteLocker = await _objCachedEssenceLock.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    }
+
                     try
                     {
                         // Another check in case this was already cached in between requesting the lock and obtaining the lock
-                        if (_decCachedEssence != decimal.MinValue)
+                        if (_decCachedEssence != decimal.MinValue && !blnAttributeSpecific)
                             return _decCachedEssence;
                         // If the character has a fixed Essence Improvement, permanently fix their Essence at its value.
                         if ((await ImprovementManager
-                                   .GetCachedImprovementListForValueOfAsync(this, Improvement.ImprovementType.CyborgEssence, token: token).ConfigureAwait(false)).Count
+                                   .GetCachedImprovementListForValueOfAsync(
+                                       this, Improvement.ImprovementType.CyborgEssence, token: token)
+                                   .ConfigureAwait(false)).Count
                             > 0)
                         {
-                            return _decCachedEssence = 0.1m;
+                            if (!blnAttributeSpecific)
+                                _decCachedEssence = 0.1m;
+                            return 0.1m;
                         }
 
-                        decimal decESS = await ESS.GetMetatypeMaximumAsync(token).ConfigureAwait(false);
-                        decESS += await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.EssencePenalty, token: token).ConfigureAwait(false);
-                        decESS += await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.EssencePenaltyT100, token: token).ConfigureAwait(false)
+                        decimal decESS = await ESS.GetMetatypeMaximumAsync(token).ConfigureAwait(false) + decExtraEss;
+                        decESS += await ImprovementManager
+                                        .ValueOfAsync(this, Improvement.ImprovementType.EssencePenalty, token: token)
+                                        .ConfigureAwait(false);
+                        decESS += await ImprovementManager
+                                        .ValueOfAsync(this, Improvement.ImprovementType.EssencePenaltyT100,
+                                                      token: token).ConfigureAwait(false)
                                   / 100.0m;
 
                         // Run through all of the pieces of Cyberware and include their Essence cost.
-                        decESS -= await Cyberware.SumAsync(objCyberware => objCyberware.GetCalculatedESSAsync(token), token: token).ConfigureAwait(false);
+                        decESS -= await Cyberware
+                                        .SumAsync(objCyberware => objCyberware.GetCalculatedESSAsync(token),
+                                                  token: token).ConfigureAwait(false);
 
                         //1781 Essence is not printing
                         //ESS.Base = Convert.ToInt32(decESS); -- Disabled because this messes up Character Validity, and it really shouldn't be what "Base" of an attribute is supposed to be (it's supposed to be extra levels gained)
 
-                        return _decCachedEssence = decESS;
+                        if (!blnAttributeSpecific)
+                            _decCachedEssence = decESS;
+                        return decESS;
                     }
                     finally
                     {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                        if (objWriteLocker != null)
+                            await objWriteLocker.DisposeAsync().ConfigureAwait(false);
                     }
+                }
+                finally
+                {
+                    objLocker?.Dispose();
                 }
             }
         }
 
         private decimal _decCachedCyberwareEssence = decimal.MinValue;
-
-        /// <summary>
-        /// Character's Essence to be used to calculate the penalty MAG should receive from lost Essence.
-        /// </summary>
-        public decimal EssenceForMagPenalty(CancellationToken token = default)
-        {
-            using (EnterReadLock.Enter(LockObject, token))
-            {
-                // If the character has a fixed Essence Improvement, permanently fix their Essence at its value.
-                if (ImprovementManager
-                    .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.CyborgEssence, token: token).Count
-                    > 0)
-                {
-                    return 0.1m;
-                }
-
-                decimal decESS = ESS.MetatypeMaximum;
-                decESS += ImprovementManager.ValueOf(this, Improvement.ImprovementType.EssencePenalty, token: token);
-                decESS += ImprovementManager.ValueOf(this, Improvement.ImprovementType.EssencePenaltyT100, token: token)
-                          / 100.0m;
-                decESS += ImprovementManager.ValueOf(
-                              this, Improvement.ImprovementType.EssencePenaltyMAGOnlyT100, token: token)
-                          / 100.0m;
-
-                // Run through all of the pieces of Cyberware and include their Essence cost.
-                decESS -= Cyberware.Sum(objCyberware => objCyberware.CalculatedESS);
-
-                //1781 Essence is not printing
-                //ESS.Base = Convert.ToInt32(decESS); -- Disabled because this messes up Character Validity, and it really shouldn't be what "Base" of an attribute is supposed to be (it's supposed to be extra levels gained)
-
-                return decESS;
-            }
-        }
-
-        /// <summary>
-        /// Character's Essence to be used to calculate the penalty MAG should receive from lost Essence.
-        /// </summary>
-        public async ValueTask<decimal> EssenceForMagPenaltyAsync(CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
-            {
-                // If the character has a fixed Essence Improvement, permanently fix their Essence at its value.
-                if ((await ImprovementManager
-                           .GetCachedImprovementListForValueOfAsync(this, Improvement.ImprovementType.CyborgEssence, token: token).ConfigureAwait(false)).Count
-                    > 0)
-                {
-                    return 0.1m;
-                }
-
-                decimal decESS = await ESS.GetMetatypeMaximumAsync(token).ConfigureAwait(false);
-                decESS += await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.EssencePenalty, token: token).ConfigureAwait(false);
-                decESS += await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.EssencePenaltyT100, token: token).ConfigureAwait(false)
-                          / 100.0m;
-                decESS += await ImprovementManager.ValueOfAsync(
-                              this, Improvement.ImprovementType.EssencePenaltyMAGOnlyT100, token: token).ConfigureAwait(false)
-                          / 100.0m;
-
-                // Run through all of the pieces of Cyberware and include their Essence cost.
-                decESS -= await Cyberware.SumAsync(objCyberware => objCyberware.CalculatedESS, token: token).ConfigureAwait(false);
-
-                //1781 Essence is not printing
-                //ESS.Base = Convert.ToInt32(decESS); -- Disabled because this messes up Character Validity, and it really shouldn't be what "Base" of an attribute is supposed to be (it's supposed to be extra levels gained)
-
-                return decESS;
-            }
-        }
 
         /// <summary>
         /// Essence consumed by Cyberware.
@@ -27408,19 +27445,39 @@ namespace Chummer
                 // (which means EssenceAtSpecialStart is not set to decimal.MinValue)
                 if (EssenceAtSpecialStart != decimal.MinValue)
                 {
-                    decimal decESS = Essence();
-                    decimal decESSMag = Essence(true);
+                    decimal decSpecialAttBurnMultiplier = 1.0m;
+                    decimal decTotalSpecialAttBurnMultiplier = 1.0m;
+                    List<Improvement> lstUsedImprovements =
+                        ImprovementManager.GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.SpecialAttBurn);
+                    if (lstUsedImprovements.Count != 0)
+                    {
+                        foreach (Improvement objImprovement in lstUsedImprovements)
+                            decSpecialAttBurnMultiplier -= 1m - objImprovement.Value / 100m;
+                    }
+                    List<Improvement> lstUsedImprovements2 =
+                        ImprovementManager.GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.SpecialAttTotalBurnMultiplier);
+                    if (lstUsedImprovements2.Count != 0)
+                    {
+                        foreach (Improvement objImprovement in lstUsedImprovements2)
+                            decTotalSpecialAttBurnMultiplier *= objImprovement.Value / 100m;
+                    }
+
+                    decimal decESSMag = Essence(true, "MAG");
+                    decimal decESSRes = Essence(true, "RES");
+                    decimal decESSDep = Essence(true, "DEP");
                     if (!Settings.DontRoundEssenceInternally)
                     {
                         int intESSDecimals = Settings.EssenceDecimals;
-                        decESS = decimal.Round(decESS, intESSDecimals, MidpointRounding.AwayFromZero);
                         decESSMag = decimal.Round(decESSMag, intESSDecimals, MidpointRounding.AwayFromZero);
+                        decESSRes = decimal.Round(decESSRes, intESSDecimals, MidpointRounding.AwayFromZero);
+                        decESSDep = decimal.Round(decESSDep, intESSDecimals, MidpointRounding.AwayFromZero);
                     }
 
                     // Reduce a character's MAG and RES from Essence Loss.
                     decimal decMetatypeMaximumESS = ESS.MetatypeMaximum;
-                    int intMagMaxReduction = (decMetatypeMaximumESS - decESSMag).StandardRound();
-                    int intMaxReduction = (decMetatypeMaximumESS - decESS).StandardRound();
+                    int intMagMaxReduction = ((decMetatypeMaximumESS - decESSMag) * decSpecialAttBurnMultiplier * decTotalSpecialAttBurnMultiplier).StandardRound();
+                    int intResMaxReduction = ((decMetatypeMaximumESS - decESSRes) * decSpecialAttBurnMultiplier * decTotalSpecialAttBurnMultiplier).StandardRound();
+                    int intDepMaxReduction = ((decMetatypeMaximumESS - decESSDep) * decSpecialAttBurnMultiplier * decTotalSpecialAttBurnMultiplier).StandardRound();
                     // Character has the option set where essence loss just acts as an augmented malus, so just replace old essence loss improvements with new ones that apply an augmented malus
                     // equal to the amount by which the attribute's maximum would normally be reduced.
                     if (Settings.SpecialKarmaCostBasedOnShownValue)
@@ -27432,19 +27489,37 @@ namespace Chummer
                         ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.EssenceLossChargen);
                         // With this house rule, Cyberadept Daemon just negates a penalty from Essence based on Grade instead of restoring Resonance, so delete all old improvements
                         ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.CyberadeptDaemon);
-                        if (intMaxReduction != 0)
+
+                        if (intMagMaxReduction != 0)
                         {
-                            int intRESReduction = intMaxReduction;
+                            ImprovementManager.CreateImprovement(this, "MAG", eEssenceLossSource, string.Empty,
+                                                                 Improvement.ImprovementType.Attribute, string.Empty, 0,
+                                                                 1, 0, 0, -intMagMaxReduction);
+                            ImprovementManager.CreateImprovement(this, "MAGAdept", eEssenceLossSource, string.Empty,
+                                                                 Improvement.ImprovementType.Attribute, string.Empty, 0,
+                                                                 1, 0, 0, -intMagMaxReduction);
+                            // If this is a Mystic Adept using special Mystic Adept PP rules (i.e. no second MAG attribute), Mystic Adepts lose PPs even if they have fewer PPs than their MAG
+                            if (UseMysticAdeptPPs)
+                                ImprovementManager.CreateImprovement(this, string.Empty, eEssenceLossSource,
+                                                                     string.Empty,
+                                                                     Improvement.ImprovementType.AdeptPowerPoints,
+                                                                     string.Empty, -intMagMaxReduction);
+                        }
+
+                        if (intResMaxReduction != 0)
+                        {
+                            int intRESReduction = intResMaxReduction;
                             if (TechnomancerEnabled && SubmersionGrade > 0 && ImprovementManager
-                                    .GetCachedImprovementListForValueOf(this,
-                                        Improvement.ImprovementType.CyberadeptDaemon)
-                                    .Count > 0)
+                                                                              .GetCachedImprovementListForValueOf(this,
+                                                                                  Improvement.ImprovementType
+                                                                                      .CyberadeptDaemon)
+                                                                              .Count > 0)
                             {
                                 decimal decNonCyberwareEssence = BiowareEssence + EssenceHole;
                                 int intMaxCyberadeptDaemonBonus = Math.Ceiling(decNonCyberwareEssence) ==
                                                                   Math.Floor(decNonCyberwareEssence)
-                                    ? (int)Math.Ceiling(CyberwareEssence)
-                                    : (int)Math.Floor(CyberwareEssence);
+                                    ? (int) Math.Ceiling(CyberwareEssence)
+                                    : (int) Math.Floor(CyberwareEssence);
                                 int intCyberadeptDaemonBonus = 0;
                                 for (int i = 1; i <= SubmersionGrade; ++i)
                                 {
@@ -27458,25 +27533,18 @@ namespace Chummer
 
                             if (intRESReduction != 0)
                                 ImprovementManager.CreateImprovement(this, "RES", eEssenceLossSource, string.Empty,
-                                    Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -intRESReduction);
-                            ImprovementManager.CreateImprovement(this, "DEP", eEssenceLossSource, string.Empty,
-                                Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -intMaxReduction);
+                                                                     Improvement.ImprovementType.Attribute,
+                                                                     string.Empty, 0, 1, 0, 0, -intRESReduction);
                         }
 
-                        if (intMagMaxReduction != 0)
+                        if (intDepMaxReduction != 0)
                         {
-                            ImprovementManager.CreateImprovement(this, "MAG", eEssenceLossSource, string.Empty,
-                                Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -intMagMaxReduction);
-                            ImprovementManager.CreateImprovement(this, "MAGAdept", eEssenceLossSource, string.Empty,
-                                Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -intMagMaxReduction);
-                            // If this is a Mystic Adept using special Mystic Adept PP rules (i.e. no second MAG attribute), Mystic Adepts lose PPs even if they have fewer PPs than their MAG
-                            if (UseMysticAdeptPPs)
-                                ImprovementManager.CreateImprovement(this, string.Empty, eEssenceLossSource,
-                                    string.Empty,
-                                    Improvement.ImprovementType.AdeptPowerPoints, string.Empty, -intMagMaxReduction);
+                            ImprovementManager.CreateImprovement(this, "DEP", eEssenceLossSource, string.Empty,
+                                                                 Improvement.ImprovementType.Attribute, string.Empty, 0,
+                                                                 1, 0, 0, -intDepMaxReduction);
                         }
 
-                        if (intMaxReduction != 0 || intMagMaxReduction != 0)
+                        if (intMagMaxReduction != 0 || intResMaxReduction != 0 || intDepMaxReduction != 0)
                             ImprovementManager.Commit(this);
                     }
                     // RAW Career mode: complicated. Similar to RAW Create mode, but with the extra possibility of burning current karma levels and/or PPs instead of pure minima reduction,
@@ -27484,8 +27552,9 @@ namespace Chummer
                     else if (Created)
                     {
                         // "Base" minimum reduction. This is the amount by which the character's special attribute minima would be reduced across career and create modes if there wasn't any funny business
-                        int intMinReduction = (EssenceAtSpecialStart - decESS).StandardRound();
-                        int intMagMinReduction = (EssenceAtSpecialStart - decESSMag).StandardRound();
+                        int intMagMinReduction = ((EssenceAtSpecialStart - decESSMag) * decSpecialAttBurnMultiplier * decTotalSpecialAttBurnMultiplier).StandardRound();
+                        int intResMinReduction = ((EssenceAtSpecialStart - decESSRes) * decSpecialAttBurnMultiplier * decTotalSpecialAttBurnMultiplier).StandardRound();
+                        int intDepMinReduction = ((EssenceAtSpecialStart - decESSDep) * decSpecialAttBurnMultiplier * decTotalSpecialAttBurnMultiplier).StandardRound();
 
                         // This extra code is needed for legacy shims, to convert proper attribute values for characters who would end up having a higher level than their total attribute maxima
                         // They are extra amounts by which the relevant attributes' karma levels should be burned
@@ -27545,92 +27614,11 @@ namespace Chummer
 
                         // Career Minimum and Maximum reduction relies on whether there's any extra reduction since chargen.
                         // This is the step where create mode attribute loss regarding attribute maximum loss gets factored out.
-                        int intRESMaximumReduction = intMaxReduction + RES.TotalMaximum - RES.MaximumNoEssenceLoss();
-                        int intDEPMaximumReduction = intMaxReduction + DEP.TotalMaximum - DEP.MaximumNoEssenceLoss();
                         int intMAGMaximumReduction = intMagMaxReduction + MAG.TotalMaximum - MAG.MaximumNoEssenceLoss();
-                        int intMAGAdeptMaximumReduction =
-                            intMagMaxReduction + MAGAdept.TotalMaximum - MAGAdept.MaximumNoEssenceLoss();
-
-                        // Create the Essence Loss (or gain, in case of essence restoration and increasing maxima) Improvements.
-                        if (intMaxReduction > 0
-                            || intMinReduction > 0
-                            || intRESMaximumReduction != 0
-                            || intDEPMaximumReduction != 0)
-                        {
-                            // This is the step where create mode attribute loss regarding attribute minimum loss gets factored out.
-                            int intRESMinimumReduction;
-                            int intDEPMinimumReduction;
-                            // If only maxima would be reduced, use the attribute's current total value instead of its current maximum, as this makes sure minima will only get reduced if the maximum reduction would eat into the current value
-                            if (Settings.ESSLossReducesMaximumOnly)
-                            {
-                                intRESMinimumReduction = Math.Max(0,
-                                    intMinReduction + RES.TotalValue - RES.MaximumNoEssenceLoss(true));
-                                intDEPMinimumReduction = Math.Max(0,
-                                    intMinReduction + DEP.TotalValue - DEP.MaximumNoEssenceLoss(true));
-                            }
-                            else
-                            {
-                                intRESMinimumReduction =
-                                    intMinReduction + RES.TotalMaximum - RES.MaximumNoEssenceLoss(true);
-                                intDEPMinimumReduction =
-                                    intMinReduction + DEP.TotalMaximum - DEP.MaximumNoEssenceLoss(true);
-                            }
-
-                            // If the new RES reduction is greater than the old one...
-                            int intRESMinimumReductionDelta = intRESMinimumReduction - intOldRESCareerMinimumReduction;
-                            if (intRESMinimumReductionDelta > 0)
-                            {
-                                // ... and adding minimum reducing-improvements wouldn't do anything, start burning karma.
-                                if (intRESMinimumReduction >
-                                    RES.Base + RES.FreeBase + RES.RawMinimum + RES.AttributeValueModifiers)
-                                {
-                                    // intRESMinimumReduction is not actually reduced so that karma doesn't get burned away each time this function is called.
-                                    // Besides, this only fires if intRESMinimumReduction is already at a level where increasing it any more wouldn't have any effect on the character.
-                                    intExtraRESBurn += Math.Min(RES.Karma, intRESMinimumReductionDelta);
-                                    RES.Karma -= intExtraRESBurn;
-                                }
-                            }
-                            // If the new RES reduction is less than our old one, the character doesn't actually get any new values back
-                            else
-                            {
-                                intRESMinimumReduction = intOldRESCareerMinimumReduction;
-                            }
-
-                            // If the new DEP reduction is greater than the old one...
-                            int intDEPMinimumReductionDelta = intDEPMinimumReduction - intOldDEPCareerMinimumReduction;
-                            if (intDEPMinimumReductionDelta > 0)
-                            {
-                                // ... and adding minimum reducing-improvements wouldn't do anything, start burning karma.
-                                if (intDEPMinimumReduction >
-                                    DEP.Base + DEP.FreeBase + DEP.RawMinimum + DEP.AttributeValueModifiers)
-                                {
-                                    // intDEPMinimumReduction is not actually reduced so that karma doesn't get burned away each time this function is called.
-                                    // Besides, this only fires if intDEPMinimumReduction is already at a level where increasing it any more wouldn't have any effect on the character.
-                                    intExtraDEPBurn += Math.Min(DEP.Karma, intDEPMinimumReductionDelta);
-                                    DEP.Karma -= intExtraDEPBurn;
-                                }
-                            }
-                            // If the new DEP reduction is less than our old one, the character doesn't actually get any new values back
-                            else
-                            {
-                                intDEPMinimumReduction = intOldDEPCareerMinimumReduction;
-                            }
-
-                            // Create Improvements
-                            if (intRESMinimumReduction != 0 || intRESMaximumReduction != 0)
-                                ImprovementManager.CreateImprovement(this, "RES",
-                                    Improvement.ImprovementSource.EssenceLoss,
-                                    string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1,
-                                    -intRESMinimumReduction, -intRESMaximumReduction);
-                            if (intDEPMinimumReduction != 0 || intDEPMaximumReduction != 0)
-                                ImprovementManager.CreateImprovement(this, "DEP",
-                                    Improvement.ImprovementSource.EssenceLoss,
-                                    string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1,
-                                    -intDEPMinimumReduction, -intDEPMaximumReduction);
-                            if (intRESMinimumReduction != 0 || intRESMaximumReduction != 0 ||
-                                intDEPMinimumReduction != 0 || intDEPMaximumReduction != 0)
-                                ImprovementManager.Commit(this);
-                        }
+                        int intMAGAdeptMaximumReduction = intMagMaxReduction + MAGAdept.TotalMaximum
+                                                          - MAGAdept.MaximumNoEssenceLoss();
+                        int intRESMaximumReduction = intResMaxReduction + RES.TotalMaximum - RES.MaximumNoEssenceLoss();
+                        int intDEPMaximumReduction = intDepMaxReduction + DEP.TotalMaximum - DEP.MaximumNoEssenceLoss();
 
                         if (intMagMaxReduction > 0
                             || intMagMinReduction > 0
@@ -27743,40 +27731,133 @@ namespace Chummer
                                 intMAGAdeptMinimumReduction != 0 || intMAGAdeptMaximumReduction != 0)
                                 ImprovementManager.Commit(this);
                         }
+
+                        // Create the Essence Loss (or gain, in case of essence restoration and increasing maxima) Improvements.
+                        if (intResMaxReduction > 0
+                            || intResMinReduction > 0
+                            || intRESMaximumReduction != 0)
+                        {
+                            // This is the step where create mode attribute loss regarding attribute minimum loss gets factored out.
+                            int intRESMinimumReduction;
+                            // If only maxima would be reduced, use the attribute's current total value instead of its current maximum, as this makes sure minima will only get reduced if the maximum reduction would eat into the current value
+                            if (Settings.ESSLossReducesMaximumOnly)
+                            {
+                                intRESMinimumReduction = Math.Max(0,
+                                    intResMinReduction + RES.TotalValue - RES.MaximumNoEssenceLoss(true));
+                            }
+                            else
+                            {
+                                intRESMinimumReduction =
+                                    intResMinReduction + RES.TotalMaximum - RES.MaximumNoEssenceLoss(true);
+                            }
+
+                            // If the new RES reduction is greater than the old one...
+                            int intRESMinimumReductionDelta = intRESMinimumReduction - intOldRESCareerMinimumReduction;
+                            if (intRESMinimumReductionDelta > 0)
+                            {
+                                // ... and adding minimum reducing-improvements wouldn't do anything, start burning karma.
+                                if (intRESMinimumReduction >
+                                    RES.Base + RES.FreeBase + RES.RawMinimum + RES.AttributeValueModifiers)
+                                {
+                                    // intRESMinimumReduction is not actually reduced so that karma doesn't get burned away each time this function is called.
+                                    // Besides, this only fires if intRESMinimumReduction is already at a level where increasing it any more wouldn't have any effect on the character.
+                                    intExtraRESBurn += Math.Min(RES.Karma, intRESMinimumReductionDelta);
+                                    RES.Karma -= intExtraRESBurn;
+                                }
+                            }
+                            // If the new RES reduction is less than our old one, the character doesn't actually get any new values back
+                            else
+                            {
+                                intRESMinimumReduction = intOldRESCareerMinimumReduction;
+                            }
+
+                            // Create Improvements
+                            if (intRESMinimumReduction != 0 || intRESMaximumReduction != 0)
+                            {
+                                ImprovementManager.CreateImprovement(this, "RES",
+                                                                     Improvement.ImprovementSource.EssenceLoss,
+                                                                     string.Empty,
+                                                                     Improvement.ImprovementType.Attribute,
+                                                                     string.Empty, 0, 1,
+                                                                     -intRESMinimumReduction, -intRESMaximumReduction);
+                                ImprovementManager.Commit(this);
+                            }
+                        }
+
+                        if (intDepMaxReduction > 0
+                            || intDepMinReduction > 0
+                            || intDEPMaximumReduction != 0)
+                        {
+                            // This is the step where create mode attribute loss regarding attribute minimum loss gets factored out.
+                            int intDEPMinimumReduction;
+                            // If only maxima would be reduced, use the attribute's current total value instead of its current maximum, as this makes sure minima will only get reduced if the maximum reduction would eat into the current value
+                            if (Settings.ESSLossReducesMaximumOnly)
+                            {
+                                intDEPMinimumReduction = Math.Max(0,
+                                    intDepMinReduction + DEP.TotalValue - DEP.MaximumNoEssenceLoss(true));
+                            }
+                            else
+                            {
+                                intDEPMinimumReduction =
+                                    intDepMinReduction + DEP.TotalMaximum - DEP.MaximumNoEssenceLoss(true);
+                            }
+                            
+                            // If the new DEP reduction is greater than the old one...
+                            int intDEPMinimumReductionDelta = intDEPMinimumReduction - intOldDEPCareerMinimumReduction;
+                            if (intDEPMinimumReductionDelta > 0)
+                            {
+                                // ... and adding minimum reducing-improvements wouldn't do anything, start burning karma.
+                                if (intDEPMinimumReduction >
+                                    DEP.Base + DEP.FreeBase + DEP.RawMinimum + DEP.AttributeValueModifiers)
+                                {
+                                    // intDEPMinimumReduction is not actually reduced so that karma doesn't get burned away each time this function is called.
+                                    // Besides, this only fires if intDEPMinimumReduction is already at a level where increasing it any more wouldn't have any effect on the character.
+                                    intExtraDEPBurn += Math.Min(DEP.Karma, intDEPMinimumReductionDelta);
+                                    DEP.Karma -= intExtraDEPBurn;
+                                }
+                            }
+                            // If the new DEP reduction is less than our old one, the character doesn't actually get any new values back
+                            else
+                            {
+                                intDEPMinimumReduction = intOldDEPCareerMinimumReduction;
+                            }
+
+                            // Create Improvements
+                            if (intDEPMinimumReduction != 0 || intDEPMaximumReduction != 0)
+                            {
+                                ImprovementManager.CreateImprovement(this, "DEP",
+                                                                     Improvement.ImprovementSource.EssenceLoss,
+                                                                     string.Empty,
+                                                                     Improvement.ImprovementType.Attribute,
+                                                                     string.Empty, 0, 1,
+                                                                     -intDEPMinimumReduction, -intDEPMaximumReduction);
+                                ImprovementManager.Commit(this);
+                            }
+                        }
                     }
                     // RAW Create mode: Reduce maxima based on max ESS - current ESS, reduce minima based on their essence from the most optimal way in which they could have gotten access to special attributes
                     else
                     {
-                        int intMinReduction = (EssenceAtSpecialStart - decESS).StandardRound();
-                        int intMagMinReduction = (EssenceAtSpecialStart - decESSMag).StandardRound();
-                        int intRESMinimumReduction = intMinReduction;
-                        int intDEPMinimumReduction = intMinReduction;
+                        int intMagMinReduction = ((EssenceAtSpecialStart - decESSMag) * decSpecialAttBurnMultiplier * decTotalSpecialAttBurnMultiplier).StandardRound();
+                        int intResMinReduction = ((EssenceAtSpecialStart - decESSRes) * decSpecialAttBurnMultiplier * decTotalSpecialAttBurnMultiplier).StandardRound();
+                        int intDepMinReduction = ((EssenceAtSpecialStart - decESSDep) * decSpecialAttBurnMultiplier * decTotalSpecialAttBurnMultiplier).StandardRound();
+                        int intRESMinimumReduction = intResMinReduction;
+                        int intDEPMinimumReduction = intDepMinReduction;
                         int intMAGMinimumReduction = intMagMinReduction;
                         int intMAGAdeptMinimumReduction = intMagMinReduction;
                         if (Settings.ESSLossReducesMaximumOnly)
                         {
-                            intRESMinimumReduction = Math.Max(0, intMinReduction + RES.TotalValue - RES.TotalMaximum);
-                            intDEPMinimumReduction = Math.Max(0, intMinReduction + DEP.TotalValue - DEP.TotalMaximum);
                             intMAGMinimumReduction =
                                 Math.Max(0, intMagMinReduction + MAG.TotalValue - MAG.TotalMaximum);
                             intMAGAdeptMinimumReduction = Math.Max(0,
                                 intMagMinReduction + MAGAdept.TotalValue - MAGAdept.TotalMaximum);
+                            intRESMinimumReduction = Math.Max(0, intResMinReduction + RES.TotalValue - RES.TotalMaximum);
+                            intDEPMinimumReduction = Math.Max(0, intDepMinReduction + DEP.TotalValue - DEP.TotalMaximum);
                         }
 
                         ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.EssenceLoss);
                         ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.EssenceLossChargen);
-                        if (intMaxReduction != 0 || intRESMinimumReduction != 0 || intDEPMinimumReduction != 0)
-                        {
-                            ImprovementManager.CreateImprovement(this, "RES",
-                                Improvement.ImprovementSource.EssenceLossChargen, string.Empty,
-                                Improvement.ImprovementType.Attribute, string.Empty, 0, 1, -intRESMinimumReduction,
-                                -intMaxReduction);
-                            ImprovementManager.CreateImprovement(this, "DEP",
-                                Improvement.ImprovementSource.EssenceLossChargen, string.Empty,
-                                Improvement.ImprovementType.Attribute, string.Empty, 0, 1, -intDEPMinimumReduction,
-                                -intMaxReduction);
-                        }
-
+                        
                         if (intMagMaxReduction != 0 || intMAGMinimumReduction != 0 || intMAGAdeptMinimumReduction != 0)
                         {
                             ImprovementManager.CreateImprovement(this, "MAG",
@@ -27787,6 +27868,20 @@ namespace Chummer
                                 Improvement.ImprovementSource.EssenceLossChargen, string.Empty,
                                 Improvement.ImprovementType.Attribute, string.Empty, 0, 1, -intMAGAdeptMinimumReduction,
                                 -intMagMaxReduction);
+                        }
+                        if (intResMaxReduction != 0 || intRESMinimumReduction != 0)
+                        {
+                            ImprovementManager.CreateImprovement(this, "RES",
+                                                                 Improvement.ImprovementSource.EssenceLossChargen, string.Empty,
+                                                                 Improvement.ImprovementType.Attribute, string.Empty, 0, 1, -intRESMinimumReduction,
+                                                                 -intResMaxReduction);
+                        }
+                        if (intDepMaxReduction != 0 || intDEPMinimumReduction != 0)
+                        {
+                            ImprovementManager.CreateImprovement(this, "DEP",
+                                                                 Improvement.ImprovementSource.EssenceLossChargen, string.Empty,
+                                                                 Improvement.ImprovementType.Attribute, string.Empty, 0, 1, -intDEPMinimumReduction,
+                                                                 -intDepMaxReduction);
                         }
                     }
 
@@ -27867,7 +27962,7 @@ namespace Chummer
 
                         if (RESEnabled
                             && (Settings.SpecialKarmaCostBasedOnShownValue
-                                && intMaxReduction >= RES.TotalMaximum
+                                && intResMaxReduction >= RES.TotalMaximum
                                 || !Settings.SpecialKarmaCostBasedOnShownValue
                                 && RES.TotalMaximum < 1))
                         {
@@ -27931,19 +28026,39 @@ namespace Chummer
                 // (which means EssenceAtSpecialStart is not set to decimal.MinValue)
                 if (EssenceAtSpecialStart != decimal.MinValue)
                 {
-                    decimal decESS = await EssenceAsync(token: token).ConfigureAwait(false);
-                    decimal decESSMag = await EssenceAsync(true, token).ConfigureAwait(false);
+                    decimal decSpecialAttBurnMultiplier = 1.0m;
+                    decimal decTotalSpecialAttBurnMultiplier = 1.0m;
+                    List<Improvement> lstUsedImprovements =
+                        await ImprovementManager.GetCachedImprovementListForValueOfAsync(this, Improvement.ImprovementType.SpecialAttBurn, token: token).ConfigureAwait(false);
+                    if (lstUsedImprovements.Count != 0)
+                    {
+                        foreach (Improvement objImprovement in lstUsedImprovements)
+                            decSpecialAttBurnMultiplier -= 1m - objImprovement.Value / 100m;
+                    }
+                    List<Improvement> lstUsedImprovements2 =
+                        await ImprovementManager.GetCachedImprovementListForValueOfAsync(this, Improvement.ImprovementType.SpecialAttTotalBurnMultiplier, token: token).ConfigureAwait(false);
+                    if (lstUsedImprovements2.Count != 0)
+                    {
+                        foreach (Improvement objImprovement in lstUsedImprovements2)
+                            decTotalSpecialAttBurnMultiplier *= objImprovement.Value / 100m;
+                    }
+
+                    decimal decESSMag = await EssenceAsync(true, "MAG", token).ConfigureAwait(false);
+                    decimal decESSRes = await EssenceAsync(true, "RES", token).ConfigureAwait(false);
+                    decimal decESSDep = await EssenceAsync(true, "DEP", token).ConfigureAwait(false);
                     if (!Settings.DontRoundEssenceInternally)
                     {
                         int intESSDecimals = Settings.EssenceDecimals;
-                        decESS = decimal.Round(decESS, intESSDecimals, MidpointRounding.AwayFromZero);
                         decESSMag = decimal.Round(decESSMag, intESSDecimals, MidpointRounding.AwayFromZero);
+                        decESSRes = decimal.Round(decESSRes, intESSDecimals, MidpointRounding.AwayFromZero);
+                        decESSDep = decimal.Round(decESSDep, intESSDecimals, MidpointRounding.AwayFromZero);
                     }
 
                     // Reduce a character's MAG and RES from Essence Loss.
                     decimal decMetatypeMaximumESS = await ESS.GetMetatypeMaximumAsync(token).ConfigureAwait(false);
-                    int intMagMaxReduction = (decMetatypeMaximumESS - decESSMag).StandardRound();
-                    int intMaxReduction = (decMetatypeMaximumESS - decESS).StandardRound();
+                    int intMagMaxReduction = ((decMetatypeMaximumESS - decESSMag) * decSpecialAttBurnMultiplier * decTotalSpecialAttBurnMultiplier).StandardRound();
+                    int intResMaxReduction = ((decMetatypeMaximumESS - decESSRes) * decSpecialAttBurnMultiplier * decTotalSpecialAttBurnMultiplier).StandardRound();
+                    int intDepMaxReduction = ((decMetatypeMaximumESS - decESSDep) * decSpecialAttBurnMultiplier * decTotalSpecialAttBurnMultiplier).StandardRound();
                     // Character has the option set where essence loss just acts as an augmented malus, so just replace old essence loss improvements with new ones that apply an augmented malus
                     // equal to the amount by which the attribute's maximum would normally be reduced.
                     if (Settings.SpecialKarmaCostBasedOnShownValue)
@@ -27958,9 +28073,25 @@ namespace Chummer
                         // With this house rule, Cyberadept Daemon just negates a penalty from Essence based on Grade instead of restoring Resonance, so delete all old improvements
                         await ImprovementManager.RemoveImprovementsAsync(
                             this, Improvement.ImprovementSource.CyberadeptDaemon, token: token).ConfigureAwait(false);
-                        if (intMaxReduction != 0)
+
+                        if (intMagMaxReduction != 0)
                         {
-                            int intRESReduction = intMaxReduction;
+                            await ImprovementManager.CreateImprovementAsync(
+                                this, "MAG", eEssenceLossSource, string.Empty,
+                                Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -intMagMaxReduction, token: token).ConfigureAwait(false);
+                            await ImprovementManager.CreateImprovementAsync(
+                                this, "MAGAdept", eEssenceLossSource, string.Empty,
+                                Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -intMagMaxReduction, token: token).ConfigureAwait(false);
+                            // If this is a Mystic Adept using special Mystic Adept PP rules (i.e. no second MAG attribute), Mystic Adepts lose PPs even if they have fewer PPs than their MAG
+                            if (UseMysticAdeptPPs)
+                                await ImprovementManager.CreateImprovementAsync(this, string.Empty, eEssenceLossSource,
+                                    string.Empty,
+                                    Improvement.ImprovementType.AdeptPowerPoints, string.Empty, -intMagMaxReduction, token: token).ConfigureAwait(false);
+                        }
+
+                        if (intResMaxReduction != 0)
+                        {
+                            int intRESReduction = intResMaxReduction;
                             if (TechnomancerEnabled && SubmersionGrade > 0 && (await ImprovementManager
                                     .GetCachedImprovementListForValueOfAsync(this,
                                                                              Improvement.ImprovementType
@@ -27987,27 +28118,16 @@ namespace Chummer
                                 await ImprovementManager.CreateImprovementAsync(
                                     this, "RES", eEssenceLossSource, string.Empty,
                                     Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -intRESReduction, token: token).ConfigureAwait(false);
-                            await ImprovementManager.CreateImprovementAsync(
-                                this, "DEP", eEssenceLossSource, string.Empty,
-                                Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -intMaxReduction, token: token).ConfigureAwait(false);
                         }
 
-                        if (intMagMaxReduction != 0)
+                        if (intDepMaxReduction != 0)
                         {
                             await ImprovementManager.CreateImprovementAsync(
-                                this, "MAG", eEssenceLossSource, string.Empty,
-                                Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -intMagMaxReduction, token: token).ConfigureAwait(false);
-                            await ImprovementManager.CreateImprovementAsync(
-                                this, "MAGAdept", eEssenceLossSource, string.Empty,
-                                Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -intMagMaxReduction, token: token).ConfigureAwait(false);
-                            // If this is a Mystic Adept using special Mystic Adept PP rules (i.e. no second MAG attribute), Mystic Adepts lose PPs even if they have fewer PPs than their MAG
-                            if (UseMysticAdeptPPs)
-                                await ImprovementManager.CreateImprovementAsync(this, string.Empty, eEssenceLossSource,
-                                    string.Empty,
-                                    Improvement.ImprovementType.AdeptPowerPoints, string.Empty, -intMagMaxReduction, token: token).ConfigureAwait(false);
+                                this, "DEP", eEssenceLossSource, string.Empty,
+                                Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -intDepMaxReduction, token: token).ConfigureAwait(false);
                         }
 
-                        if (intMaxReduction != 0 || intMagMaxReduction != 0)
+                        if (intMagMaxReduction != 0 || intResMaxReduction != 0 || intDepMaxReduction != 0)
                             await ImprovementManager.CommitAsync(this, token).ConfigureAwait(false);
                     }
                     // RAW Career mode: complicated. Similar to RAW Create mode, but with the extra possibility of burning current karma levels and/or PPs instead of pure minima reduction,
@@ -28015,8 +28135,9 @@ namespace Chummer
                     else if (Created)
                     {
                         // "Base" minimum reduction. This is the amount by which the character's special attribute minima would be reduced across career and create modes if there wasn't any funny business
-                        int intMinReduction = (EssenceAtSpecialStart - decESS).StandardRound();
-                        int intMagMinReduction = (EssenceAtSpecialStart - decESSMag).StandardRound();
+                        int intMagMinReduction = ((EssenceAtSpecialStart - decESSMag) * decSpecialAttBurnMultiplier * decTotalSpecialAttBurnMultiplier).StandardRound();
+                        int intResMinReduction = ((EssenceAtSpecialStart - decESSRes) * decSpecialAttBurnMultiplier * decTotalSpecialAttBurnMultiplier).StandardRound();
+                        int intDepMinReduction = ((EssenceAtSpecialStart - decESSDep) * decSpecialAttBurnMultiplier * decTotalSpecialAttBurnMultiplier).StandardRound();
 
                         // This extra code is needed for legacy shims, to convert proper attribute values for characters who would end up having a higher level than their total attribute maxima
                         // They are extra amounts by which the relevant attributes' karma levels should be burned
@@ -28089,97 +28210,16 @@ namespace Chummer
 
                         // Career Minimum and Maximum reduction relies on whether there's any extra reduction since chargen.
                         // This is the step where create mode attribute loss regarding attribute maximum loss gets factored out.
-                        int intRESMaximumReduction
-                            = intMaxReduction + await RES.GetTotalMaximumAsync(token).ConfigureAwait(false) - await RES.MaximumNoEssenceLossAsync(token: token).ConfigureAwait(false);
-                        int intDEPMaximumReduction
-                            = intMaxReduction + await DEP.GetTotalMaximumAsync(token).ConfigureAwait(false) - await DEP.MaximumNoEssenceLossAsync(token: token).ConfigureAwait(false);
                         int intMAGMaximumReduction = intMagMaxReduction + await MAG.GetTotalMaximumAsync(token).ConfigureAwait(false)
                                                      - await MAG.MaximumNoEssenceLossAsync(token: token).ConfigureAwait(false);
                         int intMAGAdeptMaximumReduction =
                             intMagMaxReduction + await MAGAdept.GetTotalMaximumAsync(token: token).ConfigureAwait(false) - await MAGAdept.MaximumNoEssenceLossAsync(token: token).ConfigureAwait(false);
+                        int intRESMaximumReduction
+                            = intResMaxReduction + await RES.GetTotalMaximumAsync(token).ConfigureAwait(false) - await RES.MaximumNoEssenceLossAsync(token: token).ConfigureAwait(false);
+                        int intDEPMaximumReduction
+                            = intDepMaxReduction + await DEP.GetTotalMaximumAsync(token).ConfigureAwait(false) - await DEP.MaximumNoEssenceLossAsync(token: token).ConfigureAwait(false);
 
                         // Create the Essence Loss (or gain, in case of essence restoration and increasing maxima) Improvements.
-                        if (intMaxReduction > 0
-                            || intMinReduction > 0
-                            || intRESMaximumReduction != 0
-                            || intDEPMaximumReduction != 0)
-                        {
-                            // This is the step where create mode attribute loss regarding attribute minimum loss gets factored out.
-                            int intRESMinimumReduction;
-                            int intDEPMinimumReduction;
-                            // If only maxima would be reduced, use the attribute's current total value instead of its current maximum, as this makes sure minima will only get reduced if the maximum reduction would eat into the current value
-                            if (Settings.ESSLossReducesMaximumOnly)
-                            {
-                                intRESMinimumReduction = Math.Max(0,
-                                                                  intMinReduction + await RES.GetTotalValueAsync(token).ConfigureAwait(false)
-                                                                  - await RES.MaximumNoEssenceLossAsync(true, token).ConfigureAwait(false));
-                                intDEPMinimumReduction = Math.Max(0,
-                                                                  intMinReduction + await DEP.GetTotalValueAsync(token).ConfigureAwait(false)
-                                                                  - await DEP.MaximumNoEssenceLossAsync(true, token).ConfigureAwait(false));
-                            }
-                            else
-                            {
-                                intRESMinimumReduction =
-                                    intMinReduction + await RES.GetTotalMaximumAsync(token).ConfigureAwait(false) - await RES.MaximumNoEssenceLossAsync(true, token).ConfigureAwait(false);
-                                intDEPMinimumReduction =
-                                    intMinReduction + await DEP.GetTotalMaximumAsync(token).ConfigureAwait(false) - await DEP.MaximumNoEssenceLossAsync(true, token).ConfigureAwait(false);
-                            }
-
-                            // If the new RES reduction is greater than the old one...
-                            int intRESMinimumReductionDelta = intRESMinimumReduction - intOldRESCareerMinimumReduction;
-                            if (intRESMinimumReductionDelta > 0)
-                            {
-                                // ... and adding minimum reducing-improvements wouldn't do anything, start burning karma.
-                                if (intRESMinimumReduction >
-                                    RES.Base + await RES.GetFreeBaseAsync(token).ConfigureAwait(false) + await RES.GetRawMinimumAsync(token).ConfigureAwait(false) + await RES.GetAttributeValueModifiersAsync(token).ConfigureAwait(false))
-                                {
-                                    // intRESMinimumReduction is not actually reduced so that karma doesn't get burned away each time this function is called.
-                                    // Besides, this only fires if intRESMinimumReduction is already at a level where increasing it any more wouldn't have any effect on the character.
-                                    intExtraRESBurn += Math.Min(RES.Karma, intRESMinimumReductionDelta);
-                                    RES.Karma -= intExtraRESBurn;
-                                }
-                            }
-                            // If the new RES reduction is less than our old one, the character doesn't actually get any new values back
-                            else
-                            {
-                                intRESMinimumReduction = intOldRESCareerMinimumReduction;
-                            }
-
-                            // If the new DEP reduction is greater than the old one...
-                            int intDEPMinimumReductionDelta = intDEPMinimumReduction - intOldDEPCareerMinimumReduction;
-                            if (intDEPMinimumReductionDelta > 0)
-                            {
-                                // ... and adding minimum reducing-improvements wouldn't do anything, start burning karma.
-                                if (intDEPMinimumReduction >
-                                    DEP.Base + await DEP.GetFreeBaseAsync(token).ConfigureAwait(false) + await DEP.GetRawMinimumAsync(token).ConfigureAwait(false) + await DEP.GetAttributeValueModifiersAsync(token).ConfigureAwait(false))
-                                {
-                                    // intDEPMinimumReduction is not actually reduced so that karma doesn't get burned away each time this function is called.
-                                    // Besides, this only fires if intDEPMinimumReduction is already at a level where increasing it any more wouldn't have any effect on the character.
-                                    intExtraDEPBurn += Math.Min(DEP.Karma, intDEPMinimumReductionDelta);
-                                    DEP.Karma -= intExtraDEPBurn;
-                                }
-                            }
-                            // If the new DEP reduction is less than our old one, the character doesn't actually get any new values back
-                            else
-                            {
-                                intDEPMinimumReduction = intOldDEPCareerMinimumReduction;
-                            }
-
-                            // Create Improvements
-                            if (intRESMinimumReduction != 0 || intRESMaximumReduction != 0)
-                                await ImprovementManager.CreateImprovementAsync(this, "RES",
-                                    Improvement.ImprovementSource.EssenceLoss,
-                                    string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1,
-                                    -intRESMinimumReduction, -intRESMaximumReduction, token: token).ConfigureAwait(false);
-                            if (intDEPMinimumReduction != 0 || intDEPMaximumReduction != 0)
-                                await ImprovementManager.CreateImprovementAsync(this, "DEP",
-                                    Improvement.ImprovementSource.EssenceLoss,
-                                    string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1,
-                                    -intDEPMinimumReduction, -intDEPMaximumReduction, token: token).ConfigureAwait(false);
-                            if (intRESMinimumReduction != 0 || intRESMaximumReduction != 0 ||
-                                intDEPMinimumReduction != 0 || intDEPMaximumReduction != 0)
-                                await ImprovementManager.CommitAsync(this, token).ConfigureAwait(false);
-                        }
 
                         if (intMagMaxReduction > 0
                             || intMagMinReduction > 0
@@ -28298,46 +28338,152 @@ namespace Chummer
                                 intMAGAdeptMinimumReduction != 0 || intMAGAdeptMaximumReduction != 0)
                                 await ImprovementManager.CommitAsync(this, token).ConfigureAwait(false);
                         }
+
+                        if (intResMaxReduction > 0
+                            || intResMinReduction > 0
+                            || intRESMaximumReduction != 0)
+                        {
+                            // This is the step where create mode attribute loss regarding attribute minimum loss gets factored out.
+                            int intRESMinimumReduction;
+                            // If only maxima would be reduced, use the attribute's current total value instead of its current maximum, as this makes sure minima will only get reduced if the maximum reduction would eat into the current value
+                            if (Settings.ESSLossReducesMaximumOnly)
+                            {
+                                intRESMinimumReduction = Math.Max(0,
+                                                                  intResMinReduction + await RES.GetTotalValueAsync(token).ConfigureAwait(false)
+                                                                  - await RES.MaximumNoEssenceLossAsync(true, token).ConfigureAwait(false));
+                            }
+                            else
+                            {
+                                intRESMinimumReduction =
+                                    intResMinReduction + await RES.GetTotalMaximumAsync(token).ConfigureAwait(false) - await RES.MaximumNoEssenceLossAsync(true, token).ConfigureAwait(false);
+                            }
+
+                            // If the new RES reduction is greater than the old one...
+                            int intRESMinimumReductionDelta = intRESMinimumReduction - intOldRESCareerMinimumReduction;
+                            if (intRESMinimumReductionDelta > 0)
+                            {
+                                // ... and adding minimum reducing-improvements wouldn't do anything, start burning karma.
+                                if (intRESMinimumReduction >
+                                    RES.Base + await RES.GetFreeBaseAsync(token).ConfigureAwait(false) + await RES.GetRawMinimumAsync(token).ConfigureAwait(false) + await RES.GetAttributeValueModifiersAsync(token).ConfigureAwait(false))
+                                {
+                                    // intRESMinimumReduction is not actually reduced so that karma doesn't get burned away each time this function is called.
+                                    // Besides, this only fires if intRESMinimumReduction is already at a level where increasing it any more wouldn't have any effect on the character.
+                                    intExtraRESBurn += Math.Min(RES.Karma, intRESMinimumReductionDelta);
+                                    RES.Karma -= intExtraRESBurn;
+                                }
+                            }
+                            // If the new RES reduction is less than our old one, the character doesn't actually get any new values back
+                            else
+                            {
+                                intRESMinimumReduction = intOldRESCareerMinimumReduction;
+                            }
+
+                            // Create Improvements
+                            if (intRESMinimumReduction != 0 || intRESMaximumReduction != 0)
+                            {
+                                await ImprovementManager.CreateImprovementAsync(this, "RES",
+                                                            Improvement.ImprovementSource.EssenceLoss,
+                                                            string.Empty, Improvement.ImprovementType.Attribute,
+                                                            string.Empty, 0, 1,
+                                                            -intRESMinimumReduction, -intRESMaximumReduction,
+                                                            token: token)
+                                                        .ConfigureAwait(false);
+                                await ImprovementManager.CommitAsync(this, token).ConfigureAwait(false);
+                            }
+                        }
+
+                        if (intDepMaxReduction > 0
+                            || intDepMinReduction > 0
+                            || intDEPMaximumReduction != 0)
+                        {
+                            // This is the step where create mode attribute loss regarding attribute minimum loss gets factored out.
+                            int intDEPMinimumReduction;
+                            // If only maxima would be reduced, use the attribute's current total value instead of its current maximum, as this makes sure minima will only get reduced if the maximum reduction would eat into the current value
+                            if (Settings.ESSLossReducesMaximumOnly)
+                            {
+                                intDEPMinimumReduction = Math.Max(0,
+                                                                  intDepMinReduction + await DEP.GetTotalValueAsync(token).ConfigureAwait(false)
+                                                                  - await DEP.MaximumNoEssenceLossAsync(true, token).ConfigureAwait(false));
+                            }
+                            else
+                            {
+                                intDEPMinimumReduction =
+                                    intDepMinReduction + await DEP.GetTotalMaximumAsync(token).ConfigureAwait(false) - await DEP.MaximumNoEssenceLossAsync(true, token).ConfigureAwait(false);
+                            }
+
+                            // If the new DEP reduction is greater than the old one...
+                            int intDEPMinimumReductionDelta = intDEPMinimumReduction - intOldDEPCareerMinimumReduction;
+                            if (intDEPMinimumReductionDelta > 0)
+                            {
+                                // ... and adding minimum reducing-improvements wouldn't do anything, start burning karma.
+                                if (intDEPMinimumReduction >
+                                    DEP.Base + await DEP.GetFreeBaseAsync(token).ConfigureAwait(false) + await DEP.GetRawMinimumAsync(token).ConfigureAwait(false) + await DEP.GetAttributeValueModifiersAsync(token).ConfigureAwait(false))
+                                {
+                                    // intDEPMinimumReduction is not actually reduced so that karma doesn't get burned away each time this function is called.
+                                    // Besides, this only fires if intDEPMinimumReduction is already at a level where increasing it any more wouldn't have any effect on the character.
+                                    intExtraDEPBurn += Math.Min(DEP.Karma, intDEPMinimumReductionDelta);
+                                    DEP.Karma -= intExtraDEPBurn;
+                                }
+                            }
+                            // If the new DEP reduction is less than our old one, the character doesn't actually get any new values back
+                            else
+                            {
+                                intDEPMinimumReduction = intOldDEPCareerMinimumReduction;
+                            }
+
+                            // Create Improvements
+                            if (intDEPMinimumReduction != 0 || intDEPMaximumReduction != 0)
+                            {
+                                await ImprovementManager.CreateImprovementAsync(this, "DEP",
+                                                            Improvement.ImprovementSource.EssenceLoss,
+                                                            string.Empty, Improvement.ImprovementType.Attribute,
+                                                            string.Empty, 0, 1,
+                                                            -intDEPMinimumReduction, -intDEPMaximumReduction,
+                                                            token: token)
+                                                        .ConfigureAwait(false);
+                                await ImprovementManager.CommitAsync(this, token).ConfigureAwait(false);
+                            }
+                        }
                     }
                     // RAW Create mode: Reduce maxima based on max ESS - current ESS, reduce minima based on their essence from the most optimal way in which they could have gotten access to special attributes
                     else
                     {
-                        int intMinReduction = (EssenceAtSpecialStart - decESS).StandardRound();
-                        int intMagMinReduction = (EssenceAtSpecialStart - decESSMag).StandardRound();
-                        int intRESMinimumReduction = intMinReduction;
-                        int intDEPMinimumReduction = intMinReduction;
+                        int intMagMinReduction = ((EssenceAtSpecialStart - decESSMag) * decSpecialAttBurnMultiplier * decTotalSpecialAttBurnMultiplier).StandardRound();
+                        int intResMinReduction = ((EssenceAtSpecialStart - decESSRes) * decSpecialAttBurnMultiplier * decTotalSpecialAttBurnMultiplier).StandardRound();
+                        int intDepMinReduction = ((EssenceAtSpecialStart - decESSDep) * decSpecialAttBurnMultiplier * decTotalSpecialAttBurnMultiplier).StandardRound();
                         int intMAGMinimumReduction = intMagMinReduction;
                         int intMAGAdeptMinimumReduction = intMagMinReduction;
+                        int intRESMinimumReduction = intResMinReduction;
+                        int intDEPMinimumReduction = intDepMinReduction;
                         if (Settings.ESSLossReducesMaximumOnly)
                         {
-                            intRESMinimumReduction = Math.Max(0, intMinReduction + await RES.GetTotalValueAsync(token).ConfigureAwait(false) - await RES.GetTotalMaximumAsync(token).ConfigureAwait(false));
-                            intDEPMinimumReduction = Math.Max(0, intMinReduction + await DEP.GetTotalValueAsync(token).ConfigureAwait(false) - await DEP.GetTotalMaximumAsync(token).ConfigureAwait(false));
                             intMAGMinimumReduction =
-                                Math.Max(0, intMagMinReduction + await MAG.GetTotalValueAsync(token).ConfigureAwait(false) - await MAG.GetTotalMaximumAsync(token).ConfigureAwait(false));
+                                Math.Max(
+                                    0,
+                                    intMagMinReduction + await MAG.GetTotalValueAsync(token).ConfigureAwait(false)
+                                    - await MAG.GetTotalMaximumAsync(token).ConfigureAwait(false));
                             intMAGAdeptMinimumReduction = Math.Max(0,
-                                                                   intMagMinReduction + await MAGAdept.GetTotalValueAsync(token).ConfigureAwait(false)
-                                                                   - await MAGAdept.GetTotalMaximumAsync(token).ConfigureAwait(false));
+                                                                   intMagMinReduction
+                                                                   + await MAGAdept.GetTotalValueAsync(token)
+                                                                       .ConfigureAwait(false)
+                                                                   - await MAGAdept.GetTotalMaximumAsync(token)
+                                                                       .ConfigureAwait(false));
+                            intRESMinimumReduction
+                                = Math.Max(
+                                    0,
+                                    intResMinReduction + await RES.GetTotalValueAsync(token).ConfigureAwait(false)
+                                    - await RES.GetTotalMaximumAsync(token).ConfigureAwait(false));
+                            intDEPMinimumReduction
+                                = Math.Max(
+                                    0,
+                                    intDepMinReduction + await DEP.GetTotalValueAsync(token).ConfigureAwait(false)
+                                    - await DEP.GetTotalMaximumAsync(token).ConfigureAwait(false));
                         }
 
                         await ImprovementManager.RemoveImprovementsAsync(
                             this, Improvement.ImprovementSource.EssenceLoss, token: token).ConfigureAwait(false);
                         await ImprovementManager.RemoveImprovementsAsync(
                             this, Improvement.ImprovementSource.EssenceLossChargen, token: token).ConfigureAwait(false);
-                        if (intMaxReduction != 0 || intRESMinimumReduction != 0 || intDEPMinimumReduction != 0)
-                        {
-                            await ImprovementManager.CreateImprovementAsync(this, "RES",
-                                                                            Improvement.ImprovementSource
-                                                                                .EssenceLossChargen, string.Empty,
-                                                                            Improvement.ImprovementType.Attribute,
-                                                                            string.Empty, 0, 1, -intRESMinimumReduction,
-                                                                            -intMaxReduction, token: token).ConfigureAwait(false);
-                            await ImprovementManager.CreateImprovementAsync(this, "DEP",
-                                                                            Improvement.ImprovementSource
-                                                                                .EssenceLossChargen, string.Empty,
-                                                                            Improvement.ImprovementType.Attribute,
-                                                                            string.Empty, 0, 1, -intDEPMinimumReduction,
-                                                                            -intMaxReduction, token: token).ConfigureAwait(false);
-                        }
 
                         if (intMagMaxReduction != 0 || intMAGMinimumReduction != 0 || intMAGAdeptMinimumReduction != 0)
                         {
@@ -28354,6 +28500,24 @@ namespace Chummer
                                                                             string.Empty, 0, 1,
                                                                             -intMAGAdeptMinimumReduction,
                                                                             -intMagMaxReduction, token: token).ConfigureAwait(false);
+                        }
+                        if (intResMaxReduction != 0 || intRESMinimumReduction != 0)
+                        {
+                            await ImprovementManager.CreateImprovementAsync(this, "RES",
+                                                                            Improvement.ImprovementSource
+                                                                                .EssenceLossChargen, string.Empty,
+                                                                            Improvement.ImprovementType.Attribute,
+                                                                            string.Empty, 0, 1, -intRESMinimumReduction,
+                                                                            -intResMaxReduction, token: token).ConfigureAwait(false);
+                        }
+                        if (intDepMaxReduction != 0 || intDEPMinimumReduction != 0)
+                        {
+                            await ImprovementManager.CreateImprovementAsync(this, "DEP",
+                                                                            Improvement.ImprovementSource
+                                                                                .EssenceLossChargen, string.Empty,
+                                                                            Improvement.ImprovementType.Attribute,
+                                                                            string.Empty, 0, 1, -intDEPMinimumReduction,
+                                                                            -intDepMaxReduction, token: token).ConfigureAwait(false);
                         }
                     }
 
@@ -28442,7 +28606,7 @@ namespace Chummer
                         {
                             int intResTotalMaximum = await RES.GetTotalMaximumAsync(token).ConfigureAwait(false);
                             if (Settings.SpecialKarmaCostBasedOnShownValue
-                                && intMaxReduction >= intResTotalMaximum
+                                && intResMaxReduction >= intResTotalMaximum
                                 || !Settings.SpecialKarmaCostBasedOnShownValue
                                 && intResTotalMaximum < 1)
                             {

@@ -463,6 +463,14 @@ namespace Chummer
                     return objImprovementAdder.essencepenaltyt100;
                 case "ESSENCEPENALTYMAGONLYT100":
                     return objImprovementAdder.essencepenaltymagonlyt100;
+                case "ESSENCEPENALTYRESONLYT100":
+                    return objImprovementAdder.essencepenaltyresonlyt100;
+                case "ESSENCEPENALTYDEPONLYT100":
+                    return objImprovementAdder.essencepenaltydeponlyt100;
+                case "SPECIALATTBURNMULTIPLIER":
+                    return objImprovementAdder.specialattburnmultiplier;
+                case "SPECIALATTTOTALBURNMULTIPLIER":
+                    return objImprovementAdder.specialatttotalburnmultiplier;
                 case "ESSENCEMAX":
                     return objImprovementAdder.essencemax;
                 case "SELECTSPRITE":
