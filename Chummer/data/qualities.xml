@@ -44,7 +44,13 @@
       <name>Analytical Mind</name>
       <karma>5</karma>
       <category>Positive</category>
-      <bonus />
+      <bonus>
+        <skillattribute>
+          <name>LOG</name>
+          <bonus>2</bonus>
+          <condition>Involving pattern recognition, evidence analysis, clue hunting, or solving puzzles</condition>
+        </skillattribute>
+      </bonus>
       <source>SR5</source>
       <page>72</page>
     </quality>
@@ -67,6 +73,29 @@
       <karma>10</karma>
       <category>Positive</category>
       <bonus />
+      <required>
+        <oneof>
+          <metatype>Centaur</metatype>
+          <metatype>Naga</metatype>
+          <metatype>Pixie</metatype>
+          <metatype>Sasquatch</metatype>
+          <quality>Adept</quality>
+          <quality>Aware</quality>
+          <quality>Aspected Magician</quality>
+          <quality>Enchanter</quality>
+          <quality>Explorer</quality>
+          <quality>Apprentice</quality>
+          <quality>Magician</quality>
+          <quality>Mystic Adept</quality>
+          <quality>Infected: Mutaqua</quality>
+          <quality>Infected: Nosferatu</quality>
+          <quality>Infected: Wendigo</quality>
+          <attribute>
+            <name>MAG</name>
+            <total>1</total>
+          </attribute>
+        </oneof>
+      </required>
       <forbidden>
         <oneof>
           <quality>Astral Beacon</quality>
@@ -172,6 +201,13 @@
       <category>Positive</category>
       <bonus>
         <notoriety>-1</notoriety>
+        <bonus>
+          <skillcategory>
+            <name>Social Active</name>
+            <bonus>2</bonus>
+            <condition>Meeting people the first time</condition>
+          </skillcategory>
+        </bonus>
       </bonus>
       <source>SR5</source>
       <page>74</page>
@@ -929,6 +965,11 @@
           <name>technomancer</name>
         </enabletab>
         <unlockskills>Technomancer</unlockskills>
+        <specificskill>
+          <name>Computer</name>
+          <bonus>2</bonus>
+          <condition>Matrix Perception</condition>
+        </specificskill>
       </bonus>
       <forbidden>
         <oneof>
@@ -1183,6 +1224,10 @@
           <quality>Infected: Mutaqua</quality>
           <quality>Infected: Nosferatu</quality>
           <quality>Infected: Wendigo</quality>
+          <attribute>
+            <name>MAG</name>
+            <total>1</total>
+          </attribute>
         </oneof>
       </required>
       <source>SR5</source>
@@ -2694,7 +2739,28 @@
       <name>City Slicker</name>
       <karma>7</karma>
       <category>Positive</category>
-      <bonus />
+      <bonus>
+        <skillgroup>
+          <name>Outdoors</name>
+          <bonus>1</bonus>
+          <exclude>Survival</exclude>
+          <condition>Urban</condition>
+        </skillgroup>
+        <specificskill>
+          <name>Perception</name>
+          <bonus>-1</bonus>
+          <condition>Not Urban</condition>
+        </specificskill>
+        <specificskill>
+          <name>Survival</name>
+          <bonus>-1</bonus>
+        </specificskill>
+        <specificskill>
+          <name>Survival</name>
+          <bonus>-1</bonus>
+          <condition>Urban</condition>
+        </specificskill>
+      </bonus>
       <source>RF</source>
       <page>145</page>
     </quality>
@@ -2862,7 +2928,6 @@
           <bonus>2</bonus>
         </skillcategory>
       </bonus>
-
       <forbidden>
         <oneof>
           <quality>Fame: National</quality>
@@ -2890,7 +2955,6 @@
           <bonus>3</bonus>
         </skillcategory>
       </bonus>
-
       <forbidden>
         <oneof>
           <quality>Fame: National</quality>
@@ -2909,7 +2973,6 @@
       <bonus>
         <friendsinhighplaces />
       </bonus>
-
       <source>RF</source>
       <page>147</page>
     </quality>
@@ -3048,7 +3111,48 @@
       <name>Outdoorsman</name>
       <karma>3</karma>
       <category>Positive</category>
-      <bonus />
+      <bonus>
+        <skillgroup>
+          <name>Outdoors</name>
+          <bonus>2</bonus>
+          <condition>Rural</condition>
+        </skillgroup>
+        <skillgroup>
+          <name>Outdoors</name>
+          <bonus>2</bonus>
+          <condition>Desert</condition>
+        </skillgroup>
+        <skillgroup>
+          <name>Outdoors</name>
+          <bonus>2</bonus>
+          <condition>Forest</condition>
+        </skillgroup>
+        <skillgroup>
+          <name>Outdoors</name>
+          <bonus>2</bonus>
+          <condition>Jungle</condition>
+        </skillgroup>
+        <skillgroup>
+          <name>Outdoors</name>
+          <bonus>2</bonus>
+          <condition>Mountain</condition>
+        </skillgroup>
+        <skillgroup>
+          <name>Outdoors</name>
+          <bonus>2</bonus>
+          <condition>Polar</condition>
+        </skillgroup>
+        <specificskill>
+          <name>Perception</name>
+          <bonus>-1</bonus>
+          <condition>Urban</condition>
+        </specificskill>
+        <specificskill>
+          <name>Survival</name>
+          <bonus>-1</bonus>
+          <condition>Urban</condition>
+        </specificskill>
+      </bonus>
       <source>RF</source>
       <page>148</page>
     </quality>
@@ -3634,7 +3738,6 @@
       <bonus>
         <selecttext />
       </bonus>
-
       <source>RF</source>
       <page>153</page>
     </quality>
@@ -3675,7 +3778,6 @@
       <karma>-20</karma>
       <category>Negative</category>
       <bonus />
-
       <source>RF</source>
       <page>153</page>
     </quality>
@@ -3843,7 +3945,28 @@
       <karma>-5</karma>
       <category>Negative</category>
       <limit>3</limit>
-      <bonus />
+      <bonus>
+        <skillattribute>
+          <name>LOG</name>
+          <bonus>-Rating</bonus>
+        </skillattribute>
+        <skillattribute>
+          <name>INT</name>
+          <bonus>-Rating</bonus>
+        </skillattribute>
+        <judgeintentionsoffense>-Rating</judgeintentionsoffense>
+        <memory>-Rating</memory>
+        <mentalmanipulationresist>-Rating</mentalmanipulationresist>
+        <manaillusionresist>-Rating</manaillusionresist>
+        <physicalillusionresist>-Rating</physicalillusionresist>
+        <decreaselogresist>-Rating</decreaselogresist>
+        <decreaseintresist>-Rating</decreaseintresist>
+        <detectionspellresist>-Rating</detectionspellresist>
+        <physiologicaladdictionfirsttime>-Rating</physiologicaladdictionfirsttime>
+        <physiologicaladdictionalreadyaddicted>-Rating</physiologicaladdictionalreadyaddicted>
+        <dodge>-Rating</dodge>
+        <surprise>-Rating</surprise>
+      </bonus>
       <source>RF</source>
       <page>154</page>
     </quality>
@@ -3906,7 +4029,6 @@
       <bonus>
         <selecttext />
       </bonus>
-
       <source>RF</source>
       <page>155</page>
     </quality>
@@ -3925,7 +4047,6 @@
       <karma>-8</karma>
       <category>Negative</category>
       <bonus />
-
       <source>RF</source>
       <page>155</page>
     </quality>
@@ -4100,7 +4221,6 @@
         <basiclifestylecost>10</basiclifestylecost>
         <lifestylecost>10</lifestylecost>
       </bonus>
-
       <source>RF</source>
       <page>157</page>
     </quality>
@@ -4207,7 +4327,6 @@
       <bonus>
         <selecttext />
       </bonus>
-
       <source>RF</source>
       <page>158</page>
     </quality>
@@ -4220,7 +4339,6 @@
       <bonus>
         <selecttext />
       </bonus>
-
       <source>RF</source>
       <page>158</page>
     </quality>
@@ -4233,7 +4351,6 @@
       <bonus>
         <selecttext />
       </bonus>
-
       <source>RF</source>
       <page>158</page>
     </quality>
@@ -4246,7 +4363,6 @@
       <bonus>
         <selecttext />
       </bonus>
-
       <source>RF</source>
       <page>158</page>
     </quality>
@@ -4259,7 +4375,6 @@
       <bonus>
         <selecttext />
       </bonus>
-
       <source>RF</source>
       <page>158</page>
     </quality>
@@ -4272,7 +4387,6 @@
       <bonus>
         <selecttext />
       </bonus>
-
       <source>RF</source>
       <page>158</page>
     </quality>
@@ -4285,7 +4399,6 @@
       <bonus>
         <selecttext />
       </bonus>
-
       <source>RF</source>
       <page>158</page>
     </quality>
@@ -4298,7 +4411,6 @@
       <bonus>
         <selecttext />
       </bonus>
-
       <source>RF</source>
       <page>158</page>
     </quality>
@@ -4311,7 +4423,6 @@
       <bonus>
         <selecttext />
       </bonus>
-
       <source>RF</source>
       <page>158</page>
     </quality>
@@ -4324,7 +4435,6 @@
       <bonus>
         <selecttext />
       </bonus>
-
       <source>RF</source>
       <page>158</page>
     </quality>
@@ -4337,7 +4447,6 @@
       <bonus>
         <selecttext />
       </bonus>
-
       <source>RF</source>
       <page>158</page>
     </quality>
@@ -4350,7 +4459,6 @@
       <bonus>
         <selecttext />
       </bonus>
-
       <source>RF</source>
       <page>158</page>
     </quality>
@@ -4379,7 +4487,6 @@
       <karma>-5</karma>
       <category>Negative</category>
       <bonus />
-
       <source>RF</source>
       <page>158</page>
     </quality>
@@ -4415,7 +4522,13 @@
       <name>Reduced Sense (Smell)</name>
       <karma>-2</karma>
       <category>Negative</category>
-      <bonus />
+      <bonus>
+        <specificskill>
+          <name>Perception</name>
+          <bonus>-2</bonus>
+          <condition>Scent</condition>
+        </specificskill>
+      </bonus>
       <source>RF</source>
       <page>159</page>
     </quality>
@@ -4424,7 +4537,13 @@
       <name>Reduced Sense (Taste)</name>
       <karma>-2</karma>
       <category>Negative</category>
-      <bonus />
+      <bonus>
+        <specificskill>
+          <name>Perception</name>
+          <bonus>-2</bonus>
+          <condition>Taste</condition>
+        </specificskill>
+      </bonus>
       <source>RF</source>
       <page>159</page>
     </quality>
@@ -4433,7 +4552,13 @@
       <name>Reduced Sense (Touch)</name>
       <karma>-10</karma>
       <category>Negative</category>
-      <bonus />
+      <bonus>
+        <specificskill>
+          <name>Perception</name>
+          <bonus>-2</bonus>
+          <condition>Touch</condition>
+        </specificskill>
+      </bonus>
       <source>RF</source>
       <page>159</page>
     </quality>
@@ -4442,7 +4567,13 @@
       <name>Reduced Sense (Hearing)</name>
       <karma>-5</karma>
       <category>Negative</category>
-      <bonus />
+      <bonus>
+        <specificskill>
+          <name>Perception</name>
+          <bonus>-2</bonus>
+          <condition>Hearing</condition>
+        </specificskill>
+      </bonus>
       <forbidden>
         <oneof>
           <quality>Deaf</quality>
@@ -4456,7 +4587,13 @@
       <name>Reduced Sense (Sight)</name>
       <karma>-5</karma>
       <category>Negative</category>
-      <bonus />
+      <bonus>
+        <specificskill>
+          <name>Perception</name>
+          <bonus>-2</bonus>
+          <condition>Visual</condition>
+        </specificskill>
+      </bonus>
       <forbidden>
         <oneof>
           <quality>Blind</quality>
@@ -4470,7 +4607,12 @@
       <name>Reduced Sense (Astral Sight)</name>
       <karma>-5</karma>
       <category>Negative</category>
-      <bonus />
+      <bonus>
+        <specificskill>
+          <name>Assensing</name>
+          <bonus>-2</bonus>
+        </specificskill>
+      </bonus>
       <required>
         <oneof>
           <quality>Magician</quality>
@@ -4517,7 +4659,6 @@
       <bonus>
         <selecttext />
       </bonus>
-
       <source>RF</source>
       <page>159</page>
     </quality>
@@ -4529,7 +4670,6 @@
       <bonus>
         <selecttext />
       </bonus>
-
       <source>RF</source>
       <page>159</page>
     </quality>
@@ -5247,7 +5387,14 @@
       <karma>4</karma>
       <category>Positive</category>
       <metagenic>True</metagenic>
-      <bonus />
+      <bonus>
+        <addskillspecializationoption>
+          <spec>Electroception</spec>
+          <skills>
+            <skill>Perception</skill>
+          </skills>
+        </addskillspecializationoption>
+      </bonus>
       <required>
         <oneof>
           <quality>Changeling (Class I SURGE)</quality>
@@ -5264,7 +5411,14 @@
       <karma>7</karma>
       <category>Positive</category>
       <metagenic>True</metagenic>
-      <bonus />
+      <bonus>
+        <addskillspecializationoption>
+          <spec>Electroception</spec>
+          <skills>
+            <skill>Perception</skill>
+          </skills>
+        </addskillspecializationoption>
+      </bonus>
       <required>
         <oneof>
           <quality>Changeling (Class I SURGE)</quality>
@@ -6564,7 +6718,13 @@
       <karma>3</karma>
       <category>Positive</category>
       <metagenic>True</metagenic>
-      <bonus />
+      <bonus>
+        <specificskill>
+          <name>Perception</name>
+          <bonus>2</bonus>
+          <condition>Scent</condition>
+        </specificskill>
+      </bonus>
       <required>
         <oneof>
           <quality>Changeling (Class I SURGE)</quality>
@@ -6703,7 +6863,12 @@
       <karma>-5</karma>
       <category>Negative</category>
       <metagenic>True</metagenic>
-      <bonus />
+      <bonus>
+        <specificskill>
+          <name>Animal Handling</name>
+          <bonus>-2</bonus>
+        </specificskill>
+      </bonus>
       <source>RF</source>
       <page>120</page>
     </quality>
@@ -6713,7 +6878,17 @@
       <karma>-6</karma>
       <category>Negative</category>
       <metagenic>True</metagenic>
-      <bonus />
+      <bonus>
+        <skillcategory>
+          <name>Combat Active</name>
+          <bonus>-1</bonus>
+        </skillcategory>
+        <specificskill>
+          <name>Gunnery</name> <!-- Only combat skill that is not a combat active skill -->
+          <bonus>-1</bonus>
+        </specificskill>
+        <defensetest>-1</defensetest>
+      </bonus>
       <forbidden>
         <oneof>
           <quality>Third Eye</quality>
@@ -11106,7 +11281,6 @@
       <karma>-7</karma>
       <category>Negative</category>
       <bonus />
-
       <required>
         <oneof>
           <skill>
@@ -11599,7 +11773,6 @@
       <karma>5</karma>
       <category>Positive</category>
       <bonus />
-
       <source>CF</source>
       <page>54</page>
     </quality>
@@ -11663,7 +11836,6 @@
       <karma>8</karma>
       <category>Positive</category>
       <bonus />
-
       <source>CF</source>
       <page>56</page>
     </quality>
@@ -11974,11 +12146,13 @@
         <disablecyberwaregrade>Used</disablecyberwaregrade>
         <disablecyberwaregrade>Alphaware</disablecyberwaregrade>
         <disablecyberwaregrade>Omegaware</disablecyberwaregrade>
+        <disablecyberwaregrade>Greyware</disablecyberwaregrade>
         <disablecyberwaregrade>Standard (Adapsin)</disablecyberwaregrade>
         <disablecyberwaregrade>Standard (Burnout's Way) (Adapsin)</disablecyberwaregrade>
         <disablecyberwaregrade>Used (Adapsin)</disablecyberwaregrade>
         <disablecyberwaregrade>Alphaware (Adapsin)</disablecyberwaregrade>
         <disablecyberwaregrade>Omegaware (Adapsin)</disablecyberwaregrade>
+        <disablecyberwaregrade>Greyware (Adapsin)</disablecyberwaregrade>
       </bonus>
       <required>
         <oneof>
@@ -12120,7 +12294,6 @@
       <karma>-7</karma>
       <category>Negative</category>
       <bonus />
-
       <source>CF</source>
       <page>58</page>
     </quality>
@@ -12252,7 +12425,10 @@
       <karma>2</karma>
       <category>Positive</category>
       <bonus>
-        <selectskill excludecategory="Combat Active" />
+        <weaponskillaccuracy>
+          <selectskill excludecategory="Combat Active" />
+          <value>1</value>
+        </weaponskillaccuracy>
       </bonus>
       <source>HT</source>
       <page>191</page>
@@ -12714,7 +12890,13 @@
       <name>Alibi</name>
       <karma>4</karma>
       <category>Positive</category>
-      <bonus />
+      <bonus>
+        <specificskill>
+          <name>Con</name>
+          <bonus>2</bonus>
+          <condition>With plausible-seeming evidence</condition>
+        </specificskill>
+      </bonus>
       <source>CA</source>
       <page>150</page>
     </quality>
@@ -12723,7 +12905,13 @@
       <name>Closer</name>
       <karma>4</karma>
       <category>Positive</category>
-      <bonus />
+      <bonus>
+        <specificskill>
+          <name>Negotiation</name>
+          <bonus>2</bonus>
+          <condition>Matters of life or death</condition>
+        </specificskill>
+      </bonus>
       <source>CA</source>
       <page>150</page>
     </quality>
@@ -12786,7 +12974,13 @@
       <name>Innocuous</name>
       <karma>5</karma>
       <category>Positive</category>
-      <bonus />
+      <bonus>
+        <specificskill>
+          <name>Sneaking</name>
+          <bonus>2</bonus>
+          <condition>Hiding in a crowd</condition>
+        </specificskill>
+      </bonus>
       <source>CA</source>
       <page>151</page>
     </quality>
@@ -12969,7 +13163,13 @@
       <karma>-3</karma>
       <category>Negative</category>
       <limit>3</limit>
-      <bonus />
+      <bonus>
+        <skillcategory>
+          <name>Social Active</name>
+          <bonus>-Rating</bonus>
+          <condition>When not looking your best</condition>
+        </skillcategory>
+      </bonus>
       <source>CA</source>
       <page>152</page>
     </quality>
@@ -17791,7 +17991,13 @@
       <name>Natural Leader</name>
       <karma>5</karma>
       <category>Positive</category>
-      <bonus />
+      <bonus>
+        <specificskill>
+          <name>Leadership</name>
+          <bonus>1</bonus>
+          <condition>Combat maneuvers</condition>
+        </specificskill>
+      </bonus>
       <source>SL</source>
       <page>127</page>
     </quality>
@@ -17824,6 +18030,11 @@
       <limit>False</limit>
       <bonus>
         <selecttext />
+        <skillcategory>
+          <name>Social Active</name>
+          <bonus>-2</bonus>
+          <condition>With corporate personnel</condition>
+        </skillcategory>
       </bonus>
       <source>SL</source>
       <page>127</page>
@@ -17836,6 +18047,11 @@
       <limit>False</limit>
       <bonus>
         <selecttext />
+        <skillcategory>
+          <name>Social Active</name>
+          <bonus>-3</bonus>
+          <condition>With corporate personnel</condition>
+        </skillcategory>
       </bonus>
       <source>SL</source>
       <page>127</page>
@@ -17882,7 +18098,13 @@
       <karma>-3</karma>
       <category>Negative</category>
       <limit>3</limit>
-      <bonus />
+      <bonus>
+        <skillcategory>
+          <name>Social Active</name>
+          <bonus>-Rating</bonus>
+          <condition>With non-combat personnel</condition>
+        </skillcategory>
+      </bonus>
       <source>SL</source>
       <page>181</page>
     </quality>
@@ -17940,7 +18162,13 @@
       <name>Basement Dweller</name>
       <karma>-8</karma>
       <category>Negative</category>
-      <bonus />
+      <bonus>
+        <skillcategory>
+          <name>Social Active</name>
+          <bonus>-2</bonus>
+          <condition>Meeting people the first time</condition>
+        </skillcategory>
+      </bonus>
       <source>KC</source>
       <page>77</page>
     </quality>
@@ -17996,7 +18224,7 @@
       <karma>-3</karma>
       <category>Negative</category>
       <bonus>
-        <selectskill limittoskill="Compiling, Computer, Cybercombat, Decompiling, Electronic Warfare, Hacking, Registering, Software" />
+        <selectskill limittoskill="Compiling,Computer,Cybercombat,Decompiling,Electronic Warfare,Hacking,Registering,Software" />
       </bonus>
       <source>KC</source>
       <page>78</page>
@@ -18024,7 +18252,13 @@
       <name>Malware Infection</name>
       <karma>-5</karma>
       <category>Negative</category>
-      <bonus />
+      <bonus>
+        <specificskill>
+          <name>Computer</name>
+          <bonus>-2</bonus>
+          <condition>Matrix Perception</condition>
+        </specificskill>
+      </bonus>
       <source>KC</source>
       <page>79</page>
     </quality>
@@ -18042,7 +18276,13 @@
       <name>Sloppy Code</name>
       <karma>-3</karma>
       <category>Negative</category>
-      <bonus />
+      <bonus>
+        <skillgroup>
+          <name>Stealth</name>
+          <bonus>-2</bonus>
+          <condition>When in hosts</condition>
+        </skillgroup>
+      </bonus>
       <source>KC</source>
       <page>79</page>
     </quality>
@@ -18207,7 +18447,9 @@
       <name>Natural Hacker</name>
       <karma>14</karma>
       <category>Positive</category>
-      <bonus />
+      <bonus>
+        <selecttext xml="actions.xml" xpath="/chummer/actions/action[category = 'Matrix' and type != 'No']/name" allowedit="True" />
+      </bonus>
       <required>
         <oneof>
           <quality>Technomancer</quality>
@@ -18570,7 +18812,12 @@
       <name>Sprite Combustion</name>
       <karma>-13</karma>
       <category>Negative</category>
-      <bonus />
+      <bonus>
+        <specificskill>
+          <name>Registering</name>
+          <bonus>-1</bonus>
+        </specificskill>
+      </bonus>
       <required>
         <oneof>
           <quality>Technomancer</quality>
@@ -18960,6 +19207,7 @@
       <name>Hair Trigger</name>
       <karma>2</karma>
       <category>Positive</category>
+      <bonus />
       <required>
         <oneof>
           <quality>Technomancer</quality>
@@ -18973,6 +19221,13 @@
       <name>Hi-Rez</name>
       <karma>4</karma>
       <category>Positive</category>
+      <bonus>
+        <specificskill>
+          <name>Computer</name>
+          <bonus>2</bonus>
+          <condition>Matrix Perception</condition>
+        </specificskill>
+      </bonus>
       <required>
         <oneof>
           <quality>Technomancer</quality>
@@ -18986,6 +19241,7 @@
       <name>Instinctive Hack</name>
       <karma>2</karma>
       <category>Positive</category>
+      <bonus />
       <source>BTB</source>
       <page>160</page>
     </quality>
@@ -18994,6 +19250,13 @@
       <name>Rabble Rouser</name>
       <karma>6</karma>
       <category>Positive</category>
+      <bonus>
+        <skillcategory>
+          <name>Social Active</name>
+          <bonus>2</bonus>
+          <condition>Crowds of ten or more people</condition>
+        </skillcategory>
+      </bonus>
       <source>BTB</source>
       <page>161</page>
     </quality>
@@ -19018,6 +19281,23 @@
       <category>Positive</category>
       <canbuywithspellpoints>True</canbuywithspellpoints>
       <doublecareer>False</doublecareer>
+      <bonus>
+        <specificskill>
+          <name>Compiling</name>
+          <bonus>2</bonus>
+          <condition>Hot-Sim</condition>
+        </specificskill>
+        <specificskill>
+          <name>Decompiling</name>
+          <bonus>2</bonus>
+          <condition>Hot-Sim</condition>
+        </specificskill>
+        <specificskill>
+          <name>Software</name>
+          <bonus>2</bonus>
+          <condition>Threading Complex Forms in Hot-Sim</condition>
+        </specificskill>
+      </bonus>
       <required>
         <allof>
           <attribute>
@@ -19035,6 +19315,7 @@
       <name>Prototype Materials</name>
       <karma>5</karma>
       <category>Positive</category>
+      <bonus />
       <forbidden>
         <oneof>
           <magenabled />
@@ -19054,6 +19335,7 @@
       <name>Shoot First, Don't Ask</name>
       <karma>2</karma>
       <category>Positive</category>
+      <bonus />
       <source>BTB</source>
       <page>161</page>
     </quality>

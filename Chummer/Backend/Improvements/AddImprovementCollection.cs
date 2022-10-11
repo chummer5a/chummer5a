@@ -2865,7 +2865,7 @@ namespace Chummer
             _objCharacter.LimitModifiers.Add(objLimitModifier);
 
             CreateImprovement(objLimitModifier.InternalId, _objImprovementSource, SourceName, Improvement.ImprovementType.LimitModifier,
-                _strUnique, decBonus, 0, 0, 0, 0, 0, string.Empty, false, string.Empty, strCondition);
+                _strUnique, decBonus, 0, 0, 0, 0, 0, string.Empty, false, strCondition: strCondition);
         }
 
         // The Improvement adjusts a Skill Category.
@@ -2881,13 +2881,14 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strName))
             {
                 bool blnAddToRating = bonusNode["applytorating"]?.InnerText == bool.TrueString;
-                string strExclude = bonusNode["exclude"]?.InnerText;
+                string strExclude = bonusNode["exclude"]?.InnerText ?? string.Empty;
+                string strCondition = bonusNode["condition"]?.InnerText ?? string.Empty;
                 CreateImprovement(strName, _objImprovementSource, SourceName,
                                   Improvement.ImprovementType.SkillCategory, _strUnique,
                                   ImprovementManager.ValueToDec(_objCharacter, bonusNode["bonus"]?.InnerXml,
                                                                 _intRating), 1, 0,
                                   0,
-                                  0, 0, !string.IsNullOrEmpty(strExclude) ? strExclude : string.Empty, blnAddToRating);
+                                  0, 0, !string.IsNullOrEmpty(strExclude) ? strExclude : string.Empty, blnAddToRating, strCondition: strCondition);
             }
         }
 
@@ -2904,12 +2905,13 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strName))
             {
                 bool blnAddToRating = bonusNode["applytorating"]?.InnerText == bool.TrueString;
-                string strExclude = bonusNode["exclude"]?.InnerText;
+                string strExclude = bonusNode["exclude"]?.InnerText ?? string.Empty;
+                string strCondition = bonusNode["condition"]?.InnerText ?? string.Empty;
                 CreateImprovement(strName, _objImprovementSource, SourceName,
                                   Improvement.ImprovementType.SkillGroup, _strUnique,
                                   ImprovementManager.ValueToDec(_objCharacter, bonusNode["bonus"]?.InnerXml,
                                                                 _intRating), 1, 0, 0, 0,
-                                  0, !string.IsNullOrEmpty(strExclude) ? strExclude : string.Empty, blnAddToRating);
+                                  0, !string.IsNullOrEmpty(strExclude) ? strExclude : string.Empty, blnAddToRating, strCondition: strCondition);
             }
         }
 
@@ -2931,13 +2933,14 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strName))
             {
                 bool blnAddToRating = bonusNode["applytorating"]?.InnerText == bool.TrueString;
-                string strExclude = bonusNode["exclude"]?.InnerText;
+                string strExclude = bonusNode["exclude"]?.InnerText ?? string.Empty;
+                string strCondition = bonusNode["condition"]?.InnerText ?? string.Empty;
                 CreateImprovement(strName, _objImprovementSource, SourceName,
                                   Improvement.ImprovementType.SkillAttribute, strUseUnique,
                                   ImprovementManager.ValueToDec(_objCharacter, bonusNode["bonus"]?.InnerXml,
                                                                 _intRating), 1,
-                                  0, 0, 0, 0, !string.IsNullOrEmpty(strExclude) ? strExclude : string.Empty,
-                                  blnAddToRating);
+                                  0, 0, 0, 0, strExclude,
+                                  blnAddToRating, strCondition: strCondition);
             }
         }
 
@@ -2959,13 +2962,14 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strName))
             {
                 bool blnAddToRating = bonusNode["applytorating"]?.InnerText == bool.TrueString;
-                string strExclude = bonusNode["exclude"]?.InnerText;
+                string strExclude = bonusNode["exclude"]?.InnerText ?? string.Empty;
+                string strCondition = bonusNode["condition"]?.InnerText ?? string.Empty;
                 CreateImprovement(strName, _objImprovementSource, SourceName,
                                   Improvement.ImprovementType.SkillLinkedAttribute, strUseUnique,
                                   ImprovementManager.ValueToDec(_objCharacter, bonusNode["bonus"]?.InnerXml,
                                                                 _intRating), 1,
-                                  0, 0, 0, 0, !string.IsNullOrEmpty(strExclude) ? strExclude : string.Empty,
-                                  blnAddToRating);
+                                  0, 0, 0, 0, strExclude,
+                                  blnAddToRating, strCondition: strCondition);
             }
         }
 

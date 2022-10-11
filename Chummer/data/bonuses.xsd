@@ -924,6 +924,7 @@
             <xs:element name="bonus" type="xs:string" minOccurs="0" maxOccurs="1" />
             <xs:element name="exclude" type="xs:string" minOccurs="0" maxOccurs="1" />
             <xs:element name="applytorating" type="xs:string" minOccurs="0" maxOccurs="1" />
+            <xs:element name="condition" type="xs:string" minOccurs="0" maxOccurs="1" />s
           </xs:sequence>
         </xs:complexType>
       </xs:element>
@@ -934,6 +935,7 @@
             <xs:element name="bonus" type="xs:string" minOccurs="0" maxOccurs="1" />
             <xs:element name="exclude" type="xs:string" minOccurs="0" maxOccurs="1" />
             <xs:element name="applytorating" type="xs:string" minOccurs="0" maxOccurs="1" />
+            <xs:element name="condition" type="xs:string" minOccurs="0" maxOccurs="1" />
           </xs:sequence>
         </xs:complexType>
       </xs:element>
@@ -1011,6 +1013,7 @@
             <xs:element name="exclude" type="xs:string" minOccurs="0" maxOccurs="1" />
             <xs:element name="bonus" type="xs:string" minOccurs="0" maxOccurs="1" />
             <xs:element name="applytorating" type="xs:string" minOccurs="0" maxOccurs="1" />
+            <xs:element name="condition" type="xs:string" minOccurs="0" maxOccurs="1" />
           </xs:sequence>
         </xs:complexType>
       </xs:element>
@@ -1127,6 +1130,7 @@
             <xs:element name="bonus" type="xs:string" minOccurs="0" maxOccurs="1" />
             <xs:element name="exclude" type="xs:string" minOccurs="0" maxOccurs="1" />
             <xs:element name="applytorating" type="xs:string" minOccurs="0" maxOccurs="1" />
+            <xs:element name="condition" type="xs:string" minOccurs="0" maxOccurs="1" />
           </xs:sequence>
         </xs:complexType>
       </xs:element>

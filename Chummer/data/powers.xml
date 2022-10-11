@@ -173,7 +173,7 @@
       <source>SR5</source>
       <page>309</page>
       <bonus>
-        <weaponskillaccuracy precedence="0">
+        <weaponskillaccuracy>
           <selectskill skillcategory="Combat Active" excludeskill="Unarmed Combat" />
           <value>1</value>
         </weaponskillaccuracy>

@@ -14,6 +14,13 @@ Data Changes:
 - Corrected the Cybercombat dice bonus of Intrusion Countermeasure (The Guardian) to be conditional because it is not granted against IC.
 - Added bonus nodes for Architect (The Builder) and Archivist (The Secret Keeper) paragons' dice bonuses for the Edit File and Matrix Search Computer actions respectively.
 - Modified Cyberlimb Optimization so that if the selected skill for it is a skill that can be used with weapons, the +1 limit modifier will show up as part of those weapons' accuracy. Existing characters with this 'ware will need to either re-buy it or reapply improvements to see the effects. Part of #4841.
+- Astral Chameleon can now properly only be taken by Awakened characters.
+- Technomancers now have their inherent +2 to Matrix Perception reflected in the program. Existing technomancers will need to reapply improvements to see this bonus.
+- City Slicker, Outdoorsman, Dimmer Bulb, Reduced Sense, Vomeronasal Organ, Critter Spook, Cyclopean Eye, Malware Infection, Sprite Combustion, and Hi-Rez now all have their dice pool effects reflected in the program.
+- Electroception now adds a specialization option for Electroception to the Perception skill.
+- Cyber-Snob now properly forbids access to Greyware-grade cyberware.
+- When taking Practice Practice Practice in a skill that can potentially be used in tandem with a weapon, its effect on said weapon's accuracy is now properly reflected in the program.
+- Natural Hacker now properly prompts the user as to which Matrix action it should affect.
 
 Changed/New Strings:
 - LimitCondition_SoldierParagon
