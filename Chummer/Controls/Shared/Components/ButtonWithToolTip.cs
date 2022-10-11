@@ -17,7 +17,6 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
-using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 

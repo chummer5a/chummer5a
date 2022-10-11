@@ -27,10 +27,6 @@ namespace Chummer
 {
     public class DpiFriendlyImagedButton : Button
     {
-        public DpiFriendlyImagedButton()
-        {
-        }
-
         public void RefreshImage()
         {
             if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)

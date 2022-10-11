@@ -1828,19 +1828,19 @@ namespace Chummer
 
                             await UpdateInitiationCost(GenericToken).ConfigureAwait(false);
 
-                            string strTemp = await LanguageManager.GetStringAsync("Tab_Initiation", token: GenericToken).ConfigureAwait(false);
-                            await tabInitiation.DoThreadSafeAsync(x => x.Text = strTemp, GenericToken).ConfigureAwait(false);
-                            strTemp = await LanguageManager.GetStringAsync("Button_AddMetamagic", token: GenericToken).ConfigureAwait(false);
-                            await cmsMetamagic.DoThreadSafeAsync(() => tsMetamagicAddMetamagic.Text = strTemp,
+                            string strTemp1 = await LanguageManager.GetStringAsync("Tab_Initiation", token: GenericToken).ConfigureAwait(false);
+                            await tabInitiation.DoThreadSafeAsync(x => x.Text = strTemp1, GenericToken).ConfigureAwait(false);
+                            string strTemp2 = await LanguageManager.GetStringAsync("Button_AddMetamagic", token: GenericToken).ConfigureAwait(false);
+                            await cmsMetamagic.DoThreadSafeAsync(() => tsMetamagicAddMetamagic.Text = strTemp2,
                                                                  GenericToken).ConfigureAwait(false);
-                            strTemp = await LanguageManager.GetStringAsync("Button_AddInitiateGrade", token: GenericToken).ConfigureAwait(false);
-                            await cmdAddMetamagic.DoThreadSafeAsync(x => x.Text = strTemp, GenericToken).ConfigureAwait(false);
-                            strTemp = await LanguageManager.GetStringAsync("Button_RemoveInitiateGrade", token: GenericToken).ConfigureAwait(false);
-                            await cmdDeleteMetamagic.DoThreadSafeAsync(x => x.Text = strTemp, GenericToken).ConfigureAwait(false);
-                            strTemp = await LanguageManager.GetStringAsync("String_InitiationType", token: GenericToken).ConfigureAwait(false);
-                            await gpbInitiationType.DoThreadSafeAsync(x => x.Text = strTemp, GenericToken).ConfigureAwait(false);
-                            strTemp = await LanguageManager.GetStringAsync("String_InitiationGroup", token: GenericToken).ConfigureAwait(false);
-                            await gpbInitiationGroup.DoThreadSafeAsync(x => x.Text = strTemp, GenericToken).ConfigureAwait(false);
+                            string strTemp3 = await LanguageManager.GetStringAsync("Button_AddInitiateGrade", token: GenericToken).ConfigureAwait(false);
+                            await cmdAddMetamagic.DoThreadSafeAsync(x => x.Text = strTemp3, GenericToken).ConfigureAwait(false);
+                            string strTemp4 = await LanguageManager.GetStringAsync("Button_RemoveInitiateGrade", token: GenericToken).ConfigureAwait(false);
+                            await cmdDeleteMetamagic.DoThreadSafeAsync(x => x.Text = strTemp4, GenericToken).ConfigureAwait(false);
+                            string strTemp5 = await LanguageManager.GetStringAsync("String_InitiationType", token: GenericToken).ConfigureAwait(false);
+                            await gpbInitiationType.DoThreadSafeAsync(x => x.Text = strTemp5, GenericToken).ConfigureAwait(false);
+                            string strTemp6 = await LanguageManager.GetStringAsync("String_InitiationGroup", token: GenericToken).ConfigureAwait(false);
+                            await gpbInitiationGroup.DoThreadSafeAsync(x => x.Text = strTemp6, GenericToken).ConfigureAwait(false);
                             string strText1 = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync(
                                                                 "Checkbox_InitiationOrdeal").ConfigureAwait(false),
                                                     CharacterObjectSettings.KarmaMAGInitiationOrdealPercent.ToString(
@@ -1873,8 +1873,8 @@ namespace Chummer
                                                               , CharacterObject.InitiateGrade + 1
                                                               , CharacterObjectSettings.KarmaInitiationFlat + (CharacterObject.InitiateGrade + 1) * CharacterObjectSettings.KarmaInitiation);
                             await cmdAddMetamagic.SetToolTipAsync(strInitTip, GenericToken).ConfigureAwait(false);
-                            strTemp = await LanguageManager.GetStringAsync("Checkbox_JoinedGroup", token: GenericToken).ConfigureAwait(false);
-                            await chkJoinGroup.DoThreadSafeAsync(x => x.Text = strTemp, GenericToken).ConfigureAwait(false);
+                            string strTemp7 = await LanguageManager.GetStringAsync("Checkbox_JoinedGroup", token: GenericToken).ConfigureAwait(false);
+                            await chkJoinGroup.DoThreadSafeAsync(x => x.Text = strTemp7, GenericToken).ConfigureAwait(false);
 
                             if (!await CharacterObject.AttributeSection.Attributes.ContainsAsync(CharacterObject.MAG).ConfigureAwait(false))
                             {
@@ -1929,19 +1929,19 @@ namespace Chummer
 
                             await UpdateInitiationCost(GenericToken).ConfigureAwait(false);
 
-                            string strTemp = await LanguageManager.GetStringAsync("Tab_Submersion", token: GenericToken).ConfigureAwait(false);
-                            await tabInitiation.DoThreadSafeAsync(x => x.Text = strTemp, GenericToken).ConfigureAwait(false);
-                            strTemp = await LanguageManager.GetStringAsync("Button_AddEcho", token: GenericToken).ConfigureAwait(false);
-                            await cmsMetamagic.DoThreadSafeAsync(() => tsMetamagicAddMetamagic.Text = strTemp,
+                            string strTemp1 = await LanguageManager.GetStringAsync("Tab_Submersion", token: GenericToken).ConfigureAwait(false);
+                            await tabInitiation.DoThreadSafeAsync(x => x.Text = strTemp1, GenericToken).ConfigureAwait(false);
+                            string strTemp2 = await LanguageManager.GetStringAsync("Button_AddEcho", token: GenericToken).ConfigureAwait(false);
+                            await cmsMetamagic.DoThreadSafeAsync(() => tsMetamagicAddMetamagic.Text = strTemp2,
                                                                  GenericToken).ConfigureAwait(false);
-                            strTemp = await LanguageManager.GetStringAsync("Button_AddSubmersionGrade", token: GenericToken).ConfigureAwait(false);
-                            await cmdAddMetamagic.DoThreadSafeAsync(x => x.Text = strTemp, GenericToken).ConfigureAwait(false);
-                            strTemp = await LanguageManager.GetStringAsync("Button_RemoveSubmersionGrade", token: GenericToken).ConfigureAwait(false);
-                            await cmdDeleteMetamagic.DoThreadSafeAsync(x => x.Text = strTemp, GenericToken).ConfigureAwait(false);
-                            strTemp = await LanguageManager.GetStringAsync("String_SubmersionType", token: GenericToken).ConfigureAwait(false);
-                            await gpbInitiationType.DoThreadSafeAsync(x => x.Text = strTemp, GenericToken).ConfigureAwait(false);
-                            strTemp = await LanguageManager.GetStringAsync("String_SubmersionNetwork", token: GenericToken).ConfigureAwait(false);
-                            await gpbInitiationGroup.DoThreadSafeAsync(x => x.Text = strTemp, GenericToken).ConfigureAwait(false);
+                            string strTemp3 = await LanguageManager.GetStringAsync("Button_AddSubmersionGrade", token: GenericToken).ConfigureAwait(false);
+                            await cmdAddMetamagic.DoThreadSafeAsync(x => x.Text = strTemp3, GenericToken).ConfigureAwait(false);
+                            string strTemp4 = await LanguageManager.GetStringAsync("Button_RemoveSubmersionGrade", token: GenericToken).ConfigureAwait(false);
+                            await cmdDeleteMetamagic.DoThreadSafeAsync(x => x.Text = strTemp4, GenericToken).ConfigureAwait(false);
+                            string strTemp5 = await LanguageManager.GetStringAsync("String_SubmersionType", token: GenericToken).ConfigureAwait(false);
+                            await gpbInitiationType.DoThreadSafeAsync(x => x.Text = strTemp5, GenericToken).ConfigureAwait(false);
+                            string strTemp6 = await LanguageManager.GetStringAsync("String_SubmersionNetwork", token: GenericToken).ConfigureAwait(false);
+                            await gpbInitiationGroup.DoThreadSafeAsync(x => x.Text = strTemp6, GenericToken).ConfigureAwait(false);
                             string strText1 = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync(
                                                                 "Checkbox_SubmersionTask").ConfigureAwait(false),
                                                     CharacterObjectSettings.KarmaRESInitiationOrdealPercent.ToString(
@@ -1974,8 +1974,8 @@ namespace Chummer
                                                               , CharacterObject.SubmersionGrade + 1
                                                               , CharacterObjectSettings.KarmaInitiationFlat + (CharacterObject.SubmersionGrade + 1) * CharacterObjectSettings.KarmaInitiation);
                             await cmdAddMetamagic.SetToolTipAsync(strInitTip, GenericToken).ConfigureAwait(false);
-                            strTemp = await LanguageManager.GetStringAsync("Checkbox_JoinedNetwork", token: GenericToken).ConfigureAwait(false);
-                            await chkJoinGroup.DoThreadSafeAsync(x => x.Text = strTemp, GenericToken).ConfigureAwait(false);
+                            string strTemp7 = await LanguageManager.GetStringAsync("Checkbox_JoinedNetwork", token: GenericToken).ConfigureAwait(false);
+                            await chkJoinGroup.DoThreadSafeAsync(x => x.Text = strTemp7, GenericToken).ConfigureAwait(false);
 
                             if (CharacterObject.AttributeSection.Attributes != null && !await CharacterObject.AttributeSection.Attributes.ContainsAsync(
                                     CharacterObject.RES).ConfigureAwait(false))
@@ -3808,18 +3808,27 @@ namespace Chummer
 
             try
             {
-                string strFileName;
+                string strFileName = string.Empty;
+                string strFilter = await LanguageManager.GetStringAsync("DialogFilter_Chummer").ConfigureAwait(false)
+                                   + '|' +
+                                   await LanguageManager.GetStringAsync("DialogFilter_Chum5").ConfigureAwait(false)
+                                   + '|' +
+                                   await LanguageManager.GetStringAsync("DialogFilter_Chum5lz").ConfigureAwait(false)
+                                   + '|' +
+                                   await LanguageManager.GetStringAsync("DialogFilter_All").ConfigureAwait(false);
                 // Prompt the user to select a save file to possess.
-                using (OpenFileDialog dlgOpenFile = await this.DoThreadSafeFuncAsync(() => new OpenFileDialog(), GenericToken).ConfigureAwait(false))
+                DialogResult eResult = await this.DoThreadSafeFuncAsync(x =>
                 {
-                    dlgOpenFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Chummer").ConfigureAwait(false) + '|' +
-                                         await LanguageManager.GetStringAsync("DialogFilter_Chum5").ConfigureAwait(false) + '|' +
-                                         await LanguageManager.GetStringAsync("DialogFilter_Chum5lz").ConfigureAwait(false) + '|' +
-                                         await LanguageManager.GetStringAsync("DialogFilter_All").ConfigureAwait(false);
-                    if (await this.DoThreadSafeFuncAsync(x => dlgOpenFile.ShowDialog(x), GenericToken).ConfigureAwait(false) != DialogResult.OK)
-                        return;
-                    strFileName = dlgOpenFile.FileName;
-                }
+                    using (OpenFileDialog dlgOpenFile = new OpenFileDialog())
+                    {
+                        dlgOpenFile.Filter = strFilter;
+                        DialogResult eReturn = dlgOpenFile.ShowDialog(x);
+                        strFileName = dlgOpenFile.FileName;
+                        return eReturn;
+                    }
+                }, GenericToken);
+                if (eResult != DialogResult.OK)
+                    return;
 
                 string strOpenFile = string.Empty;
                 CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
@@ -4504,10 +4513,11 @@ namespace Chummer
                         break;
                     }
 
+                    int intInitialCost = intSpellKarmaCost;
                     using (ThreadSafeForm<SelectSpell> frmPickSpell = await ThreadSafeForm<SelectSpell>.GetAsync(
                                () => new SelectSpell(CharacterObject)
                                {
-                                   FreeOnly = intKarma < intSpellKarmaCost &&
+                                   FreeOnly = intKarma < intInitialCost &&
                                               (blnCanTouchOnlySpellBeFree || blnCanGenericSpellBeFree)
                                }, GenericToken).ConfigureAwait(false))
                     {
@@ -6054,7 +6064,8 @@ namespace Chummer
                         return;
 
                     // Locate the selected Vehicle.
-                    objVehicle = await CharacterObject.Vehicles.FirstOrDefaultAsync(x => x.InternalId == frmPickItem.MyForm.SelectedItem, GenericToken).ConfigureAwait(false);
+                    string strItem = frmPickItem.MyForm.SelectedItem;
+                    objVehicle = await CharacterObject.Vehicles.FirstOrDefaultAsync(x => x.InternalId == strItem, GenericToken).ConfigureAwait(false);
                 }
 
                 if (objVehicle == null)
@@ -6404,8 +6415,9 @@ namespace Chummer
                         int intDummy = 0;
                         if (objXmlQuality != null && objXmlQuality["nolevels"] == null && objXmlQuality.TryGetInt32FieldQuickly("limit", ref intDummy))
                         {
+                            string strQuality = frmPickQuality.MyForm.SelectedQuality;
                             intRatingToAdd -= await CharacterObject.Qualities.CountAsync(x =>
-                                x.SourceIDString.Equals(frmPickQuality.MyForm.SelectedQuality,
+                                x.SourceIDString.Equals(strQuality,
                                                         StringComparison.InvariantCultureIgnoreCase)
                                 && string.IsNullOrEmpty(x.SourceName), GenericToken).ConfigureAwait(false);
                         }
@@ -6617,8 +6629,9 @@ namespace Chummer
                     int intDummy = 0;
                     if (objXmlQuality != null && objXmlQuality["nolevels"] == null && objXmlQuality.TryGetInt32FieldQuickly("limit", ref intDummy))
                     {
+                        string strQuality = frmPickQuality.MyForm.SelectedQuality;
                         intRatingToAdd -= await CharacterObject.Qualities.CountAsync(x =>
-                            x.SourceIDString.Equals(frmPickQuality.MyForm.SelectedQuality,
+                            x.SourceIDString.Equals(strQuality,
                                                     StringComparison.InvariantCultureIgnoreCase) && string.IsNullOrEmpty(x.SourceName), GenericToken).ConfigureAwait(false);
                     }
                 }
@@ -7376,41 +7389,50 @@ namespace Chummer
         private async ValueTask DoEditImprovement(CancellationToken token = default)
         {
             // Edit the selected Improvement.
-            if (!(await treImprovements.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token).ConfigureAwait(false) is Improvement objImprovement))
+            if (!(await treImprovements.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token).ConfigureAwait(false) is
+                    Improvement objImprovement))
                 return;
-            using (ThreadSafeForm<CreateImprovement> frmPickImprovement = await ThreadSafeForm<CreateImprovement>.GetAsync(
-                       () => new CreateImprovement(CharacterObject, objImprovement.CustomGroup)
-                       {
-                           EditImprovementObject = objImprovement
-                       }, token).ConfigureAwait(false))
+            Improvement objNewImprovement;
+            using (ThreadSafeForm<CreateImprovement> frmPickImprovement = await ThreadSafeForm<CreateImprovement>
+                       .GetAsync(
+                           () => new CreateImprovement(CharacterObject, objImprovement.CustomGroup)
+                           {
+                               EditImprovementObject = objImprovement
+                           }, token).ConfigureAwait(false))
             {
-                if (await frmPickImprovement.ShowDialogSafeAsync(this, token).ConfigureAwait(false) == DialogResult.Cancel)
+                if (await frmPickImprovement.ShowDialogSafeAsync(this, token).ConfigureAwait(false)
+                    == DialogResult.Cancel)
                     return;
+                objNewImprovement = frmPickImprovement.MyForm.NewImprovement;
+            }
 
-                TreeNode newNode = null;
-                if (!string.IsNullOrEmpty(frmPickImprovement.MyForm.NewImprovement?.InternalId))
-                    newNode = await treImprovements.DoThreadSafeFuncAsync(x => x.FindNode(frmPickImprovement.MyForm.NewImprovement.InternalId), token).ConfigureAwait(false);
+            TreeNode newNode = null;
+            if (!string.IsNullOrEmpty(objNewImprovement?.InternalId))
+                newNode = await treImprovements
+                                .DoThreadSafeFuncAsync(x => x.FindNode(objNewImprovement.InternalId), token)
+                                .ConfigureAwait(false);
 
-                if (newNode != null)
+            if (newNode != null)
+            {
+                await treImprovements.DoThreadSafeAsync(() =>
                 {
-                    await treImprovements.DoThreadSafeAsync(() =>
-                    {
-                        newNode.Text = frmPickImprovement.MyForm.NewImprovement.CustomName;
-                        newNode.ForeColor = frmPickImprovement.MyForm.NewImprovement.PreferredColor;
-                        newNode.ToolTipText = frmPickImprovement.MyForm.NewImprovement.Notes;
-                    }, token).ConfigureAwait(false);
-                }
-                else
-                {
-                    Utils.BreakIfDebug();
-                }
+                    newNode.Text = objNewImprovement.CustomName;
+                    newNode.ForeColor = objNewImprovement.PreferredColor;
+                    newNode.ToolTipText = objNewImprovement.Notes;
+                }, token).ConfigureAwait(false);
+            }
+            else
+            {
+                Utils.BreakIfDebug();
+            }
 
-                //TODO: This is currently necessary because the Custom Improvement refresh fires before the improvement is assigned a custom group.
-                // Simplest way to fix this would be to make the customgroup a variable in the CreateImprovements method, but that's spooky.
-                if (!string.IsNullOrWhiteSpace(frmPickImprovement.MyForm.NewImprovement?.CustomGroup))
-                {
-                    await RefreshCustomImprovements(treImprovements, lmtControl.LimitTreeView, cmsImprovementLocation, cmsImprovement, lmtControl.LimitContextMenuStrip, token: token).ConfigureAwait(false);
-                }
+            //TODO: This is currently necessary because the Custom Improvement refresh fires before the improvement is assigned a custom group.
+            // Simplest way to fix this would be to make the customgroup a variable in the CreateImprovements method, but that's spooky.
+            if (!string.IsNullOrWhiteSpace(objNewImprovement?.CustomGroup))
+            {
+                await RefreshCustomImprovements(treImprovements, lmtControl.LimitTreeView, cmsImprovementLocation,
+                                                cmsImprovement, lmtControl.LimitContextMenuStrip, token: token)
+                    .ConfigureAwait(false);
             }
 
             await RequestCharacterUpdate(token).ConfigureAwait(false);
@@ -13324,9 +13346,10 @@ namespace Chummer
                         return;
 
                     // Locate the selected Vehicle.
+                    string strSelectedItem = frmPickItem.MyForm.SelectedItem;
                     Vehicle objVehicle
                         = await CharacterObject.Vehicles.FirstOrDefaultAsync(
-                            x => x.InternalId == frmPickItem.MyForm.SelectedItem, GenericToken).ConfigureAwait(false);
+                            x => x.InternalId == strSelectedItem, GenericToken).ConfigureAwait(false);
                     if (objVehicle == null)
                         return;
 
@@ -15319,14 +15342,14 @@ namespace Chummer
                     await lblCritterPowerName.DoThreadSafeAsync(x => x.Text = objPower.CurrentDisplayName, token).ConfigureAwait(false);
                     string strText = await objPower.DisplayCategoryAsync(GlobalSettings.Language, token).ConfigureAwait(false);
                     await lblCritterPowerCategory.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
-                    strText = await objPower.DisplayTypeAsync(GlobalSettings.Language, token).ConfigureAwait(false);
-                    await lblCritterPowerType.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
-                    strText = await objPower.DisplayActionAsync(GlobalSettings.Language, token).ConfigureAwait(false);
-                    await lblCritterPowerAction.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
-                    strText = await objPower.DisplayRangeAsync(GlobalSettings.Language, token).ConfigureAwait(false);
-                    await lblCritterPowerRange.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
-                    strText = await objPower.DisplayDurationAsync(GlobalSettings.Language, token).ConfigureAwait(false);
-                    await lblCritterPowerDuration.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
+                    string strText2 = await objPower.DisplayTypeAsync(GlobalSettings.Language, token).ConfigureAwait(false);
+                    await lblCritterPowerType.DoThreadSafeAsync(x => x.Text = strText2, token).ConfigureAwait(false);
+                    string strText3 = await objPower.DisplayActionAsync(GlobalSettings.Language, token).ConfigureAwait(false);
+                    await lblCritterPowerAction.DoThreadSafeAsync(x => x.Text = strText3, token).ConfigureAwait(false);
+                    string strText4 = await objPower.DisplayRangeAsync(GlobalSettings.Language, token).ConfigureAwait(false);
+                    await lblCritterPowerRange.DoThreadSafeAsync(x => x.Text = strText4, token).ConfigureAwait(false);
+                    string strText5 = await objPower.DisplayDurationAsync(GlobalSettings.Language, token).ConfigureAwait(false);
+                    await lblCritterPowerDuration.DoThreadSafeAsync(x => x.Text = strText5, token).ConfigureAwait(false);
                     await chkCritterPowerCount.DoThreadSafeAsync(x => x.Checked = objPower.CountTowardsLimit, token).ConfigureAwait(false);
                     await objPower.SetSourceDetailAsync(lblCritterPowerSource, token).ConfigureAwait(false);
                     if (objPower.PowerPoints > 0)
@@ -17075,11 +17098,11 @@ namespace Chummer
                             x.Text = objWeapon.DisplayConcealability;
                         }, token).ConfigureAwait(false);
                         await cmdWeaponMoveToVehicle.DoThreadSafeAsync(x => x.Visible = blnDeleteWeaponEnabled && CharacterObject.Vehicles.Count > 0, token).ConfigureAwait(false);
-                        strText = await LanguageManager.GetStringAsync(
+                        string strText2 = await LanguageManager.GetStringAsync(
                             objWeapon.Parent == null ? "Checkbox_Equipped" : "Checkbox_Installed", token: token).ConfigureAwait(false);
                         await chkWeaponEquipped.DoThreadSafeAsync(x =>
                         {
-                            x.Text = strText;
+                            x.Text = strText2;
                             x.Enabled = !objWeapon.IncludedInWeapon;
                             x.Checked = objWeapon.Equipped;
                         }, token).ConfigureAwait(false);
@@ -17091,8 +17114,8 @@ namespace Chummer
                         }, token).ConfigureAwait(false);
                         token.ThrowIfCancellationRequested();
                         // gpbWeaponsWeapon
-                        strText = await LanguageManager.GetStringAsync("String_Weapon", token: token).ConfigureAwait(false);
-                        await gpbWeaponsWeapon.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
+                        string strText3 = await LanguageManager.GetStringAsync("String_Weapon", token: token).ConfigureAwait(false);
+                        await gpbWeaponsWeapon.DoThreadSafeAsync(x => x.Text = strText3, token).ConfigureAwait(false);
                         await lblWeaponDamageLabel.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
                         await lblWeaponDamage.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
                         await lblWeaponDamage.DoThreadSafeAsync(x => x.Text = objWeapon.DisplayDamage, token).ConfigureAwait(false);
@@ -17465,12 +17488,12 @@ namespace Chummer
                                 = objSelectedAccessory.TotalConcealability.ToString(
                                     "+#,0;-#,0;0", GlobalSettings.CultureInfo);
                         }, token).ConfigureAwait(false);
-                        strText = await LanguageManager.GetStringAsync(objSelectedAccessory.Parent == null
+                        string strText2 = await LanguageManager.GetStringAsync(objSelectedAccessory.Parent == null
                                                                            ? "Checkbox_Equipped"
                                                                            : "Checkbox_Installed", token: token).ConfigureAwait(false);
                         await chkWeaponEquipped.DoThreadSafeAsync(x =>
                         {
-                            x.Text = strText;
+                            x.Text = strText2;
                             x.Enabled = !objSelectedAccessory.IncludedInWeapon;
                             x.Checked = objSelectedAccessory.Equipped;
                         }, token).ConfigureAwait(false);
@@ -17482,8 +17505,8 @@ namespace Chummer
                         }, token).ConfigureAwait(false);
                         token.ThrowIfCancellationRequested();
                         // gpbWeaponsWeapon
-                        strText = await LanguageManager.GetStringAsync("String_WeaponAccessory", token: token).ConfigureAwait(false);
-                        await gpbWeaponsWeapon.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
+                        string strText3 = await LanguageManager.GetStringAsync("String_WeaponAccessory", token: token).ConfigureAwait(false);
+                        await gpbWeaponsWeapon.DoThreadSafeAsync(x => x.Text = strText3, token).ConfigureAwait(false);
                         if (string.IsNullOrEmpty(objSelectedAccessory.Damage))
                         {
                             await lblWeaponDamageLabel.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
@@ -19468,7 +19491,8 @@ namespace Chummer
                         await cmdDeleteVehicle.DoThreadSafeAsync(x => x.Enabled = string.IsNullOrEmpty(objVehicle.ParentID), token).ConfigureAwait(false);
                         token.ThrowIfCancellationRequested();
                         // gpbVehiclesCommon
-                        await lblVehicleName.DoThreadSafeAsync(x => x.Text = objVehicle.CurrentDisplayName, token).ConfigureAwait(false);
+                        string strName = await objVehicle.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                        await lblVehicleName.DoThreadSafeAsync(x => x.Text = strName, token).ConfigureAwait(false);
                         await lblVehicleCategory.DoThreadSafeAsync(x => x.Text = objVehicle.DisplayCategory(GlobalSettings.Language), token).ConfigureAwait(false);
                         await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
                         await lblVehicleRating.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
@@ -19627,44 +19651,59 @@ namespace Chummer
                         break;
                     }
                     case WeaponMount objWeaponMount:
+                    {
                         await gpbVehiclesCommon.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
                         await gpbVehiclesVehicle.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
                         await gpbVehiclesWeapon.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
                         await gpbVehiclesMatrix.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
                         token.ThrowIfCancellationRequested();
                         // Buttons
-                        await cmdDeleteVehicle.DoThreadSafeAsync(x => x.Enabled = !objWeaponMount.IncludedInVehicle, token).ConfigureAwait(false);
+                        await cmdDeleteVehicle
+                              .DoThreadSafeAsync(x => x.Enabled = !objWeaponMount.IncludedInVehicle, token)
+                              .ConfigureAwait(false);
                         token.ThrowIfCancellationRequested();
                         // gpbVehiclesCommon
-                        await lblVehicleCategory.DoThreadSafeAsync(x => x.Text = objWeaponMount.DisplayCategory(GlobalSettings.Language), token).ConfigureAwait(false);
-                        await lblVehicleName.DoThreadSafeAsync(x => x.Text = objWeaponMount.CurrentDisplayName, token).ConfigureAwait(false);
-                        await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
+                        await lblVehicleCategory
+                              .DoThreadSafeAsync(x => x.Text = objWeaponMount.DisplayCategory(GlobalSettings.Language),
+                                                 token).ConfigureAwait(false);
+                        string strName = await objWeaponMount.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                        await lblVehicleName.DoThreadSafeAsync(x => x.Text = strName, token).ConfigureAwait(false);
+                        await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = false, token)
+                                                   .ConfigureAwait(false);
                         await lblVehicleRating.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
-                        await lblVehicleGearQtyLabel.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
+                        await lblVehicleGearQtyLabel.DoThreadSafeAsync(x => x.Visible = false, token)
+                                                    .ConfigureAwait(false);
                         await lblVehicleGearQty.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
-                        await cmdVehicleGearReduceQty.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
-                        await lblVehicleAvail.DoThreadSafeAsync(x => x.Text = objWeaponMount.DisplayTotalAvail, token).ConfigureAwait(false);
+                        await cmdVehicleGearReduceQty.DoThreadSafeAsync(x => x.Visible = false, token)
+                                                     .ConfigureAwait(false);
+                        await lblVehicleAvail.DoThreadSafeAsync(x => x.Text = objWeaponMount.DisplayTotalAvail, token)
+                                             .ConfigureAwait(false);
                         await lblVehicleCost.DoThreadSafeAsync(x => x.Text
                                                                    = objWeaponMount.TotalCost.ToString(
                                                                        CharacterObjectSettings.NuyenFormat,
-                                                                       GlobalSettings.CultureInfo), token).ConfigureAwait(false);
-                        await lblVehicleSlotsLabel.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
+                                                                       GlobalSettings.CultureInfo), token)
+                                            .ConfigureAwait(false);
+                        await lblVehicleSlotsLabel.DoThreadSafeAsync(x => x.Visible = true, token)
+                                                  .ConfigureAwait(false);
                         await lblVehicleSlots.DoThreadSafeAsync(x =>
                         {
                             x.Visible = true;
                             x.Text = objWeaponMount.CalculatedSlots.ToString(GlobalSettings.CultureInfo);
                         }, token).ConfigureAwait(false);
-                        await cmdVehicleMoveToInventory.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
-                        await cmdVehicleCyberwareChangeMount.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
+                        await cmdVehicleMoveToInventory.DoThreadSafeAsync(x => x.Visible = false, token)
+                                                       .ConfigureAwait(false);
+                        await cmdVehicleCyberwareChangeMount.DoThreadSafeAsync(x => x.Visible = false, token)
+                                                            .ConfigureAwait(false);
                         await chkVehicleWeaponAccessoryInstalled.DoThreadSafeAsync(x =>
                         {
                             x.Visible = true;
                             x.Checked = objWeaponMount.Equipped;
                             x.Enabled = !objWeaponMount.IncludedInVehicle;
                         }, token).ConfigureAwait(false);
-                        await chkVehicleIncludedInWeapon.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
+                        await chkVehicleIncludedInWeapon.DoThreadSafeAsync(x => x.Visible = false, token)
+                                                        .ConfigureAwait(false);
                         break;
-
+                    }
                     case VehicleMod objMod:
                     {
                         await gpbVehiclesCommon.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
@@ -19676,11 +19715,12 @@ namespace Chummer
                         await cmdDeleteVehicle.DoThreadSafeAsync(x => x.Enabled = !objMod.IncludedInVehicle, token).ConfigureAwait(false);
                         token.ThrowIfCancellationRequested();
                         // gpbVehiclesCommon
-                        await lblVehicleName.DoThreadSafeAsync(x => x.Text = objMod.CurrentDisplayName, token).ConfigureAwait(false);
+                        string strName = await objMod.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                        await lblVehicleName.DoThreadSafeAsync(x => x.Text = strName, token).ConfigureAwait(false);
                         string strText = await LanguageManager.GetStringAsync("String_VehicleModification", token: token).ConfigureAwait(false);
                         await lblVehicleCategory.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
-                        strText = await LanguageManager.GetStringAsync(objMod.RatingLabel, token: token).ConfigureAwait(false);
-                        await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
+                        string strText2 = await LanguageManager.GetStringAsync(objMod.RatingLabel, token: token).ConfigureAwait(false);
+                        await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Text = strText2, token).ConfigureAwait(false);
                         if (!objMod.MaxRating.Equals("qty", StringComparison.OrdinalIgnoreCase))
                         {
                             if (objMod.MaxRating.Equals("seats", StringComparison.OrdinalIgnoreCase))
@@ -19759,7 +19799,8 @@ namespace Chummer
                                                                          "Quality", StringComparison.Ordinal), token).ConfigureAwait(false);
                         token.ThrowIfCancellationRequested();
                         // gpbVehiclesCommon
-                        await lblVehicleName.DoThreadSafeAsync(x => x.Text = objWeapon.CurrentDisplayName, token).ConfigureAwait(false);
+                        string strName = await objWeapon.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false);
+                        await lblVehicleName.DoThreadSafeAsync(x => x.Text = strName, token).ConfigureAwait(false);
                         string strText = await objWeapon.DisplayCategoryAsync(GlobalSettings.Language, token).ConfigureAwait(false);
                         await lblVehicleCategory.DoThreadSafeAsync(x => x.Text = strText, token: token).ConfigureAwait(false);
                         await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
@@ -20103,7 +20144,8 @@ namespace Chummer
                         // Buttons
                         await cmdDeleteVehicle.DoThreadSafeAsync(x => x.Enabled = !objAccessory.IncludedInWeapon, token).ConfigureAwait(false);
                         // gpbVehiclesCommon
-                        await lblVehicleName.DoThreadSafeAsync(x => x.Text = objAccessory.CurrentDisplayNameShort, token).ConfigureAwait(false);
+                        string strName = await objAccessory.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false);
+                        await lblVehicleName.DoThreadSafeAsync(x => x.Text = strName, token).ConfigureAwait(false);
                         string strText = await LanguageManager.GetStringAsync("String_VehicleWeaponAccessory", token: token).ConfigureAwait(false);
                         await lblVehicleCategory.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
                         if (objAccessory.MaxRating > 0)
@@ -20181,8 +20223,8 @@ namespace Chummer
                         }, token).ConfigureAwait(false);
                         token.ThrowIfCancellationRequested();
                         // gpbWeaponsWeapon
-                        strText = await LanguageManager.GetStringAsync("String_WeaponAccessory", token: token).ConfigureAwait(false);
-                        await gpbWeaponsWeapon.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
+                        string strText3 = await LanguageManager.GetStringAsync("String_WeaponAccessory", token: token).ConfigureAwait(false);
+                        await gpbWeaponsWeapon.DoThreadSafeAsync(x => x.Text = strText3, token).ConfigureAwait(false);
                         if (string.IsNullOrEmpty(objAccessory.Damage))
                         {
                             await lblVehicleWeaponDamageLabel.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
@@ -20317,7 +20359,8 @@ namespace Chummer
                         // Buttons
                         await cmdDeleteVehicle.DoThreadSafeAsync(x => x.Enabled = string.IsNullOrEmpty(objCyberware.ParentID), token).ConfigureAwait(false);
                         // gpbVehiclesCommon
-                        await lblVehicleName.DoThreadSafeAsync(x => x.Text = objCyberware.CurrentDisplayNameShort, token).ConfigureAwait(false);
+                        string strName = await objCyberware.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false);
+                        await lblVehicleName.DoThreadSafeAsync(x => x.Text = strName, token).ConfigureAwait(false);
                         string strText = await objCyberware.DisplayCategoryAsync(GlobalSettings.Language, token).ConfigureAwait(false);
                         await lblVehicleCategory.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
                         if (objCyberware.MaxRating == 0)
@@ -20386,7 +20429,8 @@ namespace Chummer
                         // Buttons
                         await cmdDeleteVehicle.DoThreadSafeAsync(x => x.Enabled = !objGear.IncludedInParent, token).ConfigureAwait(false);
                         // gpbVehiclesCommon
-                        await lblVehicleName.DoThreadSafeAsync(x => x.Text = objGear.CurrentDisplayNameShort, token).ConfigureAwait(false);
+                        string strName = await objGear.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false);
+                        await lblVehicleName.DoThreadSafeAsync(x => x.Text = strName, token).ConfigureAwait(false);
                         await lblVehicleCategory.DoThreadSafeAsync(x => x.Text = objGear.DisplayCategory(GlobalSettings.Language), token).ConfigureAwait(false);
                         await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
                         await lblVehicleRating.DoThreadSafeAsync(x =>
@@ -20929,18 +20973,18 @@ namespace Chummer
                     if (string.IsNullOrEmpty(strText))
                         strText = await LanguageManager.GetStringAsync("String_None", token: token).ConfigureAwait(false);
                     await lblSpellDescriptors.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
-                    strText = await objSpell.DisplayCategoryAsync(GlobalSettings.Language, token).ConfigureAwait(false);
-                    await lblSpellCategory.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
-                    strText = await objSpell.DisplayTypeAsync(GlobalSettings.Language, token).ConfigureAwait(false);
-                    await lblSpellType.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
-                    strText = await objSpell.DisplayRangeAsync(GlobalSettings.Language, token).ConfigureAwait(false);
-                    await lblSpellRange.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
-                    strText = await objSpell.DisplayDamageAsync(GlobalSettings.Language, token).ConfigureAwait(false);
-                    await lblSpellDamage.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
-                    strText = await objSpell.DisplayDurationAsync(GlobalSettings.Language, token).ConfigureAwait(false);
-                    await lblSpellDuration.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
-                    strText = await objSpell.DisplayDvAsync(GlobalSettings.Language, token).ConfigureAwait(false);
-                    await lblSpellDV.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
+                    string strText2 = await objSpell.DisplayCategoryAsync(GlobalSettings.Language, token).ConfigureAwait(false);
+                    await lblSpellCategory.DoThreadSafeAsync(x => x.Text = strText2, token).ConfigureAwait(false);
+                    string strText3 = await objSpell.DisplayTypeAsync(GlobalSettings.Language, token).ConfigureAwait(false);
+                    await lblSpellType.DoThreadSafeAsync(x => x.Text = strText3, token).ConfigureAwait(false);
+                    string strText4 = await objSpell.DisplayRangeAsync(GlobalSettings.Language, token).ConfigureAwait(false);
+                    await lblSpellRange.DoThreadSafeAsync(x => x.Text = strText4, token).ConfigureAwait(false);
+                    string strText5 = await objSpell.DisplayDamageAsync(GlobalSettings.Language, token).ConfigureAwait(false);
+                    await lblSpellDamage.DoThreadSafeAsync(x => x.Text = strText5, token).ConfigureAwait(false);
+                    string strText6 = await objSpell.DisplayDurationAsync(GlobalSettings.Language, token).ConfigureAwait(false);
+                    await lblSpellDuration.DoThreadSafeAsync(x => x.Text = strText6, token).ConfigureAwait(false);
+                    string strText7 = await objSpell.DisplayDvAsync(GlobalSettings.Language, token).ConfigureAwait(false);
+                    await lblSpellDV.DoThreadSafeAsync(x => x.Text = strText7, token).ConfigureAwait(false);
                     await lblSpellDV.SetToolTipAsync(objSpell.DvTooltip, token).ConfigureAwait(false);
                     await objSpell.SetSourceDetailAsync(lblSpellSource, token).ConfigureAwait(false);
                     // Determine the size of the Spellcasting Dice Pool.
@@ -21123,10 +21167,10 @@ namespace Chummer
                     await cmdDeleteComplexForm.DoThreadSafeAsync(x => x.Enabled = objComplexForm.Grade == 0, token).ConfigureAwait(false);
                     string strText = await objComplexForm.DisplayTargetAsync(GlobalSettings.Language, token).ConfigureAwait(false);
                     await lblTarget.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
-                    strText = await objComplexForm.DisplayDurationAsync(GlobalSettings.Language, token).ConfigureAwait(false);
-                    await lblDuration.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
-                    strText = await objComplexForm.DisplayFvAsync(GlobalSettings.Language, token).ConfigureAwait(false);
-                    await lblFV.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
+                    string strText2 = await objComplexForm.DisplayDurationAsync(GlobalSettings.Language, token).ConfigureAwait(false);
+                    await lblDuration.DoThreadSafeAsync(x => x.Text = strText2, token).ConfigureAwait(false);
+                    string strText3 = await objComplexForm.DisplayFvAsync(GlobalSettings.Language, token).ConfigureAwait(false);
+                    await lblFV.DoThreadSafeAsync(x => x.Text = strText3, token).ConfigureAwait(false);
                     await lblFV.SetToolTipAsync(objComplexForm.FvTooltip, token).ConfigureAwait(false);
                     await objComplexForm.SetSourceDetailAsync(lblComplexFormSource, token).ConfigureAwait(false);
                     // Determine the size of the Threading Dice Pool.
