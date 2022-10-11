@@ -336,7 +336,7 @@ namespace Chummer
             foreach (ImprovementDictionaryKey objKey in s_DictionaryCachedValues.Keys.Where(x => x.CharacterObject == objCharacter).ToList())
             {
                 (bool blnSuccess, Tuple<decimal, List<Improvement>> tupTemp)
-                    = await s_DictionaryCachedValues.TryRemoveAsync(objKey, token);
+                    = await s_DictionaryCachedValues.TryRemoveAsync(objKey, token).ConfigureAwait(false);
                 if (blnSuccess)
                     tupTemp.Item2.Clear(); // Just in case this helps the GC
             }
@@ -344,12 +344,12 @@ namespace Chummer
             foreach (ImprovementDictionaryKey objKey in s_DictionaryCachedAugmentedValues.Keys.Where(x => x.CharacterObject == objCharacter).ToList())
             {
                 (bool blnSuccess, Tuple<decimal, List<Improvement>> tupTemp)
-                    = await s_DictionaryCachedAugmentedValues.TryRemoveAsync(objKey, token);
+                    = await s_DictionaryCachedAugmentedValues.TryRemoveAsync(objKey, token).ConfigureAwait(false);
                 if (blnSuccess)
                     tupTemp.Item2.Clear(); // Just in case this helps the GC
             }
 
-            await s_DictionaryTransactions.TryRemoveAsync(objCharacter, token);
+            await s_DictionaryTransactions.TryRemoveAsync(objCharacter, token).ConfigureAwait(false);
         }
 
         #endregion Properties
@@ -425,7 +425,7 @@ namespace Chummer
         {
             (decimal decReturn, List<Improvement> lstUsedImprovements) = await MetaValueOfAsync(
                 objCharacter, objImprovementType, x => x.Value, s_DictionaryCachedValues, blnAddToRating,
-                strImprovedName, blnUnconditionalOnly, blnIncludeNonImproved, token);
+                strImprovedName, blnUnconditionalOnly, blnIncludeNonImproved, token).ConfigureAwait(false);
             if (decReturn != 0 && lstUsedImprovements.Count == 0)
             {
                 Log.Warn("A cached value modifier somehow is not zero while having no used improvements in its list.");

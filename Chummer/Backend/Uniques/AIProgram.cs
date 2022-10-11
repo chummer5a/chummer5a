@@ -191,7 +191,7 @@ namespace Chummer
                 await objWriter.WriteElementStringAsync("guid", InternalId, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("sourceid", SourceIDString, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("name", await DisplayNameShortAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("fullname", await DisplayNameAsync(strLanguageToPrint, token), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("fullname", await DisplayNameAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("name_english", Name, token).ConfigureAwait(false);
                 if (string.IsNullOrEmpty(_strRequiresProgram) || _strRequiresProgram == await LanguageManager.GetStringAsync("String_None", strLanguageToPrint, token: token).ConfigureAwait(false))
                     await objWriter.WriteElementStringAsync("requiresprogram", await LanguageManager.GetStringAsync("String_None", strLanguageToPrint, token: token).ConfigureAwait(false), token).ConfigureAwait(false);

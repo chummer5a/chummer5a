@@ -1536,7 +1536,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strInput))
                 return string.Empty;
-            string strReturn = await strInput.IsRtfAsync(token) ? Rtf.ToHtml(strInput) : strInput.CleanForHtml();
+            string strReturn = await strInput.IsRtfAsync(token).ConfigureAwait(false) ? Rtf.ToHtml(strInput) : strInput.CleanForHtml();
             return strReturn.CleanStylisticLigatures().NormalizeWhiteSpace().CleanOfInvalidUnicodeChars();
         }
 

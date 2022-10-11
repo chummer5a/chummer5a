@@ -933,7 +933,7 @@ namespace Chummer
                                             strPostModifierExpression.Replace(
                                                 "{Modifier}",
                                                 decCharacterESSModifier.ToString(GlobalSettings.InvariantCultureInfo)),
-                                            token);
+                                            token).ConfigureAwait(false);
                                     if (blnIsSuccess2)
                                         decCharacterESSModifier = Convert.ToDecimal(objProcess2, GlobalSettings.InvariantCultureInfo);
                                 }

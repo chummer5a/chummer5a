@@ -81,7 +81,7 @@ namespace Chummer
                     foreach (XmlNode objXmlCategory in objXmlCategoryList)
                     {
                         string strCategory = objXmlCategory.InnerText;
-                        if (await AnyItemInList(strCategory))
+                        if (await AnyItemInList(strCategory).ConfigureAwait(false))
                         {
                             _lstCategory.Add(new ListItem(strCategory, objXmlCategory.Attributes?["translate"]?.InnerText ?? strCategory));
                         }
@@ -93,9 +93,9 @@ namespace Chummer
 
             if (_lstCategory.Count > 0)
             {
-                _lstCategory.Insert(0, new ListItem("Show All", await LanguageManager.GetStringAsync("String_ShowAll")));
+                _lstCategory.Insert(0, new ListItem("Show All", await LanguageManager.GetStringAsync("String_ShowAll").ConfigureAwait(false)));
             }
-            await cboCategory.PopulateWithListItemsAsync(_lstCategory);
+            await cboCategory.PopulateWithListItemsAsync(_lstCategory).ConfigureAwait(false);
             await cboCategory.DoThreadSafeAsync(x =>
             {
                 x.Enabled = _lstCategory.Count > 1;
@@ -105,70 +105,70 @@ namespace Chummer
 
                 if (x.SelectedIndex == -1)
                     x.SelectedIndex = 0;
-            });
+            }).ConfigureAwait(false);
 
             // Change the BP Label to Karma if the character is being built with Karma instead (or is in Career Mode).
             if (_objCharacter.Created || !_objCharacter.EffectiveBuildMethodUsesPriorityTables)
             {
-                string strTemp = await LanguageManager.GetStringAsync("Label_LP");
-                await lblBPLabel.DoThreadSafeAsync(x => x.Text = strTemp);
+                string strTemp = await LanguageManager.GetStringAsync("Label_LP").ConfigureAwait(false);
+                await lblBPLabel.DoThreadSafeAsync(x => x.Text = strTemp).ConfigureAwait(false);
             }
 
             _blnLoading = false;
 
-            await RefreshList(await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()));
+            await RefreshList(await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()).ConfigureAwait(false)).ConfigureAwait(false);
         }
 
         private async void RefreshListControlWithCurrentCategory(object sender, EventArgs e)
         {
-            await RefreshList(await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()));
+            await RefreshList(await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()).ConfigureAwait(false)).ConfigureAwait(false);
         }
 
         private async void lstLifestyleQualities_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
-            string strSelectedLifestyleId = await lstLifestyleQualities.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
+            string strSelectedLifestyleId = await lstLifestyleQualities.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()).ConfigureAwait(false);
             if (string.IsNullOrEmpty(strSelectedLifestyleId))
             {
-                await tlpRight.DoThreadSafeAsync(x => x.Visible = false);
+                await tlpRight.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);
                 return;
             }
 
             XmlNode objXmlQuality = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = " + strSelectedLifestyleId.CleanXPath() + ']');
             if (objXmlQuality == null)
             {
-                await tlpRight.DoThreadSafeAsync(x => x.Visible = false);
+                await tlpRight.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);
                 return;
             }
 
-            await this.DoThreadSafeAsync(x => x.SuspendLayout());
+            await this.DoThreadSafeAsync(x => x.SuspendLayout()).ConfigureAwait(false);
             try
             {
                 int intBP = 0;
                 objXmlQuality.TryGetInt32FieldQuickly("lp", ref intBP);
-                string strBP = await chkFree.DoThreadSafeFuncAsync(x => x.Checked)
-                    ? await LanguageManager.GetStringAsync("Checkbox_Free")
+                string strBP = await chkFree.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false)
+                    ? await LanguageManager.GetStringAsync("Checkbox_Free").ConfigureAwait(false)
                     : intBP.ToString(GlobalSettings.CultureInfo);
-                await lblBP.DoThreadSafeAsync(x => x.Text = strBP);
-                await lblBPLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strBP));
+                await lblBP.DoThreadSafeAsync(x => x.Text = strBP).ConfigureAwait(false);
+                await lblBPLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strBP)).ConfigureAwait(false);
 
                 string strSource = objXmlQuality["source"]?.InnerText
-                                   ?? await LanguageManager.GetStringAsync("String_Unknown");
+                                   ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
                 string strPage = objXmlQuality["altpage"]?.InnerText ?? objXmlQuality["page"]?.InnerText
-                    ?? await LanguageManager.GetStringAsync("String_Unknown");
+                    ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
                 if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
                 {
                     SourceString objSourceString = await SourceString.GetSourceStringAsync(
-                        strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter);
-                    await objSourceString.SetControlAsync(lblSource);
-                    await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = true);
+                        strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter).ConfigureAwait(false);
+                    await objSourceString.SetControlAsync(lblSource).ConfigureAwait(false);
+                    await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = true).ConfigureAwait(false);
                 }
                 else
                 {
-                    await lblSource.DoThreadSafeAsync(x => x.Text = string.Empty);
-                    await lblSource.SetToolTipAsync(string.Empty);
-                    await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = false);
+                    await lblSource.DoThreadSafeAsync(x => x.Text = string.Empty).ConfigureAwait(false);
+                    await lblSource.SetToolTipAsync(string.Empty).ConfigureAwait(false);
+                    await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);
                 }
 
                 if (objXmlQuality["allowed"] != null)
@@ -177,13 +177,13 @@ namespace Chummer
                     {
                         x.Text = GetMinimumRequirement(objXmlQuality["allowed"].InnerText);
                         x.Visible = true;
-                    });
-                    await lblMinimumLabel.DoThreadSafeAsync(x => x.Visible = true);
+                    }).ConfigureAwait(false);
+                    await lblMinimumLabel.DoThreadSafeAsync(x => x.Visible = true).ConfigureAwait(false);
                 }
                 else
                 {
-                    await lblMinimum.DoThreadSafeAsync(x => x.Visible = false);
-                    await lblMinimumLabel.DoThreadSafeAsync(x => x.Visible = false);
+                    await lblMinimum.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);
+                    await lblMinimumLabel.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);
                 }
 
                 if (objXmlQuality["cost"] != null)
@@ -191,39 +191,39 @@ namespace Chummer
                     string strCost;
                     if (chkFree.Checked)
                     {
-                        strCost = await LanguageManager.GetStringAsync("Checkbox_Free");
+                        strCost = await LanguageManager.GetStringAsync("Checkbox_Free").ConfigureAwait(false);
                     }
                     else if (objXmlQuality["allowed"]?.InnerText.Contains(_strSelectedLifestyle) == true)
                     {
-                        strCost = await LanguageManager.GetStringAsync("String_LifestyleFreeNuyen");
+                        strCost = await LanguageManager.GetStringAsync("String_LifestyleFreeNuyen").ConfigureAwait(false);
                     }
                     else
                     {
                         strCost = objXmlQuality["cost"]?.InnerText;
-                        (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strCost);
+                        (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strCost).ConfigureAwait(false);
                         decimal decCost = blnIsSuccess ? Convert.ToDecimal((double) objProcess) : 0;
                         strCost = decCost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo)
-                                  + await LanguageManager.GetStringAsync("String_NuyenSymbol");
+                                  + await LanguageManager.GetStringAsync("String_NuyenSymbol").ConfigureAwait(false);
                     }
 
                     await lblCost.DoThreadSafeAsync(x =>
                     {
                         x.Text = strCost;
                         x.Visible = true;
-                    });
-                    await lblCostLabel.DoThreadSafeAsync(x => x.Visible = true);
+                    }).ConfigureAwait(false);
+                    await lblCostLabel.DoThreadSafeAsync(x => x.Visible = true).ConfigureAwait(false);
                 }
                 else
                 {
-                    await lblCost.DoThreadSafeAsync(x => x.Visible = false);
-                    await lblCostLabel.DoThreadSafeAsync(x => x.Visible = false);
+                    await lblCost.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);
+                    await lblCostLabel.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);
                 }
 
-                await tlpRight.DoThreadSafeAsync(x => x.Visible = true);
+                await tlpRight.DoThreadSafeAsync(x => x.Visible = true).ConfigureAwait(false);
             }
             finally
             {
-                await this.DoThreadSafeAsync(x => x.ResumeLayout());
+                await this.DoThreadSafeAsync(x => x.ResumeLayout()).ConfigureAwait(false);
             }
         }
 
@@ -247,13 +247,13 @@ namespace Chummer
         private async void cmdOK_Click(object sender, EventArgs e)
         {
             _blnAddAgain = false;
-            await AcceptForm();
+            await AcceptForm().ConfigureAwait(false);
         }
 
         private async void cmdOKAdd_Click(object sender, EventArgs e)
         {
             _blnAddAgain = true;
-            await AcceptForm();
+            await AcceptForm().ConfigureAwait(false);
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
@@ -369,8 +369,8 @@ namespace Chummer
             string strFilter = string.Empty;
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
             {
-                string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token: token);
-                sbdFilter.Append('(').Append(await _objCharacter.Settings.BookXPathAsync(token: token)).Append(')');
+                string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false);
+                sbdFilter.Append('(').Append(await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false)).Append(')');
                 if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All"
                                                        && (GlobalSettings.SearchInCategoryOnly
                                                            || string.IsNullOrWhiteSpace(strSearch)))
@@ -416,7 +416,7 @@ namespace Chummer
                 {
                     if (objXmlQualityList?.Count > 0)
                     {
-                        bool blnLimitList = await chkLimitList.DoThreadSafeFuncAsync(x => x.Checked, token: token);
+                        bool blnLimitList = await chkLimitList.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
                         foreach (XmlNode objXmlQuality in objXmlQualityList)
                         {
                             string strId = objXmlQuality["id"]?.InnerText;
@@ -427,14 +427,14 @@ namespace Chummer
                                 return true;
                             }
 
-                            if (blnLimitList && !await RequirementMet(objXmlQuality, false, token))
+                            if (blnLimitList && !await RequirementMet(objXmlQuality, false, token).ConfigureAwait(false))
                                 continue;
 
                             lstLifestyleQuality.Add(
                                 new ListItem(
                                     strId,
                                     objXmlQuality["translate"]?.InnerText ?? objXmlQuality["name"]?.InnerText
-                                    ?? await LanguageManager.GetStringAsync("String_Unknown", token: token)));
+                                    ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false)));
                         }
                     }
                 }
@@ -443,9 +443,9 @@ namespace Chummer
                 {
                     lstLifestyleQuality.Sort(CompareListItems.CompareNames);
 
-                    string strOldSelectedQuality = await lstLifestyleQualities.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token);
+                    string strOldSelectedQuality = await lstLifestyleQualities.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false);
                     _blnLoading = true;
-                    await lstLifestyleQualities.PopulateWithListItemsAsync(lstLifestyleQuality, token: token);
+                    await lstLifestyleQualities.PopulateWithListItemsAsync(lstLifestyleQuality, token: token).ConfigureAwait(false);
                     _blnLoading = false;
                     await lstLifestyleQualities.DoThreadSafeAsync(x =>
                     {
@@ -453,7 +453,7 @@ namespace Chummer
                             x.SelectedIndex = -1;
                         else
                             x.SelectedValue = strOldSelectedQuality;
-                    }, token: token);
+                    }, token: token).ConfigureAwait(false);
                 }
 
                 return lstLifestyleQuality?.Count > 0;
@@ -470,23 +470,23 @@ namespace Chummer
         /// </summary>
         private async ValueTask AcceptForm(CancellationToken token = default)
         {
-            string strSelectedSourceIDString = await lstLifestyleQualities.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token);
+            string strSelectedSourceIDString = await lstLifestyleQualities.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false);
             if (string.IsNullOrEmpty(strSelectedSourceIDString))
                 return;
             XmlNode objNode = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = " + strSelectedSourceIDString.CleanXPath() + ']');
-            if (objNode == null || !await RequirementMet(objNode, true, token: token))
+            if (objNode == null || !await RequirementMet(objNode, true, token: token).ConfigureAwait(false))
                 return;
 
             _strSelectedQuality = strSelectedSourceIDString;
-            _strSelectCategory = (GlobalSettings.SearchInCategoryOnly || await txtSearch.DoThreadSafeFuncAsync(x => x.TextLength, token: token) == 0)
-                ? await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token)
+            _strSelectCategory = (GlobalSettings.SearchInCategoryOnly || await txtSearch.DoThreadSafeFuncAsync(x => x.TextLength, token: token).ConfigureAwait(false) == 0)
+                ? await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false)
                 : objNode["category"]?.InnerText;
 
             await this.DoThreadSafeAsync(x =>
             {
                 x.DialogResult = DialogResult.OK;
                 x.Close();
-            }, token: token);
+            }, token: token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -498,7 +498,7 @@ namespace Chummer
         private async ValueTask<bool> RequirementMet(XmlNode objXmlQuality, bool blnShowMessage, CancellationToken token = default)
         {
             // Ignore the rules.
-            if (await _objCharacter.GetIgnoreRulesAsync(token))
+            if (await _objCharacter.GetIgnoreRulesAsync(token).ConfigureAwait(false))
                 return true;
 
             // See if the character already has this Quality and whether or not multiple copies are allowed.
@@ -510,7 +510,7 @@ namespace Chummer
                     if (objXmlQuality["allowmultiple"] == null && objQuality.Name == objXmlQuality["name"].InnerText)
                     {
                         if (blnShowMessage)
-                            Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectQuality_QualityLimit", token: token), await LanguageManager.GetStringAsync("MessageTitle_SelectQuality_QualityLimit", token: token), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectQuality_QualityLimit", token: token).ConfigureAwait(false), await LanguageManager.GetStringAsync("MessageTitle_SelectQuality_QualityLimit", token: token).ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         return false;
                     }
                 }
@@ -628,7 +628,7 @@ namespace Chummer
                                             // Check to see if the character has a Metagenic Quality.
                                             foreach (Quality objQuality in _objCharacter.Qualities)
                                             {
-                                                if ((await objQuality.GetNodeXPathAsync(token: token))
+                                                if ((await objQuality.GetNodeXPathAsync(token: token).ConfigureAwait(false))
                                                     ?.SelectSingleNode("metagenic")
                                                     ?.Value == bool.TrueString)
                                                 {
@@ -652,10 +652,10 @@ namespace Chummer
                         if (blnShowMessage)
                             Program.ShowMessageBox(this,
                                                             await LanguageManager.GetStringAsync(
-                                                                "Message_SelectQuality_QualityRestriction", token: token)
+                                                                "Message_SelectQuality_QualityRestriction", token: token).ConfigureAwait(false)
                                                             + sbdForbidden,
                                                             await LanguageManager.GetStringAsync(
-                                                                "MessageTitle_SelectQuality_QualityRestriction", token: token),
+                                                                "MessageTitle_SelectQuality_QualityRestriction", token: token).ConfigureAwait(false),
                                                             MessageBoxButtons.OK, MessageBoxIcon.Information);
                         return false;
                     }
@@ -669,7 +669,7 @@ namespace Chummer
                 {
                     bool blnRequirementMet = true;
 
-                    XmlDocument objXmlQualityDocument = await _objCharacter.LoadDataAsync("qualities.xml", token: token);
+                    XmlDocument objXmlQualityDocument = await _objCharacter.LoadDataAsync("qualities.xml", token: token).ConfigureAwait(false);
                     // Loop through the oneof requirements.
                     using (XmlNodeList objXmlRequiredList = objXmlQuality.SelectNodes("required/oneof"))
                     {
@@ -681,7 +681,7 @@ namespace Chummer
                             {
                                 sbdThisRequirement.AppendLine()
                                                   .Append(await LanguageManager.GetStringAsync(
-                                                              "Message_SelectQuality_OneOf", token: token));
+                                                              "Message_SelectQuality_OneOf", token: token).ConfigureAwait(false));
                                 using (XmlNodeList objXmlOneOfList = objXmlOneOf.ChildNodes)
                                 {
                                     foreach (XmlNode objXmlRequired in objXmlOneOfList)
@@ -805,7 +805,7 @@ namespace Chummer
                                                 sbdThisRequirement.AppendLine().Append('\t')
                                                                   .Append(
                                                                       await LanguageManager.GetStringAsync(
-                                                                          "Message_SelectQuality_Inherit", token: token));
+                                                                          "Message_SelectQuality_Inherit", token: token).ConfigureAwait(false));
                                                 break;
 
                                             case "careerkarma":
@@ -818,7 +818,7 @@ namespace Chummer
                                                     sbdThisRequirement.AppendLine().Append('\t').AppendFormat(
                                                         GlobalSettings.CultureInfo,
                                                         await LanguageManager.GetStringAsync(
-                                                            "Message_SelectQuality_RequireKarma", token: token),
+                                                            "Message_SelectQuality_RequireKarma", token: token).ConfigureAwait(false),
                                                         objXmlRequired.InnerText);
                                                 break;
 
@@ -827,7 +827,7 @@ namespace Chummer
                                                 if (objXmlRequired.InnerText.StartsWith('-'))
                                                 {
                                                     // Essence must be less than the value.
-                                                    if (await _objCharacter.EssenceAsync(token: token) < Convert.ToDecimal(
+                                                    if (await _objCharacter.EssenceAsync(token: token).ConfigureAwait(false) < Convert.ToDecimal(
                                                             objXmlRequired.InnerText.TrimStart('-'),
                                                             GlobalSettings.InvariantCultureInfo))
                                                         blnOneOfMet = true;
@@ -835,7 +835,7 @@ namespace Chummer
                                                 else
                                                 {
                                                     // Essence must be equal to or greater than the value.
-                                                    if (await _objCharacter.EssenceAsync(token: token)
+                                                    if (await _objCharacter.EssenceAsync(token: token).ConfigureAwait(false)
                                                         >= Convert.ToDecimal(objXmlRequired.InnerText,
                                                                              GlobalSettings.InvariantCultureInfo))
                                                         blnOneOfMet = true;
@@ -847,7 +847,7 @@ namespace Chummer
                                                 // Check if the character has the required Skill.
                                                 Skill objSkill
                                                     = await _objCharacter.SkillsSection.GetActiveSkillAsync(
-                                                        objXmlRequired["name"].InnerText, token);
+                                                        objXmlRequired["name"].InnerText, token).ConfigureAwait(false);
                                                 if ((objSkill?.Rating ?? 0)
                                                     >= Convert.ToInt32(objXmlRequired["val"].InnerText,
                                                                        GlobalSettings.InvariantCultureInfo))
@@ -860,9 +860,9 @@ namespace Chummer
                                             case "attribute":
                                                 // Check to see if an Attribute meets a requirement.
                                                 CharacterAttrib objAttribute
-                                                    = await _objCharacter.GetAttributeAsync(objXmlRequired["name"].InnerText, token: token);
+                                                    = await _objCharacter.GetAttributeAsync(objXmlRequired["name"].InnerText, token: token).ConfigureAwait(false);
                                                 // Make sure the Attribute's total value meets the requirement.
-                                                if (objXmlRequired["total"] != null && await objAttribute.GetTotalValueAsync(token)
+                                                if (objXmlRequired["total"] != null && await objAttribute.GetTotalValueAsync(token).ConfigureAwait(false)
                                                     >= Convert.ToInt32(objXmlRequired["total"].InnerText,
                                                                        GlobalSettings.InvariantCultureInfo))
                                                 {
@@ -876,10 +876,10 @@ namespace Chummer
                                                 string strAttributes = objXmlRequired["attributes"].InnerText;
                                                 strAttributes
                                                     = await _objCharacter.AttributeSection
-                                                                         .ProcessAttributesInXPathAsync(strAttributes, token: token);
+                                                                         .ProcessAttributesInXPathAsync(strAttributes, token: token).ConfigureAwait(false);
                                                 (bool blnIsSuccess, object objProcess)
                                                     = await CommonFunctions.EvaluateInvariantXPathAsync(
-                                                        strAttributes, token);
+                                                        strAttributes, token).ConfigureAwait(false);
                                                 if ((blnIsSuccess ? ((double) objProcess).StandardRound() : 0)
                                                     >= Convert.ToInt32(objXmlRequired["val"].InnerText,
                                                                        GlobalSettings.InvariantCultureInfo))
@@ -944,7 +944,7 @@ namespace Chummer
                                                 {
                                                     if (await _objCharacter.Cyberware.AnyAsync(
                                                             objCyberware =>
-                                                                objCyberware.Name == objXmlBioware.InnerText, token: token))
+                                                                objCyberware.Name == objXmlBioware.InnerText, token: token).ConfigureAwait(false))
                                                     {
                                                         intTotal++;
                                                     }
@@ -998,7 +998,7 @@ namespace Chummer
                                                     {
                                                         if (await objCyberware.Children.AnyAsync(
                                                                 objPlugin =>
-                                                                    objPlugin.Name == objXmlCyberware.InnerText, token: token))
+                                                                    objPlugin.Name == objXmlCyberware.InnerText, token: token).ConfigureAwait(false))
                                                         {
                                                             intTotal++;
                                                         }
@@ -1010,7 +1010,7 @@ namespace Chummer
                                                              "cyberwarecategory"))
                                                 {
                                                     intTotal += await _objCharacter.Cyberware.CountAsync(objCyberware =>
-                                                        objCyberware.Category == objXmlCyberware.InnerText, token: token);
+                                                        objCyberware.Category == objXmlCyberware.InnerText, token: token).ConfigureAwait(false);
                                                 }
 
                                                 if (intTotal >= Convert.ToInt32(objXmlRequired["count"].InnerText,
@@ -1027,10 +1027,10 @@ namespace Chummer
 
                                             case "damageresistance":
                                                 // Damage Resistance must be a particular value.
-                                                if (await _objCharacter.BOD.GetTotalValueAsync(token)
+                                                if (await _objCharacter.BOD.GetTotalValueAsync(token).ConfigureAwait(false)
                                                     + await ImprovementManager.ValueOfAsync(_objCharacter,
                                                         Improvement.ImprovementType
-                                                                   .DamageResistance, token: token)
+                                                                   .DamageResistance, token: token).ConfigureAwait(false)
                                                     >= Convert.ToInt32(objXmlRequired.InnerText,
                                                                        GlobalSettings.InvariantCultureInfo))
                                                     blnOneOfMet = true;
@@ -1057,7 +1057,7 @@ namespace Chummer
                             {
                                 sbdThisRequirement.AppendLine()
                                                   .Append(await LanguageManager.GetStringAsync(
-                                                              "Message_SelectQuality_AllOf", token: token));
+                                                              "Message_SelectQuality_AllOf", token: token).ConfigureAwait(false));
                                 using (XmlNodeList objXmlAllOfList = objXmlAllOf.ChildNodes)
                                 {
                                     foreach (XmlNode objXmlRequired in objXmlAllOfList)
@@ -1160,7 +1160,7 @@ namespace Chummer
                                                 sbdThisRequirement.AppendLine().Append('\t')
                                                                   .Append(
                                                                       await LanguageManager.GetStringAsync(
-                                                                          "Message_SelectQuality_Inherit", token: token));
+                                                                          "Message_SelectQuality_Inherit", token: token).ConfigureAwait(false));
                                                 break;
 
                                             case "careerkarma":
@@ -1173,7 +1173,7 @@ namespace Chummer
                                                     sbdThisRequirement.AppendLine().Append('\t').AppendFormat(
                                                         GlobalSettings.CultureInfo,
                                                         await LanguageManager.GetStringAsync(
-                                                            "Message_SelectQuality_RequireKarma", token: token),
+                                                            "Message_SelectQuality_RequireKarma", token: token).ConfigureAwait(false),
                                                         objXmlRequired.InnerText);
                                                 break;
 
@@ -1182,7 +1182,7 @@ namespace Chummer
                                                 if (objXmlRequired.InnerText.StartsWith('-'))
                                                 {
                                                     // Essence must be less than the value.
-                                                    if (await _objCharacter.EssenceAsync(token: token) < Convert.ToDecimal(
+                                                    if (await _objCharacter.EssenceAsync(token: token).ConfigureAwait(false) < Convert.ToDecimal(
                                                             objXmlRequired.InnerText.TrimStart('-'),
                                                             GlobalSettings.InvariantCultureInfo))
                                                         blnFound = true;
@@ -1190,7 +1190,7 @@ namespace Chummer
                                                 else
                                                 {
                                                     // Essence must be equal to or greater than the value.
-                                                    if (await _objCharacter.EssenceAsync(token: token)
+                                                    if (await _objCharacter.EssenceAsync(token: token).ConfigureAwait(false)
                                                         >= Convert.ToDecimal(objXmlRequired.InnerText,
                                                                              GlobalSettings.InvariantCultureInfo))
                                                         blnFound = true;
@@ -1202,7 +1202,7 @@ namespace Chummer
                                                 // Check if the character has the required Skill.
                                                 Skill objSkill
                                                     = await _objCharacter.SkillsSection.GetActiveSkillAsync(
-                                                        objXmlRequired["name"].InnerText, token);
+                                                        objXmlRequired["name"].InnerText, token).ConfigureAwait(false);
                                                 if ((objSkill?.Rating ?? 0)
                                                     >= Convert.ToInt32(objXmlRequired["val"].InnerText,
                                                                        GlobalSettings.InvariantCultureInfo))
@@ -1215,9 +1215,9 @@ namespace Chummer
                                             case "attribute":
                                                 // Check to see if an Attribute meets a requirement.
                                                 CharacterAttrib objAttribute
-                                                    = await _objCharacter.GetAttributeAsync(objXmlRequired["name"].InnerText, token: token);
+                                                    = await _objCharacter.GetAttributeAsync(objXmlRequired["name"].InnerText, token: token).ConfigureAwait(false);
                                                 // Make sure the Attribute's total value meets the requirement.
-                                                if (objXmlRequired["total"] != null && await objAttribute.GetTotalValueAsync(token)
+                                                if (objXmlRequired["total"] != null && await objAttribute.GetTotalValueAsync(token).ConfigureAwait(false)
                                                     >= Convert.ToInt32(objXmlRequired["total"].InnerText,
                                                                        GlobalSettings.InvariantCultureInfo))
                                                 {
@@ -1231,10 +1231,10 @@ namespace Chummer
                                                 string strAttributes = objXmlRequired["attributes"].InnerText;
                                                 strAttributes
                                                     = await _objCharacter.AttributeSection
-                                                                         .ProcessAttributesInXPathAsync(strAttributes, token: token);
+                                                                         .ProcessAttributesInXPathAsync(strAttributes, token: token).ConfigureAwait(false);
                                                 (bool blnIsSuccess, object objProcess)
                                                     = await CommonFunctions.EvaluateInvariantXPathAsync(
-                                                        strAttributes, token);
+                                                        strAttributes, token).ConfigureAwait(false);
                                                 if ((blnIsSuccess ? ((double)objProcess).StandardRound() : 0)
                                                     >= Convert.ToInt32(objXmlRequired["val"].InnerText,
                                                                        GlobalSettings.InvariantCultureInfo))
@@ -1300,7 +1300,7 @@ namespace Chummer
                                                     {
                                                         if (await _objCharacter.Cyberware.AnyAsync(
                                                                 objCyberware =>
-                                                                    objCyberware.Name == objXmlBioware.InnerText, token: token))
+                                                                    objCyberware.Name == objXmlBioware.InnerText, token: token).ConfigureAwait(false))
                                                         {
                                                             intTotal++;
                                                         }
@@ -1310,7 +1310,7 @@ namespace Chummer
                                                     foreach (XmlNode objXmlCyberware in objXmlRequired.SelectNodes(
                                                                  "cyberwarecontains"))
                                                     {
-                                                        foreach (Cyberware objCyberware in await _objCharacter.GetCyberwareAsync(token))
+                                                        foreach (Cyberware objCyberware in await _objCharacter.GetCyberwareAsync(token).ConfigureAwait(false))
                                                         {
                                                             if (objCyberware.Name.Contains(objXmlCyberware.InnerText))
                                                             {
@@ -1330,7 +1330,7 @@ namespace Chummer
                                                     foreach (XmlNode objXmlCyberware in objXmlRequired.SelectNodes(
                                                                  "biowarecontains"))
                                                     {
-                                                        foreach (Cyberware objCyberware in await _objCharacter.GetCyberwareAsync(token))
+                                                        foreach (Cyberware objCyberware in await _objCharacter.GetCyberwareAsync(token).ConfigureAwait(false))
                                                         {
                                                             if (objCyberware.Name.Contains(objXmlCyberware.InnerText))
                                                             {
@@ -1354,7 +1354,7 @@ namespace Chummer
                                                         {
                                                             if (await objCyberware.Children.AnyAsync(
                                                                     objPlugin =>
-                                                                        objPlugin.Name == objXmlCyberware.InnerText, token: token))
+                                                                        objPlugin.Name == objXmlCyberware.InnerText, token: token).ConfigureAwait(false))
                                                             {
                                                                 intTotal++;
                                                             }
@@ -1367,7 +1367,7 @@ namespace Chummer
                                                     {
                                                         intTotal += await _objCharacter.Cyberware.CountAsync(
                                                             objCyberware =>
-                                                                objCyberware.Category == objXmlCyberware.InnerText, token: token);
+                                                                objCyberware.Category == objXmlCyberware.InnerText, token: token).ConfigureAwait(false);
                                                     }
 
                                                     if (intTotal >= Convert.ToInt32(objXmlRequired["count"].InnerText,
@@ -1384,10 +1384,10 @@ namespace Chummer
 
                                             case "damageresistance":
                                                 // Damage Resistance must be a particular value.
-                                                if (await _objCharacter.BOD.GetTotalValueAsync(token)
+                                                if (await _objCharacter.BOD.GetTotalValueAsync(token).ConfigureAwait(false)
                                                     + await ImprovementManager.ValueOfAsync(_objCharacter,
                                                         Improvement.ImprovementType
-                                                                   .DamageResistance, token: token)
+                                                                   .DamageResistance, token: token).ConfigureAwait(false)
                                                     >= Convert.ToInt32(objXmlRequired.InnerText,
                                                                        GlobalSettings.InvariantCultureInfo))
                                                     blnFound = true;
@@ -1412,11 +1412,11 @@ namespace Chummer
                     {
                         if (blnShowMessage)
                         {
-                            string strMessage = await LanguageManager.GetStringAsync("Message_SelectQuality_QualityRequirement", token: token);
+                            string strMessage = await LanguageManager.GetStringAsync("Message_SelectQuality_QualityRequirement", token: token).ConfigureAwait(false);
                             strMessage += sbdRequirement.ToString();
                             Program.ShowMessageBox(this, strMessage,
                                                             await LanguageManager.GetStringAsync(
-                                                                "MessageTitle_SelectQuality_QualityRequirement", token: token),
+                                                                "MessageTitle_SelectQuality_QualityRequirement", token: token).ConfigureAwait(false),
                                                             MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
 
@@ -1430,7 +1430,7 @@ namespace Chummer
 
         private async void OpenSourceFromLabel(object sender, EventArgs e)
         {
-            await CommonFunctions.OpenPdfFromControl(sender);
+            await CommonFunctions.OpenPdfFromControl(sender).ConfigureAwait(false);
         }
 
         #endregion Methods

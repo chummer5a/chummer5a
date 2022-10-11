@@ -63,7 +63,7 @@ namespace Chummer
         private async void SelectAIProgram_Load(object sender, EventArgs e)
         {
             // Populate the Category list.
-            foreach (XPathNavigator objXmlCategory in await _xmlBaseChummerNode.SelectAndCacheExpressionAsync("categories/category"))
+            foreach (XPathNavigator objXmlCategory in await _xmlBaseChummerNode.SelectAndCacheExpressionAsync("categories/category").ConfigureAwait(false))
             {
                 string strInnerText = objXmlCategory.Value;
                 if (_blnInherentProgram && strInnerText != "Common Programs" && strInnerText != "Hacking Programs")
@@ -73,49 +73,49 @@ namespace Chummer
                 // Make sure it is not already in the Category list.
                 if (_lstCategory.All(objItem => objItem.Value.ToString() != strInnerText))
                 {
-                    _lstCategory.Add(new ListItem(strInnerText, (await objXmlCategory.SelectSingleNodeAndCacheExpressionAsync("@translate"))?.Value ?? strInnerText));
+                    _lstCategory.Add(new ListItem(strInnerText, (await objXmlCategory.SelectSingleNodeAndCacheExpressionAsync("@translate").ConfigureAwait(false))?.Value ?? strInnerText));
                 }
             }
             _lstCategory.Sort(CompareListItems.CompareNames);
 
             if (_lstCategory.Count > 0)
             {
-                _lstCategory.Insert(0, new ListItem("Show All", await LanguageManager.GetStringAsync("String_ShowAll")));
+                _lstCategory.Insert(0, new ListItem("Show All", await LanguageManager.GetStringAsync("String_ShowAll").ConfigureAwait(false)));
             }
             
-            await cboCategory.PopulateWithListItemsAsync(_lstCategory);
+            await cboCategory.PopulateWithListItemsAsync(_lstCategory).ConfigureAwait(false);
             await cboCategory.DoThreadSafeAsync(x =>
             {
                 if (!string.IsNullOrEmpty(_strSelectedCategory))
                     x.SelectedValue = _strSelectedCategory;
                 if (x.SelectedIndex == -1)
                     x.SelectedIndex = 0;
-            });
+            }).ConfigureAwait(false);
 
             _blnLoading = false;
 
-            await RefreshList();
+            await RefreshList().ConfigureAwait(false);
         }
 
         private async void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
         {
-            await RefreshList();
+            await RefreshList().ConfigureAwait(false);
         }
 
         private async void chkLimitList_CheckedChanged(object sender, EventArgs e)
         {
-            await RefreshList();
+            await RefreshList().ConfigureAwait(false);
         }
 
         private async void lstAIPrograms_SelectedIndexChanged(object sender, EventArgs e)
         {
-            await UpdateProgramInfo();
+            await UpdateProgramInfo().ConfigureAwait(false);
         }
 
         private async void cmdOK_Click(object sender, EventArgs e)
         {
             _blnAddAgain = false;
-            await AcceptForm();
+            await AcceptForm().ConfigureAwait(false);
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
@@ -127,12 +127,12 @@ namespace Chummer
         private async void cmdOKAdd_Click(object sender, EventArgs e)
         {
             _blnAddAgain = true;
-            await AcceptForm();
+            await AcceptForm().ConfigureAwait(false);
         }
 
         private async void txtSearch_TextChanged(object sender, EventArgs e)
         {
-            await RefreshList();
+            await RefreshList().ConfigureAwait(false);
         }
 
         private void txtSearch_KeyDown(object sender, KeyEventArgs e)
@@ -204,11 +204,11 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
-            await this.DoThreadSafeAsync(x => x.SuspendLayout(), token: token);
+            await this.DoThreadSafeAsync(x => x.SuspendLayout(), token: token).ConfigureAwait(false);
             try
             {
-                await tlpRight.DoThreadSafeFuncAsync(x => x.Visible = false, token: token);
-                string strSelectedId = await lstAIPrograms.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token);
+                await tlpRight.DoThreadSafeFuncAsync(x => x.Visible = false, token: token).ConfigureAwait(false);
+                string strSelectedId = await lstAIPrograms.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false);
                 if (!string.IsNullOrEmpty(strSelectedId))
                 {
                     // Retrieve the information for the selected piece of Cyberware.
@@ -220,7 +220,7 @@ namespace Chummer
                         string strRequiresProgram = objXmlProgram.SelectSingleNode("require")?.Value;
                         if (string.IsNullOrEmpty(strRequiresProgram))
                         {
-                            strRequiresProgram = await LanguageManager.GetStringAsync("String_None", token: token);
+                            strRequiresProgram = await LanguageManager.GetStringAsync("String_None", token: token).ConfigureAwait(false);
                         }
                         else
                         {
@@ -231,46 +231,46 @@ namespace Chummer
                                   ?? strRequiresProgram;
                         }
 
-                        await lblRequiresProgram.DoThreadSafeAsync(x => x.Text = strRequiresProgram, token: token);
+                        await lblRequiresProgram.DoThreadSafeAsync(x => x.Text = strRequiresProgram, token: token).ConfigureAwait(false);
 
                         string strSource = objXmlProgram.SelectSingleNode("source")?.Value;
                         if (!string.IsNullOrEmpty(strSource))
                         {
                             string strPage
-                                = (await objXmlProgram.SelectSingleNodeAndCacheExpressionAsync("altpage", token: token))?.Value
+                                = (await objXmlProgram.SelectSingleNodeAndCacheExpressionAsync("altpage", token: token).ConfigureAwait(false))?.Value
                                   ?? objXmlProgram.SelectSingleNode("page")?.Value;
                             if (!string.IsNullOrEmpty(strPage))
                             {
                                 SourceString objSource = await SourceString.GetSourceStringAsync(
                                     strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo,
-                                    _objCharacter, token);
-                                await lblSource.DoThreadSafeAsync(x => x.Text = objSource.ToString(), token: token);
-                                await lblSource.SetToolTipAsync(objSource.LanguageBookTooltip, token: token);
+                                    _objCharacter, token).ConfigureAwait(false);
+                                await lblSource.DoThreadSafeAsync(x => x.Text = objSource.ToString(), token: token).ConfigureAwait(false);
+                                await lblSource.SetToolTipAsync(objSource.LanguageBookTooltip, token: token).ConfigureAwait(false);
                             }
                             else
                             {
-                                string strUnknown = await LanguageManager.GetStringAsync("String_Unknown", token: token);
-                                await lblSource.DoThreadSafeAsync(x => x.Text = strUnknown, token: token);
-                                await lblSource.SetToolTipAsync(strUnknown, token: token);
+                                string strUnknown = await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
+                                await lblSource.DoThreadSafeAsync(x => x.Text = strUnknown, token: token).ConfigureAwait(false);
+                                await lblSource.SetToolTipAsync(strUnknown, token: token).ConfigureAwait(false);
                             }
                         }
                         else
                         {
-                            string strUnknown = await LanguageManager.GetStringAsync("String_Unknown", token: token);
-                            await lblSource.DoThreadSafeAsync(x => x.Text = strUnknown, token: token);
-                            await lblSource.SetToolTipAsync(strUnknown, token: token);
+                            string strUnknown = await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
+                            await lblSource.DoThreadSafeAsync(x => x.Text = strUnknown, token: token).ConfigureAwait(false);
+                            await lblSource.SetToolTipAsync(strUnknown, token: token).ConfigureAwait(false);
                         }
 
-                        await tlpRight.DoThreadSafeAsync(x => x.Visible = true, token: token);
+                        await tlpRight.DoThreadSafeAsync(x => x.Visible = true, token: token).ConfigureAwait(false);
                     }
                 }
 
-                await lblRequiresProgramLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(lblRequiresProgram.Text), token: token);
-                await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(lblSource.Text), token: token);
+                await lblRequiresProgramLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(lblRequiresProgram.Text), token: token).ConfigureAwait(false);
+                await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(lblSource.Text), token: token).ConfigureAwait(false);
             }
             finally
             {
-                await this.DoThreadSafeAsync(x => x.ResumeLayout(), token: token);
+                await this.DoThreadSafeAsync(x => x.ResumeLayout(), token: token).ConfigureAwait(false);
             }
         }
 
@@ -284,11 +284,11 @@ namespace Chummer
             
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
             {
-                sbdFilter.Append('(').Append(await _objCharacter.Settings.BookXPathAsync(token: token)).Append(')');
-                string strCategory = await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token);
+                sbdFilter.Append('(').Append(await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false)).Append(')');
+                string strCategory = await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false);
                 if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All"
                                                        && (GlobalSettings.SearchInCategoryOnly
-                                                           || await txtSearch.DoThreadSafeFuncAsync(x => x.TextLength == 0, token: token)))
+                                                           || await txtSearch.DoThreadSafeFuncAsync(x => x.TextLength == 0, token: token).ConfigureAwait(false)))
                     sbdFilter.Append(" and category = ").Append(strCategory.CleanXPath());
                 else
                 {
@@ -310,10 +310,10 @@ namespace Chummer
                 }
 
                 if (!string.IsNullOrEmpty(txtSearch.Text))
-                    sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token: token)));
+                    sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false)));
 
                 // Populate the Program list.
-                await UpdateProgramList(_xmlBaseChummerNode.Select("programs/program[" + sbdFilter + ']'), token);
+                await UpdateProgramList(_xmlBaseChummerNode.Select("programs/program[" + sbdFilter + ']'), token).ConfigureAwait(false);
             }
         }
 
@@ -322,9 +322,9 @@ namespace Chummer
         /// </summary>
         private async ValueTask UpdateProgramList(XPathNodeIterator objXmlNodeList, CancellationToken token = default)
         {
-            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token);
-            bool blnLimitList = await chkLimitList.DoThreadSafeFuncAsync(x => x.Checked, token: token);
-            bool blnHasSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.TextLength != 0, token: token);
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+            bool blnLimitList = await chkLimitList.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
+            bool blnHasSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.TextLength != 0, token: token).ConfigureAwait(false);
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                            out List<ListItem> lstPrograms))
             {
@@ -355,13 +355,13 @@ namespace Chummer
                     }
 
                     string strName = objXmlProgram.SelectSingleNode("name")?.Value
-                                     ?? await LanguageManager.GetStringAsync("String_Unknown", token: token);
+                                     ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
                     // If this is a critter with Optional Programs, see if this Program is allowed.
                     if (_xmlOptionalAIProgramsNode?.SelectSingleNode("program") != null
                         && _xmlOptionalAIProgramsNode.SelectSingleNode("program[. = " + strName.CleanXPath() + ']')
                         == null)
                         continue;
-                    string strDisplayName = (await objXmlProgram.SelectSingleNodeAndCacheExpressionAsync("translate", token: token))?.Value ?? strName;
+                    string strDisplayName = (await objXmlProgram.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value ?? strName;
                     if (!GlobalSettings.SearchInCategoryOnly && blnHasSearch)
                     {
                         string strCategory = objXmlProgram.SelectSingleNode("category")?.Value;
@@ -380,7 +380,7 @@ namespace Chummer
                 }
 
                 lstPrograms.Sort(CompareListItems.CompareNames);
-                await lstAIPrograms.PopulateWithListItemsAsync(lstPrograms, token: token);
+                await lstAIPrograms.PopulateWithListItemsAsync(lstPrograms, token: token).ConfigureAwait(false);
             }
         }
 
@@ -389,7 +389,7 @@ namespace Chummer
         /// </summary>
         private async ValueTask AcceptForm(CancellationToken token = default)
         {
-            string strSelectedId = await lstAIPrograms.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token);
+            string strSelectedId = await lstAIPrograms.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false);
             if (!string.IsNullOrEmpty(strSelectedId))
             {
                 XPathNavigator xmlProgram = _xmlBaseChummerNode.SelectSingleNode("programs/program[id = " + strSelectedId.CleanXPath() + ']');
@@ -397,27 +397,27 @@ namespace Chummer
                     return;
 
                 // Check to make sure requirement is met
-                if (!xmlProgram.RequirementsMet(_objCharacter, null, await LanguageManager.GetStringAsync("String_Program", token: token)))
+                if (!xmlProgram.RequirementsMet(_objCharacter, null, await LanguageManager.GetStringAsync("String_Program", token: token).ConfigureAwait(false)))
                 {
                     return;
                 }
 
                 _strSelectedAIProgram = strSelectedId;
-                _strSelectedCategory = (GlobalSettings.SearchInCategoryOnly || await txtSearch.DoThreadSafeFuncAsync(x => x.TextLength == 0, token: token))
-                    ? await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token)
+                _strSelectedCategory = (GlobalSettings.SearchInCategoryOnly || await txtSearch.DoThreadSafeFuncAsync(x => x.TextLength == 0, token: token).ConfigureAwait(false))
+                    ? await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false)
                     : xmlProgram.SelectSingleNode("category")?.Value;
 
                 await this.DoThreadSafeAsync(x =>
                 {
                     x.DialogResult = DialogResult.OK;
                     x.Close();
-                }, token: token);
+                }, token: token).ConfigureAwait(false);
             }
         }
 
         private async void OpenSourceFromLabel(object sender, EventArgs e)
         {
-            await CommonFunctions.OpenPdfFromControl(sender);
+            await CommonFunctions.OpenPdfFromControl(sender).ConfigureAwait(false);
         }
 
         #endregion Methods

@@ -1733,7 +1733,7 @@ namespace Chummer.Backend.Attributes
         /// <param name="token">Cancellation token to listen to.</param>
         public async ValueTask AssignLimitsAsync(int intMin, int intMax, int intAug, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token))
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
                 bool blnMinChanged = _intMetatypeMin != intMin;
                 bool blnMaxChanged = _intMetatypeMax != intMax;
@@ -1815,7 +1815,7 @@ namespace Chummer.Backend.Attributes
         /// <param name="token">Cancellation token to listen to.</param>
         public async ValueTask AssignBaseKarmaLimitsAsync(int intBase, int intKarma, int intMin, int intMax, int intAug, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token))
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
                 bool blnBaseChanged = _intBase != intBase;
                 bool blnKarmaChanged = _intKarma != intKarma;

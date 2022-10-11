@@ -544,7 +544,7 @@ namespace Chummer.UI.Table
                             {
                                 x.RestartLayout(true);
                             }
-                        });
+                        }).ConfigureAwait(false);
                     }
                     else
                     {
@@ -584,7 +584,7 @@ namespace Chummer.UI.Table
                         {
                             x.RestartLayout(true);
                         }
-                    });
+                    }).ConfigureAwait(false);
                     break;
 
                 case ListChangedType.ItemDeleted:
@@ -614,7 +614,7 @@ namespace Chummer.UI.Table
                         {
                             x.RestartLayout(true);
                         }
-                    });
+                    }).ConfigureAwait(false);
                     break;
 
                 case ListChangedType.ItemMoved:
@@ -660,7 +660,7 @@ namespace Chummer.UI.Table
                         }
 
                         x.Sort();
-                    });
+                    }).ConfigureAwait(false);
                     break;
             }
         }

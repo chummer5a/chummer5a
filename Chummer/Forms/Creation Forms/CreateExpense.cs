@@ -59,15 +59,15 @@ namespace Chummer
 
         private async void cmdOK_Click(object sender, EventArgs e)
         {
-            if (KarmaNuyenExchange && _objMode == ExpenseType.Nuyen && await nudAmount.DoThreadSafeFuncAsync(x => x.Value) % _objCharacterSettings.NuyenPerBPWftP != 0)
+            if (KarmaNuyenExchange && _objMode == ExpenseType.Nuyen && await nudAmount.DoThreadSafeFuncAsync(x => x.Value).ConfigureAwait(false) % _objCharacterSettings.NuyenPerBPWftP != 0)
             {
                 Program.ShowMessageBox(
                     this,
                     string.Format(GlobalSettings.CultureInfo,
-                                  await LanguageManager.GetStringAsync("Message_KarmaNuyenExchange"),
+                                  await LanguageManager.GetStringAsync("Message_KarmaNuyenExchange").ConfigureAwait(false),
                                   _objCharacterSettings.NuyenPerBPWftP.ToString(
-                                      _objCharacterSettings.NuyenFormat, GlobalSettings.CultureInfo) + await LanguageManager.GetStringAsync("String_NuyenSymbol")),
-                    await LanguageManager.GetStringAsync("MessageTitle_KarmaNuyenExchange"), MessageBoxButtons.OK,
+                                      _objCharacterSettings.NuyenFormat, GlobalSettings.CultureInfo) + await LanguageManager.GetStringAsync("String_NuyenSymbol").ConfigureAwait(false)),
+                    await LanguageManager.GetStringAsync("MessageTitle_KarmaNuyenExchange").ConfigureAwait(false), MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
             }
             else
@@ -76,7 +76,7 @@ namespace Chummer
                 {
                     x.DialogResult = DialogResult.OK;
                     x.Close();
-                });
+                }).ConfigureAwait(false);
             }
         }
 
@@ -227,15 +227,15 @@ namespace Chummer
         {
             if (!IsInEditMode)
             {
-                string strText = await LanguageManager.GetStringAsync("String_ExpenseDefault");
-                await txtDescription.DoThreadSafeAsync(x => x.Text = strText);
+                string strText = await LanguageManager.GetStringAsync("String_ExpenseDefault").ConfigureAwait(false);
+                await txtDescription.DoThreadSafeAsync(x => x.Text = strText).ConfigureAwait(false);
             }
             await chkKarmaNuyenExchange.DoThreadSafeAsync(x =>
             {
                 x.Visible = !string.IsNullOrWhiteSpace(KarmaNuyenExchangeString);
                 x.Text = KarmaNuyenExchangeString;
-            });
-            await chkForceCareerVisible.DoThreadSafeAsync(x => x.Enabled = chkKarmaNuyenExchange.Checked);
+            }).ConfigureAwait(false);
+            await chkForceCareerVisible.DoThreadSafeAsync(x => x.Enabled = chkKarmaNuyenExchange.Checked).ConfigureAwait(false);
         }
     }
 }

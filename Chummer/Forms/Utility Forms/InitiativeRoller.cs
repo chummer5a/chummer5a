@@ -35,13 +35,13 @@ namespace Chummer
 
         private async void InitiativeRoller_Load(object sender, EventArgs e)
         {
-            string strText = await LanguageManager.GetStringAsync("Label_LifestyleNuyen_ResultOf");
-            await lblDice.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strText, Dice));
+            string strText = await LanguageManager.GetStringAsync("Label_LifestyleNuyen_ResultOf").ConfigureAwait(false);
+            await lblDice.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strText, Dice)).ConfigureAwait(false);
             await nudDiceResult.DoThreadSafeAsync(x =>
             {
                 x.Maximum = Dice * 6;
                 x.Minimum = Dice;
-            });
+            }).ConfigureAwait(false);
         }
 
         private void cmdOK_Click(object sender, EventArgs e)

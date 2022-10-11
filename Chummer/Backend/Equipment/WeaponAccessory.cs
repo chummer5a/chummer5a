@@ -1672,6 +1672,57 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Toggle the Wireless Bonus for this weapon accessory.
+        /// </summary>
+        public async ValueTask RefreshWirelessBonusesAsync(CancellationToken token = default)
+        {
+            if (!string.IsNullOrEmpty(WirelessBonus?.InnerText))
+            {
+                if (WirelessOn && Equipped && Parent.WirelessOn)
+                {
+                    if (WirelessBonus.SelectSingleNode("@mode")?.Value == "replace")
+                    {
+                        ImprovementManager.DisableImprovements(_objCharacter,
+                            await _objCharacter.Improvements.ToListAsync(x =>
+                                                                             x.ImproveSource == Improvement.ImprovementSource.WeaponAccessory &&
+                                                                             x.SourceName == InternalId, token: token).ConfigureAwait(false));
+                    }
+
+                    await ImprovementManager.CreateImprovementsAsync(_objCharacter,
+                                                                     Improvement.ImprovementSource.WeaponAccessory,
+                                                                     InternalId + "Wireless", WirelessBonus, Rating,
+                                                                     await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
+                                                                     token: token).ConfigureAwait(false);
+
+                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(_strExtra))
+                        _strExtra = ImprovementManager.SelectedValue;
+                }
+                else
+                {
+                    if (WirelessBonus.SelectSingleNode("@mode")?.Value == "replace")
+                    {
+                        ImprovementManager.EnableImprovements(_objCharacter,
+                                                              await _objCharacter.Improvements.ToListAsync(x =>
+                                                                  x.ImproveSource == Improvement.ImprovementSource.WeaponAccessory &&
+                                                                  x.SourceName == InternalId, token: token).ConfigureAwait(false));
+                    }
+
+                    string strSourceNameToRemove = InternalId + "Wireless";
+                    await ImprovementManager.RemoveImprovementsAsync(_objCharacter,
+                                                                     await _objCharacter.Improvements.ToListAsync(
+                                                                         x => x.ImproveSource
+                                                                              == Improvement.ImprovementSource
+                                                                                  .WeaponAccessory
+                                                                              && x.SourceName == strSourceNameToRemove,
+                                                                         token: token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                }
+            }
+
+            foreach (Gear objGear in GearChildren)
+                await objGear.RefreshWirelessBonusesAsync(token).ConfigureAwait(false);
+        }
+
+        /// <summary>
         /// Checks a nominated piece of gear for Availability requirements.
         /// </summary>
         /// <param name="dicRestrictedGearLimits">Dictionary of Restricted Gear availabilities still available with the amount of items that can still use that availability.</param>

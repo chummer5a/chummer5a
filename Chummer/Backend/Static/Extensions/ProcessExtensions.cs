@@ -42,14 +42,14 @@ namespace Chummer
                     objProcess.EnableRaisingEvents = true;
                     objProcess.Exited += (sender, args) => objTaskCompletionSource.TrySetResult(objProcess.ExitCode);
                     objProcess.Start();
-                    return await objTaskCompletionSource.Task;
+                    return await objTaskCompletionSource.Task.ConfigureAwait(false);
                 }
             }
 
             objProcess.EnableRaisingEvents = true;
             objProcess.Exited += (sender, args) => objTaskCompletionSource.TrySetResult(objProcess.ExitCode);
             objProcess.Start();
-            return await objTaskCompletionSource.Task;
+            return await objTaskCompletionSource.Task.ConfigureAwait(false);
         }
 
         /// <summary>

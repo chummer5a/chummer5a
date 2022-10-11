@@ -51,22 +51,22 @@ namespace Chummer
                 foreach (string strLimit in _lstLimits)
                 {
                     lstLimitItems.Add(
-                        new ListItem(strLimit, await LanguageManager.GetStringAsync("String_Limit" + strLimit + "Short")));
+                        new ListItem(strLimit, await LanguageManager.GetStringAsync("String_Limit" + strLimit + "Short").ConfigureAwait(false)));
                 }
                 
-                await cboLimit.PopulateWithListItemsAsync(lstLimitItems);
+                await cboLimit.PopulateWithListItemsAsync(lstLimitItems).ConfigureAwait(false);
                 if (lstLimitItems.Count >= 1)
-                    await cboLimit.DoThreadSafeAsync(x => x.SelectedIndex = 0);
+                    await cboLimit.DoThreadSafeAsync(x => x.SelectedIndex = 0).ConfigureAwait(false);
                 else
-                    await cmdOK.DoThreadSafeAsync(x => x.Enabled = false);
+                    await cmdOK.DoThreadSafeAsync(x => x.Enabled = false).ConfigureAwait(false);
             }
 
             if (_objLimitModifier != null)
             {
-                await cboLimit.DoThreadSafeAsync(x => x.SelectedValue = _objLimitModifier.Limit);
-                await txtName.DoThreadSafeAsync(x => x.Text = _objLimitModifier.Name);
+                await cboLimit.DoThreadSafeAsync(x => x.SelectedValue = _objLimitModifier.Limit).ConfigureAwait(false);
+                await txtName.DoThreadSafeAsync(x => x.Text = _objLimitModifier.Name).ConfigureAwait(false);
                 _intBonus = _objLimitModifier.Bonus;
-                await txtCondition.DoThreadSafeAsync(x => x.Text = _objLimitModifier.Condition);
+                await txtCondition.DoThreadSafeAsync(x => x.Text = _objLimitModifier.Condition).ConfigureAwait(false);
             }
         }
 

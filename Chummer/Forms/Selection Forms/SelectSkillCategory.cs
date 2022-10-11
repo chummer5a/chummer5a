@@ -49,27 +49,27 @@ namespace Chummer
                 foreach (XPathNavigator objXmlCategory in !string.IsNullOrEmpty(_strForceCategory)
                              ? _objXmlDocument.Select("/chummer/categories/category[. = "
                                                       + _strForceCategory.CleanXPath() + ']')
-                             : await _objXmlDocument.SelectAndCacheExpressionAsync("/chummer/categories/category"))
+                             : await _objXmlDocument.SelectAndCacheExpressionAsync("/chummer/categories/category").ConfigureAwait(false))
                 {
                     string strInnerText = objXmlCategory.Value;
                     lstCategory.Add(new ListItem(strInnerText,
-                                                 (await objXmlCategory.SelectSingleNodeAndCacheExpressionAsync("@translate"))?.Value
+                                                 (await objXmlCategory.SelectSingleNodeAndCacheExpressionAsync("@translate").ConfigureAwait(false))?.Value
                                                  ?? strInnerText));
                 }
                 
-                await cboCategory.PopulateWithListItemsAsync(lstCategory);
+                await cboCategory.PopulateWithListItemsAsync(lstCategory).ConfigureAwait(false);
                 // Select the first Skill in the list.
-                await cboCategory.DoThreadSafeAsync(x => x.SelectedIndex = 0);
+                await cboCategory.DoThreadSafeAsync(x => x.SelectedIndex = 0).ConfigureAwait(false);
             }
 
-            if (await cboCategory.DoThreadSafeFuncAsync(x => x.Items.Count) == 1)
+            if (await cboCategory.DoThreadSafeFuncAsync(x => x.Items.Count).ConfigureAwait(false) == 1)
             {
-                _strSelectedCategory = await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString());
+                _strSelectedCategory = await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString()).ConfigureAwait(false);
                 await this.DoThreadSafeAsync(x =>
                 {
                     x.DialogResult = DialogResult.OK;
                     x.Close();
-                });
+                }).ConfigureAwait(false);
             }
         }
 

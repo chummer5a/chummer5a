@@ -1431,7 +1431,7 @@ namespace SevenZip.Compression.LZMA
                     }
                     else if (progressAsync != null)
                     {
-                        await progressAsync.SetProgressAsync(processedInSize, processedOutSize, token);
+                        await progressAsync.SetProgressAsync(processedInSize, processedOutSize, token).ConfigureAwait(false);
                     }
                 }
             }

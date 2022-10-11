@@ -1212,9 +1212,9 @@ namespace Chummer
                 !string.IsNullOrEmpty(strNameOnPage))
                 strEnglishNameOnPage = strNameOnPage;
 
-            using (await EnterReadLock.EnterAsync(objCharacter.LockObject, token))
+            using (await EnterReadLock.EnterAsync(objCharacter.LockObject, token).ConfigureAwait(false))
             {
-                string strGearNotes = await GetTextFromPdfAsync(strSource + ' ' + strPage, strEnglishNameOnPage, objCharacter, token);
+                string strGearNotes = await GetTextFromPdfAsync(strSource + ' ' + strPage, strEnglishNameOnPage, objCharacter, token).ConfigureAwait(false);
 
                 if (!string.IsNullOrEmpty(strGearNotes)
                     || GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
@@ -1232,7 +1232,7 @@ namespace Chummer
                     strTranslatedNameOnPage = strNameOnPage;
 
                 return await GetTextFromPdfAsync(strSource + ' ' + strDisplayPage,
-                    strTranslatedNameOnPage, objCharacter, token);
+                                                 strTranslatedNameOnPage, objCharacter, token).ConfigureAwait(false);
             }
         }
 
@@ -1374,7 +1374,7 @@ namespace Chummer
             {
                 (bool blnIsSuccess, object objProcess) = await EvaluateInvariantXPathAsync(
                     strIn.Replace("/", " div ").Replace("F", strForce).Replace("1D6", strForce)
-                        .Replace("2D6", strForce), token);
+                         .Replace("2D6", strForce), token).ConfigureAwait(false);
                 if (blnIsSuccess)
                     intValue = ((double)objProcess).StandardRound();
             }
@@ -1464,7 +1464,7 @@ namespace Chummer
             {
                 (bool blnIsSuccess, object objProcess) = await EvaluateInvariantXPathAsync(
                     strIn.Replace("/", " div ").Replace("F", strForce).Replace("1D6", strForce)
-                        .Replace("2D6", strForce), token);
+                         .Replace("2D6", strForce), token).ConfigureAwait(false);
                 if (blnIsSuccess)
                     decValue = Convert.ToDecimal((double)objProcess);
             }
@@ -1506,7 +1506,7 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             return !GlobalSettings.ConfirmDelete ||
-                   Program.ShowMessageBox(strMessage, await LanguageManager.GetStringAsync("MessageTitle_Delete", token: token),
+                   Program.ShowMessageBox(strMessage, await LanguageManager.GetStringAsync("MessageTitle_Delete", token: token).ConfigureAwait(false),
                        MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
         }
 
@@ -1527,7 +1527,7 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             return !GlobalSettings.ConfirmKarmaExpense ||
-                   Program.ShowMessageBox(strMessage, await LanguageManager.GetStringAsync("MessageTitle_ConfirmKarmaExpense", token: token),
+                   Program.ShowMessageBox(strMessage, await LanguageManager.GetStringAsync("MessageTitle_ConfirmKarmaExpense", token: token).ConfigureAwait(false),
                        MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
         }
 

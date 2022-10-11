@@ -69,14 +69,14 @@ namespace Chummer.UI.Powers
         {
             if (_objCharacter != null)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
             try
             {
-                await RealLoad();
+                await RealLoad().ConfigureAwait(false);
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -144,7 +144,7 @@ namespace Chummer.UI.Powers
                 {
                     x.ResumeLayout(true);
                 }
-            }, token: token);
+            }, token: token).ConfigureAwait(false);
 
             sw.Stop();
             Debug.WriteLine("RealLoad() in {0} ms", sw.Elapsed.TotalMilliseconds);
@@ -165,7 +165,7 @@ namespace Chummer.UI.Powers
         private async void OnCharacterPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(Character.PowerPointsTotal) || e.PropertyName == nameof(Character.PowerPointsUsed))
-                await CalculatePowerPoints();
+                await CalculatePowerPoints().ConfigureAwait(false);
         }
 
         private async void OnPowersListChanged(object sender, ListChangedEventArgs e)
@@ -178,14 +178,14 @@ namespace Chummer.UI.Powers
                         if (propertyName == nameof(Power.FreeLevels) || propertyName == nameof(Power.TotalRating))
                         {
                             // recalculation of power points on rating/free levels change
-                            await CalculatePowerPoints();
+                            await CalculatePowerPoints().ConfigureAwait(false);
                         }
                         break;
                     }
                 case ListChangedType.Reset:
                 case ListChangedType.ItemAdded:
                 case ListChangedType.ItemDeleted:
-                    await CalculatePowerPoints();
+                    await CalculatePowerPoints().ConfigureAwait(false);
                     break;
             }
         }
@@ -249,15 +249,15 @@ namespace Chummer.UI.Powers
         private async void cmdAddPower_Click(object sender, EventArgs e)
         {
             // Open the Cyberware XML file and locate the selected piece.
-            XmlDocument objXmlDocument = await _objCharacter.LoadDataAsync("powers.xml");
+            XmlDocument objXmlDocument = await _objCharacter.LoadDataAsync("powers.xml").ConfigureAwait(false);
             bool blnAddAgain;
 
             do
             {
-                using (ThreadSafeForm<SelectPower> frmPickPower = await ThreadSafeForm<SelectPower>.GetAsync(() => new SelectPower(_objCharacter)))
+                using (ThreadSafeForm<SelectPower> frmPickPower = await ThreadSafeForm<SelectPower>.GetAsync(() => new SelectPower(_objCharacter)).ConfigureAwait(false))
                 {
                     // Make sure the dialogue window was not canceled.
-                    if (await frmPickPower.ShowDialogSafeAsync(_objCharacter) == DialogResult.Cancel)
+                    if (await frmPickPower.ShowDialogSafeAsync(_objCharacter).ConfigureAwait(false) == DialogResult.Cancel)
                         break;
 
                     blnAddAgain = frmPickPower.MyForm.AddAgain;
@@ -267,7 +267,7 @@ namespace Chummer.UI.Powers
                     XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[id = " + frmPickPower.MyForm.SelectedPower.CleanXPath() + ']');
                     if (objPower.Create(objXmlPower))
                     {
-                        await _objCharacter.Powers.AddAsync(objPower);
+                        await _objCharacter.Powers.AddAsync(objPower).ConfigureAwait(false);
                     }
                 }
             }
@@ -279,13 +279,13 @@ namespace Chummer.UI.Powers
         /// </summary>
         public async ValueTask CalculatePowerPoints(CancellationToken token = default)
         {
-            decimal decPowerPointsTotal = await _objCharacter.GetPowerPointsTotalAsync(token);
-            decimal decPowerPointsRemaining = decPowerPointsTotal - await _objCharacter.GetPowerPointsUsedAsync(token);
+            decimal decPowerPointsTotal = await _objCharacter.GetPowerPointsTotalAsync(token).ConfigureAwait(false);
+            decimal decPowerPointsRemaining = decPowerPointsTotal - await _objCharacter.GetPowerPointsUsedAsync(token).ConfigureAwait(false);
             string strText = string.Format(GlobalSettings.CultureInfo, "{1}{0}({2}{0}{3})",
-                                           await LanguageManager.GetStringAsync("String_Space", token: token), decPowerPointsTotal,
+                                           await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false), decPowerPointsTotal,
                                            decPowerPointsRemaining,
-                                           await LanguageManager.GetStringAsync("String_Remaining", token: token));
-            await lblPowerPoints.DoThreadSafeAsync(x => x.Text = strText, token: token);
+                                           await LanguageManager.GetStringAsync("String_Remaining", token: token).ConfigureAwait(false));
+            await lblPowerPoints.DoThreadSafeAsync(x => x.Text = strText, token: token).ConfigureAwait(false);
         }
 
         private void InitializeTable()
@@ -461,11 +461,11 @@ namespace Chummer.UI.Powers
                                                                                = await ThreadSafeForm<EditNotes>
                                                                                    .GetAsync(
                                                                                        () => new EditNotes(
-                                                                                           p.Notes, p.NotesColor)))
+                                                                                           p.Notes, p.NotesColor)).ConfigureAwait(false))
                                                                               {
                                                                                   if (await frmPowerNotes
                                                                                        .ShowDialogSafeAsync(
-                                                                                           _objCharacter)
+                                                                                           _objCharacter).ConfigureAwait(false)
                                                                                    == DialogResult.OK)
                                                                                       p.Notes = frmPowerNotes.MyForm
                                                                                           .Notes;
@@ -505,7 +505,7 @@ namespace Chummer.UI.Powers
                                                                                 //Cache the parentform prior to deletion, otherwise the relationship is broken.
                                                                                 Form frmParent
                                                                                     = await this.DoThreadSafeFuncAsync(
-                                                                                        x => x.ParentForm);
+                                                                                        x => x.ParentForm).ConfigureAwait(false);
                                                                                 if (p.FreeLevels > 0)
                                                                                 {
                                                                                     string strExtra = p.Extra;
@@ -516,7 +516,7 @@ namespace Chummer.UI.Powers
                                                                                                 Improvement
                                                                                                     .ImprovementType
                                                                                                     .AdeptPowerFreePoints,
-                                                                                                p.Name))
+                                                                                                p.Name).ConfigureAwait(false))
                                                                                         .Find(x => x.UniqueName
                                                                                             == strExtra)
                                                                                         ?.SourceName;
@@ -541,7 +541,7 @@ namespace Chummer.UI.Powers
 
                                                                                 if (frmParent is CharacterShared
                                                                                  objParent)
-                                                                                    await objParent.RequestCharacterUpdate();
+                                                                                    await objParent.RequestCharacterUpdate().ConfigureAwait(false);
                                                                             },
                                                                             EnabledExtractor = (p => p.FreeLevels == 0)
                                                                         }));

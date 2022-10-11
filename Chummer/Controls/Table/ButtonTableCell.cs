@@ -49,7 +49,7 @@ namespace Chummer.UI.Table
         private async void OnButtonClick(object sender, EventArgs e)
         {
             if (ClickHandler != null)
-                await ClickHandler.Invoke(Value as T);
+                await ClickHandler.Invoke(Value as T).ConfigureAwait(false);
         }
 
         private void OnLoad(object sender, EventArgs eventArgs)

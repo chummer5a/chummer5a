@@ -2503,6 +2503,59 @@ namespace Chummer.Backend.Equipment
                 objGear.RefreshWirelessBonuses();
         }
 
+        /// <summary>
+        /// Toggle the Wireless Bonus for this armor.
+        /// </summary>
+        public async ValueTask RefreshWirelessBonusesAsync(CancellationToken token = default)
+        {
+            if (!string.IsNullOrEmpty(WirelessBonus?.InnerText))
+            {
+                if (WirelessOn && Equipped)
+                {
+                    if (WirelessBonus.SelectSingleNode("@mode")?.Value == "replace")
+                    {
+                        ImprovementManager.DisableImprovements(_objCharacter,
+                                                               await _objCharacter.Improvements.ToListAsync(
+                                                                   x => x.ImproveSource
+                                                                        == Improvement.ImprovementSource.Armor
+                                                                        && x.SourceName == InternalId, token: token).ConfigureAwait(false));
+                    }
+
+                    await ImprovementManager.CreateImprovementsAsync(_objCharacter, Improvement.ImprovementSource.Armor,
+                                                                     InternalId + "Wireless", WirelessBonus, Rating,
+                                                                     await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
+                                                                     token: token).ConfigureAwait(false);
+
+                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(_strExtra))
+                        _strExtra = ImprovementManager.SelectedValue;
+                }
+                else
+                {
+                    if (WirelessBonus.SelectSingleNode("@mode")?.Value == "replace")
+                    {
+                        ImprovementManager.EnableImprovements(_objCharacter,
+                                                              await _objCharacter.Improvements.ToListAsync(
+                                                                  x => x.ImproveSource
+                                                                       == Improvement.ImprovementSource.Armor
+                                                                       && x.SourceName == InternalId, token: token).ConfigureAwait(false));
+                    }
+
+                    string strSourceNameToRemove = InternalId + "Wireless";
+                    await ImprovementManager.RemoveImprovementsAsync(_objCharacter,
+                                                                     await _objCharacter.Improvements.ToListAsync(
+                                                                         x => x.ImproveSource
+                                                                              == Improvement.ImprovementSource.Armor
+                                                                              && x.SourceName == strSourceNameToRemove,
+                                                                         token: token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                }
+            }
+
+            foreach (ArmorMod objArmorMod in ArmorMods)
+                await objArmorMod.RefreshWirelessBonusesAsync(token).ConfigureAwait(false);
+            foreach (Gear objGear in GearChildren)
+                await objGear.RefreshWirelessBonusesAsync(token).ConfigureAwait(false);
+        }
+
         #region UI Methods
 
         /// <summary>

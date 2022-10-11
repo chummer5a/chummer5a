@@ -76,7 +76,7 @@ namespace Chummer
 
         private async void EditNotes_Load(object sender, EventArgs e)
         {
-            await UpdateColorRepresentation();
+            await UpdateColorRepresentation().ConfigureAwait(false);
         }
 
         private void txtNotes_KeyDown(object sender, KeyEventArgs e)
@@ -128,10 +128,10 @@ namespace Chummer
         private async void btnColorSelect_Click(object sender, EventArgs e)
         {
             _colNotes = dlgColor.Color; //Selected color is always how it is shown in light mode, use the stored one for it.
-            if (await this.DoThreadSafeFuncAsync(x => dlgColor.ShowDialog(x)) != DialogResult.OK)
+            if (await this.DoThreadSafeFuncAsync(x => dlgColor.ShowDialog(x)).ConfigureAwait(false) != DialogResult.OK)
                 return;
-            _colNotes = await ColorManager.GenerateModeIndependentColorAsync(dlgColor.Color);
-            await UpdateColorRepresentation();
+            _colNotes = await ColorManager.GenerateModeIndependentColorAsync(dlgColor.Color).ConfigureAwait(false);
+            await UpdateColorRepresentation().ConfigureAwait(false);
         }
 
         private void txtNotes_TextChanged(object sender, EventArgs e)
@@ -155,8 +155,8 @@ namespace Chummer
         private async ValueTask UpdateColorRepresentation(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            Color objColor = await ColorManager.GenerateCurrentModeColorAsync(_colNotes, token);
-            await txtNotes.DoThreadSafeAsync(x => x.ForeColor = objColor, token);
+            Color objColor = await ColorManager.GenerateCurrentModeColorAsync(_colNotes, token).ConfigureAwait(false);
+            await txtNotes.DoThreadSafeAsync(x => x.ForeColor = objColor, token).ConfigureAwait(false);
         }
     }
 }

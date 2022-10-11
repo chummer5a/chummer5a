@@ -550,7 +550,7 @@ namespace Chummer
                     strSelectedPath = dlgSelectFolder.SelectedPath;
                     return eReturn;
                 }
-            });
+            }).ConfigureAwait(false);
 
             if (eResult != DialogResult.OK)
                 return;
@@ -990,7 +990,7 @@ namespace Chummer
                         strNewFileName = dlgOpenFile.FileName;
                         return eReturn;
                     }
-                }, token: token);
+                }, token: token).ConfigureAwait(false);
 
                 if (eResult != DialogResult.OK)
                     return;
@@ -1048,7 +1048,7 @@ namespace Chummer
                         strFileName = dlgOpenFile.FileName;
                         return eReturn;
                     }
-                }, token: token);
+                }, token: token).ConfigureAwait(false);
 
                 if (eResult != DialogResult.OK)
                     return;
@@ -1670,7 +1670,7 @@ namespace Chummer
                     XPathDocument xmlDocument;
                     try
                     {
-                        xmlDocument = await XPathDocumentExtensions.LoadStandardFromFileAsync(strFilePath, token: token);
+                        xmlDocument = await XPathDocumentExtensions.LoadStandardFromFileAsync(strFilePath, token: token).ConfigureAwait(false);
                     }
                     catch (IOException)
                     {
@@ -1730,7 +1730,7 @@ namespace Chummer
                         XPathDocument xmlDocument;
                         try
                         {
-                            xmlDocument = await XPathDocumentExtensions.LoadStandardFromFileAsync(strFilePath, token: token);
+                            xmlDocument = await XPathDocumentExtensions.LoadStandardFromFileAsync(strFilePath, token: token).ConfigureAwait(false);
                         }
                         catch (IOException)
                         {
@@ -1961,7 +1961,7 @@ namespace Chummer
                         strSelectedPath = dlgSelectFolder.SelectedPath;
                         return eReturn;
                     }
-                });
+                }).ConfigureAwait(false);
 
                 if (eResult != DialogResult.OK || string.IsNullOrWhiteSpace(strSelectedPath))
                     return;

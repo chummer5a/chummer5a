@@ -37,25 +37,25 @@ namespace Chummer
 
         private async void SelectDiceHits_Load(object sender, EventArgs e)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
             try
             {
-                string strSpace = await LanguageManager.GetStringAsync("String_Space");
-                string strText = await LanguageManager.GetStringAsync("String_DiceHits_HitsOn") + strSpace
+                string strSpace = await LanguageManager.GetStringAsync("String_Space").ConfigureAwait(false);
+                string strText = await LanguageManager.GetStringAsync("String_DiceHits_HitsOn").ConfigureAwait(false) + strSpace
                     + Dice.ToString(GlobalSettings.CultureInfo)
-                    + await LanguageManager.GetStringAsync("String_D6")
-                    + await LanguageManager.GetStringAsync("String_Colon") + strSpace;
-                await lblDice.DoThreadSafeAsync(x => x.Text = strText);
+                    + await LanguageManager.GetStringAsync("String_D6").ConfigureAwait(false)
+                    + await LanguageManager.GetStringAsync("String_Colon").ConfigureAwait(false) + strSpace;
+                await lblDice.DoThreadSafeAsync(x => x.Text = strText).ConfigureAwait(false);
                 await nudDiceResult.DoThreadSafeAsync(x =>
                 {
                     x.Maximum = Dice * 6;
                     x.Minimum = 6;
-                });
-                await DoRoll();
+                }).ConfigureAwait(false);
+                await DoRoll().ConfigureAwait(false);
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -73,14 +73,14 @@ namespace Chummer
 
         private async void cmdRoll_Click(object sender, EventArgs e)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
             try
             {
-                await DoRoll();
+                await DoRoll().ConfigureAwait(false);
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -89,10 +89,10 @@ namespace Chummer
             int intResult = 0;
             for (int i = 0; i < Dice; ++i)
             {
-                intResult += await GlobalSettings.RandomGenerator.NextD6ModuloBiasRemovedAsync(token: token);
+                intResult += await GlobalSettings.RandomGenerator.NextD6ModuloBiasRemovedAsync(token: token).ConfigureAwait(false);
             }
 
-            await nudDiceResult.DoThreadSafeAsync(x => x.ValueAsInt = intResult, token: token);
+            await nudDiceResult.DoThreadSafeAsync(x => x.ValueAsInt = intResult, token: token).ConfigureAwait(false);
         }
 
         #endregion Control Events

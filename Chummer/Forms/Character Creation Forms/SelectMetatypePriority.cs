@@ -1035,7 +1035,7 @@ namespace Chummer
         /// </summary>
         private async ValueTask MetatypeSelected(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(_objCharacter.LockObject, token))
+            using (await EnterReadLock.EnterAsync(_objCharacter.LockObject, token).ConfigureAwait(false))
             {
                 if (_objCharacter.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
                 {

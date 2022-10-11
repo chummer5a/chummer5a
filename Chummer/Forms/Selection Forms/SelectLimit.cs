@@ -59,26 +59,26 @@ namespace Chummer
                 foreach (string strLimit in _lstLimits)
                 {
                     lstLimitItems.Add(
-                        new ListItem(strLimit, await LanguageManager.GetStringAsync("String_Limit" + strLimit + "Short")));
+                        new ListItem(strLimit, await LanguageManager.GetStringAsync("String_Limit" + strLimit + "Short").ConfigureAwait(false)));
                 }
                 
-                await cboLimit.PopulateWithListItemsAsync(lstLimitItems);
+                await cboLimit.PopulateWithListItemsAsync(lstLimitItems).ConfigureAwait(false);
                 if (lstLimitItems.Count >= 1)
-                    await cboLimit.DoThreadSafeAsync(x => x.SelectedIndex = 0);
+                    await cboLimit.DoThreadSafeAsync(x => x.SelectedIndex = 0).ConfigureAwait(false);
                 else if (lstLimitItems.Count == 1)
                 {
-                    string strSelectedLimit = await cboLimit.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
+                    string strSelectedLimit = await cboLimit.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()).ConfigureAwait(false);
                     if (!string.IsNullOrEmpty(strSelectedLimit))
                     {
                         _strReturnValue = strSelectedLimit;
                         _strSelectedDisplayLimit
-                            = ((ListItem) await cboLimit.DoThreadSafeFuncAsync(x => x.SelectedItem)).Name;
+                            = ((ListItem) await cboLimit.DoThreadSafeFuncAsync(x => x.SelectedItem).ConfigureAwait(false)).Name;
                         DialogResult = DialogResult.OK;
                         Close();
                     }
                 }
                 else
-                    await cmdOK.DoThreadSafeAsync(x => x.Enabled = false);
+                    await cmdOK.DoThreadSafeAsync(x => x.Enabled = false).ConfigureAwait(false);
             }
         }
 

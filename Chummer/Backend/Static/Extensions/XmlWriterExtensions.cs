@@ -32,7 +32,7 @@ namespace Chummer
         public static async Task WriteStartElementAsync(this XmlWriter objWriter, string localName, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            await objWriter.WriteStartElementAsync(null, localName, null);
+            await objWriter.WriteStartElementAsync(null, localName, null).ConfigureAwait(false);
             if (objWriter.WriteState == WriteState.Error)
             {
                 Utils.BreakIfDebug();
@@ -45,7 +45,7 @@ namespace Chummer
         public static async Task WriteElementStringAsync(this XmlWriter objWriter, string localName, string value, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            await objWriter.WriteElementStringAsync(null, localName, null, value);
+            await objWriter.WriteElementStringAsync(null, localName, null, value).ConfigureAwait(false);
             if (objWriter.WriteState == WriteState.Error)
             {
                 Utils.BreakIfDebug();
@@ -58,7 +58,7 @@ namespace Chummer
         public static async Task WriteAttributeStringAsync(this XmlWriter objWriter, string localName, string value, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            await objWriter.WriteAttributeStringAsync(null, localName, null, value);
+            await objWriter.WriteAttributeStringAsync(null, localName, null, value).ConfigureAwait(false);
             if (objWriter.WriteState == WriteState.Error)
             {
                 Utils.BreakIfDebug();
@@ -81,7 +81,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static async Task<XmlElementWriteHelper> StartElementAsync(this XmlWriter objWriter, string localName, CancellationToken token = default)
         {
-            XmlElementWriteHelper objReturn = await XmlElementWriteHelper.StartElementAsync(objWriter, localName, token);
+            XmlElementWriteHelper objReturn = await XmlElementWriteHelper.StartElementAsync(objWriter, localName, token).ConfigureAwait(false);
             if (objWriter.WriteState == WriteState.Error)
             {
                 Utils.BreakIfDebug();

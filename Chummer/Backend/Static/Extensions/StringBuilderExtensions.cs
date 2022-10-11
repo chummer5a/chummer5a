@@ -534,7 +534,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 if (i > 0)
                     sbdInput.Append(strSeparator);
-                sbdInput.Append(await astrValues[i + intStartIndex]);
+                sbdInput.Append(await astrValues[i + intStartIndex].ConfigureAwait(false));
             }
             return sbdInput;
         }
@@ -558,7 +558,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 if (i > 0)
                     sbdInput.Append(strSeparator);
-                sbdInput.Append(await astrValues[i]);
+                sbdInput.Append(await astrValues[i].ConfigureAwait(false));
             }
             return sbdInput;
         }
@@ -582,7 +582,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 if (i > 0)
                     sbdInput.Append(strSeparator);
-                sbdInput.Append(await aobjValues[i]);
+                sbdInput.Append(await aobjValues[i].ConfigureAwait(false));
             }
             return sbdInput;
         }
@@ -608,7 +608,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 if (!blnFirst)
                     sbdInput.Append(chrSeparator);
-                sbdInput.Append(await tskValue);
+                sbdInput.Append(await tskValue.ConfigureAwait(false));
                 blnFirst = false;
             }
             return sbdInput;
@@ -634,7 +634,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 if (!blnFirst)
                     sbdInput.Append(chrSeparator);
-                sbdInput.Append(await tskValue);
+                sbdInput.Append(await tskValue.ConfigureAwait(false));
                 blnFirst = false;
             }
             return sbdInput;
@@ -667,7 +667,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 if (i > 0)
                     sbdInput.Append(chrSeparator);
-                sbdInput.Append(await astrValues[i + intStartIndex]);
+                sbdInput.Append(await astrValues[i + intStartIndex].ConfigureAwait(false));
             }
             return sbdInput;
         }
@@ -691,7 +691,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 if (i > 0)
                     sbdInput.Append(chrSeparator);
-                sbdInput.Append(await astrValues[i]);
+                sbdInput.Append(await astrValues[i].ConfigureAwait(false));
             }
             return sbdInput;
         }
@@ -715,7 +715,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 if (i > 0)
                     sbdInput.Append(chrSeparator);
-                sbdInput.Append(await aobjValues[i]);
+                sbdInput.Append(await aobjValues[i].ConfigureAwait(false));
             }
             return sbdInput;
         }

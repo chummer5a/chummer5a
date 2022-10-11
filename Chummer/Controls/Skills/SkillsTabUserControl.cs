@@ -84,14 +84,14 @@ namespace Chummer.UI.Skills
         {
             if (_objCharacter != null)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
             try
             {
-                await RealLoad();
+                await RealLoad().ConfigureAwait(false);
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -102,7 +102,7 @@ namespace Chummer.UI.Skills
             else
             {
                 _objCharacter = new Character();
-                await this.DoThreadSafeAsync(x => x.Disposed += (sender, args) => _objCharacter.Dispose(), token);
+                await this.DoThreadSafeAsync(x => x.Disposed += (sender, args) => _objCharacter.Dispose(), token).ConfigureAwait(false);
                 Utils.BreakIfDebug();
             }
 
@@ -121,7 +121,7 @@ namespace Chummer.UI.Skills
 
             //Visible = false;
 
-            bool blnExoticVisible = (await _objCharacter.LoadDataXPathAsync("skills.xml", token: token))
+            bool blnExoticVisible = (await _objCharacter.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false))
                 .SelectSingleNode(
                     "/chummer/skills/skill[exotic = "
                     + bool.TrueString.CleanXPath()
@@ -306,7 +306,7 @@ namespace Chummer.UI.Skills
                 {
                     x.ResumeLayout(true);
                 }
-            }, token: token);
+            }, token: token).ConfigureAwait(false);
             sw.Stop();
             Debug.WriteLine("RealLoad() in {0} ms", sw.Elapsed.TotalMilliseconds);
 
@@ -809,46 +809,46 @@ namespace Chummer.UI.Skills
         {
             ExoticSkill objSkill;
             using (ThreadSafeForm<SelectExoticSkill> frmPickExoticSkill
-                   = await ThreadSafeForm<SelectExoticSkill>.GetAsync(() => new SelectExoticSkill(_objCharacter)))
+                   = await ThreadSafeForm<SelectExoticSkill>.GetAsync(() => new SelectExoticSkill(_objCharacter)).ConfigureAwait(false))
             {
-                if (await frmPickExoticSkill.ShowDialogSafeAsync(_objCharacter) != DialogResult.OK)
+                if (await frmPickExoticSkill.ShowDialogSafeAsync(_objCharacter).ConfigureAwait(false) != DialogResult.OK)
                     return;
 
                 objSkill = await _objCharacter.SkillsSection.AddExoticSkillAsync(
                     frmPickExoticSkill.MyForm.SelectedExoticSkill,
-                    frmPickExoticSkill.MyForm.SelectedExoticSkillSpecialisation);
+                    frmPickExoticSkill.MyForm.SelectedExoticSkillSpecialisation).ConfigureAwait(false);
             }
 
-            using (await EnterReadLock.EnterAsync(objSkill.LockObject))
+            using (await EnterReadLock.EnterAsync(objSkill.LockObject).ConfigureAwait(false))
             {
                 // Karma check needs to come after the skill is created to make sure bonus-based modifiers (e.g. JoAT) get applied properly (since they can potentially trigger off of the specific exotic skill target)
-                if (await _objCharacter.GetCreatedAsync()
+                if (await _objCharacter.GetCreatedAsync().ConfigureAwait(false)
                     && await objSkill.GetUpgradeKarmaCostAsync().ConfigureAwait(false)
-                    > await _objCharacter.GetKarmaAsync())
+                    > await _objCharacter.GetKarmaAsync().ConfigureAwait(false))
                 {
-                    Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_NotEnoughKarma"));
-                    await _objCharacter.SkillsSection.Skills.RemoveAsync(objSkill);
+                    Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_NotEnoughKarma").ConfigureAwait(false));
+                    await _objCharacter.SkillsSection.Skills.RemoveAsync(objSkill).ConfigureAwait(false);
                     return;
                 }
 
-                await objSkill.Upgrade();
+                await objSkill.Upgrade().ConfigureAwait(false);
             }
         }
 
         private async void btnKnowledge_Click(object sender, EventArgs e)
         {
-            if (await _objCharacter.GetCreatedAsync())
+            if (await _objCharacter.GetCreatedAsync().ConfigureAwait(false))
             {
                 string strSelectedSkill;
 
-                string strDescription = await LanguageManager.GetStringAsync("Label_Options_NewKnowledgeSkill");
+                string strDescription = await LanguageManager.GetStringAsync("Label_Options_NewKnowledgeSkill").ConfigureAwait(false);
                 using (ThreadSafeForm<SelectItem> form = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem
-                {
-                    Description = strDescription
-                }))
+                       {
+                           Description = strDescription
+                       }).ConfigureAwait(false))
                 {
                     form.MyForm.SetDropdownItemsMode(_objCharacter.SkillsSection.MyDefaultKnowledgeSkills);
-                    if (await form.ShowDialogSafeAsync(_objCharacter) != DialogResult.OK)
+                    if (await form.ShowDialogSafeAsync(_objCharacter).ConfigureAwait(false) != DialogResult.OK)
                         return;
                     strSelectedSkill = form.MyForm.SelectedItem;
                 }
@@ -863,11 +863,11 @@ namespace Chummer.UI.Skills
                 {
                     DialogResult eDialogResult = Program.ShowMessageBox(this,
                         string.Format(GlobalSettings.CultureInfo,
-                                      await LanguageManager.GetStringAsync("Message_NewNativeLanguageSkill"),
+                                      await LanguageManager.GetStringAsync("Message_NewNativeLanguageSkill").ConfigureAwait(false),
                                       1 + await ImprovementManager.ValueOfAsync(
-                                          _objCharacter, Improvement.ImprovementType.NativeLanguageLimit),
+                                          _objCharacter, Improvement.ImprovementType.NativeLanguageLimit).ConfigureAwait(false),
                                       skill.WritableName),
-                        await LanguageManager.GetStringAsync("Tip_Skill_NativeLanguage"), MessageBoxButtons.YesNoCancel);
+                        await LanguageManager.GetStringAsync("Tip_Skill_NativeLanguage").ConfigureAwait(false), MessageBoxButtons.YesNoCancel);
                     switch (eDialogResult)
                     {
                         case DialogResult.Cancel:
@@ -883,28 +883,28 @@ namespace Chummer.UI.Skills
                     }
                 }
 
-                await _objCharacter.SkillsSection.KnowledgeSkills.AddAsync(skill);
+                await _objCharacter.SkillsSection.KnowledgeSkills.AddAsync(skill).ConfigureAwait(false);
             }
             else
             {
-                await _objCharacter.SkillsSection.KnowledgeSkills.AddAsync(new KnowledgeSkill(_objCharacter));
+                await _objCharacter.SkillsSection.KnowledgeSkills.AddAsync(new KnowledgeSkill(_objCharacter)).ConfigureAwait(false);
             }
         }
 
         private async void btnResetCustomDisplayAttribute_Click(object sender, EventArgs e)
         {
-            await _lstActiveSkills.DoThreadSafeAsync(x => x.SuspendLayout());
+            await _lstActiveSkills.DoThreadSafeAsync(x => x.SuspendLayout()).ConfigureAwait(false);
             try
             {
-                foreach (SkillControl objSkillControl in await _lstActiveSkills.DisplayPanel.DoThreadSafeFuncAsync(x => x.Controls))
+                foreach (SkillControl objSkillControl in await _lstActiveSkills.DisplayPanel.DoThreadSafeFuncAsync(x => x.Controls).ConfigureAwait(false))
                 {
                     if (objSkillControl.CustomAttributeSet)
-                        await objSkillControl.ResetSelectAttribute();
+                        await objSkillControl.ResetSelectAttribute().ConfigureAwait(false);
                 }
             }
             finally
             {
-                await _lstActiveSkills.DoThreadSafeAsync(x => x.ResumeLayout());
+                await _lstActiveSkills.DoThreadSafeAsync(x => x.ResumeLayout()).ConfigureAwait(false);
             }
         }
 

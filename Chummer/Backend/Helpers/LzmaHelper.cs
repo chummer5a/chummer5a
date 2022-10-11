@@ -325,7 +325,7 @@ namespace Chummer
             Decoder decoder = s_LzyDecoder.Value;
             token.ThrowIfCancellationRequested();
             byte[] properties = new byte[5];
-            if (await objInStream.ReadAsync(properties, 0, 5, token) != 5)
+            if (await objInStream.ReadAsync(properties, 0, 5, token).ConfigureAwait(false) != 5)
                 throw new ArgumentException("input .lzma is too short");
             decoder.SetDecoderProperties(properties);
             long outSize = 0;
@@ -344,7 +344,7 @@ namespace Chummer
             long compressedSize = objInStream.Length - objInStream.Position;
             token.ThrowIfCancellationRequested();
             IAsyncCodeProgress funcProgress = funcOnProgress != null ? new AsyncDelegateCodeProgress(funcOnProgress) : null;
-            await Task.Run(() => decoder.CodeAsync(objInStream, objOutStream, compressedSize, outSize, funcProgress, token), token);
+            await Task.Run(() => decoder.CodeAsync(objInStream, objOutStream, compressedSize, outSize, funcProgress, token), token).ConfigureAwait(false);
         }
 
         private sealed class DelegateCodeProgress : ICodeProgress

@@ -47,21 +47,21 @@ namespace Chummer
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                            out List<ListItem> lstAmmo))
             {
-                string strSpace = await LanguageManager.GetStringAsync("String_Space");
+                string strSpace = await LanguageManager.GetStringAsync("String_Space").ConfigureAwait(false);
                 // Add each of the items to a new List since we need to also grab their plugin information.
                 foreach (Gear objGear in _lstAmmo)
                 {
-                    string strName = await objGear.DisplayNameShortAsync(GlobalSettings.Language) + " x"
+                    string strName = await objGear.DisplayNameShortAsync(GlobalSettings.Language).ConfigureAwait(false) + " x"
                         + objGear.Quantity.ToString(GlobalSettings.InvariantCultureInfo);
                     if (objGear.Rating > 0)
-                        strName += strSpace + '(' + await LanguageManager.GetStringAsync(objGear.RatingLabel) + strSpace
+                        strName += strSpace + '(' + await LanguageManager.GetStringAsync(objGear.RatingLabel).ConfigureAwait(false) + strSpace
                                    + objGear.Rating.ToString(GlobalSettings.CultureInfo) + ')';
 
                     if (objGear.Parent is Gear objParent)
                     {
-                        if (!string.IsNullOrEmpty(await objParent.DisplayNameShortAsync(GlobalSettings.Language)))
+                        if (!string.IsNullOrEmpty(await objParent.DisplayNameShortAsync(GlobalSettings.Language).ConfigureAwait(false)))
                         {
-                            strName += strSpace + '(' + await objParent.DisplayNameShortAsync(GlobalSettings.Language);
+                            strName += strSpace + '(' + await objParent.DisplayNameShortAsync(GlobalSettings.Language).ConfigureAwait(false);
                             if (objParent.Location != null)
                                 strName += strSpace + '@' + strSpace + objParent.Location.DisplayName();
                             strName += ')';
@@ -92,7 +92,7 @@ namespace Chummer
                 }
 
                 // Populate the lists.
-                await cboAmmo.PopulateWithListItemsAsync(lstAmmo);
+                await cboAmmo.PopulateWithListItemsAsync(lstAmmo).ConfigureAwait(false);
                 await cboAmmo.DoThreadSafeAsync(x =>
                 {
                     Gear objExistingGear = _objWeapon?.AmmoLoaded;
@@ -100,7 +100,7 @@ namespace Chummer
                         x.SelectedValue = objExistingGear.InternalId;
                     if (x.SelectedIndex == -1)
                         x.SelectedIndex = 0;
-                });
+                }).ConfigureAwait(false);
             }
 
             await cboType.DoThreadSafeAsync(x =>
@@ -115,10 +115,10 @@ namespace Chummer
                 {
                     x.EndUpdate();
                 }
-            });
+            }).ConfigureAwait(false);
 
             // If there's only 1 value in each list, the character doesn't have a choice, so just accept it.
-            if (await cboAmmo.DoThreadSafeFuncAsync(x => x.Items.Count) == 1 && await cboType.DoThreadSafeFuncAsync(x => x.Items.Count) == 1)
+            if (await cboAmmo.DoThreadSafeFuncAsync(x => x.Items.Count).ConfigureAwait(false) == 1 && await cboType.DoThreadSafeFuncAsync(x => x.Items.Count).ConfigureAwait(false) == 1)
                 AcceptForm();
         }
 

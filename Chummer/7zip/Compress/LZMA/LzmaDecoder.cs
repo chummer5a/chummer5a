@@ -356,7 +356,7 @@ namespace SevenZip.Compression.LZMA
                                             }
                                             else if (progressAsync != null)
                                             {
-                                                await progressAsync.SetProgressAsync((long)outSize64, (long)nowPos64, token);
+                                                await progressAsync.SetProgressAsync((long)outSize64, (long)nowPos64, token).ConfigureAwait(false);
                                             }
                                             continue;
                                         }
@@ -432,7 +432,7 @@ namespace SevenZip.Compression.LZMA
                         }
                         else if (progressAsync != null)
                         {
-                            await progressAsync.SetProgressAsync((long)outSize64, (long)nowPos64, token);
+                            await progressAsync.SetProgressAsync((long)outSize64, (long)nowPos64, token).ConfigureAwait(false);
                         }
                     }
                 }

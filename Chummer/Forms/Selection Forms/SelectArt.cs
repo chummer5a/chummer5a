@@ -89,16 +89,16 @@ namespace Chummer
         private async void SelectArt_Load(object sender, EventArgs e)
         {
             string strText = string.Format(GlobalSettings.CultureInfo,
-                                           await LanguageManager.GetStringAsync("Title_SelectGeneric"), _strLocalName);
-            await this.DoThreadSafeAsync(x => x.Text = strText);
+                                           await LanguageManager.GetStringAsync("Title_SelectGeneric").ConfigureAwait(false), _strLocalName);
+            await this.DoThreadSafeAsync(x => x.Text = strText).ConfigureAwait(false);
             string strLimitText = string.Format(GlobalSettings.CultureInfo,
                                                 await LanguageManager.GetStringAsync(
-                                                    "Checkbox_SelectGeneric_LimitList"), _strLocalName);
-            await chkLimitList.DoThreadSafeAsync(x => x.Text = strLimitText);
+                                                    "Checkbox_SelectGeneric_LimitList").ConfigureAwait(false), _strLocalName);
+            await chkLimitList.DoThreadSafeAsync(x => x.Text = strLimitText).ConfigureAwait(false);
 
             _blnLoading = false;
 
-            await BuildList();
+            await BuildList().ConfigureAwait(false);
         }
 
         private async void lstArt_SelectedIndexChanged(object sender, EventArgs e)
@@ -106,10 +106,10 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
-            string strSelected = await lstArt.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
+            string strSelected = await lstArt.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()).ConfigureAwait(false);
             if (string.IsNullOrEmpty(strSelected))
             {
-                await tlpRight.DoThreadSafeAsync(x => x.Visible = false);
+                await tlpRight.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);
                 return;
             }
 
@@ -118,16 +118,16 @@ namespace Chummer
 
             if (objXmlMetamagic == null)
             {
-                await tlpRight.DoThreadSafeAsync(x => x.Visible = false);
+                await tlpRight.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);
                 return;
             }
 
-            string strSource = objXmlMetamagic.SelectSingleNode("source")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
-            string strPage = (await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("altpage"))?.Value ?? objXmlMetamagic.SelectSingleNode("page")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
+            string strSource = objXmlMetamagic.SelectSingleNode("source")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
+            string strPage = (await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("altpage").ConfigureAwait(false))?.Value ?? objXmlMetamagic.SelectSingleNode("page")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
             SourceString objSource = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language,
-                                                                             GlobalSettings.CultureInfo, _objCharacter);
-            await objSource.SetControlAsync(lblSource);
-            await tlpRight.DoThreadSafeAsync(x => x.Visible = true);
+                                                                             GlobalSettings.CultureInfo, _objCharacter).ConfigureAwait(false);
+            await objSource.SetControlAsync(lblSource).ConfigureAwait(false);
+            await tlpRight.DoThreadSafeAsync(x => x.Visible = true).ConfigureAwait(false);
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -148,12 +148,12 @@ namespace Chummer
 
         private async void chkLimitList_CheckedChanged(object sender, EventArgs e)
         {
-            await BuildList();
+            await BuildList().ConfigureAwait(false);
         }
 
         private async void txtSearch_TextChanged(object sender, EventArgs e)
         {
-            await BuildList();
+            await BuildList().ConfigureAwait(false);
         }
 
         #region Properties
@@ -176,31 +176,31 @@ namespace Chummer
                 return;
             
             string strFilter = _strXPathFilter;
-            string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token: token);
+            string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false);
             if (!string.IsNullOrEmpty(strSearch))
                 strFilter += " and " + CommonFunctions.GenerateSearchXPath(strSearch);
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                            out List<ListItem> lstArts))
             {
-                bool blnLimitList = await chkLimitList.DoThreadSafeFuncAsync(x => x.Checked, token: token);
+                bool blnLimitList = await chkLimitList.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
                 foreach (XPathNavigator objXmlMetamagic in
                          _objXmlDocument.Select(_strBaseXPath + '[' + strFilter + ']'))
                 {
-                    string strId = (await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("id", token: token))?.Value;
+                    string strId = (await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("id", token: token).ConfigureAwait(false))?.Value;
                     if (!string.IsNullOrEmpty(strId)
                         && (!blnLimitList || objXmlMetamagic.RequirementsMet(_objCharacter)))
                     {
-                        lstArts.Add(new ListItem((await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("id", token: token))?.Value,
-                                                 (await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("translate", token: token))?.Value
-                                                 ?? (await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("name", token: token))?.Value
-                                                 ?? await LanguageManager.GetStringAsync("String_Unknown", token: token)));
+                        lstArts.Add(new ListItem((await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("id", token: token).ConfigureAwait(false))?.Value,
+                                                 (await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value
+                                                 ?? (await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("name", token: token).ConfigureAwait(false))?.Value
+                                                 ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false)));
                     }
                 }
 
                 lstArts.Sort(CompareListItems.CompareNames);
-                string strOldSelected = await lstArt.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token);
+                string strOldSelected = await lstArt.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false);
                 _blnLoading = true;
-                await lstArt.PopulateWithListItemsAsync(lstArts, token: token);
+                await lstArt.PopulateWithListItemsAsync(lstArts, token: token).ConfigureAwait(false);
                 _blnLoading = false;
                 await lstArt.DoThreadSafeAsync(x =>
                 {
@@ -208,7 +208,7 @@ namespace Chummer
                         x.SelectedValue = strOldSelected;
                     else
                         x.SelectedIndex = -1;
-                }, token: token);
+                }, token: token).ConfigureAwait(false);
             }
         }
 
@@ -238,7 +238,7 @@ namespace Chummer
 
         private async void OpenSourceFromLabel(object sender, EventArgs e)
         {
-            await CommonFunctions.OpenPdfFromControl(sender);
+            await CommonFunctions.OpenPdfFromControl(sender).ConfigureAwait(false);
         }
 
         #endregion Methods

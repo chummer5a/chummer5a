@@ -48,50 +48,50 @@ namespace Chummer
             // Build a list of Weapon Categories found in the Weapons file.
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstCategory))
             {
-                XPathNavigator objXmlDocument = await XmlManager.LoadXPathAsync("weapons.xml", _objCharacter?.Settings.EnabledCustomDataDirectoryPaths);
+                XPathNavigator objXmlDocument = await XmlManager.LoadXPathAsync("weapons.xml", _objCharacter?.Settings.EnabledCustomDataDirectoryPaths).ConfigureAwait(false);
                 foreach (XPathNavigator objXmlCategory in !string.IsNullOrEmpty(OnlyCategory)
                              ? objXmlDocument.Select("/chummer/categories/category[. = "
                                                       + OnlyCategory.CleanXPath() + ']')
-                             : await objXmlDocument.SelectAndCacheExpressionAsync("/chummer/categories/category"))
+                             : await objXmlDocument.SelectAndCacheExpressionAsync("/chummer/categories/category").ConfigureAwait(false))
                 {
                     if (!string.IsNullOrEmpty(WeaponType) && objXmlCategory.Value != "Exotic Ranged Weapons")
                     {
-                        string strType = (await objXmlCategory.SelectSingleNodeAndCacheExpressionAsync("@type"))?.Value;
+                        string strType = (await objXmlCategory.SelectSingleNodeAndCacheExpressionAsync("@type").ConfigureAwait(false))?.Value;
                         if (string.IsNullOrEmpty(strType) || strType != WeaponType)
                             continue;
                     }
 
                     string strInnerText = objXmlCategory.Value;
                     lstCategory.Add(new ListItem(strInnerText,
-                                                 (await objXmlCategory.SelectSingleNodeAndCacheExpressionAsync("@translate"))?.Value
+                                                 (await objXmlCategory.SelectSingleNodeAndCacheExpressionAsync("@translate").ConfigureAwait(false))?.Value
                                                  ?? strInnerText));
                 }
 
                 // Add the Cyberware Category.
                 if (lstCategory.Count == 0 && (OnlyCategory == "Cyberware" || OnlyCategory == "Cyberweapon"))
                 {
-                    lstCategory.Add(new ListItem("Cyberware", await LanguageManager.GetStringAsync("String_Cyberware")));
+                    lstCategory.Add(new ListItem("Cyberware", await LanguageManager.GetStringAsync("String_Cyberware").ConfigureAwait(false)));
                 }
 
                 switch (lstCategory.Count)
                 {
                     case 0:
-                        await this.DoThreadSafeAsync(x => x.ConfirmSelection(string.Empty));
+                        await this.DoThreadSafeAsync(x => x.ConfirmSelection(string.Empty)).ConfigureAwait(false);
                         return;
 
                     case 1:
                         string strSelect = lstCategory[0].Value.ToString();
-                        await this.DoThreadSafeAsync(x => x.ConfirmSelection(strSelect));
+                        await this.DoThreadSafeAsync(x => x.ConfirmSelection(strSelect)).ConfigureAwait(false);
                         return;
                 }
                 
-                await cboCategory.PopulateWithListItemsAsync(lstCategory);
+                await cboCategory.PopulateWithListItemsAsync(lstCategory).ConfigureAwait(false);
                 await cboCategory.DoThreadSafeAsync(x =>
                 {
                     // Select the first Skill in the list.
                     if (x.Items.Count > 0)
                         x.SelectedIndex = 0;
-                });
+                }).ConfigureAwait(false);
             }
         }
 

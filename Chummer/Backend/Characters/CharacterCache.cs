@@ -488,7 +488,7 @@ namespace Chummer
         public static async Task<CharacterCache> CreateFromFileAsync(CharacterCache objExistingCache, CancellationToken token = default)
         {
             CharacterCache objReturn = new CharacterCache();
-            await objReturn.CopyFromAsync(objExistingCache, token);
+            await objReturn.CopyFromAsync(objExistingCache, token).ConfigureAwait(false);
             return objReturn;
         }
 
@@ -498,7 +498,7 @@ namespace Chummer
         public static async Task<CharacterCache> CreateFromFileAsync(string strFile, CancellationToken token = default)
         {
             CharacterCache objReturn = new CharacterCache();
-            await objReturn.LoadFromFileAsync(strFile, token);
+            await objReturn.LoadFromFileAsync(strFile, token).ConfigureAwait(false);
             return objReturn;
         }
 

@@ -40,15 +40,15 @@ namespace Chummer
             try
             {
                 await txtHistory.DoThreadSafeAsync(
-                    x => x.Text = File.ReadAllText(Path.Combine(Utils.GetStartupPath, "changelog.txt")));
+                    x => x.Text = File.ReadAllText(Path.Combine(Utils.GetStartupPath, "changelog.txt"))).ConfigureAwait(false);
             }
             catch
             {
                 Program.ShowMessageBox(this,
-                    await LanguageManager.GetStringAsync("Message_History_FileNotFound"),
-                    await LanguageManager.GetStringAsync("MessageTitle_FileNotFound"), MessageBoxButtons.OK,
+                    await LanguageManager.GetStringAsync("Message_History_FileNotFound").ConfigureAwait(false),
+                    await LanguageManager.GetStringAsync("MessageTitle_FileNotFound").ConfigureAwait(false), MessageBoxButtons.OK,
                     MessageBoxIcon.Exclamation);
-                await this.DoThreadSafeAsync(x => x.Close());
+                await this.DoThreadSafeAsync(x => x.Close()).ConfigureAwait(false);
                 return;
             }
 
@@ -56,7 +56,7 @@ namespace Chummer
             {
                 x.SelectionStart = 0;
                 x.SelectionLength = 0;
-            });
+            }).ConfigureAwait(false);
         }
 
         #endregion Control Events

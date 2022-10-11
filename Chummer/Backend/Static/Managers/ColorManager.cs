@@ -1679,7 +1679,7 @@ namespace Chummer
                         await ApplyColorsRecursivelyAsync(tssDropDownChild, blnLightMode, token).ConfigureAwait(false);
                     break;
                 case ColorableToolStripSeparator tssSeparator when objParent != null:
-                    await objParent.DoThreadSafeAsync(() => tssSeparator.DefaultColorScheme = blnLightMode, token);
+                    await objParent.DoThreadSafeAsync(() => tssSeparator.DefaultColorScheme = blnLightMode, token).ConfigureAwait(false);
                     break;
                 case ColorableToolStripSeparator tssSeparator:
                     tssSeparator.DefaultColorScheme = blnLightMode;

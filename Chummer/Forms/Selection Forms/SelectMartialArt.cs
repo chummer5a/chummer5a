@@ -67,13 +67,13 @@ namespace Chummer
                     {
                         x.DialogResult = DialogResult.OK;
                         x.Close();
-                    });
+                    }).ConfigureAwait(false);
                 }
             }
 
             _blnLoading = false;
 
-            await RefreshArtList();
+            await RefreshArtList().ConfigureAwait(false);
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -98,7 +98,7 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
-            string strSelectedId = await lstMartialArts.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
+            string strSelectedId = await lstMartialArts.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()).ConfigureAwait(false);
             if (!string.IsNullOrEmpty(strSelectedId))
             {
                 // Populate the Martial Arts list.
@@ -106,26 +106,26 @@ namespace Chummer
 
                 if (objXmlArt != null)
                 {
-                    string strKarmaCost = (await objXmlArt.SelectSingleNodeAndCacheExpressionAsync("cost"))?.Value
+                    string strKarmaCost = (await objXmlArt.SelectSingleNodeAndCacheExpressionAsync("cost").ConfigureAwait(false))?.Value
                                           ?? 7.ToString(GlobalSettings.CultureInfo);
-                    await lblKarmaCost.DoThreadSafeAsync(x => x.Text = strKarmaCost);
-                    await lblKarmaCostLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strKarmaCost));
+                    await lblKarmaCost.DoThreadSafeAsync(x => x.Text = strKarmaCost).ConfigureAwait(false);
+                    await lblKarmaCostLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strKarmaCost)).ConfigureAwait(false);
 
                     string strTechniques;
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdTechniques))
                     {
                         foreach (XPathNavigator xmlMartialArtsTechnique in await objXmlArt.SelectAndCacheExpressionAsync(
-                                     "techniques/technique"))
+                                     "techniques/technique").ConfigureAwait(false))
                         {
                             string strLoopTechniqueName
-                                = (await xmlMartialArtsTechnique.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value
+                                = (await xmlMartialArtsTechnique.SelectSingleNodeAndCacheExpressionAsync("name").ConfigureAwait(false))?.Value
                                   ?? string.Empty;
                             if (!string.IsNullOrEmpty(strLoopTechniqueName))
                             {
                                 XPathNavigator xmlTechniqueNode
                                     = _xmlBaseMartialArtsTechniquesNode.SelectSingleNode(
                                         "technique[name = " + strLoopTechniqueName.CleanXPath() + " and ("
-                                        + await _objCharacter.Settings.BookXPathAsync() + ")]");
+                                        + await _objCharacter.Settings.BookXPathAsync().ConfigureAwait(false) + ")]");
                                 if (xmlTechniqueNode != null)
                                 {
                                     if (sbdTechniques.Length > 0)
@@ -133,7 +133,7 @@ namespace Chummer
                                     sbdTechniques.Append(
                                         !GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
                                                                         StringComparison.OrdinalIgnoreCase)
-                                            ? (await xmlTechniqueNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
+                                            ? (await xmlTechniqueNode.SelectSingleNodeAndCacheExpressionAsync("translate").ConfigureAwait(false))?.Value
                                               ?? strLoopTechniqueName
                                             : strLoopTechniqueName);
                                 }
@@ -143,27 +143,27 @@ namespace Chummer
                         strTechniques = sbdTechniques.ToString();
                     }
 
-                    await lblIncludedTechniques.DoThreadSafeAsync(x => x.Text = strTechniques);
-                    await gpbIncludedTechniques.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strTechniques));
+                    await lblIncludedTechniques.DoThreadSafeAsync(x => x.Text = strTechniques).ConfigureAwait(false);
+                    await gpbIncludedTechniques.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strTechniques)).ConfigureAwait(false);
 
-                    string strSource = (await objXmlArt.SelectSingleNodeAndCacheExpressionAsync("source"))?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
-                    string strPage = (await objXmlArt.SelectSingleNodeAndCacheExpressionAsync("altpage"))?.Value ?? (await objXmlArt.SelectSingleNodeAndCacheExpressionAsync("page"))?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
-                    SourceString objSourceString = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter);
-                    await objSourceString.SetControlAsync(lblSource);
+                    string strSource = (await objXmlArt.SelectSingleNodeAndCacheExpressionAsync("source").ConfigureAwait(false))?.Value ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
+                    string strPage = (await objXmlArt.SelectSingleNodeAndCacheExpressionAsync("altpage").ConfigureAwait(false))?.Value ?? (await objXmlArt.SelectSingleNodeAndCacheExpressionAsync("page").ConfigureAwait(false))?.Value ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
+                    SourceString objSourceString = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter).ConfigureAwait(false);
+                    await objSourceString.SetControlAsync(lblSource).ConfigureAwait(false);
                     string strSourceText = objSourceString.ToString();
-                    await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strSourceText));
-                    await tlpRight.DoThreadSafeAsync(x => x.Visible = true);
+                    await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strSourceText)).ConfigureAwait(false);
+                    await tlpRight.DoThreadSafeAsync(x => x.Visible = true).ConfigureAwait(false);
                 }
                 else
                 {
-                    await tlpRight.DoThreadSafeAsync(x => x.Visible = false);
-                    await gpbIncludedTechniques.DoThreadSafeAsync(x => x.Visible = false);
+                    await tlpRight.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);
+                    await gpbIncludedTechniques.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);
                 }
             }
             else
             {
-                await tlpRight.DoThreadSafeAsync(x => x.Visible = false);
-                await gpbIncludedTechniques.DoThreadSafeAsync(x => x.Visible = false);
+                await tlpRight.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);
+                await gpbIncludedTechniques.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);
             }
         }
 
@@ -175,7 +175,7 @@ namespace Chummer
 
         private async void txtSearch_TextChanged(object sender, EventArgs e)
         {
-            await RefreshArtList();
+            await RefreshArtList().ConfigureAwait(false);
         }
 
         #endregion Control Events
@@ -225,7 +225,7 @@ namespace Chummer
 
         private async void OpenSourceFromLabel(object sender, EventArgs e)
         {
-            await CommonFunctions.OpenPdfFromControl(sender);
+            await CommonFunctions.OpenPdfFromControl(sender).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -233,12 +233,12 @@ namespace Chummer
         /// </summary>
         private async ValueTask RefreshArtList(CancellationToken token = default)
         {
-            string strFilter = '(' + await _objCharacter.Settings.BookXPathAsync(token: token) + ')';
+            string strFilter = '(' + await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false) + ')';
             if (ShowQualities)
                 strFilter += " and isquality = " + bool.TrueString.CleanXPath();
             else
                 strFilter += " and not(isquality = " + bool.TrueString.CleanXPath() + ')';
-            string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token: token);
+            string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false);
             if (!string.IsNullOrEmpty(strSearch))
                 strFilter += " and " + CommonFunctions.GenerateSearchXPath(strSearch);
 
@@ -248,21 +248,21 @@ namespace Chummer
             {
                 foreach (XPathNavigator objXmlArt in objArtList)
                 {
-                    string strId = (await objXmlArt.SelectSingleNodeAndCacheExpressionAsync("id", token: token))?.Value;
+                    string strId = (await objXmlArt.SelectSingleNodeAndCacheExpressionAsync("id", token: token).ConfigureAwait(false))?.Value;
                     if (!string.IsNullOrEmpty(strId) && objXmlArt.RequirementsMet(_objCharacter))
                     {
                         lstMartialArt.Add(new ListItem(
                                               strId,
-                                              (await objXmlArt.SelectSingleNodeAndCacheExpressionAsync("translate", token: token))?.Value
-                                              ?? (await objXmlArt.SelectSingleNodeAndCacheExpressionAsync("name", token: token))?.Value
-                                              ?? await LanguageManager.GetStringAsync("String_Unknown", token: token)));
+                                              (await objXmlArt.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value
+                                              ?? (await objXmlArt.SelectSingleNodeAndCacheExpressionAsync("name", token: token).ConfigureAwait(false))?.Value
+                                              ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false)));
                     }
                 }
 
                 lstMartialArt.Sort(CompareListItems.CompareNames);
-                string strOldSelected = await lstMartialArts.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token);
+                string strOldSelected = await lstMartialArts.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false);
                 _blnLoading = true;
-                await lstMartialArts.PopulateWithListItemsAsync(lstMartialArt, token: token);
+                await lstMartialArts.PopulateWithListItemsAsync(lstMartialArt, token: token).ConfigureAwait(false);
                 _blnLoading = false;
                 await lstMartialArts.DoThreadSafeAsync(x =>
                 {
@@ -270,7 +270,7 @@ namespace Chummer
                         x.SelectedValue = strOldSelected;
                     else
                         x.SelectedIndex = -1;
-                }, token: token);
+                }, token: token).ConfigureAwait(false);
             }
         }
 

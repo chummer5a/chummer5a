@@ -55,8 +55,8 @@ namespace Chummer
                 {
                     case "Gear":
                     {
-                        string strSpace = await LanguageManager.GetStringAsync("String_Space");
-                        await cboAmmo.DoThreadSafeAsync(x => x.DropDownStyle = ComboBoxStyle.DropDownList);
+                        string strSpace = await LanguageManager.GetStringAsync("String_Space").ConfigureAwait(false);
+                        await cboAmmo.DoThreadSafeAsync(x => x.DropDownStyle = ComboBoxStyle.DropDownList).ConfigureAwait(false);
                         // Add each of the items to a new List since we need to also grab their plugin information.
                         foreach (Gear objGear in _lstGear)
                         {
@@ -76,7 +76,7 @@ namespace Chummer
 
                                 if (objGear.Rating > 0)
                                     sbdAmmoName.Append(strSpace).Append('(')
-                                               .Append(await LanguageManager.GetStringAsync(objGear.RatingLabel)).Append(strSpace)
+                                               .Append(await LanguageManager.GetStringAsync(objGear.RatingLabel).ConfigureAwait(false)).Append(strSpace)
                                                .Append(objGear.Rating.ToString(GlobalSettings.CultureInfo)).Append(')');
                                 sbdAmmoName.Append(strSpace).Append('x')
                                            .Append(objGear.Quantity.ToString(GlobalSettings.InvariantCultureInfo));
@@ -88,7 +88,7 @@ namespace Chummer
                     }
                     case "Vehicles":
                     {
-                        await cboAmmo.DoThreadSafeAsync(x => x.DropDownStyle = ComboBoxStyle.DropDownList);
+                        await cboAmmo.DoThreadSafeAsync(x => x.DropDownStyle = ComboBoxStyle.DropDownList).ConfigureAwait(false);
                         // Add each of the items to a new List.
                         foreach (Vehicle objVehicle in _lstVehicles)
                         {
@@ -98,7 +98,7 @@ namespace Chummer
                         break;
                     }
                     case "General":
-                        await cboAmmo.DoThreadSafeAsync(x => x.DropDownStyle = ComboBoxStyle.DropDownList);
+                        await cboAmmo.DoThreadSafeAsync(x => x.DropDownStyle = ComboBoxStyle.DropDownList).ConfigureAwait(false);
                         lstItems.AddRange(_lstGeneralItems);
                         break;
 
@@ -107,7 +107,7 @@ namespace Chummer
                         {
                             x.DropDownStyle = ComboBoxStyle.DropDown;
                             x.AutoCompleteMode = AutoCompleteMode.Suggest;
-                        });
+                        }).ConfigureAwait(false);
                         lstItems.AddRange(_lstGeneralItems);
                         break;
 
@@ -117,17 +117,17 @@ namespace Chummer
                         {
                             x.DropDownStyle = ComboBoxStyle.DropDown;
                             x.AutoCompleteMode = AutoCompleteMode.Suggest;
-                        });
+                        }).ConfigureAwait(false);
                         if (!_objCharacter.Settings.LicenseRestricted)
                         {
-                            foreach (XPathNavigator objNode in await (await _objCharacter.LoadDataXPathAsync("licenses.xml"))
-                                         .SelectAndCacheExpressionAsync(
-                                             "/chummer/licenses/license"))
+                            foreach (XPathNavigator objNode in await (await _objCharacter.LoadDataXPathAsync("licenses.xml").ConfigureAwait(false))
+                                                                     .SelectAndCacheExpressionAsync(
+                                                                         "/chummer/licenses/license").ConfigureAwait(false))
                             {
                                 string strInnerText = objNode.Value;
                                 if (!string.IsNullOrEmpty(strInnerText))
                                     lstItems.Add(new ListItem(strInnerText,
-                                                              (await objNode.SelectSingleNodeAndCacheExpressionAsync("@translate"))
+                                                              (await objNode.SelectSingleNodeAndCacheExpressionAsync("@translate").ConfigureAwait(false))
                                                                      ?.Value ?? strInnerText));
                             }
                         }
@@ -305,16 +305,16 @@ namespace Chummer
                 lstItems.Sort(CompareListItems.CompareNames);
 
                 // Populate the lists.
-                await cboAmmo.PopulateWithListItemsAsync(lstItems);
+                await cboAmmo.PopulateWithListItemsAsync(lstItems).ConfigureAwait(false);
 
                 // If there's only 1 value in the list, the character doesn't have a choice, so just accept it.
-                if (await cboAmmo.DoThreadSafeFuncAsync(x => x.Items.Count) == 1 && _blnAllowAutoSelect)
+                if (await cboAmmo.DoThreadSafeFuncAsync(x => x.Items.Count).ConfigureAwait(false) == 1 && _blnAllowAutoSelect)
                     AcceptForm();
 
                 if (!string.IsNullOrEmpty(_strForceItem))
                 {
-                    await cboAmmo.DoThreadSafeAsync(x => x.SelectedIndex = x.FindStringExact(_strForceItem));
-                    if (await cboAmmo.DoThreadSafeFuncAsync(x => x.SelectedIndex) != -1)
+                    await cboAmmo.DoThreadSafeAsync(x => x.SelectedIndex = x.FindStringExact(_strForceItem)).ConfigureAwait(false);
+                    if (await cboAmmo.DoThreadSafeFuncAsync(x => x.SelectedIndex).ConfigureAwait(false) != -1)
                         AcceptForm();
                 }
 
@@ -331,12 +331,12 @@ namespace Chummer
                         }
                         else
                             x.Text = _strSelectItemOnLoad;
-                    });
+                    }).ConfigureAwait(false);
                 }
             }
 
-            if (await cboAmmo.DoThreadSafeFuncAsync(x => x.Items.Count) < 0)
-                await cmdOK.DoThreadSafeAsync(x => x.Enabled = false);
+            if (await cboAmmo.DoThreadSafeFuncAsync(x => x.Items.Count).ConfigureAwait(false) < 0)
+                await cmdOK.DoThreadSafeAsync(x => x.Enabled = false).ConfigureAwait(false);
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)

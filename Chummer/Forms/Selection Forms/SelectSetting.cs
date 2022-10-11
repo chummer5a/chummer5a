@@ -50,7 +50,7 @@ namespace Chummer
                     XPathDocument objXmlDocument;
                     try
                     {
-                        objXmlDocument = await XPathDocumentExtensions.LoadStandardFromFileAsync(strFileName);
+                        objXmlDocument = await XPathDocumentExtensions.LoadStandardFromFileAsync(strFileName).ConfigureAwait(false);
                     }
                     catch (IOException)
                     {
@@ -63,18 +63,18 @@ namespace Chummer
 
                     lstSettings.Add(new ListItem(Path.GetFileName(strFileName),
                                                  objXmlDocument.CreateNavigator().SelectSingleNode("/settings/name")
-                                                               ?.Value ?? await LanguageManager.GetStringAsync("String_Unknown")));
+                                                               ?.Value ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false)));
                 }
 
                 lstSettings.Sort(CompareListItems.CompareNames);
-                await cboSetting.PopulateWithListItemsAsync(lstSettings);
+                await cboSetting.PopulateWithListItemsAsync(lstSettings).ConfigureAwait(false);
                 // Attempt to make default.xml the default one. If it could not be found in the list, select the first item instead.
                 await cboSetting.DoThreadSafeAsync(x =>
                 {
                     x.SelectedIndex = x.FindStringExact("Default Settings");
                     if (x.SelectedIndex == -1)
                         x.SelectedIndex = 0;
-                });
+                }).ConfigureAwait(false);
             }
         }
 

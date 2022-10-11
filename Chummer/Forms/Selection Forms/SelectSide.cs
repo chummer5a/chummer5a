@@ -48,15 +48,15 @@ namespace Chummer
             // Create a list for the sides.
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSides))
             {
-                lstSides.Add(new ListItem("Left", await LanguageManager.GetStringAsync("String_Improvement_SideLeft")));
-                lstSides.Add(new ListItem("Right", await LanguageManager.GetStringAsync("String_Improvement_SideRight")));
+                lstSides.Add(new ListItem("Left", await LanguageManager.GetStringAsync("String_Improvement_SideLeft").ConfigureAwait(false)));
+                lstSides.Add(new ListItem("Right", await LanguageManager.GetStringAsync("String_Improvement_SideRight").ConfigureAwait(false)));
                 lstSides.Sort(CompareListItems.CompareNames);
                 
-                await cboSide.PopulateWithListItemsAsync(lstSides);
+                await cboSide.PopulateWithListItemsAsync(lstSides).ConfigureAwait(false);
             }
 
             // Select the first item in the list.
-            await cboSide.DoThreadSafeAsync(x => x.SelectedIndex = 0);
+            await cboSide.DoThreadSafeAsync(x => x.SelectedIndex = 0).ConfigureAwait(false);
         }
 
         #endregion Control Events

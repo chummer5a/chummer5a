@@ -53,20 +53,20 @@ namespace Chummer
 
         private async void HeroLabImporter_Load(object sender, EventArgs e)
         {
-            dlgOpenFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_HeroLab") + '|'
-                + await LanguageManager.GetStringAsync("DialogFilter_All");
+            dlgOpenFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_HeroLab").ConfigureAwait(false) + '|'
+                + await LanguageManager.GetStringAsync("DialogFilter_All").ConfigureAwait(false);
         }
 
         private async void cmdSelectFile_Click(object sender, EventArgs e)
         {
             // Prompt the user to select a save file to possess.
-            if (await this.DoThreadSafeFuncAsync(x => dlgOpenFile.ShowDialog(x)) != DialogResult.OK)
+            if (await this.DoThreadSafeFuncAsync(x => dlgOpenFile.ShowDialog(x)).ConfigureAwait(false) != DialogResult.OK)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
             try
             {
                 string strSelectedFile = dlgOpenFile.FileName;
-                TreeNode objNode = await CacheCharacters(strSelectedFile);
+                TreeNode objNode = await CacheCharacters(strSelectedFile).ConfigureAwait(false);
                 if (objNode != null)
                 {
                     await treCharacterList.DoThreadSafeAsync(x =>
@@ -74,12 +74,12 @@ namespace Chummer
                         x.Nodes.Clear();
                         x.Nodes.Add(objNode);
                         x.SelectedNode = objNode.Nodes.Count > 0 ? objNode.Nodes[0] : objNode;
-                    });
+                    }).ConfigureAwait(false);
                 }
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -95,7 +95,7 @@ namespace Chummer
                 Program.ShowMessageBox(
                     this,
                     string.Format(GlobalSettings.CultureInfo,
-                                  await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed", token: token), strFile));
+                                  await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed", token: token).ConfigureAwait(false), strFile));
                 return null;
             }
 
@@ -126,7 +126,7 @@ namespace Chummer
                                             xmlSourceDoc = new XPathDocument(objXmlReader);
                                         XPathNavigator objToAdd = xmlSourceDoc.CreateNavigator();
                                         lstCharacterXmlStatblocks.Add(objToAdd);
-                                    }, token);
+                                    }, token).ConfigureAwait(false);
                                 }
                                 // If we run into any problems loading the character cache, fail out early.
                                 catch (IOException)
@@ -147,10 +147,10 @@ namespace Chummer
                                     Bitmap bmpNewMugshot = bmpMugshot.PixelFormat == PixelFormat.Format32bppPArgb
                                         ? bmpMugshot.Clone() as Bitmap // Clone makes sure file handle is closed
                                         : bmpMugshot.ConvertPixelFormat(PixelFormat.Format32bppPArgb);
-                                    while (!await _dicImages.TryAddAsync(strKey, bmpNewMugshot, token))
+                                    while (!await _dicImages.TryAddAsync(strKey, bmpNewMugshot, token).ConfigureAwait(false))
                                     {
                                         (bool blnSuccess, Bitmap bmpOldMugshot) =
-                                            await _dicImages.TryRemoveAsync(strKey, token);
+                                            await _dicImages.TryRemoveAsync(strKey, token).ConfigureAwait(false);
                                         if (blnSuccess)
                                             bmpOldMugshot?.Dispose();
                                     }
@@ -164,7 +164,7 @@ namespace Chummer
                     Program.ShowMessageBox(
                         this,
                         string.Format(GlobalSettings.CultureInfo,
-                                      await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed", token: token),
+                                      await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed", token: token).ConfigureAwait(false),
                                       strFile));
                     return null;
                 }
@@ -173,26 +173,26 @@ namespace Chummer
                     Program.ShowMessageBox(
                         this,
                         string.Format(GlobalSettings.CultureInfo,
-                                      await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed", token: token),
+                                      await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed", token: token).ConfigureAwait(false),
                                       strFile));
                     return null;
                 }
                 catch (UnauthorizedAccessException)
                 {
                     Program.ShowMessageBox(
-                        this, await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning", token: token));
+                        this, await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning", token: token).ConfigureAwait(false));
                     return null;
                 }
 
                 string strFileText
-                    = await strFile.CheapReplaceAsync(Utils.GetStartupPath, () => '<' + Application.ProductName + '>', token: token);
+                    = await strFile.CheapReplaceAsync(Utils.GetStartupPath, () => '<' + Application.ProductName + '>', token: token).ConfigureAwait(false);
                 TreeNode nodRootNode = new TreeNode
                 {
                     Text = strFileText,
                     ToolTipText = strFileText
                 };
 
-                XPathNavigator xmlMetatypesDocument = await XmlManager.LoadXPathAsync("metatypes.xml", token: token);
+                XPathNavigator xmlMetatypesDocument = await XmlManager.LoadXPathAsync("metatypes.xml", token: token).ConfigureAwait(false);
                 foreach (XPathNavigator xmlCharacterDocument in lstCharacterXmlStatblocks)
                 {
                     XPathNavigator xmlBaseCharacterNode
@@ -237,7 +237,7 @@ namespace Chummer
                                 }
 
                                 foreach (XPathNavigator xmlMetavariant in
-                                         await xmlMetatype.SelectAndCacheExpressionAsync("metavariants/metavariant", token: token))
+                                         await xmlMetatype.SelectAndCacheExpressionAsync("metavariants/metavariant", token: token).ConfigureAwait(false))
                                 {
                                     string strMetavariantName
                                         = xmlMetavariant.SelectSingleNode("name")?.Value ?? string.Empty;
@@ -318,7 +318,7 @@ namespace Chummer
                         if (!objCache.Created)
                         {
                             XPathNodeIterator xmlJournalEntries
-                                = await xmlBaseCharacterNode.SelectAndCacheExpressionAsync("journals/journal", token: token);
+                                = await xmlBaseCharacterNode.SelectAndCacheExpressionAsync("journals/journal", token: token).ConfigureAwait(false);
                             if (xmlJournalEntries?.Count > 1)
                             {
                                 objCache.Created = true;
@@ -333,7 +333,7 @@ namespace Chummer
                         string strImageString = xmlBaseCharacterNode.SelectSingleNode("images/image/@filename")?.Value;
                         if (!string.IsNullOrEmpty(strImageString))
                         {
-                            (bool blnSuccess, Bitmap objTemp) = await _dicImages.TryGetValueAsync(strImageString, token);
+                            (bool blnSuccess, Bitmap objTemp) = await _dicImages.TryGetValueAsync(strImageString, token).ConfigureAwait(false);
                             if (blnSuccess)
                             {
                                 objCache.Mugshot = objTemp;
@@ -343,14 +343,14 @@ namespace Chummer
                         objCache.FilePath = strFile;
                         TreeNode objNode = new TreeNode
                         {
-                            Text = await CalculatedName(objCache, token),
+                            Text = await CalculatedName(objCache, token).ConfigureAwait(false),
                             ToolTipText = await strFile.CheapReplaceAsync(Utils.GetStartupPath,
-                                                                          () => '<' + Application.ProductName + '>', token: token)
+                                                                          () => '<' + Application.ProductName + '>', token: token).ConfigureAwait(false)
                         };
                         nodRootNode.Nodes.Add(objNode);
 
-                        await _lstCharacterCache.AddAsync(objCache, token);
-                        objNode.Tag = await _lstCharacterCache.IndexOfAsync(objCache, token);
+                        await _lstCharacterCache.AddAsync(objCache, token).ConfigureAwait(false);
+                        objNode.Tag = await _lstCharacterCache.IndexOfAsync(objCache, token).ConfigureAwait(false);
                     }
                 }
 
@@ -359,7 +359,7 @@ namespace Chummer
             }
             finally
             {
-                await lstCharacterXmlStatblocks.DisposeAsync();
+                await lstCharacterXmlStatblocks.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -401,14 +401,14 @@ namespace Chummer
             {
                 strName = objCache.CharacterName;
                 if (string.IsNullOrEmpty(strName))
-                    strName = await LanguageManager.GetStringAsync("String_UnnamedCharacter", token: token);
+                    strName = await LanguageManager.GetStringAsync("String_UnnamedCharacter", token: token).ConfigureAwait(false);
             }
-            string strBuildMethod = await LanguageManager.GetStringAsync("String_" + objCache.BuildMethod, false, token);
+            string strBuildMethod = await LanguageManager.GetStringAsync("String_" + objCache.BuildMethod, false, token).ConfigureAwait(false);
             if (string.IsNullOrEmpty(strBuildMethod))
-                strBuildMethod = await LanguageManager.GetStringAsync("String_Unknown", token: token);
-            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token);
+                strBuildMethod = await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
             strName += strSpace + '(' + strBuildMethod + strSpace + '-' + strSpace
-                       + await LanguageManager.GetStringAsync(objCache.Created ? "Title_CareerMode" : "Title_CreateMode", token: token) + ')';
+                       + await LanguageManager.GetStringAsync(objCache.Created ? "Title_CareerMode" : "Title_CreateMode", token: token).ConfigureAwait(false) + ')';
             return strName;
         }
 
@@ -421,9 +421,9 @@ namespace Chummer
         {
             if (objCache != null)
             {
-                await txtCharacterBio.DoThreadSafeAsync(x => x.Text = objCache.Description, token: token);
+                await txtCharacterBio.DoThreadSafeAsync(x => x.Text = objCache.Description, token: token).ConfigureAwait(false);
 
-                string strUnknown = await LanguageManager.GetStringAsync("String_Unknown", token: token);
+                string strUnknown = await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
 
                 await lblCharacterName.DoThreadSafeAsync(x =>
                 {
@@ -431,8 +431,8 @@ namespace Chummer
                     if (string.IsNullOrEmpty(x.Text))
                         x.Text = strUnknown;
                     x.Visible = true;
-                }, token: token);
-                await lblCharacterNameLabel.DoThreadSafeAsync(x => x.Visible = true, token: token);
+                }, token: token).ConfigureAwait(false);
+                await lblCharacterNameLabel.DoThreadSafeAsync(x => x.Visible = true, token: token).ConfigureAwait(false);
 
                 await lblCharacterAlias.DoThreadSafeAsync(x =>
                 {
@@ -440,8 +440,8 @@ namespace Chummer
                     if (string.IsNullOrEmpty(x.Text))
                         x.Text = strUnknown;
                     x.Visible = true;
-                }, token: token);
-                await lblCharacterAliasLabel.DoThreadSafeAsync(x => x.Visible = true, token: token);
+                }, token: token).ConfigureAwait(false);
+                await lblCharacterAliasLabel.DoThreadSafeAsync(x => x.Visible = true, token: token).ConfigureAwait(false);
 
                 await lblPlayerName.DoThreadSafeAsync(x =>
                 {
@@ -449,18 +449,18 @@ namespace Chummer
                     if (string.IsNullOrEmpty(x.Text))
                         x.Text = strUnknown;
                     x.Visible = true;
-                }, token: token);
-                await lblPlayerNameLabel.DoThreadSafeAsync(x => x.Visible = true, token: token);
+                }, token: token).ConfigureAwait(false);
+                await lblPlayerNameLabel.DoThreadSafeAsync(x => x.Visible = true, token: token).ConfigureAwait(false);
 
-                string strNone = await LanguageManager.GetStringAsync("String_None", token: token);
+                string strNone = await LanguageManager.GetStringAsync("String_None", token: token).ConfigureAwait(false);
                 await lblCareerKarma.DoThreadSafeAsync(x =>
                 {
                     x.Text = objCache.Karma;
                     if (string.IsNullOrEmpty(x.Text) || x.Text == 0.ToString(GlobalSettings.CultureInfo))
                         x.Text = strNone;
                     x.Visible = true;
-                }, token: token);
-                await lblCareerKarmaLabel.DoThreadSafeAsync(x => x.Visible = true, token: token);
+                }, token: token).ConfigureAwait(false);
+                await lblCareerKarmaLabel.DoThreadSafeAsync(x => x.Visible = true, token: token).ConfigureAwait(false);
 
                 await lblEssence.DoThreadSafeAsync(x =>
                 {
@@ -468,22 +468,22 @@ namespace Chummer
                     if (string.IsNullOrEmpty(x.Text))
                         x.Text = strUnknown;
                     x.Visible = true;
-                }, token: token);
-                await lblEssenceLabel.DoThreadSafeAsync(x => x.Visible = true, token: token);
+                }, token: token).ConfigureAwait(false);
+                await lblEssenceLabel.DoThreadSafeAsync(x => x.Visible = true, token: token).ConfigureAwait(false);
 
-                await picMugshot.DoThreadSafeAsync(x => x.Image = objCache.Mugshot, token: token);
+                await picMugshot.DoThreadSafeAsync(x => x.Image = objCache.Mugshot, token: token).ConfigureAwait(false);
 
                 // Populate character information fields.
-                XPathNavigator objMetatypeDoc = await XmlManager.LoadXPathAsync("metatypes.xml", token: token);
+                XPathNavigator objMetatypeDoc = await XmlManager.LoadXPathAsync("metatypes.xml", token: token).ConfigureAwait(false);
                 XPathNavigator objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = " + objCache.Metatype.CleanXPath() + ']');
                 if (objMetatypeNode == null)
                 {
-                    objMetatypeDoc = await XmlManager.LoadXPathAsync("critters.xml", token: token);
+                    objMetatypeDoc = await XmlManager.LoadXPathAsync("critters.xml", token: token).ConfigureAwait(false);
                     objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = " + objCache.Metatype.CleanXPath() + ']');
                 }
 
                 string strMetatype = objMetatypeNode != null
-                    ? (await objMetatypeNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token))?.Value
+                    ? (await objMetatypeNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value
                       ?? objCache.Metatype
                     : objCache.Metatype;
 
@@ -492,7 +492,7 @@ namespace Chummer
                     objMetatypeNode = objMetatypeNode?.SelectSingleNode("metavariants/metavariant[name = " + objCache.Metavariant.CleanXPath() + ']');
 
                     strMetatype += " (" + (objMetatypeNode != null
-                        ? (await objMetatypeNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token))?.Value
+                        ? (await objMetatypeNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value
                           ?? objCache.Metavariant
                         : objCache.Metavariant) + ')';
                 }
@@ -503,33 +503,33 @@ namespace Chummer
                     if (string.IsNullOrEmpty(x.Text))
                         x.Text = strUnknown;
                     x.Visible = true;
-                }, token: token);
-                await lblMetatypeLabel.DoThreadSafeAsync(x => x.Visible = true, token: token);
+                }, token: token).ConfigureAwait(false);
+                await lblMetatypeLabel.DoThreadSafeAsync(x => x.Visible = true, token: token).ConfigureAwait(false);
 
-                await cmdImport.DoThreadSafeAsync(x => x.Enabled = true, token: token);
+                await cmdImport.DoThreadSafeAsync(x => x.Enabled = true, token: token).ConfigureAwait(false);
             }
             else
             {
-                await txtCharacterBio.DoThreadSafeAsync(x => x.Text = string.Empty, token: token);
+                await txtCharacterBio.DoThreadSafeAsync(x => x.Text = string.Empty, token: token).ConfigureAwait(false);
 
-                await lblCharacterNameLabel.DoThreadSafeAsync(x => x.Visible = false, token: token);
-                await lblCharacterName.DoThreadSafeAsync(x => x.Visible = false, token: token);
-                await lblCharacterAliasLabel.DoThreadSafeAsync(x => x.Visible = false, token: token);
-                await lblCharacterAlias.DoThreadSafeAsync(x => x.Visible = false, token: token);
-                await lblPlayerNameLabel.DoThreadSafeAsync(x => x.Visible = false, token: token);
-                await lblPlayerName.DoThreadSafeAsync(x => x.Visible = false, token: token);
-                await lblMetatypeLabel.DoThreadSafeAsync(x => x.Visible = false, token: token);
-                await lblMetatype.DoThreadSafeAsync(x => x.Visible = false, token: token);
-                await lblCareerKarmaLabel.DoThreadSafeAsync(x => x.Visible = false, token: token);
-                await lblCareerKarma.DoThreadSafeAsync(x => x.Visible = false, token: token);
-                await lblEssenceLabel.DoThreadSafeAsync(x => x.Visible = false, token: token);
-                await lblEssence.DoThreadSafeAsync(x => x.Visible = false, token: token);
+                await lblCharacterNameLabel.DoThreadSafeAsync(x => x.Visible = false, token: token).ConfigureAwait(false);
+                await lblCharacterName.DoThreadSafeAsync(x => x.Visible = false, token: token).ConfigureAwait(false);
+                await lblCharacterAliasLabel.DoThreadSafeAsync(x => x.Visible = false, token: token).ConfigureAwait(false);
+                await lblCharacterAlias.DoThreadSafeAsync(x => x.Visible = false, token: token).ConfigureAwait(false);
+                await lblPlayerNameLabel.DoThreadSafeAsync(x => x.Visible = false, token: token).ConfigureAwait(false);
+                await lblPlayerName.DoThreadSafeAsync(x => x.Visible = false, token: token).ConfigureAwait(false);
+                await lblMetatypeLabel.DoThreadSafeAsync(x => x.Visible = false, token: token).ConfigureAwait(false);
+                await lblMetatype.DoThreadSafeAsync(x => x.Visible = false, token: token).ConfigureAwait(false);
+                await lblCareerKarmaLabel.DoThreadSafeAsync(x => x.Visible = false, token: token).ConfigureAwait(false);
+                await lblCareerKarma.DoThreadSafeAsync(x => x.Visible = false, token: token).ConfigureAwait(false);
+                await lblEssenceLabel.DoThreadSafeAsync(x => x.Visible = false, token: token).ConfigureAwait(false);
+                await lblEssence.DoThreadSafeAsync(x => x.Visible = false, token: token).ConfigureAwait(false);
 
-                await picMugshot.DoThreadSafeAsync(x => x.Image = null, token: token);
-                await cmdImport.DoThreadSafeAsync(x => x.Enabled = false, token: token);
+                await picMugshot.DoThreadSafeAsync(x => x.Image = null, token: token).ConfigureAwait(false);
+                await cmdImport.DoThreadSafeAsync(x => x.Enabled = false, token: token).ConfigureAwait(false);
             }
 
-            await ProcessMugshot(token);
+            await ProcessMugshot(token).ConfigureAwait(false);
         }
 
         #region Form Methods
@@ -537,27 +537,27 @@ namespace Chummer
         private async void treCharacterList_AfterSelect(object sender, TreeViewEventArgs e)
         {
             HeroLabCharacterCache objCache = null;
-            TreeNode objSelectedNode = await treCharacterList.DoThreadSafeFuncAsync(x => x.SelectedNode);
+            TreeNode objSelectedNode = await treCharacterList.DoThreadSafeFuncAsync(x => x.SelectedNode).ConfigureAwait(false);
             if (objSelectedNode?.Level > 0)
             {
                 int intIndex = Convert.ToInt32(objSelectedNode.Tag, GlobalSettings.InvariantCultureInfo);
                 if (intIndex >= 0 && intIndex < _lstCharacterCache.Count)
                     objCache = _lstCharacterCache[intIndex];
             }
-            await UpdateCharacter(objCache);
-            await treCharacterList.DoThreadSafeAsync(x => x.ClearNodeBackground(x.SelectedNode));
+            await UpdateCharacter(objCache).ConfigureAwait(false);
+            await treCharacterList.DoThreadSafeAsync(x => x.ClearNodeBackground(x.SelectedNode)).ConfigureAwait(false);
         }
 
         private async void cmdImport_Click(object sender, EventArgs e)
         {
-            await DoImport();
+            await DoImport().ConfigureAwait(false);
         }
 
         private async void picMugshot_SizeChanged(object sender, EventArgs e)
         {
             if (this.IsNullOrDisposed())
                 return;
-            await ProcessMugshot();
+            await ProcessMugshot().ConfigureAwait(false);
         }
 
         private Task ProcessMugshot(CancellationToken token = default)
@@ -584,7 +584,7 @@ namespace Chummer
 
         private async Task DoImport(CancellationToken token = default)
         {
-            TreeNode objSelectedNode = await treCharacterList.DoThreadSafeFuncAsync(x => x.SelectedNode, token);
+            TreeNode objSelectedNode = await treCharacterList.DoThreadSafeFuncAsync(x => x.SelectedNode, token).ConfigureAwait(false);
             if (objSelectedNode == null || objSelectedNode.Level <= 0)
                 return;
             int intIndex = Convert.ToInt32(objSelectedNode.Tag, GlobalSettings.InvariantCultureInfo);
@@ -597,21 +597,21 @@ namespace Chummer
             string strCharacterId = objCache.CharacterId;
             if (string.IsNullOrEmpty(strFile) || string.IsNullOrEmpty(strCharacterId))
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
                 bool blnLoaded = false;
                 Character objCharacter = new Character();
                 try
                 {
-                    await Program.OpenCharacters.AddAsync(objCharacter, token: token);
-                    IAsyncReadOnlyDictionary<string, CharacterSettings> dicCharacterSettings = await SettingsManager.GetLoadedCharacterSettingsAsync(token);
+                    await Program.OpenCharacters.AddAsync(objCharacter, token: token).ConfigureAwait(false);
+                    IAsyncReadOnlyDictionary<string, CharacterSettings> dicCharacterSettings = await SettingsManager.GetLoadedCharacterSettingsAsync(token).ConfigureAwait(false);
                     CharacterSettings objHeroLabSettings =
                         dicCharacterSettings.Values.FirstOrDefault(
                             x => x.Name == objCache.SettingsName && x.BuildMethod == objCache.BuildMethod);
                     if (objHeroLabSettings != null)
                     {
-                        await objCharacter.SetSettingsKeyAsync(await objHeroLabSettings.GetDictionaryKeyAsync(token), token);
+                        await objCharacter.SetSettingsKeyAsync(await objHeroLabSettings.GetDictionaryKeyAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
                     }
                     else
                     {
@@ -619,18 +619,18 @@ namespace Chummer
                             x => x.Name.Contains(objCache.SettingsName) && x.BuildMethod == objCache.BuildMethod);
                         if (objHeroLabSettings != null)
                         {
-                            await objCharacter.SetSettingsKeyAsync(await objHeroLabSettings.GetDictionaryKeyAsync(token), token);
+                            await objCharacter.SetSettingsKeyAsync(await objHeroLabSettings.GetDictionaryKeyAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
                         }
                         else
                         {
                             (bool blnSuccess, CharacterSettings objDefaultCharacterSettings)
                                 = await dicCharacterSettings.TryGetValueAsync(
-                                    GlobalSettings.DefaultCharacterSetting, token);
+                                    GlobalSettings.DefaultCharacterSetting, token).ConfigureAwait(false);
                             bool blnCacheUsesPriorityTables = objCache.BuildMethod.UsesPriorityTables();
                             if (blnSuccess && blnCacheUsesPriorityTables
                                 == objDefaultCharacterSettings.BuildMethod.UsesPriorityTables())
                             {
-                                await objCharacter.SetSettingsKeyAsync(await objDefaultCharacterSettings.GetDictionaryKeyAsync(token), token);
+                                await objCharacter.SetSettingsKeyAsync(await objDefaultCharacterSettings.GetDictionaryKeyAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
                             }
                             else
                             {
@@ -638,16 +638,16 @@ namespace Chummer
                                     = dicCharacterSettings.Values.FirstOrDefault(
                                         x => x.BuiltInOption && x.BuildMethod == objCache.BuildMethod);
                                 if (objTempSetting != null)
-                                    await objCharacter.SetSettingsKeyAsync(await objTempSetting.GetDictionaryKeyAsync(token), token);
+                                    await objCharacter.SetSettingsKeyAsync(await objTempSetting.GetDictionaryKeyAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
                                 else
                                 {
                                     objTempSetting = dicCharacterSettings.Values.FirstOrDefault(
                                         x => x.BuiltInOption && x.BuildMethod.UsesPriorityTables()
                                             == blnCacheUsesPriorityTables);
                                     if (objTempSetting != null)
-                                        await objCharacter.SetSettingsKeyAsync(await objTempSetting.GetDictionaryKeyAsync(token), token);
+                                        await objCharacter.SetSettingsKeyAsync(await objTempSetting.GetDictionaryKeyAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
                                     else
-                                        await objCharacter.SetSettingsKeyAsync(GlobalSettings.DefaultCharacterSetting, token);
+                                        await objCharacter.SetSettingsKeyAsync(GlobalSettings.DefaultCharacterSetting, token).ConfigureAwait(false);
                                 }
                             }
                         }
@@ -655,33 +655,33 @@ namespace Chummer
 
                     using (ThreadSafeForm<SelectBuildMethod> frmPickBP
                            = await ThreadSafeForm<SelectBuildMethod>.GetAsync(
-                               () => new SelectBuildMethod(objCharacter, true), token))
+                               () => new SelectBuildMethod(objCharacter, true), token).ConfigureAwait(false))
                     {
-                        if (await frmPickBP.ShowDialogSafeAsync(this, token) != DialogResult.OK)
+                        if (await frmPickBP.ShowDialogSafeAsync(this, token).ConfigureAwait(false) != DialogResult.OK)
                             return;
                     }
 
                     //Timekeeper.Start("load_file");
-                    if (!await objCharacter.LoadFromHeroLabFileAsync(strFile, strCharacterId, await objCharacter.GetSettingsKeyAsync(token)))
+                    if (!await objCharacter.LoadFromHeroLabFileAsync(strFile, strCharacterId, await objCharacter.GetSettingsKeyAsync(token).ConfigureAwait(false)).ConfigureAwait(false))
                         return;
                     blnLoaded = true;
                     //Timekeeper.Finish("load_file");
-                    await Program.OpenCharacter(objCharacter, token: token);
+                    await Program.OpenCharacter(objCharacter, token: token).ConfigureAwait(false);
                 }
                 finally
                 {
-                    await cmdImport.DoThreadSafeAsync(x => x.Enabled = true, token);
-                    await cmdSelectFile.DoThreadSafeAsync(x => x.Enabled = true, token);
+                    await cmdImport.DoThreadSafeAsync(x => x.Enabled = true, token).ConfigureAwait(false);
+                    await cmdSelectFile.DoThreadSafeAsync(x => x.Enabled = true, token).ConfigureAwait(false);
                     if (!blnLoaded)
-                        await Program.OpenCharacters.RemoveAsync(objCharacter, token: token);
+                        await Program.OpenCharacters.RemoveAsync(objCharacter, token: token).ConfigureAwait(false);
                 }
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
 
-            await this.DoThreadSafeAsync(x => x.Close(), token);
+            await this.DoThreadSafeAsync(x => x.Close(), token).ConfigureAwait(false);
         }
     }
 }

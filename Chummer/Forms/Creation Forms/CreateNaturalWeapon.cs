@@ -57,13 +57,13 @@ namespace Chummer
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstDVType))
             {
                 foreach (XPathNavigator objXmlSkill in await _objXmlSkillsDocument.SelectAndCacheExpressionAsync(
-                             "skills/skill[category = \"Combat Active\"]"))
+                             "skills/skill[category = \"Combat Active\"]").ConfigureAwait(false))
                 {
-                    string strName = (await objXmlSkill.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value;
+                    string strName = (await objXmlSkill.SelectSingleNodeAndCacheExpressionAsync("name").ConfigureAwait(false))?.Value;
                     if (!string.IsNullOrEmpty(strName))
                         lstSkills.Add(new ListItem(
                                           strName,
-                                          (await objXmlSkill.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
+                                          (await objXmlSkill.SelectSingleNodeAndCacheExpressionAsync("translate").ConfigureAwait(false))?.Value
                                           ?? strName));
                 }
 
@@ -75,18 +75,18 @@ namespace Chummer
                                                i.ToString(GlobalSettings.CultureInfo)));
                 }
 
-                lstDVType.Add(new ListItem("P", await LanguageManager.GetStringAsync("String_DamagePhysical")));
-                lstDVType.Add(new ListItem("S", await LanguageManager.GetStringAsync("String_DamageStun")));
+                lstDVType.Add(new ListItem("P", await LanguageManager.GetStringAsync("String_DamagePhysical").ConfigureAwait(false)));
+                lstDVType.Add(new ListItem("S", await LanguageManager.GetStringAsync("String_DamageStun").ConfigureAwait(false)));
 
                 // Bind the Lists to the ComboBoxes.
-                await cboSkill.PopulateWithListItemsAsync(lstSkills);
-                await cboSkill.DoThreadSafeAsync(x => x.SelectedIndex = 0);
+                await cboSkill.PopulateWithListItemsAsync(lstSkills).ConfigureAwait(false);
+                await cboSkill.DoThreadSafeAsync(x => x.SelectedIndex = 0).ConfigureAwait(false);
 
-                await cboDVBase.PopulateWithListItemsAsync(lstDVBase);
-                await cboDVBase.DoThreadSafeAsync(x => x.SelectedIndex = 0);
+                await cboDVBase.PopulateWithListItemsAsync(lstDVBase).ConfigureAwait(false);
+                await cboDVBase.DoThreadSafeAsync(x => x.SelectedIndex = 0).ConfigureAwait(false);
 
-                await cboDVType.PopulateWithListItemsAsync(lstDVType);
-                await cboDVType.DoThreadSafeAsync(x => x.SelectedIndex = 0);
+                await cboDVType.PopulateWithListItemsAsync(lstDVType).ConfigureAwait(false);
+                await cboDVType.DoThreadSafeAsync(x => x.SelectedIndex = 0).ConfigureAwait(false);
             }
         }
 
@@ -98,7 +98,7 @@ namespace Chummer
 
         private async void cmdOK_Click(object sender, EventArgs e)
         {
-            await AcceptForm();
+            await AcceptForm().ConfigureAwait(false);
         }
 
         #endregion Control Events
@@ -124,8 +124,8 @@ namespace Chummer
         private async ValueTask AcceptForm(CancellationToken token = default)
         {
             // Assemble the DV from the fields.
-            string strDamage = await cboDVBase.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token: token);
-            int intDVMod = await nudDVMod.DoThreadSafeFuncAsync(x => x.ValueAsInt, token: token);
+            string strDamage = await cboDVBase.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token: token).ConfigureAwait(false);
+            int intDVMod = await nudDVMod.DoThreadSafeFuncAsync(x => x.ValueAsInt, token: token).ConfigureAwait(false);
             if (intDVMod != 0)
             {
                 if (intDVMod < 0)
@@ -133,11 +133,11 @@ namespace Chummer
                 else
                     strDamage += '+' + intDVMod.ToString(GlobalSettings.InvariantCultureInfo);
             }
-            strDamage += await cboDVType.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token: token);
+            strDamage += await cboDVType.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token: token).ConfigureAwait(false);
 
             // Create the AP value.
             string strAP;
-            int intAP = await nudAP.DoThreadSafeFuncAsync(x => x.ValueAsInt, token: token);
+            int intAP = await nudAP.DoThreadSafeFuncAsync(x => x.ValueAsInt, token: token).ConfigureAwait(false);
             if (intAP == 0)
                 strAP = "0";
             else if (intAP > 0)
@@ -154,9 +154,9 @@ namespace Chummer
                 _objWeapon = new Weapon(_objCharacter)
                 {
                     Name = txtName.Text,
-                    Category = await LanguageManager.GetStringAsync("Tab_Critter", token: token),
+                    Category = await LanguageManager.GetStringAsync("Tab_Critter", token: token).ConfigureAwait(false),
                     RangeType = "Melee",
-                    Reach = await nudReach.DoThreadSafeFuncAsync(x => x.ValueAsInt, token: token),
+                    Reach = await nudReach.DoThreadSafeFuncAsync(x => x.ValueAsInt, token: token).ConfigureAwait(false),
                     Damage = strDamage,
                     AP = strAP,
                     Mode = "0",
@@ -165,9 +165,9 @@ namespace Chummer
                     Avail = "0",
                     Cost = "0",
                     Ammo = "0",
-                    UseSkill = await cboSkill.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token: token),
-                    Source = (await objPower.SelectSingleNodeAndCacheExpressionAsync("source", token: token))?.Value,
-                    Page = (await objPower.SelectSingleNodeAndCacheExpressionAsync("page", token: token))?.Value
+                    UseSkill = await cboSkill.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token: token).ConfigureAwait(false),
+                    Source = (await objPower.SelectSingleNodeAndCacheExpressionAsync("source", token: token).ConfigureAwait(false))?.Value,
+                    Page = (await objPower.SelectSingleNodeAndCacheExpressionAsync("page", token: token).ConfigureAwait(false))?.Value
                 };
                 _objWeapon.CreateClips();
 
@@ -175,7 +175,7 @@ namespace Chummer
                 {
                     x.DialogResult = DialogResult.OK;
                     x.Close();
-                }, token: token);
+                }, token: token).ConfigureAwait(false);
             }
         }
 

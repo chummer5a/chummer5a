@@ -1554,7 +1554,7 @@ namespace Chummer
                 // This should only happen when a character is trading up to a less-costly Quality.
                 if (intKarmaCost > 0)
                 {
-                    if (intKarmaCost > await _objCharacter.GetKarmaAsync(token))
+                    if (intKarmaCost > await _objCharacter.GetKarmaAsync(token).ConfigureAwait(false))
                     {
                         Program.ShowMessageBox(
                             await LanguageManager.GetStringAsync("Message_NotEnoughKarma", token: token).ConfigureAwait(false),

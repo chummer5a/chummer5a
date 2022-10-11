@@ -54,24 +54,24 @@ namespace Chummer
                 foreach (string strAbbrev in _lstAttributeAbbrevs)
                 {
                     string strAttributeDisplayName = strAbbrev == "MAGAdept"
-                        ? await LanguageManager.MAGAdeptStringAsync()
-                        : await LanguageManager.GetStringAsync("String_Attribute" + strAbbrev + "Short");
+                        ? await LanguageManager.MAGAdeptStringAsync().ConfigureAwait(false)
+                        : await LanguageManager.GetStringAsync("String_Attribute" + strAbbrev + "Short").ConfigureAwait(false);
                     lstAttributes.Add(new ListItem(strAbbrev, strAttributeDisplayName));
                 }
 
-                await cboAttribute.PopulateWithListItemsAsync(lstAttributes);
+                await cboAttribute.PopulateWithListItemsAsync(lstAttributes).ConfigureAwait(false);
                 if (lstAttributes.Count >= 1)
-                    await cboAttribute.DoThreadSafeAsync(x => x.SelectedIndex = 0);
+                    await cboAttribute.DoThreadSafeAsync(x => x.SelectedIndex = 0).ConfigureAwait(false);
                 else if (lstAttributes.Count == 0)
-                    await cmdOK.DoThreadSafeAsync(x => x.Enabled = false);
+                    await cmdOK.DoThreadSafeAsync(x => x.Enabled = false).ConfigureAwait(false);
                 else
                 {
-                    _strReturnValue = await cboAttribute.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString());
+                    _strReturnValue = await cboAttribute.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString()).ConfigureAwait(false);
                     await this.DoThreadSafeAsync(x =>
                     {
                         x.DialogResult = DialogResult.OK;
                         x.Close();
-                    });
+                    }).ConfigureAwait(false);
                 }
             }
         }

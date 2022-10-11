@@ -57,7 +57,7 @@ namespace Chummer
             {
                 _strWorkStage = _strDefaultStageName = xmlStageNode.InnerText;
 
-                await BuildTree(GetSelectString());
+                await BuildTree(GetSelectString()).ConfigureAwait(false);
             }
             else
             {
@@ -155,29 +155,29 @@ namespace Chummer
             }
 
             _strSelectedId = (string)e.Node.Tag;
-            XmlNode xmlSelectedNodeInfo = Quality.GetNodeOverrideable(_strSelectedId, await _objCharacter.LoadDataAsync("lifemodules.xml"));
+            XmlNode xmlSelectedNodeInfo = Quality.GetNodeOverrideable(_strSelectedId, await _objCharacter.LoadDataAsync("lifemodules.xml").ConfigureAwait(false));
 
             if (xmlSelectedNodeInfo != null)
             {
-                await cmdOK.DoThreadSafeAsync(x => x.Enabled = blnSelectAble);
-                await cmdOKAdd.DoThreadSafeAsync(x => x.Enabled = blnSelectAble);
+                await cmdOK.DoThreadSafeAsync(x => x.Enabled = blnSelectAble).ConfigureAwait(false);
+                await cmdOKAdd.DoThreadSafeAsync(x => x.Enabled = blnSelectAble).ConfigureAwait(false);
 
-                await lblBP.DoThreadSafeAsync(x => x.Text = xmlSelectedNodeInfo["karma"]?.InnerText ?? string.Empty);
-                string strSpace = await LanguageManager.GetStringAsync("String_Space");
+                await lblBP.DoThreadSafeAsync(x => x.Text = xmlSelectedNodeInfo["karma"]?.InnerText ?? string.Empty).ConfigureAwait(false);
+                string strSpace = await LanguageManager.GetStringAsync("String_Space").ConfigureAwait(false);
                 await lblSource.DoThreadSafeAsync(x => x.Text = xmlSelectedNodeInfo["source"]?.InnerText
                                                                 ?? string.Empty + strSpace
-                                                                + xmlSelectedNodeInfo["page"]?.InnerText);
-                await lblStage.DoThreadSafeAsync(x => x.Text = xmlSelectedNodeInfo["stage"]?.InnerText ?? string.Empty);
+                                                                + xmlSelectedNodeInfo["page"]?.InnerText).ConfigureAwait(false);
+                await lblStage.DoThreadSafeAsync(x => x.Text = xmlSelectedNodeInfo["stage"]?.InnerText ?? string.Empty).ConfigureAwait(false);
             }
             else
             {
-                string strError = await LanguageManager.GetStringAsync("String_Error");
-                await lblBP.DoThreadSafeAsync(x => x.Text = strError);
-                await lblStage.DoThreadSafeAsync(x => x.Text = strError);
-                await lblSource.DoThreadSafeAsync(x => x.Text = strError);
+                string strError = await LanguageManager.GetStringAsync("String_Error").ConfigureAwait(false);
+                await lblBP.DoThreadSafeAsync(x => x.Text = strError).ConfigureAwait(false);
+                await lblStage.DoThreadSafeAsync(x => x.Text = strError).ConfigureAwait(false);
+                await lblSource.DoThreadSafeAsync(x => x.Text = strError).ConfigureAwait(false);
 
-                await cmdOK.DoThreadSafeAsync(x => x.Enabled = false);
-                await cmdOKAdd.DoThreadSafeAsync(x => x.Enabled = false);
+                await cmdOK.DoThreadSafeAsync(x => x.Enabled = false).ConfigureAwait(false);
+                await cmdOKAdd.DoThreadSafeAsync(x => x.Enabled = false).ConfigureAwait(false);
             }
         }
 
@@ -194,17 +194,17 @@ namespace Chummer
 
         private async void chkLimitList_Click(object sender, EventArgs e)
         {
-            bool blnLimitListChecked = await chkLimitList.DoThreadSafeFuncAsync(x => x.Checked);
-            await lblStage.DoThreadSafeAsync(x => x.Visible = blnLimitListChecked);
-            await cboStage.DoThreadSafeAsync(x => x.Visible = !blnLimitListChecked);
+            bool blnLimitListChecked = await chkLimitList.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false);
+            await lblStage.DoThreadSafeAsync(x => x.Visible = blnLimitListChecked).ConfigureAwait(false);
+            await cboStage.DoThreadSafeAsync(x => x.Visible = !blnLimitListChecked).ConfigureAwait(false);
 
             if (blnLimitListChecked)
             {
-                if (await cboStage.DoThreadSafeFuncAsync(x => x.DataSource == null))
+                if (await cboStage.DoThreadSafeFuncAsync(x => x.DataSource == null).ConfigureAwait(false))
                 {
                     using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstStages))
                     {
-                        lstStages.Add(new ListItem("0", await LanguageManager.GetStringAsync("String_All")));
+                        lstStages.Add(new ListItem("0", await LanguageManager.GetStringAsync("String_All").ConfigureAwait(false)));
 
                         using (XmlNodeList xmlNodes = _xmlDocument.SelectNodes("/chummer/stages/stage"))
                         {
@@ -242,7 +242,7 @@ namespace Chummer
                             return 0;
                         });
 
-                        await cboStage.PopulateWithListItemsAsync(lstStages);
+                        await cboStage.PopulateWithListItemsAsync(lstStages).ConfigureAwait(false);
                     }
                 }
 
@@ -253,18 +253,18 @@ namespace Chummer
                         = ((List<ListItem>) x.DataSource).Find(y => y.Value.ToString() == strToFind);
                     if (!string.IsNullOrEmpty(selectedItem.Name))
                         x.SelectedItem = selectedItem;
-                });
+                }).ConfigureAwait(false);
             }
             else
             {
                 _strWorkStage = _strDefaultStageName;
-                await BuildTree(GetSelectString());
+                await BuildTree(GetSelectString()).ConfigureAwait(false);
             }
         }
 
         private async void cboStage_SelectionChangeCommitted(object sender, EventArgs e)
         {
-            string strSelected = await cboStage.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()) ?? string.Empty;
+            string strSelected = await cboStage.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()).ConfigureAwait(false) ?? string.Empty;
             if (strSelected == "0")
             {
                 _strWorkStage = string.Empty;
@@ -273,12 +273,12 @@ namespace Chummer
             {
                 _strWorkStage = _xmlDocument.SelectSingleNode("chummer/stages/stage[@order = " + strSelected.CleanXPath() + ']')?.InnerText ?? string.Empty;
             }
-            await BuildTree(GetSelectString());
+            await BuildTree(GetSelectString()).ConfigureAwait(false);
         }
 
         private async void txtSearch_TextChanged(object sender, EventArgs e)
         {
-            string strText = await txtSearch.DoThreadSafeFuncAsync(x => x.Text);
+            string strText = await txtSearch.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false);
             if (string.IsNullOrWhiteSpace(strText))
             {
                 _rgxSearchRegex = null;
@@ -295,7 +295,7 @@ namespace Chummer
                 }
             }
 
-            await BuildTree(GetSelectString());
+            await BuildTree(GetSelectString()).ConfigureAwait(false);
         }
 
         private string GetSelectString()

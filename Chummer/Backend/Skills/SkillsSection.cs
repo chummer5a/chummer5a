@@ -602,8 +602,8 @@ namespace Chummer.Backend.Skills
                                 Karma = objSkill.Karma
                             };
                             await objNewKnowledgeSkill.SetTypeAsync(
-                                await strKnowledgeSkillTypeToUse.GetValueAsync(token).ConfigureAwait(false), token);
-                            await objNewKnowledgeSkill.SetWriteableNameAsync(await objSkill.GetNameAsync(token), token);
+                                await strKnowledgeSkillTypeToUse.GetValueAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
+                            await objNewKnowledgeSkill.SetWriteableNameAsync(await objSkill.GetNameAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
                             await objNewKnowledgeSkill.Specializations.AddRangeAsync(objSkill.Specializations, token: token).ConfigureAwait(false);
                             await (await GetKnowledgeSkillsAsync(token).ConfigureAwait(false)).AddWithSortAsync(objNewKnowledgeSkill, (x, y) =>
                             {
@@ -1516,8 +1516,8 @@ namespace Chummer.Backend.Skills
                                 // ReSharper disable once AccessToDisposedClosure
                                 dicSkills.TryAdd(x.Name, x.Id);
                         }, token: token), token),
-                                 // ReSharper disable once AccessToDisposedClosure
-                        Task.Run(() => KnowledgeSkills.ForEachParallelAsync(x => dicSkills.TryAdd(x.Name, x.Id), token: token), token));
+                        // ReSharper disable once AccessToDisposedClosure
+                        Task.Run(() => KnowledgeSkills.ForEachParallelAsync(x => dicSkills.TryAdd(x.Name, x.Id), token: token), token)).ConfigureAwait(false);
                     UpdateUndoSpecific(
                         dicSkills,
                         EnumerableExtensions.ToEnumerable(KarmaExpenseType.AddSkill, KarmaExpenseType.ImproveSkill));
@@ -1552,7 +1552,7 @@ namespace Chummer.Backend.Skills
             }
             finally
             {
-                await objLocker.DisposeAsync();
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1657,14 +1657,14 @@ namespace Chummer.Backend.Skills
                     foreach (Skill objSkill in await _dicSkillBackups.GetValuesAsync(token).ConfigureAwait(false))
                         await objSkill.DisposeAsync().ConfigureAwait(false);
                     foreach (Skill objSkill in _lstSkills)
-                        await objSkill.RemoveAsync(token);
+                        await objSkill.RemoveAsync(token).ConfigureAwait(false);
                     foreach (KnowledgeSkill objSkill in KnowledgeSkills)
                     {
                         objSkill.PropertyChanged -= OnKnowledgeSkillPropertyChanged;
-                        await objSkill.RemoveAsync(token);
+                        await objSkill.RemoveAsync(token).ConfigureAwait(false);
                     }
                     foreach (SkillGroup objGroup in SkillGroups)
-                        await objGroup.DisposeAsync();
+                        await objGroup.DisposeAsync().ConfigureAwait(false);
                     await _dicSkillBackups.ClearAsync(token).ConfigureAwait(false);
                     await _dicSkills.ClearAsync(token).ConfigureAwait(false);
                     await _lstSkills.ClearAsync(token).ConfigureAwait(false);
@@ -2225,7 +2225,7 @@ namespace Chummer.Backend.Skills
             objExistingSkill.Notes += objNewSkill.Notes;
             objExistingSkill.NotesColor = objNewSkill.NotesColor;
             await objExistingSkill.Specializations.AddAsyncRangeWithSortAsync(objNewSkill.Specializations, CompareSpecializations, token: token).ConfigureAwait(false);
-            await objNewSkill.RemoveAsync(token);
+            await objNewSkill.RemoveAsync(token).ConfigureAwait(false);
         }
 
         private List<ListItem> _lstDefaultKnowledgeSkills;

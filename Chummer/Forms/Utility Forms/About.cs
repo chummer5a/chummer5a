@@ -95,32 +95,32 @@ namespace Chummer
 
         private async void About_Load(object sender, EventArgs e)
         {
-            string strSpace = await LanguageManager.GetStringAsync("String_Space");
-            string strReturn = await LanguageManager.GetStringAsync("Label_About", false);
+            string strSpace = await LanguageManager.GetStringAsync("String_Space").ConfigureAwait(false);
+            string strReturn = await LanguageManager.GetStringAsync("Label_About", false).ConfigureAwait(false);
             if (string.IsNullOrEmpty(strReturn))
                 strReturn = "About";
-            await this.DoThreadSafeAsync(x => x.Text = strReturn + strSpace + AssemblyTitle);
-            await lblProductName.DoThreadSafeAsync(x => x.Text = AssemblyProduct);
-            strReturn = await LanguageManager.GetStringAsync("String_Version", false);
-            if (string.IsNullOrEmpty(strReturn))
-                strReturn = "Version";
-            await lblVersion.DoThreadSafeAsync(x => x.Text = strReturn + strSpace + AssemblyVersion);
-            strReturn = await LanguageManager.GetStringAsync("About_Copyright_Text", false);
-            if (string.IsNullOrEmpty(strReturn))
-                strReturn = AssemblyCopyright;
-            await lblCopyright.DoThreadSafeAsync(x => x.Text = strReturn);
-            strReturn = await LanguageManager.GetStringAsync("About_Company_Text", false);
-            if (string.IsNullOrEmpty(strReturn))
-                strReturn = AssemblyCompany;
-            await lblCompanyName.DoThreadSafeAsync(x => x.Text = strReturn);
-            strReturn = await LanguageManager.GetStringAsync("About_Description_Text", false);
-            if (string.IsNullOrEmpty(strReturn))
-                strReturn = AssemblyDescription;
-            await txtDescription.DoThreadSafeAsync(x => x.Text = strReturn);
+            await this.DoThreadSafeAsync(x => x.Text = strReturn + strSpace + AssemblyTitle).ConfigureAwait(false);
+            await lblProductName.DoThreadSafeAsync(x => x.Text = AssemblyProduct).ConfigureAwait(false);
+            string strReturn2 = await LanguageManager.GetStringAsync("String_Version", false).ConfigureAwait(false);
+            if (string.IsNullOrEmpty(strReturn2))
+                strReturn2 = "Version";
+            await lblVersion.DoThreadSafeAsync(x => x.Text = strReturn2 + strSpace + AssemblyVersion).ConfigureAwait(false);
+            string strReturn3 = await LanguageManager.GetStringAsync("About_Copyright_Text", false).ConfigureAwait(false);
+            if (string.IsNullOrEmpty(strReturn3))
+                strReturn3 = AssemblyCopyright;
+            await lblCopyright.DoThreadSafeAsync(x => x.Text = strReturn3).ConfigureAwait(false);
+            string strReturn4 = await LanguageManager.GetStringAsync("About_Company_Text", false).ConfigureAwait(false);
+            if (string.IsNullOrEmpty(strReturn4))
+                strReturn4 = AssemblyCompany;
+            await lblCompanyName.DoThreadSafeAsync(x => x.Text = strReturn4).ConfigureAwait(false);
+            string strReturn5 = await LanguageManager.GetStringAsync("About_Description_Text", false).ConfigureAwait(false);
+            if (string.IsNullOrEmpty(strReturn5))
+                strReturn5 = AssemblyDescription;
+            await txtDescription.DoThreadSafeAsync(x => x.Text = strReturn5).ConfigureAwait(false);
             await txtContributors.DoThreadSafeAsync(x => x.Text += Environment.NewLine + Environment.NewLine + string.Join(Environment.NewLine, Properties.Contributors.Usernames)
-                                                                   + Environment.NewLine + "/u/Iridios");
-            string strDisclaimer = await LanguageManager.GetStringAsync("About_Label_Disclaimer_Text");
-            await txtDisclaimer.DoThreadSafeAsync(x => x.Text = strDisclaimer);
+                                                                   + Environment.NewLine + "/u/Iridios").ConfigureAwait(false);
+            string strDisclaimer = await LanguageManager.GetStringAsync("About_Label_Disclaimer_Text").ConfigureAwait(false);
+            await txtDisclaimer.DoThreadSafeAsync(x => x.Text = strDisclaimer).ConfigureAwait(false);
         }
 
         private void txt_KeyDown(object sender, KeyEventArgs e)

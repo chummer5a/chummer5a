@@ -4386,7 +4386,7 @@ namespace Chummer
                                 {
                                     objStream.Seek(0, SeekOrigin.Begin);
                                     await objStream.CompressToLzmaFileAsync(
-                                        objFileStream, GlobalSettings.Chum5lzCompressionLevel, token: innerToken);
+                                        objFileStream, GlobalSettings.Chum5lzCompressionLevel, token: innerToken).ConfigureAwait(false);
                                 }
                             }
                         }
@@ -4907,7 +4907,7 @@ namespace Chummer
 
                                 objXmlCharacter = objXmlDocument.SelectSingleNode("/character");
                                 xmlCharacterNavigator =
-                                    (await objXmlDocument.GetFastNavigatorAsync(token)).SelectSingleNode("/character");
+                                    (await objXmlDocument.GetFastNavigatorAsync(token).ConfigureAwait(false)).SelectSingleNode("/character");
                                 return true;
                             }
 
@@ -4996,7 +4996,7 @@ namespace Chummer
                                             (blnSync
                                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                 ? objXmlDocument.GetFastNavigator()
-                                                : await objXmlDocument.GetFastNavigatorAsync(token))
+                                                : await objXmlDocument.GetFastNavigatorAsync(token).ConfigureAwait(false))
                                             .SelectSingleNode("/character");
                                         if (xmlCharacterNavigator == null)
                                             return false;
@@ -8608,7 +8608,7 @@ namespace Chummer
                     // <spelllimit />
                     await objWriter.WriteElementStringAsync("spelllimit", FreeSpells.ToString(objCulture), token: token).ConfigureAwait(false);
                     // <karma />
-                    await objWriter.WriteElementStringAsync("karma", (await GetKarmaAsync(token)).ToString(objCulture), token: token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("karma", (await GetKarmaAsync(token).ConfigureAwait(false)).ToString(objCulture), token: token).ConfigureAwait(false);
                     // <totalkarma />
                     await objWriter.WriteElementStringAsync("totalkarma", CareerKarma.ToString(objCulture), token: token).ConfigureAwait(false);
                     // <special />
@@ -15187,7 +15187,7 @@ namespace Chummer
         public async ValueTask DecreaseKarmaAsync(int value, CancellationToken token = default)
         {
             if (value != 0)
-                await IncreaseKarmaAsync(-value, token);
+                await IncreaseKarmaAsync(-value, token).ConfigureAwait(false);
         }
 
         public string DisplayKarma
@@ -34173,7 +34173,7 @@ namespace Chummer
                 RESEnabled = false;
 
                 // Gain MAG that is permanently set to 1.
-                await MAG.AssignBaseKarmaLimitsAsync(0, 0, 1, 1, 1, token);
+                await MAG.AssignBaseKarmaLimitsAsync(0, 0, 1, 1, 1, token).ConfigureAwait(false);
 
                 // Add the Cyberzombie Lifestyle if it is not already taken.
                 if (Lifestyles.All(x => x.BaseLifestyle != "Cyberzombie Lifestyle Addition"))

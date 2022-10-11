@@ -46,16 +46,25 @@ namespace Chummer
         /// </summary>
         private async void OpenFile(object sender, EventArgs e)
         {
-            using (OpenFileDialog dlgOpenFile = await this.DoThreadSafeFuncAsync(() => new OpenFileDialog()))
+            string strFilter = await LanguageManager.GetStringAsync("DialogFilter_Chummer").ConfigureAwait(false) + '|'
+                +
+                await LanguageManager.GetStringAsync("DialogFilter_Chum5").ConfigureAwait(false) + '|' +
+                await LanguageManager.GetStringAsync("DialogFilter_Chum5lz").ConfigureAwait(false) + '|' +
+                await LanguageManager.GetStringAsync("DialogFilter_All").ConfigureAwait(false);
+            string strFileName = string.Empty;
+            DialogResult eResult = await this.DoThreadSafeFuncAsync(x =>
             {
-                dlgOpenFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Chummer") + '|' +
-                                     await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|' +
-                                     await LanguageManager.GetStringAsync("DialogFilter_Chum5lz") + '|' +
-                                     await LanguageManager.GetStringAsync("DialogFilter_All");
-                if (await this.DoThreadSafeFuncAsync(x => dlgOpenFile.ShowDialog(x)) != DialogResult.OK)
-                    return;
-                await LoadCharacter(dlgOpenFile.FileName);
-            }
+                using (OpenFileDialog dlgOpenFile = new OpenFileDialog())
+                {
+                    dlgOpenFile.Filter = strFilter;
+                    DialogResult eReturn = dlgOpenFile.ShowDialog(x);
+                    strFileName = dlgOpenFile.FileName;
+                    return eReturn;
+                }
+            }).ConfigureAwait(false);
+            if (eResult != DialogResult.OK)
+                return;
+            await LoadCharacter(strFileName).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -71,25 +80,25 @@ namespace Chummer
                 {
                     FileName = fileName
                 };
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
                 try
                 {
-                    if (!await objCharacter.LoadAsync(token: token))
+                    if (!await objCharacter.LoadAsync(token: token).ConfigureAwait(false))
                     {
                         // TODO edward setup error page
-                        await objCharacter.DisposeAsync();
+                        await objCharacter.DisposeAsync().ConfigureAwait(false);
                         return; // we obviously cannot init
                     }
 
-                    await nudInit.DoThreadSafeAsync(x => x.Value = objCharacter.InitiativeDice, token: token);
-                    await txtName.DoThreadSafeAsync(x => x.Text = objCharacter.Name, token: token);
+                    await nudInit.DoThreadSafeAsync(x => x.Value = objCharacter.InitiativeDice, token: token).ConfigureAwait(false);
+                    await txtName.DoThreadSafeAsync(x => x.Text = objCharacter.Name, token: token).ConfigureAwait(false);
                     if (int.TryParse(
                             objCharacter.Initiative.SplitNoAlloc(' ', StringSplitOptions.RemoveEmptyEntries)
                                         .FirstOrDefault(), out int intTemp))
-                        await nudInitStart.DoThreadSafeAsync(x => x.Value = intTemp, token: token);
+                        await nudInitStart.DoThreadSafeAsync(x => x.Value = intTemp, token: token).ConfigureAwait(false);
                     if (_character != null)
                     {
-                        await _character.DisposeAsync();
+                        await _character.DisposeAsync().ConfigureAwait(false);
                     }
 
                     _character = objCharacter;
@@ -97,7 +106,7 @@ namespace Chummer
                 }
                 finally
                 {
-                    await objCursorWait.DisposeAsync();
+                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
         }
@@ -126,28 +135,28 @@ namespace Chummer
         {
             if (_character != null)
             {
-                _character.Name = await txtName.DoThreadSafeFuncAsync(x => x.Text);
-                _character.InitPasses = await nudInit.DoThreadSafeFuncAsync(x => x.ValueAsInt);
+                _character.Name = await txtName.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false);
+                _character.InitPasses = await nudInit.DoThreadSafeFuncAsync(x => x.ValueAsInt).ConfigureAwait(false);
                 _character.Delayed = false;
-                _character.InitialInit = await nudInitStart.DoThreadSafeFuncAsync(x => x.ValueAsInt);
+                _character.InitialInit = await nudInitStart.DoThreadSafeFuncAsync(x => x.ValueAsInt).ConfigureAwait(false);
             }
             else
             {
                 _character = new Character
                 {
-                    Name = await txtName.DoThreadSafeFuncAsync(x => x.Text),
-                    InitPasses = await nudInit.DoThreadSafeFuncAsync(x => x.ValueAsInt),
+                    Name = await txtName.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false),
+                    InitPasses = await nudInit.DoThreadSafeFuncAsync(x => x.ValueAsInt).ConfigureAwait(false),
                     Delayed = false,
-                    InitialInit = await nudInitStart.DoThreadSafeFuncAsync(x => x.ValueAsInt)
+                    InitialInit = await nudInitStart.DoThreadSafeFuncAsync(x => x.ValueAsInt).ConfigureAwait(false)
                 };
             }
-            if (await chkAutoRollInit.DoThreadSafeFuncAsync(x => x.Checked))
+            if (await chkAutoRollInit.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false))
             {
                 int intInitPasses = _character.InitPasses;
                 int intInitRoll = intInitPasses;
                 for (int j = 0; j < intInitPasses; ++j)
                 {
-                    intInitRoll += await GlobalSettings.RandomGenerator.NextD6ModuloBiasRemovedAsync();
+                    intInitRoll += await GlobalSettings.RandomGenerator.NextD6ModuloBiasRemovedAsync().ConfigureAwait(false);
                 }
                 _character.InitRoll = intInitRoll + _character.InitialInit;
             }
@@ -155,8 +164,8 @@ namespace Chummer
                 _character.InitRoll = int.MinValue;
 
             Disposed -= OnDisposed;
-            await parentControl.AddToken(_character);
-            await this.DoThreadSafeAsync(x => x.Close());
+            await parentControl.AddToken(_character).ConfigureAwait(false);
+            await this.DoThreadSafeAsync(x => x.Close()).ConfigureAwait(false);
         }
     }
 }

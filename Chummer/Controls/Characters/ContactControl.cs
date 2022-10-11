@@ -487,7 +487,7 @@ namespace Chummer
                     strFileName = dlgOpenFile.FileName;
                     return eReturn;
                 }
-            });
+            }).ConfigureAwait(false);
             if (eResult != DialogResult.OK)
                 return;
             _objContact.FileName = strFileName;

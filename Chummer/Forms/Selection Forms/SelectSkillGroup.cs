@@ -51,7 +51,7 @@ namespace Chummer
                 {
                     // Build the list of Skill Groups found in the Skills file.
                     foreach (XPathNavigator objXmlSkill in await _objXmlDocument.SelectAndCacheExpressionAsync(
-                                 "/chummer/skillgroups/name"))
+                                 "/chummer/skillgroups/name").ConfigureAwait(false))
                     {
                         if (!string.IsNullOrEmpty(_strExcludeCategory))
                         {
@@ -77,7 +77,7 @@ namespace Chummer
 
                         string strInnerText = objXmlSkill.Value;
                         lstGroups.Add(new ListItem(strInnerText,
-                                                   (await objXmlSkill.SelectSingleNodeAndCacheExpressionAsync("@translate"))?.Value
+                                                   (await objXmlSkill.SelectSingleNodeAndCacheExpressionAsync("@translate").ConfigureAwait(false))?.Value
                                                    ?? strInnerText));
                     }
                 }
@@ -87,19 +87,19 @@ namespace Chummer
                 }
 
                 lstGroups.Sort(CompareListItems.CompareNames);
-                await cboSkillGroup.PopulateWithListItemsAsync(lstGroups);
+                await cboSkillGroup.PopulateWithListItemsAsync(lstGroups).ConfigureAwait(false);
                 // Select the first Skill in the list.
-                await cboSkillGroup.DoThreadSafeAsync(x => x.SelectedIndex = 0);
+                await cboSkillGroup.DoThreadSafeAsync(x => x.SelectedIndex = 0).ConfigureAwait(false);
             }
 
-            if (await cboSkillGroup.DoThreadSafeFuncAsync(x => x.Items.Count) == 1)
+            if (await cboSkillGroup.DoThreadSafeFuncAsync(x => x.Items.Count).ConfigureAwait(false) == 1)
             {
-                _strReturnValue = await cboSkillGroup.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString());
+                _strReturnValue = await cboSkillGroup.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString()).ConfigureAwait(false);
                 await this.DoThreadSafeAsync(x =>
                 {
                     x.DialogResult = DialogResult.OK;
                     x.Close();
-                });
+                }).ConfigureAwait(false);
             }
         }
 

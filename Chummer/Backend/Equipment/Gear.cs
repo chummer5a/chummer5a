@@ -1499,23 +1499,23 @@ namespace Chummer.Backend.Equipment
 
             if (_nodWeaponBonus != null || blnForcePrintAllBlocks)
             {
-                await objWriter.WriteElementStringAsync("weaponbonusdamage", await WeaponBonusDamageAsync(strLanguageToPrint, token), token: token);
+                await objWriter.WriteElementStringAsync("weaponbonusdamage", await WeaponBonusDamageAsync(strLanguageToPrint, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("weaponbonusdamage_english",
-                                                        await WeaponBonusDamageAsync(GlobalSettings.DefaultLanguage, token), token: token);
-                await objWriter.WriteElementStringAsync("weaponbonusap", WeaponBonusAP, token: token);
-                await objWriter.WriteElementStringAsync("weaponbonusacc", WeaponBonusAcc, token: token);
-                await objWriter.WriteElementStringAsync("weaponbonusrange", WeaponBonusRange.ToString(objCulture), token: token);
+                                                        await WeaponBonusDamageAsync(GlobalSettings.DefaultLanguage, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("weaponbonusap", WeaponBonusAP, token: token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("weaponbonusacc", WeaponBonusAcc, token: token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("weaponbonusrange", WeaponBonusRange.ToString(objCulture), token: token).ConfigureAwait(false);
             }
 
             if (_nodFlechetteWeaponBonus != null || blnForcePrintAllBlocks)
             {
                 await objWriter.WriteElementStringAsync("flechetteweaponbonusdamage",
-                                                        await FlechetteWeaponBonusDamageAsync(strLanguageToPrint, token), token: token);
+                                                        await FlechetteWeaponBonusDamageAsync(strLanguageToPrint, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("flechetteweaponbonusdamage_english",
-                                                        await FlechetteWeaponBonusDamageAsync(GlobalSettings.DefaultLanguage, token), token: token);
-                await objWriter.WriteElementStringAsync("flechetteweaponbonusap", FlechetteWeaponBonusAP, token: token);
-                await objWriter.WriteElementStringAsync("flechetteweaponbonusacc", FlechetteWeaponBonusAcc, token: token);
-                await objWriter.WriteElementStringAsync("flechetteweaponbonusrange", FlechetteWeaponBonusRange.ToString(objCulture), token: token);
+                                                        await FlechetteWeaponBonusDamageAsync(GlobalSettings.DefaultLanguage, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("flechetteweaponbonusap", FlechetteWeaponBonusAP, token: token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("flechetteweaponbonusacc", FlechetteWeaponBonusAcc, token: token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("flechetteweaponbonusrange", FlechetteWeaponBonusRange.ToString(objCulture), token: token).ConfigureAwait(false);
             }
         }
 
@@ -1955,9 +1955,9 @@ namespace Chummer.Backend.Equipment
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
-            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token);
+            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
             string s = objNode != null
-                ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage", token: token))?.Value ?? Page
+                ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage", token: token).ConfigureAwait(false))?.Value ?? Page
                 : Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
@@ -2430,7 +2430,7 @@ namespace Chummer.Backend.Equipment
             XmlDocument objDoc = blnSync
                 // ReSharper disable once MethodHasAsyncOverload
                 ? _objCharacter.LoadData("gear.xml", strLanguage, token: token)
-                : await _objCharacter.LoadDataAsync("gear.xml", strLanguage, token: token);
+                : await _objCharacter.LoadDataAsync("gear.xml", strLanguage, token: token).ConfigureAwait(false);
             string strNameWithQuotes = Name.CleanXPath();
             _objCachedMyXmlNode = objDoc.SelectSingleNode(!string.IsNullOrWhiteSpace(strName)
                                                               ? "/chummer/gears/gear[name = " + strName.CleanXPath()

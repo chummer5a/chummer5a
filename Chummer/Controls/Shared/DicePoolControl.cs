@@ -42,7 +42,7 @@ namespace Chummer.UI.Shared.Components
 
         private async void DicePoolControl_Load(object sender, EventArgs e)
         {
-            await cmdRoll.SetToolTipTextAsync(await LanguageManager.GetStringAsync("Tip_DiceRoller"));
+            await cmdRoll.SetToolTipTextAsync(await LanguageManager.GetStringAsync("Tip_DiceRoller").ConfigureAwait(false)).ConfigureAwait(false);
         }
 
         private async void cmdRoll_Click(object sender, EventArgs e)
@@ -52,7 +52,7 @@ namespace Chummer.UI.Shared.Components
             Character objCharacter = null;
             if (this.DoThreadSafeFunc(x => x.ParentForm) is CharacterShared frmParent)
                 objCharacter = frmParent.CharacterObject;
-            await Program.MainForm.OpenDiceRollerWithPool(objCharacter, DicePool);
+            await Program.MainForm.OpenDiceRollerWithPool(objCharacter, DicePool).ConfigureAwait(false);
         }
 
         public void SetLabelToolTip(string caption)

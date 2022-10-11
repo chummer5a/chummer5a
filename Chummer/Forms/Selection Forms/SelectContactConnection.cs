@@ -87,8 +87,8 @@ namespace Chummer
 
         private async void SelectContactConnection_Load(object sender, EventArgs e)
         {
-            string strNone = await LanguageManager.GetStringAsync("String_None");
-            string strMembers = await LanguageManager.GetStringAsync("String_SelectContactConnection_Members");
+            string strNone = await LanguageManager.GetStringAsync("String_None").ConfigureAwait(false);
+            string strMembers = await LanguageManager.GetStringAsync("String_SelectContactConnection_Members").ConfigureAwait(false);
             // Populate the fields with their data.
             // Membership.
             await cboMembership.DoThreadSafeAsync(x =>
@@ -98,12 +98,12 @@ namespace Chummer
                 x.Items.Add("+2: " + string.Format(GlobalSettings.CultureInfo, strMembers, "20-99"));
                 x.Items.Add("+4: " + string.Format(GlobalSettings.CultureInfo, strMembers, "100-1000"));
                 x.Items.Add("+6: " + string.Format(GlobalSettings.CultureInfo, strMembers, "1000+"));
-            });
+            }).ConfigureAwait(false);
 
-            string strAoI1 = await LanguageManager.GetStringAsync("String_SelectContactConnection_AreaDistrict");
-            string strAoI2 = await LanguageManager.GetStringAsync("String_SelectContactConnection_AreaSprawlwide");
-            string strAoI3 = await LanguageManager.GetStringAsync("String_SelectContactConnection_AreaNational");
-            string strAoI4 = await LanguageManager.GetStringAsync("String_SelectContactConnection_AreaGlobal");
+            string strAoI1 = await LanguageManager.GetStringAsync("String_SelectContactConnection_AreaDistrict").ConfigureAwait(false);
+            string strAoI2 = await LanguageManager.GetStringAsync("String_SelectContactConnection_AreaSprawlwide").ConfigureAwait(false);
+            string strAoI3 = await LanguageManager.GetStringAsync("String_SelectContactConnection_AreaNational").ConfigureAwait(false);
+            string strAoI4 = await LanguageManager.GetStringAsync("String_SelectContactConnection_AreaGlobal").ConfigureAwait(false);
             // Area of Influence.
             await cboAreaOfInfluence.DoThreadSafeAsync(x =>
             {
@@ -112,11 +112,11 @@ namespace Chummer
                 x.Items.Add("+2: " + strAoI2);
                 x.Items.Add("+4: " + strAoI3);
                 x.Items.Add("+6: " + strAoI4);
-            });
+            }).ConfigureAwait(false);
 
-            string strMgR1 = await LanguageManager.GetStringAsync("String_SelectContactConnection_MagicalMinority");
-            string strMgR2 = await LanguageManager.GetStringAsync("String_SelectContactConnection_MagicalMost");
-            string strMgR3 = await LanguageManager.GetStringAsync("String_SelectContactConnection_MagicalVast");
+            string strMgR1 = await LanguageManager.GetStringAsync("String_SelectContactConnection_MagicalMinority").ConfigureAwait(false);
+            string strMgR2 = await LanguageManager.GetStringAsync("String_SelectContactConnection_MagicalMost").ConfigureAwait(false);
+            string strMgR3 = await LanguageManager.GetStringAsync("String_SelectContactConnection_MagicalVast").ConfigureAwait(false);
             // Magical Resources.
             await cboMagicalResources.DoThreadSafeAsync(x =>
             {
@@ -124,11 +124,11 @@ namespace Chummer
                 x.Items.Add("+1: " + strMgR1);
                 x.Items.Add("+4: " + strMgR2);
                 x.Items.Add("+6: " + strMgR3);
-            });
+            }).ConfigureAwait(false);
 
-            string strMxR1 = await LanguageManager.GetStringAsync("String_SelectContactConnection_MatrixActive");
-            string strMxR2 = await LanguageManager.GetStringAsync("String_SelectContactConnection_MatrixBroad");
-            string strMxR3 = await LanguageManager.GetStringAsync("String_SelectContactConnection_MatrixPervasive");
+            string strMxR1 = await LanguageManager.GetStringAsync("String_SelectContactConnection_MatrixActive").ConfigureAwait(false);
+            string strMxR2 = await LanguageManager.GetStringAsync("String_SelectContactConnection_MatrixBroad").ConfigureAwait(false);
+            string strMxR3 = await LanguageManager.GetStringAsync("String_SelectContactConnection_MatrixPervasive").ConfigureAwait(false);
             // Matrix Resources.
             await cboMatrixResources.DoThreadSafeAsync(x =>
             {
@@ -136,39 +136,46 @@ namespace Chummer
                 x.Items.Add("+1: " + strMxR1);
                 x.Items.Add("+2: " + strMxR2);
                 x.Items.Add("+4: " + strMxR3);
-            });
+            }).ConfigureAwait(false);
 
             // Select the appropriate field values.
             _blnSkipUpdate = true;
-            await cboMembership.DoThreadSafeAsync(x => x.SelectedIndex = x.FindString('+' + _intMembership.ToString(GlobalSettings.InvariantCultureInfo)));
-            await cboAreaOfInfluence.DoThreadSafeAsync(x => x.SelectedIndex = x.FindString('+' + _intAreaOfInfluence.ToString(GlobalSettings.InvariantCultureInfo)));
-            await cboMagicalResources.DoThreadSafeAsync(x => x.SelectedIndex = x.FindString('+' + _intMagicalResources.ToString(GlobalSettings.InvariantCultureInfo)));
-            await cboMatrixResources.DoThreadSafeAsync(x => x.SelectedIndex = x.FindString('+' + _intMatrixResources.ToString(GlobalSettings.InvariantCultureInfo)));
-            await txtGroupName.DoThreadSafeAsync(x => x.Text = _strGroupName);
-            await cmdChangeColour.DoThreadSafeAsync(x => x.BackColor = _objColour);
-            await chkFreeContact.DoThreadSafeAsync(x => x.Checked = _blnFree);
+            await cboMembership.DoThreadSafeAsync(x => x.SelectedIndex = x.FindString('+' + _intMembership.ToString(GlobalSettings.InvariantCultureInfo))).ConfigureAwait(false);
+            await cboAreaOfInfluence.DoThreadSafeAsync(x => x.SelectedIndex = x.FindString('+' + _intAreaOfInfluence.ToString(GlobalSettings.InvariantCultureInfo))).ConfigureAwait(false);
+            await cboMagicalResources.DoThreadSafeAsync(x => x.SelectedIndex = x.FindString('+' + _intMagicalResources.ToString(GlobalSettings.InvariantCultureInfo))).ConfigureAwait(false);
+            await cboMatrixResources.DoThreadSafeAsync(x => x.SelectedIndex = x.FindString('+' + _intMatrixResources.ToString(GlobalSettings.InvariantCultureInfo))).ConfigureAwait(false);
+            await txtGroupName.DoThreadSafeAsync(x => x.Text = _strGroupName).ConfigureAwait(false);
+            await cmdChangeColour.DoThreadSafeAsync(x => x.BackColor = _objColour).ConfigureAwait(false);
+            await chkFreeContact.DoThreadSafeAsync(x => x.Checked = _blnFree).ConfigureAwait(false);
             _blnSkipUpdate = false;
 
-            await lblTotalConnectionModifier.DoThreadSafeAsync(x => x.Text = (_intMembership + _intAreaOfInfluence + _intMagicalResources + _intMatrixResources).ToString(GlobalSettings.CultureInfo));
+            await lblTotalConnectionModifier.DoThreadSafeAsync(x => x.Text = (_intMembership + _intAreaOfInfluence + _intMagicalResources + _intMatrixResources).ToString(GlobalSettings.CultureInfo)).ConfigureAwait(false);
         }
 
         private async void cmdChangeColour_Click(object sender, EventArgs e)
         {
-            using (ColorDialog dlgColor = await this.DoThreadSafeFuncAsync(() => new ColorDialog()))
+            Color objSelectedColor = _objColour;
+            DialogResult eResult = await this.DoThreadSafeFuncAsync(x =>
             {
-                if (await this.DoThreadSafeFuncAsync(x => dlgColor.ShowDialog(x)) != DialogResult.OK)
-                    return;
-                if (dlgColor.Color.Name == "White" || dlgColor.Color.Name == "Black")
+                using (ColorDialog dlgColor = new ColorDialog())
                 {
-                    Color objColor = await ColorManager.GetControlAsync();
-                    await cmdChangeColour.DoThreadSafeAsync(x => x.BackColor = objColor);
-                    _objColour = objColor;
+                    DialogResult eReturn = dlgColor.ShowDialog(x);
+                    objSelectedColor = dlgColor.Color;
+                    return eReturn;
                 }
-                else
-                {
-                    await cmdChangeColour.DoThreadSafeAsync(x => x.BackColor = dlgColor.Color);
-                    _objColour = dlgColor.Color;
-                }
+            }).ConfigureAwait(false);
+            if (eResult != DialogResult.OK)
+                return;
+            if (objSelectedColor.Name == "White" || objSelectedColor.Name == "Black")
+            {
+                Color objColor = await ColorManager.GetControlAsync().ConfigureAwait(false);
+                await cmdChangeColour.DoThreadSafeAsync(x => x.BackColor = objColor).ConfigureAwait(false);
+                _objColour = objColor;
+            }
+            else
+            {
+                await cmdChangeColour.DoThreadSafeAsync(x => x.BackColor = objSelectedColor).ConfigureAwait(false);
+                _objColour = objSelectedColor;
             }
         }
 

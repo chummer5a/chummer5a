@@ -110,9 +110,9 @@ namespace Chummer
         {
             try
             {
-                dlgSaveFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5", token: GenericToken) + '|' +
-                                     await LanguageManager.GetStringAsync("DialogFilter_Chum5lz", token: GenericToken) + '|' +
-                                     await LanguageManager.GetStringAsync("DialogFilter_All", token: GenericToken);
+                dlgSaveFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5", token: GenericToken).ConfigureAwait(false) + '|' +
+                                     await LanguageManager.GetStringAsync("DialogFilter_Chum5lz", token: GenericToken).ConfigureAwait(false) + '|' +
+                                     await LanguageManager.GetStringAsync("DialogFilter_All", token: GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -133,8 +133,8 @@ namespace Chummer
                     _objCachedSettings = null;
                     try
                     {
-                        await RequestCharacterUpdate(GenericToken);
-                        await SetDirty(true, GenericToken);
+                        await RequestCharacterUpdate(GenericToken).ConfigureAwait(false);
+                        await SetDirty(true, GenericToken).ConfigureAwait(false);
                     }
                     catch (OperationCanceledException)
                     {

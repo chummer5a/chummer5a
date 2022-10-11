@@ -85,7 +85,7 @@ namespace Chummer.UI.Charts
             {
                 await _objYAxis.DoThreadSafeAsync(x => x.LabelFormatter = val =>
                                                       val.ToString((_objCharacter?.Settings.NuyenFormat ?? "#,0.##") + LanguageManager.GetString("String_NuyenSymbol"),
-                                                                   GlobalSettings.CultureInfo));
+                                                                   GlobalSettings.CultureInfo)).ConfigureAwait(false);
             }
         }
 

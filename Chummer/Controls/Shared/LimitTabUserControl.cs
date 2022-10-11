@@ -57,14 +57,14 @@ namespace Chummer.UI.Shared
         {
             if (_objCharacter != null)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
             try
             {
-                await RealLoad();
+                await RealLoad().ConfigureAwait(false);
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -101,9 +101,9 @@ namespace Chummer.UI.Shared
         {
             using (ThreadSafeForm<SelectLimitModifier> frmPickLimitModifier =
                    await ThreadSafeForm<SelectLimitModifier>.GetAsync(() =>
-                       new SelectLimitModifier(null, "Physical", "Mental", "Social")))
+                                                                          new SelectLimitModifier(null, "Physical", "Mental", "Social")).ConfigureAwait(false))
             {
-                if (await frmPickLimitModifier.ShowDialogSafeAsync(_objCharacter) == DialogResult.Cancel)
+                if (await frmPickLimitModifier.ShowDialogSafeAsync(_objCharacter).ConfigureAwait(false) == DialogResult.Cancel)
                     return;
 
                 // Create the new limit modifier.
@@ -114,7 +114,7 @@ namespace Chummer.UI.Shared
                 if (objLimitModifier.InternalId.IsEmptyGuid())
                     return;
 
-                await _objCharacter.LimitModifiers.AddAsync(objLimitModifier);
+                await _objCharacter.LimitModifiers.AddAsync(objLimitModifier).ConfigureAwait(false);
             }
 
             MakeDirtyWithCharacterUpdate?.Invoke(this, EventArgs.Empty);
@@ -139,13 +139,13 @@ namespace Chummer.UI.Shared
 
         private async void tssLimitModifierNotes_Click(object sender, EventArgs e)
         {
-            object objSelectedNodeTag = await treLimit.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag);
+            object objSelectedNodeTag = await treLimit.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag).ConfigureAwait(false);
             switch (objSelectedNodeTag)
             {
                 case null:
                     return;
                 case IHasNotes objNotes:
-                    await WriteNotes(objNotes, await treLimit.DoThreadSafeFuncAsync(x => x.SelectedNode));
+                    await WriteNotes(objNotes, await treLimit.DoThreadSafeFuncAsync(x => x.SelectedNode).ConfigureAwait(false)).ConfigureAwait(false);
                     break;
                 default:
                 {
@@ -155,9 +155,9 @@ namespace Chummer.UI.Shared
                         if (objImprovement.ImproveType != Improvement.ImprovementType.LimitModifier ||
                             objImprovement.SourceName != objSelectedNodeTag.ToString())
                             continue;
-                        using (ThreadSafeForm<EditNotes> frmItemNotes = await ThreadSafeForm<EditNotes>.GetAsync(() => new EditNotes(objImprovement.Notes, objImprovement.NotesColor)))
+                        using (ThreadSafeForm<EditNotes> frmItemNotes = await ThreadSafeForm<EditNotes>.GetAsync(() => new EditNotes(objImprovement.Notes, objImprovement.NotesColor)).ConfigureAwait(false))
                         {
-                            if (await frmItemNotes.ShowDialogSafeAsync(_objCharacter) != DialogResult.OK)
+                            if (await frmItemNotes.ShowDialogSafeAsync(_objCharacter).ConfigureAwait(false) != DialogResult.OK)
                                 continue;
 
                             objImprovement.Notes = frmItemNotes.MyForm.Notes;
@@ -166,7 +166,7 @@ namespace Chummer.UI.Shared
                         {
                             x.SelectedNode.ForeColor = objImprovement.PreferredColor;
                             x.SelectedNode.ToolTipText = objImprovement.Notes.WordWrap();
-                        });
+                        }).ConfigureAwait(false);
                         MakeDirty?.Invoke(this, EventArgs.Empty);
                     }
 
@@ -177,7 +177,7 @@ namespace Chummer.UI.Shared
 
         private async void tssLimitModifierEdit_Click(object sender, EventArgs e)
         {
-            await UpdateLimitModifier();
+            await UpdateLimitModifier().ConfigureAwait(false);
         }
 
         #endregion Click Events
@@ -193,9 +193,9 @@ namespace Chummer.UI.Shared
         /// <param name="token"></param>
         private async ValueTask WriteNotes(IHasNotes objNotes, TreeNode treNode, CancellationToken token = default)
         {
-            using (ThreadSafeForm<EditNotes> frmItemNotes = await ThreadSafeForm<EditNotes>.GetAsync(() => new EditNotes(objNotes.Notes, objNotes.NotesColor), token))
+            using (ThreadSafeForm<EditNotes> frmItemNotes = await ThreadSafeForm<EditNotes>.GetAsync(() => new EditNotes(objNotes.Notes, objNotes.NotesColor), token).ConfigureAwait(false))
             {
-                if (await frmItemNotes.ShowDialogSafeAsync(_objCharacter, token) != DialogResult.OK)
+                if (await frmItemNotes.ShowDialogSafeAsync(_objCharacter, token).ConfigureAwait(false) != DialogResult.OK)
                     return;
 
                 objNotes.Notes = frmItemNotes.MyForm.Notes;
@@ -207,7 +207,7 @@ namespace Chummer.UI.Shared
                 {
                     treNode.ForeColor = objNotes.PreferredColor;
                     treNode.ToolTipText = objNotes.Notes.WordWrap();
-                }, token: token);
+                }, token: token).ConfigureAwait(false);
             else
             {
                 treNode.ForeColor = objNotes.PreferredColor;
@@ -218,19 +218,19 @@ namespace Chummer.UI.Shared
 
         private async Task RefreshLimitModifiers(NotifyCollectionChangedEventArgs e = null, CancellationToken token = default)
         {
-            string strSelectedId = (await treLimit.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token: token) as IHasInternalId)?.InternalId ?? string.Empty;
+            string strSelectedId = (await treLimit.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token: token).ConfigureAwait(false) as IHasInternalId)?.InternalId ?? string.Empty;
 
             TreeNode[] aobjLimitNodes = new TreeNode[(int)LimitType.NumLimitTypes];
 
             if (e == null)
             {
-                await treLimit.DoThreadSafeAsync(x => x.Nodes.Clear(), token: token);
+                await treLimit.DoThreadSafeAsync(x => x.Nodes.Clear(), token: token).ConfigureAwait(false);
 
                 // Add Limit Modifiers.
                 foreach (LimitModifier objLimitModifier in _objCharacter.LimitModifiers)
                 {
                     int intTargetLimit = (int)Enum.Parse(typeof(LimitType), objLimitModifier.Limit);
-                    TreeNode objParentNode = await GetLimitModifierParentNode(intTargetLimit);
+                    TreeNode objParentNode = await GetLimitModifierParentNode(intTargetLimit).ConfigureAwait(false);
                     await treLimit.DoThreadSafeAsync(() =>
                     {
                         if (!objParentNode.Nodes.ContainsKey(objLimitModifier.CurrentDisplayName))
@@ -240,7 +240,7 @@ namespace Chummer.UI.Shared
                                                             ? cmsLimitModifier
                                                             : cmsLimitModifierNotesOnly));
                         }
-                    }, token: token);
+                    }, token: token).ConfigureAwait(false);
                 }
 
                 // Add Limit Modifiers from Improvements
@@ -268,15 +268,15 @@ namespace Chummer.UI.Shared
 
                     if (intTargetLimit != -1)
                     {
-                        TreeNode objParentNode = await GetLimitModifierParentNode(intTargetLimit);
+                        TreeNode objParentNode = await GetLimitModifierParentNode(intTargetLimit).ConfigureAwait(false);
                         string strName = objImprovement.UniqueName
-                                         + await LanguageManager.GetStringAsync("String_Colon", token: token)
-                                         + await LanguageManager.GetStringAsync("String_Space", token: token);
+                                         + await LanguageManager.GetStringAsync("String_Colon", token: token).ConfigureAwait(false)
+                                         + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
                         if (objImprovement.Value > 0)
                             strName += '+';
                         strName += objImprovement.Value.ToString(GlobalSettings.CultureInfo);
                         if (!string.IsNullOrEmpty(objImprovement.Condition))
-                            strName += ',' + await LanguageManager.GetStringAsync("String_Space", token: token)
+                            strName += ',' + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false)
                                            + objImprovement.Condition;
                         await treLimit.DoThreadSafeAsync(() =>
                         {
@@ -311,11 +311,11 @@ namespace Chummer.UI.Shared
 
                                 objParentNode.Nodes.Add(objNode);
                             }
-                        }, token: token);
+                        }, token: token).ConfigureAwait(false);
                     }
                 }
 
-                await treLimit.DoThreadSafeAsync(x => x.SortCustomAlphabetically(strSelectedId), token: token);
+                await treLimit.DoThreadSafeAsync(x => x.SortCustomAlphabetically(strSelectedId), token: token).ConfigureAwait(false);
             }
             else
             {
@@ -325,7 +325,7 @@ namespace Chummer.UI.Shared
                     aobjLimitNodes[1] = x.FindNode("Node_Mental", false);
                     aobjLimitNodes[2] = x.FindNode("Node_Social", false);
                     aobjLimitNodes[3] = x.FindNode("Node_Astral", false);
-                }, token: token);
+                }, token: token).ConfigureAwait(false);
 
                 switch (e.Action)
                 {
@@ -334,7 +334,7 @@ namespace Chummer.UI.Shared
                             foreach (LimitModifier objLimitModifier in e.NewItems)
                             {
                                 int intTargetLimit = (int)Enum.Parse(typeof(LimitType), objLimitModifier.Limit);
-                                TreeNode objParentNode = await GetLimitModifierParentNode(intTargetLimit);
+                                TreeNode objParentNode = await GetLimitModifierParentNode(intTargetLimit).ConfigureAwait(false);
                                 await treLimit.DoThreadSafeAsync(x =>
                                 {
                                     TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
@@ -357,7 +357,7 @@ namespace Chummer.UI.Shared
                                         objParentNode.Expand();
                                         x.SelectedNode = objNode;
                                     }
-                                }, token: token);
+                                }, token: token).ConfigureAwait(false);
                             }
 
                             break;
@@ -378,7 +378,7 @@ namespace Chummer.UI.Shared
                                             objParent.Remove();
                                     }
                                 }
-                            }, token: token);
+                            }, token: token).ConfigureAwait(false);
                             break;
                         }
 
@@ -396,11 +396,11 @@ namespace Chummer.UI.Shared
                                         objNode.Remove();
                                     }
                                 }
-                            }, token: token);
+                            }, token: token).ConfigureAwait(false);
                             foreach (LimitModifier objLimitModifier in e.NewItems)
                             {
                                 int intTargetLimit = (int)Enum.Parse(typeof(LimitType), objLimitModifier.Limit);
-                                TreeNode objParentNode = await GetLimitModifierParentNode(intTargetLimit);
+                                TreeNode objParentNode = await GetLimitModifierParentNode(intTargetLimit).ConfigureAwait(false);
                                 await treLimit.DoThreadSafeAsync(x =>
                                 {
                                     TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
@@ -423,7 +423,7 @@ namespace Chummer.UI.Shared
                                         objParentNode.Expand();
                                         x.SelectedNode = objNode;
                                     }
-                                }, token: token);
+                                }, token: token).ConfigureAwait(false);
                             }
 
                             await treLimit.DoThreadSafeAsync(() =>
@@ -433,13 +433,13 @@ namespace Chummer.UI.Shared
                                     if (objOldParentNode.Level == 0 && objOldParentNode.Nodes.Count == 0)
                                         objOldParentNode.Remove();
                                 }
-                            }, token: token);
+                            }, token: token).ConfigureAwait(false);
                             break;
                         }
 
                     case NotifyCollectionChangedAction.Reset:
                         {
-                            await RefreshLimitModifiers(token: token);
+                            await RefreshLimitModifiers(token: token).ConfigureAwait(false);
                             break;
                         }
                 }
@@ -456,42 +456,42 @@ namespace Chummer.UI.Shared
                             objParentNode = new TreeNode
                             {
                                 Tag = "Node_Physical",
-                                Text = await LanguageManager.GetStringAsync("Node_Physical", token: token)
+                                Text = await LanguageManager.GetStringAsync("Node_Physical", token: token).ConfigureAwait(false)
                             };
-                            await treLimit.DoThreadSafeAsync(x => x.Nodes.Insert(0, objParentNode), token: token);
+                            await treLimit.DoThreadSafeAsync(x => x.Nodes.Insert(0, objParentNode), token: token).ConfigureAwait(false);
                             break;
 
                         case 1:
                             objParentNode = new TreeNode
                             {
                                 Tag = "Node_Mental",
-                                Text = await LanguageManager.GetStringAsync("Node_Mental", token: token)
+                                Text = await LanguageManager.GetStringAsync("Node_Mental", token: token).ConfigureAwait(false)
                             };
-                            await treLimit.DoThreadSafeAsync(x => x.Nodes.Insert(aobjLimitNodes[0] == null ? 0 : 1, objParentNode), token: token);
+                            await treLimit.DoThreadSafeAsync(x => x.Nodes.Insert(aobjLimitNodes[0] == null ? 0 : 1, objParentNode), token: token).ConfigureAwait(false);
                             break;
 
                         case 2:
                             objParentNode = new TreeNode
                             {
                                 Tag = "Node_Social",
-                                Text = await LanguageManager.GetStringAsync("Node_Social", token: token)
+                                Text = await LanguageManager.GetStringAsync("Node_Social", token: token).ConfigureAwait(false)
                             };
-                            await treLimit.DoThreadSafeAsync(x => x.Nodes.Insert((aobjLimitNodes[0] == null ? 0 : 1) + (aobjLimitNodes[1] == null ? 0 : 1), objParentNode), token: token);
+                            await treLimit.DoThreadSafeAsync(x => x.Nodes.Insert((aobjLimitNodes[0] == null ? 0 : 1) + (aobjLimitNodes[1] == null ? 0 : 1), objParentNode), token: token).ConfigureAwait(false);
                             break;
 
                         case 3:
                             objParentNode = new TreeNode
                             {
                                 Tag = "Node_Astral",
-                                Text = await LanguageManager.GetStringAsync("Node_Astral", token: token)
+                                Text = await LanguageManager.GetStringAsync("Node_Astral", token: token).ConfigureAwait(false)
                             };
-                            await treLimit.DoThreadSafeAsync(x => x.Nodes.Add(objParentNode), token: token);
+                            await treLimit.DoThreadSafeAsync(x => x.Nodes.Add(objParentNode), token: token).ConfigureAwait(false);
                             break;
                     }
 
                     aobjLimitNodes[intTargetLimit] = objParentNode;
                     if (objParentNode != null)
-                        await treLimit.DoThreadSafeAsync(() => objParentNode.Expand(), token: token);
+                        await treLimit.DoThreadSafeAsync(() => objParentNode.Expand(), token: token).ConfigureAwait(false);
                 }
                 return objParentNode;
             }
@@ -502,7 +502,7 @@ namespace Chummer.UI.Shared
         /// </summary>
         protected async ValueTask UpdateLimitModifier(CancellationToken token = default)
         {
-            TreeNode objSelectedNode = await treLimit.DoThreadSafeFuncAsync(x => x.SelectedNode, token: token);
+            TreeNode objSelectedNode = await treLimit.DoThreadSafeFuncAsync(x => x.SelectedNode, token: token).ConfigureAwait(false);
             if (objSelectedNode == null || objSelectedNode.Level <= 0)
                 return;
             string strGuid = (objSelectedNode.Tag as IHasInternalId)?.InternalId ?? string.Empty;
@@ -512,26 +512,26 @@ namespace Chummer.UI.Shared
             //If the LimitModifier couldn't be found (Ie it comes from an Improvement or the user hasn't properly selected a treenode, fail out early.
             if (objLimitModifier == null)
             {
-                Program.ShowMessageBox(await LanguageManager.GetStringAsync("Warning_NoLimitFound", token: token));
+                Program.ShowMessageBox(await LanguageManager.GetStringAsync("Warning_NoLimitFound", token: token).ConfigureAwait(false));
                 return;
             }
 
             using (ThreadSafeForm<SelectLimitModifier> frmPickLimitModifier =
                    await ThreadSafeForm<SelectLimitModifier>.GetAsync(() =>
-                       new SelectLimitModifier(objLimitModifier, "Physical", "Mental", "Social"), token))
+                                                                          new SelectLimitModifier(objLimitModifier, "Physical", "Mental", "Social"), token).ConfigureAwait(false))
             {
-                if (await frmPickLimitModifier.ShowDialogSafeAsync(_objCharacter, token) == DialogResult.Cancel)
+                if (await frmPickLimitModifier.ShowDialogSafeAsync(_objCharacter, token).ConfigureAwait(false) == DialogResult.Cancel)
                     return;
 
                 //Remove the old LimitModifier to ensure we don't double up.
-                await _objCharacter.LimitModifiers.RemoveAsync(objLimitModifier, token);
+                await _objCharacter.LimitModifiers.RemoveAsync(objLimitModifier, token).ConfigureAwait(false);
                 // Create the new limit modifier.
-                objLimitModifier = new LimitModifier(_objCharacter, strGuid);
-                objLimitModifier.Create(frmPickLimitModifier.MyForm.SelectedName,
-                    frmPickLimitModifier.MyForm.SelectedBonus, frmPickLimitModifier.MyForm.SelectedLimitType,
-                    frmPickLimitModifier.MyForm.SelectedCondition, true);
+                LimitModifier objNewLimitModifier = new LimitModifier(_objCharacter, strGuid);
+                objNewLimitModifier.Create(frmPickLimitModifier.MyForm.SelectedName,
+                                           frmPickLimitModifier.MyForm.SelectedBonus, frmPickLimitModifier.MyForm.SelectedLimitType,
+                                           frmPickLimitModifier.MyForm.SelectedCondition, true);
 
-                await _objCharacter.LimitModifiers.AddAsync(objLimitModifier, token);
+                await _objCharacter.LimitModifiers.AddAsync(objNewLimitModifier, token).ConfigureAwait(false);
             }
 
             MakeDirtyWithCharacterUpdate?.Invoke(this, EventArgs.Empty);
@@ -539,7 +539,7 @@ namespace Chummer.UI.Shared
 
         private async void LimitModifierCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            await RefreshLimitModifiers(e);
+            await RefreshLimitModifiers(e).ConfigureAwait(false);
         }
 
         #endregion Methods

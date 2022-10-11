@@ -190,8 +190,8 @@ namespace Chummer
             if (source == null)
                 return;
             string strText = ToString();
-            await source.DoThreadSafeAsync(x => x.Text = strText, token);
-            await source.SetToolTipAsync(LanguageBookTooltip, token);
+            await source.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
+            await source.SetToolTipAsync(LanguageBookTooltip, token).ConfigureAwait(false);
         }
 
         public bool Equals(SourceString other)

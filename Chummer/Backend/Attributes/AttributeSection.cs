@@ -117,13 +117,13 @@ namespace Chummer.Backend.Attributes
 
         public async ValueTask<ThreadSafeObservableCollection<CharacterAttrib>> GetAttributesAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token))
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                using (await EnterReadLock.EnterAsync(_objAttributesInitializerLock, token))
+                using (await EnterReadLock.EnterAsync(_objAttributesInitializerLock, token).ConfigureAwait(false))
                 {
                     if (!_blnAttributesInitialized)
                     {
-                        await InitializeAttributesListAsync(token);
+                        await InitializeAttributesListAsync(token).ConfigureAwait(false);
                     }
                 }
 
@@ -173,46 +173,46 @@ namespace Chummer.Backend.Attributes
 
         private async ValueTask InitializeAttributesListAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(_objCharacter.LockObject, token))
+            using (await EnterReadLock.EnterAsync(_objCharacter.LockObject, token).ConfigureAwait(false))
             {
-                IAsyncDisposable objLocker = await _objAttributesInitializerLock.EnterWriteLockAsync(token);
+                IAsyncDisposable objLocker = await _objAttributesInitializerLock.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     _blnAttributesInitialized = true;
 
                     // Not creating a new collection here so that CollectionChanged events from previous list are kept
-                    await _lstAttributes.ClearAsync(token);
-                    await _lstAttributes.AddAsync(await GetAttributeByNameAsync("BOD", token), token);
-                    await _lstAttributes.AddAsync(await GetAttributeByNameAsync("AGI", token), token);
-                    await _lstAttributes.AddAsync(await GetAttributeByNameAsync("REA", token), token);
-                    await _lstAttributes.AddAsync(await GetAttributeByNameAsync("STR", token), token);
-                    await _lstAttributes.AddAsync(await GetAttributeByNameAsync("CHA", token), token);
-                    await _lstAttributes.AddAsync(await GetAttributeByNameAsync("INT", token), token);
-                    await _lstAttributes.AddAsync(await GetAttributeByNameAsync("LOG", token), token);
-                    await _lstAttributes.AddAsync(await GetAttributeByNameAsync("WIL", token), token);
-                    await _lstAttributes.AddAsync(await GetAttributeByNameAsync("EDG", token), token);
+                    await _lstAttributes.ClearAsync(token).ConfigureAwait(false);
+                    await _lstAttributes.AddAsync(await GetAttributeByNameAsync("BOD", token).ConfigureAwait(false), token).ConfigureAwait(false);
+                    await _lstAttributes.AddAsync(await GetAttributeByNameAsync("AGI", token).ConfigureAwait(false), token).ConfigureAwait(false);
+                    await _lstAttributes.AddAsync(await GetAttributeByNameAsync("REA", token).ConfigureAwait(false), token).ConfigureAwait(false);
+                    await _lstAttributes.AddAsync(await GetAttributeByNameAsync("STR", token).ConfigureAwait(false), token).ConfigureAwait(false);
+                    await _lstAttributes.AddAsync(await GetAttributeByNameAsync("CHA", token).ConfigureAwait(false), token).ConfigureAwait(false);
+                    await _lstAttributes.AddAsync(await GetAttributeByNameAsync("INT", token).ConfigureAwait(false), token).ConfigureAwait(false);
+                    await _lstAttributes.AddAsync(await GetAttributeByNameAsync("LOG", token).ConfigureAwait(false), token).ConfigureAwait(false);
+                    await _lstAttributes.AddAsync(await GetAttributeByNameAsync("WIL", token).ConfigureAwait(false), token).ConfigureAwait(false);
+                    await _lstAttributes.AddAsync(await GetAttributeByNameAsync("EDG", token).ConfigureAwait(false), token).ConfigureAwait(false);
 
-                    if (await _objCharacter.GetMAGEnabledAsync(token))
+                    if (await _objCharacter.GetMAGEnabledAsync(token).ConfigureAwait(false))
                     {
-                        await _lstAttributes.AddAsync(await GetAttributeByNameAsync("MAG", token), token);
-                        if (await (await _objCharacter.GetSettingsAsync(token)).GetMysAdeptSecondMAGAttributeAsync(token) &&
-                            await _objCharacter.GetIsMysticAdeptAsync(token))
-                            await _lstAttributes.AddAsync(await GetAttributeByNameAsync("MAGAdept", token), token);
+                        await _lstAttributes.AddAsync(await GetAttributeByNameAsync("MAG", token).ConfigureAwait(false), token).ConfigureAwait(false);
+                        if (await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetMysAdeptSecondMAGAttributeAsync(token).ConfigureAwait(false) &&
+                            await _objCharacter.GetIsMysticAdeptAsync(token).ConfigureAwait(false))
+                            await _lstAttributes.AddAsync(await GetAttributeByNameAsync("MAGAdept", token).ConfigureAwait(false), token).ConfigureAwait(false);
                     }
 
-                    if (await _objCharacter.GetRESEnabledAsync(token))
+                    if (await _objCharacter.GetRESEnabledAsync(token).ConfigureAwait(false))
                     {
-                        await _lstAttributes.AddAsync(await GetAttributeByNameAsync("RES", token), token);
+                        await _lstAttributes.AddAsync(await GetAttributeByNameAsync("RES", token).ConfigureAwait(false), token).ConfigureAwait(false);
                     }
 
-                    if (await _objCharacter.GetDEPEnabledAsync(token))
+                    if (await _objCharacter.GetDEPEnabledAsync(token).ConfigureAwait(false))
                     {
-                        await _lstAttributes.AddAsync(await GetAttributeByNameAsync("DEP", token), token);
+                        await _lstAttributes.AddAsync(await GetAttributeByNameAsync("DEP", token).ConfigureAwait(false), token).ConfigureAwait(false);
                     }
                 }
                 finally
                 {
-                    await objLocker.DisposeAsync();
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
         }
@@ -1134,7 +1134,7 @@ namespace Chummer.Backend.Attributes
             {
                 (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(
                     objCharacterNode.SelectSingleNode(strAttributeLower + "min")?.Value.Replace("/", " div ")
-                                    .Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1", token);
+                                    .Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1", token).ConfigureAwait(false);
                 if (blnIsSuccess)
                     intMinValue = ((double)objProcess).StandardRound();
             }
@@ -1145,7 +1145,7 @@ namespace Chummer.Backend.Attributes
             {
                 (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(
                     objCharacterNode.SelectSingleNode(strAttributeLower + "max")?.Value.Replace("/", " div ")
-                                    .Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1", token);
+                                    .Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1", token).ConfigureAwait(false);
                 if (blnIsSuccess)
                     intMaxValue = ((double)objProcess).StandardRound();
             }
@@ -1156,7 +1156,7 @@ namespace Chummer.Backend.Attributes
             {
                 (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(
                     objCharacterNode.SelectSingleNode(strAttributeLower + "aug")?.Value.Replace("/", " div ")
-                                    .Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1", token);
+                                    .Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1", token).ConfigureAwait(false);
                 if (blnIsSuccess)
                     intAugValue = ((double)objProcess).StandardRound();
             }
@@ -1165,9 +1165,9 @@ namespace Chummer.Backend.Attributes
             catch (InvalidCastException) { intAugValue = 1; }
 
             await objNewAttribute.AssignBaseKarmaLimitsAsync(
-                (await objCharacterNode.SelectSingleNodeAndCacheExpressionAsync("base", token))?.ValueAsInt ?? 0,
-                (await objCharacterNode.SelectSingleNodeAndCacheExpressionAsync("base", token))?.ValueAsInt ?? 0, intMinValue, intMaxValue,
-                intAugValue, token);
+                (await objCharacterNode.SelectSingleNodeAndCacheExpressionAsync("base", token).ConfigureAwait(false))?.ValueAsInt ?? 0,
+                (await objCharacterNode.SelectSingleNodeAndCacheExpressionAsync("base", token).ConfigureAwait(false))?.ValueAsInt ?? 0, intMinValue, intMaxValue,
+                intAugValue, token).ConfigureAwait(false);
             return objNewAttribute;
         }
 
@@ -1304,7 +1304,7 @@ namespace Chummer.Backend.Attributes
         {
             if (objSource == null || objTarget == null)
                 return;
-            using (await EnterReadLock.EnterAsync(objSource.LockObject, token))
+            using (await EnterReadLock.EnterAsync(objSource.LockObject, token).ConfigureAwait(false))
             {
                 string strSourceAbbrev = objSource.Abbrev.ToLowerInvariant();
                 if (strSourceAbbrev == "magadept")
@@ -1322,7 +1322,7 @@ namespace Chummer.Backend.Attributes
                                  GlobalSettings.InvariantCultureInfo, out int intAugmentedMaximum);
                     intMaximum = Math.Max(intMaximum, intMinimum);
                     intAugmentedMaximum = Math.Max(intAugmentedMaximum, intMaximum);
-                    await objTarget.AssignBaseKarmaLimitsAsync(objSource.Base, objSource.Karma, intMinimum, intMaximum, intAugmentedMaximum, token);
+                    await objTarget.AssignBaseKarmaLimitsAsync(objSource.Base, objSource.Karma, intMinimum, intMaximum, intAugmentedMaximum, token).ConfigureAwait(false);
                 }
             }
         }

@@ -61,7 +61,7 @@ namespace Chummer
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSkills))
             {
                 // Build the list of Exotic Active Skills from the Skills file.
-                using (XmlNodeList objXmlSkillList = (await _objCharacter.LoadDataAsync("skills.xml"))
+                using (XmlNodeList objXmlSkillList = (await _objCharacter.LoadDataAsync("skills.xml").ConfigureAwait(false))
                                                                   .SelectNodes(
                                                                       "/chummer/skills/skill[exotic = " + bool.TrueString.CleanXPath() + ']'))
                 {
@@ -80,7 +80,7 @@ namespace Chummer
                 }
 
                 lstSkills.Sort(CompareListItems.CompareNames);
-                await cboCategory.PopulateWithListItemsAsync(lstSkills);
+                await cboCategory.PopulateWithListItemsAsync(lstSkills).ConfigureAwait(false);
 
                 // Select the first Skill in the list.
                 if (lstSkills.Count > 0)
@@ -89,18 +89,18 @@ namespace Chummer
                     {
                         x.SelectedIndex = 0;
                         x.Enabled = lstSkills.Count > 1;
-                    });
+                    }).ConfigureAwait(false);
                 }
                 else
-                    await cmdOK.DoThreadSafeAsync(x => x.Enabled = false);
+                    await cmdOK.DoThreadSafeAsync(x => x.Enabled = false).ConfigureAwait(false);
             }
 
-            await BuildList();
+            await BuildList().ConfigureAwait(false);
         }
 
         private async void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
         {
-            await BuildList();
+            await BuildList().ConfigureAwait(false);
         }
 
         public void ForceSkill(string strSkill)
@@ -127,15 +127,15 @@ namespace Chummer
 
         private async ValueTask BuildList(CancellationToken token = default)
         {
-            string strSelectedCategory = await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token) ?? string.Empty;
+            string strSelectedCategory = await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false) ?? string.Empty;
             if (string.IsNullOrEmpty(strSelectedCategory))
                 return;
-            XPathNodeIterator xmlWeaponList = (await _objCharacter.LoadDataXPathAsync("weapons.xml", token: token))
+            XPathNodeIterator xmlWeaponList = (await _objCharacter.LoadDataXPathAsync("weapons.xml", token: token).ConfigureAwait(false))
                                                            .Select("/chummer/weapons/weapon[(category = "
                                                                    + (strSelectedCategory + 's').CleanXPath()
                                                                    + " or useskill = "
                                                                    + strSelectedCategory.CleanXPath() + ") and ("
-                                                                   + await _objCharacter.Settings.BookXPathAsync(false, token) + ")]");
+                                                                   + await _objCharacter.Settings.BookXPathAsync(false, token).ConfigureAwait(false) + ")]");
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSkillSpecializations))
             {
                 if (xmlWeaponList.Count > 0)
@@ -148,15 +148,15 @@ namespace Chummer
                             lstSkillSpecializations.Add(
                                 new ListItem(
                                     strName,
-                                    (await xmlWeapon.SelectSingleNodeAndCacheExpressionAsync("translate", token: token))?.Value ?? strName));
+                                    (await xmlWeapon.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value ?? strName));
                         }
                     }
                 }
 
-                foreach (XPathNavigator xmlSpec in (await _objCharacter.LoadDataXPathAsync("skills.xml", token: token))
+                foreach (XPathNavigator xmlSpec in (await _objCharacter.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false))
                                                                 .Select("/chummer/skills/skill[name = "
                                                                         + strSelectedCategory.CleanXPath() + " and ("
-                                                                        + await _objCharacter.Settings.BookXPathAsync(token: token)
+                                                                        + await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false)
                                                                         + ")]/specs/spec"))
                 {
                     string strName = xmlSpec.Value;
@@ -164,7 +164,7 @@ namespace Chummer
                     {
                         lstSkillSpecializations.Add(new ListItem(
                                                         strName,
-                                                        (await xmlSpec.SelectSingleNodeAndCacheExpressionAsync("@translate", token: token))?.Value
+                                                        (await xmlSpec.SelectSingleNodeAndCacheExpressionAsync("@translate", token: token).ConfigureAwait(false))?.Value
                                                         ?? strName));
                     }
                 }
@@ -183,9 +183,9 @@ namespace Chummer
 
                 lstSkillSpecializations.Sort(
                     Comparer<ListItem>.Create((a, b) => string.CompareOrdinal(a.Name, b.Name)));
-                string strOldText = await cboSkillSpecialisations.DoThreadSafeFuncAsync(x => x.Text, token: token);
-                string strOldSelectedValue = await cboSkillSpecialisations.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token) ?? string.Empty;
-                await cboSkillSpecialisations.PopulateWithListItemsAsync(lstSkillSpecializations, token: token);
+                string strOldText = await cboSkillSpecialisations.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false);
+                string strOldSelectedValue = await cboSkillSpecialisations.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false) ?? string.Empty;
+                await cboSkillSpecialisations.PopulateWithListItemsAsync(lstSkillSpecializations, token: token).ConfigureAwait(false);
                 await cboSkillSpecialisations.DoThreadSafeAsync(x =>
                 {
                     if (!string.IsNullOrEmpty(strOldSelectedValue))
@@ -198,7 +198,7 @@ namespace Chummer
                         else if (lstSkillSpecializations.Count > 0)
                             x.SelectedIndex = 0;
                     }
-                }, token: token);
+                }, token: token).ConfigureAwait(false);
             }
         }
     }

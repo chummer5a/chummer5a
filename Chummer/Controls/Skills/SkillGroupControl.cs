@@ -149,16 +149,16 @@ namespace Chummer.UI.Skills
 
         private async void btnCareerIncrease_Click(object sender, EventArgs e)
         {
-            using (await EnterReadLock.EnterAsync(_skillGroup.LockObject))
+            using (await EnterReadLock.EnterAsync(_skillGroup.LockObject).ConfigureAwait(false))
             {
                 string confirmstring = string.Format(GlobalSettings.CultureInfo,
-                    await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpense"),
+                    await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpense").ConfigureAwait(false),
                     _skillGroup.CurrentDisplayName, _skillGroup.Rating + 1, _skillGroup.UpgradeKarmaCost);
 
-                if (!await CommonFunctions.ConfirmKarmaExpenseAsync(confirmstring))
+                if (!await CommonFunctions.ConfirmKarmaExpenseAsync(confirmstring).ConfigureAwait(false))
                     return;
 
-                await _skillGroup.Upgrade();
+                await _skillGroup.Upgrade().ConfigureAwait(false);
             }
         }
 

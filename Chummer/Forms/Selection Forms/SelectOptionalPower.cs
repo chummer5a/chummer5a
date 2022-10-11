@@ -61,19 +61,19 @@ namespace Chummer
                 foreach ((string strPowerName, string strPowerExtra) in _lstPowerExtraPairs)
                 {
                     string strName = string.IsNullOrEmpty(strPowerExtra)
-                        ? await _objCharacter.TranslateExtraAsync(strPowerName)
-                        : await _objCharacter.TranslateExtraAsync(strPowerName)
-                          + await LanguageManager.GetStringAsync("String_Space") + '('
-                          + await _objCharacter.TranslateExtraAsync(strPowerExtra) + ')';
+                        ? await _objCharacter.TranslateExtraAsync(strPowerName).ConfigureAwait(false)
+                        : await _objCharacter.TranslateExtraAsync(strPowerName).ConfigureAwait(false)
+                          + await LanguageManager.GetStringAsync("String_Space").ConfigureAwait(false) + '('
+                          + await _objCharacter.TranslateExtraAsync(strPowerExtra).ConfigureAwait(false) + ')';
                     lstPowerItems.Add(new ListItem(new Tuple<string, string>(strPowerName, strPowerExtra), strName));
                 }
                 
-                await cboPower.PopulateWithListItemsAsync(lstPowerItems);
+                await cboPower.PopulateWithListItemsAsync(lstPowerItems).ConfigureAwait(false);
                 if (lstPowerItems.Count > 1)
-                    await cboPower.DoThreadSafeAsync(x => x.SelectedIndex = 0);
+                    await cboPower.DoThreadSafeAsync(x => x.SelectedIndex = 0).ConfigureAwait(false);
                 else if (lstPowerItems.Count == 1)
                 {
-                    if (await cboPower.DoThreadSafeFuncAsync(x => x.SelectedValue) is Tuple<string, string> objSelectedItem)
+                    if (await cboPower.DoThreadSafeFuncAsync(x => x.SelectedValue).ConfigureAwait(false) is Tuple<string, string> objSelectedItem)
                     {
                         _strReturnPower = objSelectedItem.Item1;
                         _strReturnExtra = objSelectedItem.Item2;
@@ -82,7 +82,7 @@ namespace Chummer
                     }
                 }
                 else
-                    await cmdOK.DoThreadSafeAsync(x => x.Enabled = false);
+                    await cmdOK.DoThreadSafeAsync(x => x.Enabled = false).ConfigureAwait(false);
             }
         }
 

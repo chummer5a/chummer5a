@@ -85,7 +85,7 @@ namespace Chummer
             {
                 if (xmlSuiteList?.Count > 0)
                 {
-                    List<Grade> lstGrades = await _objCharacter.GetGradesListAsync(_eSource);
+                    List<Grade> lstGrades = await _objCharacter.GetGradesListAsync(_eSource).ConfigureAwait(false);
 
                     using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                out List<ListItem> lstSuitesToAdd))
@@ -105,11 +105,11 @@ namespace Chummer
                                     {
                                         case Improvement.ImprovementSource.Bioware when (await ImprovementManager
                                                 .GetCachedImprovementListForValueOfAsync(_objCharacter,
-                                                    Improvement.ImprovementType.DisableBiowareGrade))
+                                                    Improvement.ImprovementType.DisableBiowareGrade).ConfigureAwait(false))
                                             .Any(x => strGrade.Contains(x.ImprovedName)):
                                         case Improvement.ImprovementSource.Cyberware when (await ImprovementManager
                                                 .GetCachedImprovementListForValueOfAsync(_objCharacter,
-                                                    Improvement.ImprovementType.DisableCyberwareGrade))
+                                                    Improvement.ImprovementType.DisableCyberwareGrade).ConfigureAwait(false))
                                             .Any(x => strGrade.Contains(x.ImprovedName)):
                                             continue;
                                     }

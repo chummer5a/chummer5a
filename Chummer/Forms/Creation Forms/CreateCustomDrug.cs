@@ -62,18 +62,18 @@ namespace Chummer
 
         private async void CreateCustomDrug_Load(object sender, EventArgs e)
         {
-            string strLevelString = await LanguageManager.GetStringAsync("String_Level");
-            string strSpaceString = await LanguageManager.GetStringAsync("String_Space");
+            string strLevelString = await LanguageManager.GetStringAsync("String_Level").ConfigureAwait(false);
+            string strSpaceString = await LanguageManager.GetStringAsync("String_Space").ConfigureAwait(false);
             foreach (KeyValuePair<string, DrugComponent> objItem in _dicDrugComponents)
             {
                 string strCategory = objItem.Value.Category;
-                TreeNode nodCategoryNode = await treAvailableComponents.DoThreadSafeFuncAsync(x => x.FindNode("Node_" + strCategory));
+                TreeNode nodCategoryNode = await treAvailableComponents.DoThreadSafeFuncAsync(x => x.FindNode("Node_" + strCategory)).ConfigureAwait(false);
                 if (nodCategoryNode == null)
                 {
                     Log.Warn("Unknown category " + strCategory + " in component " + objItem.Key);
                     return;
                 }
-                TreeNode objNode = await treAvailableComponents.DoThreadSafeFuncAsync(() => nodCategoryNode.Nodes.Add(objItem.Value.DisplayNameShort(GlobalSettings.Language)));
+                TreeNode objNode = await treAvailableComponents.DoThreadSafeFuncAsync(() => nodCategoryNode.Nodes.Add(objItem.Value.DisplayNameShort(GlobalSettings.Language))).ConfigureAwait(false);
                 int intLevelCount = objItem.Value.DrugEffects.Count;
                 if (intLevelCount == 1)
                 {
@@ -84,19 +84,20 @@ namespace Chummer
                     objNode.Tag = new DrugNodeData(objItem.Value);
                     for (int i = 0; i < intLevelCount; i++)
                     {
+                        int i1 = i;
                         TreeNode objSubNode = await treAvailableComponents.DoThreadSafeFuncAsync(
                             () => objNode.Nodes.Add(strLevelString + strSpaceString
-                                                                   + (i + 1).ToString(GlobalSettings.CultureInfo)));
+                                                                   + (i1 + 1).ToString(GlobalSettings.CultureInfo))).ConfigureAwait(false);
                         objSubNode.Tag = new DrugNodeData(objItem.Value, i);
                     }
                 }
             }
-            await treAvailableComponents.DoThreadSafeAsync(x => x.ExpandAll());
-            await treChosenComponents.DoThreadSafeAsync(x => x.ExpandAll());
-            await PopulateGrades();
-            await UpdateCustomDrugStats();
-            string strDescription = await _objDrug.GenerateDescriptionAsync(0);
-            await lblDrugDescription.DoThreadSafeAsync(x => x.Text = strDescription);
+            await treAvailableComponents.DoThreadSafeAsync(x => x.ExpandAll()).ConfigureAwait(false);
+            await treChosenComponents.DoThreadSafeAsync(x => x.ExpandAll()).ConfigureAwait(false);
+            await PopulateGrades().ConfigureAwait(false);
+            await UpdateCustomDrugStats().ConfigureAwait(false);
+            string strDescription = await _objDrug.GenerateDescriptionAsync(0).ConfigureAwait(false);
+            await lblDrugDescription.DoThreadSafeAsync(x => x.Text = strDescription).ConfigureAwait(false);
         }
 
         private void LoadData()
@@ -119,11 +120,11 @@ namespace Chummer
         private async Task PopulateGrades(CancellationToken token = default)
         {
             _lstGrade.Clear();
-            foreach (Grade objGrade in await _objCharacter.GetGradesListAsync(Improvement.ImprovementSource.Drug, token: token))
+            foreach (Grade objGrade in await _objCharacter.GetGradesListAsync(Improvement.ImprovementSource.Drug, token: token).ConfigureAwait(false))
             {
                 _lstGrade.Add(new ListItem(objGrade.Name, objGrade.CurrentDisplayName));
             }
-            await cboGrade.PopulateWithListItemsAsync(_lstGrade, token: token);
+            await cboGrade.PopulateWithListItemsAsync(_lstGrade, token: token).ConfigureAwait(false);
         }
 
         private async ValueTask UpdateCustomDrugStats(CancellationToken token = default)
@@ -131,13 +132,13 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             _objDrug = new Drug(_objCharacter)
             {
-                Name = await txtDrugName.DoThreadSafeFuncAsync(x => x.Text, token),
+                Name = await txtDrugName.DoThreadSafeFuncAsync(x => x.Text, token).ConfigureAwait(false),
                 Category = "Custom Drug"
             };
             if (_objCharacter != null)
             {
                 string strSelectedGrade = cboGrade != null
-                    ? await cboGrade.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token)
+                    ? await cboGrade.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false)
                     : string.Empty;
                 if (!string.IsNullOrEmpty(strSelectedGrade))
                     _objDrug.Grade = Grade.ConvertToCyberwareGrade(strSelectedGrade, Improvement.ImprovementSource.Drug, _objCharacter);
@@ -147,7 +148,7 @@ namespace Chummer
             {
                 DrugComponent objDrugComponent = objNodeData.DrugComponent;
                 objDrugComponent.Level = objNodeData.Level;
-                await _objDrug.Components.AddAsync(objDrugComponent, token: token);
+                await _objDrug.Components.AddAsync(objDrugComponent, token: token).ConfigureAwait(false);
             }
         }
 
@@ -157,13 +158,13 @@ namespace Chummer
             // Make sure the suite and file name fields are populated.
             if (string.IsNullOrEmpty(txtDrugName.Text))
             {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CustomDrug_Name", token: token), await LanguageManager.GetStringAsync("MessageTitle_CustomDrug_Name", token: token), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CustomDrug_Name", token: token).ConfigureAwait(false), await LanguageManager.GetStringAsync("MessageTitle_CustomDrug_Name", token: token).ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             if (_objDrug.Components.Count(o => o.Category == "Foundation") != 1)
             {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CustomDrug_MissingFoundation", token: token), await LanguageManager.GetStringAsync("MessageTitle_CustomDrug_Foundation", token: token), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CustomDrug_MissingFoundation", token: token).ConfigureAwait(false), await LanguageManager.GetStringAsync("MessageTitle_CustomDrug_Foundation", token: token).ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -172,19 +173,19 @@ namespace Chummer
             {
                 x.DialogResult = DialogResult.OK;
                 x.Close();
-            }, token);
+            }, token).ConfigureAwait(false);
         }
 
         private async ValueTask AddSelectedComponent(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (!(await treAvailableComponents.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token) is DrugNodeData objNodeData) || objNodeData.Level == -1)
+            if (!(await treAvailableComponents.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token).ConfigureAwait(false) is DrugNodeData objNodeData) || objNodeData.Level == -1)
             {
                 return;
             }
 
             string strCategory = objNodeData.DrugComponent.Category;
-            TreeNode nodCategoryNode = await treChosenComponents.DoThreadSafeFuncAsync(x => x.FindNode("Node_" + strCategory), token);
+            TreeNode nodCategoryNode = await treChosenComponents.DoThreadSafeFuncAsync(x => x.FindNode("Node_" + strCategory), token).ConfigureAwait(false);
             if (nodCategoryNode == null)
             {
                 Log.Warn("Unknown category " + strCategory + " in component " + objNodeData.DrugComponent.Name);
@@ -196,7 +197,7 @@ namespace Chummer
                 objNodeData.DrugComponent.Limit && objNodeData.DrugComponent.Limit != 0)
             {
                 Program.ShowMessageBox(this,
-                    string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_DuplicateDrugComponentWarning", token: token),
+                    string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_DuplicateDrugComponentWarning", token: token).ConfigureAwait(false),
                         objNodeData.DrugComponent.Limit));
                 return;
             }
@@ -204,15 +205,15 @@ namespace Chummer
             //drug can have only one foundation
             if (objNodeData.DrugComponent.Category == "Foundation" && _lstSelectedDrugComponents.Any(c => c.DrugComponent.Category == "Foundation"))
             {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_DuplicateDrugFoundationWarning", token: token));
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_DuplicateDrugFoundationWarning", token: token).ConfigureAwait(false));
                 return;
             }
 
-            string strSpaceString = await LanguageManager.GetStringAsync("String_Space", token: token);
+            string strSpaceString = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
             //restriction for maximum level of block (CF 191)
             if (objNodeData.Level + 1 > 2)
             {
-                string strColonString = await LanguageManager.GetStringAsync("String_Colon", token: token);
+                string strColonString = await LanguageManager.GetStringAsync("String_Colon", token: token).ConfigureAwait(false);
                 foreach (DrugComponent objFoundationComponent in _lstSelectedDrugComponents.Select(x => x.DrugComponent))
                 {
                     if (objFoundationComponent.Category != "Foundation")
@@ -225,7 +226,7 @@ namespace Chummer
                             dctBlockAttributes.TryGetValue(objItem.Key, out decimal decBlockAttrValue) &&
                             decBlockAttrValue > 0)
                         {
-                            string strMessage = await LanguageManager.GetStringAsync("String_MaximumDrugBlockLevel", token: token) +
+                            string strMessage = await LanguageManager.GetStringAsync("String_MaximumDrugBlockLevel", token: token).ConfigureAwait(false) +
                                                 Environment.NewLine + Environment.NewLine +
                                                 objFoundationComponent.CurrentDisplayName + strColonString +
                                                 strSpaceString + objItem.Key +
@@ -242,72 +243,72 @@ namespace Chummer
 
             string strNodeText = objNodeData.DrugComponent.CurrentDisplayName;
             if (objNodeData.DrugComponent.Level <= 0 && objNodeData.DrugComponent.DrugEffects.Count > 1)
-                strNodeText += strSpaceString + '(' + await LanguageManager.GetStringAsync("String_Level", token: token) + strSpaceString + (objNodeData.Level + 1).ToString(GlobalSettings.CultureInfo) + ')';
+                strNodeText += strSpaceString + '(' + await LanguageManager.GetStringAsync("String_Level", token: token).ConfigureAwait(false) + strSpaceString + (objNodeData.Level + 1).ToString(GlobalSettings.CultureInfo) + ')';
             await treChosenComponents.DoThreadSafeAsync(() =>
             {
                 TreeNode objNewNode = nodCategoryNode.Nodes.Add(strNodeText);
                 objNewNode.Tag = objNodeData;
                 objNewNode.EnsureVisible();
-            }, token);
+            }, token).ConfigureAwait(false);
             _lstSelectedDrugComponents.Add(objNodeData);
-            await UpdateCustomDrugStats(token);
-            string strDescription = await _objDrug.GenerateDescriptionAsync(0, token: token);
-            await lblDrugDescription.DoThreadSafeAsync(x => x.Text = strDescription, token);
+            await UpdateCustomDrugStats(token).ConfigureAwait(false);
+            string strDescription = await _objDrug.GenerateDescriptionAsync(0, token: token).ConfigureAwait(false);
+            await lblDrugDescription.DoThreadSafeAsync(x => x.Text = strDescription, token).ConfigureAwait(false);
         }
 
         public Drug CustomDrug => _objDrug;
 
         private async void treAvailableComponents_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            if (await treAvailableComponents.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is DrugNodeData objNodeData)
+            if (await treAvailableComponents.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag).ConfigureAwait(false) is DrugNodeData objNodeData)
             {
-                string strDescription = await objNodeData.DrugComponent.GenerateDescriptionAsync(objNodeData.Level);
-                await lblBlockDescription.DoThreadSafeAsync(x => x.Text = strDescription);
+                string strDescription = await objNodeData.DrugComponent.GenerateDescriptionAsync(objNodeData.Level).ConfigureAwait(false);
+                await lblBlockDescription.DoThreadSafeAsync(x => x.Text = strDescription).ConfigureAwait(false);
             }
         }
 
         private async void treChoosenComponents_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            if (await treChosenComponents.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is DrugNodeData objNodeData)
+            if (await treChosenComponents.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag).ConfigureAwait(false) is DrugNodeData objNodeData)
             {
-                string strDescription = await objNodeData.DrugComponent.GenerateDescriptionAsync(objNodeData.Level);
-                await lblBlockDescription.DoThreadSafeAsync(x => x.Text = strDescription);
+                string strDescription = await objNodeData.DrugComponent.GenerateDescriptionAsync(objNodeData.Level).ConfigureAwait(false);
+                await lblBlockDescription.DoThreadSafeAsync(x => x.Text = strDescription).ConfigureAwait(false);
             }
         }
 
         private async void btnAddComponent_Click(object sender, EventArgs e)
         {
-            await AddSelectedComponent();
+            await AddSelectedComponent().ConfigureAwait(false);
         }
 
         private async void treAvailableComponents_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
         {
-            await AddSelectedComponent();
+            await AddSelectedComponent().ConfigureAwait(false);
         }
 
         private async void btnRemoveComponent_Click(object sender, EventArgs e)
         {
-            if (!(await treChosenComponents.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is DrugNodeData objNodeData))
+            if (!(await treChosenComponents.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag).ConfigureAwait(false) is DrugNodeData objNodeData))
                 return;
-            await treChosenComponents.DoThreadSafeAsync(x => x.Nodes.Remove(x.SelectedNode));
+            await treChosenComponents.DoThreadSafeAsync(x => x.Nodes.Remove(x.SelectedNode)).ConfigureAwait(false);
 
             _lstSelectedDrugComponents.Remove(objNodeData);
 
-            await UpdateCustomDrugStats();
-            string strDescription = await _objDrug.GenerateDescriptionAsync(0);
-            await lblDrugDescription.DoThreadSafeAsync(x => x.Text = strDescription);
+            await UpdateCustomDrugStats().ConfigureAwait(false);
+            string strDescription = await _objDrug.GenerateDescriptionAsync(0).ConfigureAwait(false);
+            await lblDrugDescription.DoThreadSafeAsync(x => x.Text = strDescription).ConfigureAwait(false);
         }
 
         private async void txtDrugName_TextChanged(object sender, EventArgs e)
         {
-            _objDrug.Name = await txtDrugName.DoThreadSafeFuncAsync(x => x.Text);
-            string strDescription = await _objDrug.GenerateDescriptionAsync(0);
-            await lblDrugDescription.DoThreadSafeAsync(x => x.Text = strDescription);
+            _objDrug.Name = await txtDrugName.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false);
+            string strDescription = await _objDrug.GenerateDescriptionAsync(0).ConfigureAwait(false);
+            await lblDrugDescription.DoThreadSafeAsync(x => x.Text = strDescription).ConfigureAwait(false);
         }
 
         private async void btnOk_Click(object sender, EventArgs e)
         {
-            await AcceptForm();
+            await AcceptForm().ConfigureAwait(false);
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
@@ -324,14 +325,14 @@ namespace Chummer
 
             // Update the Essence and Cost multipliers based on the Grade that has been selected.
             // Retrieve the information for the selected Grade.
-            XmlNode objXmlGrade = _objXmlDocument.SelectSingleNode("/chummer/grades/grade[name = " + (await cboGrade.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString())).CleanXPath() + ']');
+            XmlNode objXmlGrade = _objXmlDocument.SelectSingleNode("/chummer/grades/grade[name = " + (await cboGrade.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString()).ConfigureAwait(false)).CleanXPath() + ']');
             if (!objXmlGrade.TryGetDoubleFieldQuickly("cost", ref _dblCostMultiplier))
                 _dblCostMultiplier = 1.0;
             if (!objXmlGrade.TryGetInt32FieldQuickly("addictionthreshold", ref _intAddictionThreshold))
                 _intAddictionThreshold = 0;
-            await UpdateCustomDrugStats();
-            string strDescription = await _objDrug.GenerateDescriptionAsync(0);
-            await lblDrugDescription.DoThreadSafeAsync(x => x.Text = strDescription);
+            await UpdateCustomDrugStats().ConfigureAwait(false);
+            string strDescription = await _objDrug.GenerateDescriptionAsync(0).ConfigureAwait(false);
+            await lblDrugDescription.DoThreadSafeAsync(x => x.Text = strDescription).ConfigureAwait(false);
         }
 
         private sealed class DrugNodeData

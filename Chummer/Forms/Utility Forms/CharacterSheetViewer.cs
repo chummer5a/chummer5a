@@ -211,7 +211,7 @@ namespace Chummer
                                                                    ? strCareer
                                                                    : strCreate) + strSpace + '('
                                                                + (await x.GetSettingsAsync(token).ConfigureAwait(false))
-                                                               .Name + ')'), token: token);
+                                                               .Name + ')'), token: token).ConfigureAwait(false);
                     strTitle = sbdTitle.ToString();
                 }
             }
