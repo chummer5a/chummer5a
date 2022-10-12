@@ -360,7 +360,7 @@ namespace Chummer
                     token.ThrowIfCancellationRequested();
                     if (achrImage.Length > 0)
                     {
-                        using (MemoryStream objStream = new MemoryStream())
+                        using (MemoryStream objStream = new MemoryStream(achrImage.Length))
                         {
                             await objStream.WriteAsync(achrImage, 0, achrImage.Length, token).ConfigureAwait(false);
                             imgReturn = Image.FromStream(objStream, true);
