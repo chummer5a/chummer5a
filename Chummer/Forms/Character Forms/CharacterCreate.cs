@@ -14248,6 +14248,18 @@ namespace Chummer
 
                     await CharacterObject.SetCreatedAsync(true, false, token: token).ConfigureAwait(false);
 
+                    // Save all essence modifiers for all Cyberware.
+                    await CharacterObject.Cyberware.GetAllDescendants(x => x.Children).ForEachAsync(x => x.SaveNonRetroactiveEssenceModifiersAsync(token), token).ConfigureAwait(false);
+                    foreach (Vehicle objVehicle in CharacterObject.Vehicles)
+                    {
+                        await objVehicle.Mods.SelectMany(objMod => objMod.Cyberware).GetAllDescendants(x => x.Children)
+                            .ForEachAsync(x => x.SaveNonRetroactiveEssenceModifiersAsync(token), token)
+                            .ConfigureAwait(false);
+                        await objVehicle.WeaponMounts.SelectMany(objMount => objMount.Mods.SelectMany(objMod => objMod.Cyberware)).GetAllDescendants(x => x.Children)
+                            .ForEachAsync(x => x.SaveNonRetroactiveEssenceModifiersAsync(token), token)
+                            .ConfigureAwait(false);
+                    }
+
                     using (ThreadSafeForm<LoadingBar> frmLoadingBar
                            = await Program.CreateAndShowProgressBarAsync(token: token).ConfigureAwait(false))
                     {

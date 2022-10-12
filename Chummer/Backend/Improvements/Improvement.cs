@@ -1215,12 +1215,6 @@ namespace Chummer
                 case ImprovementType.WeaponCategoryDice:
                     break;
 
-                case ImprovementType.CyberwareEssCostNonRetroactive:
-                    break;
-
-                case ImprovementType.CyberwareTotalEssMultiplierNonRetroactive:
-                    break;
-
                 case ImprovementType.SpecialTab:
                     break;
 
@@ -1255,12 +1249,20 @@ namespace Chummer
                 case ImprovementType.Smartlink:
                     break;
 
+                case ImprovementType.CyberwareEssCostNonRetroactive:
+                case ImprovementType.CyberwareTotalEssMultiplierNonRetroactive:
                 case ImprovementType.BiowareEssCostNonRetroactive:
-                    break;
-
                 case ImprovementType.BiowareTotalEssMultiplierNonRetroactive:
+                {
+                    if (!_objCharacter.Created)
+                    {
+                        // Immediately reset cached essence to make sure this fires off before any other property changers would
+                        _objCharacter.ResetCachedEssence();
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                            nameof(Character.Essence));
+                    }
                     break;
-
+                }
                 case ImprovementType.GenetechCostMultiplier:
                     break;
 
