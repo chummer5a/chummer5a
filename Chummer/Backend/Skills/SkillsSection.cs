@@ -690,7 +690,7 @@ namespace Chummer.Backend.Skills
                                     {
                                         foreach (XmlNode xmlNode in xmlGroupsList)
                                         {
-                                            string strName = xmlNode["name"]?.InnerText;
+                                            string strName = xmlNode["name"]?.InnerText ?? string.Empty;
                                             SkillGroup objGroup = null;
                                             if (!string.IsNullOrEmpty(strName))
                                                 objGroup = blnSync
@@ -795,7 +795,9 @@ namespace Chummer.Backend.Skills
                                 }
 
                                 // TODO: Skill groups don't refresh their CanIncrease property correctly when the last of their skills is being added, as the total base rating will be zero. Call this here to force a refresh.
-                                foreach (SkillGroup g in SkillGroups.ToList())
+                                foreach (SkillGroup g in blnSync
+                                             ? SkillGroups.ToList()
+                                             : await SkillGroups.ToListAsync(token).ConfigureAwait(false))
                                 {
                                     g.OnPropertyChanged(nameof(SkillGroup.SkillList));
                                 }

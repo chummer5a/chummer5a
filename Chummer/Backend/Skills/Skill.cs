@@ -1894,8 +1894,8 @@ namespace Chummer.Backend.Skills
                 if (intCost < 0)
                     Utils.BreakIfDebug();
 
-                int intSpecCount = await GetBuyWithKarmaAsync(token).ConfigureAwait(false) || !await CharacterObject
-                    .GetEffectiveBuildMethodUsesPriorityTablesAsync(token).ConfigureAwait(false)
+                int intSpecCount = await GetBuyWithKarmaAsync(token).ConfigureAwait(false)
+                                   || !await CharacterObject.GetEffectiveBuildMethodUsesPriorityTablesAsync(token).ConfigureAwait(false)
                     ? await Specializations.CountAsync(objSpec => !objSpec.Free, token: token).ConfigureAwait(false)
                     : 0;
                 int intSpecCost = intSpecCount *

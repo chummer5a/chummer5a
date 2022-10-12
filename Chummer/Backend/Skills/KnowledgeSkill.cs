@@ -665,12 +665,7 @@ namespace Chummer.Backend.Skills
 
                     decimal decMultiplier = 1.0m;
                     decimal decExtra = 0;
-                    int intSpecCount = 0;
-                    foreach (SkillSpecialization objSpec in Specializations)
-                    {
-                        if (!objSpec.Free && BuyWithKarma)
-                            ++intSpecCount;
-                    }
+                    int intSpecCount = BuyWithKarma ? Specializations.Count(x => !x.Free) : 0;
 
                     decimal decSpecCost = CharacterObject.Settings.KarmaKnowledgeSpecialization * intSpecCount;
                     decimal decExtraSpecCost = 0;
@@ -768,8 +763,7 @@ namespace Chummer.Backend.Skills
 
                 decimal decMultiplier = 1.0m;
                 decimal decExtra = 0;
-                int intSpecCount = await GetBuyWithKarmaAsync(token).ConfigureAwait(false) || !await CharacterObject
-                    .GetEffectiveBuildMethodUsesPriorityTablesAsync(token).ConfigureAwait(false)
+                int intSpecCount = await GetBuyWithKarmaAsync(token).ConfigureAwait(false)
                     ? await Specializations.CountAsync(objSpec => !objSpec.Free, token: token).ConfigureAwait(false)
                     : 0;
                 decimal decSpecCost = intSpecCount *
