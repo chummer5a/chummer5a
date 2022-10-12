@@ -578,10 +578,10 @@ namespace Chummer.Backend.Skills
                         XPathNavigator xmlCategories = _objCharacter.LoadDataXPath("skills.xml")
                                                                     .SelectSingleNodeAndCacheExpression(
                                                                         "/chummer/categories");
-                        if (xmlCategories.SelectSingleNode("category[@type = \"knowledge\" and . = \"Professional\"]")
+                        if (xmlCategories.SelectSingleNodeAndCacheExpression("category[@type = \"knowledge\" and . = \"Professional\"]")
                             != null)
                             return "Professional";
-                        return xmlCategories.SelectSingleNode("category[@type = \"knowledge\"]")?.Value
+                        return xmlCategories.SelectSingleNodeAndCacheExpression("category[@type = \"knowledge\"]")?.Value
                                ?? "Professional";
                     });
                 }
@@ -669,10 +669,10 @@ namespace Chummer.Backend.Skills
                         XPathNavigator xmlCategories = await (await _objCharacter.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false))
                                                              .SelectSingleNodeAndCacheExpressionAsync(
                                                                  "/chummer/categories", token).ConfigureAwait(false);
-                        if (xmlCategories.SelectSingleNode("category[@type = \"knowledge\" and . = \"Professional\"]")
+                        if (await xmlCategories.SelectSingleNodeAndCacheExpressionAsync("category[@type = \"knowledge\" and . = \"Professional\"]", token).ConfigureAwait(false)
                             != null)
                             return "Professional";
-                        return xmlCategories.SelectSingleNode("category[@type = \"knowledge\"]")?.Value
+                        return (await xmlCategories.SelectSingleNodeAndCacheExpressionAsync("category[@type = \"knowledge\"]", token).ConfigureAwait(false))?.Value
                                ?? "Professional";
                     }, Utils.JoinableTaskFactory);
                 }

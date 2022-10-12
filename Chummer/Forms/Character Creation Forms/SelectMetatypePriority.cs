@@ -1196,22 +1196,22 @@ namespace Chummer
                                     || objQuality.OriginSource == QualitySource.MetatypeRemovable
                                     || objQuality.OriginSource == QualitySource.MetatypeRemovedAtChargen)
                                     continue;
+                                XPathNavigator xmlBaseNode = await objQuality.GetNodeXPathAsync(token: token).ConfigureAwait(false);
                                 XPathNavigator xmlRestrictionNode
-                                    = (await objQuality.GetNodeXPathAsync(token: token).ConfigureAwait(false))?.SelectSingleNode("required");
+                                    = xmlBaseNode != null ? await xmlBaseNode.SelectSingleNodeAndCacheExpressionAsync("required", token).ConfigureAwait(false) : null;
                                 if (xmlRestrictionNode != null &&
-                                    (xmlRestrictionNode.SelectSingleNode(".//metatype") != null
-                                     || xmlRestrictionNode.SelectSingleNode(".//metavariant") != null))
+                                    (await xmlRestrictionNode.SelectSingleNodeAndCacheExpressionAsync(".//metatype", token).ConfigureAwait(false) != null
+                                     || await xmlRestrictionNode.SelectSingleNodeAndCacheExpressionAsync(".//metavariant", token).ConfigureAwait(false) != null))
                                 {
                                     lstQualitiesToCheck.Add(objQuality);
                                 }
                                 else
                                 {
                                     xmlRestrictionNode
-                                        = (await objQuality.GetNodeXPathAsync(token: token).ConfigureAwait(false))?.SelectSingleNode(
-                                            "forbidden");
+                                        = xmlBaseNode != null ? await xmlBaseNode.SelectSingleNodeAndCacheExpressionAsync("forbidden", token).ConfigureAwait(false) : null;
                                     if (xmlRestrictionNode != null &&
-                                        (xmlRestrictionNode.SelectSingleNode(".//metatype") != null
-                                         || xmlRestrictionNode.SelectSingleNode(".//metavariant") != null))
+                                        (await xmlRestrictionNode.SelectSingleNodeAndCacheExpressionAsync(".//metatype", token).ConfigureAwait(false) != null
+                                         || await xmlRestrictionNode.SelectSingleNodeAndCacheExpressionAsync(".//metavariant", token).ConfigureAwait(false) != null))
                                     {
                                         lstQualitiesToCheck.Add(objQuality);
                                     }

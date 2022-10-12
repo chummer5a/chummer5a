@@ -217,7 +217,7 @@ namespace Chummer
                             "programs/program[id = " + strSelectedId.CleanXPath() + ']');
                     if (objXmlProgram != null)
                     {
-                        string strRequiresProgram = objXmlProgram.SelectSingleNode("require")?.Value;
+                        string strRequiresProgram = (await objXmlProgram.SelectSingleNodeAndCacheExpressionAsync("require", token))?.Value;
                         if (string.IsNullOrEmpty(strRequiresProgram))
                         {
                             strRequiresProgram = await LanguageManager.GetStringAsync("String_None", token: token).ConfigureAwait(false);
@@ -233,12 +233,12 @@ namespace Chummer
 
                         await lblRequiresProgram.DoThreadSafeAsync(x => x.Text = strRequiresProgram, token: token).ConfigureAwait(false);
 
-                        string strSource = objXmlProgram.SelectSingleNode("source")?.Value;
+                        string strSource = (await objXmlProgram.SelectSingleNodeAndCacheExpressionAsync("source", token))?.Value;
                         if (!string.IsNullOrEmpty(strSource))
                         {
                             string strPage
                                 = (await objXmlProgram.SelectSingleNodeAndCacheExpressionAsync("altpage", token: token).ConfigureAwait(false))?.Value
-                                  ?? objXmlProgram.SelectSingleNode("page")?.Value;
+                                  ?? (await objXmlProgram.SelectSingleNodeAndCacheExpressionAsync("page", token))?.Value;
                             if (!string.IsNullOrEmpty(strPage))
                             {
                                 SourceString objSource = await SourceString.GetSourceStringAsync(
@@ -330,13 +330,13 @@ namespace Chummer
             {
                 foreach (XPathNavigator objXmlProgram in objXmlNodeList)
                 {
-                    string strId = objXmlProgram.SelectSingleNode("id")?.Value;
+                    string strId = (await objXmlProgram.SelectSingleNodeAndCacheExpressionAsync("id", token))?.Value;
                     if (string.IsNullOrEmpty(strId))
                         continue;
 
                     if (blnLimitList)
                     {
-                        string strRequire = objXmlProgram.SelectSingleNode("require")?.Value;
+                        string strRequire = (await objXmlProgram.SelectSingleNodeAndCacheExpressionAsync("require", token))?.Value;
                         if (!string.IsNullOrEmpty(strRequire))
                         {
                             bool blnAdd = false;
@@ -354,17 +354,17 @@ namespace Chummer
                         }
                     }
 
-                    string strName = objXmlProgram.SelectSingleNode("name")?.Value
+                    string strName = (await objXmlProgram.SelectSingleNodeAndCacheExpressionAsync("name", token))?.Value
                                      ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
                     // If this is a critter with Optional Programs, see if this Program is allowed.
-                    if (_xmlOptionalAIProgramsNode?.SelectSingleNode("program") != null
-                        && _xmlOptionalAIProgramsNode.SelectSingleNode("program[. = " + strName.CleanXPath() + ']')
-                        == null)
+                    if (_xmlOptionalAIProgramsNode != null
+                        && await _xmlOptionalAIProgramsNode.SelectSingleNodeAndCacheExpressionAsync("program", token) != null
+                        && _xmlOptionalAIProgramsNode.SelectSingleNode("program[. = " + strName.CleanXPath() + ']') == null)
                         continue;
                     string strDisplayName = (await objXmlProgram.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value ?? strName;
                     if (!GlobalSettings.SearchInCategoryOnly && blnHasSearch)
                     {
-                        string strCategory = objXmlProgram.SelectSingleNode("category")?.Value;
+                        string strCategory = (await objXmlProgram.SelectSingleNodeAndCacheExpressionAsync("category", token))?.Value;
                         if (!string.IsNullOrEmpty(strCategory))
                         {
                             ListItem objFoundItem
@@ -403,9 +403,9 @@ namespace Chummer
                 }
 
                 _strSelectedAIProgram = strSelectedId;
-                _strSelectedCategory = (GlobalSettings.SearchInCategoryOnly || await txtSearch.DoThreadSafeFuncAsync(x => x.TextLength == 0, token: token).ConfigureAwait(false))
+                _strSelectedCategory = GlobalSettings.SearchInCategoryOnly || await txtSearch.DoThreadSafeFuncAsync(x => x.TextLength == 0, token: token).ConfigureAwait(false)
                     ? await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false)
-                    : xmlProgram.SelectSingleNode("category")?.Value;
+                    : (await xmlProgram.SelectSingleNodeAndCacheExpressionAsync("category", token))?.Value;
 
                 await this.DoThreadSafeAsync(x =>
                 {

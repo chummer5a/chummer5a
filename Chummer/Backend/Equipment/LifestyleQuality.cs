@@ -394,9 +394,9 @@ namespace Chummer.Backend.Equipment
                     foreach (XPathNavigator xmlNode in objXmlDocument.SelectAndCacheExpression(
                                  "/chummer/qualities/quality"))
                     {
-                        lstQualities.Add(new ListItem(xmlNode.SelectSingleNode("id")?.Value,
+                        lstQualities.Add(new ListItem(xmlNode.SelectSingleNodeAndCacheExpression("id")?.Value,
                                                       xmlNode.SelectSingleNodeAndCacheExpression("translate")?.Value
-                                                      ?? xmlNode.SelectSingleNode("name")?.Value));
+                                                      ?? xmlNode.SelectSingleNodeAndCacheExpression("name")?.Value));
                     }
 
                     using (ThreadSafeForm<SelectItem> frmSelect = ThreadSafeForm<SelectItem>.Get(() => new SelectItem

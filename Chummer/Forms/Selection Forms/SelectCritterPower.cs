@@ -155,7 +155,7 @@ namespace Chummer
                     }
                     await lblCritterPowerType.DoThreadSafeAsync(x => x.Text = strType).ConfigureAwait(false);
 
-                    string strAction = objXmlPower.SelectSingleNode("action")?.Value ?? string.Empty;
+                    string strAction = (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("action"))?.Value ?? string.Empty;
                     switch (strAction)
                     {
                         case "Auto":
@@ -180,7 +180,7 @@ namespace Chummer
                     }
                     await lblCritterPowerAction.DoThreadSafeAsync(x => x.Text = strAction).ConfigureAwait(false);
 
-                    string strRange = objXmlPower.SelectSingleNode("range")?.Value ?? string.Empty;
+                    string strRange = (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("range"))?.Value ?? string.Empty;
                     if (!string.IsNullOrEmpty(strRange))
                     {
                         strRange = await strRange.CheapReplaceAsync("Self",
@@ -234,7 +234,7 @@ namespace Chummer
                     // If the character is a Free Spirit, populate the Power Points Cost as well.
                     if (_objCharacter.Metatype == "Free Spirit")
                     {
-                        XPathNavigator xmlOptionalPowerCostNode = _xmlMetatypeDataNode.SelectSingleNode("optionalpowers/power[. = " + objXmlPower.SelectSingleNode("name")?.Value.CleanXPath() + "]/@cost");
+                        XPathNavigator xmlOptionalPowerCostNode = _xmlMetatypeDataNode.SelectSingleNode("optionalpowers/power[. = " + (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value.CleanXPath() + "]/@cost");
                         if (xmlOptionalPowerCostNode != null)
                         {
                             await lblPowerPoints.DoThreadSafeAsync(x =>
@@ -445,7 +445,7 @@ namespace Chummer
             // If the character is a Free Spirit (PC, not the Critter version), populate the Power Points Cost as well.
             if (_objCharacter.Metatype == "Free Spirit" && !_objCharacter.IsCritter)
             {
-                string strName = objXmlPower.SelectSingleNode("name")?.Value;
+                string strName = objXmlPower.SelectSingleNodeAndCacheExpression("name")?.Value;
                 if (!string.IsNullOrEmpty(strName))
                 {
                     XPathNavigator objXmlOptionalPowerCost = _xmlMetatypeDataNode.SelectSingleNode("optionalpowers/power[. = " + strName.CleanXPath() + "]/@cost");

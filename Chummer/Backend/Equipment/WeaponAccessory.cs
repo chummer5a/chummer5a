@@ -1897,7 +1897,7 @@ namespace Chummer.Backend.Equipment
                         XPathNavigator checkNode = GlobalSettings.Clipboard.SelectSingleNode("/character/gears/gear")?.CreateNavigator();
                         if (checkNode == null)
                             return false;
-                        string strCheckValue = checkNode.SelectSingleNode("category")?.Value;
+                        string strCheckValue = checkNode.SelectSingleNodeAndCacheExpression("category")?.Value;
                         if (!string.IsNullOrEmpty(strCheckValue))
                         {
                             XmlNodeList xmlGearCategoryList = AllowGear?.SelectNodes("gearcategory");
@@ -1907,7 +1907,7 @@ namespace Chummer.Backend.Equipment
                             }
                         }
 
-                        strCheckValue = checkNode.SelectSingleNode("name")?.Value;
+                        strCheckValue = checkNode.SelectSingleNodeAndCacheExpression("name")?.Value;
                         if (!string.IsNullOrEmpty(strCheckValue))
                         {
                             XmlNodeList xmlGearNameList = AllowGear?.SelectNodes("gearname");

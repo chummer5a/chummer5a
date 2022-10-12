@@ -57,14 +57,14 @@ namespace Chummer
             switch (objWindowMode)
             {
                 case Mode.Art:
-                    _objXmlDocument = objCharacter.LoadDataXPath("metamagic.xml").SelectSingleNode("/chummer/arts");
+                    _objXmlDocument = objCharacter.LoadDataXPath("metamagic.xml").SelectSingleNodeAndCacheExpression("/chummer/arts");
                     _strLocalName = LanguageManager.GetString("String_Art");
                     _strBaseXPath = "art";
                     _strXPathFilter = _objCharacter.Settings.BookXPath();
                     break;
 
                 case Mode.Enhancement:
-                    _objXmlDocument = objCharacter.LoadDataXPath("powers.xml").SelectSingleNode("/chummer/enhancements");
+                    _objXmlDocument = objCharacter.LoadDataXPath("powers.xml").SelectSingleNodeAndCacheExpression("/chummer/enhancements");
                     _strLocalName = LanguageManager.GetString("String_Enhancement");
                     _strBaseXPath = "enhancement";
                     _strXPathFilter = _objCharacter.Settings.BookXPath();
@@ -72,14 +72,14 @@ namespace Chummer
 
                 case Mode.Enchantment:
                     _strLocalName = LanguageManager.GetString("String_Enchantment");
-                    _objXmlDocument = objCharacter.LoadDataXPath("spells.xml").SelectSingleNode("/chummer/spells");
+                    _objXmlDocument = objCharacter.LoadDataXPath("spells.xml").SelectSingleNodeAndCacheExpression("/chummer/spells");
                     _strBaseXPath = "spell";
                     _strXPathFilter = "category = 'Enchantments' and (" + _objCharacter.Settings.BookXPath() + ')';
                     break;
 
                 case Mode.Ritual:
                     _strLocalName = LanguageManager.GetString("String_Ritual");
-                    _objXmlDocument = objCharacter.LoadDataXPath("spells.xml").SelectSingleNode("/chummer/spells");
+                    _objXmlDocument = objCharacter.LoadDataXPath("spells.xml").SelectSingleNodeAndCacheExpression("/chummer/spells");
                     _strBaseXPath = "spell";
                     _strXPathFilter = "category = 'Rituals' and (" + _objCharacter.Settings.BookXPath() + ')';
                     break;
@@ -122,8 +122,8 @@ namespace Chummer
                 return;
             }
 
-            string strSource = objXmlMetamagic.SelectSingleNode("source")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
-            string strPage = (await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("altpage").ConfigureAwait(false))?.Value ?? objXmlMetamagic.SelectSingleNode("page")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
+            string strSource = (await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("source"))?.Value ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
+            string strPage = (await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("altpage").ConfigureAwait(false))?.Value ?? (await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("page"))?.Value ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
             SourceString objSource = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language,
                                                                              GlobalSettings.CultureInfo, _objCharacter).ConfigureAwait(false);
             await objSource.SetControlAsync(lblSource).ConfigureAwait(false);

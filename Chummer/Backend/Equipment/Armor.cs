@@ -2713,12 +2713,12 @@ namespace Chummer.Backend.Equipment
                             XPathNavigator xmlNode = this.GetNodeXPath();
                             if (xmlNode == null)
                                 return strPasteCategory == "General";
-                            XPathNavigator xmlForceModCategory = xmlNode.SelectSingleNode("forcemodcategory");
+                            XPathNavigator xmlForceModCategory = xmlNode.SelectSingleNodeAndCacheExpression("forcemodcategory");
                             if (xmlForceModCategory != null)
                                 return xmlForceModCategory.Value == strPasteCategory;
                             if (strPasteCategory == "General")
                                 return true;
-                            XPathNodeIterator xmlAddonCategoryList = xmlNode.Select("addoncategory");
+                            XPathNodeIterator xmlAddonCategoryList = xmlNode.SelectAndCacheExpression("addoncategory");
                             return xmlAddonCategoryList.Count <= 0 || xmlAddonCategoryList.Cast<XPathNavigator>().Any(xmlCategory => xmlCategory.Value == strPasteCategory);
                         }
                     case ClipboardContentType.Gear:
@@ -2726,7 +2726,7 @@ namespace Chummer.Backend.Equipment
                             XPathNavigator xmlNode = this.GetNodeXPath();
                             if (xmlNode == null)
                                 return false;
-                            XPathNodeIterator xmlAddonCategoryList = xmlNode.Select("addoncategory");
+                            XPathNodeIterator xmlAddonCategoryList = xmlNode.SelectAndCacheExpression("addoncategory");
                             return xmlAddonCategoryList.Count <= 0 || xmlAddonCategoryList.Cast<XPathNavigator>().Any(xmlCategory => xmlCategory.Value == strPasteCategory);
                         }
                     default:

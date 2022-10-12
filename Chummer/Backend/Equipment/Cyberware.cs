@@ -1607,9 +1607,9 @@ namespace Chummer.Backend.Equipment
                     // This step is needed in case there's a custom data file that has the name "Reflex Recorder (Skill)", in which case we wouldn't want to rename the 'ware
                     XPathNavigator xmlReflexRecorderNode = _eImprovementSource == Improvement.ImprovementSource.Bioware
                         ? _objCharacter.LoadDataXPath("bioware.xml")
-                            .SelectSingleNode("/chummer/biowares/bioware[name = \"Reflex Recorder (Skill)\"]")
+                            .SelectSingleNodeAndCacheExpression("/chummer/biowares/bioware[name = \"Reflex Recorder (Skill)\"]")
                         : _objCharacter.LoadDataXPath("cyberware.xml")
-                            .SelectSingleNode("/chummer/cyberwares/cyberware[name = \"Reflex Recorder (Skill)\"]");
+                            .SelectSingleNodeAndCacheExpression("/chummer/cyberwares/cyberware[name = \"Reflex Recorder (Skill)\"]");
                     if (xmlReflexRecorderNode == null)
                         _strName = "Reflex Recorder";
                 }
@@ -6192,7 +6192,7 @@ namespace Chummer.Backend.Equipment
         {
             if (xmlCyberwareImportNode == null)
                 return false;
-            string strOriginalName = xmlCyberwareImportNode.SelectSingleNode("@name")?.Value ?? string.Empty;
+            string strOriginalName = xmlCyberwareImportNode.SelectSingleNodeAndCacheExpression("@name")?.Value ?? string.Empty;
             if (!string.IsNullOrEmpty(strOriginalName))
             {
                 string strGradeName = objSelectedGrade?.Name ?? "Standard";
@@ -6465,14 +6465,14 @@ namespace Chummer.Backend.Equipment
 
                 foreach (XPathNavigator xmlPluginToAdd in xmlGearImportNode.Select(strPluginNodeName + "/item[@useradded = \"no\"]"))
                 {
-                    string strName = xmlPluginToAdd.SelectSingleNode("@name")?.Value ?? string.Empty;
+                    string strName = xmlPluginToAdd.SelectSingleNodeAndCacheExpression("@name")?.Value ?? string.Empty;
                     if (!string.IsNullOrEmpty(strName))
                     {
                         Cyberware objPlugin = Children.FirstOrDefault(x =>
                             x.ParentID == InternalId && (x.Name.Contains(strName) || strName.Contains(x.Name)));
                         if (objPlugin != null)
                         {
-                            objPlugin.Notes = xmlPluginToAdd.SelectSingleNode("description")?.Value;
+                            objPlugin.Notes = xmlPluginToAdd.SelectSingleNodeAndCacheExpression("description")?.Value;
                             objPlugin.ProcessHeroLabCyberwarePlugins(xmlPluginToAdd, objParentGrade, lstWeapons,
                                 lstVehicles);
                         }
@@ -6482,8 +6482,8 @@ namespace Chummer.Backend.Equipment
                                 x.IncludedInParent && (x.Name.Contains(strName) || strName.Contains(x.Name)));
                             if (objPluginGear != null)
                             {
-                                objPluginGear.Quantity = xmlPluginToAdd.SelectSingleNode("@quantity")?.ValueAsInt ?? 1;
-                                objPluginGear.Notes = xmlPluginToAdd.SelectSingleNode("description")?.Value;
+                                objPluginGear.Quantity = xmlPluginToAdd.SelectSingleNodeAndCacheExpression("@quantity")?.ValueAsInt ?? 1;
+                                objPluginGear.Notes = xmlPluginToAdd.SelectSingleNodeAndCacheExpression("description")?.Value;
                                 objPluginGear.ProcessHeroLabGearPlugins(xmlPluginToAdd, lstWeapons);
                             }
                         }

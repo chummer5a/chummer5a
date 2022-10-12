@@ -962,10 +962,10 @@ namespace Chummer.Backend.Skills
                 return;
             using (LockObject.EnterWriteLock())
             {
-                string strTemp = xmlNode.SelectSingleNode("@name")?.Value;
+                string strTemp = xmlNode.SelectSingleNodeAndCacheExpression("@name")?.Value;
                 if (!string.IsNullOrEmpty(strTemp))
                     _strGroupName = strTemp.TrimEndOnce("Group").Trim();
-                strTemp = xmlNode.SelectSingleNode("@base")?.Value;
+                strTemp = xmlNode.SelectSingleNodeAndCacheExpression("@base")?.Value;
                 if (!string.IsNullOrEmpty(strTemp) && int.TryParse(strTemp, out int intTemp))
                     _intSkillFromKarma = intTemp;
             }

@@ -388,7 +388,7 @@ namespace Chummer.Backend.Equipment
                         foreach (XPathNavigator xmlLifestyle in xmlLifestyles.SelectAndCacheExpression(
                                      "/chummer/lifestyles/lifestyle"))
                         {
-                            string strName = xmlLifestyle.SelectSingleNode("name")?.Value
+                            string strName = xmlLifestyle.SelectSingleNodeAndCacheExpression("name")?.Value
                                              ?? LanguageManager.GetString("String_Error");
                             lstQualities.Add(
                                 new ListItem(strName, xmlLifestyle.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));

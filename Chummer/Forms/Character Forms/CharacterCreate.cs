@@ -12495,10 +12495,10 @@ namespace Chummer
                                                                           objCyberware.ForceGrade), token).ConfigureAwait(false);
                         XPathNavigator xmlCyberware = await objCyberware.GetNodeXPathAsync(token: token).ConfigureAwait(false);
                         HashSet<string> setDisallowedGrades = null;
-                        if (xmlCyberware?.SelectSingleNode("bannedgrades") != null)
+                        if (xmlCyberware != null && await xmlCyberware.SelectSingleNodeAndCacheExpressionAsync("bannedgrades", token) != null)
                         {
                             setDisallowedGrades = new HashSet<string>();
-                            foreach (XPathNavigator objNode in xmlCyberware.Select("bannedgrades/grade"))
+                            foreach (XPathNavigator objNode in await xmlCyberware.SelectAndCacheExpressionAsync("bannedgrades/grade", token))
                             {
                                 setDisallowedGrades.Add(objNode.Value);
                             }

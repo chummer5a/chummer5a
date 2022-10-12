@@ -76,20 +76,20 @@ namespace Chummer
             {
                 string strSpace = await LanguageManager.GetStringAsync("String_Space").ConfigureAwait(false);
                 // Display the information for the selected Power.
-                string strPowerPointsText = objXmlPower.SelectSingleNode("points")?.Value ?? string.Empty;
-                if (objXmlPower.SelectSingleNode("levels")?.Value == bool.TrueString)
+                string strPowerPointsText = (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("points"))?.Value ?? string.Empty;
+                if ((await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("levels"))?.Value == bool.TrueString)
                 {
                     strPowerPointsText += strSpace + '/' + strSpace + await LanguageManager.GetStringAsync("Label_Power_Level").ConfigureAwait(false);
                 }
-                string strExtrPointCost = objXmlPower.SelectSingleNode("extrapointcost")?.Value;
+                string strExtrPointCost = (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("extrapointcost"))?.Value;
                 if (!string.IsNullOrEmpty(strExtrPointCost))
                 {
                     strPowerPointsText = strExtrPointCost + strSpace + '+' + strSpace + strPowerPointsText;
                 }
                 await lblPowerPoints.DoThreadSafeAsync(x => x.Text = strPowerPointsText).ConfigureAwait(false);
 
-                string strSource = objXmlPower.SelectSingleNode("source")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
-                string strPage = (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("altpage").ConfigureAwait(false))?.Value ?? objXmlPower.SelectSingleNode("page")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
+                string strSource = (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("source"))?.Value ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
+                string strPage = (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("altpage").ConfigureAwait(false))?.Value ?? (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("page"))?.Value ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
                 SourceString objSource = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language,
                     GlobalSettings.CultureInfo, _objCharacter).ConfigureAwait(false);
                 await objSource.SetControlAsync(lblSource).ConfigureAwait(false);

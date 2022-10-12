@@ -146,7 +146,7 @@ namespace Chummer
                 strAP = intAP.ToString(GlobalSettings.InvariantCultureInfo);
 
             // Get the information for the Natural Weapon Critter Power.
-            XPathNavigator objPower = _objXmlPowersDocument.SelectSingleNode("powers/power[name = \"Natural Weapon\"]");
+            XPathNavigator objPower = await _objXmlPowersDocument.SelectSingleNodeAndCacheExpressionAsync("powers/power[name = \"Natural Weapon\"]", token);
 
             if (objPower != null)
             {

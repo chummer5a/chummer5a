@@ -3437,7 +3437,7 @@ namespace Chummer.Backend.Equipment
                             string strClipboardCategory = GlobalSettings.Clipboard.SelectSingleNode("category")?.Value;
                             if (!string.IsNullOrEmpty(strClipboardCategory))
                             {
-                                XPathNodeIterator xmlAddonCategoryList = this.GetNodeXPath()?.Select("addoncategory");
+                                XPathNodeIterator xmlAddonCategoryList = this.GetNodeXPath()?.SelectAndCacheExpression("addoncategory");
                                 return xmlAddonCategoryList?.Count > 0 && xmlAddonCategoryList.Cast<XPathNavigator>().Any(xmlLoop => xmlLoop.Value == strClipboardCategory);
                             }
                             return false;

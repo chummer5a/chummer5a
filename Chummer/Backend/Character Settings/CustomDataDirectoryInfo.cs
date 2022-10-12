@@ -26,6 +26,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
+using System.Xml.XPath;
 
 namespace Chummer
 {
@@ -60,9 +61,8 @@ namespace Chummer
                 if (File.Exists(strFullDirectory))
                 {
                     HasManifest = true;
-                    XmlDocument xmlObjManifest = new XmlDocument();
-                    xmlObjManifest.LoadStandard(strFullDirectory);
-                    XmlNode xmlNode = xmlObjManifest.SelectSingleNode("manifest");
+                    XPathDocument xmlObjManifest = XPathDocumentExtensions.LoadStandardFromFile(strFullDirectory);
+                    XPathNavigator xmlNode = xmlObjManifest.CreateNavigator().SelectSingleNodeAndCacheExpression("manifest");
 
                     if (!xmlNode.TryGetField("version", VersionExtensions.TryParse, out _objMyVersion))
                         _objMyVersion = new Version(1, 0);
@@ -83,14 +83,9 @@ namespace Chummer
 
             #region Local Methods
 
-            void GetManifestDescriptions(XmlNode xmlDocument)
+            void GetManifestDescriptions(XPathNavigator xmlDocument)
             {
-                XmlNodeList xmlDescriptionNodes = xmlDocument.SelectNodes("descriptions/description");
-
-                if (xmlDescriptionNodes == null)
-                    return;
-
-                foreach (XmlNode descriptionNode in xmlDescriptionNodes)
+                foreach (XPathNavigator descriptionNode in xmlDocument.SelectAndCacheExpression("descriptions/description"))
                 {
                     string language = string.Empty;
                     descriptionNode.TryGetStringFieldQuickly("lang", ref language);
@@ -105,14 +100,9 @@ namespace Chummer
             }
             //Must be called after DisplayDictionary was populated!
 
-            void GetManifestAuthors(XmlNode xmlDocument)
+            void GetManifestAuthors(XPathNavigator xmlDocument)
             {
-                XmlNodeList xmlAuthorNodes = xmlDocument.SelectNodes("authors/author");
-
-                if (xmlAuthorNodes == null)
-                    return;
-
-                foreach (XmlNode objXmlNode in xmlAuthorNodes)
+                foreach (XPathNavigator objXmlNode in xmlDocument.SelectAndCacheExpression("authors/author"))
                 {
                     string authorName = string.Empty;
                     bool isMain = false;
@@ -129,14 +119,9 @@ namespace Chummer
             }
             //Must be called after AuthorDictionary was populated!
 
-            void GetDependencies(XmlNode xmlDocument)
+            void GetDependencies(XPathNavigator xmlDocument)
             {
-                XmlNodeList xmlDependencies = xmlDocument.SelectNodes("dependencies/dependency");
-
-                if (xmlDependencies == null)
-                    return;
-
-                foreach (XmlNode objXmlNode in xmlDependencies)
+                foreach (XPathNavigator objXmlNode in xmlDocument.SelectAndCacheExpression("dependencies/dependency"))
                 {
                     Guid guidId = Guid.Empty;
                     string strDependencyName = string.Empty;
@@ -156,14 +141,9 @@ namespace Chummer
                 }
             }
 
-            void GetIncompatibilities(XmlNode xmlDocument)
+            void GetIncompatibilities(XPathNavigator xmlDocument)
             {
-                XmlNodeList xmlIncompatibilities = xmlDocument.SelectNodes("incompatibilities/incompatibility");
-
-                if (xmlIncompatibilities == null)
-                    return;
-
-                foreach (XmlNode objXmlNode in xmlIncompatibilities)
+                foreach (XPathNavigator objXmlNode in xmlDocument.SelectAndCacheExpression("incompatibilities/incompatibility"))
                 {
                     Guid guidId = Guid.Empty;
                     string strDependencyName = string.Empty;

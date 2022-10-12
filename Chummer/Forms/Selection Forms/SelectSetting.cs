@@ -62,7 +62,7 @@ namespace Chummer
                     }
 
                     lstSettings.Add(new ListItem(Path.GetFileName(strFileName),
-                                                 objXmlDocument.CreateNavigator().SelectSingleNode("/settings/name")
+                                                 (await objXmlDocument.CreateNavigator().SelectSingleNodeAndCacheExpressionAsync("/settings/name"))
                                                                ?.Value ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false)));
                 }
 

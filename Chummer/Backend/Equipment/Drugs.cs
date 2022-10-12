@@ -1671,7 +1671,7 @@ namespace Chummer.Backend.Equipment
                 return Name;
 
             XPathNavigator xmlGearDataNode = this.GetNodeXPath(strLanguage);
-            if (xmlGearDataNode?.SelectSingleNode("name")?.Value == "Custom Item")
+            if (xmlGearDataNode?.SelectSingleNodeAndCacheExpression("name")?.Value == "Custom Item")
             {
                 return _objCharacter.TranslateExtra(Name, strLanguage);
             }

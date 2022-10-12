@@ -448,7 +448,7 @@ namespace Chummer
                     }
                     else
                     {
-                        if ((await objTradition.GetNodeXPathAsync(token: token).ConfigureAwait(false))?.SelectSingleNode("spirits/spirit[. = \"All\"]") != null)
+                        if ((await objTradition.GetNodeXPathAsync(token: token).ConfigureAwait(false))?.SelectSingleNodeAndCacheExpression("spirits/spirit[. = \"All\"]") != null)
                         {
                             if (setLimitCategories.Count == 0)
                             {

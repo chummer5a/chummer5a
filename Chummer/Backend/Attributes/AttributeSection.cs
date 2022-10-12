@@ -913,7 +913,7 @@ namespace Chummer.Backend.Attributes
                                     "attributes/attribute[@name = " + GetAttributeEnglishName(strAttribute).CleanXPath()
                                                                     +
                                                                     ']');
-                            XPathNavigator xmlAttributeBaseNode = xmlHeroLabAttributeNode?.SelectSingleNode("@base");
+                            XPathNavigator xmlAttributeBaseNode = xmlHeroLabAttributeNode?.SelectSingleNodeAndCacheExpression("@base");
                             if (xmlAttributeBaseNode != null &&
                                 int.TryParse(xmlAttributeBaseNode.Value, out int intHeroLabAttributeBaseValue))
                             {

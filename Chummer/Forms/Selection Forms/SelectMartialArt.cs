@@ -50,8 +50,8 @@ namespace Chummer
 
             // Load the Martial Arts information.
             XPathNavigator xmlBaseMartialArtsDocumentNode = _objCharacter.LoadDataXPath("martialarts.xml");
-            _xmlBaseMartialArtsNode = xmlBaseMartialArtsDocumentNode.SelectSingleNode("/chummer/martialarts");
-            _xmlBaseMartialArtsTechniquesNode = xmlBaseMartialArtsDocumentNode.SelectSingleNode("/chummer/techniques");
+            _xmlBaseMartialArtsNode = xmlBaseMartialArtsDocumentNode.SelectSingleNodeAndCacheExpression("/chummer/martialarts");
+            _xmlBaseMartialArtsTechniquesNode = xmlBaseMartialArtsDocumentNode.SelectSingleNodeAndCacheExpression("/chummer/techniques");
         }
 
         private async void SelectMartialArt_Load(object sender, EventArgs e)

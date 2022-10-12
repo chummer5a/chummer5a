@@ -1714,7 +1714,7 @@ namespace Chummer.Backend.Equipment
                 {
                     case ClipboardContentType.Gear:
                         {
-                            XPathNodeIterator xmlAddonCategoryList = this.GetNodeXPath()?.Select("addoncategory");
+                            XPathNodeIterator xmlAddonCategoryList = this.GetNodeXPath()?.SelectAndCacheExpression("addoncategory");
                             if (!(xmlAddonCategoryList?.Count > 0))
                                 return true;
                             string strGearCategory = GlobalSettings.Clipboard.SelectSingleNode("category")?.Value;

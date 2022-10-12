@@ -196,14 +196,14 @@ namespace Chummer
                 foreach (XPathNavigator xmlCharacterDocument in lstCharacterXmlStatblocks)
                 {
                     XPathNavigator xmlBaseCharacterNode
-                        = xmlCharacterDocument.SelectSingleNode("/document/public/character");
+                        = await xmlCharacterDocument.SelectSingleNodeAndCacheExpressionAsync("/document/public/character", token);
                     if (xmlBaseCharacterNode != null)
                     {
                         HeroLabCharacterCache objCache = new HeroLabCharacterCache
                         {
-                            PlayerName = xmlBaseCharacterNode.SelectSingleNode("@playername")?.Value ?? string.Empty
+                            PlayerName = (await xmlBaseCharacterNode.SelectSingleNodeAndCacheExpressionAsync("@playername", token))?.Value ?? string.Empty
                         };
-                        string strNameString = xmlBaseCharacterNode.SelectSingleNode("@name")?.Value ?? string.Empty;
+                        string strNameString = (await xmlBaseCharacterNode.SelectSingleNodeAndCacheExpressionAsync("@name", token))?.Value ?? string.Empty;
                         objCache.CharacterId = strNameString;
                         if (!string.IsNullOrEmpty(strNameString))
                         {
@@ -220,15 +220,15 @@ namespace Chummer
                             }
                         }
 
-                        string strRaceString = xmlBaseCharacterNode.SelectSingleNode("race/@name")?.Value;
+                        string strRaceString = (await xmlBaseCharacterNode.SelectSingleNodeAndCacheExpressionAsync("race/@name", token))?.Value;
                         if (strRaceString == "Metasapient")
                             strRaceString = "A.I.";
                         if (!string.IsNullOrEmpty(strRaceString))
                         {
-                            foreach (XPathNavigator xmlMetatype in xmlMetatypesDocument.Select(
-                                         "/chummer/metatypes/metatype"))
+                            foreach (XPathNavigator xmlMetatype in await xmlMetatypesDocument.SelectAndCacheExpressionAsync(
+                                         "/chummer/metatypes/metatype", token))
                             {
-                                string strMetatypeName = xmlMetatype.SelectSingleNode("name")?.Value ?? string.Empty;
+                                string strMetatypeName = (await xmlMetatype.SelectSingleNodeAndCacheExpressionAsync("name", token))?.Value ?? string.Empty;
                                 if (strMetatypeName == strRaceString)
                                 {
                                     objCache.Metatype = strMetatypeName;
@@ -240,7 +240,7 @@ namespace Chummer
                                          await xmlMetatype.SelectAndCacheExpressionAsync("metavariants/metavariant", token: token).ConfigureAwait(false))
                                 {
                                     string strMetavariantName
-                                        = xmlMetavariant.SelectSingleNode("name")?.Value ?? string.Empty;
+                                        = (await xmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("name", token))?.Value ?? string.Empty;
                                     if (strMetavariantName == strRaceString)
                                     {
                                         objCache.Metatype = strMetatypeName;
@@ -251,17 +251,17 @@ namespace Chummer
                             }
                         }
 
-                        objCache.Description = xmlBaseCharacterNode.SelectSingleNode("personal/description")?.Value;
-                        objCache.Karma = xmlBaseCharacterNode.SelectSingleNode("karma/@total")?.Value ?? "0";
-                        objCache.Essence = xmlBaseCharacterNode
-                                           .SelectSingleNode("attributes/attribute[@name = \"Essence\"]/@text")?.Value;
+                        objCache.Description = (await xmlBaseCharacterNode.SelectSingleNodeAndCacheExpressionAsync("personal/description", token))?.Value;
+                        objCache.Karma = (await xmlBaseCharacterNode.SelectSingleNodeAndCacheExpressionAsync("karma/@total", token))?.Value ?? "0";
+                        objCache.Essence = (await xmlBaseCharacterNode
+                            .SelectSingleNodeAndCacheExpressionAsync("attributes/attribute[@name = \"Essence\"]/@text", token))?.Value;
                         objCache.BuildMethod
-                            = xmlBaseCharacterNode.SelectSingleNode("creation/bp/@total")?.ValueAsInt <= 100
+                            = (await xmlBaseCharacterNode.SelectSingleNodeAndCacheExpressionAsync("creation/bp/@total", token))?.ValueAsInt <= 100
                                 ? CharacterBuildMethod.Priority
                                 : CharacterBuildMethod.Karma;
 
                         string strSettingsSummary =
-                            xmlBaseCharacterNode.SelectSingleNode("settings/@summary")?.Value;
+                            (await xmlBaseCharacterNode.SelectSingleNodeAndCacheExpressionAsync("settings/@summary", token))?.Value;
                         if (!string.IsNullOrEmpty(strSettingsSummary))
                         {
                             int intSemicolonIndex;
@@ -323,14 +323,16 @@ namespace Chummer
                             {
                                 objCache.Created = true;
                             }
-                            else if (xmlJournalEntries?.Count == 1
-                                     && xmlJournalEntries.Current?.SelectSingleNode("@name")?.Value != "Title")
+                            else if (xmlJournalEntries?.Count == 1 && xmlJournalEntries.Current != null
+                                                                   && (await xmlJournalEntries.Current
+                                                                       .SelectSingleNodeAndCacheExpressionAsync(
+                                                                           "@name", token))?.Value != "Title")
                             {
                                 objCache.Created = true;
                             }
                         }
 
-                        string strImageString = xmlBaseCharacterNode.SelectSingleNode("images/image/@filename")?.Value;
+                        string strImageString = (await xmlBaseCharacterNode.SelectSingleNodeAndCacheExpressionAsync("images/image/@filename", token))?.Value;
                         if (!string.IsNullOrEmpty(strImageString))
                         {
                             (bool blnSuccess, Bitmap objTemp) = await _dicImages.TryGetValueAsync(strImageString, token).ConfigureAwait(false);

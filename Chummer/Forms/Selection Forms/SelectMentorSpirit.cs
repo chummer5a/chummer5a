@@ -82,7 +82,7 @@ namespace Chummer
                                     (_objCharacter.MagicianEnabled ||
                                      !strName.StartsWith("Magician:", StringComparison.Ordinal)))
                                 {
-                                    if (objChoice.SelectSingleNode("@set")?.Value == "2")
+                                    if ((await objChoice.SelectSingleNodeAndCacheExpressionAsync("@set"))?.Value == "2")
                                         lstChoice2.Add(new ListItem(strName,
                                                                     (await objChoice.SelectSingleNodeAndCacheExpressionAsync(
                                                                         "translate").ConfigureAwait(false))?.Value ?? strName));
@@ -134,21 +134,21 @@ namespace Chummer
 
                     // Get the information for the selected Mentor.
                     string strUnknown = await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
-                    string strAdvantage = objXmlMentor.SelectSingleNode("altadvantage")?.Value ??
-                                          objXmlMentor.SelectSingleNode("advantage")?.Value ??
+                    string strAdvantage = (await objXmlMentor.SelectSingleNodeAndCacheExpressionAsync("altadvantage"))?.Value ??
+                                          (await objXmlMentor.SelectSingleNodeAndCacheExpressionAsync("advantage"))?.Value ??
                                           strUnknown;
                     await lblAdvantage.DoThreadSafeAsync(x => x.Text = strAdvantage).ConfigureAwait(false);
                     await lblAdvantageLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strAdvantage)).ConfigureAwait(false);
-                    string strDisadvantage = objXmlMentor.SelectSingleNode("altdisadvantage")?.Value ??
-                                             objXmlMentor.SelectSingleNode("disadvantage")?.Value ??
+                    string strDisadvantage = (await objXmlMentor.SelectSingleNodeAndCacheExpressionAsync("altdisadvantage"))?.Value ??
+                                             (await objXmlMentor.SelectSingleNodeAndCacheExpressionAsync("disadvantage"))?.Value ??
                                              strUnknown;
                     await lblDisadvantage.DoThreadSafeAsync(x => x.Text = strDisadvantage).ConfigureAwait(false);
                     await lblDisadvantageLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strDisadvantage)).ConfigureAwait(false);
 
-                    string strSource = objXmlMentor.SelectSingleNode("source")?.Value ??
+                    string strSource = (await objXmlMentor.SelectSingleNodeAndCacheExpressionAsync("source"))?.Value ??
                                        await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
                     string strPage = (await objXmlMentor.SelectSingleNodeAndCacheExpressionAsync("altpage").ConfigureAwait(false))?.Value ??
-                                     objXmlMentor.SelectSingleNode("page")?.Value ??
+                                     (await objXmlMentor.SelectSingleNodeAndCacheExpressionAsync("page"))?.Value ??
                                      await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
                     SourceString objSourceString = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language,
                         GlobalSettings.CultureInfo, _objCharacter).ConfigureAwait(false);

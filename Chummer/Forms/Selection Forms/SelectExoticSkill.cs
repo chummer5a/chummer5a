@@ -142,7 +142,7 @@ namespace Chummer
                 {
                     foreach (XPathNavigator xmlWeapon in xmlWeaponList)
                     {
-                        string strName = xmlWeapon.SelectSingleNode("name")?.Value;
+                        string strName = (await xmlWeapon.SelectSingleNodeAndCacheExpressionAsync("name", token))?.Value;
                         if (!string.IsNullOrEmpty(strName))
                         {
                             lstSkillSpecializations.Add(

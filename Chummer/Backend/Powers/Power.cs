@@ -319,7 +319,7 @@ namespace Chummer
             Bonus = objNode["bonus"];
             if (objNode["adeptway"] != null)
             {
-                _nodAdeptWayRequirements = objNode["adeptwayrequires"]?.CreateNavigator() ?? this.GetNodeXPath()?.SelectSingleNode("adeptwayrequires");
+                _nodAdeptWayRequirements = objNode["adeptwayrequires"]?.CreateNavigator() ?? this.GetNodeXPath()?.SelectSingleNodeAndCacheExpression("adeptwayrequires");
             }
             if (Name != "Improved Reflexes" && Name.StartsWith("Improved Reflexes", StringComparison.Ordinal))
             {

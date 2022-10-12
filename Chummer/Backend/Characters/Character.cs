@@ -4845,7 +4845,7 @@ namespace Chummer
 
                                 objXmlCharacter = objXmlDocument.SelectSingleNode("/character");
                                 xmlCharacterNavigator =
-                                    objXmlDocument.GetFastNavigator().SelectSingleNode("/character");
+                                    objXmlDocument.GetFastNavigator().SelectSingleNodeAndCacheExpression("/character");
                                 return true;
                             }
 
@@ -4906,8 +4906,10 @@ namespace Chummer
                                 } while (blnErrorCaught);
 
                                 objXmlCharacter = objXmlDocument.SelectSingleNode("/character");
-                                xmlCharacterNavigator =
-                                    (await objXmlDocument.GetFastNavigatorAsync(token).ConfigureAwait(false)).SelectSingleNode("/character");
+                                xmlCharacterNavigator
+                                    = await (await objXmlDocument.GetFastNavigatorAsync(token).ConfigureAwait(false))
+                                            .SelectSingleNodeAndCacheExpressionAsync("/character", token)
+                                            .ConfigureAwait(false);
                                 return true;
                             }
 
@@ -4993,11 +4995,14 @@ namespace Chummer
                                         objXmlDocument.InnerXml =
                                             objXmlDocument.InnerXml.Replace("Corruptor", "Corrupter");
                                         xmlCharacterNavigator =
-                                            (blnSync
+                                            blnSync
                                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                 ? objXmlDocument.GetFastNavigator()
-                                                : await objXmlDocument.GetFastNavigatorAsync(token).ConfigureAwait(false))
-                                            .SelectSingleNode("/character");
+                                                                .SelectSingleNodeAndCacheExpression("/character")
+                                                : await (await objXmlDocument.GetFastNavigatorAsync(token)
+                                                                             .ConfigureAwait(false))
+                                                        .SelectSingleNodeAndCacheExpressionAsync("/character", token)
+                                                        .ConfigureAwait(false);
                                         if (xmlCharacterNavigator == null)
                                             return false;
                                     }
@@ -5569,7 +5574,7 @@ namespace Chummer
                                     && !Guid.TryParse(
                                         // ReSharper disable once MethodHasAsyncOverload
                                         (blnSync ? GetNodeXPath(true, token: token) : await GetNodeXPathAsync(true, token: token).ConfigureAwait(false))
-                                        ?.SelectSingleNode("id")?.Value, out _guiMetatype))
+                                        ?.SelectSingleNodeAndCacheExpression("id")?.Value, out _guiMetatype))
                                 {
                                     return false;
                                 }
@@ -5580,12 +5585,34 @@ namespace Chummer
                                 xmlCharacterNavigator.TryGetStringFieldQuickly("run", ref _strRun);
                                 xmlCharacterNavigator.TryGetStringFieldQuickly("sprint", ref _strSprint);
 
-                                _strRunAlt = xmlCharacterNavigator.SelectSingleNode("run/@alt")?.Value ??
-                                             string.Empty;
-                                _strWalkAlt = xmlCharacterNavigator.SelectSingleNode("walk/@alt")?.Value ??
-                                              string.Empty;
-                                _strSprintAlt = xmlCharacterNavigator.SelectSingleNode("sprint/@alt")?.Value ??
-                                                string.Empty;
+                                if (blnSync)
+                                {
+                                    _strRunAlt = xmlCharacterNavigator.SelectSingleNodeAndCacheExpression("run/@alt")
+                                                                      ?.Value ??
+                                                 string.Empty;
+                                    _strWalkAlt = xmlCharacterNavigator.SelectSingleNodeAndCacheExpression("walk/@alt")
+                                                                       ?.Value ??
+                                                  string.Empty;
+                                    _strSprintAlt = xmlCharacterNavigator
+                                                    .SelectSingleNodeAndCacheExpression("sprint/@alt")?.Value ??
+                                                    string.Empty;
+                                }
+                                else
+                                {
+                                    _strRunAlt
+                                        = (await xmlCharacterNavigator.SelectSingleNodeAndCacheExpressionAsync(
+                                              "run/@alt", token).ConfigureAwait(false))?.Value ??
+                                          string.Empty;
+                                    _strWalkAlt
+                                        = (await xmlCharacterNavigator.SelectSingleNodeAndCacheExpressionAsync(
+                                              "walk/@alt", token).ConfigureAwait(false))?.Value ??
+                                          string.Empty;
+                                    _strSprintAlt
+                                        = (await xmlCharacterNavigator.SelectSingleNodeAndCacheExpressionAsync(
+                                              "sprint/@alt", token).ConfigureAwait(false))?.Value ??
+                                          string.Empty;
+                                }
+
                                 xmlCharacterNavigator.TryGetInt32FieldQuickly("initiativedice",
                                                                               ref _intInitiativeDice);
                                 xmlCharacterNavigator.TryGetInt32FieldQuickly("metatypebp", ref _intMetatypeBP);
@@ -5601,7 +5628,7 @@ namespace Chummer
                                 {
                                     // ReSharper disable once MethodHasAsyncOverload
                                     _strMetatype = (blnSync ? GetNodeXPath(true, token: token) : await GetNodeXPathAsync(true, token: token).ConfigureAwait(false))
-                                                   .SelectSingleNode("name")?.Value ?? "Human";
+                                                   .SelectSingleNodeAndCacheExpression("name")?.Value ?? "Human";
                                 }
 
                                 if (!xmlCharacterNavigator.TryGetGuidFieldQuickly("metavariantid",
@@ -5612,7 +5639,7 @@ namespace Chummer
                                         = Guid.Parse(
                                             // ReSharper disable once MethodHasAsyncOverload
                                             (blnSync ? this.GetNodeXPath(token: token) : await this.GetNodeXPathAsync(token: token).ConfigureAwait(false))
-                                            ?.SelectSingleNode("id")?.Value);
+                                            ?.SelectSingleNodeAndCacheExpression("id")?.Value);
                                 }
 
                                 bool blnDoSourceFetch =
@@ -5629,8 +5656,8 @@ namespace Chummer
                                         = blnSync ? this.GetNodeXPath(token: token) : await this.GetNodeXPathAsync(token: token).ConfigureAwait(false);
                                     if (xmlCharNode != null)
                                     {
-                                        _strSource = xmlCharNode.SelectSingleNode("source")?.Value ?? _strSource;
-                                        _strPage = xmlCharNode.SelectSingleNode("page")?.Value ?? _strPage;
+                                        _strSource = xmlCharNode.SelectSingleNodeAndCacheExpression("source")?.Value ?? _strSource;
+                                        _strPage = xmlCharNode.SelectSingleNodeAndCacheExpression("page")?.Value ?? _strPage;
                                     }
                                 }
 
@@ -6086,7 +6113,7 @@ namespace Chummer
                                                     // ReSharper disable once MethodHasAsyncOverload
                                                     ? objQuality.GetNodeXPath(token: token)
                                                     : await objQuality.GetNodeXPathAsync(token: token).ConfigureAwait(false))
-                                                ?.SelectSingleNode("bonus/addgear/name")
+                                                ?.SelectSingleNodeAndCacheExpression("bonus/addgear/name")
                                                 ?.Value ==
                                                 "Living Persona")
                                                 objLivingPersonaQuality = objQuality;
@@ -6515,10 +6542,10 @@ namespace Chummer
                                 else
                                 {
                                     XPathNavigator xpathTraditionNavigator =
-                                        xmlCharacterNavigator.SelectSingleNode("tradition");
+                                        xmlCharacterNavigator.SelectSingleNodeAndCacheExpression("tradition");
                                     // Regular tradition load
-                                    if (xpathTraditionNavigator?.SelectSingleNode("guid") != null ||
-                                        xpathTraditionNavigator?.SelectSingleNode("id") != null)
+                                    if (xpathTraditionNavigator?.SelectSingleNodeAndCacheExpression("guid") != null ||
+                                        xpathTraditionNavigator?.SelectSingleNodeAndCacheExpression("id") != null)
                                     {
                                         _objTradition.Load(objXmlCharacter.SelectSingleNode("tradition"));
                                     }
@@ -11288,11 +11315,11 @@ namespace Chummer
                         {
                             if (strImprovedSourceName == "SEEKER_WIL")
                                 return (await LoadDataXPathAsync("qualities.xml", token: token).ConfigureAwait(false))
-                                       .SelectSingleNode(
+                                       .SelectSingleNodeAndCacheExpression(
                                            "/chummer/qualities/quality[name = \"Cyber-Singularity Seeker\"]/translate")
                                        ?.Value ?? "Cyber-Singularity Seeker";
                             return (await LoadDataXPathAsync("qualities.xml", token: token).ConfigureAwait(false))
-                                   .SelectSingleNode("/chummer/qualities/quality[name = \"Redliner\"]/translate")
+                                   .SelectSingleNodeAndCacheExpression("/chummer/qualities/quality[name = \"Redliner\"]/translate")
                                    ?.Value ?? "Redliner";
                         }
 
@@ -13470,7 +13497,7 @@ namespace Chummer
                 // Legacy Shimmer
                 if (Mugshots.Count == 0)
                 {
-                    XPathNavigator objOldMugshotNode = xmlSavedNode.SelectSingleNode("mugshot");
+                    XPathNavigator objOldMugshotNode = xmlSavedNode.SelectSingleNodeAndCacheExpression("mugshot");
                     string strMugshot = objOldMugshotNode?.Value;
                     if (!string.IsNullOrWhiteSpace(strMugshot))
                     {
@@ -19584,7 +19611,7 @@ namespace Chummer
                                 if (string.IsNullOrEmpty(strErasedString))
                                 {
                                     XPathNavigator xmlErasedQuality = LoadDataXPath("qualities.xml")
-                                        .SelectSingleNode("chummer/qualities/quality[name = \"Erased\"]");
+                                        .SelectSingleNodeAndCacheExpression("chummer/qualities/quality[name = \"Erased\"]");
                                     if (xmlErasedQuality != null)
                                     {
                                         strErasedString
@@ -27220,12 +27247,12 @@ namespace Chummer
                             sbdReturn.AppendLine(strToAppend);
                         else
                         {
-                            strToAppend = objXmlBook.SelectSingleNode("name")?.Value;
+                            strToAppend = objXmlBook.SelectSingleNodeAndCacheExpression("name")?.Value;
                             if (!string.IsNullOrEmpty(strToAppend))
                                 sbdReturn.AppendLine(strToAppend);
                             else
                             {
-                                strToAppend = objXmlBook.SelectSingleNode("altcode")?.Value ?? strBook;
+                                strToAppend = objXmlBook.SelectSingleNodeAndCacheExpression("altcode")?.Value ?? strBook;
                                 sbdReturn.Append(LanguageManager.GetString("String_Unknown", strLanguage))
                                          .Append(LanguageManager.GetString("String_Space", strLanguage)).Append('(')
                                          .Append(strToAppend).AppendLine(')');
@@ -31343,7 +31370,7 @@ namespace Chummer
                                                                       "]");
 
                                 _blnCreated =
-                                    (xmlStatBlockBaseNode.SelectSingleNode("karma/@total")?.Value ?? "0") !=
+                                    (xmlStatBlockBaseNode.SelectSingleNodeAndCacheExpression("karma/@total")?.Value ?? "0") !=
                                     "0";
                                 if (!_blnCreated)
                                 {
@@ -31356,7 +31383,7 @@ namespace Chummer
                                         _blnCreated = true;
                                     }
                                     else if (xmlJournalEntries.Count == 1 &&
-                                             xmlJournalEntries.Current.SelectSingleNode("@name")?.Value != "Title")
+                                             xmlJournalEntries.Current.SelectSingleNodeAndCacheExpression("@name")?.Value != "Title")
                                     {
                                         _blnCreated = true;
                                     }
@@ -31383,7 +31410,7 @@ namespace Chummer
                                 }
 
                                 // Metatype information.
-                                string strRaceString = xmlStatBlockBaseNode.SelectSingleNode("race/@name")?.Value;
+                                string strRaceString = xmlStatBlockBaseNode.SelectSingleNodeAndCacheExpression("race/@name")?.Value;
                                 if (!string.IsNullOrEmpty(strRaceString))
                                 {
                                     if (strRaceString == "Metasapient")
@@ -31396,26 +31423,26 @@ namespace Chummer
                                                  : await (await LoadDataXPathAsync("metatypes.xml", token: token).ConfigureAwait(false))
                                                          .SelectAndCacheExpressionAsync("/chummer/metatypes/metatype", token: token).ConfigureAwait(false)))
                                     {
-                                        string strMetatypeName = xmlMetatype.SelectSingleNode("name").Value;
+                                        string strMetatypeName = xmlMetatype.SelectSingleNodeAndCacheExpression("name").Value;
                                         if (strMetatypeName == strRaceString)
                                         {
                                             _strMetatype = strMetatypeName;
-                                            _strMetatypeCategory = xmlMetatype.SelectSingleNode("category").Value;
+                                            _strMetatypeCategory = xmlMetatype.SelectSingleNodeAndCacheExpression("category").Value;
                                             _strMetavariant = "None";
 
-                                            XPathNavigator objRunNode = xmlMetatype.SelectSingleNode("run");
-                                            XPathNavigator objWalkNode = xmlMetatype.SelectSingleNode("walk");
-                                            XPathNavigator objSprintNode = xmlMetatype.SelectSingleNode("sprint");
+                                            XPathNavigator objRunNode = xmlMetatype.SelectSingleNodeAndCacheExpression("run");
+                                            XPathNavigator objWalkNode = xmlMetatype.SelectSingleNodeAndCacheExpression("walk");
+                                            XPathNavigator objSprintNode = xmlMetatype.SelectSingleNodeAndCacheExpression("sprint");
 
-                                            _strMovement = xmlMetatype.SelectSingleNode("movement")?.Value ??
+                                            _strMovement = xmlMetatype.SelectSingleNodeAndCacheExpression("movement")?.Value ??
                                                            string.Empty;
                                             _strRun = objRunNode?.Value ?? string.Empty;
                                             _strWalk = objWalkNode?.Value ?? string.Empty;
                                             _strSprint = objSprintNode?.Value ?? string.Empty;
 
-                                            objRunNode = objRunNode?.SelectSingleNode("@alt");
-                                            objWalkNode = objWalkNode?.SelectSingleNode("@alt");
-                                            objSprintNode = objSprintNode?.SelectSingleNode("@alt");
+                                            objRunNode = objRunNode?.SelectSingleNodeAndCacheExpression("@alt");
+                                            objWalkNode = objWalkNode?.SelectSingleNodeAndCacheExpression("@alt");
+                                            objSprintNode = objSprintNode?.SelectSingleNodeAndCacheExpression("@alt");
                                             _strRunAlt = objRunNode?.Value ?? string.Empty;
                                             _strWalkAlt = objWalkNode?.Value ?? string.Empty;
                                             _strSprintAlt = objSprintNode?.Value ?? string.Empty;
@@ -31426,35 +31453,35 @@ namespace Chummer
                                                      "metavariants/metavariant"))
                                         {
                                             string strMetavariantName =
-                                                xmlMetavariant.SelectSingleNode("name").Value;
+                                                xmlMetavariant.SelectSingleNodeAndCacheExpression("name").Value;
                                             if (strMetavariantName == strRaceString)
                                             {
                                                 _strMetatype = strMetatypeName;
                                                 _strMetatypeCategory =
-                                                    xmlMetatype.SelectSingleNode("category").Value;
+                                                    xmlMetatype.SelectSingleNodeAndCacheExpression("category").Value;
                                                 _strMetavariant = strMetavariantName;
 
                                                 XPathNavigator objRunNode =
-                                                    xmlMetavariant?.SelectSingleNode("run") ??
-                                                    xmlMetatype?.SelectSingleNode("run");
+                                                    xmlMetavariant?.SelectSingleNodeAndCacheExpression("run") ??
+                                                    xmlMetatype?.SelectSingleNodeAndCacheExpression("run");
                                                 XPathNavigator objWalkNode =
-                                                    xmlMetavariant?.SelectSingleNode("walk") ??
-                                                    xmlMetatype?.SelectSingleNode("walk");
+                                                    xmlMetavariant?.SelectSingleNodeAndCacheExpression("walk") ??
+                                                    xmlMetatype?.SelectSingleNodeAndCacheExpression("walk");
                                                 XPathNavigator objSprintNode =
-                                                    xmlMetavariant?.SelectSingleNode("sprint") ??
-                                                    xmlMetatype?.SelectSingleNode("sprint");
+                                                    xmlMetavariant?.SelectSingleNodeAndCacheExpression("sprint") ??
+                                                    xmlMetatype?.SelectSingleNodeAndCacheExpression("sprint");
 
                                                 _strMovement =
-                                                    xmlMetavariant?.SelectSingleNode("movement")?.Value ??
-                                                    xmlMetatype?.SelectSingleNode("movement")?.Value ??
+                                                    xmlMetavariant?.SelectSingleNodeAndCacheExpression("movement")?.Value ??
+                                                    xmlMetatype?.SelectSingleNodeAndCacheExpression("movement")?.Value ??
                                                     string.Empty;
                                                 _strRun = objRunNode?.Value ?? string.Empty;
                                                 _strWalk = objWalkNode?.Value ?? string.Empty;
                                                 _strSprint = objSprintNode?.Value ?? string.Empty;
 
-                                                objRunNode = objRunNode?.SelectSingleNode("@alt");
-                                                objWalkNode = objWalkNode?.SelectSingleNode("@alt");
-                                                objSprintNode = objSprintNode?.SelectSingleNode("@alt");
+                                                objRunNode = objRunNode?.SelectSingleNodeAndCacheExpression("@alt");
+                                                objWalkNode = objWalkNode?.SelectSingleNodeAndCacheExpression("@alt");
+                                                objSprintNode = objSprintNode?.SelectSingleNodeAndCacheExpression("@alt");
                                                 _strRunAlt = objRunNode?.Value ?? string.Empty;
                                                 _strWalkAlt = objWalkNode?.Value ?? string.Empty;
                                                 _strSprintAlt = objSprintNode?.Value ?? string.Empty;
@@ -31476,25 +31503,25 @@ namespace Chummer
                                     _strAlias = strCharacterId;
                                 }
 
-                                XPathNavigator xmlPersonalNode = xmlStatBlockBaseNode.SelectSingleNode("personal");
+                                XPathNavigator xmlPersonalNode = xmlStatBlockBaseNode.SelectSingleNodeAndCacheExpression("personal");
                                 if (xmlPersonalNode != null)
                                 {
-                                    _strBackground = xmlPersonalNode.SelectSingleNode("description")?.Value;
-                                    _strHeight = xmlPersonalNode.SelectSingleNode("charheight/@text")?.Value;
-                                    _strWeight = xmlPersonalNode.SelectSingleNode("charweight/@text")?.Value;
+                                    _strBackground = xmlPersonalNode.SelectSingleNodeAndCacheExpression("description")?.Value;
+                                    _strHeight = xmlPersonalNode.SelectSingleNodeAndCacheExpression("charheight/@text")?.Value;
+                                    _strWeight = xmlPersonalNode.SelectSingleNodeAndCacheExpression("charweight/@text")?.Value;
                                     if (xmlPersonalNode.HasAttributes)
                                     {
-                                        _strGender = xmlPersonalNode.SelectSingleNode("@gender")?.Value;
-                                        _strAge = xmlPersonalNode.SelectSingleNode("@age")?.Value;
-                                        _strHair = xmlPersonalNode.SelectSingleNode("@hair")?.Value;
-                                        _strEyes = xmlPersonalNode.SelectSingleNode("@eyes")?.Value;
-                                        _strSkin = xmlPersonalNode.SelectSingleNode("@skin")?.Value;
+                                        _strGender = xmlPersonalNode.SelectSingleNodeAndCacheExpression("@gender")?.Value;
+                                        _strAge = xmlPersonalNode.SelectSingleNodeAndCacheExpression("@age")?.Value;
+                                        _strHair = xmlPersonalNode.SelectSingleNodeAndCacheExpression("@hair")?.Value;
+                                        _strEyes = xmlPersonalNode.SelectSingleNodeAndCacheExpression("@eyes")?.Value;
+                                        _strSkin = xmlPersonalNode.SelectSingleNodeAndCacheExpression("@skin")?.Value;
                                     }
                                 }
 
-                                _strPlayerName = xmlStatBlockBaseNode.SelectSingleNode("@playername")?.Value;
+                                _strPlayerName = xmlStatBlockBaseNode.SelectSingleNodeAndCacheExpression("@playername")?.Value;
 
-                                foreach (XPathNavigator xmlImageFileNameNode in xmlStatBlockBaseNode.Select(
+                                foreach (XPathNavigator xmlImageFileNameNode in xmlStatBlockBaseNode.SelectAndCacheExpression(
                                              "images/image/@filename"))
                                 {
                                     if (dicImages.TryGetValue(xmlImageFileNameNode.Value, out Bitmap objOutput))
@@ -31513,7 +31540,7 @@ namespace Chummer
                                 if (string.IsNullOrEmpty(strSettingsKey))
                                 {
                                     string strSettingsSummary =
-                                        xmlStatBlockBaseNode.SelectSingleNode("settings/@summary")?.Value;
+                                        xmlStatBlockBaseNode.SelectSingleNodeAndCacheExpression("settings/@summary")?.Value;
                                     if (!string.IsNullOrEmpty(strSettingsSummary))
                                     {
                                         int intCharCreationSystemsIndex =
@@ -31551,7 +31578,7 @@ namespace Chummer
                                                     }
 
                                                     bool blnIsKarmaBased = xmlStatBlockBaseNode
-                                                                           .SelectSingleNode("creation/bp/@total")
+                                                                           .SelectSingleNodeAndCacheExpression("creation/bp/@total")
                                                                            ?.ValueAsInt > 100;
                                                     if (blnDoFullHouse)
                                                     {
@@ -31634,11 +31661,11 @@ namespace Chummer
                                     if (strRaceString == "A.I.")
                                         _strPriorityTalent = "AI";
                                     XPathNavigator xmlPriorityTalentPick =
-                                        xmlLeadsBaseNode.SelectSingleNode(
+                                        xmlLeadsBaseNode.SelectSingleNodeAndCacheExpression(
                                             "container/pick[starts-with(@thing, \"qu\") and @source = \"heritage\"]");
                                     if (xmlPriorityTalentPick != null)
                                     {
-                                        switch (xmlPriorityTalentPick.SelectSingleNode("@thing")?.Value)
+                                        switch (xmlPriorityTalentPick.SelectSingleNodeAndCacheExpression("@thing")?.Value)
                                         {
                                             case "quAware":
                                                 _strPriorityTalent = "Aware";
@@ -33289,7 +33316,7 @@ namespace Chummer
                                             Lifestyle objLifestyle = new Lifestyle(this);
                                             objLifestyle.Create(xmlLifestyleDataNode);
                                             if (int.TryParse(
-                                                    xmlHeroLabLifestyleNode.SelectSingleNode("@months")?.Value,
+                                                    xmlHeroLabLifestyleNode.SelectSingleNodeAndCacheExpression("@months")?.Value,
                                                     out int intMonths))
                                             {
                                                 objLifestyle.Increments = intMonths;
@@ -33327,10 +33354,10 @@ namespace Chummer
                                     }
                                 }
 
-                                foreach (XPathNavigator xmlPluginToAdd in xmlStatBlockBaseNode.Select(
+                                foreach (XPathNavigator xmlPluginToAdd in xmlStatBlockBaseNode.SelectAndCacheExpression(
                                              "gear/equipment/item[@useradded = \"no\"]"))
                                 {
-                                    string strName = xmlPluginToAdd.SelectSingleNode("@name")?.Value;
+                                    string strName = xmlPluginToAdd.SelectSingleNodeAndCacheExpression("@name")?.Value;
                                     if (!string.IsNullOrEmpty(strName))
                                     {
                                         Gear objPlugin = _lstGear.FirstOrDefault(x =>
@@ -33340,9 +33367,9 @@ namespace Chummer
                                         {
                                             objPlugin.Quantity =
                                                 Convert.ToDecimal(
-                                                    xmlPluginToAdd.SelectSingleNode("@quantity")?.Value ?? "1",
+                                                    xmlPluginToAdd.SelectSingleNodeAndCacheExpression("@quantity")?.Value ?? "1",
                                                     GlobalSettings.InvariantCultureInfo);
-                                            objPlugin.Notes = xmlPluginToAdd.SelectSingleNode("description")?.Value;
+                                            objPlugin.Notes = xmlPluginToAdd.SelectSingleNodeAndCacheExpression("description")?.Value;
                                             objPlugin.ProcessHeroLabGearPlugins(xmlPluginToAdd, lstWeapons);
                                         }
                                     }

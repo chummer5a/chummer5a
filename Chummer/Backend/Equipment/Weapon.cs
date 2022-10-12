@@ -5452,7 +5452,7 @@ namespace Chummer.Backend.Equipment
                     return _strRelevantSpec;
                 }
 
-                string strGunnerySpec = this.GetNodeXPath()?.SelectSingleNode("category/@gunneryspec")?.Value;
+                string strGunnerySpec = this.GetNodeXPath()?.SelectSingleNodeAndCacheExpression("category/@gunneryspec")?.Value;
                 if (string.IsNullOrEmpty(strGunnerySpec))
                 {
                     strGunnerySpec = _objCharacter.LoadDataXPath("weapons.xml")
@@ -7144,7 +7144,7 @@ namespace Chummer.Backend.Equipment
         {
             if (xmlWeaponImportNode == null)
                 return false;
-            string strOriginalName = xmlWeaponImportNode.SelectSingleNode("@name")?.Value ?? string.Empty;
+            string strOriginalName = xmlWeaponImportNode.SelectSingleNodeAndCacheExpression("@name")?.Value ?? string.Empty;
             if (!string.IsNullOrEmpty(strOriginalName))
             {
                 XmlDocument xmlWeaponDocument = _objCharacter.LoadData("weapons.xml");
@@ -7167,9 +7167,9 @@ namespace Chummer.Backend.Equipment
                     Create(xmlWeaponDataNode, lstWeapons, true, true, true);
                     if (Cost.Contains("Variable"))
                     {
-                        Cost = xmlWeaponImportNode.SelectSingleNode("gearcost/@value")?.Value;
+                        Cost = xmlWeaponImportNode.SelectSingleNodeAndCacheExpression("gearcost/@value")?.Value;
                     }
-                    Notes = xmlWeaponImportNode.SelectSingleNode("description")?.Value;
+                    Notes = xmlWeaponImportNode.SelectSingleNodeAndCacheExpression("description")?.Value;
 
                     ProcessHeroLabWeaponPlugins(xmlWeaponImportNode, lstWeapons);
 
@@ -7196,7 +7196,7 @@ namespace Chummer.Backend.Equipment
                     }
                     else
                     {
-                        string strWeaponAccessoryName = xmlWeaponImportNode.SelectSingleNode("@name")?.Value;
+                        string strWeaponAccessoryName = xmlWeaponImportNode.SelectSingleNodeAndCacheExpression("@name")?.Value;
                         if (!string.IsNullOrEmpty(strWeaponAccessoryName))
                         {
                             XmlDocument xmlWeaponDocument = _objCharacter.LoadData("weapons.xml");
@@ -7276,8 +7276,8 @@ namespace Chummer.Backend.Equipment
                                 string strExtraMount = xmlWeaponAccessoryData["extramount"]?.InnerText.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries)
                                     .FirstOrDefault(x => x != strMainMount) ?? string.Empty;
 
-                                objWeaponAccessory.Create(xmlWeaponAccessoryData, new Tuple<string, string>(strMainMount, strExtraMount), xmlWeaponAccessoryToImport.SelectSingleNode("@rating")?.ValueAsInt ?? 0);
-                                objWeaponAccessory.Notes = xmlWeaponAccessoryToImport.SelectSingleNode("description")?.Value;
+                                objWeaponAccessory.Create(xmlWeaponAccessoryData, new Tuple<string, string>(strMainMount, strExtraMount), xmlWeaponAccessoryToImport.SelectSingleNodeAndCacheExpression("@rating")?.ValueAsInt ?? 0);
+                                objWeaponAccessory.Notes = xmlWeaponAccessoryToImport.SelectSingleNodeAndCacheExpression("description")?.Value;
                                 objWeaponAccessory.Parent = this;
                                 WeaponAccessories.Add(objWeaponAccessory);
 
@@ -7291,14 +7291,14 @@ namespace Chummer.Backend.Equipment
                                     }
                                     foreach (XPathNavigator xmlPluginToAdd in xmlWeaponAccessoryToImport.Select(strPluginName + "/item[@useradded = \"no\"]"))
                                     {
-                                        string strGearName = xmlPluginToAdd.SelectSingleNode("@name")?.Value;
+                                        string strGearName = xmlPluginToAdd.SelectSingleNodeAndCacheExpression("@name")?.Value;
                                         if (!string.IsNullOrEmpty(strGearName))
                                         {
                                             Gear objPlugin = objWeaponAccessory.GearChildren.FirstOrDefault(x => x.IncludedInParent && !string.IsNullOrEmpty(x.Name) && (x.Name.Contains(strGearName) || strGearName.Contains(x.Name)));
                                             if (objPlugin != null)
                                             {
-                                                objPlugin.Quantity = xmlPluginToAdd.SelectSingleNode("@quantity")?.ValueAsInt ?? 1;
-                                                objPlugin.Notes = xmlPluginToAdd.SelectSingleNode("description")?.Value;
+                                                objPlugin.Quantity = xmlPluginToAdd.SelectSingleNodeAndCacheExpression("@quantity")?.ValueAsInt ?? 1;
+                                                objPlugin.Notes = xmlPluginToAdd.SelectSingleNodeAndCacheExpression("description")?.Value;
                                                 objPlugin.ProcessHeroLabGearPlugins(xmlPluginToAdd, lstWeapons);
                                             }
                                         }
@@ -7316,13 +7316,13 @@ namespace Chummer.Backend.Equipment
                 }
                 foreach (XPathNavigator xmlPluginToAdd in xmlWeaponImportNode.Select(strName + "/item[@useradded = \"no\"]"))
                 {
-                    string strPluginName = xmlWeaponImportNode.SelectSingleNode("@name")?.Value;
+                    string strPluginName = xmlWeaponImportNode.SelectSingleNodeAndCacheExpression("@name")?.Value;
                     if (!string.IsNullOrEmpty(strPluginName))
                     {
                         Weapon objUnderbarrel = UnderbarrelWeapons.FirstOrDefault(x => x.IncludedInWeapon && (x.Name.Contains(strPluginName) || strPluginName.Contains(x.Name)));
                         if (objUnderbarrel != null)
                         {
-                            objUnderbarrel.Notes = xmlPluginToAdd.SelectSingleNode("description")?.Value;
+                            objUnderbarrel.Notes = xmlPluginToAdd.SelectSingleNodeAndCacheExpression("description")?.Value;
                             objUnderbarrel.ProcessHeroLabWeaponPlugins(xmlPluginToAdd, lstWeapons);
                         }
                         else
@@ -7330,7 +7330,7 @@ namespace Chummer.Backend.Equipment
                             WeaponAccessory objWeaponAccessory = WeaponAccessories.FirstOrDefault(x => x.IncludedInWeapon && (x.Name.Contains(strPluginName) || strPluginName.Contains(x.Name)));
                             if (objWeaponAccessory != null)
                             {
-                                objWeaponAccessory.Notes = xmlPluginToAdd.SelectSingleNode("description")?.Value;
+                                objWeaponAccessory.Notes = xmlPluginToAdd.SelectSingleNodeAndCacheExpression("description")?.Value;
 
                                 foreach (string strPluginNodeName in Character.HeroLabPluginNodeNames)
                                 {
@@ -7342,14 +7342,14 @@ namespace Chummer.Backend.Equipment
                                     }
                                     foreach (XPathNavigator xmlSubPluginToAdd in xmlPluginToAdd.Select(strPluginNodeName + "/item[@useradded = \"no\"]"))
                                     {
-                                        string strGearName = xmlSubPluginToAdd.SelectSingleNode("@name")?.Value;
+                                        string strGearName = xmlSubPluginToAdd.SelectSingleNodeAndCacheExpression("@name")?.Value;
                                         if (!string.IsNullOrEmpty(strGearName))
                                         {
                                             Gear objPlugin = objWeaponAccessory.GearChildren.FirstOrDefault(x => x.IncludedInParent && !string.IsNullOrEmpty(x.Name) && (x.Name.Contains(strGearName) || strGearName.Contains(x.Name)));
                                             if (objPlugin != null)
                                             {
-                                                objPlugin.Quantity = xmlSubPluginToAdd.SelectSingleNode("@quantity")?.ValueAsInt ?? 1;
-                                                objPlugin.Notes = xmlSubPluginToAdd.SelectSingleNode("description")?.Value;
+                                                objPlugin.Quantity = xmlSubPluginToAdd.SelectSingleNodeAndCacheExpression("@quantity")?.ValueAsInt ?? 1;
+                                                objPlugin.Notes = xmlSubPluginToAdd.SelectSingleNodeAndCacheExpression("description")?.Value;
                                                 objPlugin.ProcessHeroLabGearPlugins(xmlSubPluginToAdd, lstWeapons);
                                             }
                                         }
@@ -7363,8 +7363,8 @@ namespace Chummer.Backend.Equipment
                                     Gear objPlugin = objLoopAccessory.GearChildren.DeepFirstOrDefault(x => x.Children, x => x.IncludedInParent && !string.IsNullOrEmpty(x.Name) && (x.Name.Contains(strName) || strName.Contains(x.Name)));
                                     if (objPlugin != null)
                                     {
-                                        objPlugin.Quantity = xmlPluginToAdd.SelectSingleNode("@quantity")?.ValueAsInt ?? 1;
-                                        objPlugin.Notes = xmlPluginToAdd.SelectSingleNode("description")?.Value;
+                                        objPlugin.Quantity = xmlPluginToAdd.SelectSingleNodeAndCacheExpression("@quantity")?.ValueAsInt ?? 1;
+                                        objPlugin.Notes = xmlPluginToAdd.SelectSingleNodeAndCacheExpression("description")?.Value;
                                         objPlugin.ProcessHeroLabGearPlugins(xmlPluginToAdd, lstWeapons);
                                         break;
                                     }
@@ -7720,13 +7720,13 @@ namespace Chummer.Backend.Equipment
         {
             if (objXmlAccessory == null) return false;
             string[] lstMounts = AccessoryMounts.Split('/', StringSplitOptions.RemoveEmptyEntries);
-            XPathNavigator xmlMountNode = objXmlAccessory.SelectSingleNode("mount");
+            XPathNavigator xmlMountNode = objXmlAccessory.SelectSingleNodeAndCacheExpression("mount");
             if (!string.IsNullOrEmpty(xmlMountNode?.Value) && (lstMounts.Length == 0 || xmlMountNode.Value.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries).All(strItem =>
                 !string.IsNullOrEmpty(strItem) && lstMounts.All(strAllowedMount => strAllowedMount != strItem))))
             {
                 return false;
             }
-            xmlMountNode = objXmlAccessory.SelectSingleNode("extramount");
+            xmlMountNode = objXmlAccessory.SelectSingleNodeAndCacheExpression("extramount");
             if (!string.IsNullOrEmpty(xmlMountNode?.Value) && (lstMounts.Length == 0 || xmlMountNode.Value.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries).All(strItem =>
                 !string.IsNullOrEmpty(strItem) && lstMounts.All(strAllowedMount => strAllowedMount != strItem))))
             {
@@ -7736,19 +7736,19 @@ namespace Chummer.Backend.Equipment
             if (!objXmlAccessory.RequirementsMet(_objCharacter, this, string.Empty, string.Empty))
                 return false;
 
-            XPathNavigator xmlTestNode = objXmlAccessory.SelectSingleNode("forbidden/weapondetails");
+            XPathNavigator xmlTestNode = objXmlAccessory.SelectSingleNodeAndCacheExpression("forbidden/weapondetails");
             if (xmlTestNode != null)
             {
                 XPathNavigator xmlRequirementsNode = this.GetNodeXPath();
                 // Assumes topmost parent is an AND node
                 if (xmlRequirementsNode.ProcessFilterOperationNode(xmlTestNode, false))
                     return false;
-                xmlTestNode = objXmlAccessory.SelectSingleNode("required/weapondetails");
+                xmlTestNode = objXmlAccessory.SelectSingleNodeAndCacheExpression("required/weapondetails");
                 // Assumes topmost parent is an AND node
                 return xmlTestNode == null || xmlRequirementsNode.ProcessFilterOperationNode(xmlTestNode, false);
             }
 
-            xmlTestNode = objXmlAccessory.SelectSingleNode("required/weapondetails");
+            xmlTestNode = objXmlAccessory.SelectSingleNodeAndCacheExpression("required/weapondetails");
             // Assumes topmost parent is an AND node
             return xmlTestNode == null || this.GetNodeXPath().ProcessFilterOperationNode(xmlTestNode, false);
         }

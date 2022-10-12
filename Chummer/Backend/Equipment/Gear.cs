@@ -3177,7 +3177,7 @@ namespace Chummer.Backend.Equipment
                 return Name;
 
             XPathNavigator xmlGearDataNode = this.GetNodeXPath(strLanguage);
-            if (xmlGearDataNode?.SelectSingleNode("name")?.Value == "Custom Item")
+            if (xmlGearDataNode?.SelectSingleNodeAndCacheExpression("name")?.Value == "Custom Item")
             {
                 return _objCharacter.TranslateExtra(Name, strLanguage);
             }
@@ -3194,7 +3194,7 @@ namespace Chummer.Backend.Equipment
                 return Name;
 
             XPathNavigator xmlGearDataNode = await this.GetNodeXPathAsync(strLanguage, token: token);
-            if (xmlGearDataNode?.SelectSingleNode("name")?.Value == "Custom Item")
+            if (xmlGearDataNode?.SelectSingleNodeAndCacheExpression("name")?.Value == "Custom Item")
             {
                 return await _objCharacter.TranslateExtraAsync(Name, strLanguage, token: token);
             }
@@ -4190,7 +4190,7 @@ namespace Chummer.Backend.Equipment
                 {
                     objParentNode.Nodes.Add(objChildNode);
                     if (objChild.ParentID != InternalId ||
-                        this.GetNodeXPath()?.SelectSingleNode("gears/@startcollapsed")?.Value != bool.TrueString)
+                        this.GetNodeXPath()?.SelectSingleNodeAndCacheExpression("gears/@startcollapsed")?.Value != bool.TrueString)
                         blnExpandNode = true;
                 }
             }
@@ -4304,7 +4304,7 @@ namespace Chummer.Backend.Equipment
         {
             if (xmlGearImportNode == null)
                 return false;
-            string strOriginalName = xmlGearImportNode.SelectSingleNode("@name")?.Value ?? string.Empty;
+            string strOriginalName = xmlGearImportNode.SelectSingleNodeAndCacheExpression("@name")?.Value ?? string.Empty;
             if (!string.IsNullOrEmpty(strOriginalName))
             {
                 XmlDocument xmlGearDocument = _objCharacter.LoadData("gear.xml");
@@ -4521,15 +4521,15 @@ namespace Chummer.Backend.Equipment
                 foreach (XPathNavigator xmlPluginToAdd in xmlGearImportNode.Select(strPluginNodeName +
                     "/item[@useradded = \"no\"]"))
                 {
-                    string strName = xmlPluginToAdd.SelectSingleNode("@name")?.Value ?? string.Empty;
+                    string strName = xmlPluginToAdd.SelectSingleNodeAndCacheExpression("@name")?.Value ?? string.Empty;
                     if (!string.IsNullOrEmpty(strName))
                     {
                         Gear objPlugin = Children.FirstOrDefault(x =>
                             x.IncludedInParent && (x.Name.Contains(strName) || strName.Contains(x.Name)));
                         if (objPlugin != null)
                         {
-                            objPlugin.Quantity = xmlPluginToAdd.SelectSingleNode("@quantity")?.ValueAsInt ?? 1;
-                            objPlugin.Notes = xmlPluginToAdd.SelectSingleNode("description")?.Value;
+                            objPlugin.Quantity = xmlPluginToAdd.SelectSingleNodeAndCacheExpression("@quantity")?.ValueAsInt ?? 1;
+                            objPlugin.Notes = xmlPluginToAdd.SelectSingleNodeAndCacheExpression("description")?.Value;
                             objPlugin.ProcessHeroLabGearPlugins(xmlPluginToAdd, lstWeapons);
                         }
                     }
@@ -4696,7 +4696,7 @@ namespace Chummer.Backend.Equipment
                 {
                     case ClipboardContentType.Gear:
                         {
-                            XPathNodeIterator xmlAddonCategoryList = this.GetNodeXPath()?.Select("addoncategory");
+                            XPathNodeIterator xmlAddonCategoryList = this.GetNodeXPath()?.SelectAndCacheExpression("addoncategory");
                             if (!(xmlAddonCategoryList?.Count > 0))
                                 return false;
                             string strCategory = GlobalSettings.Clipboard.SelectSingleNode("category")?.Value;

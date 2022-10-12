@@ -26,6 +26,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
+using System.Xml.XPath;
 using Chummer.Backend.Attributes;
 using Chummer.Backend.Equipment;
 using Chummer.Backend.Skills;
@@ -628,9 +629,11 @@ namespace Chummer
                                             // Check to see if the character has a Metagenic Quality.
                                             foreach (Quality objQuality in _objCharacter.Qualities)
                                             {
-                                                if ((await objQuality.GetNodeXPathAsync(token: token).ConfigureAwait(false))
-                                                    ?.SelectSingleNode("metagenic")
-                                                    ?.Value == bool.TrueString)
+                                                XPathNavigator objInnerNode = (await objQuality.GetNodeXPathAsync(token: token)
+                                                    .ConfigureAwait(false));
+                                                if (objInnerNode != null
+                                                    && (await objInnerNode.SelectSingleNodeAndCacheExpressionAsync(
+                                                        "metagenic", token))?.Value == bool.TrueString)
                                                 {
                                                     blnRequirementForbidden = true;
                                                     sbdForbidden.AppendLine().Append('\t')

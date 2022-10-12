@@ -565,7 +565,7 @@ namespace Chummer.Backend.Skills
         {
             if (xmlSkillNode == null)
                 throw new ArgumentNullException(nameof(xmlSkillNode));
-            string strName = xmlSkillNode.SelectSingleNode("@name")?.Value ?? string.Empty;
+            string strName = xmlSkillNode.SelectSingleNodeAndCacheExpression("@name")?.Value ?? string.Empty;
 
             XmlNode xmlSkillDataNode = objCharacter.LoadData("skills.xml")
                 .SelectSingleNode((blnIsKnowledgeSkill
@@ -576,9 +576,9 @@ namespace Chummer.Backend.Skills
 
             bool blnIsNativeLanguage = false;
             int intKarmaRating = 0;
-            if (xmlSkillNode.SelectSingleNode("@text")?.Value == "N")
+            if (xmlSkillNode.SelectSingleNodeAndCacheExpression("@text")?.Value == "N")
                 blnIsNativeLanguage = true;
-            else if (!int.TryParse(xmlSkillNode.SelectSingleNode("@base")?.Value, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out intKarmaRating)) // Only reading karma rating out for now, any base rating will need modification within SkillsSection
+            else if (!int.TryParse(xmlSkillNode.SelectSingleNodeAndCacheExpression("@base")?.Value, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out intKarmaRating)) // Only reading karma rating out for now, any base rating will need modification within SkillsSection
                 intKarmaRating = 0;
 
             Skill objSkill;
@@ -595,7 +595,7 @@ namespace Chummer.Backend.Skills
             else
             {
                 objSkill = FromData(xmlSkillDataNode, objCharacter, false);
-                if (xmlSkillNode.SelectSingleNode("@fromgroup")?.Value == "yes")
+                if (xmlSkillNode.SelectSingleNodeAndCacheExpression("@fromgroup")?.Value == "yes")
                 {
                     intKarmaRating -= objSkill.SkillGroupObject.Karma;
                 }
@@ -603,7 +603,7 @@ namespace Chummer.Backend.Skills
 
                 if (objSkill is ExoticSkill objExoticSkill)
                 {
-                    string strSpecializationName = xmlSkillNode.SelectSingleNode("specialization/@bonustext")?.Value ?? string.Empty;
+                    string strSpecializationName = xmlSkillNode.SelectSingleNodeAndCacheExpression("specialization/@bonustext")?.Value ?? string.Empty;
                     if (!string.IsNullOrEmpty(strSpecializationName))
                     {
                         int intLastPlus = strSpecializationName.LastIndexOf('+');
@@ -620,7 +620,7 @@ namespace Chummer.Backend.Skills
 
             foreach (XPathNavigator xmlSpecializationNode in xmlSkillNode.SelectAndCacheExpression("specialization"))
             {
-                string strSpecializationName = xmlSpecializationNode.SelectSingleNode("@bonustext")?.Value;
+                string strSpecializationName = xmlSpecializationNode.SelectSingleNodeAndCacheExpression("@bonustext")?.Value;
                 if (string.IsNullOrEmpty(strSpecializationName))
                     continue;
                 int intLastPlus = strSpecializationName.LastIndexOf('+');
@@ -2773,7 +2773,7 @@ namespace Chummer.Backend.Skills
                                 else
                                     _lstCachedSuggestedSpecializations.Clear();
                                 XPathNodeIterator xmlSpecList =
-                                    this.GetNodeXPath(GlobalSettings.Language)?.Select("specs/spec");
+                                    this.GetNodeXPath(GlobalSettings.Language)?.SelectAndCacheExpression("specs/spec");
                                 if (xmlSpecList?.Count > 0)
                                 {
                                     foreach (XPathNavigator xmlSpecNode in xmlSpecList)
@@ -2783,7 +2783,7 @@ namespace Chummer.Backend.Skills
                                             continue;
                                         _lstCachedSuggestedSpecializations.Add(
                                             new ListItem(strInnerText,
-                                                xmlSpecNode.SelectSingleNode("@translate")?.Value ?? strInnerText));
+                                                xmlSpecNode.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strInnerText));
                                     }
                                 }
 
@@ -2827,8 +2827,12 @@ namespace Chummer.Backend.Skills
                                 _lstCachedSuggestedSpecializations = Utils.ListItemListPool.Get();
                             else
                                 _lstCachedSuggestedSpecializations.Clear();
-                            XPathNodeIterator xmlSpecList =
-                                (await this.GetNodeXPathAsync(GlobalSettings.Language, token: token).ConfigureAwait(false))?.Select("specs/spec");
+                            XPathNavigator objBaseNode = await this
+                                                               .GetNodeXPathAsync(GlobalSettings.Language, token: token)
+                                                               .ConfigureAwait(false);
+                            XPathNodeIterator xmlSpecList = objBaseNode != null
+                                ? await objBaseNode.SelectAndCacheExpressionAsync("specs/spec", token).ConfigureAwait(false)
+                                : null;
                             if (xmlSpecList?.Count > 0)
                             {
                                 foreach (XPathNavigator xmlSpecNode in xmlSpecList)
@@ -2838,7 +2842,7 @@ namespace Chummer.Backend.Skills
                                         continue;
                                     _lstCachedSuggestedSpecializations.Add(
                                         new ListItem(strInnerText,
-                                                     xmlSpecNode.SelectSingleNode("@translate")?.Value
+                                                     (await xmlSpecNode.SelectSingleNodeAndCacheExpressionAsync("@translate", token).ConfigureAwait(false))?.Value
                                                      ?? strInnerText));
                                 }
                             }

@@ -48,7 +48,7 @@ namespace Chummer
             this.TranslateWinForm();
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             // Load the Complex Form information.
-            _xmlBaseComplexFormsNode = _objCharacter.LoadDataXPath("complexforms.xml").SelectSingleNode("/chummer/complexforms");
+            _xmlBaseComplexFormsNode = _objCharacter.LoadDataXPath("complexforms.xml").SelectSingleNodeAndCacheExpression("/chummer/complexforms");
 
             _xmlOptionalComplexFormNode = _objCharacter.GetNodeXPath();
             if (_xmlOptionalComplexFormNode == null) return;
@@ -61,7 +61,7 @@ namespace Chummer
                     _xmlOptionalComplexFormNode = xmlMetavariantNode;
             }
 
-            _xmlOptionalComplexFormNode = _xmlOptionalComplexFormNode.SelectSingleNode("optionalcomplexforms");
+            _xmlOptionalComplexFormNode = _xmlOptionalComplexFormNode.SelectSingleNodeAndCacheExpression("optionalcomplexforms");
         }
 
         private async void SelectComplexForm_Load(object sender, EventArgs e)
@@ -91,7 +91,7 @@ namespace Chummer
             try
             {
                 string strDuration;
-                switch (xmlComplexForm.SelectSingleNode("duration")?.Value)
+                switch ((await xmlComplexForm.SelectSingleNodeAndCacheExpressionAsync("duration"))?.Value)
                 {
                     case "P":
                         strDuration = await LanguageManager.GetStringAsync("String_SpellDurationPermanent").ConfigureAwait(false);
@@ -113,7 +113,7 @@ namespace Chummer
                 await lblDuration.DoThreadSafeAsync(x => x.Text = strDuration).ConfigureAwait(false);
 
                 string strTarget;
-                switch (xmlComplexForm.SelectSingleNode("target")?.Value)
+                switch ((await xmlComplexForm.SelectSingleNodeAndCacheExpressionAsync("target"))?.Value)
                 {
                     case "Persona":
                         strTarget = await LanguageManager.GetStringAsync("String_ComplexFormTargetPersona").ConfigureAwait(false);
@@ -150,7 +150,7 @@ namespace Chummer
 
                 await lblTarget.DoThreadSafeAsync(x => x.Text = strTarget).ConfigureAwait(false);
 
-                string strFv = xmlComplexForm.SelectSingleNode("fv")?.Value.Replace('/', '÷').Replace('*', '×')
+                string strFv = (await xmlComplexForm.SelectSingleNodeAndCacheExpressionAsync("fv"))?.Value.Replace('/', '÷').Replace('*', '×')
                                ?? string.Empty;
                 if (!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 {
@@ -172,10 +172,10 @@ namespace Chummer
 
                 await lblFV.DoThreadSafeAsync(x => x.Text = strFv).ConfigureAwait(false);
 
-                string strSource = xmlComplexForm.SelectSingleNode("source")?.Value ??
+                string strSource = (await xmlComplexForm.SelectSingleNodeAndCacheExpressionAsync("source"))?.Value ??
                                    await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
                 string strPage = (await xmlComplexForm.SelectSingleNodeAndCacheExpressionAsync("altpage").ConfigureAwait(false))?.Value ??
-                                 xmlComplexForm.SelectSingleNode("page")?.Value ??
+                                 (await xmlComplexForm.SelectSingleNodeAndCacheExpressionAsync("page"))?.Value ??
                                  await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
                 SourceString objSource = await SourceString.GetSourceStringAsync(
                     strSource, strPage, GlobalSettings.Language,

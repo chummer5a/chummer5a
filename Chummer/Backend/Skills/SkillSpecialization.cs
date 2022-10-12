@@ -130,7 +130,7 @@ namespace Chummer.Backend.Skills
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
-            return this.GetNodeXPath(strLanguage)?.SelectSingleNode("@translate")?.Value ?? Name;
+            return this.GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? Name;
         }
 
         /// <summary>
@@ -141,7 +141,10 @@ namespace Chummer.Backend.Skills
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
-            return (await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false))?.SelectSingleNode("@translate")?.Value ?? Name;
+            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
+            return objNode != null
+                ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("@translate", token).ConfigureAwait(false))?.Value ?? Name
+                : Name;
         }
 
         /// <summary>
