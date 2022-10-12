@@ -644,7 +644,7 @@ namespace Chummer.Backend.Skills
 
         internal void Load(XmlNode xmlSkillNode, bool blnLegacy, CustomActivity parentActivity, CancellationToken token = default)
         {
-            Utils.JoinableTaskFactory.RunAsync(() => LoadCoreAsync(true, xmlSkillNode, blnLegacy, parentActivity, token));
+            Utils.JoinableTaskFactory.Run(() => LoadCoreAsync(true, xmlSkillNode, blnLegacy, parentActivity, token));
         }
 
         internal Task LoadAsync(XmlNode xmlSkillNode, bool blnLegacy, CustomActivity parentActivity, CancellationToken token = default)

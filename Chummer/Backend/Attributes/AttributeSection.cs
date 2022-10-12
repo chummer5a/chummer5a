@@ -656,7 +656,7 @@ namespace Chummer.Backend.Attributes
 
         public void Load(XmlNode xmlSavedCharacterNode, CancellationToken token = default)
         {
-            Utils.JoinableTaskFactory.RunAsync(() => LoadCoreAsync(true, xmlSavedCharacterNode, token));
+            Utils.JoinableTaskFactory.Run(() => LoadCoreAsync(true, xmlSavedCharacterNode, token));
         }
 
         public Task LoadAsync(XmlNode xmlSavedCharacterNode, CancellationToken token = default)
