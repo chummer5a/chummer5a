@@ -1723,20 +1723,20 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (ReferenceEquals(lsbThis.DataSource, lstItems))
                 return;
+            token.ThrowIfCancellationRequested();
             // Binding multiple ComboBoxes to the same DataSource will also cause selected values to sync up between them.
             // Resetting bindings to prevent this though will also reset bindings to other properties, so that's not really an option
             // This means the code we use has to set the DataSources to new lists instead of the same one.
-            List<ListItem> lstItemsToSet = null;
-            bool blnDoReturnList = false;
+            List<ListItem> lstItemsToSet = Utils.ListItemListPool.Get();
+            bool blnDoReturnList = true;
             try
             {
                 if (lstItems != null)
                 {
-                    lstItemsToSet = Utils.ListItemListPool.Get();
-                    blnDoReturnList = true;
                     lstItemsToSet.AddRange(lstItems);
                 }
 
+                token.ThrowIfCancellationRequested();
                 lsbThis.BeginUpdate();
                 try
                 {
@@ -1747,17 +1747,15 @@ namespace Chummer
                         lsbThis.DisplayMember = nameof(ListItem.Name);
                     }
                     // Setting DataSource is slow because WinForms is old, so let's make sure we definitely need to do it
-                    else if (lstItemsToSet != null && lstCurrentList.SequenceEqual(lstItemsToSet))
+                    else if (lstCurrentList.SequenceEqual(lstItemsToSet))
                         return;
 
                     token.ThrowIfCancellationRequested();
                     List<ListItem> lstOldItems = null;
                     if (lsbThis.DataSource != null)
                     {
-                        lstOldItems
-                            = lsbThis
-                                    .DataSource as
-                                List<ListItem>; // If the old DataSource is a List<ListItem>, make sure we can return it to the pool
+                        // If the old DataSource is a List<ListItem>, make sure we can return it to the pool
+                        lstOldItems = lsbThis.DataSource as List<ListItem>;
                         lsbThis.BindingContext = new BindingContext();
                     }
                     else
@@ -1765,7 +1763,10 @@ namespace Chummer
                         lsbThis.Disposed += (sender, args) =>
                         {
                             if (lsbThis.DataSource is List<ListItem> lstInnerToReturn)
+                            {
+                                lsbThis.DataSource = null;
                                 Utils.ListItemListPool.Return(lstInnerToReturn);
+                            }
                         };
                     }
 
@@ -1801,20 +1802,20 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (ReferenceEquals(cboThis.DataSource, lstItems))
                 return;
+            token.ThrowIfCancellationRequested();
             // Binding multiple ComboBoxes to the same DataSource will also cause selected values to sync up between them.
             // Resetting bindings to prevent this though will also reset bindings to other properties, so that's not really an option
             // This means the code we use has to set the DataSources to new lists instead of the same one.
-            List<ListItem> lstItemsToSet = null;
-            bool blnDoReturnList = false;
+            List<ListItem> lstItemsToSet = Utils.ListItemListPool.Get();
+            bool blnDoReturnList = true;
             try
             {
                 if (lstItems != null)
                 {
-                    lstItemsToSet = Utils.ListItemListPool.Get();
-                    blnDoReturnList = true;
                     lstItemsToSet.AddRange(lstItems);
                 }
 
+                token.ThrowIfCancellationRequested();
                 cboThis.BeginUpdate();
                 try
                 {
@@ -1825,17 +1826,15 @@ namespace Chummer
                         cboThis.DisplayMember = nameof(ListItem.Name);
                     }
                     // Setting DataSource is slow because WinForms is old, so let's make sure we definitely need to do it
-                    else if (lstItemsToSet != null && lstCurrentList.SequenceEqual(lstItemsToSet))
+                    else if (lstCurrentList.SequenceEqual(lstItemsToSet))
                         return;
 
                     token.ThrowIfCancellationRequested();
                     List<ListItem> lstOldItems = null;
                     if (cboThis.DataSource != null)
                     {
-                        lstOldItems
-                            = cboThis
-                                    .DataSource as
-                                List<ListItem>; // If the old DataSource is a List<ListItem>, make sure we can return it to the pool
+                        // If the old DataSource is a List<ListItem>, make sure we can return it to the pool
+                        lstOldItems = cboThis.DataSource as List<ListItem>;
                         cboThis.BindingContext = new BindingContext();
                     }
                     else
@@ -1843,7 +1842,10 @@ namespace Chummer
                         cboThis.Disposed += (sender, args) =>
                         {
                             if (cboThis.DataSource is List<ListItem> lstInnerToReturn)
+                            {
+                                cboThis.DataSource = null;
                                 Utils.ListItemListPool.Return(lstInnerToReturn);
+                            }
                         };
                     }
 
@@ -1879,20 +1881,20 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (ReferenceEquals(cboThis.DataSource, lstItems))
                 return;
+            token.ThrowIfCancellationRequested();
             // Binding multiple ComboBoxes to the same DataSource will also cause selected values to sync up between them.
             // Resetting bindings to prevent this though will also reset bindings to other properties, so that's not really an option
             // This means the code we use has to set the DataSources to new lists instead of the same one.
-            List<ListItem> lstItemsToSet = null;
-            bool blnDoReturnList = false;
+            List<ListItem> lstItemsToSet = Utils.ListItemListPool.Get();
+            bool blnDoReturnList = true;
             try
             {
                 if (lstItems != null)
                 {
-                    lstItemsToSet = Utils.ListItemListPool.Get();
-                    blnDoReturnList = true;
                     lstItemsToSet.AddRange(lstItems);
                 }
 
+                token.ThrowIfCancellationRequested();
                 cboThis.BeginUpdate();
                 try
                 {
@@ -1903,17 +1905,15 @@ namespace Chummer
                         cboThis.DisplayMember = nameof(ListItem.Name);
                     }
                     // Setting DataSource is slow because WinForms is old, so let's make sure we definitely need to do it
-                    else if (lstItemsToSet != null && lstCurrentList.SequenceEqual(lstItemsToSet))
+                    else if (lstCurrentList.SequenceEqual(lstItemsToSet))
                         return;
 
                     token.ThrowIfCancellationRequested();
                     List<ListItem> lstOldItems = null;
                     if (cboThis.DataSource != null)
                     {
-                        lstOldItems
-                            = cboThis
-                                    .DataSource as
-                                List<ListItem>; // If the old DataSource is a List<ListItem>, make sure we can return it to the pool
+                        // If the old DataSource is a List<ListItem>, make sure we can return it to the pool
+                        lstOldItems = cboThis.DataSource as List<ListItem>;
                         cboThis.BindingContext = new BindingContext();
                     }
                     else
@@ -1921,7 +1921,10 @@ namespace Chummer
                         cboThis.Disposed += (sender, args) =>
                         {
                             if (cboThis.DataSource is List<ListItem> lstInnerToReturn)
+                            {
+                                cboThis.DataSource = null;
                                 Utils.ListItemListPool.Return(lstInnerToReturn);
+                            }
                         };
                     }
 
