@@ -1046,72 +1046,8 @@ namespace Chummer.Backend.Equipment
                 }
 
                 // Retrieve the Bioware or Cyberware ESS Cost Multiplier. Bioware Modifiers do not apply to Genetech.
-                if (_objCharacter.Created && this.GetNodeXPath()?.SelectSingleNodeAndCacheExpression("forcegrade")?.Value != "None")
-                {
-                    _decExtraESSAdditiveMultiplier = 0;
-                    _decExtraESSMultiplicativeMultiplier = 1;
-                    switch (_eImprovementSource)
-                    {
-                        // Apply the character's Cyberware Essence cost multiplier if applicable.
-                        case Improvement.ImprovementSource.Cyberware:
-                        {
-                            List<Improvement> lstUsedImprovements =
-                                ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter,
-                                    Improvement.ImprovementType.CyberwareEssCostNonRetroactive);
-                            if (lstUsedImprovements.Count != 0)
-                            {
-                                decimal decMultiplier = 1;
-                                decMultiplier = lstUsedImprovements.Aggregate(decMultiplier,
-                                    (current, objImprovement) =>
-                                        current - (1m - objImprovement.Value / 100m));
-                                _decExtraESSAdditiveMultiplier -= 1.0m - decMultiplier;
-                            }
-
-                            List<Improvement> lstUsedImprovements2 =
-                                ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter,
-                                    Improvement.ImprovementType.CyberwareTotalEssMultiplierNonRetroactive);
-                            if (lstUsedImprovements2.Count != 0)
-                            {
-                                foreach (Improvement objImprovement in lstUsedImprovements2)
-                                {
-                                    _decExtraESSMultiplicativeMultiplier *=
-                                        objImprovement.Value / 100m;
-                                }
-                            }
-
-                            break;
-                        }
-                        // Apply the character's Bioware Essence cost multiplier if applicable.
-                        case Improvement.ImprovementSource.Bioware:
-                        {
-                            List<Improvement> lstUsedImprovements =
-                                ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter,
-                                    Improvement.ImprovementType.BiowareEssCostNonRetroactive);
-                            if (lstUsedImprovements.Count != 0)
-                            {
-                                decimal decMultiplier = 1;
-                                decMultiplier = lstUsedImprovements.Aggregate(decMultiplier,
-                                    (current, objImprovement) =>
-                                        current - (1m - objImprovement.Value / 100m));
-                                _decExtraESSAdditiveMultiplier -= 1.0m - decMultiplier;
-                            }
-
-                            List<Improvement> lstUsedImprovements2 =
-                                ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter,
-                                    Improvement.ImprovementType.BiowareTotalEssMultiplierNonRetroactive);
-                            if (lstUsedImprovements2.Count != 0)
-                            {
-                                foreach (Improvement objImprovement in lstUsedImprovements2)
-                                {
-                                    _decExtraESSMultiplicativeMultiplier *=
-                                        objImprovement.Value / 100m;
-                                }
-                            }
-
-                            break;
-                        }
-                    }
-                }
+                if (_objCharacter.Created)
+                    SaveNonRetroactiveEssenceModifiers();
 
                 if (blnCreateChildren)
                     CreateChildren(objXmlCyberware, objGrade, lstWeapons, lstVehicles, blnCreateImprovements);
@@ -3861,6 +3797,76 @@ namespace Chummer.Backend.Equipment
                     if ((Parent == null || AddToParentESS) && string.IsNullOrEmpty(PlugsIntoModularMount) &&
                         ParentVehicle == null)
                         _objCharacter.OnPropertyChanged(EssencePropertyName);
+                }
+            }
+        }
+
+        public void SaveNonRetroactiveEssenceModifiers()
+        {
+            if (this.GetNodeXPath()?.SelectSingleNodeAndCacheExpression("forcegrade")?.Value != "None")
+            {
+                _decExtraESSAdditiveMultiplier = 0;
+                _decExtraESSMultiplicativeMultiplier = 1;
+                switch (_eImprovementSource)
+                {
+                    // Apply the character's Cyberware Essence cost multiplier if applicable.
+                    case Improvement.ImprovementSource.Cyberware:
+                        {
+                            List<Improvement> lstUsedImprovements =
+                                ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter,
+                                    Improvement.ImprovementType.CyberwareEssCostNonRetroactive);
+                            if (lstUsedImprovements.Count != 0)
+                            {
+                                decimal decMultiplier = 1;
+                                decMultiplier = lstUsedImprovements.Aggregate(decMultiplier,
+                                    (current, objImprovement) =>
+                                        current - (1m - objImprovement.Value / 100m));
+                                _decExtraESSAdditiveMultiplier -= 1.0m - decMultiplier;
+                            }
+
+                            List<Improvement> lstUsedImprovements2 =
+                                ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter,
+                                    Improvement.ImprovementType.CyberwareTotalEssMultiplierNonRetroactive);
+                            if (lstUsedImprovements2.Count != 0)
+                            {
+                                foreach (Improvement objImprovement in lstUsedImprovements2)
+                                {
+                                    _decExtraESSMultiplicativeMultiplier *=
+                                        objImprovement.Value / 100m;
+                                }
+                            }
+
+                            break;
+                        }
+                    // Apply the character's Bioware Essence cost multiplier if applicable.
+                    case Improvement.ImprovementSource.Bioware:
+                        {
+                            List<Improvement> lstUsedImprovements =
+                                ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter,
+                                    Improvement.ImprovementType.BiowareEssCostNonRetroactive);
+                            if (lstUsedImprovements.Count != 0)
+                            {
+                                decimal decMultiplier = 1;
+                                decMultiplier = lstUsedImprovements.Aggregate(decMultiplier,
+                                    (current, objImprovement) =>
+                                        current - (1m - objImprovement.Value / 100m));
+                                _decExtraESSAdditiveMultiplier -= 1.0m - decMultiplier;
+                            }
+
+                            List<Improvement> lstUsedImprovements2 =
+                                ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter,
+                                    Improvement.ImprovementType.BiowareTotalEssMultiplierNonRetroactive);
+                            if (lstUsedImprovements2.Count != 0)
+                            {
+                                foreach (Improvement objImprovement in lstUsedImprovements2)
+                                {
+                                    _decExtraESSMultiplicativeMultiplier *=
+                                        objImprovement.Value / 100m;
+                                }
+                            }
+
+                            break;
+                        }
                 }
             }
         }
