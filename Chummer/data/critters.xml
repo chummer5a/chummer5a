@@ -52104,6 +52104,378 @@
       <page>169</page>
     </metatype>
     <metatype>
+      <id>fb630477-55d2-4898-8865-1c8e933ea65b</id>
+      <name>Ipodo (Ferret)</name>
+      <category>Technocritters</category>
+      <karma>0</karma>
+      <bodmin>1</bodmin>
+      <bodmax>3</bodmax>
+      <bodaug>7</bodaug>
+      <agimin>2</agimin>
+      <agimax>5</agimax>
+      <agiaug>9</agiaug>
+      <reamin>2</reamin>
+      <reamax>5</reamax>
+      <reaaug>9</reaaug>
+      <strmin>1</strmin>
+      <strmax>4</strmax>
+      <straug>8</straug>
+      <chamin>3</chamin>
+      <chamax>6</chamax>
+      <chaaug>10</chaaug>
+      <intmin>2</intmin>
+      <intmax>8</intmax>
+      <intaug>12</intaug>
+      <logmin>1</logmin>
+      <logmax>4</logmax>
+      <logaug>8</logaug>
+      <wilmin>4</wilmin>
+      <wilmax>8</wilmax>
+      <wilaug>12</wilaug>
+      <inimin>8</inimin>
+      <inimax>16</inimax>
+      <iniaug>25</iniaug>
+      <edgmin>5</edgmin>
+      <edgmax>6</edgmax>
+      <edgaug>6</edgaug>
+      <magmin>0</magmin>
+      <magmax>0</magmax>
+      <magaug>0</magaug>
+      <resmin>6</resmin>
+      <resmax>6</resmax>
+      <resaug>6</resaug>
+      <depmin>0</depmin>
+      <depmax>0</depmax>
+      <depaug>0</depaug>
+      <essmin>0</essmin>
+      <essmax>6</essmax>
+      <essaug>6</essaug>
+      <walk>2/0/0</walk>
+      <run>6/0/0</run>
+      <sprint>4/0/0</sprint>
+      <bonus>
+        <enableattribute>
+          <name>RES</name>
+        </enableattribute>
+        <enabletab>
+          <name>critter</name>
+          <name>technomancer</name>
+        </enabletab>
+      </bonus>
+      <powers>
+        <power>AR-Parallelism</power>
+        <power>Blend</power>
+        <power>Gremlins</power>
+        <power>Holographic Concealment</power>
+        <power>Munge</power>
+        <power select="Bite: DV (STR+1)P, AP 0, Reach 1">Natural Weapon</power>
+        <power>Resonance Feed</power>
+        <power>Tunnel</power>
+        <power rating="1">Fragile</power>
+      </powers>
+      <skills>
+        <skill rating="3">Gymnastics</skill>
+        <skill rating="3">Perception</skill>
+        <skill rating="3">Sneaking</skill>
+        <skill rating="4">Tracking</skill>
+        <skill rating="3">Unarmed Combat</skill>
+        <skill rating="5">Computer</skill>
+        <skill rating="3">Cybercombat</skill>
+        <skill rating="5">Electronic Warfare</skill>
+        <skill rating="6">Hacking</skill>
+        <skill rating="5">Software</skill>
+      </skills>
+      <complexforms>
+        <complexform select="Firewall">Diffusion of [Matrix Attribute]</complexform>
+        <complexform select="Attack">Diffusion of [Matrix Attribute]</complexform>
+        <complexform select="Sleaze">Infusion of [Matrix Attribute]</complexform>
+        <complexform>Pulse Storm</complexform>
+        <complexform>Puppeteer</complexform>
+        <complexform>Resonance Spike</complexform>
+      </complexforms>
+      <source>KC</source>
+      <page>170</page>
+    </metatype>
+    <metatype>
+      <id>c2c8269e-3d38-4af7-b009-57ff447f0f62</id>
+      <name>Ipodo (Otter)</name>
+      <category>Technocritters</category>
+      <karma>0</karma>
+      <bodmin>2</bodmin>
+      <bodmax>4</bodmax>
+      <bodaug>8</bodaug>
+      <agimin>3</agimin>
+      <agimax>6</agimax>
+      <agiaug>10</agiaug>
+      <reamin>3</reamin>
+      <reamax>6</reamax>
+      <reaaug>10</reaaug>
+      <strmin>2</strmin>
+      <strmax>5</strmax>
+      <straug>9</straug>
+      <chamin>3</chamin>
+      <chamax>6</chamax>
+      <chaaug>10</chaaug>
+      <intmin>2</intmin>
+      <intmax>8</intmax>
+      <intaug>12</intaug>
+      <logmin>1</logmin>
+      <logmax>4</logmax>
+      <logaug>8</logaug>
+      <wilmin>4</wilmin>
+      <wilmax>8</wilmax>
+      <wilaug>12</wilaug>
+      <inimin>8</inimin>
+      <inimax>16</inimax>
+      <iniaug>25</iniaug>
+      <edgmin>5</edgmin>
+      <edgmax>6</edgmax>
+      <edgaug>6</edgaug>
+      <magmin>0</magmin>
+      <magmax>0</magmax>
+      <magaug>0</magaug>
+      <resmin>6</resmin>
+      <resmax>6</resmax>
+      <resaug>6</resaug>
+      <depmin>0</depmin>
+      <depmax>0</depmax>
+      <depaug>0</depaug>
+      <essmin>0</essmin>
+      <essmax>6</essmax>
+      <essaug>6</essaug>
+      <walk>2/0/0</walk>
+      <run>6/0/0</run>
+      <sprint>4/0/0</sprint>
+      <bonus>
+        <enableattribute>
+          <name>RES</name>
+        </enableattribute>
+        <enabletab>
+          <name>critter</name>
+          <name>technomancer</name>
+        </enabletab>
+      </bonus>
+      <powers>
+        <power>AR-Parallelism</power>
+        <power>Blend</power>
+        <power>Gremlins</power>
+        <power>Holographic Concealment</power>
+        <power>Munge</power>
+        <power select="Bite: DV (STR+1)P, AP 0, Reach 1">Natural Weapon</power>
+        <power>Resonance Feed</power>
+        <power>Tunnel</power>
+        <power rating="1">Fragile</power>
+      </powers>
+      <skills>
+        <skill rating="3">Gymnastics</skill>
+        <skill rating="3">Perception</skill>
+        <skill rating="3">Sneaking</skill>
+        <skill rating="4">Tracking</skill>
+        <skill rating="3">Unarmed Combat</skill>
+        <skill rating="5">Computer</skill>
+        <skill rating="3">Cybercombat</skill>
+        <skill rating="5">Electronic Warfare</skill>
+        <skill rating="6">Hacking</skill>
+        <skill rating="5">Software</skill>
+      </skills>
+      <complexforms>
+        <complexform select="Firewall">Diffusion of [Matrix Attribute]</complexform>
+        <complexform select="Attack">Diffusion of [Matrix Attribute]</complexform>
+        <complexform select="Sleaze">Infusion of [Matrix Attribute]</complexform>
+        <complexform>Pulse Storm</complexform>
+        <complexform>Puppeteer</complexform>
+        <complexform>Resonance Spike</complexform>
+      </complexforms>
+      <source>KC</source>
+      <page>170</page>
+    </metatype>
+    <metatype>
+      <id>de742f83-97aa-4ae2-844c-c23325962ffa</id>
+      <name>Ipodo (Badger)</name>
+      <category>Technocritters</category>
+      <karma>0</karma>
+      <bodmin>2</bodmin>
+      <bodmax>4</bodmax>
+      <bodaug>8</bodaug>
+      <agimin>3</agimin>
+      <agimax>6</agimax>
+      <agiaug>10</agiaug>
+      <reamin>3</reamin>
+      <reamax>6</reamax>
+      <reaaug>10</reaaug>
+      <strmin>2</strmin>
+      <strmax>5</strmax>
+      <straug>9</straug>
+      <chamin>3</chamin>
+      <chamax>6</chamax>
+      <chaaug>10</chaaug>
+      <intmin>2</intmin>
+      <intmax>8</intmax>
+      <intaug>12</intaug>
+      <logmin>1</logmin>
+      <logmax>4</logmax>
+      <logaug>8</logaug>
+      <wilmin>4</wilmin>
+      <wilmax>8</wilmax>
+      <wilaug>12</wilaug>
+      <inimin>8</inimin>
+      <inimax>16</inimax>
+      <iniaug>25</iniaug>
+      <edgmin>5</edgmin>
+      <edgmax>6</edgmax>
+      <edgaug>6</edgaug>
+      <magmin>0</magmin>
+      <magmax>0</magmax>
+      <magaug>0</magaug>
+      <resmin>6</resmin>
+      <resmax>6</resmax>
+      <resaug>6</resaug>
+      <depmin>0</depmin>
+      <depmax>0</depmax>
+      <depaug>0</depaug>
+      <essmin>0</essmin>
+      <essmax>6</essmax>
+      <essaug>6</essaug>
+      <walk>2/0/0</walk>
+      <run>6/0/0</run>
+      <sprint>4/0/0</sprint>
+      <bonus>
+        <enableattribute>
+          <name>RES</name>
+        </enableattribute>
+        <enabletab>
+          <name>critter</name>
+          <name>technomancer</name>
+        </enabletab>
+      </bonus>
+      <powers>
+        <power>AR-Parallelism</power>
+        <power>Blend</power>
+        <power>Gremlins</power>
+        <power>Holographic Concealment</power>
+        <power>Munge</power>
+        <power select="Bite: DV (STR+1)P, AP 0, Reach 1">Natural Weapon</power>
+        <power>Resonance Feed</power>
+        <power>Tunnel</power>
+        <power rating="1">Fragile</power>
+      </powers>
+      <skills>
+        <skill rating="3">Gymnastics</skill>
+        <skill rating="3">Perception</skill>
+        <skill rating="3">Sneaking</skill>
+        <skill rating="4">Tracking</skill>
+        <skill rating="3">Unarmed Combat</skill>
+        <skill rating="5">Computer</skill>
+        <skill rating="3">Cybercombat</skill>
+        <skill rating="5">Electronic Warfare</skill>
+        <skill rating="6">Hacking</skill>
+        <skill rating="5">Software</skill>
+      </skills>
+      <complexforms>
+        <complexform select="Firewall">Diffusion of [Matrix Attribute]</complexform>
+        <complexform select="Attack">Diffusion of [Matrix Attribute]</complexform>
+        <complexform select="Sleaze">Infusion of [Matrix Attribute]</complexform>
+        <complexform>Pulse Storm</complexform>
+        <complexform>Puppeteer</complexform>
+        <complexform>Resonance Spike</complexform>
+      </complexforms>
+      <source>KC</source>
+      <page>170</page>
+    </metatype>
+    <metatype>
+      <id>949aa959-aca5-4ffb-af5b-1f138e0f3cfb</id>
+      <name>Ipodo (Wolverine)</name>
+      <category>Technocritters</category>
+      <karma>0</karma>
+      <bodmin>3</bodmin>
+      <bodmax>5</bodmax>
+      <bodaug>9</bodaug>
+      <agimin>4</agimin>
+      <agimax>7</agimax>
+      <agiaug>11</agiaug>
+      <reamin>4</reamin>
+      <reamax>7</reamax>
+      <reaaug>11</reaaug>
+      <strmin>3</strmin>
+      <strmax>6</strmax>
+      <straug>10</straug>
+      <chamin>3</chamin>
+      <chamax>6</chamax>
+      <chaaug>10</chaaug>
+      <intmin>2</intmin>
+      <intmax>8</intmax>
+      <intaug>12</intaug>
+      <logmin>1</logmin>
+      <logmax>4</logmax>
+      <logaug>8</logaug>
+      <wilmin>4</wilmin>
+      <wilmax>8</wilmax>
+      <wilaug>12</wilaug>
+      <inimin>8</inimin>
+      <inimax>16</inimax>
+      <iniaug>25</iniaug>
+      <edgmin>5</edgmin>
+      <edgmax>6</edgmax>
+      <edgaug>6</edgaug>
+      <magmin>0</magmin>
+      <magmax>0</magmax>
+      <magaug>0</magaug>
+      <resmin>6</resmin>
+      <resmax>6</resmax>
+      <resaug>6</resaug>
+      <depmin>0</depmin>
+      <depmax>0</depmax>
+      <depaug>0</depaug>
+      <essmin>0</essmin>
+      <essmax>6</essmax>
+      <essaug>6</essaug>
+      <walk>2/0/0</walk>
+      <run>6/0/0</run>
+      <sprint>4/0/0</sprint>
+      <bonus>
+        <enableattribute>
+          <name>RES</name>
+        </enableattribute>
+        <enabletab>
+          <name>critter</name>
+          <name>technomancer</name>
+        </enabletab>
+      </bonus>
+      <powers>
+        <power>AR-Parallelism</power>
+        <power>Blend</power>
+        <power>Gremlins</power>
+        <power>Holographic Concealment</power>
+        <power>Munge</power>
+        <power select="Bite: DV (STR+1)P, AP 0, Reach 1">Natural Weapon</power>
+        <power>Resonance Feed</power>
+        <power>Tunnel</power>
+        <power rating="1">Fragile</power>
+      </powers>
+      <skills>
+        <skill rating="3">Gymnastics</skill>
+        <skill rating="3">Perception</skill>
+        <skill rating="3">Sneaking</skill>
+        <skill rating="4">Tracking</skill>
+        <skill rating="3">Unarmed Combat</skill>
+        <skill rating="5">Computer</skill>
+        <skill rating="3">Cybercombat</skill>
+        <skill rating="5">Electronic Warfare</skill>
+        <skill rating="6">Hacking</skill>
+        <skill rating="5">Software</skill>
+      </skills>
+      <complexforms>
+        <complexform select="Firewall">Diffusion of [Matrix Attribute]</complexform>
+        <complexform select="Attack">Diffusion of [Matrix Attribute]</complexform>
+        <complexform select="Sleaze">Infusion of [Matrix Attribute]</complexform>
+        <complexform>Pulse Storm</complexform>
+        <complexform>Puppeteer</complexform>
+        <complexform>Resonance Spike</complexform>
+      </complexforms>
+      <source>KC</source>
+      <page>170</page>
+    </metatype>
+    <metatype>
       <id>8f7e0bfe-ce38-489b-ace7-b0aa4f7e320c</id>
       <name>Energizer</name>
       <category>Technocritters</category>
