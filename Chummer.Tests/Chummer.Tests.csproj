@@ -65,15 +65,6 @@
     <Reference Include="Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\MSTest.TestFramework.2.2.10\lib\net45\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.VisualStudio.Threading, Version=17.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.VisualStudio.Threading.17.3.44\lib\net472\Microsoft.VisualStudio.Threading.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.Validation, Version=17.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.VisualStudio.Validation.17.0.64\lib\netstandard2.0\Microsoft.VisualStudio.Validation.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Win32.Registry, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Win32.Registry.5.0.0\lib\net461\Microsoft.Win32.Registry.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -97,19 +88,12 @@
     <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.6.0.0\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
-    <Reference Include="System.Security.AccessControl, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Security.AccessControl.6.0.0\lib\net461\System.Security.AccessControl.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Security.Principal.Windows, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Security.Principal.Windows.5.0.0\lib\net461\System.Security.Principal.Windows.dll</HintPath>
-    </Reference>
     <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="WindowsBase" />
     <Reference Include="xmlunit-core, Version=2.9.1.209, Culture=neutral, PublicKeyToken=e7d7e3088fd452f6, processorArchitecture=MSIL">
       <HintPath>..\packages\XMLUnit.Core.2.9.1\lib\net35\xmlunit-core.dll</HintPath>
     </Reference>
@@ -246,12 +230,6 @@
   <ItemGroup>
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.NetAnalyzers.6.0.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.NetAnalyzers.dll" />
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.NetAnalyzers.6.0.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.NetAnalyzers.dll" />
-    <Analyzer Include="..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.3.44\analyzers\cs\Microsoft.VisualStudio.Threading.Analyzers.CodeFixes.dll" />
-    <Analyzer Include="..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.3.44\analyzers\cs\Microsoft.VisualStudio.Threading.Analyzers.CSharp.dll" />
-    <Analyzer Include="..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.3.44\analyzers\cs\Microsoft.VisualStudio.Threading.Analyzers.dll" />
-    <Analyzer Include="..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.3.44\analyzers\vb\Microsoft.VisualStudio.Threading.Analyzers.CodeFixes.dll" />
-    <Analyzer Include="..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.3.44\analyzers\vb\Microsoft.VisualStudio.Threading.Analyzers.dll" />
-    <Analyzer Include="..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.3.44\analyzers\vb\Microsoft.VisualStudio.Threading.Analyzers.VisualBasic.dll" />
     <Analyzer Include="..\packages\xunit.analyzers.1.0.0\analyzers\dotnet\cs\xunit.analyzers.dll" />
     <Analyzer Include="..\packages\xunit.analyzers.1.0.0\analyzers\dotnet\cs\xunit.analyzers.fixes.dll" />
   </ItemGroup>
@@ -267,10 +245,8 @@
     <Error Condition="!Exists('..\packages\MSTest.TestAdapter.2.2.10\build\net46\MSTest.TestAdapter.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MSTest.TestAdapter.2.2.10\build\net46\MSTest.TestAdapter.targets'))" />
     <Error Condition="!Exists('..\packages\xunit.core.2.4.2\build\xunit.core.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\xunit.core.2.4.2\build\xunit.core.props'))" />
     <Error Condition="!Exists('..\packages\xunit.core.2.4.2\build\xunit.core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\xunit.core.2.4.2\build\xunit.core.targets'))" />
-    <Error Condition="!Exists('..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.3.44\build\Microsoft.VisualStudio.Threading.Analyzers.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.3.44\build\Microsoft.VisualStudio.Threading.Analyzers.targets'))" />
   </Target>
   <Import Project="..\packages\Microsoft.CodeAnalysis.NetAnalyzers.6.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.targets" Condition="Exists('..\packages\Microsoft.CodeAnalysis.NetAnalyzers.6.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.targets')" />
   <Import Project="..\packages\MSTest.TestAdapter.2.2.10\build\net46\MSTest.TestAdapter.targets" Condition="Exists('..\packages\MSTest.TestAdapter.2.2.10\build\net46\MSTest.TestAdapter.targets')" />
   <Import Project="..\packages\xunit.core.2.4.2\build\xunit.core.targets" Condition="Exists('..\packages\xunit.core.2.4.2\build\xunit.core.targets')" />
-  <Import Project="..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.3.44\build\Microsoft.VisualStudio.Threading.Analyzers.targets" Condition="Exists('..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.3.44\build\Microsoft.VisualStudio.Threading.Analyzers.targets')" />
 </Project>

@@ -576,14 +576,14 @@ namespace Chummer.Tests
                 {
                     objExportCultureInfo = CultureInfo.InvariantCulture;
                 }
-                Utils.JoinableTaskFactory.Run(async () =>
+                Task.Run(async () =>
                 {
                     XmlDocument xmlDocument
                         = await objCharacter.GenerateExportXml(objExportCultureInfo, strExportLanguage);
                     using (FileStream objFileStream
                            = new FileStream(strPath, FileMode.Create, FileAccess.Write, FileShare.None))
                         xmlDocument.Save(objFileStream);
-                }); // Need this wrapper to make unit test work
+                }).GetAwaiter().GetResult(); // Need this wrapper to make unit test work
                 Debug.WriteLine("Character exported: " + objCharacter.Name + " to " + Path.GetFileName(strPath));
             }
             catch (AssertFailedException e)
