@@ -6668,12 +6668,6 @@
           <name>Sound Suppressor</name>
         </accessory>
       </accessories>
-      <accessorymounts>
-        <mount>Barrel</mount>
-        <mount>Top</mount>
-        <mount>Stock</mount>
-        <mount>Side</mount>
-      </accessorymounts>
     </weapon>
     <weapon>
       <id>017d8327-3bce-420a-af24-a2bed3ab0e83</id>
@@ -16320,6 +16314,12 @@
           <accessory>Stock Removal</accessory>
           <accessory>Sawed Off/Shortbarrel and Stock Removal</accessory>
         </oneof>
+        <weapondetails>
+          <OR>
+            <name>HK Urban Combat</name>
+            <name>HK Urban Fighter</name>
+          </OR>
+        </weapondetails>
       </forbidden>
       <rating>0</rating>
       <rc>1</rc>
@@ -16438,7 +16438,11 @@
           <accessory>Vintage</accessory>
         </oneof>
         <weapondetails>
-          <type>Melee</type>
+          <OR>
+            <name>HK Urban Combat</name>
+            <name>HK Urban Fighter</name>
+            <type>Melee</type>
+          </OR>
         </weapondetails>
       </forbidden>
       <gears>
@@ -16502,6 +16506,11 @@
           </OR>
         </weapondetails>
       </required>
+      <forbidden>
+        <weapondetails>
+          <name>HK Urban Fighter</name>
+        </weapondetails>
+      </forbidden>
     </accessory>
     <accessory>
       <id>6763996b-0458-46ee-a6a5-f50255ace664</id>
@@ -16633,6 +16642,12 @@
           <accessory>Advanced Safety System, Immobilization</accessory>
           <accessory>Advanced Safety System, Self Destruct</accessory>
         </oneof>
+        <weapondetails>
+          <OR>
+            <name>HK Urban Combat</name>
+            <name>HK Urban Fighter</name>
+          </OR>
+        </weapondetails>
       </forbidden>
       <rating>0</rating>
       <required>
@@ -16720,6 +16735,12 @@
           <accessory>Advanced Safety System, Explosive Self Destruct</accessory>
           <accessory>Advanced Safety System, Electro Shocker</accessory>
         </oneof>
+        <weapondetails>
+          <OR>
+            <name>HK Urban Combat</name>
+            <name>HK Urban Fighter</name>
+          </OR>
+        </weapondetails>
       </forbidden>
       <rating>0</rating>
       <required>
@@ -16745,6 +16766,12 @@
           <accessory>Advanced Safety System, Explosive Self Destruct</accessory>
           <accessory>Advanced Safety System, Electro Shocker</accessory>
         </oneof>
+        <weapondetails>
+          <OR>
+            <name>HK Urban Combat</name>
+            <name>HK Urban Fighter</name>
+          </OR>
+        </weapondetails>
       </forbidden>
       <rating>0</rating>
       <required>
@@ -16770,6 +16797,12 @@
           <accessory>Advanced Safety System, Basic</accessory>
           <accessory>Advanced Safety System, Electro Shocker</accessory>
         </oneof>
+        <weapondetails>
+          <OR>
+            <name>HK Urban Combat</name>
+            <name>HK Urban Fighter</name>
+          </OR>
+        </weapondetails>
       </forbidden>
       <rating>0</rating>
       <required>
@@ -16795,6 +16828,12 @@
           <accessory>Advanced Safety System, Explosive Self Destruct</accessory>
           <accessory>Advanced Safety System, Basic</accessory>
         </oneof>
+        <weapondetails>
+          <OR>
+            <name>HK Urban Combat</name>
+            <name>HK Urban Fighter</name>
+          </OR>
+        </weapondetails>
       </forbidden>
       <rating>0</rating>
       <required>
@@ -16850,6 +16889,14 @@
       <source>RG</source>
       <page>51</page>
       <rating>2</rating>
+      <forbidden>
+        <weapondetails>
+          <OR>
+            <name>HK Urban Combat</name>
+            <name>HK Urban Fighter</name>
+          </OR>
+        </weapondetails>
+      </forbidden>
     </accessory>
     <accessory>
       <id>41ca17be-6fe4-469f-9a66-7345263c4733</id>
@@ -16948,9 +16995,13 @@
       <page>52</page>
       <forbidden>
         <weapondetails>
-          <accessorymounts>
-            <mount>Stock</mount>
-          </accessorymounts>
+          <OR>
+            <accessorymounts>
+              <mount>Stock</mount>
+            </accessorymounts>
+            <name>HK Urban Combat</name>
+            <name>HK Urban Fighter</name>
+          </OR>
         </weapondetails>
       </forbidden>
       <rating>0</rating>
@@ -17101,6 +17152,14 @@
           <accessory>Safe Target System, Base</accessory>
         </oneof>
       </required>
+      <forbidden>
+        <weapondetails>
+          <OR>
+            <name>HK Urban Combat</name>
+            <name>HK Urban Fighter</name>
+          </OR>
+        </weapondetails>
+      </forbidden>
     </accessory>
     <accessory>
       <id>9147a5ee-fba6-4915-9123-709df5835998</id>
@@ -17116,6 +17175,14 @@
           <accessory>Safe Target System, Base</accessory>
         </oneof>
       </required>
+      <forbidden>
+        <weapondetails>
+          <OR>
+            <name>HK Urban Combat</name>
+            <name>HK Urban Fighter</name>
+          </OR>
+        </weapondetails>
+      </forbidden>
     </accessory>
     <accessory>
       <id>69e7431a-cf62-4712-8e71-728297385d20</id>
@@ -17131,6 +17198,14 @@
           <accessory>Safe Target System, Base</accessory>
         </oneof>
       </required>
+      <forbidden>
+        <weapondetails>
+          <OR>
+            <name>HK Urban Combat</name>
+            <name>HK Urban Fighter</name>
+          </OR>
+        </weapondetails>
+      </forbidden>
     </accessory>
     <accessory>
       <id>de62b79f-2864-4023-a286-6c1f270aade3</id>
@@ -17151,6 +17226,14 @@
       <source>RG</source>
       <page>52</page>
       <rating>0</rating>
+      <forbidden>
+        <weapondetails>
+          <OR>
+            <name>HK Urban Combat</name>
+            <name>HK Urban Fighter</name>
+          </OR>
+        </weapondetails>
+      </forbidden>
     </accessory>
     <accessory>
       <id>324ee965-d210-4768-a282-aa3180588fc7</id>
@@ -17161,6 +17244,14 @@
       <source>RG</source>
       <page>53</page>
       <rating>0</rating>
+      <forbidden>
+        <weapondetails>
+          <OR>
+            <name>HK Urban Combat</name>
+            <name>HK Urban Fighter</name>
+          </OR>
+        </weapondetails>
+      </forbidden>
     </accessory>
     <accessory>
       <id>dd786d50-9f42-406e-82d6-359213c086cc</id>
@@ -17268,6 +17359,12 @@
         <oneof>
           <accessory>Vintage</accessory>
         </oneof>
+        <weapondetails>
+          <OR>
+            <name>HK Urban Combat</name>
+            <name>HK Urban Fighter</name>
+          </OR>
+        </weapondetails>
       </forbidden>
       <rating>0</rating>
     </accessory>
@@ -17283,6 +17380,12 @@
         <oneof>
           <accessory>Vintage</accessory>
         </oneof>
+        <weapondetails>
+          <OR>
+            <name>HK Urban Combat</name>
+            <name>HK Urban Fighter</name>
+          </OR>
+        </weapondetails>
       </forbidden>
       <rating>0</rating>
     </accessory>
@@ -17329,6 +17432,14 @@
       <source>CF</source>
       <page>90</page>
       <rating>0</rating>
+      <forbidden>
+        <weapondetails>
+          <OR>
+            <name>HK Urban Combat</name>
+            <name>HK Urban Fighter</name>
+          </OR>
+        </weapondetails>
+      </forbidden>
     </accessory>
     <!-- End Region -->
     <!-- Region Hard Targets -->
@@ -17350,13 +17461,13 @@
         <oneof>
           <accessory>Drum Magazine, 24-round</accessory>
           <accessory>Drum Magazine, 32-round</accessory>
-          <weapondetails>
-            <OR>
-              <ammo operation="contains">(cy)</ammo>
-              <ammo operation="contains">(d)</ammo>
-            </OR>
-          </weapondetails>
         </oneof>
+        <weapondetails>
+          <OR>
+            <ammo operation="contains">(cy)</ammo>
+            <ammo operation="contains">(d)</ammo>
+          </OR>
+        </weapondetails>
       </required>
     </accessory>
     <accessory>
@@ -17396,6 +17507,8 @@
             <name>Ceska Black Scorpion</name>
             <name>PPSK-4 Collapsible Machine Pistol</name>
             <name>Steyr TMP</name>
+            <name>HK Urban Combat</name>
+            <name>HK Urban Fighter</name>
           </OR>
         </weapondetails>
       </forbidden>
@@ -17431,6 +17544,14 @@
           </OR>
         </weapondetails>
       </required>
+      <forbidden>
+        <weapondetails>
+          <OR>
+            <name>HK Urban Combat</name>
+            <name>HK Urban Fighter</name>
+          </OR>
+        </weapondetails>
+      </forbidden>
     </accessory>
     <accessory>
       <id>5d819147-d262-48c2-bb0e-80e0049c67ed</id>
@@ -17448,6 +17569,12 @@
           <accessory>Chameleon Coating (Pistol)</accessory>
           <accessory>Chameleon Coating (Rifle)</accessory>
         </oneof>
+        <weapondetails>
+          <OR>
+            <name>HK Urban Combat</name>
+            <name>HK Urban Fighter</name>
+          </OR>
+        </weapondetails>
       </forbidden>
       <rating>6</rating>
     </accessory>
@@ -17533,6 +17660,14 @@
       <source>HT</source>
       <page>181</page>
       <rating>0</rating>
+      <forbidden>
+        <weapondetails>
+          <OR>
+            <name>HK Urban Combat</name>
+            <name>HK Urban Fighter</name>
+          </OR>
+        </weapondetails>
+      </forbidden>
     </accessory>
     <accessory>
       <id>83902f51-5f87-444f-a3ff-a74ce865e1af</id>
@@ -17671,6 +17806,14 @@
           <type>Melee</type>
         </weapondetails>
       </required>
+      <forbidden>
+        <weapondetails>
+          <OR>
+            <name>HK Urban Combat</name>
+            <name>HK Urban Fighter</name>
+          </OR>
+        </weapondetails>
+      </forbidden>
     </accessory>
     <accessory>
       <id>b83bfd3a-8011-4a8e-8e76-033dbd6a79c1</id>
@@ -17691,6 +17834,14 @@
       <source>HT</source>
       <page>180</page>
       <rating>0</rating>
+      <forbidden>
+        <weapondetails>
+          <OR>
+            <name>HK Urban Combat</name>
+            <name>HK Urban Fighter</name>
+          </OR>
+        </weapondetails>
+      </forbidden>
     </accessory>
     <accessory>
       <id>225d5411-953e-4537-9e97-40bced059bd3</id>
@@ -17806,6 +17957,8 @@
         <weapondetails>
           <OR>
             <category>Bows</category>
+            <name>HK Urban Combat</name>
+            <name>HK Urban Fighter</name>
             <type>Melee</type>
           </OR>
         </weapondetails>
@@ -17829,6 +17982,11 @@
       <page>182</page>
       <accuracy>1</accuracy>
       <rating>0</rating>
+      <forbidden>
+        <weapondetails>
+          <name>HK Urban Combat</name>
+        </weapondetails>
+      </forbidden>
     </accessory>
     <accessory>
       <id>f277db83-e5f0-47c8-a465-e0307105796f</id>
@@ -17844,6 +18002,12 @@
           <accessory>Smartgun System, External</accessory>
           <accessory>Krime Dual-Mode External Smartgun Link</accessory>
         </oneof>
+        <weapondetails>
+          <OR>
+            <name>HK Urban Combat</name>
+            <name>HK Urban Fighter</name>
+          </OR>
+        </weapondetails>
       </forbidden>
       <rating>10</rating>
       <required>
@@ -17888,6 +18052,11 @@
           </OR>
         </weapondetails>
       </required>
+      <forbidden>
+        <weapondetails>
+          <name>HK Urban Fighter</name>
+        </weapondetails>
+      </forbidden>
     </accessory>
     <accessory>
       <id>e632b766-55fb-42bf-8bd3-6c9c46830a29</id>
@@ -18014,6 +18183,12 @@
           <accessory>Stock Removal</accessory>
           <accessory>Sawed Off/Shortbarrel and Stock Removal</accessory>
         </oneof>
+        <weapondetails>
+          <OR>
+            <name>HK Urban Combat</name>
+            <name>HK Urban Fighter</name>
+          </OR>
+        </weapondetails>
       </forbidden>
       <rating>0</rating>
       <rc>1</rc>
@@ -18053,7 +18228,11 @@
           <accessory>Vintage</accessory>
         </oneof>
         <weapondetails>
-          <type>Melee</type>
+          <OR>
+            <name>HK Urban Combat</name>
+            <name>HK Urban Fighter</name>
+            <type>Melee</type>
+          </OR>
         </weapondetails>
       </forbidden>
       <rating>0</rating>
@@ -18074,7 +18253,11 @@
           <accessory>Vintage</accessory>
         </oneof>
         <weapondetails>
-          <type>Melee</type>
+          <OR>
+            <name>HK Urban Combat</name>
+            <name>HK Urban Fighter</name>
+            <type>Melee</type>
+          </OR>
         </weapondetails>
       </forbidden>
       <rating>0</rating>
@@ -18410,6 +18593,11 @@
           </OR>
         </weapondetails>
       </required>
+      <forbidden>
+        <weapondetails>
+          <name>HK Urban Fighter</name>
+        </weapondetails>
+      </forbidden>
     </accessory>
     <accessory>
       <id>c455e976-a3b8-4c45-8777-6814f14c295b</id>
@@ -18432,6 +18620,11 @@
           </OR>
         </weapondetails>
       </required>
+      <forbidden>
+        <weapondetails>
+          <name>HK Urban Fighter</name>
+        </weapondetails>
+      </forbidden>
     </accessory>
     <accessory>
       <id>91d1b0c0-3146-4435-b2ef-322e80dbbb59</id>
@@ -18472,6 +18665,14 @@
           <specialmodificationlimit>1</specialmodificationlimit>
         </oneof>
       </required>
+      <forbidden>
+        <weapondetails>
+          <OR>
+            <name>HK Urban Combat</name>
+            <name>HK Urban Fighter</name>
+          </OR>
+        </weapondetails>
+      </forbidden>
     </accessory>
     <accessory>
       <id>56b17280-27c6-414a-9957-f628ae5efefa</id>
@@ -18489,6 +18690,14 @@
           <specialmodificationlimit>1</specialmodificationlimit>
         </oneof>
       </required>
+      <forbidden>
+        <weapondetails>
+          <OR>
+            <name>HK Urban Combat</name>
+            <name>HK Urban Fighter</name>
+          </OR>
+        </weapondetails>
+      </forbidden>
     </accessory>
     <accessory>
       <id>9084d801-c654-4eec-960e-4186a6de81d6</id>
@@ -18506,6 +18715,14 @@
           <specialmodificationlimit>1</specialmodificationlimit>
         </oneof>
       </required>
+      <forbidden>
+        <weapondetails>
+          <OR>
+            <name>HK Urban Combat</name>
+            <name>HK Urban Fighter</name>
+          </OR>
+        </weapondetails>
+      </forbidden>
     </accessory>
     <accessory>
       <id>93be91c1-3f77-4e7b-9ac2-eb349b76d017</id>
@@ -18523,6 +18740,14 @@
           <specialmodificationlimit>1</specialmodificationlimit>
         </oneof>
       </required>
+      <forbidden>
+        <weapondetails>
+          <OR>
+            <name>HK Urban Combat</name>
+            <name>HK Urban Fighter</name>
+          </OR>
+        </weapondetails>
+      </forbidden>
     </accessory>
     <accessory>
       <id>3c82e17b-76cd-47b9-9bda-c3131a64e0ee</id>
@@ -18540,6 +18765,14 @@
           <specialmodificationlimit>2</specialmodificationlimit>
         </oneof>
       </required>
+      <forbidden>
+        <weapondetails>
+          <OR>
+            <name>HK Urban Combat</name>
+            <name>HK Urban Fighter</name>
+          </OR>
+        </weapondetails>
+      </forbidden>
     </accessory>
     <accessory>
       <id>15d159e8-d3db-4cf3-8964-0eb2235ed6c2</id>
@@ -18557,6 +18790,14 @@
           <specialmodificationlimit>1</specialmodificationlimit>
         </oneof>
       </required>
+      <forbidden>
+        <weapondetails>
+          <OR>
+            <name>HK Urban Combat</name>
+            <name>HK Urban Fighter</name>
+          </OR>
+        </weapondetails>
+      </forbidden>
     </accessory>
     <accessory>
       <id>09abdea8-df9a-4e74-86aa-0f79ce96f422</id>
@@ -18574,6 +18815,14 @@
           <specialmodificationlimit>1</specialmodificationlimit>
         </oneof>
       </required>
+      <forbidden>
+        <weapondetails>
+          <OR>
+            <name>HK Urban Combat</name>
+            <name>HK Urban Fighter</name>
+          </OR>
+        </weapondetails>
+      </forbidden>
     </accessory>
     <!-- End Region -->
     <!-- End Region -->
@@ -18587,6 +18836,14 @@
       <source>SOTG</source>
       <page>12</page>
       <rating>0</rating>
+      <forbidden>
+        <weapondetails>
+          <OR>
+            <name>HK Urban Combat</name>
+            <name>HK Urban Fighter</name>
+          </OR>
+        </weapondetails>
+      </forbidden>
     </accessory>
     <accessory>
       <id>63a4c7fe-847e-46e6-a99d-da0f39e63b8a</id>
@@ -18597,6 +18854,14 @@
       <source>SOTG</source>
       <page>12</page>
       <rating>6</rating>
+      <forbidden>
+        <weapondetails>
+          <OR>
+            <name>HK Urban Combat</name>
+            <name>HK Urban Fighter</name>
+          </OR>
+        </weapondetails>
+      </forbidden>
     </accessory>
     <!-- End Region -->
     <!-- Region Krime Katalog -->
@@ -18683,6 +18948,14 @@
       <source>KK</source>
       <page>23</page>
       <rating>0</rating>
+      <forbidden>
+        <weapondetails>
+          <OR>
+            <name>HK Urban Combat</name>
+            <name>HK Urban Fighter</name>
+          </OR>
+        </weapondetails>
+      </forbidden>
     </accessory>
     <accessory>
       <id>3e048d18-3011-4e43-a557-0696c4c09042</id>
@@ -18704,6 +18977,14 @@
       <source>KK</source>
       <page>23</page>
       <rating>0</rating>
+      <forbidden>
+        <weapondetails>
+          <OR>
+            <name>HK Urban Combat</name>
+            <name>HK Urban Fighter</name>
+          </OR>
+        </weapondetails>
+      </forbidden>
     </accessory>
     <!-- End Region -->
   </accessories>

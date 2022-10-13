@@ -218,7 +218,7 @@
       <page>433</page>
       <avail>4</avail>
       <bonus>
-        <selectweapon weapondetails="contains(ammo, '(c)') or contains(ammo, '(d)')" />
+        <selectweapon weapondetails="(contains(ammo, '(c)') or contains(ammo, '(d)')) and name != 'HK Urban Fighter'" />
       </bonus>
       <cost>5</cost>
     </gear>
