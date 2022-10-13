@@ -11190,11 +11190,11 @@ namespace Chummer
             int intHighPlacesFriends = 0;
             ThreadSafeObservableCollection<Contact> lstContacts
                 = await CharacterObject.GetContactsAsync(token).ConfigureAwait(false);
-            await lstContacts.ForEachAsync(objContact =>
+            intPointsInContacts += await lstContacts.SumAsync(objContact =>
             {
                 // Don't care about free contacts
                 if (objContact.EntityType != ContactType.Contact || objContact.Free)
-                    return;
+                    return 0;
 
                 if (objContact.Connection >= 8 && blnFriendsInHighPlaces)
                 {
@@ -11207,10 +11207,10 @@ namespace Chummer
                     //Prefers to eat 0, we went over
                     if (over < 0)
                     {
+                        intContactPointsLeft = 0; //we went over so we know none are left
                         //over is negative so to add we substract
                         //instead of +abs(over)
-                        intPointsInContacts -= over;
-                        intContactPointsLeft = 0; //we went over so we know none are left
+                        return -over;
                     }
                     else
                     {
@@ -11218,6 +11218,8 @@ namespace Chummer
                         intContactPointsLeft = over;
                     }
                 }
+
+                return 0;
             }, token).ConfigureAwait(false);
 
             await CharacterObject.SetContactPointsUsedAsync(intContactPointsLeft, token).ConfigureAwait(false);
@@ -11803,25 +11805,24 @@ namespace Chummer
                 intKarmaPointsRemain -= intFociPointsUsed;
 
                 // Calculate the BP used by Stacked Foci.
-                await (await CharacterObject.GetStackedFociAsync(token).ConfigureAwait(false)).ForEachWithBreak(
+                intKarmaPointsRemain -= await (await CharacterObject.GetStackedFociAsync(token).ConfigureAwait(false)).SumAsync(
                     async objFocus =>
                     {
                         token.ThrowIfCancellationRequested();
                         if (!objFocus.Bonded)
-                            return true;
+                            return 0;
                         int intBindingCost = await objFocus.GetBindingCostAsync(token).ConfigureAwait(false);
-                        intKarmaPointsRemain -= intBindingCost;
                         intFociPointsUsed += intBindingCost;
 
                         if (!blnDoUIUpdate)
-                            return true;
+                            return intBindingCost;
                         if (sbdFociPointsTooltip.Length > 0)
                             sbdFociPointsTooltip.AppendLine().Append(strSpace).Append('+').Append(strSpace);
                         sbdFociPointsTooltip
                             .Append(await objFocus.GetCurrentDisplayNameAsync(token).ConfigureAwait(false))
                             .Append(strSpace).Append('(')
                             .Append(intBindingCost.ToString(GlobalSettings.CultureInfo)).Append(')');
-                        return true;
+                        return intBindingCost;
                     }, token).ConfigureAwait(false);
 
                 intFreestyleBP += intFociPointsUsed;
@@ -11837,13 +11838,13 @@ namespace Chummer
             // Calculate the BP used by Spirits and Sprites.
             int intSpiritPointsUsed = 0;
             int intSpritePointsUsed = 0;
-            await (await CharacterObject.GetSpiritsAsync(token).ConfigureAwait(false)).ForEachAsync(async objSpirit =>
+            intKarmaPointsRemain -= await (await CharacterObject.GetSpiritsAsync(token).ConfigureAwait(false)).SumAsync(async objSpirit =>
             {
                 token.ThrowIfCancellationRequested();
                 int intLoopKarma = objSpirit.ServicesOwed
                                    * await CharacterObjectSettings.GetKarmaSpiritAsync(token).ConfigureAwait(false);
                 // Each Sprite costs KarmaSpirit x Services Owed.
-                intKarmaPointsRemain -= intLoopKarma;
+                int intReturn = intLoopKarma;
                 if (objSpirit.EntityType == SpiritType.Spirit)
                 {
                     intSpiritPointsUsed += intLoopKarma;
@@ -11853,7 +11854,7 @@ namespace Chummer
                         int intTemp = objSpirit.Force
                                       * await CharacterObjectSettings.GetKarmaSpiritFetteringAsync(token)
                                                                      .ConfigureAwait(false);
-                        intKarmaPointsRemain -= intTemp;
+                        intReturn += intTemp;
                         intSpiritPointsUsed += intTemp;
                     }
                 }
@@ -11861,6 +11862,8 @@ namespace Chummer
                 {
                     intSpritePointsUsed += intLoopKarma;
                 }
+
+                return intReturn;
             }, token: token).ConfigureAwait(false);
             intFreestyleBP += intSpiritPointsUsed + intSpritePointsUsed;
 
@@ -11879,17 +11882,17 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             // ------------------------------------------------------------------------------
             // Calculate the BP used by Programs and Advanced Programs.
-            int intAINormalProgramPointsUsed = 0;
             int intAIAdvancedProgramPointsUsed = 0;
-            await (await CharacterObject.GetAIProgramsAsync(token).ConfigureAwait(false)).ForEachAsync(objProgram =>
+            int intAINormalProgramPointsUsed = await (await CharacterObject.GetAIProgramsAsync(token).ConfigureAwait(false)).SumAsync(objProgram =>
             {
                 token.ThrowIfCancellationRequested();
                 if (!objProgram.CanDelete)
-                    return;
+                    return 0;
                 if (objProgram.IsAdvancedProgram)
                     ++intAIAdvancedProgramPointsUsed;
                 else
-                    ++intAINormalProgramPointsUsed;
+                    return 1;
+                return 0;
             }, token).ConfigureAwait(false);
             int intKarmaCost = 0;
             int intNumAdvancedProgramPointsAsNormalPrograms = 0;
@@ -12495,10 +12498,10 @@ namespace Chummer
                                                                           objCyberware.ForceGrade), token).ConfigureAwait(false);
                         XPathNavigator xmlCyberware = await objCyberware.GetNodeXPathAsync(token: token).ConfigureAwait(false);
                         HashSet<string> setDisallowedGrades = null;
-                        if (xmlCyberware != null && await xmlCyberware.SelectSingleNodeAndCacheExpressionAsync("bannedgrades", token) != null)
+                        if (xmlCyberware != null && await xmlCyberware.SelectSingleNodeAndCacheExpressionAsync("bannedgrades", token).ConfigureAwait(false) != null)
                         {
                             setDisallowedGrades = new HashSet<string>();
-                            foreach (XPathNavigator objNode in await xmlCyberware.SelectAndCacheExpressionAsync("bannedgrades/grade", token))
+                            foreach (XPathNavigator objNode in await xmlCyberware.SelectAndCacheExpressionAsync("bannedgrades/grade", token).ConfigureAwait(false))
                             {
                                 setDisallowedGrades.Add(objNode.Value);
                             }

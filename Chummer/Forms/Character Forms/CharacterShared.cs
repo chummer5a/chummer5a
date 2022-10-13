@@ -308,7 +308,7 @@ namespace Chummer
         protected async Task AutoSaveCharacter(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, true, token);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, true, token).ConfigureAwait(false);
             try
             {
                 try
@@ -324,7 +324,7 @@ namespace Chummer
                         catch (UnauthorizedAccessException)
                         {
                             Program.ShowMessageBox(
-                                this, await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning", token: token));
+                                this, await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning", token: token).ConfigureAwait(false));
                             return;
                         }
                     }
@@ -338,7 +338,7 @@ namespace Chummer
                     }
 
                     string strFilePath = Path.Combine(strAutosavePath, strShowFileName);
-                    if (!await CharacterObject.SaveAsync(strFilePath, false, false, token))
+                    if (!await CharacterObject.SaveAsync(strFilePath, false, false, token).ConfigureAwait(false))
                     {
                         Log.Info("Autosave failed for character " + CharacterObject.CharacterName + " ("
                                  + CharacterObject.FileName + ')');
@@ -351,7 +351,7 @@ namespace Chummer
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -365,10 +365,10 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (treLimit == null)
                 return;
-            TreeNode objSelectedNode = await treLimit.DoThreadSafeFuncAsync(x => x.SelectedNode, token);
+            TreeNode objSelectedNode = await treLimit.DoThreadSafeFuncAsync(x => x.SelectedNode, token).ConfigureAwait(false);
             if (objSelectedNode == null || objSelectedNode.Level == 0)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
                 string strGuid = (objSelectedNode.Tag as IHasInternalId)?.InternalId ?? string.Empty;
@@ -378,19 +378,19 @@ namespace Chummer
                 //If the LimitModifier couldn't be found (Ie it comes from an Improvement or the user hasn't properly selected a treenode, fail out early.
                 if (objLimitModifier == null)
                 {
-                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Warning_NoLimitFound", token: token));
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Warning_NoLimitFound", token: token).ConfigureAwait(false));
                     return;
                 }
 
                 using (ThreadSafeForm<SelectLimitModifier> frmPickLimitModifier =
                        await ThreadSafeForm<SelectLimitModifier>.GetAsync(
-                           () => new SelectLimitModifier(objLimitModifier, "Physical", "Mental", "Social"), token))
+                           () => new SelectLimitModifier(objLimitModifier, "Physical", "Mental", "Social"), token).ConfigureAwait(false))
                 {
-                    if (await frmPickLimitModifier.ShowDialogSafeAsync(this, token) == DialogResult.Cancel)
+                    if (await frmPickLimitModifier.ShowDialogSafeAsync(this, token).ConfigureAwait(false) == DialogResult.Cancel)
                         return;
 
                     //Remove the old LimitModifier to ensure we don't double up.
-                    await CharacterObject.LimitModifiers.RemoveAsync(objLimitModifier, token);
+                    await CharacterObject.LimitModifiers.RemoveAsync(objLimitModifier, token).ConfigureAwait(false);
                     // Create the new limit modifier.
                     LimitModifier objNewLimitModifier = new LimitModifier(CharacterObject, strGuid);
                     objNewLimitModifier.Create(frmPickLimitModifier.MyForm.SelectedName,
@@ -398,12 +398,12 @@ namespace Chummer
                                                frmPickLimitModifier.MyForm.SelectedLimitType,
                                                frmPickLimitModifier.MyForm.SelectedCondition, true);
 
-                    await CharacterObject.LimitModifiers.AddAsync(objNewLimitModifier, token);
+                    await CharacterObject.LimitModifiers.AddAsync(objNewLimitModifier, token).ConfigureAwait(false);
                 }
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 

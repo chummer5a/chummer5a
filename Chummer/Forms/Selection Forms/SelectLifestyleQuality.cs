@@ -633,7 +633,7 @@ namespace Chummer
                                                     .ConfigureAwait(false));
                                                 if (objInnerNode != null
                                                     && (await objInnerNode.SelectSingleNodeAndCacheExpressionAsync(
-                                                        "metagenic", token))?.Value == bool.TrueString)
+                                                        "metagenic", token).ConfigureAwait(false))?.Value == bool.TrueString)
                                                 {
                                                     blnRequirementForbidden = true;
                                                     sbdForbidden.AppendLine().Append('\t')

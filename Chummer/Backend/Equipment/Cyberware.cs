@@ -2611,9 +2611,9 @@ namespace Chummer.Backend.Equipment
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
-            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token);
+            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
             string s = objNode != null
-                ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage", token: token))?.Value ?? Page
+                ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage", token: token).ConfigureAwait(false))?.Value ?? Page
                 : Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
@@ -3213,10 +3213,10 @@ namespace Chummer.Backend.Equipment
             if (blnEquip)
             {
                 ImprovementManager.EnableImprovements(_objCharacter,
-                                                      await (await _objCharacter.GetImprovementsAsync(token))
-                                                          .ToListAsync(
-                                                              x => x.ImproveSource == SourceType
-                                                                   && x.SourceName == InternalId, token: token));
+                                                      await (await _objCharacter.GetImprovementsAsync(token).ConfigureAwait(false))
+                                                            .ToListAsync(
+                                                                x => x.ImproveSource == SourceType
+                                                                     && x.SourceName == InternalId, token: token).ConfigureAwait(false));
 
                 /*
                 // If the piece grants a bonus, pass the information to the Improvement Manager.
@@ -3240,7 +3240,7 @@ namespace Chummer.Backend.Equipment
                 if (PairBonus != null)
                 {
                     // This cyberware should not be included in the count to make things easier.
-                    List<Cyberware> lstPairableCyberwares = (await _objCharacter.GetCyberwareAsync(token)).DeepWhere(x => x.Children,
+                    List<Cyberware> lstPairableCyberwares = (await _objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepWhere(x => x.Children,
                         x => x != this && IncludePair.Contains(x.Name) && x.Extra == Extra &&
                              x.IsModularCurrentlyEquipped).ToList();
                     int intCount = lstPairableCyberwares.Count;
@@ -3269,22 +3269,22 @@ namespace Chummer.Backend.Equipment
                         else if (Bonus != null && !string.IsNullOrEmpty(_strExtra))
                             ImprovementManager.ForcedValue = _strExtra;
                         await ImprovementManager.CreateImprovementsAsync(_objCharacter, SourceType, InternalId + "Pair", PairBonus,
-                                                                         Rating, await GetCurrentDisplayNameShortAsync(token), token: token);
+                                                                         Rating, await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                     }
                 }
             }
             else
             {
                 ImprovementManager.DisableImprovements(_objCharacter,
-                                                       await (await _objCharacter.GetImprovementsAsync(token)).ToListAsync(
+                                                       await (await _objCharacter.GetImprovementsAsync(token).ConfigureAwait(false)).ToListAsync(
                                                            x => x.ImproveSource == SourceType
-                                                                && x.SourceName == InternalId, token: token));
+                                                                && x.SourceName == InternalId, token: token).ConfigureAwait(false));
 
                 if (PairBonus != null)
                 {
-                    await ImprovementManager.RemoveImprovementsAsync(_objCharacter, SourceType, InternalId + "Pair", token);
+                    await ImprovementManager.RemoveImprovementsAsync(_objCharacter, SourceType, InternalId + "Pair", token).ConfigureAwait(false);
                     // This cyberware should not be included in the count to make things easier (we want to get the same number regardless of whether we call this before or after the actual equipping).
-                    List<Cyberware> lstPairableCyberwares = (await _objCharacter.GetCyberwareAsync(token)).DeepWhere(x => x.Children,
+                    List<Cyberware> lstPairableCyberwares = (await _objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepWhere(x => x.Children,
                         x => x != this && IncludePair.Contains(x.Name) && x.Extra == Extra &&
                              x.IsModularCurrentlyEquipped).ToList();
                     int intCount = lstPairableCyberwares.Count;
@@ -3308,7 +3308,7 @@ namespace Chummer.Backend.Equipment
                     foreach (Cyberware objLoopCyberware in lstPairableCyberwares)
                     {
                         await ImprovementManager.RemoveImprovementsAsync(_objCharacter, objLoopCyberware.SourceType,
-                                                                         objLoopCyberware.InternalId + "Pair", token);
+                                                                         objLoopCyberware.InternalId + "Pair", token).ConfigureAwait(false);
                         // Go down the list and create pair bonuses for every second item
                         if (intCount > 0 && (intCount & 1) == 0)
                         {
@@ -3318,7 +3318,7 @@ namespace Chummer.Backend.Equipment
                                 ImprovementManager.ForcedValue = _strExtra;
                             await ImprovementManager.CreateImprovementsAsync(_objCharacter, objLoopCyberware.SourceType,
                                                                              objLoopCyberware.InternalId + "Pair", objLoopCyberware.PairBonus, objLoopCyberware.Rating,
-                                                                             await objLoopCyberware.GetCurrentDisplayNameShortAsync(token), token: token);
+                                                                             await objLoopCyberware.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                         }
 
                         --intCount;
@@ -3327,12 +3327,12 @@ namespace Chummer.Backend.Equipment
             }
 
             foreach (Gear objChildGear in GearChildren)
-                await objChildGear.ChangeEquippedStatusAsync(blnEquip, true, token);
+                await objChildGear.ChangeEquippedStatusAsync(blnEquip, true, token).ConfigureAwait(false);
 
             foreach (Cyberware objChild in Children)
-                await objChild.ChangeModularEquipAsync(blnEquip, true, token);
+                await objChild.ChangeModularEquipAsync(blnEquip, true, token).ConfigureAwait(false);
 
-            await RefreshWirelessBonusesAsync(token);
+            await RefreshWirelessBonusesAsync(token).ConfigureAwait(false);
 
             if (!blnSkipEncumbranceOnPropertyChanged && ParentVehicle == null)
                 _objCharacter?.OnPropertyChanged(nameof(Character.TotalCarriedWeight));
@@ -3394,7 +3394,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public async ValueTask<int> GetRatingAsync(CancellationToken token = default)
         {
-            return Math.Max(Math.Min(_intRating, await GetMaxRatingAsync(token)), await GetMinRatingAsync(token));
+            return Math.Max(Math.Min(_intRating, await GetMaxRatingAsync(token).ConfigureAwait(false)), await GetMinRatingAsync(token).ConfigureAwait(false));
         }
 
         private bool ProcessPropertyChanges { get; set; } = true;
@@ -3571,23 +3571,23 @@ namespace Chummer.Backend.Equipment
                 && !int.TryParse(strRating, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out intReturn))
             {
                 strRating = await strRating.CheapReplaceAsync("MaximumSTR",
-                                                         async () => (ParentVehicle != null
-                                                                 ? Math.Max(1, await ParentVehicle.GetTotalBodyAsync(token) * 2)
-                                                                 : await (await _objCharacter.GetAttributeAsync("STR", token: token)).GetTotalMaximumAsync(token))
-                                                             .ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                                                              async () => (ParentVehicle != null
+                                                                      ? Math.Max(1, await ParentVehicle.GetTotalBodyAsync(token).ConfigureAwait(false) * 2)
+                                                                      : await (await _objCharacter.GetAttributeAsync("STR", token: token).ConfigureAwait(false)).GetTotalMaximumAsync(token).ConfigureAwait(false))
+                                                                  .ToString(GlobalSettings.InvariantCultureInfo), token: token)
                                            .CheapReplaceAsync("MaximumAGI",
-                                                         async () => (ParentVehicle != null
-                                                                 ? Math.Max(1, await ParentVehicle.GetPilotAsync(token) * 2)
-                                                                 : await (await _objCharacter.GetAttributeAsync("AGI", token: token)).GetTotalMaximumAsync(token))
-                                                             .ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                                                              async () => (ParentVehicle != null
+                                                                      ? Math.Max(1, await ParentVehicle.GetPilotAsync(token).ConfigureAwait(false) * 2)
+                                                                      : await (await _objCharacter.GetAttributeAsync("AGI", token: token).ConfigureAwait(false)).GetTotalMaximumAsync(token).ConfigureAwait(false))
+                                                                  .ToString(GlobalSettings.InvariantCultureInfo), token: token)
                                            .CheapReplaceAsync("MinimumSTR",
-                                                         async () => (ParentVehicle != null ? await ParentVehicle.GetTotalBodyAsync(token) : 3).ToString(
-                                                             GlobalSettings.InvariantCultureInfo), token: token)
+                                                              async () => (ParentVehicle != null ? await ParentVehicle.GetTotalBodyAsync(token).ConfigureAwait(false) : 3).ToString(
+                                                                  GlobalSettings.InvariantCultureInfo), token: token)
                                            .CheapReplaceAsync("MinimumAGI",
-                                                         async () => (ParentVehicle != null ? await ParentVehicle.GetPilotAsync(token) : 3).ToString(
-                                                             GlobalSettings.InvariantCultureInfo), token: token);
+                                                              async () => (ParentVehicle != null ? await ParentVehicle.GetPilotAsync(token).ConfigureAwait(false) : 3).ToString(
+                                                                  GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
 
-                (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strRating, token);
+                (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strRating, token).ConfigureAwait(false);
                 if (blnIsSuccess)
                     intReturn = ((double)objProcess).StandardRound();
             }
@@ -3650,23 +3650,23 @@ namespace Chummer.Backend.Equipment
                 && !int.TryParse(strRating, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out intReturn))
             {
                 strRating = await strRating.CheapReplaceAsync("MaximumSTR",
-                                                         async () => (ParentVehicle != null
-                                                                 ? Math.Max(1, await ParentVehicle.GetTotalBodyAsync(token) * 2)
-                                                                 : await (await _objCharacter.GetAttributeAsync("STR", token: token)).GetTotalMaximumAsync(token))
-                                                             .ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                                                              async () => (ParentVehicle != null
+                                                                      ? Math.Max(1, await ParentVehicle.GetTotalBodyAsync(token).ConfigureAwait(false) * 2)
+                                                                      : await (await _objCharacter.GetAttributeAsync("STR", token: token).ConfigureAwait(false)).GetTotalMaximumAsync(token).ConfigureAwait(false))
+                                                                  .ToString(GlobalSettings.InvariantCultureInfo), token: token)
                                            .CheapReplaceAsync("MaximumAGI",
-                                                         async () => (ParentVehicle != null
-                                                                 ? Math.Max(1, await ParentVehicle.GetPilotAsync(token) * 2)
-                                                                 : await (await _objCharacter.GetAttributeAsync("AGI", token: token)).GetTotalMaximumAsync(token))
-                                                             .ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                                                              async () => (ParentVehicle != null
+                                                                      ? Math.Max(1, await ParentVehicle.GetPilotAsync(token).ConfigureAwait(false) * 2)
+                                                                      : await (await _objCharacter.GetAttributeAsync("AGI", token: token).ConfigureAwait(false)).GetTotalMaximumAsync(token).ConfigureAwait(false))
+                                                                  .ToString(GlobalSettings.InvariantCultureInfo), token: token)
                                            .CheapReplaceAsync("MinimumSTR",
-                                                         async () => (ParentVehicle != null ? await ParentVehicle.GetTotalBodyAsync(token) : 3).ToString(
-                                                             GlobalSettings.InvariantCultureInfo), token: token)
+                                                              async () => (ParentVehicle != null ? await ParentVehicle.GetTotalBodyAsync(token).ConfigureAwait(false) : 3).ToString(
+                                                                  GlobalSettings.InvariantCultureInfo), token: token)
                                            .CheapReplaceAsync("MinimumAGI",
-                                                         async () => (ParentVehicle != null ? await ParentVehicle.GetPilotAsync(token) : 3).ToString(
-                                                             GlobalSettings.InvariantCultureInfo), token: token);
+                                                              async () => (ParentVehicle != null ? await ParentVehicle.GetPilotAsync(token).ConfigureAwait(false) : 3).ToString(
+                                                                  GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
 
-                (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strRating, token);
+                (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strRating, token).ConfigureAwait(false);
                 if (blnIsSuccess)
                     intReturn = ((double)objProcess).StandardRound();
             }
@@ -4202,7 +4202,7 @@ namespace Chummer.Backend.Equipment
             XmlDocument objDoc = blnSync
                 // ReSharper disable once MethodHasAsyncOverload
                 ? _objCharacter.LoadData(strDoc, strLanguage, token: token)
-                : await _objCharacter.LoadDataAsync(strDoc, strLanguage, token: token);
+                : await _objCharacter.LoadDataAsync(strDoc, strLanguage, token: token).ConfigureAwait(false);
             _objCachedMyXmlNode = objDoc.SelectSingleNode(strPath + (SourceID == Guid.Empty
                                                               ? "[name = " + Name.CleanXPath() + ']'
                                                               : "[id = " + SourceIDString.CleanXPath()
@@ -4238,7 +4238,7 @@ namespace Chummer.Backend.Equipment
             XPathNavigator objDoc = blnSync
                 // ReSharper disable once MethodHasAsyncOverload
                 ? _objCharacter.LoadDataXPath(strDoc, strLanguage, token: token)
-                : await _objCharacter.LoadDataXPathAsync(strDoc, strLanguage, token: token);
+                : await _objCharacter.LoadDataXPathAsync(strDoc, strLanguage, token: token).ConfigureAwait(false);
             _objCachedMyXPathNode = objDoc.SelectSingleNode(strPath + (SourceID == Guid.Empty
                                                                 ? "[name = " + Name.CleanXPath() + ']'
                                                                 : "[id = " + SourceIDString.CleanXPath()
@@ -4556,9 +4556,9 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public async Task<decimal> GetCalculatedESSAsync(CancellationToken token = default)
         {
-            return await _objCharacter.GetIsPrototypeTranshumanAsync(token) && PrototypeTranshuman
+            return await _objCharacter.GetIsPrototypeTranshumanAsync(token).ConfigureAwait(false) && PrototypeTranshuman
                 ? 0
-                : await GetCalculatedESSPrototypeInvariantAsync(token);
+                : await GetCalculatedESSPrototypeInvariantAsync(token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -4620,7 +4620,7 @@ namespace Chummer.Backend.Equipment
                     ? CommonFunctions.EvaluateInvariantXPath(
                         strESS.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo)))
                     : await CommonFunctions.EvaluateInvariantXPathAsync(
-                        strESS.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo)), token);
+                        strESS.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo)), token).ConfigureAwait(false);
                 decReturn = blnIsSuccess ? Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo) : 0;
             }
             else
@@ -4662,10 +4662,10 @@ namespace Chummer.Backend.Equipment
                         else
                         {
                             await UpdateMultipliersAsync(Improvement.ImprovementType.CyberwareEssCost,
-                                Improvement.ImprovementType.CyberwareTotalEssMultiplier);
+                                                         Improvement.ImprovementType.CyberwareTotalEssMultiplier).ConfigureAwait(false);
                             if (!_objCharacter.Created)
                                 await UpdateMultipliersAsync(Improvement.ImprovementType.CyberwareEssCostNonRetroactive,
-                                    Improvement.ImprovementType.CyberwareTotalEssMultiplierNonRetroactive);
+                                                             Improvement.ImprovementType.CyberwareTotalEssMultiplierNonRetroactive).ConfigureAwait(false);
                         }
 
                         break;
@@ -4682,10 +4682,10 @@ namespace Chummer.Backend.Equipment
                         else
                         {
                             await UpdateMultipliersAsync(Improvement.ImprovementType.BiowareEssCost,
-                                Improvement.ImprovementType.BiowareTotalEssMultiplier);
+                                                         Improvement.ImprovementType.BiowareTotalEssMultiplier).ConfigureAwait(false);
                             if (!_objCharacter.Created)
                                 await UpdateMultipliersAsync(Improvement.ImprovementType.BiowareEssCostNonRetroactive,
-                                    Improvement.ImprovementType.BiowareTotalEssMultiplierNonRetroactive);
+                                                             Improvement.ImprovementType.BiowareTotalEssMultiplierNonRetroactive).ConfigureAwait(false);
                         }
 
                         // Apply the character's Basic Bioware Essence cost multiplier if applicable.
@@ -4696,7 +4696,7 @@ namespace Chummer.Backend.Equipment
                                 ? ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter,
                                     Improvement.ImprovementType.BasicBiowareEssCost)
                                 : await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter,
-                                    Improvement.ImprovementType.BasicBiowareEssCost, token: token);
+                                    Improvement.ImprovementType.BasicBiowareEssCost, token: token).ConfigureAwait(false);
                             if (lstUsedImprovements.Count != 0)
                             {
                                 foreach (Improvement objImprovement in lstUsedImprovements)
@@ -4712,7 +4712,7 @@ namespace Chummer.Backend.Equipment
                                               Improvement.ImprovementType.None);
                         else
                             await UpdateMultipliersAsync(Improvement.ImprovementType.GenetechEssMultiplier,
-                                                         Improvement.ImprovementType.None);
+                                                         Improvement.ImprovementType.None).ConfigureAwait(false);
                         break;
                     // Apply the character's Geneware Essence cost multiplier if applicable. Since Geneware does not use Grades, we only check the genetechessmultiplier improvement.
                     case Improvement.ImprovementSource.Bioware when IsGeneware:
@@ -4721,7 +4721,7 @@ namespace Chummer.Backend.Equipment
                                               Improvement.ImprovementType.None);
                         else
                             await UpdateMultipliersAsync(Improvement.ImprovementType.GenetechEssMultiplier,
-                                                         Improvement.ImprovementType.None);
+                                                         Improvement.ImprovementType.None).ConfigureAwait(false);
                         break;
                 }
                 void UpdateMultipliers(Improvement.ImprovementType eBaseMultiplier, Improvement.ImprovementType eTotalMultiplier)
@@ -4752,7 +4752,7 @@ namespace Chummer.Backend.Equipment
                     if (eBaseMultiplier != Improvement.ImprovementType.None)
                     {
                         List<Improvement> lstUsedImprovements =
-                            await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter, eBaseMultiplier, token: token);
+                            await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter, eBaseMultiplier, token: token).ConfigureAwait(false);
                         if (lstUsedImprovements.Count != 0)
                         {
                             foreach (Improvement objImprovement in lstUsedImprovements)
@@ -4763,7 +4763,7 @@ namespace Chummer.Backend.Equipment
                     if (eTotalMultiplier != Improvement.ImprovementType.None)
                     {
                         List<Improvement> lstUsedImprovements =
-                            await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter, eTotalMultiplier, token: token);
+                            await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter, eTotalMultiplier, token: token).ConfigureAwait(false);
                         if (lstUsedImprovements.Count != 0)
                         {
                             foreach (Improvement objImprovement in lstUsedImprovements)
@@ -4788,7 +4788,7 @@ namespace Chummer.Backend.Equipment
                         ? CommonFunctions.EvaluateInvariantXPath(
                             strPostModifierExpression.Replace("{Modifier}", decTotalModifier.ToString(GlobalSettings.InvariantCultureInfo)))
                         : await CommonFunctions.EvaluateInvariantXPathAsync(
-                            strPostModifierExpression.Replace("{Modifier}", decTotalModifier.ToString(GlobalSettings.InvariantCultureInfo)), token);
+                            strPostModifierExpression.Replace("{Modifier}", decTotalModifier.ToString(GlobalSettings.InvariantCultureInfo)), token).ConfigureAwait(false);
                     if (blnIsSuccess)
                         decTotalModifier = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
                 }
@@ -4817,12 +4817,12 @@ namespace Chummer.Backend.Equipment
                     objChild => objChild.AddToParentESS && !objChild.PrototypeTranshuman,
                     objChild =>
                         objChild.GetCalculatedESSPrototypeInvariantAsync(
-                            objChild.Rating, objGrade, token), token: token);
+                            objChild.Rating, objGrade, token), token: token).ConfigureAwait(false);
             else
                 decReturn += await Children.SumAsync(objChild => objChild.AddToParentESS,
                                                      objChild =>
                                                          objChild.GetCalculatedESSPrototypeInvariantAsync(
-                                                             objChild.Rating, objGrade, token), token: token);
+                                                             objChild.Rating, objGrade, token), token: token).ConfigureAwait(false);
             return decReturn;
         }
 
@@ -5426,11 +5426,11 @@ namespace Chummer.Backend.Equipment
             {
                 case "STR":
                     // Base Strength for any limb is 3.
-                    return ParentVehicle != null ? Math.Max(await ParentVehicle.GetTotalBodyAsync(token), 0) : 3;
+                    return ParentVehicle != null ? Math.Max(await ParentVehicle.GetTotalBodyAsync(token).ConfigureAwait(false), 0) : 3;
 
                 case "AGI":
                     // Base Agility for any limb is 3.
-                    return ParentVehicle != null ? Math.Max(await ParentVehicle.GetPilotAsync(token), 0) : 3;
+                    return ParentVehicle != null ? Math.Max(await ParentVehicle.GetPilotAsync(token).ConfigureAwait(false), 0) : 3;
 
                 default:
                     return 0;
@@ -5474,10 +5474,10 @@ namespace Chummer.Backend.Equipment
             token.ThrowIfCancellationRequested();
             if (!CyberlimbAttributeAbbrevs.Contains(strAbbrev))
                 return 0;
-            int intValue = await GetAttributeBaseValueAsync(strAbbrev, token);
-            if (await Children.GetCountAsync(token) > 0 && s_AttributeCustomizationCyberwares.TryGetValue(strAbbrev, out IReadOnlyCollection<string> setNamesToCheck))
+            int intValue = await GetAttributeBaseValueAsync(strAbbrev, token).ConfigureAwait(false);
+            if (await Children.GetCountAsync(token).ConfigureAwait(false) > 0 && s_AttributeCustomizationCyberwares.TryGetValue(strAbbrev, out IReadOnlyCollection<string> setNamesToCheck))
             {
-                List<Cyberware> lstCustomizationWare = new List<Cyberware>(await Children.GetCountAsync(token));
+                List<Cyberware> lstCustomizationWare = new List<Cyberware>(await Children.GetCountAsync(token).ConfigureAwait(false));
                 foreach (Cyberware objChild in Children)
                 {
                     if (setNamesToCheck.Contains(objChild.Name))
@@ -5493,10 +5493,10 @@ namespace Chummer.Backend.Equipment
 
             if (ParentVehicle == null)
             {
-                CharacterAttrib objAttribute = await _objCharacter.GetAttributeAsync(strAbbrev, token: token);
-                return Math.Min(intValue, objAttribute != null ? await objAttribute.GetTotalMaximumAsync(token) : 0);
+                CharacterAttrib objAttribute = await _objCharacter.GetAttributeAsync(strAbbrev, token: token).ConfigureAwait(false);
+                return Math.Min(intValue, objAttribute != null ? await objAttribute.GetTotalMaximumAsync(token).ConfigureAwait(false) : 0);
             }
-            return Math.Min(intValue, Math.Max(await ParentVehicle.GetTotalBodyAsync(token) * 2, 1));
+            return Math.Min(intValue, Math.Max(await ParentVehicle.GetTotalBodyAsync(token).ConfigureAwait(false) * 2, 1));
         }
 
         /// <summary>
@@ -5567,15 +5567,14 @@ namespace Chummer.Backend.Equipment
             if (InheritAttributes)
             {
                 int intAverageAttribute = 0;
-                int intCyberlimbChildrenNumber = 0;
-                await Children.ForEachAsync(async objChild =>
+                int intCyberlimbChildrenNumber = await Children.SumAsync(async objChild =>
                 {
-                    int intChildTotalValue = await objChild.GetAttributeTotalValueAsync(strAbbrev, token);
+                    int intChildTotalValue = await objChild.GetAttributeTotalValueAsync(strAbbrev, token).ConfigureAwait(false);
                     if (intChildTotalValue <= 0)
-                        return;
-                    ++intCyberlimbChildrenNumber;
+                        return 0;
                     intAverageAttribute += intChildTotalValue;
-                }, token: token);
+                    return 1;
+                }, token: token).ConfigureAwait(false);
 
                 if (intCyberlimbChildrenNumber == 0)
                     intCyberlimbChildrenNumber = 1;
@@ -5588,14 +5587,14 @@ namespace Chummer.Backend.Equipment
 
             int intBonus = 0;
 
-            if (await Children.GetCountAsync(token) > 0 && s_AttributeEnhancementCyberwares.TryGetValue(strAbbrev, out IReadOnlyCollection<string> setNamesToCheck))
+            if (await Children.GetCountAsync(token).ConfigureAwait(false) > 0 && s_AttributeEnhancementCyberwares.TryGetValue(strAbbrev, out IReadOnlyCollection<string> setNamesToCheck))
             {
-                List<Cyberware> lstEnhancementWare = new List<Cyberware>(await Children.GetCountAsync(token));
+                List<Cyberware> lstEnhancementWare = new List<Cyberware>(await Children.GetCountAsync(token).ConfigureAwait(false));
                 await Children.ForEachAsync(objChild =>
                 {
                     if (setNamesToCheck.Contains(objChild.Name))
                         lstEnhancementWare.Add(objChild);
-                }, token: token);
+                }, token: token).ConfigureAwait(false);
                 if (lstEnhancementWare.Count > 0)
                 {
                     intBonus = lstEnhancementWare.Count > 1
@@ -5609,13 +5608,13 @@ namespace Chummer.Backend.Equipment
             }
             intBonus = Math.Min(intBonus, _objCharacter.Settings.CyberlimbAttributeBonusCap);
 
-            int intReturn = await GetAttributeValueAsync(strAbbrev, token) + intBonus;
+            int intReturn = await GetAttributeValueAsync(strAbbrev, token).ConfigureAwait(false) + intBonus;
             if (ParentVehicle == null)
             {
-                CharacterAttrib objAttribute = await _objCharacter.GetAttributeAsync(strAbbrev, token: token);
-                return Math.Min(intReturn, objAttribute != null ? await objAttribute.GetTotalAugmentedMaximumAsync(token) : 0);
+                CharacterAttrib objAttribute = await _objCharacter.GetAttributeAsync(strAbbrev, token: token).ConfigureAwait(false);
+                return Math.Min(intReturn, objAttribute != null ? await objAttribute.GetTotalAugmentedMaximumAsync(token).ConfigureAwait(false) : 0);
             }
-            return Math.Min(intReturn, Math.Max(await ParentVehicle.GetTotalBodyAsync(token) * 2, 1));
+            return Math.Min(intReturn, Math.Max(await ParentVehicle.GetTotalBodyAsync(token).ConfigureAwait(false) * 2, 1));
         }
 
         public bool IsProgram => false;
@@ -6151,10 +6150,10 @@ namespace Chummer.Backend.Equipment
             if (blnAdd)
             {
                 async void FuncCyberwareToAdd(object x, NotifyCollectionChangedEventArgs y) =>
-                    await this.RefreshChildrenCyberware(treCyberware, cmsCyberware, cmsCyberwareGear, null, y, funcMakeDirty);
+                    await this.RefreshChildrenCyberware(treCyberware, cmsCyberware, cmsCyberwareGear, null, y, funcMakeDirty).ConfigureAwait(false);
 
                 async void FuncGearToAdd(object x, NotifyCollectionChangedEventArgs y) =>
-                    await this.RefreshChildrenGears(treCyberware, cmsCyberwareGear, () => Children.Count, y, funcMakeDirty);
+                    await this.RefreshChildrenGears(treCyberware, cmsCyberwareGear, () => Children.Count, y, funcMakeDirty).ConfigureAwait(false);
 
                 Children.AddTaggedCollectionChanged(treCyberware, FuncCyberwareToAdd);
                 GearChildren.AddTaggedCollectionChanged(treCyberware, FuncGearToAdd);

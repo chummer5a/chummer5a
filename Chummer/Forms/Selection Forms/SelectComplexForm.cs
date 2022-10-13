@@ -91,7 +91,7 @@ namespace Chummer
             try
             {
                 string strDuration;
-                switch ((await xmlComplexForm.SelectSingleNodeAndCacheExpressionAsync("duration"))?.Value)
+                switch ((await xmlComplexForm.SelectSingleNodeAndCacheExpressionAsync("duration").ConfigureAwait(false))?.Value)
                 {
                     case "P":
                         strDuration = await LanguageManager.GetStringAsync("String_SpellDurationPermanent").ConfigureAwait(false);
@@ -113,7 +113,7 @@ namespace Chummer
                 await lblDuration.DoThreadSafeAsync(x => x.Text = strDuration).ConfigureAwait(false);
 
                 string strTarget;
-                switch ((await xmlComplexForm.SelectSingleNodeAndCacheExpressionAsync("target"))?.Value)
+                switch ((await xmlComplexForm.SelectSingleNodeAndCacheExpressionAsync("target").ConfigureAwait(false))?.Value)
                 {
                     case "Persona":
                         strTarget = await LanguageManager.GetStringAsync("String_ComplexFormTargetPersona").ConfigureAwait(false);
@@ -150,7 +150,7 @@ namespace Chummer
 
                 await lblTarget.DoThreadSafeAsync(x => x.Text = strTarget).ConfigureAwait(false);
 
-                string strFv = (await xmlComplexForm.SelectSingleNodeAndCacheExpressionAsync("fv"))?.Value.Replace('/', '÷').Replace('*', '×')
+                string strFv = (await xmlComplexForm.SelectSingleNodeAndCacheExpressionAsync("fv").ConfigureAwait(false))?.Value.Replace('/', '÷').Replace('*', '×')
                                ?? string.Empty;
                 if (!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 {
@@ -172,10 +172,10 @@ namespace Chummer
 
                 await lblFV.DoThreadSafeAsync(x => x.Text = strFv).ConfigureAwait(false);
 
-                string strSource = (await xmlComplexForm.SelectSingleNodeAndCacheExpressionAsync("source"))?.Value ??
+                string strSource = (await xmlComplexForm.SelectSingleNodeAndCacheExpressionAsync("source").ConfigureAwait(false))?.Value ??
                                    await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
                 string strPage = (await xmlComplexForm.SelectSingleNodeAndCacheExpressionAsync("altpage").ConfigureAwait(false))?.Value ??
-                                 (await xmlComplexForm.SelectSingleNodeAndCacheExpressionAsync("page"))?.Value ??
+                                 (await xmlComplexForm.SelectSingleNodeAndCacheExpressionAsync("page").ConfigureAwait(false))?.Value ??
                                  await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
                 SourceString objSource = await SourceString.GetSourceStringAsync(
                     strSource, strPage, GlobalSettings.Language,

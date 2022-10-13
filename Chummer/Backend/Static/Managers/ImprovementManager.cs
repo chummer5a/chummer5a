@@ -452,7 +452,7 @@ namespace Chummer
                 x => x.Value,
                 s_DictionaryCachedValues, blnAddToRating, strImprovedName,
                 blnUnconditionalOnly,
-                blnIncludeNonImproved, token);
+                blnIncludeNonImproved, token).ConfigureAwait(false);
             if (decReturn != 0 && lstUsedImprovements.Count == 0)
             {
                 Log.Warn("A cached value modifier somehow is not zero while having no used improvements in its list.");
@@ -494,7 +494,7 @@ namespace Chummer
         {
             (decimal decReturn, List<Improvement> lstUsedImprovements) = await MetaValueOfAsync(
                 objCharacter, eImprovementType, x => x.Value, s_DictionaryCachedValues, false,
-                strImprovedName, true, blnIncludeNonImproved, token);
+                strImprovedName, true, blnIncludeNonImproved, token).ConfigureAwait(false);
             if (decReturn != 0 && lstUsedImprovements.Count == 0)
             {
                 Log.Warn("A cached value modifier somehow is not zero while having no used improvements in its list.");
@@ -548,7 +548,7 @@ namespace Chummer
                 x => x.Augmented * x.Rating,
                 s_DictionaryCachedAugmentedValues, blnAddToRating, strImprovedName,
                 blnUnconditionalOnly,
-                blnIncludeNonImproved, token);
+                blnIncludeNonImproved, token).ConfigureAwait(false);
             if (decReturn != 0 && lstUsedImprovements.Count == 0)
             {
                 Log.Warn("A cached augmented value modifier somehow is not zero while having no used improvements in its list.");
@@ -575,7 +575,7 @@ namespace Chummer
                 x => x.Augmented * x.Rating,
                 s_DictionaryCachedAugmentedValues, blnAddToRating, strImprovedName,
                 blnUnconditionalOnly,
-                blnIncludeNonImproved, token);
+                blnIncludeNonImproved, token).ConfigureAwait(false);
             if (decReturn != 0 && lstUsedImprovements.Count == 0)
             {
                 Log.Warn("A cached augmented value modifier somehow is not zero while having no used improvements in its list.");
@@ -647,7 +647,7 @@ namespace Chummer
         {
             (decimal decReturn, List<Improvement> lstUsedImprovements) = await MetaValueOfAsync(
                 objCharacter, eImprovementType, x => x.Augmented * x.Rating, s_DictionaryCachedAugmentedValues, false,
-                strImprovedName, true, blnIncludeNonImproved, token);
+                strImprovedName, true, blnIncludeNonImproved, token).ConfigureAwait(false);
             if (decReturn != 0 && lstUsedImprovements.Count == 0)
             {
                 Log.Warn("A cached augmented value modifier somehow is not zero while having no used improvements in its list.");
@@ -1658,7 +1658,7 @@ namespace Chummer
                                                                      "/chummer/knowledgeskills/skill[(not(hide)"
                                                                      + strFilter + ")]"))
                                                     {
-                                                        string strName = xmlSkill.SelectSingleNode("name")?.Value;
+                                                        string strName = xmlSkill.SelectSingleNodeAndCacheExpression("name")?.Value;
                                                         if (!string.IsNullOrEmpty(strName))
                                                             lstDropdownItems.Add(
                                                                 new ListItem(
@@ -1741,7 +1741,7 @@ namespace Chummer
                 XmlNode xmlSkillCategories = xmlBonusNode.SelectSingleNode("skillcategories");
                 if (xmlSkillCategories != null)
                 {
-                    string strCategory = xmlSkillNode.SelectSingleNode("category")?.Value ?? string.Empty;
+                    string strCategory = xmlSkillNode.SelectSingleNodeAndCacheExpression("category")?.Value ?? string.Empty;
                     if (string.IsNullOrWhiteSpace(strCategory))
                         throw new AbortedException();
                     using (XmlNodeList xmlCategoryList = xmlSkillCategories.SelectNodes("category"))
@@ -1755,28 +1755,28 @@ namespace Chummer
                 string strTemp = xmlBonusNode.SelectSingleNode("@skillcategory")?.InnerText;
                 if (!string.IsNullOrEmpty(strTemp))
                 {
-                    string strCategory = xmlSkillNode.SelectSingleNode("category")?.Value ?? string.Empty;
+                    string strCategory = xmlSkillNode.SelectSingleNodeAndCacheExpression("category")?.Value ?? string.Empty;
                     if (string.IsNullOrWhiteSpace(strCategory) || !strTemp.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Contains(strCategory))
                         throw new AbortedException();
                 }
                 strTemp = xmlBonusNode.SelectSingleNode("@skillgroup")?.InnerText;
                 if (!string.IsNullOrEmpty(strTemp))
                 {
-                    string strSkillGroup = xmlSkillNode.SelectSingleNode("skillgroup")?.Value ?? string.Empty;
+                    string strSkillGroup = xmlSkillNode.SelectSingleNodeAndCacheExpression("skillgroup")?.Value ?? string.Empty;
                     if (string.IsNullOrWhiteSpace(strSkillGroup) || !strTemp.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Contains(strSkillGroup))
                         throw new AbortedException();
                 }
                 strTemp = xmlBonusNode.SelectSingleNode("@excludecategory")?.InnerText;
                 if (!string.IsNullOrEmpty(strTemp))
                 {
-                    string strCategory = xmlSkillNode.SelectSingleNode("category")?.Value ?? string.Empty;
+                    string strCategory = xmlSkillNode.SelectSingleNodeAndCacheExpression("category")?.Value ?? string.Empty;
                     if (!string.IsNullOrWhiteSpace(strCategory) && strTemp.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Contains(strCategory))
                         throw new AbortedException();
                 }
                 strTemp = xmlBonusNode.SelectSingleNode("@excludeskillgroup")?.InnerText;
                 if (!string.IsNullOrEmpty(strTemp))
                 {
-                    string strSkillGroup = xmlSkillNode.SelectSingleNode("skillgroup")?.Value ?? string.Empty;
+                    string strSkillGroup = xmlSkillNode.SelectSingleNodeAndCacheExpression("skillgroup")?.Value ?? string.Empty;
                     if (!string.IsNullOrWhiteSpace(strSkillGroup) && strTemp.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Contains(strSkillGroup))
                         throw new AbortedException();
                 }
@@ -1789,7 +1789,7 @@ namespace Chummer
                 strTemp = xmlBonusNode.SelectSingleNode("@limittoattribute")?.InnerText;
                 if (!string.IsNullOrEmpty(strTemp))
                 {
-                    string strAttribute = xmlSkillNode.SelectSingleNode("attribute")?.Value ?? string.Empty;
+                    string strAttribute = xmlSkillNode.SelectSingleNodeAndCacheExpression("attribute")?.Value ?? string.Empty;
                     if (string.IsNullOrWhiteSpace(strAttribute) || !strTemp.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Contains(strAttribute))
                         throw new AbortedException();
                 }
@@ -2389,19 +2389,19 @@ namespace Chummer
             {
                 try
                 {
-                    IAsyncDisposable objLocker = await objCharacter.LockObject.EnterWriteLockAsync(token);
+                    IAsyncDisposable objLocker = await objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         objImprovementMethod.Invoke(bonusNode);
                     }
                     finally
                     {
-                        await objLocker.DisposeAsync();
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
                     }
                 }
                 catch (AbortedException)
                 {
-                    await RollbackAsync(objCharacter, token);
+                    await RollbackAsync(objCharacter, token).ConfigureAwait(false);
                     return new Tuple<bool, string>(false, strSourceName);
                 }
 
@@ -3253,7 +3253,7 @@ namespace Chummer
             Log.Debug("RemoveImprovements called with:" + Environment.NewLine + "objImprovementSource = "
                      + objImprovementSource + Environment.NewLine + "strSourceName = " + strSourceName);
             List<Improvement> objImprovementList;
-            using (await EnterReadLock.EnterAsync(objCharacter.LockObject, token))
+            using (await EnterReadLock.EnterAsync(objCharacter.LockObject, token).ConfigureAwait(false))
             {
                 // A List of Improvements to hold all of the items that will eventually be deleted.
                 objImprovementList = (string.IsNullOrEmpty(strSourceName)
@@ -3266,7 +3266,7 @@ namespace Chummer
                 // Compatibility fix for when blnConcatSelectedValue was around
                 if (strSourceName.IsGuid())
                 {
-                    string strSourceNameSpaced = strSourceName + await LanguageManager.GetStringAsync("String_Space", token: token);
+                    string strSourceNameSpaced = strSourceName + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
                     string strSourceNameSpacedInvariant = strSourceName + ' ';
                     objImprovementList.AddRange(objCharacter.Improvements.Where(
                                                     objImprovement =>
@@ -3278,7 +3278,7 @@ namespace Chummer
                 }
             }
 
-            return await RemoveImprovementsAsync(objCharacter, objImprovementList, token: token);
+            return await RemoveImprovementsAsync(objCharacter, objImprovementList, token: token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -3776,8 +3776,8 @@ namespace Chummer
                                 else
                                     await objCharacter.SkillsSection.RemoveSkillsAsync(
                                         (SkillsSection.FilterOption)Enum.Parse(typeof(SkillsSection.FilterOption),
-                                            strImprovedName), objImprovement.Target,
-                                        !blnReapplyImprovements && objCharacter.Created, token);
+                                                                               strImprovedName), objImprovement.Target,
+                                        !blnReapplyImprovements && objCharacter.Created, token).ConfigureAwait(false);
                             }
 
                             break;
@@ -4038,7 +4038,7 @@ namespace Chummer
             // Do not attempt to add the Improvements if the Character is null (as a result of Cyberware being added to a VehicleMod).
             if (objCharacter != null)
             {
-                IAsyncDisposable objLocker = await objCharacter.LockObject.EnterWriteLockAsync(token);
+                IAsyncDisposable objLocker = await objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     // Record the improvement.
@@ -4064,8 +4064,8 @@ namespace Chummer
                     // This is initially set to false make sure no property changers are triggered by the setters in the section above
                     objImprovement.SetupComplete = true;
                     // Add the Improvement to the list.
-                    await objCharacter.Improvements.AddAsync(objImprovement, token);
-                    await ClearCachedValueAsync(objCharacter, objImprovementType, strImprovedName, token);
+                    await objCharacter.Improvements.AddAsync(objImprovement, token).ConfigureAwait(false);
+                    await ClearCachedValueAsync(objCharacter, objImprovementType, strImprovedName, token).ConfigureAwait(false);
 
                     // Add the Improvement to the Transaction List.
                     List<Improvement> lstTransactions;
@@ -4073,17 +4073,17 @@ namespace Chummer
                     do
                     {
                         bool blnSuccess;
-                        (blnSuccess, lstTransactions) = await s_DictionaryTransactions.TryGetValueAsync(objCharacter, token);
+                        (blnSuccess, lstTransactions) = await s_DictionaryTransactions.TryGetValueAsync(objCharacter, token).ConfigureAwait(false);
                         if (blnSuccess)
                             break;
                         lstTransactions = lstTransactionsNew;
-                    } while (!await s_DictionaryTransactions.TryAddAsync(objCharacter, lstTransactions, token));
+                    } while (!await s_DictionaryTransactions.TryAddAsync(objCharacter, lstTransactions, token).ConfigureAwait(false));
 
                     lstTransactions.Add(objImprovement);
                 }
                 finally
                 {
-                    await objLocker.DisposeAsync();
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
 
@@ -4114,7 +4114,7 @@ namespace Chummer
             Log.Debug("Commit");
             // Clear all of the Improvements from the Transaction List.
             (bool blnSuccess, List<Improvement> lstTransactions)
-                = await s_DictionaryTransactions.TryRemoveAsync(objCharacter, token);
+                = await s_DictionaryTransactions.TryRemoveAsync(objCharacter, token).ConfigureAwait(false);
             if (blnSuccess)
             {
                 lstTransactions.ProcessRelevantEvents();

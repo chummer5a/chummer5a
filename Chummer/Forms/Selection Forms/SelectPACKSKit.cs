@@ -285,7 +285,7 @@ namespace Chummer
                                               ?? strName) + strSpace
                                                           + await LanguageManager.GetStringAsync(
                                                               "String_SelectPACKSKit_Group").ConfigureAwait(false) + strSpace
-                                                          + ((await objXmlSkill.SelectSingleNodeAndCacheExpressionAsync("rating"))?.Value ?? string.Empty);
+                                                          + ((await objXmlSkill.SelectSingleNodeAndCacheExpressionAsync("rating").ConfigureAwait(false))?.Value ?? string.Empty);
                             string strSpec = (await objXmlSkill.SelectSingleNodeAndCacheExpressionAsync("spec").ConfigureAwait(false))?.Value;
                             if (!string.IsNullOrEmpty(strSpec))
                                 strText += strSpace + '(' + strSpec + ')';
@@ -315,9 +315,9 @@ namespace Chummer
                                 ? ((await objNode.SelectSingleNodeAndCacheExpressionAsync("translate").ConfigureAwait(false))
                                    ?.Value
                                    ?? strName)
-                                : strName) + strSpace + ((await objXmlSkill.SelectSingleNodeAndCacheExpressionAsync("rating"))?.Value
+                                : strName) + strSpace + ((await objXmlSkill.SelectSingleNodeAndCacheExpressionAsync("rating").ConfigureAwait(false))?.Value
                                                          ?? string.Empty);
-                            string strSpec = (await objXmlSkill.SelectSingleNodeAndCacheExpressionAsync("spec"))?.Value;
+                            string strSpec = (await objXmlSkill.SelectSingleNodeAndCacheExpressionAsync("spec").ConfigureAwait(false))?.Value;
                             if (!string.IsNullOrEmpty(strSpec))
                                 strText += strSpace + '(' + strSpec + ')';
                             TreeNode objChild = new TreeNode
@@ -356,7 +356,7 @@ namespace Chummer
                                 ? ((await objNode.SelectSingleNodeAndCacheExpressionAsync("translate").ConfigureAwait(false))
                                    ?.Value
                                    ?? strName)
-                                : strName) + strSpace + ((await objXmlArt.SelectSingleNodeAndCacheExpressionAsync("rating"))?.Value
+                                : strName) + strSpace + ((await objXmlArt.SelectSingleNodeAndCacheExpressionAsync("rating").ConfigureAwait(false))?.Value
                                                          ?? string.Empty);
                             TreeNode objChild = new TreeNode
                             {
@@ -463,7 +463,7 @@ namespace Chummer
                                 ? ((await objNode.SelectSingleNodeAndCacheExpressionAsync("translate").ConfigureAwait(false))
                                    ?.Value
                                    ?? strName)
-                                : strName) + strSpace + ((await objXmlSpell.SelectSingleNodeAndCacheExpressionAsync("rating"))?.Value
+                                : strName) + strSpace + ((await objXmlSpell.SelectSingleNodeAndCacheExpressionAsync("rating").ConfigureAwait(false))?.Value
                                                          ?? string.Empty);
                             string strSelect = (await objXmlSpell.SelectSingleNodeAndCacheExpressionAsync("@select").ConfigureAwait(false))?.Value;
                             if (!string.IsNullOrEmpty(strSelect))
@@ -557,7 +557,7 @@ namespace Chummer
                             string strRating = (await objXmlCyberware.SelectSingleNodeAndCacheExpressionAsync("rating").ConfigureAwait(false))?.Value;
                             if (!string.IsNullOrEmpty(strRating))
                                 strText += strSpace + await LanguageManager.GetStringAsync("String_Rating").ConfigureAwait(false) + strSpace + strRating;
-                            strText += strSpace + '(' + (await objXmlCyberware.SelectSingleNodeAndCacheExpressionAsync("grade")).Value + ')';
+                            strText += strSpace + '(' + (await objXmlCyberware.SelectSingleNodeAndCacheExpressionAsync("grade").ConfigureAwait(false)).Value + ')';
                             TreeNode objChild = new TreeNode
                             {
                                 Text = strText
@@ -950,7 +950,7 @@ namespace Chummer
 
         private async ValueTask WriteGear(XPathNavigator objXmlGear, TreeNode objParent)
         {
-            XPathNavigator xmlNameNode = await objXmlGear.SelectSingleNodeAndCacheExpressionAsync("name");
+            XPathNavigator xmlNameNode = await objXmlGear.SelectSingleNodeAndCacheExpressionAsync("name").ConfigureAwait(false);
             string strName = xmlNameNode?.Value ?? string.Empty;
             string strCategory = (await objXmlGear.SelectSingleNodeAndCacheExpressionAsync("category").ConfigureAwait(false))?.Value;
             XPathNavigator objNode = !string.IsNullOrEmpty(strCategory)

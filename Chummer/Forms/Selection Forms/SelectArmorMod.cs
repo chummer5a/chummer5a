@@ -235,18 +235,18 @@ namespace Chummer
             {
                 // Extract the Avil and Cost values from the Cyberware info since these may contain formulas and/or be based off of the Rating.
                 // This is done using XPathExpression.
-                string strArmor = (await objXmlMod.SelectSingleNodeAndCacheExpressionAsync("armor", token))?.Value;
+                string strArmor = (await objXmlMod.SelectSingleNodeAndCacheExpressionAsync("armor", token).ConfigureAwait(false))?.Value;
                 await lblA.DoThreadSafeAsync(x => x.Text = strArmor, token: token).ConfigureAwait(false);
                 await lblALabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strArmor), token: token).ConfigureAwait(false);
 
-                string strRatingLabel = (await objXmlMod.SelectSingleNodeAndCacheExpressionAsync("ratinglabel", token))?.Value;
+                string strRatingLabel = (await objXmlMod.SelectSingleNodeAndCacheExpressionAsync("ratinglabel", token).ConfigureAwait(false))?.Value;
                 strRatingLabel = !string.IsNullOrEmpty(strRatingLabel)
                     ? string.Format(GlobalSettings.CultureInfo,
                                     await LanguageManager.GetStringAsync("Label_RatingFormat", token: token).ConfigureAwait(false),
                                     await LanguageManager.GetStringAsync(strRatingLabel, token: token).ConfigureAwait(false))
                     : await LanguageManager.GetStringAsync("Label_Rating", token: token).ConfigureAwait(false);
                 await lblRatingLabel.DoThreadSafeAsync(x => x.Text = strRatingLabel, token: token).ConfigureAwait(false);
-                decimal decMaximum = Convert.ToDecimal((await objXmlMod.SelectSingleNodeAndCacheExpressionAsync("maxrating", token))?.Value,
+                decimal decMaximum = Convert.ToDecimal((await objXmlMod.SelectSingleNodeAndCacheExpressionAsync("maxrating", token).ConfigureAwait(false))?.Value,
                                                        GlobalSettings.InvariantCultureInfo);
                 await nudRating.DoThreadSafeAsync(x => x.Maximum = decMaximum, token: token).ConfigureAwait(false);
                 if (await chkHideOverAvailLimit.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
@@ -262,7 +262,7 @@ namespace Chummer
                 if (await chkShowOnlyAffordItems.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false) && !await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
                 {
                     decimal decCostMultiplier = 1 + (await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false) / 100.0m);
-                    if (_setBlackMarketMaps.Contains((await objXmlMod.SelectSingleNodeAndCacheExpressionAsync("category", token))?.Value))
+                    if (_setBlackMarketMaps.Contains((await objXmlMod.SelectSingleNodeAndCacheExpressionAsync("category", token).ConfigureAwait(false))?.Value))
                         decCostMultiplier *= 0.9m;
                     int intMaximum = await nudRating.DoThreadSafeFuncAsync(x => x.MaximumAsInt, token: token).ConfigureAwait(false);
                     while (intMaximum > 1 && !await objXmlMod.CheckNuyenRestrictionAsync(_objCharacter.Nuyen, decCostMultiplier, intMaximum, token).ConfigureAwait(false))
@@ -298,13 +298,13 @@ namespace Chummer
                 }
 
                 string strAvail = new AvailabilityValue(Convert.ToInt32(nudRating.Value),
-                                                        (await objXmlMod.SelectSingleNodeAndCacheExpressionAsync("avail", token))?.Value).ToString();
+                                                        (await objXmlMod.SelectSingleNodeAndCacheExpressionAsync("avail", token).ConfigureAwait(false))?.Value).ToString();
                 await lblAvail.DoThreadSafeAsync(x => x.Text = strAvail, token: token).ConfigureAwait(false);
                 await lblAvailLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strAvail), token: token).ConfigureAwait(false);
 
                 // Cost.
                 bool blnCanBlackMarketDiscount
-                    = _setBlackMarketMaps.Contains((await objXmlMod.SelectSingleNodeAndCacheExpressionAsync("category", token))?.Value);
+                    = _setBlackMarketMaps.Contains((await objXmlMod.SelectSingleNodeAndCacheExpressionAsync("category", token).ConfigureAwait(false))?.Value);
                 await chkBlackMarketDiscount.DoThreadSafeAsync(x =>
                 {
                     x.Enabled = blnCanBlackMarketDiscount;
@@ -330,7 +330,7 @@ namespace Chummer
                 }
                 else
                 {
-                    string strCostElement = (await objXmlMod.SelectSingleNodeAndCacheExpressionAsync("cost", token))?.Value ?? string.Empty;
+                    string strCostElement = (await objXmlMod.SelectSingleNodeAndCacheExpressionAsync("cost", token).ConfigureAwait(false))?.Value ?? string.Empty;
                     if (strCostElement.StartsWith("FixedValues(", StringComparison.Ordinal))
                     {
                         string strSuffix = string.Empty;
@@ -399,7 +399,7 @@ namespace Chummer
 
                 // Capacity.
                 // XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
-                string strCapacity = (await objXmlMod.SelectSingleNodeAndCacheExpressionAsync("armorcapacity", token))?.Value;
+                string strCapacity = (await objXmlMod.SelectSingleNodeAndCacheExpressionAsync("armorcapacity", token).ConfigureAwait(false))?.Value;
 
                 // Handle YNT Softweave
                 if (_eCapacityStyle == CapacityStyle.Zero || string.IsNullOrEmpty(strCapacity))
@@ -435,10 +435,10 @@ namespace Chummer
                 bool blnShowCapacity = !string.IsNullOrEmpty(await lblCapacity.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false));
                 await lblCapacityLabel.DoThreadSafeAsync(x => x.Visible = blnShowCapacity, token: token).ConfigureAwait(false);
 
-                string strSource = (await objXmlMod.SelectSingleNodeAndCacheExpressionAsync("source", token))?.Value
+                string strSource = (await objXmlMod.SelectSingleNodeAndCacheExpressionAsync("source", token).ConfigureAwait(false))?.Value
                                    ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
                 string strPage = (await objXmlMod.SelectSingleNodeAndCacheExpressionAsync("altpage", token: token).ConfigureAwait(false))?.Value
-                                 ?? (await objXmlMod.SelectSingleNodeAndCacheExpressionAsync("page", token))?.Value
+                                 ?? (await objXmlMod.SelectSingleNodeAndCacheExpressionAsync("page", token).ConfigureAwait(false))?.Value
                                  ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
                 SourceString objSource = await SourceString.GetSourceStringAsync(
                     strSource, strPage, GlobalSettings.Language,

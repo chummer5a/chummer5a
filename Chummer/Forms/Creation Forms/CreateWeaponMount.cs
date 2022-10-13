@@ -918,7 +918,7 @@ namespace Chummer
                 {
                     foreach (XPathNavigator xmlWeaponMountOptionNode in xmlWeaponMountOptionNodeList)
                     {
-                        string strId = (await xmlWeaponMountOptionNode.SelectSingleNodeAndCacheExpressionAsync("id", token))?.Value;
+                        string strId = (await xmlWeaponMountOptionNode.SelectSingleNodeAndCacheExpressionAsync("id", token).ConfigureAwait(false))?.Value;
                         if (string.IsNullOrEmpty(strId))
                             continue;
 

@@ -124,7 +124,7 @@ namespace Chummer
                     await nudRating.DoThreadSafeAsync(x => x.ValueAsInt = x.MinimumAsInt).ConfigureAwait(false);
                     int intMaxRating = int.MaxValue;
                     if (xmlQuality.TryGetInt32FieldQuickly("limit", ref intMaxRating)
-                        && await xmlQuality.SelectSingleNodeAndCacheExpressionAsync("nolevels") == null)
+                        && await xmlQuality.SelectSingleNodeAndCacheExpressionAsync("nolevels").ConfigureAwait(false) == null)
                     {
                         await lblRatingNALabel.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);
                         await nudRating.DoThreadSafeAsync(x =>
@@ -146,10 +146,10 @@ namespace Chummer
 
                     await UpdateCostLabel(xmlQuality).ConfigureAwait(false);
 
-                    string strSource = (await xmlQuality.SelectSingleNodeAndCacheExpressionAsync("source"))?.Value
+                    string strSource = (await xmlQuality.SelectSingleNodeAndCacheExpressionAsync("source").ConfigureAwait(false))?.Value
                                        ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
                     string strPage = (await xmlQuality.SelectSingleNodeAndCacheExpressionAsync("altpage").ConfigureAwait(false))?.Value
-                                     ?? (await xmlQuality.SelectSingleNodeAndCacheExpressionAsync("page"))?.Value
+                                     ?? (await xmlQuality.SelectSingleNodeAndCacheExpressionAsync("page").ConfigureAwait(false))?.Value
                                      ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
                     SourceString objSource = await SourceString.GetSourceStringAsync(
                         strSource, strPage, GlobalSettings.Language,
@@ -375,7 +375,7 @@ namespace Chummer
                     await lblBP.DoThreadSafeAsync(x => x.Text = 0.ToString(GlobalSettings.CultureInfo), token: token).ConfigureAwait(false);
                 else
                 {
-                    string strKarma = xmlQuality.SelectSingleNodeAndCacheExpression("karma")?.Value ?? string.Empty;
+                    string strKarma = (await xmlQuality.SelectSingleNodeAndCacheExpressionAsync("karma", token).ConfigureAwait(false))?.Value ?? string.Empty;
                     if (strKarma.StartsWith("Variable(", StringComparison.Ordinal))
                     {
                         int intMin;
@@ -403,13 +403,13 @@ namespace Chummer
                     {
                         int.TryParse(strKarma, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out int intBP);
 
-                        if ((await xmlQuality.SelectSingleNodeAndCacheExpressionAsync("costdiscount", token)).RequirementsMet(_objCharacter))
+                        if ((await xmlQuality.SelectSingleNodeAndCacheExpressionAsync("costdiscount", token).ConfigureAwait(false)).RequirementsMet(_objCharacter))
                         {
-                            XPathNavigator xmlValueNode = await xmlQuality.SelectSingleNodeAndCacheExpressionAsync("costdiscount/value", token);
+                            XPathNavigator xmlValueNode = await xmlQuality.SelectSingleNodeAndCacheExpressionAsync("costdiscount/value", token).ConfigureAwait(false);
                             if (xmlValueNode != null)
                             {
                                 int intValue = xmlValueNode.ValueAsInt;
-                                switch ((await xmlQuality.SelectSingleNodeAndCacheExpressionAsync("category", token))?.Value)
+                                switch ((await xmlQuality.SelectSingleNodeAndCacheExpressionAsync("category", token).ConfigureAwait(false))?.Value)
                                 {
                                     case "Positive":
                                         intBP += intValue;
@@ -424,7 +424,7 @@ namespace Chummer
 
                         if (_objCharacter.Created && !_objCharacter.Settings.DontDoubleQualityPurchases)
                         {
-                            string strDoubleCostCareer = (await xmlQuality.SelectSingleNodeAndCacheExpressionAsync("doublecareer", token))?.Value;
+                            string strDoubleCostCareer = (await xmlQuality.SelectSingleNodeAndCacheExpressionAsync("doublecareer", token).ConfigureAwait(false))?.Value;
                             if (string.IsNullOrEmpty(strDoubleCostCareer) || strDoubleCostCareer != bool.FalseString)
                             {
                                 intBP *= 2;
@@ -435,7 +435,7 @@ namespace Chummer
 
                         await lblBP.DoThreadSafeAsync(x => x.Text = (intBP * _objCharacter.Settings.KarmaQuality).ToString(GlobalSettings.CultureInfo), token: token).ConfigureAwait(false);
                         if (!_objCharacter.Created && _objCharacter.FreeSpells > 0 && Convert.ToBoolean(
-                            (await xmlQuality.SelectSingleNodeAndCacheExpressionAsync("canbuywithspellpoints", token))?.Value,
+                            (await xmlQuality.SelectSingleNodeAndCacheExpressionAsync("canbuywithspellpoints", token).ConfigureAwait(false))?.Value,
                             GlobalSettings.InvariantCultureInfo))
                         {
                             int i = (intBP * _objCharacter.Settings.KarmaQuality);
@@ -687,7 +687,7 @@ namespace Chummer
             _strSelectedQuality = strSelectedQuality;
             _strSelectCategory = (GlobalSettings.SearchInCategoryOnly || await txtSearch.DoThreadSafeFuncAsync(x => x.TextLength, token: token).ConfigureAwait(false) == 0)
                 ? await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false)
-                : (await objNode.SelectSingleNodeAndCacheExpressionAsync("category", token))?.Value;
+                : (await objNode.SelectSingleNodeAndCacheExpressionAsync("category", token).ConfigureAwait(false))?.Value;
             await this.DoThreadSafeAsync(x =>
             {
                 x.DialogResult = DialogResult.OK;

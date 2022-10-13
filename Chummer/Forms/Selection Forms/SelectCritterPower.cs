@@ -155,7 +155,7 @@ namespace Chummer
                     }
                     await lblCritterPowerType.DoThreadSafeAsync(x => x.Text = strType).ConfigureAwait(false);
 
-                    string strAction = (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("action"))?.Value ?? string.Empty;
+                    string strAction = (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("action").ConfigureAwait(false))?.Value ?? string.Empty;
                     switch (strAction)
                     {
                         case "Auto":
@@ -180,7 +180,7 @@ namespace Chummer
                     }
                     await lblCritterPowerAction.DoThreadSafeAsync(x => x.Text = strAction).ConfigureAwait(false);
 
-                    string strRange = (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("range"))?.Value ?? string.Empty;
+                    string strRange = (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("range").ConfigureAwait(false))?.Value ?? string.Empty;
                     if (!string.IsNullOrEmpty(strRange))
                     {
                         strRange = await strRange.CheapReplaceAsync("Self",
@@ -234,7 +234,7 @@ namespace Chummer
                     // If the character is a Free Spirit, populate the Power Points Cost as well.
                     if (_objCharacter.Metatype == "Free Spirit")
                     {
-                        XPathNavigator xmlOptionalPowerCostNode = _xmlMetatypeDataNode.SelectSingleNode("optionalpowers/power[. = " + (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value.CleanXPath() + "]/@cost");
+                        XPathNavigator xmlOptionalPowerCostNode = _xmlMetatypeDataNode.SelectSingleNode("optionalpowers/power[. = " + (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("name").ConfigureAwait(false))?.Value.CleanXPath() + "]/@cost");
                         if (xmlOptionalPowerCostNode != null)
                         {
                             await lblPowerPoints.DoThreadSafeAsync(x =>

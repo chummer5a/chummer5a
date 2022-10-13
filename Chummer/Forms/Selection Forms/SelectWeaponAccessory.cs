@@ -293,7 +293,7 @@ namespace Chummer
                 //TODO: Accessories don't use a category mapping, so we use parent weapon's category instead.
                 if (_objCharacter.BlackMarketDiscount && value != null)
                 {
-                    string strCategory = value.GetNodeXPath()?.SelectSingleNode("category")?.Value ?? string.Empty;
+                    string strCategory = value.GetNodeXPath()?.SelectSingleNodeAndCacheExpression("category")?.Value ?? string.Empty;
                     _blnIsParentWeaponBlackMarketAllowed = !string.IsNullOrEmpty(strCategory) && _setBlackMarketMaps.Contains(strCategory);
                 }
                 else
@@ -366,7 +366,7 @@ namespace Chummer
                 return;
             }
 
-            string strRC = (await xmlAccessory.SelectSingleNodeAndCacheExpressionAsync("rc", token))?.Value;
+            string strRC = (await xmlAccessory.SelectSingleNodeAndCacheExpressionAsync("rc", token).ConfigureAwait(false))?.Value;
             if (!string.IsNullOrEmpty(strRC))
             {
                 await lblRCLabel.DoThreadSafeAsync(x => x.Visible = true, token: token).ConfigureAwait(false);
@@ -382,7 +382,7 @@ namespace Chummer
                 await lblRCLabel.DoThreadSafeAsync(x => x.Visible = false, token: token).ConfigureAwait(false);
             }
 
-            if (int.TryParse((await xmlAccessory.SelectSingleNodeAndCacheExpressionAsync("rating", token))?.Value, out int intMaxRating) && intMaxRating > 0)
+            if (int.TryParse((await xmlAccessory.SelectSingleNodeAndCacheExpressionAsync("rating", token).ConfigureAwait(false))?.Value, out int intMaxRating) && intMaxRating > 0)
             {
                 await nudRating.DoThreadSafeAsync(x => x.Maximum = intMaxRating, token: token).ConfigureAwait(false);
                 if (await chkHideOverAvailLimit.DoThreadSafeFuncAsync(x => x.Checked, token: token)
@@ -410,7 +410,7 @@ namespace Chummer
                     decimal decCostMultiplier
                         = 1 + (await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false)
                                / 100.0m);
-                    if (_setBlackMarketMaps.Contains((await xmlAccessory.SelectSingleNodeAndCacheExpressionAsync("category", token))?.Value))
+                    if (_setBlackMarketMaps.Contains((await xmlAccessory.SelectSingleNodeAndCacheExpressionAsync("category", token).ConfigureAwait(false))?.Value))
                         decCostMultiplier *= 0.9m;
                     int intMinimum = await nudRating.DoThreadSafeFuncAsync(x => x.MinimumAsInt, token: token)
                                                     .ConfigureAwait(false);
@@ -448,7 +448,7 @@ namespace Chummer
 
             if (blnUpdateMountComboBoxes)
             {
-                string strDataMounts = (await xmlAccessory.SelectSingleNodeAndCacheExpressionAsync("mount", token))?.Value;
+                string strDataMounts = (await xmlAccessory.SelectSingleNodeAndCacheExpressionAsync("mount", token).ConfigureAwait(false))?.Value;
                 List<string> lstMounts = new List<string>(1);
                 if (!string.IsNullOrEmpty(strDataMounts))
                 {
@@ -483,7 +483,7 @@ namespace Chummer
                 await lblMountLabel.DoThreadSafeAsync(x => x.Visible = true, token: token).ConfigureAwait(false);
 
                 List<string> lstExtraMounts = new List<string>(1);
-                string strExtraMount = (await xmlAccessory.SelectSingleNodeAndCacheExpressionAsync("extramount", token))?.Value;
+                string strExtraMount = (await xmlAccessory.SelectSingleNodeAndCacheExpressionAsync("extramount", token).ConfigureAwait(false))?.Value;
                 if (!string.IsNullOrEmpty(strExtraMount))
                 {
                     lstExtraMounts.AddRange(strExtraMount.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries));
@@ -526,7 +526,7 @@ namespace Chummer
             // Avail.
             // If avail contains "F" or "R", remove it from the string so we can use the expression.
             string strAvail
-                = new AvailabilityValue(intRating, (await xmlAccessory.SelectSingleNodeAndCacheExpressionAsync("avail", token))?.Value)
+                = new AvailabilityValue(intRating, (await xmlAccessory.SelectSingleNodeAndCacheExpressionAsync("avail", token).ConfigureAwait(false))?.Value)
                     .ToString();
             await lblAvail.DoThreadSafeAsync(x => x.Text = strAvail, token: token).ConfigureAwait(false);
             await lblAvailLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strAvail), token: token)
@@ -642,7 +642,7 @@ namespace Chummer
                 await lblTest.DoThreadSafeAsync(x => x.Text = strTest, token: token).ConfigureAwait(false);
             }
 
-            XPathNavigator xmlAccessoryRatingLabel = await xmlAccessory.SelectSingleNodeAndCacheExpressionAsync("ratinglabel", token);
+            XPathNavigator xmlAccessoryRatingLabel = await xmlAccessory.SelectSingleNodeAndCacheExpressionAsync("ratinglabel", token).ConfigureAwait(false);
             string strRatingLabel = xmlAccessoryRatingLabel != null
                 ? string.Format(GlobalSettings.CultureInfo,
                                 await LanguageManager.GetStringAsync("Label_RatingFormat", token: token)
@@ -674,12 +674,12 @@ namespace Chummer
                 }
             }, token: token).ConfigureAwait(false);
 
-            string strSource = (await xmlAccessory.SelectSingleNodeAndCacheExpressionAsync("source", token))?.Value
+            string strSource = (await xmlAccessory.SelectSingleNodeAndCacheExpressionAsync("source", token).ConfigureAwait(false))?.Value
                                ?? await LanguageManager.GetStringAsync("String_Unknown", token: token)
                                                        .ConfigureAwait(false);
             string strPage
                 = (await xmlAccessory.SelectSingleNodeAndCacheExpressionAsync("altpage", token: token)
-                                     .ConfigureAwait(false))?.Value ?? (await xmlAccessory.SelectSingleNodeAndCacheExpressionAsync("page", token))?.Value
+                                     .ConfigureAwait(false))?.Value ?? (await xmlAccessory.SelectSingleNodeAndCacheExpressionAsync("page", token).ConfigureAwait(false))?.Value
                 ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
             SourceString objSourceString = await SourceString
                                                  .GetSourceStringAsync(strSource, strPage, GlobalSettings.Language,
