@@ -14808,7 +14808,8 @@
           <name>Smartgun System, Internal</name>
         </accessory>
         <accessory>
-          <name>Plastic Components 6</name>
+          <name>Plastic Components</name>
+          <rating>6</rating>
         </accessory>
       </accessories>
     </weapon>
@@ -18847,7 +18848,7 @@
     </accessory>
     <accessory>
       <id>63a4c7fe-847e-46e6-a99d-da0f39e63b8a</id>
-      <name>Plastic Components 6</name>
+      <name>Plastic Components</name>
       <mount />
       <avail>18R</avail>
       <cost>1000</cost>
