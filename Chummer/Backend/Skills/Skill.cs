@@ -4725,6 +4725,8 @@ namespace Chummer.Backend.Skills
 
         private void OnSkillGroupChanged(object sender, PropertyChangedEventArgs e)
         {
+            if (CharacterObject?.IsLoading != false)
+                return;
             switch (e.PropertyName)
             {
                 case nameof(Skills.SkillGroup.Base) when CharacterObject.EffectiveBuildMethodUsesPriorityTables:
@@ -4768,6 +4770,8 @@ namespace Chummer.Backend.Skills
 
         private void OnCharacterChanged(object sender, PropertyChangedEventArgs e)
         {
+            if (CharacterObject?.IsLoading != false)
+                return;
             switch (e.PropertyName)
             {
                 case nameof(Character.Karma):
@@ -4830,6 +4834,8 @@ namespace Chummer.Backend.Skills
 
         private void OnCharacterSettingsPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
+            if (CharacterObject?.IsLoading != false)
+                return;
             switch (e.PropertyName)
             {
                 case nameof(CharacterSettings.StrictSkillGroupsInCreateMode):
@@ -4925,6 +4931,8 @@ namespace Chummer.Backend.Skills
 
         protected void OnLinkedAttributeChanged(object sender, PropertyChangedEventArgs e)
         {
+            if (CharacterObject?.IsLoading != false)
+                return;
             switch (e?.PropertyName)
             {
                 case nameof(CharacterAttrib.TotalValue):
@@ -4950,42 +4958,48 @@ namespace Chummer.Backend.Skills
                     _strDictionaryKey = null;
                 _blnSkipSpecializationRefresh =
                     true; // Needed to make sure we don't call this method another time when we set the specialization's Parent
-                switch (e.Action)
+                try
                 {
-                    case NotifyCollectionChangedAction.Add:
-                        foreach (SkillSpecialization objSkillSpecialization in e.NewItems)
-                            objSkillSpecialization.Parent = this;
-                        break;
+                    switch (e.Action)
+                    {
+                        case NotifyCollectionChangedAction.Add:
+                            foreach (SkillSpecialization objSkillSpecialization in e.NewItems)
+                                objSkillSpecialization.Parent = this;
+                            break;
 
-                    case NotifyCollectionChangedAction.Remove:
-                        foreach (SkillSpecialization objSkillSpecialization in e.OldItems)
-                        {
-                            if (objSkillSpecialization.Parent == this)
-                                objSkillSpecialization.Parent = null;
-                        }
+                        case NotifyCollectionChangedAction.Remove:
+                            foreach (SkillSpecialization objSkillSpecialization in e.OldItems)
+                            {
+                                if (objSkillSpecialization.Parent == this)
+                                    objSkillSpecialization.Parent = null;
+                            }
 
-                        break;
+                            break;
 
-                    case NotifyCollectionChangedAction.Replace:
-                        foreach (SkillSpecialization objSkillSpecialization in e.OldItems)
-                        {
-                            if (objSkillSpecialization.Parent == this)
-                                objSkillSpecialization.Parent = null;
-                        }
+                        case NotifyCollectionChangedAction.Replace:
+                            foreach (SkillSpecialization objSkillSpecialization in e.OldItems)
+                            {
+                                if (objSkillSpecialization.Parent == this)
+                                    objSkillSpecialization.Parent = null;
+                            }
 
-                        foreach (SkillSpecialization objSkillSpecialization in e.NewItems)
-                            objSkillSpecialization.Parent = this;
-                        break;
+                            foreach (SkillSpecialization objSkillSpecialization in e.NewItems)
+                                objSkillSpecialization.Parent = this;
+                            break;
 
-                    case NotifyCollectionChangedAction.Reset:
-                        foreach (SkillSpecialization objSkillSpecialization in Specializations)
-                            objSkillSpecialization.Parent = this;
-                        break;
+                        case NotifyCollectionChangedAction.Reset:
+                            foreach (SkillSpecialization objSkillSpecialization in Specializations)
+                                objSkillSpecialization.Parent = this;
+                            break;
+                    }
+                }
+                finally
+                {
+                    _blnSkipSpecializationRefresh = false;
                 }
 
-                _blnSkipSpecializationRefresh = false;
-
-                OnPropertyChanged(nameof(Specializations));
+                if (CharacterObject?.IsLoading == false)
+                    OnPropertyChanged(nameof(Specializations));
             }
         }
 
@@ -4997,13 +5011,18 @@ namespace Chummer.Backend.Skills
             {
                 _blnSkipSpecializationRefresh =
                     true; // Needed to make sure we don't call this method another time when we set the specialization's Parent
-                foreach (SkillSpecialization objSkillSpecialization in e.OldItems)
+                try
                 {
-                    if (objSkillSpecialization.Parent == this)
-                        objSkillSpecialization.Parent = null;
+                    foreach (SkillSpecialization objSkillSpecialization in e.OldItems)
+                    {
+                        if (objSkillSpecialization.Parent == this)
+                            objSkillSpecialization.Parent = null;
+                    }
                 }
-
-                _blnSkipSpecializationRefresh = false;
+                finally
+                {
+                    _blnSkipSpecializationRefresh = false;
+                }
             }
         }
 

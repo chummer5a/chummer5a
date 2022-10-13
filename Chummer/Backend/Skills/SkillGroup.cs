@@ -1397,6 +1397,8 @@ namespace Chummer.Backend.Skills
 
         private void OnCharacterPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
+            if (CharacterObject?.IsLoading != false)
+                return;
             switch (e.PropertyName)
             {
                 case nameof(Character.Karma):
@@ -1411,6 +1413,8 @@ namespace Chummer.Backend.Skills
 
         private void OnCharacterSettingsPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
+            if (CharacterObject?.IsLoading != false && e.PropertyName != nameof(CharacterSettings.AllowSkillRegrouping))
+                return;
             switch (e.PropertyName)
             {
                 case nameof(CharacterSettings.StrictSkillGroupsInCreateMode):

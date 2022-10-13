@@ -1113,7 +1113,7 @@ namespace Chummer.Backend.Skills
 
                         XPathNavigator skillsDocXPath = blnSync
                             // ReSharper disable once MethodHasAsyncOverload
-                            ? _objCharacter.LoadDataXPath("skills.xml")
+                            ? _objCharacter.LoadDataXPath("skills.xml", token: token)
                             : await _objCharacter.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false);
                         using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                         out HashSet<string>
@@ -1140,7 +1140,7 @@ namespace Chummer.Backend.Skills
 
                             XmlDocument skillsDoc = blnSync
                                 // ReSharper disable once MethodHasAsyncOverload
-                                ? _objCharacter.LoadData("skills.xml")
+                                ? _objCharacter.LoadData("skills.xml", token: token)
                                 : await _objCharacter.LoadDataAsync("skills.xml", token: token).ConfigureAwait(false);
                             foreach (string skillId in setSkillGuids.Where(s => Skills.All(skill => skill.Name != s)))
                             {
