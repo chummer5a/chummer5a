@@ -32096,7 +32096,7 @@ namespace Chummer
 
                                 if (Created)
                                 {
-                                    decimal.TryParse(xmlStatBlockBaseNode.SelectSingleNode("cash/@total")?.Value,
+                                    decimal.TryParse(xmlStatBlockBaseNode.SelectSingleNodeAndCacheExpression("cash/@total")?.Value,
                                                      NumberStyles.Any,
                                                      GlobalSettings.InvariantCultureInfo, out _decNuyen);
                                 }
@@ -32498,7 +32498,7 @@ namespace Chummer
                                         Loyalty = xmlContactToImport.SelectSingleNodeAndCacheExpression("@loyalty")?.ValueAsInt ?? 1
                                     };
                                     string strDescription =
-                                        xmlContactToImport.SelectSingleNode("description")?.Value;
+                                        xmlContactToImport.SelectSingleNodeAndCacheExpression("description")?.Value;
                                     using (new FetchSafelyFromPool<StringBuilder>(
                                                Utils.StringBuilderPool, out StringBuilder sbdNotes))
                                     {
@@ -32858,7 +32858,7 @@ namespace Chummer
                                 foreach (XPathNavigator xmlPluginToAdd in xmlStatBlockBaseNode.Select(
                                              "gear/weapons/item[@useradded = \"no\"]"))
                                 {
-                                    string strName = xmlPluginToAdd.SelectSingleNode("@name")?.Value;
+                                    string strName = xmlPluginToAdd.SelectSingleNodeAndCacheExpression("@name")?.Value;
                                     if (!string.IsNullOrEmpty(strName))
                                     {
                                         Weapon objWeapon = _lstWeapons.FirstOrDefault(x =>
@@ -32866,7 +32866,7 @@ namespace Chummer
                                             (x.Name.Contains(strName) || strName.Contains(x.Name)));
                                         if (objWeapon != null)
                                         {
-                                            objWeapon.Notes = xmlPluginToAdd.SelectSingleNode("description")?.Value;
+                                            objWeapon.Notes = xmlPluginToAdd.SelectSingleNodeAndCacheExpression("description")?.Value;
                                             objWeapon.ProcessHeroLabWeaponPlugins(xmlPluginToAdd, lstWeapons);
                                         }
                                     }
@@ -32901,7 +32901,7 @@ namespace Chummer
                                 foreach (XPathNavigator xmlPluginToAdd in xmlStatBlockBaseNode.Select(
                                              "gear/augmentations/cyberware/item[@useradded = \"no\"]"))
                                 {
-                                    string strName = xmlPluginToAdd.SelectSingleNode("@name")?.Value;
+                                    string strName = xmlPluginToAdd.SelectSingleNodeAndCacheExpression("@name")?.Value;
                                     if (!string.IsNullOrEmpty(strName))
                                     {
                                         Cyberware objPlugin = _lstCyberware.FirstOrDefault(x =>
@@ -32909,7 +32909,7 @@ namespace Chummer
                                             (x.Name.Contains(strName) || strName.Contains(x.Name)));
                                         if (objPlugin != null)
                                         {
-                                            objPlugin.Notes = xmlPluginToAdd.SelectSingleNode("description")?.Value;
+                                            objPlugin.Notes = xmlPluginToAdd.SelectSingleNodeAndCacheExpression("description")?.Value;
                                             objPlugin.ProcessHeroLabCyberwarePlugins(xmlPluginToAdd,
                                                 objPlugin.Grade,
                                                 lstWeapons,
@@ -32938,7 +32938,7 @@ namespace Chummer
                                 foreach (XPathNavigator xmlPluginToAdd in xmlStatBlockBaseNode.Select(
                                              "gear/augmentations/bioware/item[@useradded = \"no\"]"))
                                 {
-                                    string strName = xmlPluginToAdd.SelectSingleNode("@name")?.Value;
+                                    string strName = xmlPluginToAdd.SelectSingleNodeAndCacheExpression("@name")?.Value;
                                     if (!string.IsNullOrEmpty(strName))
                                     {
                                         Cyberware objPlugin = _lstCyberware.FirstOrDefault(x =>
@@ -32946,7 +32946,7 @@ namespace Chummer
                                             (x.Name.Contains(strName) || strName.Contains(x.Name)));
                                         if (objPlugin != null)
                                         {
-                                            objPlugin.Notes = xmlPluginToAdd.SelectSingleNode("description")?.Value;
+                                            objPlugin.Notes = xmlPluginToAdd.SelectSingleNodeAndCacheExpression("description")?.Value;
                                             objPlugin.ProcessHeroLabCyberwarePlugins(xmlPluginToAdd,
                                                 objPlugin.Grade,
                                                 lstWeapons,
@@ -32975,7 +32975,7 @@ namespace Chummer
                                     : await LoadDataAsync("spells.xml", token: token).ConfigureAwait(false);
                                 foreach (XPathNavigator xmlHeroLabSpell in xmlNodeList)
                                 {
-                                    string strSpellName = xmlHeroLabSpell.SelectSingleNode("@name")?.Value;
+                                    string strSpellName = xmlHeroLabSpell.SelectSingleNodeAndCacheExpression("@name")?.Value;
                                     if (!string.IsNullOrEmpty(strSpellName))
                                     {
                                         bool blnIsLimited =
@@ -33078,7 +33078,7 @@ namespace Chummer
                                         {
                                             strForcedValue = strSpellName.TrimStartOnce("Clean ")
                                                                          .TrimEndOnce(", Extended");
-                                            if (xmlHeroLabSpell.SelectSingleNode("@type")?.Value == "Physical")
+                                            if (xmlHeroLabSpell.SelectSingleNodeAndCacheExpression("@type")?.Value == "Physical")
                                                 strSpellName = "Detect [Object]";
                                             else if (strSpellName.EndsWith(", Extended", StringComparison.Ordinal))
                                                 strSpellName = "Detect [Life Form], Extended";
@@ -33108,7 +33108,7 @@ namespace Chummer
                                         else if (strSpellName.StartsWith("Destroy ", StringComparison.Ordinal))
                                         {
                                             strForcedValue = strSpellName.TrimStartOnce("Destroy ");
-                                            strSpellName = xmlHeroLabSpell.SelectSingleNode("@type")?.Value ==
+                                            strSpellName = xmlHeroLabSpell.SelectSingleNodeAndCacheExpression("@type")?.Value ==
                                                            "Physical"
                                                 ? "Destroy [Vehicle]"
                                                 : "Destroy [Free Spirit]";
@@ -33212,7 +33212,7 @@ namespace Chummer
                                         }
 
                                         string strSpellCategory =
-                                            xmlHeroLabSpell.SelectSingleNode("@category")?.Value;
+                                            xmlHeroLabSpell.SelectSingleNodeAndCacheExpression("@category")?.Value;
                                         XmlNode xmlSpellData = xmlSpellDocument.SelectSingleNode(
                                             "chummer/spells/spell[category = " + strSpellCategory.CleanXPath() +
                                             " and name = " + strSpellName.CleanXPath() + ']');
@@ -33248,7 +33248,7 @@ namespace Chummer
                                         {
                                             Spell objSpell = new Spell(this);
                                             objSpell.Create(xmlSpellData, strForcedValue, blnIsLimited);
-                                            objSpell.Notes = xmlHeroLabSpell.SelectSingleNode("description")?.Value;
+                                            objSpell.Notes = xmlHeroLabSpell.SelectSingleNodeAndCacheExpression("description")?.Value;
                                             if (blnSync)
                                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                 _lstSpells.Add(objSpell);
@@ -33277,7 +33277,7 @@ namespace Chummer
                                     : await LoadDataAsync("powers.xml", token: token).ConfigureAwait(false);
                                 foreach (XPathNavigator xmlHeroLabPower in xmlNodeList)
                                 {
-                                    string strPowerName = xmlHeroLabPower.SelectSingleNode("@name")?.Value;
+                                    string strPowerName = xmlHeroLabPower.SelectSingleNodeAndCacheExpression("@name")?.Value;
                                     if (!string.IsNullOrEmpty(strPowerName))
                                     {
                                         int intRating = 1;
@@ -33347,7 +33347,7 @@ namespace Chummer
                                         {
                                             Power objPower = new Power(this) { Extra = strForcedValue };
                                             objPower.Create(xmlPowerData, intRating);
-                                            objPower.Notes = xmlHeroLabPower.SelectSingleNode("description")?.Value;
+                                            objPower.Notes = xmlHeroLabPower.SelectSingleNodeAndCacheExpression("description")?.Value;
                                             if (blnSync)
                                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                 _lstPowers.Add(objPower);
@@ -33535,18 +33535,18 @@ namespace Chummer
                                     : await xmlStatBlockBaseNode.SelectAndCacheExpressionAsync("identities/identity", token).ConfigureAwait(false);
                                 foreach (XPathNavigator xmlHeroLabIdentity in xmlNodeList)
                                 {
-                                    string strIdentityName = xmlHeroLabIdentity.SelectSingleNode("@name")?.Value;
+                                    string strIdentityName = xmlHeroLabIdentity.SelectSingleNodeAndCacheExpression("@name")?.Value;
                                     int intIdentityNameParenthesesStart = strIdentityName.IndexOf('(');
                                     if (intIdentityNameParenthesesStart != -1)
                                         strIdentityName =
                                             strIdentityName.Substring(0, intIdentityNameParenthesesStart);
                                     XPathNavigator xmlHeroLabFakeSINNode =
-                                        xmlHeroLabIdentity.SelectSingleNode("license[@name = \"Fake SIN\"]");
+                                        xmlHeroLabIdentity.SelectSingleNodeAndCacheExpression("license[@name = \"Fake SIN\"]");
                                     if (xmlHeroLabFakeSINNode != null)
                                     {
                                         Gear objFakeSIN = new Gear(this);
                                         objFakeSIN.Create(xmlFakeSINDataNode,
-                                                          xmlHeroLabFakeSINNode.SelectSingleNode("@rating")?.ValueAsInt
+                                                          xmlHeroLabFakeSINNode.SelectSingleNodeAndCacheExpression("@rating")?.ValueAsInt
                                                           ?? 1,
                                                           lstWeapons,
                                                           strIdentityName);
@@ -33578,10 +33578,10 @@ namespace Chummer
                                     }
 
                                     XPathNavigator xmlHeroLabLifestyleNode =
-                                        xmlHeroLabIdentity.SelectSingleNode("lifestyle");
+                                        xmlHeroLabIdentity.SelectSingleNodeAndCacheExpression("lifestyle");
                                     if (xmlHeroLabLifestyleNode != null)
                                     {
-                                        string strLifestyleType = xmlHeroLabLifestyleNode.SelectSingleNode("@name")
+                                        string strLifestyleType = xmlHeroLabLifestyleNode.SelectSingleNodeAndCacheExpression("@name")
                                             ?.Value
                                             .TrimEndOnce(" Lifestyle");
 

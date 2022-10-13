@@ -439,7 +439,7 @@ namespace Chummer
                 if (await xmlCyberware.SelectSingleNodeAndCacheExpressionAsync("bannedgrades", token).ConfigureAwait(false) != null)
                 {
                     setDisallowedGrades = new HashSet<string>();
-                    foreach (XPathNavigator objNode in xmlCyberware.Select("bannedgrades/grade"))
+                    foreach (XPathNavigator objNode in await xmlCyberware.SelectAndCacheExpressionAsync("bannedgrades/grade", token))
                     {
                         setDisallowedGrades.Add(objNode.Value);
                     }

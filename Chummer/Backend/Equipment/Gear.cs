@@ -4470,7 +4470,7 @@ namespace Chummer.Backend.Equipment
 
                 if (xmlGearDataNode != null)
                 {
-                    Create(xmlGearDataNode, xmlGearImportNode.SelectSingleNode("@rating")?.ValueAsInt ?? 0, lstWeapons,
+                    Create(xmlGearDataNode, xmlGearImportNode.SelectSingleNodeAndCacheExpression("@rating")?.ValueAsInt ?? 0, lstWeapons,
                         strForceValue);
                 }
                 else
@@ -4479,9 +4479,9 @@ namespace Chummer.Backend.Equipment
                         xmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = 'Custom Item']");
                     if (xmlCustomGearDataNode != null)
                     {
-                        Create(xmlCustomGearDataNode, xmlGearImportNode.SelectSingleNode("@rating")?.ValueAsInt ?? 0,
+                        Create(xmlCustomGearDataNode, xmlGearImportNode.SelectSingleNodeAndCacheExpression("@rating")?.ValueAsInt ?? 0,
                             lstWeapons, strOriginalName);
-                        Cost = xmlGearImportNode.SelectSingleNode("gearcost/@value")?.Value;
+                        Cost = xmlGearImportNode.SelectSingleNodeAndCacheExpression("gearcost/@value")?.Value;
                     }
                     else
                         return false;
@@ -4490,8 +4490,8 @@ namespace Chummer.Backend.Equipment
                 if (InternalId.IsEmptyGuid())
                     return false;
 
-                Quantity = xmlGearImportNode.SelectSingleNode("@quantity")?.ValueAsInt ?? 1;
-                Notes = xmlGearImportNode.SelectSingleNode("description")?.Value;
+                Quantity = xmlGearImportNode.SelectSingleNodeAndCacheExpression("@quantity")?.ValueAsInt ?? 1;
+                Notes = xmlGearImportNode.SelectSingleNodeAndCacheExpression("description")?.Value;
 
                 ProcessHeroLabGearPlugins(xmlGearImportNode, lstWeapons);
 

@@ -6851,7 +6851,7 @@ namespace Chummer
             }
 
             // Fix for legacy characters with old addqualities improvements.
-            await RemoveAddedQualities(objXmlDeleteQuality.Select("addqualities/addquality"), token).ConfigureAwait(false);
+            await RemoveAddedQualities(await objXmlDeleteQuality.SelectAndCacheExpressionAsync("addqualities/addquality", token), token).ConfigureAwait(false);
 
             // Perform removal
             objSelectedQuality.DeleteQuality(blnCompleteDelete);
@@ -9090,8 +9090,10 @@ namespace Chummer
                 }
 
                 string strCategories = string.Empty;
-                XPathNodeIterator xmlAddonCategoryList
-                    = (await objSensor.GetNodeXPathAsync(GenericToken).ConfigureAwait(false))?.Select("addoncategory");
+                XPathNavigator objSensorNode = await objSensor.GetNodeXPathAsync(GenericToken).ConfigureAwait(false);
+                XPathNodeIterator xmlAddonCategoryList = objSensorNode != null
+                    ? await objSensorNode.SelectAndCacheExpressionAsync("addoncategory", GenericToken).ConfigureAwait(false)
+                    : null;
                 if (xmlAddonCategoryList?.Count > 0)
                 {
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
@@ -11805,8 +11807,10 @@ namespace Chummer
                 CharacterObject.Cyberware.FindCyberwareGear(objSensor.InternalId, out Cyberware objCyberware);
 
                 string strCategories = string.Empty;
-                XPathNodeIterator xmlAddonCategoryList
-                    = (await objSensor.GetNodeXPathAsync(GenericToken).ConfigureAwait(false))?.Select("addoncategory");
+                XPathNavigator objSensorNode = await objSensor.GetNodeXPathAsync(GenericToken).ConfigureAwait(false);
+                XPathNodeIterator xmlAddonCategoryList = objSensorNode != null
+                    ? await objSensorNode.SelectAndCacheExpressionAsync("addoncategory", GenericToken).ConfigureAwait(false)
+                    : null;
                 if (xmlAddonCategoryList?.Count > 0)
                 {
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
@@ -11942,8 +11946,10 @@ namespace Chummer
                 }
 
                 string strCategories = string.Empty;
-                XPathNodeIterator xmlAddonCategoryList
-                    = (await objSensor.GetNodeXPathAsync(GenericToken).ConfigureAwait(false))?.Select("addoncategory");
+                XPathNavigator objSensorNode = await objSensor.GetNodeXPathAsync(GenericToken).ConfigureAwait(false);
+                XPathNodeIterator xmlAddonCategoryList = objSensorNode != null
+                    ? await objSensorNode.SelectAndCacheExpressionAsync("addoncategory", GenericToken).ConfigureAwait(false)
+                    : null;
                 if (xmlAddonCategoryList?.Count > 0)
                 {
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
@@ -12217,8 +12223,10 @@ namespace Chummer
                 // Open the Gear XML file and locate the selected piece.
                 XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml", token: GenericToken).ConfigureAwait(false);
                 string strCategories = string.Empty;
-                XPathNodeIterator xmlAddonCategoryList
-                    = (await objSensor.GetNodeXPathAsync(GenericToken).ConfigureAwait(false))?.Select("addoncategory");
+                XPathNavigator objSensorNode = await objSensor.GetNodeXPathAsync(GenericToken).ConfigureAwait(false);
+                XPathNodeIterator xmlAddonCategoryList = objSensorNode != null
+                    ? await objSensorNode.SelectAndCacheExpressionAsync("addoncategory", GenericToken).ConfigureAwait(false)
+                    : null;
                 if (xmlAddonCategoryList?.Count > 0)
                 {
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
@@ -12406,8 +12414,10 @@ namespace Chummer
                 // Open the Gear XML file and locate the selected piece.
                 XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml", token: GenericToken).ConfigureAwait(false);
                 string strCategories = string.Empty;
-                XPathNodeIterator xmlAddonCategoryList
-                    = (await objSensor.GetNodeXPathAsync(GenericToken).ConfigureAwait(false))?.Select("addoncategory");
+                XPathNavigator objSensorNode = await objSensor.GetNodeXPathAsync(GenericToken).ConfigureAwait(false);
+                XPathNodeIterator xmlAddonCategoryList = objSensorNode != null
+                    ? await objSensorNode.SelectAndCacheExpressionAsync("addoncategory", GenericToken).ConfigureAwait(false)
+                    : null;
                 if (xmlAddonCategoryList?.Count > 0)
                 {
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
@@ -18864,7 +18874,7 @@ namespace Chummer
 
                 if (xmlParent != null)
                 {
-                    XPathNodeIterator xmlAddonCategoryList = xmlParent.Select("addoncategory");
+                    XPathNodeIterator xmlAddonCategoryList = await xmlParent.SelectAndCacheExpressionAsync("addoncategory", token);
                     if (xmlAddonCategoryList.Count > 0)
                     {
                         using (new FetchSafelyFromPool<StringBuilder>(
@@ -19129,8 +19139,11 @@ namespace Chummer
 
                 if (!string.IsNullOrEmpty(strSelectedId) && objParent is IHasXmlDataNode objParentWithDataNode)
                 {
-                    XPathNodeIterator xmlAddonCategoryList
-                        = (await objParentWithDataNode.GetNodeXPathAsync(token).ConfigureAwait(false))?.Select("addoncategory");
+                    XPathNavigator objParentDataNode
+                        = await objParentWithDataNode.GetNodeXPathAsync(token).ConfigureAwait(false);
+                    XPathNodeIterator xmlAddonCategoryList = objParentDataNode != null
+                        ? await objParentDataNode.SelectAndCacheExpressionAsync("addoncategory", token).ConfigureAwait(false)
+                        : null;
                     if (xmlAddonCategoryList?.Count > 0)
                     {
                         using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,

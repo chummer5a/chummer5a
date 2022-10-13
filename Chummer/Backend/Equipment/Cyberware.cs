@@ -5989,7 +5989,7 @@ namespace Chummer.Backend.Equipment
                 decReturn += objLoopGear.DeleteGear(false);
 
             // Fix for legacy characters with old addqualities improvements.
-            XPathNodeIterator xmlOldAddQualitiesList = this.GetNodeXPath()?.Select("addqualities/addquality");
+            XPathNodeIterator xmlOldAddQualitiesList = this.GetNodeXPath()?.SelectAndCacheExpression("addqualities/addquality");
             if (xmlOldAddQualitiesList?.Count > 0)
             {
                 foreach (XPathNavigator objNode in xmlOldAddQualitiesList)
