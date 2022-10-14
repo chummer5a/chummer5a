@@ -28,6 +28,7 @@ namespace Chummer.UI.Attributes
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.lblName = new Chummer.LabelWithToolTip();
             this.flpRight = new System.Windows.Forms.FlowLayoutPanel();
             this.lblLimits = new Chummer.LabelWithToolTip();

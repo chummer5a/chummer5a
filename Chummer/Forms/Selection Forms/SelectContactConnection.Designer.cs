@@ -28,6 +28,7 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.cboMembership = new Chummer.ElasticComboBox();
             this.lblMembershipLabel = new System.Windows.Forms.Label();
             this.cboAreaOfInfluence = new Chummer.ElasticComboBox();

@@ -30,6 +30,7 @@ namespace Chummer.UI.Skills
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.splitSkills = new System.Windows.Forms.SplitContainer();
             this.tlpTopPanel = new System.Windows.Forms.TableLayoutPanel();
             this.tlpSkillGroups = new System.Windows.Forms.TableLayoutPanel();

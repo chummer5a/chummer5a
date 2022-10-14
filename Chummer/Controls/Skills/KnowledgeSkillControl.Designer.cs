@@ -28,6 +28,7 @@ namespace Chummer.UI.Skills
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.lblModifiedRating = new Chummer.LabelWithToolTip();
             this.cmdDelete = new System.Windows.Forms.Button();
             this.cboName = new Chummer.ElasticComboBox();

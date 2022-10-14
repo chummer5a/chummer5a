@@ -28,6 +28,7 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.chkAttributes = new Chummer.ColorableCheckBox();
             this.chkQualities = new Chummer.ColorableCheckBox();
             this.chkStartingNuyen = new Chummer.ColorableCheckBox();

@@ -28,6 +28,7 @@ namespace Chummer.UI.Shared.Components
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.cmdRoll = new Chummer.ButtonWithToolTip();
             this.lblDicePool = new Chummer.LabelWithToolTip();
             this.flpContainer = new System.Windows.Forms.FlowLayoutPanel();

@@ -28,6 +28,7 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.lblYear = new System.Windows.Forms.Label();
             this.nudYear = new Chummer.NumericUpDownEx();
             this.lblMonth = new System.Windows.Forms.Label();

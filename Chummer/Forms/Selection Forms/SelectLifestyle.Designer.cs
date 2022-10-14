@@ -28,6 +28,7 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.cboLifestyle = new Chummer.ElasticComboBox();
             this.lblLifestyles = new System.Windows.Forms.Label();
             this.cmdOKAdd = new System.Windows.Forms.Button();

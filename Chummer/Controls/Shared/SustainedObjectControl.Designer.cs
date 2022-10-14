@@ -28,7 +28,8 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
-            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
+            this.components = new System.ComponentModel.Container();
+            this.bufferedTableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.lblSustainedSpell = new System.Windows.Forms.Label();
             this.lblNetHits = new System.Windows.Forms.Label();
             this.nudNetHits = new Chummer.NumericUpDownEx();
@@ -37,45 +38,45 @@ namespace Chummer
             this.chkSelfSustained = new Chummer.ColorableCheckBox();
             this.cmdDelete = new System.Windows.Forms.Button();
             this.lblSelfSustained = new System.Windows.Forms.Label();
-            this.tlpMain.SuspendLayout();
+            this.bufferedTableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudNetHits)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudForce)).BeginInit();
             this.SuspendLayout();
             // 
-            // tlpMain
+            // bufferedTableLayoutPanel1
             // 
-            this.tlpMain.AutoSize = true;
-            this.tlpMain.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpMain.ColumnCount = 8;
-            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpMain.Controls.Add(this.lblSustainedSpell, 0, 0);
-            this.tlpMain.Controls.Add(this.lblNetHits, 0, 1);
-            this.tlpMain.Controls.Add(this.nudNetHits, 2, 1);
-            this.tlpMain.Controls.Add(this.lblForce, 3, 1);
-            this.tlpMain.Controls.Add(this.nudForce, 4, 1);
-            this.tlpMain.Controls.Add(this.chkSelfSustained, 6, 1);
-            this.tlpMain.Controls.Add(this.cmdDelete, 7, 0);
-            this.tlpMain.Controls.Add(this.lblSelfSustained, 5, 1);
-            this.tlpMain.Location = new System.Drawing.Point(0, 0);
-            this.tlpMain.Name = "tlpMain";
-            this.tlpMain.RowCount = 2;
-            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpMain.Size = new System.Drawing.Size(265, 39);
-            this.tlpMain.TabIndex = 1;
+            this.bufferedTableLayoutPanel1.AutoSize = true;
+            this.bufferedTableLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.bufferedTableLayoutPanel1.ColumnCount = 8;
+            this.bufferedTableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.bufferedTableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.bufferedTableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.bufferedTableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.bufferedTableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.bufferedTableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.bufferedTableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.bufferedTableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.bufferedTableLayoutPanel1.Controls.Add(this.lblSustainedSpell, 0, 0);
+            this.bufferedTableLayoutPanel1.Controls.Add(this.lblNetHits, 0, 1);
+            this.bufferedTableLayoutPanel1.Controls.Add(this.nudNetHits, 2, 1);
+            this.bufferedTableLayoutPanel1.Controls.Add(this.lblForce, 3, 1);
+            this.bufferedTableLayoutPanel1.Controls.Add(this.nudForce, 4, 1);
+            this.bufferedTableLayoutPanel1.Controls.Add(this.chkSelfSustained, 6, 1);
+            this.bufferedTableLayoutPanel1.Controls.Add(this.cmdDelete, 7, 0);
+            this.bufferedTableLayoutPanel1.Controls.Add(this.lblSelfSustained, 5, 1);
+            this.bufferedTableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
+            this.bufferedTableLayoutPanel1.Name = "bufferedTableLayoutPanel1";
+            this.bufferedTableLayoutPanel1.RowCount = 2;
+            this.bufferedTableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.bufferedTableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.bufferedTableLayoutPanel1.Size = new System.Drawing.Size(265, 39);
+            this.bufferedTableLayoutPanel1.TabIndex = 1;
             // 
             // lblSustainedSpell
             // 
             this.lblSustainedSpell.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblSustainedSpell.AutoSize = true;
-            this.tlpMain.SetColumnSpan(this.lblSustainedSpell, 6);
+            this.bufferedTableLayoutPanel1.SetColumnSpan(this.lblSustainedSpell, 6);
             this.lblSustainedSpell.Location = new System.Drawing.Point(3, 0);
             this.lblSustainedSpell.Name = "lblSustainedSpell";
             this.lblSustainedSpell.Size = new System.Drawing.Size(61, 13);
@@ -175,7 +176,7 @@ namespace Chummer
             this.cmdDelete.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.cmdDelete.Location = new System.Drawing.Point(242, 9);
             this.cmdDelete.Name = "cmdDelete";
-            this.tlpMain.SetRowSpan(this.cmdDelete, 2);
+            this.bufferedTableLayoutPanel1.SetRowSpan(this.cmdDelete, 2);
             this.cmdDelete.Size = new System.Drawing.Size(20, 20);
             this.cmdDelete.TabIndex = 7;
             this.cmdDelete.Tag = "";
@@ -203,15 +204,15 @@ namespace Chummer
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.Controls.Add(this.tlpMain);
+            this.Controls.Add(this.bufferedTableLayoutPanel1);
             this.Margin = new System.Windows.Forms.Padding(2);
             this.MaximumSize = new System.Drawing.Size(1000, 45);
             this.MinimumSize = new System.Drawing.Size(241, 2);
             this.Name = "SustainedObjectControl";
             this.Size = new System.Drawing.Size(268, 42);
             this.Load += new System.EventHandler(this.SustainedObjectControl_Load);
-            this.tlpMain.ResumeLayout(false);
-            this.tlpMain.PerformLayout();
+            this.bufferedTableLayoutPanel1.ResumeLayout(false);
+            this.bufferedTableLayoutPanel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudNetHits)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudForce)).EndInit();
             this.ResumeLayout(false);
@@ -221,7 +222,7 @@ namespace Chummer
 
         #endregion
 
-        private System.Windows.Forms.TableLayoutPanel tlpMain;
+        private System.Windows.Forms.TableLayoutPanel bufferedTableLayoutPanel1;
         private ColorableCheckBox chkSelfSustained;
         private NumericUpDownEx nudForce;
         private System.Windows.Forms.Button cmdDelete;
