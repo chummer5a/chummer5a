@@ -14418,6 +14418,8 @@ namespace Chummer
             }
         }
 
+        public string CurrentDisplayName => CharacterName;
+
         /// <summary>
         /// Street Cred.
         /// </summary>
@@ -30161,10 +30163,12 @@ namespace Chummer
         //This tree keeps track of dependencies
         private static readonly PropertyDependencyGraph<Character> s_CharacterDependencyGraph =
             new PropertyDependencyGraph<Character>(
-                    new DependencyGraphNode<string, Character>(nameof(CharacterName),
-                        new DependencyGraphNode<string, Character>(nameof(Alias)),
-                        new DependencyGraphNode<string, Character>(nameof(Name), x => string.IsNullOrWhiteSpace(x.Alias),
-                            new DependencyGraphNode<string, Character>(nameof(Alias))
+                    new DependencyGraphNode<string, Character>(nameof(CurrentDisplayName),
+                        new DependencyGraphNode<string, Character>(nameof(CharacterName),
+                            new DependencyGraphNode<string, Character>(nameof(Alias)),
+                            new DependencyGraphNode<string, Character>(nameof(Name), x => string.IsNullOrWhiteSpace(x.Alias),
+                                new DependencyGraphNode<string, Character>(nameof(Alias))
+                            )
                         )
                     ),
                     new DependencyGraphNode<string, Character>(nameof(DisplayPowerPointsRemaining),

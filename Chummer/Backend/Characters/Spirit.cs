@@ -656,6 +656,17 @@ namespace Chummer
             }
         }
 
+        public string CurrentDisplayName
+        {
+            get
+            {
+                string strReturn = CritterName;
+                if (string.IsNullOrEmpty(strReturn))
+                    strReturn = LanguageManager.TranslateExtra(Name, strPreferFile: "critters.xml");
+                return strReturn;
+            }
+        }
+
         public string RatingLabel
         {
             get
@@ -1030,8 +1041,11 @@ namespace Chummer
                 new DependencyGraphNode<string, Spirit>(nameof(NoLinkedCharacter),
                     new DependencyGraphNode<string, Spirit>(nameof(LinkedCharacter))
                 ),
-                new DependencyGraphNode<string, Spirit>(nameof(CritterName),
-                    new DependencyGraphNode<string, Spirit>(nameof(LinkedCharacter))
+                new DependencyGraphNode<string, Spirit>(nameof(CurrentDisplayName),
+                    new DependencyGraphNode<string, Spirit>(nameof(CritterName),
+                        new DependencyGraphNode<string, Spirit>(nameof(LinkedCharacter))
+                    ),
+                    new DependencyGraphNode<string, Spirit>(nameof(Name), x => string.IsNullOrEmpty(x.CritterName))
                 ),
                 new DependencyGraphNode<string, Spirit>(nameof(MainMugshot),
                     new DependencyGraphNode<string, Spirit>(nameof(LinkedCharacter)),

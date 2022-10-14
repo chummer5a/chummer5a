@@ -547,6 +547,38 @@ namespace Chummer.UI.Powers
                                                                         }));
             deleteColumn.AddDependency(nameof(Power.FreeLevels));
 
+            TableColumn<Power> reapplyImprovementsColumn = this.DoThreadSafeFunc(() => new TableColumn<Power>(
+                () => new ButtonTableCell<Power>(new DpiFriendlyImagedButton
+                {
+                    ImageDpi96 = Resources.page_refresh,
+                    ImageDpi192 = Resources.page_refresh1,
+                    Dock = DockStyle.Fill
+                })
+                {
+                    ClickHandler = async p =>
+                    {
+                        if (ParentForm is CharacterCreate
+                            frmCreate)
+                            await frmCreate
+                                  .ReapplySpecificImprovements(
+                                      p.InternalId,
+                                      p.CurrentDisplayName)
+                                  .ConfigureAwait(false);
+                        else if (ParentForm is CharacterCareer
+                                 frmCareer)
+                            await frmCareer
+                                  .ReapplySpecificImprovements(
+                                      p.InternalId,
+                                      p.CurrentDisplayName)
+                                  .ConfigureAwait(false);
+                    },
+                    Alignment = Alignment.Center
+                })
+            {
+                Text = string.Empty,
+                ToolTipExtractor = p => LanguageManager.GetString("Menu_SpecialReapplyImprovements").WordWrap()
+            });
+
             _table.Columns.Add(nameColumn);
             _table.Columns.Add(actionColumn);
             _table.Columns.Add(ratingColumn);
@@ -557,6 +589,7 @@ namespace Chummer.UI.Powers
             _table.Columns.Add(noteColumn);
             _table.Columns.Add(sourceColumn);
             _table.Columns.Add(deleteColumn);
+            _table.Columns.Add(reapplyImprovementsColumn);
             _table.UpdateLightDarkMode();
             _table.TranslateWinForm();
             pnlPowers.Controls.Add(_table);

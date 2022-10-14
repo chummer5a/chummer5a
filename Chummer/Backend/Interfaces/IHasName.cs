@@ -22,5 +22,7 @@ namespace Chummer
     public interface IHasName
     {
         string Name { get; set; }
+
+        string CurrentDisplayName { get; }
     }
 }

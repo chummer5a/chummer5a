@@ -3344,11 +3344,23 @@
     </string>
     <string>
       <key>Message_ConfirmReapplyImprovements</key>
-      <text>Chummer will attempt to re-locate your characters Improvable items and re-apply any Improvements they grant. This may result in your character's Attributes, Skills, and other numbers changing if any of the Improvements these items grant have changed. It is recommended that you save your character before performing this action in case you are not satisfied with the changes. Are you sure you want to re-apply Improvements?</text>
+      <text>Chummer will attempt to re-locate your character's Improvable items and re-apply any Improvements they grant. This may result in your character's Attributes, Skills, and other numbers changing if any of the Improvements these items grant have changed. It is recommended that you save your character before performing this action in case you are not satisfied with the changes.\n\nAre you sure you want to re-apply Improvements?</text>
     </string>
     <string>
       <key>MessageTitle_ConfirmReapplyImprovements</key>
       <text>Re-apply Improvements</text>
+    </string>
+    <string>
+      <key>Message_ConfirmReapplySpecificImprovements</key>
+      <text>Chummer will attempt to re-apply any Improvements granted by {0}. This may result in your character's Attributes, Skills, and other numbers changing if any of the Improvements granted by {0} have changed. Depending on how dramatic these Improvements are, it is recommended that you save your character before performing this action in case you are not satisfied with the changes.\n\nAre you sure you want to re-apply the Improvements of {0}?</text>
+    </string>
+    <string>
+      <key>MessageTitle_ConfirmReapplySpecificImprovements</key>
+      <text>Re-apply Specific Improvements</text>
+    </string>
+    <string>
+      <key>String_SelectedItem</key>
+      <text>Selected Item</text>
     </string>
     <string>
       <key>Message_ReapplyImprovementsFoundOutdatedItems_Top</key>

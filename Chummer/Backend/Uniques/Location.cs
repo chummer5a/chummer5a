@@ -136,6 +136,8 @@ namespace Chummer
             set => _strName = value;
         }
 
+        public string CurrentDisplayName => Name;
+
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
         /// </summary>

@@ -1,5 +1,6 @@
 Future Build 225
 Application Changes:
+- Added the ability to re-apply the improvements of individual items instead of only for the entire character all at once. Implements #4628.
 - Attempting to reassign or reapply priorities or metatypes that give access to special attributes and/or skills linked to special attributes no longer causes Chummer to crash.
 - Fixed some rare bugs and crashes that could occur when writing to a file that Chummer was simultaneously attempting to read in.
 - Trying to add an item with a weapon select entry that relies on selecting for weapon details no longer causes a crash. Fixes #4934.
@@ -33,6 +34,9 @@ Data Changes:
 Changed/New Strings:
 - LimitCondition_SoldierParagon
 - Label_Options_EssenceModifierPostExpression
+- Message_ConfirmReapplySpecificImprovements
+- MessageTitle_ConfirmReapplySpecificImprovements
+- String_SelectedItem
 
 Build 224
 Application Changes:

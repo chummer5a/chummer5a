@@ -525,6 +525,8 @@ namespace Chummer
 
         public string CurrentDisplayNameShort => DisplayNameShort(GlobalSettings.Language);
 
+        public string CurrentDisplayName => CurrentDisplayNameShort;
+
         /// <summary>
         /// Sourcebook.
         /// </summary>

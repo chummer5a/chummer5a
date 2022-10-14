@@ -3096,6 +3096,207 @@ namespace Chummer
             }
         }
 
+        private async void tsQualityReapplyImprovements_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                object objSelected = (await treQualities.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
+                                                        .ConfigureAwait(false))?.Tag;
+                await ReapplySpecificImprovements((objSelected as IHasInternalId)?.InternalId,
+                                                  (objSelected as IHasName)?.CurrentDisplayName, GenericToken)
+                    .ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void tsCyberwareReapplyImprovements_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                object objSelected = (await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
+                                                        .ConfigureAwait(false))?.Tag;
+                await ReapplySpecificImprovements((objSelected as IHasInternalId)?.InternalId,
+                                                  (objSelected as IHasName)?.CurrentDisplayName, GenericToken)
+                    .ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void tsArmorReapplyImprovements_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                object objSelected = (await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
+                                                        .ConfigureAwait(false))?.Tag;
+                await ReapplySpecificImprovements((objSelected as IHasInternalId)?.InternalId,
+                                                  (objSelected as IHasName)?.CurrentDisplayName, GenericToken)
+                    .ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void tsWeaponReapplyImprovements_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                object objSelected = (await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
+                                                      .ConfigureAwait(false))?.Tag;
+                await ReapplySpecificImprovements((objSelected as IHasInternalId)?.InternalId,
+                                                  (objSelected as IHasName)?.CurrentDisplayName, GenericToken)
+                    .ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void tsGearReapplyImprovements_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                object objSelected = (await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
+                                                        .ConfigureAwait(false))?.Tag;
+                await ReapplySpecificImprovements((objSelected as IHasInternalId)?.InternalId,
+                                                  (objSelected as IHasName)?.CurrentDisplayName, GenericToken)
+                    .ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void tsMartialArtsReapplyImprovements_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                object objSelected = (await treMartialArts.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
+                                                        .ConfigureAwait(false))?.Tag;
+                await ReapplySpecificImprovements((objSelected as IHasInternalId)?.InternalId,
+                                                  (objSelected as IHasName)?.CurrentDisplayName, GenericToken)
+                    .ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void tsSpellReapplyImprovements_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                object objSelected = (await treSpells.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
+                                                     .ConfigureAwait(false))?.Tag;
+                await ReapplySpecificImprovements((objSelected as IHasInternalId)?.InternalId,
+                                                  (objSelected as IHasName)?.CurrentDisplayName, GenericToken)
+                    .ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void tsComplexFormReapplyImprovements_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                object objSelected = (await treComplexForms.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
+                                                           .ConfigureAwait(false))?.Tag;
+                await ReapplySpecificImprovements((objSelected as IHasInternalId)?.InternalId,
+                                                  (objSelected as IHasName)?.CurrentDisplayName, GenericToken)
+                    .ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void tsAIProgramReapplyImprovements_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                object objSelected = (await treAIPrograms.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
+                                                         .ConfigureAwait(false))?.Tag;
+                await ReapplySpecificImprovements((objSelected as IHasInternalId)?.InternalId,
+                                                  (objSelected as IHasName)?.CurrentDisplayName, GenericToken)
+                    .ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void tsCritterPowersReapplyImprovements_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                object objSelected = (await treCritterPowers.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
+                                                            .ConfigureAwait(false))?.Tag;
+                await ReapplySpecificImprovements((objSelected as IHasInternalId)?.InternalId,
+                                                  (objSelected as IHasName)?.CurrentDisplayName, GenericToken)
+                    .ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void tsMetamagicReapplyImprovements_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                object objSelected = (await treMetamagic.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
+                                                        .ConfigureAwait(false))?.Tag;
+                await ReapplySpecificImprovements((objSelected as IHasInternalId)?.InternalId,
+                                                  (objSelected as IHasName)?.CurrentDisplayName, GenericToken)
+                    .ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        internal async ValueTask ReapplySpecificImprovements(string strSelectedId, string strSelectedName,
+                                                            CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (string.IsNullOrEmpty(strSelectedId))
+                return;
+            string strName = !string.IsNullOrEmpty(strSelectedName)
+                ? strSelectedName
+                : await LanguageManager.GetStringAsync("String_SelectedItem", token: token).ConfigureAwait(false);
+            // This only re-applies the Improvements for everything the character has. If a match is not found in the data files, the current Improvement information is left as-is.
+            // Verify that the user wants to go through with it.
+            if (Program.ShowMessageBox(
+                    this,
+                    string.Format(GlobalSettings.CultureInfo,
+                                  await LanguageManager
+                                        .GetStringAsync("Message_ConfirmReapplySpecificImprovements", token: token)
+                                        .ConfigureAwait(false), strName),
+                    await LanguageManager
+                          .GetStringAsync("MessageTitle_ConfirmReapplySpecificImprovements", token: token)
+                          .ConfigureAwait(false),
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                return;
+            await DoReapplyImprovements(strSelectedId.Yield().ToList(), token: token).ConfigureAwait(false);
+        }
+
         private async ValueTask DoReapplyImprovements(ICollection<string> lstInternalIdFilter = null,
                                                       CancellationToken token = default)
         {
