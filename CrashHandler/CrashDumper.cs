@@ -60,10 +60,10 @@ namespace CrashHandler
         /// Start up the crash dump collector from a Base64-encoded string containing the serialized info for the crash.
         /// </summary>
         /// <param name="strJsonPath">String path of the text file that contains our JSON package.</param>
-        /// <param name="datCrashDateTime">Utc Date and Time at which the crash happened.</param>
-        public CrashDumper(string strJsonPath, DateTime datCrashDateTime)
+        /// <param name="strDateString">String for the Utc Date and Time at which the crash happened.</param>
+        public CrashDumper(string strJsonPath, string strDateString)
         {
-            CrashDumpName = "chummer_crash_" + datCrashDateTime.ToFileTimeUtc();
+            CrashDumpName = "chummer_crash_" + strDateString;
             CrashDumpLogName = Path.Combine(Utils.GetStartupPath, CrashDumpName + ".log");
 
             if (!Deserialize(strJsonPath, out _procId, out _dicFilePaths, out _lstPretendFilePaths, out _attributes,

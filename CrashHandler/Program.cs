@@ -42,8 +42,8 @@ namespace CrashHandler
             {
                 Debugger.Launch();
             }
-
-            using (CrashDumper objDumper = new CrashDumper(args[0], Convert.ToDateTime(args[1])))
+            
+            using (CrashDumper objDumper = new CrashDumper(args[0], args[1]))
             {
                 Application.Run(new CrashReporter(objDumper));
             }

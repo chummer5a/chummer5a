@@ -225,10 +225,10 @@ namespace Chummer.Backend
 
 #if DEBUG
                 using (Process crashHandler
-                       = Process.Start(Path.Combine(Utils.GetStartupPath, "CrashHandler.exe"), "crash \"" + strJsonPath + "\" \"" + datCrashDateTime.ToString(GlobalSettings.InvariantCultureInfo) + "\" --debug"))
+                       = Process.Start(Path.Combine(Utils.GetStartupPath, "CrashHandler.exe"), "crash \"" + strJsonPath + "\" \"" + datCrashDateTime.ToFileTimeUtc() + "\" --debug"))
 #else
                 using (Process crashHandler
-                       = Process.Start(Path.Combine(Utils.GetStartupPath, "CrashHandler.exe"), "crash \"" + strJsonPath + "\" \"" + datCrashDateTime.ToString(GlobalSettings.InvariantCultureInfo) + "\""))
+                       = Process.Start(Path.Combine(Utils.GetStartupPath, "CrashHandler.exe"), "crash \"" + strJsonPath + "\" \"" + datCrashDateTime.ToFileTimeUtc() + "\""))
 #endif
                     crashHandler?.WaitForExit();
             }
