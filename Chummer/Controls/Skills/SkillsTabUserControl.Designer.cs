@@ -30,7 +30,6 @@ namespace Chummer.UI.Skills
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             this.splitSkills = new System.Windows.Forms.SplitContainer();
             this.tlpTopPanel = new System.Windows.Forms.TableLayoutPanel();
             this.tlpSkillGroups = new System.Windows.Forms.TableLayoutPanel();
@@ -314,7 +313,6 @@ namespace Chummer.UI.Skills
             // 
             this.btnExotic.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.btnExotic.AutoSize = true;
-            this.btnExotic.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.btnExotic.Location = new System.Drawing.Point(428, 3);
             this.btnExotic.Name = "btnExotic";
             this.btnExotic.Size = new System.Drawing.Size(90, 23);
@@ -470,8 +468,8 @@ namespace Chummer.UI.Skills
             // 
             // btnKnowledge
             // 
+            this.btnKnowledge.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.btnKnowledge.AutoSize = true;
-            this.btnKnowledge.Dock = System.Windows.Forms.DockStyle.Fill;
             this.btnKnowledge.Location = new System.Drawing.Point(3, 3);
             this.btnKnowledge.Name = "btnKnowledge";
             this.btnKnowledge.Size = new System.Drawing.Size(80, 23);
