@@ -322,7 +322,10 @@ namespace Chummer
         public static string GetSettingsFolderPath => s_strGetSettingsFolderPath.Value;
 
         private static readonly Lazy<JoinableTaskFactory> s_objJoinableTaskFactory
-            = new Lazy<JoinableTaskFactory>(() => new JoinableTaskFactory(Program.MyJoinableTaskContext));
+            = new Lazy<JoinableTaskFactory>(() => new JoinableTaskFactory(
+                                                IsRunningInVisualStudio
+                                                    ? new JoinableTaskContext()
+                                                    : Program.MyJoinableTaskContext));
 
         public static JoinableTaskFactory JoinableTaskFactory => s_objJoinableTaskFactory.Value;
 
