@@ -30,7 +30,6 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CharacterSheetViewer));
             this.cmsSaveButton = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsSaveAsXml = new Chummer.DpiFriendlyToolStripMenuItem();

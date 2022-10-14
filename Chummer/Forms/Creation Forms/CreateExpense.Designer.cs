@@ -28,7 +28,6 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CreateExpense));
             this.lblKarma = new System.Windows.Forms.Label();
             this.nudAmount = new Chummer.NumericUpDownEx();

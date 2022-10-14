@@ -28,7 +28,6 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SelectLifestyleStartingNuyen));
             this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.lblResult = new System.Windows.Forms.Label();

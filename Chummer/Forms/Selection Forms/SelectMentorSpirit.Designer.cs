@@ -28,7 +28,6 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             this.lblDisadvantage = new System.Windows.Forms.Label();
             this.lblDisadvantageLabel = new System.Windows.Forms.Label();
             this.lblAdvantage = new System.Windows.Forms.Label();

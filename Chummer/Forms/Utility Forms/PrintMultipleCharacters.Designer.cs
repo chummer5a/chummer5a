@@ -28,7 +28,6 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PrintMultipleCharacters));
             this.dlgOpenFile = new System.Windows.Forms.OpenFileDialog();
             this.cmdSelectCharacter = new System.Windows.Forms.Button();

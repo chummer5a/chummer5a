@@ -28,7 +28,6 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ChummerUpdater));
             this.webNotes = new System.Windows.Forms.WebBrowser();
             this.cmdUpdate = new System.Windows.Forms.Button();

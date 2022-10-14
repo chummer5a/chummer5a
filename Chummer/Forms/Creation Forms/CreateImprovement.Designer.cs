@@ -28,7 +28,6 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             this.lblImprovementType = new System.Windows.Forms.Label();
             this.cboImprovemetType = new Chummer.ElasticComboBox();
             this.cmdCancel = new System.Windows.Forms.Button();

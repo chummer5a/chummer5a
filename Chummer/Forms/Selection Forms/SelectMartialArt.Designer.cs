@@ -28,7 +28,6 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             this.cmdCancel = new System.Windows.Forms.Button();
             this.lstMartialArts = new System.Windows.Forms.ListBox();
             this.cmdOK = new System.Windows.Forms.Button();

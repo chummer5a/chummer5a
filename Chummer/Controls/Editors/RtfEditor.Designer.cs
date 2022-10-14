@@ -30,7 +30,6 @@ namespace Chummer.UI.Editors
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             this.tsControls = new System.Windows.Forms.ToolStrip();
             this.tsbBold = new Chummer.DpiFriendlyToolStripButton();
             this.tsbItalic = new Chummer.DpiFriendlyToolStripButton();

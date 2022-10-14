@@ -1,4 +1,4 @@
-﻿namespace Chummer
+namespace Chummer
 {
     partial class SelectDiceHits
     {
@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             this.nudDiceResult = new Chummer.NumericUpDownEx();
             this.lblDice = new System.Windows.Forms.Label();
             this.lblDescription = new System.Windows.Forms.Label();

@@ -28,7 +28,6 @@ namespace Chummer.UI.Skills
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             this.lblName = new Chummer.LabelWithToolTip();
             this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.tlpMain.SuspendLayout();

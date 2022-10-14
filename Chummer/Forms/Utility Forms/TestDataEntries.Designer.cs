@@ -28,7 +28,6 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             this.cboTest = new Chummer.ElasticComboBox();
             this.cmdTest = new System.Windows.Forms.Button();
             this.txtOutput = new System.Windows.Forms.TextBox();

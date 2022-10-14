@@ -28,7 +28,6 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             this.lstSpells = new System.Windows.Forms.ListBox();
             this.lblDescriptorsLabel = new System.Windows.Forms.Label();
             this.lblDescriptors = new System.Windows.Forms.Label();

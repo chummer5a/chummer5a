@@ -28,7 +28,6 @@ namespace Chummer.Forms
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.imgIcon = new System.Windows.Forms.PictureBox();
             this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
