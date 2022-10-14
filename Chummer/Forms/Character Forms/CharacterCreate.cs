@@ -19270,18 +19270,22 @@ namespace Chummer
 
         private async void cboPrimaryArm_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (IsLoading || IsRefreshing || await CharacterObject.GetAmbidextrousAsync(GenericToken).ConfigureAwait(false))
+            if (IsLoading || IsRefreshing)
                 return;
+
             try
             {
-                CharacterObject.PrimaryArm = await cboPrimaryArm.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), GenericToken).ConfigureAwait(false);
+                if (await CharacterObject.GetAmbidextrousAsync(GenericToken).ConfigureAwait(false))
+                    return;
+                CharacterObject.PrimaryArm = await cboPrimaryArm
+                                                   .DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), GenericToken)
+                                                   .ConfigureAwait(false);
+                await SetDirty(true).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
                 //swallow this
             }
-
-            await SetDirty(true).ConfigureAwait(false);
         }
 
         private async void AttributeCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)

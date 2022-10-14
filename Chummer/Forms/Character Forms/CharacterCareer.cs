@@ -22493,11 +22493,12 @@ namespace Chummer
         {
             try
             {
-                if (IsLoading || IsRefreshing || await CharacterObject.GetAmbidextrousAsync(GenericToken).ConfigureAwait(false))
+                if (IsLoading || IsRefreshing
+                              || await CharacterObject.GetAmbidextrousAsync(GenericToken).ConfigureAwait(false))
                     return;
-                CharacterObject.PrimaryArm
-                    = await cboPrimaryArm.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), GenericToken).ConfigureAwait(false);
-
+                CharacterObject.PrimaryArm = await cboPrimaryArm
+                                                   .DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), GenericToken)
+                                                   .ConfigureAwait(false);
                 await SetDirty(true).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
