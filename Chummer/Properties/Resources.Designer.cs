@@ -723,6 +723,26 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap chart_organisation_add {
+            get {
+                object obj = ResourceManager.GetObject("chart_organisation_add", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap chart_organisation_add1 {
+            get {
+                object obj = ResourceManager.GetObject("chart_organisation_add1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap cog_edit {
             get {
                 object obj = ResourceManager.GetObject("cog_edit", resourceCulture);
@@ -5884,6 +5904,26 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap gift_add {
+            get {
+                object obj = ResourceManager.GetObject("gift_add", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap gift_add1 {
+            get {
+                object obj = ResourceManager.GetObject("gift_add1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap group {
             get {
                 object obj = ResourceManager.GetObject("group", resourceCulture);
@@ -6107,6 +6147,26 @@ namespace Chummer.Properties {
         public static System.Drawing.Bitmap ladybird_add1 {
             get {
                 object obj = ResourceManager.GetObject("ladybird_add1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap lightning_add {
+            get {
+                object obj = ResourceManager.GetObject("lightning_add", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap lightning_add1 {
+            get {
+                object obj = ResourceManager.GetObject("lightning_add1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -6637,6 +6697,26 @@ namespace Chummer.Properties {
         public static System.Drawing.Bitmap rip1 {
             get {
                 object obj = ResourceManager.GetObject("rip1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap script_add {
+            get {
+                object obj = ResourceManager.GetObject("script_add", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap script_add1 {
+            get {
+                object obj = ResourceManager.GetObject("script_add1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

@@ -168,6 +168,7 @@ namespace Chummer
             this.lmtControl = new Chummer.UI.Shared.LimitTabUserControl();
             this.cmsGearButton = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsGearButtonAddAccessory = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsGearButtonReapplyImprovements = new Chummer.DpiFriendlyToolStripMenuItem();
             this.cmsVehicle = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsVehicleAddWeapon = new Chummer.DpiFriendlyToolStripMenuItem();
             this.tsVehicleAddWeaponWeapon = new Chummer.DpiFriendlyToolStripMenuItem();
@@ -486,6 +487,7 @@ namespace Chummer
             this.tsMetamagicAddMetamagic = new Chummer.DpiFriendlyToolStripMenuItem();
             this.tsMetamagicAddRitual = new Chummer.DpiFriendlyToolStripMenuItem();
             this.tsMetamagicNotes = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsMetamagicReapplyImprovements = new Chummer.DpiFriendlyToolStripMenuItem();
             this.cmdDeleteMetamagic = new System.Windows.Forms.Button();
             this.tlpInitiationRight = new System.Windows.Forms.TableLayoutPanel();
             this.lblMetamagicSourceLabel = new System.Windows.Forms.Label();
@@ -1087,8 +1089,6 @@ namespace Chummer
             this.tsGearAllowRenameNotes = new Chummer.DpiFriendlyToolStripMenuItem();
             this.tsGearAllowRenameExtra = new Chummer.DpiFriendlyToolStripMenuItem();
             this.tsGearAllowRenameReapplyImprovements = new Chummer.DpiFriendlyToolStripMenuItem();
-            this.tsMetamagicReapplyImprovements = new Chummer.DpiFriendlyToolStripMenuItem();
-            this.tsGearButtonReapplyImprovements = new Chummer.DpiFriendlyToolStripMenuItem();
             this.StatusStrip.SuspendLayout();
             this.cmsMartialArts.SuspendLayout();
             this.cmsSpellButton.SuspendLayout();
@@ -2629,7 +2629,7 @@ namespace Chummer
             this.tsGearButtonAddAccessory,
             this.tsGearButtonReapplyImprovements});
             this.cmsGearButton.Name = "cmsGearButton";
-            this.cmsGearButton.Size = new System.Drawing.Size(204, 70);
+            this.cmsGearButton.Size = new System.Drawing.Size(204, 48);
             // 
             // tsGearButtonAddAccessory
             // 
@@ -2645,6 +2645,21 @@ namespace Chummer
             this.tsGearButtonAddAccessory.Tag = "Menu_AddAccessory";
             this.tsGearButtonAddAccessory.Text = "&Add Accessory";
             this.tsGearButtonAddAccessory.Click += new System.EventHandler(this.tsGearAddAsPlugin_Click);
+            // 
+            // tsGearButtonReapplyImprovements
+            // 
+            this.tsGearButtonReapplyImprovements.Image = global::Chummer.Properties.Resources.page_refresh;
+            this.tsGearButtonReapplyImprovements.ImageDpi120 = null;
+            this.tsGearButtonReapplyImprovements.ImageDpi144 = null;
+            this.tsGearButtonReapplyImprovements.ImageDpi192 = global::Chummer.Properties.Resources.page_refresh1;
+            this.tsGearButtonReapplyImprovements.ImageDpi288 = null;
+            this.tsGearButtonReapplyImprovements.ImageDpi384 = null;
+            this.tsGearButtonReapplyImprovements.ImageDpi96 = global::Chummer.Properties.Resources.page_refresh;
+            this.tsGearButtonReapplyImprovements.Name = "tsGearButtonReapplyImprovements";
+            this.tsGearButtonReapplyImprovements.Size = new System.Drawing.Size(203, 22);
+            this.tsGearButtonReapplyImprovements.Tag = "Menu_SpecialReapplyImprovements";
+            this.tsGearButtonReapplyImprovements.Text = "Re-Apply Improvements";
+            this.tsGearButtonReapplyImprovements.Click += new System.EventHandler(this.tsGearReapplyImprovements_Click);
             // 
             // cmsVehicle
             // 
@@ -7160,17 +7175,17 @@ namespace Chummer
             this.tsMetamagicNotes,
             this.tsMetamagicReapplyImprovements});
             this.cmsMetamagic.Name = "cmsMetamagic";
-            this.cmsMetamagic.Size = new System.Drawing.Size(204, 158);
+            this.cmsMetamagic.Size = new System.Drawing.Size(204, 180);
             // 
             // tsMetamagicAddArt
             // 
-            this.tsMetamagicAddArt.Image = null;
+            this.tsMetamagicAddArt.Image = global::Chummer.Properties.Resources.script_add;
             this.tsMetamagicAddArt.ImageDpi120 = null;
             this.tsMetamagicAddArt.ImageDpi144 = null;
-            this.tsMetamagicAddArt.ImageDpi192 = null;
+            this.tsMetamagicAddArt.ImageDpi192 = global::Chummer.Properties.Resources.script_add1;
             this.tsMetamagicAddArt.ImageDpi288 = null;
             this.tsMetamagicAddArt.ImageDpi384 = null;
-            this.tsMetamagicAddArt.ImageDpi96 = null;
+            this.tsMetamagicAddArt.ImageDpi96 = global::Chummer.Properties.Resources.script_add;
             this.tsMetamagicAddArt.Name = "tsMetamagicAddArt";
             this.tsMetamagicAddArt.Size = new System.Drawing.Size(203, 22);
             this.tsMetamagicAddArt.Text = "Add Art";
@@ -7178,13 +7193,13 @@ namespace Chummer
             // 
             // tsMetamagicAddEnchantment
             // 
-            this.tsMetamagicAddEnchantment.Image = null;
+            this.tsMetamagicAddEnchantment.Image = global::Chummer.Properties.Resources.lightning_add;
             this.tsMetamagicAddEnchantment.ImageDpi120 = null;
             this.tsMetamagicAddEnchantment.ImageDpi144 = null;
-            this.tsMetamagicAddEnchantment.ImageDpi192 = null;
+            this.tsMetamagicAddEnchantment.ImageDpi192 = global::Chummer.Properties.Resources.lightning_add1;
             this.tsMetamagicAddEnchantment.ImageDpi288 = null;
             this.tsMetamagicAddEnchantment.ImageDpi384 = null;
-            this.tsMetamagicAddEnchantment.ImageDpi96 = null;
+            this.tsMetamagicAddEnchantment.ImageDpi96 = global::Chummer.Properties.Resources.lightning_add;
             this.tsMetamagicAddEnchantment.Name = "tsMetamagicAddEnchantment";
             this.tsMetamagicAddEnchantment.Size = new System.Drawing.Size(203, 22);
             this.tsMetamagicAddEnchantment.Text = "Add Enchantment";
@@ -7192,13 +7207,13 @@ namespace Chummer
             // 
             // tsMetamagicAddEnhancement
             // 
-            this.tsMetamagicAddEnhancement.Image = null;
+            this.tsMetamagicAddEnhancement.Image = global::Chummer.Properties.Resources.gift_add;
             this.tsMetamagicAddEnhancement.ImageDpi120 = null;
             this.tsMetamagicAddEnhancement.ImageDpi144 = null;
-            this.tsMetamagicAddEnhancement.ImageDpi192 = null;
+            this.tsMetamagicAddEnhancement.ImageDpi192 = global::Chummer.Properties.Resources.gift_add1;
             this.tsMetamagicAddEnhancement.ImageDpi288 = null;
             this.tsMetamagicAddEnhancement.ImageDpi384 = null;
-            this.tsMetamagicAddEnhancement.ImageDpi96 = null;
+            this.tsMetamagicAddEnhancement.ImageDpi96 = global::Chummer.Properties.Resources.gift_add;
             this.tsMetamagicAddEnhancement.Name = "tsMetamagicAddEnhancement";
             this.tsMetamagicAddEnhancement.Size = new System.Drawing.Size(203, 22);
             this.tsMetamagicAddEnhancement.Text = "Add Enhancement";
@@ -7206,13 +7221,13 @@ namespace Chummer
             // 
             // tsMetamagicAddMetamagic
             // 
-            this.tsMetamagicAddMetamagic.Image = null;
+            this.tsMetamagicAddMetamagic.Image = global::Chummer.Properties.Resources.award_star_add;
             this.tsMetamagicAddMetamagic.ImageDpi120 = null;
             this.tsMetamagicAddMetamagic.ImageDpi144 = null;
-            this.tsMetamagicAddMetamagic.ImageDpi192 = null;
+            this.tsMetamagicAddMetamagic.ImageDpi192 = global::Chummer.Properties.Resources.award_star_add1;
             this.tsMetamagicAddMetamagic.ImageDpi288 = null;
             this.tsMetamagicAddMetamagic.ImageDpi384 = null;
-            this.tsMetamagicAddMetamagic.ImageDpi96 = null;
+            this.tsMetamagicAddMetamagic.ImageDpi96 = global::Chummer.Properties.Resources.award_star_add;
             this.tsMetamagicAddMetamagic.Name = "tsMetamagicAddMetamagic";
             this.tsMetamagicAddMetamagic.Size = new System.Drawing.Size(203, 22);
             this.tsMetamagicAddMetamagic.Text = "Add Metamagic";
@@ -7220,13 +7235,13 @@ namespace Chummer
             // 
             // tsMetamagicAddRitual
             // 
-            this.tsMetamagicAddRitual.Image = null;
+            this.tsMetamagicAddRitual.Image = global::Chummer.Properties.Resources.chart_organisation_add;
             this.tsMetamagicAddRitual.ImageDpi120 = null;
             this.tsMetamagicAddRitual.ImageDpi144 = null;
-            this.tsMetamagicAddRitual.ImageDpi192 = null;
+            this.tsMetamagicAddRitual.ImageDpi192 = global::Chummer.Properties.Resources.chart_organisation_add1;
             this.tsMetamagicAddRitual.ImageDpi288 = null;
             this.tsMetamagicAddRitual.ImageDpi384 = null;
-            this.tsMetamagicAddRitual.ImageDpi96 = null;
+            this.tsMetamagicAddRitual.ImageDpi96 = global::Chummer.Properties.Resources.chart_organisation_add;
             this.tsMetamagicAddRitual.Name = "tsMetamagicAddRitual";
             this.tsMetamagicAddRitual.Size = new System.Drawing.Size(203, 22);
             this.tsMetamagicAddRitual.Text = "Add Ritual";
@@ -7246,6 +7261,21 @@ namespace Chummer
             this.tsMetamagicNotes.Tag = "Menu_Notes";
             this.tsMetamagicNotes.Text = "&Notes";
             this.tsMetamagicNotes.Click += new System.EventHandler(this.tsMetamagicNotes_Click);
+            // 
+            // tsMetamagicReapplyImprovements
+            // 
+            this.tsMetamagicReapplyImprovements.Image = global::Chummer.Properties.Resources.page_refresh;
+            this.tsMetamagicReapplyImprovements.ImageDpi120 = null;
+            this.tsMetamagicReapplyImprovements.ImageDpi144 = null;
+            this.tsMetamagicReapplyImprovements.ImageDpi192 = global::Chummer.Properties.Resources.page_refresh1;
+            this.tsMetamagicReapplyImprovements.ImageDpi288 = null;
+            this.tsMetamagicReapplyImprovements.ImageDpi384 = null;
+            this.tsMetamagicReapplyImprovements.ImageDpi96 = global::Chummer.Properties.Resources.page_refresh;
+            this.tsMetamagicReapplyImprovements.Name = "tsMetamagicReapplyImprovements";
+            this.tsMetamagicReapplyImprovements.Size = new System.Drawing.Size(203, 22);
+            this.tsMetamagicReapplyImprovements.Tag = "Menu_SpecialReapplyImprovements";
+            this.tsMetamagicReapplyImprovements.Text = "Re-Apply Improvements";
+            this.tsMetamagicReapplyImprovements.Click += new System.EventHandler(this.tsMetamagicReapplyImprovements_Click);
             // 
             // cmdDeleteMetamagic
             // 
@@ -15738,36 +15768,6 @@ namespace Chummer
             this.tsGearAllowRenameReapplyImprovements.Tag = "Menu_SpecialReapplyImprovements";
             this.tsGearAllowRenameReapplyImprovements.Text = "Re-Apply Improvements";
             this.tsGearAllowRenameReapplyImprovements.Click += new System.EventHandler(this.tsGearReapplyImprovements_Click);
-            // 
-            // tsMetamagicReapplyImprovements
-            // 
-            this.tsMetamagicReapplyImprovements.Image = global::Chummer.Properties.Resources.page_refresh;
-            this.tsMetamagicReapplyImprovements.ImageDpi120 = null;
-            this.tsMetamagicReapplyImprovements.ImageDpi144 = null;
-            this.tsMetamagicReapplyImprovements.ImageDpi192 = global::Chummer.Properties.Resources.page_refresh1;
-            this.tsMetamagicReapplyImprovements.ImageDpi288 = null;
-            this.tsMetamagicReapplyImprovements.ImageDpi384 = null;
-            this.tsMetamagicReapplyImprovements.ImageDpi96 = global::Chummer.Properties.Resources.page_refresh;
-            this.tsMetamagicReapplyImprovements.Name = "tsMetamagicReapplyImprovements";
-            this.tsMetamagicReapplyImprovements.Size = new System.Drawing.Size(203, 22);
-            this.tsMetamagicReapplyImprovements.Tag = "Menu_SpecialReapplyImprovements";
-            this.tsMetamagicReapplyImprovements.Text = "Re-Apply Improvements";
-            this.tsMetamagicReapplyImprovements.Click += new System.EventHandler(this.tsMetamagicReapplyImprovements_Click);
-            // 
-            // tsGearButtonReapplyImprovements
-            // 
-            this.tsGearButtonReapplyImprovements.Image = global::Chummer.Properties.Resources.page_refresh;
-            this.tsGearButtonReapplyImprovements.ImageDpi120 = null;
-            this.tsGearButtonReapplyImprovements.ImageDpi144 = null;
-            this.tsGearButtonReapplyImprovements.ImageDpi192 = global::Chummer.Properties.Resources.page_refresh1;
-            this.tsGearButtonReapplyImprovements.ImageDpi288 = null;
-            this.tsGearButtonReapplyImprovements.ImageDpi384 = null;
-            this.tsGearButtonReapplyImprovements.ImageDpi96 = global::Chummer.Properties.Resources.page_refresh;
-            this.tsGearButtonReapplyImprovements.Name = "tsGearButtonReapplyImprovements";
-            this.tsGearButtonReapplyImprovements.Size = new System.Drawing.Size(203, 22);
-            this.tsGearButtonReapplyImprovements.Tag = "Menu_SpecialReapplyImprovements";
-            this.tsGearButtonReapplyImprovements.Text = "Re-Apply Improvements";
-            this.tsGearButtonReapplyImprovements.Click += new System.EventHandler(this.tsGearReapplyImprovements_Click);
             // 
             // CharacterCreate
             // 
