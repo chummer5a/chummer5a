@@ -448,10 +448,12 @@ namespace Chummer.UI.Powers
             */
 
             TableColumn<Power> noteColumn = this.DoThreadSafeFunc(() => new TableColumn<Power>(
-                                                                      () => new ButtonTableCell<Power>(new PictureBox
+                                                                      () => new ButtonTableCell<Power>(new DpiFriendlyImagedButton
                                                                       {
-                                                                          Image = Resources.note_edit,
-                                                                          Size = GetImageSize(Resources.note_edit)
+                                                                          ImageDpi96 = Resources.note_edit,
+                                                                          ImageDpi192 = Resources.note_edit1,
+                                                                          Dock = DockStyle.Fill,
+                                                                          AutoSize = true
                                                                       })
                                                                       {
                                                                           ClickHandler = async p =>
@@ -497,7 +499,8 @@ namespace Chummer.UI.Powers
                                                                                 Text = LanguageManager.GetString(
                                                                                     "String_Delete"),
                                                                                 Tag = "String_Delete",
-                                                                                Dock = DockStyle.Fill
+                                                                                Dock = DockStyle.Fill,
+                                                                                AutoSize = true
                                                                             })
                                                                         {
                                                                             ClickHandler = async p =>
@@ -552,7 +555,8 @@ namespace Chummer.UI.Powers
                 {
                     ImageDpi96 = Resources.page_refresh,
                     ImageDpi192 = Resources.page_refresh1,
-                    Dock = DockStyle.Fill
+                    Dock = DockStyle.Fill,
+                    AutoSize = true
                 })
                 {
                     ClickHandler = async p =>

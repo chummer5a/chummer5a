@@ -53,7 +53,8 @@ namespace Chummer.UI.Table
             }
             else
             {
-                this.DoThreadSafe(x => x.BackColor = (intIndex & 1) == 0 ? ColorManager.ControlLightest : ColorManager.Control);
+                this.DoThreadSafe(x => x.BackColor
+                                      = (intIndex & 1) == 0 ? ColorManager.ControlLightest : ColorManager.Control);
             }
         }
 
@@ -66,7 +67,9 @@ namespace Chummer.UI.Table
             }
             else
             {
-                Color objColor = (intIndex & 1) == 0 ? await ColorManager.GetControlLightestAsync(token).ConfigureAwait(false) : await ColorManager.GetControlAsync(token).ConfigureAwait(false);
+                Color objColor = (intIndex & 1) == 0
+                    ? await ColorManager.GetControlLightestAsync(token).ConfigureAwait(false)
+                    : await ColorManager.GetControlAsync(token).ConfigureAwait(false);
                 await this.DoThreadSafeAsync(x => x.BackColor = objColor, token: token).ConfigureAwait(false);
             }
         }
@@ -76,11 +79,10 @@ namespace Chummer.UI.Table
             get => _intIndex;
             set
             {
-                if (_intIndex != value)
-                {
-                    _intIndex = value;
-                    Update(Index, Selected);
-                }
+                if (_intIndex == value)
+                    return;
+                _intIndex = value;
+                Update(Index, Selected);
             }
         }
 
@@ -89,11 +91,10 @@ namespace Chummer.UI.Table
             get => _blnSelected;
             set
             {
-                if (_blnSelected != value)
-                {
-                    _blnSelected = value;
-                    Update(Index, Selected);
-                }
+                if (_blnSelected == value)
+                    return;
+                _blnSelected = value;
+                Update(Index, Selected);
             }
         }
     }

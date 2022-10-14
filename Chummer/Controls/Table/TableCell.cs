@@ -91,9 +91,15 @@ namespace Chummer.UI.Table
             }
 
             SuspendLayout();
-            ContentField.Location = new Point(x, y);
-            Size = new Size(x + size.Width, y + size.Height);
-            ResumeLayout(false);
+            try
+            {
+                ContentField.Location = new Point(x, y);
+                Size = new Size(x + size.Width, y + size.Height);
+            }
+            finally
+            {
+                ResumeLayout(false);
+            }
             //Invalidate();
         }
 

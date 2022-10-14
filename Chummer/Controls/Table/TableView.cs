@@ -148,9 +148,10 @@ namespace Chummer.UI.Table
                                 {
                                     TableCell cell = _table._lstCells[i].cells[index];
                                     cell.Location = new Point(x, row.Margin.Top);
-                                    if (dy < cell.Height)
+                                    int intHeight = Math.Max(cell.Height, cell.PreferredSize.Height);
+                                    if (dy < intHeight)
                                     {
-                                        dy = cell.Height;
+                                        dy = intHeight;
                                     }
                                     x += widths[i];
                                 }
