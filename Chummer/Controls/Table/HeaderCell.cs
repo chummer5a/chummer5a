@@ -93,6 +93,8 @@ namespace Chummer.UI.Table
             get => _intArrowSize;
             set
             {
+                if (_intArrowSize == value)
+                    return;
                 if (value <= 0)
                 {
                     throw new ArgumentOutOfRangeException(nameof(ArrowSize));
@@ -107,6 +109,8 @@ namespace Chummer.UI.Table
             get => _intArrowPadding;
             set
             {
+                if (_intArrowPadding == value)
+                    return;
                 if (value < 0)
                 {
                     throw new ArgumentOutOfRangeException(nameof(ArrowPadding));
@@ -121,6 +125,8 @@ namespace Chummer.UI.Table
             get => _eSortType;
             set
             {
+                if (_eSortType == value)
+                    return;
                 _eSortType = value;
                 this.DoThreadSafe(x => x.Invalidate());
             }

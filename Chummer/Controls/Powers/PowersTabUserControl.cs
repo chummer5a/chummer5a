@@ -21,7 +21,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Drawing;
 using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
@@ -453,7 +452,8 @@ namespace Chummer.UI.Powers
                                                                           ImageDpi96 = Resources.note_edit,
                                                                           ImageDpi192 = Resources.note_edit1,
                                                                           Dock = DockStyle.Fill,
-                                                                          AutoSize = true
+                                                                          AutoSize = true,
+                                                                          FlatStyle = FlatStyle.Flat
                                                                       })
                                                                       {
                                                                           ClickHandler = async p =>
@@ -556,7 +556,8 @@ namespace Chummer.UI.Powers
                     ImageDpi96 = Resources.page_refresh,
                     ImageDpi192 = Resources.page_refresh1,
                     Dock = DockStyle.Fill,
-                    AutoSize = true
+                    AutoSize = true,
+                    FlatStyle = FlatStyle.Flat
                 })
                 {
                     ClickHandler = async p =>
@@ -597,11 +598,6 @@ namespace Chummer.UI.Powers
             _table.UpdateLightDarkMode();
             _table.TranslateWinForm();
             pnlPowers.Controls.Add(_table);
-        }
-
-        private static Size GetImageSize(Image image)
-        {
-            return new Size(image.Width, image.Height);
         }
     }
 }

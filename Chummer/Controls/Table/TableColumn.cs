@@ -111,7 +111,7 @@ namespace Chummer.UI.Table
         /// <summary>
         /// The dependencies as enumerable.
         /// </summary>
-        internal IEnumerable<string> Dependencies => _setDependencies;
+        internal IReadOnlyCollection<string> Dependencies => _setDependencies;
 
         /// <summary>
         /// Method for extracting the value for the cell from

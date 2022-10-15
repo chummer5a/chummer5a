@@ -503,11 +503,11 @@ namespace Chummer.UI.Table
             get => _filter;
             set
             {
-                if (value != null || _filter != _defaultFilter)
-                {
-                    _filter = value ?? _defaultFilter;
-                    DoFilter();
-                }
+                Predicate<T> objNewValue = value ?? _defaultFilter;
+                if (_filter == objNewValue)
+                    return;
+                _filter = objNewValue;
+                DoFilter();
             }
         }
 
@@ -568,16 +568,22 @@ namespace Chummer.UI.Table
                             }
 
                             row.SuspendLayout();
-                            for (int i = 0; i < _columns.Count; i++)
+                            try
                             {
-                                TableColumn<T> column = _columns[i];
-                                IList<TableCell> cells = _lstCells[i].cells;
-                                TableCell newCell = CreateCell(item, column);
-                                cells.Insert(e.NewIndex, newCell);
-                                row.Controls.Add(newCell);
+                                for (int i = 0; i < _columns.Count; i++)
+                                {
+                                    TableColumn<T> column = _columns[i];
+                                    IList<TableCell> cells = _lstCells[i].cells;
+                                    TableCell newCell = CreateCell(item, column);
+                                    cells.Insert(e.NewIndex, newCell);
+                                    row.Controls.Add(newCell);
+                                }
+                            }
+                            finally
+                            {
+                                row.ResumeLayout(false);
                             }
 
-                            row.ResumeLayout(false);
                             _lstPermutation.Add(_lstPermutation.Count);
                             x.Sort(false);
                         }

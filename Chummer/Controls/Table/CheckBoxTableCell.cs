@@ -18,12 +18,13 @@
  */
 
 using System;
+using System.Threading;
 
 namespace Chummer.UI.Table
 {
     public partial class CheckBoxTableCell<T> : TableCell where T : class
     {
-        private bool _blnUpdating;
+        private int _intUpdating;
 
         public CheckBoxTableCell(string text = "", string tag = null)
         {
@@ -49,11 +50,17 @@ namespace Chummer.UI.Table
             {
                 _checkBox.Enabled = EnabledExtractor(Value as T);
             }
-            if (!_blnUpdating && ValueGetter != null)
+            if (ValueUpdater == null)
+                return;
+            if (Interlocked.CompareExchange(ref _intUpdating, 1, 0) != 0)
+                return;
+            try
             {
-                _blnUpdating = true;
                 _checkBox.Checked = ValueGetter(tValue);
-                _blnUpdating = false;
+            }
+            finally
+            {
+                Interlocked.CompareExchange(ref _intUpdating, 0, 1);
             }
         }
 
@@ -81,11 +88,17 @@ namespace Chummer.UI.Table
 
         private void checked_changed(object sender, EventArgs e)
         {
-            if (!_blnUpdating && ValueUpdater != null)
+            if (ValueUpdater == null)
+                return;
+            if (Interlocked.CompareExchange(ref _intUpdating, 1, 0) != 0)
+                return;
+            try
             {
-                _blnUpdating = true;
                 ValueUpdater(Value as T, _checkBox.Checked);
-                _blnUpdating = false;
+            }
+            finally
+            {
+                Interlocked.CompareExchange(ref _intUpdating, 0, 1);
             }
         }
     }
