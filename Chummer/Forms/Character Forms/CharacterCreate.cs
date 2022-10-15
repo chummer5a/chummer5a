@@ -59,17 +59,34 @@ namespace Chummer
 
         public TabControl TabCharacterTabs => tabCharacterTabs;
 
+        private readonly Font _fntNormal;
+        private readonly Font _fntStrikeout;
+
         #region Form Events
 
         [Obsolete("This constructor is for use by form designers only.", true)]
         public CharacterCreate()
         {
             InitializeComponent();
+            _fntNormal = new Font(treQualities.Font, FontStyle.Regular);
+            _fntStrikeout = new Font(treQualities.Font, FontStyle.Strikeout);
+            Disposed += (sender, args) =>
+            {
+                _fntNormal.Dispose();
+                _fntStrikeout.Dispose();
+            };
         }
 
         public CharacterCreate(Character objCharacter) : base(objCharacter)
         {
             InitializeComponent();
+            _fntNormal = new Font(treQualities.Font, FontStyle.Regular);
+            _fntStrikeout = new Font(treQualities.Font, FontStyle.Strikeout);
+            Disposed += (sender, args) =>
+            {
+                _fntNormal.Dispose();
+                _fntStrikeout.Dispose();
+            };
 
             GlobalSettings.ClipboardChanged += RefreshPasteStatus;
             tabStreetGearTabs.MouseWheel += ShiftTabsOnMouseScroll;
@@ -405,7 +422,7 @@ namespace Chummer
                                         await lblBuildEnemies.DoThreadSafeAsync(x => x.Visible = false, GenericToken).ConfigureAwait(false);
                                     }
 
-                                    await RefreshQualities(treQualities, cmsQuality, token: GenericToken).ConfigureAwait(false);
+                                    await RefreshQualities(treQualities, cmsQuality, _fntNormal, _fntStrikeout, token: GenericToken).ConfigureAwait(false);
                                     await RefreshSpirits(panSpirits, panSprites, token: GenericToken).ConfigureAwait(false);
                                     await RefreshSpells(treSpells, treMetamagic, cmsSpell, cmsInitiationNotes, token: GenericToken).ConfigureAwait(false);
                                     await RefreshComplexForms(treComplexForms, treMetamagic, cmsComplexForm,
@@ -2055,7 +2072,7 @@ namespace Chummer
                                 }
 
                                 // Refresh all trees because enabled sources can change the nodes that are visible
-                                await RefreshQualities(treQualities, cmsQuality, token: GenericToken).ConfigureAwait(false);
+                                await RefreshQualities(treQualities, cmsQuality, _fntNormal, _fntStrikeout, token: GenericToken).ConfigureAwait(false);
                                 await RefreshSpirits(panSpirits, panSprites, token: GenericToken).ConfigureAwait(false);
                                 await RefreshSpells(treSpells, treMetamagic, cmsSpell, cmsInitiationNotes, token: GenericToken).ConfigureAwait(false);
                                 await RefreshComplexForms(treComplexForms, treMetamagic, cmsComplexForm,
@@ -19420,7 +19437,7 @@ namespace Chummer
         {
             try
             {
-                await RefreshQualities(treQualities, cmsQuality, e, GenericToken).ConfigureAwait(false);
+                await RefreshQualities(treQualities, cmsQuality, _fntNormal, _fntStrikeout, e, GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {

@@ -34,7 +34,6 @@ namespace Chummer
     public class LockingTypedOrderedDictionary<TKey, TValue> :
         IAsyncDictionary<TKey, TValue>,
         IAsyncList<KeyValuePair<TKey, TValue>>,
-        IDictionary,
         IAsyncReadOnlyList<KeyValuePair<TKey, TValue>>,
         IAsyncReadOnlyDictionary<TKey, TValue>,
         ISerializable,
@@ -157,37 +156,10 @@ namespace Chummer
         }
 
         /// <inheritdoc />
-        IDictionaryEnumerator IDictionary.GetEnumerator()
-        {
-            LockingDictionaryEnumerator objReturn = LockingDictionaryEnumerator.Get(this);
-            objReturn.SetEnumerator(new LockingTypedOrderedDictionaryEnumerator(this));
-            return objReturn;
-        }
-
-        /// <inheritdoc />
         IEnumerator<KeyValuePair<TKey, TValue>> IEnumerable<KeyValuePair<TKey, TValue>>.GetEnumerator()
         {
             for (int i = 0; i < Count - 1; ++i)
                 yield return this[i];
-        }
-
-        /// <inheritdoc />
-        public bool Contains(object key)
-        {
-            switch (key)
-            {
-                case TKey objKey:
-                    return ContainsKey(objKey);
-
-                case KeyValuePair<TKey, TValue> objKeyValuePair:
-                    return Contains(objKeyValuePair);
-
-                case Tuple<TKey, TValue> objTuple:
-                    return Contains(objTuple);
-
-                default:
-                    return false;
-            }
         }
 
         /// <inheritdoc />
@@ -228,16 +200,6 @@ namespace Chummer
         public void Add(Tuple<TKey, TValue> item)
         {
             (TKey objKey, TValue objValue) = item;
-            Add(objKey, objValue);
-        }
-
-        /// <inheritdoc />
-        public void Add(object key, object value)
-        {
-            if (!(key is TKey objKey))
-                throw new ArgumentException(nameof(objKey));
-            if (!(value is TValue objValue))
-                throw new ArgumentException(nameof(objValue));
             Add(objKey, objValue);
         }
 
@@ -658,30 +620,6 @@ namespace Chummer
                     // Needed to make sure ordering is retained
                     for (int i = 0; i < _dicUnorderedData.Count; ++i)
                         yield return _dicUnorderedData[_lstIndexes[i]];
-                }
-            }
-        }
-
-        ICollection IDictionary.Keys
-        {
-            get
-            {
-                using (EnterReadLock.Enter(LockObject))
-                    return _lstIndexes;
-            }
-        }
-
-        ICollection IDictionary.Values
-        {
-            get
-            {
-                using (EnterReadLock.Enter(LockObject))
-                {
-                    // Needed to make sure ordering is retained
-                    List<TValue> lstReturn = new List<TValue>(_dicUnorderedData.Count);
-                    for (int i = 0; i < _dicUnorderedData.Count; ++i)
-                        lstReturn.Add(_dicUnorderedData[_lstIndexes[i]]);
-                    return lstReturn;
                 }
             }
         }

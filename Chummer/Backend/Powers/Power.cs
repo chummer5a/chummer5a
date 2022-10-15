@@ -45,7 +45,7 @@ namespace Chummer
     /// </summary>
     [HubClassTag("SourceID", true, "Name", "Extra")]
     [DebuggerDisplay("{DisplayName(GlobalSettings.DefaultLanguage)}")]
-    public class Power : INotifyMultiplePropertyChanged, IHasInternalId, IHasName, IHasXmlDataNode, IHasNotes, IHasSource
+    public class Power : INotifyMultiplePropertyChanged, IHasInternalId, IHasName, IHasXmlDataNode, IHasNotes, IHasSource, IDisposable, IAsyncDisposable
     {
         private Guid _guiID;
         private Guid _guiSourceID = Guid.Empty;
@@ -92,22 +92,11 @@ namespace Chummer
             }
         }
 
-        public void UnbindPower()
-        {
-            if (CharacterObject != null)
-            {
-                CharacterObject.PropertyChanged -= OnCharacterChanged;
-                CharacterObject.Settings.PropertyChanged -= OnCharacterSettingsChanged;
-            }
-            MAGAttributeObject = null;
-            BoostedSkill = null;
-        }
-
         public void DeletePower()
         {
             ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Power, InternalId);
             CharacterObject.Powers.Remove(this);
-            UnbindPower();
+            Dispose();
         }
 
         /// <summary>
@@ -1511,6 +1500,32 @@ namespace Chummer
             if (_objCachedSourceDetail.Language != GlobalSettings.Language)
                 _objCachedSourceDetail = default;
             return SourceDetail.SetControlAsync(sourceControl, token);
+        }
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            if (CharacterObject != null)
+            {
+                CharacterObject.PropertyChanged -= OnCharacterChanged;
+                CharacterObject.Settings.PropertyChanged -= OnCharacterSettingsChanged;
+            }
+            MAGAttributeObject = null;
+            BoostedSkill = null;
+            Enhancements.Dispose();
+        }
+
+        /// <inheritdoc />
+        public ValueTask DisposeAsync()
+        {
+            if (CharacterObject != null)
+            {
+                CharacterObject.PropertyChanged -= OnCharacterChanged;
+                CharacterObject.Settings.PropertyChanged -= OnCharacterSettingsChanged;
+            }
+            MAGAttributeObject = null;
+            BoostedSkill = null;
+            return Enhancements.DisposeAsync();
         }
     }
 }

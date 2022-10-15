@@ -6232,47 +6232,25 @@ namespace Chummer.Backend.Equipment
                 XmlDocument xmlBiowareDocument = _objCharacter.LoadData("bioware.xml");
                 string strForceValue = string.Empty;
                 XmlNode xmlCyberwareDataNode = null;
-                XmlNodeList xmlCyberwareNodeList = xmlCyberwareDocument.SelectNodes("/chummer/cyberwares/cyberware[contains(name, " + strOriginalName.CleanXPath() + ")]");
-                if (xmlCyberwareNodeList != null)
+                using (XmlNodeList xmlCyberwareNodeList
+                       = xmlCyberwareDocument.SelectNodes("/chummer/cyberwares/cyberware[contains(name, "
+                                                          + strOriginalName.CleanXPath() + ")]"))
                 {
-                    foreach (XmlNode xmlLoopNode in xmlCyberwareNodeList)
-                    {
-                        XmlNode xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/parentdetails");
-                        if (xmlTestNode != null && xmlParentCyberwareNode.ProcessFilterOperationNode(xmlTestNode, false))
-                        {
-                            // Assumes topmost parent is an AND node
-                            continue;
-                        }
-
-                        xmlTestNode = xmlLoopNode.SelectSingleNode("required/parentdetails");
-                        if (xmlTestNode != null && !xmlParentCyberwareNode.ProcessFilterOperationNode(xmlTestNode, false))
-                        {
-                            // Assumes topmost parent is an AND node
-                            continue;
-                        }
-
-                        xmlCyberwareDataNode = xmlLoopNode;
-                        break;
-                    }
-                }
-
-                if (xmlCyberwareDataNode == null)
-                {
-                    blnCyberware = false;
-                    xmlCyberwareNodeList = xmlBiowareDocument.SelectNodes("/chummer/biowares/bioware[contains(name, " + strOriginalName.CleanXPath() + ")]");
                     if (xmlCyberwareNodeList != null)
                     {
                         foreach (XmlNode xmlLoopNode in xmlCyberwareNodeList)
                         {
                             XmlNode xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/parentdetails");
-                            if (xmlTestNode != null && xmlParentCyberwareNode.ProcessFilterOperationNode(xmlTestNode, false))
+                            if (xmlTestNode != null
+                                && xmlParentCyberwareNode.ProcessFilterOperationNode(xmlTestNode, false))
                             {
                                 // Assumes topmost parent is an AND node
                                 continue;
                             }
 
                             xmlTestNode = xmlLoopNode.SelectSingleNode("required/parentdetails");
-                            if (xmlTestNode != null && !xmlParentCyberwareNode.ProcessFilterOperationNode(xmlTestNode, false))
+                            if (xmlTestNode != null
+                                && !xmlParentCyberwareNode.ProcessFilterOperationNode(xmlTestNode, false))
                             {
                                 // Assumes topmost parent is an AND node
                                 continue;
@@ -6286,25 +6264,25 @@ namespace Chummer.Backend.Equipment
 
                 if (xmlCyberwareDataNode == null)
                 {
-                    string[] astrOriginalNameSplit = strOriginalName.Split(':', StringSplitOptions.RemoveEmptyEntries);
-                    if (astrOriginalNameSplit.Length > 1)
+                    blnCyberware = false;
+                    using (XmlNodeList xmlCyberwareNodeList = xmlBiowareDocument.SelectNodes(
+                               "/chummer/biowares/bioware[contains(name, " + strOriginalName.CleanXPath() + ")]"))
                     {
-                        string strName = astrOriginalNameSplit[0].Trim();
-                        blnCyberware = true;
-                        xmlCyberwareNodeList = xmlCyberwareDocument.SelectNodes("/chummer/cyberwares/cyberware[contains(name, " + strName.CleanXPath() + ")]");
                         if (xmlCyberwareNodeList != null)
                         {
                             foreach (XmlNode xmlLoopNode in xmlCyberwareNodeList)
                             {
                                 XmlNode xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/parentdetails");
-                                if (xmlTestNode != null && xmlParentCyberwareNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                if (xmlTestNode != null
+                                    && xmlParentCyberwareNode.ProcessFilterOperationNode(xmlTestNode, false))
                                 {
                                     // Assumes topmost parent is an AND node
                                     continue;
                                 }
 
                                 xmlTestNode = xmlLoopNode.SelectSingleNode("required/parentdetails");
-                                if (xmlTestNode != null && !xmlParentCyberwareNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                if (xmlTestNode != null
+                                    && !xmlParentCyberwareNode.ProcessFilterOperationNode(xmlTestNode, false))
                                 {
                                     // Assumes topmost parent is an AND node
                                     continue;
@@ -6313,61 +6291,36 @@ namespace Chummer.Backend.Equipment
                                 xmlCyberwareDataNode = xmlLoopNode;
                                 break;
                             }
-
-                            if (xmlCyberwareDataNode != null)
-                                strForceValue = astrOriginalNameSplit[1].Trim();
-                            else
-                            {
-                                blnCyberware = false;
-                                xmlCyberwareNodeList = xmlBiowareDocument.SelectNodes("/chummer/biowares/bioware[contains(name, " + strName.CleanXPath() + ")]");
-                                if (xmlCyberwareNodeList != null)
-                                    foreach (XmlNode xmlLoopNode in xmlCyberwareNodeList)
-                                    {
-                                        XmlNode xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/parentdetails");
-                                        if (xmlTestNode != null && xmlParentCyberwareNode.ProcessFilterOperationNode(xmlTestNode, false))
-                                        {
-                                            // Assumes topmost parent is an AND node
-                                            continue;
-                                        }
-
-                                        xmlTestNode = xmlLoopNode.SelectSingleNode("required/parentdetails");
-                                        if (xmlTestNode != null && !xmlParentCyberwareNode.ProcessFilterOperationNode(xmlTestNode, false))
-                                        {
-                                            // Assumes topmost parent is an AND node
-                                            continue;
-                                        }
-
-                                        xmlCyberwareDataNode = xmlLoopNode;
-                                        break;
-                                    }
-
-                                if (xmlCyberwareDataNode != null)
-                                    strForceValue = astrOriginalNameSplit[1].Trim();
-                            }
                         }
                     }
+                }
 
-                    if (xmlCyberwareDataNode == null)
+                if (xmlCyberwareDataNode == null)
+                {
+                    string[] astrOriginalNameSplit = strOriginalName.Split(':', StringSplitOptions.RemoveEmptyEntries);
+                    if (astrOriginalNameSplit.Length > 1)
                     {
-                        astrOriginalNameSplit = strOriginalName.Split(',', StringSplitOptions.RemoveEmptyEntries);
-                        if (astrOriginalNameSplit.Length > 1)
+                        string strName = astrOriginalNameSplit[0].Trim();
+                        blnCyberware = true;
+                        using (XmlNodeList xmlCyberwareNodeList
+                               = xmlCyberwareDocument.SelectNodes(
+                                   "/chummer/cyberwares/cyberware[contains(name, " + strName.CleanXPath() + ")]"))
                         {
-                            string strName = astrOriginalNameSplit[0].Trim();
-                            blnCyberware = true;
-                            xmlCyberwareNodeList = xmlCyberwareDocument.SelectNodes("/chummer/cyberwares/cyberware[contains(name, " + strName.CleanXPath() + ")]");
                             if (xmlCyberwareNodeList != null)
                             {
                                 foreach (XmlNode xmlLoopNode in xmlCyberwareNodeList)
                                 {
                                     XmlNode xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/parentdetails");
-                                    if (xmlTestNode != null && xmlParentCyberwareNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                    if (xmlTestNode != null
+                                        && xmlParentCyberwareNode.ProcessFilterOperationNode(xmlTestNode, false))
                                     {
                                         // Assumes topmost parent is an AND node
                                         continue;
                                     }
 
                                     xmlTestNode = xmlLoopNode.SelectSingleNode("required/parentdetails");
-                                    if (xmlTestNode != null && !xmlParentCyberwareNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                    if (xmlTestNode != null
+                                        && !xmlParentCyberwareNode.ProcessFilterOperationNode(xmlTestNode, false))
                                     {
                                         // Assumes topmost parent is an AND node
                                         continue;
@@ -6382,28 +6335,120 @@ namespace Chummer.Backend.Equipment
                                 else
                                 {
                                     blnCyberware = false;
-                                    xmlCyberwareNodeList = xmlBiowareDocument.SelectNodes("/chummer/biowares/bioware[contains(name, " + strName.CleanXPath() + ")]");
-                                    if (xmlCyberwareNodeList != null)
-                                        foreach (XmlNode xmlLoopNode in xmlCyberwareNodeList)
+                                    using (XmlNodeList xmlCyberwareNodeList2 = xmlBiowareDocument.SelectNodes(
+                                               "/chummer/biowares/bioware[contains(name, " + strName.CleanXPath()
+                                               + ")]"))
+                                    {
+                                        if (xmlCyberwareNodeList2 != null)
                                         {
-                                            XmlNode xmlTestNode =
-                                                xmlLoopNode.SelectSingleNode("forbidden/parentdetails");
-                                            if (xmlTestNode != null && xmlParentCyberwareNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                            foreach (XmlNode xmlLoopNode in xmlCyberwareNodeList2)
                                             {
-                                                // Assumes topmost parent is an AND node
-                                                continue;
-                                            }
+                                                XmlNode xmlTestNode
+                                                    = xmlLoopNode.SelectSingleNode("forbidden/parentdetails");
+                                                if (xmlTestNode != null
+                                                    && xmlParentCyberwareNode
+                                                        .ProcessFilterOperationNode(xmlTestNode, false))
+                                                {
+                                                    // Assumes topmost parent is an AND node
+                                                    continue;
+                                                }
 
-                                            xmlTestNode = xmlLoopNode.SelectSingleNode("required/parentdetails");
-                                            if (xmlTestNode != null && !xmlParentCyberwareNode.ProcessFilterOperationNode(xmlTestNode, false))
-                                            {
-                                                // Assumes topmost parent is an AND node
-                                                continue;
-                                            }
+                                                xmlTestNode = xmlLoopNode.SelectSingleNode("required/parentdetails");
+                                                if (xmlTestNode != null
+                                                    && !xmlParentCyberwareNode.ProcessFilterOperationNode(
+                                                        xmlTestNode, false))
+                                                {
+                                                    // Assumes topmost parent is an AND node
+                                                    continue;
+                                                }
 
-                                            xmlCyberwareDataNode = xmlLoopNode;
-                                            break;
+                                                xmlCyberwareDataNode = xmlLoopNode;
+                                                break;
+                                            }
                                         }
+                                    }
+
+                                    if (xmlCyberwareDataNode != null)
+                                        strForceValue = astrOriginalNameSplit[1].Trim();
+                                }
+                            }
+                        }
+                    }
+
+                    if (xmlCyberwareDataNode == null)
+                    {
+                        astrOriginalNameSplit = strOriginalName.Split(',', StringSplitOptions.RemoveEmptyEntries);
+                        if (astrOriginalNameSplit.Length > 1)
+                        {
+                            string strName = astrOriginalNameSplit[0].Trim();
+                            blnCyberware = true;
+                            using (XmlNodeList xmlCyberwareNodeList
+                                   = xmlCyberwareDocument.SelectNodes(
+                                       "/chummer/cyberwares/cyberware[contains(name, " + strName.CleanXPath() + ")]"))
+                            {
+                                if (xmlCyberwareNodeList != null)
+                                {
+                                    foreach (XmlNode xmlLoopNode in xmlCyberwareNodeList)
+                                    {
+                                        XmlNode xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/parentdetails");
+                                        if (xmlTestNode != null
+                                            && xmlParentCyberwareNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                        {
+                                            // Assumes topmost parent is an AND node
+                                            continue;
+                                        }
+
+                                        xmlTestNode = xmlLoopNode.SelectSingleNode("required/parentdetails");
+                                        if (xmlTestNode != null
+                                            && !xmlParentCyberwareNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                        {
+                                            // Assumes topmost parent is an AND node
+                                            continue;
+                                        }
+
+                                        xmlCyberwareDataNode = xmlLoopNode;
+                                        break;
+                                    }
+
+                                    if (xmlCyberwareDataNode != null)
+                                        strForceValue = astrOriginalNameSplit[1].Trim();
+                                    else
+                                    {
+                                        blnCyberware = false;
+                                        using (XmlNodeList xmlCyberwareNodeList2 = xmlBiowareDocument.SelectNodes(
+                                                   "/chummer/biowares/bioware[contains(name, " + strName.CleanXPath()
+                                                   + ")]"))
+                                        {
+                                            if (xmlCyberwareNodeList2 != null)
+                                            {
+                                                foreach (XmlNode xmlLoopNode in xmlCyberwareNodeList2)
+                                                {
+                                                    XmlNode xmlTestNode =
+                                                        xmlLoopNode.SelectSingleNode("forbidden/parentdetails");
+                                                    if (xmlTestNode != null
+                                                        && xmlParentCyberwareNode.ProcessFilterOperationNode(
+                                                            xmlTestNode, false))
+                                                    {
+                                                        // Assumes topmost parent is an AND node
+                                                        continue;
+                                                    }
+
+                                                    xmlTestNode = xmlLoopNode.SelectSingleNode(
+                                                        "required/parentdetails");
+                                                    if (xmlTestNode != null
+                                                        && !xmlParentCyberwareNode.ProcessFilterOperationNode(
+                                                            xmlTestNode, false))
+                                                    {
+                                                        // Assumes topmost parent is an AND node
+                                                        continue;
+                                                    }
+
+                                                    xmlCyberwareDataNode = xmlLoopNode;
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }

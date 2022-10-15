@@ -2213,9 +2213,11 @@ namespace Chummer
         /// </summary>
         /// <param name="treQualities">TreeView to insert the qualities into.</param>
         /// <param name="cmsQuality">ContextMenuStrip to add to each Quality node.</param>
+        /// <param name="fntStrikeout">Font to use for disabled qualities (e.g. cybereyes-disabled Low Light Vision).</param>
         /// <param name="notifyCollectionChangedEventArgs">Arguments for the change to the underlying ObservableCollection.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        protected async ValueTask RefreshQualities(TreeView treQualities, ContextMenuStrip cmsQuality, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null, CancellationToken token = default)
+        /// <param name="fntNormal">Normal font to use for qualities.</param>
+        protected async ValueTask RefreshQualities(TreeView treQualities, ContextMenuStrip cmsQuality, Font fntNormal, Font fntStrikeout, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null, CancellationToken token = default)
         {
             if (treQualities == null)
                 return;
@@ -2478,12 +2480,7 @@ namespace Chummer
                             TreeNode objNode = treQualities.FindNodeByTag(objQuality);
                             if (objNode == null)
                                 return;
-                            Font objOldFont = objNode.NodeFont;
-                            //Treenodes store their font as null when inheriting from the treeview; have to pull it from the treeview directly to set the fontstyle.
-                            objNode.NodeFont = new Font(treQualities.Font,
-                                objQuality.Suppressed ? FontStyle.Strikeout : FontStyle.Regular);
-                            // Dispose the old font if it's not null so that we don't leak memory
-                            objOldFont?.Dispose();
+                            objNode.NodeFont = objQuality.Suppressed ? fntStrikeout : fntNormal;
                             break;
                         }
                     case nameof(Quality.Notes):

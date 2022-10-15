@@ -35,7 +35,7 @@ namespace Chummer
     /// </summary>
     /// <typeparam name="TKey">Key to use for the dictionary.</typeparam>
     /// <typeparam name="TValue">Values to use for the dictionary.</typeparam>
-    public class LockingDictionary<TKey, TValue> : IDictionary, IAsyncDictionary<TKey, TValue>, IAsyncReadOnlyDictionary<TKey, TValue>, IAsyncProducerConsumerCollection<KeyValuePair<TKey, TValue>>, IHasLockObject, ISerializable, IDeserializationCallback
+    public class LockingDictionary<TKey, TValue> : IAsyncDictionary<TKey, TValue>, IAsyncReadOnlyDictionary<TKey, TValue>, IAsyncProducerConsumerCollection<KeyValuePair<TKey, TValue>>, IHasLockObject, ISerializable, IDeserializationCallback
     {
         private readonly Dictionary<TKey, TValue> _dicData;
         public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
@@ -81,14 +81,6 @@ namespace Chummer
             return objReturn;
         }
 
-        /// <inheritdoc />
-        IDictionaryEnumerator IDictionary.GetEnumerator()
-        {
-            LockingDictionaryEnumerator objReturn = LockingDictionaryEnumerator.Get(this);
-            objReturn.SetEnumerator(_dicData.GetEnumerator());
-            return objReturn;
-        }
-
         public async ValueTask<IEnumerator<KeyValuePair<TKey, TValue>>> GetEnumeratorAsync(CancellationToken token = default)
         {
             LockingEnumerator<KeyValuePair<TKey, TValue>> objReturn = await LockingEnumerator<KeyValuePair<TKey, TValue>>.GetAsync(this, token).ConfigureAwait(false);
@@ -115,18 +107,6 @@ namespace Chummer
             {
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
-        }
-
-        /// <inheritdoc />
-        public bool Contains(object key)
-        {
-            return ContainsKey((TKey)key);
-        }
-
-        /// <inheritdoc />
-        public void Add(object key, object value)
-        {
-            Add((TKey)key, (TValue)value);
         }
 
         public ValueTask AddAsync(object key, object value, CancellationToken token = default)
@@ -301,12 +281,6 @@ namespace Chummer
                 return _dicData.Remove(key);
         }
 
-        /// <inheritdoc />
-        public void Remove(object key)
-        {
-            Remove((TKey)key);
-        }
-
         public async ValueTask<bool> RemoveAsync(KeyValuePair<TKey, TValue> item, CancellationToken token = default)
         {
             // Immediately enter a write lock to prevent attempted reads until we have either removed the item we want to remove or failed to do so
@@ -418,9 +392,6 @@ namespace Chummer
 
         /// <inheritdoc cref="IDictionary{TKey, TValue}.IsReadOnly" />
         public bool IsReadOnly => false;
-
-        /// <inheritdoc />
-        public bool IsFixedSize => false;
 
         /// <inheritdoc cref="IDictionary{TKey, TValue}.ContainsKey" />
         public bool ContainsKey(TKey key)
@@ -702,13 +673,6 @@ namespace Chummer
         }
 
         /// <inheritdoc />
-        public object this[object key]
-        {
-            get => this[(TKey)key];
-            set => this[(TKey)key] = (TValue)value;
-        }
-
-        /// <inheritdoc />
         IEnumerable<TKey> IReadOnlyDictionary<TKey, TValue>.Keys
         {
             get
@@ -719,16 +683,6 @@ namespace Chummer
                     foreach (TKey objKey in _dicData.Keys)
                         yield return objKey;
                 }
-            }
-        }
-
-        /// <inheritdoc />
-        ICollection IDictionary.Keys
-        {
-            get
-            {
-                using (EnterReadLock.Enter(LockObject))
-                    return _dicData.Keys;
             }
         }
 
@@ -788,16 +742,6 @@ namespace Chummer
         {
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
                 return _dicData.Values;
-        }
-
-        /// <inheritdoc />
-        ICollection IDictionary.Values
-        {
-            get
-            {
-                using (EnterReadLock.Enter(LockObject))
-                    return _dicData.Values;
-            }
         }
 
         private int _intIsDisposed;

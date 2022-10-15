@@ -87,6 +87,8 @@ namespace Chummer
         {
             // Immediately interlocked exchange the object we're returning to make sure we don't somehow hold onto it
             T objLocal = Interlocked.Exchange(ref objToReturn, null);
+            if (objLocal == null)
+                throw new ArgumentNullException(nameof(objToReturn));
             if (_actionRunOnReturn != null)
             {
                 try
@@ -114,7 +116,7 @@ namespace Chummer
                 }
             }
             // Dispose of the item if it wasn't
-            objLocal?.Dispose();
+            objLocal.Dispose();
         }
 
         /// <inheritdoc />

@@ -91,21 +91,19 @@ namespace Chummer.Backend.Equipment
             get => _objAmmoGear;
             set
             {
-                if (_objAmmoGear == value)
+                Gear objOldGear = Interlocked.Exchange(ref _objAmmoGear, value);
+                if (objOldGear == value)
                     return;
-                Gear objOldGear = _objAmmoGear;
                 if (objOldGear != null)
                     objOldGear.PropertyChanged -= UpdateAmmoQuantity;
                 if (value != null)
                 {
-                    _objAmmoGear = value;
                     value.LoadedIntoClip = this;
                     Ammo = Math.Min(Ammo, value.Quantity.ToInt32());
                     value.PropertyChanged += UpdateAmmoQuantity;
                 }
                 else
                 {
-                    _objAmmoGear = null;
                     Ammo = 0;
                 }
                 if (objOldGear != null)

@@ -874,20 +874,24 @@ namespace Chummer
                             + "selectattribute = " + objXmlAttribute.OuterXml + Environment.NewLine;
 
                         List<string> lstAbbrevs = new List<string>(xmlSelectAttributeList.Count);
-                        XmlNodeList xmlAttributeList = objXmlAttribute.SelectNodes("attribute");
-                        if (xmlAttributeList?.Count > 0)
+                        using (XmlNodeList xmlAttributeList = objXmlAttribute.SelectNodes("attribute"))
                         {
-                            foreach (XmlNode objSubNode in xmlAttributeList)
-                                lstAbbrevs.Add(objSubNode.InnerText);
-                        }
-                        else
-                        {
-                            lstAbbrevs.AddRange(AttributeSection.AttributeStrings);
-                            xmlAttributeList = objXmlAttribute.SelectNodes("excludeattribute");
                             if (xmlAttributeList?.Count > 0)
                             {
                                 foreach (XmlNode objSubNode in xmlAttributeList)
-                                    lstAbbrevs.Remove(objSubNode.InnerText);
+                                    lstAbbrevs.Add(objSubNode.InnerText);
+                            }
+                            else
+                            {
+                                lstAbbrevs.AddRange(AttributeSection.AttributeStrings);
+                                using (XmlNodeList xmlAttributeList2 = objXmlAttribute.SelectNodes("excludeattribute"))
+                                {
+                                    if (xmlAttributeList2?.Count > 0)
+                                    {
+                                        foreach (XmlNode objSubNode in xmlAttributeList2)
+                                            lstAbbrevs.Remove(objSubNode.InnerText);
+                                    }
+                                }
                             }
                         }
 
@@ -1031,20 +1035,24 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(bonusNode));
 
             List<string> lstAbbrevs = new List<string>(AttributeSection.AttributeStrings.Count);
-            XmlNodeList xmlAttributeList = bonusNode.SelectNodes("attribute");
-            if (xmlAttributeList?.Count > 0)
+            using (XmlNodeList xmlAttributeList = bonusNode.SelectNodes("attribute"))
             {
-                foreach (XmlNode objSubNode in xmlAttributeList)
-                    lstAbbrevs.Add(objSubNode.InnerText);
-            }
-            else
-            {
-                lstAbbrevs.AddRange(AttributeSection.AttributeStrings);
-                xmlAttributeList = bonusNode.SelectNodes("excludeattribute");
                 if (xmlAttributeList?.Count > 0)
                 {
                     foreach (XmlNode objSubNode in xmlAttributeList)
-                        lstAbbrevs.Remove(objSubNode.InnerText);
+                        lstAbbrevs.Add(objSubNode.InnerText);
+                }
+                else
+                {
+                    lstAbbrevs.AddRange(AttributeSection.AttributeStrings);
+                    using (XmlNodeList xmlAttributeList2 = bonusNode.SelectNodes("excludeattribute"))
+                    {
+                        if (xmlAttributeList2?.Count > 0)
+                        {
+                            foreach (XmlNode objSubNode in xmlAttributeList2)
+                                lstAbbrevs.Remove(objSubNode.InnerText);
+                        }
+                    }
                 }
             }
 
@@ -1273,20 +1281,24 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(bonusNode));
 
             List<string> lstAbbrevs = new List<string>(AttributeSection.AttributeStrings.Count);
-            XmlNodeList xmlAttributeList = bonusNode.SelectNodes("attribute");
-            if (xmlAttributeList?.Count > 0)
+            using (XmlNodeList xmlAttributeList = bonusNode.SelectNodes("attribute"))
             {
-                foreach (XmlNode objSubNode in xmlAttributeList)
-                    lstAbbrevs.Add(objSubNode.InnerText);
-            }
-            else
-            {
-                lstAbbrevs.AddRange(AttributeSection.AttributeStrings);
-                xmlAttributeList = bonusNode.SelectNodes("excludeattribute");
                 if (xmlAttributeList?.Count > 0)
                 {
                     foreach (XmlNode objSubNode in xmlAttributeList)
-                        lstAbbrevs.Remove(objSubNode.InnerText);
+                        lstAbbrevs.Add(objSubNode.InnerText);
+                }
+                else
+                {
+                    lstAbbrevs.AddRange(AttributeSection.AttributeStrings);
+                    using (XmlNodeList xmlAttributeList2 = bonusNode.SelectNodes("excludeattribute"))
+                    {
+                        if (xmlAttributeList2?.Count > 0)
+                        {
+                            foreach (XmlNode objSubNode in xmlAttributeList2)
+                                lstAbbrevs.Remove(objSubNode.InnerText);
+                        }
+                    }
                 }
             }
 
@@ -1408,20 +1420,24 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(bonusNode));
 
             List<string> lstAbbrevs = new List<string>(AttributeSection.AttributeStrings.Count);
-            XmlNodeList xmlAttributeList = bonusNode.SelectNodes("attribute");
-            if (xmlAttributeList?.Count > 0)
+            using (XmlNodeList xmlAttributeList = bonusNode.SelectNodes("attribute"))
             {
-                foreach (XmlNode objSubNode in xmlAttributeList)
-                    lstAbbrevs.Add(objSubNode.InnerText);
-            }
-            else
-            {
-                lstAbbrevs.AddRange(AttributeSection.AttributeStrings);
-                xmlAttributeList = bonusNode.SelectNodes("excludeattribute");
                 if (xmlAttributeList?.Count > 0)
                 {
                     foreach (XmlNode objSubNode in xmlAttributeList)
-                        lstAbbrevs.Remove(objSubNode.InnerText);
+                        lstAbbrevs.Add(objSubNode.InnerText);
+                }
+                else
+                {
+                    lstAbbrevs.AddRange(AttributeSection.AttributeStrings);
+                    using (XmlNodeList xmlAttributeList2 = bonusNode.SelectNodes("excludeattribute"))
+                    {
+                        if (xmlAttributeList2?.Count > 0)
+                        {
+                            foreach (XmlNode objSubNode in xmlAttributeList2)
+                                lstAbbrevs.Remove(objSubNode.InnerText);
+                        }
+                    }
                 }
             }
 
@@ -4198,7 +4214,10 @@ namespace Chummer
                     Power objNewPower = new Power(_objCharacter);
                     XmlNode objXmlPower = _objCharacter.LoadData("powers.xml").SelectSingleNode("/chummer/powers/power[name = " + strPowerName.CleanXPath() + ']');
                     if (!objNewPower.Create(objXmlPower, 0, bonusNode["bonusoverride"]))
+                    {
+                        objNewPower.DeletePower();
                         throw new AbortedException();
+                    }
 
                     Power objBoostedPower = _objCharacter.Powers.FirstOrDefault(objPower => objPower.Name == objNewPower.Name && objPower.Extra == objNewPower.Extra);
                     if (objBoostedPower == null)
@@ -4282,7 +4301,10 @@ namespace Chummer
                             // If no, add the power and mark it free or give it free levels
                             Power objNewPower = new Power(_objCharacter);
                             if (!objNewPower.Create(objXmlPower))
+                            {
+                                objNewPower.DeletePower();
                                 throw new AbortedException();
+                            }
 
                             SelectedValue = objNewPower.CurrentDisplayName;
 

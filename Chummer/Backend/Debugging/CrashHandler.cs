@@ -99,6 +99,7 @@ namespace Chummer.Backend
                     {
                         //On 32 bit builds? get 64 bit registry
                         objCurrentVersionKey.Close();
+                        objCurrentVersionKey.Dispose();
                         obj64BitRegistryKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64);
                         objCurrentVersionKey = obj64BitRegistryKey.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
                     }

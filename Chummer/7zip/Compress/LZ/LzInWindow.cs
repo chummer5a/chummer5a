@@ -151,17 +151,15 @@ namespace SevenZip.Compression.LZ
         {
             unchecked
             {
-                if (_streamEndWasReached)
-                    if (_pos + index + limit > _streamPos)
-                        limit = _streamPos - (uint)(_pos + index);
+                if (_streamEndWasReached && _pos + index + limit > _streamPos)
+                    limit = _streamPos - (uint)(_pos + index);
                 distance++;
                 // Byte *pby = _buffer + (size_t)_pos + index;
                 uint pby = _bufferOffset + _pos + (uint)index;
-
-                uint i;
-                for (i = 0; i < limit && _bufferBase[pby + i] == _bufferBase[pby + i - distance]; i++)
-                {
-                }
+                uint pby2 = pby - distance;
+                uint i = 0;
+                while (i < limit && _bufferBase[pby + i] == _bufferBase[pby2 + i])
+                    ++i;
 
                 return i;
             }

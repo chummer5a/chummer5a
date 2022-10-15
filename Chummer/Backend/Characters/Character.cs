@@ -5880,16 +5880,18 @@ namespace Chummer
                                        : await Timekeeper.StartSyncronAsync("load_char_mentorspirit", loadActivity, token).ConfigureAwait(false))
                             {
                                 // Improvements.
-                                objXmlNodeList = objXmlCharacter.SelectNodes("mentorspirits/mentorspirit");
-                                foreach (XmlNode objXmlMentor in objXmlNodeList)
+                                using (objXmlNodeList = objXmlCharacter.SelectNodes("mentorspirits/mentorspirit"))
                                 {
-                                    MentorSpirit objMentor = new MentorSpirit(this, objXmlMentor);
-                                    objMentor.Load(objXmlMentor);
-                                    if (blnSync)
-                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                        _lstMentorSpirits.Add(objMentor);
-                                    else
-                                        await _lstMentorSpirits.AddAsync(objMentor, token).ConfigureAwait(false);
+                                    foreach (XmlNode objXmlMentor in objXmlNodeList)
+                                    {
+                                        MentorSpirit objMentor = new MentorSpirit(this, objXmlMentor);
+                                        objMentor.Load(objXmlMentor);
+                                        if (blnSync)
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                            _lstMentorSpirits.Add(objMentor);
+                                        else
+                                            await _lstMentorSpirits.AddAsync(objMentor, token).ConfigureAwait(false);
+                                    }
                                 }
 
                                 //using finish("load_char_mentorspirit");
@@ -6119,375 +6121,443 @@ namespace Chummer
                             using (_ = blnSync
                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                        ? Timekeeper.StartSyncron("load_char_quality", loadActivity)
-                                       : await Timekeeper.StartSyncronAsync("load_char_quality", loadActivity, token).ConfigureAwait(false))
+                                       : await Timekeeper.StartSyncronAsync("load_char_quality", loadActivity, token)
+                                                         .ConfigureAwait(false))
                             {
                                 // Qualities
 
-                                objXmlNodeList = objXmlCharacter.SelectNodes("qualities/quality");
-                                bool blnHasOldQualities = false;
-                                xmlRootQualitiesNode =
-                                    (blnSync
-                                        // ReSharper disable once MethodHasAsyncOverload
-                                        ? LoadData("qualities.xml", token: token)
-                                        : await LoadDataAsync("qualities.xml", token: token).ConfigureAwait(false))
-                                    .SelectSingleNode("/chummer/qualities");
-                                foreach (XmlNode objXmlQuality in objXmlNodeList)
+                                using (objXmlNodeList = objXmlCharacter.SelectNodes("qualities/quality"))
                                 {
-                                    if (objXmlQuality["name"] != null)
+                                    bool blnHasOldQualities = false;
+                                    xmlRootQualitiesNode =
+                                        (blnSync
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            ? LoadData("qualities.xml", token: token)
+                                            : await LoadDataAsync("qualities.xml", token: token).ConfigureAwait(false))
+                                        .SelectSingleNode("/chummer/qualities");
+                                    foreach (XmlNode objXmlQuality in objXmlNodeList)
                                     {
-                                        if (!CorrectedUnleveledQuality(objXmlQuality, xmlRootQualitiesNode))
+                                        if (objXmlQuality["name"] != null)
                                         {
-                                            Quality objQuality = new Quality(this);
-                                            objQuality.Load(objXmlQuality);
-                                            // Corrects an issue arising from older versions of CorrectedUnleveledQuality()
-                                            if (_lstQualities.Any(x => x.InternalId == objQuality.InternalId))
-                                                objQuality.SetGUID(Guid.NewGuid());
-                                            if (blnSync)
+                                            if (!CorrectedUnleveledQuality(objXmlQuality, xmlRootQualitiesNode))
                                             {
-                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                _lstQualities.Add(objQuality);
-                                                // ReSharper disable once MethodHasAsyncOverload
-                                                if (objQuality.GetNodeXPath(token: token)
-                                                              // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                              ?.SelectSingleNodeAndCacheExpression("bonus/addgear/name")
-                                                              ?.Value == "Living Persona")
-                                                    objLivingPersonaQuality = objQuality;
-                                            }
-                                            else
-                                            {
-                                                await _lstQualities.AddAsync(objQuality, token).ConfigureAwait(false);
-                                                XPathNavigator objQualityNode = await objQuality
-                                                    .GetNodeXPathAsync(token: token).ConfigureAwait(false);
-                                                if (objQualityNode != null
-                                                    && (await objQualityNode.SelectSingleNodeAndCacheExpressionAsync(
-                                                        "bonus/addgear/name", token).ConfigureAwait(false))?.Value == "Living Persona")
-                                                    objLivingPersonaQuality = objQuality;
-                                            }
-
-                                            // Legacy shim
-                                            if (LastSavedVersion <= new Version(5, 195, 1)
-                                                && (objQuality.Name == "The Artisan's Way"
-                                                    || objQuality.Name == "The Artist's Way"
-                                                    || objQuality.Name == "The Athlete's Way"
-                                                    || objQuality.Name == "The Burnout's Way"
-                                                    || objQuality.Name == "The Invisible Way"
-                                                    || objQuality.Name == "The Magician's Way"
-                                                    || objQuality.Name == "The Speaker's Way"
-                                                    || objQuality.Name == "The Warrior's Way")
-                                                && objQuality.Bonus?.HasChildNodes == false)
-                                            {
+                                                Quality objQuality = new Quality(this);
+                                                objQuality.Load(objXmlQuality);
+                                                // Corrects an issue arising from older versions of CorrectedUnleveledQuality()
+                                                if (_lstQualities.Any(x => x.InternalId == objQuality.InternalId))
+                                                    objQuality.SetGUID(Guid.NewGuid());
                                                 if (blnSync)
-                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                    ImprovementManager.RemoveImprovements(this,
-                                                        Improvement.ImprovementSource.Quality,
-                                                        objQuality.InternalId);
-                                                else
-                                                    await ImprovementManager.RemoveImprovementsAsync(this,
-                                                        Improvement.ImprovementSource.Quality,
-                                                        objQuality.InternalId, token).ConfigureAwait(false);
-                                                XmlNode objNode = blnSync
-                                                    // ReSharper disable once MethodHasAsyncOverload
-                                                    ? objQuality.GetNode(token: token)
-                                                    : await objQuality.GetNodeAsync(token: token).ConfigureAwait(false);
-                                                if (objNode != null)
                                                 {
-                                                    objQuality.Bonus = objNode["bonus"];
-                                                    if (objQuality.Bonus != null)
-                                                    {
-                                                        ImprovementManager.ForcedValue = objQuality.Extra;
-                                                        if (blnSync)
-                                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                            ImprovementManager.CreateImprovements(this,
-                                                                Improvement.ImprovementSource.Quality,
-                                                                objQuality.InternalId, objQuality.Bonus, 1,
-                                                                objQuality.CurrentDisplayNameShort);
-                                                        else
-                                                            await ImprovementManager.CreateImprovementsAsync(this,
-                                                                Improvement.ImprovementSource.Quality,
-                                                                objQuality.InternalId, objQuality.Bonus, 1,
-                                                                await objQuality.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
-                                                        if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
-                                                        {
-                                                            objQuality.Extra = ImprovementManager.SelectedValue;
-                                                        }
-                                                    }
+                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                    _lstQualities.Add(objQuality);
+                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                    if (objQuality.GetNodeXPath(token: token)
+                                                                  // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                                  ?.SelectSingleNodeAndCacheExpression(
+                                                                      "bonus/addgear/name")
+                                                                  ?.Value == "Living Persona")
+                                                        objLivingPersonaQuality = objQuality;
+                                                }
+                                                else
+                                                {
+                                                    await _lstQualities.AddAsync(objQuality, token)
+                                                                       .ConfigureAwait(false);
+                                                    XPathNavigator objQualityNode = await objQuality
+                                                        .GetNodeXPathAsync(token: token).ConfigureAwait(false);
+                                                    if (objQualityNode != null
+                                                        && (await objQualityNode
+                                                                  .SelectSingleNodeAndCacheExpressionAsync(
+                                                                      "bonus/addgear/name", token)
+                                                                  .ConfigureAwait(false))?.Value == "Living Persona")
+                                                        objLivingPersonaQuality = objQuality;
+                                                }
 
-                                                    objQuality.FirstLevelBonus = objNode["firstlevelbonus"];
-                                                    if (objQuality.FirstLevelBonus?.HasChildNodes == true)
+                                                // Legacy shim
+                                                if (LastSavedVersion <= new Version(5, 195, 1)
+                                                    && (objQuality.Name == "The Artisan's Way"
+                                                        || objQuality.Name == "The Artist's Way"
+                                                        || objQuality.Name == "The Athlete's Way"
+                                                        || objQuality.Name == "The Burnout's Way"
+                                                        || objQuality.Name == "The Invisible Way"
+                                                        || objQuality.Name == "The Magician's Way"
+                                                        || objQuality.Name == "The Speaker's Way"
+                                                        || objQuality.Name == "The Warrior's Way")
+                                                    && objQuality.Bonus?.HasChildNodes == false)
+                                                {
+                                                    if (blnSync)
+                                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                        ImprovementManager.RemoveImprovements(this,
+                                                            Improvement.ImprovementSource.Quality,
+                                                            objQuality.InternalId);
+                                                    else
+                                                        await ImprovementManager.RemoveImprovementsAsync(this,
+                                                            Improvement.ImprovementSource.Quality,
+                                                            objQuality.InternalId, token).ConfigureAwait(false);
+                                                    XmlNode objNode = blnSync
+                                                        // ReSharper disable once MethodHasAsyncOverload
+                                                        ? objQuality.GetNode(token: token)
+                                                        : await objQuality.GetNodeAsync(token: token)
+                                                                          .ConfigureAwait(false);
+                                                    if (objNode != null)
                                                     {
-                                                        bool blnDoFirstLevel = true;
-                                                        foreach (Quality objCheckQuality in Qualities)
-                                                        {
-                                                            if (objCheckQuality != objQuality &&
-                                                                objCheckQuality.SourceIDString ==
-                                                                objQuality.SourceIDString &&
-                                                                objCheckQuality.Extra == objQuality.Extra &&
-                                                                objCheckQuality.SourceName == objQuality.SourceName)
-                                                            {
-                                                                blnDoFirstLevel = false;
-                                                                break;
-                                                            }
-                                                        }
-
-                                                        if (blnDoFirstLevel)
+                                                        objQuality.Bonus = objNode["bonus"];
+                                                        if (objQuality.Bonus != null)
                                                         {
                                                             ImprovementManager.ForcedValue = objQuality.Extra;
                                                             if (blnSync)
                                                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                                 ImprovementManager.CreateImprovements(this,
                                                                     Improvement.ImprovementSource.Quality,
-                                                                    objQuality.InternalId,
-                                                                    objQuality.FirstLevelBonus, 1,
+                                                                    objQuality.InternalId, objQuality.Bonus, 1,
                                                                     objQuality.CurrentDisplayNameShort);
                                                             else
                                                                 await ImprovementManager.CreateImprovementsAsync(this,
-                                                                    Improvement.ImprovementSource.Quality,
-                                                                    objQuality.InternalId,
-                                                                    objQuality.FirstLevelBonus, 1,
-                                                                    await objQuality.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
-                                                            if (!string.IsNullOrEmpty(ImprovementManager
-                                                                    .SelectedValue))
+                                                                        Improvement.ImprovementSource.Quality,
+                                                                        objQuality.InternalId, objQuality.Bonus, 1,
+                                                                        await objQuality
+                                                                              .GetCurrentDisplayNameShortAsync(token)
+                                                                              .ConfigureAwait(false), token: token)
+                                                                    .ConfigureAwait(false);
+                                                            if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                                             {
                                                                 objQuality.Extra = ImprovementManager.SelectedValue;
                                                             }
                                                         }
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    // Failed to re-apply the improvements immediately, so let's just add it for processing when the character is opened
-                                                    if (blnSync)
-                                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                        _lstInternalIdsNeedingReapplyImprovements.Add(objQuality.InternalId);
-                                                    else
-                                                        await _lstInternalIdsNeedingReapplyImprovements.AddAsync(objQuality.InternalId, token).ConfigureAwait(false);
-                                                }
 
-                                                objQuality.NaturalWeaponsNode = objNode["naturalweapons"];
-                                                if (objQuality.NaturalWeaponsNode != null)
-                                                {
-                                                    ImprovementManager.ForcedValue = objQuality.Extra;
-                                                    if (blnSync)
-                                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                        ImprovementManager.CreateImprovements(this,
-                                                            Improvement.ImprovementSource.Quality,
-                                                            objQuality.InternalId, objQuality.NaturalWeaponsNode, 1,
-                                                            objQuality.CurrentDisplayNameShort);
-                                                    else
-                                                        await ImprovementManager.CreateImprovementsAsync(this,
-                                                            Improvement.ImprovementSource.Quality,
-                                                            objQuality.InternalId, objQuality.NaturalWeaponsNode, 1,
-                                                            await objQuality.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
-                                                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
-                                                    {
-                                                        objQuality.Extra = ImprovementManager.SelectedValue;
-                                                    }
-                                                }
-                                            }
-
-                                            if (LastSavedVersion <= new Version(5, 200, 0)
-                                                && objQuality.Name == "Made Man"
-                                                && objQuality.Bonus["selectcontact"] != null)
-                                            {
-                                                string selectedContactUniqueId = (Improvements.FirstOrDefault(x =>
-                                                        x.SourceName == objQuality.InternalId &&
-                                                        x.ImproveType == Improvement.ImprovementType
-                                                            .ContactForcedLoyalty))
-                                                    ?.ImprovedName;
-                                                if (string.IsNullOrWhiteSpace(selectedContactUniqueId))
-                                                {
-                                                    selectedContactUniqueId =
-                                                        Contacts.FirstOrDefault(x => x.Name == objQuality.Extra)
-                                                                ?.UniqueId;
-                                                }
-
-                                                if (string.IsNullOrWhiteSpace(selectedContactUniqueId))
-                                                {
-                                                    // Populate the Magician Traditions list.
-                                                    using (new FetchSafelyFromPool<List<ListItem>>(
-                                                               Utils.ListItemListPool,
-                                                               out List<ListItem> lstContacts))
-                                                    {
-                                                        foreach (Contact objContact in Contacts)
+                                                        objQuality.FirstLevelBonus = objNode["firstlevelbonus"];
+                                                        if (objQuality.FirstLevelBonus?.HasChildNodes == true)
                                                         {
-                                                            if (objContact.IsGroup)
-                                                                lstContacts.Add(new ListItem(objContact.Name,
-                                                                    objContact.UniqueId));
-                                                        }
+                                                            bool blnDoFirstLevel = true;
+                                                            foreach (Quality objCheckQuality in Qualities)
+                                                            {
+                                                                if (objCheckQuality != objQuality &&
+                                                                    objCheckQuality.SourceIDString ==
+                                                                    objQuality.SourceIDString &&
+                                                                    objCheckQuality.Extra == objQuality.Extra &&
+                                                                    objCheckQuality.SourceName == objQuality.SourceName)
+                                                                {
+                                                                    blnDoFirstLevel = false;
+                                                                    break;
+                                                                }
+                                                            }
 
-                                                        if (lstContacts.Count > 1)
-                                                        {
-                                                            lstContacts.Sort(CompareListItems.CompareNames);
+                                                            if (blnDoFirstLevel)
+                                                            {
+                                                                ImprovementManager.ForcedValue = objQuality.Extra;
+                                                                if (blnSync)
+                                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                                    ImprovementManager.CreateImprovements(this,
+                                                                        Improvement.ImprovementSource.Quality,
+                                                                        objQuality.InternalId,
+                                                                        objQuality.FirstLevelBonus, 1,
+                                                                        objQuality.CurrentDisplayNameShort);
+                                                                else
+                                                                    await ImprovementManager.CreateImprovementsAsync(
+                                                                            this,
+                                                                            Improvement.ImprovementSource.Quality,
+                                                                            objQuality.InternalId,
+                                                                            objQuality.FirstLevelBonus, 1,
+                                                                            await objQuality
+                                                                                .GetCurrentDisplayNameShortAsync(token)
+                                                                                .ConfigureAwait(false), token: token)
+                                                                        .ConfigureAwait(false);
+                                                                if (!string.IsNullOrEmpty(ImprovementManager
+                                                                        .SelectedValue))
+                                                                {
+                                                                    objQuality.Extra = ImprovementManager.SelectedValue;
+                                                                }
+                                                            }
                                                         }
-
+                                                    }
+                                                    else
+                                                    {
+                                                        // Failed to re-apply the improvements immediately, so let's just add it for processing when the character is opened
                                                         if (blnSync)
-                                                        {
-                                                            // ReSharper disable once MethodHasAsyncOverload
                                                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                            using (ThreadSafeForm<SelectItem> frmPickItem = ThreadSafeForm<SelectItem>.Get(() => new SelectItem()))
-                                                            {
-                                                                frmPickItem.MyForm.SetDropdownItemsMode(lstContacts);
-                                                                // ReSharper disable once MethodHasAsyncOverload
-                                                                if (frmPickItem.ShowDialogSafe(this, token) != DialogResult.OK)
-                                                                {
-                                                                    return false;
-                                                                }
-                                                                selectedContactUniqueId = frmPickItem.MyForm.SelectedItem;
-                                                            }
-                                                        }
+                                                            _lstInternalIdsNeedingReapplyImprovements.Add(
+                                                                objQuality.InternalId);
                                                         else
+                                                            await _lstInternalIdsNeedingReapplyImprovements
+                                                                  .AddAsync(objQuality.InternalId, token)
+                                                                  .ConfigureAwait(false);
+                                                    }
+
+                                                    objQuality.NaturalWeaponsNode = objNode["naturalweapons"];
+                                                    if (objQuality.NaturalWeaponsNode != null)
+                                                    {
+                                                        ImprovementManager.ForcedValue = objQuality.Extra;
+                                                        if (blnSync)
+                                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                            ImprovementManager.CreateImprovements(this,
+                                                                Improvement.ImprovementSource.Quality,
+                                                                objQuality.InternalId, objQuality.NaturalWeaponsNode, 1,
+                                                                objQuality.CurrentDisplayNameShort);
+                                                        else
+                                                            await ImprovementManager.CreateImprovementsAsync(this,
+                                                                    Improvement.ImprovementSource.Quality,
+                                                                    objQuality.InternalId,
+                                                                    objQuality.NaturalWeaponsNode, 1,
+                                                                    await objQuality
+                                                                          .GetCurrentDisplayNameShortAsync(token)
+                                                                          .ConfigureAwait(false), token: token)
+                                                                .ConfigureAwait(false);
+                                                        if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                                         {
-                                                            using (ThreadSafeForm<SelectItem> frmPickItem = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem(), token).ConfigureAwait(false))
-                                                            {
-                                                                frmPickItem.MyForm.SetDropdownItemsMode(lstContacts);
-                                                                if (await frmPickItem.ShowDialogSafeAsync(this, token).ConfigureAwait(false) != DialogResult.OK)
-                                                                {
-                                                                    return false;
-                                                                }
-                                                                selectedContactUniqueId = frmPickItem.MyForm.SelectedItem;
-                                                            }
+                                                            objQuality.Extra = ImprovementManager.SelectedValue;
                                                         }
                                                     }
                                                 }
 
-                                                objQuality.Bonus =
-                                                    xmlRootQualitiesNode.SelectSingleNode(
-                                                        "quality[name=\"Made Man\"]/bonus");
-                                                objQuality.Extra = string.Empty;
-                                                if (blnSync)
+                                                if (LastSavedVersion <= new Version(5, 200, 0)
+                                                    && objQuality.Name == "Made Man"
+                                                    && objQuality.Bonus["selectcontact"] != null)
                                                 {
-                                                    // ReSharper disable MethodHasAsyncOverloadWithCancellation
-                                                    ImprovementManager.RemoveImprovements(this,
-                                                        Improvement.ImprovementSource.Quality,
-                                                        objQuality.InternalId);
-                                                    ImprovementManager.CreateImprovement(this, string.Empty,
-                                                        Improvement.ImprovementSource.Quality, objQuality.InternalId,
-                                                        Improvement.ImprovementType.MadeMan,
-                                                        objQuality.CurrentDisplayNameShort);
-                                                    ImprovementManager.CreateImprovement(this, selectedContactUniqueId,
-                                                        Improvement.ImprovementSource.Quality, objQuality.InternalId,
-                                                        Improvement.ImprovementType.AddContact,
-                                                        objQuality.CurrentDisplayNameShort);
-                                                    ImprovementManager.CreateImprovement(this, selectedContactUniqueId,
-                                                        Improvement.ImprovementSource.Quality, objQuality.InternalId,
-                                                        Improvement.ImprovementType.ContactForcedLoyalty,
-                                                        objQuality.CurrentDisplayNameShort);
-                                                    ImprovementManager.CreateImprovement(this, selectedContactUniqueId,
-                                                        Improvement.ImprovementSource.Quality, objQuality.InternalId,
-                                                        Improvement.ImprovementType.ContactForceGroup,
-                                                        objQuality.CurrentDisplayNameShort);
-                                                    ImprovementManager.CreateImprovement(this, selectedContactUniqueId,
-                                                        Improvement.ImprovementSource.Quality, objQuality.InternalId,
-                                                        Improvement.ImprovementType.ContactMakeFree,
-                                                        objQuality.CurrentDisplayNameShort);
-                                                    ImprovementManager.Commit(this);
-                                                    // ReSharper restore MethodHasAsyncOverloadWithCancellation
-                                                }
-                                                else
-                                                {
-                                                    await ImprovementManager.RemoveImprovementsAsync(this,
-                                                        Improvement.ImprovementSource.Quality,
-                                                        objQuality.InternalId, token).ConfigureAwait(false);
-                                                    await ImprovementManager.CreateImprovementAsync(this, string.Empty,
-                                                        Improvement.ImprovementSource.Quality, objQuality.InternalId,
-                                                        Improvement.ImprovementType.MadeMan,
-                                                        objQuality.CurrentDisplayNameShort, token: token).ConfigureAwait(false);
-                                                    await ImprovementManager.CreateImprovementAsync(
-                                                        this, selectedContactUniqueId,
-                                                        Improvement.ImprovementSource.Quality, objQuality.InternalId,
-                                                        Improvement.ImprovementType.AddContact,
-                                                        objQuality.CurrentDisplayNameShort, token: token).ConfigureAwait(false);
-                                                    await ImprovementManager.CreateImprovementAsync(
-                                                        this, selectedContactUniqueId,
-                                                        Improvement.ImprovementSource.Quality, objQuality.InternalId,
-                                                        Improvement.ImprovementType.ContactForcedLoyalty,
-                                                        objQuality.CurrentDisplayNameShort, token: token).ConfigureAwait(false);
-                                                    await ImprovementManager.CreateImprovementAsync(
-                                                        this, selectedContactUniqueId,
-                                                        Improvement.ImprovementSource.Quality, objQuality.InternalId,
-                                                        Improvement.ImprovementType.ContactForceGroup,
-                                                        objQuality.CurrentDisplayNameShort, token: token).ConfigureAwait(false);
-                                                    await ImprovementManager.CreateImprovementAsync(
-                                                        this, selectedContactUniqueId,
-                                                        Improvement.ImprovementSource.Quality, objQuality.InternalId,
-                                                        Improvement.ImprovementType.ContactMakeFree,
-                                                        objQuality.CurrentDisplayNameShort, token: token).ConfigureAwait(false);
-                                                    await ImprovementManager.CommitAsync(this, token).ConfigureAwait(false);
-                                                }
-                                            }
+                                                    string selectedContactUniqueId = (Improvements.FirstOrDefault(x =>
+                                                            x.SourceName == objQuality.InternalId &&
+                                                            x.ImproveType == Improvement.ImprovementType
+                                                                .ContactForcedLoyalty))
+                                                        ?.ImprovedName;
+                                                    if (string.IsNullOrWhiteSpace(selectedContactUniqueId))
+                                                    {
+                                                        selectedContactUniqueId =
+                                                            Contacts.FirstOrDefault(x => x.Name == objQuality.Extra)
+                                                                    ?.UniqueId;
+                                                    }
 
-                                            if (LastSavedVersion <= new Version(5, 212, 43)
-                                                && objQuality.Name == "Inspired"
-                                                && objQuality.Source == "SASS"
-                                                && objQuality.Bonus["selectexpertise"] == null)
-                                            {
-                                                // Old handling of SASS' Inspired quality was both hardcoded and wrong
-                                                // Since SASS' Inspired requires the player to choose a specialization, we always need a prompt,
-                                                // so add the quality to the list for processing when the character is opened.
-                                                if (blnSync)
-                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                    _lstInternalIdsNeedingReapplyImprovements.Add(objQuality.InternalId);
-                                                else
-                                                    await _lstInternalIdsNeedingReapplyImprovements.AddAsync(objQuality.InternalId, token).ConfigureAwait(false);
-                                            }
+                                                    if (string.IsNullOrWhiteSpace(selectedContactUniqueId))
+                                                    {
+                                                        // Populate the Magician Traditions list.
+                                                        using (new FetchSafelyFromPool<List<ListItem>>(
+                                                                   Utils.ListItemListPool,
+                                                                   out List<ListItem> lstContacts))
+                                                        {
+                                                            foreach (Contact objContact in Contacts)
+                                                            {
+                                                                if (objContact.IsGroup)
+                                                                    lstContacts.Add(new ListItem(objContact.Name,
+                                                                        objContact.UniqueId));
+                                                            }
 
-                                            if (LastSavedVersion <= new Version(5, 212, 56)
-                                                && objQuality.Name == "Chain Breaker"
-                                                && objQuality.Bonus == null)
-                                            {
-                                                // Chain Breaker bonus requires manual selection of two spirit types, so we need a prompt.
-                                                if (blnSync)
-                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                    _lstInternalIdsNeedingReapplyImprovements.Add(objQuality.InternalId);
-                                                else
-                                                    await _lstInternalIdsNeedingReapplyImprovements.AddAsync(objQuality.InternalId, token).ConfigureAwait(false);
-                                            }
+                                                            if (lstContacts.Count > 1)
+                                                            {
+                                                                lstContacts.Sort(CompareListItems.CompareNames);
+                                                            }
 
-                                            if (LastSavedVersion <= new Version(5, 212, 78)
-                                                && objQuality.Name == "Resonant Stream: Cyberadept"
-                                                && objQuality.Bonus == null)
-                                            {
-                                                objQuality.Bonus =
-                                                    xmlRootQualitiesNode.SelectSingleNode(
-                                                        "quality[name=\"Resonant Stream: Cyberadept\"]/bonus");
-                                                if (blnSync)
-                                                {
-                                                    // ReSharper disable MethodHasAsyncOverloadWithCancellation
-                                                    ImprovementManager.RemoveImprovements(this,
-                                                        Improvement.ImprovementSource.Quality,
-                                                        objQuality.InternalId);
-                                                    ImprovementManager.CreateImprovement(this, string.Empty,
-                                                        Improvement.ImprovementSource.Quality, objQuality.InternalId,
-                                                        Improvement.ImprovementType.CyberadeptDaemon,
-                                                        objQuality.CurrentDisplayNameShort);
-                                                    ImprovementManager.Commit(this);
-                                                    // ReSharper restore MethodHasAsyncOverloadWithCancellation
+                                                            if (blnSync)
+                                                            {
+                                                                // ReSharper disable once MethodHasAsyncOverload
+                                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                                using (ThreadSafeForm<SelectItem> frmPickItem
+                                                                       = ThreadSafeForm<SelectItem>.Get(
+                                                                           () => new SelectItem()))
+                                                                {
+                                                                    frmPickItem.MyForm
+                                                                               .SetDropdownItemsMode(lstContacts);
+                                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                                    if (frmPickItem.ShowDialogSafe(this, token)
+                                                                        != DialogResult.OK)
+                                                                    {
+                                                                        return false;
+                                                                    }
+
+                                                                    selectedContactUniqueId
+                                                                        = frmPickItem.MyForm.SelectedItem;
+                                                                }
+                                                            }
+                                                            else
+                                                            {
+                                                                using (ThreadSafeForm<SelectItem> frmPickItem
+                                                                       = await ThreadSafeForm<SelectItem>
+                                                                               .GetAsync(() => new SelectItem(), token)
+                                                                               .ConfigureAwait(false))
+                                                                {
+                                                                    frmPickItem.MyForm
+                                                                               .SetDropdownItemsMode(lstContacts);
+                                                                    if (await frmPickItem
+                                                                              .ShowDialogSafeAsync(this, token)
+                                                                              .ConfigureAwait(false) != DialogResult.OK)
+                                                                    {
+                                                                        return false;
+                                                                    }
+
+                                                                    selectedContactUniqueId
+                                                                        = frmPickItem.MyForm.SelectedItem;
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+
+                                                    objQuality.Bonus =
+                                                        xmlRootQualitiesNode.SelectSingleNode(
+                                                            "quality[name=\"Made Man\"]/bonus");
+                                                    objQuality.Extra = string.Empty;
+                                                    if (blnSync)
+                                                    {
+                                                        // ReSharper disable MethodHasAsyncOverloadWithCancellation
+                                                        ImprovementManager.RemoveImprovements(this,
+                                                            Improvement.ImprovementSource.Quality,
+                                                            objQuality.InternalId);
+                                                        ImprovementManager.CreateImprovement(this, string.Empty,
+                                                            Improvement.ImprovementSource.Quality,
+                                                            objQuality.InternalId,
+                                                            Improvement.ImprovementType.MadeMan,
+                                                            objQuality.CurrentDisplayNameShort);
+                                                        ImprovementManager.CreateImprovement(
+                                                            this, selectedContactUniqueId,
+                                                            Improvement.ImprovementSource.Quality,
+                                                            objQuality.InternalId,
+                                                            Improvement.ImprovementType.AddContact,
+                                                            objQuality.CurrentDisplayNameShort);
+                                                        ImprovementManager.CreateImprovement(
+                                                            this, selectedContactUniqueId,
+                                                            Improvement.ImprovementSource.Quality,
+                                                            objQuality.InternalId,
+                                                            Improvement.ImprovementType.ContactForcedLoyalty,
+                                                            objQuality.CurrentDisplayNameShort);
+                                                        ImprovementManager.CreateImprovement(
+                                                            this, selectedContactUniqueId,
+                                                            Improvement.ImprovementSource.Quality,
+                                                            objQuality.InternalId,
+                                                            Improvement.ImprovementType.ContactForceGroup,
+                                                            objQuality.CurrentDisplayNameShort);
+                                                        ImprovementManager.CreateImprovement(
+                                                            this, selectedContactUniqueId,
+                                                            Improvement.ImprovementSource.Quality,
+                                                            objQuality.InternalId,
+                                                            Improvement.ImprovementType.ContactMakeFree,
+                                                            objQuality.CurrentDisplayNameShort);
+                                                        ImprovementManager.Commit(this);
+                                                        // ReSharper restore MethodHasAsyncOverloadWithCancellation
+                                                    }
+                                                    else
+                                                    {
+                                                        await ImprovementManager.RemoveImprovementsAsync(this,
+                                                            Improvement.ImprovementSource.Quality,
+                                                            objQuality.InternalId, token).ConfigureAwait(false);
+                                                        await ImprovementManager.CreateImprovementAsync(
+                                                                this, string.Empty,
+                                                                Improvement.ImprovementSource.Quality,
+                                                                objQuality.InternalId,
+                                                                Improvement.ImprovementType.MadeMan,
+                                                                objQuality.CurrentDisplayNameShort, token: token)
+                                                            .ConfigureAwait(false);
+                                                        await ImprovementManager.CreateImprovementAsync(
+                                                                this, selectedContactUniqueId,
+                                                                Improvement.ImprovementSource.Quality,
+                                                                objQuality.InternalId,
+                                                                Improvement.ImprovementType.AddContact,
+                                                                objQuality.CurrentDisplayNameShort, token: token)
+                                                            .ConfigureAwait(false);
+                                                        await ImprovementManager.CreateImprovementAsync(
+                                                                this, selectedContactUniqueId,
+                                                                Improvement.ImprovementSource.Quality,
+                                                                objQuality.InternalId,
+                                                                Improvement.ImprovementType.ContactForcedLoyalty,
+                                                                objQuality.CurrentDisplayNameShort, token: token)
+                                                            .ConfigureAwait(false);
+                                                        await ImprovementManager.CreateImprovementAsync(
+                                                                this, selectedContactUniqueId,
+                                                                Improvement.ImprovementSource.Quality,
+                                                                objQuality.InternalId,
+                                                                Improvement.ImprovementType.ContactForceGroup,
+                                                                objQuality.CurrentDisplayNameShort, token: token)
+                                                            .ConfigureAwait(false);
+                                                        await ImprovementManager.CreateImprovementAsync(
+                                                                this, selectedContactUniqueId,
+                                                                Improvement.ImprovementSource.Quality,
+                                                                objQuality.InternalId,
+                                                                Improvement.ImprovementType.ContactMakeFree,
+                                                                objQuality.CurrentDisplayNameShort, token: token)
+                                                            .ConfigureAwait(false);
+                                                        await ImprovementManager.CommitAsync(this, token)
+                                                            .ConfigureAwait(false);
+                                                    }
                                                 }
-                                                else
+
+                                                if (LastSavedVersion <= new Version(5, 212, 43)
+                                                    && objQuality.Name == "Inspired"
+                                                    && objQuality.Source == "SASS"
+                                                    && objQuality.Bonus["selectexpertise"] == null)
                                                 {
-                                                    await ImprovementManager.RemoveImprovementsAsync(this,
-                                                        Improvement.ImprovementSource.Quality,
-                                                        objQuality.InternalId, token: token).ConfigureAwait(false);
-                                                    await ImprovementManager.CreateImprovementAsync(this, string.Empty,
-                                                        Improvement.ImprovementSource.Quality, objQuality.InternalId,
-                                                        Improvement.ImprovementType.CyberadeptDaemon,
-                                                        objQuality.CurrentDisplayNameShort, token: token).ConfigureAwait(false);
-                                                    await ImprovementManager.CommitAsync(this, token).ConfigureAwait(false);
+                                                    // Old handling of SASS' Inspired quality was both hardcoded and wrong
+                                                    // Since SASS' Inspired requires the player to choose a specialization, we always need a prompt,
+                                                    // so add the quality to the list for processing when the character is opened.
+                                                    if (blnSync)
+                                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                        _lstInternalIdsNeedingReapplyImprovements.Add(
+                                                            objQuality.InternalId);
+                                                    else
+                                                        await _lstInternalIdsNeedingReapplyImprovements
+                                                              .AddAsync(objQuality.InternalId, token)
+                                                              .ConfigureAwait(false);
+                                                }
+
+                                                if (LastSavedVersion <= new Version(5, 212, 56)
+                                                    && objQuality.Name == "Chain Breaker"
+                                                    && objQuality.Bonus == null)
+                                                {
+                                                    // Chain Breaker bonus requires manual selection of two spirit types, so we need a prompt.
+                                                    if (blnSync)
+                                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                        _lstInternalIdsNeedingReapplyImprovements.Add(
+                                                            objQuality.InternalId);
+                                                    else
+                                                        await _lstInternalIdsNeedingReapplyImprovements
+                                                              .AddAsync(objQuality.InternalId, token)
+                                                              .ConfigureAwait(false);
+                                                }
+
+                                                if (LastSavedVersion <= new Version(5, 212, 78)
+                                                    && objQuality.Name == "Resonant Stream: Cyberadept"
+                                                    && objQuality.Bonus == null)
+                                                {
+                                                    objQuality.Bonus =
+                                                        xmlRootQualitiesNode.SelectSingleNode(
+                                                            "quality[name=\"Resonant Stream: Cyberadept\"]/bonus");
+                                                    if (blnSync)
+                                                    {
+                                                        // ReSharper disable MethodHasAsyncOverloadWithCancellation
+                                                        ImprovementManager.RemoveImprovements(this,
+                                                            Improvement.ImprovementSource.Quality,
+                                                            objQuality.InternalId);
+                                                        ImprovementManager.CreateImprovement(this, string.Empty,
+                                                            Improvement.ImprovementSource.Quality,
+                                                            objQuality.InternalId,
+                                                            Improvement.ImprovementType.CyberadeptDaemon,
+                                                            objQuality.CurrentDisplayNameShort);
+                                                        ImprovementManager.Commit(this);
+                                                        // ReSharper restore MethodHasAsyncOverloadWithCancellation
+                                                    }
+                                                    else
+                                                    {
+                                                        await ImprovementManager.RemoveImprovementsAsync(this,
+                                                            Improvement.ImprovementSource.Quality,
+                                                            objQuality.InternalId, token: token).ConfigureAwait(false);
+                                                        await ImprovementManager.CreateImprovementAsync(
+                                                                this, string.Empty,
+                                                                Improvement.ImprovementSource.Quality,
+                                                                objQuality.InternalId,
+                                                                Improvement.ImprovementType.CyberadeptDaemon,
+                                                                objQuality.CurrentDisplayNameShort, token: token)
+                                                            .ConfigureAwait(false);
+                                                        await ImprovementManager.CommitAsync(this, token)
+                                                            .ConfigureAwait(false);
+                                                    }
                                                 }
                                             }
                                         }
+                                        else
+                                        {
+                                            // If the Quality does not have a name tag, it is in the old format. Set the flag to show that old Qualities are in use.
+                                            blnHasOldQualities = true;
+                                        }
                                     }
-                                    else
-                                    {
-                                        // If the Quality does not have a name tag, it is in the old format. Set the flag to show that old Qualities are in use.
-                                        blnHasOldQualities = true;
-                                    }
-                                }
 
-                                // If old Qualities are in use, they need to be converted before loading can continue.
-                                if (blnHasOldQualities)
-                                    ConvertOldQualities(objXmlNodeList);
-                                //Timekeeper.Finish("load_char_quality");
+                                    // If old Qualities are in use, they need to be converted before loading can continue.
+                                    if (blnHasOldQualities)
+                                        ConvertOldQualities(objXmlNodeList);
+                                    //Timekeeper.Finish("load_char_quality");
+                                }
                             }
 
                             if (frmLoadingForm != null)
@@ -10113,6 +10183,8 @@ namespace Chummer
                     objItem.Dispose();
                 foreach (Spell objItem in _lstSpells)
                     objItem.Dispose();
+                foreach (Power objItem in _lstPowers)
+                    objItem.Dispose();
                 foreach (MartialArt objItem in _lstMartialArts)
                     objItem.Dispose();
                 foreach (StackedFocus objItem in _lstStackedFoci)
@@ -10257,6 +10329,8 @@ namespace Chummer
                 foreach (Lifestyle objItem in _lstLifestyles)
                     objItem.Dispose();
                 foreach (Spell objItem in _lstSpells)
+                    objItem.Dispose();
+                foreach (Power objItem in _lstPowers)
                     objItem.Dispose();
                 foreach (MartialArt objItem in _lstMartialArts)
                     objItem.Dispose();

@@ -794,8 +794,14 @@ namespace Chummer
                                         _mascotChummy = await this.DoThreadSafeFuncAsync(x =>
                                         {
                                             Chummy objReturn = new Chummy(null);
-                                            x.Disposed += (o, args) => objReturn.Dispose();
-                                            return objReturn;
+                                            try
+                                            {
+                                                return objReturn;
+                                            }
+                                            finally
+                                            {
+                                                x.Disposed += (o, args) => objReturn.Dispose();
+                                            }
                                         }, token: _objGenericToken).ConfigureAwait(false);
                                         await _mascotChummy.DoThreadSafeAsync(
                                             x => x.Show(this), token: _objGenericToken).ConfigureAwait(false);
@@ -2182,8 +2188,14 @@ namespace Chummer
                         RollerWindow = await this.DoThreadSafeFuncAsync(x =>
                         {
                             DiceRoller objReturn = new DiceRoller(this);
-                            x.Disposed += (o, args) => objReturn.Dispose();
-                            return objReturn;
+                            try
+                            {
+                                return objReturn;
+                            }
+                            finally
+                            {
+                                x.Disposed += (o, args) => objReturn.Dispose();
+                            }
                         }, token: _objGenericToken).ConfigureAwait(false);
                         await RollerWindow.DoThreadSafeAsync(x => x.Show(), token: _objGenericToken).ConfigureAwait(false);
                     }
@@ -3337,8 +3349,14 @@ namespace Chummer
                         RollerWindow = await this.DoThreadSafeFuncAsync(x =>
                         {
                             DiceRoller objReturn = new DiceRoller(this, objCharacter?.Qualities, intDice);
-                            x.Disposed += (o, args) => objReturn.Dispose();
-                            return objReturn;
+                            try
+                            {
+                                return objReturn;
+                            }
+                            finally
+                            {
+                                x.Disposed += (o, args) => objReturn.Dispose();
+                            }
                         }, token).ConfigureAwait(false);
                         await RollerWindow.DoThreadSafeAsync(x => x.Show(), token).ConfigureAwait(false);
                     }

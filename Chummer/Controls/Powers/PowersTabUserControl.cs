@@ -268,6 +268,8 @@ namespace Chummer.UI.Powers
                     {
                         await _objCharacter.Powers.AddAsync(objPower).ConfigureAwait(false);
                     }
+                    else
+                        objPower.DeletePower();
                 }
             }
             while (blnAddAgain);
@@ -540,7 +542,6 @@ namespace Chummer.UI.Powers
                                                                                 }
 
                                                                                 p.DeletePower();
-                                                                                p.UnbindPower();
 
                                                                                 if (frmParent is CharacterShared
                                                                                  objParent)

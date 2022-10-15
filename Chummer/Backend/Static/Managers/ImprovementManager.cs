@@ -22,7 +22,6 @@ using Chummer.Backend.Equipment;
 using Chummer.Backend.Skills;
 using NLog;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -49,8 +48,8 @@ namespace Chummer
         private static readonly LockingDictionary<Character, List<Improvement>> s_DictionaryTransactions
             = new LockingDictionary<Character, List<Improvement>>(10);
 
-        private static readonly ConcurrentHashSet<Tuple<ImprovementDictionaryKey, IDictionary>>
-            s_SetCurrentlyCalculatingValues = new ConcurrentHashSet<Tuple<ImprovementDictionaryKey, IDictionary>>();
+        private static readonly ConcurrentHashSet<Tuple<ImprovementDictionaryKey, IAsyncDictionary<ImprovementDictionaryKey, Tuple<decimal, List<Improvement>>>>>
+            s_SetCurrentlyCalculatingValues = new ConcurrentHashSet<Tuple<ImprovementDictionaryKey, IAsyncDictionary<ImprovementDictionaryKey, Tuple<decimal, List<Improvement>>>>>();
 
         private static readonly LockingDictionary<ImprovementDictionaryKey, Tuple<decimal, List<Improvement>>>
             s_DictionaryCachedValues
@@ -743,12 +742,12 @@ namespace Chummer
             using (blnSync ? EnterReadLock.Enter(objCharacter.LockObject, token) : await EnterReadLock.EnterAsync(objCharacter.LockObject, token).ConfigureAwait(false))
             {
                 // These values are needed to prevent race conditions that could cause Chummer to crash
-                Tuple<ImprovementDictionaryKey, IDictionary> tupMyValueToCheck
-                    = new Tuple<ImprovementDictionaryKey, IDictionary>(
+                Tuple<ImprovementDictionaryKey, IAsyncDictionary<ImprovementDictionaryKey, Tuple<decimal, List<Improvement>>>> tupMyValueToCheck
+                    = new Tuple<ImprovementDictionaryKey, IAsyncDictionary<ImprovementDictionaryKey, Tuple<decimal, List<Improvement>>>>(
                         new ImprovementDictionaryKey(objCharacter, eImprovementType, strImprovedName),
                         dicCachedValuesToUse);
-                Tuple<ImprovementDictionaryKey, IDictionary> tupBlankValueToCheck
-                    = new Tuple<ImprovementDictionaryKey, IDictionary>(
+                Tuple<ImprovementDictionaryKey, IAsyncDictionary<ImprovementDictionaryKey, Tuple<decimal, List<Improvement>>>> tupBlankValueToCheck
+                    = new Tuple<ImprovementDictionaryKey, IAsyncDictionary<ImprovementDictionaryKey, Tuple<decimal, List<Improvement>>>>(
                         new ImprovementDictionaryKey(objCharacter, eImprovementType, string.Empty),
                         dicCachedValuesToUse);
 
@@ -3844,7 +3843,6 @@ namespace Chummer
                                 if (objImprovedPower.TotalRating <= 0)
                                 {
                                     objImprovedPower.DeletePower();
-                                    objImprovedPower.UnbindPower();
                                 }
 
                                 objImprovedPower.OnPropertyChanged(nameof(objImprovedPower.TotalRating));

@@ -134,6 +134,7 @@ namespace Chummer
 
         protected override void Dispose(bool disposing)
         {
+            base.Dispose(disposing);
             if (!disposing)
                 return;
             if (Interlocked.CompareExchange(ref _intIsDisposed, 1, 0) > 0)

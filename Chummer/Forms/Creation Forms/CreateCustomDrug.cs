@@ -42,14 +42,10 @@ namespace Chummer
         private double _dblCostMultiplier;
         private int _intAddictionThreshold;
 
-        public CreateCustomDrug(Character objCharacter, Drug objDrug = null)
+        public CreateCustomDrug(Character objCharacter)
         {
             Disposed += (sender, args) => Utils.ListItemListPool.Return(_lstGrade);
-            if (objDrug == null)
-            {
-                objDrug = new Drug(objCharacter);
-            }
-            _objDrug = objDrug;
+            _objDrug = new Drug(objCharacter);
             _objCharacter = objCharacter;
             InitializeComponent();
             this.UpdateLightDarkMode();
@@ -130,7 +126,7 @@ namespace Chummer
         private async ValueTask UpdateCustomDrugStats(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            _objDrug = new Drug(_objCharacter)
+            Drug objNewDrug = new Drug(_objCharacter)
             {
                 Name = await txtDrugName.DoThreadSafeFuncAsync(x => x.Text, token).ConfigureAwait(false),
                 Category = "Custom Drug"
@@ -141,15 +137,17 @@ namespace Chummer
                     ? await cboGrade.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false)
                     : string.Empty;
                 if (!string.IsNullOrEmpty(strSelectedGrade))
-                    _objDrug.Grade = Grade.ConvertToCyberwareGrade(strSelectedGrade, Improvement.ImprovementSource.Drug, _objCharacter);
+                    objNewDrug.Grade = Grade.ConvertToCyberwareGrade(strSelectedGrade, Improvement.ImprovementSource.Drug, _objCharacter);
             }
 
             foreach (DrugNodeData objNodeData in _lstSelectedDrugComponents)
             {
                 DrugComponent objDrugComponent = objNodeData.DrugComponent;
                 objDrugComponent.Level = objNodeData.Level;
-                await _objDrug.Components.AddAsync(objDrugComponent, token: token).ConfigureAwait(false);
+                await objNewDrug.Components.AddAsync(objDrugComponent, token: token).ConfigureAwait(false);
             }
+
+            Interlocked.Exchange(ref _objDrug, objNewDrug)?.Dispose();
         }
 
         private async ValueTask AcceptForm(CancellationToken token = default)
@@ -313,7 +311,7 @@ namespace Chummer
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
-            _objDrug = null;
+            Interlocked.Exchange(ref _objDrug, null)?.Dispose();
             DialogResult = DialogResult.Cancel;
             Close();
         }

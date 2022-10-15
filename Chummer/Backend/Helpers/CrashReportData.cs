@@ -139,6 +139,7 @@ namespace Chummer
                                 //on 32 bit builds?
                                 //cv = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Wow6432Node\Microsoft\Windows NT\CurrentVersion");
                                 cv.Close();
+                                cv.Dispose();
                                 cv2 = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64);
                                 cv = cv2.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
                             }
