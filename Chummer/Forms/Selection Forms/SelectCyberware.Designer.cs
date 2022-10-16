@@ -868,6 +868,7 @@ namespace Chummer
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_SelectCyberware";
             this.Text = "Select Cyberware";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SelectCyberware_Closing);
             this.Load += new System.EventHandler(this.SelectCyberware_Load);
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
