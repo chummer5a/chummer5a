@@ -420,7 +420,7 @@ namespace Chummer
         public CharacterAttrib MAGAttributeObject
         {
             get => _objMAGAttribute;
-            protected set
+            private set
             {
                 if (_objMAGAttribute != value)
                 {
@@ -438,7 +438,7 @@ namespace Chummer
         public Skill BoostedSkill
         {
             get => _objBoostedSkill;
-            protected set
+            private set
             {
                 if (_objBoostedSkill != value)
                 {
@@ -1362,13 +1362,13 @@ namespace Chummer
             }
         }
 
-        protected void OnLinkedAttributeChanged(object sender, PropertyChangedEventArgs e)
+        private void OnLinkedAttributeChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e?.PropertyName == nameof(CharacterAttrib.TotalValue))
                 OnPropertyChanged(nameof(TotalMaximumLevels));
         }
 
-        protected void OnBoostedSkillChanged(object sender, PropertyChangedEventArgs e)
+        private void OnBoostedSkillChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e?.PropertyName == nameof(Skill.LearnedRating) && sender is Skill objSkill && BoostedSkill.LearnedRating != _cachedLearnedRating && _cachedLearnedRating != TotalMaximumLevels)
             {
