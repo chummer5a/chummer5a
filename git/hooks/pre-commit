@@ -8,25 +8,17 @@
 # To enable this hook, rename this file to "pre-commit".
 #set -x
 
-List=$(git status | findstr modified | findstr app.config | cut -d ":" -f2 | xargs)
 exitstatus=0
-
-for f in "$List"
+git ls-files --modified --exclude-standard ':/**/app.config' |
+while read -r f
 do
-	if [ ${#f} -ge 1 ] 
-	then 
-		if grep -Rq "<nlog>" $f
-		then
-			printf "Please remove the nlog-block in file $f!"
-			exitstatus=1
-		else
-			printf "NLog not found in $f."
-		fi
+	if grep -q "<nlog>" "$f"
+	then
+		printf 'Please remove the nlog-block in file %s!\n' "$f"
+		exitstatus=1
 	else
-		printf "Variable is empty"
+		printf 'NLog not found in %s.\n' "$f"
 	fi
 done
 
-exit $exitstatus
-
-
+exit "$exitstatus"
