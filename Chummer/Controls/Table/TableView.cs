@@ -43,7 +43,7 @@ namespace Chummer.UI.Table
 
             public override bool Layout(object container, LayoutEventArgs layoutEventArgs)
             {
-                using (CursorWait.NewAsync(_table))
+                using (CursorWait.New(_table))
                 {
                     _table.SuspendLayout();
                     try
