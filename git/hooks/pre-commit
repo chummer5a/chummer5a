@@ -9,16 +9,11 @@
 #set -x
 
 exitstatus=0
-git ls-files --modified --exclude-standard ':/**/app.config' |
+git grep --cached --files-with-match -e '<nlog[\s>]' -- ':/**/app.config' |
 while read -r f
 do
-	if grep -q "<nlog>" "$f"
-	then
-		printf 'Please remove the nlog-block in file %s!\n' "$f"
-		exitstatus=1
-	else
-		printf 'NLog not found in %s.\n' "$f"
-	fi
+	printf 'Please remove the nlog-block in file %s!\n' "$f"
+	exitstatus=1
 done
 
 exit "$exitstatus"
