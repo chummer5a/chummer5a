@@ -22,6 +22,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -1708,6 +1709,16 @@ namespace Chummer
 
         #region ComboBox Extensions
 
+        /// <summary>
+        /// We use this dictionary to keep track of which List{ListItem} types assigned to WinForms controls need to be returned to pools
+        /// when the controls dispose. It's really hacky, but because controls' DataSource property gets muddied during the control's disposal,
+        /// some external dictionary like this is kind of the only safe way to handle this issue without relying solely on custom control types.
+        /// It's also a ConcurrentDictionary and not LockingDictionary because it will overwhelmingly be used for adding and/or updating values,
+        /// not any for just getting/reading them.
+        /// </summary>
+        private static ConcurrentDictionary<Control, List<ListItem>> s_dicListItemListAssignments
+            = new ConcurrentDictionary<Control, List<ListItem>>();
+
         public static void PopulateWithListItems(this ListBox lsbThis, IEnumerable<ListItem> lstItems, CancellationToken token = default)
         {
             lsbThis?.DoThreadSafe(x => PopulateWithListItemsCore(x, lstItems, token));
@@ -1751,20 +1762,17 @@ namespace Chummer
                         return;
 
                     token.ThrowIfCancellationRequested();
-                    List<ListItem> lstOldItems = null;
                     if (lsbThis.DataSource != null)
                     {
-                        // If the old DataSource is a List<ListItem>, make sure we can return it to the pool
-                        lstOldItems = lsbThis.DataSource as List<ListItem>;
+                        // Assign new binding context because to avoid weirdness when switching DataSource
                         lsbThis.BindingContext = new BindingContext();
                     }
                     else
                     {
                         lsbThis.Disposed += (sender, args) =>
                         {
-                            if (lsbThis.DataSource is List<ListItem> lstInnerToReturn)
+                            if (s_dicListItemListAssignments.TryRemove(lsbThis, out List<ListItem> lstInnerToReturn))
                             {
-                                lsbThis.DataSource = null;
                                 Utils.ListItemListPool.Return(lstInnerToReturn);
                             }
                         };
@@ -1772,8 +1780,12 @@ namespace Chummer
 
                     blnDoReturnList = false;
                     lsbThis.DataSource = lstItemsToSet;
-                    if (lstOldItems != null)
-                        Utils.ListItemListPool.Return(lstOldItems);
+                    s_dicListItemListAssignments.AddOrUpdate(lsbThis, lstItemsToSet, (x, y) =>
+                    {
+                        if (y != null)
+                            Utils.ListItemListPool.Return(y);
+                        return lstItemsToSet;
+                    });
                 }
                 finally
                 {
@@ -1830,20 +1842,17 @@ namespace Chummer
                         return;
 
                     token.ThrowIfCancellationRequested();
-                    List<ListItem> lstOldItems = null;
                     if (cboThis.DataSource != null)
                     {
-                        // If the old DataSource is a List<ListItem>, make sure we can return it to the pool
-                        lstOldItems = cboThis.DataSource as List<ListItem>;
+                        // Assign new binding context because to avoid weirdness when switching DataSource
                         cboThis.BindingContext = new BindingContext();
                     }
                     else
                     {
                         cboThis.Disposed += (sender, args) =>
                         {
-                            if (cboThis.DataSource is List<ListItem> lstInnerToReturn)
+                            if (s_dicListItemListAssignments.TryRemove(cboThis, out List<ListItem> lstInnerToReturn))
                             {
-                                cboThis.DataSource = null;
                                 Utils.ListItemListPool.Return(lstInnerToReturn);
                             }
                         };
@@ -1851,8 +1860,12 @@ namespace Chummer
 
                     blnDoReturnList = false;
                     cboThis.DataSource = lstItemsToSet;
-                    if (lstOldItems != null)
-                        Utils.ListItemListPool.Return(lstOldItems);
+                    s_dicListItemListAssignments.AddOrUpdate(cboThis, lstItemsToSet, (x, y) =>
+                    {
+                        if (y != null)
+                            Utils.ListItemListPool.Return(y);
+                        return lstItemsToSet;
+                    });
                 }
                 finally
                 {
@@ -1909,20 +1922,17 @@ namespace Chummer
                         return;
 
                     token.ThrowIfCancellationRequested();
-                    List<ListItem> lstOldItems = null;
                     if (cboThis.DataSource != null)
                     {
-                        // If the old DataSource is a List<ListItem>, make sure we can return it to the pool
-                        lstOldItems = cboThis.DataSource as List<ListItem>;
+                        // Assign new binding context because to avoid weirdness when switching DataSource
                         cboThis.BindingContext = new BindingContext();
                     }
                     else
                     {
                         cboThis.Disposed += (sender, args) =>
                         {
-                            if (cboThis.DataSource is List<ListItem> lstInnerToReturn)
+                            if (s_dicListItemListAssignments.TryRemove(cboThis, out List<ListItem> lstInnerToReturn))
                             {
-                                cboThis.DataSource = null;
                                 Utils.ListItemListPool.Return(lstInnerToReturn);
                             }
                         };
@@ -1930,8 +1940,12 @@ namespace Chummer
 
                     blnDoReturnList = false;
                     cboThis.DataSource = lstItemsToSet;
-                    if (lstOldItems != null)
-                        Utils.ListItemListPool.Return(lstOldItems);
+                    s_dicListItemListAssignments.AddOrUpdate(cboThis, lstItemsToSet, (x, y) =>
+                    {
+                        if (y != null)
+                            Utils.ListItemListPool.Return(y);
+                        return lstItemsToSet;
+                    });
                 }
                 finally
                 {
