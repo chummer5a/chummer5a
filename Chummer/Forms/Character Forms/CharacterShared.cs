@@ -417,18 +417,18 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (!(treNode?.Tag is IHasNotes objNotes))
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
                 using (ThreadSafeForm<EditNotes> frmItemNotes =
                        await ThreadSafeForm<EditNotes>.GetAsync(
-                           () => new EditNotes(objNotes.Notes, objNotes.NotesColor), token))
+                           () => new EditNotes(objNotes.Notes, objNotes.NotesColor), token).ConfigureAwait(false))
                 {
-                    if (await frmItemNotes.ShowDialogSafeAsync(this, token) != DialogResult.OK)
+                    if (await frmItemNotes.ShowDialogSafeAsync(this, token).ConfigureAwait(false) != DialogResult.OK)
                         return;
                     objNotes.Notes = frmItemNotes.MyForm.Notes;
                     objNotes.NotesColor = frmItemNotes.MyForm.NotesColor;
-                    await SetDirty(true, token);
+                    await SetDirty(true, token).ConfigureAwait(false);
                     TreeView objTreeView = treNode.TreeView;
                     if (objTreeView != null)
                     {
@@ -436,7 +436,7 @@ namespace Chummer
                         {
                             treNode.ForeColor = objNotes.PreferredColor;
                             treNode.ToolTipText = objNotes.Notes.WordWrap();
-                        }, token);
+                        }, token).ConfigureAwait(false);
                     }
                     else
                     {
@@ -447,7 +447,7 @@ namespace Chummer
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 

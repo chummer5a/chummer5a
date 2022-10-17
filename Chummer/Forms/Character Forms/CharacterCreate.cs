@@ -14938,7 +14938,7 @@ namespace Chummer
 
                 if (xmlParent != null)
                 {
-                    XPathNodeIterator xmlAddonCategoryList = await xmlParent.SelectAndCacheExpressionAsync("addoncategory", token);
+                    XPathNodeIterator xmlAddonCategoryList = await xmlParent.SelectAndCacheExpressionAsync("addoncategory", token).ConfigureAwait(false);
                     if (xmlAddonCategoryList.Count > 0)
                     {
                         using (new FetchSafelyFromPool<StringBuilder>(

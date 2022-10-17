@@ -7069,7 +7069,7 @@ namespace Chummer
             }
 
             // Fix for legacy characters with old addqualities improvements.
-            await RemoveAddedQualities(await objXmlDeleteQuality.SelectAndCacheExpressionAsync("addqualities/addquality", token), token).ConfigureAwait(false);
+            await RemoveAddedQualities(await objXmlDeleteQuality.SelectAndCacheExpressionAsync("addqualities/addquality", token).ConfigureAwait(false), token).ConfigureAwait(false);
 
             // Perform removal
             objSelectedQuality.DeleteQuality(blnCompleteDelete);

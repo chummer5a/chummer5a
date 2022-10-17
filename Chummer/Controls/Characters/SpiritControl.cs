@@ -483,7 +483,7 @@ namespace Chummer
                         else
                         {
                             XPathNavigator objTraditionNode = await objTradition.GetNodeXPathAsync(token: token).ConfigureAwait(false);
-                            XPathNodeIterator xmlSpiritList = objTraditionNode != null ? await objTraditionNode.SelectAndCacheExpressionAsync("spirits/*", token) : null;
+                            XPathNodeIterator xmlSpiritList = objTraditionNode != null ? await objTraditionNode.SelectAndCacheExpressionAsync("spirits/*", token).ConfigureAwait(false) : null;
                             if (xmlSpiritList != null)
                             {
                                 foreach (XPathNavigator objXmlSpirit in xmlSpiritList)

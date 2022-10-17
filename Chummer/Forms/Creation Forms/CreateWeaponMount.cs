@@ -944,7 +944,7 @@ namespace Chummer
                             case "Visibility":
                             {
                                 XPathNodeIterator xmlNodeList = xmlForbiddenNode != null
-                                    ? await xmlForbiddenNode.SelectAndCacheExpressionAsync("visibility", token)
+                                    ? await xmlForbiddenNode.SelectAndCacheExpressionAsync("visibility", token).ConfigureAwait(false)
                                     : null;
                                 if (xmlNodeList?.Count > 0)
                                 {
@@ -961,7 +961,7 @@ namespace Chummer
                                 if (xmlRequiredNode != null)
                                 {
                                     blnAddItem = false;
-                                    xmlNodeList = await xmlRequiredNode.SelectAndCacheExpressionAsync("visibility", token);
+                                    xmlNodeList = await xmlRequiredNode.SelectAndCacheExpressionAsync("visibility", token).ConfigureAwait(false);
                                     if (xmlNodeList.Count > 0)
                                     {
                                         foreach (XPathNavigator xmlLoopNode in xmlNodeList)

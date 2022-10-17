@@ -412,7 +412,7 @@ namespace Chummer
 
                     if (await chkBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
                         decCost *= 0.9m;
-                    if (Vehicle.DoesDealerConnectionApply(_setDealerConnectionMaps, (await objXmlVehicle.SelectSingleNodeAndCacheExpressionAsync("category", token))?.Value))
+                    if (Vehicle.DoesDealerConnectionApply(_setDealerConnectionMaps, (await objXmlVehicle.SelectSingleNodeAndCacheExpressionAsync("category", token).ConfigureAwait(false))?.Value))
                         decCost *= 0.9m;
                 }
 

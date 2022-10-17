@@ -655,18 +655,18 @@ namespace Chummer
 
         private async void chkTravelerBonusLPRandomize_CheckedChanged(object sender, EventArgs e)
         {
-            if (await chkBonusLPRandomize.DoThreadSafeFuncAsync(x => x.Checked))
+            if (await chkBonusLPRandomize.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false))
             {
-                int intRandom = await GlobalSettings.RandomGenerator.NextD6ModuloBiasRemovedAsync();
+                int intRandom = await GlobalSettings.RandomGenerator.NextD6ModuloBiasRemovedAsync().ConfigureAwait(false);
                 await nudBonusLP.DoThreadSafeAsync(x =>
                 {
                     x.Enabled = false;
                     x.Value = intRandom;
-                });
+                }).ConfigureAwait(false);
             }
             else
             {
-                await nudBonusLP.DoThreadSafeAsync(x => x.Enabled = true);
+                await nudBonusLP.DoThreadSafeAsync(x => x.Enabled = true).ConfigureAwait(false);
             }
         }
 
