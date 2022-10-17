@@ -8,12 +8,13 @@
 # To enable this hook, rename this file to "pre-commit".
 #set -x
 
-exitstatus=0
 git grep --cached --files-with-match -e '<nlog[\s>]' -- ':/**/app.config' |
-while read -r f
-do
-	printf 'Please remove the nlog-block in file %s!\n' "$f"
-	exitstatus=1
-done
-
-exit "$exitstatus"
+{
+	exitstatus=0
+	while read -r f
+	do
+		printf 'Please remove the nlog-block in file %s!\n' "$f"
+		exitstatus=1
+	done
+	exit "$exitstatus"
+}
