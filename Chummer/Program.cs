@@ -738,15 +738,23 @@ namespace Chummer
                 if (_frmMainForm == value)
                     return;
                 _frmMainForm = value;
-                if (value != null)
+                if (value == null)
+                    return;
+                // Set up this way instead of using foreach because on-assign actions can add more on-assign actions
+                int i = 0;
+                int j = 0;
+                while (i < MainFormOnAssignActions.Count || j < MainFormOnAssignAsyncActions.Count)
                 {
-                    foreach (Action<ChummerMainForm> funcToRun in MainFormOnAssignActions)
-                        funcToRun(value);
-                    MainFormOnAssignActions.Clear();
-                    foreach (Func<ChummerMainForm, Task> funcAsyncToRun in MainFormOnAssignAsyncActions)
-                        Utils.RunWithoutThreadLock(() => funcAsyncToRun(value));
-                    MainFormOnAssignAsyncActions.Clear();
+                    for (; i < MainFormOnAssignActions.Count; ++i)
+                        MainFormOnAssignActions[i](value);
+                    for (; j < MainFormOnAssignAsyncActions.Count; ++j)
+                    {
+                        int j1 = j;
+                        Utils.RunWithoutThreadLock(() => MainFormOnAssignAsyncActions[j1](value));
+                    }
                 }
+                MainFormOnAssignActions.Clear();
+                MainFormOnAssignAsyncActions.Clear();
             }
         }
 

@@ -16358,7 +16358,14 @@ namespace Chummer
                         int intNewIndex = lstNodes.IndexOf(objSelectedNode);
                         intNewIndex = up ? Math.Max(0, intNewIndex - 1) : Math.Min(lstNodes.Count - 1, intNewIndex + 1);
 
-                        Utils.RunWithoutThreadLock(() => MoveTreeNode(objSelectedNode, intNewIndex));
+                        try
+                        {
+                            Utils.RunWithoutThreadLock(() => MoveTreeNode(objSelectedNode, intNewIndex), GenericToken);
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            //swallow this
+                        }
                     }
                 }
 
