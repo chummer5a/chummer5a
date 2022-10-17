@@ -429,7 +429,7 @@ namespace Chummer
                                 if (await objCharacter.GetSettingsKeyAsync(token).ConfigureAwait(false) == strKeyToDelete)
                                     await objCharacter.SetSettingsKeyAsync(strKey, token).ConfigureAwait(false);
                             }, token: token).ConfigureAwait(false);
-                            await s_DicLoadedCharacterSettings.RemoveAsync(objExistingSettings.DictionaryKey, token).ConfigureAwait(false);
+                            await s_DicLoadedCharacterSettings.RemoveAsync(strKeyToDelete, token).ConfigureAwait(false);
                             await objExistingSettings.DisposeAsync().ConfigureAwait(false);
                             return;
                         }

@@ -3605,7 +3605,9 @@ namespace Chummer
 
         public async ValueTask<string> GetDictionaryKeyAsync(CancellationToken token = default)
         {
-            return await GetBuiltInOptionAsync(token).ConfigureAwait(false) ? await GetSourceIdAsync(token).ConfigureAwait(false) : await GetFileNameAsync(token).ConfigureAwait(false);
+            return await GetBuiltInOptionAsync(token).ConfigureAwait(false)
+                ? await GetSourceIdAsync(token).ConfigureAwait(false)
+                : await GetFileNameAsync(token).ConfigureAwait(false);
         }
 
         #endregion Build Properties

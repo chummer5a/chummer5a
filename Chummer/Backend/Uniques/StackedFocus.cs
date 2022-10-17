@@ -34,7 +34,7 @@ namespace Chummer
     /// A Stacked Focus.
     /// </summary>
     [DebuggerDisplay("{Name(GlobalSettings.DefaultLanguage)}")]
-    public sealed class StackedFocus : IDisposable
+    public sealed class StackedFocus : IDisposable, IAsyncDisposable
     {
         private Guid _guiID;
         private bool _blnBonded;
@@ -464,6 +464,12 @@ namespace Chummer
         public void Dispose()
         {
             _lstGear.Dispose();
+        }
+
+        /// <inheritdoc />
+        public ValueTask DisposeAsync()
+        {
+            return _lstGear.DisposeAsync();
         }
     }
 }

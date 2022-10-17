@@ -39,7 +39,7 @@ namespace Chummer.Backend.Equipment
     /// Vehicle Modification.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage)}")]
-    public sealed class VehicleMod : IHasInternalId, IHasName, IHasXmlDataNode, IHasNotes, ICanEquip, IHasSource, IHasRating, ICanSort, IHasStolenProperty, ICanPaste, ICanSell, ICanBlackMarketDiscount, IDisposable
+    public sealed class VehicleMod : IHasInternalId, IHasName, IHasXmlDataNode, IHasNotes, ICanEquip, IHasSource, IHasRating, ICanSort, IHasStolenProperty, ICanPaste, ICanSell, ICanBlackMarketDiscount, IDisposable, IAsyncDisposable
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
         private static Logger Log => s_ObjLogger.Value;
@@ -2016,6 +2016,22 @@ namespace Chummer.Backend.Equipment
         {
             _lstVehicleWeapons.Dispose();
             _lstCyberware.Dispose();
+        }
+
+        /// <inheritdoc />
+        public async ValueTask DisposeAsync()
+        {
+            foreach (Weapon objChild in _lstVehicleWeapons)
+                await objChild.DisposeAsync().ConfigureAwait(false);
+            foreach (Cyberware objChild in _lstCyberware)
+                await objChild.DisposeAsync().ConfigureAwait(false);
+            await DisposeSelfAsync().ConfigureAwait(false);
+        }
+
+        private async ValueTask DisposeSelfAsync()
+        {
+            await _lstVehicleWeapons.DisposeAsync().ConfigureAwait(false);
+            await _lstCyberware.DisposeAsync().ConfigureAwait(false);
         }
     }
 }

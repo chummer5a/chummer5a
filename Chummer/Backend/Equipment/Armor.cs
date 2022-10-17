@@ -40,7 +40,7 @@ namespace Chummer.Backend.Equipment
     /// </summary>
     [HubClassTag("SourceID", true, "TotalArmor", "Extra")]
     [DebuggerDisplay("{DisplayName(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage)}")]
-    public sealed class Armor : IHasInternalId, IHasName, IHasXmlDataNode, IHasNotes, ICanSell, IHasChildrenAndCost<Gear>, IHasCustomName, IHasLocation, ICanEquip, IHasSource, IHasRating, ICanSort, IHasWirelessBonus, IHasStolenProperty, ICanPaste, IHasGear, IHasMatrixAttributes, ICanBlackMarketDiscount, IDisposable
+    public sealed class Armor : IHasInternalId, IHasName, IHasXmlDataNode, IHasNotes, ICanSell, IHasChildrenAndCost<Gear>, IHasCustomName, IHasLocation, ICanEquip, IHasSource, IHasRating, ICanSort, IHasWirelessBonus, IHasStolenProperty, ICanPaste, IHasGear, IHasMatrixAttributes, ICanBlackMarketDiscount, IDisposable, IAsyncDisposable
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
         private static Logger Log => s_ObjLogger.Value;
@@ -2754,6 +2754,22 @@ namespace Chummer.Backend.Equipment
         {
             _lstArmorMods.Dispose();
             _lstGear.Dispose();
+        }
+
+        /// <inheritdoc />
+        public async ValueTask DisposeAsync()
+        {
+            foreach (ArmorMod objChild in _lstArmorMods)
+                await objChild.DisposeAsync().ConfigureAwait(false);
+            foreach (Gear objChild in _lstGear)
+                await objChild.DisposeAsync().ConfigureAwait(false);
+            await DisposeSelfAsync().ConfigureAwait(false);
+        }
+
+        private async ValueTask DisposeSelfAsync()
+        {
+            await _lstArmorMods.DisposeAsync().ConfigureAwait(false);
+            await _lstGear.DisposeAsync().ConfigureAwait(false);
         }
     }
 }

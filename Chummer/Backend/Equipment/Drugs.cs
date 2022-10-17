@@ -34,7 +34,7 @@ using NLog;
 
 namespace Chummer.Backend.Equipment
 {
-    public sealed class Drug : IHasName, IHasXmlDataNode, ICanSort, IHasStolenProperty, ICanRemove, IDisposable
+    public sealed class Drug : IHasName, IHasXmlDataNode, ICanSort, IHasStolenProperty, ICanRemove, IDisposable, IAsyncDisposable
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
         private static Logger Log => s_ObjLogger.Value;
@@ -1452,6 +1452,12 @@ namespace Chummer.Backend.Equipment
         public void Dispose()
         {
             _lstComponents.Dispose();
+        }
+
+        /// <inheritdoc />
+        public ValueTask DisposeAsync()
+        {
+            return _lstComponents.DisposeAsync();
         }
     }
 

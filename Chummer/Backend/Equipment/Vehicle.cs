@@ -44,7 +44,7 @@ namespace Chummer.Backend.Equipment
     /// </summary>
     [HubClassTag("SourceID", true, "Name", null)]
     [DebuggerDisplay("{DisplayName(GlobalSettings.DefaultLanguage)}")]
-    public sealed class Vehicle : IHasInternalId, IHasName, IHasXmlDataNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasCustomName, IHasPhysicalConditionMonitor, IHasLocation, IHasSource, ICanSort, IHasGear, IHasStolenProperty, ICanPaste, ICanBlackMarketDiscount, IDisposable
+    public sealed class Vehicle : IHasInternalId, IHasName, IHasXmlDataNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasCustomName, IHasPhysicalConditionMonitor, IHasLocation, IHasSource, ICanSort, IHasGear, IHasStolenProperty, ICanPaste, ICanBlackMarketDiscount, IDisposable, IAsyncDisposable
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
         private static Logger Log => s_ObjLogger.Value;
@@ -3478,6 +3478,31 @@ namespace Chummer.Backend.Equipment
             _lstWeapons.Dispose();
             _lstWeaponMounts.Dispose();
             _lstLocations.Dispose();
+        }
+
+        /// <inheritdoc />
+        public async ValueTask DisposeAsync()
+        {
+            foreach (VehicleMod objChild in _lstVehicleMods)
+                await objChild.DisposeAsync().ConfigureAwait(false);
+            foreach (Gear objChild in _lstGear)
+                await objChild.DisposeAsync().ConfigureAwait(false);
+            foreach (Weapon objChild in _lstWeapons)
+                await objChild.DisposeAsync().ConfigureAwait(false);
+            foreach (WeaponMount objChild in _lstWeaponMounts)
+                await objChild.DisposeAsync().ConfigureAwait(false);
+            foreach (Location objChild in _lstLocations)
+                await objChild.DisposeAsync().ConfigureAwait(false);
+            await DisposeSelfAsync().ConfigureAwait(false);
+        }
+
+        private async ValueTask DisposeSelfAsync()
+        {
+            await _lstVehicleMods.DisposeAsync().ConfigureAwait(false);
+            await _lstGear.DisposeAsync().ConfigureAwait(false);
+            await _lstWeapons.DisposeAsync().ConfigureAwait(false);
+            await _lstWeaponMounts.DisposeAsync().ConfigureAwait(false);
+            await _lstLocations.DisposeAsync().ConfigureAwait(false);
         }
     }
 }

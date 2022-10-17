@@ -2003,6 +2003,7 @@ namespace Chummer
             }
         }
 
+        /// <inheritdoc />
         public void Dispose()
         {
             if (_lstCachedContactArchetypes != null)
@@ -2017,6 +2018,24 @@ namespace Chummer
             foreach (Image imgMugshot in _lstMugshots)
                 imgMugshot.Dispose();
             _lstMugshots.Dispose();
+        }
+
+        /// <inheritdoc />
+        public async ValueTask DisposeAsync()
+        {
+            if (_lstCachedContactArchetypes != null)
+                Utils.ListItemListPool.Return(_lstCachedContactArchetypes);
+            if (_objLinkedCharacter != null && !Utils.IsUnitTest
+                                            && await Program.OpenCharacters.AllAsync(
+                                                                x => x == _objLinkedCharacter
+                                                                     || !x.LinkedCharacters.Contains(
+                                                                         _objLinkedCharacter))
+                                                            .ConfigureAwait(false)
+                                            && Program.MainForm.OpenFormsWithCharacters.All(
+                                                x => !x.CharacterObjects.Contains(_objLinkedCharacter)))
+                await Program.OpenCharacters.RemoveAsync(_objLinkedCharacter).ConfigureAwait(false);
+            await _lstMugshots.ForEachAsync(x => x.Dispose()).ConfigureAwait(false);
+            await _lstMugshots.DisposeAsync().ConfigureAwait(false);
         }
 
         #endregion IHasMugshots

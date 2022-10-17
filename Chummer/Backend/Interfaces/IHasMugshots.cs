@@ -26,7 +26,7 @@ using System.Xml.XPath;
 
 namespace Chummer
 {
-    public interface IHasMugshots : IDisposable
+    public interface IHasMugshots : IDisposable, IAsyncDisposable
     {
         ThreadSafeList<Image> Mugshots { get; }
         Image MainMugshot { get; set; }

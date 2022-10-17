@@ -43,7 +43,7 @@ namespace Chummer.Backend.Equipment
     /// </summary>
     [HubClassTag("SourceID", true, "Name", null)]
     [DebuggerDisplay("{DisplayName(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage)}")]
-    public sealed class Weapon : IHasChildren<Weapon>, IHasName, IHasInternalId, IHasXmlDataNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasCustomName, IHasLocation, ICanEquip, IHasSource, ICanSort, IHasWirelessBonus, IHasStolenProperty, ICanPaste, IHasRating, ICanBlackMarketDiscount, IDisposable
+    public sealed class Weapon : IHasChildren<Weapon>, IHasName, IHasInternalId, IHasXmlDataNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasCustomName, IHasLocation, ICanEquip, IHasSource, ICanSort, IHasWirelessBonus, IHasStolenProperty, ICanPaste, IHasRating, ICanBlackMarketDiscount, IDisposable, IAsyncDisposable
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
         private static Logger Log => s_ObjLogger.Value;
@@ -8069,6 +8069,22 @@ namespace Chummer.Backend.Equipment
         {
             _lstAccessories.Dispose();
             _lstUnderbarrel.Dispose();
+        }
+
+        /// <inheritdoc />
+        public async ValueTask DisposeAsync()
+        {
+            foreach (WeaponAccessory objChild in _lstAccessories)
+                await objChild.DisposeAsync();
+            foreach (Weapon objChild in _lstUnderbarrel)
+                await objChild.DisposeAsync();
+            await DisposeSelfAsync();
+        }
+
+        private async ValueTask DisposeSelfAsync()
+        {
+            await _lstAccessories.DisposeAsync();
+            await _lstUnderbarrel.DisposeAsync();
         }
     }
 }

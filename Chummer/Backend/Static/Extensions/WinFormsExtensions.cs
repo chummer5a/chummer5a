@@ -1716,7 +1716,7 @@ namespace Chummer
         /// It's also a ConcurrentDictionary and not LockingDictionary because it will overwhelmingly be used for adding and/or updating values,
         /// not any for just getting/reading them.
         /// </summary>
-        private static ConcurrentDictionary<Control, List<ListItem>> s_dicListItemListAssignments
+        private static readonly ConcurrentDictionary<Control, List<ListItem>> s_dicListItemListAssignments
             = new ConcurrentDictionary<Control, List<ListItem>>();
 
         public static void PopulateWithListItems(this ListBox lsbThis, IEnumerable<ListItem> lstItems, CancellationToken token = default)

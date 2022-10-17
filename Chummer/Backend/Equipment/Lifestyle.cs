@@ -52,7 +52,7 @@ namespace Chummer.Backend.Equipment
     /// Lifestyle.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalSettings.DefaultLanguage)}")]
-    public sealed class Lifestyle : IHasInternalId, IHasXmlDataNode, IHasNotes, ICanRemove, IHasCustomName, IHasSource, ICanSort, INotifyMultiplePropertyChanged, IDisposable, IHasCost
+    public sealed class Lifestyle : IHasInternalId, IHasXmlDataNode, IHasNotes, ICanRemove, IHasCustomName, IHasSource, ICanSort, INotifyMultiplePropertyChanged, IDisposable, IAsyncDisposable, IHasCost
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
         private static Logger Log => s_ObjLogger.Value;
@@ -1964,6 +1964,16 @@ namespace Chummer.Backend.Equipment
             LifestyleQualities.CollectionChanged -= LifestyleQualitiesCollectionChanged;
             LifestyleQualities.BeforeClearCollectionChanged -= LifestyleQualitiesOnBeforeClearCollectionChanged;
             LifestyleQualities.Dispose();
+        }
+
+        /// <inheritdoc />
+        public ValueTask DisposeAsync()
+        {
+            foreach (LifestyleQuality objQuality in LifestyleQualities)
+                objQuality.Dispose();
+            LifestyleQualities.CollectionChanged -= LifestyleQualitiesCollectionChanged;
+            LifestyleQualities.BeforeClearCollectionChanged -= LifestyleQualitiesOnBeforeClearCollectionChanged;
+            return LifestyleQualities.DisposeAsync();
         }
     }
 }

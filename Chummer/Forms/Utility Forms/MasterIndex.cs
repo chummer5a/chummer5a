@@ -110,7 +110,8 @@ namespace Chummer
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                            out List<ListItem> lstCharacterSettings))
             {
-                IAsyncReadOnlyDictionary<string, CharacterSettings> dicCharacterSettings = await SettingsManager.GetLoadedCharacterSettingsAsync(token).ConfigureAwait(false);
+                IAsyncReadOnlyDictionary<string, CharacterSettings> dicCharacterSettings
+                    = await SettingsManager.GetLoadedCharacterSettingsAsync(token).ConfigureAwait(false);
                 foreach (CharacterSettings objLoopSettings in dicCharacterSettings.Select(x => x.Value))
                 {
                     lstCharacterSettings.Add(new ListItem(objLoopSettings, objLoopSettings.DisplayName));
@@ -118,40 +119,53 @@ namespace Chummer
 
                 lstCharacterSettings.Sort(CompareListItems.CompareNames);
 
-                string strOldSettingKey = (await cboCharacterSetting.DoThreadSafeFuncAsync(x => x.SelectedValue, token).ConfigureAwait(false) as CharacterSettings)?.DictionaryKey;
-                if (strOldSettingKey == null)
+                string strOldSettingKey
+                    = await cboCharacterSetting.DoThreadSafeFuncAsync(x => x.SelectedValue, token).ConfigureAwait(false)
+                        is CharacterSettings objOldSettings
+                        ? await objOldSettings.GetDictionaryKeyAsync(token).ConfigureAwait(false)
+                        : string.Empty;
+                if (string.IsNullOrEmpty(strOldSettingKey))
                 {
                     if (_objSelectedSetting == null)
                         _objSelectedSetting = await GetInitialSetting(token).ConfigureAwait(false);
-                    strOldSettingKey = _objSelectedSetting?.DictionaryKey;
+                    strOldSettingKey = _objSelectedSetting != null
+                        ? await _objSelectedSetting.GetDictionaryKeyAsync(token).ConfigureAwait(false)
+                        : string.Empty;
                 }
 
                 bool blnOldSkipRefresh = _blnSkipRefresh;
                 _blnSkipRefresh = true;
-                
+
                 await cboCharacterSetting.PopulateWithListItemsAsync(lstCharacterSettings, token).ConfigureAwait(false);
                 if (!string.IsNullOrEmpty(strOldSettingKey))
                 {
                     (bool blnSuccess, CharacterSettings objSettings)
                         = await dicCharacterSettings.TryGetValueAsync(strOldSettingKey, token).ConfigureAwait(false);
                     if (blnSuccess)
-                        await cboCharacterSetting.DoThreadSafeAsync(x => x.SelectedValue = objSettings, token).ConfigureAwait(false);
+                        await cboCharacterSetting.DoThreadSafeAsync(x => x.SelectedValue = objSettings, token)
+                                                 .ConfigureAwait(false);
                 }
 
                 _blnSkipRefresh = blnOldSkipRefresh;
 
-                if (await cboCharacterSetting.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false) != -1)
+                if (await cboCharacterSetting.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false)
+                    != -1)
                     return;
                 (bool blnSuccess2, CharacterSettings objSettings2)
-                    = await dicCharacterSettings.TryGetValueAsync(GlobalSettings.DefaultMasterIndexSetting, token).ConfigureAwait(false);
+                    = await dicCharacterSettings.TryGetValueAsync(GlobalSettings.DefaultMasterIndexSetting, token)
+                                                .ConfigureAwait(false);
                 if (blnSuccess2)
-                    await cboCharacterSetting.DoThreadSafeAsync(x => x.SelectedValue = objSettings2, token).ConfigureAwait(false);
+                    await cboCharacterSetting.DoThreadSafeAsync(x => x.SelectedValue = objSettings2, token)
+                                             .ConfigureAwait(false);
                 else
                 {
                     (bool blnSuccess3, CharacterSettings objSettings3)
-                        = await dicCharacterSettings.TryGetValueAsync(GlobalSettings.DefaultMasterIndexSettingDefaultValue, token).ConfigureAwait(false);
+                        = await dicCharacterSettings
+                                .TryGetValueAsync(GlobalSettings.DefaultMasterIndexSettingDefaultValue, token)
+                                .ConfigureAwait(false);
                     if (blnSuccess3)
-                        await cboCharacterSetting.DoThreadSafeAsync(x => x.SelectedValue = objSettings3, token).ConfigureAwait(false);
+                        await cboCharacterSetting.DoThreadSafeAsync(x => x.SelectedValue = objSettings3, token)
+                                                 .ConfigureAwait(false);
                 }
 
                 await cboCharacterSetting.DoThreadSafeAsync(x =>
@@ -245,16 +259,20 @@ namespace Chummer
                 try
                 {
                     string strSelectedSetting
-                        = (await cboCharacterSetting.DoThreadSafeFuncAsync(x => x.SelectedValue, _objGenericToken).ConfigureAwait(false) as
-                            CharacterSettings)?.DictionaryKey;
-                    CharacterSettings objSettings = null;
+                        = await cboCharacterSetting.DoThreadSafeFuncAsync(x => x.SelectedValue, _objGenericToken)
+                                                   .ConfigureAwait(false) is CharacterSettings objOldSettings
+                            ? await objOldSettings.GetDictionaryKeyAsync(_objGenericToken).ConfigureAwait(false)
+                            : string.Empty;
                     bool blnSuccess = false;
+                    CharacterSettings objSettings = null;
                     IAsyncReadOnlyDictionary<string, CharacterSettings> dicCharacterSettings
-                        = await SettingsManager.GetLoadedCharacterSettingsAsync(_objGenericToken).ConfigureAwait(false);
+                        = await SettingsManager.GetLoadedCharacterSettingsAsync(_objGenericToken)
+                                               .ConfigureAwait(false);
                     if (!string.IsNullOrEmpty(strSelectedSetting))
                     {
                         (blnSuccess, objSettings)
-                            = await dicCharacterSettings.TryGetValueAsync(strSelectedSetting, _objGenericToken).ConfigureAwait(false);
+                            = await dicCharacterSettings.TryGetValueAsync(strSelectedSetting, _objGenericToken)
+                                                        .ConfigureAwait(false);
                     }
 
                     if (!blnSuccess)
@@ -266,7 +284,10 @@ namespace Chummer
                         {
                             (blnSuccess, objSettings)
                                 = await dicCharacterSettings.TryGetValueAsync(
-                                    GlobalSettings.DefaultMasterIndexSettingDefaultValue, _objGenericToken).ConfigureAwait(false);
+                                                                GlobalSettings
+                                                                    .DefaultMasterIndexSettingDefaultValue,
+                                                                _objGenericToken)
+                                                            .ConfigureAwait(false);
                             if (!blnSuccess)
                                 objSettings = dicCharacterSettings.Values.First();
                         }

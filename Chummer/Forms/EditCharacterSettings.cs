@@ -215,7 +215,7 @@ namespace Chummer
                 LockingDictionary<string, CharacterSettings> dicCharacterSettings = await SettingsManager.GetLoadedCharacterSettingsAsModifiableAsync().ConfigureAwait(false);
                 (bool blnSuccess, CharacterSettings objDeletedSettings)
                     = await dicCharacterSettings.TryRemoveAsync(
-                        _objReferenceCharacterSettings.DictionaryKey).ConfigureAwait(false);
+                        await _objReferenceCharacterSettings.GetDictionaryKeyAsync().ConfigureAwait(false)).ConfigureAwait(false);
                 if (!blnSuccess)
                     return;
                 if (!await Utils.SafeDeleteFileAsync(
@@ -223,7 +223,7 @@ namespace Chummer
                 {
                     // Revert removal of setting if we cannot delete the file
                     await dicCharacterSettings.AddAsync(
-                        objDeletedSettings.DictionaryKey, objDeletedSettings).ConfigureAwait(false);
+                        await objDeletedSettings.GetDictionaryKeyAsync().ConfigureAwait(false), objDeletedSettings).ConfigureAwait(false);
                     return;
                 }
 
@@ -356,8 +356,8 @@ namespace Chummer
                 {
                     CharacterSettings objNewCharacterSettings
                         = new CharacterSettings(_objCharacterSettings, false, strSelectedFullFileName);
-                    if (!await dicCharacterSettings.TryAddAsync(
-                            objNewCharacterSettings.DictionaryKey, objNewCharacterSettings).ConfigureAwait(false))
+                    string strKey = await objNewCharacterSettings.GetDictionaryKeyAsync().ConfigureAwait(false);
+                    if (!await dicCharacterSettings.TryAddAsync(strKey, objNewCharacterSettings).ConfigureAwait(false))
                     {
                         await objNewCharacterSettings.DisposeAsync().ConfigureAwait(false);
                         return;
@@ -366,8 +366,7 @@ namespace Chummer
                     if (!_objCharacterSettings.Save(strSelectedFullFileName, true))
                     {
                         // Revert addition of settings if we cannot create a file
-                        await dicCharacterSettings.RemoveAsync(
-                            objNewCharacterSettings.DictionaryKey).ConfigureAwait(false);
+                        await dicCharacterSettings.RemoveAsync(strKey).ConfigureAwait(false);
                         await objNewCharacterSettings.DisposeAsync().ConfigureAwait(false);
                         return;
                     }

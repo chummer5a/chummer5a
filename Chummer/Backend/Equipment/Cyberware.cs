@@ -43,7 +43,7 @@ namespace Chummer.Backend.Equipment
     [DebuggerDisplay("{DisplayName(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage)}")]
     public sealed class Cyberware : ICanPaste, IHasChildrenAndCost<Cyberware>, IHasGear, IHasName, IHasInternalId, IHasXmlDataNode,
         IHasMatrixAttributes, IHasNotes, ICanSell, IHasRating, IHasSource, ICanSort, IHasStolenProperty,
-        IHasWirelessBonus, ICanBlackMarketDiscount, IDisposable
+        IHasWirelessBonus, ICanBlackMarketDiscount, IDisposable, IAsyncDisposable
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
         private static Logger Log => s_ObjLogger.Value;
@@ -6958,6 +6958,24 @@ namespace Chummer.Backend.Equipment
         {
             _lstChildren.Dispose();
             _lstGear.Dispose();
+            Utils.StringHashSetPool.Return(_lstIncludeInPairBonus);
+            Utils.StringHashSetPool.Return(_lstIncludeInWirelessPairBonus);
+        }
+
+        /// <inheritdoc />
+        public async ValueTask DisposeAsync()
+        {
+            foreach (Cyberware objChild in _lstChildren)
+                await objChild.DisposeAsync().ConfigureAwait(false);
+            foreach (Gear objChild in _lstGear)
+                await objChild.DisposeAsync().ConfigureAwait(false);
+            await DisposeSelfAsync().ConfigureAwait(false);
+        }
+
+        private async ValueTask DisposeSelfAsync()
+        {
+            await _lstChildren.DisposeAsync().ConfigureAwait(false);
+            await _lstGear.DisposeAsync().ConfigureAwait(false);
             Utils.StringHashSetPool.Return(_lstIncludeInPairBonus);
             Utils.StringHashSetPool.Return(_lstIncludeInWirelessPairBonus);
         }

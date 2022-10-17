@@ -23,6 +23,7 @@ using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 
@@ -32,7 +33,7 @@ namespace Chummer
     /// A Location.
     /// </summary>
     [DebuggerDisplay("{nameof(Name)}")]
-    public sealed class Location : IHasInternalId, IHasName, IHasNotes, ICanRemove, ICanSort, IDisposable
+    public sealed class Location : IHasInternalId, IHasName, IHasNotes, ICanRemove, ICanSort, IDisposable, IAsyncDisposable
     {
         private Guid _guiID;
         private string _strName;
@@ -279,10 +280,16 @@ namespace Chummer
             return blnReturn;
         }
 
-        /// <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
+        /// <inheritdoc />
         public void Dispose()
         {
             _lstChildren.Dispose();
+        }
+
+        /// <inheritdoc />
+        public ValueTask DisposeAsync()
+        {
+            return _lstChildren.DisposeAsync();
         }
     }
 }
