@@ -72,7 +72,7 @@ namespace Chummer
             this.lblSecurityTotal = new System.Windows.Forms.Label();
             this.lblAreaTotal = new System.Windows.Forms.Label();
             this.lblComfortTotal = new System.Windows.Forms.Label();
-            this.chkQualityContributesLP = new Chummer.ColorableCheckBox();
+            this.chkQualityUseLPCost = new Chummer.ColorableCheckBox();
             this.lblBonusLP = new System.Windows.Forms.Label();
             this.nudBonusLP = new Chummer.NumericUpDownEx();
             this.chkBonusLPRandomize = new Chummer.ColorableCheckBox();
@@ -167,7 +167,7 @@ namespace Chummer
             this.lblTotalLPLabel.Size = new System.Drawing.Size(63, 13);
             this.lblTotalLPLabel.TabIndex = 12;
             this.lblTotalLPLabel.Tag = "Label_SelectAdvancedLifestyle_UnusedLP";
-            this.lblTotalLPLabel.Text = "Unused LP:";
+            this.lblTotalLPLabel.Text = "Unused Lifestyle Points:";
             this.lblTotalLPLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // lblTotalLP
@@ -522,7 +522,7 @@ namespace Chummer
             this.lblQualityLPLabel.Size = new System.Drawing.Size(58, 13);
             this.lblQualityLPLabel.TabIndex = 70;
             this.lblQualityLPLabel.Tag = "Label_QualityLP";
-            this.lblQualityLPLabel.Text = "Quality LP:";
+            this.lblQualityLPLabel.Text = "Quality Lifestyle Point Cost:";
             this.lblQualityLPLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // lblQualitySource
@@ -575,7 +575,7 @@ namespace Chummer
             this.lblQualityCostLabel.Size = new System.Drawing.Size(66, 13);
             this.lblQualityCostLabel.TabIndex = 72;
             this.lblQualityCostLabel.Tag = "Label_QualityCost";
-            this.lblQualityCostLabel.Text = "Quality Cost:";
+            this.lblQualityCostLabel.Text = "Quality Nuyen Cost:";
             this.lblQualityCostLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // chkPrimaryTenant
@@ -632,21 +632,20 @@ namespace Chummer
             this.lblComfortTotal.Text = "[0]";
             this.lblComfortTotal.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // chkQualityContributesLP
+            // chkQualityUseLPCost
             // 
-            this.chkQualityContributesLP.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.chkQualityContributesLP.AutoSize = true;
-            this.chkQualityContributesLP.DefaultColorScheme = true;
-            this.chkQualityContributesLP.Location = new System.Drawing.Point(120, 4);
-            this.chkQualityContributesLP.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chkQualityContributesLP.Name = "chkQualityContributesLP";
-            this.chkQualityContributesLP.Size = new System.Drawing.Size(142, 17);
-            this.chkQualityContributesLP.TabIndex = 78;
-            this.chkQualityContributesLP.Tag = "Label_SelectAdvancedLifestyle_LPContribution";
-            this.chkQualityContributesLP.Text = "Quality Contributes to LP";
-            this.chkQualityContributesLP.UseVisualStyleBackColor = true;
-            this.chkQualityContributesLP.Visible = false;
-            this.chkQualityContributesLP.CheckedChanged += new System.EventHandler(this.chkQualityContributesLP_CheckedChanged);
+            this.chkQualityUseLPCost.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkQualityUseLPCost.AutoSize = true;
+            this.chkQualityUseLPCost.DefaultColorScheme = true;
+            this.chkQualityUseLPCost.Location = new System.Drawing.Point(120, 4);
+            this.chkQualityUseLPCost.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkQualityUseLPCost.Name = "chkQualityUseLPCost";
+            this.chkQualityUseLPCost.Size = new System.Drawing.Size(142, 17);
+            this.chkQualityUseLPCost.TabIndex = 78;
+            this.chkQualityUseLPCost.Tag = "Label_SelectAdvancedLifestyle_LPContribution";
+            this.chkQualityUseLPCost.Text = "Use Lifestyle Points to Pay for Quality";
+            this.chkQualityUseLPCost.UseVisualStyleBackColor = true;
+            this.chkQualityUseLPCost.CheckedChanged += new System.EventHandler(this.chkQualityContributesLP_CheckedChanged);
             // 
             // lblBonusLP
             // 
@@ -658,7 +657,7 @@ namespace Chummer
             this.lblBonusLP.Size = new System.Drawing.Size(56, 13);
             this.lblBonusLP.TabIndex = 81;
             this.lblBonusLP.Tag = "Label_BonusLP";
-            this.lblBonusLP.Text = "Bonus LP:";
+            this.lblBonusLP.Text = "Bonus Lifestyle Points:";
             this.lblBonusLP.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.lblBonusLP.Visible = false;
             // 
@@ -983,7 +982,7 @@ namespace Chummer
             this.tlpLifestyleQuality.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpLifestyleQuality.Controls.Add(this.lblQualityLPLabel, 0, 0);
             this.tlpLifestyleQuality.Controls.Add(this.lblQualityLp, 1, 0);
-            this.tlpLifestyleQuality.Controls.Add(this.chkQualityContributesLP, 2, 0);
+            this.tlpLifestyleQuality.Controls.Add(this.chkQualityUseLPCost, 2, 0);
             this.tlpLifestyleQuality.Controls.Add(this.lblQualityCostLabel, 0, 1);
             this.tlpLifestyleQuality.Controls.Add(this.lblQualitySourceLabel, 0, 2);
             this.tlpLifestyleQuality.Controls.Add(this.lblQualityCost, 1, 1);
@@ -1081,7 +1080,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblSecurityTotal;
         private System.Windows.Forms.Label lblAreaTotal;
         private System.Windows.Forms.Label lblComfortTotal;
-        private Chummer.ColorableCheckBox chkQualityContributesLP;
+        private Chummer.ColorableCheckBox chkQualityUseLPCost;
         private System.Windows.Forms.Label lblBonusLP;
         private Chummer.NumericUpDownEx nudBonusLP;
         private Chummer.ColorableCheckBox chkBonusLPRandomize;

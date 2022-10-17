@@ -588,19 +588,19 @@
     </string>
     <string>
       <key>Label_LP</key>
-      <text>LP:</text>
+      <text>Lifestyle Points:</text>
     </string>
     <string>
       <key>Label_BonusLP</key>
-      <text>Bonus LP:</text>
+      <text>Bonus Lifestyle Points:</text>
     </string>
     <string>
       <key>Label_QualityLP</key>
-      <text>Quality LP:</text>
+      <text>Quality Lifestyle Point Cost:</text>
     </string>
     <string>
       <key>Label_QualityCost</key>
-      <text>Quality Cost:</text>
+      <text>Quality Nuyen Cost:</text>
     </string>
     <string>
       <key>Label_QualitySource</key>
@@ -8384,7 +8384,7 @@
     </string>
     <string>
       <key>Label_SelectAdvancedLifestyle_UnusedLP</key>
-      <text>Unused LP:</text>
+      <text>Unused Lifestyle Points:</text>
     </string>
     <string>
       <key>Message_SelectAdvancedLifestyle_LifestyleName</key>
@@ -8400,7 +8400,7 @@
     </string>
     <string>
       <key>MessageTitle_SelectAdvancedLifestyle_OverLPLimit</key>
-      <text>Over LP Limit</text>
+      <text>Over Lifestyle Points Limit</text>
     </string>
     <string>
       <key>Label_SelectAdvancedLifestyle_TrustFund</key>
@@ -8412,7 +8412,7 @@
     </string>
     <string>
       <key>Label_SelectAdvancedLifestyle_LPContribution</key>
-      <text>Contributes to Lifestyle Points</text>
+      <text>Use Lifestyle Points to Pay for Quality</text>
     </string>
     <string>
       <key>Label_Options_KarmaMysticAdeptPowerPoint</key>

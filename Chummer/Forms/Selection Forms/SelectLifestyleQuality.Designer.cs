@@ -199,7 +199,7 @@ namespace Chummer
             this.lblBPLabel.Size = new System.Drawing.Size(23, 13);
             this.lblBPLabel.TabIndex = 2;
             this.lblBPLabel.Tag = "Label_LP";
-            this.lblBPLabel.Text = "LP:";
+            this.lblBPLabel.Text = "Lifestyle Points:";
             // 
             // chkFree
             // 

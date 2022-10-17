@@ -14,6 +14,7 @@ Application Changes:
 - Buying knowledge skill specializations with knowledge skill points in Point Buy- and Life Modules-based character creation methods no longer also costs karma.
 - Greatly sped up load times for characters with lots of weapons and/or gear.
 - Non-retroactive 'ware Essence modifiers now always automatically apply at character creation instead of only to 'ware bought sequentially after acquiring the source of a given non-retroactive 'ware Essence modifier. The non-retroactiveness now only starts applying after character creation.
+- A toggle has been added to allow the user to choose if they wish to pay for a lifestyle quality that would be free at their lifestyle level using nuyen instead of Lifestyle Points in accordance with Hard Targets p. 140. Fixes #4916.
 
 Data Changes:
 - Added bonus nodes for Shooter (The Soldier) paragon's Compiling dice pool penalty and +1 limit for attack actions. Fixes #4935.
@@ -38,6 +39,13 @@ Changed/New Strings:
 - Message_ConfirmReapplySpecificImprovements
 - MessageTitle_ConfirmReapplySpecificImprovements
 - String_SelectedItem
+- Label_SelectAdvancedLifestyle_UnusedLP
+- MessageTitle_SelectAdvancedLifestyle_OverLPLimit
+- Label_SelectAdvancedLifestyle_LPContribution
+- Label_QualityCost
+- Label_LP
+- Label_BonusLP
+- Label_QualityLP
 
 Build 224
 Application Changes:

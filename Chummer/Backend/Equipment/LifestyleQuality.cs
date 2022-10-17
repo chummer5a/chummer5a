@@ -19,20 +19,23 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
+using Chummer.Annotations;
 using NLog;
 
 namespace Chummer.Backend.Equipment
 {
     [DebuggerDisplay("{DisplayName(GlobalSettings.DefaultLanguage)}")]
-    public sealed class LifestyleQuality : IHasInternalId, IHasName, IHasXmlDataNode, IHasNotes, IHasSource, ICanRemove, IDisposable
+    public sealed class LifestyleQuality : IHasInternalId, IHasName, IHasXmlDataNode, IHasNotes, IHasSource, ICanRemove, INotifyMultiplePropertyChanged, IDisposable
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
         private static Logger Log => s_ObjLogger.Value;
@@ -45,7 +48,7 @@ namespace Chummer.Backend.Equipment
         private string _strPage = string.Empty;
         private string _strNotes = string.Empty;
         private Color _colNotes = ColorManager.HasNotesColor;
-        private bool _blnContributeToLP = true;
+        private bool _blnUseLPCost = true;
         private bool _blnPrint = true;
         private int _intLP;
         private string _strCost = string.Empty;
@@ -57,8 +60,8 @@ namespace Chummer.Backend.Equipment
         private int _intArea;
         private int _intSecurity;
         private int _intSecurityMaximum;
-        private int _intComfortMaximum;
-        private int _intComfort;
+        private int _intComfortsMaximum;
+        private int _intComforts;
         private readonly HashSet<string> _setAllowedFreeLifestyles = Utils.StringHashSetPool.Get();
         private readonly Character _objCharacter;
         private bool _blnFree;
@@ -158,13 +161,12 @@ namespace Chummer.Backend.Equipment
                 Type = ConvertToLifestyleQualityType(_strCategory);
             OriginSource = objLifestyleQualitySource;
             objXmlLifestyleQuality.TryGetInt32FieldQuickly("areamaximum", ref _intAreaMaximum);
-            objXmlLifestyleQuality.TryGetInt32FieldQuickly("comfortsmaximum", ref _intComfortMaximum);
+            objXmlLifestyleQuality.TryGetInt32FieldQuickly("comfortsmaximum", ref _intComfortsMaximum);
             objXmlLifestyleQuality.TryGetInt32FieldQuickly("securitymaximum", ref _intSecurityMaximum);
             objXmlLifestyleQuality.TryGetInt32FieldQuickly("area", ref _intArea);
-            objXmlLifestyleQuality.TryGetInt32FieldQuickly("comforts", ref _intComfort);
+            objXmlLifestyleQuality.TryGetInt32FieldQuickly("comforts", ref _intComforts);
             objXmlLifestyleQuality.TryGetInt32FieldQuickly("security", ref _intSecurity);
             objXmlLifestyleQuality.TryGetBoolFieldQuickly("print", ref _blnPrint);
-            objXmlLifestyleQuality.TryGetBoolFieldQuickly("contributetolimit", ref _blnContributeToLP);
             if (!objXmlLifestyleQuality.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
                 objXmlLifestyleQuality.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
 
@@ -286,12 +288,12 @@ namespace Chummer.Backend.Equipment
                 _intBaseMultiplier.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("lp", _intLP.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("areamaximum", _intAreaMaximum.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("comfortsmaximum", _intComfortMaximum.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("comfortsmaximum", _intComfortsMaximum.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("securitymaximum", _intSecurityMaximum.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("area", _intArea.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("comforts", _intComfort.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("comforts", _intComforts.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("security", _intSecurity.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("contributetolimit", _blnContributeToLP.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("uselpcost", _blnUseLPCost.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("print", _blnPrint.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("lifestylequalitytype", Type.ToString());
             objWriter.WriteElementString("lifestylequalitysource", OriginSource.ToString());
@@ -334,7 +336,8 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("cost", ref _strCost);
             objNode.TryGetInt32FieldQuickly("multiplier", ref _intMultiplier);
             objNode.TryGetInt32FieldQuickly("basemultiplier", ref _intBaseMultiplier);
-            objNode.TryGetBoolFieldQuickly("contributetolimit", ref _blnContributeToLP);
+            if (!objNode.TryGetBoolFieldQuickly("uselpcost", ref _blnUseLPCost))
+                objNode.TryGetBoolFieldQuickly("contributetolimit", ref _blnUseLPCost);
             if (!objNode.TryGetInt32FieldQuickly("areamaximum", ref _intAreaMaximum))
                 objMyNode.Value?.TryGetInt32FieldQuickly("areamaximum", ref _intAreaMaximum);
             if (!objNode.TryGetInt32FieldQuickly("area", ref _intArea))
@@ -343,10 +346,10 @@ namespace Chummer.Backend.Equipment
                 objMyNode.Value?.TryGetInt32FieldQuickly("securitymaximum", ref _intSecurityMaximum);
             if (!objNode.TryGetInt32FieldQuickly("security", ref _intSecurity))
                 objMyNode.Value?.TryGetInt32FieldQuickly("security", ref _intSecurity);
-            if (!objNode.TryGetInt32FieldQuickly("comforts", ref _intComfort))
-                objMyNode.Value?.TryGetInt32FieldQuickly("comforts", ref _intComfort);
-            if (!objNode.TryGetInt32FieldQuickly("comfortsmaximum", ref _intComfortMaximum))
-                objMyNode.Value?.TryGetInt32FieldQuickly("comfortsmaximum", ref _intComfortMaximum);
+            if (!objNode.TryGetInt32FieldQuickly("comforts", ref _intComforts))
+                objMyNode.Value?.TryGetInt32FieldQuickly("comforts", ref _intComforts);
+            if (!objNode.TryGetInt32FieldQuickly("comfortsmaximum", ref _intComfortsMaximum))
+                objMyNode.Value?.TryGetInt32FieldQuickly("comfortsmaximum", ref _intComfortsMaximum);
             objNode.TryGetBoolFieldQuickly("print", ref _blnPrint);
             if (objNode["lifestylequalitytype"] != null)
                 Type = ConvertToLifestyleQualityType(objNode["lifestylequalitytype"].InnerText);
@@ -429,13 +432,13 @@ namespace Chummer.Backend.Equipment
             if (objLifestyleQualityNode.TryGetInt32FieldQuickly("areamaximum", ref intTemp))
                 AreaMaximum = intTemp;
             if (objLifestyleQualityNode.TryGetInt32FieldQuickly("comfortsmaximum", ref intTemp))
-                ComfortMaximum = intTemp;
+                ComfortsMaximum = intTemp;
             if (objLifestyleQualityNode.TryGetInt32FieldQuickly("securitymaximum", ref intTemp))
                 SecurityMaximum = intTemp;
             if (objLifestyleQualityNode.TryGetInt32FieldQuickly("area", ref intTemp))
                 Area = intTemp;
             if (objLifestyleQualityNode.TryGetInt32FieldQuickly("comforts", ref intTemp))
-                Comfort = intTemp;
+                Comforts = intTemp;
             if (objLifestyleQualityNode.TryGetInt32FieldQuickly("security", ref intTemp))
                 Security = intTemp;
             if (objLifestyleQualityNode.TryGetInt32FieldQuickly("multiplier", ref intTemp))
@@ -480,7 +483,7 @@ namespace Chummer.Backend.Equipment
                 await objWriter.WriteElementStringAsync("lifestylequalitytype_english", Type.ToString(), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("lifestylequalitysource", OriginSource.ToString(), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("free", Free.ToString(), token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("freebylifestyle", FreeByLifestyle.ToString(), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("freebylifestyle", CanBeFreeByLifestyle.ToString(), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("isfreegrid", IsFreeGrid.ToString(), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
@@ -526,13 +529,14 @@ namespace Chummer.Backend.Equipment
                 _objCachedMyXmlNode = null;
                 _objCachedMyXPathNode = null;
                 _strName = value;
+                OnPropertyChanged();
             }
         }
 
         /// <summary>
         ///     LifestyleQuality's parent lifestyle.
         /// </summary>
-        public Lifestyle ParentLifestyle { get; set; }
+        public Lifestyle ParentLifestyle { get; private set; }
 
         /// <summary>
         ///     Extra information that should be applied to the name, like a linked CharacterAttribute.
@@ -540,7 +544,13 @@ namespace Chummer.Backend.Equipment
         public string Extra
         {
             get => _strExtra;
-            set => _strExtra = value;
+            set
+            {
+                if (_strExtra == value)
+                    return;
+                _strExtra = value;
+                OnPropertyChanged();
+            }
         }
 
         /// <summary>
@@ -549,7 +559,13 @@ namespace Chummer.Backend.Equipment
         public string Source
         {
             get => _strSource;
-            set => _strSource = value;
+            set
+            {
+                if (_strSource == value)
+                    return;
+                _strSource = value;
+                OnPropertyChanged();
+            }
         }
 
         /// <summary>
@@ -558,7 +574,13 @@ namespace Chummer.Backend.Equipment
         public string Page
         {
             get => _strPage;
-            set => _strPage = value;
+            set
+            {
+                if (_strPage == value)
+                    return;
+                _strPage = value;
+                OnPropertyChanged();
+            }
         }
 
         /// <summary>
@@ -606,21 +628,30 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         ///     Source of the LifestyleQuality.
         /// </summary>
-        public QualitySource OriginSource { get; set; } = QualitySource.Selected;
+        public QualitySource OriginSource
+        {
+            get => _eOriginSource;
+            set
+            {
+                if (_eOriginSource == value)
+                    return;
+                _eOriginSource = value;
+                OnPropertyChanged();
+            }
+        }
 
         /// <summary>
         ///     Number of Build Points the LifestyleQuality costs.
         /// </summary>
         public int LP
         {
-            get => Free || !ContributesLP ? 0 : _intLP;
+            get => Free || !UseLPCost ? 0 : _intLP;
             set
             {
                 if (_intLP == value)
                     return;
                 _intLP = value;
-                if (!Free && ContributesLP)
-                    ParentLifestyle?.OnPropertyChanged(nameof(Lifestyle.TotalLP));
+                OnPropertyChanged();
             }
         }
 
@@ -723,7 +754,13 @@ namespace Chummer.Backend.Equipment
         public bool AllowPrint
         {
             get => _blnPrint;
-            set => _blnPrint = value;
+            set
+            {
+                if (_blnPrint == value)
+                    return;
+                _blnPrint = value;
+                OnPropertyChanged();
+            }
         }
 
         /// <summary>
@@ -732,7 +769,13 @@ namespace Chummer.Backend.Equipment
         public string Notes
         {
             get => _strNotes;
-            set => _strNotes = value;
+            set
+            {
+                if (_strNotes == value)
+                    return;
+                _strNotes = value;
+                OnPropertyChanged();
+            }
         }
 
         /// <summary>
@@ -741,7 +784,13 @@ namespace Chummer.Backend.Equipment
         public Color NotesColor
         {
             get => _colNotes;
-            set => _colNotes = value;
+            set
+            {
+                if (_colNotes == value)
+                    return;
+                _colNotes = value;
+                OnPropertyChanged();
+            }
         }
 
         /// <summary>
@@ -751,7 +800,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                if (Free || FreeByLifestyle)
+                if (Free || UseLPCost)
                     return 0;
                 if (!decimal.TryParse(CostString, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
                     out decimal decReturn))
@@ -776,8 +825,7 @@ namespace Chummer.Backend.Equipment
                 if (_strCost == value)
                     return;
                 _strCost = value;
-                if (!Free && !FreeByLifestyle)
-                    ParentLifestyle?.OnPropertyChanged(nameof(Lifestyle.TotalMonthlyCost));
+                OnPropertyChanged();
             }
         }
 
@@ -792,15 +840,7 @@ namespace Chummer.Backend.Equipment
                 if (_blnFree == value)
                     return;
                 _blnFree = value;
-                if (ContributesLP)
-                {
-                    if (!FreeByLifestyle)
-                        ParentLifestyle?.OnMultiplePropertyChanged(nameof(Lifestyle.TotalLP), nameof(Lifestyle.TotalMonthlyCost), nameof(Lifestyle.CostMultiplier), nameof(Lifestyle.BaseCostMultiplier));
-                    else
-                        ParentLifestyle?.OnPropertyChanged(nameof(Lifestyle.TotalLP));
-                }
-                else if (!FreeByLifestyle)
-                    ParentLifestyle?.OnMultiplePropertyChanged(nameof(Lifestyle.TotalMonthlyCost), nameof(Lifestyle.CostMultiplier), nameof(Lifestyle.BaseCostMultiplier));
+                OnPropertyChanged();
             }
         }
 
@@ -822,27 +862,31 @@ namespace Chummer.Backend.Equipment
                         OriginSource = QualitySource.Selected;
                         break;
                 }
-                ParentLifestyle?.OnPropertyChanged(nameof(Lifestyle.LifestyleQualities));
-            }
-        }
-
-        public bool ContributesLP
-        {
-            get => _blnContributeToLP;
-            set
-            {
-                if (_blnContributeToLP == value)
-                    return;
-                _blnContributeToLP = value;
-                if (value && !Free)
-                    ParentLifestyle?.OnPropertyChanged(nameof(Lifestyle.TotalLP));
+                OnPropertyChanged();
             }
         }
 
         /// <summary>
-        ///     Are the costs of this Quality included in base lifestyle costs?
+        /// Whether or not this Quality costs LP.
         /// </summary>
-        public bool FreeByLifestyle
+        public bool UseLPCost
+        {
+            get => CanBeFreeByLifestyle && _blnUseLPCost;
+            set
+            {
+                if (!CanBeFreeByLifestyle && !value)
+                    return;
+                if (_blnUseLPCost == value)
+                    return;
+                _blnUseLPCost = value;
+                OnPropertyChanged();
+            }
+        }
+
+        /// <summary>
+        /// Can this Quality have no nuyen costs based on the base lifestyle?
+        /// </summary>
+        public bool CanBeFreeByLifestyle
         {
             get
             {
@@ -861,32 +905,32 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        ///     Comfort LP is increased/reduced by this Quality.
+        ///     Comforts LP is increased/reduced by this Quality.
         /// </summary>
-        public int Comfort
+        public int Comforts
         {
-            get => _intComfort;
+            get => _intComforts;
             set
             {
-                if (_intComfort == value)
+                if (_intComforts == value)
                     return;
-                _intComfort = value;
-                ParentLifestyle?.OnMultiplePropertyChanged(nameof(Lifestyle.TotalComforts), nameof(Lifestyle.ComfortsDelta));
+                _intComforts = value;
+                OnPropertyChanged();
             }
         }
 
         /// <summary>
-        ///     Comfort LP maximum is increased/reduced by this Quality.
+        ///     Comforts LP maximum is increased/reduced by this Quality.
         /// </summary>
-        public int ComfortMaximum
+        public int ComfortsMaximum
         {
-            get => _intComfortMaximum;
+            get => _intComfortsMaximum;
             set
             {
-                if (_intComfortMaximum == value)
+                if (_intComfortsMaximum == value)
                     return;
-                _intComfortMaximum = value;
-                ParentLifestyle?.OnPropertyChanged(nameof(Lifestyle.TotalComfortsMaximum));
+                _intComfortsMaximum = value;
+                OnPropertyChanged();
             }
         }
 
@@ -901,7 +945,7 @@ namespace Chummer.Backend.Equipment
                 if (_intSecurityMaximum == value)
                     return;
                 _intSecurityMaximum = value;
-                ParentLifestyle?.OnPropertyChanged(nameof(Lifestyle.TotalSecurityMaximum));
+                OnPropertyChanged();
             }
         }
 
@@ -916,7 +960,7 @@ namespace Chummer.Backend.Equipment
                 if (_intSecurity == value)
                     return;
                 _intSecurity = value;
-                ParentLifestyle?.OnMultiplePropertyChanged(nameof(Lifestyle.TotalSecurity), nameof(Lifestyle.SecurityDelta));
+                OnPropertyChanged();
             }
         }
 
@@ -925,14 +969,13 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public int Multiplier
         {
-            get => Free || FreeByLifestyle ? 0 : _intMultiplier;
+            get => Free || UseLPCost ? 0 : _intMultiplier;
             set
             {
                 if (_intMultiplier == value)
                     return;
                 _intMultiplier = value;
-                if (!Free && !FreeByLifestyle)
-                    ParentLifestyle?.OnPropertyChanged(nameof(Lifestyle.CostMultiplier));
+                OnPropertyChanged();
             }
         }
 
@@ -941,14 +984,13 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public int BaseMultiplier
         {
-            get => Free || FreeByLifestyle ? 0 : _intBaseMultiplier;
+            get => Free || UseLPCost ? 0 : _intBaseMultiplier;
             set
             {
                 if (_intBaseMultiplier == value)
                     return;
                 _intBaseMultiplier = value;
-                if (!Free && !FreeByLifestyle)
-                    ParentLifestyle?.OnPropertyChanged(nameof(Lifestyle.BaseCostMultiplier));
+                OnPropertyChanged();
             }
         }
 
@@ -958,7 +1000,13 @@ namespace Chummer.Backend.Equipment
         public string Category
         {
             get => _strCategory;
-            set => _strCategory = value;
+            set
+            {
+                if (_strCategory == value)
+                    return;
+                _strCategory = value;
+                OnPropertyChanged();
+            }
         }
 
         /// <summary>
@@ -972,7 +1020,7 @@ namespace Chummer.Backend.Equipment
                 if (_intAreaMaximum == value)
                     return;
                 _intAreaMaximum = value;
-                ParentLifestyle?.OnPropertyChanged(nameof(Lifestyle.TotalAreaMaximum));
+                OnPropertyChanged();
             }
         }
 
@@ -987,7 +1035,7 @@ namespace Chummer.Backend.Equipment
                 if (_intArea == value)
                     return;
                 _intArea = value;
-                ParentLifestyle?.OnMultiplePropertyChanged(nameof(Lifestyle.TotalArea), nameof(Lifestyle.AreaDelta));
+                OnPropertyChanged();
             }
         }
 
@@ -1014,6 +1062,7 @@ namespace Chummer.Backend.Equipment
 
         private XPathNavigator _objCachedMyXPathNode;
         private string _strCachedXPathNodeLanguage = string.Empty;
+        private QualitySource _eOriginSource = QualitySource.Selected;
 
         public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
@@ -1103,6 +1152,188 @@ namespace Chummer.Backend.Equipment
             ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Quality, InternalId);
 
             return ParentLifestyle.LifestyleQualities.Remove(this);
+        }
+
+        private static readonly PropertyDependencyGraph<LifestyleQuality> s_LifestyleQualityDependencyGraph =
+            new PropertyDependencyGraph<LifestyleQuality>(
+                new DependencyGraphNode<string, LifestyleQuality>(nameof(CurrentDisplayName),
+                    new DependencyGraphNode<string, LifestyleQuality>(nameof(DisplayName),
+                        new DependencyGraphNode<string, LifestyleQuality>(nameof(DisplayNameShort),
+                            new DependencyGraphNode<string, LifestyleQuality>(nameof(Name))
+                        ),
+                        new DependencyGraphNode<string, LifestyleQuality>(nameof(Extra))
+                    )
+                ),
+                new DependencyGraphNode<string, LifestyleQuality>(nameof(CurrentDisplayNameShort),
+                    new DependencyGraphNode<string, LifestyleQuality>(nameof(DisplayNameShort))
+                ),
+                new DependencyGraphNode<string, LifestyleQuality>(nameof(CurrentFormattedDisplayName),
+                    new DependencyGraphNode<string, LifestyleQuality>(nameof(FormattedDisplayName),
+                        new DependencyGraphNode<string, LifestyleQuality>(nameof(DisplayName)),
+                        new DependencyGraphNode<string, LifestyleQuality>(nameof(Cost),
+                            new DependencyGraphNode<string, LifestyleQuality>(nameof(Free),
+                                new DependencyGraphNode<string, LifestyleQuality>(nameof(OriginSource), x => !x._blnFree)
+                            ),
+                            new DependencyGraphNode<string, LifestyleQuality>(nameof(UseLPCost), x => !x.Free),
+                            new DependencyGraphNode<string, LifestyleQuality>(nameof(CostString), x => !x.Free && !x.UseLPCost)
+                        ),
+                        new DependencyGraphNode<string, LifestyleQuality>(nameof(Multiplier),
+                            new DependencyGraphNode<string, LifestyleQuality>(nameof(Free)),
+                            new DependencyGraphNode<string, LifestyleQuality>(nameof(UseLPCost), x => !x.Free)
+                        )
+                    )
+                ),
+                new DependencyGraphNode<string, LifestyleQuality>(nameof(UseLPCost),
+                    new DependencyGraphNode<string, LifestyleQuality>(nameof(CanBeFreeByLifestyle))
+                ),
+                new DependencyGraphNode<string, LifestyleQuality>(nameof(LP),
+                    new DependencyGraphNode<string, LifestyleQuality>(nameof(Free)),
+                    new DependencyGraphNode<string, LifestyleQuality>(nameof(UseLPCost), x => !x.Free)
+                ),
+                new DependencyGraphNode<string, LifestyleQuality>(nameof(BaseMultiplier),
+                    new DependencyGraphNode<string, LifestyleQuality>(nameof(Free)),
+                    new DependencyGraphNode<string, LifestyleQuality>(nameof(UseLPCost), x => !x.Free)
+                )
+            );
+
+        /// <inheritdoc />
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        public void OnPropertyChanged([CallerMemberName] string strPropertyName = null)
+        {
+            this.OnMultiplePropertyChanged(strPropertyName);
+        }
+
+        /// <inheritdoc />
+        public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
+        {
+            HashSet<string> setNamesOfChangedProperties = null;
+            try
+            {
+                foreach (string strPropertyName in lstPropertyNames)
+                {
+                    if (setNamesOfChangedProperties == null)
+                        setNamesOfChangedProperties
+                            = s_LifestyleQualityDependencyGraph.GetWithAllDependents(this, strPropertyName, true);
+                    else
+                    {
+                        foreach (string strLoopChangedProperty in s_LifestyleQualityDependencyGraph
+                                     .GetWithAllDependentsEnumerable(this, strPropertyName))
+                            setNamesOfChangedProperties.Add(strLoopChangedProperty);
+                    }
+                }
+
+                if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
+                    return;
+
+                if (ParentLifestyle != null)
+                {
+                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                    out HashSet<string>
+                                                                        setParentLifestyleNamesOfChangedProperties))
+                    {
+                        if (setNamesOfChangedProperties.Contains(nameof(LP))
+                            && (!Free || setNamesOfChangedProperties.Contains(nameof(Free)))
+                            && (UseLPCost || setNamesOfChangedProperties.Contains(nameof(UseLPCost))))
+                        {
+                            setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.TotalLP));
+                        }
+
+                        if (setNamesOfChangedProperties.Contains(nameof(Free)))
+                        {
+                            if (UseLPCost || setNamesOfChangedProperties.Contains(nameof(UseLPCost)))
+                            {
+                                setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.TotalLP));
+                                if (!CanBeFreeByLifestyle || setNamesOfChangedProperties.Contains(nameof(CanBeFreeByLifestyle)))
+                                {
+                                    setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.TotalMonthlyCost));
+                                    setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.CostMultiplier));
+                                    setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.BaseCostMultiplier));
+                                }
+                            }
+                            else
+                            {
+                                setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.TotalMonthlyCost));
+                                setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.CostMultiplier));
+                                setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.BaseCostMultiplier));
+                            }
+                        }
+                        if (setNamesOfChangedProperties.Contains(nameof(Cost))
+                            && (!Free || setNamesOfChangedProperties.Contains(nameof(Free)))
+                            && (!UseLPCost || setNamesOfChangedProperties.Contains(nameof(UseLPCost))))
+                        {
+                            setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.TotalMonthlyCost));
+                        }
+
+                        if (setNamesOfChangedProperties.Contains(nameof(UseLPCost))
+                            && (!Free || setNamesOfChangedProperties.Contains(nameof(Free))))
+                        {
+                            setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.TotalLP));
+                            setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.TotalMonthlyCost));
+                            setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.CostMultiplier));
+                            setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.BaseCostMultiplier));
+                        }
+
+                        if (setNamesOfChangedProperties.Contains(nameof(IsFreeGrid)))
+                            setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.LifestyleQualities));
+                        if (setNamesOfChangedProperties.Contains(nameof(Multiplier))
+                            && (!Free || setNamesOfChangedProperties.Contains(nameof(Free)))
+                            && (!UseLPCost || setNamesOfChangedProperties.Contains(nameof(UseLPCost))))
+                        {
+                            setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.CostMultiplier));
+                        }
+
+                        if (setNamesOfChangedProperties.Contains(nameof(BaseMultiplier))
+                            && (!Free || setNamesOfChangedProperties.Contains(nameof(Free)))
+                            && (!UseLPCost || setNamesOfChangedProperties.Contains(nameof(UseLPCost))))
+                        {
+                            setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.BaseCostMultiplier));
+                        }
+
+                        if (setNamesOfChangedProperties.Contains(nameof(ComfortsMaximum)))
+                            setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.TotalComfortsMaximum));
+                        if (setNamesOfChangedProperties.Contains(nameof(Comforts)))
+                        {
+                            setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.TotalComforts));
+                            setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.ComfortsDelta));
+                        }
+                        if (setNamesOfChangedProperties.Contains(nameof(SecurityMaximum)))
+                            setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.TotalSecurityMaximum));
+                        if (setNamesOfChangedProperties.Contains(nameof(Security)))
+                        {
+                            setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.TotalSecurity));
+                            setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.SecurityDelta));
+                        }
+                        if (setNamesOfChangedProperties.Contains(nameof(AreaMaximum)))
+                            setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.TotalAreaMaximum));
+                        if (setNamesOfChangedProperties.Contains(nameof(Area)))
+                        {
+                            setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.TotalArea));
+                            setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.AreaDelta));
+                        }
+
+                        if (setParentLifestyleNamesOfChangedProperties.Count > 0)
+                            ParentLifestyle.OnMultiplePropertyChanged(setParentLifestyleNamesOfChangedProperties);
+                    }
+                }
+
+                Utils.RunOnMainThread(() =>
+                {
+                    if (PropertyChanged != null)
+                    {
+                        foreach (string strPropertyToChange in setNamesOfChangedProperties)
+                        {
+                            PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
+                        }
+                    }
+                });
+            }
+            finally
+            {
+                if (setNamesOfChangedProperties != null)
+                    Utils.StringHashSetPool.Return(setNamesOfChangedProperties);
+            }
         }
     }
 }

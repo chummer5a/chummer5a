@@ -617,11 +617,19 @@ namespace Chummer
             if (treLifestyleQualities.SelectedNode?.Tag is LifestyleQuality objQuality)
             {
                 tlpLifestyleQuality.Visible = true;
-                chkQualityContributesLP.Enabled = !(objQuality.Free || objQuality.OriginSource == QualitySource.BuiltIn);
-
+                chkQualityUseLPCost.Enabled = !objQuality.Free && objQuality.CanBeFreeByLifestyle;
+                
                 _blnSkipRefresh = true;
-                chkQualityContributesLP.Checked = objQuality.ContributesLP;
-                _blnSkipRefresh = false;
+                try
+                {
+                    chkQualityUseLPCost.Checked = chkQualityUseLPCost.Enabled
+                        ? objQuality.UseLPCost
+                        : !objQuality.Free && !objQuality.CanBeFreeByLifestyle;
+                }
+                finally
+                {
+                    _blnSkipRefresh = false;
+                }
 
                 lblQualityLp.Text = objQuality.LP.ToString(GlobalSettings.CultureInfo);
                 lblQualityCost.Text = objQuality.Cost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol");
@@ -641,20 +649,24 @@ namespace Chummer
                 return;
             if (!(treLifestyleQualities.SelectedNode?.Tag is LifestyleQuality objQuality))
                 return;
-            objQuality.ContributesLP = chkQualityContributesLP.Checked;
+            objQuality.UseLPCost = !chkQualityUseLPCost.Enabled || chkQualityUseLPCost.Checked;
             lblQualityLp.Text = objQuality.LP.ToString(GlobalSettings.CultureInfo);
         }
 
-        private void chkTravelerBonusLPRandomize_CheckedChanged(object sender, EventArgs e)
+        private async void chkTravelerBonusLPRandomize_CheckedChanged(object sender, EventArgs e)
         {
-            if (chkBonusLPRandomize.Checked)
+            if (await chkBonusLPRandomize.DoThreadSafeFuncAsync(x => x.Checked))
             {
-                nudBonusLP.Enabled = false;
-                nudBonusLP.Value = GlobalSettings.RandomGenerator.NextD6ModuloBiasRemoved();
+                int intRandom = await GlobalSettings.RandomGenerator.NextD6ModuloBiasRemovedAsync();
+                await nudBonusLP.DoThreadSafeAsync(x =>
+                {
+                    x.Enabled = false;
+                    x.Value = intRandom;
+                });
             }
             else
             {
-                nudBonusLP.Enabled = true;
+                await nudBonusLP.DoThreadSafeAsync(x => x.Enabled = true);
             }
         }
 

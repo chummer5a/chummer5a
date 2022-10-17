@@ -586,7 +586,7 @@ namespace Chummer.Backend.Equipment
             foreach (LifestyleQuality objQuality in LifestyleQualities.Where(x => x.OriginSource != QualitySource.BuiltIn))
             {
                 intMinArea -= objQuality.Area;
-                intMinComfort -= objQuality.Comfort;
+                intMinComfort -= objQuality.Comforts;
                 intMinSec -= objQuality.Security;
             }
             Area = Math.Max(intMinArea - BaseArea, 0);
@@ -1159,7 +1159,7 @@ namespace Chummer.Backend.Equipment
 
         public int TotalComfortsMaximum => ComfortsMaximum
                                            + LifestyleQualities.Sum(x => x.OriginSource != QualitySource.BuiltIn,
-                                                                    lq => lq.ComfortMaximum);
+                                                                    lq => lq.ComfortsMaximum);
 
         public int TotalSecurityMaximum => SecurityMaximum
                                            + LifestyleQualities.Sum(x => x.OriginSource != QualitySource.BuiltIn,
@@ -1506,11 +1506,11 @@ namespace Chummer.Backend.Equipment
                                                                   lq => lq.Area);
 
         /// <summary>
-        /// Total Comfort of the Lifestyle, including all Lifestyle qualities.
+        /// Total Comforts of the Lifestyle, including all Lifestyle qualities.
         /// </summary>
         public int TotalComforts => BaseComforts + Comforts
                                                  + LifestyleQualities.Sum(
-                                                     x => x.OriginSource != QualitySource.BuiltIn, lq => lq.Comfort);
+                                                     x => x.OriginSource != QualitySource.BuiltIn, lq => lq.Comforts);
 
         /// <summary>
         /// Total Security of the Lifestyle, including all Lifestyle qualities.
@@ -1529,7 +1529,7 @@ namespace Chummer.Backend.Equipment
             Math.Max(
                 TotalComfortsMaximum - (BaseComforts
                                         + LifestyleQualities.Sum(x => x.OriginSource != QualitySource.BuiltIn,
-                                                                 lq => lq.Comfort)), 0);
+                                                                 lq => lq.Comforts)), 0);
 
         public decimal SecurityDelta =>
             Math.Max(
@@ -1907,6 +1907,13 @@ namespace Chummer.Backend.Equipment
                 if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
                     return;
 
+                if (setNamesOfChangedProperties.Contains(nameof(BaseLifestyle)))
+                {
+                    foreach (LifestyleQuality objQuality in LifestyleQualities)
+                    {
+                        objQuality.OnPropertyChanged(nameof(LifestyleQuality.CanBeFreeByLifestyle));
+                    }
+                }
                 Utils.RunOnMainThread(() =>
                 {
                     if (PropertyChanged != null)
