@@ -4657,7 +4657,7 @@ namespace Chummer
                 {
                     if (_blnIsLoading == value)
                         return;
-                    using (EnterReadLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLockAsync())
                     {
                         _blnIsLoading = value;
                         OnPropertyChanged();
@@ -13267,6 +13267,8 @@ namespace Chummer
                         return;
                     using (LockObject.EnterWriteLock())
                     {
+                        if (ReferenceEquals(_objSettings, value)) // Just in case
+                            return;
                         CharacterSettings objOldSettings = _objSettings;
                         bool blnActuallyDifferentSettings = false;
                         if (_objSettings != null)
@@ -13324,6 +13326,8 @@ namespace Chummer
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
+                    if (ReferenceEquals(_objSettings, value)) // Just in case
+                        return;
                     CharacterSettings objOldSettings = _objSettings;
                     bool blnActuallyDifferentSettings = false;
                     if (_objSettings != null)

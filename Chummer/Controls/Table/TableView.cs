@@ -214,10 +214,10 @@ namespace Chummer.UI.Table
             }
         }
 
-        private readonly Func<T, Task<bool>> _defaultFilter;
+        private readonly Func<T, Task<bool>> _funcDefaultFilter;
         private TableColumn<T> _sortColumn;
         private ThreadSafeBindingList<T> _lstItems;
-        private Func<T, Task<bool>> _filter;
+        private Func<T, Task<bool>> _funcFilter;
         private readonly TableColumnCollection<T> _columns;
         private TableLayoutEngine _layoutEngine;
         private readonly List<ColumnHolder> _lstCells = new List<ColumnHolder>();
@@ -231,8 +231,8 @@ namespace Chummer.UI.Table
         public TableView()
         {
             _columns = new TableColumnCollection<T>(this);
-            _defaultFilter = item => Task.FromResult(true);
-            _filter = _defaultFilter;
+            _funcDefaultFilter = x => Task.FromResult(true);
+            _funcFilter = _funcDefaultFilter;
             InitializeComponent();
             Disposed += (sender, args) => DisposeAll();
         }
@@ -280,15 +280,11 @@ namespace Chummer.UI.Table
 
         public void ResumeSort(object objSender)
         {
-            if (_objSortPausedSender == objSender)
-            {
-                _objSortPausedSender = null;
-
+            if (Interlocked.CompareExchange(ref _objSortPausedSender, null, objSender) == objSender
                 // prevent sort for focus loss when disposing
-                if (_lstItems != null && _lstPermutation.Count == _lstItems.Count)
-                {
-                    Sort();
-                }
+                && Items != null && _lstPermutation.Count == Items.Count)
+            {
+                Sort();
             }
         }
 
@@ -305,7 +301,9 @@ namespace Chummer.UI.Table
             {
                 Func<T, T, Task<int>> comparison = _sortColumn.CreateSorter();
 
-                _lstPermutation.Sort((i1, i2) => Utils.JoinableTaskFactory.Run(() => comparison(_lstItems[i1], _lstItems[i2])));
+                _lstPermutation.Sort((i1, i2) => Utils.JoinableTaskFactory.Run(
+                                         async () => await comparison(await Items.GetValueAtAsync(i1).ConfigureAwait(false),
+                                                                      await Items.GetValueAtAsync(i2).ConfigureAwait(false)).ConfigureAwait(false)));
                 if (_eSortType == SortOrder.Descending)
                 {
                     _lstPermutation.Reverse();
@@ -363,17 +361,17 @@ namespace Chummer.UI.Table
                 try
                 {
                     List<TableCell> cells;
-                    if (_lstItems != null)
+                    if (Items != null)
                     {
-                        cells = new List<TableCell>(_lstItems.Count);
-                        for (int i = 0; i < _lstItems.Count; i++)
+                        cells = new List<TableCell>(await Items.GetCountAsync(token).ConfigureAwait(false));
+                        int i = 0;
+                        await Items.ForEachAsync(async item =>
                         {
-                            T item = _lstItems[i];
                             TableCell cell = await CreateCell(item, column, token).ConfigureAwait(false);
                             cells.Add(cell);
                             if (await Filter(item).ConfigureAwait(false))
                             {
-                                TableRow row = _lstRowCells[i];
+                                TableRow row = _lstRowCells[i++];
                                 await row.DoThreadSafeAsync(x =>
                                 {
                                     x.SuspendLayout();
@@ -387,7 +385,7 @@ namespace Chummer.UI.Table
                                     }
                                 }, token).ConfigureAwait(false);
                             }
-                        }
+                        }, token: token).ConfigureAwait(false);
                     }
                     else
                     {
@@ -492,7 +490,7 @@ namespace Chummer.UI.Table
 
         private async ValueTask DoFilter(bool performLayout = true, CancellationToken token = default)
         {
-            if (_lstItems == null)
+            if (Items == null)
                 return;
             using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
@@ -500,7 +498,7 @@ namespace Chummer.UI.Table
                 try
                 {
                     int i = 0;
-                    await _lstItems.ForEachAsync(async objItem =>
+                    await Items.ForEachAsync(async objItem =>
                     {
                         TableRow row = _lstRowCells[i++];
                         await row.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
@@ -541,14 +539,13 @@ namespace Chummer.UI.Table
         /// <summary>
         /// Predicate for filtering the items.
         /// </summary>
-        public Func<T, Task<bool>> Filter => _filter;
+        public Func<T, Task<bool>> Filter => _funcFilter;
 
         public async ValueTask SetFilterAsync(Func<T, Task<bool>> value, CancellationToken token = default)
         {
-            Func<T, Task<bool>> objNewValue = value ?? _defaultFilter;
-            if (_filter == objNewValue)
+            Func<T, Task<bool>> objNewValue = value ?? _funcDefaultFilter;
+            if (Interlocked.Exchange(ref _funcFilter, objNewValue) == objNewValue)
                 return;
-            _filter = objNewValue;
             await DoFilter(token: token).ConfigureAwait(false);
         }
 
@@ -558,7 +555,7 @@ namespace Chummer.UI.Table
             {
                 case ListChangedType.ItemChanged:
                 {
-                    T item = await _lstItems.GetValueAtAsync(e.NewIndex).ConfigureAwait(false);
+                    T item = await Items.GetValueAtAsync(e.NewIndex).ConfigureAwait(false);
                     if (e.PropertyDescriptor == null)
                     {
                         using (await CursorWait.NewAsync(this).ConfigureAwait(false))
@@ -598,7 +595,7 @@ namespace Chummer.UI.Table
 
                 case ListChangedType.ItemAdded:
                 {
-                    T item = await _lstItems.GetValueAtAsync(e.NewIndex).ConfigureAwait(false);
+                    T item = await Items.GetValueAtAsync(e.NewIndex).ConfigureAwait(false);
                     Control[] lstToAdd = new Control[_columns.Count];
                     for (int i = 0; i < _columns.Count; i++)
                     {
