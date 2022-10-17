@@ -1122,6 +1122,9 @@ namespace Chummer.Backend.Skills
 
         public string CurrentDisplayName => DisplayName(GlobalSettings.Language);
 
+        public ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default) =>
+            DisplayNameAsync(GlobalSettings.Language, token);
+
         public string DisplayName(string strLanguage)
         {
             using (EnterReadLock.Enter(LockObject))

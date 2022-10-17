@@ -38,8 +38,9 @@ namespace Chummer.UI.Powers
     {
         private TableView<Power> _table;
 
-        public PowersTabUserControl()
+        public PowersTabUserControl(CancellationToken objMyToken = default)
         {
+            _objMyToken = objMyToken;
             InitializeComponent();
 
             Disposed += (sender, args) => UnbindPowersTabUserControl();
@@ -47,7 +48,7 @@ namespace Chummer.UI.Powers
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
 
-            _dropDownList = GenerateDropdownFilter();
+            _dropDownList = GenerateDropdownFilter(objMyToken);
 
             SuspendLayout();
             try
@@ -61,17 +62,31 @@ namespace Chummer.UI.Powers
         }
 
         private Character _objCharacter;
-        private readonly List<Tuple<string, Predicate<Power>>> _dropDownList;
+        private List<Tuple<string, Func<Power, Task<bool>>>> _dropDownList;
         private bool _blnSearchMode;
+
+        private CancellationToken _objMyToken;
+
+        public CancellationToken MyToken
+        {
+            get => _objMyToken;
+            set
+            {
+                if (_objMyToken == value)
+                    return;
+                _objMyToken = value;
+                _dropDownList = GenerateDropdownFilter(value);
+            }
+        }
 
         private async void PowersTabUserControl_Load(object sender, EventArgs e)
         {
             if (_objCharacter != null)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: MyToken).ConfigureAwait(false);
             try
             {
-                await RealLoad().ConfigureAwait(false);
+                await RealLoad(MyToken, MyToken).ConfigureAwait(false);
             }
             finally
             {
@@ -79,8 +94,9 @@ namespace Chummer.UI.Powers
             }
         }
 
-        public async ValueTask RealLoad(CancellationToken token = default)
+        public async ValueTask RealLoad(CancellationToken objMyToken = default, CancellationToken token = default)
         {
+            MyToken = objMyToken;
             if (ParentForm is CharacterShared frmParent)
                 _objCharacter = frmParent.CharacterObject;
             else
@@ -163,44 +179,80 @@ namespace Chummer.UI.Powers
 
         private async void OnCharacterPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(Character.PowerPointsTotal) || e.PropertyName == nameof(Character.PowerPointsUsed))
-                await CalculatePowerPoints().ConfigureAwait(false);
+            try
+            {
+                if (e.PropertyName == nameof(Character.PowerPointsTotal)
+                    || e.PropertyName == nameof(Character.PowerPointsUsed))
+                    await CalculatePowerPoints(MyToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void OnPowersListChanged(object sender, ListChangedEventArgs e)
         {
-            switch (e.ListChangedType)
+            try
             {
-                case ListChangedType.ItemChanged:
+                switch (e.ListChangedType)
+                {
+                    case ListChangedType.ItemChanged:
                     {
                         string propertyName = e.PropertyDescriptor?.Name;
                         if (propertyName == nameof(Power.FreeLevels) || propertyName == nameof(Power.TotalRating))
                         {
                             // recalculation of power points on rating/free levels change
-                            await CalculatePowerPoints().ConfigureAwait(false);
+                            await CalculatePowerPoints(MyToken).ConfigureAwait(false);
                         }
+
                         break;
                     }
-                case ListChangedType.Reset:
-                case ListChangedType.ItemAdded:
-                case ListChangedType.ItemDeleted:
-                    await CalculatePowerPoints().ConfigureAwait(false);
-                    break;
+                    case ListChangedType.Reset:
+                    case ListChangedType.ItemAdded:
+                    case ListChangedType.ItemDeleted:
+                        await CalculatePowerPoints(MyToken).ConfigureAwait(false);
+                        break;
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
             }
         }
 
-        private static List<Tuple<string, Predicate<Power>>> GenerateDropdownFilter()
+        private static List<Tuple<string, Func<Power, Task<bool>>>> GenerateDropdownFilter(CancellationToken objMyToken = default)
         {
-            List<Tuple<string, Predicate<Power>>> ret = new List<Tuple<string, Predicate<Power>>>(4)
+            List<Tuple<string, Func<Power, Task<bool>>>> ret = new List<Tuple<string, Func<Power, Task<bool>>>>(4)
             {
-                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_Search"),
-                    null),
-                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_PowerFilterAll"),
-                    power => true),
-                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_PowerFilterRatingAboveZero"),
-                    power => power.Rating > 0),
-                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_PowerFilterRatingZero"),
-                    power => power.Rating == 0)
+                new Tuple<string, Func<Power, Task<bool>>>(LanguageManager.GetString("String_Search"),
+                                                           null),
+                new Tuple<string, Func<Power, Task<bool>>>(LanguageManager.GetString("String_PowerFilterAll"),
+                                                           power => Task.FromResult(true)),
+                new Tuple<string, Func<Power, Task<bool>>>(LanguageManager.GetString("String_PowerFilterRatingAboveZero"),
+                                                           async power =>
+                                                           {
+                                                               try
+                                                               {
+                                                                   return await power.GetRatingAsync(objMyToken).ConfigureAwait(false) > 0;
+                                                               }
+                                                               catch (OperationCanceledException)
+                                                               {
+                                                                   return true;
+                                                               }
+                                                           }),
+                new Tuple<string, Func<Power, Task<bool>>>(LanguageManager.GetString("String_PowerFilterRatingZero"),
+                                                           async power =>
+                                                           {
+                                                               try
+                                                               {
+                                                                   return await power.GetRatingAsync(objMyToken).ConfigureAwait(false) == 0;
+                                                               }
+                                                               catch (OperationCanceledException)
+                                                               {
+                                                                   return true;
+                                                               }
+                                                           })
             };
 
             /*
@@ -218,10 +270,12 @@ namespace Chummer.UI.Powers
             return ret;
         }
 
-        private void cboDisplayFilter_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboDisplayFilter_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (cboDisplayFilter.SelectedItem is Tuple<string, Predicate<Power>> selectedItem)
+            try
             {
+                if (!(cboDisplayFilter.SelectedItem is Tuple<string, Func<Power, Task<bool>>> selectedItem))
+                    return;
                 if (selectedItem.Item2 == null)
                 {
                     cboDisplayFilter.DropDownStyle = ComboBoxStyle.DropDown;
@@ -232,47 +286,77 @@ namespace Chummer.UI.Powers
                 {
                     cboDisplayFilter.DropDownStyle = ComboBoxStyle.DropDownList;
                     _blnSearchMode = false;
-                    _table.Filter = selectedItem.Item2;
+                    await _table.SetFilterAsync(selectedItem.Item2, MyToken).ConfigureAwait(false);
                 }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
             }
         }
 
-        private void cboDisplayFilter_TextUpdate(object sender, EventArgs e)
+        private async void cboDisplayFilter_TextUpdate(object sender, EventArgs e)
         {
             if (_blnSearchMode)
             {
-                _table.Filter = (power => GlobalSettings.InvariantCultureInfo.CompareInfo.IndexOf(power.CurrentDisplayName, cboDisplayFilter.Text, CompareOptions.IgnoreCase) >= 0);
+                await _table.SetFilterAsync(
+                    async power =>
+                    {
+                        try
+                        {
+                            return GlobalSettings.InvariantCultureInfo.CompareInfo.IndexOf(
+                                await power.GetCurrentDisplayNameAsync(token: MyToken).ConfigureAwait(false),
+                                await cboDisplayFilter.DoThreadSafeFuncAsync(x => x.Text, token: MyToken).ConfigureAwait(false),
+                                CompareOptions.IgnoreCase) >= 0;
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            return true;
+                        }
+                    }, MyToken).ConfigureAwait(false);
             }
         }
 
         private async void cmdAddPower_Click(object sender, EventArgs e)
         {
-            // Open the Cyberware XML file and locate the selected piece.
-            XmlDocument objXmlDocument = await _objCharacter.LoadDataAsync("powers.xml").ConfigureAwait(false);
-            bool blnAddAgain;
-
-            do
+            try
             {
-                using (ThreadSafeForm<SelectPower> frmPickPower = await ThreadSafeForm<SelectPower>.GetAsync(() => new SelectPower(_objCharacter)).ConfigureAwait(false))
+                // Open the Cyberware XML file and locate the selected piece.
+                XmlDocument objXmlDocument = await _objCharacter.LoadDataAsync("powers.xml", token: MyToken)
+                                                                .ConfigureAwait(false);
+                bool blnAddAgain;
+
+                do
                 {
-                    // Make sure the dialogue window was not canceled.
-                    if (await frmPickPower.ShowDialogSafeAsync(_objCharacter).ConfigureAwait(false) == DialogResult.Cancel)
-                        break;
-
-                    blnAddAgain = frmPickPower.MyForm.AddAgain;
-
-                    Power objPower = new Power(_objCharacter);
-
-                    XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[id = " + frmPickPower.MyForm.SelectedPower.CleanXPath() + ']');
-                    if (objPower.Create(objXmlPower))
+                    using (ThreadSafeForm<SelectPower> frmPickPower = await ThreadSafeForm<SelectPower>
+                                                                            .GetAsync(
+                                                                                () => new SelectPower(_objCharacter),
+                                                                                MyToken).ConfigureAwait(false))
                     {
-                        await _objCharacter.Powers.AddAsync(objPower).ConfigureAwait(false);
+                        // Make sure the dialogue window was not canceled.
+                        if (await frmPickPower.ShowDialogSafeAsync(_objCharacter, MyToken).ConfigureAwait(false)
+                            == DialogResult.Cancel)
+                            break;
+
+                        blnAddAgain = frmPickPower.MyForm.AddAgain;
+
+                        Power objPower = new Power(_objCharacter);
+
+                        XmlNode objXmlPower = objXmlDocument.SelectSingleNode(
+                            "/chummer/powers/power[id = " + frmPickPower.MyForm.SelectedPower.CleanXPath() + ']');
+                        if (objPower.Create(objXmlPower))
+                        {
+                            await _objCharacter.Powers.AddAsync(objPower, MyToken).ConfigureAwait(false);
+                        }
+                        else
+                            objPower.DeletePower();
                     }
-                    else
-                        objPower.DeletePower();
-                }
+                } while (blnAddAgain);
             }
-            while (blnAddAgain);
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         /// <summary>
@@ -302,10 +386,20 @@ namespace Chummer.UI.Powers
                 () => new TableColumn<Power>(() => new TextTableCell())
                 {
                     Text = "Power",
-                    Extractor = (power => power.CurrentDisplayName),
+                    Extractor = (async power =>
+                    {
+                        try
+                        {
+                            return await power.GetCurrentDisplayNameAsync(MyToken).ConfigureAwait(false);
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            return default;
+                        }
+                    }),
                     Tag = "String_Power",
-                    Sorter = (name1, name2) =>
-                        string.Compare((string)name1, (string)name2, GlobalSettings.CultureInfo,
+                    Sorter = async (name1, name2) =>
+                        string.Compare((await name1.ConfigureAwait(false)).ToString(), (await name2.ConfigureAwait(false)).ToString(), GlobalSettings.CultureInfo,
                                        CompareOptions.Ordinal)
                 });
             nameColumn.AddDependency(nameof(Power.CurrentDisplayName));
@@ -314,10 +408,20 @@ namespace Chummer.UI.Powers
                 () => new TableColumn<Power>(() => new TextTableCell())
                 {
                     Text = "Action",
-                    Extractor = (power => power.DisplayAction),
+                    Extractor = (async power =>
+                    {
+                        try
+                        {
+                            return await power.GetDisplayActionAsync(MyToken).ConfigureAwait(false);
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            return default;
+                        }
+                    }),
                     Tag = "ColumnHeader_Action",
-                    Sorter = (action1, action2) =>
-                        string.Compare((string)action1, (string)action2, GlobalSettings.CultureInfo,
+                    Sorter = async (action1, action2) =>
+                        string.Compare((await action1.ConfigureAwait(false)).ToString(), (await action2.ConfigureAwait(false)).ToString(), GlobalSettings.CultureInfo,
                                        CompareOptions.Ordinal)
                 });
             actionColumn.AddDependency(nameof(Power.DisplayAction));
@@ -345,12 +449,19 @@ namespace Chummer.UI.Powers
             {
                 Text = "Rating",
                 Tag = "String_Rating",
-                Sorter = (o1, o2) =>
+                Sorter = async (o1, o2) =>
                 {
-                    if (o1 is Power objPower1
-                        && o2 is Power objPower2)
-                        return objPower1.Rating
-                            - objPower2.Rating;
+                    try
+                    {
+                        if (await o1.ConfigureAwait(false) is Power objPower1 && await o2.ConfigureAwait(false) is Power objPower2)
+                            return await objPower1.GetRatingAsync(MyToken).ConfigureAwait(false)
+                                   - await objPower2.GetRatingAsync(MyToken).ConfigureAwait(false);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        return 0;
+                    }
+
                     string strMessage
                         = "Can't sort an Object of Type "
                         + o1.GetType() +
@@ -372,12 +483,31 @@ namespace Chummer.UI.Powers
                 () => new TableColumn<Power>(() => new TextTableCell())
                 {
                     Text = "Total Rating",
-                    Extractor = (power => power.TotalRating),
-                    Tag = "String_TotalRating",
-                    Sorter = (o1, o2) =>
+                    Extractor = (async power =>
                     {
-                        if (o1 is Power objPower1 && o2 is Power objPower2)
-                            return objPower1.TotalRating - objPower2.TotalRating;
+                        try
+                        {
+                            return await power.GetTotalRatingAsync(MyToken).ConfigureAwait(false);
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            return default;
+                        }
+                    }),
+                    Tag = "String_TotalRating",
+                    Sorter = async (o1, o2) =>
+                    {
+                        try
+                        {
+                            if (await o1.ConfigureAwait(false) is Power objPower1 && await o2.ConfigureAwait(false) is Power objPower2)
+                                return await objPower1.GetTotalRatingAsync(MyToken).ConfigureAwait(false)
+                                       - await objPower2.GetTotalRatingAsync(MyToken).ConfigureAwait(false);
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            return 0;
+                        }
+
                         string strMessage = "Can't sort an Object of Type " + o1.GetType() +
                                             " against another one of Type " + o2.GetType()
                                             + " in the totalRatingColumn." +
@@ -391,9 +521,29 @@ namespace Chummer.UI.Powers
                 () => new TableColumn<Power>(() => new TextTableCell())
                 {
                     Text = "Power Points",
-                    Extractor = (power => power.DisplayPoints),
+                    Extractor = (async power =>
+                    {
+                        try
+                        {
+                            return await power.GetDisplayPointsAsync(MyToken).ConfigureAwait(false);
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            return default;
+                        }
+                    }),
                     Tag = "ColumnHeader_Power_Points",
-                    ToolTipExtractor = (item => item.ToolTip)
+                    ToolTipExtractor = (async item =>
+                    {
+                        try
+                        {
+                            return await item.GetToolTipAsync(MyToken).ConfigureAwait(false);
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            return string.Empty;
+                        }
+                    })
                 });
             powerPointsColumn.AddDependency(nameof(Power.DisplayPoints));
             powerPointsColumn.AddDependency(nameof(Power.ToolTip));
@@ -404,10 +554,29 @@ namespace Chummer.UI.Powers
             })
             {
                 Text = "Source",
-                Extractor = (power => power.SourceDetail),
+                Extractor = (async power =>
+                {
+                    try
+                    {
+                        return await power.GetSourceDetailAsync(MyToken).ConfigureAwait(false);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        return default;
+                    }
+                }),
                 Tag = "Label_Source",
-                ToolTipExtractor = (item =>
-                    item.SourceDetail.LanguageBookTooltip)
+                ToolTipExtractor = (async item =>
+                {
+                    try
+                    {
+                        return (await item.GetSourceDetailAsync(MyToken).ConfigureAwait(false)).LanguageBookTooltip;
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        return string.Empty;
+                    }
+                })
             });
             powerPointsColumn.AddDependency(nameof(Power.Source));
 
@@ -460,19 +629,31 @@ namespace Chummer.UI.Powers
                                                                       {
                                                                           ClickHandler = async p =>
                                                                           {
-                                                                              using (ThreadSafeForm<EditNotes>
-                                                                               frmPowerNotes
-                                                                               = await ThreadSafeForm<EditNotes>
-                                                                                   .GetAsync(
-                                                                                       () => new EditNotes(
-                                                                                           p.Notes, p.NotesColor)).ConfigureAwait(false))
+                                                                              try
                                                                               {
-                                                                                  if (await frmPowerNotes
-                                                                                       .ShowDialogSafeAsync(
-                                                                                           _objCharacter).ConfigureAwait(false)
-                                                                                   == DialogResult.OK)
-                                                                                      p.Notes = frmPowerNotes.MyForm
-                                                                                          .Notes;
+                                                                                  using (ThreadSafeForm<EditNotes>
+                                                                                   frmPowerNotes
+                                                                                   = await ThreadSafeForm<EditNotes>
+                                                                                       .GetAsync(
+                                                                                           () => new EditNotes(
+                                                                                               p.Notes,
+                                                                                               p.NotesColor),
+                                                                                           MyToken)
+                                                                                       .ConfigureAwait(false))
+                                                                                  {
+                                                                                      if (await frmPowerNotes
+                                                                                           .ShowDialogSafeAsync(
+                                                                                               _objCharacter,
+                                                                                               MyToken)
+                                                                                           .ConfigureAwait(false)
+                                                                                       == DialogResult.OK)
+                                                                                          p.Notes = frmPowerNotes.MyForm
+                                                                                              .Notes;
+                                                                                  }
+                                                                              }
+                                                                              catch (OperationCanceledException)
+                                                                              {
+                                                                                  //swallow this
                                                                               }
                                                                           },
                                                                           Alignment = Alignment.Center
@@ -480,16 +661,23 @@ namespace Chummer.UI.Powers
             {
                 Text = "Notes",
                 Tag = "ColumnHeader_Notes",
-                ToolTipExtractor = (p =>
+                ToolTipExtractor = (async p =>
                 {
-                    string strTooltip
-                        = LanguageManager.GetString(
-                            "Tip_Power_EditNotes");
-                    if (!string.IsNullOrEmpty(p.Notes))
-                        strTooltip += Environment.NewLine
-                            + Environment.NewLine
-                            + p.Notes.RtfToPlainText();
-                    return strTooltip.WordWrap();
+                    try
+                    {
+                        string strTooltip
+                            = await LanguageManager.GetStringAsync(
+                                "Tip_Power_EditNotes", token: MyToken).ConfigureAwait(false);
+                        if (!string.IsNullOrEmpty(p.Notes))
+                            strTooltip += Environment.NewLine
+                                          + Environment.NewLine
+                                          + await p.Notes.RtfToPlainTextAsync(token: MyToken).ConfigureAwait(false);
+                        return strTooltip.WordWrap();
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        return string.Empty;
+                    }
                 })
             });
             noteColumn.AddDependency(nameof(Power.Notes));
@@ -507,45 +695,61 @@ namespace Chummer.UI.Powers
                                                                         {
                                                                             ClickHandler = async p =>
                                                                             {
-                                                                                //Cache the parentform prior to deletion, otherwise the relationship is broken.
-                                                                                Form frmParent
-                                                                                    = await this.DoThreadSafeFuncAsync(
-                                                                                        x => x.ParentForm).ConfigureAwait(false);
-                                                                                if (p.FreeLevels > 0)
+                                                                                try
                                                                                 {
-                                                                                    string strExtra = p.Extra;
-                                                                                    string strImprovementSourceName
-                                                                                        = (await ImprovementManager
-                                                                                            .GetCachedImprovementListForValueOfAsync(
-                                                                                                p.CharacterObject,
-                                                                                                Improvement
-                                                                                                    .ImprovementType
-                                                                                                    .AdeptPowerFreePoints,
-                                                                                                p.Name).ConfigureAwait(false))
-                                                                                        .Find(x => x.UniqueName
-                                                                                            == strExtra)
-                                                                                        ?.SourceName;
-                                                                                    if (!string.IsNullOrWhiteSpace(
-                                                                                        strImprovementSourceName))
+                                                                                    //Cache the parentform prior to deletion, otherwise the relationship is broken.
+                                                                                    Form frmParent
+                                                                                        = await this
+                                                                                            .DoThreadSafeFuncAsync(
+                                                                                                x => x.ParentForm,
+                                                                                                token: MyToken)
+                                                                                            .ConfigureAwait(false);
+                                                                                    if (p.FreeLevels > 0)
                                                                                     {
-                                                                                        Gear objGear
-                                                                                            = p.CharacterObject.Gear
-                                                                                                .FindById(
-                                                                                                    strImprovementSourceName);
-                                                                                        if (objGear?.Bonded == true)
+                                                                                        string strExtra = p.Extra;
+                                                                                        string strImprovementSourceName
+                                                                                            = (await ImprovementManager
+                                                                                                .GetCachedImprovementListForValueOfAsync(
+                                                                                                    p.CharacterObject,
+                                                                                                    Improvement
+                                                                                                        .ImprovementType
+                                                                                                        .AdeptPowerFreePoints,
+                                                                                                    p.Name,
+                                                                                                    token: MyToken)
+                                                                                                .ConfigureAwait(false))
+                                                                                            .Find(x => x.UniqueName
+                                                                                                == strExtra)
+                                                                                            ?.SourceName;
+                                                                                        if (!string.IsNullOrWhiteSpace(
+                                                                                            strImprovementSourceName))
                                                                                         {
-                                                                                            objGear.Equipped = false;
-                                                                                            objGear.Extra
-                                                                                                = string.Empty;
+                                                                                            Gear objGear
+                                                                                                = p.CharacterObject.Gear
+                                                                                                    .FindById(
+                                                                                                        strImprovementSourceName);
+                                                                                            if (objGear?.Bonded == true)
+                                                                                            {
+                                                                                                objGear.Equipped
+                                                                                                    = false;
+                                                                                                objGear.Extra
+                                                                                                    = string.Empty;
+                                                                                            }
                                                                                         }
                                                                                     }
+
+                                                                                    p.DeletePower();
+
+                                                                                    if (frmParent is CharacterShared
+                                                                                     objParent)
+                                                                                        await objParent
+                                                                                            .RequestCharacterUpdate(
+                                                                                                MyToken)
+                                                                                            .ConfigureAwait(false);
                                                                                 }
-
-                                                                                p.DeletePower();
-
-                                                                                if (frmParent is CharacterShared
-                                                                                 objParent)
-                                                                                    await objParent.RequestCharacterUpdate().ConfigureAwait(false);
+                                                                                catch (OperationCanceledException)
+                                                                                {
+                                                                                    //swallow this
+                                                                                }
                                                                             },
                                                                             EnabledExtractor = (p => p.FreeLevels == 0)
                                                                         }));
@@ -563,41 +767,66 @@ namespace Chummer.UI.Powers
                 {
                     ClickHandler = async p =>
                     {
-                        if (ParentForm is CharacterCreate
-                            frmCreate)
-                            await frmCreate
-                                  .ReapplySpecificImprovements(
-                                      p.InternalId,
-                                      p.CurrentDisplayName)
-                                  .ConfigureAwait(false);
-                        else if (ParentForm is CharacterCareer
-                                 frmCareer)
-                            await frmCareer
-                                  .ReapplySpecificImprovements(
-                                      p.InternalId,
-                                      p.CurrentDisplayName)
-                                  .ConfigureAwait(false);
+                        try
+                        {
+                            if (ParentForm is CharacterCreate
+                                frmCreate)
+                                await frmCreate
+                                      .ReapplySpecificImprovements(
+                                          p.InternalId,
+                                          await p.GetCurrentDisplayNameAsync(MyToken).ConfigureAwait(false), MyToken)
+                                      .ConfigureAwait(false);
+                            else if (ParentForm is CharacterCareer
+                                     frmCareer)
+                                await frmCareer
+                                      .ReapplySpecificImprovements(
+                                          p.InternalId,
+                                          await p.GetCurrentDisplayNameAsync(MyToken).ConfigureAwait(false), MyToken)
+                                      .ConfigureAwait(false);
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            //swallow this
+                        }
                     },
                     Alignment = Alignment.Center
                 })
             {
                 Text = string.Empty,
-                ToolTipExtractor = p => LanguageManager.GetString("Menu_SpecialReapplyImprovements").WordWrap()
+                ToolTipExtractor = async p =>
+                {
+                    try
+                    {
+                        return (await LanguageManager.GetStringAsync("Menu_SpecialReapplyImprovements", token: MyToken).ConfigureAwait(false))
+                            .WordWrap();
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        return string.Empty;
+                    }
+                }
             });
 
-            _table.Columns.Add(nameColumn);
-            _table.Columns.Add(actionColumn);
-            _table.Columns.Add(ratingColumn);
-            _table.Columns.Add(totalRatingColumn);
-            _table.Columns.Add(powerPointsColumn);
-            _table.Columns.Add(adeptWayColumn);
-            //_table.Columns.Add(geasColumn);
-            _table.Columns.Add(noteColumn);
-            _table.Columns.Add(sourceColumn);
-            _table.Columns.Add(deleteColumn);
-            _table.Columns.Add(reapplyImprovementsColumn);
-            _table.UpdateLightDarkMode();
-            _table.TranslateWinForm();
+            try
+            {
+                _table.Columns.Add(nameColumn, MyToken);
+                _table.Columns.Add(actionColumn, MyToken);
+                _table.Columns.Add(ratingColumn, MyToken);
+                _table.Columns.Add(totalRatingColumn, MyToken);
+                _table.Columns.Add(powerPointsColumn, MyToken);
+                _table.Columns.Add(adeptWayColumn, MyToken);
+                //_table.Columns.Add(geasColumn, MyToken);
+                _table.Columns.Add(noteColumn, MyToken);
+                _table.Columns.Add(sourceColumn, MyToken);
+                _table.Columns.Add(deleteColumn, MyToken);
+                _table.Columns.Add(reapplyImprovementsColumn, MyToken);
+                _table.UpdateLightDarkMode(token: MyToken);
+                _table.TranslateWinForm(token: MyToken);
+            }
+            catch (OperationCanceledException)
+            {
+                return;
+            }
             pnlPowers.Controls.Add(_table);
         }
     }

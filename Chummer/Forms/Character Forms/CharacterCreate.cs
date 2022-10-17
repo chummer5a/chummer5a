@@ -68,6 +68,8 @@ namespace Chummer
         public CharacterCreate()
         {
             InitializeComponent();
+            tabSkillsUc.MyToken = GenericToken;
+            tabPowerUc.MyToken = GenericToken;
             _fntNormal = new Font(treQualities.Font, FontStyle.Regular);
             _fntStrikeout = new Font(treQualities.Font, FontStyle.Strikeout);
             Disposed += (sender, args) =>
@@ -80,6 +82,8 @@ namespace Chummer
         public CharacterCreate(Character objCharacter) : base(objCharacter)
         {
             InitializeComponent();
+            tabSkillsUc.MyToken = GenericToken;
+            tabPowerUc.MyToken = GenericToken;
             _fntNormal = new Font(treQualities.Font, FontStyle.Regular);
             _fntStrikeout = new Font(treQualities.Font, FontStyle.Strikeout);
             Disposed += (sender, args) =>
@@ -753,14 +757,14 @@ namespace Chummer
                                                "load_frm_create_tabSkillsUc.RealLoad()",
                                                op_load_frm_create_longloads).ConfigureAwait(false))
                                     {
-                                        await tabSkillsUc.RealLoad().ConfigureAwait(false);
+                                        await tabSkillsUc.RealLoad(GenericToken, GenericToken).ConfigureAwait(false);
                                     }
 
                                     using (_ = await Timekeeper.StartSyncronAsync(
                                                "load_frm_create_tabPowerUc.RealLoad()",
                                                op_load_frm_create_longloads).ConfigureAwait(false))
                                     {
-                                        await tabPowerUc.RealLoad().ConfigureAwait(false);
+                                        await tabPowerUc.RealLoad(GenericToken, GenericToken).ConfigureAwait(false);
                                     }
 
                                     using (_ = await Timekeeper.StartSyncronAsync(
@@ -12354,9 +12358,9 @@ namespace Chummer
             int intActiveSkillPointsMaximum = CharacterObject.SkillsSection.SkillPointsMaximum;
             if (intActiveSkillPointsMaximum > 0)
             {
-                strTemp = CharacterObject.SkillsSection.SkillPoints.ToString(GlobalSettings.CultureInfo) + strOf + intActiveSkillPointsMaximum.ToString(GlobalSettings.CultureInfo);
+                strTemp = (await CharacterObject.SkillsSection.GetSkillPointsAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo) + strOf + intActiveSkillPointsMaximum.ToString(GlobalSettings.CultureInfo);
             }
-            int intActiveSkillsTotalCostKarma = await CharacterObject.SkillsSection.Skills.SumAsync(x => x.CurrentKarmaCost, token: token).ConfigureAwait(false);
+            int intActiveSkillsTotalCostKarma = await CharacterObject.SkillsSection.Skills.SumAsync(x => x.GetCurrentKarmaCostAsync(token).AsTask(), token: token).ConfigureAwait(false);
             if (intActiveSkillsTotalCostKarma > 0)
             {
                 if (strTemp != strZeroKarma)
@@ -12371,14 +12375,14 @@ namespace Chummer
             await lblActiveSkillsBP.DoThreadSafeAsync(x => x.Text = strTemp, token).ConfigureAwait(false);
             //Knowledge skills
             string strTemp2 = strZeroKarma;
-            int intKnowledgeSkillPointsMaximum = CharacterObject.SkillsSection.KnowledgeSkillPoints;
+            int intKnowledgeSkillPointsMaximum = await CharacterObject.SkillsSection.GetKnowledgeSkillPointsAsync(token).ConfigureAwait(false);
             if (intKnowledgeSkillPointsMaximum > 0)
             {
-                strTemp2 = CharacterObject.SkillsSection.KnowledgeSkillPointsRemain.ToString(GlobalSettings.CultureInfo) + strOf + intKnowledgeSkillPointsMaximum.ToString(GlobalSettings.CultureInfo);
+                strTemp2 = (await CharacterObject.SkillsSection.GetKnowledgeSkillPointsRemainAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo) + strOf + intKnowledgeSkillPointsMaximum.ToString(GlobalSettings.CultureInfo);
             }
 
             int intKnowledgeSkillsTotalCostKarma
-                = await CharacterObject.SkillsSection.KnowledgeSkills.SumAsync(x => x.CurrentKarmaCost, token: token).ConfigureAwait(false);
+                = await CharacterObject.SkillsSection.KnowledgeSkills.SumAsync(x => x.GetCurrentKarmaCostAsync(token).AsTask(), token: token).ConfigureAwait(false);
             if (intKnowledgeSkillsTotalCostKarma > 0)
             {
                 if (strTemp2 != strZeroKarma)
@@ -12396,7 +12400,7 @@ namespace Chummer
             int intSkillGroupPointsMaximum = CharacterObject.SkillsSection.SkillGroupPointsMaximum;
             if (intSkillGroupPointsMaximum > 0)
             {
-                strTemp3 = CharacterObject.SkillsSection.SkillGroupPoints.ToString(GlobalSettings.CultureInfo) + strOf + intSkillGroupPointsMaximum.ToString(GlobalSettings.CultureInfo);
+                strTemp3 = (await CharacterObject.SkillsSection.GetSkillGroupPointsAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo) + strOf + intSkillGroupPointsMaximum.ToString(GlobalSettings.CultureInfo);
             }
             int intSkillGroupsTotalCostKarma = await CharacterObject.SkillsSection.SkillGroups.SumAsync(x => x.GetCurrentKarmaCostAsync(token).AsTask(), token: token).ConfigureAwait(false);
             if (intSkillGroupsTotalCostKarma > 0)
@@ -16937,45 +16941,43 @@ namespace Chummer
                     }
 
                     // Check if the character has gone over on Skill Groups
-                    if (CharacterObject.SkillsSection.SkillGroupPoints < 0)
+                    int intSkillGroupPoints = await CharacterObject.SkillsSection.GetSkillGroupPointsAsync(token).ConfigureAwait(false);
+                    if (intSkillGroupPoints < 0)
                     {
                         blnValid = false;
                         sbdMessage.AppendLine().Append('\t').AppendFormat(GlobalSettings.CultureInfo,
                                                                           await LanguageManager.GetStringAsync(
                                                                               "Message_InvalidSkillGroupExcess", token: token).ConfigureAwait(false),
-                                                                          -CharacterObject.SkillsSection
-                                                                              .SkillGroupPoints);
+                                                                          -intSkillGroupPoints);
                     }
 
                     // Check if the character has gone over on Active Skills
-                    if (CharacterObject.SkillsSection.SkillPoints < 0)
+                    int intSkillPoints = await CharacterObject.SkillsSection.GetSkillPointsAsync(token).ConfigureAwait(false);
+                    if (intSkillPoints < 0)
                     {
                         blnValid = false;
                         sbdMessage.AppendLine().Append('\t').AppendFormat(GlobalSettings.CultureInfo,
                                                                           await LanguageManager.GetStringAsync(
                                                                               "Message_InvalidActiveSkillExcess", token: token).ConfigureAwait(false),
-                                                                          -CharacterObject.SkillsSection.SkillPoints);
+                                                                          -intSkillPoints);
                     }
 
                     // Check if the character has gone over on Knowledge Skills
-                    if (CharacterObject.SkillsSection.KnowledgeSkillPointsRemain < 0)
+                    int intKnoSkillPoints = await CharacterObject.SkillsSection.GetKnowledgeSkillPointsRemainAsync(token).ConfigureAwait(false);
+                    if (intKnoSkillPoints < 0)
                     {
                         blnValid = false;
                         sbdMessage.AppendLine().Append('\t').AppendFormat(GlobalSettings.CultureInfo,
                                                                           await LanguageManager.GetStringAsync(
                                                                               "Message_InvalidKnowledgeSkillExcess", token: token).ConfigureAwait(false),
-                                                                          -CharacterObject.SkillsSection
-                                                                              .KnowledgeSkillPointsRemain);
+                                                                          -intKnoSkillPoints);
                     }
 
-                    if (await CharacterObject.SkillsSection.Skills.AnyAsync(s => s.Specializations.Count > 1, token).ConfigureAwait(false))
+                    if (await CharacterObject.SkillsSection.Skills.AnyAsync(async s => await s.Specializations.GetCountAsync(token).ConfigureAwait(false) > 1, token).ConfigureAwait(false))
                     {
                         blnValid = false;
-                        sbdMessage.AppendLine().Append('\t').AppendFormat(GlobalSettings.CultureInfo,
-                                                                          await LanguageManager.GetStringAsync(
-                                                                              "Message_InvalidActiveSkillExcessSpecializations", token: token).ConfigureAwait(false),
-                                                                          -CharacterObject.SkillsSection
-                                                                              .KnowledgeSkillPointsRemain);
+                        sbdMessage.AppendLine().Append('\t').Append(await LanguageManager.GetStringAsync(
+                                                                        "Message_InvalidActiveSkillExcessSpecializations", token: token).ConfigureAwait(false));
                         await CharacterObject.SkillsSection.Skills.ForEachAsync(async objSkill =>
                         {
                             if (await objSkill.Specializations.GetCountAsync(token).ConfigureAwait(false) < 1)
@@ -17018,7 +17020,7 @@ namespace Chummer
                     }
 
                     // Check if the character's Essence is above 0.
-                    if (CharacterObject.ESS.MetatypeMaximum > 0)
+                    if (await CharacterObject.ESS.GetMetatypeMaximumAsync(token).ConfigureAwait(false) > 0)
                     {
                         decimal decEss = await CharacterObject.EssenceAsync(token: token).ConfigureAwait(false);
                         decimal decExcessEss = 0.0m;
@@ -17085,7 +17087,7 @@ namespace Chummer
 
                     // Check if the character has more than the permitted amount of native languages.
                     int intLanguages
-                        = await CharacterObject.SkillsSection.KnowledgeSkills.CountAsync(objSkill => objSkill.IsNativeLanguage, token).ConfigureAwait(false);
+                        = await CharacterObject.SkillsSection.KnowledgeSkills.CountAsync(objSkill => objSkill.GetIsNativeLanguageAsync(token).AsTask(), token).ConfigureAwait(false);
 
                     int intLanguageLimit = 1 + (await ImprovementManager
                                                       .ValueOfAsync(CharacterObject,
@@ -17470,14 +17472,13 @@ namespace Chummer
                     }
 
                     // Check if the character has gone over on Skill Groups
-                    if (blnValid && CharacterObject.SkillsSection.SkillGroupPoints > 0
+                    if (blnValid && intSkillGroupPoints > 0
                                  && Program.ShowMessageBox(this,
                                                            string.Format(
                                                                GlobalSettings.CultureInfo,
                                                                await LanguageManager.GetStringAsync(
                                                                    "Message_ExtraPoints", token: token).ConfigureAwait(false)
-                                                               , CharacterObject.SkillsSection.SkillGroupPoints
-                                                                   .ToString(GlobalSettings.CultureInfo)
+                                                               , intSkillGroupPoints.ToString(GlobalSettings.CultureInfo)
                                                                , await LanguageManager.GetStringAsync("Label_SummarySkillGroups", token: token).ConfigureAwait(false)),
                                                            await LanguageManager.GetStringAsync(
                                                                "MessageTitle_ExtraPoints", token: token).ConfigureAwait(false),
@@ -17488,11 +17489,11 @@ namespace Chummer
                     }
 
                     // Check if the character has gone over on Active Skills
-                    if (blnValid && CharacterObject.SkillsSection.SkillPoints > 0 && Program.ShowMessageBox(
+                    if (blnValid && intSkillPoints > 0 && Program.ShowMessageBox(
                             this,
                             string.Format(GlobalSettings.CultureInfo,
                                           await LanguageManager.GetStringAsync("Message_ExtraPoints", token: token).ConfigureAwait(false)
-                                          , CharacterObject.SkillsSection.SkillPoints.ToString(
+                                          , intSkillPoints.ToString(
                                               GlobalSettings.CultureInfo)
                                           , await LanguageManager.GetStringAsync("Label_SummaryActiveSkills", token: token).ConfigureAwait(false)),
                             await LanguageManager.GetStringAsync("MessageTitle_ExtraPoints", token: token).ConfigureAwait(false), MessageBoxButtons.YesNo,
@@ -17502,15 +17503,13 @@ namespace Chummer
                     }
 
                     // Check if the character has gone over on Knowledge Skills
-                    if (blnValid && CharacterObject.SkillsSection.KnowledgeSkillPointsRemain > 0
+                    if (blnValid && intKnoSkillPoints > 0
                                  && Program.ShowMessageBox(this,
                                                            string.Format(
                                                                GlobalSettings.CultureInfo,
                                                                await LanguageManager.GetStringAsync(
                                                                    "Message_ExtraPoints", token: token).ConfigureAwait(false)
-                                                               , CharacterObject.SkillsSection
-                                                                   .KnowledgeSkillPointsRemain
-                                                                   .ToString(GlobalSettings.CultureInfo)
+                                                               , intKnoSkillPoints.ToString(GlobalSettings.CultureInfo)
                                                                , await LanguageManager.GetStringAsync("Label_SummaryKnowledgeSkills", token: token).ConfigureAwait(false)),
                                                            await LanguageManager.GetStringAsync(
                                                                "MessageTitle_ExtraPoints", token: token).ConfigureAwait(false),

@@ -959,7 +959,7 @@ namespace Chummer.Backend.Skills
                                         }
                                     }
                                     else if (await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false)
-                                             && !await KnowledgeSkills.AnyAsync(x => x.IsNativeLanguage, token)
+                                             && !await KnowledgeSkills.AnyAsync(x => x.GetIsNativeLanguageAsync(token).AsTask(), token)
                                                                       .ConfigureAwait(false))
                                     {
                                         KnowledgeSkill objEnglishSkill = new KnowledgeSkill(_objCharacter);
@@ -1785,7 +1785,7 @@ namespace Chummer.Backend.Skills
         }
 
         private bool _blnSkillsInitialized;
-        private readonly ReaderWriterLockSlim _objSkillsInitializerLock = new ReaderWriterLockSlim();
+        private readonly AsyncFriendlyReaderWriterLock _objSkillsInitializerLock = new AsyncFriendlyReaderWriterLock();
         private readonly ThreadSafeBindingList<Skill> _lstSkills = new ThreadSafeBindingList<Skill>();
         private readonly LockingDictionary<string, Skill> _dicSkills = new LockingDictionary<string, Skill>();
 
@@ -1797,94 +1797,20 @@ namespace Chummer.Backend.Skills
             get
             {
                 using (EnterReadLock.Enter(LockObject))
+                using (EnterReadLock.Enter(_objSkillsInitializerLock))
                 {
-                    _objSkillsInitializerLock.EnterUpgradeableReadLock();
-                    try
+                    if (!_blnSkillsInitialized && _objCharacter.SkillsSection == this)
                     {
-                        if (!_blnSkillsInitialized && _objCharacter.SkillsSection == this)
-                        {
-                            _objSkillsInitializerLock.EnterWriteLock();
-                            try
-                            {
-                                if (!_blnSkillsInitialized && _objCharacter.SkillsSection == this) // repeat check to avoid redoing calculations if another thread read Skills before first one acquired write lock
-                                {
-                                    XmlDocument xmlSkillsDocument = _objCharacter.LoadData("skills.xml");
-                                    using (XmlNodeList xmlSkillList = xmlSkillsDocument
-                                               .SelectNodes("/chummer/skills/skill[not(exotic) and ("
-                                                            + _objCharacter.Settings.BookXPath() + ')'
-                                                            + SkillFilter(FilterOption.NonSpecial) + ']'))
-                                    {
-                                        if (xmlSkillList?.Count > 0)
-                                        {
-                                            foreach (XmlNode xmlSkill in xmlSkillList)
-                                            {
-                                                bool blnIsKnowledgeSkill
-                                                    = xmlSkillsDocument
-                                                      .SelectSingleNode("/chummer/categories/category[. = "
-                                                                        + xmlSkill["category"]?.InnerText.CleanXPath()
-                                                                        + "]/@type")
-                                                      ?.Value
-                                                      != "active";
-                                                Skill objSkill = Skill.FromData(xmlSkill, _objCharacter,
-                                                    blnIsKnowledgeSkill);
-                                                if (objSkill.SkillId != Guid.Empty && !objSkill.IsExoticSkill)
-                                                {
-                                                    Skill objExistingSkill
-                                                        = _lstSkills.FirstOrDefault(x => x.SkillId == objSkill.SkillId);
-                                                    if (objExistingSkill != null)
-                                                    {
-                                                        MergeSkills(objExistingSkill, objSkill);
-                                                        continue;
-                                                    }
-                                                }
-
-                                                _lstSkills.AddWithSort(objSkill, CompareSkills, MergeSkills);
-                                            }
-                                        }
-                                    }
-
-                                    _blnSkillsInitialized = true;
-                                }
-                            }
-                            finally
-                            {
-                                _objSkillsInitializerLock.ExitWriteLock();
-                            }
-                        }
-                    }
-                    finally
-                    {
-                        _objSkillsInitializerLock.ExitUpgradeableReadLock();
-                    }
-
-                    return _lstSkills;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Active Skills
-        /// </summary>
-        public async ValueTask<ThreadSafeBindingList<Skill>> GetSkillsAsync(CancellationToken token = default)
-        {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
-            {
-                _objSkillsInitializerLock.EnterUpgradeableReadLock();
-                try
-                {
-                    if (!_blnSkillsInitialized && await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false) == this)
-                    {
-                        _objSkillsInitializerLock.EnterWriteLock();
-                        try
+                        using (_objSkillsInitializerLock.EnterWriteLock())
                         {
                             if (!_blnSkillsInitialized
-                                && await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false)
+                                && _objCharacter.SkillsSection
                                 == this) // repeat check to avoid redoing calculations if another thread read Skills before first one acquired write lock
                             {
-                                XmlDocument xmlSkillsDocument = await _objCharacter.LoadDataAsync("skills.xml", token: token).ConfigureAwait(false);
+                                XmlDocument xmlSkillsDocument = _objCharacter.LoadData("skills.xml");
                                 using (XmlNodeList xmlSkillList = xmlSkillsDocument
                                            .SelectNodes("/chummer/skills/skill[not(exotic) and ("
-                                                        + await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false) + ')'
+                                                        + _objCharacter.Settings.BookXPath() + ')'
                                                         + SkillFilter(FilterOption.NonSpecial) + ']'))
                                 {
                                     if (xmlSkillList?.Count > 0)
@@ -1903,15 +1829,15 @@ namespace Chummer.Backend.Skills
                                             if (objSkill.SkillId != Guid.Empty && !objSkill.IsExoticSkill)
                                             {
                                                 Skill objExistingSkill
-                                                    = await _lstSkills.FirstOrDefaultAsync(x => x.SkillId == objSkill.SkillId, token: token).ConfigureAwait(false);
+                                                    = _lstSkills.FirstOrDefault(x => x.SkillId == objSkill.SkillId);
                                                 if (objExistingSkill != null)
                                                 {
-                                                    await MergeSkillsAsync(objExistingSkill, objSkill, token).ConfigureAwait(false);
+                                                    MergeSkills(objExistingSkill, objSkill);
                                                     continue;
                                                 }
                                             }
 
-                                            await _lstSkills.AddWithSortAsync(objSkill, CompareSkills, (x, y) => MergeSkillsAsync(x, y, token), token: token).ConfigureAwait(false);
+                                            _lstSkills.AddWithSort(objSkill, CompareSkills, MergeSkills);
                                         }
                                     }
                                 }
@@ -1919,15 +1845,85 @@ namespace Chummer.Backend.Skills
                                 _blnSkillsInitialized = true;
                             }
                         }
-                        finally
+                    }
+
+                    return _lstSkills;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Active Skills
+        /// </summary>
+        public async ValueTask<ThreadSafeBindingList<Skill>> GetSkillsAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await EnterReadLock.EnterAsync(_objSkillsInitializerLock, token).ConfigureAwait(false))
+            {
+                if (!_blnSkillsInitialized
+                    && await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false) == this)
+                {
+                    IAsyncDisposable objLocker
+                        = await _objSkillsInitializerLock.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        if (!_blnSkillsInitialized
+                            && await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false)
+                            == this) // repeat check to avoid redoing calculations if another thread read Skills before first one acquired write lock
                         {
-                            _objSkillsInitializerLock.ExitWriteLock();
+                            XmlDocument xmlSkillsDocument = await _objCharacter
+                                                                  .LoadDataAsync("skills.xml", token: token)
+                                                                  .ConfigureAwait(false);
+                            using (XmlNodeList xmlSkillList = xmlSkillsDocument
+                                       .SelectNodes("/chummer/skills/skill[not(exotic) and ("
+                                                    + await (await _objCharacter.GetSettingsAsync(token)
+                                                            .ConfigureAwait(false)).BookXPathAsync(token: token)
+                                                        .ConfigureAwait(false) + ')'
+                                                    + SkillFilter(FilterOption.NonSpecial) + ']'))
+                            {
+                                if (xmlSkillList?.Count > 0)
+                                {
+                                    foreach (XmlNode xmlSkill in xmlSkillList)
+                                    {
+                                        bool blnIsKnowledgeSkill
+                                            = xmlSkillsDocument
+                                              .SelectSingleNode("/chummer/categories/category[. = "
+                                                                + xmlSkill["category"]?.InnerText.CleanXPath()
+                                                                + "]/@type")
+                                              ?.Value
+                                              != "active";
+                                        Skill objSkill = Skill.FromData(xmlSkill, _objCharacter,
+                                                                        blnIsKnowledgeSkill);
+                                        if (objSkill.SkillId != Guid.Empty && !objSkill.IsExoticSkill)
+                                        {
+                                            Skill objExistingSkill
+                                                = await _lstSkills
+                                                        .FirstOrDefaultAsync(
+                                                            x => x.SkillId == objSkill.SkillId, token: token)
+                                                        .ConfigureAwait(false);
+                                            if (objExistingSkill != null)
+                                            {
+                                                await MergeSkillsAsync(objExistingSkill, objSkill, token)
+                                                    .ConfigureAwait(false);
+                                                continue;
+                                            }
+                                        }
+
+                                        await _lstSkills
+                                              .AddWithSortAsync(objSkill, CompareSkills,
+                                                                (x, y) => MergeSkillsAsync(x, y, token), token: token)
+                                              .ConfigureAwait(false);
+                                    }
+                                }
+                            }
+
+                            _blnSkillsInitialized = true;
                         }
                     }
-                }
-                finally
-                {
-                    _objSkillsInitializerLock.ExitUpgradeableReadLock();
+                    finally
+                    {
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                    }
                 }
 
                 return _lstSkills;
@@ -1938,11 +1934,21 @@ namespace Chummer.Backend.Skills
         /// Checks if the character has an active skill with a given name.
         /// </summary>
         /// <param name="strSkillKey">Name of the skill. For exotic skills, this is slightly different, refer to a Skill's DictionaryKey property for more info.</param>
-        /// <returns></returns>
         public bool HasActiveSkill(string strSkillKey)
         {
             using (EnterReadLock.Enter(LockObject))
                 return _dicSkills.ContainsKey(strSkillKey);
+        }
+
+        /// <summary>
+        /// Checks if the character has an active skill with a given name.
+        /// </summary>
+        /// <param name="strSkillKey">Name of the skill. For exotic skills, this is slightly different, refer to a Skill's DictionaryKey property for more info.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async ValueTask<bool> HasActiveSkillAsync(string strSkillKey, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                return await _dicSkills.ContainsKeyAsync(strSkillKey, token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -2027,6 +2033,16 @@ namespace Chummer.Backend.Skills
         }
 
         /// <summary>
+        /// KnowsoftSkills.
+        /// </summary>
+        public async ValueTask<ThreadSafeBindingList<KnowledgeSkill>> GetKnowsoftSkillsAsync(
+            CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                return _lstKnowsoftSkills;
+        }
+
+        /// <summary>
         /// Skill Groups.
         /// </summary>
         public ThreadSafeBindingList<SkillGroup> SkillGroups
@@ -2049,6 +2065,9 @@ namespace Chummer.Backend.Skills
 
         public bool HasKnowledgePoints => KnowledgeSkillPoints > 0;
 
+        public async ValueTask<bool> GetHasKnowledgePointsAsync(CancellationToken token = default) =>
+            await GetKnowledgeSkillPointsAsync(token).ConfigureAwait(false) > 0;
+
         public bool HasAvailableNativeLanguageSlots
         {
             get
@@ -2059,7 +2078,21 @@ namespace Chummer.Backend.Skills
             }
         }
 
+        public async ValueTask<bool> GetHasAvailableNativeLanguageSlotsAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                return await (await GetKnowledgeSkillsAsync(token).ConfigureAwait(false))
+                             .CountAsync(x => x.GetIsNativeLanguageAsync(token).AsTask(), token).ConfigureAwait(false)
+                       < 1 + await ImprovementManager
+                               .ValueOfAsync(_objCharacter, Improvement.ImprovementType.NativeLanguageLimit,
+                                             token: token)
+                               .ConfigureAwait(false);
+        }
+
         private int _intCachedKnowledgePoints = int.MinValue;
+
+        private readonly AsyncFriendlyReaderWriterLock _objCachedKnowledgePointsLock
+            = new AsyncFriendlyReaderWriterLock();
 
         /// <summary>
         /// Number of free Knowledge Skill Points the character has.
@@ -2069,37 +2102,101 @@ namespace Chummer.Backend.Skills
             get
             {
                 using (EnterReadLock.Enter(LockObject))
+                using (EnterReadLock.Enter(_objCachedKnowledgePointsLock))
                 {
                     if (_intCachedKnowledgePoints == int.MinValue)
                     {
-                        string strExpression = _objCharacter.Settings.KnowledgePointsExpression;
-                        if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
+                        using (_objCachedKnowledgePointsLock.EnterWriteLock())
                         {
-                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                          out StringBuilder sbdValue))
+                            if (_intCachedKnowledgePoints == int.MinValue) // Just in case
                             {
-                                sbdValue.Append(strExpression);
-                                _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdValue, strExpression);
+                                string strExpression = _objCharacter.Settings.KnowledgePointsExpression;
+                                if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1
+                                    || strExpression.Contains("div"))
+                                {
+                                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                               out StringBuilder sbdValue))
+                                    {
+                                        sbdValue.Append(strExpression);
+                                        _objCharacter.AttributeSection
+                                                     .ProcessAttributesInXPath(sbdValue, strExpression);
 
-                                // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                                (bool blnIsSuccess, object objProcess)
-                                    = CommonFunctions.EvaluateInvariantXPath(
-                                        sbdValue.ToString());
-                                _intCachedKnowledgePoints = blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
+                                        // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+                                        (bool blnIsSuccess, object objProcess)
+                                            = CommonFunctions.EvaluateInvariantXPath(
+                                                sbdValue.ToString());
+                                        _intCachedKnowledgePoints
+                                            = blnIsSuccess ? ((double) objProcess).StandardRound() : 0;
+                                    }
+                                }
+                                else
+                                    int.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
+                                                 out _intCachedKnowledgePoints);
+
+                                _intCachedKnowledgePoints += ImprovementManager
+                                                             .ValueOf(_objCharacter,
+                                                                      Improvement.ImprovementType.FreeKnowledgeSkills)
+                                                             .StandardRound();
                             }
                         }
-                        else
-                            int.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
-                                         out _intCachedKnowledgePoints);
-
-                        _intCachedKnowledgePoints += ImprovementManager
-                                                     .ValueOf(_objCharacter,
-                                                              Improvement.ImprovementType.FreeKnowledgeSkills)
-                                                     .StandardRound();
                     }
 
                     return _intCachedKnowledgePoints;
                 }
+            }
+        }
+
+        /// <summary>
+        /// Number of free Knowledge Skill Points the character has.
+        /// </summary>
+        public async ValueTask<int> GetKnowledgeSkillPointsAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            using (await EnterReadLock.EnterAsync(_objCachedKnowledgePointsLock, token).ConfigureAwait(false))
+            {
+                if (_intCachedKnowledgePoints == int.MinValue)
+                {
+                    IAsyncDisposable objLocker = await _objCachedKnowledgePointsLock.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        if (_intCachedKnowledgePoints == int.MinValue) // Just in case
+                        {
+                            string strExpression = _objCharacter.Settings.KnowledgePointsExpression;
+                            if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1
+                                || strExpression.Contains("div"))
+                            {
+                                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                              out StringBuilder sbdValue))
+                                {
+                                    sbdValue.Append(strExpression);
+                                    await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(
+                                        sbdValue, strExpression, token: token).ConfigureAwait(false);
+
+                                    // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+                                    (bool blnIsSuccess, object objProcess)
+                                        = await CommonFunctions.EvaluateInvariantXPathAsync(
+                                            sbdValue.ToString(), token).ConfigureAwait(false);
+                                    _intCachedKnowledgePoints
+                                        = blnIsSuccess ? ((double) objProcess).StandardRound() : 0;
+                                }
+                            }
+                            else
+                                int.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
+                                             out _intCachedKnowledgePoints);
+
+                            _intCachedKnowledgePoints += (await ImprovementManager
+                                                                .ValueOfAsync(_objCharacter,
+                                                                              Improvement.ImprovementType.FreeKnowledgeSkills, token: token).ConfigureAwait(false))
+                                .StandardRound();
+                        }
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                    }
+                }
+
+                return _intCachedKnowledgePoints;
             }
         }
 
@@ -2116,6 +2213,15 @@ namespace Chummer.Backend.Skills
         }
 
         /// <summary>
+        /// Number of free Knowledge skill points the character have remaining
+        /// </summary>
+        public async ValueTask<int> GetKnowledgeSkillPointsRemainAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                return await GetKnowledgeSkillPointsAsync(token).ConfigureAwait(false) - await GetKnowledgeSkillPointsUsedAsync(token).ConfigureAwait(false);
+        }
+
+        /// <summary>
         /// Number of knowledge skill points the character have used.
         /// </summary>
         public int KnowledgeSkillPointsUsed
@@ -2128,6 +2234,15 @@ namespace Chummer.Backend.Skills
         }
 
         /// <summary>
+        /// Number of knowledge skill points the character have used.
+        /// </summary>
+        public async ValueTask<int> GetKnowledgeSkillPointsUsedAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                return await GetKnowledgeSkillRanksSumAsync(token).ConfigureAwait(false) - await GetSkillPointsSpentOnKnoskillsAsync(token).ConfigureAwait(false);
+        }
+
+        /// <summary>
         /// Sum of knowledge skill ranks the character has allocated.
         /// </summary>
         public int KnowledgeSkillRanksSum
@@ -2137,6 +2252,15 @@ namespace Chummer.Backend.Skills
                 using (EnterReadLock.Enter(LockObject))
                     return KnowledgeSkills.Sum(x => x.CurrentSpCost);
             }
+        }
+
+        /// <summary>
+        /// Sum of knowledge skill ranks the character has allocated.
+        /// </summary>
+        public async ValueTask<int> GetKnowledgeSkillRanksSumAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                return await (await GetKnowledgeSkillsAsync(token).ConfigureAwait(false)).SumAsync(x => x.GetCurrentSpCostAsync(token).AsTask(), token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -2154,11 +2278,27 @@ namespace Chummer.Backend.Skills
                         return 0;
                     }
 
-                    int work = 0;
-                    if (KnowledgeSkillRanksSum > KnowledgeSkillPoints)
-                        work -= KnowledgeSkillPoints - KnowledgeSkillRanksSum;
-                    return work;
+                    int intReturn = KnowledgeSkillRanksSum - KnowledgeSkillPoints;
+                    return Math.Max(intReturn, 0);
                 }
+            }
+        }
+
+        /// <summary>
+        /// Number of Skill Points that have been spent on knowledge skills.
+        /// </summary>
+        public async ValueTask<int> GetSkillPointsSpentOnKnoskillsAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                //Even if it is stupid, you can spend real skill points on knoskills...
+                if (!await _objCharacter.GetEffectiveBuildMethodUsesPriorityTablesAsync(token).ConfigureAwait(false))
+                {
+                    return 0;
+                }
+
+                int intReturn = await GetKnowledgeSkillRanksSumAsync(token).ConfigureAwait(false) - await GetKnowledgeSkillPointsAsync(token).ConfigureAwait(false);
+                return Math.Max(intReturn, 0);
             }
         }
 
@@ -2178,6 +2318,25 @@ namespace Chummer.Backend.Skills
 
                     return SkillPointsMaximum - Skills.Sum(x => x.CurrentSpCost) - SkillPointsSpentOnKnoskills;
                 }
+            }
+        }
+
+        /// <summary>
+        /// Number of free Skill Points the character has left.
+        /// </summary>
+        public async ValueTask<int> GetSkillPointsAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                if (SkillPointsMaximum == 0)
+                {
+                    return 0;
+                }
+
+                return SkillPointsMaximum
+                       - await (await GetSkillsAsync(token).ConfigureAwait(false)).SumAsync(x => x.GetCurrentSpCostAsync(token).AsTask(),
+                                                                      token).ConfigureAwait(false)
+                       - await GetSkillPointsSpentOnKnoskillsAsync(token).ConfigureAwait(false);
             }
         }
 
@@ -2628,6 +2787,7 @@ namespace Chummer.Backend.Skills
                 _dicSkills.Dispose();
                 _dicSkillBackups.Dispose();
                 _objSkillsInitializerLock.Dispose();
+                _objCachedKnowledgePointsLock.Dispose();
                 if (_lstDefaultKnowledgeSkills != null)
                     Utils.ListItemListPool.Return(_lstDefaultKnowledgeSkills);
                 if (_lstKnowledgeTypes != null)
@@ -2660,7 +2820,8 @@ namespace Chummer.Backend.Skills
                 await _lstSkillGroups.DisposeAsync().ConfigureAwait(false);
                 await _dicSkills.DisposeAsync().ConfigureAwait(false);
                 await _dicSkillBackups.DisposeAsync().ConfigureAwait(false);
-                _objSkillsInitializerLock.Dispose();
+                await _objSkillsInitializerLock.DisposeAsync().ConfigureAwait(false);
+                await _objCachedKnowledgePointsLock.DisposeAsync().ConfigureAwait(false);
                 if (_lstDefaultKnowledgeSkills != null)
                     Utils.ListItemListPool.Return(_lstDefaultKnowledgeSkills);
                 if (_lstKnowledgeTypes != null)

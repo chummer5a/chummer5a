@@ -63,6 +63,8 @@ namespace Chummer
         public CharacterCareer()
         {
             InitializeComponent();
+            tabSkillsUc.MyToken = GenericToken;
+            tabPowerUc.MyToken = GenericToken;
             _fntNormal = new Font(treQualities.Font, FontStyle.Regular);
             _fntStrikeout = new Font(treQualities.Font, FontStyle.Strikeout);
             Disposed += (sender, args) =>
@@ -75,6 +77,8 @@ namespace Chummer
         public CharacterCareer(Character objCharacter) : base(objCharacter)
         {
             InitializeComponent();
+            tabSkillsUc.MyToken = GenericToken;
+            tabPowerUc.MyToken = GenericToken;
             _fntNormal = new Font(treQualities.Font, FontStyle.Regular);
             _fntStrikeout = new Font(treQualities.Font, FontStyle.Strikeout);
             Disposed += (sender, args) =>
@@ -768,14 +772,14 @@ namespace Chummer
                                                "load_frm_career_tabSkillsUc.RealLoad()",
                                                op_load_frm_career_longloads).ConfigureAwait(false))
                                     {
-                                        await tabSkillsUc.RealLoad().ConfigureAwait(false);
+                                        await tabSkillsUc.RealLoad(GenericToken, GenericToken).ConfigureAwait(false);
                                     }
 
                                     using (_ = await Timekeeper.StartSyncronAsync(
                                                "load_frm_career_tabPowerUc.RealLoad()",
                                                op_load_frm_career_longloads).ConfigureAwait(false))
                                     {
-                                        await tabPowerUc.RealLoad().ConfigureAwait(false);
+                                        await tabPowerUc.RealLoad(GenericToken, GenericToken).ConfigureAwait(false);
                                     }
 
                                     using (_ = await Timekeeper.StartSyncronAsync(

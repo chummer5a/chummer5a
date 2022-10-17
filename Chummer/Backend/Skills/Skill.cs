@@ -304,9 +304,11 @@ namespace Chummer.Backend.Skills
                         .WriteElementStringAsync("poolmod", intDicePoolModifiers.ToString(objCulture), token: token)
                         .ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("islanguage",
-                        IsLanguage.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                                            (await GetIsLanguageAsync(token).ConfigureAwait(false)).ToString(
+                                                                GlobalSettings.InvariantCultureInfo), token: token)
+                                   .ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("isnativelanguage",
-                            IsNativeLanguage.ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                                                            (await GetIsNativeLanguageAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
                         .ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("bp",
                         (await GetCurrentKarmaCostAsync(token).ConfigureAwait(false)).ToString(objCulture),
@@ -1189,14 +1191,15 @@ namespace Chummer.Backend.Skills
         {
             using (EnterReadLock.Enter(LockObject))
             {
-                if (!Enabled && !IsNativeLanguage)
+                bool blnIsNativeLanguage = IsNativeLanguage;
+                if (!Enabled && !blnIsNativeLanguage)
                     return 0;
                 int intValue = intAttributeOverrideValue > int.MinValue
                     ? intAttributeOverrideValue
                     : CharacterObject.AttributeSection.GetAttributeByName(strAttribute).TotalValue;
                 if (intValue <= 0)
                     return 0;
-                if (IsNativeLanguage)
+                if (blnIsNativeLanguage)
                     return int.MaxValue;
                 int intRating = Rating;
                 if (intRating > 0)
@@ -1225,7 +1228,8 @@ namespace Chummer.Backend.Skills
         {
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                if (!await GetEnabledAsync(token).ConfigureAwait(false) && !IsNativeLanguage)
+                bool blnIsNativeLanguage = await GetIsNativeLanguageAsync(token).ConfigureAwait(false);
+                if (!await GetEnabledAsync(token).ConfigureAwait(false) && !blnIsNativeLanguage)
                     return 0;
                 int intValue = intAttributeOverrideValue > int.MinValue
                     ? intAttributeOverrideValue
@@ -1233,7 +1237,7 @@ namespace Chummer.Backend.Skills
                         .ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false);
                 if (intValue <= 0)
                     return 0;
-                if (IsNativeLanguage)
+                if (blnIsNativeLanguage)
                     return int.MaxValue;
                 int intRating = await GetRatingAsync(token).ConfigureAwait(false);
                 if (intRating > 0)
@@ -2539,6 +2543,14 @@ namespace Chummer.Backend.Skills
 
         public virtual bool IsLanguage => false;
 
+#pragma warning disable CS1998
+        public virtual async ValueTask<bool> GetIsLanguageAsync(CancellationToken token = default)
+#pragma warning restore CS1998
+        {
+            token.ThrowIfCancellationRequested();
+            return false;
+        }
+
         public virtual bool IsNativeLanguage
         {
             get => false;
@@ -2547,6 +2559,14 @@ namespace Chummer.Backend.Skills
             {
                 // Dummy setter that is only set up so that Language skills can have a setter that is functional
             }
+        }
+
+#pragma warning disable CS1998
+        public virtual async ValueTask<bool> GetIsNativeLanguageAsync(CancellationToken token = default)
+#pragma warning restore CS1998
+        {
+            token.ThrowIfCancellationRequested();
+            return false;
         }
 
         private string _strDictionaryKey;
@@ -3127,7 +3147,8 @@ namespace Chummer.Backend.Skills
         {
             using (EnterReadLock.Enter(LockObject))
             {
-                if (!Default && !Leveled && !IsNativeLanguage)
+                bool blnIsNativeLanguage = IsNativeLanguage;
+                if (!Default && !Leveled && !blnIsNativeLanguage)
                 {
                     return strExtraStart + LanguageManager.GetString("Tip_Skill_Cannot_Default");
                 }
@@ -3148,7 +3169,7 @@ namespace Chummer.Backend.Skills
                         att.DisplayNameShort(GlobalSettings.Language));
                 }
 
-                if (IsNativeLanguage)
+                if (blnIsNativeLanguage)
                 {
                     return strExtraStart + LanguageManager.GetString("Tip_Skill_NativeLanguage");
                 }
@@ -3419,8 +3440,10 @@ namespace Chummer.Backend.Skills
         {
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                if (!await GetDefaultAsync(token).ConfigureAwait(false) &&
-                    !await GetLeveledAsync(token).ConfigureAwait(false) && !IsNativeLanguage)
+                bool blnIsNativeLanguage = await GetIsNativeLanguageAsync(token).ConfigureAwait(false);
+                if (!await GetDefaultAsync(token).ConfigureAwait(false)
+                    && !await GetLeveledAsync(token).ConfigureAwait(false)
+                    && !blnIsNativeLanguage)
                 {
                     return strExtraStart + await LanguageManager
                         .GetStringAsync("Tip_Skill_Cannot_Default", token: token).ConfigureAwait(false);
@@ -3444,7 +3467,7 @@ namespace Chummer.Backend.Skills
                         await att.DisplayNameShortAsync(GlobalSettings.Language, token).ConfigureAwait(false));
                 }
 
-                if (IsNativeLanguage)
+                if (blnIsNativeLanguage)
                 {
                     return strExtraStart + await LanguageManager
                         .GetStringAsync("Tip_Skill_NativeLanguage", token: token).ConfigureAwait(false);
@@ -4031,13 +4054,21 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        public virtual string DisplayPool
+        public string DisplayPool
         {
             get
             {
                 using (EnterReadLock.Enter(LockObject))
-                    return DisplayOtherAttribute(Attribute);
+                    return IsNativeLanguage ? LanguageManager.GetString("Skill_NativeLanguageShort") : DisplayOtherAttribute(Attribute);
             }
+        }
+
+        public async Task<string> GetDisplayPoolAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                return await GetIsNativeLanguageAsync(token).ConfigureAwait(false)
+                    ? await LanguageManager.GetStringAsync("Skill_NativeLanguageShort", token: token).ConfigureAwait(false)
+                    : await DisplayOtherAttributeAsync(Attribute, token).ConfigureAwait(false);
         }
 
         public string DisplayOtherAttribute(string strAttribute)
@@ -4416,13 +4447,24 @@ namespace Chummer.Backend.Skills
                             new DependencyGraphNode<string, Skill>(nameof(RelevantImprovements)))),
                     new DependencyGraphNode<string, Skill>(nameof(DisplayPool),
                         new DependencyGraphNode<string, Skill>(nameof(IsNativeLanguage)),
-                        new DependencyGraphNode<string, Skill>(nameof(DisplayOtherAttribute),
+                        new DependencyGraphNode<string, Skill>(nameof(Attribute), x => !x.IsNativeLanguage),
+                        new DependencyGraphNode<string, Skill>(nameof(DisplayOtherAttribute), x => !x.IsNativeLanguage,
                             new DependencyGraphNode<string, Skill>(nameof(PoolOtherAttribute),
                                 new DependencyGraphNode<string, Skill>(nameof(Enabled)),
                                 new DependencyGraphNode<string, Skill>(nameof(IsNativeLanguage)),
                                 new DependencyGraphNode<string, Skill>(nameof(Rating)),
                                 new DependencyGraphNode<string, Skill>(nameof(GetSpecializationBonus),
-                                    new DependencyGraphNode<string, Skill>(nameof(Specializations))
+                                    new DependencyGraphNode<string, Skill>(nameof(IsExoticSkill)),
+                                    new DependencyGraphNode<string, Skill>(nameof(Specializations)),
+                                    new DependencyGraphNode<string, Skill>(nameof(TotalBaseRating)),
+                                    new DependencyGraphNode<string, Skill>(nameof(GetSpecialization),
+                                        new DependencyGraphNode<string, Skill>(nameof(IsExoticSkill)),
+                                        new DependencyGraphNode<string, Skill>(nameof(Specializations)),
+                                        new DependencyGraphNode<string, Skill>(nameof(HasSpecialization),
+                                            new DependencyGraphNode<string, Skill>(nameof(IsExoticSkill)),
+                                            new DependencyGraphNode<string, Skill>(nameof(Specializations))
+                                        )
+                                    )
                                 ),
                                 new DependencyGraphNode<string, Skill>(nameof(PoolModifiers),
                                     new DependencyGraphNode<string, Skill>(nameof(Bonus),
@@ -4438,7 +4480,8 @@ namespace Chummer.Backend.Skills
                             ),
                             new DependencyGraphNode<string, Skill>(nameof(DictionaryKey)),
                             new DependencyGraphNode<string, Skill>(nameof(IsExoticSkill)),
-                            new DependencyGraphNode<string, Skill>(nameof(Specializations))
+                            new DependencyGraphNode<string, Skill>(nameof(Specializations)),
+                            new DependencyGraphNode<string, Skill>(nameof(GetSpecializationBonus))
                         ),
                         new DependencyGraphNode<string, Skill>(nameof(Pool),
                             new DependencyGraphNode<string, Skill>(nameof(AttributeModifiers),

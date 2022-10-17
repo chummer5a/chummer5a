@@ -21,6 +21,7 @@ using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
 using Chummer.Backend.Skills;
 using Chummer.Properties;
@@ -39,10 +40,13 @@ namespace Chummer.UI.Skills
         private readonly ButtonWithToolTip btnCareerIncrease;
         // ReSharper restore PrivateFieldCanBeConvertedToLocalVariable
 
-        public SkillGroupControl(SkillGroup skillGroup)
+        private readonly CancellationToken _objMyToken;
+
+        public SkillGroupControl(SkillGroup skillGroup, CancellationToken objMyToken = default)
         {
             if (skillGroup == null)
                 return;
+            _objMyToken = objMyToken;
             _skillGroup = skillGroup;
             InitializeComponent();
             Disposed += (sender, args) => UnbindSkillGroupControl();
@@ -149,16 +153,30 @@ namespace Chummer.UI.Skills
 
         private async void btnCareerIncrease_Click(object sender, EventArgs e)
         {
-            using (await EnterReadLock.EnterAsync(_skillGroup.LockObject).ConfigureAwait(false))
+            try
             {
-                string confirmstring = string.Format(GlobalSettings.CultureInfo,
-                    await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpense").ConfigureAwait(false),
-                    _skillGroup.CurrentDisplayName, _skillGroup.Rating + 1, _skillGroup.UpgradeKarmaCost);
+                using (await EnterReadLock.EnterAsync(_skillGroup.LockObject, _objMyToken).ConfigureAwait(false))
+                {
+                    string strConfirm = string.Format(GlobalSettings.CultureInfo,
+                                                      await LanguageManager
+                                                            .GetStringAsync(
+                                                                "Message_ConfirmKarmaExpense", token: _objMyToken)
+                                                            .ConfigureAwait(false),
+                                                      await _skillGroup.GetCurrentDisplayNameAsync(_objMyToken)
+                                                                       .ConfigureAwait(false),
+                                                      await _skillGroup.GetRatingAsync(_objMyToken)
+                                                                       .ConfigureAwait(false) + 1,
+                                                      _skillGroup.UpgradeKarmaCost);
 
-                if (!await CommonFunctions.ConfirmKarmaExpenseAsync(confirmstring).ConfigureAwait(false))
-                    return;
+                    if (!await CommonFunctions.ConfirmKarmaExpenseAsync(strConfirm, _objMyToken).ConfigureAwait(false))
+                        return;
 
-                await _skillGroup.Upgrade().ConfigureAwait(false);
+                    await _skillGroup.Upgrade(_objMyToken).ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
             }
         }
 

@@ -380,15 +380,6 @@ namespace Chummer.Backend.Skills
 
         public override string SkillCategory => Type;
 
-        public override string DisplayPool
-        {
-            get
-            {
-                using (EnterReadLock.Enter(LockObject))
-                    return IsNativeLanguage ? LanguageManager.GetString("Skill_NativeLanguageShort") : base.DisplayPool;
-            }
-        }
-
         // ReSharper disable once InconsistentNaming
         private int _intCachedCyberwareRating = int.MinValue;
 
@@ -520,7 +511,9 @@ namespace Chummer.Backend.Skills
         public override async ValueTask<string> DisplaySpecializationAsync(string strLanguage, CancellationToken token = default)
         {
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
-                return IsNativeLanguage ? string.Empty : await base.DisplaySpecializationAsync(strLanguage, token).ConfigureAwait(false);
+                return await GetIsNativeLanguageAsync(token).ConfigureAwait(false)
+                    ? string.Empty
+                    : await base.DisplaySpecializationAsync(strLanguage, token).ConfigureAwait(false);
         }
 
         public string Type
@@ -600,7 +593,7 @@ namespace Chummer.Backend.Skills
                     }
 
                     OnPropertyChanged(nameof(Type));
-                    if (!IsLanguage)
+                    if (!await GetIsLanguageAsync(token).ConfigureAwait(false))
                         IsNativeLanguage = false;
                 }
                 finally
@@ -611,6 +604,11 @@ namespace Chummer.Backend.Skills
         }
 
         public override bool IsLanguage => Type == "Language";
+
+        public override async ValueTask<bool> GetIsLanguageAsync(CancellationToken token = default)
+        {
+            return await GetTypeAsync(token).ConfigureAwait(false) == "Language";
+        }
 
         public override bool IsNativeLanguage
         {
@@ -640,6 +638,12 @@ namespace Chummer.Backend.Skills
                     }
                 }
             }
+        }
+
+        public override async ValueTask<bool> GetIsNativeLanguageAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                return _blnIsNativeLanguage;
         }
 
         /// <summary>

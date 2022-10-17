@@ -235,6 +235,17 @@ namespace Chummer
             }
         }
 
+        public async ValueTask<SourceString> GetSourceDetailAsync(CancellationToken token = default)
+        {
+            if (_objCachedSourceDetail == default)
+                _objCachedSourceDetail = await SourceString.GetSourceStringAsync(Source,
+                    await DisplayPageAsync(GlobalSettings.Language, token).ConfigureAwait(false),
+                    GlobalSettings.Language,
+                    GlobalSettings.CultureInfo,
+                    CharacterObject, token).ConfigureAwait(false);
+            return _objCachedSourceDetail;
+        }
+
         /// <summary>
         /// Load the Power from the XmlNode.
         /// </summary>
@@ -710,7 +721,10 @@ namespace Chummer
         /// </summary>
         public async ValueTask<int> GetTotalRatingAsync(CancellationToken token = default)
         {
-            return Math.Min(await GetRatingAsync(token).ConfigureAwait(false) + await GetFreeLevelsAsync(token).ConfigureAwait(false), await GetTotalMaximumLevelsAsync(token).ConfigureAwait(false));
+            return Math.Min(
+                await GetRatingAsync(token).ConfigureAwait(false)
+                + await GetFreeLevelsAsync(token).ConfigureAwait(false),
+                await GetTotalMaximumLevelsAsync(token).ConfigureAwait(false));
         }
 
         public bool DoesNotHaveFreeLevels => FreeLevels == 0;
@@ -885,6 +899,13 @@ namespace Chummer
                     _strCachedPowerPoints = PowerPoints.ToString(GlobalSettings.CultureInfo);
                 return _strCachedPowerPoints;
             }
+        }
+
+        public async ValueTask<string> GetDisplayPointsAsync(CancellationToken token = default)
+        {
+            if (string.IsNullOrEmpty(_strCachedPowerPoints))
+                _strCachedPowerPoints = (await GetPowerPointsAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
+            return _strCachedPowerPoints;
         }
 
         /// <summary>
@@ -1077,6 +1098,9 @@ namespace Chummer
         /// Translated Action.
         /// </summary>
         public string DisplayAction => DisplayActionMethod(GlobalSettings.Language);
+
+        public Task<string> GetDisplayActionAsync(CancellationToken token = default) =>
+            DisplayActionMethodAsync(GlobalSettings.Language, token);
 
         /// <summary>
         /// Translated Action.
@@ -1483,6 +1507,38 @@ namespace Chummer
 
                     return sbdModifier.ToString();
                 }
+            }
+        }
+
+        /// <summary>
+        /// ToolTip that shows how the Power is calculating its Modified Rating.
+        /// </summary>
+        public async ValueTask<string> GetToolTipAsync(CancellationToken token = default)
+        {
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdModifier))
+            {
+                sbdModifier.Append(await LanguageManager.GetStringAsync("String_Rating", token: token)
+                                                        .ConfigureAwait(false)).Append(strSpace).Append('(')
+                           .Append((await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo)).Append(strSpace)
+                           .Append('×')
+                           .Append(strSpace).Append(PointsPerLevel.ToString(GlobalSettings.CultureInfo))
+                           .Append(')');
+                foreach (Improvement objImprovement in (await ImprovementManager
+                                                              .GetCachedImprovementListForValueOfAsync(
+                                                                  CharacterObject,
+                                                                  Improvement.ImprovementType.AdeptPower,
+                                                                  Name, token: token).ConfigureAwait(false)).Where(
+                             objImprovement =>
+                                 objImprovement.UniqueName == Extra))
+                {
+                    sbdModifier.Append(strSpace).Append('+').Append(strSpace)
+                               .Append(await CharacterObject.GetObjectNameAsync(objImprovement, token: token)
+                                                            .ConfigureAwait(false)).Append(strSpace).Append('(')
+                               .Append(objImprovement.Rating.ToString(GlobalSettings.CultureInfo)).Append(')');
+                }
+
+                return sbdModifier.ToString();
             }
         }
 
