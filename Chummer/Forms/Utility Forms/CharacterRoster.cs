@@ -336,7 +336,7 @@ namespace Chummer
             }
         }
 
-        private bool _blnIsClosing;
+        private int _intIsClosing;
 
         private async void CharacterRoster_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -345,9 +345,8 @@ namespace Chummer
                 CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
                 try
                 {
-                    if (_blnIsClosing)
+                    if (Interlocked.CompareExchange(ref _intIsClosing, 1, 0) > 0) // Needed to prevent crashes on disposal
                         return;
-                    _blnIsClosing = true; // Needed to prevent crashes on disposal
                     CancellationTokenSource objTemp
                         = Interlocked.Exchange(ref _objMostRecentlyUsedsRefreshCancellationTokenSource, null);
                     if (objTemp?.IsCancellationRequested == false)

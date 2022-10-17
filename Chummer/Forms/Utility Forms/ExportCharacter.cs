@@ -53,7 +53,7 @@ namespace Chummer
         private string _strXslt;
         private string _strExportLanguage;
         private CultureInfo _objExportCulture;
-        private bool _blnLoading = true;
+        private int _intLoading = 1;
 
         public Character CharacterObject => _objCharacter;
 
@@ -110,7 +110,7 @@ namespace Chummer
                     }, _objGenericToken).ConfigureAwait(false);
                 }
 
-                _blnLoading = false;
+                Interlocked.Decrement(ref _intLoading);
                 await UpdateWindowTitleAsync(_objGenericToken).ConfigureAwait(false);
                 await DoLanguageUpdate(_objGenericToken).ConfigureAwait(false);
             }
@@ -262,7 +262,7 @@ namespace Chummer
         private async Task DoLanguageUpdate(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (!_blnLoading)
+            if (_intLoading == 0)
             {
                 _strExportLanguage = await cboLanguage.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false) ?? GlobalSettings.Language;
                 try
@@ -292,7 +292,7 @@ namespace Chummer
         private async Task DoXsltUpdate(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (!_blnLoading)
+            if (_intLoading == 0)
             {
                 if (_objCharacterXml != null)
                 {
@@ -412,14 +412,14 @@ namespace Chummer
 
         private void txtText_Leave(object sender, EventArgs e)
         {
-            if (_blnLoading)
+            if (_intLoading > 0)
                 return;
             _blnSelected = false;
         }
 
         private void txtText_MouseUp(object sender, MouseEventArgs e)
         {
-            if (_blnLoading || _blnSelected || txtText.SelectionLength != 0)
+            if (_intLoading > 0 || _blnSelected || txtText.SelectionLength != 0)
                 return;
             _blnSelected = true;
             txtText.SelectAll();

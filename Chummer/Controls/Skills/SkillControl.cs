@@ -725,7 +725,7 @@ namespace Chummer.UI.Skills
                 using (ThreadSafeForm<EditNotes> frmItemNotes = await ThreadSafeForm<EditNotes>
                                                                       .GetAsync(
                                                                           () => new EditNotes(
-                                                                              _objSkill.Notes, _objSkill.NotesColor),
+                                                                              _objSkill.Notes, _objSkill.NotesColor, _objMyToken),
                                                                           _objMyToken).ConfigureAwait(false))
                 {
                     if (await frmItemNotes.ShowDialogSafeAsync(_objSkill.CharacterObject, _objMyToken)

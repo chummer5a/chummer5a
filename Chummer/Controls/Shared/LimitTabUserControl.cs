@@ -68,7 +68,7 @@ namespace Chummer.UI.Shared
             }
         }
 
-        public Task RealLoad()
+        public Task RealLoad(CancellationToken token = default)
         {
             if (ParentForm is CharacterShared frmParent)
                 _objCharacter = frmParent.CharacterObject;
@@ -92,7 +92,7 @@ namespace Chummer.UI.Shared
             lblAstral.DoOneWayDataBinding("ToolTipText", _objCharacter, nameof(Character.LimitAstralToolTip));
 
             _objCharacter.LimitModifiers.CollectionChanged += LimitModifierCollectionChanged;
-            return RefreshLimitModifiers();
+            return RefreshLimitModifiers(token: token);
         }
 
         #region Click Events

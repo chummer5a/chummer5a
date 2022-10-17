@@ -39,7 +39,7 @@ namespace Chummer
         private readonly Character _objCharacter;
         private string _strCurrentPossessionMethod;
 
-        private bool _blnLoading = true;
+        private int _intLoading = 1;
         private readonly Dictionary<string, int> _dicSumtoTenValues;
         private readonly List<string> _lstPrioritySkills;
         private readonly List<string> _lstPriorities;
@@ -122,7 +122,8 @@ namespace Chummer
 
                     // Populate the Priority Category list.
                     XPathNavigator xmlBasePrioritiesNode
-                        = await _xmlBasePriorityDataNode.SelectSingleNodeAndCacheExpressionAsync("priorities").ConfigureAwait(false);
+                        = await _xmlBasePriorityDataNode.SelectSingleNodeAndCacheExpressionAsync("priorities")
+                                                        .ConfigureAwait(false);
                     if (xmlBasePrioritiesNode != null)
                     {
                         foreach (XPathNavigator objXmlPriorityCategory in await _xmlBasePriorityDataNode
@@ -148,7 +149,8 @@ namespace Chummer
                                     foreach (XPathNavigator objXmlPriority in objItems)
                                     {
                                         string strValue
-                                            = (await objXmlPriority.SelectSingleNodeAndCacheExpressionAsync("value").ConfigureAwait(false))
+                                            = (await objXmlPriority.SelectSingleNodeAndCacheExpressionAsync("value")
+                                                                   .ConfigureAwait(false))
                                             ?.Value;
                                         if (!string.IsNullOrEmpty(strValue) && _lstPriorities.Contains(strValue))
                                         {
@@ -161,7 +163,8 @@ namespace Chummer
                                                              (await objXmlPriority
                                                                     .SelectSingleNodeAndCacheExpressionAsync(
                                                                         "name").ConfigureAwait(false))?.Value ??
-                                                             await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false)));
+                                                             await LanguageManager.GetStringAsync("String_Unknown")
+                                                                 .ConfigureAwait(false)));
                                         }
                                     }
 
@@ -169,7 +172,8 @@ namespace Chummer
                                     switch (objXmlPriorityCategory.Value)
                                     {
                                         case "Heritage":
-                                            await cboHeritage.PopulateWithListItemsAsync(lstItems).ConfigureAwait(false);
+                                            await cboHeritage.PopulateWithListItemsAsync(lstItems)
+                                                             .ConfigureAwait(false);
                                             break;
 
                                         case "Talent":
@@ -177,7 +181,8 @@ namespace Chummer
                                             break;
 
                                         case "Attributes":
-                                            await cboAttributes.PopulateWithListItemsAsync(lstItems).ConfigureAwait(false);
+                                            await cboAttributes.PopulateWithListItemsAsync(lstItems)
+                                                               .ConfigureAwait(false);
                                             break;
 
                                         case "Skills":
@@ -185,7 +190,8 @@ namespace Chummer
                                             break;
 
                                         case "Resources":
-                                            await cboResources.PopulateWithListItemsAsync(lstItems).ConfigureAwait(false);
+                                            await cboResources.PopulateWithListItemsAsync(lstItems)
+                                                              .ConfigureAwait(false);
                                             break;
                                     }
                                 }
@@ -200,28 +206,33 @@ namespace Chummer
                         await cboAttributes.DoThreadSafeAsync(x => x.SelectedIndex
                                                                   = x.FindString(_objCharacter.AttributesPriority[0]
                                                                       .ToString(GlobalSettings
-                                                                          .InvariantCultureInfo))).ConfigureAwait(false);
+                                                                          .InvariantCultureInfo)))
+                                           .ConfigureAwait(false);
                         //Heritage (Metatype)
                         await cboHeritage.DoThreadSafeAsync(x => x.SelectedIndex
                                                                 = x.FindString(_objCharacter.MetatypePriority[0]
                                                                                    .ToString(GlobalSettings
-                                                                                       .InvariantCultureInfo))).ConfigureAwait(false);
+                                                                                       .InvariantCultureInfo)))
+                                         .ConfigureAwait(false);
                         //Resources
                         await cboResources.DoThreadSafeAsync(x => x.SelectedIndex
                                                                  = x.FindString(_objCharacter.ResourcesPriority[0]
                                                                      .ToString(GlobalSettings
-                                                                                   .InvariantCultureInfo))).ConfigureAwait(false);
+                                                                                   .InvariantCultureInfo)))
+                                          .ConfigureAwait(false);
                         //Skills
                         await cboSkills.DoThreadSafeAsync(x => x.SelectedIndex
                                                               = x.FindString(_objCharacter.SkillsPriority[0]
                                                                                  .ToString(GlobalSettings
-                                                                                     .InvariantCultureInfo))).ConfigureAwait(false);
+                                                                                     .InvariantCultureInfo)))
+                                       .ConfigureAwait(false);
                         //Magical/Resonance Talent
                         await cboTalent.DoThreadSafeAsync(x => x.SelectedIndex
                                                               = x.FindString(_objCharacter.SpecialPriority[0]
                                                                                  .ToString(
                                                                                      GlobalSettings
-                                                                                         .InvariantCultureInfo))).ConfigureAwait(false);
+                                                                                         .InvariantCultureInfo)))
+                                       .ConfigureAwait(false);
 
                         await LoadMetatypes().ConfigureAwait(false);
                         await PopulateMetatypes().ConfigureAwait(false);
@@ -317,7 +328,9 @@ namespace Chummer
                     // Set up possession boxes
                     // Add Possession and Inhabitation to the list of Critter Tradition variations.
                     await chkPossessionBased.SetToolTipAsync(
-                        await LanguageManager.GetStringAsync("Tip_Metatype_PossessionTradition").ConfigureAwait(false)).ConfigureAwait(false);
+                                                await LanguageManager.GetStringAsync("Tip_Metatype_PossessionTradition")
+                                                                     .ConfigureAwait(false))
+                                            .ConfigureAwait(false);
 
                     using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                                    out List<ListItem> lstMethods))
@@ -344,7 +357,7 @@ namespace Chummer
                         await cboPossessionMethod.PopulateWithListItemsAsync(lstMethods).ConfigureAwait(false);
                     }
 
-                    _blnLoading = false;
+                    Interlocked.Decrement(ref _intLoading);
                 }
                 finally
                 {
@@ -363,7 +376,7 @@ namespace Chummer
 
         private async void lstMetatypes_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_blnLoading)
+            if (_intLoading > 0)
                 return;
             CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
             try
@@ -555,7 +568,6 @@ namespace Chummer
                                 }
 
                                 lstSkills.Sort(CompareListItems.CompareNames);
-                                bool blnOldLoading = _blnLoading;
                                 int intOldSelectedIndex = await cboSkill1
                                                                 .DoThreadSafeFuncAsync(x => x.SelectedIndex, token)
                                                                 .ConfigureAwait(false);
@@ -570,10 +582,17 @@ namespace Chummer
                                 }, token).ConfigureAwait(false);
                                 if (intOldDataSourceSize == lstSkills.Count)
                                 {
-                                    _blnLoading = true;
-                                    await cboSkill1.DoThreadSafeAsync(x => x.SelectedIndex = intOldSelectedIndex, token)
-                                                   .ConfigureAwait(false);
-                                    _blnLoading = blnOldLoading;
+                                    Interlocked.Increment(ref _intLoading);
+                                    try
+                                    {
+                                        await cboSkill1
+                                              .DoThreadSafeAsync(x => x.SelectedIndex = intOldSelectedIndex, token)
+                                              .ConfigureAwait(false);
+                                    }
+                                    finally
+                                    {
+                                        Interlocked.Decrement(ref _intLoading);
+                                    }
                                 }
 
                                 if (intSkillCount > 1)
@@ -592,11 +611,17 @@ namespace Chummer
                                     }, token).ConfigureAwait(false);
                                     if (intOldDataSourceSize2 == lstSkills.Count)
                                     {
-                                        _blnLoading = true;
-                                        await cboSkill2
-                                              .DoThreadSafeAsync(x => x.SelectedIndex = intOldSelectedIndex2, token)
-                                              .ConfigureAwait(false);
-                                        _blnLoading = blnOldLoading;
+                                        Interlocked.Increment(ref _intLoading);
+                                        try
+                                        {
+                                            await cboSkill2
+                                                  .DoThreadSafeAsync(x => x.SelectedIndex = intOldSelectedIndex2, token)
+                                                  .ConfigureAwait(false);
+                                        }
+                                        finally
+                                        {
+                                            Interlocked.Decrement(ref _intLoading);
+                                        }
                                     }
 
                                     if (await cboSkill2.DoThreadSafeFuncAsync(x => x.SelectedIndex, token)
@@ -643,11 +668,17 @@ namespace Chummer
                                         }, token).ConfigureAwait(false);
                                         if (intOldDataSourceSize3 == lstSkills.Count)
                                         {
-                                            _blnLoading = true;
-                                            await cboSkill3
-                                                  .DoThreadSafeAsync(x => x.SelectedIndex = intOldSelectedIndex3, token)
-                                                  .ConfigureAwait(false);
-                                            _blnLoading = blnOldLoading;
+                                            Interlocked.Increment(ref _intLoading);
+                                            try
+                                            {
+                                                await cboSkill3
+                                                      .DoThreadSafeAsync(x => x.SelectedIndex = intOldSelectedIndex3, token)
+                                                      .ConfigureAwait(false);
+                                            }
+                                            finally
+                                            {
+                                                Interlocked.Decrement(ref _intLoading);
+                                            }
                                         }
 
                                         if ((await cboSkill3.DoThreadSafeFuncAsync(x => x.SelectedIndex, token)
@@ -786,7 +817,7 @@ namespace Chummer
 
         private async void cboMetavariant_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_blnLoading)
+            if (_intLoading > 0)
                 return;
             CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
             try
@@ -820,7 +851,7 @@ namespace Chummer
 
         private async void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_blnLoading)
+            if (_intLoading > 0)
                 return;
             CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
             try
@@ -847,7 +878,7 @@ namespace Chummer
 
         private async void cboHeritage_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_blnLoading)
+            if (_intLoading > 0)
                 return;
             CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
             try
@@ -884,7 +915,7 @@ namespace Chummer
 
         private async void cboTalent_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_blnLoading)
+            if (_intLoading > 0)
                 return;
             CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
             try
@@ -918,7 +949,7 @@ namespace Chummer
 
         private async void cboAttributes_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_blnLoading)
+            if (_intLoading > 0)
                 return;
             CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
             try
@@ -950,7 +981,7 @@ namespace Chummer
 
         private async void cboSkills_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_blnLoading)
+            if (_intLoading > 0)
                 return;
             CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
             try
@@ -982,7 +1013,7 @@ namespace Chummer
 
         private async void cboResources_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_blnLoading)
+            if (_intLoading > 0)
                 return;
             CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
             try
@@ -2580,10 +2611,16 @@ namespace Chummer
                 await cboTalents.PopulateWithListItemsAsync(lstTalent, token).ConfigureAwait(false);
                 if (intOldDataSourceSize == await cboTalents.DoThreadSafeFuncAsync(x => x.Items.Count, token).ConfigureAwait(false))
                 {
-                    bool blnOldLoading = _blnLoading;
-                    _blnLoading = true;
-                    await cboTalents.DoThreadSafeAsync(x => x.SelectedIndex = intOldSelectedIndex, token).ConfigureAwait(false);
-                    _blnLoading = blnOldLoading;
+                    Interlocked.Increment(ref _intLoading);
+                    try
+                    {
+                        await cboTalents.DoThreadSafeAsync(x => x.SelectedIndex = intOldSelectedIndex, token)
+                                        .ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        Interlocked.Decrement(ref _intLoading);
+                    }
                 }
 
                 await cboTalents.DoThreadSafeAsync(x => x.Enabled = x.Items.Count > 1, token).ConfigureAwait(false);
@@ -2637,11 +2674,19 @@ namespace Chummer
 
                         string strOldSelectedValue
                             = await cboMetavariant.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false) ?? _objCharacter.Metavariant;
-                        bool blnOldLoading = _blnLoading;
-                        _blnLoading = true;
-                        await cboMetavariant.PopulateWithListItemsAsync(lstMetavariants, token).ConfigureAwait(false);
-                        await cboMetavariant.DoThreadSafeAsync(x => x.Enabled = lstMetavariants.Count > 1, token).ConfigureAwait(false);
-                        _blnLoading = blnOldLoading;
+                        Interlocked.Increment(ref _intLoading);
+                        try
+                        {
+                            await cboMetavariant.PopulateWithListItemsAsync(lstMetavariants, token)
+                                                .ConfigureAwait(false);
+                            await cboMetavariant.DoThreadSafeAsync(x => x.Enabled = lstMetavariants.Count > 1, token)
+                                                .ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            Interlocked.Decrement(ref _intLoading);
+                        }
+                        
                         await cboMetavariant.DoThreadSafeAsync(x =>
                         {
                             if (!string.IsNullOrEmpty(strOldSelectedValue))
@@ -2757,10 +2802,16 @@ namespace Chummer
 
                     lstMetatype.Sort(CompareListItems.CompareNames);
                     string strOldSelectedValue = await lstMetatypes.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false) ?? _objCharacter.Metatype;
-                    bool blnOldLoading = _blnLoading;
-                    _blnLoading = true;
-                    await lstMetatypes.PopulateWithListItemsAsync(lstMetatype, token).ConfigureAwait(false);
-                    _blnLoading = blnOldLoading;
+                    Interlocked.Increment(ref _intLoading);
+                    try
+                    {
+                        await lstMetatypes.PopulateWithListItemsAsync(lstMetatype, token).ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        Interlocked.Decrement(ref _intLoading);
+                    }
+                    
                     await lstMetatypes.DoThreadSafeAsync(x =>
                     {
                         if (!string.IsNullOrEmpty(strOldSelectedValue))
@@ -2866,10 +2917,16 @@ namespace Chummer
 
                     lstCategory.Sort(CompareListItems.CompareNames);
                     string strOldSelected = await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false) ?? _objCharacter.MetatypeCategory;
-                    bool blnOldLoading = _blnLoading;
-                    _blnLoading = true;
-                    await cboCategory.PopulateWithListItemsAsync(lstCategory, token).ConfigureAwait(false);
-                    _blnLoading = blnOldLoading;
+                    Interlocked.Increment(ref _intLoading);
+                    try
+                    {
+                        await cboCategory.PopulateWithListItemsAsync(lstCategory, token).ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        Interlocked.Decrement(ref _intLoading);
+                    }
+                    
                     await cboCategory.DoThreadSafeAsync(x =>
                     {
                         if (!string.IsNullOrEmpty(strOldSelected))

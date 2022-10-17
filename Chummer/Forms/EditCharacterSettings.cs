@@ -44,7 +44,7 @@ namespace Chummer
         // List of custom data directory infos on the character, in load order. If the character has a directory name for which we have no info, key will be a string instead of an info
         private readonly TypedOrderedDictionary<object, bool> _dicCharacterCustomDataDirectoryInfos = new TypedOrderedDictionary<object, bool>();
 
-        private bool _blnLoading = true;
+        private int _intLoading = 1;
         private bool _blnSkipLimbCountUpdate;
         private bool _blnDirty;
         private bool _blnSourcebookToggle = true;
@@ -110,7 +110,7 @@ namespace Chummer
             SetupDataBindings();
 
             await SetIsDirty(false).ConfigureAwait(false);
-            _blnLoading = false;
+            Interlocked.Decrement(ref _intLoading);
             _blnIsLayoutSuspended = false;
         }
 
@@ -166,7 +166,7 @@ namespace Chummer
                     {
                         ListItem objNewListItem = new ListItem(_lstSettings[intCurrentSelectedSettingIndex].Value,
                                                                _objCharacterSettings.DisplayName);
-                        _blnLoading = true;
+                        Interlocked.Increment(ref _intLoading);
                         try
                         {
                             _lstSettings[intCurrentSelectedSettingIndex] = objNewListItem;
@@ -175,7 +175,7 @@ namespace Chummer
                         }
                         finally
                         {
-                            _blnLoading = false;
+                            Interlocked.Decrement(ref _intLoading);
                         }
                     }
 
@@ -455,7 +455,7 @@ namespace Chummer
 
         private async void cboSetting_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_blnLoading)
+            if (_intLoading > 0)
                 return;
             string strSelectedFile = await cboSetting.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()).ConfigureAwait(false);
             if (string.IsNullOrEmpty(strSelectedFile))
@@ -473,14 +473,14 @@ namespace Chummer
                 if (Program.ShowMessageBox(text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question) !=
                     DialogResult.Yes)
                 {
-                    _blnLoading = true;
+                    Interlocked.Increment(ref _intLoading);
                     try
                     {
                         await cboSetting.DoThreadSafeFuncAsync(x => x.SelectedIndex = _intOldSelectedSettingIndex).ConfigureAwait(false);
                     }
                     finally
                     {
-                        _blnLoading = false;
+                        Interlocked.Decrement(ref _intLoading);
                     }
                     return;
                 }
@@ -490,7 +490,7 @@ namespace Chummer
             CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
             try
             {
-                _blnLoading = true;
+                Interlocked.Increment(ref _intLoading);
                 try
                 {
                     bool blnDoResumeLayout = !_blnIsLayoutSuspended;
@@ -531,7 +531,7 @@ namespace Chummer
                 }
                 finally
                 {
-                    _blnLoading = false;
+                    Interlocked.Decrement(ref _intLoading);
                 }
 
                 _intOldSelectedSettingIndex = cboSetting.SelectedIndex;
@@ -554,7 +554,7 @@ namespace Chummer
             CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
             try
             {
-                _blnLoading = true;
+                Interlocked.Increment(ref _intLoading);
                 try
                 {
                     bool blnDoResumeLayout = !_blnIsLayoutSuspended;
@@ -594,7 +594,7 @@ namespace Chummer
                 }
                 finally
                 {
-                    _blnLoading = false;
+                    Interlocked.Decrement(ref _intLoading);
                 }
 
                 _intOldSelectedSettingIndex = cboSetting.SelectedIndex;
@@ -607,7 +607,7 @@ namespace Chummer
 
         private void cboLimbCount_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_blnLoading || _blnSkipLimbCountUpdate)
+            if (_intLoading > 0 || _blnSkipLimbCountUpdate)
                 return;
 
             string strLimbCount = cboLimbCount.SelectedValue?.ToString();
@@ -669,7 +669,7 @@ namespace Chummer
 
         private void cmdEnableSourcebooks_Click(object sender, EventArgs e)
         {
-            _blnLoading = true;
+            Interlocked.Increment(ref _intLoading);
             try
             {
                 foreach (TreeNode objNode in treSourcebook.Nodes)
@@ -687,7 +687,7 @@ namespace Chummer
             }
             finally
             {
-                _blnLoading = false;
+                Interlocked.Decrement(ref _intLoading);
             }
             _objCharacterSettings.OnPropertyChanged(nameof(CharacterSettings.Books));
             _blnSourcebookToggle = !_blnSourcebookToggle;
@@ -695,7 +695,7 @@ namespace Chummer
 
         private void treSourcebook_AfterCheck(object sender, TreeViewEventArgs e)
         {
-            if (_blnLoading)
+            if (_intLoading > 0)
                 return;
             TreeNode objNode = e.Node;
             if (objNode == null)
@@ -703,14 +703,14 @@ namespace Chummer
             string strBookCode = objNode.Tag.ToString();
             if (string.IsNullOrEmpty(strBookCode) || (_setPermanentSourcebooks.Contains(strBookCode) && !objNode.Checked))
             {
-                _blnLoading = true;
+                Interlocked.Increment(ref _intLoading);
                 try
                 {
                     objNode.Checked = !objNode.Checked;
                 }
                 finally
                 {
-                    _blnLoading = false;
+                    Interlocked.Decrement(ref _intLoading);
                 }
                 return;
             }
@@ -785,7 +785,7 @@ namespace Chummer
 
         private void treCustomDataDirectories_AfterCheck(object sender, TreeViewEventArgs e)
         {
-            if (_blnLoading)
+            if (_intLoading > 0)
                 return;
             TreeNode objNode = e.Node;
             if (objNode == null)
@@ -866,7 +866,7 @@ namespace Chummer
 
         private async void txtNuyenExpression_TextChanged(object sender, EventArgs e)
         {
-            if (_blnLoading)
+            if (_intLoading > 0)
                 return;
             string strText = await txtNuyenExpression.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false);
             Color objColor
@@ -962,7 +962,7 @@ namespace Chummer
 
         private void cboPriorityTable_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_blnLoading)
+            if (_intLoading > 0)
                 return;
             string strNewPriorityTable = cboPriorityTable.SelectedValue?.ToString();
             if (string.IsNullOrWhiteSpace(strNewPriorityTable))
@@ -1301,19 +1301,25 @@ namespace Chummer
 
                     string strOldSelected = _objCharacterSettings.PriorityTable;
 
-                    bool blnOldLoading = _blnLoading;
-                    _blnLoading = true;
-                    await cboPriorityTable.PopulateWithListItemsAsync(lstPriorityTables, token).ConfigureAwait(false);
-                    await cboPriorityTable.DoThreadSafeAsync(x =>
+                    Interlocked.Increment(ref _intLoading);
+                    try
                     {
-                        if (!string.IsNullOrEmpty(strOldSelected))
-                            x.SelectedValue = strOldSelected;
-                        if (x.SelectedIndex == -1 && lstPriorityTables.Count > 0)
-                            x.SelectedValue = _objReferenceCharacterSettings.PriorityTable;
-                        if (x.SelectedIndex == -1 && lstPriorityTables.Count > 0)
-                            x.SelectedIndex = 0;
-                    }, token).ConfigureAwait(false);
-                    _blnLoading = blnOldLoading;
+                        await cboPriorityTable.PopulateWithListItemsAsync(lstPriorityTables, token)
+                                              .ConfigureAwait(false);
+                        await cboPriorityTable.DoThreadSafeAsync(x =>
+                        {
+                            if (!string.IsNullOrEmpty(strOldSelected))
+                                x.SelectedValue = strOldSelected;
+                            if (x.SelectedIndex == -1 && lstPriorityTables.Count > 0)
+                                x.SelectedValue = _objReferenceCharacterSettings.PriorityTable;
+                            if (x.SelectedIndex == -1 && lstPriorityTables.Count > 0)
+                                x.SelectedIndex = 0;
+                        }, token).ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        Interlocked.Decrement(ref _intLoading);
+                    }
                 }
 
                 string strSelectedTable
@@ -1334,46 +1340,63 @@ namespace Chummer
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
-                using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
-                                                               out List<ListItem> lstLimbCount))
+                _blnSkipLimbCountUpdate = true;
+                try
                 {
-                    foreach (XPathNavigator objXmlNode in await (await XmlManager
-                                                                       .LoadXPathAsync("options.xml",
-                                                                           _objCharacterSettings.EnabledCustomDataDirectoryPaths,
-                                                                           token: token).ConfigureAwait(false))
-                                                                .SelectAndCacheExpressionAsync("/chummer/limbcounts/limb", token: token).ConfigureAwait(false))
+                    using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                                                                   out List<ListItem> lstLimbCount))
                     {
-                        string strExclude = (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("exclude", token: token).ConfigureAwait(false))?.Value
-                                            ??
-                                            string.Empty;
-                        if (!string.IsNullOrEmpty(strExclude))
-                            strExclude = '<' + strExclude;
-                        lstLimbCount.Add(new ListItem(
-                                             (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("limbcount", token: token).ConfigureAwait(false))
-                                             ?.Value + strExclude,
-                                             (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))
-                                             ?.Value
-                                             ?? (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("name", token: token).ConfigureAwait(false))
-                                             ?.Value
-                                             ?? string.Empty));
+                        foreach (XPathNavigator objXmlNode in await (await XmlManager
+                                                                           .LoadXPathAsync("options.xml",
+                                                                               _objCharacterSettings
+                                                                                   .EnabledCustomDataDirectoryPaths,
+                                                                               token: token).ConfigureAwait(false))
+                                                                    .SelectAndCacheExpressionAsync(
+                                                                        "/chummer/limbcounts/limb", token: token)
+                                                                    .ConfigureAwait(false))
+                        {
+                            string strExclude
+                                = (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("exclude", token: token)
+                                                   .ConfigureAwait(false))?.Value
+                                  ??
+                                  string.Empty;
+                            if (!string.IsNullOrEmpty(strExclude))
+                                strExclude = '<' + strExclude;
+                            lstLimbCount.Add(new ListItem(
+                                                 (await objXmlNode
+                                                        .SelectSingleNodeAndCacheExpressionAsync(
+                                                            "limbcount", token: token).ConfigureAwait(false))
+                                                 ?.Value + strExclude,
+                                                 (await objXmlNode
+                                                        .SelectSingleNodeAndCacheExpressionAsync(
+                                                            "translate", token: token).ConfigureAwait(false))
+                                                 ?.Value
+                                                 ?? (await objXmlNode
+                                                           .SelectSingleNodeAndCacheExpressionAsync(
+                                                               "name", token: token).ConfigureAwait(false))
+                                                 ?.Value
+                                                 ?? string.Empty));
+                        }
+
+                        string strLimbSlot
+                            = _objCharacterSettings.LimbCount.ToString(GlobalSettings.InvariantCultureInfo);
+                        if (!string.IsNullOrEmpty(_objCharacterSettings.ExcludeLimbSlot))
+                            strLimbSlot += '<' + _objCharacterSettings.ExcludeLimbSlot;
+
+                        await cboLimbCount.PopulateWithListItemsAsync(lstLimbCount, token).ConfigureAwait(false);
+                        await cboLimbCount.DoThreadSafeAsync(x =>
+                        {
+                            if (!string.IsNullOrEmpty(strLimbSlot))
+                                x.SelectedValue = strLimbSlot;
+                            if (x.SelectedIndex == -1 && lstLimbCount.Count > 0)
+                                x.SelectedIndex = 0;
+                        }, token).ConfigureAwait(false);
                     }
-
-                    string strLimbSlot = _objCharacterSettings.LimbCount.ToString(GlobalSettings.InvariantCultureInfo);
-                    if (!string.IsNullOrEmpty(_objCharacterSettings.ExcludeLimbSlot))
-                        strLimbSlot += '<' + _objCharacterSettings.ExcludeLimbSlot;
-
-                    _blnSkipLimbCountUpdate = true;
-                    await cboLimbCount.PopulateWithListItemsAsync(lstLimbCount, token).ConfigureAwait(false);
-                    await cboLimbCount.DoThreadSafeAsync(x =>
-                    {
-                        if (!string.IsNullOrEmpty(strLimbSlot))
-                            x.SelectedValue = strLimbSlot;
-                        if (x.SelectedIndex == -1 && lstLimbCount.Count > 0)
-                            x.SelectedIndex = 0;
-                    }, token).ConfigureAwait(false);
                 }
-
-                _blnSkipLimbCountUpdate = false;
+                finally
+                {
+                    _blnSkipLimbCountUpdate = false;
+                }
             }
             finally
             {
@@ -1720,7 +1743,7 @@ namespace Chummer
             try
             {
                 string strSelect = string.Empty;
-                if (!_blnLoading)
+                if (_intLoading == 0)
                     strSelect = await cboSetting.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false);
                 _lstSettings.Clear();
                 foreach (KeyValuePair<string, CharacterSettings> kvpCharacterSettingsEntry in await SettingsManager.GetLoadedCharacterSettingsAsync(token).ConfigureAwait(false))
@@ -1755,10 +1778,8 @@ namespace Chummer
             CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
             try
             {
-                if (!_blnLoading)
+                if (Interlocked.CompareExchange(ref _intLoading, 1, 0) == 0)
                 {
-                    bool blnOldLoading = _blnLoading;
-                    _blnLoading = true;
                     try
                     {
                         await SetIsDirty(!await _objCharacterSettings.HasIdenticalSettingsAsync(_objReferenceCharacterSettings).ConfigureAwait(false)).ConfigureAwait(false);
@@ -1775,7 +1796,7 @@ namespace Chummer
                     }
                     finally
                     {
-                        _blnLoading = blnOldLoading;
+                        Interlocked.Decrement(ref _intLoading);
                     }
                 }
                 else

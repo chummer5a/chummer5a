@@ -45,7 +45,7 @@ namespace Chummer
         private readonly ThreadSafeList<Character> _lstCharacters = new ThreadSafeList<Character>();
         private XmlDocument _objCharacterXml = new XmlDocument { XmlResolver = null };
         private string _strSelectedSheet = GlobalSettings.DefaultCharacterSheet;
-        private bool _blnLoading;
+        private int _intLoading;
         private CultureInfo _objPrintCulture = GlobalSettings.CultureInfo;
         private string _strPrintLanguage = GlobalSettings.Language;
         private CancellationTokenSource _objRefresherCancellationTokenSource;
@@ -113,7 +113,7 @@ namespace Chummer
 
         private async void CharacterSheetViewer_Load(object sender, EventArgs e)
         {
-            _blnLoading = true;
+            Interlocked.Increment(ref _intLoading);
             try
             {
                 // Populate the XSLT list with all of the XSL files found in the sheets directory.
@@ -167,7 +167,7 @@ namespace Chummer
             }
             finally
             {
-                _blnLoading = false;
+                Interlocked.Decrement(ref _intLoading);
             }
             try
             {
@@ -221,7 +221,7 @@ namespace Chummer
         private async void cboXSLT_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Re-generate the output when a new sheet is selected.
-            if (!_blnLoading)
+            if (_intLoading == 0)
             {
                 try
                 {
@@ -508,9 +508,8 @@ namespace Chummer
                 // Swallow this
             }
 
-            if (!_blnLoading)
+            if (Interlocked.CompareExchange(ref _intLoading, 1, 0) == 0)
             {
-                _blnLoading = true;
                 string strOldSelected = _strSelectedSheet;
                 // Strip away the language prefix
                 if (strOldSelected.Contains(Path.DirectorySeparatorChar))
@@ -570,7 +569,7 @@ namespace Chummer
                 }
                 finally
                 {
-                    _blnLoading = false;
+                    Interlocked.Decrement(ref _intLoading);
                 }
 
                 try
@@ -1108,10 +1107,9 @@ namespace Chummer
             await UpdateWindowTitleAsync(token).ConfigureAwait(false);
 
             token.ThrowIfCancellationRequested();
-            bool blnOldLoading = _blnLoading;
+            Interlocked.Increment(ref _intLoading);
             try
             {
-                _blnLoading = true;
                 // Populate the XSLT list with all of the XSL files found in the sheets directory.
                 await LanguageManager.PopulateSheetLanguageListAsync(cboLanguage, _strSelectedSheet, _lstCharacters, token: token).ConfigureAwait(false);
                 await PopulateXsltList(token).ConfigureAwait(false);
@@ -1119,7 +1117,7 @@ namespace Chummer
             }
             finally
             {
-                _blnLoading = blnOldLoading;
+                Interlocked.Decrement(ref _intLoading);
             }
         }
 

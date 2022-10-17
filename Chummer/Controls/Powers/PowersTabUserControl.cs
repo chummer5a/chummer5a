@@ -637,7 +637,8 @@ namespace Chummer.UI.Powers
                                                                                        .GetAsync(
                                                                                            () => new EditNotes(
                                                                                                p.Notes,
-                                                                                               p.NotesColor),
+                                                                                               p.NotesColor,
+                                                                                               MyToken),
                                                                                            MyToken)
                                                                                        .ConfigureAwait(false))
                                                                                   {

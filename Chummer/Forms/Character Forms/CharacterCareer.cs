@@ -7441,7 +7441,7 @@ namespace Chummer
                     return;
                 using (ThreadSafeForm<EditNotes> frmItemNotes
                        = await ThreadSafeForm<EditNotes>.GetAsync(
-                           () => new EditNotes(objWeek.Notes, objWeek.NotesColor), GenericToken).ConfigureAwait(false))
+                           () => new EditNotes(objWeek.Notes, objWeek.NotesColor, GenericToken), GenericToken).ConfigureAwait(false))
                 {
                     if (await frmItemNotes.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false) != DialogResult.OK)
                         return;
@@ -16845,13 +16845,16 @@ namespace Chummer
             }
         }
 
-        private bool _blnFileUpdateQueued;
+        private int _intFileUpdateQueued;
 
         protected override async void LiveUpdateFromCharacterFile(object sender, FileSystemEventArgs e)
         {
-            if (_blnFileUpdateQueued)
+            if (Interlocked.Increment(ref _intFileUpdateQueued) > 1)
+            {
+                Interlocked.Decrement(ref _intFileUpdateQueued);
                 return;
-            _blnFileUpdateQueued = true;
+            }
+
             try
             {
                 while (IsDirty || IsLoading || SkipUpdate || IsCharacterUpdateRequested)
@@ -16935,7 +16938,7 @@ namespace Chummer
             }
             finally
             {
-                _blnFileUpdateQueued = false;
+                Interlocked.Decrement(ref _intFileUpdateQueued);
             }
         }
 

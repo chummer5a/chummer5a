@@ -6544,7 +6544,7 @@ namespace Chummer
                     {
                         using (ThreadSafeForm<EditNotes> frmItemNotes
                                = await ThreadSafeForm<EditNotes>.GetAsync(
-                                   () => new EditNotes(objGear.Notes, objGear.NotesColor)).ConfigureAwait(false))
+                                   () => new EditNotes(objGear.Notes, objGear.NotesColor, GenericToken)).ConfigureAwait(false))
                         {
                             if (await frmItemNotes.ShowDialogSafeAsync(this).ConfigureAwait(false) != DialogResult.OK)
                                 return;
@@ -8558,11 +8558,11 @@ namespace Chummer
             }
         }
 
-        private bool _blnSkipQualityLevelChanged;
+        private int _intSkipQualityLevelChanged;
 
         private async void nudQualityLevel_ValueChanged(object sender, EventArgs e)
         {
-            if (_blnSkipQualityLevelChanged)
+            if (_intSkipQualityLevelChanged > 0)
                 return;
             try
             {
@@ -8643,9 +8643,15 @@ namespace Chummer
                     if (blnAddItem)
                     {
                         //to avoid an System.InvalidOperationException: Cannot change ObservableCollection during a CollectionChanged event.
-                        _blnSkipQualityLevelChanged = true;
-                        await CharacterObject.Qualities.AddAsync(objQuality).ConfigureAwait(false);
-                        _blnSkipQualityLevelChanged = false;
+                        Interlocked.Increment(ref _intSkipQualityLevelChanged);
+                        try
+                        {
+                            await CharacterObject.Qualities.AddAsync(objQuality).ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            Interlocked.Decrement(ref _intSkipQualityLevelChanged);
+                        }
 
                         // Add any created Weapons to the character.
                         foreach (Weapon objWeapon in lstWeapons)
@@ -12417,13 +12423,16 @@ namespace Chummer
             await lblSkillGroupsBP.DoThreadSafeAsync(x => x.Text = strTemp3, token).ConfigureAwait(false);
         }
 
-        private bool _blnFileUpdateQueued;
+        private int _intFileUpdateQueued;
 
         protected override async void LiveUpdateFromCharacterFile(object sender, FileSystemEventArgs e)
         {
-            if (_blnFileUpdateQueued)
+            if (Interlocked.Increment(ref _intFileUpdateQueued) > 1)
+            {
+                Interlocked.Decrement(ref _intFileUpdateQueued);
                 return;
-            _blnFileUpdateQueued = true;
+            }
+
             try
             {
                 while (IsDirty || IsLoading || SkipUpdate || IsCharacterUpdateRequested)
@@ -12513,7 +12522,7 @@ namespace Chummer
             }
             finally
             {
-                _blnFileUpdateQueued = false;
+                Interlocked.Decrement(ref _intFileUpdateQueued);
             }
         }
 
@@ -14507,7 +14516,7 @@ namespace Chummer
                     {
                         await frmLoadingBar.MyForm.PerformStepAsync(CharacterObject.CharacterName,
                                                                     LoadingBar.ProgressBarTextPatterns.Saving, token).ConfigureAwait(false);
-                        _blnFileUpdateQueued = true;
+                        Interlocked.Increment(ref _intFileUpdateQueued);
                         try
                         {
                             if (!await CharacterObject.SaveAsync(token: token).ConfigureAwait(false))
@@ -14529,7 +14538,7 @@ namespace Chummer
                         }
                         finally
                         {
-                            _blnFileUpdateQueued = false;
+                            Interlocked.Decrement(ref _intFileUpdateQueued);
                         }
 
                         IsDirty = false;

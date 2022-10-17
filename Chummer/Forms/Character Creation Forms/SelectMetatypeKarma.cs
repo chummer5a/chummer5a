@@ -33,7 +33,7 @@ namespace Chummer
 {
     public partial class SelectMetatypeKarma : Form
     {
-        private bool _blnLoading = true;
+        private int _intLoading = 1;
 
         private readonly Character _objCharacter;
         private string _strCurrentPossessionMethod;
@@ -154,7 +154,7 @@ namespace Chummer
                     await PopulateMetavariants().ConfigureAwait(false);
                     await RefreshSelectedMetavariant().ConfigureAwait(false);
 
-                    _blnLoading = false;
+                    Interlocked.Decrement(ref _intLoading);
                 }
                 finally
                 {
@@ -173,7 +173,7 @@ namespace Chummer
 
         private async void lstMetatypes_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_blnLoading)
+            if (_intLoading > 0)
                 return;
             CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
             try
@@ -196,7 +196,7 @@ namespace Chummer
 
         private async ValueTask ProcessMetatypeSelectedChanged(CancellationToken token = default)
         {
-            if (_blnLoading)
+            if (_intLoading > 0)
                 return;
             await PopulateMetavariants(token).ConfigureAwait(false);
         }
@@ -216,7 +216,7 @@ namespace Chummer
 
         private async void cboMetavariant_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_blnLoading)
+            if (_intLoading > 0)
                 return;
             CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
             try
@@ -239,7 +239,7 @@ namespace Chummer
 
         private async ValueTask ProcessMetavariantSelectedChanged(CancellationToken token = default)
         {
-            if (_blnLoading)
+            if (_intLoading > 0)
                 return;
             await RefreshSelectedMetavariant(token).ConfigureAwait(false);
         }
@@ -252,7 +252,7 @@ namespace Chummer
 
         private async void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_blnLoading)
+            if (_intLoading > 0)
                 return;
             CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
             try
@@ -899,15 +899,22 @@ namespace Chummer
 
                     // Retrieve the list of Metavariants for the selected Metatype.
 
-                    bool blnOldLoading = _blnLoading;
                     string strOldSelectedValue
                         = await cboMetavariant.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false)
                           ?? _objCharacter?.MetavariantGuid.ToString(
                               "D", GlobalSettings.InvariantCultureInfo);
-                    _blnLoading = true;
-                    await cboMetavariant.PopulateWithListItemsAsync(lstMetavariants, token).ConfigureAwait(false);
-                    await cboMetavariant.DoThreadSafeAsync(x => x.Enabled = lstMetavariants.Count > 1, token).ConfigureAwait(false);
-                    _blnLoading = blnOldLoading;
+                    Interlocked.Increment(ref _intLoading);
+                    try
+                    {
+                        await cboMetavariant.PopulateWithListItemsAsync(lstMetavariants, token).ConfigureAwait(false);
+                        await cboMetavariant.DoThreadSafeAsync(x => x.Enabled = lstMetavariants.Count > 1, token)
+                                            .ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        Interlocked.Decrement(ref _intLoading);
+                    }
+                    
                     if (!string.IsNullOrEmpty(strOldSelectedValue))
                     {
                         bool blnDoProcess = await cboMetavariant.DoThreadSafeFuncAsync(x =>
@@ -935,11 +942,22 @@ namespace Chummer
                 await lblMetavariantLabel.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
                 await cboMetavariant.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
                 // Clear the Metavariant list if nothing is currently selected.
-                bool blnOldLoading = _blnLoading;
-                _blnLoading = true;
-                await cboMetavariant.PopulateWithListItemsAsync(new ListItem(Guid.Empty, await LanguageManager.GetStringAsync("String_None", token: token).ConfigureAwait(false)).Yield(), token).ConfigureAwait(false);
-                await cboMetavariant.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
-                _blnLoading = blnOldLoading;
+                Interlocked.Increment(ref _intLoading);
+                try
+                {
+                    await cboMetavariant
+                          .PopulateWithListItemsAsync(
+                              new ListItem(
+                                  Guid.Empty,
+                                  await LanguageManager.GetStringAsync("String_None", token: token)
+                                                       .ConfigureAwait(false)).Yield(), token).ConfigureAwait(false);
+                    await cboMetavariant.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    Interlocked.Decrement(ref _intLoading);
+                }
+                
                 await cboMetavariant.DoThreadSafeAsync(x => x.SelectedIndex = 0, token).ConfigureAwait(false);
 
                 await lblForceLabel.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
@@ -993,8 +1011,7 @@ namespace Chummer
                     }
 
                     lstMetatypeItems.Sort(CompareListItems.CompareNames);
-
-                    bool blnOldLoading = _blnLoading;
+                    
                     string strOldSelected
                         = await lstMetatypes.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false)
                           ?? _objCharacter?.MetatypeGuid.ToString(
@@ -1010,9 +1027,16 @@ namespace Chummer
                             strOldSelected = string.Empty;
                     }
 
-                    _blnLoading = true;
-                    await lstMetatypes.PopulateWithListItemsAsync(lstMetatypeItems, token).ConfigureAwait(false);
-                    _blnLoading = blnOldLoading;
+                    Interlocked.Increment(ref _intLoading);
+                    try
+                    {
+                        await lstMetatypes.PopulateWithListItemsAsync(lstMetatypeItems, token).ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        Interlocked.Decrement(ref _intLoading);
+                    }
+                    
                     // Attempt to select the default Human item. If it could not be found, select the first item in the list instead.
                     if (!string.IsNullOrEmpty(strOldSelected))
                     {
@@ -1066,7 +1090,7 @@ namespace Chummer
 
         private async void txtSearch_TextChanged(object sender, EventArgs e)
         {
-            if (_blnLoading)
+            if (_intLoading > 0)
                 return;
             CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
             try

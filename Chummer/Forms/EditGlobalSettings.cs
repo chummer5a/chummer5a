@@ -48,9 +48,9 @@ namespace Chummer
         // List of sourcebook infos, needed to make sure we don't directly modify ones in the options unless we save our options
         private readonly Dictionary<string, SourcebookInfo> _dicSourcebookInfos;
 
-        private bool _blnSkipRefresh;
         private bool _blnDirty;
-        private bool _blnLoading = true;
+        private int _intSkipRefresh;
+        private int _intLoading = 1;
         private string _strSelectedLanguage = GlobalSettings.Language;
         private CultureInfo _objSelectedCultureInfo = GlobalSettings.CultureInfo;
         private ColorMode _eSelectedColorModeSetting = GlobalSettings.ColorModeSetting;
@@ -93,7 +93,7 @@ namespace Chummer
             await SetDefaultValueForXsltList().ConfigureAwait(false);
             await PopulatePdfParameters().ConfigureAwait(false);
 
-            _blnLoading = false;
+            Interlocked.Decrement(ref _intLoading);
 
             if (_blnPromptPdfReaderOnLoad)
             {
@@ -172,19 +172,25 @@ namespace Chummer
                 await cmdVerify.DoThreadSafeAsync(x => x.Enabled = isEnabled).ConfigureAwait(false);
                 await cmdVerifyData.DoThreadSafeAsync(x => x.Enabled = isEnabled).ConfigureAwait(false);
 
-                if (!_blnLoading)
+                int intLoading = Interlocked.Increment(ref _intLoading);
+                try
                 {
-                    CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
-                    try
+                    if (intLoading == 1)
                     {
-                        _blnLoading = true;
-                        await TranslateForm().ConfigureAwait(false);
-                        _blnLoading = false;
+                        CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
+                        try
+                        {
+                            await TranslateForm().ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                        }
                     }
-                    finally
-                    {
-                        await objCursorWait.DisposeAsync().ConfigureAwait(false);
-                    }
+                }
+                finally
+                {
+                    Interlocked.Decrement(ref _intLoading);
                 }
 
                 OptionsChanged(sender, e);
@@ -289,7 +295,7 @@ namespace Chummer
 
         private void nudPDFOffset_ValueChanged(object sender, EventArgs e)
         {
-            if (_blnSkipRefresh || _blnLoading)
+            if (_intSkipRefresh > 0 || _intLoading > 0)
                 return;
 
             int intOffset = decimal.ToInt32(nudPDFOffset.Value);
@@ -329,7 +335,7 @@ namespace Chummer
 
         private async void cboUseLoggingApplicationInsights_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_blnLoading)
+            if (_intLoading > 0)
                 return;
             UseAILogging useAI = await cboUseLoggingApplicationInsights.DoThreadSafeFuncAsync(x => (UseAILogging)((ListItem)x.SelectedItem).Value).ConfigureAwait(false);
             GlobalSettings.UseLoggingResetCounter = 10;
@@ -340,9 +346,26 @@ namespace Chummer
                     await LanguageManager.GetStringAsync("MessageTitle_Options_ConfirmTelemetry", _strSelectedLanguage).ConfigureAwait(false),
                     MessageBoxButtons.YesNo))
             {
-                _blnLoading = true;
-                await cboUseLoggingApplicationInsights.DoThreadSafeAsync(x => x.SelectedItem = UseAILogging.Info).ConfigureAwait(false);
-                _blnLoading = false;
+                int intLoading = Interlocked.Increment(ref _intLoading);
+                try
+                {
+                    if (intLoading == 1)
+                    {
+                        CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
+                        try
+                        {
+                            await cboUseLoggingApplicationInsights.DoThreadSafeAsync(x => x.SelectedItem = UseAILogging.Info).ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                        }
+                    }
+                }
+                finally
+                {
+                    Interlocked.Decrement(ref _intLoading);
+                }
                 return;
             }
             OptionsChanged(sender, e);
@@ -350,16 +373,33 @@ namespace Chummer
 
         private async void chkUseLogging_CheckedChanged(object sender, EventArgs e)
         {
-            if (_blnLoading)
+            if (_intLoading > 0)
                 return;
             if (chkUseLogging.Checked && !GlobalSettings.UseLogging && DialogResult.Yes != Program.ShowMessageBox(this,
                 (await LanguageManager.GetStringAsync("Message_Options_ConfirmDetailedTelemetry", _strSelectedLanguage).ConfigureAwait(false)).WordWrap(),
                 await LanguageManager.GetStringAsync("MessageTitle_Options_ConfirmDetailedTelemetry", _strSelectedLanguage).ConfigureAwait(false),
                 MessageBoxButtons.YesNo))
             {
-                _blnLoading = true;
-                await chkUseLogging.DoThreadSafeAsync(x => x.Checked = false).ConfigureAwait(false);
-                _blnLoading = false;
+                int intLoading = Interlocked.Increment(ref _intLoading);
+                try
+                {
+                    if (intLoading == 1)
+                    {
+                        CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
+                        try
+                        {
+                            await chkUseLogging.DoThreadSafeAsync(x => x.Checked = false).ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                        }
+                    }
+                }
+                finally
+                {
+                    Interlocked.Decrement(ref _intLoading);
+                }
                 return;
             }
             bool blnEnabled = await chkUseLogging.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false);
@@ -422,7 +462,7 @@ namespace Chummer
 
         private void cboMugshotCompression_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_blnLoading)
+            if (_intLoading > 0)
                 return;
             bool blnShowQualitySelector = Equals(cboMugshotCompression.SelectedValue, "jpeg_manual");
             lblMugshotCompressionQuality.Visible = blnShowQualitySelector;
@@ -432,7 +472,7 @@ namespace Chummer
 
         private async void cboColorMode_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_blnLoading)
+            if (_intLoading > 0)
                 return;
             CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
             try
@@ -467,7 +507,7 @@ namespace Chummer
 
         private void chkPrintExpenses_CheckedChanged(object sender, EventArgs e)
         {
-            if (_blnLoading)
+            if (_intLoading > 0)
                 return;
             if (chkPrintExpenses.Checked)
             {
@@ -489,7 +529,7 @@ namespace Chummer
 
         private void txtPDFLocation_TextChanged(object sender, EventArgs e)
         {
-            if (_blnLoading)
+            if (_intLoading > 0)
                 return;
             cmdRemovePDFLocation.Enabled = txtPDFLocation.TextLength > 0;
             cmdPDFTest.Enabled = txtPDFAppPath.TextLength > 0 && txtPDFLocation.TextLength > 0;
@@ -513,7 +553,7 @@ namespace Chummer
 
         private async void chkLifeModules_CheckedChanged(object sender, EventArgs e)
         {
-            if (_blnLoading || !await chkLifeModule.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false))
+            if (_intLoading > 0 || !await chkLifeModule.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false))
                 return;
             if (Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Tip_LifeModule_Warning", _strSelectedLanguage).ConfigureAwait(false), Application.ProductName,
                    MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) != DialogResult.OK)
@@ -866,7 +906,7 @@ namespace Chummer
 
         private async void lsbCustomDataDirectories_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_blnSkipRefresh)
+            if (_intSkipRefresh > 0)
                 return;
             ListItem objSelectedItem = await lsbCustomDataDirectories.DoThreadSafeFuncAsync(x => (ListItem)x.SelectedItem).ConfigureAwait(false);
             CustomDataDirectoryInfo objSelected = (CustomDataDirectoryInfo)objSelectedItem.Value;
@@ -937,7 +977,7 @@ namespace Chummer
         public async ValueTask DoLinkPdfReader(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (_blnLoading)
+            if (_intLoading > 0)
                 _blnPromptPdfReaderOnLoad = true;
             else
                 await PromptPdfAppPath(token).ConfigureAwait(false);
@@ -948,7 +988,7 @@ namespace Chummer
         public async ValueTask DoLinkPdf(string strCode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (_blnLoading)
+            if (_intLoading > 0)
                 _strSelectCodeOnRefresh = strCode;
             else
             {
@@ -1109,11 +1149,20 @@ namespace Chummer
                 }
 
                 lstSourcebookInfos.Sort(CompareListItems.CompareNames);
-                bool blnOldSkipRefresh = _blnSkipRefresh;
-                _blnSkipRefresh = true;
-                string strOldSelected = await lstGlobalSourcebookInfos.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false);
-                await lstGlobalSourcebookInfos.PopulateWithListItemsAsync(lstSourcebookInfos, token).ConfigureAwait(false);
-                _blnSkipRefresh = blnOldSkipRefresh;
+                string strOldSelected;
+                Interlocked.Increment(ref _intSkipRefresh);
+                try
+                {
+                    strOldSelected = await lstGlobalSourcebookInfos
+                                                  .DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token)
+                                                  .ConfigureAwait(false);
+                    await lstGlobalSourcebookInfos.PopulateWithListItemsAsync(lstSourcebookInfos, token)
+                                                  .ConfigureAwait(false);
+                }
+                finally
+                {
+                    Interlocked.Decrement(ref _intSkipRefresh);
+                }
                 await lstGlobalSourcebookInfos.DoThreadSafeAsync(x =>
                 {
                     if (string.IsNullOrEmpty(strOldSelected))
@@ -1126,56 +1175,62 @@ namespace Chummer
 
         private async ValueTask PopulateCustomDataDirectoryListBox(CancellationToken token = default)
         {
-            bool blnOldSkipRefresh = _blnSkipRefresh;
-            _blnSkipRefresh = true;
-            ListItem objOldSelected = await lsbCustomDataDirectories.DoThreadSafeFuncAsync(x => x.SelectedIndex != -1 ? (ListItem)x.SelectedItem : ListItem.Blank, token).ConfigureAwait(false);
-            await lsbCustomDataDirectories.DoThreadSafeAsync(x => x.BeginUpdate(), token).ConfigureAwait(false);
+            ListItem objOldSelected;
+            Interlocked.Increment(ref _intSkipRefresh);
             try
             {
-                await lsbCustomDataDirectories.DoThreadSafeAsync(x =>
+                objOldSelected = await lsbCustomDataDirectories.DoThreadSafeFuncAsync(x => x.SelectedIndex != -1 ? (ListItem)x.SelectedItem : ListItem.Blank, token).ConfigureAwait(false);
+                await lsbCustomDataDirectories.DoThreadSafeAsync(x => x.BeginUpdate(), token).ConfigureAwait(false);
+                try
                 {
-                    if (_setCustomDataDirectoryInfos.Count != x.Items.Count)
+                    await lsbCustomDataDirectories.DoThreadSafeAsync(x =>
                     {
-                        x.Items.Clear();
-                        foreach (CustomDataDirectoryInfo objCustomDataDirectory in _setCustomDataDirectoryInfos)
+                        if (_setCustomDataDirectoryInfos.Count != x.Items.Count)
                         {
-                            ListItem objItem = new ListItem(objCustomDataDirectory, objCustomDataDirectory.Name);
-                            x.Items.Add(objItem);
+                            x.Items.Clear();
+                            foreach (CustomDataDirectoryInfo objCustomDataDirectory in _setCustomDataDirectoryInfos)
+                            {
+                                ListItem objItem = new ListItem(objCustomDataDirectory, objCustomDataDirectory.Name);
+                                x.Items.Add(objItem);
+                            }
                         }
-                    }
-                    else
-                    {
-                        HashSet<CustomDataDirectoryInfo> setListedInfos = new HashSet<CustomDataDirectoryInfo>();
-                        for (int iI = x.Items.Count - 1; iI >= 0; --iI)
+                        else
                         {
-                            ListItem objExistingItem = (ListItem) lsbCustomDataDirectories.Items[iI];
-                            CustomDataDirectoryInfo objExistingInfo = (CustomDataDirectoryInfo) objExistingItem.Value;
-                            if (!_setCustomDataDirectoryInfos.Contains(objExistingInfo))
-                                x.Items.RemoveAt(iI);
-                            else
-                                setListedInfos.Add(objExistingInfo);
+                            HashSet<CustomDataDirectoryInfo> setListedInfos = new HashSet<CustomDataDirectoryInfo>();
+                            for (int iI = x.Items.Count - 1; iI >= 0; --iI)
+                            {
+                                ListItem objExistingItem = (ListItem) lsbCustomDataDirectories.Items[iI];
+                                CustomDataDirectoryInfo objExistingInfo = (CustomDataDirectoryInfo) objExistingItem.Value;
+                                if (!_setCustomDataDirectoryInfos.Contains(objExistingInfo))
+                                    x.Items.RemoveAt(iI);
+                                else
+                                    setListedInfos.Add(objExistingInfo);
+                            }
+
+                            foreach (CustomDataDirectoryInfo objCustomDataDirectory in _setCustomDataDirectoryInfos.Where(
+                                         y => !setListedInfos.Contains(y)))
+                            {
+                                ListItem objItem = new ListItem(objCustomDataDirectory, objCustomDataDirectory.Name);
+                                x.Items.Add(objItem);
+                            }
                         }
 
-                        foreach (CustomDataDirectoryInfo objCustomDataDirectory in _setCustomDataDirectoryInfos.Where(
-                                     y => !setListedInfos.Contains(y)))
+                        if (_intLoading > 0)
                         {
-                            ListItem objItem = new ListItem(objCustomDataDirectory, objCustomDataDirectory.Name);
-                            x.Items.Add(objItem);
+                            x.DisplayMember = nameof(ListItem.Name);
+                            x.ValueMember = nameof(ListItem.Value);
                         }
-                    }
-
-                    if (_blnLoading)
-                    {
-                        x.DisplayMember = nameof(ListItem.Name);
-                        x.ValueMember = nameof(ListItem.Value);
-                    }
-                }, token).ConfigureAwait(false);
+                    }, token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await lsbCustomDataDirectories.DoThreadSafeAsync(x => x.EndUpdate(), token).ConfigureAwait(false);
+                }
             }
             finally
             {
-                await lsbCustomDataDirectories.DoThreadSafeAsync(x => x.EndUpdate(), token).ConfigureAwait(false);
+                Interlocked.Decrement(ref _intSkipRefresh);
             }
-            _blnSkipRefresh = blnOldSkipRefresh;
             await lsbCustomDataDirectories.DoThreadSafeAsync(x => x.SelectedItem = objOldSelected, token).ConfigureAwait(false);
         }
 
@@ -1465,7 +1520,7 @@ namespace Chummer
 
                 string strOldSelected = await cboMugshotCompression.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false);
 
-                if (_blnLoading)
+                if (_intLoading > 0)
                 {
                     int intQuality = GlobalSettings.SavedImageQuality;
                     if (intQuality == int.MaxValue)
@@ -1918,7 +1973,7 @@ namespace Chummer
 
         private void OptionsChanged(object sender, EventArgs e)
         {
-            if (!_blnLoading)
+            if (_intLoading == 0)
             {
                 _blnDirty = true;
             }

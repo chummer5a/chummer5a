@@ -32,7 +32,7 @@ namespace Chummer
 {
     public partial class MasterIndex : Form
     {
-        private bool _blnSkipRefresh = true;
+        private int _intSkipRefresh = 1;
         private CharacterSettings _objSelectedSetting;
         private readonly LockingDictionary<MasterIndexEntry, Task<string>> _dicCachedNotes = new LockingDictionary<MasterIndexEntry, Task<string>>();
         private readonly List<ListItem> _lstFileNamesWithItems = Utils.ListItemListPool.Get();
@@ -133,20 +133,25 @@ namespace Chummer
                         : string.Empty;
                 }
 
-                bool blnOldSkipRefresh = _blnSkipRefresh;
-                _blnSkipRefresh = true;
-
-                await cboCharacterSetting.PopulateWithListItemsAsync(lstCharacterSettings, token).ConfigureAwait(false);
-                if (!string.IsNullOrEmpty(strOldSettingKey))
+                Interlocked.Increment(ref _intSkipRefresh);
+                try
                 {
-                    (bool blnSuccess, CharacterSettings objSettings)
-                        = await dicCharacterSettings.TryGetValueAsync(strOldSettingKey, token).ConfigureAwait(false);
-                    if (blnSuccess)
-                        await cboCharacterSetting.DoThreadSafeAsync(x => x.SelectedValue = objSettings, token)
-                                                 .ConfigureAwait(false);
+                    await cboCharacterSetting.PopulateWithListItemsAsync(lstCharacterSettings, token)
+                                             .ConfigureAwait(false);
+                    if (!string.IsNullOrEmpty(strOldSettingKey))
+                    {
+                        (bool blnSuccess, CharacterSettings objSettings)
+                            = await dicCharacterSettings.TryGetValueAsync(strOldSettingKey, token)
+                                                        .ConfigureAwait(false);
+                        if (blnSuccess)
+                            await cboCharacterSetting.DoThreadSafeAsync(x => x.SelectedValue = objSettings, token)
+                                                     .ConfigureAwait(false);
+                    }
                 }
-
-                _blnSkipRefresh = blnOldSkipRefresh;
+                finally
+                {
+                    Interlocked.Decrement(ref _intSkipRefresh);
+                }
 
                 if (await cboCharacterSetting.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false)
                     != -1)
@@ -251,7 +256,7 @@ namespace Chummer
 
         private async void cboCharacterSetting_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_blnSkipRefresh)
+            if (_intSkipRefresh > 0)
                 return;
             try
             {
@@ -571,7 +576,7 @@ namespace Chummer
                 }
                 finally
                 {
-                    _blnSkipRefresh = false;
+                    Interlocked.Decrement(ref _intSkipRefresh);
                     IsFinishedLoading = blnOldIsFinishedLoading;
                 }
             }
@@ -591,7 +596,7 @@ namespace Chummer
 
         private async void RefreshList(object sender, EventArgs e)
         {
-            if (_blnSkipRefresh)
+            if (_intSkipRefresh > 0)
                 return;
             try
             {
@@ -639,9 +644,17 @@ namespace Chummer
 
                         object objOldSelectedValue
                             = await lstItems.DoThreadSafeFuncAsync(x => x.SelectedValue, _objGenericToken).ConfigureAwait(false);
-                        _blnSkipRefresh = true;
-                        await lstItems.PopulateWithListItemsAsync(lstFilteredItems, _objGenericToken).ConfigureAwait(false);
-                        _blnSkipRefresh = false;
+                        Interlocked.Increment(ref _intSkipRefresh);
+                        try
+                        {
+                            await lstItems.PopulateWithListItemsAsync(lstFilteredItems, _objGenericToken)
+                                          .ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            Interlocked.Decrement(ref _intSkipRefresh);
+                        }
+                        
                         if (objOldSelectedValue is MasterIndexEntry objOldSelectedEntry)
                             await lstItems.DoThreadSafeFuncAsync(
                                 x => x.SelectedIndex
@@ -670,7 +683,7 @@ namespace Chummer
 
         private async void lstItems_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_blnSkipRefresh)
+            if (_intSkipRefresh > 0)
                 return;
 
             try

@@ -40,14 +40,17 @@ namespace Chummer
         private string _strNotes;
         private Color _colNotes;
 
+        private readonly CancellationToken _objMyToken;
+
         #region Control Events
 
-        public EditNotes(string strOldNotes) : this(strOldNotes, ColorManager.HasNotesColor)
+        public EditNotes(string strOldNotes, CancellationToken objMyToken = default) : this(strOldNotes, ColorManager.HasNotesColor, objMyToken)
         {
         }
 
-        public EditNotes(string strOldNotes, Color colNotes)
+        public EditNotes(string strOldNotes, Color colNotes, CancellationToken objMyToken = default)
         {
+            _objMyToken = objMyToken;
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
@@ -76,7 +79,14 @@ namespace Chummer
 
         private async void EditNotes_Load(object sender, EventArgs e)
         {
-            await UpdateColorRepresentation().ConfigureAwait(false);
+            try
+            {
+                await UpdateColorRepresentation(_objMyToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private void txtNotes_KeyDown(object sender, KeyEventArgs e)
@@ -127,11 +137,21 @@ namespace Chummer
 
         private async void btnColorSelect_Click(object sender, EventArgs e)
         {
-            _colNotes = dlgColor.Color; //Selected color is always how it is shown in light mode, use the stored one for it.
-            if (await this.DoThreadSafeFuncAsync(x => dlgColor.ShowDialog(x)).ConfigureAwait(false) != DialogResult.OK)
-                return;
-            _colNotes = await ColorManager.GenerateModeIndependentColorAsync(dlgColor.Color).ConfigureAwait(false);
-            await UpdateColorRepresentation().ConfigureAwait(false);
+            try
+            {
+                _colNotes = dlgColor
+                    .Color; //Selected color is always how it is shown in light mode, use the stored one for it.
+                if (await this.DoThreadSafeFuncAsync(x => dlgColor.ShowDialog(x), token: _objMyToken)
+                              .ConfigureAwait(false) != DialogResult.OK)
+                    return;
+                _colNotes = await ColorManager.GenerateModeIndependentColorAsync(dlgColor.Color, _objMyToken)
+                                              .ConfigureAwait(false);
+                await UpdateColorRepresentation(_objMyToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private void txtNotes_TextChanged(object sender, EventArgs e)
