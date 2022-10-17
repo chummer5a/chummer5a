@@ -457,7 +457,7 @@ namespace Chummer
         {
             if (pnlAttributes == null)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
                 if (notifyCollectionChangedEventArgs == null ||
@@ -499,7 +499,7 @@ namespace Chummer
                         {
                             x.ResumeLayout();
                         }
-                    }, token);
+                    }, token).ConfigureAwait(false);
                 }
                 else
                 {
@@ -557,7 +557,7 @@ namespace Chummer
                                 }
 
                                 x.Controls.AddRange(aobjControls);
-                            }, token);
+                            }, token).ConfigureAwait(false);
                             break;
                         }
 
@@ -583,7 +583,7 @@ namespace Chummer
                                         objAttrib.Karma = 0;
                                     }
                                 }
-                            }, token);
+                            }, token).ConfigureAwait(false);
                             break;
                         }
 
@@ -609,7 +609,7 @@ namespace Chummer
                                         objAttrib.Karma = 0;
                                     }
                                 }
-                            }, token);
+                            }, token).ConfigureAwait(false);
 
                             bool blnVaryingAddedWidths = false;
                             int intNewNameWidth = -1;
@@ -661,7 +661,7 @@ namespace Chummer
                                 }
 
                                 x.Controls.AddRange(aobjControls);
-                            }, token);
+                            }, token).ConfigureAwait(false);
                             break;
                         }
                     }
@@ -669,7 +669,7 @@ namespace Chummer
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -693,23 +693,23 @@ namespace Chummer
             TreeNode objManipulationNode = null;
             TreeNode objRitualsNode = null;
             TreeNode objEnchantmentsNode = null;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
                 if (notifyCollectionChangedEventArgs == null ||
                     notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
                 {
                     string strSelectedId
-                        = (await treSpells.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token) as
+                        = (await treSpells.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token).ConfigureAwait(false) as
                             IHasInternalId)?.InternalId ?? string.Empty;
                     string strSelectedMetamagicId =
                         treMetamagic != null
-                            ? (await treMetamagic.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token) as
+                            ? (await treMetamagic.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token).ConfigureAwait(false) as
                                 IHasInternalId)?.InternalId ?? string.Empty
                             : string.Empty;
 
                     // Clear the default nodes of entries.
-                    await treSpells.DoThreadSafeAsync(x => x.Nodes.Clear(), token);
+                    await treSpells.DoThreadSafeAsync(x => x.Nodes.Clear(), token).ConfigureAwait(false);
 
                     // Add the Spells that exist.
                     foreach (Spell objSpell in CharacterObject.Spells)
@@ -717,16 +717,16 @@ namespace Chummer
                         if (objSpell.Grade > 0 && treMetamagic != null)
                         {
                             await treMetamagic.DoThreadSafeAsync(x => x.FindNodeByTag(objSpell)?.Remove(),
-                                                                 token);
+                                                                 token).ConfigureAwait(false);
                         }
 
-                        await AddToTree(objSpell, false);
+                        await AddToTree(objSpell, false).ConfigureAwait(false);
                     }
 
-                    await treSpells.DoThreadSafeAsync(x => x.SortCustomAlphabetically(strSelectedId), token);
+                    await treSpells.DoThreadSafeAsync(x => x.SortCustomAlphabetically(strSelectedId), token).ConfigureAwait(false);
                     if (treMetamagic != null)
                         await treMetamagic.DoThreadSafeAsync(x => x.SelectedNode = x.FindNode(strSelectedMetamagicId),
-                                                             token);
+                                                             token).ConfigureAwait(false);
                 }
                 else
                 {
@@ -739,14 +739,14 @@ namespace Chummer
                         objManipulationNode = x.FindNode("Node_SelectedManipulationSpells", false);
                         objRitualsNode = x.FindNode("Node_SelectedGeomancyRituals", false);
                         objEnchantmentsNode = x.FindNode("Node_SelectedEnchantments", false);
-                    }, token);
+                    }, token).ConfigureAwait(false);
                     switch (notifyCollectionChangedEventArgs.Action)
                     {
                         case NotifyCollectionChangedAction.Add:
                         {
                             foreach (Spell objSpell in notifyCollectionChangedEventArgs.NewItems)
                             {
-                                await AddToTree(objSpell);
+                                await AddToTree(objSpell).ConfigureAwait(false);
                             }
 
                             break;
@@ -765,12 +765,12 @@ namespace Chummer
                                         if (objParent.Level == 0 && objParent.Nodes.Count == 0)
                                             objParent.Remove();
                                     }
-                                }, token);
+                                }, token).ConfigureAwait(false);
 
                                 if (objSpell.Grade > 0 && treMetamagic != null)
                                 {
                                     await treMetamagic.DoThreadSafeAsync(
-                                        x => x.FindNodeByTag(objSpell)?.Remove(), token);
+                                        x => x.FindNodeByTag(objSpell)?.Remove(), token).ConfigureAwait(false);
                                 }
                             }
 
@@ -790,18 +790,18 @@ namespace Chummer
                                         lstOldParents.Add(objNode.Parent);
                                         objNode.Remove();
                                     }
-                                }, token);
+                                }, token).ConfigureAwait(false);
 
                                 if (objSpell.Grade > 0 && treMetamagic != null)
                                 {
                                     await treMetamagic.DoThreadSafeAsync(
-                                        x => x.FindNodeByTag(objSpell)?.Remove(), token);
+                                        x => x.FindNodeByTag(objSpell)?.Remove(), token).ConfigureAwait(false);
                                 }
                             }
 
                             foreach (Spell objSpell in notifyCollectionChangedEventArgs.NewItems)
                             {
-                                await AddToTree(objSpell);
+                                await AddToTree(objSpell).ConfigureAwait(false);
                             }
 
                             await treSpells.DoThreadSafeAsync(() =>
@@ -811,7 +811,7 @@ namespace Chummer
                                     if (objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
                                         objOldParent.Remove();
                                 }
-                            }, token);
+                            }, token).ConfigureAwait(false);
 
                             break;
                         }
@@ -820,7 +820,7 @@ namespace Chummer
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
 
             async ValueTask AddToTree(Spell objSpell, bool blnSingleAdd = true)
@@ -837,14 +837,14 @@ namespace Chummer
                             objCombatNode = new TreeNode
                             {
                                 Tag = "Node_SelectedCombatSpells",
-                                Text = await LanguageManager.GetStringAsync("Node_SelectedCombatSpells", token: token)
+                                Text = await LanguageManager.GetStringAsync("Node_SelectedCombatSpells", token: token).ConfigureAwait(false)
                             };
                             await treSpells.DoThreadSafeAsync(x =>
                             {
                                 // ReSharper disable once AssignNullToNotNullAttribute
                                 x.Nodes.Insert(0, objCombatNode);
                                 objCombatNode.Expand();
-                            }, token);
+                            }, token).ConfigureAwait(false);
                         }
                         objParentNode = objCombatNode;
                         break;
@@ -855,14 +855,14 @@ namespace Chummer
                             objDetectionNode = new TreeNode
                             {
                                 Tag = "Node_SelectedDetectionSpells",
-                                Text = await LanguageManager.GetStringAsync("Node_SelectedDetectionSpells", token: token)
+                                Text = await LanguageManager.GetStringAsync("Node_SelectedDetectionSpells", token: token).ConfigureAwait(false)
                             };
                             await treSpells.DoThreadSafeAsync(x =>
                             {
                                 // ReSharper disable once AssignNullToNotNullAttribute
                                 x.Nodes.Insert(objCombatNode == null ? 0 : 1, objDetectionNode);
                                 objDetectionNode.Expand();
-                            }, token);
+                            }, token).ConfigureAwait(false);
                         }
                         objParentNode = objDetectionNode;
                         break;
@@ -873,7 +873,7 @@ namespace Chummer
                             objHealthNode = new TreeNode
                             {
                                 Tag = "Node_SelectedHealthSpells",
-                                Text = await LanguageManager.GetStringAsync("Node_SelectedHealthSpells", token: token)
+                                Text = await LanguageManager.GetStringAsync("Node_SelectedHealthSpells", token: token).ConfigureAwait(false)
                             };
                             await treSpells.DoThreadSafeAsync(x =>
                             {
@@ -881,7 +881,7 @@ namespace Chummer
                                                // ReSharper disable once AssignNullToNotNullAttribute
                                                (objDetectionNode == null ? 0 : 1), objHealthNode);
                                 objHealthNode.Expand();
-                            }, token);
+                            }, token).ConfigureAwait(false);
                         }
                         objParentNode = objHealthNode;
                         break;
@@ -892,7 +892,7 @@ namespace Chummer
                             objIllusionNode = new TreeNode
                             {
                                 Tag = "Node_SelectedIllusionSpells",
-                                Text = await LanguageManager.GetStringAsync("Node_SelectedIllusionSpells", token: token)
+                                Text = await LanguageManager.GetStringAsync("Node_SelectedIllusionSpells", token: token).ConfigureAwait(false)
                             };
                             await treSpells.DoThreadSafeAsync(x =>
                             {
@@ -901,7 +901,7 @@ namespace Chummer
                                                // ReSharper disable once AssignNullToNotNullAttribute
                                                (objHealthNode == null ? 0 : 1), objIllusionNode);
                                 objIllusionNode.Expand();
-                            }, token);
+                            }, token).ConfigureAwait(false);
                         }
                         objParentNode = objIllusionNode;
                         break;
@@ -912,7 +912,7 @@ namespace Chummer
                             objManipulationNode = new TreeNode
                             {
                                 Tag = "Node_SelectedManipulationSpells",
-                                Text = await LanguageManager.GetStringAsync("Node_SelectedManipulationSpells", token: token)
+                                Text = await LanguageManager.GetStringAsync("Node_SelectedManipulationSpells", token: token).ConfigureAwait(false)
                             };
                             await treSpells.DoThreadSafeAsync(x =>
                             {
@@ -922,7 +922,7 @@ namespace Chummer
                                                // ReSharper disable once AssignNullToNotNullAttribute
                                                (objIllusionNode == null ? 0 : 1), objManipulationNode);
                                 objManipulationNode.Expand();
-                            }, token);
+                            }, token).ConfigureAwait(false);
                         }
                         objParentNode = objManipulationNode;
                         break;
@@ -933,7 +933,7 @@ namespace Chummer
                             objRitualsNode = new TreeNode
                             {
                                 Tag = "Node_SelectedGeomancyRituals",
-                                Text = await LanguageManager.GetStringAsync("Node_SelectedGeomancyRituals", token: token)
+                                Text = await LanguageManager.GetStringAsync("Node_SelectedGeomancyRituals", token: token).ConfigureAwait(false)
                             };
                             await treSpells.DoThreadSafeAsync(x =>
                             {
@@ -944,7 +944,7 @@ namespace Chummer
                                                // ReSharper disable once AssignNullToNotNullAttribute
                                                (objManipulationNode == null ? 0 : 1), objRitualsNode);
                                 objRitualsNode.Expand();
-                            }, token);
+                            }, token).ConfigureAwait(false);
                         }
                         objParentNode = objRitualsNode;
                         break;
@@ -955,21 +955,21 @@ namespace Chummer
                             objEnchantmentsNode = new TreeNode
                             {
                                 Tag = "Node_SelectedEnchantments",
-                                Text = await LanguageManager.GetStringAsync("Node_SelectedEnchantments", token: token)
+                                Text = await LanguageManager.GetStringAsync("Node_SelectedEnchantments", token: token).ConfigureAwait(false)
                             };
                             await treSpells.DoThreadSafeAsync(x =>
                             {
                                 // ReSharper disable once AssignNullToNotNullAttribute
                                 x.Nodes.Add(objEnchantmentsNode);
                                 objEnchantmentsNode.Expand();
-                            }, token);
+                            }, token).ConfigureAwait(false);
                         }
                         objParentNode = objEnchantmentsNode;
                         break;
                 }
                 if (objSpell.Grade > 0)
                 {
-                    InitiationGrade objGrade = await CharacterObject.InitiationGrades.FirstOrDefaultAsync(x => x.Grade == objSpell.Grade, token);
+                    InitiationGrade objGrade = await CharacterObject.InitiationGrades.FirstOrDefaultAsync(x => x.Grade == objSpell.Grade, token).ConfigureAwait(false);
                     if (objGrade != null && treMetamagic != null)
                     {
                         await treMetamagic.DoThreadSafeAsync(x =>
@@ -994,7 +994,7 @@ namespace Chummer
                                 if (blnSingleAdd)
                                     x.SelectedNode = objMetamagicNode;
                             }
-                        }, token);
+                        }, token).ConfigureAwait(false);
                     }
                 }
 
@@ -1020,7 +1020,7 @@ namespace Chummer
                     }
                     else
                         objParentNode.Nodes.Add(objNode);
-                }, token);
+                }, token).ConfigureAwait(false);
             }
         }
 
@@ -1029,38 +1029,38 @@ namespace Chummer
             if (treAIPrograms == null)
                 return;
             TreeNode objParentNode = null;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
                 if (notifyCollectionChangedEventArgs == null ||
                     notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
                 {
                     string strSelectedId =
-                        (await treAIPrograms.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token) as
+                        (await treAIPrograms.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token).ConfigureAwait(false) as
                             IHasInternalId)?.InternalId ?? string.Empty;
 
-                    await treAIPrograms.DoThreadSafeAsync(x => x.Nodes.Clear(), token);
+                    await treAIPrograms.DoThreadSafeAsync(x => x.Nodes.Clear(), token).ConfigureAwait(false);
 
                     // Add AI Programs.
                     foreach (AIProgram objAIProgram in CharacterObject.AIPrograms)
                     {
-                        await AddToTree(objAIProgram, false);
+                        await AddToTree(objAIProgram, false).ConfigureAwait(false);
                     }
 
-                    await treAIPrograms.DoThreadSafeAsync(x => x.SortCustomAlphabetically(strSelectedId), token);
+                    await treAIPrograms.DoThreadSafeAsync(x => x.SortCustomAlphabetically(strSelectedId), token).ConfigureAwait(false);
                 }
                 else
                 {
                     objParentNode
                         = await treAIPrograms.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedAIPrograms", false),
-                                                                    token);
+                                                                    token).ConfigureAwait(false);
                     switch (notifyCollectionChangedEventArgs.Action)
                     {
                         case NotifyCollectionChangedAction.Add:
                         {
                             foreach (AIProgram objAIProgram in notifyCollectionChangedEventArgs.NewItems)
                             {
-                                await AddToTree(objAIProgram);
+                                await AddToTree(objAIProgram).ConfigureAwait(false);
                             }
 
                             break;
@@ -1080,7 +1080,7 @@ namespace Chummer
                                             objParent.Remove();
                                     }
                                 }
-                            }, token);
+                            }, token).ConfigureAwait(false);
 
                             break;
                         }
@@ -1099,11 +1099,11 @@ namespace Chummer
                                         objNode.Remove();
                                     }
                                 }
-                            }, token);
+                            }, token).ConfigureAwait(false);
 
                             foreach (AIProgram objAIProgram in notifyCollectionChangedEventArgs.NewItems)
                             {
-                                await AddToTree(objAIProgram);
+                                await AddToTree(objAIProgram).ConfigureAwait(false);
                             }
 
                             await treAIPrograms.DoThreadSafeAsync(() =>
@@ -1113,7 +1113,7 @@ namespace Chummer
                                     if (objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
                                         objOldParent.Remove();
                                 }
-                            }, token);
+                            }, token).ConfigureAwait(false);
 
                             break;
                         }
@@ -1122,7 +1122,7 @@ namespace Chummer
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
 
             async ValueTask AddToTree(AIProgram objAIProgram, bool blnSingleAdd = true)
@@ -1136,14 +1136,14 @@ namespace Chummer
                     objParentNode = new TreeNode
                     {
                         Tag = "Node_SelectedAIPrograms",
-                        Text = await LanguageManager.GetStringAsync("Node_SelectedAIPrograms", token: token)
+                        Text = await LanguageManager.GetStringAsync("Node_SelectedAIPrograms", token: token).ConfigureAwait(false)
                     };
                     await treAIPrograms.DoThreadSafeAsync(x =>
                     {
                         // ReSharper disable once AssignNullToNotNullAttribute
                         x.Nodes.Add(objParentNode);
                         objParentNode.Expand();
-                    }, token);
+                    }, token).ConfigureAwait(false);
                 }
 
                 await treAIPrograms.DoThreadSafeAsync(x =>
@@ -1168,7 +1168,7 @@ namespace Chummer
                     }
                     else
                         objParentNode.Nodes.Add(objNode);
-                }, token);
+                }, token).ConfigureAwait(false);
             }
         }
 
@@ -1177,22 +1177,22 @@ namespace Chummer
             if (treComplexForms == null)
                 return;
             TreeNode objParentNode = null;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
                 if (notifyCollectionChangedEventArgs == null ||
                     notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
                 {
                     string strSelectedId =
-                        (await treComplexForms.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token) as
+                        (await treComplexForms.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token).ConfigureAwait(false) as
                             IHasInternalId)?.InternalId ?? string.Empty;
                     string strSelectedMetamagicId =
                         treMetamagic != null
-                            ? (await treMetamagic.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token) as
+                            ? (await treMetamagic.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token).ConfigureAwait(false) as
                                 IHasInternalId)?.InternalId ?? string.Empty
                             : string.Empty;
 
-                    await treComplexForms.DoThreadSafeAsync(x => x.Nodes.Clear(), token);
+                    await treComplexForms.DoThreadSafeAsync(x => x.Nodes.Clear(), token).ConfigureAwait(false);
 
                     // Add Complex Forms.
                     foreach (ComplexForm objComplexForm in CharacterObject.ComplexForms)
@@ -1200,30 +1200,30 @@ namespace Chummer
                         if (objComplexForm.Grade > 0 && treMetamagic != null)
                         {
                             await treMetamagic.DoThreadSafeAsync(x => x.FindNodeByTag(objComplexForm)?.Remove(),
-                                                                 token);
+                                                                 token).ConfigureAwait(false);
                         }
 
-                        await AddToTree(objComplexForm, false);
+                        await AddToTree(objComplexForm, false).ConfigureAwait(false);
                     }
 
                     await treComplexForms.DoThreadSafeAsync(x => x.SortCustomAlphabetically(strSelectedId),
-                                                            token);
+                                                            token).ConfigureAwait(false);
                     if (treMetamagic != null)
                         await treMetamagic.DoThreadSafeAsync(x => x.SelectedNode = x.FindNode(strSelectedMetamagicId),
-                                                             token);
+                                                             token).ConfigureAwait(false);
                 }
                 else
                 {
                     objParentNode
                         = await treComplexForms.DoThreadSafeFuncAsync(
-                            x => x.FindNode("Node_SelectedAdvancedComplexForms", false), token);
+                            x => x.FindNode("Node_SelectedAdvancedComplexForms", false), token).ConfigureAwait(false);
                     switch (notifyCollectionChangedEventArgs.Action)
                     {
                         case NotifyCollectionChangedAction.Add:
                         {
                             foreach (ComplexForm objComplexForm in notifyCollectionChangedEventArgs.NewItems)
                             {
-                                await AddToTree(objComplexForm);
+                                await AddToTree(objComplexForm).ConfigureAwait(false);
                             }
 
                             break;
@@ -1242,12 +1242,12 @@ namespace Chummer
                                         if (objParent.Level == 0 && objParent.Nodes.Count == 0)
                                             objParent.Remove();
                                     }
-                                }, token);
+                                }, token).ConfigureAwait(false);
 
                                 if (objComplexForm.Grade > 0 && treMetamagic != null)
                                 {
                                     await treMetamagic.DoThreadSafeAsync(
-                                        x => x.FindNodeByTag(objComplexForm)?.Remove(), token);
+                                        x => x.FindNodeByTag(objComplexForm)?.Remove(), token).ConfigureAwait(false);
                                 }
                             }
 
@@ -1267,18 +1267,18 @@ namespace Chummer
                                         lstOldParents.Add(objNode.Parent);
                                         objNode.Remove();
                                     }
-                                }, token);
+                                }, token).ConfigureAwait(false);
 
                                 if (objComplexForm.Grade > 0 && treMetamagic != null)
                                 {
                                     await treMetamagic.DoThreadSafeAsync(
-                                        x => x.FindNodeByTag(objComplexForm)?.Remove(), token);
+                                        x => x.FindNodeByTag(objComplexForm)?.Remove(), token).ConfigureAwait(false);
                                 }
                             }
 
                             foreach (ComplexForm objComplexForm in notifyCollectionChangedEventArgs.NewItems)
                             {
-                                await AddToTree(objComplexForm);
+                                await AddToTree(objComplexForm).ConfigureAwait(false);
                             }
 
                             await treComplexForms.DoThreadSafeAsync(() =>
@@ -1288,7 +1288,7 @@ namespace Chummer
                                     if (objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
                                         objOldParent.Remove();
                                 }
-                            }, token);
+                            }, token).ConfigureAwait(false);
 
                             break;
                         }
@@ -1297,7 +1297,7 @@ namespace Chummer
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
 
             async ValueTask AddToTree(ComplexForm objComplexForm, bool blnSingleAdd = true)
@@ -1310,18 +1310,18 @@ namespace Chummer
                     objParentNode = new TreeNode
                     {
                         Tag = "Node_SelectedAdvancedComplexForms",
-                        Text = await LanguageManager.GetStringAsync("Node_SelectedAdvancedComplexForms", token: token)
+                        Text = await LanguageManager.GetStringAsync("Node_SelectedAdvancedComplexForms", token: token).ConfigureAwait(false)
                     };
                     await treComplexForms.DoThreadSafeAsync(x =>
                     {
                         // ReSharper disable once AssignNullToNotNullAttribute
                         x.Nodes.Add(objParentNode);
                         objParentNode.Expand();
-                    }, token);
+                    }, token).ConfigureAwait(false);
                 }
                 if (objComplexForm.Grade > 0)
                 {
-                    InitiationGrade objGrade = await CharacterObject.InitiationGrades.FirstOrDefaultAsync(x => x.Grade == objComplexForm.Grade, token);
+                    InitiationGrade objGrade = await CharacterObject.InitiationGrades.FirstOrDefaultAsync(x => x.Grade == objComplexForm.Grade, token).ConfigureAwait(false);
                     if (objGrade != null && treMetamagic != null)
                     {
                         await treMetamagic.DoThreadSafeAsync(x =>
@@ -1346,7 +1346,7 @@ namespace Chummer
                                 if (blnSingleAdd)
                                     x.SelectedNode = objMetamagicNode;
                             }
-                        }, token);
+                        }, token).ConfigureAwait(false);
                     }
                 }
 
@@ -1372,7 +1372,7 @@ namespace Chummer
                     }
                     else
                         objParentNode.Nodes.Add(objNode);
-                }, token);
+                }, token).ConfigureAwait(false);
             }
         }
 
@@ -1380,7 +1380,7 @@ namespace Chummer
         {
             if (treMetamagic == null)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
                 if (notifyCollectionChangedEventArgs == null ||
@@ -1394,11 +1394,11 @@ namespace Chummer
                             TreeNodeCollection lstReturn = x.Nodes;
                             lstReturn.Clear();
                             return new Tuple<string, TreeNodeCollection>(strReturn, lstReturn);
-                        }, token);
+                        }, token).ConfigureAwait(false);
 
                     foreach (InitiationGrade objGrade in CharacterObject.InitiationGrades)
                     {
-                        await AddToTree(objGrade);
+                        await AddToTree(objGrade).ConfigureAwait(false);
                     }
 
                     await treMetamagic.DoThreadSafeAsync(x =>
@@ -1428,7 +1428,7 @@ namespace Chummer
                         }
 
                         x.SelectedNode = x.FindNode(strSelectedId);
-                    }, token);
+                    }, token).ConfigureAwait(false);
                 }
                 else
                 {
@@ -1439,7 +1439,7 @@ namespace Chummer
                             int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
                             foreach (InitiationGrade objGrade in notifyCollectionChangedEventArgs.NewItems)
                             {
-                                await AddToTree(objGrade, intNewIndex);
+                                await AddToTree(objGrade, intNewIndex).ConfigureAwait(false);
                                 ++intNewIndex;
                             }
                         }
@@ -1453,7 +1453,7 @@ namespace Chummer
                                 {
                                     x.FindNodeByTag(objGrade)?.Remove();
                                 }
-                            }, token);
+                            }, token).ConfigureAwait(false);
                         }
                             break;
 
@@ -1465,12 +1465,12 @@ namespace Chummer
                                 {
                                     x.FindNodeByTag(objGrade)?.Remove();
                                 }
-                            }, token);
+                            }, token).ConfigureAwait(false);
 
                             int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
                             foreach (InitiationGrade objGrade in notifyCollectionChangedEventArgs.NewItems)
                             {
-                                await AddToTree(objGrade, intNewIndex);
+                                await AddToTree(objGrade, intNewIndex).ConfigureAwait(false);
                                 ++intNewIndex;
                             }
                         }
@@ -1491,7 +1491,7 @@ namespace Chummer
                                         ++intNewIndex;
                                     }
                                 }
-                            }, token);
+                            }, token).ConfigureAwait(false);
                         }
                             break;
                     }
@@ -1499,7 +1499,7 @@ namespace Chummer
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
 
             Task AddToTree(InitiationGrade objInitiationGrade, int intIndex = -1)
@@ -1638,7 +1638,7 @@ namespace Chummer
         {
             if (treMetamagic == null || notifyCollectionChangedEventArgs == null)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
                 switch (notifyCollectionChangedEventArgs.Action)
@@ -1647,7 +1647,7 @@ namespace Chummer
                     {
                         foreach (Art objArt in notifyCollectionChangedEventArgs.NewItems)
                         {
-                            await AddToTree(objArt);
+                            await AddToTree(objArt).ConfigureAwait(false);
                         }
                     }
                         break;
@@ -1660,7 +1660,7 @@ namespace Chummer
                             {
                                 x.FindNodeByTag(objArt)?.Remove();
                             }
-                        }, token);
+                        }, token).ConfigureAwait(false);
                     }
                         break;
 
@@ -1672,30 +1672,30 @@ namespace Chummer
                             {
                                 x.FindNodeByTag(objArt)?.Remove();
                             }
-                        }, token);
+                        }, token).ConfigureAwait(false);
 
                         foreach (Art objArt in notifyCollectionChangedEventArgs.NewItems)
                         {
-                            await AddToTree(objArt);
+                            await AddToTree(objArt).ConfigureAwait(false);
                         }
                     }
                         break;
 
                     case NotifyCollectionChangedAction.Reset:
                     {
-                        await RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes, token: token);
+                        await RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes, token: token).ConfigureAwait(false);
                     }
                         break;
                 }
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
 
             async ValueTask AddToTree(Art objArt, bool blnSingleAdd = true)
             {
-                InitiationGrade objGrade = await CharacterObject.InitiationGrades.FirstOrDefaultAsync(x => x.Grade == objArt.Grade, token);
+                InitiationGrade objGrade = await CharacterObject.InitiationGrades.FirstOrDefaultAsync(x => x.Grade == objArt.Grade, token).ConfigureAwait(false);
 
                 if (objGrade != null)
                 {
@@ -1724,7 +1724,7 @@ namespace Chummer
                             if (blnSingleAdd)
                                 x.SelectedNode = objNode;
                         }
-                    }, token);
+                    }, token).ConfigureAwait(false);
                 }
             }
         }
@@ -1734,7 +1734,7 @@ namespace Chummer
             if (treMetamagic == null || notifyCollectionChangedEventArgs == null)
                 return;
 
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
                 switch (notifyCollectionChangedEventArgs.Action)
@@ -1743,7 +1743,7 @@ namespace Chummer
                     {
                         foreach (Enhancement objEnhancement in notifyCollectionChangedEventArgs.NewItems)
                         {
-                            await AddToTree(objEnhancement);
+                            await AddToTree(objEnhancement).ConfigureAwait(false);
                         }
                     }
                         break;
@@ -1756,7 +1756,7 @@ namespace Chummer
                             {
                                 x.FindNodeByTag(objEnhancement)?.Remove();
                             }
-                        }, token);
+                        }, token).ConfigureAwait(false);
                     }
                         break;
 
@@ -1768,30 +1768,30 @@ namespace Chummer
                             {
                                 x.FindNodeByTag(objEnhancement)?.Remove();
                             }
-                        }, token);
+                        }, token).ConfigureAwait(false);
 
                         foreach (Enhancement objEnhancement in notifyCollectionChangedEventArgs.NewItems)
                         {
-                            await AddToTree(objEnhancement);
+                            await AddToTree(objEnhancement).ConfigureAwait(false);
                         }
                     }
                         break;
 
                     case NotifyCollectionChangedAction.Reset:
                     {
-                        await RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes, token: token);
+                        await RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes, token: token).ConfigureAwait(false);
                     }
                         break;
                 }
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
 
             async ValueTask AddToTree(Enhancement objEnhancement, bool blnSingleAdd = true)
             {
-                InitiationGrade objGrade = await CharacterObject.InitiationGrades.FirstOrDefaultAsync(x => x.Grade == objEnhancement.Grade, token);
+                InitiationGrade objGrade = await CharacterObject.InitiationGrades.FirstOrDefaultAsync(x => x.Grade == objEnhancement.Grade, token).ConfigureAwait(false);
 
                 if (objGrade != null)
                 {
@@ -1820,14 +1820,14 @@ namespace Chummer
                             if (blnSingleAdd)
                                 x.SelectedNode = objNode;
                         }
-                    }, token);
+                    }, token).ConfigureAwait(false);
                 }
             }
         }
 
         protected async ValueTask RefreshPowerCollectionListChanged(TreeView treMetamagic, ContextMenuStrip cmsMetamagic, ContextMenuStrip cmsInitiationNotes, ListChangedEventArgs e = null, CancellationToken token = default)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
                 switch (e?.ListChangedType)
@@ -1836,19 +1836,19 @@ namespace Chummer
                     {
                         await CharacterObject.Powers[e.NewIndex].Enhancements
                                              .AddTaggedCollectionChangedAsync(
-                                                 treMetamagic, MakeDirtyWithCharacterUpdate, token);
+                                                 treMetamagic, MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
                         await CharacterObject.Powers[e.NewIndex].Enhancements
-                                             .AddTaggedCollectionChangedAsync(treMetamagic, FuncDelegateToAdd, token);
+                                             .AddTaggedCollectionChangedAsync(treMetamagic, FuncDelegateToAdd, token).ConfigureAwait(false);
 
                         async void FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y) =>
                             await RefreshEnhancementCollection(treMetamagic, cmsMetamagic, cmsInitiationNotes,
-                                                               y, token);
+                                                               y, token).ConfigureAwait(false);
                     }
                         break;
 
                     case ListChangedType.Reset:
                     {
-                        await RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes, token: token);
+                        await RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes, token: token).ConfigureAwait(false);
                     }
                         break;
 
@@ -1865,13 +1865,13 @@ namespace Chummer
                         foreach (Power objPower in CharacterObject.Powers)
                         {
                             await objPower.Enhancements.AddTaggedCollectionChangedAsync(treMetamagic,
-                                MakeDirtyWithCharacterUpdate, token);
+                                MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
                             await objPower.Enhancements.AddTaggedCollectionChangedAsync(
-                                treMetamagic, FuncDelegateToAdd, token);
+                                treMetamagic, FuncDelegateToAdd, token).ConfigureAwait(false);
 
                             async void FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y) =>
                                 await RefreshEnhancementCollection(treMetamagic, cmsMetamagic, cmsInitiationNotes,
-                                                                   y, token);
+                                                                   y, token).ConfigureAwait(false);
                         }
                     }
                         break;
@@ -1879,27 +1879,27 @@ namespace Chummer
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
 
-            await RequestCharacterUpdate(token);
+            await RequestCharacterUpdate(token).ConfigureAwait(false);
 
-            await SetDirty(true, token);
+            await SetDirty(true, token).ConfigureAwait(false);
         }
 
         protected async ValueTask RefreshPowerCollectionBeforeRemove(TreeView treMetamagic, RemovingOldEventArgs removingOldEventArgs, CancellationToken token = default)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
                 if (removingOldEventArgs?.OldObject is Power objPower)
                 {
-                    await objPower.Enhancements.RemoveTaggedCollectionChangedAsync(treMetamagic, token);
+                    await objPower.Enhancements.RemoveTaggedCollectionChangedAsync(treMetamagic, token).ConfigureAwait(false);
                 }
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1907,7 +1907,7 @@ namespace Chummer
         {
             if (treMetamagic == null || notifyCollectionChangedEventArgs == null)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
                 switch (notifyCollectionChangedEventArgs.Action)
@@ -1916,7 +1916,7 @@ namespace Chummer
                     {
                         foreach (Metamagic objMetamagic in notifyCollectionChangedEventArgs.NewItems)
                         {
-                            await AddToTree(objMetamagic);
+                            await AddToTree(objMetamagic).ConfigureAwait(false);
                         }
                     }
                         break;
@@ -1929,7 +1929,7 @@ namespace Chummer
                             {
                                 x.FindNodeByTag(objMetamagic)?.Remove();
                             }
-                        }, token);
+                        }, token).ConfigureAwait(false);
                     }
                         break;
 
@@ -1941,25 +1941,25 @@ namespace Chummer
                             {
                                 x.FindNodeByTag(objMetamagic)?.Remove();
                             }
-                        }, token);
+                        }, token).ConfigureAwait(false);
 
                         foreach (Metamagic objMetamagic in notifyCollectionChangedEventArgs.NewItems)
                         {
-                            await AddToTree(objMetamagic);
+                            await AddToTree(objMetamagic).ConfigureAwait(false);
                         }
                     }
                         break;
 
                     case NotifyCollectionChangedAction.Reset:
                     {
-                        await RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes, token: token);
+                        await RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes, token: token).ConfigureAwait(false);
                     }
                         break;
                 }
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
 
             async ValueTask AddToTree(Metamagic objMetamagic, bool blnSingleAdd = true)
@@ -1986,11 +1986,11 @@ namespace Chummer
                         objNode.Expand();
                         if (blnSingleAdd)
                             x.SelectedNode = objNode;
-                    }, token);
+                    }, token).ConfigureAwait(false);
                 }
                 else
                 {
-                    InitiationGrade objGrade = await CharacterObject.InitiationGrades.FirstOrDefaultAsync(x => x.Grade == objMetamagic.Grade, token);
+                    InitiationGrade objGrade = await CharacterObject.InitiationGrades.FirstOrDefaultAsync(x => x.Grade == objMetamagic.Grade, token).ConfigureAwait(false);
 
                     if (objGrade != null)
                     {
@@ -2019,7 +2019,7 @@ namespace Chummer
                                 if (blnSingleAdd)
                                     x.SelectedNode = objNode;
                             }
-                        }, token);
+                        }, token).ConfigureAwait(false);
                     }
                 }
             }
@@ -2038,26 +2038,26 @@ namespace Chummer
                 return;
             TreeNode objPowersNode = null;
             TreeNode objWeaknessesNode = null;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
                 if (notifyCollectionChangedEventArgs == null
                     || notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
                 {
                     string strSelectedId
-                        = (await treCritterPowers.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token) as
+                        = (await treCritterPowers.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token).ConfigureAwait(false) as
                               IHasInternalId)
                           ?.InternalId ??
                           string.Empty;
-                    await treCritterPowers.DoThreadSafeAsync(x => x.Nodes.Clear(), token);
+                    await treCritterPowers.DoThreadSafeAsync(x => x.Nodes.Clear(), token).ConfigureAwait(false);
                     // Add the Critter Powers that exist.
                     foreach (CritterPower objPower in CharacterObject.CritterPowers)
                     {
-                        await AddToTree(objPower, false);
+                        await AddToTree(objPower, false).ConfigureAwait(false);
                     }
 
                     await treCritterPowers.DoThreadSafeAsync(x => x.SortCustomAlphabetically(strSelectedId),
-                                                             token);
+                                                             token).ConfigureAwait(false);
                 }
                 else
                 {
@@ -2065,14 +2065,14 @@ namespace Chummer
                     {
                         objPowersNode = x.FindNode("Node_CritterPowers", false);
                         objWeaknessesNode = x.FindNode("Node_CritterWeaknesses", false);
-                    }, token);
+                    }, token).ConfigureAwait(false);
                     switch (notifyCollectionChangedEventArgs.Action)
                     {
                         case NotifyCollectionChangedAction.Add:
                         {
                             foreach (CritterPower objPower in notifyCollectionChangedEventArgs.NewItems)
                             {
-                                await AddToTree(objPower);
+                                await AddToTree(objPower).ConfigureAwait(false);
                             }
 
                             break;
@@ -2092,7 +2092,7 @@ namespace Chummer
                                             objParent.Remove();
                                     }
                                 }
-                            }, token);
+                            }, token).ConfigureAwait(false);
 
                             break;
                         }
@@ -2111,11 +2111,11 @@ namespace Chummer
                                         objNode.Remove();
                                     }
                                 }
-                            }, token);
+                            }, token).ConfigureAwait(false);
 
                             foreach (CritterPower objPower in notifyCollectionChangedEventArgs.NewItems)
                             {
-                                await AddToTree(objPower);
+                                await AddToTree(objPower).ConfigureAwait(false);
                             }
 
                             await treCritterPowers.DoThreadSafeAsync(() =>
@@ -2125,7 +2125,7 @@ namespace Chummer
                                     if (objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
                                         objOldParent.Remove();
                                 }
-                            }, token);
+                            }, token).ConfigureAwait(false);
 
                             break;
                         }
@@ -2134,7 +2134,7 @@ namespace Chummer
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
 
             async ValueTask AddToTree(CritterPower objPower, bool blnSingleAdd = true)
@@ -2151,14 +2151,14 @@ namespace Chummer
                             objWeaknessesNode = new TreeNode
                             {
                                 Tag = "Node_CritterWeaknesses",
-                                Text = await LanguageManager.GetStringAsync("Node_CritterWeaknesses", token: token)
+                                Text = await LanguageManager.GetStringAsync("Node_CritterWeaknesses", token: token).ConfigureAwait(false)
                             };
                             await treCritterPowers.DoThreadSafeAsync(x =>
                             {
                                 // ReSharper disable once AssignNullToNotNullAttribute
                                 x.Nodes.Add(objWeaknessesNode);
                                 objWeaknessesNode.Expand();
-                            }, token);
+                            }, token).ConfigureAwait(false);
                         }
                         objParentNode = objWeaknessesNode;
                         break;
@@ -2169,14 +2169,14 @@ namespace Chummer
                             objPowersNode = new TreeNode
                             {
                                 Tag = "Node_CritterPowers",
-                                Text = await LanguageManager.GetStringAsync("Node_CritterPowers", token: token)
+                                Text = await LanguageManager.GetStringAsync("Node_CritterPowers", token: token).ConfigureAwait(false)
                             };
                             await treCritterPowers.DoThreadSafeAsync(x =>
                             {
                                 // ReSharper disable once AssignNullToNotNullAttribute
                                 x.Nodes.Insert(0, objPowersNode);
                                 objPowersNode.Expand();
-                            }, token);
+                            }, token).ConfigureAwait(false);
                         }
                         objParentNode = objPowersNode;
                         break;
@@ -2204,7 +2204,7 @@ namespace Chummer
                     }
                     else
                         objParentNode.Nodes.Add(objNode);
-                }, token);
+                }, token).ConfigureAwait(false);
             }
         }
 
@@ -2225,20 +2225,20 @@ namespace Chummer
             TreeNode objNegativeQualityRoot = null;
             TreeNode objLifeModuleRoot = null;
 
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
                 if (notifyCollectionChangedEventArgs == null ||
                     notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
                 {
                     string strSelectedNode =
-                        (await treQualities.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token) as
+                        (await treQualities.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token).ConfigureAwait(false) as
                             IHasInternalId)?.InternalId ?? string.Empty;
 
                     // Create the root nodes.
                     foreach (Quality objQuality in CharacterObject.Qualities)
                         objQuality.PropertyChanged -= AddedQualityOnPropertyChanged;
-                    await treQualities.DoThreadSafeAsync(x => x.Nodes.Clear(), token);
+                    await treQualities.DoThreadSafeAsync(x => x.Nodes.Clear(), token).ConfigureAwait(false);
 
                     // Multiple instances of the same quality are combined into just one entry with a number next to it (e.g. 6 discrete entries of "Focused Concentration" become "Focused Concentration 6")
                     using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
@@ -2247,7 +2247,7 @@ namespace Chummer
                         foreach (Quality objQuality in CharacterObject.Qualities)
                         {
                             setQualitiesToPrint.Add(objQuality.SourceIDString + '|' +
-                                                    await objQuality.GetSourceNameAsync(GlobalSettings.Language, token) + '|' +
+                                                    await objQuality.GetSourceNameAsync(GlobalSettings.Language, token).ConfigureAwait(false) + '|' +
                                                     objQuality.Extra);
                         }
 
@@ -2255,17 +2255,17 @@ namespace Chummer
                         foreach (Quality objQuality in CharacterObject.Qualities)
                         {
                             if (!setQualitiesToPrint.Remove(objQuality.SourceIDString + '|' +
-                                                            await objQuality.GetSourceNameAsync(GlobalSettings.Language, token)
+                                                            await objQuality.GetSourceNameAsync(GlobalSettings.Language, token).ConfigureAwait(false)
                                                             + '|' +
                                                             objQuality.Extra))
                                 continue;
 
-                            await AddToTree(objQuality, false);
+                            await AddToTree(objQuality, false).ConfigureAwait(false);
                         }
                     }
 
                     await treQualities.DoThreadSafeAsync(x => x.SortCustomAlphabetically(strSelectedNode),
-                                                         token);
+                                                         token).ConfigureAwait(false);
                 }
                 else
                 {
@@ -2274,7 +2274,7 @@ namespace Chummer
                         objPositiveQualityRoot = x.FindNodeByTag("Node_SelectedPositiveQualities", false);
                         objNegativeQualityRoot = x.FindNodeByTag("Node_SelectedNegativeQualities", false);
                         objLifeModuleRoot = x.FindNodeByTag("String_LifeModules", false);
-                    }, token);
+                    }, token).ConfigureAwait(false);
                     bool blnDoNameRefresh = false;
                     switch (notifyCollectionChangedEventArgs.Action)
                     {
@@ -2285,7 +2285,7 @@ namespace Chummer
                                 if (objQuality.Levels > 1)
                                     blnDoNameRefresh = true;
                                 else
-                                    await AddToTree(objQuality);
+                                    await AddToTree(objQuality).ConfigureAwait(false);
                             }
 
                             break;
@@ -2309,7 +2309,7 @@ namespace Chummer
                                             if (objParent.Level == 0 && objParent.Nodes.Count == 0)
                                                 objParent.Remove();
                                         }
-                                    }, token);
+                                    }, token).ConfigureAwait(false);
                                 }
                             }
 
@@ -2327,7 +2327,7 @@ namespace Chummer
                                 {
                                     TreeNode objNode
                                         = await treQualities.DoThreadSafeFuncAsync(
-                                            x => x.FindNodeByTag(objQuality), token);
+                                            x => x.FindNodeByTag(objQuality), token).ConfigureAwait(false);
                                     if (objNode != null)
                                     {
                                         await treQualities.DoThreadSafeAsync(() =>
@@ -2336,11 +2336,11 @@ namespace Chummer
                                                 lstOldParents.Add(objNode.Parent);
                                             objNode.Remove();
                                             objQuality.PropertyChanged -= AddedQualityOnPropertyChanged;
-                                        }, token);
+                                        }, token).ConfigureAwait(false);
                                     }
                                     else
                                     {
-                                        await RefreshQualityNames(treQualities, token);
+                                        await RefreshQualityNames(treQualities, token).ConfigureAwait(false);
                                     }
                                 }
                             }
@@ -2350,7 +2350,7 @@ namespace Chummer
                                 if (objQuality.Levels > 1)
                                     blnDoNameRefresh = true;
                                 else
-                                    await AddToTree(objQuality);
+                                    await AddToTree(objQuality).ConfigureAwait(false);
                             }
 
                             await treQualities.DoThreadSafeAsync(() =>
@@ -2360,19 +2360,19 @@ namespace Chummer
                                     if (objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
                                         objOldParent.Remove();
                                 }
-                            }, token);
+                            }, token).ConfigureAwait(false);
 
                             break;
                         }
                     }
 
                     if (blnDoNameRefresh)
-                        await RefreshQualityNames(treQualities, token);
+                        await RefreshQualityNames(treQualities, token).ConfigureAwait(false);
                 }
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
 
             async ValueTask AddToTree(Quality objQuality, bool blnSingleAdd = true)
@@ -2389,14 +2389,14 @@ namespace Chummer
                             objPositiveQualityRoot = new TreeNode
                             {
                                 Tag = "Node_SelectedPositiveQualities",
-                                Text = await LanguageManager.GetStringAsync("Node_SelectedPositiveQualities", token: token)
+                                Text = await LanguageManager.GetStringAsync("Node_SelectedPositiveQualities", token: token).ConfigureAwait(false)
                             };
                             await treQualities.DoThreadSafeAsync(x =>
                             {
                                 // ReSharper disable once AssignNullToNotNullAttribute
                                 x.Nodes.Insert(0, objPositiveQualityRoot);
                                 objPositiveQualityRoot.Expand();
-                            }, token);
+                            }, token).ConfigureAwait(false);
                         }
                         objParentNode = objPositiveQualityRoot;
                         break;
@@ -2407,7 +2407,7 @@ namespace Chummer
                             objNegativeQualityRoot = new TreeNode
                             {
                                 Tag = "Node_SelectedNegativeQualities",
-                                Text = await LanguageManager.GetStringAsync("Node_SelectedNegativeQualities", token: token)
+                                Text = await LanguageManager.GetStringAsync("Node_SelectedNegativeQualities", token: token).ConfigureAwait(false)
                             };
                             await treQualities.DoThreadSafeAsync(x =>
                             {
@@ -2418,7 +2418,7 @@ namespace Chummer
                                         // ReSharper disable once AssignNullToNotNullAttribute
                                         : 1, objNegativeQualityRoot);
                                 objNegativeQualityRoot.Expand();
-                            }, token);
+                            }, token).ConfigureAwait(false);
                         }
                         objParentNode = objNegativeQualityRoot;
                         break;
@@ -2429,14 +2429,14 @@ namespace Chummer
                             objLifeModuleRoot = new TreeNode
                             {
                                 Tag = "String_LifeModules",
-                                Text = await LanguageManager.GetStringAsync("String_LifeModules", token: token)
+                                Text = await LanguageManager.GetStringAsync("String_LifeModules", token: token).ConfigureAwait(false)
                             };
                             await treQualities.DoThreadSafeAsync(x =>
                             {
                                 // ReSharper disable once AssignNullToNotNullAttribute
                                 x.Nodes.Add(objLifeModuleRoot);
                                 objLifeModuleRoot.Expand();
-                            }, token);
+                            }, token).ConfigureAwait(false);
                         }
                         objParentNode = objLifeModuleRoot;
                         break;
@@ -2464,7 +2464,7 @@ namespace Chummer
                         }
                         else
                             objParentNode.Nodes.Add(objNode);
-                    }, token);
+                    }, token).ConfigureAwait(false);
                     objQuality.PropertyChanged += AddedQualityOnPropertyChanged;
                 }
             }
@@ -2505,9 +2505,9 @@ namespace Chummer
         protected async ValueTask RefreshQualityNames(TreeView treQualities, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (treQualities == null || await treQualities.DoThreadSafeFuncAsync(x => x.GetNodeCount(false), token) <= 0)
+            if (treQualities == null || await treQualities.DoThreadSafeFuncAsync(x => x.GetNodeCount(false), token).ConfigureAwait(false) <= 0)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
                 await treQualities.DoThreadSafeAsync(x =>
@@ -2522,11 +2522,11 @@ namespace Chummer
                     }
 
                     x.SortCustomAlphabetically(objSelectedNode?.Tag);
-                }, token);
+                }, token).ConfigureAwait(false);
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -2541,24 +2541,24 @@ namespace Chummer
         {
             if (objNodeList == null || objNodeList.Count <= 0)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
                 foreach (XPathNavigator objNode in objNodeList)
                 {
-                    Quality objQuality = await CharacterObject.Qualities.FirstOrDefaultAsync(x => x.Name == objNode.Value, token);
+                    Quality objQuality = await CharacterObject.Qualities.FirstOrDefaultAsync(x => x.Name == objNode.Value, token).ConfigureAwait(false);
                     if (objQuality != null)
                     {
                         objQuality.DeleteQuality();
                         await ImprovementManager.RemoveImprovementsAsync(
                             CharacterObject, Improvement.ImprovementSource.CritterPower,
-                            objQuality.InternalId, token);
+                            objQuality.InternalId, token).ConfigureAwait(false);
                     }
                 }
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -2569,22 +2569,22 @@ namespace Chummer
             if (treArmor == null || notifyCollectionChangedEventArgs == null)
                 return;
 
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
                 string strSelectedId
-                    = (await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token) as IHasInternalId)
+                    = (await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token).ConfigureAwait(false) as IHasInternalId)
                     ?.InternalId ?? string.Empty;
 
                 TreeNode nodRoot
-                    = await treArmor.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedArmor", false), token);
+                    = await treArmor.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedArmor", false), token).ConfigureAwait(false);
                 await RefreshLocation(treArmor, nodRoot, cmsArmorLocation, notifyCollectionChangedEventArgs,
                                       strSelectedId,
-                                      "Node_SelectedArmor", token);
+                                      "Node_SelectedArmor", token).ConfigureAwait(false);
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -2593,22 +2593,22 @@ namespace Chummer
             if (treGear == null || notifyCollectionChangedEventArgs == null)
                 return;
 
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
                 string strSelectedId
-                    = (await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token) as IHasInternalId)
+                    = (await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token).ConfigureAwait(false) as IHasInternalId)
                     ?.InternalId ?? string.Empty;
 
                 TreeNode nodRoot
-                    = await treGear.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedGear", false), token);
+                    = await treGear.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedGear", false), token).ConfigureAwait(false);
                 await RefreshLocation(treGear, nodRoot, cmsGearLocation, notifyCollectionChangedEventArgs,
                                       strSelectedId,
-                                      "Node_SelectedGear", token);
+                                      "Node_SelectedGear", token).ConfigureAwait(false);
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -2617,24 +2617,24 @@ namespace Chummer
             if (treVehicles == null || notifyCollectionChangedEventArgs == null)
                 return;
 
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
                 string strSelectedId
                     = (await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag,
-                                                               token) as IHasInternalId)?.InternalId
+                                                               token).ConfigureAwait(false) as IHasInternalId)?.InternalId
                       ?? string.Empty;
 
                 TreeNode nodRoot
                     = await treVehicles.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedVehicles", false),
-                                                              token);
+                                                              token).ConfigureAwait(false);
                 await RefreshLocation(treVehicles, nodRoot, cmsVehicleLocation, notifyCollectionChangedEventArgs,
                                       strSelectedId,
-                                      "Node_SelectedVehicles", token);
+                                      "Node_SelectedVehicles", token).ConfigureAwait(false);
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -2643,23 +2643,23 @@ namespace Chummer
             if (treVehicles == null || objVehicle == null || notifyCollectionChangedEventArgs == null)
                 return;
 
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
                 string strSelectedId
                     = (await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag,
-                                                               token) as IHasInternalId)?.InternalId
+                                                               token).ConfigureAwait(false) as IHasInternalId)?.InternalId
                       ?? string.Empty;
 
                 TreeNode nodRoot
-                    = await treVehicles.DoThreadSafeFuncAsync(x => x.FindNodeByTag(objVehicle), token);
+                    = await treVehicles.DoThreadSafeFuncAsync(x => x.FindNodeByTag(objVehicle), token).ConfigureAwait(false);
                 await RefreshLocation(treVehicles, nodRoot, cmsVehicleLocation, funcOffset,
                                       notifyCollectionChangedEventArgs,
-                                      strSelectedId, "Node_SelectedVehicles", false, token);
+                                      strSelectedId, "Node_SelectedVehicles", false, token).ConfigureAwait(false);
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -2668,23 +2668,23 @@ namespace Chummer
             if (treWeapons == null || notifyCollectionChangedEventArgs == null)
                 return;
 
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
                 string strSelectedId
-                    = (await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token) as IHasInternalId)
+                    = (await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token).ConfigureAwait(false) as IHasInternalId)
                     ?.InternalId ?? string.Empty;
 
                 TreeNode nodRoot
                     = await treWeapons.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedWeapons", false),
-                                                             token);
+                                                             token).ConfigureAwait(false);
                 await RefreshLocation(treWeapons, nodRoot, cmsWeaponLocation, notifyCollectionChangedEventArgs,
                                       strSelectedId,
-                                      "Node_SelectedWeapons", token);
+                                      "Node_SelectedWeapons", token).ConfigureAwait(false);
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -2693,16 +2693,16 @@ namespace Chummer
             if (treImprovements == null || notifyCollectionChangedEventArgs == null)
                 return;
 
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
                 string strSelectedId =
-                    (await treImprovements.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token) as
+                    (await treImprovements.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token).ConfigureAwait(false) as
                         IHasInternalId)?.InternalId ?? string.Empty;
 
                 TreeNode nodRoot
                     = await treImprovements.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedImprovements", false),
-                                                                  token);
+                                                                  token).ConfigureAwait(false);
 
                 switch (notifyCollectionChangedEventArgs.Action)
                 {
@@ -2717,9 +2717,8 @@ namespace Chummer
                                 Text = strLocation,
                                 ContextMenuStrip = cmsImprovementLocation
                             };
-                            await treImprovements.DoThreadSafeAsync(x => x.Nodes.Insert(intNewIndex, objLocation),
-                                                                    token);
-                            ++intNewIndex;
+                            int index = Interlocked.Increment(ref intNewIndex) - 1;
+                            await treImprovements.DoThreadSafeAsync(x => x.Nodes.Insert(index, objLocation), token).ConfigureAwait(false);
                         }
                     }
                         break;
@@ -2730,10 +2729,10 @@ namespace Chummer
                         {
                             TreeNode objNode
                                 = await treImprovements.DoThreadSafeFuncAsync(
-                                    x => x.FindNodeByTag(strLocation, false), token);
+                                    x => x.FindNodeByTag(strLocation, false), token).ConfigureAwait(false);
                             if (objNode != null)
                             {
-                                await treImprovements.DoThreadSafeAsync(() => objNode.Remove(), token);
+                                await treImprovements.DoThreadSafeAsync(() => objNode.Remove(), token).ConfigureAwait(false);
                                 if (objNode.Nodes.Count > 0)
                                 {
                                     if (nodRoot == null)
@@ -2741,21 +2740,23 @@ namespace Chummer
                                         nodRoot = new TreeNode
                                         {
                                             Tag = "Node_SelectedImprovements",
-                                            Text = await LanguageManager.GetStringAsync("Node_SelectedImprovements", token: token)
+                                            Text = await LanguageManager.GetStringAsync("Node_SelectedImprovements", token: token).ConfigureAwait(false)
                                         };
+                                        TreeNode root = nodRoot;
                                         await treImprovements.DoThreadSafeAsync(
-                                            x => x.Nodes.Insert(0, nodRoot), token);
+                                            x => x.Nodes.Insert(0, root), token).ConfigureAwait(false);
                                     }
 
+                                    TreeNode root2 = nodRoot;
                                     await treImprovements.DoThreadSafeAsync(() =>
                                     {
                                         for (int i = objNode.Nodes.Count - 1; i >= 0; --i)
                                         {
                                             TreeNode nodImprovement = objNode.Nodes[i];
                                             nodImprovement.Remove();
-                                            nodRoot.Nodes.Add(nodImprovement);
+                                            root2.Nodes.Add(nodImprovement);
                                         }
-                                    }, token);
+                                    }, token).ConfigureAwait(false);
                                 }
                             }
                         }
@@ -2769,7 +2770,7 @@ namespace Chummer
                         {
                             TreeNode objNode
                                 = await treImprovements.DoThreadSafeFuncAsync(
-                                    x => x.FindNodeByTag(strLocation, false), token);
+                                    x => x.FindNodeByTag(strLocation, false), token).ConfigureAwait(false);
                             if (objNode != null)
                             {
                                 if (notifyCollectionChangedEventArgs
@@ -2779,7 +2780,7 @@ namespace Chummer
                                     {
                                         objNode.Tag = objNewLocation;
                                         objNode.Text = objNewLocation;
-                                    }, token);
+                                    }, token).ConfigureAwait(false);
                                 }
 
                                 ++intNewItemsIndex;
@@ -2796,7 +2797,7 @@ namespace Chummer
                         {
                             TreeNode objLocation
                                 = await treImprovements.DoThreadSafeFuncAsync(
-                                    x => x.FindNode(strLocation, false), token);
+                                    x => x.FindNode(strLocation, false), token).ConfigureAwait(false);
                             if (objLocation != null)
                             {
                                 lstMoveNodes.Add(new Tuple<string, TreeNode>(strLocation, objLocation));
@@ -2811,9 +2812,9 @@ namespace Chummer
                                 lstMoveNodes.Find(x => x.Item1 == strLocation);
                             if (objLocationTuple != null)
                             {
+                                int index = Interlocked.Increment(ref intNewIndex) - 1;
                                 await treImprovements.DoThreadSafeAsync(
-                                    x => x.Nodes.Insert(intNewIndex, objLocationTuple.Item2), token);
-                                ++intNewIndex;
+                                    x => x.Nodes.Insert(index, objLocationTuple.Item2), token).ConfigureAwait(false);
                                 lstMoveNodes.Remove(objLocationTuple);
                             }
                         }
@@ -2826,10 +2827,10 @@ namespace Chummer
                         {
                             TreeNode objLocation
                                 = await treImprovements.DoThreadSafeFuncAsync(
-                                    x => x.FindNode(strLocation, false), token);
+                                    x => x.FindNode(strLocation, false), token).ConfigureAwait(false);
                             if (objLocation != null)
                             {
-                                await treImprovements.DoThreadSafeAsync(() => objLocation.Remove(), token);
+                                await treImprovements.DoThreadSafeAsync(() => objLocation.Remove(), token).ConfigureAwait(false);
                                 if (objLocation.Nodes.Count > 0)
                                 {
                                     if (nodRoot == null)
@@ -2837,21 +2838,23 @@ namespace Chummer
                                         nodRoot = new TreeNode
                                         {
                                             Tag = "Node_SelectedImprovements",
-                                            Text = await LanguageManager.GetStringAsync("Node_SelectedImprovements", token: token)
+                                            Text = await LanguageManager.GetStringAsync("Node_SelectedImprovements", token: token).ConfigureAwait(false)
                                         };
+                                        TreeNode root = nodRoot;
                                         await treImprovements.DoThreadSafeAsync(
-                                            x => x.Nodes.Insert(0, nodRoot), token);
+                                            x => x.Nodes.Insert(0, root), token).ConfigureAwait(false);
                                     }
 
+                                    TreeNode root2 = nodRoot;
                                     await treImprovements.DoThreadSafeAsync(() =>
                                     {
                                         for (int i = objLocation.Nodes.Count - 1; i >= 0; --i)
                                         {
                                             TreeNode nodImprovement = objLocation.Nodes[i];
                                             nodImprovement.Remove();
-                                            nodRoot.Nodes.Add(nodImprovement);
+                                            root2.Nodes.Add(nodImprovement);
                                         }
-                                    }, token);
+                                    }, token).ConfigureAwait(false);
                                 }
                             }
                         }
@@ -2859,18 +2862,18 @@ namespace Chummer
                         break;
                 }
 
-                await treImprovements.DoThreadSafeAsync(x => x.SelectedNode = x.FindNode(strSelectedId), token);
+                await treImprovements.DoThreadSafeAsync(x => x.SelectedNode = x.FindNode(strSelectedId), token).ConfigureAwait(false);
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
         private async ValueTask RefreshLocation(TreeView treSelected, TreeNode nodRoot, ContextMenuStrip cmsLocation,
             NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs, string strSelectedId, string strNodeName, CancellationToken token = default)
         {
-            await RefreshLocation(treSelected, nodRoot, cmsLocation, null, notifyCollectionChangedEventArgs, strSelectedId, strNodeName, token: token);
+            await RefreshLocation(treSelected, nodRoot, cmsLocation, null, notifyCollectionChangedEventArgs, strSelectedId, strNodeName, token: token).ConfigureAwait(false);
         }
 
         private async ValueTask RefreshLocation(TreeView treSelected, TreeNode nodRoot, ContextMenuStrip cmsLocation,
@@ -2878,7 +2881,7 @@ namespace Chummer
             NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs, string strSelectedId, string strNodeName,
             bool rootSibling = true, CancellationToken token = default)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
                 switch (notifyCollectionChangedEventArgs.Action)
@@ -2903,7 +2906,7 @@ namespace Chummer
 
                                 ++intNewIndex;
                             }
-                        }, token);
+                        }, token).ConfigureAwait(false);
                     }
                         break;
 
@@ -2913,7 +2916,7 @@ namespace Chummer
                         {
                             TreeNode nodLocation
                                 = await treSelected.DoThreadSafeFuncAsync(
-                                    x => x.FindNodeByTag(objLocation, false), token);
+                                    x => x.FindNodeByTag(objLocation, false), token).ConfigureAwait(false);
                             if (nodLocation == null)
                                 continue;
                             if (nodLocation.Nodes.Count > 0)
@@ -2923,23 +2926,25 @@ namespace Chummer
                                     nodRoot = new TreeNode
                                     {
                                         Tag = strNodeName,
-                                        Text = await LanguageManager.GetStringAsync(strNodeName, token: token)
+                                        Text = await LanguageManager.GetStringAsync(strNodeName, token: token).ConfigureAwait(false)
                                     };
-                                    await treSelected.DoThreadSafeAsync(x => x.Nodes.Insert(0, nodRoot), token);
+                                    TreeNode root = nodRoot;
+                                    await treSelected.DoThreadSafeAsync(x => x.Nodes.Insert(0, root), token).ConfigureAwait(false);
                                 }
 
+                                TreeNode root2 = nodRoot;
                                 await treSelected.DoThreadSafeAsync(() =>
                                 {
                                     for (int i = nodLocation.Nodes.Count - 1; i >= 0; --i)
                                     {
                                         TreeNode nodWeapon = nodLocation.Nodes[i];
                                         nodWeapon.Remove();
-                                        nodRoot.Nodes.Add(nodWeapon);
+                                        root2.Nodes.Add(nodWeapon);
                                     }
-                                }, token);
+                                }, token).ConfigureAwait(false);
                             }
 
-                            await treSelected.DoThreadSafeAsync(() => nodLocation.Remove(), token);
+                            await treSelected.DoThreadSafeAsync(() => nodLocation.Remove(), token).ConfigureAwait(false);
                         }
                     }
                         break;
@@ -2951,7 +2956,7 @@ namespace Chummer
                         {
                             TreeNode objNode
                                 = await treSelected.DoThreadSafeFuncAsync(
-                                    x => x.FindNodeByTag(objLocation, false), token);
+                                    x => x.FindNodeByTag(objLocation, false), token).ConfigureAwait(false);
                             if (objNode != null)
                             {
                                 if (notifyCollectionChangedEventArgs.NewItems[intNewItemsIndex] is Location
@@ -2961,7 +2966,7 @@ namespace Chummer
                                     {
                                         objNode.Tag = objNewLocation;
                                         objNode.Text = objNewLocation.DisplayName();
-                                    }, token);
+                                    }, token).ConfigureAwait(false);
                                 }
 
                                 ++intNewItemsIndex;
@@ -2978,7 +2983,7 @@ namespace Chummer
                         {
                             TreeNode objNode
                                 = await treSelected.DoThreadSafeFuncAsync(
-                                    x => x.FindNodeByTag(objLocation, false), token);
+                                    x => x.FindNodeByTag(objLocation, false), token).ConfigureAwait(false);
                             if (objNode != null)
                             {
                                 lstMoveNodes.Add(new Tuple<Location, TreeNode>(objLocation, objNode));
@@ -2993,9 +2998,9 @@ namespace Chummer
                                 lstMoveNodes.Find(x => x.Item1 == objLocation);
                             if (objLocationTuple != null)
                             {
+                                int index = Interlocked.Increment(ref intNewIndex) - 1;
                                 await treSelected.DoThreadSafeAsync(
-                                    x => x.Nodes.Insert(intNewIndex, objLocationTuple.Item2), token);
-                                ++intNewIndex;
+                                    x => x.Nodes.Insert(index, objLocationTuple.Item2), token).ConfigureAwait(false);
                                 lstMoveNodes.Remove(objLocationTuple);
                             }
                         }
@@ -3018,7 +3023,7 @@ namespace Chummer
                         {
                             TreeNode nodLocation
                                 = await treSelected.DoThreadSafeFuncAsync(
-                                    x => x.FindNode(objLocation.InternalId, false), token);
+                                    x => x.FindNode(objLocation.InternalId, false), token).ConfigureAwait(false);
                             if (nodLocation == null)
                                 continue;
                             if (nodLocation.Nodes.Count > 0)
@@ -3028,20 +3033,22 @@ namespace Chummer
                                     nodRoot = new TreeNode
                                     {
                                         Tag = strNodeName,
-                                        Text = await LanguageManager.GetStringAsync(strNodeName, token: token)
+                                        Text = await LanguageManager.GetStringAsync(strNodeName, token: token).ConfigureAwait(false)
                                     };
-                                    await treSelected.DoThreadSafeAsync(x => x.Nodes.Insert(0, nodRoot), token);
+                                    TreeNode root = nodRoot;
+                                    await treSelected.DoThreadSafeAsync(x => x.Nodes.Insert(0, root), token).ConfigureAwait(false);
                                 }
 
+                                TreeNode root2 = nodRoot;
                                 await treSelected.DoThreadSafeAsync(() =>
                                 {
                                     for (int i = nodLocation.Nodes.Count - 1; i >= 0; --i)
                                     {
                                         TreeNode nodWeapon = nodLocation.Nodes[i];
                                         nodWeapon.Remove();
-                                        nodRoot.Nodes.Add(nodWeapon);
+                                        root2.Nodes.Add(nodWeapon);
                                     }
-                                }, token);
+                                }, token).ConfigureAwait(false);
                             }
 
                             objLocation.Remove(false);
@@ -3050,11 +3057,11 @@ namespace Chummer
                         break;
                 }
 
-                await treSelected.DoThreadSafeAsync(x => x.SelectedNode = x.FindNode(strSelectedId), token);
+                await treSelected.DoThreadSafeAsync(x => x.SelectedNode = x.FindNode(strSelectedId), token).ConfigureAwait(false);
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -3064,11 +3071,11 @@ namespace Chummer
         {
             if (treWeapons == null)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
                 string strSelectedId
-                    = (await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token) as IHasInternalId)
+                    = (await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token).ConfigureAwait(false) as IHasInternalId)
                     ?.InternalId ?? string.Empty;
 
                 TreeNode nodRoot = null;
@@ -3076,7 +3083,7 @@ namespace Chummer
                 if (notifyCollectionChangedEventArgs == null ||
                     notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
                 {
-                    await treWeapons.DoThreadSafeAsync(x => x.SuspendLayout(), token);
+                    await treWeapons.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
                     try
                     {
                         await treWeapons.DoThreadSafeAsync(x =>
@@ -3087,28 +3094,28 @@ namespace Chummer
                             {
                                 x.Nodes.Add(objLocation.CreateTreeNode(cmsWeaponLocation));
                             }
-                        }, token);
+                        }, token).ConfigureAwait(false);
 
                         foreach (Weapon objWeapon in CharacterObject.Weapons)
                         {
-                            await AddToTree(objWeapon, -1, false);
+                            await AddToTree(objWeapon, -1, false).ConfigureAwait(false);
                             objWeapon.SetupChildrenWeaponsCollectionChanged(
                                 true, treWeapons, cmsWeapon, cmsWeaponAccessory,
                                 cmsWeaponAccessoryGear, MakeDirtyWithCharacterUpdate);
                         }
 
                         await treWeapons.DoThreadSafeAsync(x => x.SelectedNode = x.FindNode(strSelectedId),
-                                                           token);
+                                                           token).ConfigureAwait(false);
                     }
                     finally
                     {
-                        await treWeapons.DoThreadSafeAsync(x => x.ResumeLayout(), token);
+                        await treWeapons.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
                     }
                 }
                 else
                 {
                     nodRoot = await treWeapons.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedWeapons", false),
-                                                                     token);
+                                                                     token).ConfigureAwait(false);
 
                     switch (notifyCollectionChangedEventArgs.Action)
                     {
@@ -3117,7 +3124,7 @@ namespace Chummer
                             int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
                             foreach (Weapon objWeapon in notifyCollectionChangedEventArgs.NewItems)
                             {
-                                await AddToTree(objWeapon, intNewIndex);
+                                await AddToTree(objWeapon, intNewIndex).ConfigureAwait(false);
                                 ++intNewIndex;
                                 objWeapon.SetupChildrenWeaponsCollectionChanged(true, treWeapons, cmsWeapon,
                                     cmsWeaponAccessory, cmsWeaponAccessoryGear, MakeDirtyWithCharacterUpdate);
@@ -3131,7 +3138,7 @@ namespace Chummer
                             {
                                 objWeapon.SetupChildrenWeaponsCollectionChanged(false, treWeapons);
                                 await treWeapons.DoThreadSafeAsync(x => x.FindNode(objWeapon.InternalId)?.Remove(),
-                                                                   token);
+                                                                   token).ConfigureAwait(false);
                             }
 
                             await treWeapons.DoThreadSafeAsync(() =>
@@ -3140,7 +3147,7 @@ namespace Chummer
                                 {
                                     nodRoot.Remove();
                                 }
-                            }, token);
+                            }, token).ConfigureAwait(false);
                         }
                             break;
 
@@ -3150,13 +3157,13 @@ namespace Chummer
                             {
                                 objWeapon.SetupChildrenWeaponsCollectionChanged(false, treWeapons);
                                 await treWeapons.DoThreadSafeAsync(x => x.FindNode(objWeapon.InternalId)?.Remove(),
-                                                                   token);
+                                                                   token).ConfigureAwait(false);
                             }
 
                             int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
                             foreach (Weapon objWeapon in notifyCollectionChangedEventArgs.NewItems)
                             {
-                                await AddToTree(objWeapon, intNewIndex);
+                                await AddToTree(objWeapon, intNewIndex).ConfigureAwait(false);
                                 ++intNewIndex;
                                 objWeapon.SetupChildrenWeaponsCollectionChanged(true, treWeapons, cmsWeapon,
                                     cmsWeaponAccessory, cmsWeaponAccessoryGear, MakeDirtyWithCharacterUpdate);
@@ -3170,7 +3177,7 @@ namespace Chummer
                                 }
 
                                 x.SelectedNode = x.FindNode(strSelectedId);
-                            }, token);
+                            }, token).ConfigureAwait(false);
                         }
                             break;
 
@@ -3182,12 +3189,12 @@ namespace Chummer
                                 {
                                     x.FindNode(objWeapon.InternalId)?.Remove();
                                 }
-                            }, token);
+                            }, token).ConfigureAwait(false);
 
                             int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
                             foreach (Weapon objWeapon in notifyCollectionChangedEventArgs.NewItems)
                             {
-                                await AddToTree(objWeapon, intNewIndex);
+                                await AddToTree(objWeapon, intNewIndex).ConfigureAwait(false);
                                 ++intNewIndex;
                             }
 
@@ -3199,7 +3206,7 @@ namespace Chummer
                                 }
 
                                 x.SelectedNode = x.FindNode(strSelectedId);
-                            }, token);
+                            }, token).ConfigureAwait(false);
                             break;
                         }
                     }
@@ -3214,7 +3221,7 @@ namespace Chummer
                     if (objWeapon.Location != null)
                     {
                         nodParent = await treWeapons.DoThreadSafeFuncAsync(
-                            x => x.FindNode(objWeapon.Location.InternalId, false), token);
+                            x => x.FindNode(objWeapon.Location.InternalId, false), token).ConfigureAwait(false);
                     }
 
                     if (nodParent == null)
@@ -3224,10 +3231,10 @@ namespace Chummer
                             nodRoot = new TreeNode
                             {
                                 Tag = "Node_SelectedWeapons",
-                                Text = await LanguageManager.GetStringAsync("Node_SelectedWeapons", token: token)
+                                Text = await LanguageManager.GetStringAsync("Node_SelectedWeapons", token: token).ConfigureAwait(false)
                             };
                             // ReSharper disable once AssignNullToNotNullAttribute
-                            await treWeapons.DoThreadSafeAsync(x => x.Nodes.Insert(0, nodRoot), token);
+                            await treWeapons.DoThreadSafeAsync(x => x.Nodes.Insert(0, nodRoot), token).ConfigureAwait(false);
                         }
 
                         nodParent = nodRoot;
@@ -3244,12 +3251,12 @@ namespace Chummer
                         nodParent.Expand();
                         if (blnSingleAdd)
                             x.SelectedNode = objNode;
-                    }, token);
+                    }, token).ConfigureAwait(false);
                 }
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -3257,11 +3264,11 @@ namespace Chummer
         {
             if (treArmor == null)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
                 string strSelectedId
-                    = (await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token) as IHasInternalId)
+                    = (await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token).ConfigureAwait(false) as IHasInternalId)
                     ?.InternalId ?? string.Empty;
 
                 TreeNode nodRoot = null;
@@ -3269,7 +3276,7 @@ namespace Chummer
                 if (notifyCollectionChangedEventArgs == null ||
                     notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
                 {
-                    await treArmor.DoThreadSafeAsync(x => x.SuspendLayout(), token);
+                    await treArmor.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
                     try
                     {
                         await treArmor.DoThreadSafeAsync(x =>
@@ -3281,29 +3288,29 @@ namespace Chummer
                             {
                                 x.Nodes.Add(objLocation.CreateTreeNode(cmsArmorLocation));
                             }
-                        }, token);
+                        }, token).ConfigureAwait(false);
 
                         // Add Armor.
                         foreach (Armor objArmor in CharacterObject.Armor)
                         {
-                            await AddToTree(objArmor, -1, false);
+                            await AddToTree(objArmor, -1, false).ConfigureAwait(false);
 
                             async void FuncArmorModsToAdd(object x, NotifyCollectionChangedEventArgs y) =>
-                                await RefreshArmorMods(treArmor, objArmor, cmsArmorMod, cmsArmorGear, y, token);
+                                await RefreshArmorMods(treArmor, objArmor, cmsArmorMod, cmsArmorGear, y, token).ConfigureAwait(false);
 
                             async void FuncArmorGearToAdd(object x, NotifyCollectionChangedEventArgs y) =>
                                 await objArmor.RefreshChildrenGears(
                                     treArmor, cmsArmorGear, () => objArmor.ArmorMods.Count, y,
-                                    MakeDirtyWithCharacterUpdate, token: token);
+                                    MakeDirtyWithCharacterUpdate, token: token).ConfigureAwait(false);
 
                             await objArmor.ArmorMods.AddTaggedCollectionChangedAsync(
-                                treArmor, MakeDirtyWithCharacterUpdate, token);
+                                treArmor, MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
                             await objArmor.ArmorMods.AddTaggedCollectionChangedAsync(treArmor,
-                                FuncArmorModsToAdd, token);
+                                FuncArmorModsToAdd, token).ConfigureAwait(false);
                             await objArmor.GearChildren.AddTaggedCollectionChangedAsync(
-                                treArmor, MakeDirtyWithCharacterUpdate, token);
+                                treArmor, MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
                             await objArmor.GearChildren.AddTaggedCollectionChangedAsync(treArmor,
-                                FuncArmorGearToAdd, token);
+                                FuncArmorGearToAdd, token).ConfigureAwait(false);
                             foreach (Gear objGear in objArmor.GearChildren)
                                 objGear.SetupChildrenGearsCollectionChanged(
                                     true, treArmor, cmsArmorGear, MakeDirtyWithCharacterUpdate);
@@ -3311,29 +3318,29 @@ namespace Chummer
                             {
                                 async void FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y) =>
                                     await objArmorMod.RefreshChildrenGears(
-                                        treArmor, cmsArmorGear, null, y, MakeDirtyWithCharacterUpdate, token: token);
+                                        treArmor, cmsArmorGear, null, y, MakeDirtyWithCharacterUpdate, token: token).ConfigureAwait(false);
 
                                 await objArmorMod.GearChildren.AddTaggedCollectionChangedAsync(
-                                    treArmor, MakeDirtyWithCharacterUpdate, token);
+                                    treArmor, MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
                                 await objArmorMod.GearChildren.AddTaggedCollectionChangedAsync(
-                                    treArmor, FuncDelegateToAdd, token);
+                                    treArmor, FuncDelegateToAdd, token).ConfigureAwait(false);
                                 foreach (Gear objGear in objArmorMod.GearChildren)
                                     objGear.SetupChildrenGearsCollectionChanged(
                                         true, treArmor, cmsArmorGear, MakeDirtyWithCharacterUpdate);
                             }
                         }
 
-                        await treArmor.DoThreadSafeAsync(x => x.SelectedNode = x.FindNode(strSelectedId), token);
+                        await treArmor.DoThreadSafeAsync(x => x.SelectedNode = x.FindNode(strSelectedId), token).ConfigureAwait(false);
                     }
                     finally
                     {
-                        await treArmor.DoThreadSafeAsync(x => x.ResumeLayout(), token);
+                        await treArmor.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
                     }
                 }
                 else
                 {
                     nodRoot = await treArmor.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedArmor", false),
-                                                                   token);
+                                                                   token).ConfigureAwait(false);
 
                     switch (notifyCollectionChangedEventArgs.Action)
                     {
@@ -3342,24 +3349,24 @@ namespace Chummer
                             int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
                             foreach (Armor objArmor in notifyCollectionChangedEventArgs.NewItems)
                             {
-                                await AddToTree(objArmor, intNewIndex);
+                                await AddToTree(objArmor, intNewIndex).ConfigureAwait(false);
 
                                 async void FuncArmorModsToAdd(object x, NotifyCollectionChangedEventArgs y) =>
-                                    await RefreshArmorMods(treArmor, objArmor, cmsArmorMod, cmsArmorGear, y, token);
+                                    await RefreshArmorMods(treArmor, objArmor, cmsArmorMod, cmsArmorGear, y, token).ConfigureAwait(false);
 
                                 async void FuncArmorGearToAdd(object x, NotifyCollectionChangedEventArgs y) =>
                                     await objArmor.RefreshChildrenGears(
                                         treArmor, cmsArmorGear, () => objArmor.ArmorMods.Count, y,
-                                        MakeDirtyWithCharacterUpdate, token: token);
+                                        MakeDirtyWithCharacterUpdate, token: token).ConfigureAwait(false);
 
                                 await objArmor.ArmorMods.AddTaggedCollectionChangedAsync(
-                                    treArmor, MakeDirtyWithCharacterUpdate, token);
+                                    treArmor, MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
                                 await objArmor.ArmorMods.AddTaggedCollectionChangedAsync(treArmor,
-                                    FuncArmorModsToAdd, token);
+                                    FuncArmorModsToAdd, token).ConfigureAwait(false);
                                 await objArmor.GearChildren.AddTaggedCollectionChangedAsync(
-                                    treArmor, MakeDirtyWithCharacterUpdate, token);
+                                    treArmor, MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
                                 await objArmor.GearChildren.AddTaggedCollectionChangedAsync(treArmor,
-                                    FuncArmorGearToAdd, token);
+                                    FuncArmorGearToAdd, token).ConfigureAwait(false);
                                 foreach (Gear objGear in objArmor.GearChildren)
                                     objGear.SetupChildrenGearsCollectionChanged(
                                         true, treArmor, cmsArmorGear, MakeDirtyWithCharacterUpdate);
@@ -3367,12 +3374,12 @@ namespace Chummer
                                 {
                                     async void FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y) =>
                                         await objArmorMod.RefreshChildrenGears(
-                                            treArmor, cmsArmorGear, null, y, MakeDirtyWithCharacterUpdate, token: token);
+                                            treArmor, cmsArmorGear, null, y, MakeDirtyWithCharacterUpdate, token: token).ConfigureAwait(false);
 
                                     await objArmorMod.GearChildren.AddTaggedCollectionChangedAsync(
-                                        treArmor, MakeDirtyWithCharacterUpdate, token);
+                                        treArmor, MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
                                     await objArmorMod.GearChildren.AddTaggedCollectionChangedAsync(
-                                        treArmor, FuncDelegateToAdd, token);
+                                        treArmor, FuncDelegateToAdd, token).ConfigureAwait(false);
                                     foreach (Gear objGear in objArmorMod.GearChildren)
                                         objGear.SetupChildrenGearsCollectionChanged(
                                             true, treArmor, cmsArmorGear, MakeDirtyWithCharacterUpdate);
@@ -3387,19 +3394,19 @@ namespace Chummer
                         {
                             foreach (Armor objArmor in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                await objArmor.ArmorMods.RemoveTaggedCollectionChangedAsync(treArmor, token);
-                                await objArmor.GearChildren.RemoveTaggedCollectionChangedAsync(treArmor, token);
+                                await objArmor.ArmorMods.RemoveTaggedCollectionChangedAsync(treArmor, token).ConfigureAwait(false);
+                                await objArmor.GearChildren.RemoveTaggedCollectionChangedAsync(treArmor, token).ConfigureAwait(false);
                                 foreach (Gear objGear in objArmor.GearChildren)
                                     objGear.SetupChildrenGearsCollectionChanged(false, treArmor);
                                 foreach (ArmorMod objArmorMod in objArmor.ArmorMods)
                                 {
-                                    await objArmorMod.GearChildren.RemoveTaggedCollectionChangedAsync(treArmor, token);
+                                    await objArmorMod.GearChildren.RemoveTaggedCollectionChangedAsync(treArmor, token).ConfigureAwait(false);
                                     foreach (Gear objGear in objArmorMod.GearChildren)
                                         objGear.SetupChildrenGearsCollectionChanged(false, treArmor);
                                 }
 
                                 await treArmor.DoThreadSafeAsync(x => x.FindNode(objArmor.InternalId)?.Remove(),
-                                                                 token);
+                                                                 token).ConfigureAwait(false);
                             }
 
                             await treArmor.DoThreadSafeAsync(() =>
@@ -3408,7 +3415,7 @@ namespace Chummer
                                 {
                                     nodRoot.Remove();
                                 }
-                            }, token);
+                            }, token).ConfigureAwait(false);
 
                             break;
                         }
@@ -3416,42 +3423,42 @@ namespace Chummer
                         {
                             foreach (Armor objArmor in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                await objArmor.ArmorMods.RemoveTaggedCollectionChangedAsync(treArmor, token);
-                                await objArmor.GearChildren.RemoveTaggedCollectionChangedAsync(treArmor, token);
+                                await objArmor.ArmorMods.RemoveTaggedCollectionChangedAsync(treArmor, token).ConfigureAwait(false);
+                                await objArmor.GearChildren.RemoveTaggedCollectionChangedAsync(treArmor, token).ConfigureAwait(false);
                                 foreach (Gear objGear in objArmor.GearChildren)
                                     objGear.SetupChildrenGearsCollectionChanged(false, treArmor);
                                 foreach (ArmorMod objArmorMod in objArmor.ArmorMods)
                                 {
-                                    await objArmorMod.GearChildren.RemoveTaggedCollectionChangedAsync(treArmor, token);
+                                    await objArmorMod.GearChildren.RemoveTaggedCollectionChangedAsync(treArmor, token).ConfigureAwait(false);
                                     foreach (Gear objGear in objArmorMod.GearChildren)
                                         objGear.SetupChildrenGearsCollectionChanged(false, treArmor);
                                 }
 
                                 await treArmor.DoThreadSafeAsync(x => x.FindNode(objArmor.InternalId)?.Remove(),
-                                                                 token);
+                                                                 token).ConfigureAwait(false);
                             }
 
                             int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
                             foreach (Armor objArmor in notifyCollectionChangedEventArgs.NewItems)
                             {
-                                await AddToTree(objArmor, intNewIndex);
+                                await AddToTree(objArmor, intNewIndex).ConfigureAwait(false);
 
                                 async void FuncArmorModsToAdd(object x, NotifyCollectionChangedEventArgs y) =>
-                                    await RefreshArmorMods(treArmor, objArmor, cmsArmorMod, cmsArmorGear, y, token);
+                                    await RefreshArmorMods(treArmor, objArmor, cmsArmorMod, cmsArmorGear, y, token).ConfigureAwait(false);
 
                                 async void FuncArmorGearToAdd(object x, NotifyCollectionChangedEventArgs y) =>
                                     await objArmor.RefreshChildrenGears(
                                         treArmor, cmsArmorGear, () => objArmor.ArmorMods.Count, y,
-                                        MakeDirtyWithCharacterUpdate, token: token);
+                                        MakeDirtyWithCharacterUpdate, token: token).ConfigureAwait(false);
 
                                 await objArmor.ArmorMods.AddTaggedCollectionChangedAsync(
-                                    treArmor, MakeDirtyWithCharacterUpdate, token);
+                                    treArmor, MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
                                 await objArmor.ArmorMods.AddTaggedCollectionChangedAsync(treArmor,
-                                    FuncArmorModsToAdd, token);
+                                    FuncArmorModsToAdd, token).ConfigureAwait(false);
                                 await objArmor.GearChildren.AddTaggedCollectionChangedAsync(
-                                    treArmor, MakeDirtyWithCharacterUpdate, token);
+                                    treArmor, MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
                                 await objArmor.GearChildren.AddTaggedCollectionChangedAsync(treArmor,
-                                    FuncArmorGearToAdd, token);
+                                    FuncArmorGearToAdd, token).ConfigureAwait(false);
                                 foreach (Gear objGear in objArmor.GearChildren)
                                     objGear.SetupChildrenGearsCollectionChanged(
                                         true, treArmor, cmsArmorGear, MakeDirtyWithCharacterUpdate);
@@ -3459,12 +3466,12 @@ namespace Chummer
                                 {
                                     async void FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y) =>
                                         await objArmorMod.RefreshChildrenGears(
-                                            treArmor, cmsArmorGear, null, y, MakeDirtyWithCharacterUpdate, token: token);
+                                            treArmor, cmsArmorGear, null, y, MakeDirtyWithCharacterUpdate, token: token).ConfigureAwait(false);
 
                                     await objArmorMod.GearChildren.AddTaggedCollectionChangedAsync(
-                                        treArmor, MakeDirtyWithCharacterUpdate, token);
+                                        treArmor, MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
                                     await objArmorMod.GearChildren.AddTaggedCollectionChangedAsync(
-                                        treArmor, FuncDelegateToAdd, token);
+                                        treArmor, FuncDelegateToAdd, token).ConfigureAwait(false);
                                     foreach (Gear objGear in objArmorMod.GearChildren)
                                         objGear.SetupChildrenGearsCollectionChanged(
                                             true, treArmor, cmsArmorGear, MakeDirtyWithCharacterUpdate);
@@ -3481,7 +3488,7 @@ namespace Chummer
                                 }
 
                                 x.SelectedNode = x.FindNode(strSelectedId);
-                            }, token);
+                            }, token).ConfigureAwait(false);
                             break;
                         }
                         case NotifyCollectionChangedAction.Move:
@@ -3492,12 +3499,12 @@ namespace Chummer
                                 {
                                     x.FindNode(objArmor.InternalId)?.Remove();
                                 }
-                            }, token);
+                            }, token).ConfigureAwait(false);
 
                             int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
                             foreach (Armor objArmor in notifyCollectionChangedEventArgs.NewItems)
                             {
-                                await AddToTree(objArmor, intNewIndex);
+                                await AddToTree(objArmor, intNewIndex).ConfigureAwait(false);
                                 ++intNewIndex;
                             }
 
@@ -3509,7 +3516,7 @@ namespace Chummer
                                 }
 
                                 x.SelectedNode = x.FindNode(strSelectedId);
-                            }, token);
+                            }, token).ConfigureAwait(false);
                             break;
                         }
                     }
@@ -3524,7 +3531,7 @@ namespace Chummer
                     if (objArmor.Location != null)
                     {
                         nodParent = await treArmor.DoThreadSafeFuncAsync(
-                            x => x.FindNode(objArmor.Location.InternalId, false), token);
+                            x => x.FindNode(objArmor.Location.InternalId, false), token).ConfigureAwait(false);
                     }
 
                     if (nodParent == null)
@@ -3534,10 +3541,10 @@ namespace Chummer
                             nodRoot = new TreeNode
                             {
                                 Tag = "Node_SelectedArmor",
-                                Text = await LanguageManager.GetStringAsync("Node_SelectedArmor", token: token)
+                                Text = await LanguageManager.GetStringAsync("Node_SelectedArmor", token: token).ConfigureAwait(false)
                             };
                             // ReSharper disable once AssignNullToNotNullAttribute
-                            await treArmor.DoThreadSafeAsync(x => x.Nodes.Insert(0, nodRoot), token);
+                            await treArmor.DoThreadSafeAsync(x => x.Nodes.Insert(0, nodRoot), token).ConfigureAwait(false);
                         }
 
                         nodParent = nodRoot;
@@ -3554,12 +3561,12 @@ namespace Chummer
                         nodParent.Expand();
                         if (blnSingleAdd)
                             x.SelectedNode = objNode;
-                    }, token);
+                    }, token).ConfigureAwait(false);
                 }
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -3567,10 +3574,10 @@ namespace Chummer
         {
             if (treArmor == null || objArmor == null || notifyCollectionChangedEventArgs == null)
                 return;
-            TreeNode nodArmor = await treArmor.DoThreadSafeFuncAsync(x => x.FindNode(objArmor.InternalId), token);
+            TreeNode nodArmor = await treArmor.DoThreadSafeFuncAsync(x => x.FindNode(objArmor.InternalId), token).ConfigureAwait(false);
             if (nodArmor == null)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
                 switch (notifyCollectionChangedEventArgs.Action)
@@ -3580,16 +3587,16 @@ namespace Chummer
                         int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
                         foreach (ArmorMod objArmorMod in notifyCollectionChangedEventArgs.NewItems)
                         {
-                            await AddToTree(objArmorMod, intNewIndex);
+                            await AddToTree(objArmorMod, intNewIndex).ConfigureAwait(false);
                             await objArmorMod.GearChildren.AddTaggedCollectionChangedAsync(
-                                treArmor, MakeDirtyWithCharacterUpdate, token);
+                                treArmor, MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
 
                             async void FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y) =>
                                 await objArmorMod.RefreshChildrenGears(treArmor, cmsArmorGear, null, y,
-                                                                       MakeDirtyWithCharacterUpdate, token: token);
+                                                                       MakeDirtyWithCharacterUpdate, token: token).ConfigureAwait(false);
 
                             await objArmorMod.GearChildren.AddTaggedCollectionChangedAsync(treArmor,
-                                FuncDelegateToAdd, token);
+                                FuncDelegateToAdd, token).ConfigureAwait(false);
                             foreach (Gear objGear in objArmorMod.GearChildren)
                                 objGear.SetupChildrenGearsCollectionChanged(
                                     true, treArmor, cmsArmorGear, MakeDirtyWithCharacterUpdate);
@@ -3602,11 +3609,11 @@ namespace Chummer
                     {
                         foreach (ArmorMod objArmorMod in notifyCollectionChangedEventArgs.OldItems)
                         {
-                            await objArmorMod.GearChildren.RemoveTaggedCollectionChangedAsync(treArmor, token);
+                            await objArmorMod.GearChildren.RemoveTaggedCollectionChangedAsync(treArmor, token).ConfigureAwait(false);
                             foreach (Gear objGear in objArmorMod.GearChildren)
                                 objGear.SetupChildrenGearsCollectionChanged(false, treArmor);
                             await treArmor.DoThreadSafeAsync(() => nodArmor.FindNode(objArmorMod.InternalId)?.Remove(),
-                                                             token);
+                                                             token).ConfigureAwait(false);
                         }
 
                         break;
@@ -3614,44 +3621,44 @@ namespace Chummer
                     case NotifyCollectionChangedAction.Replace:
                     {
                         string strSelectedId
-                            = (await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token) as
+                            = (await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token).ConfigureAwait(false) as
                                 IHasInternalId)
                             ?.InternalId ?? string.Empty;
                         foreach (ArmorMod objArmorMod in notifyCollectionChangedEventArgs.OldItems)
                         {
-                            await objArmorMod.GearChildren.RemoveTaggedCollectionChangedAsync(treArmor, token);
+                            await objArmorMod.GearChildren.RemoveTaggedCollectionChangedAsync(treArmor, token).ConfigureAwait(false);
                             foreach (Gear objGear in objArmorMod.GearChildren)
                                 objGear.SetupChildrenGearsCollectionChanged(false, treArmor);
                             await treArmor.DoThreadSafeAsync(() => nodArmor.FindNode(objArmorMod.InternalId)?.Remove(),
-                                                             token);
+                                                             token).ConfigureAwait(false);
                         }
 
                         int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
                         foreach (ArmorMod objArmorMod in notifyCollectionChangedEventArgs.NewItems)
                         {
-                            await AddToTree(objArmorMod, intNewIndex);
+                            await AddToTree(objArmorMod, intNewIndex).ConfigureAwait(false);
                             await objArmorMod.GearChildren.AddTaggedCollectionChangedAsync(
-                                treArmor, MakeDirtyWithCharacterUpdate, token);
+                                treArmor, MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
 
                             async void FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y) =>
                                 await objArmorMod.RefreshChildrenGears(treArmor, cmsArmorGear, null, y,
-                                                                       MakeDirtyWithCharacterUpdate, token: token);
+                                                                       MakeDirtyWithCharacterUpdate, token: token).ConfigureAwait(false);
 
                             await objArmorMod.GearChildren.AddTaggedCollectionChangedAsync(treArmor,
-                                FuncDelegateToAdd, token);
+                                FuncDelegateToAdd, token).ConfigureAwait(false);
                             foreach (Gear objGear in objArmorMod.GearChildren)
                                 objGear.SetupChildrenGearsCollectionChanged(
                                     true, treArmor, cmsArmorGear, MakeDirtyWithCharacterUpdate);
                             ++intNewIndex;
                         }
 
-                        await treArmor.DoThreadSafeAsync(x => x.SelectedNode = x.FindNode(strSelectedId), token);
+                        await treArmor.DoThreadSafeAsync(x => x.SelectedNode = x.FindNode(strSelectedId), token).ConfigureAwait(false);
                         break;
                     }
                     case NotifyCollectionChangedAction.Move:
                     {
                         string strSelectedId
-                            = (await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token) as
+                            = (await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token).ConfigureAwait(false) as
                                 IHasInternalId)
                             ?.InternalId ?? string.Empty;
                         await treArmor.DoThreadSafeAsync(() =>
@@ -3660,16 +3667,16 @@ namespace Chummer
                             {
                                 nodArmor.FindNode(objArmorMod.InternalId)?.Remove();
                             }
-                        }, token);
+                        }, token).ConfigureAwait(false);
 
                         int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
                         foreach (ArmorMod objArmorMod in notifyCollectionChangedEventArgs.NewItems)
                         {
-                            await AddToTree(objArmorMod, intNewIndex);
+                            await AddToTree(objArmorMod, intNewIndex).ConfigureAwait(false);
                             ++intNewIndex;
                         }
 
-                        await treArmor.DoThreadSafeAsync(x => x.SelectedNode = x.FindNode(strSelectedId), token);
+                        await treArmor.DoThreadSafeAsync(x => x.SelectedNode = x.FindNode(strSelectedId), token).ConfigureAwait(false);
                         break;
                     }
                     case NotifyCollectionChangedAction.Reset:
@@ -3684,7 +3691,7 @@ namespace Chummer
                                     objNode.Remove();
                                 }
                             }
-                        }, token);
+                        }, token).ConfigureAwait(false);
 
                         break;
                     }
@@ -3710,7 +3717,7 @@ namespace Chummer
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -3718,11 +3725,11 @@ namespace Chummer
         {
             if (treGear == null)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
                 string strSelectedId
-                    = (await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token) as IHasInternalId)
+                    = (await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token).ConfigureAwait(false) as IHasInternalId)
                     ?.InternalId ?? string.Empty;
 
                 TreeNode nodRoot = null;
@@ -3730,37 +3737,37 @@ namespace Chummer
                 if (notifyCollectionChangedEventArgs == null ||
                     notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
                 {
-                    await treGear.DoThreadSafeAsync(x => x.SuspendLayout(), token);
+                    await treGear.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
                     try
                     {
-                        await treGear.DoThreadSafeAsync(x => x.Nodes.Clear(), token);
+                        await treGear.DoThreadSafeAsync(x => x.Nodes.Clear(), token).ConfigureAwait(false);
 
                         // Start by populating Locations.
                         foreach (Location objLocation in CharacterObject.GearLocations)
                         {
                             await treGear.DoThreadSafeAsync(
-                                x => x.Nodes.Add(objLocation.CreateTreeNode(cmsGearLocation)), token);
+                                x => x.Nodes.Add(objLocation.CreateTreeNode(cmsGearLocation)), token).ConfigureAwait(false);
                         }
 
                         // Add Gear.
                         foreach (Gear objGear in CharacterObject.Gear)
                         {
-                            await AddToTree(objGear, -1, false);
+                            await AddToTree(objGear, -1, false).ConfigureAwait(false);
                             objGear.SetupChildrenGearsCollectionChanged(
                                 true, treGear, cmsGear, MakeDirtyWithCharacterUpdate);
                         }
 
-                        await treGear.DoThreadSafeAsync(x => x.SelectedNode = x.FindNode(strSelectedId), token);
+                        await treGear.DoThreadSafeAsync(x => x.SelectedNode = x.FindNode(strSelectedId), token).ConfigureAwait(false);
                     }
                     finally
                     {
-                        await treGear.DoThreadSafeAsync(x => x.ResumeLayout(), token);
+                        await treGear.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
                     }
                 }
                 else
                 {
                     nodRoot = await treGear.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedGear", false),
-                                                                  token);
+                                                                  token).ConfigureAwait(false);
 
                     switch (notifyCollectionChangedEventArgs.Action)
                     {
@@ -3769,7 +3776,7 @@ namespace Chummer
                             int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
                             foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
                             {
-                                await AddToTree(objGear, intNewIndex);
+                                await AddToTree(objGear, intNewIndex).ConfigureAwait(false);
                                 objGear.SetupChildrenGearsCollectionChanged(
                                     true, treGear, cmsGear, MakeDirtyWithCharacterUpdate);
                                 ++intNewIndex;
@@ -3782,7 +3789,7 @@ namespace Chummer
                             foreach (Gear objGear in notifyCollectionChangedEventArgs.OldItems)
                             {
                                 objGear.SetupChildrenGearsCollectionChanged(false, treGear);
-                                await treGear.DoThreadSafeAsync(x => x.FindNodeByTag(objGear)?.Remove(), token);
+                                await treGear.DoThreadSafeAsync(x => x.FindNodeByTag(objGear)?.Remove(), token).ConfigureAwait(false);
                             }
                         }
                             break;
@@ -3792,29 +3799,29 @@ namespace Chummer
                             foreach (Gear objGear in notifyCollectionChangedEventArgs.OldItems)
                             {
                                 objGear.SetupChildrenGearsCollectionChanged(false, treGear);
-                                await treGear.DoThreadSafeAsync(x => x.FindNodeByTag(objGear)?.Remove(), token);
+                                await treGear.DoThreadSafeAsync(x => x.FindNodeByTag(objGear)?.Remove(), token).ConfigureAwait(false);
                             }
 
                             int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
                             foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
                             {
-                                await AddToTree(objGear, intNewIndex);
+                                await AddToTree(objGear, intNewIndex).ConfigureAwait(false);
 
                                 async void FuncGearToAdd(object x, NotifyCollectionChangedEventArgs y) =>
                                     await objGear.RefreshChildrenGears(treGear, cmsGear, null, y,
-                                                                       MakeDirtyWithCharacterUpdate, token: token);
+                                                                       MakeDirtyWithCharacterUpdate, token: token).ConfigureAwait(false);
 
                                 await objGear.Children.AddTaggedCollectionChangedAsync(
-                                    treGear, MakeDirtyWithCharacterUpdate, token);
+                                    treGear, MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
                                 await objGear.Children.AddTaggedCollectionChangedAsync(
-                                    treGear, FuncGearToAdd, token);
+                                    treGear, FuncGearToAdd, token).ConfigureAwait(false);
                                 objGear.SetupChildrenGearsCollectionChanged(
                                     true, treGear, cmsGear, MakeDirtyWithCharacterUpdate);
                                 ++intNewIndex;
                             }
 
                             await treGear.DoThreadSafeAsync(x => x.SelectedNode = x.FindNode(strSelectedId),
-                                                            token);
+                                                            token).ConfigureAwait(false);
                         }
                             break;
 
@@ -3826,17 +3833,17 @@ namespace Chummer
                                 {
                                     x.FindNodeByTag(objGear)?.Remove();
                                 }
-                            }, token);
+                            }, token).ConfigureAwait(false);
 
                             int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
                             foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
                             {
-                                await AddToTree(objGear, intNewIndex);
+                                await AddToTree(objGear, intNewIndex).ConfigureAwait(false);
                                 ++intNewIndex;
                             }
 
                             await treGear.DoThreadSafeAsync(x => x.SelectedNode = x.FindNode(strSelectedId),
-                                                            token);
+                                                            token).ConfigureAwait(false);
                         }
                             break;
                     }
@@ -3857,7 +3864,7 @@ namespace Chummer
                     if (objGear.Location != null)
                     {
                         nodParent = await treGear.DoThreadSafeFuncAsync(x => x.FindNodeByTag(objGear.Location, false),
-                                                                        token);
+                                                                        token).ConfigureAwait(false);
                     }
 
                     if (nodParent == null)
@@ -3867,10 +3874,10 @@ namespace Chummer
                             nodRoot = new TreeNode
                             {
                                 Tag = "Node_SelectedGear",
-                                Text = await LanguageManager.GetStringAsync("Node_SelectedGear", token: token)
+                                Text = await LanguageManager.GetStringAsync("Node_SelectedGear", token: token).ConfigureAwait(false)
                             };
                             // ReSharper disable once AssignNullToNotNullAttribute
-                            await treGear.DoThreadSafeAsync(x => x.Nodes.Insert(0, nodRoot), token);
+                            await treGear.DoThreadSafeAsync(x => x.Nodes.Insert(0, nodRoot), token).ConfigureAwait(false);
                         }
 
                         nodParent = nodRoot;
@@ -3887,12 +3894,12 @@ namespace Chummer
                         nodParent.Expand();
                         if (blnSingleAdd)
                             x.SelectedNode = objNode;
-                    }, token);
+                    }, token).ConfigureAwait(false);
                 }
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -3900,11 +3907,11 @@ namespace Chummer
         {
             if (treGear == null)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
                 string strSelectedId
-                    = (await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token) as IHasInternalId)
+                    = (await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token).ConfigureAwait(false) as IHasInternalId)
                     ?.InternalId ?? string.Empty;
 
                 TreeNode nodRoot = null;
@@ -3912,28 +3919,28 @@ namespace Chummer
                 if (notifyCollectionChangedEventArgs == null ||
                     notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
                 {
-                    await treGear.DoThreadSafeAsync(x => x.SuspendLayout(), token);
+                    await treGear.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
                     try
                     {
-                        await treGear.DoThreadSafeAsync(x => x.Nodes.Clear(), token);
+                        await treGear.DoThreadSafeAsync(x => x.Nodes.Clear(), token).ConfigureAwait(false);
 
                         // Add Gear.
                         foreach (Drug d in CharacterObject.Drugs)
                         {
-                            await AddToTree(d, -1, false);
+                            await AddToTree(d, -1, false).ConfigureAwait(false);
                         }
 
-                        await treGear.DoThreadSafeAsync(x => x.SelectedNode = x.FindNode(strSelectedId), token);
+                        await treGear.DoThreadSafeAsync(x => x.SelectedNode = x.FindNode(strSelectedId), token).ConfigureAwait(false);
                     }
                     finally
                     {
-                        await treGear.DoThreadSafeAsync(x => x.ResumeLayout(), token);
+                        await treGear.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
                     }
                 }
                 else
                 {
                     nodRoot = await treGear.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedDrugs", false),
-                                                                  token);
+                                                                  token).ConfigureAwait(false);
 
                     switch (notifyCollectionChangedEventArgs.Action)
                     {
@@ -3942,7 +3949,7 @@ namespace Chummer
                             int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
                             foreach (Drug d in notifyCollectionChangedEventArgs.NewItems)
                             {
-                                await AddToTree(d, intNewIndex);
+                                await AddToTree(d, intNewIndex).ConfigureAwait(false);
                                 ++intNewIndex;
                             }
                         }
@@ -3956,7 +3963,7 @@ namespace Chummer
                                 {
                                     x.FindNodeByTag(d)?.Remove();
                                 }
-                            }, token);
+                            }, token).ConfigureAwait(false);
                         }
                             break;
 
@@ -3969,17 +3976,17 @@ namespace Chummer
                                 {
                                     x.FindNodeByTag(d)?.Remove();
                                 }
-                            }, token);
+                            }, token).ConfigureAwait(false);
 
                             int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
                             foreach (Drug d in notifyCollectionChangedEventArgs.NewItems)
                             {
-                                await AddToTree(d, intNewIndex);
+                                await AddToTree(d, intNewIndex).ConfigureAwait(false);
                                 ++intNewIndex;
                             }
 
                             await treGear.DoThreadSafeAsync(x => x.SelectedNode = x.FindNode(strSelectedId),
-                                                            token);
+                                                            token).ConfigureAwait(false);
                         }
                             break;
                     }
@@ -3995,10 +4002,10 @@ namespace Chummer
                         nodRoot = new TreeNode
                         {
                             Tag = "Node_SelectedDrugs",
-                            Text = await LanguageManager.GetStringAsync("Node_SelectedDrugs", token: token)
+                            Text = await LanguageManager.GetStringAsync("Node_SelectedDrugs", token: token).ConfigureAwait(false)
                         };
                         // ReSharper disable once AssignNullToNotNullAttribute
-                        await treGear.DoThreadSafeAsync(x => x.Nodes.Insert(0, nodRoot), token);
+                        await treGear.DoThreadSafeAsync(x => x.Nodes.Insert(0, nodRoot), token).ConfigureAwait(false);
                     }
 
                     await treGear.DoThreadSafeAsync(x =>
@@ -4012,12 +4019,12 @@ namespace Chummer
                         nodRoot.Expand();
                         if (blnSingleAdd)
                             x.SelectedNode = objNode;
-                    }, token);
+                    }, token).ConfigureAwait(false);
                 }
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -4032,34 +4039,34 @@ namespace Chummer
             TreeNode objHoleNode = null;
             TreeNode objAntiHoleNode = null;
 
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
                 string strSelectedId
-                    = (await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token) as
+                    = (await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token).ConfigureAwait(false) as
                         IHasInternalId)?.InternalId ?? string.Empty;
 
                 if (notifyCollectionChangedEventArgs == null ||
                     notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
                 {
-                    await treCyberware.DoThreadSafeAsync(x => x.SuspendLayout(), token);
+                    await treCyberware.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
                     try
                     {
-                        await treCyberware.DoThreadSafeAsync(x => x.Nodes.Clear(), token);
+                        await treCyberware.DoThreadSafeAsync(x => x.Nodes.Clear(), token).ConfigureAwait(false);
 
                         foreach (Cyberware objCyberware in CharacterObject.Cyberware)
                         {
-                            await AddToTree(objCyberware, false);
+                            await AddToTree(objCyberware, false).ConfigureAwait(false);
                             objCyberware.SetupChildrenCyberwareCollectionChanged(true, treCyberware, cmsCyberware,
                                 cmsCyberwareGear, MakeDirtyWithCharacterUpdate);
                         }
 
                         await treCyberware.DoThreadSafeAsync(x => x.SortCustomAlphabetically(strSelectedId),
-                                                             token);
+                                                             token).ConfigureAwait(false);
                     }
                     finally
                     {
-                        await treCyberware.DoThreadSafeAsync(x => x.ResumeLayout(), token);
+                        await treCyberware.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
                     }
                 }
                 else
@@ -4075,14 +4082,14 @@ namespace Chummer
                             = x.FindNode(
                                 Cyberware.EssenceAntiHoleGUID.ToString("D", GlobalSettings.InvariantCultureInfo),
                                 false);
-                    }, token);
+                    }, token).ConfigureAwait(false);
                     switch (notifyCollectionChangedEventArgs.Action)
                     {
                         case NotifyCollectionChangedAction.Add:
                         {
                             foreach (Cyberware objCyberware in notifyCollectionChangedEventArgs.NewItems)
                             {
-                                await AddToTree(objCyberware);
+                                await AddToTree(objCyberware).ConfigureAwait(false);
                                 objCyberware.SetupChildrenCyberwareCollectionChanged(true, treCyberware, cmsCyberware,
                                     cmsCyberwareGear, MakeDirtyWithCharacterUpdate);
                             }
@@ -4104,7 +4111,7 @@ namespace Chummer
                                         if (objParent != null && objParent.Level == 0 && objParent.Nodes.Count == 0)
                                             objParent.Remove();
                                     }
-                                }, token);
+                                }, token).ConfigureAwait(false);
                             }
                         }
                             break;
@@ -4127,12 +4134,12 @@ namespace Chummer
                                         if (objParent != null && objParent.Level == 0)
                                             lstOldParentNodes.Add(objParent);
                                     }
-                                }, token);
+                                }, token).ConfigureAwait(false);
                             }
 
                             foreach (Cyberware objCyberware in notifyCollectionChangedEventArgs.NewItems)
                             {
-                                await AddToTree(objCyberware);
+                                await AddToTree(objCyberware).ConfigureAwait(false);
                                 objCyberware.SetupChildrenCyberwareCollectionChanged(true, treCyberware, cmsCyberware,
                                     cmsCyberwareGear, MakeDirtyWithCharacterUpdate);
                             }
@@ -4146,7 +4153,7 @@ namespace Chummer
                                 }
 
                                 x.SelectedNode = x.FindNode(strSelectedId);
-                            }, token);
+                            }, token).ConfigureAwait(false);
                         }
                             break;
                     }
@@ -4167,7 +4174,7 @@ namespace Chummer
 
                             if (blnSingleAdd)
                                 x.SelectedNode = objHoleNode;
-                        }, token);
+                        }, token).ConfigureAwait(false);
                         return;
                     }
 
@@ -4184,7 +4191,7 @@ namespace Chummer
 
                             if (blnSingleAdd)
                                 x.SelectedNode = objAntiHoleNode;
-                        }, token);
+                        }, token).ConfigureAwait(false);
                         return;
                     }
 
@@ -4202,14 +4209,14 @@ namespace Chummer
                                 objCyberwareRoot = new TreeNode
                                 {
                                     Tag = "Node_SelectedCyberware",
-                                    Text = await LanguageManager.GetStringAsync("Node_SelectedCyberware", token: token)
+                                    Text = await LanguageManager.GetStringAsync("Node_SelectedCyberware", token: token).ConfigureAwait(false)
                                 };
                                 await treCyberware.DoThreadSafeAsync(x =>
                                 {
                                     // ReSharper disable once AssignNullToNotNullAttribute
                                     x.Nodes.Insert(0, objCyberwareRoot);
                                     objCyberwareRoot.Expand();
-                                }, token);
+                                }, token).ConfigureAwait(false);
                             }
 
                             nodParent = objCyberwareRoot;
@@ -4222,7 +4229,7 @@ namespace Chummer
                                 objModularRoot = new TreeNode
                                 {
                                     Tag = "Node_UnequippedModularCyberware",
-                                    Text = await LanguageManager.GetStringAsync("Node_UnequippedModularCyberware", token: token)
+                                    Text = await LanguageManager.GetStringAsync("Node_UnequippedModularCyberware", token: token).ConfigureAwait(false)
                                 };
                                 int intIndex = 0;
                                 if (objBiowareRoot != null || objCyberwareRoot != null)
@@ -4232,7 +4239,7 @@ namespace Chummer
                                     // ReSharper disable once AssignNullToNotNullAttribute
                                     x.Nodes.Insert(intIndex, objModularRoot);
                                     objModularRoot.Expand();
-                                }, token);
+                                }, token).ConfigureAwait(false);
                             }
 
                             nodParent = objModularRoot;
@@ -4245,14 +4252,14 @@ namespace Chummer
                                 objBiowareRoot = new TreeNode
                                 {
                                     Tag = "Node_SelectedBioware",
-                                    Text = await LanguageManager.GetStringAsync("Node_SelectedBioware", token: token)
+                                    Text = await LanguageManager.GetStringAsync("Node_SelectedBioware", token: token).ConfigureAwait(false)
                                 };
                                 await treCyberware.DoThreadSafeAsync(x =>
                                 {
                                     // ReSharper disable once AssignNullToNotNullAttribute
                                     x.Nodes.Insert(objCyberwareRoot == null ? 0 : 1, objBiowareRoot);
                                     objBiowareRoot.Expand();
-                                }, token);
+                                }, token).ConfigureAwait(false);
                             }
 
                             nodParent = objBiowareRoot;
@@ -4283,13 +4290,13 @@ namespace Chummer
                             }
                             else
                                 nodParent.Nodes.Add(objNode);
-                        }, token);
+                        }, token).ConfigureAwait(false);
                     }
                 }
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -4297,12 +4304,12 @@ namespace Chummer
         {
             if (treVehicles == null)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
                 string strSelectedId
                     = (await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag,
-                                                               token) as IHasInternalId)?.InternalId
+                                                               token).ConfigureAwait(false) as IHasInternalId)?.InternalId
                       ?? string.Empty;
 
                 TreeNode nodRoot = null;
@@ -4310,7 +4317,7 @@ namespace Chummer
                 if (notifyCollectionChangedEventArgs == null ||
                     notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
                 {
-                    await treVehicles.DoThreadSafeAsync(x => x.SuspendLayout(), token);
+                    await treVehicles.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
                     try
                     {
                         await treVehicles.DoThreadSafeAsync(x =>
@@ -4322,18 +4329,18 @@ namespace Chummer
                             {
                                 x.Nodes.Add(objLocation.CreateTreeNode(cmsVehicleLocation));
                             }
-                        }, token);
+                        }, token).ConfigureAwait(false);
 
                         // Add Vehicles.
                         foreach (Vehicle objVehicle in CharacterObject.Vehicles)
                         {
-                            await AddToTree(objVehicle, -1, false);
+                            await AddToTree(objVehicle, -1, false).ConfigureAwait(false);
 
                             async void FuncVehicleModsToAdd(object x, NotifyCollectionChangedEventArgs y) =>
                                 await objVehicle.RefreshVehicleMods(
                                     treVehicles, cmsVehicle, cmsCyberware, cmsCyberwareGear, cmsVehicleWeapon,
                                     cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, null, y,
-                                    MakeDirtyWithCharacterUpdate, token: token);
+                                    MakeDirtyWithCharacterUpdate, token: token).ConfigureAwait(false);
 
                             async void
                                 FuncVehicleWeaponMountsToAdd(object x, NotifyCollectionChangedEventArgs y) =>
@@ -4341,53 +4348,53 @@ namespace Chummer
                                     treVehicles, cmsVehicleWeaponMount, cmsVehicleWeapon,
                                     cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsCyberware,
                                     cmsCyberwareGear, cmsVehicle, () => objVehicle.Mods.Count, y,
-                                    MakeDirtyWithCharacterUpdate, token: token);
+                                    MakeDirtyWithCharacterUpdate, token: token).ConfigureAwait(false);
 
                             async void FuncVehicleWeaponsToAdd(object x, NotifyCollectionChangedEventArgs y) =>
                                 await objVehicle.RefreshChildrenWeapons(
                                     treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
                                     cmsVehicleWeaponAccessoryGear,
                                     () => objVehicle.Mods.Count + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0),
-                                    y, MakeDirtyWithCharacterUpdate, token: token);
+                                    y, MakeDirtyWithCharacterUpdate, token: token).ConfigureAwait(false);
 
                             await objVehicle.Mods.AddTaggedCollectionChangedAsync(
-                                treVehicles, MakeDirtyWithCharacterUpdate, token);
+                                treVehicles, MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
                             await objVehicle.Mods.AddTaggedCollectionChangedAsync(
-                                treVehicles, FuncVehicleModsToAdd, token);
+                                treVehicles, FuncVehicleModsToAdd, token).ConfigureAwait(false);
                             await objVehicle.WeaponMounts.AddTaggedCollectionChangedAsync(
-                                treVehicles, MakeDirtyWithCharacterUpdate, token);
+                                treVehicles, MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
                             await objVehicle.WeaponMounts.AddTaggedCollectionChangedAsync(
-                                treVehicles, FuncVehicleWeaponMountsToAdd, token);
+                                treVehicles, FuncVehicleWeaponMountsToAdd, token).ConfigureAwait(false);
                             await objVehicle.Weapons.AddTaggedCollectionChangedAsync(
-                                treVehicles, MakeDirtyWithCharacterUpdate, token);
+                                treVehicles, MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
                             await objVehicle.Weapons.AddTaggedCollectionChangedAsync(
-                                treVehicles, FuncVehicleWeaponsToAdd, token);
+                                treVehicles, FuncVehicleWeaponsToAdd, token).ConfigureAwait(false);
                             foreach (VehicleMod objMod in objVehicle.Mods)
                             {
                                 async void FuncVehicleModCyberwareToAdd(
                                     object x, NotifyCollectionChangedEventArgs y) =>
                                     await objMod.RefreshChildrenCyberware(
                                         treVehicles, cmsCyberware, cmsCyberwareGear, null, y,
-                                        MakeDirtyWithCharacterUpdate, token: token);
+                                        MakeDirtyWithCharacterUpdate, token: token).ConfigureAwait(false);
 
                                 async void FuncVehicleModWeaponsToAdd(
                                     object x, NotifyCollectionChangedEventArgs y) =>
                                     await objMod.RefreshChildrenWeapons(
                                         treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
                                         cmsVehicleWeaponAccessoryGear, () => objMod.Cyberware.Count, y,
-                                        MakeDirtyWithCharacterUpdate, token: token);
+                                        MakeDirtyWithCharacterUpdate, token: token).ConfigureAwait(false);
 
                                 await objMod.Cyberware.AddTaggedCollectionChangedAsync(
-                                    treVehicles, MakeDirtyWithCharacterUpdate, token);
+                                    treVehicles, MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
                                 await objMod.Cyberware.AddTaggedCollectionChangedAsync(
-                                    treVehicles, FuncVehicleModCyberwareToAdd, token);
+                                    treVehicles, FuncVehicleModCyberwareToAdd, token).ConfigureAwait(false);
                                 foreach (Cyberware objCyberware in objMod.Cyberware)
                                     objCyberware.SetupChildrenCyberwareCollectionChanged(true, treVehicles,
                                         cmsCyberware, cmsCyberwareGear, MakeDirtyWithCharacterUpdate);
                                 await objMod.Weapons.AddTaggedCollectionChangedAsync(
-                                    treVehicles, MakeDirtyWithCharacterUpdate, token);
+                                    treVehicles, MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
                                 await objMod.Weapons.AddTaggedCollectionChangedAsync(
-                                    treVehicles, FuncVehicleModWeaponsToAdd, token);
+                                    treVehicles, FuncVehicleModWeaponsToAdd, token).ConfigureAwait(false);
                                 foreach (Weapon objWeapon in objMod.Weapons)
                                     objWeapon.SetupChildrenWeaponsCollectionChanged(true, treVehicles,
                                         cmsVehicleWeapon, cmsVehicleWeaponAccessory,
@@ -4402,23 +4409,23 @@ namespace Chummer
                                                                       cmsCyberwareGear, cmsVehicleWeapon,
                                                                       cmsVehicleWeaponAccessory,
                                                                       cmsVehicleWeaponAccessoryGear, null, y,
-                                                                      MakeDirtyWithCharacterUpdate, token: token);
+                                                                      MakeDirtyWithCharacterUpdate, token: token).ConfigureAwait(false);
 
                                 async void FuncWeaponMountWeaponsToAdd(
                                     object x, NotifyCollectionChangedEventArgs y) =>
                                     await objMount.RefreshChildrenWeapons(
                                         treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
                                         cmsVehicleWeaponAccessoryGear, () => objMount.Mods.Count, y,
-                                        MakeDirtyWithCharacterUpdate, token: token);
+                                        MakeDirtyWithCharacterUpdate, token: token).ConfigureAwait(false);
 
                                 await objMount.Mods.AddTaggedCollectionChangedAsync(
-                                    treVehicles, MakeDirtyWithCharacterUpdate, token);
+                                    treVehicles, MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
                                 await objMount.Mods.AddTaggedCollectionChangedAsync(
-                                    treVehicles, FuncWeaponMountVehicleModToAdd, token);
+                                    treVehicles, FuncWeaponMountVehicleModToAdd, token).ConfigureAwait(false);
                                 await objMount.Weapons.AddTaggedCollectionChangedAsync(
-                                    treVehicles, MakeDirtyWithCharacterUpdate, token);
+                                    treVehicles, MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
                                 await objMount.Weapons.AddTaggedCollectionChangedAsync(
-                                    treVehicles, FuncWeaponMountWeaponsToAdd, token);
+                                    treVehicles, FuncWeaponMountWeaponsToAdd, token).ConfigureAwait(false);
                                 foreach (Weapon objWeapon in objMount.Weapons)
                                     objWeapon.SetupChildrenWeaponsCollectionChanged(true, treVehicles,
                                         cmsVehicleWeapon, cmsVehicleWeaponAccessory,
@@ -4429,26 +4436,26 @@ namespace Chummer
                                         object x, NotifyCollectionChangedEventArgs y) =>
                                         await objMod.RefreshChildrenCyberware(
                                             treVehicles, cmsCyberware, cmsCyberwareGear, null, y,
-                                            MakeDirtyWithCharacterUpdate, token: token);
+                                            MakeDirtyWithCharacterUpdate, token: token).ConfigureAwait(false);
 
                                     async void FuncWeaponMountVehicleModWeaponsToAdd(
                                         object x, NotifyCollectionChangedEventArgs y) =>
                                         await objMod.RefreshChildrenWeapons(
                                             treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
                                             cmsVehicleWeaponAccessoryGear, () => objMod.Cyberware.Count, y,
-                                            MakeDirtyWithCharacterUpdate, token: token);
+                                            MakeDirtyWithCharacterUpdate, token: token).ConfigureAwait(false);
 
                                     await objMod.Cyberware.AddTaggedCollectionChangedAsync(
-                                        treVehicles, MakeDirtyWithCharacterUpdate, token);
+                                        treVehicles, MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
                                     await objMod.Cyberware.AddTaggedCollectionChangedAsync(
-                                        treVehicles, FuncWeaponMountVehicleModCyberwareToAdd, token);
+                                        treVehicles, FuncWeaponMountVehicleModCyberwareToAdd, token).ConfigureAwait(false);
                                     foreach (Cyberware objCyberware in objMod.Cyberware)
                                         objCyberware.SetupChildrenCyberwareCollectionChanged(true, treVehicles,
                                             cmsCyberware, cmsCyberwareGear, MakeDirtyWithCharacterUpdate);
                                     await objMod.Weapons.AddTaggedCollectionChangedAsync(
-                                        treVehicles, MakeDirtyWithCharacterUpdate, token);
+                                        treVehicles, MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
                                     await objMod.Weapons.AddTaggedCollectionChangedAsync(
-                                        treVehicles, FuncWeaponMountVehicleModWeaponsToAdd, token);
+                                        treVehicles, FuncWeaponMountVehicleModWeaponsToAdd, token).ConfigureAwait(false);
                                     foreach (Weapon objWeapon in objMod.Weapons)
                                         objWeapon.SetupChildrenWeaponsCollectionChanged(true, treVehicles,
                                             cmsVehicleWeapon, cmsVehicleWeaponAccessory,
@@ -4467,40 +4474,40 @@ namespace Chummer
                                     treVehicles, cmsVehicleGear,
                                     () => objVehicle.Mods.Count + objVehicle.Weapons.Count
                                                                 + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0),
-                                    y, MakeDirtyWithCharacterUpdate, token: token);
+                                    y, MakeDirtyWithCharacterUpdate, token: token).ConfigureAwait(false);
 
                             async void FuncVehicleLocationsToAdd(object x, NotifyCollectionChangedEventArgs y) =>
                                 await RefreshLocationsInVehicle(treVehicles, objVehicle, cmsVehicleLocation,
                                                                 () => objVehicle.Mods.Count + objVehicle.Weapons.Count
                                                                     + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0)
                                                                     + objVehicle.GearChildren.Count(
-                                                                        z => z.Location == null), y, token);
+                                                                        z => z.Location == null), y, token).ConfigureAwait(false);
 
                             await objVehicle.GearChildren.AddTaggedCollectionChangedAsync(
-                                treVehicles, MakeDirtyWithCharacterUpdate, token);
+                                treVehicles, MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
                             await objVehicle.GearChildren.AddTaggedCollectionChangedAsync(
-                                treVehicles, FuncVehicleGearToAdd, token);
+                                treVehicles, FuncVehicleGearToAdd, token).ConfigureAwait(false);
                             foreach (Gear objGear in objVehicle.GearChildren)
                                 objGear.SetupChildrenGearsCollectionChanged(
                                     true, treVehicles, cmsVehicleGear, MakeDirtyWithCharacterUpdate);
                             await objVehicle.Locations.AddTaggedCollectionChangedAsync(
-                                treVehicles, MakeDirtyWithCharacterUpdate, token);
+                                treVehicles, MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
                             await objVehicle.Locations.AddTaggedCollectionChangedAsync(
-                                treVehicles, FuncVehicleLocationsToAdd, token);
+                                treVehicles, FuncVehicleLocationsToAdd, token).ConfigureAwait(false);
                         }
 
                         await treVehicles.DoThreadSafeAsync(x => x.SelectedNode = x.FindNode(strSelectedId),
-                                                            token);
+                                                            token).ConfigureAwait(false);
                     }
                     finally
                     {
-                        await treVehicles.DoThreadSafeAsync(x => x.ResumeLayout(), token);
+                        await treVehicles.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
                     }
                 }
                 else
                 {
                     nodRoot = await treVehicles.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedVehicles", false),
-                                                                      token);
+                                                                      token).ConfigureAwait(false);
 
                     switch (notifyCollectionChangedEventArgs.Action)
                     {
@@ -4509,13 +4516,13 @@ namespace Chummer
                             int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
                             foreach (Vehicle objVehicle in notifyCollectionChangedEventArgs.NewItems)
                             {
-                                await AddToTree(objVehicle, intNewIndex);
+                                await AddToTree(objVehicle, intNewIndex).ConfigureAwait(false);
 
                                 async void FuncVehicleModsToAdd(object x, NotifyCollectionChangedEventArgs y) =>
                                     await objVehicle.RefreshVehicleMods(
                                         treVehicles, cmsVehicle, cmsCyberware, cmsCyberwareGear, cmsVehicleWeapon,
                                         cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, null, y,
-                                        MakeDirtyWithCharacterUpdate, token: token);
+                                        MakeDirtyWithCharacterUpdate, token: token).ConfigureAwait(false);
 
                                 async void
                                     FuncVehicleWeaponMountsToAdd(object x, NotifyCollectionChangedEventArgs y) =>
@@ -4523,53 +4530,53 @@ namespace Chummer
                                         treVehicles, cmsVehicleWeaponMount, cmsVehicleWeapon,
                                         cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsCyberware,
                                         cmsCyberwareGear, cmsVehicle, () => objVehicle.Mods.Count, y,
-                                        MakeDirtyWithCharacterUpdate, token: token);
+                                        MakeDirtyWithCharacterUpdate, token: token).ConfigureAwait(false);
 
                                 async void FuncVehicleWeaponsToAdd(object x, NotifyCollectionChangedEventArgs y) =>
                                     await objVehicle.RefreshChildrenWeapons(
                                         treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
                                         cmsVehicleWeaponAccessoryGear,
                                         () => objVehicle.Mods.Count + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0),
-                                        y, MakeDirtyWithCharacterUpdate, token: token);
+                                        y, MakeDirtyWithCharacterUpdate, token: token).ConfigureAwait(false);
 
                                 await objVehicle.Mods.AddTaggedCollectionChangedAsync(
-                                    treVehicles, MakeDirtyWithCharacterUpdate, token);
+                                    treVehicles, MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
                                 await objVehicle.Mods.AddTaggedCollectionChangedAsync(
-                                    treVehicles, FuncVehicleModsToAdd, token);
+                                    treVehicles, FuncVehicleModsToAdd, token).ConfigureAwait(false);
                                 await objVehicle.WeaponMounts.AddTaggedCollectionChangedAsync(
-                                    treVehicles, MakeDirtyWithCharacterUpdate, token);
+                                    treVehicles, MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
                                 await objVehicle.WeaponMounts.AddTaggedCollectionChangedAsync(
-                                    treVehicles, FuncVehicleWeaponMountsToAdd, token);
+                                    treVehicles, FuncVehicleWeaponMountsToAdd, token).ConfigureAwait(false);
                                 await objVehicle.Weapons.AddTaggedCollectionChangedAsync(
-                                    treVehicles, MakeDirtyWithCharacterUpdate, token);
+                                    treVehicles, MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
                                 await objVehicle.Weapons.AddTaggedCollectionChangedAsync(
-                                    treVehicles, FuncVehicleWeaponsToAdd, token);
+                                    treVehicles, FuncVehicleWeaponsToAdd, token).ConfigureAwait(false);
                                 foreach (VehicleMod objMod in objVehicle.Mods)
                                 {
                                     async void FuncVehicleModCyberwareToAdd(
                                         object x, NotifyCollectionChangedEventArgs y) =>
                                         await objMod.RefreshChildrenCyberware(
                                             treVehicles, cmsCyberware, cmsCyberwareGear, null, y,
-                                            MakeDirtyWithCharacterUpdate, token: token);
+                                            MakeDirtyWithCharacterUpdate, token: token).ConfigureAwait(false);
 
                                     async void FuncVehicleModWeaponsToAdd(
                                         object x, NotifyCollectionChangedEventArgs y) =>
                                         await objMod.RefreshChildrenWeapons(
                                             treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
                                             cmsVehicleWeaponAccessoryGear, () => objMod.Cyberware.Count, y,
-                                            MakeDirtyWithCharacterUpdate, token: token);
+                                            MakeDirtyWithCharacterUpdate, token: token).ConfigureAwait(false);
 
                                     await objMod.Cyberware.AddTaggedCollectionChangedAsync(
-                                        treVehicles, MakeDirtyWithCharacterUpdate, token);
+                                        treVehicles, MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
                                     await objMod.Cyberware.AddTaggedCollectionChangedAsync(
-                                        treVehicles, FuncVehicleModCyberwareToAdd, token);
+                                        treVehicles, FuncVehicleModCyberwareToAdd, token).ConfigureAwait(false);
                                     foreach (Cyberware objCyberware in objMod.Cyberware)
                                         objCyberware.SetupChildrenCyberwareCollectionChanged(true, treVehicles,
                                             cmsCyberware, cmsCyberwareGear, MakeDirtyWithCharacterUpdate);
                                     await objMod.Weapons.AddTaggedCollectionChangedAsync(
-                                        treVehicles, MakeDirtyWithCharacterUpdate, token);
+                                        treVehicles, MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
                                     await objMod.Weapons.AddTaggedCollectionChangedAsync(
-                                        treVehicles, FuncVehicleModWeaponsToAdd, token);
+                                        treVehicles, FuncVehicleModWeaponsToAdd, token).ConfigureAwait(false);
                                     foreach (Weapon objWeapon in objMod.Weapons)
                                         objWeapon.SetupChildrenWeaponsCollectionChanged(true, treVehicles,
                                             cmsVehicleWeapon, cmsVehicleWeaponAccessory,
@@ -4584,23 +4591,23 @@ namespace Chummer
                                                                           cmsCyberwareGear, cmsVehicleWeapon,
                                                                           cmsVehicleWeaponAccessory,
                                                                           cmsVehicleWeaponAccessoryGear, null, y,
-                                                                          MakeDirtyWithCharacterUpdate, token: token);
+                                                                          MakeDirtyWithCharacterUpdate, token: token).ConfigureAwait(false);
 
                                     async void FuncWeaponMountWeaponsToAdd(
                                         object x, NotifyCollectionChangedEventArgs y) =>
                                         await objMount.RefreshChildrenWeapons(
                                             treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
                                             cmsVehicleWeaponAccessoryGear, () => objMount.Mods.Count, y,
-                                            MakeDirtyWithCharacterUpdate, token: token);
+                                            MakeDirtyWithCharacterUpdate, token: token).ConfigureAwait(false);
 
                                     await objMount.Mods.AddTaggedCollectionChangedAsync(
-                                        treVehicles, MakeDirtyWithCharacterUpdate, token);
+                                        treVehicles, MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
                                     await objMount.Mods.AddTaggedCollectionChangedAsync(
-                                        treVehicles, FuncWeaponMountVehicleModToAdd, token);
+                                        treVehicles, FuncWeaponMountVehicleModToAdd, token).ConfigureAwait(false);
                                     await objMount.Weapons.AddTaggedCollectionChangedAsync(
-                                        treVehicles, MakeDirtyWithCharacterUpdate, token);
+                                        treVehicles, MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
                                     await objMount.Weapons.AddTaggedCollectionChangedAsync(
-                                        treVehicles, FuncWeaponMountWeaponsToAdd, token);
+                                        treVehicles, FuncWeaponMountWeaponsToAdd, token).ConfigureAwait(false);
                                     foreach (Weapon objWeapon in objMount.Weapons)
                                         objWeapon.SetupChildrenWeaponsCollectionChanged(true, treVehicles,
                                             cmsVehicleWeapon, cmsVehicleWeaponAccessory,
@@ -4611,26 +4618,26 @@ namespace Chummer
                                             object x, NotifyCollectionChangedEventArgs y) =>
                                             await objMod.RefreshChildrenCyberware(
                                                 treVehicles, cmsCyberware, cmsCyberwareGear, null, y,
-                                                MakeDirtyWithCharacterUpdate, token: token);
+                                                MakeDirtyWithCharacterUpdate, token: token).ConfigureAwait(false);
 
                                         async void FuncWeaponMountVehicleModWeaponsToAdd(
                                             object x, NotifyCollectionChangedEventArgs y) =>
                                             await objMod.RefreshChildrenWeapons(
                                                 treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
                                                 cmsVehicleWeaponAccessoryGear, () => objMod.Cyberware.Count, y,
-                                                MakeDirtyWithCharacterUpdate, token: token);
+                                                MakeDirtyWithCharacterUpdate, token: token).ConfigureAwait(false);
 
                                         await objMod.Cyberware.AddTaggedCollectionChangedAsync(
-                                            treVehicles, MakeDirtyWithCharacterUpdate, token);
+                                            treVehicles, MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
                                         await objMod.Cyberware.AddTaggedCollectionChangedAsync(
-                                            treVehicles, FuncWeaponMountVehicleModCyberwareToAdd, token);
+                                            treVehicles, FuncWeaponMountVehicleModCyberwareToAdd, token).ConfigureAwait(false);
                                         foreach (Cyberware objCyberware in objMod.Cyberware)
                                             objCyberware.SetupChildrenCyberwareCollectionChanged(true, treVehicles,
                                                 cmsCyberware, cmsCyberwareGear, MakeDirtyWithCharacterUpdate);
                                         await objMod.Weapons.AddTaggedCollectionChangedAsync(
-                                            treVehicles, MakeDirtyWithCharacterUpdate, token);
+                                            treVehicles, MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
                                         await objMod.Weapons.AddTaggedCollectionChangedAsync(
-                                            treVehicles, FuncWeaponMountVehicleModWeaponsToAdd, token);
+                                            treVehicles, FuncWeaponMountVehicleModWeaponsToAdd, token).ConfigureAwait(false);
                                         foreach (Weapon objWeapon in objMod.Weapons)
                                             objWeapon.SetupChildrenWeaponsCollectionChanged(true, treVehicles,
                                                 cmsVehicleWeapon, cmsVehicleWeaponAccessory,
@@ -4649,7 +4656,7 @@ namespace Chummer
                                         treVehicles, cmsVehicleGear,
                                         () => objVehicle.Mods.Count + objVehicle.Weapons.Count
                                                                     + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0),
-                                        y, MakeDirtyWithCharacterUpdate, token: token);
+                                        y, MakeDirtyWithCharacterUpdate, token: token).ConfigureAwait(false);
 
                                 async void FuncVehicleLocationsToAdd(object x, NotifyCollectionChangedEventArgs y) =>
                                     await RefreshLocationsInVehicle(treVehicles, objVehicle, cmsVehicleLocation,
@@ -4657,19 +4664,19 @@ namespace Chummer
                                                                           + objVehicle.Weapons.Count
                                                                           + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0)
                                                                           + objVehicle.GearChildren.Count(
-                                                                              z => z.Location == null), y, token);
+                                                                              z => z.Location == null), y, token).ConfigureAwait(false);
 
                                 await objVehicle.GearChildren.AddTaggedCollectionChangedAsync(
-                                    treVehicles, MakeDirtyWithCharacterUpdate, token);
+                                    treVehicles, MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
                                 await objVehicle.GearChildren.AddTaggedCollectionChangedAsync(
-                                    treVehicles, FuncVehicleGearToAdd, token);
+                                    treVehicles, FuncVehicleGearToAdd, token).ConfigureAwait(false);
                                 foreach (Gear objGear in objVehicle.GearChildren)
                                     objGear.SetupChildrenGearsCollectionChanged(
                                         true, treVehicles, cmsVehicleGear, MakeDirtyWithCharacterUpdate);
                                 await objVehicle.Locations.AddTaggedCollectionChangedAsync(
-                                    treVehicles, MakeDirtyWithCharacterUpdate, token);
+                                    treVehicles, MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
                                 await objVehicle.Locations.AddTaggedCollectionChangedAsync(
-                                    treVehicles, FuncVehicleLocationsToAdd, token);
+                                    treVehicles, FuncVehicleLocationsToAdd, token).ConfigureAwait(false);
 
                                 ++intNewIndex;
                             }
@@ -4680,31 +4687,31 @@ namespace Chummer
                         {
                             foreach (Vehicle objVehicle in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                await objVehicle.Mods.RemoveTaggedCollectionChangedAsync(treVehicles, token);
-                                await objVehicle.WeaponMounts.RemoveTaggedCollectionChangedAsync(treVehicles, token);
-                                await objVehicle.Weapons.RemoveTaggedCollectionChangedAsync(treVehicles, token);
+                                await objVehicle.Mods.RemoveTaggedCollectionChangedAsync(treVehicles, token).ConfigureAwait(false);
+                                await objVehicle.WeaponMounts.RemoveTaggedCollectionChangedAsync(treVehicles, token).ConfigureAwait(false);
+                                await objVehicle.Weapons.RemoveTaggedCollectionChangedAsync(treVehicles, token).ConfigureAwait(false);
                                 foreach (VehicleMod objMod in objVehicle.Mods)
                                 {
-                                    await objMod.Cyberware.RemoveTaggedCollectionChangedAsync(treVehicles, token);
+                                    await objMod.Cyberware.RemoveTaggedCollectionChangedAsync(treVehicles, token).ConfigureAwait(false);
                                     foreach (Cyberware objCyberware in objMod.Cyberware)
                                         objCyberware.SetupChildrenCyberwareCollectionChanged(false, treVehicles);
-                                    await objMod.Weapons.RemoveTaggedCollectionChangedAsync(treVehicles, token);
+                                    await objMod.Weapons.RemoveTaggedCollectionChangedAsync(treVehicles, token).ConfigureAwait(false);
                                     foreach (Weapon objWeapon in objMod.Weapons)
                                         objWeapon.SetupChildrenWeaponsCollectionChanged(false, treVehicles);
                                 }
 
                                 foreach (WeaponMount objMount in objVehicle.WeaponMounts)
                                 {
-                                    await objMount.Mods.RemoveTaggedCollectionChangedAsync(treVehicles, token);
-                                    await objMount.Weapons.RemoveTaggedCollectionChangedAsync(treVehicles, token);
+                                    await objMount.Mods.RemoveTaggedCollectionChangedAsync(treVehicles, token).ConfigureAwait(false);
+                                    await objMount.Weapons.RemoveTaggedCollectionChangedAsync(treVehicles, token).ConfigureAwait(false);
                                     foreach (Weapon objWeapon in objMount.Weapons)
                                         objWeapon.SetupChildrenWeaponsCollectionChanged(false, treVehicles);
                                     foreach (VehicleMod objMod in objMount.Mods)
                                     {
-                                        await objMod.Cyberware.RemoveTaggedCollectionChangedAsync(treVehicles, token);
+                                        await objMod.Cyberware.RemoveTaggedCollectionChangedAsync(treVehicles, token).ConfigureAwait(false);
                                         foreach (Cyberware objCyberware in objMod.Cyberware)
                                             objCyberware.SetupChildrenCyberwareCollectionChanged(false, treVehicles);
-                                        await objMod.Weapons.RemoveTaggedCollectionChangedAsync(treVehicles, token);
+                                        await objMod.Weapons.RemoveTaggedCollectionChangedAsync(treVehicles, token).ConfigureAwait(false);
                                         foreach (Weapon objWeapon in objMod.Weapons)
                                             objWeapon.SetupChildrenWeaponsCollectionChanged(false, treVehicles);
                                     }
@@ -4712,12 +4719,12 @@ namespace Chummer
 
                                 foreach (Weapon objWeapon in objVehicle.Weapons)
                                     objWeapon.SetupChildrenWeaponsCollectionChanged(false, treVehicles);
-                                await objVehicle.GearChildren.RemoveTaggedCollectionChangedAsync(treVehicles, token);
+                                await objVehicle.GearChildren.RemoveTaggedCollectionChangedAsync(treVehicles, token).ConfigureAwait(false);
                                 foreach (Gear objGear in objVehicle.GearChildren)
                                     objGear.SetupChildrenGearsCollectionChanged(false, treVehicles);
-                                await objVehicle.Locations.RemoveTaggedCollectionChangedAsync(treVehicles, token);
+                                await objVehicle.Locations.RemoveTaggedCollectionChangedAsync(treVehicles, token).ConfigureAwait(false);
                                 await treVehicles.DoThreadSafeAsync(x => x.FindNodeByTag(objVehicle)?.Remove(),
-                                                                    token);
+                                                                    token).ConfigureAwait(false);
                             }
 
                             break;
@@ -4726,31 +4733,31 @@ namespace Chummer
                         {
                             foreach (Vehicle objVehicle in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                await objVehicle.Mods.RemoveTaggedCollectionChangedAsync(treVehicles, token);
-                                await objVehicle.WeaponMounts.RemoveTaggedCollectionChangedAsync(treVehicles, token);
-                                await objVehicle.Weapons.RemoveTaggedCollectionChangedAsync(treVehicles, token);
+                                await objVehicle.Mods.RemoveTaggedCollectionChangedAsync(treVehicles, token).ConfigureAwait(false);
+                                await objVehicle.WeaponMounts.RemoveTaggedCollectionChangedAsync(treVehicles, token).ConfigureAwait(false);
+                                await objVehicle.Weapons.RemoveTaggedCollectionChangedAsync(treVehicles, token).ConfigureAwait(false);
                                 foreach (VehicleMod objMod in objVehicle.Mods)
                                 {
-                                    await objMod.Cyberware.RemoveTaggedCollectionChangedAsync(treVehicles, token);
+                                    await objMod.Cyberware.RemoveTaggedCollectionChangedAsync(treVehicles, token).ConfigureAwait(false);
                                     foreach (Cyberware objCyberware in objMod.Cyberware)
                                         objCyberware.SetupChildrenCyberwareCollectionChanged(false, treVehicles);
-                                    await objMod.Weapons.RemoveTaggedCollectionChangedAsync(treVehicles, token);
+                                    await objMod.Weapons.RemoveTaggedCollectionChangedAsync(treVehicles, token).ConfigureAwait(false);
                                     foreach (Weapon objWeapon in objMod.Weapons)
                                         objWeapon.SetupChildrenWeaponsCollectionChanged(false, treVehicles);
                                 }
 
                                 foreach (WeaponMount objMount in objVehicle.WeaponMounts)
                                 {
-                                    await objMount.Mods.RemoveTaggedCollectionChangedAsync(treVehicles, token);
-                                    await objMount.Weapons.RemoveTaggedCollectionChangedAsync(treVehicles, token);
+                                    await objMount.Mods.RemoveTaggedCollectionChangedAsync(treVehicles, token).ConfigureAwait(false);
+                                    await objMount.Weapons.RemoveTaggedCollectionChangedAsync(treVehicles, token).ConfigureAwait(false);
                                     foreach (Weapon objWeapon in objMount.Weapons)
                                         objWeapon.SetupChildrenWeaponsCollectionChanged(false, treVehicles);
                                     foreach (VehicleMod objMod in objMount.Mods)
                                     {
-                                        await objMod.Cyberware.RemoveTaggedCollectionChangedAsync(treVehicles, token);
+                                        await objMod.Cyberware.RemoveTaggedCollectionChangedAsync(treVehicles, token).ConfigureAwait(false);
                                         foreach (Cyberware objCyberware in objMod.Cyberware)
                                             objCyberware.SetupChildrenCyberwareCollectionChanged(false, treVehicles);
-                                        await objMod.Weapons.RemoveTaggedCollectionChangedAsync(treVehicles, token);
+                                        await objMod.Weapons.RemoveTaggedCollectionChangedAsync(treVehicles, token).ConfigureAwait(false);
                                         foreach (Weapon objWeapon in objMod.Weapons)
                                             objWeapon.SetupChildrenWeaponsCollectionChanged(false, treVehicles);
                                     }
@@ -4758,24 +4765,24 @@ namespace Chummer
 
                                 foreach (Weapon objWeapon in objVehicle.Weapons)
                                     objWeapon.SetupChildrenWeaponsCollectionChanged(false, treVehicles);
-                                await objVehicle.GearChildren.RemoveTaggedCollectionChangedAsync(treVehicles, token);
+                                await objVehicle.GearChildren.RemoveTaggedCollectionChangedAsync(treVehicles, token).ConfigureAwait(false);
                                 foreach (Gear objGear in objVehicle.GearChildren)
                                     objGear.SetupChildrenGearsCollectionChanged(false, treVehicles);
-                                await objVehicle.Locations.RemoveTaggedCollectionChangedAsync(treVehicles, token);
+                                await objVehicle.Locations.RemoveTaggedCollectionChangedAsync(treVehicles, token).ConfigureAwait(false);
                                 await treVehicles.DoThreadSafeAsync(x => x.FindNodeByTag(objVehicle)?.Remove(),
-                                                                    token);
+                                                                    token).ConfigureAwait(false);
                             }
 
                             int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
                             foreach (Vehicle objVehicle in notifyCollectionChangedEventArgs.NewItems)
                             {
-                                await AddToTree(objVehicle, intNewIndex);
+                                await AddToTree(objVehicle, intNewIndex).ConfigureAwait(false);
 
                                 async void FuncVehicleModsToAdd(object x, NotifyCollectionChangedEventArgs y) =>
                                     await objVehicle.RefreshVehicleMods(
                                         treVehicles, cmsVehicle, cmsCyberware, cmsCyberwareGear, cmsVehicleWeapon,
                                         cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, null, y,
-                                        MakeDirtyWithCharacterUpdate, token: token);
+                                        MakeDirtyWithCharacterUpdate, token: token).ConfigureAwait(false);
 
                                 async void
                                     FuncVehicleWeaponMountsToAdd(object x, NotifyCollectionChangedEventArgs y) =>
@@ -4783,53 +4790,53 @@ namespace Chummer
                                         treVehicles, cmsVehicleWeaponMount, cmsVehicleWeapon,
                                         cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsCyberware,
                                         cmsCyberwareGear, cmsVehicle, () => objVehicle.Mods.Count, y,
-                                        MakeDirtyWithCharacterUpdate, token: token);
+                                        MakeDirtyWithCharacterUpdate, token: token).ConfigureAwait(false);
 
                                 async void FuncVehicleWeaponsToAdd(object x, NotifyCollectionChangedEventArgs y) =>
                                     await objVehicle.RefreshChildrenWeapons(
                                         treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
                                         cmsVehicleWeaponAccessoryGear,
                                         () => objVehicle.Mods.Count + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0),
-                                        y, MakeDirtyWithCharacterUpdate, token: token);
+                                        y, MakeDirtyWithCharacterUpdate, token: token).ConfigureAwait(false);
 
                                 await objVehicle.Mods.AddTaggedCollectionChangedAsync(
-                                    treVehicles, MakeDirtyWithCharacterUpdate, token);
+                                    treVehicles, MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
                                 await objVehicle.Mods.AddTaggedCollectionChangedAsync(
-                                    treVehicles, FuncVehicleModsToAdd, token);
+                                    treVehicles, FuncVehicleModsToAdd, token).ConfigureAwait(false);
                                 await objVehicle.WeaponMounts.AddTaggedCollectionChangedAsync(
-                                    treVehicles, MakeDirtyWithCharacterUpdate, token);
+                                    treVehicles, MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
                                 await objVehicle.WeaponMounts.AddTaggedCollectionChangedAsync(
-                                    treVehicles, FuncVehicleWeaponMountsToAdd, token);
+                                    treVehicles, FuncVehicleWeaponMountsToAdd, token).ConfigureAwait(false);
                                 await objVehicle.Weapons.AddTaggedCollectionChangedAsync(
-                                    treVehicles, MakeDirtyWithCharacterUpdate, token);
+                                    treVehicles, MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
                                 await objVehicle.Weapons.AddTaggedCollectionChangedAsync(
-                                    treVehicles, FuncVehicleWeaponsToAdd, token);
+                                    treVehicles, FuncVehicleWeaponsToAdd, token).ConfigureAwait(false);
                                 foreach (VehicleMod objMod in objVehicle.Mods)
                                 {
                                     async void FuncVehicleModCyberwareToAdd(
                                         object x, NotifyCollectionChangedEventArgs y) =>
                                         await objMod.RefreshChildrenCyberware(
                                             treVehicles, cmsCyberware, cmsCyberwareGear, null, y,
-                                            MakeDirtyWithCharacterUpdate, token: token);
+                                            MakeDirtyWithCharacterUpdate, token: token).ConfigureAwait(false);
 
                                     async void FuncVehicleModWeaponsToAdd(
                                         object x, NotifyCollectionChangedEventArgs y) =>
                                         await objMod.RefreshChildrenWeapons(
                                             treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
                                             cmsVehicleWeaponAccessoryGear, () => objMod.Cyberware.Count, y,
-                                            MakeDirtyWithCharacterUpdate, token: token);
+                                            MakeDirtyWithCharacterUpdate, token: token).ConfigureAwait(false);
 
                                     await objMod.Cyberware.AddTaggedCollectionChangedAsync(
-                                        treVehicles, MakeDirtyWithCharacterUpdate, token);
+                                        treVehicles, MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
                                     await objMod.Cyberware.AddTaggedCollectionChangedAsync(
-                                        treVehicles, FuncVehicleModCyberwareToAdd, token);
+                                        treVehicles, FuncVehicleModCyberwareToAdd, token).ConfigureAwait(false);
                                     foreach (Cyberware objCyberware in objMod.Cyberware)
                                         objCyberware.SetupChildrenCyberwareCollectionChanged(true, treVehicles,
                                             cmsCyberware, cmsCyberwareGear, MakeDirtyWithCharacterUpdate);
                                     await objMod.Weapons.AddTaggedCollectionChangedAsync(
-                                        treVehicles, MakeDirtyWithCharacterUpdate, token);
+                                        treVehicles, MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
                                     await objMod.Weapons.AddTaggedCollectionChangedAsync(
-                                        treVehicles, FuncVehicleModWeaponsToAdd, token);
+                                        treVehicles, FuncVehicleModWeaponsToAdd, token).ConfigureAwait(false);
                                     foreach (Weapon objWeapon in objMod.Weapons)
                                         objWeapon.SetupChildrenWeaponsCollectionChanged(true, treVehicles,
                                             cmsVehicleWeapon, cmsVehicleWeaponAccessory,
@@ -4844,23 +4851,23 @@ namespace Chummer
                                                                           cmsCyberwareGear, cmsVehicleWeapon,
                                                                           cmsVehicleWeaponAccessory,
                                                                           cmsVehicleWeaponAccessoryGear, null, y,
-                                                                          MakeDirtyWithCharacterUpdate, token: token);
+                                                                          MakeDirtyWithCharacterUpdate, token: token).ConfigureAwait(false);
 
                                     async void FuncWeaponMountWeaponsToAdd(
                                         object x, NotifyCollectionChangedEventArgs y) =>
                                         await objMount.RefreshChildrenWeapons(
                                             treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
                                             cmsVehicleWeaponAccessoryGear, () => objMount.Mods.Count, y,
-                                            MakeDirtyWithCharacterUpdate, token: token);
+                                            MakeDirtyWithCharacterUpdate, token: token).ConfigureAwait(false);
 
                                     await objMount.Mods.AddTaggedCollectionChangedAsync(
-                                        treVehicles, MakeDirtyWithCharacterUpdate, token);
+                                        treVehicles, MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
                                     await objMount.Mods.AddTaggedCollectionChangedAsync(
-                                        treVehicles, FuncWeaponMountVehicleModToAdd, token);
+                                        treVehicles, FuncWeaponMountVehicleModToAdd, token).ConfigureAwait(false);
                                     await objMount.Weapons.AddTaggedCollectionChangedAsync(
-                                        treVehicles, MakeDirtyWithCharacterUpdate, token);
+                                        treVehicles, MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
                                     await objMount.Weapons.AddTaggedCollectionChangedAsync(
-                                        treVehicles, FuncWeaponMountWeaponsToAdd, token);
+                                        treVehicles, FuncWeaponMountWeaponsToAdd, token).ConfigureAwait(false);
                                     foreach (Weapon objWeapon in objMount.Weapons)
                                         objWeapon.SetupChildrenWeaponsCollectionChanged(true, treVehicles,
                                             cmsVehicleWeapon, cmsVehicleWeaponAccessory,
@@ -4871,26 +4878,26 @@ namespace Chummer
                                             object x, NotifyCollectionChangedEventArgs y) =>
                                             await objMod.RefreshChildrenCyberware(
                                                 treVehicles, cmsCyberware, cmsCyberwareGear, null, y,
-                                                MakeDirtyWithCharacterUpdate, token: token);
+                                                MakeDirtyWithCharacterUpdate, token: token).ConfigureAwait(false);
 
                                         async void FuncWeaponMountVehicleModWeaponsToAdd(
                                             object x, NotifyCollectionChangedEventArgs y) =>
                                             await objMod.RefreshChildrenWeapons(
                                                 treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
                                                 cmsVehicleWeaponAccessoryGear, () => objMod.Cyberware.Count, y,
-                                                MakeDirtyWithCharacterUpdate, token: token);
+                                                MakeDirtyWithCharacterUpdate, token: token).ConfigureAwait(false);
 
                                         await objMod.Cyberware.AddTaggedCollectionChangedAsync(
-                                            treVehicles, MakeDirtyWithCharacterUpdate, token);
+                                            treVehicles, MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
                                         await objMod.Cyberware.AddTaggedCollectionChangedAsync(
-                                            treVehicles, FuncWeaponMountVehicleModCyberwareToAdd, token);
+                                            treVehicles, FuncWeaponMountVehicleModCyberwareToAdd, token).ConfigureAwait(false);
                                         foreach (Cyberware objCyberware in objMod.Cyberware)
                                             objCyberware.SetupChildrenCyberwareCollectionChanged(true, treVehicles,
                                                 cmsCyberware, cmsCyberwareGear, MakeDirtyWithCharacterUpdate);
                                         await objMod.Weapons.AddTaggedCollectionChangedAsync(
-                                            treVehicles, MakeDirtyWithCharacterUpdate, token);
+                                            treVehicles, MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
                                         await objMod.Weapons.AddTaggedCollectionChangedAsync(
-                                            treVehicles, FuncWeaponMountVehicleModWeaponsToAdd, token);
+                                            treVehicles, FuncWeaponMountVehicleModWeaponsToAdd, token).ConfigureAwait(false);
                                         foreach (Weapon objWeapon in objMod.Weapons)
                                             objWeapon.SetupChildrenWeaponsCollectionChanged(true, treVehicles,
                                                 cmsVehicleWeapon, cmsVehicleWeaponAccessory,
@@ -4909,7 +4916,7 @@ namespace Chummer
                                         treVehicles, cmsVehicleGear,
                                         () => objVehicle.Mods.Count + objVehicle.Weapons.Count
                                                                     + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0),
-                                        y, MakeDirtyWithCharacterUpdate, token: token);
+                                        y, MakeDirtyWithCharacterUpdate, token: token).ConfigureAwait(false);
 
                                 async void FuncVehicleLocationsToAdd(object x, NotifyCollectionChangedEventArgs y) =>
                                     await RefreshLocationsInVehicle(treVehicles, objVehicle, cmsVehicleLocation,
@@ -4917,25 +4924,25 @@ namespace Chummer
                                                                           + objVehicle.Weapons.Count
                                                                           + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0)
                                                                           + objVehicle.GearChildren.Count(
-                                                                              z => z.Location == null), y, token);
+                                                                              z => z.Location == null), y, token).ConfigureAwait(false);
 
                                 await objVehicle.GearChildren.AddTaggedCollectionChangedAsync(
-                                    treVehicles, MakeDirtyWithCharacterUpdate, token);
+                                    treVehicles, MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
                                 await objVehicle.GearChildren.AddTaggedCollectionChangedAsync(
-                                    treVehicles, FuncVehicleGearToAdd, token);
+                                    treVehicles, FuncVehicleGearToAdd, token).ConfigureAwait(false);
                                 foreach (Gear objGear in objVehicle.GearChildren)
                                     objGear.SetupChildrenGearsCollectionChanged(
                                         true, treVehicles, cmsVehicleGear, MakeDirtyWithCharacterUpdate);
                                 await objVehicle.Locations.AddTaggedCollectionChangedAsync(
-                                    treVehicles, MakeDirtyWithCharacterUpdate, token);
+                                    treVehicles, MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
                                 await objVehicle.Locations.AddTaggedCollectionChangedAsync(
-                                    treVehicles, FuncVehicleLocationsToAdd, token);
+                                    treVehicles, FuncVehicleLocationsToAdd, token).ConfigureAwait(false);
 
                                 ++intNewIndex;
                             }
 
                             await treVehicles.DoThreadSafeAsync(x => x.SelectedNode = x.FindNode(strSelectedId),
-                                                                token);
+                                                                token).ConfigureAwait(false);
                             break;
                         }
                         case NotifyCollectionChangedAction.Move:
@@ -4946,17 +4953,17 @@ namespace Chummer
                                 {
                                     x.FindNodeByTag(objVehicle)?.Remove();
                                 }
-                            }, token);
+                            }, token).ConfigureAwait(false);
 
                             int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
                             foreach (Vehicle objVehicle in notifyCollectionChangedEventArgs.NewItems)
                             {
-                                await AddToTree(objVehicle, intNewIndex);
+                                await AddToTree(objVehicle, intNewIndex).ConfigureAwait(false);
                                 ++intNewIndex;
                             }
 
                             await treVehicles.DoThreadSafeAsync(x => x.SelectedNode = x.FindNode(strSelectedId),
-                                                                token);
+                                                                token).ConfigureAwait(false);
                             break;
                         }
                     }
@@ -4976,7 +4983,7 @@ namespace Chummer
                     if (objVehicle.Location != null)
                     {
                         nodParent = await treVehicles.DoThreadSafeFuncAsync(
-                            x => x.FindNodeByTag(objVehicle.Location, false), token);
+                            x => x.FindNodeByTag(objVehicle.Location, false), token).ConfigureAwait(false);
                     }
 
                     if (nodParent == null)
@@ -4986,9 +4993,9 @@ namespace Chummer
                             nodRoot = new TreeNode
                             {
                                 Tag = "Node_SelectedVehicles",
-                                Text = await LanguageManager.GetStringAsync("Node_SelectedVehicles", token: token)
+                                Text = await LanguageManager.GetStringAsync("Node_SelectedVehicles", token: token).ConfigureAwait(false)
                             };
-                            await treVehicles.DoThreadSafeAsync(x => x.Nodes.Insert(0, nodRoot), token);
+                            await treVehicles.DoThreadSafeAsync(x => x.Nodes.Insert(0, nodRoot), token).ConfigureAwait(false);
                         }
 
                         nodParent = nodRoot;
@@ -5003,12 +5010,12 @@ namespace Chummer
                         nodParent.Expand();
                         if (blnSingleAdd)
                             x.SelectedNode = objNode;
-                    }, token);
+                    }, token).ConfigureAwait(false);
                 }
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -5016,28 +5023,28 @@ namespace Chummer
         {
             if (treFoci == null)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
                 string strSelectedId
-                    = (await treFoci.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token) as IHasInternalId)
+                    = (await treFoci.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token).ConfigureAwait(false) as IHasInternalId)
                     ?.InternalId ?? string.Empty;
 
                 if (notifyCollectionChangedEventArgs == null ||
                     notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
                 {
-                    await treFoci.DoThreadSafeAsync(x => x.SuspendLayout(), token);
+                    await treFoci.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
                     try
                     {
-                        await treFoci.DoThreadSafeAsync(x => x.Nodes.Clear(), token);
+                        await treFoci.DoThreadSafeAsync(x => x.Nodes.Clear(), token).ConfigureAwait(false);
 
                         int intFociTotal = 0;
 
-                        int intMaxFocusTotal = (await (await CharacterObject.GetAttributeAsync("MAG", token: token))
-                            .GetTotalValueAsync(token)) * 5;
+                        int intMaxFocusTotal = (await (await CharacterObject.GetAttributeAsync("MAG", token: token).ConfigureAwait(false))
+                                                      .GetTotalValueAsync(token).ConfigureAwait(false)) * 5;
                         if (CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept)
-                            intMaxFocusTotal = Math.Min(intMaxFocusTotal, (await (await CharacterObject.GetAttributeAsync("MAGAdept", token: token))
-                                                            .GetTotalValueAsync(token)) * 5);
+                            intMaxFocusTotal = Math.Min(intMaxFocusTotal, (await (await CharacterObject.GetAttributeAsync("MAGAdept", token: token).ConfigureAwait(false))
+                                                            .GetTotalValueAsync(token).ConfigureAwait(false)) * 5);
 
                         foreach (Gear objGear in CharacterObject.Gear)
                         {
@@ -5050,8 +5057,8 @@ namespace Chummer
                                     if (objNode == null)
                                         continue;
                                     objNode.Text = await objNode.Text.CheapReplaceAsync(
-                                        await LanguageManager.GetStringAsync("String_Rating", token: token),
-                                        () => LanguageManager.GetStringAsync(objGear.RatingLabel, token: token), token: token);
+                                        await LanguageManager.GetStringAsync("String_Rating", token: token).ConfigureAwait(false),
+                                        () => LanguageManager.GetStringAsync(objGear.RatingLabel, token: token), token: token).ConfigureAwait(false);
                                     for (int i = CharacterObject.Foci.Count - 1; i >= 0; --i)
                                     {
                                         if (i < CharacterObject.Foci.Count)
@@ -5064,7 +5071,7 @@ namespace Chummer
                                                 if (intFociTotal > intMaxFocusTotal && !CharacterObject.IgnoreRules)
                                                 {
                                                     objGear.Bonded = false;
-                                                    await CharacterObject.Foci.RemoveAtAsync(i, token: token);
+                                                    await CharacterObject.Foci.RemoveAtAsync(i, token: token).ConfigureAwait(false);
                                                     objNode.Checked = false;
                                                 }
                                                 else
@@ -5073,7 +5080,7 @@ namespace Chummer
                                         }
                                     }
 
-                                    await AddToTree(objNode, false);
+                                    await AddToTree(objNode, false).ConfigureAwait(false);
                                 }
                                     break;
 
@@ -5084,7 +5091,7 @@ namespace Chummer
                                         if (objStack.GearId == objGear.InternalId)
                                         {
                                             await ImprovementManager.RemoveImprovementsAsync(CharacterObject,
-                                                Improvement.ImprovementSource.StackedFocus, objStack.InternalId, token);
+                                                Improvement.ImprovementSource.StackedFocus, objStack.InternalId, token).ConfigureAwait(false);
 
                                             if (objStack.Bonded)
                                             {
@@ -5096,7 +5103,7 @@ namespace Chummer
                                                         Improvement.ImprovementSource.StackedFocus, objStack.InternalId,
                                                         objFociGear.Bonus, objFociGear.Rating,
                                                         await objFociGear.DisplayNameShortAsync(
-                                                            GlobalSettings.Language, token), token: token);
+                                                            GlobalSettings.Language, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                                                     if (objFociGear.WirelessOn)
                                                         await ImprovementManager.CreateImprovementsAsync(
                                                             CharacterObject,
@@ -5104,11 +5111,11 @@ namespace Chummer
                                                             objStack.InternalId,
                                                             objFociGear.WirelessBonus, objFociGear.Rating,
                                                             await objFociGear.DisplayNameShortAsync(
-                                                                GlobalSettings.Language, token), token: token);
+                                                                GlobalSettings.Language, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                                                 }
                                             }
 
-                                            await AddToTree(objStack.CreateTreeNode(objGear, cmsFocus), false);
+                                            await AddToTree(objStack.CreateTreeNode(objGear, cmsFocus), false).ConfigureAwait(false);
                                         }
                                     }
                                 }
@@ -5116,11 +5123,11 @@ namespace Chummer
                             }
                         }
 
-                        await treFoci.DoThreadSafeAsync(x => x.SortCustomAlphabetically(strSelectedId), token);
+                        await treFoci.DoThreadSafeAsync(x => x.SortCustomAlphabetically(strSelectedId), token).ConfigureAwait(false);
                     }
                     finally
                     {
-                        await treFoci.DoThreadSafeAsync(x => x.ResumeLayout(), token);
+                        await treFoci.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
                     }
                 }
                 else
@@ -5130,17 +5137,17 @@ namespace Chummer
                         case NotifyCollectionChangedAction.Add:
                         {
                             bool blnWarned = false;
-                            int intMaxFocusTotal = (await (await CharacterObject.GetAttributeAsync("MAG", token: token))
-                                .GetTotalValueAsync(token)) * 5;
+                            int intMaxFocusTotal = (await (await CharacterObject.GetAttributeAsync("MAG", token: token).ConfigureAwait(false))
+                                                          .GetTotalValueAsync(token).ConfigureAwait(false)) * 5;
                             if (CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept)
-                                intMaxFocusTotal = Math.Min(intMaxFocusTotal, (await (await CharacterObject.GetAttributeAsync("MAGAdept", token: token))
-                                                                .GetTotalValueAsync(token)) * 5);
+                                intMaxFocusTotal = Math.Min(intMaxFocusTotal, (await (await CharacterObject.GetAttributeAsync("MAGAdept", token: token).ConfigureAwait(false))
+                                                                .GetTotalValueAsync(token).ConfigureAwait(false)) * 5);
 
                             HashSet<Gear> setNewGears = new HashSet<Gear>();
                             foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
                                 setNewGears.Add(objGear);
 
-                            int intFociTotal = await CharacterObject.Foci.SumAsync(x => !setNewGears.Contains(x.GearObject), x => x.Rating, token);
+                            int intFociTotal = await CharacterObject.Foci.SumAsync(x => !setNewGears.Contains(x.GearObject), x => x.Rating, token).ConfigureAwait(false);
 
                             foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
                             {
@@ -5153,8 +5160,8 @@ namespace Chummer
                                         if (objNode == null)
                                             continue;
                                         objNode.Text = await objNode.Text.CheapReplaceAsync(
-                                            await LanguageManager.GetStringAsync("String_Rating", token: token),
-                                            () => LanguageManager.GetStringAsync("String_Force", token: token), token: token);
+                                            await LanguageManager.GetStringAsync("String_Rating", token: token).ConfigureAwait(false),
+                                            () => LanguageManager.GetStringAsync("String_Force", token: token), token: token).ConfigureAwait(false);
                                         for (int i = CharacterObject.Foci.Count - 1; i >= 0; --i)
                                         {
                                             if (i < CharacterObject.Foci.Count)
@@ -5168,15 +5175,15 @@ namespace Chummer
                                                     {
                                                         // Mark the Gear a Bonded.
                                                         objGear.Bonded = false;
-                                                        await CharacterObject.Foci.RemoveAtAsync(i, token: token);
+                                                        await CharacterObject.Foci.RemoveAtAsync(i, token: token).ConfigureAwait(false);
                                                         objNode.Checked = false;
                                                         if (!blnWarned)
                                                         {
                                                             Program.ShowMessageBox(this,
                                                                 await LanguageManager.GetStringAsync(
-                                                                    "Message_FocusMaximumForce", token: token),
+                                                                    "Message_FocusMaximumForce", token: token).ConfigureAwait(false),
                                                                 await LanguageManager.GetStringAsync(
-                                                                    "MessageTitle_FocusMaximum", token: token),
+                                                                    "MessageTitle_FocusMaximum", token: token).ConfigureAwait(false),
                                                                 MessageBoxButtons.OK, MessageBoxIcon.Information);
                                                             blnWarned = true;
                                                             break;
@@ -5188,7 +5195,7 @@ namespace Chummer
                                             }
                                         }
 
-                                        await AddToTree(objNode);
+                                        await AddToTree(objNode).ConfigureAwait(false);
                                     }
                                         break;
 
@@ -5199,7 +5206,7 @@ namespace Chummer
                                             if (objStack.GearId == objGear.InternalId)
                                             {
                                                 await ImprovementManager.RemoveImprovementsAsync(CharacterObject,
-                                                    Improvement.ImprovementSource.StackedFocus, objStack.InternalId, token);
+                                                    Improvement.ImprovementSource.StackedFocus, objStack.InternalId, token).ConfigureAwait(false);
 
                                                 if (objStack.Bonded)
                                                 {
@@ -5212,7 +5219,7 @@ namespace Chummer
                                                             Improvement.ImprovementSource.StackedFocus,
                                                             objStack.InternalId, objFociGear.Bonus, objFociGear.Rating,
                                                             await objFociGear.DisplayNameShortAsync(
-                                                                GlobalSettings.Language, token), token: token);
+                                                                GlobalSettings.Language, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                                                         if (objFociGear.WirelessOn)
                                                             await ImprovementManager.CreateImprovementsAsync(
                                                                 CharacterObject,
@@ -5220,11 +5227,11 @@ namespace Chummer
                                                                 objStack.InternalId, objFociGear.WirelessBonus,
                                                                 objFociGear.Rating,
                                                                 await objFociGear.DisplayNameShortAsync(
-                                                                    GlobalSettings.Language, token), token: token);
+                                                                    GlobalSettings.Language, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                                                     }
                                                 }
 
-                                                await AddToTree(objStack.CreateTreeNode(objGear, cmsFocus));
+                                                await AddToTree(objStack.CreateTreeNode(objGear, cmsFocus)).ConfigureAwait(false);
                                             }
                                         }
                                     }
@@ -5250,13 +5257,13 @@ namespace Chummer
                                                 Focus objFocus = CharacterObject.Foci[i];
                                                 if (objFocus.GearObject == objGear)
                                                 {
-                                                    await CharacterObject.Foci.RemoveAtAsync(i, token: token);
+                                                    await CharacterObject.Foci.RemoveAtAsync(i, token: token).ConfigureAwait(false);
                                                 }
                                             }
                                         }
 
                                         await treFoci.DoThreadSafeAsync(x => x.FindNodeByTag(objGear)?.Remove(),
-                                                                        token);
+                                                                        token).ConfigureAwait(false);
                                     }
                                         break;
 
@@ -5269,10 +5276,14 @@ namespace Chummer
                                                 StackedFocus objStack = CharacterObject.StackedFoci[i];
                                                 if (objStack.GearId == objGear.InternalId)
                                                 {
-                                                    await CharacterObject.StackedFoci.RemoveAtAsync(i, token: token);
+                                                    await CharacterObject.StackedFoci.RemoveAtAsync(i, token: token)
+                                                                         .ConfigureAwait(false);
                                                     await treFoci.DoThreadSafeAsync(
-                                                        x => x.FindNodeByTag(objStack)?.Remove(), token);
-                                                    objStack.Dispose();
+                                                        x =>
+                                                        {
+                                                            x.FindNodeByTag(objStack)?.Remove();
+                                                            objStack.Dispose();
+                                                        }, token).ConfigureAwait(false);
                                                 }
                                             }
                                         }
@@ -5299,13 +5310,13 @@ namespace Chummer
                                                 Focus objFocus = CharacterObject.Foci[i];
                                                 if (objFocus.GearObject == objGear)
                                                 {
-                                                    await CharacterObject.Foci.RemoveAtAsync(i, token: token);
+                                                    await CharacterObject.Foci.RemoveAtAsync(i, token: token).ConfigureAwait(false);
                                                 }
                                             }
                                         }
 
                                         await treFoci.DoThreadSafeAsync(x => x.FindNodeByTag(objGear)?.Remove(),
-                                                                        token);
+                                                                        token).ConfigureAwait(false);
                                     }
                                         break;
 
@@ -5318,10 +5329,13 @@ namespace Chummer
                                                 StackedFocus objStack = CharacterObject.StackedFoci[i];
                                                 if (objStack.GearId == objGear.InternalId)
                                                 {
-                                                    await CharacterObject.StackedFoci.RemoveAtAsync(i, token: token);
+                                                    await CharacterObject.StackedFoci.RemoveAtAsync(i, token: token).ConfigureAwait(false);
                                                     await treFoci.DoThreadSafeAsync(
-                                                        x => x.FindNodeByTag(objStack)?.Remove(), token);
-                                                    objStack.Dispose();
+                                                        x =>
+                                                        {
+                                                            x.FindNodeByTag(objStack)?.Remove();
+                                                            objStack.Dispose();
+                                                        }, token).ConfigureAwait(false);
                                                 }
                                             }
                                         }
@@ -5331,17 +5345,17 @@ namespace Chummer
                             }
 
                             bool blnWarned = false;
-                            int intMaxFocusTotal = (await (await CharacterObject.GetAttributeAsync("MAG", token: token))
-                                .GetTotalValueAsync(token)) * 5;
+                            int intMaxFocusTotal = (await (await CharacterObject.GetAttributeAsync("MAG", token: token).ConfigureAwait(false))
+                                                          .GetTotalValueAsync(token).ConfigureAwait(false)) * 5;
                             if (CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept)
-                                intMaxFocusTotal = Math.Min(intMaxFocusTotal, (await (await CharacterObject.GetAttributeAsync("MAGAdept", token: token))
-                                                                .GetTotalValueAsync(token)) * 5);
+                                intMaxFocusTotal = Math.Min(intMaxFocusTotal, (await (await CharacterObject.GetAttributeAsync("MAGAdept", token: token).ConfigureAwait(false))
+                                                                .GetTotalValueAsync(token).ConfigureAwait(false)) * 5);
 
                             HashSet<Gear> setNewGears = new HashSet<Gear>();
                             foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
                                 setNewGears.Add(objGear);
 
-                            int intFociTotal = await CharacterObject.Foci.SumAsync(x => !setNewGears.Contains(x.GearObject), x => x.Rating, token);
+                            int intFociTotal = await CharacterObject.Foci.SumAsync(x => !setNewGears.Contains(x.GearObject), x => x.Rating, token).ConfigureAwait(false);
 
                             foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
                             {
@@ -5354,8 +5368,8 @@ namespace Chummer
                                         if (objNode == null)
                                             continue;
                                         objNode.Text = await objNode.Text.CheapReplaceAsync(
-                                            await LanguageManager.GetStringAsync("String_Rating", token: token),
-                                            () => LanguageManager.GetString("String_Force", token: token), token: token);
+                                            await LanguageManager.GetStringAsync("String_Rating", token: token).ConfigureAwait(false),
+                                            () => LanguageManager.GetString("String_Force", token: token), token: token).ConfigureAwait(false);
                                         for (int i = CharacterObject.Foci.Count - 1; i >= 0; --i)
                                         {
                                             if (i < CharacterObject.Foci.Count)
@@ -5369,15 +5383,15 @@ namespace Chummer
                                                     {
                                                         // Mark the Gear a Bonded.
                                                         objGear.Bonded = false;
-                                                        await CharacterObject.Foci.RemoveAtAsync(i, token: token);
+                                                        await CharacterObject.Foci.RemoveAtAsync(i, token: token).ConfigureAwait(false);
                                                         objNode.Checked = false;
                                                         if (!blnWarned)
                                                         {
                                                             Program.ShowMessageBox(this,
                                                                 await LanguageManager.GetStringAsync(
-                                                                    "Message_FocusMaximumForce", token: token),
+                                                                    "Message_FocusMaximumForce", token: token).ConfigureAwait(false),
                                                                 await LanguageManager.GetStringAsync(
-                                                                    "MessageTitle_FocusMaximum", token: token),
+                                                                    "MessageTitle_FocusMaximum", token: token).ConfigureAwait(false),
                                                                 MessageBoxButtons.OK, MessageBoxIcon.Information);
                                                             blnWarned = true;
                                                             break;
@@ -5389,7 +5403,7 @@ namespace Chummer
                                             }
                                         }
 
-                                        await AddToTree(objNode);
+                                        await AddToTree(objNode).ConfigureAwait(false);
                                     }
                                         break;
 
@@ -5400,7 +5414,7 @@ namespace Chummer
                                             if (objStack.GearId == objGear.InternalId)
                                             {
                                                 await ImprovementManager.RemoveImprovementsAsync(CharacterObject,
-                                                    Improvement.ImprovementSource.StackedFocus, objStack.InternalId, token);
+                                                    Improvement.ImprovementSource.StackedFocus, objStack.InternalId, token).ConfigureAwait(false);
 
                                                 if (objStack.Bonded)
                                                 {
@@ -5413,7 +5427,7 @@ namespace Chummer
                                                             Improvement.ImprovementSource.StackedFocus,
                                                             objStack.InternalId, objFociGear.Bonus, objFociGear.Rating,
                                                             await objFociGear.DisplayNameShortAsync(
-                                                                GlobalSettings.Language, token), token: token);
+                                                                GlobalSettings.Language, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                                                         if (objFociGear.WirelessOn)
                                                             await ImprovementManager.CreateImprovementsAsync(
                                                                 CharacterObject,
@@ -5421,11 +5435,11 @@ namespace Chummer
                                                                 objStack.InternalId, objFociGear.WirelessBonus,
                                                                 objFociGear.Rating,
                                                                 await objFociGear.DisplayNameShortAsync(
-                                                                    GlobalSettings.Language, token), token: token);
+                                                                    GlobalSettings.Language, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                                                     }
                                                 }
 
-                                                await AddToTree(objStack.CreateTreeNode(objGear, cmsFocus));
+                                                await AddToTree(objStack.CreateTreeNode(objGear, cmsFocus)).ConfigureAwait(false);
                                             }
                                         }
                                     }
@@ -5464,7 +5478,7 @@ namespace Chummer
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -5472,11 +5486,11 @@ namespace Chummer
         {
             if (treMartialArts == null)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
                 string strSelectedId
-                    = (await treMartialArts.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token) as
+                    = (await treMartialArts.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token).ConfigureAwait(false) as
                         IHasInternalId)?.InternalId ?? string.Empty;
 
                 TreeNode objMartialArtsParentNode = null;
@@ -5485,53 +5499,53 @@ namespace Chummer
                 if (notifyCollectionChangedEventArgs == null ||
                     notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
                 {
-                    await treMartialArts.DoThreadSafeAsync(x => x.SuspendLayout(), token);
+                    await treMartialArts.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
                     try
                     {
-                        await treMartialArts.DoThreadSafeAsync(x => x.Nodes.Clear(), token);
+                        await treMartialArts.DoThreadSafeAsync(x => x.Nodes.Clear(), token).ConfigureAwait(false);
 
                         foreach (MartialArt objMartialArt in CharacterObject.MartialArts)
                         {
-                            await AddToTree(objMartialArt, false);
+                            await AddToTree(objMartialArt, false).ConfigureAwait(false);
                             await objMartialArt.Techniques.AddTaggedCollectionChangedAsync(
-                                treMartialArts, MakeDirtyWithCharacterUpdate, token);
+                                treMartialArts, MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
                             await objMartialArt.Techniques.AddTaggedCollectionChangedAsync(
-                                treMartialArts, FuncDelegateToAdd, token);
+                                treMartialArts, FuncDelegateToAdd, token).ConfigureAwait(false);
 
                             async void FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y) =>
-                                await RefreshMartialArtTechniques(treMartialArts, objMartialArt, cmsTechnique, y, token);
+                                await RefreshMartialArtTechniques(treMartialArts, objMartialArt, cmsTechnique, y, token).ConfigureAwait(false);
                         }
 
                         await treMartialArts.DoThreadSafeAsync(x => x.SortCustomAlphabetically(strSelectedId),
-                                                               token);
+                                                               token).ConfigureAwait(false);
                     }
                     finally
                     {
-                        await treMartialArts.DoThreadSafeAsync(x => x.ResumeLayout(), token);
+                        await treMartialArts.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
                     }
                 }
                 else
                 {
                     objMartialArtsParentNode
                         = await treMartialArts.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedMartialArts", false),
-                                                                     token);
+                                                                     token).ConfigureAwait(false);
                     objQualityNode
                         = await treMartialArts.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedQualities", false),
-                                                                     token);
+                                                                     token).ConfigureAwait(false);
                     switch (notifyCollectionChangedEventArgs.Action)
                     {
                         case NotifyCollectionChangedAction.Add:
                         {
                             foreach (MartialArt objMartialArt in notifyCollectionChangedEventArgs.NewItems)
                             {
-                                await AddToTree(objMartialArt);
+                                await AddToTree(objMartialArt).ConfigureAwait(false);
                                 await objMartialArt.Techniques.AddTaggedCollectionChangedAsync(
-                                    treMartialArts, MakeDirtyWithCharacterUpdate, token);
+                                    treMartialArts, MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
                                 await objMartialArt.Techniques.AddTaggedCollectionChangedAsync(
-                                    treMartialArts, FuncDelegateToAdd, token);
+                                    treMartialArts, FuncDelegateToAdd, token).ConfigureAwait(false);
 
                                 async void FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y) =>
-                                    await RefreshMartialArtTechniques(treMartialArts, objMartialArt, cmsTechnique, y, token);
+                                    await RefreshMartialArtTechniques(treMartialArts, objMartialArt, cmsTechnique, y, token).ConfigureAwait(false);
                             }
                         }
                             break;
@@ -5540,7 +5554,7 @@ namespace Chummer
                         {
                             foreach (MartialArt objMartialArt in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                await objMartialArt.Techniques.RemoveTaggedCollectionChangedAsync(treMartialArts, token);
+                                await objMartialArt.Techniques.RemoveTaggedCollectionChangedAsync(treMartialArts, token).ConfigureAwait(false);
                                 await treMartialArts.DoThreadSafeAsync(x =>
                                 {
                                     TreeNode objNode = x.FindNodeByTag(objMartialArt);
@@ -5551,7 +5565,7 @@ namespace Chummer
                                         if (objParent.Nodes.Count == 0)
                                             objParent.Remove();
                                     }
-                                }, token);
+                                }, token).ConfigureAwait(false);
                             }
 
                             break;
@@ -5562,7 +5576,7 @@ namespace Chummer
                                 new List<TreeNode>(notifyCollectionChangedEventArgs.OldItems.Count);
                             foreach (MartialArt objMartialArt in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                await objMartialArt.Techniques.RemoveTaggedCollectionChangedAsync(treMartialArts, token);
+                                await objMartialArt.Techniques.RemoveTaggedCollectionChangedAsync(treMartialArts, token).ConfigureAwait(false);
                                 await treMartialArts.DoThreadSafeAsync(x =>
                                 {
                                     TreeNode objNode = x.FindNodeByTag(objMartialArt);
@@ -5571,19 +5585,19 @@ namespace Chummer
                                         lstOldParents.Add(objNode.Parent);
                                         objNode.Remove();
                                     }
-                                }, token);
+                                }, token).ConfigureAwait(false);
                             }
 
                             foreach (MartialArt objMartialArt in notifyCollectionChangedEventArgs.NewItems)
                             {
-                                await AddToTree(objMartialArt);
+                                await AddToTree(objMartialArt).ConfigureAwait(false);
                                 await objMartialArt.Techniques.AddTaggedCollectionChangedAsync(
-                                    treMartialArts, MakeDirtyWithCharacterUpdate, token);
+                                    treMartialArts, MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
                                 await objMartialArt.Techniques.AddTaggedCollectionChangedAsync(
-                                    treMartialArts, FuncDelegateToAdd, token);
+                                    treMartialArts, FuncDelegateToAdd, token).ConfigureAwait(false);
 
                                 async void FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y) =>
-                                    await RefreshMartialArtTechniques(treMartialArts, objMartialArt, cmsTechnique, y, token);
+                                    await RefreshMartialArtTechniques(treMartialArts, objMartialArt, cmsTechnique, y, token).ConfigureAwait(false);
                             }
 
                             await treMartialArts.DoThreadSafeAsync(() =>
@@ -5593,7 +5607,7 @@ namespace Chummer
                                     if (objOldParent.Nodes.Count == 0)
                                         objOldParent.Remove();
                                 }
-                            }, token);
+                            }, token).ConfigureAwait(false);
                         }
                             break;
                     }
@@ -5613,14 +5627,14 @@ namespace Chummer
                             objQualityNode = new TreeNode
                             {
                                 Tag = "Node_SelectedQualities",
-                                Text = await LanguageManager.GetStringAsync("Node_SelectedQualities", token: token)
+                                Text = await LanguageManager.GetStringAsync("Node_SelectedQualities", token: token).ConfigureAwait(false)
                             };
                             await treMartialArts.DoThreadSafeAsync(x =>
                             {
                                 // ReSharper disable once AssignNullToNotNullAttribute
                                 x.Nodes.Add(objQualityNode);
                                 objQualityNode.Expand();
-                            }, token);
+                            }, token).ConfigureAwait(false);
                         }
 
                         objParentNode = objQualityNode;
@@ -5632,14 +5646,14 @@ namespace Chummer
                             objMartialArtsParentNode = new TreeNode
                             {
                                 Tag = "Node_SelectedMartialArts",
-                                Text = await LanguageManager.GetStringAsync("Node_SelectedMartialArts", token: token)
+                                Text = await LanguageManager.GetStringAsync("Node_SelectedMartialArts", token: token).ConfigureAwait(false)
                             };
                             await treMartialArts.DoThreadSafeAsync(x =>
                             {
                                 // ReSharper disable once AssignNullToNotNullAttribute
                                 x.Nodes.Insert(0, objMartialArtsParentNode);
                                 objMartialArtsParentNode.Expand();
-                            }, token);
+                            }, token).ConfigureAwait(false);
                         }
 
                         objParentNode = objMartialArtsParentNode;
@@ -5669,12 +5683,12 @@ namespace Chummer
                             objParentNode.Nodes.Add(objNode);
 
                         objParentNode.Expand();
-                    }, token);
+                    }, token).ConfigureAwait(false);
                 }
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -5682,10 +5696,10 @@ namespace Chummer
         {
             if (treMartialArts == null || objMartialArt == null || notifyCollectionChangedEventArgs == null)
                 return;
-            TreeNode nodMartialArt = await treMartialArts.DoThreadSafeFuncAsync(x => x.FindNodeByTag(objMartialArt), token);
+            TreeNode nodMartialArt = await treMartialArts.DoThreadSafeFuncAsync(x => x.FindNodeByTag(objMartialArt), token).ConfigureAwait(false);
             if (nodMartialArt == null)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
                 switch (notifyCollectionChangedEventArgs.Action)
@@ -5698,7 +5712,7 @@ namespace Chummer
                             {
                                 AddToTree(objTechnique);
                             }
-                        }, token);
+                        }, token).ConfigureAwait(false);
                     }
                         break;
 
@@ -5710,7 +5724,7 @@ namespace Chummer
                             {
                                 nodMartialArt.FindNodeByTag(objTechnique)?.Remove();
                             }
-                        }, token);
+                        }, token).ConfigureAwait(false);
                     }
                         break;
 
@@ -5727,7 +5741,7 @@ namespace Chummer
                             {
                                 AddToTree(objTechnique);
                             }
-                        }, token);
+                        }, token).ConfigureAwait(false);
                     }
                         break;
 
@@ -5745,7 +5759,7 @@ namespace Chummer
                             }
 
                             x.SortCustomAlphabetically(strSelectedId);
-                        }, token);
+                        }, token).ConfigureAwait(false);
                     }
                         break;
                 }
@@ -5780,7 +5794,7 @@ namespace Chummer
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -5791,29 +5805,29 @@ namespace Chummer
         {
             if (treImprovements == null)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
                 string strSelectedId =
                     (await treImprovements.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag as IHasInternalId,
-                                                                 token))?.InternalId ?? string.Empty;
+                                                                 token).ConfigureAwait(false))?.InternalId ?? string.Empty;
 
                 TreeNode objRoot;
 
                 if (notifyCollectionChangedEventArgs == null ||
                     notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
                 {
-                    await treImprovements.DoThreadSafeAsync(x => x.SuspendLayout(), token);
+                    await treImprovements.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
                     try
                     {
-                        await treImprovements.DoThreadSafeAsync(x => x.Nodes.Clear(), token);
+                        await treImprovements.DoThreadSafeAsync(x => x.Nodes.Clear(), token).ConfigureAwait(false);
 
                         objRoot = new TreeNode
                         {
                             Tag = "Node_SelectedImprovements",
-                            Text = await LanguageManager.GetStringAsync("Node_SelectedImprovements", token: token)
+                            Text = await LanguageManager.GetStringAsync("Node_SelectedImprovements", token: token).ConfigureAwait(false)
                         };
-                        await treImprovements.DoThreadSafeAsync(x => x.Nodes.Add(objRoot), token);
+                        await treImprovements.DoThreadSafeAsync(x => x.Nodes.Add(objRoot), token).ConfigureAwait(false);
 
                         // Add the Locations.
                         foreach (string strGroup in CharacterObject.ImprovementGroups)
@@ -5824,7 +5838,7 @@ namespace Chummer
                                 Text = strGroup,
                                 ContextMenuStrip = cmsImprovementLocation
                             };
-                            await treImprovements.DoThreadSafeAsync(x => x.Nodes.Add(objGroup), token);
+                            await treImprovements.DoThreadSafeAsync(x => x.Nodes.Add(objGroup), token).ConfigureAwait(false);
                         }
 
                         foreach (Improvement objImprovement in CharacterObject.Improvements)
@@ -5832,23 +5846,23 @@ namespace Chummer
                             if (objImprovement.ImproveSource == Improvement.ImprovementSource.Custom ||
                                 objImprovement.ImproveSource == Improvement.ImprovementSource.Drug)
                             {
-                                await AddToTree(objImprovement, false);
+                                await AddToTree(objImprovement, false).ConfigureAwait(false);
                             }
                         }
 
                         // Sort the list of Custom Improvements in alphabetical order based on their Custom Name within each Group.
                         await treImprovements.DoThreadSafeAsync(x => x.SortCustomAlphabetically(strSelectedId),
-                                                                token);
+                                                                token).ConfigureAwait(false);
                     }
                     finally
                     {
-                        await treImprovements.DoThreadSafeAsync(x => x.ResumeLayout(), token);
+                        await treImprovements.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
                     }
                 }
                 else
                 {
                     objRoot = await treImprovements.DoThreadSafeFuncAsync(
-                        x => x.FindNode("Node_SelectedImprovements", false), token);
+                        x => x.FindNode("Node_SelectedImprovements", false), token).ConfigureAwait(false);
                     TreeNode[] aobjLimitNodes = new TreeNode[4];
                     if (treLimit != null)
                         await treLimit.DoThreadSafeAsync(x =>
@@ -5857,7 +5871,7 @@ namespace Chummer
                             aobjLimitNodes[1] = x.FindNode("Node_Mental", false);
                             aobjLimitNodes[2] = x.FindNode("Node_Social", false);
                             aobjLimitNodes[3] = x.FindNode("Node_Astral", false);
-                        }, token);
+                        }, token).ConfigureAwait(false);
 
                     switch (notifyCollectionChangedEventArgs.Action)
                     {
@@ -5868,8 +5882,8 @@ namespace Chummer
                                 if (objImprovement.ImproveSource == Improvement.ImprovementSource.Custom ||
                                     objImprovement.ImproveSource == Improvement.ImprovementSource.Drug)
                                 {
-                                    await AddToTree(objImprovement);
-                                    await AddToLimitTree(objImprovement);
+                                    await AddToTree(objImprovement).ConfigureAwait(false);
+                                    await AddToLimitTree(objImprovement).ConfigureAwait(false);
                                 }
                             }
 
@@ -5907,7 +5921,7 @@ namespace Chummer
                                         });
                                     }
                                 }
-                            }, token);
+                            }, token).ConfigureAwait(false);
 
                             break;
                         }
@@ -5940,15 +5954,15 @@ namespace Chummer
                                         });
                                     }
                                 }
-                            }, token);
+                            }, token).ConfigureAwait(false);
 
                             foreach (Improvement objImprovement in notifyCollectionChangedEventArgs.NewItems)
                             {
                                 if (objImprovement.ImproveSource == Improvement.ImprovementSource.Custom ||
                                     objImprovement.ImproveSource == Improvement.ImprovementSource.Drug)
                                 {
-                                    await AddToTree(objImprovement);
-                                    await AddToLimitTree(objImprovement);
+                                    await AddToTree(objImprovement).ConfigureAwait(false);
+                                    await AddToLimitTree(objImprovement).ConfigureAwait(false);
                                 }
                             }
 
@@ -5959,7 +5973,7 @@ namespace Chummer
                                     if (objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
                                         objOldParent.Remove();
                                 }
-                            }, token);
+                            }, token).ConfigureAwait(false);
 
                             break;
                         }
@@ -6000,57 +6014,57 @@ namespace Chummer
                                         objParentNode = new TreeNode
                                         {
                                             Tag = "Node_Physical",
-                                            Text = await LanguageManager.GetStringAsync("Node_Physical", token: token)
+                                            Text = await LanguageManager.GetStringAsync("Node_Physical", token: token).ConfigureAwait(false)
                                         };
                                         await treLimit.DoThreadSafeAsync(
-                                            x => x.Nodes.Insert(0, objParentNode), token);
+                                            x => x.Nodes.Insert(0, objParentNode), token).ConfigureAwait(false);
                                         break;
 
                                     case 1:
                                         objParentNode = new TreeNode
                                         {
                                             Tag = "Node_Mental",
-                                            Text = await LanguageManager.GetStringAsync("Node_Mental", token: token)
+                                            Text = await LanguageManager.GetStringAsync("Node_Mental", token: token).ConfigureAwait(false)
                                         };
                                         await treLimit.DoThreadSafeAsync(
                                             x => x.Nodes.Insert(aobjLimitNodes[0] == null ? 0 : 1, objParentNode),
-                                            token);
+                                            token).ConfigureAwait(false);
                                         break;
 
                                     case 2:
                                         objParentNode = new TreeNode
                                         {
                                             Tag = "Node_Social",
-                                            Text = await LanguageManager.GetStringAsync("Node_Social", token: token)
+                                            Text = await LanguageManager.GetStringAsync("Node_Social", token: token).ConfigureAwait(false)
                                         };
                                         await treLimit.DoThreadSafeAsync(x => x.Nodes.Insert(
                                                                              (aobjLimitNodes[0] == null ? 0 : 1)
                                                                              + (aobjLimitNodes[1] == null ? 0 : 1),
-                                                                             objParentNode), token);
+                                                                             objParentNode), token).ConfigureAwait(false);
                                         break;
 
                                     case 3:
                                         objParentNode = new TreeNode
                                         {
                                             Tag = "Node_Astral",
-                                            Text = await LanguageManager.GetStringAsync("Node_Astral", token: token)
+                                            Text = await LanguageManager.GetStringAsync("Node_Astral", token: token).ConfigureAwait(false)
                                         };
-                                        await treLimit.DoThreadSafeAsync(x => x.Nodes.Add(objParentNode), token);
+                                        await treLimit.DoThreadSafeAsync(x => x.Nodes.Add(objParentNode), token).ConfigureAwait(false);
                                         break;
                                 }
 
                                 if (objParentNode != null)
-                                    await treLimit.DoThreadSafeAsync(() => objParentNode.Expand(), token);
+                                    await treLimit.DoThreadSafeAsync(() => objParentNode.Expand(), token).ConfigureAwait(false);
                             }
 
                             string strName = objImprovement.UniqueName
-                                             + await LanguageManager.GetStringAsync("String_Colon", token: token) +
-                                             await LanguageManager.GetStringAsync("String_Space", token: token);
+                                             + await LanguageManager.GetStringAsync("String_Colon", token: token).ConfigureAwait(false) +
+                                             await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
                             if (objImprovement.Value > 0)
                                 strName += '+';
                             strName += objImprovement.Value.ToString(GlobalSettings.CultureInfo);
                             if (!string.IsNullOrEmpty(objImprovement.Condition))
-                                strName += ',' + await LanguageManager.GetStringAsync("String_Space", token: token)
+                                strName += ',' + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false)
                                                + objImprovement.Condition;
                             if (objParentNode?.Nodes.ContainsKey(strName) == false)
                             {
@@ -6098,7 +6112,7 @@ namespace Chummer
 
                                     lstParentNodeChildren.Insert(intTargetIndex, objNode);
                                     x.SelectedNode = objNode;
-                                }, token);
+                                }, token).ConfigureAwait(false);
                             }
                         }
                     }
@@ -6121,7 +6135,7 @@ namespace Chummer
                                     break;
                                 }
                             }
-                        }, token);
+                        }, token).ConfigureAwait(false);
                     }
                     else
                     {
@@ -6130,9 +6144,9 @@ namespace Chummer
                             objParentNode = new TreeNode
                             {
                                 Tag = "Node_SelectedImprovements",
-                                Text = await LanguageManager.GetStringAsync("Node_SelectedImprovements", token: token)
+                                Text = await LanguageManager.GetStringAsync("Node_SelectedImprovements", token: token).ConfigureAwait(false)
                             };
-                            await treImprovements.DoThreadSafeAsync(x => x.Nodes.Add(objParentNode), token);
+                            await treImprovements.DoThreadSafeAsync(x => x.Nodes.Add(objParentNode), token).ConfigureAwait(false);
                         }
                     }
 
@@ -6158,12 +6172,12 @@ namespace Chummer
                             objParentNode.Nodes.Add(objNode);
 
                         objParentNode.Expand();
-                    }, token);
+                    }, token).ConfigureAwait(false);
                 }
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -6172,49 +6186,49 @@ namespace Chummer
         {
             if (treLifestyles == null)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
                 string strSelectedId
-                    = (await treLifestyles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token) as
+                    = (await treLifestyles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token).ConfigureAwait(false) as
                         IHasInternalId)?.InternalId ?? string.Empty;
                 TreeNode objParentNode = null;
 
                 if (e == null || e.Action == NotifyCollectionChangedAction.Reset)
                 {
-                    await treLifestyles.DoThreadSafeAsync(x => x.SuspendLayout(), token);
+                    await treLifestyles.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
                     try
                     {
-                        await treLifestyles.DoThreadSafeAsync(x => x.Nodes.Clear(), token);
+                        await treLifestyles.DoThreadSafeAsync(x => x.Nodes.Clear(), token).ConfigureAwait(false);
 
                         if (CharacterObject.Lifestyles.Count > 0)
                         {
                             foreach (Lifestyle objLifestyle in CharacterObject.Lifestyles)
                             {
-                                await AddToTree(objLifestyle, false);
+                                await AddToTree(objLifestyle, false).ConfigureAwait(false);
                             }
 
                             await treLifestyles.DoThreadSafeAsync(x => x.SortCustomAlphabetically(strSelectedId),
-                                                                  token);
+                                                                  token).ConfigureAwait(false);
                         }
                     }
                     finally
                     {
-                        await treLifestyles.DoThreadSafeAsync(x => x.ResumeLayout(), token);
+                        await treLifestyles.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
                     }
                 }
                 else
                 {
                     objParentNode
                         = await treLifestyles.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedLifestyles", false),
-                                                                    token);
+                                                                    token).ConfigureAwait(false);
                     switch (e.Action)
                     {
                         case NotifyCollectionChangedAction.Add:
                         {
                             foreach (Lifestyle objLifestyle in e.NewItems)
                             {
-                                await AddToTree(objLifestyle);
+                                await AddToTree(objLifestyle).ConfigureAwait(false);
                             }
 
                             break;
@@ -6234,7 +6248,7 @@ namespace Chummer
                                             objParent.Remove();
                                     }
                                 }
-                            }, token);
+                            }, token).ConfigureAwait(false);
 
                             break;
                         }
@@ -6252,11 +6266,11 @@ namespace Chummer
                                         objNode.Remove();
                                     }
                                 }
-                            }, token);
+                            }, token).ConfigureAwait(false);
 
                             foreach (Lifestyle objLifestyle in e.NewItems)
                             {
-                                await AddToTree(objLifestyle);
+                                await AddToTree(objLifestyle).ConfigureAwait(false);
                             }
 
                             await treLifestyles.DoThreadSafeAsync(() =>
@@ -6266,7 +6280,7 @@ namespace Chummer
                                     if (nodOldParent.Level == 0 && nodOldParent.Nodes.Count == 0)
                                         nodOldParent.Remove();
                                 }
-                            }, token);
+                            }, token).ConfigureAwait(false);
 
                             break;
                         }
@@ -6284,14 +6298,14 @@ namespace Chummer
                         objParentNode = new TreeNode
                         {
                             Tag = "Node_SelectedLifestyles",
-                            Text = await LanguageManager.GetStringAsync("Node_SelectedLifestyles", token: token)
+                            Text = await LanguageManager.GetStringAsync("Node_SelectedLifestyles", token: token).ConfigureAwait(false)
                         };
                         await treLifestyles.DoThreadSafeAsync(x =>
                         {
                             // ReSharper disable once AssignNullToNotNullAttribute
                             x.Nodes.Add(objParentNode);
                             objParentNode.Expand();
-                        }, token);
+                        }, token).ConfigureAwait(false);
                     }
 
                     await treLifestyles.DoThreadSafeAsync(x =>
@@ -6316,12 +6330,12 @@ namespace Chummer
                         }
                         else
                             objParentNode.Nodes.Add(objNode);
-                    }, token);
+                    }, token).ConfigureAwait(false);
                 }
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -6332,15 +6346,15 @@ namespace Chummer
         {
             if (lstCalendar == null)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
                 if (listChangedEventArgs == null || listChangedEventArgs.ListChangedType == ListChangedType.Reset)
                 {
-                    await lstCalendar.DoThreadSafeAsync(x => x.SuspendLayout(), token);
+                    await lstCalendar.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
                     try
                     {
-                        await lstCalendar.DoThreadSafeAsync(x => x.Items.Clear(), token);
+                        await lstCalendar.DoThreadSafeAsync(x => x.Items.Clear(), token).ConfigureAwait(false);
                         foreach (CalendarWeek objWeek in CharacterObject.Calendar)
                         {
                             ListViewItem.ListViewSubItem objNoteItem = new ListViewItem.ListViewSubItem
@@ -6362,12 +6376,12 @@ namespace Chummer
                             objItem.SubItems.Add(objNoteItem);
                             objItem.SubItems.Add(objInternalIdItem);
 
-                            await lstCalendar.DoThreadSafeAsync(x => x.Items.Add(objItem), token);
+                            await lstCalendar.DoThreadSafeAsync(x => x.Items.Add(objItem), token).ConfigureAwait(false);
                         }
                     }
                     finally
                     {
-                        await lstCalendar.DoThreadSafeAsync(x => x.ResumeLayout(), token);
+                        await lstCalendar.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
                     }
                 }
                 else
@@ -6399,21 +6413,21 @@ namespace Chummer
                             objItem.SubItems.Add(objInternalIdItem);
 
                             await lstCalendar.DoThreadSafeAsync(x => x.Items.Insert(intInsertIndex, objItem),
-                                                                token);
+                                                                token).ConfigureAwait(false);
                         }
                             break;
 
                         case ListChangedType.ItemDeleted:
                         {
                             await lstCalendar.DoThreadSafeAsync(x => x.Items.RemoveAt(listChangedEventArgs.NewIndex),
-                                                                token);
+                                                                token).ConfigureAwait(false);
                         }
                             break;
 
                         case ListChangedType.ItemChanged:
                         {
                             await lstCalendar.DoThreadSafeAsync(x => x.Items.RemoveAt(listChangedEventArgs.NewIndex),
-                                                                token);
+                                                                token).ConfigureAwait(false);
                             int intInsertIndex = listChangedEventArgs.NewIndex;
                             CalendarWeek objWeek = CharacterObject.Calendar[intInsertIndex];
 
@@ -6437,14 +6451,14 @@ namespace Chummer
                             objItem.SubItems.Add(objInternalIdItem);
 
                             await lstCalendar.DoThreadSafeAsync(x => x.Items.Insert(intInsertIndex, objItem),
-                                                                token);
+                                                                token).ConfigureAwait(false);
                         }
                             break;
 
                         case ListChangedType.ItemMoved:
                         {
                             await lstCalendar.DoThreadSafeAsync(x => x.Items.RemoveAt(listChangedEventArgs.OldIndex),
-                                                                token);
+                                                                token).ConfigureAwait(false);
                             int intInsertIndex = listChangedEventArgs.NewIndex;
                             CalendarWeek objWeek = CharacterObject.Calendar[intInsertIndex];
 
@@ -6468,7 +6482,7 @@ namespace Chummer
                             objItem.SubItems.Add(objInternalIdItem);
 
                             await lstCalendar.DoThreadSafeAsync(x => x.Items.Insert(intInsertIndex, objItem),
-                                                                token);
+                                                                token).ConfigureAwait(false);
                         }
                             break;
                     }
@@ -6476,7 +6490,7 @@ namespace Chummer
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -6484,26 +6498,26 @@ namespace Chummer
         {
             if (panContacts == null && panEnemies == null && panPets == null)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
                 if (notifyCollectionChangedEventArgs == null ||
                     notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
                 {
                     if (panContacts != null)
-                        await panContacts.DoThreadSafeAsync(x => x.SuspendLayout(), token);
+                        await panContacts.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
                     if (panEnemies != null)
-                        await panEnemies.DoThreadSafeAsync(x => x.SuspendLayout(), token);
+                        await panEnemies.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
                     if (panPets != null)
-                        await panPets.DoThreadSafeAsync(x => x.SuspendLayout(), token);
+                        await panPets.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
                     try
                     {
                         if (panContacts != null)
-                            await panContacts.DoThreadSafeAsync(x => x.Controls.Clear(), token);
+                            await panContacts.DoThreadSafeAsync(x => x.Controls.Clear(), token).ConfigureAwait(false);
                         if (panEnemies != null)
-                            await panEnemies.DoThreadSafeAsync(x => x.Controls.Clear(), token);
+                            await panEnemies.DoThreadSafeAsync(x => x.Controls.Clear(), token).ConfigureAwait(false);
                         if (panPets != null)
-                            await panPets.DoThreadSafeAsync(x => x.Controls.Clear(), token);
+                            await panPets.DoThreadSafeAsync(x => x.Controls.Clear(), token).ConfigureAwait(false);
                         foreach (Contact objContact in CharacterObject.Contacts)
                         {
                             switch (objContact.EntityType)
@@ -6521,7 +6535,7 @@ namespace Chummer
                                         objContactControl.MouseDown += DragContactControl;
 
                                         panContacts.Controls.Add(objContactControl);
-                                    }, token);
+                                    }, token).ConfigureAwait(false);
                                 }
                                     break;
 
@@ -6538,7 +6552,7 @@ namespace Chummer
                                         objContactControl.MouseDown += DragContactControl;
 
                                         panEnemies.Controls.Add(objContactControl);
-                                    }, token);
+                                    }, token).ConfigureAwait(false);
                                 }
                                     break;
 
@@ -6555,7 +6569,7 @@ namespace Chummer
                                         objContactControl.MouseDown += DragContactControl;
 
                                         panPets.Controls.Add(objContactControl);
-                                    }, token);
+                                    }, token).ConfigureAwait(false);
                                 }
                                     break;
                             }
@@ -6564,11 +6578,11 @@ namespace Chummer
                     finally
                     {
                         if (panContacts != null)
-                            await panContacts.DoThreadSafeAsync(x => x.ResumeLayout(), token);
+                            await panContacts.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
                         if (panEnemies != null)
-                            await panEnemies.DoThreadSafeAsync(x => x.ResumeLayout(), token);
+                            await panEnemies.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
                         if (panPets != null)
-                            await panPets.DoThreadSafeAsync(x => x.ResumeLayout(), token);
+                            await panPets.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
                     }
                 }
                 else
@@ -6594,7 +6608,7 @@ namespace Chummer
                                             objContactControl.MouseDown += DragContactControl;
 
                                             x.Controls.Add(objContactControl);
-                                        }, token);
+                                        }, token).ConfigureAwait(false);
                                     }
                                         break;
 
@@ -6611,7 +6625,7 @@ namespace Chummer
                                             objContactControl.MouseDown += DragContactControl;
 
                                             x.Controls.Add(objContactControl);
-                                        }, token);
+                                        }, token).ConfigureAwait(false);
                                     }
                                         break;
 
@@ -6628,7 +6642,7 @@ namespace Chummer
                                             objContactControl.MouseDown += DragContactControl;
 
                                             x.Controls.Add(objContactControl);
-                                        }, token);
+                                        }, token).ConfigureAwait(false);
                                     }
                                         break;
                                 }
@@ -6661,7 +6675,7 @@ namespace Chummer
                                                     objContactControl.Dispose();
                                                 }
                                             }
-                                        }, token);
+                                        }, token).ConfigureAwait(false);
                                     }
                                         break;
 
@@ -6683,7 +6697,7 @@ namespace Chummer
                                                     objContactControl.Dispose();
                                                 }
                                             }
-                                        }, token);
+                                        }, token).ConfigureAwait(false);
                                     }
                                         break;
 
@@ -6705,7 +6719,7 @@ namespace Chummer
                                                     objPetControl.Dispose();
                                                 }
                                             }
-                                        }, token);
+                                        }, token).ConfigureAwait(false);
                                     }
                                         break;
                                 }
@@ -6738,7 +6752,7 @@ namespace Chummer
                                                     objContactControl.Dispose();
                                                 }
                                             }
-                                        }, token);
+                                        }, token).ConfigureAwait(false);
                                     }
                                         break;
 
@@ -6760,7 +6774,7 @@ namespace Chummer
                                                     objContactControl.Dispose();
                                                 }
                                             }
-                                        }, token);
+                                        }, token).ConfigureAwait(false);
                                     }
                                         break;
 
@@ -6782,7 +6796,7 @@ namespace Chummer
                                                     objPetControl.Dispose();
                                                 }
                                             }
-                                        }, token);
+                                        }, token).ConfigureAwait(false);
                                     }
                                         break;
                                 }
@@ -6805,7 +6819,7 @@ namespace Chummer
                                             objContactControl.MouseDown += DragContactControl;
 
                                             x.Controls.Add(objContactControl);
-                                        }, token);
+                                        }, token).ConfigureAwait(false);
                                     }
                                         break;
 
@@ -6822,7 +6836,7 @@ namespace Chummer
                                             objContactControl.MouseDown += DragContactControl;
 
                                             x.Controls.Add(objContactControl);
-                                        }, token);
+                                        }, token).ConfigureAwait(false);
                                     }
                                         break;
 
@@ -6839,7 +6853,7 @@ namespace Chummer
                                             objContactControl.MouseDown += DragContactControl;
 
                                             x.Controls.Add(objContactControl);
-                                        }, token);
+                                        }, token).ConfigureAwait(false);
                                     }
                                         break;
                                 }
@@ -6851,7 +6865,7 @@ namespace Chummer
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -6870,7 +6884,7 @@ namespace Chummer
             if (pnlSustainedSpells == null && pnlSustainedComplexForms == null && pnlSustainedCritterPowers == null)
                 return;
 
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
                 Panel DetermineRefreshingPanel(SustainedObject objSustained, Panel flpSustainedSpellsParam,
@@ -6900,12 +6914,12 @@ namespace Chummer
                     {
                         if (x != null)
                             x.Visible = false;
-                    }, token);
+                    }, token).ConfigureAwait(false);
                     await chkPsycheActiveTechnomancer.DoThreadSafeAsync(x =>
                     {
                         if (x != null)
                             x.Visible = false;
-                    }, token);
+                    }, token).ConfigureAwait(false);
                     await pnlSustainedSpells.DoThreadSafeAsync(x =>
                     {
                         if (x != null)
@@ -6913,7 +6927,7 @@ namespace Chummer
                             x.Controls.Clear();
                             x.Visible = false;
                         }
-                    }, token);
+                    }, token).ConfigureAwait(false);
                     await pnlSustainedComplexForms.DoThreadSafeAsync(x =>
                     {
                         if (x != null)
@@ -6921,7 +6935,7 @@ namespace Chummer
                             x.Controls.Clear();
                             x.Visible = false;
                         }
-                    }, token);
+                    }, token).ConfigureAwait(false);
                     await pnlSustainedCritterPowers.DoThreadSafeAsync(x =>
                     {
                         if (x != null)
@@ -6929,7 +6943,7 @@ namespace Chummer
                             x.Controls.Clear();
                             x.Visible = false;
                         }
-                    }, token);
+                    }, token).ConfigureAwait(false);
                     foreach (SustainedObject objSustained in CharacterObject.SustainedCollection)
                     {
                         Panel refreshingPanel = DetermineRefreshingPanel(objSustained, pnlSustainedSpells,
@@ -6971,7 +6985,7 @@ namespace Chummer
                             objSustainedObjectControl.Top = intSustainedObjects * objSustainedObjectControl.Height;
 
                             x.Controls.Add(objSustainedObjectControl);
-                        }, token);
+                        }, token).ConfigureAwait(false);
                     }
                 }
                 else
@@ -7023,7 +7037,7 @@ namespace Chummer
                                         = intSustainedObjects * objSustainedObjectControl.Height;
 
                                     x.Controls.Add(objSustainedObjectControl);
-                                }, token);
+                                }, token).ConfigureAwait(false);
                             }
                         }
                             break;
@@ -7086,7 +7100,7 @@ namespace Chummer
                                             });
                                         }
                                     }
-                                }, token);
+                                }, token).ConfigureAwait(false);
                             }
                         }
                             break;
@@ -7149,7 +7163,7 @@ namespace Chummer
                                             });
                                         }
                                     }
-                                }, token);
+                                }, token).ConfigureAwait(false);
                             }
 
                             foreach (SustainedObject objSustained in notifyCollectionChangedEventArgs.NewItems)
@@ -7195,7 +7209,7 @@ namespace Chummer
                                         = intSustainedObjects * objSustainedObjectControl.Height;
 
                                     x.Controls.Add(objSustainedObjectControl);
-                                }, token);
+                                }, token).ConfigureAwait(false);
                             }
                         }
                             break;
@@ -7204,20 +7218,31 @@ namespace Chummer
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
-        public void DeleteSustainedObject(object sender, EventArgs e)
+        public async void DeleteSustainedObject(object sender, EventArgs e)
         {
-            if (sender is SustainedObjectControl objSender)
+            try
             {
-                SustainedObject objSustainedObject = objSender.LinkedSustainedObject;
+                if (sender is SustainedObjectControl objSender)
+                {
+                    SustainedObject objSustainedObject = objSender.LinkedSustainedObject;
 
-                if (!CommonFunctions.ConfirmDelete(string.Format(LanguageManager.GetString("Message_DeleteSustainedSpell"), objSustainedObject.CurrentDisplayName)))
-                    return;
+                    if (!await CommonFunctions.ConfirmDeleteAsync(
+                            string.Format(
+                                await LanguageManager.GetStringAsync("Message_DeleteSustainedSpell",
+                                                                     token: GenericToken).ConfigureAwait(false),
+                                objSustainedObject.CurrentDisplayName), GenericToken).ConfigureAwait(false))
+                        return;
 
-                CharacterObject.SustainedCollection.Remove(objSustainedObject);
+                    await CharacterObject.SustainedCollection.RemoveAsync(objSustainedObject, GenericToken).ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
             }
         }
 
@@ -7239,12 +7264,12 @@ namespace Chummer
 
             if (lstNodes == null)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
                 List<ICanSort> lstSorted = treOwningTree != null
                     ? await treOwningTree.DoThreadSafeFuncAsync(
-                        () => lstNodes.Cast<TreeNode>().Select(n => n.Tag).OfType<ICanSort>().ToList(), token)
+                        () => lstNodes.Cast<TreeNode>().Select(n => n.Tag).OfType<ICanSort>().ToList(), token).ConfigureAwait(false)
                     : lstNodes.Cast<TreeNode>().Select(n => n.Tag).OfType<ICanSort>().ToList();
 
                 // Anything that can't be sorted gets sent to the front of the list, so subtract that number from our new
@@ -7263,13 +7288,13 @@ namespace Chummer
 
                 // Sort the actual tree
                 if (treOwningTree != null)
-                    await treOwningTree.DoThreadSafeAsync(x => x.SortCustomOrder(), token);
+                    await treOwningTree.DoThreadSafeAsync(x => x.SortCustomOrder(), token).ConfigureAwait(false);
 
-                await SetDirty(true, token);
+                await SetDirty(true, token).ConfigureAwait(false);
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -7674,9 +7699,9 @@ namespace Chummer
             {
                 EntityType = ContactType.Contact
             };
-            await CharacterObject.Contacts.AddAsync(objContact, token: token);
-            await RequestCharacterUpdate(token);
-            await SetDirty(true, token);
+            await CharacterObject.Contacts.AddAsync(objContact, token: token).ConfigureAwait(false);
+            await RequestCharacterUpdate(token).ConfigureAwait(false);
+            await SetDirty(true, token).ConfigureAwait(false);
         }
 
         protected async void DeleteContact(object sender, EventArgs e)
@@ -7685,12 +7710,12 @@ namespace Chummer
             {
                 if (!(sender is ContactControl objSender))
                     return;
-                if (!await CommonFunctions.ConfirmDeleteAsync(await LanguageManager.GetStringAsync("Message_DeleteContact", token: GenericToken), GenericToken))
+                if (!await CommonFunctions.ConfirmDeleteAsync(await LanguageManager.GetStringAsync("Message_DeleteContact", token: GenericToken).ConfigureAwait(false), GenericToken).ConfigureAwait(false))
                     return;
 
-                await CharacterObject.Contacts.RemoveAsync(objSender.ContactObject, token: GenericToken);
-                await RequestCharacterUpdate(GenericToken);
-                await SetDirty(true, GenericToken);
+                await CharacterObject.Contacts.RemoveAsync(objSender.ContactObject, token: GenericToken).ConfigureAwait(false);
+                await RequestCharacterUpdate(GenericToken).ConfigureAwait(false);
+                await SetDirty(true, GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -7709,9 +7734,9 @@ namespace Chummer
                 EntityType = ContactType.Pet
             };
 
-            await CharacterObject.Contacts.AddAsync(objContact, token: token);
-            await RequestCharacterUpdate(token);
-            await SetDirty(true, token);
+            await CharacterObject.Contacts.AddAsync(objContact, token: token).ConfigureAwait(false);
+            await RequestCharacterUpdate(token).ConfigureAwait(false);
+            await SetDirty(true, token).ConfigureAwait(false);
         }
 
         protected async void DeletePet(object sender, EventArgs e)
@@ -7720,12 +7745,12 @@ namespace Chummer
             {
                 if (!(sender is PetControl objSender))
                     return;
-                if (!await CommonFunctions.ConfirmDeleteAsync(await LanguageManager.GetStringAsync("Message_DeleteContact", token: GenericToken), GenericToken))
+                if (!await CommonFunctions.ConfirmDeleteAsync(await LanguageManager.GetStringAsync("Message_DeleteContact", token: GenericToken).ConfigureAwait(false), GenericToken).ConfigureAwait(false))
                     return;
 
-                await CharacterObject.Contacts.RemoveAsync(objSender.ContactObject, token: GenericToken);
-                await RequestCharacterUpdate(GenericToken);
-                await SetDirty(true, GenericToken);
+                await CharacterObject.Contacts.RemoveAsync(objSender.ContactObject, token: GenericToken).ConfigureAwait(false);
+                await RequestCharacterUpdate(GenericToken).ConfigureAwait(false);
+                await SetDirty(true, GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -7745,9 +7770,9 @@ namespace Chummer
                 EntityType = ContactType.Enemy
             };
 
-            await CharacterObject.Contacts.AddAsync(objContact, token: token);
-            await RequestCharacterUpdate(token);
-            await SetDirty(true, token);
+            await CharacterObject.Contacts.AddAsync(objContact, token: token).ConfigureAwait(false);
+            await RequestCharacterUpdate(token).ConfigureAwait(false);
+            await SetDirty(true, token).ConfigureAwait(false);
         }
 
         protected async void DeleteEnemy(object sender, EventArgs e)
@@ -7756,12 +7781,12 @@ namespace Chummer
             {
                 if (!(sender is ContactControl objSender))
                     return;
-                if (!await CommonFunctions.ConfirmDeleteAsync(await LanguageManager.GetStringAsync("Message_DeleteEnemy", token: GenericToken), GenericToken))
+                if (!await CommonFunctions.ConfirmDeleteAsync(await LanguageManager.GetStringAsync("Message_DeleteEnemy", token: GenericToken).ConfigureAwait(false), GenericToken).ConfigureAwait(false))
                     return;
 
-                await CharacterObject.Contacts.RemoveAsync(objSender.ContactObject, token: GenericToken);
-                await RequestCharacterUpdate(GenericToken);
-                await SetDirty(true, GenericToken);
+                await CharacterObject.Contacts.RemoveAsync(objSender.ContactObject, token: GenericToken).ConfigureAwait(false);
+                await RequestCharacterUpdate(GenericToken).ConfigureAwait(false);
+                await SetDirty(true, GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -7795,7 +7820,7 @@ namespace Chummer
                         strFileName = dlgOpenFile.FileName;
                         return eReturn;
                     }
-                }, token);
+                }, token).ConfigureAwait(false);
                 // If the user cancels out, return early.
                 if (eResult != DialogResult.OK)
                     return;
@@ -7835,22 +7860,22 @@ namespace Chummer
         {
             if (panSpirits == null && panSprites == null)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
                 if (notifyCollectionChangedEventArgs == null ||
                     notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
                 {
                     if (panSpirits != null)
-                        await panSpirits.DoThreadSafeAsync(x => x.SuspendLayout(), token);
+                        await panSpirits.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
                     if (panSprites != null)
-                        await panSprites.DoThreadSafeAsync(x => x.SuspendLayout(), token);
+                        await panSprites.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
                     try
                     {
                         if (panSpirits != null)
-                            await panSpirits.DoThreadSafeAsync(x => x.Controls.Clear(), token);
+                            await panSpirits.DoThreadSafeAsync(x => x.Controls.Clear(), token).ConfigureAwait(false);
                         if (panSprites != null)
-                            await panSprites.DoThreadSafeAsync(x => x.Controls.Clear(), token);
+                            await panSprites.DoThreadSafeAsync(x => x.Controls.Clear(), token).ConfigureAwait(false);
                         int intSpirits = -1;
                         int intSprites = -1;
                         foreach (Spirit objSpirit in CharacterObject.Spirits)
@@ -7865,36 +7890,36 @@ namespace Chummer
                                 continue;
 
                             SpiritControl objSpiritControl
-                                = await this.DoThreadSafeFuncAsync(() => new SpiritControl(objSpirit), token);
+                                = await this.DoThreadSafeFuncAsync(() => new SpiritControl(objSpirit), token).ConfigureAwait(false);
 
                             // Attach an EventHandler for the ServicesOwedChanged Event.
                             objSpiritControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
                             objSpiritControl.DeleteSpirit += DeleteSpirit;
 
-                            await objSpiritControl.RebuildSpiritList(CharacterObject.MagicTradition, token);
+                            await objSpiritControl.RebuildSpiritList(CharacterObject.MagicTradition, token).ConfigureAwait(false);
 
                             if (blnIsSpirit)
                             {
-                                ++intSpirits;
+                                int index = Interlocked.Increment(ref intSpirits);
                                 await objSpiritControl.DoThreadSafeAsync(
-                                    x => x.Top = intSpirits * x.Height, token);
-                                await panSpirits.DoThreadSafeAsync(x => x.Controls.Add(objSpiritControl), token);
+                                    x => x.Top = index * x.Height, token).ConfigureAwait(false);
+                                await panSpirits.DoThreadSafeAsync(x => x.Controls.Add(objSpiritControl), token).ConfigureAwait(false);
                             }
                             else
                             {
-                                ++intSprites;
+                                int index = Interlocked.Increment(ref intSprites);
                                 await objSpiritControl.DoThreadSafeAsync(
-                                    x => x.Top = intSprites * x.Height, token);
-                                await panSprites.DoThreadSafeAsync(x => x.Controls.Add(objSpiritControl), token);
+                                    x => x.Top = index * x.Height, token).ConfigureAwait(false);
+                                await panSprites.DoThreadSafeAsync(x => x.Controls.Add(objSpiritControl), token).ConfigureAwait(false);
                             }
                         }
                     }
                     finally
                     {
                         if (panSpirits != null)
-                            await panSpirits.DoThreadSafeAsync(x => x.ResumeLayout(), token);
+                            await panSpirits.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
                         if (panSprites != null)
-                            await panSprites.DoThreadSafeAsync(x => x.ResumeLayout(), token);
+                            await panSprites.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
                     }
                 }
                 else
@@ -7905,9 +7930,11 @@ namespace Chummer
                         {
                             int intSpirits = panSpirits != null
                                 ? await panSpirits.DoThreadSafeFuncAsync(x => x.Controls.Count, token)
+                                                  .ConfigureAwait(false)
                                 : 0;
                             int intSprites = panSprites != null
                                 ? await panSprites.DoThreadSafeFuncAsync(x => x.Controls.Count, token)
+                                                  .ConfigureAwait(false)
                                 : 0;
                             foreach (Spirit objSpirit in notifyCollectionChangedEventArgs.NewItems)
                             {
@@ -7922,29 +7949,30 @@ namespace Chummer
 
                                 SpiritControl objSpiritControl
                                     = await this.DoThreadSafeFuncAsync(() => new SpiritControl(objSpirit),
-                                                                       token);
+                                                                       token).ConfigureAwait(false);
 
                                 // Attach an EventHandler for the ServicesOwedChanged Event.
                                 objSpiritControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
                                 objSpiritControl.DeleteSpirit += DeleteSpirit;
 
-                                await objSpiritControl.RebuildSpiritList(CharacterObject.MagicTradition, token);
+                                await objSpiritControl.RebuildSpiritList(CharacterObject.MagicTradition, token)
+                                                      .ConfigureAwait(false);
 
                                 if (blnIsSpirit)
                                 {
+                                    int index = Interlocked.Increment(ref intSpirits);
                                     await objSpiritControl.DoThreadSafeAsync(
-                                        x => x.Top = intSpirits * x.Height, token);
+                                        x => x.Top = index * x.Height, token).ConfigureAwait(false);
                                     await panSpirits.DoThreadSafeAsync(x => x.Controls.Add(objSpiritControl),
-                                                                       token);
-                                    ++intSpirits;
+                                                                       token).ConfigureAwait(false);
                                 }
                                 else
                                 {
+                                    int index = Interlocked.Increment(ref intSprites) - 1;
                                     await objSpiritControl.DoThreadSafeAsync(
-                                        x => x.Top = intSprites * x.Height, token);
+                                        x => x.Top = index * x.Height, token).ConfigureAwait(false);
                                     await panSprites.DoThreadSafeAsync(x => x.Controls.Add(objSpiritControl),
-                                                                       token);
-                                    ++intSprites;
+                                                                       token).ConfigureAwait(false);
                                 }
                             }
                         }
@@ -7960,64 +7988,72 @@ namespace Chummer
                                     if (panSpirits == null)
                                         continue;
                                     int intSpirits
-                                        = await panSpirits.DoThreadSafeFuncAsync(x => x.Controls.Count, token);
+                                        = await panSpirits.DoThreadSafeFuncAsync(x => x.Controls.Count, token)
+                                                          .ConfigureAwait(false);
                                     for (int i = 0; i < intSpirits; ++i)
                                     {
+                                        int i1 = i;
                                         Control objLoopControl
-                                            = await panSpirits.DoThreadSafeFuncAsync(x => x.Controls[i], token);
+                                            = await panSpirits.DoThreadSafeFuncAsync(x => x.Controls[i1], token)
+                                                              .ConfigureAwait(false);
                                         if (objLoopControl is SpiritControl objSpiritControl &&
                                             objSpiritControl.SpiritObject == objSpirit)
                                         {
                                             intMoveUpAmount
                                                 = await objSpiritControl.DoThreadSafeFuncAsync(
-                                                    x => x.Height, token);
+                                                    x => x.Height, token).ConfigureAwait(false);
                                             await panSpirits.DoThreadSafeAsync(
-                                                x => x.Controls.RemoveAt(i), token);
+                                                x => x.Controls.RemoveAt(i1), token).ConfigureAwait(false);
                                             await objSpiritControl.DoThreadSafeAsync(x =>
                                             {
                                                 x.ContactDetailChanged
                                                     -= MakeDirtyWithCharacterUpdate;
                                                 x.DeleteSpirit -= DeleteSpirit;
                                                 x.Dispose();
-                                            }, token);
+                                            }, token).ConfigureAwait(false);
                                             --i;
                                             --intSpirits;
                                         }
                                         else if (intMoveUpAmount != 0)
                                         {
+                                            int intAmount = intMoveUpAmount;
                                             await objLoopControl.DoThreadSafeAsync(
-                                                x => x.Top -= intMoveUpAmount, token);
+                                                x => x.Top -= intAmount, token).ConfigureAwait(false);
                                         }
                                     }
                                 }
                                 else if (panSprites != null)
                                 {
-                                    int intSprites = panSprites.Controls.Count;
+                                    int intSprites = await panSprites.DoThreadSafeFuncAsync(x => x.Controls.Count, token).ConfigureAwait(false);
                                     for (int i = 0; i < intSprites; ++i)
                                     {
-                                        Control objLoopControl = panSprites.Controls[i];
+                                        int i1 = i;
+                                        Control objLoopControl
+                                            = await panSprites.DoThreadSafeFuncAsync(x => x.Controls[i1], token)
+                                                              .ConfigureAwait(false);
                                         if (objLoopControl is SpiritControl objSpiritControl &&
                                             objSpiritControl.SpiritObject == objSpirit)
                                         {
                                             intMoveUpAmount
                                                 = await objSpiritControl.DoThreadSafeFuncAsync(
-                                                    x => x.Height, token);
+                                                    x => x.Height, token).ConfigureAwait(false);
                                             await panSprites.DoThreadSafeAsync(
-                                                x => x.Controls.RemoveAt(i), token);
+                                                x => x.Controls.RemoveAt(i1), token).ConfigureAwait(false);
                                             await objSpiritControl.DoThreadSafeAsync(x =>
                                             {
                                                 x.ContactDetailChanged
                                                     -= MakeDirtyWithCharacterUpdate;
                                                 x.DeleteSpirit -= DeleteSpirit;
                                                 x.Dispose();
-                                            }, token);
+                                            }, token).ConfigureAwait(false);
                                             --i;
                                             --intSprites;
                                         }
                                         else if (intMoveUpAmount != 0)
                                         {
+                                            int intAmount = intMoveUpAmount;
                                             await objLoopControl.DoThreadSafeAsync(
-                                                x => x.Top -= intMoveUpAmount, token);
+                                                x => x.Top -= intAmount, token).ConfigureAwait(false);
                                         }
                                     }
                                 }
@@ -8029,9 +8065,11 @@ namespace Chummer
                         {
                             int intSpirits = panSpirits != null
                                 ? await panSpirits.DoThreadSafeFuncAsync(x => x.Controls.Count, token)
+                                                  .ConfigureAwait(false)
                                 : 0;
                             int intSprites = panSprites != null
                                 ? await panSprites.DoThreadSafeFuncAsync(x => x.Controls.Count, token)
+                                                  .ConfigureAwait(false)
                                 : 0;
                             foreach (Spirit objSpirit in notifyCollectionChangedEventArgs.OldItems)
                             {
@@ -8042,30 +8080,33 @@ namespace Chummer
                                         continue;
                                     for (int i = 0; i < intSpirits; ++i)
                                     {
+                                        int i1 = i;
                                         Control objLoopControl
-                                            = await panSpirits.DoThreadSafeFuncAsync(x => x.Controls[i], token);
+                                            = await panSpirits.DoThreadSafeFuncAsync(x => x.Controls[i1], token)
+                                                              .ConfigureAwait(false);
                                         if (objLoopControl is SpiritControl objSpiritControl &&
                                             objSpiritControl.SpiritObject == objSpirit)
                                         {
                                             intMoveUpAmount
                                                 = await objSpiritControl.DoThreadSafeFuncAsync(
-                                                    x => x.Height, token);
+                                                    x => x.Height, token).ConfigureAwait(false);
                                             await panSpirits.DoThreadSafeAsync(
-                                                x => x.Controls.RemoveAt(i), token);
+                                                x => x.Controls.RemoveAt(i1), token).ConfigureAwait(false);
                                             await objSpiritControl.DoThreadSafeAsync(x =>
                                             {
                                                 x.ContactDetailChanged
                                                     -= MakeDirtyWithCharacterUpdate;
                                                 x.DeleteSpirit -= DeleteSpirit;
                                                 x.Dispose();
-                                            }, token);
+                                            }, token).ConfigureAwait(false);
                                             --i;
                                             --intSpirits;
                                         }
                                         else if (intMoveUpAmount != 0)
                                         {
+                                            int intAmount = intMoveUpAmount;
                                             await objLoopControl.DoThreadSafeAsync(
-                                                x => x.Top -= intMoveUpAmount, token);
+                                                x => x.Top -= intAmount, token).ConfigureAwait(false);
                                         }
                                     }
                                 }
@@ -8073,29 +8114,32 @@ namespace Chummer
                                 {
                                     for (int i = 0; i < intSprites; ++i)
                                     {
-                                        Control objLoopControl = panSprites.Controls[i];
-                                        if (objLoopControl is SpiritControl objSpiritControl &&
+                                        int i1 = i;
+                                        Control objLoopControl = await panSprites.DoThreadSafeFuncAsync(x => x.Controls[i1], token)
+                                            .ConfigureAwait(false);
+                                            if (objLoopControl is SpiritControl objSpiritControl &&
                                             objSpiritControl.SpiritObject == objSpirit)
                                         {
                                             intMoveUpAmount
                                                 = await objSpiritControl.DoThreadSafeFuncAsync(
-                                                    x => x.Height, token);
+                                                    x => x.Height, token).ConfigureAwait(false);
                                             await panSprites.DoThreadSafeAsync(
-                                                x => x.Controls.RemoveAt(i), token);
+                                                x => x.Controls.RemoveAt(i1), token).ConfigureAwait(false);
                                             await objSpiritControl.DoThreadSafeAsync(x =>
                                             {
                                                 x.ContactDetailChanged
                                                     -= MakeDirtyWithCharacterUpdate;
                                                 x.DeleteSpirit -= DeleteSpirit;
                                                 x.Dispose();
-                                            }, token);
+                                            }, token).ConfigureAwait(false);
                                             --i;
                                             --intSprites;
                                         }
                                         else if (intMoveUpAmount != 0)
                                         {
+                                            int intAmount = intMoveUpAmount;
                                             await objLoopControl.DoThreadSafeAsync(
-                                                x => x.Top -= intMoveUpAmount, token);
+                                                x => x.Top -= intAmount, token).ConfigureAwait(false);
                                         }
                                     }
                                 }
@@ -8114,29 +8158,30 @@ namespace Chummer
 
                                 SpiritControl objSpiritControl
                                     = await this.DoThreadSafeFuncAsync(() => new SpiritControl(objSpirit),
-                                                                       token);
+                                                                       token).ConfigureAwait(false);
 
                                 // Attach an EventHandler for the ServicesOwedChanged Event.
                                 objSpiritControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
                                 objSpiritControl.DeleteSpirit += DeleteSpirit;
 
-                                await objSpiritControl.RebuildSpiritList(CharacterObject.MagicTradition, token);
+                                await objSpiritControl.RebuildSpiritList(CharacterObject.MagicTradition, token)
+                                                      .ConfigureAwait(false);
 
                                 if (blnIsSpirit)
                                 {
+                                    int index = Interlocked.Increment(ref intSpirits) - 1;
                                     await objSpiritControl.DoThreadSafeAsync(
-                                        x => x.Top = intSpirits * x.Height, token);
+                                        x => x.Top = index * x.Height, token).ConfigureAwait(false);
                                     await panSpirits.DoThreadSafeAsync(x => x.Controls.Add(objSpiritControl),
-                                                                       token);
-                                    ++intSpirits;
+                                                                       token).ConfigureAwait(false);
                                 }
                                 else
                                 {
+                                    int index = Interlocked.Increment(ref intSprites) - 1;
                                     await objSpiritControl.DoThreadSafeAsync(
-                                        x => x.Top = intSprites * x.Height, token);
+                                        x => x.Top = index * x.Height, token).ConfigureAwait(false);
                                     await panSprites.DoThreadSafeAsync(x => x.Controls.Add(objSpiritControl),
-                                                                       token);
-                                    ++intSprites;
+                                                                       token).ConfigureAwait(false);
                                 }
                             }
                         }
@@ -8146,7 +8191,7 @@ namespace Chummer
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -8159,9 +8204,9 @@ namespace Chummer
             {
                 Program.ShowMessageBox(
                     this,
-                    string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_BoundSpiritLimit", token: token),
+                    string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_BoundSpiritLimit", token: token).ConfigureAwait(false),
                                   CharacterObject.Settings.BoundSpiritExpression, CharacterObject.BoundSpiritLimit),
-                    await LanguageManager.GetStringAsync("MessageTitle_BoundSpiritLimit", token: token),
+                    await LanguageManager.GetStringAsync("MessageTitle_BoundSpiritLimit", token: token).ConfigureAwait(false),
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
@@ -8171,9 +8216,9 @@ namespace Chummer
                 EntityType = SpiritType.Spirit,
                 Force = CharacterObject.MaxSpiritForce
             };
-            await CharacterObject.Spirits.AddAsync(objSpirit, token: token);
-            await RequestCharacterUpdate(token);
-            await SetDirty(true, token);
+            await CharacterObject.Spirits.AddAsync(objSpirit, token: token).ConfigureAwait(false);
+            await RequestCharacterUpdate(token).ConfigureAwait(false);
+            await SetDirty(true, token).ConfigureAwait(false);
         }
 
         protected async ValueTask AddSprite(CancellationToken token = default)
@@ -8186,10 +8231,10 @@ namespace Chummer
                 Program.ShowMessageBox(
                     this,
                     string.Format(GlobalSettings.CultureInfo,
-                                  await LanguageManager.GetStringAsync("Message_RegisteredSpriteLimit", token: token),
+                                  await LanguageManager.GetStringAsync("Message_RegisteredSpriteLimit", token: token).ConfigureAwait(false),
                                   CharacterObject.Settings.RegisteredSpriteExpression,
                                   CharacterObject.RegisteredSpriteLimit),
-                    await LanguageManager.GetStringAsync("MessageTitle_RegisteredSpriteLimit", token: token),
+                    await LanguageManager.GetStringAsync("MessageTitle_RegisteredSpriteLimit", token: token).ConfigureAwait(false),
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
@@ -8199,9 +8244,9 @@ namespace Chummer
                 EntityType = SpiritType.Sprite,
                 Force = CharacterObject.MaxSpriteLevel
             };
-            await CharacterObject.Spirits.AddAsync(objSprite, token: token);
-            await RequestCharacterUpdate(token);
-            await SetDirty(true, token);
+            await CharacterObject.Spirits.AddAsync(objSprite, token: token).ConfigureAwait(false);
+            await RequestCharacterUpdate(token).ConfigureAwait(false);
+            await SetDirty(true, token).ConfigureAwait(false);
         }
 
         protected async void DeleteSpirit(object sender, EventArgs e)
@@ -8212,12 +8257,12 @@ namespace Chummer
                     return;
                 Spirit objSpirit = objSender.SpiritObject;
                 bool blnIsSpirit = objSpirit.EntityType == SpiritType.Spirit;
-                if (!await CommonFunctions.ConfirmDeleteAsync(await LanguageManager.GetStringAsync(blnIsSpirit ? "Message_DeleteSpirit" : "Message_DeleteSprite", token: GenericToken), GenericToken))
+                if (!await CommonFunctions.ConfirmDeleteAsync(await LanguageManager.GetStringAsync(blnIsSpirit ? "Message_DeleteSpirit" : "Message_DeleteSprite", token: GenericToken).ConfigureAwait(false), GenericToken).ConfigureAwait(false))
                     return;
                 objSpirit.Fettered = false; // Fettered spirits consume MAG.
-                await CharacterObject.Spirits.RemoveAsync(objSpirit, token: GenericToken);
-                await RequestCharacterUpdate(GenericToken);
-                await SetDirty(true, GenericToken);
+                await CharacterObject.Spirits.RemoveAsync(objSpirit, token: GenericToken).ConfigureAwait(false);
+                await RequestCharacterUpdate(GenericToken).ConfigureAwait(false);
+                await SetDirty(true, GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -8233,73 +8278,89 @@ namespace Chummer
         protected async ValueTask<bool> AddMugshot(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
-                using (OpenFileDialog dlgOpenFile = await this.DoThreadSafeFuncAsync(() => new OpenFileDialog(), token))
+                ImageCodecInfo[] lstCodecs = ImageCodecInfo.GetImageEncoders();
+                string strFormat = "{0}"
+                                   + await LanguageManager.GetStringAsync("String_Space", token: token)
+                                                          .ConfigureAwait(false) + "({1})|{1}";
+                string strFilter = string.Format(
+                    GlobalSettings.InvariantCultureInfo,
+                    await LanguageManager.GetStringAsync("DialogFilter_ImagesPrefix", token: token)
+                                         .ConfigureAwait(false) + "({1})|{1}|{0}|" +
+                    await LanguageManager.GetStringAsync("DialogFilter_All", token: token).ConfigureAwait(false),
+                    string.Join("|",
+                                lstCodecs.Select(codec => string.Format(GlobalSettings.CultureInfo,
+                                                                        strFormat, codec.CodecName,
+                                                                        codec.FilenameExtension))),
+                    string.Join(";", lstCodecs.Select(codec => codec.FilenameExtension)));
+                string strInitialDirectory = string.Empty;
+                if (!string.IsNullOrWhiteSpace(GlobalSettings.RecentImageFolder) &&
+                    Directory.Exists(GlobalSettings.RecentImageFolder))
                 {
-                    if (!string.IsNullOrWhiteSpace(GlobalSettings.RecentImageFolder) &&
-                        Directory.Exists(GlobalSettings.RecentImageFolder))
-                    {
-                        dlgOpenFile.InitialDirectory = GlobalSettings.RecentImageFolder;
-                    }
-                    // Prompt the user to select an image to associate with this character.
-
-                    ImageCodecInfo[] lstCodecs = ImageCodecInfo.GetImageEncoders();
-                    string strFormat = "{0}" + await LanguageManager.GetStringAsync("String_Space", token: token) + "({1})|{1}";
-                    dlgOpenFile.Filter = string.Format(
-                        GlobalSettings.InvariantCultureInfo,
-                        await LanguageManager.GetStringAsync("DialogFilter_ImagesPrefix", token: token) + "({1})|{1}|{0}|" +
-                        await LanguageManager.GetStringAsync("DialogFilter_All", token: token),
-                        string.Join("|",
-                                    lstCodecs.Select(codec => string.Format(GlobalSettings.CultureInfo,
-                                                                            strFormat, codec.CodecName,
-                                                                            codec.FilenameExtension))),
-                        string.Join(";", lstCodecs.Select(codec => codec.FilenameExtension)));
-
-                    bool blnMakeLoop = true;
-                    while (blnMakeLoop)
-                    {
-                        token.ThrowIfCancellationRequested();
-                        blnMakeLoop = false;
-                        if (await this.DoThreadSafeFuncAsync(x => dlgOpenFile.ShowDialog(x), token) != DialogResult.OK)
-                            return false;
-                        if (!File.Exists(dlgOpenFile.FileName))
-                        {
-                            Program.ShowMessageBox(string.Format(
-                                                       await LanguageManager.GetStringAsync(
-                                                           "Message_File_Cannot_Be_Read_Accessed", token: token),
-                                                       dlgOpenFile.FileName));
-                            blnMakeLoop = true;
-                        }
-                    }
-
-                    // Convert the image to a string using Base64.
-                    GlobalSettings.RecentImageFolder = Path.GetDirectoryName(dlgOpenFile.FileName);
-
-                    using (Bitmap bmpMugshot = new Bitmap(dlgOpenFile.FileName, true))
-                    {
-                        if (bmpMugshot.PixelFormat == PixelFormat.Format32bppPArgb)
-                        {
-                            await CharacterObject.Mugshots.AddAsync(
-                                bmpMugshot.Clone() as Bitmap, token); // Clone makes sure file handle is closed
-                        }
-                        else
-                        {
-                            await CharacterObject.Mugshots.AddAsync(
-                                bmpMugshot.ConvertPixelFormat(PixelFormat.Format32bppPArgb), token);
-                        }
-                    }
-
-                    if (CharacterObject.MainMugshotIndex == -1)
-                        CharacterObject.MainMugshotIndex = CharacterObject.Mugshots.Count - 1;
+                    strInitialDirectory = GlobalSettings.RecentImageFolder;
                 }
+
+                string strFileName = string.Empty;
+                string strErrorString = await LanguageManager.GetStringAsync(
+                                                                 "Message_File_Cannot_Be_Read_Accessed",
+                                                                 token: token)
+                                                             .ConfigureAwait(false);
+
+                // Prompt the user to select an image to associate with this character.
+                bool blnMakeLoop = true;
+                while (blnMakeLoop)
+                {
+                    token.ThrowIfCancellationRequested();
+                    blnMakeLoop = false;
+                    DialogResult eResult = await this.DoThreadSafeFuncAsync(x =>
+                    {
+                        using (OpenFileDialog dlgOpenFile = new OpenFileDialog())
+                        {
+                            dlgOpenFile.InitialDirectory = strInitialDirectory;
+                            dlgOpenFile.Filter = strFilter;
+                            DialogResult eReturn = dlgOpenFile.ShowDialog(x);
+                            strFileName = dlgOpenFile.FileName;
+                            return eReturn;
+                        }
+                    }, token: token).ConfigureAwait(false);
+                    if (eResult != DialogResult.OK)
+                        return false;
+                    token.ThrowIfCancellationRequested();
+                    if (!File.Exists(strFileName))
+                    {
+                        Program.ShowMessageBox(string.Format(strErrorString, strFileName));
+                        blnMakeLoop = true;
+                    }
+                }
+
+                // Convert the image to a string using Base64.
+                GlobalSettings.RecentImageFolder = Path.GetDirectoryName(strFileName);
+
+                using (Bitmap bmpMugshot = new Bitmap(strFileName, true))
+                {
+                    if (bmpMugshot.PixelFormat == PixelFormat.Format32bppPArgb)
+                    {
+                        await CharacterObject.Mugshots.AddAsync(
+                                                 bmpMugshot.Clone() as Bitmap, token)
+                                             .ConfigureAwait(false); // Clone makes sure file handle is closed
+                    }
+                    else
+                    {
+                        await CharacterObject.Mugshots.AddAsync(
+                            bmpMugshot.ConvertPixelFormat(PixelFormat.Format32bppPArgb), token).ConfigureAwait(false);
+                    }
+                }
+
+                if (CharacterObject.MainMugshotIndex == -1)
+                    CharacterObject.MainMugshotIndex = CharacterObject.Mugshots.Count - 1;
 
                 return true;
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -8371,9 +8432,9 @@ namespace Chummer
         protected async ValueTask DoTreeDragDrop(object sender, DragEventArgs e, TreeView treView, ItemTreeViewTypes eType, CancellationToken token = default)
         {
             Point pt = ((TreeView)sender).PointToClient(new Point(e.X, e.Y));
-            TreeNode nodDestination = await ((TreeView)sender).DoThreadSafeFuncAsync(x => x.GetNodeAt(pt), token);
+            TreeNode nodDestination = await ((TreeView)sender).DoThreadSafeFuncAsync(x => x.GetNodeAt(pt), token).ConfigureAwait(false);
 
-            TreeNode objSelected = await treView.DoThreadSafeFuncAsync(x => x.SelectedNode, token);
+            TreeNode objSelected = await treView.DoThreadSafeFuncAsync(x => x.SelectedNode, token).ConfigureAwait(false);
             for (TreeNode nodLoop = nodDestination; nodLoop != null; nodLoop = nodLoop.Parent)
             {
                 if (nodLoop == objSelected)
@@ -8387,14 +8448,14 @@ namespace Chummer
             }
             else
             {
-                int intNodesCount = await treView.DoThreadSafeFuncAsync(x => x.Nodes.Count, token);
+                int intNodesCount = await treView.DoThreadSafeFuncAsync(x => x.Nodes.Count, token).ConfigureAwait(false);
                 if (intNodesCount > 0)
                 {
                     await treView.DoThreadSafeAsync(x =>
                     {
                         intNewIndex = x.Nodes[intNodesCount - 1].Nodes.Count;
                         nodDestination = x.Nodes[intNodesCount - 1];
-                    }, token);
+                    }, token).ConfigureAwait(false);
                 }
             }
 
@@ -8464,10 +8525,10 @@ namespace Chummer
                     default:
                         throw new ArgumentOutOfRangeException(nameof(eType), eType, null);
                 }
-            }, token);
+            }, token).ConfigureAwait(false);
 
             // Put the weapon in the right order in the tree
-            await MoveTreeNode(await treView.DoThreadSafeFuncAsync(x => x.FindNodeByTag(objSelected.Tag), token), intNewIndex, token);
+            await MoveTreeNode(await treView.DoThreadSafeFuncAsync(x => x.FindNodeByTag(objSelected.Tag), token).ConfigureAwait(false), intNewIndex, token).ConfigureAwait(false);
 
             await treView.DoThreadSafeAsync(x =>
             {
@@ -8477,9 +8538,9 @@ namespace Chummer
                 x.ClearNodeBackground(null);
                 // Store our new order so it's loaded properly the next time we open the character
                 x.CacheSortOrder();
-            }, token);
+            }, token).ConfigureAwait(false);
             
-            await SetDirty(true, token);
+            await SetDirty(true, token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -8549,8 +8610,8 @@ namespace Chummer
 
             try
             {
-                await RequestCharacterUpdate(GenericToken);
-                await SetDirty(true, GenericToken);
+                await RequestCharacterUpdate(GenericToken).ConfigureAwait(false);
+                await SetDirty(true, GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -8568,8 +8629,8 @@ namespace Chummer
 
             try
             {
-                await RequestCharacterUpdate(GenericToken);
-                await SetDirty(true, GenericToken);
+                await RequestCharacterUpdate(GenericToken).ConfigureAwait(false);
+                await SetDirty(true, GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -8581,8 +8642,8 @@ namespace Chummer
         {
             try
             {
-                await RequestCharacterUpdate(GenericToken);
-                await SetDirty(true, GenericToken);
+                await RequestCharacterUpdate(GenericToken).ConfigureAwait(false);
+                await SetDirty(true, GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -8597,7 +8658,7 @@ namespace Chummer
 
             try
             {
-                await SetDirty(true, GenericToken);
+                await SetDirty(true, GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -8609,7 +8670,7 @@ namespace Chummer
         {
             try
             {
-                await SetDirty(true, GenericToken);
+                await SetDirty(true, GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -8630,7 +8691,7 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (!await _objUpdateCharacterInfoSemaphoreSlim.WaitAsync(0, token))
+                if (!await _objUpdateCharacterInfoSemaphoreSlim.WaitAsync(0, token).ConfigureAwait(false))
                     return;
                 try
                 {
@@ -8658,7 +8719,7 @@ namespace Chummer
                     {
                         try
                         {
-                            await _tskUpdateCharacterInfo;
+                            await _tskUpdateCharacterInfo.ConfigureAwait(false);
                         }
                         catch (OperationCanceledException)
                         {
@@ -8777,12 +8838,12 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 if (Text.EndsWith('*') == _blnIsDirty && blnCanSkip)
                     return;
-                string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token);
+                string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
                 string strTitle = CharacterObject.CharacterName + strSpace + '-' + strSpace + FormMode + strSpace + '('
                                   + CharacterObjectSettings.Name + ')';
                 if (_blnIsDirty)
                     strTitle += '*';
-                await this.DoThreadSafeAsync(x => x.Text = strTitle, token);
+                await this.DoThreadSafeAsync(x => x.Text = strTitle, token).ConfigureAwait(false);
             }
             finally
             {
@@ -8804,34 +8865,34 @@ namespace Chummer
 
             try
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
                 try
                 {
                     // If the Character does not have a file name, trigger the Save As menu item instead.
                     if (string.IsNullOrEmpty(CharacterObject.FileName))
                     {
-                        return await SaveCharacterAs(blnDoCreated, token);
+                        return await SaveCharacterAs(blnDoCreated, token).ConfigureAwait(false);
                     }
 
                     if (blnDoCreated)
                     {
                         // If the Created is checked, make sure the user wants to actually save this character.
-                        if (blnNeedConfirm && !await ConfirmSaveCreatedCharacter(token))
+                        if (blnNeedConfirm && !await ConfirmSaveCreatedCharacter(token).ConfigureAwait(false))
                             return false;
                         // If this character has just been saved as Created, close this form and re-open the character which will open it in the Career window instead.
-                        return await SaveCharacterAsCreated(token);
+                        return await SaveCharacterAsCreated(token).ConfigureAwait(false);
                     }
 
                     using (ThreadSafeForm<LoadingBar> frmLoadingBar
-                           = await Program.CreateAndShowProgressBarAsync(token: token))
+                           = await Program.CreateAndShowProgressBarAsync(token: token).ConfigureAwait(false))
                     {
                         await frmLoadingBar.MyForm.PerformStepAsync(CharacterObject.CharacterName,
-                                                                    LoadingBar.ProgressBarTextPatterns.Saving, token);
+                                                                    LoadingBar.ProgressBarTextPatterns.Saving, token).ConfigureAwait(false);
                         if (_objCharacterFileWatcher != null)
                             _objCharacterFileWatcher.Changed -= LiveUpdateFromCharacterFile;
                         try
                         {
-                            if (!await CharacterObject.SaveAsync(token: token))
+                            if (!await CharacterObject.SaveAsync(token: token).ConfigureAwait(false))
                                 return false;
                         }
                         finally
@@ -8840,15 +8901,15 @@ namespace Chummer
                                 _objCharacterFileWatcher.Changed += LiveUpdateFromCharacterFile;
                         }
 
-                        await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(0, CharacterObject.FileName, token);
-                        await SetDirty(false, token);
+                        await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(0, CharacterObject.FileName, token).ConfigureAwait(false);
+                        await SetDirty(false, token).ConfigureAwait(false);
                     }
 
                     return true;
                 }
                 finally
                 {
-                    await objCursorWait.DisposeAsync();
+                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             finally
@@ -8871,11 +8932,11 @@ namespace Chummer
 
             try
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
                 try
                 {
                     // If the Created is checked, make sure the user wants to actually save this character.
-                    if (blnDoCreated && !await ConfirmSaveCreatedCharacter(token))
+                    if (blnDoCreated && !await ConfirmSaveCreatedCharacter(token).ConfigureAwait(false))
                     {
                         return false;
                     }
@@ -8888,7 +8949,7 @@ namespace Chummer
                     }
 
                     dlgSaveFile.FileName = strShowFileName;
-                    if (await this.DoThreadSafeFuncAsync(x => dlgSaveFile.ShowDialog(x), token: token)
+                    if (await this.DoThreadSafeFuncAsync(x => dlgSaveFile.ShowDialog(x), token: token).ConfigureAwait(false)
                         != DialogResult.OK)
                         return false;
 
@@ -8904,7 +8965,7 @@ namespace Chummer
                     CharacterObject.FileName = strFileName;
                     try
                     {
-                        bool blnReturn = await SaveCharacter(false, blnDoCreated, token);
+                        bool blnReturn = await SaveCharacter(false, blnDoCreated, token).ConfigureAwait(false);
                         if (!blnReturn)
                             CharacterObject.FileName = strOldFileName;
                         return blnReturn;
@@ -8917,7 +8978,7 @@ namespace Chummer
                 }
                 finally
                 {
-                    await objCursorWait.DisposeAsync();
+                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             finally
@@ -8938,14 +8999,14 @@ namespace Chummer
 
         public async Task DoPrint(CancellationToken token = default)
         {
-            if (!await Program.SwitchToOpenPrintCharacter(CharacterObject, token))
-                await Program.OpenCharacterForPrinting(CharacterObject, token: token);
+            if (!await Program.SwitchToOpenPrintCharacter(CharacterObject, token).ConfigureAwait(false))
+                await Program.OpenCharacterForPrinting(CharacterObject, token: token).ConfigureAwait(false);
         }
 
         public async Task DoExport(CancellationToken token = default)
         {
-            if (!await Program.SwitchToOpenExportCharacter(CharacterObject, token))
-                await Program.OpenCharacterForExport(CharacterObject, token: token);
+            if (!await Program.SwitchToOpenExportCharacter(CharacterObject, token).ConfigureAwait(false))
+                await Program.OpenCharacterForExport(CharacterObject, token: token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -8985,19 +9046,19 @@ namespace Chummer
         public async ValueTask PurchaseVehicleGear(Vehicle objSelectedVehicle, Location objLocation = null, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
-                XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml", token: token);
+                XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml", token: token).ConfigureAwait(false);
                 bool blnAddAgain;
 
                 do
                 {
                     using (ThreadSafeForm<SelectGear> frmPickGear
                            = await ThreadSafeForm<SelectGear>.GetAsync(
-                               () => new SelectGear(CharacterObject, 0, 1, objSelectedVehicle), token))
+                               () => new SelectGear(CharacterObject, 0, 1, objSelectedVehicle), token).ConfigureAwait(false))
                     {
-                        if (await frmPickGear.ShowDialogSafeAsync(this, token) == DialogResult.Cancel)
+                        if (await frmPickGear.ShowDialogSafeAsync(this, token).ConfigureAwait(false) == DialogResult.Cancel)
                             break;
                         blnAddAgain = frmPickGear.MyForm.AddAgain;
 
@@ -9031,7 +9092,7 @@ namespace Chummer
                             decimal decCost = objGear.TotalCost;
 
                             // Multiply the cost if applicable.
-                            char chrAvail = (await objGear.TotalAvailTupleAsync(token: token)).Suffix;
+                            char chrAvail = (await objGear.TotalAvailTupleAsync(token: token).ConfigureAwait(false)).Suffix;
                             switch (chrAvail)
                             {
                                 case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
@@ -9050,9 +9111,9 @@ namespace Chummer
                                 {
                                     Program.ShowMessageBox(this,
                                                            await LanguageManager.GetStringAsync(
-                                                               "Message_NotEnoughNuyen", token: token),
+                                                               "Message_NotEnoughNuyen", token: token).ConfigureAwait(false),
                                                            await LanguageManager.GetStringAsync(
-                                                               "MessageTitle_NotEnoughNuyen", token: token),
+                                                               "MessageTitle_NotEnoughNuyen", token: token).ConfigureAwait(false),
                                                            MessageBoxButtons.OK,
                                                            MessageBoxIcon.Information);
                                     continue;
@@ -9062,11 +9123,11 @@ namespace Chummer
                                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                                 objExpense.Create(decCost * -1,
                                                   await LanguageManager.GetStringAsync(
-                                                      "String_ExpensePurchaseVehicleGear", token: token) +
-                                                  await LanguageManager.GetStringAsync("String_Space", token: token) +
+                                                      "String_ExpensePurchaseVehicleGear", token: token).ConfigureAwait(false) +
+                                                  await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) +
                                                   objGear.CurrentDisplayNameShort, ExpenseType.Nuyen,
                                                   DateTime.Now);
-                                await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token);
+                                await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token).ConfigureAwait(false);
                                 CharacterObject.Nuyen -= decCost;
 
                                 ExpenseUndo objUndo = new ExpenseUndo();
@@ -9094,28 +9155,28 @@ namespace Chummer
                         {
                             // Add the Gear to the Vehicle.
                             if (objLocation != null)
-                                await objLocation.Children.AddAsync(objGear, token);
-                            await objSelectedVehicle.GearChildren.AddAsync(objGear, token);
+                                await objLocation.Children.AddAsync(objGear, token).ConfigureAwait(false);
+                            await objSelectedVehicle.GearChildren.AddAsync(objGear, token).ConfigureAwait(false);
                             objGear.Parent = objSelectedVehicle;
 
                             foreach (Weapon objWeapon in lstWeapons)
                             {
                                 if (objLocation != null)
-                                    await objLocation.Children.AddAsync(objGear, token);
+                                    await objLocation.Children.AddAsync(objGear, token).ConfigureAwait(false);
                                 objWeapon.ParentVehicle = objSelectedVehicle;
-                                await objSelectedVehicle.Weapons.AddAsync(objWeapon, token);
+                                await objSelectedVehicle.Weapons.AddAsync(objWeapon, token).ConfigureAwait(false);
                             }
                         }
                     }
 
-                    await RequestCharacterUpdate(token);
+                    await RequestCharacterUpdate(token).ConfigureAwait(false);
 
-                    await SetDirty(true, token);
+                    await SetDirty(true, token).ConfigureAwait(false);
                 } while (blnAddAgain);
             }
             finally
             {
-                await objCursorWait.DisposeAsync();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
