@@ -361,16 +361,14 @@ namespace Chummer
                         // Extract the modifiers.
                         int intMin = 0;
                         int intMax = 0;
-                        int intAug = 0;
                         int intAugMax = 0;
                         objXmlAttribute.TryGetInt32FieldQuickly("min", ref intMin);
                         objXmlAttribute.TryGetInt32FieldQuickly("max", ref intMax);
-                        objXmlAttribute.TryGetInt32FieldQuickly("val", ref intAug);
                         objXmlAttribute.TryGetInt32FieldQuickly("aug", ref intAugMax);
 
                         CreateImprovement(strAttribute, _objImprovementSource, SourceName,
                             Improvement.ImprovementType.ReplaceAttribute,
-                            _strUnique, 0, 1, intMin, intMax, intAug, intAugMax);
+                            _strUnique, 0, 1, intMin, intMax, 0, intAugMax);
                     }
                     else
                     {

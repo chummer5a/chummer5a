@@ -709,12 +709,10 @@
             <xs:element name="replaceattribute" minOccurs="0" maxOccurs="unbounded">
               <xs:complexType>
                 <xs:sequence>
-                  <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-                  <xs:element name="affectbase" type="xs:string" minOccurs="0" maxOccurs="1" />
+                  <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="1" />
                   <xs:element name="min" type="xs:string" minOccurs="0" maxOccurs="1" />
                   <xs:element name="max" type="xs:string" minOccurs="0" maxOccurs="1" />
                   <xs:element name="aug" type="xs:string" minOccurs="0" maxOccurs="1" />
-                  <xs:element name="val" type="xs:string" minOccurs="0" maxOccurs="1" />
                 </xs:sequence>
               </xs:complexType>
             </xs:element>

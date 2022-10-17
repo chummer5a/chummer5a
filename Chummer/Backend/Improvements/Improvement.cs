@@ -1877,26 +1877,34 @@ namespace Chummer
                     // Keeping two enumerations separate helps avoid extra heap allocations
                     foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList)
                     {
-                        if (objCharacterAttrib.Abbrev != ImprovedName || objCharacterAttrib.MetatypeCategory == CharacterAttrib.AttributeCategory.Shapeshifter)
+                        if (objCharacterAttrib.Abbrev != ImprovedName || objCharacterAttrib.MetatypeCategory
+                            == CharacterAttrib.AttributeCategory.Shapeshifter)
                             continue;
-                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(objCharacterAttrib,
-                            nameof(CharacterAttrib.MetatypeMaximum));
-                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(objCharacterAttrib,
-                            nameof(CharacterAttrib.MetatypeMinimum));
-                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(objCharacterAttrib,
-                            nameof(CharacterAttrib.MetatypeAugmentedMaximum));
+                        if (Maximum != 0)
+                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objCharacterAttrib,
+                                nameof(CharacterAttrib.MetatypeMaximum));
+                        if (Minimum != 0)
+                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objCharacterAttrib,
+                                nameof(CharacterAttrib.MetatypeMinimum));
+                        if (AugmentedMaximum != 0)
+                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objCharacterAttrib,
+                                nameof(CharacterAttrib.MetatypeAugmentedMaximum));
                     }
 
                     foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.SpecialAttributeList)
                     {
-                        if (objCharacterAttrib.Abbrev != ImprovedName || objCharacterAttrib.MetatypeCategory == CharacterAttrib.AttributeCategory.Shapeshifter)
+                        if (objCharacterAttrib.Abbrev != ImprovedName || objCharacterAttrib.MetatypeCategory
+                            == CharacterAttrib.AttributeCategory.Shapeshifter)
                             continue;
-                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(objCharacterAttrib,
-                            nameof(CharacterAttrib.MetatypeMaximum));
-                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(objCharacterAttrib,
-                            nameof(CharacterAttrib.MetatypeMinimum));
-                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(objCharacterAttrib,
-                            nameof(CharacterAttrib.MetatypeAugmentedMaximum));
+                        if (Maximum != 0)
+                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objCharacterAttrib,
+                                nameof(CharacterAttrib.MetatypeMaximum));
+                        if (Minimum != 0)
+                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objCharacterAttrib,
+                                nameof(CharacterAttrib.MetatypeMinimum));
+                        if (AugmentedMaximum != 0)
+                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objCharacterAttrib,
+                                nameof(CharacterAttrib.MetatypeAugmentedMaximum));
                     }
                 }
                     break;

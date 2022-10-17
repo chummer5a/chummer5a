@@ -305,7 +305,7 @@ namespace Chummer.Backend.Attributes
                     int intReturn = RawMetatypeMinimum;
                     Improvement objImprovement = _objCharacter.Improvements.LastOrDefault(
                         x => x.ImproveType == Improvement.ImprovementType.ReplaceAttribute && x.ImprovedName == Abbrev
-                            && x.Enabled);
+                            && x.Enabled && x.Minimum != 0);
                     if (objImprovement != null)
                     {
                         intReturn = objImprovement.Minimum;
@@ -328,7 +328,7 @@ namespace Chummer.Backend.Attributes
                 int intReturn = RawMetatypeMinimum;
                 Improvement objImprovement = await _objCharacter.Improvements.LastOrDefaultAsync(
                     x => x.ImproveType == Improvement.ImprovementType.ReplaceAttribute && x.ImprovedName == Abbrev
-                        && x.Enabled, token: token).ConfigureAwait(false);
+                        && x.Enabled && x.Minimum != 0, token: token).ConfigureAwait(false);
                 if (objImprovement != null)
                 {
                     intReturn = objImprovement.Minimum;
@@ -380,7 +380,7 @@ namespace Chummer.Backend.Attributes
                     int intReturn = RawMetatypeMaximum;
                     Improvement objImprovement = _objCharacter.Improvements.LastOrDefault(x =>
                         x.ImproveType == Improvement.ImprovementType.ReplaceAttribute && x.ImprovedName == Abbrev &&
-                        x.Enabled);
+                        x.Enabled && x.Maximum != 0);
                     if (objImprovement != null)
                     {
                         intReturn = objImprovement.Maximum;
@@ -412,7 +412,7 @@ namespace Chummer.Backend.Attributes
                 Improvement objImprovement = await _objCharacter.Improvements
                     .LastOrDefaultAsync(
                         x => x.ImproveType == Improvement.ImprovementType.ReplaceAttribute &&
-                             x.ImprovedName == Abbrev && x.Enabled, token: token).ConfigureAwait(false);
+                             x.ImprovedName == Abbrev && x.Enabled && x.Maximum != 0, token: token).ConfigureAwait(false);
                 if (objImprovement != null)
                 {
                     intReturn = objImprovement.Maximum;
@@ -470,7 +470,7 @@ namespace Chummer.Backend.Attributes
                     int intReturn = RawMetatypeAugmentedMaximum;
                     Improvement objImprovement = _objCharacter.Improvements.LastOrDefault(x =>
                         x.ImproveType == Improvement.ImprovementType.ReplaceAttribute && x.ImprovedName == Abbrev &&
-                        x.Enabled);
+                        x.Enabled && x.AugmentedMaximum != 0);
                     if (objImprovement != null)
                     {
                         intReturn = objImprovement.AugmentedMaximum;
@@ -494,7 +494,7 @@ namespace Chummer.Backend.Attributes
                 Improvement objImprovement = await _objCharacter.Improvements
                     .LastOrDefaultAsync(
                         x => x.ImproveType == Improvement.ImprovementType.ReplaceAttribute &&
-                             x.ImprovedName == Abbrev && x.Enabled, token: token).ConfigureAwait(false);
+                             x.ImprovedName == Abbrev && x.Enabled && x.AugmentedMaximum != 0, token: token).ConfigureAwait(false);
                 if (objImprovement != null)
                 {
                     intReturn = objImprovement.AugmentedMaximum;
