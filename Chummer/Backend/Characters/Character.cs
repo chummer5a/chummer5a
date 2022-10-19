@@ -4948,7 +4948,7 @@ namespace Chummer
                 {
                     if (_blnIsLoading == value)
                         return;
-                    using (LockObject.EnterWriteLockAsync())
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnIsLoading = value;
                         OnPropertyChanged();
