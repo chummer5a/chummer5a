@@ -32,16 +32,19 @@
     <DocumentationFile>ChummerHub.xml</DocumentationFile>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <LangVersion>8.0</LangVersion>
+    <NoWarn>1701;1702;VSTHRD003;VSTHRD100;VSTHRD103;VSTHRD200</NoWarn>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DocumentationFile>ChummerHub.xml</DocumentationFile>
     <LangVersion>8.0</LangVersion>
+    <NoWarn>1701;1702;VSTHRD003;VSTHRD100;VSTHRD103;VSTHRD200</NoWarn>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release (for Testing)|AnyCPU'">
     <DocumentationFile>ChummerHub.xml</DocumentationFile>
     <LangVersion>8.0</LangVersion>
+    <NoWarn>1701;1702;VSTHRD003;VSTHRD100;VSTHRD103;VSTHRD200</NoWarn>
   </PropertyGroup>
   <ItemGroup>
 
