@@ -1666,11 +1666,13 @@ namespace Chummer
         /// Nearly identical to Convert.FromBase64String(), but the byte array that's returned is from a shared ArrayPool instead of newly allocated.
         /// </summary>
         /// <param name="s">The string to convert.</param>
+        /// <param name="token">Cancellation token to listen to, if any.</param>
         /// <returns>A rented array (from ArrayPool.Shared) of 8-bit unsigned integers that is equivalent to s.</returns>
         /// <exception cref="ArgumentNullException">s is null.</exception>
         /// <exception cref="FormatException">The length of s, ignoring white-space characters, is not zero or a multiple of 4. -or-The format of s is invalid. s contains a non-base-64 character, more than two padding characters, or a non-white space-character among the padding characters.</exception>
-        public static byte[] ToBase64PooledByteArray(this string s)
+        public static byte[] ToBase64PooledByteArray(this string s, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (s == null)
             {
                 throw new ArgumentNullException(nameof(s));
@@ -1685,6 +1687,7 @@ namespace Chummer
                         int inputLength = s.Length;
                         while (inputLength > 0)
                         {
+                            token.ThrowIfCancellationRequested();
                             int num = inputPtr[inputLength - 1];
                             if (num != 32 && num != 10 && num != 13 && num != 9)
                             {
@@ -1720,6 +1723,7 @@ namespace Chummer
                         int num2 = 0;
                         while (inputPtr < ptr)
                         {
+                            token.ThrowIfCancellationRequested();
                             uint num3 = *inputPtr;
                             inputPtr++;
                             switch (num3)
@@ -1797,6 +1801,7 @@ namespace Chummer
                         uint num = 255u;
                         while (ptr < ptr3)
                         {
+                            token.ThrowIfCancellationRequested();
                             uint num2 = *ptr;
                             ptr++;
                             if (num2 - 65 <= 25)
@@ -1919,6 +1924,259 @@ namespace Chummer
                         }
 
                         return (int)(ptr2 - startDestPtr);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Reads the specified string that encodes binary data as base-64 digits into a stream directly.
+        /// Much more memory-efficient version of Convert.FromBase64String() if the byte array would just be immediately fed into a stream anyway.
+        /// </summary>
+        /// <param name="s">The string to convert and feed into <paramref name="stream"/>.</param>
+        /// <param name="stream">Stream to hold the byte array of the base-64 decoded version of <paramref name="s"/>.</param>
+        /// <param name="token">Cancellation token to listen to, if any.</param>
+        /// <exception cref="ArgumentNullException">s is null.</exception>
+        /// <exception cref="FormatException">The length of s, ignoring white-space characters, is not zero or a multiple of 4. -or-The format of s is invalid. s contains a non-base-64 character, more than two padding characters, or a non-white space-character among the padding characters.</exception>
+        public static void ToBase64Stream(this string s, Stream stream, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (s == null)
+            {
+                throw new ArgumentNullException(nameof(s));
+            }
+
+            unchecked
+            {
+                unsafe
+                {
+                    fixed (char* inputPtr = s)
+                    {
+                        int inputLength = s.Length;
+                        while (inputLength > 0)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            int num = inputPtr[inputLength - 1];
+                            if (num != 32 && num != 10 && num != 13 && num != 9)
+                            {
+                                break;
+                            }
+
+                            inputLength--;
+                        }
+
+                        int num2 = FromBase64_ComputeResultLength(inputPtr, inputLength);
+                        stream.Position = 0;
+                        stream.SetLength(num2);
+                        _ = FromBase64_Decode(inputPtr, inputLength, 0, num2);
+                    }
+
+                    int FromBase64_ComputeResultLength(char* inputPtr, int inputLength)
+                    {
+                        char* ptr = inputPtr + inputLength;
+                        int num = inputLength;
+                        int num2 = 0;
+                        while (inputPtr < ptr)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            uint num3 = *inputPtr;
+                            inputPtr++;
+                            switch (num3)
+                            {
+                                case 0u:
+                                case 1u:
+                                case 2u:
+                                case 3u:
+                                case 4u:
+                                case 5u:
+                                case 6u:
+                                case 7u:
+                                case 8u:
+                                case 9u:
+                                case 10u:
+                                case 11u:
+                                case 12u:
+                                case 13u:
+                                case 14u:
+                                case 15u:
+                                case 16u:
+                                case 17u:
+                                case 18u:
+                                case 19u:
+                                case 20u:
+                                case 21u:
+                                case 22u:
+                                case 23u:
+                                case 24u:
+                                case 25u:
+                                case 26u:
+                                case 27u:
+                                case 28u:
+                                case 29u:
+                                case 30u:
+                                case 31u:
+                                case 32u:
+                                    num--;
+                                    break;
+
+                                case 61u:
+                                    num--;
+                                    num2++;
+                                    break;
+                            }
+                        }
+
+                        switch (num2)
+                        {
+                            case 1:
+                                num2 = 2;
+                                break;
+
+                            case 2:
+                                num2 = 1;
+                                break;
+
+                            case 0:
+                                break;
+
+                            default:
+                                throw new FormatException(
+                                    "The input is not a valid Base-64 string as it contains a non-base 64 character, more than two padding characters, or an illegal character among the padding characters.");
+                        }
+
+                        return num / 4 * 3 + num2;
+                    }
+
+                    int FromBase64_Decode(char* startInputPtr, int inputLength, int startPosition, int destLength)
+                    {
+                        char* ptr = startInputPtr;
+                        char* ptr3 = ptr + inputLength;
+                        int endPosition = startPosition + destLength;
+                        uint num = 255u;
+                        while (ptr < ptr3)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            uint num2 = *ptr;
+                            ptr++;
+                            if (num2 - 65 <= 25)
+                            {
+                                num2 -= 65;
+                            }
+                            else if (num2 - 97 <= 25)
+                            {
+                                num2 -= 71;
+                            }
+                            else if (num2 - 48 <= 9)
+                            {
+                                num2 -= 4294967292u;
+                            }
+                            else
+                            {
+                                if (num2 <= 32)
+                                {
+                                    if (num2 - 9 <= 1 || num2 == 13 || num2 == 32)
+                                    {
+                                        continue;
+                                    }
+
+                                    goto IL_0097;
+                                }
+
+                                if (num2 != 43)
+                                {
+                                    if (num2 != 47)
+                                    {
+                                        if (num2 != 61)
+                                        {
+                                            goto IL_0097;
+                                        }
+
+                                        if (ptr == ptr3)
+                                        {
+                                            num <<= 6;
+                                            if ((num & 0x80000000u) == 0)
+                                            {
+                                                throw new FormatException(
+                                                    "Invalid length for a Base-64 char array or string.");
+                                            }
+
+                                            if ((int)(endPosition - stream.Position) < 2)
+                                            {
+                                                return -1;
+                                            }
+
+                                            stream.WriteByte((byte)(num >> 16));
+                                            stream.WriteByte((byte)(num >> 8));
+                                            num = 255u;
+                                            break;
+                                        }
+
+                                        for (; ptr < ptr3 - 1; ptr++)
+                                        {
+                                            int num3 = *ptr;
+                                            if (num3 != 32 && num3 != 10 && num3 != 13 && num3 != 9)
+                                            {
+                                                break;
+                                            }
+                                        }
+
+                                        if (ptr == ptr3 - 1 && *ptr == '=')
+                                        {
+                                            num <<= 12;
+                                            if ((num & 0x80000000u) == 0)
+                                            {
+                                                throw new FormatException(
+                                                    "Invalid length for a Base-64 char array or string.");
+                                            }
+
+                                            if ((int)(endPosition - stream.Position) < 1)
+                                            {
+                                                return -1;
+                                            }
+
+                                            stream.WriteByte((byte)(num >> 16));
+                                            num = 255u;
+                                            break;
+                                        }
+
+                                        throw new FormatException(
+                                            "The input is not a valid Base-64 string as it contains a non-base 64 character, more than two padding characters, or an illegal character among the padding characters.");
+                                    }
+
+                                    num2 = 63u;
+                                }
+                                else
+                                {
+                                    num2 = 62u;
+                                }
+                            }
+
+                            num = (num << 6) | num2;
+                            if ((num & 0x80000000u) != 0)
+                            {
+                                if ((int)(endPosition - stream.Position) < 3)
+                                {
+                                    return -1;
+                                }
+
+                                stream.WriteByte((byte)(num >> 16));
+                                stream.WriteByte((byte)(num >> 8));
+                                stream.WriteByte((byte)num);
+                                num = 255u;
+                            }
+
+                            continue;
+                        IL_0097:
+                            throw new FormatException(
+                                "The input is not a valid Base-64 string as it contains a non-base 64 character, more than two padding characters, or an illegal character among the padding characters.");
+                        }
+
+                        if (num != 255)
+                        {
+                            throw new FormatException("Invalid length for a Base-64 char array or string.");
+                        }
+
+                        return (int)(stream.Position - startPosition);
                     }
                 }
             }

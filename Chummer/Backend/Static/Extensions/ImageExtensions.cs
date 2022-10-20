@@ -18,13 +18,12 @@
  */
 
 using System;
-using System.Buffers;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.IO;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.IO;
 using NLog;
 
 namespace Chummer
@@ -205,7 +204,7 @@ namespace Chummer
 
             try
             {
-                using (MemoryStream objImageStream = new MemoryStream())
+                using (RecyclableMemoryStream objImageStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
                 {
                     bmpClone.Save(objImageStream, s_LzyJpegEncoder.Value, lstJpegParameters);
                     objImageStream.Position = 0;
@@ -258,7 +257,7 @@ namespace Chummer
             {
                 try
                 {
-                    using (MemoryStream objImageStream = new MemoryStream())
+                    using (RecyclableMemoryStream objImageStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
                     {
                         bmpClone.Save(objImageStream, s_LzyJpegEncoder.Value, lstJpegParameters);
                         token.ThrowIfCancellationRequested();
@@ -283,24 +282,11 @@ namespace Chummer
         {
             if (string.IsNullOrEmpty(strBase64String))
                 return default;
-            Image imgReturn = null;
-            byte[] achrImage = strBase64String.ToBase64PooledByteArray();
-            try
+            using (RecyclableMemoryStream objStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
             {
-                if (achrImage.Length > 0)
-                {
-                    using (MemoryStream objStream = new MemoryStream(achrImage, 0, achrImage.Length))
-                    {
-                        imgReturn = Image.FromStream(objStream, true);
-                    }
-                }
+                strBase64String.ToBase64Stream(objStream);
+                return Image.FromStream(objStream, true);
             }
-            finally
-            {
-                ArrayPool<byte>.Shared.Return(achrImage, true);
-            }
-
-            return imgReturn;
         }
 
         /// <summary>
@@ -342,27 +328,12 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             return string.IsNullOrEmpty(strBase64String)
                 ? default
-                : await Task.Run(async () =>
+                : await Task.Run(() =>
                 {
-                    byte[] achrImage = strBase64String.ToBase64PooledByteArray();
-                    try
+                    using (RecyclableMemoryStream objStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
                     {
-                        token.ThrowIfCancellationRequested();
-                        if (achrImage.Length > 0)
-                        {
-                            using (MemoryStream objStream = new MemoryStream(achrImage.Length))
-                            {
-                                await objStream.WriteAsync(achrImage, 0, achrImage.Length, token)
-                                               .ConfigureAwait(false);
-                                return Image.FromStream(objStream, true);
-                            }
-                        }
-
-                        return null;
-                    }
-                    finally
-                    {
-                        ArrayPool<byte>.Shared.Return(achrImage, true);
+                        strBase64String.ToBase64Stream(objStream, token: token);
+                        return Image.FromStream(objStream, true);
                     }
                 }, token).ConfigureAwait(false);
         }
@@ -427,7 +398,7 @@ namespace Chummer
 
             try
             {
-                using (MemoryStream objImageStream = new MemoryStream())
+                using (RecyclableMemoryStream objImageStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
                 {
                     if (eOverrideFormat == null)
                     {
@@ -441,15 +412,7 @@ namespace Chummer
                     }
 
                     bmpClone.Save(objImageStream, eOverrideFormat);
-                    byte[] achrData = objImageStream.ToPooledArray();
-                    try
-                    {
-                        return Convert.ToBase64String(achrData);
-                    }
-                    finally
-                    {
-                        ArrayPool<byte>.Shared.Return(achrData, true);
-                    }
+                    return objImageStream.ToBase64String();
                 }
             }
             finally
@@ -488,18 +451,10 @@ namespace Chummer
 
             try
             {
-                using (MemoryStream objImageStream = new MemoryStream())
+                using (RecyclableMemoryStream objImageStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
                 {
                     bmpClone.Save(objImageStream, objCodecInfo, lstEncoderParameters);
-                    byte[] achrData = objImageStream.ToPooledArray();
-                    try
-                    {
-                        return Convert.ToBase64String(achrData);
-                    }
-                    finally
-                    {
-                        ArrayPool<byte>.Shared.Return(achrData, true);
-                    }
+                    return objImageStream.ToBase64String();
                 }
             }
             finally
@@ -538,11 +493,11 @@ namespace Chummer
                 break;
             }
 
-            return await Task.Run(async () =>
+            return await Task.Run(() =>
             {
                 try
                 {
-                    using (MemoryStream objImageStream = new MemoryStream())
+                    using (RecyclableMemoryStream objImageStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
                     {
                         if (eOverrideFormat == null)
                         {
@@ -557,16 +512,7 @@ namespace Chummer
 
                         bmpClone.Save(objImageStream, eOverrideFormat);
                         token.ThrowIfCancellationRequested();
-                        byte[] achrData = await objImageStream.ToPooledArrayAsync(token).ConfigureAwait(false);
-                        try
-                        {
-                            token.ThrowIfCancellationRequested();
-                            return Convert.ToBase64String(achrData);
-                        }
-                        finally
-                        {
-                            ArrayPool<byte>.Shared.Return(achrData, true);
-                        }
+                        return objImageStream.ToBase64String(token: token);
                     }
                 }
                 finally
@@ -607,24 +553,15 @@ namespace Chummer
                 break;
             }
 
-            return await Task.Run(async () =>
+            return await Task.Run(() =>
             {
                 try
                 {
-                    using (MemoryStream objImageStream = new MemoryStream())
+                    using (RecyclableMemoryStream objImageStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
                     {
                         bmpClone.Save(objImageStream, objCodecInfo, lstEncoderParameters);
                         token.ThrowIfCancellationRequested();
-                        byte[] achrData = await objImageStream.ToPooledArrayAsync(token).ConfigureAwait(false);
-                        try
-                        {
-                            token.ThrowIfCancellationRequested();
-                            return Convert.ToBase64String(achrData);
-                        }
-                        finally
-                        {
-                            ArrayPool<byte>.Shared.Return(achrData, true);
-                        }
+                        return objImageStream.ToBase64String(token: token);
                     }
                 }
                 finally
@@ -668,18 +605,10 @@ namespace Chummer
 
             try
             {
-                using (MemoryStream objImageStream = new MemoryStream())
+                using (RecyclableMemoryStream objImageStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
                 {
                     bmpClone.Save(objImageStream, s_LzyJpegEncoder.Value, lstJpegParameters);
-                    byte[] achrData = objImageStream.ToPooledArray();
-                    try
-                    {
-                        return Convert.ToBase64String(achrData);
-                    }
-                    finally
-                    {
-                        ArrayPool<byte>.Shared.Return(achrData, true);
-                    }
+                    return objImageStream.ToBase64String();
                 }
             }
             finally
@@ -723,24 +652,15 @@ namespace Chummer
                 Param = { [0] = new EncoderParameter(Encoder.Quality, ProcessJpegQualitySetting(bmpClone, intQuality)) }
             };
             token.ThrowIfCancellationRequested();
-            return await Task.Run(async () =>
+            return await Task.Run(() =>
             {
                 try
                 {
-                    using (MemoryStream objImageStream = new MemoryStream())
+                    using (RecyclableMemoryStream objImageStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
                     {
                         bmpClone.Save(objImageStream, s_LzyJpegEncoder.Value, lstJpegParameters);
                         token.ThrowIfCancellationRequested();
-                        byte[] achrData = await objImageStream.ToPooledArrayAsync(token).ConfigureAwait(false);
-                        try
-                        {
-                            token.ThrowIfCancellationRequested();
-                            return Convert.ToBase64String(achrData);
-                        }
-                        finally
-                        {
-                            ArrayPool<byte>.Shared.Return(achrData, true);
-                        }
+                        return objImageStream.ToBase64String(token: token);
                     }
                 }
                 finally

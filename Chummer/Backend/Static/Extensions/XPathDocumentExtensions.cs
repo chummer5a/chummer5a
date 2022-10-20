@@ -23,6 +23,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using System.Xml;
 using System.Xml.XPath;
+using Microsoft.IO;
 
 namespace Chummer
 {
@@ -83,7 +84,7 @@ namespace Chummer
         public static XPathDocument LoadStandardFromLzmaCompressedFile(string strFileName, bool blnSafe = true)
         {
             using (FileStream objFileStream = new FileStream(strFileName, FileMode.Open, FileAccess.Read, FileShare.Read))
-            using (MemoryStream objMemoryStream = new MemoryStream((int)objFileStream.Length))
+            using (RecyclableMemoryStream objMemoryStream = new RecyclableMemoryStream(Utils.MemoryStreamManager, "LzmaMemoryStream", (int)objFileStream.Length))
             {
                 objFileStream.DecompressLzmaFile(objMemoryStream);
                 objMemoryStream.Seek(0, SeekOrigin.Begin);
@@ -111,7 +112,7 @@ namespace Chummer
                 using (FileStream objFileStream = new FileStream(strFileName, FileMode.Open, FileAccess.Read, FileShare.Read))
                 {
                     token.ThrowIfCancellationRequested();
-                    using (MemoryStream objMemoryStream = new MemoryStream((int)objFileStream.Length))
+                    using (RecyclableMemoryStream objMemoryStream = new RecyclableMemoryStream(Utils.MemoryStreamManager, "LzmaMemoryStream", (int)objFileStream.Length))
                     {
                         await objFileStream.DecompressLzmaFileAsync(objMemoryStream, token: token).ConfigureAwait(false);
                         token.ThrowIfCancellationRequested();

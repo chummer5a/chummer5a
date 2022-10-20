@@ -42,6 +42,7 @@ using Microsoft.VisualStudio.Threading;
 using Microsoft.Win32;
 using NLog;
 using IAsyncDisposable = System.IAsyncDisposable;
+using Microsoft.IO;
 
 namespace Chummer
 {
@@ -2407,5 +2408,10 @@ namespace Chummer
         [CLSCompliant(false)]
         public static SafeDisposableObjectPool<DebuggableSemaphoreSlim> SemaphorePool { get; }
             = new SafeDisposableObjectPool<DebuggableSemaphoreSlim>(Math.Max(MaxParallelBatchSize, 256), () => new DebuggableSemaphoreSlim());
+
+        /// <summary>
+        /// RecyclableMemoryStreamManager to be used for all RecyclableMemoryStream constructors.
+        /// </summary>
+        public static RecyclableMemoryStreamManager MemoryStreamManager { get; } = new RecyclableMemoryStreamManager();
     }
 }
