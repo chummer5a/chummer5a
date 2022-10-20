@@ -28,6 +28,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.XPath;
+using Microsoft.IO;
 using NLog;
 
 namespace Chummer
@@ -145,12 +146,12 @@ namespace Chummer
                         if (objContent != null)
                         {
                             _blnInitialLoadComplete = true;
-                            using (MemoryStream memStream = new MemoryStream())
+                            using (RecyclableMemoryStream objStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
                             {
-                                objContent.Save(memStream);
-                                memStream.Position = 0;
+                                objContent.Save(objStream);
+                                objStream.Position = 0;
                                 using (XmlReader objXmlReader
-                                       = XmlReader.Create(memStream, GlobalSettings.SafeXmlReaderSettings))
+                                       = XmlReader.Create(objStream, GlobalSettings.SafeXmlReaderSettings))
                                     _objXPathContent = new XPathDocument(objXmlReader);
                             }
                         }
@@ -176,12 +177,12 @@ namespace Chummer
                         if (objContent != null)
                         {
                             _blnInitialLoadComplete = true;
-                            using (MemoryStream memStream = new MemoryStream())
+                            using (RecyclableMemoryStream objStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
                             {
-                                objContent.Save(memStream);
-                                memStream.Position = 0;
+                                objContent.Save(objStream);
+                                objStream.Position = 0;
                                 using (XmlReader objXmlReader
-                                       = XmlReader.Create(memStream, GlobalSettings.SafeXmlReaderSettings))
+                                       = XmlReader.Create(objStream, GlobalSettings.SafeXmlReaderSettings))
                                     _objXPathContent = new XPathDocument(objXmlReader);
                             }
                         }
@@ -524,12 +525,12 @@ namespace Chummer
                 if (GlobalSettings.LiveCustomData && strFileName != "improvements.xml" && xmlDocumentOfReturn != null)
                 {
                     token.ThrowIfCancellationRequested();
-                    using (MemoryStream memStream = new MemoryStream())
+                    using (RecyclableMemoryStream objStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
                     {
-                        xmlDocumentOfReturn.Save(memStream);
-                        memStream.Position = 0;
+                        xmlDocumentOfReturn.Save(objStream);
+                        objStream.Position = 0;
                         using (XmlReader objXmlReader
-                               = XmlReader.Create(memStream, GlobalSettings.SafeXmlReaderSettings))
+                               = XmlReader.Create(objStream, GlobalSettings.SafeXmlReaderSettings))
                             return new XPathDocument(objXmlReader).CreateNavigator();
                     }
                 }

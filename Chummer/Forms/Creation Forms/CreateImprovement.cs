@@ -28,6 +28,7 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
 using Chummer.Backend.Skills;
+using Microsoft.IO;
 
 namespace Chummer
 {
@@ -707,7 +708,7 @@ namespace Chummer
             }
 
             XmlDocument objBonusXml = new XmlDocument { XmlResolver = null };
-            using (MemoryStream objStream = new MemoryStream())
+            using (RecyclableMemoryStream objStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
             {
                 using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
                 {

@@ -33,6 +33,7 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Xsl;
 using Codaxy.WkHtmlToPdf;
+using Microsoft.IO;
 using Microsoft.Win32;
 using NLog;
 
@@ -875,7 +876,7 @@ namespace Chummer
 
                 string strOutput = await Task.Run(async () =>
                 {
-                    using (MemoryStream objStream = new MemoryStream())
+                    using (RecyclableMemoryStream objStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
                     {
                         using (XmlWriter objWriter = objSettings != null
                                    ? XmlWriter.Create(objStream, objSettings)

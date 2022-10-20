@@ -44,6 +44,7 @@ using System.Runtime.Serialization;
 using System.Threading;
 using Chummer.Plugins;
 using Microsoft.ApplicationInsights;
+using Microsoft.IO;
 using Newtonsoft.Json;
 using NLog;
 using Application = System.Windows.Forms.Application;
@@ -2905,7 +2906,7 @@ namespace Chummer
 
                 void DoSave()
                 {
-                    using (MemoryStream objStream = new MemoryStream())
+                    using (RecyclableMemoryStream objStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
                     {
                         using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
                         {
@@ -3713,7 +3714,7 @@ namespace Chummer
 
                 async Task DoSaveAsync(CancellationToken innerToken = default)
                 {
-                    using (MemoryStream objStream = new MemoryStream())
+                    using (RecyclableMemoryStream objStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
                     {
                         using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
                         {

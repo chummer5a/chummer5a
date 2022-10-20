@@ -32,6 +32,7 @@ using System.Xml.XPath;
 using Chummer.Plugins;
 using iText.Kernel.Pdf;
 using iText.Kernel.Pdf.Canvas.Parser.Listener;
+using Microsoft.IO;
 using NLog;
 using Application = System.Windows.Forms.Application;
 
@@ -810,9 +811,10 @@ namespace Chummer
                     return;
                 }
 
-                using (MemoryStream ms = new MemoryStream(bytes))
+                using (RecyclableMemoryStream objStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
                 {
-                    using (StreamReader reader = new StreamReader(ms, Encoding.UTF8, true))
+                    await objStream.WriteAsync(bytes, 0, bytes.Length).ConfigureAwait(false);
+                    using (StreamReader reader = new StreamReader(objStream, Encoding.UTF8, true))
                     {
                         string response = await reader.ReadToEndAsync().ConfigureAwait(false);
                         Clipboard.SetText(response);
