@@ -2776,7 +2776,7 @@ namespace Chummer
                     {
                         XmlDocument objDummyDocument = new XmlDocument { XmlResolver = null };
                         //For every 3 full points of Force a spirit has, it may gain one Optional Power.
-                        for (int i = intForce - 3; i >= 0; i -= 3)
+                        for (int i = intForce; i >= 3; i -= 3)
                         {
                             XmlNode bonusNode = objDummyDocument.CreateNode(XmlNodeType.Element, "bonus", null);
                             XmlNode powerNode =
