@@ -902,10 +902,8 @@ namespace Chummer.UI.Skills
                         strSelectedSkill = form.MyForm.SelectedItem;
                     }
 
-                    KnowledgeSkill skill = new KnowledgeSkill(_objCharacter)
-                    {
-                        WritableName = strSelectedSkill
-                    };
+                    KnowledgeSkill skill = new KnowledgeSkill(_objCharacter);
+                    await skill.SetWriteableNameAsync(strSelectedSkill, MyToken).ConfigureAwait(false);
 
                     if (await _objCharacter.SkillsSection.GetHasAvailableNativeLanguageSlotsAsync(MyToken)
                                            .ConfigureAwait(false)
@@ -916,7 +914,8 @@ namespace Chummer.UI.Skills
                                                                             string.Format(GlobalSettings.CultureInfo,
                                                                                 await LanguageManager
                                                                                     .GetStringAsync(
-                                                                                        "Message_NewNativeLanguageSkill", token: MyToken)
+                                                                                        "Message_NewNativeLanguageSkill",
+                                                                                        token: MyToken)
                                                                                     .ConfigureAwait(false),
                                                                                 1 + await ImprovementManager
                                                                                     .ValueOfAsync(
@@ -925,7 +924,9 @@ namespace Chummer.UI.Skills
                                                                                             .NativeLanguageLimit,
                                                                                         token: MyToken)
                                                                                     .ConfigureAwait(false),
-                                                                                skill.WritableName),
+                                                                                await skill
+                                                                                    .GetWriteableNameAsync(MyToken)
+                                                                                    .ConfigureAwait(false)),
                                                                             await LanguageManager
                                                                                 .GetStringAsync(
                                                                                     "Tip_Skill_NativeLanguage",

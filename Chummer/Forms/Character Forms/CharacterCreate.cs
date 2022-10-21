@@ -4942,7 +4942,7 @@ namespace Chummer
                                     x.SourceIDString.Equals(
                                         strSelectedQuality,
                                         StringComparison
-                                            .InvariantCultureIgnoreCase)
+                                            .OrdinalIgnoreCase)
                                     && string.IsNullOrEmpty(
                                         x.SourceName), GenericToken).ConfigureAwait(false);
                             }

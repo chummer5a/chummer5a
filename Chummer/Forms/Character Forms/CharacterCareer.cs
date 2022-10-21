@@ -6714,7 +6714,7 @@ namespace Chummer
                             string strQuality = frmPickQuality.MyForm.SelectedQuality;
                             intRatingToAdd -= await CharacterObject.Qualities.CountAsync(x =>
                                 x.SourceIDString.Equals(strQuality,
-                                                        StringComparison.InvariantCultureIgnoreCase)
+                                                        StringComparison.OrdinalIgnoreCase)
                                 && string.IsNullOrEmpty(x.SourceName), GenericToken).ConfigureAwait(false);
                         }
                     }
@@ -6928,7 +6928,7 @@ namespace Chummer
                         string strQuality = frmPickQuality.MyForm.SelectedQuality;
                         intRatingToAdd -= await CharacterObject.Qualities.CountAsync(x =>
                             x.SourceIDString.Equals(strQuality,
-                                                    StringComparison.InvariantCultureIgnoreCase) && string.IsNullOrEmpty(x.SourceName), GenericToken).ConfigureAwait(false);
+                                                    StringComparison.OrdinalIgnoreCase) && string.IsNullOrEmpty(x.SourceName), GenericToken).ConfigureAwait(false);
                     }
                 }
 

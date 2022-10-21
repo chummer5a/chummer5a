@@ -218,7 +218,7 @@ namespace Chummer.Backend.Skills
                 {
                     if (ForcedName)
                         return;
-                    if (string.Equals(CurrentDisplayName, value, StringComparison.CurrentCulture))
+                    if (string.Equals(CurrentDisplayName, value, StringComparison.Ordinal))
                         return;
                     using (LockObject.EnterWriteLock())
                     {
@@ -230,15 +230,15 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        public ValueTask<string> GetWriteableNameAsync(CancellationToken token = default) => GetCurrentDisplayNameAsync(token);
+        public ValueTask<string> GetWritableNameAsync(CancellationToken token = default) => GetCurrentDisplayNameAsync(token);
 
-        public async ValueTask SetWriteableNameAsync(string value, CancellationToken token = default)
+        public async ValueTask SetWritableNameAsync(string value, CancellationToken token = default)
         {
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
                 if (ForcedName)
                     return;
-                if (string.Equals(await GetCurrentDisplayNameAsync(token).ConfigureAwait(false), value, StringComparison.CurrentCulture))
+                if (string.Equals(await GetCurrentDisplayNameAsync(token).ConfigureAwait(false), value, StringComparison.Ordinal))
                     return;
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try

@@ -4625,7 +4625,7 @@ namespace Chummer.Backend.Equipment
                     string strImprovedName = objImprovement.ImprovedName;
                     if (strImprovedName.StartsWith("[contains]", StringComparison.Ordinal)
                         && strNameUpper.Contains(strImprovedName.TrimStartOnce("[contains]", true),
-                                                 StringComparison.InvariantCultureIgnoreCase))
+                                                 StringComparison.OrdinalIgnoreCase))
                     {
                         decImproveAccuracy += objImprovement.Value;
                     }
@@ -4757,7 +4757,7 @@ namespace Chummer.Backend.Equipment
                 string strImprovedName = objImprovement.ImprovedName;
                 if (strImprovedName.StartsWith("[contains]", StringComparison.Ordinal)
                     && strNameUpper.Contains(strImprovedName.TrimStartOnce("[contains]", true),
-                                             StringComparison.InvariantCultureIgnoreCase))
+                                             StringComparison.OrdinalIgnoreCase))
                 {
                     decImproveAccuracy += objImprovement.Value;
                 }
@@ -5075,7 +5075,7 @@ namespace Chummer.Backend.Equipment
                                                               "[contains]", StringComparison.Ordinal)
                                                           && strNameUpper.Contains(
                                                               strImprovedName.TrimStartOnce("[contains]", true),
-                                                              StringComparison.InvariantCultureIgnoreCase))
+                                                              StringComparison.OrdinalIgnoreCase))
                     decImproveAccuracy += objImprovement.Value;
             }
 

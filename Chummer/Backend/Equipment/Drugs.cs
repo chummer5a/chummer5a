@@ -1336,7 +1336,7 @@ namespace Chummer.Backend.Equipment
 
                     string strRating = objXmlAddQuality.Attributes?["rating"]?.InnerText;
                     int intCount = string.IsNullOrEmpty(strRating) ? 1 : ImprovementManager.ValueToInt(_objCharacter, strRating, 1);
-                    bool blnDoesNotContributeToBP = !string.Equals(objXmlAddQuality.Attributes?["contributetobp"]?.InnerText, bool.TrueString, StringComparison.CurrentCultureIgnoreCase);
+                    bool blnDoesNotContributeToBP = !string.Equals(objXmlAddQuality.Attributes?["contributetobp"]?.InnerText, bool.TrueString, StringComparison.OrdinalIgnoreCase);
 
                     for (int i = 0; i < intCount; ++i)
                     {
