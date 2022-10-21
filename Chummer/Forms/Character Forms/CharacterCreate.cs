@@ -16777,7 +16777,7 @@ namespace Chummer
                 try
                 {
                     // Check if the character has more than 1 Martial Art, not counting qualities. TODO: Make the OTP check an optional rule. Make the Martial Arts limit an optional rule.
-                    int intMartialArts = await CharacterObject.MartialArts.CountAsync(objArt => !objArt.IsQuality, token).ConfigureAwait(false);
+                    int intMartialArts = await (await CharacterObject.GetMartialArtsAsync(token)).CountAsync(objArt => !objArt.IsQuality, token).ConfigureAwait(false);
                     if (intMartialArts > 1)
                     {
                         blnValid = false;
@@ -16790,11 +16790,11 @@ namespace Chummer
                     }
 
                     // Check if the character has more than 5 Techniques in a Martial Art
-                    if (CharacterObject.MartialArts.Count > 0)
+                    if (await (await CharacterObject.GetMartialArtsAsync(token)).GetCountAsync(token).ConfigureAwait(false) > 0)
                     {
-                        int intTechniques = 0;
-                        foreach (MartialArt objLoopArt in CharacterObject.MartialArts)
-                            intTechniques += objLoopArt.Techniques.Count;
+                        int intTechniques
+                            = await (await CharacterObject.GetMartialArtsAsync(token)).SumAsync(
+                                x => x.Techniques.GetCountAsync(token).AsTask(), token);
                         if (intTechniques > 5)
                         {
                             blnValid = false;
@@ -16851,13 +16851,13 @@ namespace Chummer
                     // Check if the character has gone over the Build Point total.
                     if (!blnUseArgBuildPoints)
                         intBuildPoints = await CalculateBP(false, token).ConfigureAwait(false);
-                    int intStagedPurchaseQualityPoints = await CharacterObject.Qualities
-                                                                              .SumAsync(objQuality =>
-                                                                                      objQuality.StagedPurchase
-                                                                                      && objQuality.Type
-                                                                                      == QualityType.Positive
-                                                                                      && objQuality.ContributeToBP,
-                                                                                  x => x.BP, token).ConfigureAwait(false);
+                    int intStagedPurchaseQualityPoints = await (await CharacterObject.GetQualitiesAsync(token).ConfigureAwait(false))
+                                                               .SumAsync(objQuality =>
+                                                                             objQuality.StagedPurchase
+                                                                             && objQuality.Type
+                                                                             == QualityType.Positive
+                                                                             && objQuality.ContributeToBP,
+                                                                         x => x.BP, token).ConfigureAwait(false);
                     if (intBuildPoints + intStagedPurchaseQualityPoints < 0 && !_blnFreestyle)
                     {
                         blnValid = false;
@@ -17273,54 +17273,80 @@ namespace Chummer
                     if (CharacterObjectSettings.EnforceCapacity)
                     {
                         List<string> lstOverCapacity = new List<string>(1);
-                        bool blnOverCapacity = false;
                         int intCapacityOver = 0;
                         // Armor Capacity.
-                        foreach (Armor objArmor in CharacterObject.Armor.Where(
-                                     objArmor => objArmor.CapacityRemaining < 0))
+                        foreach (Armor objArmor in CharacterObject.Armor)
                         {
-                            blnOverCapacity = true;
-                            lstOverCapacity.Add(objArmor.Name);
-                            intCapacityOver++;
+                            if (objArmor.CapacityRemaining < 0)
+                            {
+                                lstOverCapacity.Add(await objArmor.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false));
+                                intCapacityOver++;
+                            }
+
+                            foreach (Gear objGear in objArmor.GearChildren.DeepWhere(
+                                         x => x.Children, x => x.CapacityRemaining < 0))
+                            {
+                                lstOverCapacity.Add(await objGear.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false));
+                                intCapacityOver++;
+                            }
+
+                            foreach (ArmorMod objArmorMod in objArmor.ArmorMods)
+                            {
+                                foreach (Gear objGear in objArmorMod.GearChildren.DeepWhere(
+                                             x => x.Children, x => x.CapacityRemaining < 0))
+                                {
+                                    lstOverCapacity.Add(await objGear.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false));
+                                    intCapacityOver++;
+                                }
+                            }
+                        }
+
+                        foreach (Weapon objWeapon in CharacterObject.Weapons.DeepWhere(
+                                     x => x.Children, x => x.WeaponAccessories.Count > 0))
+                        {
+                            foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
+                            {
+                                foreach (Gear objGear in objAccessory.GearChildren.DeepWhere(
+                                             x => x.Children, x => x.CapacityRemaining < 0))
+                                {
+                                    lstOverCapacity.Add(await objGear.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false));
+                                    intCapacityOver++;
+                                }
+                            }
                         }
 
                         // Gear Capacity.
-                        foreach (Gear objGear in CharacterObject.Gear)
+                        foreach (Gear objGear in CharacterObject.Gear.DeepWhere(
+                                     x => x.Children, x => x.CapacityRemaining < 0))
                         {
-                            if (objGear.CapacityRemaining < 0)
-                            {
-                                blnOverCapacity = true;
-                                lstOverCapacity.Add(objGear.Name);
-                                intCapacityOver++;
-                            }
-
-                            // Child Gear.
-                            foreach (Gear objChild in
-                                     objGear.Children.Where(objChild => objChild.CapacityRemaining < 0))
-                            {
-                                blnOverCapacity = true;
-                                lstOverCapacity.Add(objChild.Name);
-                                intCapacityOver++;
-                            }
+                            lstOverCapacity.Add(await objGear.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false));
+                            intCapacityOver++;
                         }
 
                         // Cyberware Capacity.
-                        foreach (Cyberware objCyberware in CharacterObject.Cyberware)
+                        foreach (Cyberware objCyberware in CharacterObject.Cyberware.GetAllDescendants(x => x.Children))
                         {
                             if (objCyberware.CapacityRemaining < 0)
                             {
-                                blnOverCapacity = true;
-                                lstOverCapacity.Add(objCyberware.Name);
+                                lstOverCapacity.Add(await objCyberware.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false));
                                 intCapacityOver++;
                             }
 
-                            // Check plugins.
-                            foreach (Cyberware objChild in objCyberware.Children.Where(
-                                         objChild => objChild.CapacityRemaining < 0))
+                            foreach(Gear objGear in objCyberware.GearChildren)
                             {
-                                blnOverCapacity = true;
-                                lstOverCapacity.Add(objChild.Name);
-                                intCapacityOver++;
+                                if (objGear.CapacityRemaining < 0)
+                                {
+                                    lstOverCapacity.Add(await objGear.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false));
+                                    intCapacityOver++;
+                                }
+
+                                // Child Gear.
+                                foreach (Gear objChild in objGear.Children.DeepWhere(
+                                             x => x.Children, x => x.CapacityRemaining < 0))
+                                {
+                                    lstOverCapacity.Add(await objChild.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false));
+                                    intCapacityOver++;
+                                }
                             }
                         }
 
@@ -17333,8 +17359,7 @@ namespace Chummer
                                 {
                                     if (objVehicle.DroneModSlotsUsed > objVehicle.DroneModSlots)
                                     {
-                                        blnOverCapacity = true;
-                                        lstOverCapacity.Add(objVehicle.Name);
+                                        lstOverCapacity.Add(await objVehicle.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false));
                                         intCapacityOver++;
                                     }
                                 }
@@ -17342,41 +17367,88 @@ namespace Chummer
                                 {
                                     if (objVehicle.OverR5Capacity())
                                     {
-                                        blnOverCapacity = true;
-                                        lstOverCapacity.Add(objVehicle.Name);
+                                        lstOverCapacity.Add(await objVehicle.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false));
                                         intCapacityOver++;
                                     }
                                 }
                             }
                             else if (objVehicle.Slots < objVehicle.SlotsUsed)
                             {
-                                blnOverCapacity = true;
-                                lstOverCapacity.Add(objVehicle.Name);
+                                lstOverCapacity.Add(await objVehicle.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false));
                                 intCapacityOver++;
                             }
 
-                            // Check Vehicle Gear.
-                            foreach (Gear objGear in objVehicle.GearChildren)
+                            foreach (VehicleMod objVehicleMod in objVehicle.Mods)
                             {
-                                if (objGear.CapacityRemaining < 0)
+                                foreach (Cyberware objCyberware in objVehicleMod.Cyberware.GetAllDescendants(x => x.Children))
                                 {
-                                    blnOverCapacity = true;
-                                    lstOverCapacity.Add(objGear.Name);
+                                    if (objCyberware.CapacityRemaining < 0)
+                                    {
+                                        lstOverCapacity.Add(await objCyberware.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false));
+                                        intCapacityOver++;
+                                    }
+
+                                    foreach (Gear objGear in objCyberware.GearChildren.DeepWhere(
+                                                 x => x.Children, x => x.CapacityRemaining < 0))
+                                    {
+                                        lstOverCapacity.Add(await objGear.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false));
+                                        intCapacityOver++;
+                                    }
+                                }
+                            }
+
+                            foreach (WeaponMount objMount in objVehicle.WeaponMounts)
+                            {
+                                if (objMount.Weapons.Count > objMount.WeaponCapacity)
+                                {
+                                    lstOverCapacity.Add(await objMount.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false));
                                     intCapacityOver++;
                                 }
 
-                                // Check Child Gear.
-                                foreach (Gear objChild in objGear.Children.Where(
-                                             objChild => objChild.CapacityRemaining < 0))
+                                foreach (Weapon objWeapon in objMount.Weapons.DeepWhere(
+                                             x => x.Children, x => x.WeaponAccessories.Count > 0))
                                 {
-                                    blnOverCapacity = true;
-                                    lstOverCapacity.Add(objChild.Name);
-                                    intCapacityOver++;
+                                    foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
+                                    {
+                                        foreach (Gear objGear in objAccessory.GearChildren.DeepWhere(
+                                                     x => x.Children, x => x.CapacityRemaining < 0))
+                                        {
+                                            lstOverCapacity.Add(await objGear.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false));
+                                            intCapacityOver++;
+                                        }
+                                    }
                                 }
+
+                                foreach (VehicleMod objVehicleMod in objMount.Mods)
+                                {
+                                    foreach (Cyberware objCyberware in objVehicleMod.Cyberware.GetAllDescendants(x => x.Children))
+                                    {
+                                        if (objCyberware.CapacityRemaining < 0)
+                                        {
+                                            lstOverCapacity.Add(await objCyberware.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false));
+                                            intCapacityOver++;
+                                        }
+
+                                        foreach (Gear objGear in objCyberware.GearChildren.DeepWhere(
+                                                     x => x.Children, x => x.CapacityRemaining < 0))
+                                        {
+                                            lstOverCapacity.Add(await objGear.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false));
+                                            intCapacityOver++;
+                                        }
+                                    }
+                                }
+                            }
+
+                            // Check Vehicle Gear.
+                            foreach (Gear objGear in objVehicle.GearChildren.DeepWhere(
+                                         x => x.Children, x => x.CapacityRemaining < 0))
+                            {
+                                lstOverCapacity.Add(await objGear.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false));
+                                intCapacityOver++;
                             }
                         }
 
-                        if (blnOverCapacity)
+                        if (intCapacityOver > 0)
                         {
                             blnValid = false;
                             sbdMessage.AppendLine().Append('\t').AppendFormat(
