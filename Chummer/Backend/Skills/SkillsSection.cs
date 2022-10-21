@@ -699,7 +699,7 @@ namespace Chummer.Backend.Skills
                             };
                             await objNewKnowledgeSkill.SetTypeAsync(
                                 await strKnowledgeSkillTypeToUse.GetValueAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
-                            await objNewKnowledgeSkill.SetWriteableNameAsync(await objSkill.GetNameAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
+                            await objNewKnowledgeSkill.SetWritableNameAsync(await objSkill.GetNameAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
                             await objNewKnowledgeSkill.Specializations.AddRangeAsync(objSkill.Specializations, token: token).ConfigureAwait(false);
                             await (await GetKnowledgeSkillsAsync(token).ConfigureAwait(false)).AddWithSortAsync(objNewKnowledgeSkill, (x, y) =>
                             {
@@ -963,7 +963,7 @@ namespace Chummer.Backend.Skills
                                                                       .ConfigureAwait(false))
                                     {
                                         KnowledgeSkill objEnglishSkill = new KnowledgeSkill(_objCharacter);
-                                        await objEnglishSkill.SetWriteableNameAsync("English", token)
+                                        await objEnglishSkill.SetWritableNameAsync("English", token)
                                                              .ConfigureAwait(false);
                                         objEnglishSkill.IsNativeLanguage = true;
                                         await KnowledgeSkills.AddAsync(objEnglishSkill, token).ConfigureAwait(false);

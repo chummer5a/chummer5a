@@ -354,7 +354,7 @@ namespace Chummer.UI.Skills
                             {
                                 if (intOldUpdating == 0)
                                 {
-                                    string strWritableName = await _objSkill.GetWriteableNameAsync(_objMyToken)
+                                    string strWritableName = await _objSkill.GetWritableNameAsync(_objMyToken)
                                                                             .ConfigureAwait(false);
                                     await cboName.DoThreadSafeAsync(x => x.Text = strWritableName, token: _objMyToken)
                                                  .ConfigureAwait(false);
@@ -662,7 +662,7 @@ namespace Chummer.UI.Skills
                 {
                     string strName = await cboName.DoThreadSafeFuncAsync(x => x.Text, token: _objMyToken)
                                                   .ConfigureAwait(false);
-                    await _objSkill.SetWriteableNameAsync(strName, _objMyToken).ConfigureAwait(false);
+                    await _objSkill.SetWritableNameAsync(strName, _objMyToken).ConfigureAwait(false);
                 }
                 finally
                 {

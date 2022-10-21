@@ -903,7 +903,7 @@ namespace Chummer.UI.Skills
                     }
 
                     KnowledgeSkill skill = new KnowledgeSkill(_objCharacter);
-                    await skill.SetWriteableNameAsync(strSelectedSkill, MyToken).ConfigureAwait(false);
+                    await skill.SetWritableNameAsync(strSelectedSkill, MyToken).ConfigureAwait(false);
 
                     if (await _objCharacter.SkillsSection.GetHasAvailableNativeLanguageSlotsAsync(MyToken)
                                            .ConfigureAwait(false)
@@ -925,7 +925,7 @@ namespace Chummer.UI.Skills
                                                                                         token: MyToken)
                                                                                     .ConfigureAwait(false),
                                                                                 await skill
-                                                                                    .GetWriteableNameAsync(MyToken)
+                                                                                    .GetWritableNameAsync(MyToken)
                                                                                     .ConfigureAwait(false)),
                                                                             await LanguageManager
                                                                                 .GetStringAsync(
