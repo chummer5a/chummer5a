@@ -40,10 +40,8 @@ namespace Chummer
             if (objReturn._objControl == null)
             {
                 if (Interlocked.Increment(ref _intApplicationWaitCursors) == 1)
-                {
                     Application.UseWaitCursor = true;
-                    objReturn._blnDoUnsetCursorOnDispose = true;
-                }
+                objReturn._blnDoUnsetCursorOnDispose = true;
                 return objReturn;
             }
             Form frmControl = objReturn._objControl as Form;
@@ -94,10 +92,8 @@ namespace Chummer
             if (objReturn._objControl == null)
             {
                 if (Interlocked.Increment(ref _intApplicationWaitCursors) == 1)
-                {
                     Application.UseWaitCursor = true;
-                    objReturn._blnDoUnsetCursorOnDispose = true;
-                }
+                objReturn._blnDoUnsetCursorOnDispose = true;
                 return objReturn;
             }
             Form frmControl = objReturn._objControl as Form;
