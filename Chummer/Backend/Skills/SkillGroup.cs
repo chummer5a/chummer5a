@@ -1036,8 +1036,9 @@ namespace Chummer.Backend.Skills
         {
             using (EnterReadLock.Enter(LockObject))
             {
+                Guid guidAddedSkillId = skill.SkillId;
                 // Do not add duplicate skills that we are still in the process of loading
-                if (_lstAffectedSkills.Any(x => x.SkillId == skill.SkillId))
+                if (_lstAffectedSkills.Any(x => x.SkillId == guidAddedSkillId))
                     return;
                 using (LockObject.EnterWriteLock())
                 {
@@ -1053,11 +1054,12 @@ namespace Chummer.Backend.Skills
         {
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
+                Guid guidAddedSkillId = await skill.GetSkillIdAsync(token).ConfigureAwait(false);
                 // Do not add duplicate skills that we are still in the process of loading
                 if (await _lstAffectedSkills
                           .AnyAsync(
                               async x => await x.GetSkillIdAsync(token).ConfigureAwait(false)
-                                         == await skill.GetSkillIdAsync(token).ConfigureAwait(false), token: token)
+                                         == guidAddedSkillId, token: token)
                           .ConfigureAwait(false))
                     return;
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
