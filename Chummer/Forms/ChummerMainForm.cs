@@ -594,7 +594,7 @@ namespace Chummer
 
 #if !DEBUG
                             // If Automatic Updates are enabled, check for updates immediately.
-                            StartAutoUpdateChecker();
+                            StartAutoUpdateChecker(_objGenericToken);
 #endif
 
                             GlobalSettings.MruChanged += PopulateMruToolstripMenu;
