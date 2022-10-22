@@ -40,7 +40,6 @@ using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.ApplicationInsights.Metrics;
 using Microsoft.ApplicationInsights.NLogTarget;
-using Microsoft.VisualStudio.Threading;
 using NLog;
 using NLog.Config;
 
@@ -54,11 +53,7 @@ namespace Chummer
         private const string ChummerGuid = "eb0759c1-3599-495e-8bc5-57c8b3e1b31c";
 
         private static readonly Lazy<Process> s_objMyProcess = new Lazy<Process>(Process.GetCurrentProcess);
-        public static readonly Process MyProcess = s_objMyProcess.Value;
-
-        public static SynchronizationContext MySynchronizationContext { get; private set; }
-
-        public static JoinableTaskContext MyJoinableTaskContext { get; private set; }
+        public static Process MyProcess => s_objMyProcess.Value;
 
         [CLSCompliant(false)]
         public static TelemetryClient ChummerTelemetryClient { get; } = new TelemetryClient();
@@ -238,7 +233,7 @@ namespace Chummer
 
                     Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException);
 
-                    CreateSynchronizationContext();
+                    Utils.CreateSynchronizationContext();
 
                     // Delete old ProfileOptimization file because we don't want it anymore, instead we restart profiling for each newly generated assembly
                     Utils.SafeDeleteFile(Path.Combine(Utils.GetStartupPath, "chummerprofile"));
@@ -564,19 +559,6 @@ namespace Chummer
                 {
                     if (blnReleaseMutex)
                         Utils.RunOnMainThread(() => GlobalChummerMutex.ReleaseMutex());
-                }
-            }
-        }
-
-        public static void CreateSynchronizationContext()
-        {
-            if (IsMainThread)
-            {
-                using (new DummyForm()) // New Form needs to be created (or Application.Run() called) before Synchronization.Current is set
-                {
-                    MySynchronizationContext = SynchronizationContext.Current;
-                    MyJoinableTaskContext
-                        = new JoinableTaskContext(Thread.CurrentThread, SynchronizationContext.Current);
                 }
             }
         }

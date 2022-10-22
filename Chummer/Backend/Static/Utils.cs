@@ -43,6 +43,7 @@ using Microsoft.Win32;
 using NLog;
 using IAsyncDisposable = System.IAsyncDisposable;
 using Microsoft.IO;
+using Chummer.Forms;
 
 namespace Chummer
 {
@@ -75,6 +76,30 @@ namespace Chummer
 #else
             // Method intentionally left empty.
 #endif
+        }
+
+        private static readonly LockingDictionary<Tuple<Thread, SynchronizationContext>, JoinableTaskFactory>
+            s_dicJoinableTaskContexts
+                = new LockingDictionary<Tuple<Thread, SynchronizationContext>, JoinableTaskFactory>();
+
+        public static SynchronizationContext MySynchronizationContext { get; private set; }
+
+        public static JoinableTaskContext MyJoinableTaskContext { get; private set; }
+
+        public static void CreateSynchronizationContext()
+        {
+            if (Program.IsMainThread)
+            {
+                using (new DummyForm()) // New Form needs to be created (or Application.Run() called) before Synchronization.Current is set
+                {
+                    MySynchronizationContext = SynchronizationContext.Current;
+                    MyJoinableTaskContext
+                        = new JoinableTaskContext(Thread.CurrentThread, SynchronizationContext.Current);
+                    s_dicJoinableTaskContexts.TryAdd(
+                        new Tuple<Thread, SynchronizationContext>(Thread.CurrentThread, SynchronizationContext.Current),
+                        JoinableTaskFactory);
+                }
+            }
         }
 
         // Need this as a Lazy, otherwise it won't fire properly in the designer if we just cache it, and the check itself is also quite expensive
@@ -326,7 +351,7 @@ namespace Chummer
             = new Lazy<JoinableTaskFactory>(() => new JoinableTaskFactory(
                                                 IsRunningInVisualStudio
                                                     ? new JoinableTaskContext()
-                                                    : Program.MyJoinableTaskContext));
+                                                    : MyJoinableTaskContext));
 
         public static JoinableTaskFactory JoinableTaskFactory => s_objJoinableTaskFactory.Value;
 
@@ -881,7 +906,7 @@ namespace Chummer
             }
             string strFileName = GetStartupPath + Path.DirectorySeparatorChar + AppDomain.CurrentDomain.FriendlyName;
             // Sending restart command asynchronously to MySynchronizationContext so that tasks can properly clean up before restart
-            Program.MySynchronizationContext.Post(x =>
+            MySynchronizationContext.Post(x =>
             {
                 (string strMyFileName, string strMyArguments) = (Tuple<string, string>) x;
                 ProcessStartInfo objStartInfo = new ProcessStartInfo
@@ -1121,13 +1146,13 @@ namespace Chummer
         /// </summary>
         public static void RunOnMainThread(Action func)
         {
-            if (Program.IsMainThread || Program.MySynchronizationContext == SynchronizationContext.Current)
+            if (Program.IsMainThread || MySynchronizationContext == SynchronizationContext.Current)
             {
                 func.Invoke();
                 return;
             }
             
-            Program.MySynchronizationContext.Send(x =>
+            MySynchronizationContext.Send(x =>
             {
                 Action funcToRun = (Action)x;
                 funcToRun.Invoke();
@@ -1139,12 +1164,12 @@ namespace Chummer
         /// </summary>
         public static T RunOnMainThread<T>(Func<T> func)
         {
-            if (Program.IsMainThread || Program.MySynchronizationContext == SynchronizationContext.Current)
+            if (Program.IsMainThread || MySynchronizationContext == SynchronizationContext.Current)
             {
                 return func.Invoke();
             }
             T objReturn = default;
-            Program.MySynchronizationContext.Send(x =>
+            MySynchronizationContext.Send(x =>
             {
                 Func<T> funcToRun = (Func<T>)x;
                 objReturn = funcToRun.Invoke();
@@ -1157,13 +1182,13 @@ namespace Chummer
         /// </summary>
         public static void RunOnMainThread(Action func, CancellationToken token)
         {
-            if (Program.IsMainThread || Program.MySynchronizationContext == SynchronizationContext.Current)
+            if (Program.IsMainThread || MySynchronizationContext == SynchronizationContext.Current)
             {
                 token.ThrowIfCancellationRequested();
                 func.Invoke();
                 return;
             }
-            Program.MySynchronizationContext.Send(x =>
+            MySynchronizationContext.Send(x =>
             {
                 (Action funcToRun, CancellationToken objToken) = (Tuple<Action, CancellationToken>)x;
                 objToken.ThrowIfCancellationRequested();
@@ -1176,13 +1201,13 @@ namespace Chummer
         /// </summary>
         public static T RunOnMainThread<T>(Func<T> func, CancellationToken token)
         {
-            if (Program.IsMainThread || Program.MySynchronizationContext == SynchronizationContext.Current)
+            if (Program.IsMainThread || MySynchronizationContext == SynchronizationContext.Current)
             {
                 token.ThrowIfCancellationRequested();
                 return func.Invoke();
             }
             T objReturn = default;
-            Program.MySynchronizationContext.Send(x =>
+            MySynchronizationContext.Send(x =>
             {
                 (Func<T> funcToRun, CancellationToken objToken) = (Tuple<Func<T>, CancellationToken>)x;
                 objToken.ThrowIfCancellationRequested();
@@ -1215,7 +1240,7 @@ namespace Chummer
         /// </summary>
         public static Task RunOnMainThreadAsync(Action func)
         {
-            if (Program.IsMainThread || Program.MySynchronizationContext == SynchronizationContext.Current)
+            if (Program.IsMainThread || MySynchronizationContext == SynchronizationContext.Current)
             {
                 try
                 {
@@ -1228,7 +1253,7 @@ namespace Chummer
                 return Task.CompletedTask;
             }
             TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
-            Program.MySynchronizationContext.Post(x =>
+            MySynchronizationContext.Post(x =>
             {
                 TaskCompletionSource<bool> objCompletionSource = (TaskCompletionSource<bool>)x;
                 try
@@ -1250,7 +1275,7 @@ namespace Chummer
         /// </summary>
         public static Task<T> RunOnMainThreadAsync<T>(Func<T> func)
         {
-            if (Program.IsMainThread || Program.MySynchronizationContext == SynchronizationContext.Current)
+            if (Program.IsMainThread || MySynchronizationContext == SynchronizationContext.Current)
             {
                 T objReturn;
                 try
@@ -1264,7 +1289,7 @@ namespace Chummer
                 return Task.FromResult(objReturn);
             }
             TaskCompletionSource<T> tcs = new TaskCompletionSource<T>();
-            Program.MySynchronizationContext.Post(x =>
+            MySynchronizationContext.Post(x =>
             {
                 TaskCompletionSource<T> objCompletionSource = (TaskCompletionSource<T>)x;
                 try
@@ -1285,7 +1310,7 @@ namespace Chummer
         /// </summary>
         public static Task RunOnMainThreadAsync(Action func, CancellationToken token)
         {
-            if (Program.IsMainThread || Program.MySynchronizationContext == SynchronizationContext.Current)
+            if (Program.IsMainThread || MySynchronizationContext == SynchronizationContext.Current)
             {
                 if (token.IsCancellationRequested)
                     return Task.FromCanceled(token);
@@ -1300,7 +1325,7 @@ namespace Chummer
                 return Task.CompletedTask;
             }
             TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
-            Program.MySynchronizationContext.Post(x =>
+            MySynchronizationContext.Post(x =>
             {
                 (TaskCompletionSource<bool> objCompletionSource, CancellationToken objToken) = (Tuple<TaskCompletionSource<bool>, CancellationToken>)x;
                 try
@@ -1327,7 +1352,7 @@ namespace Chummer
         /// </summary>
         public static Task<T> RunOnMainThreadAsync<T>(Func<T> func, CancellationToken token)
         {
-            if (Program.IsMainThread || Program.MySynchronizationContext == SynchronizationContext.Current)
+            if (Program.IsMainThread || MySynchronizationContext == SynchronizationContext.Current)
             {
                 if (token.IsCancellationRequested)
                     return Task.FromCanceled<T>(token);
@@ -1343,7 +1368,7 @@ namespace Chummer
                 return Task.FromResult(objReturn);
             }
             TaskCompletionSource<T> tcs = new TaskCompletionSource<T>();
-            Program.MySynchronizationContext.Post(x =>
+            MySynchronizationContext.Post(x =>
             {
                 (TaskCompletionSource<T> objCompletionSource, CancellationToken objToken) = (Tuple<TaskCompletionSource<T>, CancellationToken>)x;
                 try
@@ -1764,12 +1789,14 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (!EverDoEvents)
             {
-                Task<T> objSyncTask = funcToRun.Invoke();
-                if (objSyncTask.Status == TaskStatus.Created)
-                    objSyncTask.RunSynchronously();
-                if (objSyncTask.Exception != null)
-                    throw objSyncTask.Exception;
-                return objSyncTask.GetAwaiter().GetResult();
+                Tuple<Thread, SynchronizationContext> tupKey = new Tuple<Thread, SynchronizationContext>(Thread.CurrentThread,
+                                                                                                         SynchronizationContext.Current);
+                if (!s_dicJoinableTaskContexts.TryGetValue(tupKey, out JoinableTaskFactory objFactory))
+                {
+                    objFactory = new JoinableTaskFactory(new JoinableTaskContext(Thread.CurrentThread, SynchronizationContext.Current));
+                    s_dicJoinableTaskContexts.TryAdd(tupKey, objFactory);
+                }
+                return objFactory.Run(funcToRun);
             }
             Task<T> objTask = Task.Run(funcToRun, token);
             while (!objTask.IsCompleted)
@@ -1791,12 +1818,14 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (!EverDoEvents)
             {
-                Task<T> objSyncTask = funcToRun.Invoke(token);
-                if (objSyncTask.Status == TaskStatus.Created)
-                    objSyncTask.RunSynchronously();
-                if (objSyncTask.Exception != null)
-                    throw objSyncTask.Exception;
-                return objSyncTask.GetAwaiter().GetResult();
+                Tuple<Thread, SynchronizationContext> tupKey = new Tuple<Thread, SynchronizationContext>(Thread.CurrentThread,
+                                                                                                         SynchronizationContext.Current);
+                if (!s_dicJoinableTaskContexts.TryGetValue(tupKey, out JoinableTaskFactory objFactory))
+                {
+                    objFactory = new JoinableTaskFactory(new JoinableTaskContext(Thread.CurrentThread, SynchronizationContext.Current));
+                    s_dicJoinableTaskContexts.TryAdd(tupKey, objFactory);
+                }
+                return objFactory.Run(() => funcToRun.Invoke(token));
             }
             Task<T> objTask = Task.Run(() => funcToRun(token), token);
             while (!objTask.IsCompleted)
@@ -1938,12 +1967,15 @@ namespace Chummer
             {
                 Parallel.For(0, intLength, i =>
                 {
-                    Task<T> objSyncTask = afuncToRun[i].Invoke();
-                    if (objSyncTask.Status == TaskStatus.Created)
-                        objSyncTask.RunSynchronously();
-                    if (objSyncTask.Exception != null)
-                        throw objSyncTask.Exception;
-                    aobjReturn[i] = objSyncTask.GetAwaiter().GetResult();
+                    Tuple<Thread, SynchronizationContext> tupKey = new Tuple<Thread, SynchronizationContext>(Thread.CurrentThread,
+                        SynchronizationContext.Current);
+                    if (!s_dicJoinableTaskContexts.TryGetValue(tupKey, out JoinableTaskFactory objFactory))
+                    {
+                        objFactory = new JoinableTaskFactory(new JoinableTaskContext(Thread.CurrentThread, SynchronizationContext.Current));
+                        s_dicJoinableTaskContexts.TryAdd(tupKey, objFactory);
+                    }
+                    Func<Task<T>> funcToRun = afuncToRun[i];
+                    aobjReturn[i] = objFactory.Run(funcToRun);
                 });
                 return aobjReturn;
             }
@@ -1991,11 +2023,14 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (!EverDoEvents)
             {
-                Task objSyncTask = funcToRun.Invoke();
-                if (objSyncTask.Status == TaskStatus.Created)
-                    objSyncTask.RunSynchronously();
-                if (objSyncTask.Exception != null)
-                    throw objSyncTask.Exception;
+                Tuple<Thread, SynchronizationContext> tupKey = new Tuple<Thread, SynchronizationContext>(Thread.CurrentThread,
+                    SynchronizationContext.Current);
+                if (!s_dicJoinableTaskContexts.TryGetValue(tupKey, out JoinableTaskFactory objFactory))
+                {
+                    objFactory = new JoinableTaskFactory(new JoinableTaskContext(Thread.CurrentThread, SynchronizationContext.Current));
+                    s_dicJoinableTaskContexts.TryAdd(tupKey, objFactory);
+                }
+                objFactory.Run(funcToRun);
                 return;
             }
             Task objTask = Task.Run(funcToRun, token);
@@ -2017,11 +2052,14 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (!EverDoEvents)
             {
-                Task objSyncTask = funcToRun.Invoke(token);
-                if (objSyncTask.Status == TaskStatus.Created)
-                    objSyncTask.RunSynchronously();
-                if (objSyncTask.Exception != null)
-                    throw objSyncTask.Exception;
+                Tuple<Thread, SynchronizationContext> tupKey = new Tuple<Thread, SynchronizationContext>(Thread.CurrentThread,
+                    SynchronizationContext.Current);
+                if (!s_dicJoinableTaskContexts.TryGetValue(tupKey, out JoinableTaskFactory objFactory))
+                {
+                    objFactory = new JoinableTaskFactory(new JoinableTaskContext(Thread.CurrentThread, SynchronizationContext.Current));
+                    s_dicJoinableTaskContexts.TryAdd(tupKey, objFactory);
+                }
+                objFactory.Run(() => funcToRun.Invoke(token));
                 return;
             }
             Task objTask = Task.Run(() => funcToRun.Invoke(token), token);
@@ -2137,11 +2175,14 @@ namespace Chummer
             {
                 Parallel.ForEach(afuncToRun, funcToRun =>
                 {
-                    Task objSyncTask = funcToRun.Invoke();
-                    if (objSyncTask.Status == TaskStatus.Created)
-                        objSyncTask.RunSynchronously();
-                    if (objSyncTask.Exception != null)
-                        throw objSyncTask.Exception;
+                    Tuple<Thread, SynchronizationContext> tupKey = new Tuple<Thread, SynchronizationContext>(Thread.CurrentThread,
+                        SynchronizationContext.Current);
+                    if (!s_dicJoinableTaskContexts.TryGetValue(tupKey, out JoinableTaskFactory objFactory))
+                    {
+                        objFactory = new JoinableTaskFactory(new JoinableTaskContext(Thread.CurrentThread, SynchronizationContext.Current));
+                        s_dicJoinableTaskContexts.TryAdd(tupKey, objFactory);
+                    }
+                    objFactory.Run(funcToRun);
                 });
                 return;
             }
