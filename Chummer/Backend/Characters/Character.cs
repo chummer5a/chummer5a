@@ -5339,28 +5339,56 @@ namespace Chummer
                                 {
                                     string strMinimumVersion = string.Empty;
                                     // Check to see if a character has a minimum version set where they will not load properly on anything older
-                                    if (xmlCharacterNavigator.TryGetStringFieldQuickly("minimumappversion", ref strMinimumVersion) &&
-                                        !string.IsNullOrEmpty(strMinimumVersion))
+                                    if (xmlCharacterNavigator.TryGetStringFieldQuickly(
+                                            "minimumappversion", ref strMinimumVersion)
+                                        && !string.IsNullOrEmpty(strMinimumVersion))
                                     {
                                         strMinimumVersion = strMinimumVersion.TrimStartOnce("0.");
-                                        if (Version.TryParse(strMinimumVersion, out Version objMinimumVersion) && objMinimumVersion > Utils.CurrentChummerVersion)
+                                        if (Version.TryParse(strMinimumVersion, out Version objMinimumVersion)
+                                            && objMinimumVersion > Utils.CurrentChummerVersion)
                                         {
                                             Program.ShowMessageBox(
                                                 string.Format(GlobalSettings.CultureInfo,
-                                                    LanguageManager.GetString("Message_OlderThanChummerSaveMinimumVersion"),
-                                                    objMinimumVersion, Utils.CurrentChummerVersion),
-                                                LanguageManager.GetString("MessageTitle_OlderThanChummerSaveMinimumVersion"),
-                                                MessageBoxButtons.OK,
-                                                MessageBoxIcon.Error);
+                                                              blnSync
+                                                                  // ReSharper disable once MethodHasAsyncOverload
+                                                                  ? LanguageManager.GetString(
+                                                                      "Message_OlderThanChummerSaveMinimumVersion")
+                                                                  : await LanguageManager
+                                                                          .GetStringAsync(
+                                                                              "Message_OlderThanChummerSaveMinimumVersion",
+                                                                              token: token).ConfigureAwait(false),
+                                                              objMinimumVersion, Utils.CurrentChummerVersion),
+                                                blnSync
+                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                    ? LanguageManager.GetString(
+                                                        "MessageTitle_OlderThanChummerSaveMinimumVersion")
+                                                    : await LanguageManager
+                                                            .GetStringAsync(
+                                                                "MessageTitle_OlderThanChummerSaveMinimumVersion",
+                                                                token: token).ConfigureAwait(false),
+                                                MessageBoxButtons.OK, MessageBoxIcon.Error);
                                             return false;
                                         }
                                     }
-                                    if (_verSavedVersion > Utils.CurrentChummerVersion && DialogResult.Yes != Program.ShowMessageBox(
-                                        string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_OutdatedChummerSave"),
-                                            _verSavedVersion, Utils.CurrentChummerVersion),
-                                        LanguageManager.GetString("MessageTitle_OutdatedChummerSave"),
-                                        MessageBoxButtons.YesNo,
-                                        MessageBoxIcon.Warning))
+
+                                    if (_verSavedVersion > Utils.CurrentChummerVersion && DialogResult.Yes
+                                        != Program.ShowMessageBox(
+                                            string.Format(GlobalSettings.CultureInfo,
+                                                          blnSync
+                                                              // ReSharper disable once MethodHasAsyncOverload
+                                                              ? LanguageManager.GetString("Message_OutdatedChummerSave")
+                                                              : await LanguageManager
+                                                                      .GetStringAsync(
+                                                                          "Message_OutdatedChummerSave", token: token)
+                                                                      .ConfigureAwait(false), _verSavedVersion,
+                                                          Utils.CurrentChummerVersion),
+                                            blnSync
+                                                // ReSharper disable once MethodHasAsyncOverload
+                                                ? LanguageManager.GetString("MessageTitle_OutdatedChummerSave")
+                                                : await LanguageManager
+                                                        .GetStringAsync("MessageTitle_OutdatedChummerSave",
+                                                                        token: token).ConfigureAwait(false),
+                                            MessageBoxButtons.YesNo, MessageBoxIcon.Warning))
                                     {
                                         return false;
                                     }

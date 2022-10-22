@@ -66,7 +66,7 @@ namespace SevenZip.Buffer
             m_Stream = null;
         }
 
-        public bool ReadByte(byte b) // check it
+        public bool ReadByte(ref byte b) // check it
         {
             if (m_Pos >= m_Limit && !ReadBlock())
                 return false;
