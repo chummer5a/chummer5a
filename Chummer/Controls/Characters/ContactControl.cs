@@ -577,49 +577,7 @@ namespace Chummer
         /// </summary>
         public Contact ContactObject => _objContact;
 
-        public bool Expanded
-        {
-            get => tlpStatBlock?.DoThreadSafeFunc(x => x.Visible) == true;
-            set
-            {
-                cmdExpand.DoThreadSafe(x =>
-                {
-                    x.ImageDpi96 = value ? Resources.toggle : Resources.toggle_expand;
-                    x.ImageDpi192 = value ? Resources.toggle1 : Resources.toggle_expand1;
-                });
-                if (value && (tlpStatBlock == null || !_blnStatBlockIsLoaded))
-                {
-                    // Create second row and statblock only on the first expansion to save on handles and load times
-                    CreateSecondRow();
-                    CreateStatBlock();
-                    _blnStatBlockIsLoaded = true;
-                }
-
-                using (CursorWait.New(this))
-                {
-                    this.DoThreadSafe(x => x.SuspendLayout());
-                    try
-                    {
-                        lblConnection.DoThreadSafe(x => x.Visible = value);
-                        lblLoyalty.DoThreadSafe(x => x.Visible = value);
-                        nudConnection.DoThreadSafe(x => x.Visible = value);
-                        nudLoyalty.DoThreadSafe(x => x.Visible = value);
-                        chkGroup.DoThreadSafe(x => x.Visible = value);
-                        //We don't actually pay for contacts in play so everyone is free
-                        //Don't present a useless field
-                        chkFree.DoThreadSafe(x => x.Visible = _objContact?.CharacterObject.Created == false && value);
-                        chkBlackmail.DoThreadSafe(x => x.Visible = value);
-                        chkFamily.DoThreadSafe(x => x.Visible = value);
-                        cmdLink.DoThreadSafe(x => x.Visible = value);
-                        tlpStatBlock.DoThreadSafe(x => x.Visible = value);
-                    }
-                    finally
-                    {
-                        this.DoThreadSafe(x => x.ResumeLayout());
-                    }
-                }
-            }
-        }
+        public bool Expanded => tlpStatBlock?.DoThreadSafeFunc(x => x.Visible) == true;
 
         public async ValueTask<bool> GetExpandedAsync(CancellationToken token = default)
         {
@@ -713,13 +671,13 @@ namespace Chummer
                                                                nameof(Contact.QuickText),
                                                                // ReSharper disable once MethodSupportsCancellation
                                                                x => x.GetQuickTextAsync().AsTask(), token: token).ConfigureAwait(false);
-            txtContactName.DoDataBinding("Text", _objContact, nameof(_objContact.Name));
-            txtContactLocation.DoDataBinding("Text", _objContact, nameof(_objContact.Location));
-            cmdDelete.DoOneWayDataBinding("Visible", _objContact, nameof(_objContact.NotReadOnly));
-            this.DoOneWayDataBinding("BackColor", _objContact, nameof(_objContact.PreferredColor));
+            await txtContactName.DoDataBindingAsync("Text", _objContact, nameof(_objContact.Name), token).ConfigureAwait(false);
+            await txtContactLocation.DoDataBindingAsync("Text", _objContact, nameof(_objContact.Location), token).ConfigureAwait(false);
+            await cmdDelete.DoOneWayNegatableDataBindingAsync("Visible", _objContact, nameof(_objContact.ReadOnly), token).ConfigureAwait(false);
+            await this.DoOneWayDataBindingAsync("BackColor", _objContact, nameof(_objContact.PreferredColor), token).ConfigureAwait(false);
 
             // Properties controllable by the character themselves
-            txtContactName.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.NoLinkedCharacter));
+            await txtContactName.DoOneWayDataBindingAsync("Enabled", _objContact, nameof(_objContact.NoLinkedCharacter), token).ConfigureAwait(false);
         }
 
         private Label lblConnection;
@@ -731,175 +689,6 @@ namespace Chummer
         private ColorableCheckBox chkBlackmail;
         private ColorableCheckBox chkFamily;
         private ButtonWithToolTip cmdLink;
-
-        private void CreateSecondRow()
-        {
-            using (CursorWait.New(this))
-            {
-                this.DoThreadSafe(x =>
-                {
-                    x.lblConnection = new Label
-                    {
-                        Anchor = AnchorStyles.Right,
-                        AutoSize = true,
-                        Name = "lblConnection",
-                        Tag = "Label_Contact_Connection",
-                        Text = "Connection:",
-                        TextAlign = ContentAlignment.MiddleRight
-                    };
-                    x.nudConnection = new NumericUpDownEx
-                    {
-                        Anchor = AnchorStyles.Left | AnchorStyles.Right,
-                        AutoSize = true,
-                        Maximum = new decimal(new[] { 12, 0, 0, 0 }),
-                        Minimum = new decimal(new[] { 1, 0, 0, 0 }),
-                        Name = "nudConnection",
-                        Value = new decimal(new[] { 1, 0, 0, 0 })
-                    };
-                    x.lblLoyalty = new Label
-                    {
-                        Anchor = AnchorStyles.Right,
-                        AutoSize = true,
-                        Name = "lblLoyalty",
-                        Tag = "Label_Contact_Loyalty",
-                        Text = "Loyalty:",
-                        TextAlign = ContentAlignment.MiddleRight
-                    };
-                    x.nudLoyalty = new NumericUpDownEx
-                    {
-                        Anchor = AnchorStyles.Left | AnchorStyles.Right,
-                        AutoSize = true,
-                        Maximum = new decimal(new[] { 6, 0, 0, 0 }),
-                        Minimum = new decimal(new[] { 1, 0, 0, 0 }),
-                        Name = "nudLoyalty",
-                        Value = new decimal(new[] { 1, 0, 0, 0 })
-                    };
-                    x.chkFree = new ColorableCheckBox
-                    {
-                        Anchor = AnchorStyles.Left,
-                        AutoSize = true,
-                        DefaultColorScheme = true,
-                        Name = "chkFree",
-                        Tag = "Checkbox_Contact_Free",
-                        Text = "Free",
-                        UseVisualStyleBackColor = true
-                    };
-                    x.chkGroup = new ColorableCheckBox
-                    {
-                        Anchor = AnchorStyles.Left,
-                        AutoSize = true,
-                        DefaultColorScheme = true,
-                        Name = "chkGroup",
-                        Tag = "Checkbox_Contact_Group",
-                        Text = "Group",
-                        UseVisualStyleBackColor = true
-                    };
-                    x.chkBlackmail = new ColorableCheckBox
-                    {
-                        Anchor = AnchorStyles.Left,
-                        AutoSize = true,
-                        DefaultColorScheme = true,
-                        Name = "chkBlackmail",
-                        Tag = "Checkbox_Contact_Blackmail",
-                        Text = "Blackmail",
-                        UseVisualStyleBackColor = true
-                    };
-                    x.chkFamily = new ColorableCheckBox
-                    {
-                        Anchor = AnchorStyles.Left,
-                        AutoSize = true,
-                        DefaultColorScheme = true,
-                        Name = "chkFamily",
-                        Tag = "Checkbox_Contact_Family",
-                        Text = "Family",
-                        UseVisualStyleBackColor = true
-                    };
-                    x.cmdLink = new ButtonWithToolTip
-                    {
-                        Anchor = AnchorStyles.Right,
-                        AutoSize = true,
-                        AutoSizeMode = AutoSizeMode.GrowAndShrink,
-                        FlatAppearance = { BorderSize = 0 },
-                        FlatStyle = FlatStyle.Flat,
-                        Padding = new Padding(1),
-                        MinimumSize = new Size(24, 24),
-                        ImageDpi96 = Resources.link,
-                        ImageDpi192 = Resources.link1,
-                        Name = "cmdLink",
-                        UseVisualStyleBackColor = true,
-                        TabStop = false
-                    };
-                    x.nudConnection.ValueChanged += nudConnection_ValueChanged;
-                    x.nudLoyalty.ValueChanged += nudLoyalty_ValueChanged;
-                    x.chkFree.CheckedChanged += chkFree_CheckedChanged;
-                    x.chkGroup.CheckedChanged += chkGroup_CheckedChanged;
-                    x.chkBlackmail.CheckedChanged += chkBlackmail_CheckedChanged;
-                    x.chkFamily.CheckedChanged += chkFamily_CheckedChanged;
-                    x.cmdLink.Click += cmdLink_Click;
-                    if (x._objContact != null)
-                    {
-                        x.chkGroup.DoDataBinding("Checked", x._objContact, nameof(Contact.IsGroup));
-                        x.chkGroup.DoOneWayDataBinding("Enabled", x._objContact, nameof(Contact.GroupEnabled));
-                        x.chkFree.DoDataBinding("Checked", x._objContact, nameof(Contact.Free));
-                        x.chkFree.DoOneWayDataBinding("Enabled", x._objContact, nameof(Contact.FreeEnabled));
-                        //We don't actually pay for contacts in play so everyone is free
-                        //Don't present a useless field
-                        x.chkFree.Visible = x._objContact.CharacterObject?.Created == false;
-                        x.chkFamily.DoDataBinding("Checked", x._objContact, nameof(Contact.Family));
-                        x.chkFamily.DoOneWayNegatableDataBinding("Visible", _objContact, nameof(Contact.IsEnemy));
-                        x.chkBlackmail.DoDataBinding("Checked", x._objContact, nameof(Contact.Blackmail));
-                        x.chkBlackmail.DoOneWayNegatableDataBinding("Visible", _objContact, nameof(Contact.IsEnemy));
-                        x.nudLoyalty.DoDataBinding("Value", x._objContact, nameof(Contact.Loyalty));
-                        x.nudLoyalty.DoOneWayDataBinding("Enabled", x._objContact, nameof(Contact.LoyaltyEnabled));
-                        x.nudConnection.DoDataBinding("Value", x._objContact, nameof(Contact.Connection));
-                        x.nudConnection.DoOneWayDataBinding("Enabled", x._objContact, nameof(Contact.NotReadOnly));
-                        x.nudConnection.DoOneWayDataBinding("Maximum", x._objContact,
-                                                            nameof(Contact.ConnectionMaximum));
-                        if (x._objContact.IsEnemy)
-                        {
-                            x.cmdLink.ToolTipText = !string.IsNullOrEmpty(x._objContact.FileName)
-                                ? LanguageManager.GetString("Tip_Enemy_OpenLinkedEnemy")
-                                : LanguageManager.GetString("Tip_Enemy_LinkEnemy");
-                        }
-                        else
-                        {
-                            x.cmdLink.ToolTipText = !string.IsNullOrEmpty(x._objContact.FileName)
-                                ? LanguageManager.GetString("Tip_Contact_OpenLinkedContact")
-                                : LanguageManager.GetString("Tip_Contact_LinkContact");
-                        }
-                    }
-
-                    x.tlpMain.SetColumnSpan(x.lblConnection, 2);
-                    x.tlpMain.SetColumnSpan(x.chkFamily, 3);
-
-                    x.SuspendLayout();
-                    try
-                    {
-                        x.tlpMain.SuspendLayout();
-                        try
-                        {
-                            x.tlpMain.Controls.Add(x.lblConnection, 0, 2);
-                            x.tlpMain.Controls.Add(x.nudConnection, 2, 2);
-                            x.tlpMain.Controls.Add(x.lblLoyalty, 3, 2);
-                            x.tlpMain.Controls.Add(x.nudLoyalty, 4, 2);
-                            x.tlpMain.Controls.Add(x.chkFree, 6, 2);
-                            x.tlpMain.Controls.Add(x.chkGroup, 7, 2);
-                            x.tlpMain.Controls.Add(x.chkBlackmail, 8, 2);
-                            x.tlpMain.Controls.Add(x.chkFamily, 9, 2);
-                            x.tlpMain.Controls.Add(x.cmdLink, 12, 2);
-                        }
-                        finally
-                        {
-                            x.tlpMain.ResumeLayout();
-                        }
-                    }
-                    finally
-                    {
-                        x.ResumeLayout(true);
-                    }
-                });
-            }
-        }
 
         private async ValueTask CreateSecondRowAsync(CancellationToken token = default)
         {
@@ -1014,19 +803,15 @@ namespace Chummer
                         await chkFree.DoThreadSafeAsync(x => x.Visible = !_objContact.CharacterObject.Created, token).ConfigureAwait(false);
                     else
                         await chkFree.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
-                    await this.DoThreadSafeAsync(x =>
-                    {
-                        x.chkGroup.DoDataBinding("Checked", x._objContact, nameof(Contact.IsGroup));
-                        x.chkFree.DoDataBinding("Checked", x._objContact, nameof(Contact.Free));
-                        x.chkFamily.DoDataBinding("Checked", x._objContact, nameof(Contact.Family));
-                        x.chkFamily.DoOneWayNegatableDataBinding("Visible", _objContact, nameof(Contact.IsEnemy));
-                        x.chkBlackmail.DoDataBinding("Checked", x._objContact, nameof(Contact.Blackmail));
-                        x.chkBlackmail.DoOneWayNegatableDataBinding(
-                            "Visible", _objContact, nameof(Contact.IsEnemy));
-                        x.nudLoyalty.DoDataBinding("Value", x._objContact, nameof(Contact.Loyalty));
-                        x.nudConnection.DoDataBinding("Value", x._objContact, nameof(Contact.Connection));
-                        x.nudConnection.DoOneWayDataBinding("Enabled", x._objContact, nameof(Contact.NotReadOnly));
-                    }, token: token).ConfigureAwait(false);
+                    await chkGroup.DoDataBindingAsync("Checked", _objContact, nameof(Contact.IsGroup), token).ConfigureAwait(false);
+                    await chkFree.DoDataBindingAsync("Checked", _objContact, nameof(Contact.Free), token).ConfigureAwait(false);
+                    await chkFamily.DoDataBindingAsync("Checked", _objContact, nameof(Contact.Family), token).ConfigureAwait(false);
+                    await chkFamily.DoOneWayNegatableDataBindingAsync("Visible", _objContact, nameof(Contact.IsEnemy), token).ConfigureAwait(false);
+                    await chkBlackmail.DoDataBindingAsync("Checked", _objContact, nameof(Contact.Blackmail), token).ConfigureAwait(false);
+                    await chkBlackmail.DoOneWayNegatableDataBindingAsync("Visible", _objContact, nameof(Contact.IsEnemy), token).ConfigureAwait(false);
+                    await nudLoyalty.DoDataBindingAsync("Value", _objContact, nameof(Contact.Loyalty), token).ConfigureAwait(false);
+                    await nudConnection.DoDataBindingAsync("Value", _objContact, nameof(Contact.Connection), token).ConfigureAwait(false);
+                    await nudConnection.DoOneWayNegatableDataBindingAsync("Enabled", _objContact, nameof(Contact.ReadOnly), token).ConfigureAwait(false);
                     await chkGroup.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = y, _objContact,
                                                                   nameof(Contact.GroupEnabled),
                                                                   // ReSharper disable once MethodSupportsCancellation

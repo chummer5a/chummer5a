@@ -102,7 +102,7 @@ namespace Chummer.UI.Skills
                 return;
             try
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: MyToken).ConfigureAwait(false);
+                CursorWait objCursorWait = await CursorWait.NewAsync(token: MyToken).ConfigureAwait(false);
                 try
                 {
                     await RealLoad(MyToken, MyToken).ConfigureAwait(false);
@@ -295,22 +295,7 @@ namespace Chummer.UI.Skills
                     _lstActiveSkills.ChildPropertyChanged += ChildPropertyChanged;
                     _lstKnowledgeSkills.ChildPropertyChanged += ChildPropertyChanged;
 
-                    if (!_objCharacter.Created)
-                    {
-                        lblGroupsSp.DoOneWayDataBinding("Visible", _objCharacter,
-                                                        nameof(Character.EffectiveBuildMethodUsesPriorityTables));
-                        lblActiveSp.DoOneWayDataBinding("Visible", _objCharacter,
-                                                        nameof(Character.EffectiveBuildMethodUsesPriorityTables));
-                        lblBuyWithKarma.DoOneWayDataBinding("Visible", _objCharacter,
-                                                            nameof(Character.EffectiveBuildMethodUsesPriorityTables));
-
-                        lblKnoSp.DoOneWayDataBinding("Visible", _objCharacter.SkillsSection,
-                                                     nameof(SkillsSection.HasKnowledgePoints));
-                        lblKnoBwk.DoOneWayDataBinding("Visible", _objCharacter.SkillsSection,
-                                                      nameof(SkillsSection.HasKnowledgePoints));
-                        UpdateKnoSkillRemaining();
-                    }
-                    else
+                    if (_objCharacter.Created)
                     {
                         lblGroupsSp.Visible = false;
                         lblGroupKarma.Visible = false;
@@ -331,6 +316,37 @@ namespace Chummer.UI.Skills
                     x.ResumeLayout(true);
                 }
             }, token: token).ConfigureAwait(false);
+            if (!_objCharacter.Created)
+            {
+                await lblGroupsSp.RegisterOneWayAsyncDataBinding((x, y) => x.Visible = y, _objCharacter,
+                                                                 nameof(Character
+                                                                            .EffectiveBuildMethodUsesPriorityTables),
+                                                                 x => x.GetEffectiveBuildMethodUsesPriorityTablesAsync(
+                                                                     objMyToken).AsTask(), objMyToken, objMyToken)
+                                 .ConfigureAwait(false);
+                await lblActiveSp.RegisterOneWayAsyncDataBinding((x, y) => x.Visible = y, _objCharacter,
+                                                                 nameof(Character
+                                                                            .EffectiveBuildMethodUsesPriorityTables),
+                                                                 x => x.GetEffectiveBuildMethodUsesPriorityTablesAsync(
+                                                                     objMyToken).AsTask(), objMyToken, objMyToken)
+                                 .ConfigureAwait(false);
+                await lblBuyWithKarma.RegisterOneWayAsyncDataBinding((x, y) => x.Visible = y, _objCharacter,
+                                                                     nameof(Character
+                                                                                .EffectiveBuildMethodUsesPriorityTables),
+                                                                     x => x.GetEffectiveBuildMethodUsesPriorityTablesAsync(
+                                                                         objMyToken).AsTask(), objMyToken, objMyToken)
+                                     .ConfigureAwait(false);
+
+                await lblKnoSp.RegisterOneWayAsyncDataBinding((x, y) => x.Visible = y, _objCharacter.SkillsSection,
+                                                              nameof(SkillsSection.HasKnowledgePoints),
+                                                              x => x.GetHasKnowledgePointsAsync(objMyToken).AsTask(),
+                                                              objMyToken, objMyToken).ConfigureAwait(false);
+                await lblKnoBwk.RegisterOneWayAsyncDataBinding((x, y) => x.Visible = y, _objCharacter.SkillsSection,
+                                                               nameof(SkillsSection.HasKnowledgePoints),
+                                                               x => x.GetHasKnowledgePointsAsync(objMyToken).AsTask(),
+                                                               objMyToken, objMyToken).ConfigureAwait(false);
+                await UpdateKnoSkillRemainingAsync(objMyToken).ConfigureAwait(false);
+            }
             sw.Stop();
             Debug.WriteLine("RealLoad() in {0} ms", sw.Elapsed.TotalMilliseconds);
 

@@ -28,7 +28,6 @@ namespace Chummer.UI.Skills
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             this.lblName = new Chummer.LabelWithToolTip();
             this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.tlpMain.SuspendLayout();
@@ -76,6 +75,7 @@ namespace Chummer.UI.Skills
             this.Margin = new System.Windows.Forms.Padding(0);
             this.Name = "SkillGroupControl";
             this.Size = new System.Drawing.Size(72, 25);
+            this.Load += new System.EventHandler(this.SkillGroupControl_Load);
             this.MouseLeave += new System.EventHandler(this.OnMouseLeave);
             this.DpiChangedAfterParent += new System.EventHandler(this.SkillGroupControl_DpiChangedAfterParent);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.OnMouseMove);

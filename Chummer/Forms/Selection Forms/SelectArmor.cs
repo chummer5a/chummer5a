@@ -172,7 +172,8 @@ namespace Chummer
                 List<Weapon> lstWeapons = new List<Weapon>(1);
                 objArmor.Create(xmlArmor, 0, lstWeapons, true, true, true);
 
-                _objSelectedArmor?.Dispose();
+                if (_objSelectedArmor != null)
+                    await _objSelectedArmor.DisposeAsync().ConfigureAwait(false);
                 _objSelectedArmor = objArmor;
 
                 int intRating = 0;
@@ -234,7 +235,8 @@ namespace Chummer
             }
             else
             {
-                _objSelectedArmor?.Dispose();
+                if (_objSelectedArmor != null)
+                    await _objSelectedArmor.DisposeAsync().ConfigureAwait(false);
                 _objSelectedArmor = null;
                 await lblRatingLabel.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);
                 await lblRatingNALabel.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);

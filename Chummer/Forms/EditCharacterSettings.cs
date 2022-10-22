@@ -107,7 +107,7 @@ namespace Chummer
             }
 
             await PopulateOptions().ConfigureAwait(false);
-            SetupDataBindings();
+            await SetupDataBindings().ConfigureAwait(false);
 
             await SetIsDirty(false).ConfigureAwait(false);
             Interlocked.Decrement(ref _intLoading);
@@ -1558,182 +1558,572 @@ namespace Chummer
             await chkUseCalculatedPublicAwareness.SetToolTipAsync((await LanguageManager.GetStringAsync("Tip_PublicAwareness", token: token).ConfigureAwait(false)).WordWrap(), token).ConfigureAwait(false);
         }
 
-        private void SetupDataBindings()
+        private async ValueTask SetupDataBindings(CancellationToken token = default)
         {
-            cmdRename.DoOneWayNegatableDataBinding("Enabled", _objCharacterSettings, nameof(CharacterSettings.BuiltInOption));
-            cmdDelete.DoOneWayNegatableDataBinding("Enabled", _objCharacterSettings, nameof(CharacterSettings.BuiltInOption));
+            await cmdRename.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = !y, _objCharacterSettings,
+                                                           nameof(CharacterSettings.BuiltInOption),
+                                                           x => x.GetBuiltInOptionAsync(token).AsTask(), token: token)
+                           .ConfigureAwait(false);
+            await cmdDelete.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = !y, _objCharacterSettings,
+                                                           nameof(CharacterSettings.BuiltInOption),
+                                                           x => x.GetBuiltInOptionAsync(token).AsTask(), token: token)
+                           .ConfigureAwait(false);
 
-            cboBuildMethod.DoDataBinding("SelectedValue", _objCharacterSettings, nameof(CharacterSettings.BuildMethod));
-            lblPriorityTable.DoOneWayDataBinding("Visible", _objCharacterSettings, nameof(CharacterSettings.BuildMethodUsesPriorityTables));
-            cboPriorityTable.DoOneWayDataBinding("Visible", _objCharacterSettings, nameof(CharacterSettings.BuildMethodUsesPriorityTables));
-            lblPriorities.DoOneWayDataBinding("Visible", _objCharacterSettings, nameof(CharacterSettings.BuildMethodIsPriority));
-            txtPriorities.DoOneWayDataBinding("Visible", _objCharacterSettings, nameof(CharacterSettings.BuildMethodIsPriority));
-            txtPriorities.DoDataBinding("Text", _objCharacterSettings, nameof(CharacterSettings.PriorityArray));
-            lblSumToTen.DoOneWayDataBinding("Visible", _objCharacterSettings, nameof(CharacterSettings.BuildMethodIsSumtoTen));
-            nudSumToTen.DoOneWayDataBinding("Visible", _objCharacterSettings, nameof(CharacterSettings.BuildMethodIsSumtoTen));
-            nudSumToTen.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.SumtoTen));
-            nudStartingKarma.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.BuildKarma));
-            nudMaxNuyenKarma.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.NuyenMaximumBP));
-            nudMaxAvail.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.MaximumAvailability));
-            nudQualityKarmaLimit.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.QualityKarmaLimit));
-            nudMaxNumberMaxAttributes.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.MaxNumberMaxAttributesCreate));
-            nudMaxSkillRatingCreate.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.MaxSkillRatingCreate));
-            nudMaxKnowledgeSkillRatingCreate.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.MaxKnowledgeSkillRatingCreate));
-            nudMaxSkillRatingCreate.DoDataBinding("Maximum", _objCharacterSettings, nameof(CharacterSettings.MaxSkillRating));
-            nudMaxKnowledgeSkillRatingCreate.DoDataBinding("Maximum", _objCharacterSettings, nameof(CharacterSettings.MaxKnowledgeSkillRating));
-            txtContactPoints.DoDataBinding("Text", _objCharacterSettings, nameof(CharacterSettings.ContactPointsExpression));
-            txtKnowledgePoints.DoDataBinding("Text", _objCharacterSettings, nameof(CharacterSettings.KnowledgePointsExpression));
-            txtRegisteredSpriteLimit.DoDataBinding("Text", _objCharacterSettings, nameof(CharacterSettings.RegisteredSpriteExpression));
-            txtBoundSpiritLimit.DoDataBinding("Text", _objCharacterSettings, nameof(CharacterSettings.BoundSpiritExpression));
-            txtEssenceModifierPostExpression.DoDataBinding("Text", _objCharacterSettings, nameof(CharacterSettings.EssenceModifierPostExpression));
-            txtLiftLimit.DoDataBinding("Text", _objCharacterSettings, nameof(CharacterSettings.LiftLimitExpression));
-            txtCarryLimit.DoDataBinding("Text", _objCharacterSettings, nameof(CharacterSettings.CarryLimitExpression));
-            txtEncumbranceInterval.DoDataBinding("Text", _objCharacterSettings, nameof(CharacterSettings.EncumbranceIntervalExpression));
-            nudWeightDecimals.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.WeightDecimals));
+            await cboBuildMethod
+                  .DoDataBindingAsync("SelectedValue", _objCharacterSettings, nameof(CharacterSettings.BuildMethod),
+                                      token).ConfigureAwait(false);
+            await lblPriorityTable.RegisterOneWayAsyncDataBinding((x, y) => x.Visible = y, _objCharacterSettings,
+                                                                  nameof(CharacterSettings
+                                                                             .BuildMethodUsesPriorityTables),
+                                                                  x => x.GetBuildMethodUsesPriorityTablesAsync(token)
+                                                                        .AsTask(), token: token).ConfigureAwait(false);
+            await cboPriorityTable.RegisterOneWayAsyncDataBinding((x, y) => x.Visible = y, _objCharacterSettings,
+                                                                  nameof(CharacterSettings
+                                                                             .BuildMethodUsesPriorityTables),
+                                                                  x => x.GetBuildMethodUsesPriorityTablesAsync(token)
+                                                                        .AsTask(), token: token).ConfigureAwait(false);
+            await lblPriorities.RegisterOneWayAsyncDataBinding((x, y) => x.Visible = y, _objCharacterSettings,
+                                                               nameof(CharacterSettings.BuildMethodIsPriority),
+                                                               x => x.GetBuildMethodIsPriorityAsync(token).AsTask(),
+                                                               token: token).ConfigureAwait(false);
+            await txtPriorities.RegisterOneWayAsyncDataBinding((x, y) => x.Visible = y, _objCharacterSettings,
+                                                               nameof(CharacterSettings.BuildMethodIsPriority),
+                                                               x => x.GetBuildMethodIsPriorityAsync(token).AsTask(),
+                                                               token: token).ConfigureAwait(false);
+            await txtPriorities
+                  .DoDataBindingAsync("Text", _objCharacterSettings, nameof(CharacterSettings.PriorityArray), token)
+                  .ConfigureAwait(false);
+            await lblSumToTen.RegisterOneWayAsyncDataBinding((x, y) => x.Visible = y, _objCharacterSettings,
+                                                             nameof(CharacterSettings.BuildMethodIsSumtoTen),
+                                                             x => x.GetBuildMethodIsSumtoTenAsync(token).AsTask(),
+                                                             token: token).ConfigureAwait(false);
+            await nudSumToTen.RegisterOneWayAsyncDataBinding((x, y) => x.Visible = y, _objCharacterSettings,
+                                                             nameof(CharacterSettings.BuildMethodIsSumtoTen),
+                                                             x => x.GetBuildMethodIsSumtoTenAsync(token).AsTask(),
+                                                             token: token).ConfigureAwait(false);
+            await nudSumToTen
+                  .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.SumtoTen), token)
+                  .ConfigureAwait(false);
+            await nudStartingKarma
+                  .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.BuildKarma), token)
+                  .ConfigureAwait(false);
+            await nudMaxNuyenKarma
+                  .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.NuyenMaximumBP), token)
+                  .ConfigureAwait(false);
+            await nudMaxAvail
+                  .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.MaximumAvailability),
+                                      token).ConfigureAwait(false);
+            await nudQualityKarmaLimit
+                  .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.QualityKarmaLimit),
+                                      token).ConfigureAwait(false);
+            await nudMaxNumberMaxAttributes
+                  .DoDataBindingAsync("Value", _objCharacterSettings,
+                                      nameof(CharacterSettings.MaxNumberMaxAttributesCreate), token)
+                  .ConfigureAwait(false);
+            await nudMaxSkillRatingCreate
+                  .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.MaxSkillRatingCreate),
+                                      token).ConfigureAwait(false);
+            await nudMaxKnowledgeSkillRatingCreate
+                  .DoDataBindingAsync("Value", _objCharacterSettings,
+                                      nameof(CharacterSettings.MaxKnowledgeSkillRatingCreate), token)
+                  .ConfigureAwait(false);
+            await nudMaxSkillRatingCreate
+                  .DoDataBindingAsync("Maximum", _objCharacterSettings, nameof(CharacterSettings.MaxSkillRating), token)
+                  .ConfigureAwait(false);
+            await nudMaxKnowledgeSkillRatingCreate
+                  .DoDataBindingAsync("Maximum", _objCharacterSettings,
+                                      nameof(CharacterSettings.MaxKnowledgeSkillRating), token).ConfigureAwait(false);
+            await txtContactPoints
+                  .DoDataBindingAsync("Text", _objCharacterSettings, nameof(CharacterSettings.ContactPointsExpression),
+                                      token).ConfigureAwait(false);
+            await txtKnowledgePoints
+                  .DoDataBindingAsync("Text", _objCharacterSettings,
+                                      nameof(CharacterSettings.KnowledgePointsExpression), token).ConfigureAwait(false);
+            await txtRegisteredSpriteLimit
+                  .DoDataBindingAsync("Text", _objCharacterSettings,
+                                      nameof(CharacterSettings.RegisteredSpriteExpression), token)
+                  .ConfigureAwait(false);
+            await txtBoundSpiritLimit
+                  .DoDataBindingAsync("Text", _objCharacterSettings, nameof(CharacterSettings.BoundSpiritExpression),
+                                      token).ConfigureAwait(false);
+            await txtEssenceModifierPostExpression
+                  .DoDataBindingAsync("Text", _objCharacterSettings,
+                                      nameof(CharacterSettings.EssenceModifierPostExpression), token)
+                  .ConfigureAwait(false);
+            await txtLiftLimit
+                  .DoDataBindingAsync("Text", _objCharacterSettings, nameof(CharacterSettings.LiftLimitExpression),
+                                      token).ConfigureAwait(false);
+            await txtCarryLimit
+                  .DoDataBindingAsync("Text", _objCharacterSettings, nameof(CharacterSettings.CarryLimitExpression),
+                                      token).ConfigureAwait(false);
+            await txtEncumbranceInterval
+                  .DoDataBindingAsync("Text", _objCharacterSettings,
+                                      nameof(CharacterSettings.EncumbranceIntervalExpression), token)
+                  .ConfigureAwait(false);
+            await nudWeightDecimals
+                  .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.WeightDecimals), token)
+                  .ConfigureAwait(false);
 
-            chkEncumbrancePenaltyPhysicalLimit.DoDataBinding("Checked", _objCharacterSettings, nameof(CharacterSettings.DoEncumbrancePenaltyPhysicalLimit));
-            chkEncumbrancePenaltyMovementSpeed.DoDataBinding("Checked", _objCharacterSettings, nameof(CharacterSettings.DoEncumbrancePenaltyMovementSpeed));
-            chkEncumbrancePenaltyAgility.DoDataBinding("Checked", _objCharacterSettings, nameof(CharacterSettings.DoEncumbrancePenaltyAgility));
-            chkEncumbrancePenaltyReaction.DoDataBinding("Checked", _objCharacterSettings, nameof(CharacterSettings.DoEncumbrancePenaltyReaction));
-            chkEncumbrancePenaltyWoundModifier.DoDataBinding("Checked", _objCharacterSettings, nameof(CharacterSettings.DoEncumbrancePenaltyWoundModifier));
+            await chkEncumbrancePenaltyPhysicalLimit
+                  .DoDataBindingAsync("Checked", _objCharacterSettings,
+                                      nameof(CharacterSettings.DoEncumbrancePenaltyPhysicalLimit), token)
+                  .ConfigureAwait(false);
+            await chkEncumbrancePenaltyMovementSpeed
+                  .DoDataBindingAsync("Checked", _objCharacterSettings,
+                                      nameof(CharacterSettings.DoEncumbrancePenaltyMovementSpeed), token)
+                  .ConfigureAwait(false);
+            await chkEncumbrancePenaltyAgility
+                  .DoDataBindingAsync("Checked", _objCharacterSettings,
+                                      nameof(CharacterSettings.DoEncumbrancePenaltyAgility), token)
+                  .ConfigureAwait(false);
+            await chkEncumbrancePenaltyReaction
+                  .DoDataBindingAsync("Checked", _objCharacterSettings,
+                                      nameof(CharacterSettings.DoEncumbrancePenaltyReaction), token)
+                  .ConfigureAwait(false);
+            await chkEncumbrancePenaltyWoundModifier
+                  .DoDataBindingAsync("Checked", _objCharacterSettings,
+                                      nameof(CharacterSettings.DoEncumbrancePenaltyWoundModifier), token)
+                  .ConfigureAwait(false);
 
-            nudEncumbrancePenaltyPhysicalLimit.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.EncumbrancePenaltyPhysicalLimit));
-            nudEncumbrancePenaltyMovementSpeed.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.EncumbrancePenaltyMovementSpeed));
-            nudEncumbrancePenaltyAgility.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.EncumbrancePenaltyAgility));
-            nudEncumbrancePenaltyReaction.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.EncumbrancePenaltyReaction));
-            nudEncumbrancePenaltyWoundModifier.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.EncumbrancePenaltyWoundModifier));
+            await nudEncumbrancePenaltyPhysicalLimit
+                  .DoDataBindingAsync("Value", _objCharacterSettings,
+                                      nameof(CharacterSettings.EncumbrancePenaltyPhysicalLimit), token)
+                  .ConfigureAwait(false);
+            await nudEncumbrancePenaltyMovementSpeed
+                  .DoDataBindingAsync("Value", _objCharacterSettings,
+                                      nameof(CharacterSettings.EncumbrancePenaltyMovementSpeed), token)
+                  .ConfigureAwait(false);
+            await nudEncumbrancePenaltyAgility
+                  .DoDataBindingAsync("Value", _objCharacterSettings,
+                                      nameof(CharacterSettings.EncumbrancePenaltyAgility), token).ConfigureAwait(false);
+            await nudEncumbrancePenaltyReaction
+                  .DoDataBindingAsync("Value", _objCharacterSettings,
+                                      nameof(CharacterSettings.EncumbrancePenaltyReaction), token)
+                  .ConfigureAwait(false);
+            await nudEncumbrancePenaltyWoundModifier
+                  .DoDataBindingAsync("Value", _objCharacterSettings,
+                                      nameof(CharacterSettings.EncumbrancePenaltyWoundModifier), token)
+                  .ConfigureAwait(false);
 
-            chkEnforceCapacity.DoDataBinding("Checked", _objCharacterSettings, nameof(CharacterSettings.EnforceCapacity));
-            chkLicenseEachRestrictedItem.DoDataBinding("Checked", _objCharacterSettings, nameof(CharacterSettings.LicenseRestricted));
-            chkReverseAttributePriorityOrder.DoDataBinding("Checked", _objCharacterSettings, nameof(CharacterSettings.ReverseAttributePriorityOrder));
-            chkDronemods.DoDataBinding("Checked", _objCharacterSettings, nameof(CharacterSettings.DroneMods));
-            chkDronemodsMaximumPilot.DoDataBinding("Checked", _objCharacterSettings, nameof(CharacterSettings.DroneModsMaximumPilot));
-            chkRestrictRecoil.DoDataBinding("Checked", _objCharacterSettings, nameof(CharacterSettings.RestrictRecoil));
-            chkStrictSkillGroups.DoDataBinding("Checked", _objCharacterSettings, nameof(CharacterSettings.StrictSkillGroupsInCreateMode));
-            chkAllowPointBuySpecializationsOnKarmaSkills.DoDataBinding("Checked", _objCharacterSettings, nameof(CharacterSettings.AllowPointBuySpecializationsOnKarmaSkills));
-            chkAllowFreeGrids.DoDataBinding("Checked", _objCharacterSettings, nameof(CharacterSettings.AllowFreeGrids));
+            await chkEnforceCapacity
+                  .DoDataBindingAsync("Checked", _objCharacterSettings, nameof(CharacterSettings.EnforceCapacity),
+                                      token).ConfigureAwait(false);
+            await chkLicenseEachRestrictedItem
+                  .DoDataBindingAsync("Checked", _objCharacterSettings, nameof(CharacterSettings.LicenseRestricted),
+                                      token).ConfigureAwait(false);
+            await chkReverseAttributePriorityOrder
+                  .DoDataBindingAsync("Checked", _objCharacterSettings,
+                                      nameof(CharacterSettings.ReverseAttributePriorityOrder), token)
+                  .ConfigureAwait(false);
+            await chkDronemods
+                  .DoDataBindingAsync("Checked", _objCharacterSettings, nameof(CharacterSettings.DroneMods), token)
+                  .ConfigureAwait(false);
+            await chkDronemodsMaximumPilot
+                  .DoDataBindingAsync("Checked", _objCharacterSettings, nameof(CharacterSettings.DroneModsMaximumPilot),
+                                      token).ConfigureAwait(false);
+            await chkRestrictRecoil
+                  .DoDataBindingAsync("Checked", _objCharacterSettings, nameof(CharacterSettings.RestrictRecoil), token)
+                  .ConfigureAwait(false);
+            await chkStrictSkillGroups
+                  .DoDataBindingAsync("Checked", _objCharacterSettings,
+                                      nameof(CharacterSettings.StrictSkillGroupsInCreateMode), token)
+                  .ConfigureAwait(false);
+            await chkAllowPointBuySpecializationsOnKarmaSkills
+                  .DoDataBindingAsync("Checked", _objCharacterSettings,
+                                      nameof(CharacterSettings.AllowPointBuySpecializationsOnKarmaSkills), token)
+                  .ConfigureAwait(false);
+            await chkAllowFreeGrids
+                  .DoDataBindingAsync("Checked", _objCharacterSettings, nameof(CharacterSettings.AllowFreeGrids), token)
+                  .ConfigureAwait(false);
 
-            chkDontUseCyberlimbCalculation.DoDataBinding("Checked", _objCharacterSettings, nameof(CharacterSettings.DontUseCyberlimbCalculation));
-            chkCyberlegMovement.DoDataBinding("Checked", _objCharacterSettings, nameof(CharacterSettings.CyberlegMovement));
-            chkCyberlimbAttributeBonusCap.DoDataBinding("Checked", _objCharacterSettings, nameof(CharacterSettings.CyberlimbAttributeBonusCapOverride));
-            nudCyberlimbAttributeBonusCap.DoOneWayDataBinding("Enabled", _objCharacterSettings, nameof(CharacterSettings.CyberlimbAttributeBonusCapOverride));
-            nudCyberlimbAttributeBonusCap.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.CyberlimbAttributeBonusCap));
-            chkRedlinerLimbsSkull.DoNegatableDataBinding("Checked", _objCharacterSettings, nameof(CharacterSettings.RedlinerExcludesSkull));
-            chkRedlinerLimbsTorso.DoNegatableDataBinding("Checked", _objCharacterSettings, nameof(CharacterSettings.RedlinerExcludesTorso));
-            chkRedlinerLimbsArms.DoNegatableDataBinding("Checked", _objCharacterSettings, nameof(CharacterSettings.RedlinerExcludesArms));
-            chkRedlinerLimbsLegs.DoNegatableDataBinding("Checked", _objCharacterSettings, nameof(CharacterSettings.RedlinerExcludesLegs));
+            await chkDontUseCyberlimbCalculation
+                  .DoDataBindingAsync("Checked", _objCharacterSettings,
+                                      nameof(CharacterSettings.DontUseCyberlimbCalculation), token)
+                  .ConfigureAwait(false);
+            await chkCyberlegMovement
+                  .DoDataBindingAsync("Checked", _objCharacterSettings, nameof(CharacterSettings.CyberlegMovement),
+                                      token).ConfigureAwait(false);
+            await chkCyberlimbAttributeBonusCap
+                  .DoDataBindingAsync("Checked", _objCharacterSettings,
+                                      nameof(CharacterSettings.CyberlimbAttributeBonusCapOverride), token)
+                  .ConfigureAwait(false);
+            await nudCyberlimbAttributeBonusCap.RegisterOneWayAsyncDataBinding(
+                (x, y) => x.Enabled = y, _objCharacterSettings,
+                nameof(CharacterSettings.CyberlimbAttributeBonusCapOverride),
+                x => x.GetCyberlimbAttributeBonusCapOverrideAsync(token).AsTask(), token: token).ConfigureAwait(false);
+            await nudCyberlimbAttributeBonusCap
+                  .DoDataBindingAsync("Value", _objCharacterSettings,
+                                      nameof(CharacterSettings.CyberlimbAttributeBonusCap), token)
+                  .ConfigureAwait(false);
+            await chkRedlinerLimbsSkull
+                  .DoNegatableDataBindingAsync("Checked", _objCharacterSettings,
+                                               nameof(CharacterSettings.RedlinerExcludesSkull), token)
+                  .ConfigureAwait(false);
+            await chkRedlinerLimbsTorso
+                  .DoNegatableDataBindingAsync("Checked", _objCharacterSettings,
+                                               nameof(CharacterSettings.RedlinerExcludesTorso), token)
+                  .ConfigureAwait(false);
+            await chkRedlinerLimbsArms
+                  .DoNegatableDataBindingAsync("Checked", _objCharacterSettings,
+                                               nameof(CharacterSettings.RedlinerExcludesArms), token)
+                  .ConfigureAwait(false);
+            await chkRedlinerLimbsLegs
+                  .DoNegatableDataBindingAsync("Checked", _objCharacterSettings,
+                                               nameof(CharacterSettings.RedlinerExcludesLegs), token)
+                  .ConfigureAwait(false);
 
-            nudNuyenDecimalsMaximum.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.MaxNuyenDecimals));
-            nudNuyenDecimalsMinimum.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.MinNuyenDecimals));
-            nudEssenceDecimals.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.EssenceDecimals));
-            chkDontRoundEssenceInternally.DoDataBinding("Checked", _objCharacterSettings, nameof(CharacterSettings.DontRoundEssenceInternally));
+            await nudNuyenDecimalsMaximum
+                  .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.MaxNuyenDecimals), token)
+                  .ConfigureAwait(false);
+            await nudNuyenDecimalsMinimum
+                  .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.MinNuyenDecimals), token)
+                  .ConfigureAwait(false);
+            await nudEssenceDecimals
+                  .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.EssenceDecimals), token)
+                  .ConfigureAwait(false);
+            await chkDontRoundEssenceInternally
+                  .DoDataBindingAsync("Checked", _objCharacterSettings,
+                                      nameof(CharacterSettings.DontRoundEssenceInternally), token)
+                  .ConfigureAwait(false);
 
-            nudMinInitiativeDice.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.MinInitiativeDice));
-            nudMaxInitiativeDice.DoDataBinding("Minimum", _objCharacterSettings, nameof(CharacterSettings.MinInitiativeDice));
-            nudMaxInitiativeDice.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.MaxInitiativeDice));
-            nudMinAstralInitiativeDice.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.MinAstralInitiativeDice));
-            nudMaxAstralInitiativeDice.DoDataBinding("Minimum", _objCharacterSettings, nameof(CharacterSettings.MinAstralInitiativeDice));
-            nudMaxAstralInitiativeDice.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.MaxAstralInitiativeDice));
-            nudMinColdSimInitiativeDice.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.MinColdSimInitiativeDice));
-            nudMaxColdSimInitiativeDice.DoDataBinding("Minimum", _objCharacterSettings, nameof(CharacterSettings.MinColdSimInitiativeDice));
-            nudMaxColdSimInitiativeDice.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.MaxColdSimInitiativeDice));
-            nudMinHotSimInitiativeDice.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.MinHotSimInitiativeDice));
-            nudMaxHotSimInitiativeDice.DoDataBinding("Minimum", _objCharacterSettings, nameof(CharacterSettings.MinHotSimInitiativeDice));
-            nudMaxHotSimInitiativeDice.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.MaxHotSimInitiativeDice));
+            await nudMinInitiativeDice
+                  .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.MinInitiativeDice),
+                                      token).ConfigureAwait(false);
+            await nudMaxInitiativeDice
+                  .DoDataBindingAsync("Minimum", _objCharacterSettings, nameof(CharacterSettings.MinInitiativeDice),
+                                      token).ConfigureAwait(false);
+            await nudMaxInitiativeDice
+                  .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.MaxInitiativeDice),
+                                      token).ConfigureAwait(false);
+            await nudMinAstralInitiativeDice
+                  .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.MinAstralInitiativeDice),
+                                      token).ConfigureAwait(false);
+            await nudMaxAstralInitiativeDice
+                  .DoDataBindingAsync("Minimum", _objCharacterSettings,
+                                      nameof(CharacterSettings.MinAstralInitiativeDice), token).ConfigureAwait(false);
+            await nudMaxAstralInitiativeDice
+                  .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.MaxAstralInitiativeDice),
+                                      token).ConfigureAwait(false);
+            await nudMinColdSimInitiativeDice
+                  .DoDataBindingAsync("Value", _objCharacterSettings,
+                                      nameof(CharacterSettings.MinColdSimInitiativeDice), token).ConfigureAwait(false);
+            await nudMaxColdSimInitiativeDice
+                  .DoDataBindingAsync("Minimum", _objCharacterSettings,
+                                      nameof(CharacterSettings.MinColdSimInitiativeDice), token).ConfigureAwait(false);
+            await nudMaxColdSimInitiativeDice
+                  .DoDataBindingAsync("Value", _objCharacterSettings,
+                                      nameof(CharacterSettings.MaxColdSimInitiativeDice), token).ConfigureAwait(false);
+            await nudMinHotSimInitiativeDice
+                  .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.MinHotSimInitiativeDice),
+                                      token).ConfigureAwait(false);
+            await nudMaxHotSimInitiativeDice
+                  .DoDataBindingAsync("Minimum", _objCharacterSettings,
+                                      nameof(CharacterSettings.MinHotSimInitiativeDice), token).ConfigureAwait(false);
+            await nudMaxHotSimInitiativeDice
+                  .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.MaxHotSimInitiativeDice),
+                                      token).ConfigureAwait(false);
 
-            chkEnable4eStyleEnemyTracking.DoDataBinding("Checked", _objCharacterSettings, nameof(CharacterSettings.EnableEnemyTracking));
-            flpKarmaGainedFromEnemies.DoOneWayDataBinding("Enabled", _objCharacterSettings, nameof(CharacterSettings.EnableEnemyTracking));
-            nudKarmaGainedFromEnemies.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaEnemy));
-            chkEnemyKarmaQualityLimit.DoOneWayDataBinding("Enabled", _objCharacterSettings, nameof(CharacterSettings.EnableEnemyTracking));
-            chkEnemyKarmaQualityLimit.DoDataBinding("Checked", _objCharacterSettings, nameof(CharacterSettings.EnemyKarmaQualityLimit));
-            chkMoreLethalGameplay.DoDataBinding("Checked", _objCharacterSettings, nameof(CharacterSettings.MoreLethalGameplay));
+            await chkEnable4eStyleEnemyTracking
+                  .DoDataBindingAsync("Checked", _objCharacterSettings, nameof(CharacterSettings.EnableEnemyTracking),
+                                      token).ConfigureAwait(false);
+            await flpKarmaGainedFromEnemies.RegisterOneWayAsyncDataBinding(
+                (x, y) => x.Enabled = y, _objCharacterSettings,
+                nameof(CharacterSettings.EnableEnemyTracking),
+                x => x.GetEnableEnemyTrackingAsync(token).AsTask(), token: token).ConfigureAwait(false);
+            await nudKarmaGainedFromEnemies
+                  .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaEnemy), token)
+                  .ConfigureAwait(false);
+            await chkEnemyKarmaQualityLimit.RegisterOneWayAsyncDataBinding(
+                (x, y) => x.Enabled = y, _objCharacterSettings,
+                nameof(CharacterSettings.EnableEnemyTracking),
+                x => x.GetEnableEnemyTrackingAsync(token).AsTask(), token: token).ConfigureAwait(false);
+            await chkEnemyKarmaQualityLimit
+                  .DoDataBindingAsync("Checked", _objCharacterSettings,
+                                      nameof(CharacterSettings.EnemyKarmaQualityLimit), token).ConfigureAwait(false);
+            await chkMoreLethalGameplay
+                  .DoDataBindingAsync("Checked", _objCharacterSettings, nameof(CharacterSettings.MoreLethalGameplay),
+                                      token).ConfigureAwait(false);
 
-            chkNoArmorEncumbrance.DoDataBinding("Checked", _objCharacterSettings, nameof(CharacterSettings.NoArmorEncumbrance));
-            chkUncappedArmorAccessoryBonuses.DoDataBinding("Checked", _objCharacterSettings, nameof(CharacterSettings.UncappedArmorAccessoryBonuses));
-            chkIgnoreArt.DoDataBinding("Checked", _objCharacterSettings, nameof(CharacterSettings.IgnoreArt));
-            chkIgnoreComplexFormLimit.DoDataBinding("Checked", _objCharacterSettings, nameof(CharacterSettings.IgnoreComplexFormLimit));
-            chkUnarmedSkillImprovements.DoDataBinding("Checked", _objCharacterSettings, nameof(CharacterSettings.UnarmedImprovementsApplyToWeapons));
-            chkMysAdPp.DoDataBinding("Checked", _objCharacterSettings, nameof(CharacterSettings.MysAdeptAllowPpCareer));
-            chkMysAdPp.DoOneWayNegatableDataBinding("Enabled", _objCharacterSettings, nameof(CharacterSettings.MysAdeptSecondMAGAttribute));
-            chkPrioritySpellsAsAdeptPowers.DoDataBinding("Checked", _objCharacterSettings, nameof(CharacterSettings.PrioritySpellsAsAdeptPowers));
-            chkPrioritySpellsAsAdeptPowers.DoOneWayNegatableDataBinding("Enabled", _objCharacterSettings, nameof(CharacterSettings.MysAdeptSecondMAGAttribute));
-            chkMysAdeptSecondMAGAttribute.DoDataBinding("Checked", _objCharacterSettings, nameof(CharacterSettings.MysAdeptSecondMAGAttribute));
-            chkMysAdeptSecondMAGAttribute.DoOneWayDataBinding("Enabled", _objCharacterSettings, nameof(CharacterSettings.MysAdeptSecondMAGAttributeEnabled));
-            chkUsePointsOnBrokenGroups.DoDataBinding("Checked", _objCharacterSettings, nameof(CharacterSettings.UsePointsOnBrokenGroups));
-            chkSpecialKarmaCost.DoDataBinding("Checked", _objCharacterSettings, nameof(CharacterSettings.SpecialKarmaCostBasedOnShownValue));
-            chkUseCalculatedPublicAwareness.DoDataBinding("Checked", _objCharacterSettings, nameof(CharacterSettings.UseCalculatedPublicAwareness));
-            chkAlternateMetatypeAttributeKarma.DoDataBinding("Checked", _objCharacterSettings, nameof(CharacterSettings.AlternateMetatypeAttributeKarma));
-            chkCompensateSkillGroupKarmaDifference.DoDataBinding("Checked", _objCharacterSettings, nameof(CharacterSettings.CompensateSkillGroupKarmaDifference));
-            chkFreeMartialArtSpecialization.DoDataBinding("Checked", _objCharacterSettings, nameof(CharacterSettings.FreeMartialArtSpecialization));
-            chkIncreasedImprovedAbilityModifier.DoDataBinding("Checked", _objCharacterSettings, nameof(CharacterSettings.IncreasedImprovedAbilityMultiplier));
-            chkAllowTechnomancerSchooling.DoDataBinding("Checked", _objCharacterSettings, nameof(CharacterSettings.AllowTechnomancerSchooling));
-            chkAllowSkillRegrouping.DoDataBinding("Checked", _objCharacterSettings, nameof(CharacterSettings.AllowSkillRegrouping));
-            chkSpecializationsBreakSkillGroups.DoDataBinding("Checked", _objCharacterSettings, nameof(CharacterSettings.SpecializationsBreakSkillGroups));
-            chkDontDoubleQualityPurchases.DoDataBinding("Checked", _objCharacterSettings, nameof(CharacterSettings.DontDoubleQualityPurchases));
-            chkDontDoubleQualityRefunds.DoDataBinding("Checked", _objCharacterSettings, nameof(CharacterSettings.DontDoubleQualityRefunds));
-            chkDroneArmorMultiplier.DoDataBinding("Checked", _objCharacterSettings, nameof(CharacterSettings.DroneArmorMultiplierEnabled));
-            nudDroneArmorMultiplier.DoOneWayDataBinding("Enabled", _objCharacterSettings, nameof(CharacterSettings.DroneArmorMultiplierEnabled));
-            nudDroneArmorMultiplier.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.DroneArmorMultiplier));
-            chkESSLossReducesMaximumOnly.DoDataBinding("Checked", _objCharacterSettings, nameof(CharacterSettings.ESSLossReducesMaximumOnly));
-            chkExceedNegativeQualities.DoDataBinding("Checked", _objCharacterSettings, nameof(CharacterSettings.ExceedNegativeQualities));
-            chkExceedNegativeQualitiesNoBonus.DoOneWayDataBinding("Enabled", _objCharacterSettings, nameof(CharacterSettings.ExceedNegativeQualities));
-            chkExceedNegativeQualitiesNoBonus.DoDataBinding("Checked", _objCharacterSettings, nameof(CharacterSettings.ExceedNegativeQualitiesNoBonus));
-            chkExceedPositiveQualities.DoDataBinding("Checked", _objCharacterSettings, nameof(CharacterSettings.ExceedPositiveQualities));
-            chkExceedPositiveQualitiesCostDoubled.DoOneWayDataBinding("Enabled", _objCharacterSettings, nameof(CharacterSettings.ExceedPositiveQualities));
-            chkExceedPositiveQualitiesCostDoubled.DoDataBinding("Checked", _objCharacterSettings, nameof(CharacterSettings.ExceedPositiveQualitiesCostDoubled));
-            chkExtendAnyDetectionSpell.DoDataBinding("Checked", _objCharacterSettings, nameof(CharacterSettings.ExtendAnyDetectionSpell));
-            chkAllowCyberwareESSDiscounts.DoDataBinding("Checked", _objCharacterSettings, nameof(CharacterSettings.AllowCyberwareESSDiscounts));
-            chkAllowInitiation.DoDataBinding("Checked", _objCharacterSettings, nameof(CharacterSettings.AllowInitiationInCreateMode));
-            nudMaxSkillRating.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.MaxSkillRating));
-            nudMaxKnowledgeSkillRating.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.MaxKnowledgeSkillRating));
+            await chkNoArmorEncumbrance
+                  .DoDataBindingAsync("Checked", _objCharacterSettings, nameof(CharacterSettings.NoArmorEncumbrance),
+                                      token).ConfigureAwait(false);
+            await chkUncappedArmorAccessoryBonuses
+                  .DoDataBindingAsync("Checked", _objCharacterSettings,
+                                      nameof(CharacterSettings.UncappedArmorAccessoryBonuses), token)
+                  .ConfigureAwait(false);
+            await chkIgnoreArt
+                  .DoDataBindingAsync("Checked", _objCharacterSettings, nameof(CharacterSettings.IgnoreArt), token)
+                  .ConfigureAwait(false);
+            await chkIgnoreComplexFormLimit
+                  .DoDataBindingAsync("Checked", _objCharacterSettings,
+                                      nameof(CharacterSettings.IgnoreComplexFormLimit), token).ConfigureAwait(false);
+            await chkUnarmedSkillImprovements
+                  .DoDataBindingAsync("Checked", _objCharacterSettings,
+                                      nameof(CharacterSettings.UnarmedImprovementsApplyToWeapons), token)
+                  .ConfigureAwait(false);
+            await chkMysAdPp
+                  .DoDataBindingAsync("Checked", _objCharacterSettings, nameof(CharacterSettings.MysAdeptAllowPpCareer),
+                                      token).ConfigureAwait(false);
+            await chkMysAdPp.RegisterOneWayAsyncDataBinding(
+                (x, y) => x.Enabled = !y, _objCharacterSettings,
+                nameof(CharacterSettings.MysAdeptSecondMAGAttribute),
+                x => x.GetMysAdeptSecondMAGAttributeAsync(token).AsTask(), token: token).ConfigureAwait(false);
+            await chkPrioritySpellsAsAdeptPowers
+                  .DoDataBindingAsync("Checked", _objCharacterSettings,
+                                      nameof(CharacterSettings.PrioritySpellsAsAdeptPowers), token)
+                  .ConfigureAwait(false);
+            await chkPrioritySpellsAsAdeptPowers.RegisterOneWayAsyncDataBinding(
+                (x, y) => x.Enabled = !y, _objCharacterSettings,
+                nameof(CharacterSettings.MysAdeptSecondMAGAttribute),
+                x => x.GetMysAdeptSecondMAGAttributeAsync(token).AsTask(), token: token).ConfigureAwait(false);
+            await chkMysAdeptSecondMAGAttribute
+                  .DoDataBindingAsync("Checked", _objCharacterSettings,
+                                      nameof(CharacterSettings.MysAdeptSecondMAGAttribute), token)
+                  .ConfigureAwait(false);
+            await chkMysAdeptSecondMAGAttribute.RegisterOneWayAsyncDataBinding(
+                (x, y) => x.Enabled = y, _objCharacterSettings,
+                nameof(CharacterSettings.MysAdeptSecondMAGAttributeEnabled),
+                x => x.GetMysAdeptSecondMAGAttributeEnabledAsync(token).AsTask(), token: token).ConfigureAwait(false);
+            await chkUsePointsOnBrokenGroups
+                  .DoDataBindingAsync("Checked", _objCharacterSettings,
+                                      nameof(CharacterSettings.UsePointsOnBrokenGroups), token).ConfigureAwait(false);
+            await chkSpecialKarmaCost
+                  .DoDataBindingAsync("Checked", _objCharacterSettings,
+                                      nameof(CharacterSettings.SpecialKarmaCostBasedOnShownValue), token)
+                  .ConfigureAwait(false);
+            await chkUseCalculatedPublicAwareness
+                  .DoDataBindingAsync("Checked", _objCharacterSettings,
+                                      nameof(CharacterSettings.UseCalculatedPublicAwareness), token)
+                  .ConfigureAwait(false);
+            await chkAlternateMetatypeAttributeKarma
+                  .DoDataBindingAsync("Checked", _objCharacterSettings,
+                                      nameof(CharacterSettings.AlternateMetatypeAttributeKarma), token)
+                  .ConfigureAwait(false);
+            await chkCompensateSkillGroupKarmaDifference
+                  .DoDataBindingAsync("Checked", _objCharacterSettings,
+                                      nameof(CharacterSettings.CompensateSkillGroupKarmaDifference), token)
+                  .ConfigureAwait(false);
+            await chkFreeMartialArtSpecialization
+                  .DoDataBindingAsync("Checked", _objCharacterSettings,
+                                      nameof(CharacterSettings.FreeMartialArtSpecialization), token)
+                  .ConfigureAwait(false);
+            await chkIncreasedImprovedAbilityModifier
+                  .DoDataBindingAsync("Checked", _objCharacterSettings,
+                                      nameof(CharacterSettings.IncreasedImprovedAbilityMultiplier), token)
+                  .ConfigureAwait(false);
+            await chkAllowTechnomancerSchooling
+                  .DoDataBindingAsync("Checked", _objCharacterSettings,
+                                      nameof(CharacterSettings.AllowTechnomancerSchooling), token)
+                  .ConfigureAwait(false);
+            await chkAllowSkillRegrouping
+                  .DoDataBindingAsync("Checked", _objCharacterSettings, nameof(CharacterSettings.AllowSkillRegrouping),
+                                      token).ConfigureAwait(false);
+            await chkSpecializationsBreakSkillGroups
+                  .DoDataBindingAsync("Checked", _objCharacterSettings,
+                                      nameof(CharacterSettings.SpecializationsBreakSkillGroups), token)
+                  .ConfigureAwait(false);
+            await chkDontDoubleQualityPurchases
+                  .DoDataBindingAsync("Checked", _objCharacterSettings,
+                                      nameof(CharacterSettings.DontDoubleQualityPurchases), token)
+                  .ConfigureAwait(false);
+            await chkDontDoubleQualityRefunds
+                  .DoDataBindingAsync("Checked", _objCharacterSettings,
+                                      nameof(CharacterSettings.DontDoubleQualityRefunds), token).ConfigureAwait(false);
+            await chkDroneArmorMultiplier
+                  .DoDataBindingAsync("Checked", _objCharacterSettings,
+                                      nameof(CharacterSettings.DroneArmorMultiplierEnabled), token)
+                  .ConfigureAwait(false);
+            await nudDroneArmorMultiplier.RegisterOneWayAsyncDataBinding(
+                (x, y) => x.Enabled = y, _objCharacterSettings,
+                nameof(CharacterSettings.DroneArmorMultiplierEnabled),
+                x => x.GetDroneArmorMultiplierEnabledAsync(token).AsTask(), token: token).ConfigureAwait(false);
+            await nudDroneArmorMultiplier
+                  .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.DroneArmorMultiplier),
+                                      token).ConfigureAwait(false);
+            await chkESSLossReducesMaximumOnly
+                  .DoDataBindingAsync("Checked", _objCharacterSettings,
+                                      nameof(CharacterSettings.ESSLossReducesMaximumOnly), token).ConfigureAwait(false);
+            await chkExceedNegativeQualities
+                  .DoDataBindingAsync("Checked", _objCharacterSettings,
+                                      nameof(CharacterSettings.ExceedNegativeQualities), token).ConfigureAwait(false);
+            await chkExceedNegativeQualitiesNoBonus.RegisterOneWayAsyncDataBinding(
+                (x, y) => x.Enabled = y, _objCharacterSettings,
+                nameof(CharacterSettings.ExceedNegativeQualities),
+                x => x.GetExceedNegativeQualitiesAsync(token).AsTask(), token: token).ConfigureAwait(false);
+            await chkExceedNegativeQualitiesNoBonus
+                  .DoDataBindingAsync("Checked", _objCharacterSettings,
+                                      nameof(CharacterSettings.ExceedNegativeQualitiesNoBonus), token)
+                  .ConfigureAwait(false);
+            await chkExceedPositiveQualities
+                  .DoDataBindingAsync("Checked", _objCharacterSettings,
+                                      nameof(CharacterSettings.ExceedPositiveQualities), token).ConfigureAwait(false);
+            await chkExceedPositiveQualitiesCostDoubled.RegisterOneWayAsyncDataBinding(
+                (x, y) => x.Enabled = y, _objCharacterSettings,
+                nameof(CharacterSettings.ExceedPositiveQualities),
+                x => x.GetExceedPositiveQualitiesAsync(token).AsTask(), token: token).ConfigureAwait(false);
+            await chkExceedPositiveQualitiesCostDoubled
+                  .DoDataBindingAsync("Checked", _objCharacterSettings,
+                                      nameof(CharacterSettings.ExceedPositiveQualitiesCostDoubled), token)
+                  .ConfigureAwait(false);
+            await chkExtendAnyDetectionSpell
+                  .DoDataBindingAsync("Checked", _objCharacterSettings,
+                                      nameof(CharacterSettings.ExtendAnyDetectionSpell), token).ConfigureAwait(false);
+            await chkAllowCyberwareESSDiscounts
+                  .DoDataBindingAsync("Checked", _objCharacterSettings,
+                                      nameof(CharacterSettings.AllowCyberwareESSDiscounts), token)
+                  .ConfigureAwait(false);
+            await chkAllowInitiation
+                  .DoDataBindingAsync("Checked", _objCharacterSettings,
+                                      nameof(CharacterSettings.AllowInitiationInCreateMode), token)
+                  .ConfigureAwait(false);
+            await nudMaxSkillRating
+                  .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.MaxSkillRating), token)
+                  .ConfigureAwait(false);
+            await nudMaxKnowledgeSkillRating
+                  .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.MaxKnowledgeSkillRating),
+                                      token).ConfigureAwait(false);
 
             // Karma options.
-            nudMetatypeCostsKarmaMultiplier.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.MetatypeCostsKarmaMultiplier));
-            nudKarmaNuyenPerWftM.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.NuyenPerBPWftM));
-            nudKarmaNuyenPerWftP.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.NuyenPerBPWftP));
-            nudKarmaAttribute.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaAttribute));
-            nudKarmaQuality.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaQuality));
-            nudKarmaSpecialization.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaSpecialization));
-            nudKarmaKnowledgeSpecialization.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaKnowledgeSpecialization));
-            nudKarmaNewKnowledgeSkill.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaNewKnowledgeSkill));
-            nudKarmaNewActiveSkill.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaNewActiveSkill));
-            nudKarmaNewSkillGroup.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaNewSkillGroup));
-            nudKarmaImproveKnowledgeSkill.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaImproveKnowledgeSkill));
-            nudKarmaImproveActiveSkill.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaImproveActiveSkill));
-            nudKarmaImproveSkillGroup.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaImproveSkillGroup));
-            nudKarmaSpell.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaSpell));
-            nudKarmaNewComplexForm.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaNewComplexForm));
-            nudKarmaNewAIProgram.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaNewAIProgram));
-            nudKarmaNewAIAdvancedProgram.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaNewAIAdvancedProgram));
-            nudKarmaMetamagic.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaMetamagic));
-            nudKarmaContact.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaContact));
-            nudKarmaCarryover.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaCarryover));
-            nudKarmaSpirit.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaSpirit));
-            nudKarmaSpiritFettering.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaSpiritFettering));
-            nudKarmaTechnique.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaTechnique));
-            nudKarmaInitiation.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaInitiation));
-            nudKarmaInitiationFlat.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaInitiationFlat));
-            nudKarmaJoinGroup.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaJoinGroup));
-            nudKarmaLeaveGroup.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaLeaveGroup));
-            nudKarmaMysticAdeptPowerPoint.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaMysticAdeptPowerPoint));
+            await nudMetatypeCostsKarmaMultiplier
+                  .DoDataBindingAsync("Value", _objCharacterSettings,
+                                      nameof(CharacterSettings.MetatypeCostsKarmaMultiplier), token)
+                  .ConfigureAwait(false);
+            await nudKarmaNuyenPerWftM
+                  .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.NuyenPerBPWftM), token)
+                  .ConfigureAwait(false);
+            await nudKarmaNuyenPerWftP
+                  .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.NuyenPerBPWftP), token)
+                  .ConfigureAwait(false);
+            await nudKarmaAttribute
+                  .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaAttribute), token)
+                  .ConfigureAwait(false);
+            await nudKarmaQuality
+                  .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaQuality), token)
+                  .ConfigureAwait(false);
+            await nudKarmaSpecialization
+                  .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaSpecialization),
+                                      token).ConfigureAwait(false);
+            await nudKarmaKnowledgeSpecialization
+                  .DoDataBindingAsync("Value", _objCharacterSettings,
+                                      nameof(CharacterSettings.KarmaKnowledgeSpecialization), token)
+                  .ConfigureAwait(false);
+            await nudKarmaNewKnowledgeSkill
+                  .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaNewKnowledgeSkill),
+                                      token).ConfigureAwait(false);
+            await nudKarmaNewActiveSkill
+                  .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaNewActiveSkill),
+                                      token).ConfigureAwait(false);
+            await nudKarmaNewSkillGroup
+                  .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaNewSkillGroup),
+                                      token).ConfigureAwait(false);
+            await nudKarmaImproveKnowledgeSkill
+                  .DoDataBindingAsync("Value", _objCharacterSettings,
+                                      nameof(CharacterSettings.KarmaImproveKnowledgeSkill), token)
+                  .ConfigureAwait(false);
+            await nudKarmaImproveActiveSkill
+                  .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaImproveActiveSkill),
+                                      token).ConfigureAwait(false);
+            await nudKarmaImproveSkillGroup
+                  .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaImproveSkillGroup),
+                                      token).ConfigureAwait(false);
+            await nudKarmaSpell
+                  .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaSpell), token)
+                  .ConfigureAwait(false);
+            await nudKarmaNewComplexForm
+                  .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaNewComplexForm),
+                                      token).ConfigureAwait(false);
+            await nudKarmaNewAIProgram
+                  .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaNewAIProgram),
+                                      token).ConfigureAwait(false);
+            await nudKarmaNewAIAdvancedProgram
+                  .DoDataBindingAsync("Value", _objCharacterSettings,
+                                      nameof(CharacterSettings.KarmaNewAIAdvancedProgram), token).ConfigureAwait(false);
+            await nudKarmaMetamagic
+                  .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaMetamagic), token)
+                  .ConfigureAwait(false);
+            await nudKarmaContact
+                  .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaContact), token)
+                  .ConfigureAwait(false);
+            await nudKarmaCarryover
+                  .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaCarryover), token)
+                  .ConfigureAwait(false);
+            await nudKarmaSpirit
+                  .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaSpirit), token)
+                  .ConfigureAwait(false);
+            await nudKarmaSpiritFettering
+                  .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaSpiritFettering),
+                                      token).ConfigureAwait(false);
+            await nudKarmaTechnique
+                  .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaTechnique), token)
+                  .ConfigureAwait(false);
+            await nudKarmaInitiation
+                  .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaInitiation), token)
+                  .ConfigureAwait(false);
+            await nudKarmaInitiationFlat
+                  .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaInitiationFlat),
+                                      token).ConfigureAwait(false);
+            await nudKarmaJoinGroup
+                  .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaJoinGroup), token)
+                  .ConfigureAwait(false);
+            await nudKarmaLeaveGroup
+                  .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaLeaveGroup), token)
+                  .ConfigureAwait(false);
+            await nudKarmaMysticAdeptPowerPoint
+                  .DoDataBindingAsync("Value", _objCharacterSettings,
+                                      nameof(CharacterSettings.KarmaMysticAdeptPowerPoint), token)
+                  .ConfigureAwait(false);
 
             // Focus costs
-            nudKarmaAlchemicalFocus.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaAlchemicalFocus));
-            nudKarmaBanishingFocus.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaBanishingFocus));
-            nudKarmaBindingFocus.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaBindingFocus));
-            nudKarmaCenteringFocus.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaCenteringFocus));
-            nudKarmaCounterspellingFocus.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaCounterspellingFocus));
-            nudKarmaDisenchantingFocus.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaDisenchantingFocus));
-            nudKarmaFlexibleSignatureFocus.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaFlexibleSignatureFocus));
-            nudKarmaMaskingFocus.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaMaskingFocus));
-            nudKarmaPowerFocus.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaPowerFocus));
-            nudKarmaQiFocus.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaQiFocus));
-            nudKarmaRitualSpellcastingFocus.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaRitualSpellcastingFocus));
-            nudKarmaSpellcastingFocus.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaSpellcastingFocus));
-            nudKarmaSpellShapingFocus.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaSpellShapingFocus));
-            nudKarmaSummoningFocus.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaSummoningFocus));
-            nudKarmaSustainingFocus.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaSustainingFocus));
-            nudKarmaWeaponFocus.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaWeaponFocus));
+            await nudKarmaAlchemicalFocus
+                  .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaAlchemicalFocus),
+                                      token).ConfigureAwait(false);
+            await nudKarmaBanishingFocus
+                  .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaBanishingFocus),
+                                      token).ConfigureAwait(false);
+            await nudKarmaBindingFocus
+                  .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaBindingFocus),
+                                      token).ConfigureAwait(false);
+            await nudKarmaCenteringFocus
+                  .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaCenteringFocus),
+                                      token).ConfigureAwait(false);
+            await nudKarmaCounterspellingFocus
+                  .DoDataBindingAsync("Value", _objCharacterSettings,
+                                      nameof(CharacterSettings.KarmaCounterspellingFocus), token).ConfigureAwait(false);
+            await nudKarmaDisenchantingFocus
+                  .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaDisenchantingFocus),
+                                      token).ConfigureAwait(false);
+            await nudKarmaFlexibleSignatureFocus
+                  .DoDataBindingAsync("Value", _objCharacterSettings,
+                                      nameof(CharacterSettings.KarmaFlexibleSignatureFocus), token)
+                  .ConfigureAwait(false);
+            await nudKarmaMaskingFocus
+                  .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaMaskingFocus),
+                                      token).ConfigureAwait(false);
+            await nudKarmaPowerFocus
+                  .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaPowerFocus), token)
+                  .ConfigureAwait(false);
+            await nudKarmaQiFocus
+                  .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaQiFocus), token)
+                  .ConfigureAwait(false);
+            await nudKarmaRitualSpellcastingFocus
+                  .DoDataBindingAsync("Value", _objCharacterSettings,
+                                      nameof(CharacterSettings.KarmaRitualSpellcastingFocus), token)
+                  .ConfigureAwait(false);
+            await nudKarmaSpellcastingFocus
+                  .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaSpellcastingFocus),
+                                      token).ConfigureAwait(false);
+            await nudKarmaSpellShapingFocus
+                  .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaSpellShapingFocus),
+                                      token).ConfigureAwait(false);
+            await nudKarmaSummoningFocus
+                  .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaSummoningFocus),
+                                      token).ConfigureAwait(false);
+            await nudKarmaSustainingFocus
+                  .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaSustainingFocus),
+                                      token).ConfigureAwait(false);
+            await nudKarmaWeaponFocus
+                  .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaWeaponFocus), token)
+                  .ConfigureAwait(false);
         }
 
         private async ValueTask PopulateSettingsList(CancellationToken token = default)

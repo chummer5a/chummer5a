@@ -28,7 +28,6 @@ namespace Chummer.UI.Attributes
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             this.lblName = new Chummer.LabelWithToolTip();
             this.flpRight = new System.Windows.Forms.FlowLayoutPanel();
             this.lblLimits = new Chummer.LabelWithToolTip();
@@ -125,6 +124,7 @@ namespace Chummer.UI.Attributes
             this.MinimumSize = new System.Drawing.Size(0, 24);
             this.Name = "AttributeControl";
             this.Size = new System.Drawing.Size(194, 25);
+            this.Load += new System.EventHandler(this.AttributeControl_Load);
             this.MouseLeave += new System.EventHandler(this.OnMouseLeave);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.OnMouseMove);
             this.flpRight.ResumeLayout(false);

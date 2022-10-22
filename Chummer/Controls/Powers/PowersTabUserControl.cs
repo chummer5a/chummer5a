@@ -124,9 +124,6 @@ namespace Chummer.UI.Powers
                 {
                     Stopwatch parts = Stopwatch.StartNew();
 
-                    lblPowerPoints.DoOneWayDataBinding("Text", _objCharacter,
-                                                       nameof(Character.DisplayPowerPointsRemaining));
-
                     parts.TaskEnd("MakePowerDisplay()");
 
                     cboDisplayFilter.BeginUpdate();
@@ -160,7 +157,10 @@ namespace Chummer.UI.Powers
                     x.ResumeLayout(true);
                 }
             }, token: token).ConfigureAwait(false);
-
+            await lblPowerPoints.RegisterOneWayAsyncDataBinding((x, y) => x.Text = y, _objCharacter,
+                                                          nameof(Character.DisplayPowerPointsRemaining),
+                                                          x => x.GetDisplayPowerPointsRemainingAsync(MyToken).AsTask(),
+                                                          MyToken, MyToken);
             sw.Stop();
             Debug.WriteLine("RealLoad() in {0} ms", sw.Elapsed.TotalMilliseconds);
 

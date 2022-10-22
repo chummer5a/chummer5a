@@ -4199,21 +4199,6 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        public string HtmlSkillToolTip
-        {
-            get
-            {
-                using (EnterReadLock.Enter(LockObject))
-                    return SkillToolTip.CleanForHtml();
-            }
-        }
-
-        public async ValueTask<string> GetHtmlSkillToolTipAsync(CancellationToken token = default)
-        {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
-                return SkillToolTip.CleanForHtml();
-        }
-
         public string SkillToolTip
         {
             get
@@ -4969,19 +4954,18 @@ namespace Chummer.Backend.Skills
                         new DependencyGraphNode<string, Skill>(nameof(Name))
                     )
                 ),
-                new DependencyGraphNode<string, Skill>(nameof(HtmlSkillToolTip),
-                    new DependencyGraphNode<string, Skill>(nameof(SkillToolTip),
-                        new DependencyGraphNode<string, Skill>(nameof(Notes)),
-                        new DependencyGraphNode<string, Skill>(nameof(CurrentDisplayCategory),
-                            new DependencyGraphNode<string, Skill>(nameof(DisplayCategory),
-                                new DependencyGraphNode<string, Skill>(nameof(SkillCategory),
-                                    new DependencyGraphNode<string, Skill>(nameof(KnowledgeSkill.Type), x => x.IsKnowledgeSkill,
-                                        new DependencyGraphNode<string, Skill>(nameof(IsKnowledgeSkill))
-                                    )
+                new DependencyGraphNode<string, Skill>(nameof(SkillToolTip),
+                    new DependencyGraphNode<string, Skill>(nameof(Notes)),
+                    new DependencyGraphNode<string, Skill>(nameof(CurrentDisplayCategory),
+                        new DependencyGraphNode<string, Skill>(nameof(DisplayCategory),
+                            new DependencyGraphNode<string, Skill>(nameof(SkillCategory),
+                                new DependencyGraphNode<string, Skill>(nameof(KnowledgeSkill.Type), x => x.IsKnowledgeSkill,
+                                    new DependencyGraphNode<string, Skill>(nameof(IsKnowledgeSkill))
                                 )
                             )
                         )
-                    )),
+                    )
+                ),
                 new DependencyGraphNode<string, Skill>(nameof(PreferredControlColor),
                     new DependencyGraphNode<string, Skill>(nameof(Leveled)),
                     new DependencyGraphNode<string, Skill>(nameof(Enabled))

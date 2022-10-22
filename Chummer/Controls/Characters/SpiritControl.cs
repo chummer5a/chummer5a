@@ -62,17 +62,17 @@ namespace Chummer
         private async void SpiritControl_Load(object sender, EventArgs e)
         {
             bool blnIsSpirit = _objSpirit.EntityType == SpiritType.Spirit;
-            nudForce.DoOneWayDataBinding("Enabled", _objSpirit.CharacterObject, nameof(Character.Created));
-            chkBound.DoDataBinding("Checked", _objSpirit, nameof(Spirit.Bound));
-            chkBound.DoOneWayDataBinding("Enabled", _objSpirit.CharacterObject, nameof(Character.Created));
-            cboSpiritName.DoDataBinding("Text", _objSpirit, nameof(Spirit.Name));
-            txtCritterName.DoDataBinding("Text", _objSpirit, nameof(Spirit.CritterName));
-            txtCritterName.DoOneWayDataBinding("Enabled", _objSpirit, nameof(Spirit.NoLinkedCharacter));
-            nudForce.DoOneWayDataBinding("Maximum", _objSpirit.CharacterObject, blnIsSpirit ? nameof(Character.MaxSpiritForce) : nameof(Character.MaxSpriteLevel));
-            nudServices.DoDataBinding("Value", _objSpirit, nameof(Spirit.ServicesOwed));
-            nudForce.DoDataBinding("Value", _objSpirit, nameof(Spirit.Force));
-            chkFettered.DoOneWayDataBinding("Enabled", _objSpirit, nameof(Spirit.AllowFettering));
-            chkFettered.DoDataBinding("Checked", _objSpirit, nameof(Spirit.Fettered));
+            await nudForce.DoOneWayDataBindingAsync("Enabled", _objSpirit.CharacterObject, nameof(Character.Created));
+            await chkBound.DoDataBindingAsync("Checked", _objSpirit, nameof(Spirit.Bound));
+            await chkBound.DoOneWayDataBindingAsync("Enabled", _objSpirit.CharacterObject, nameof(Character.Created));
+            await cboSpiritName.DoDataBindingAsync("Text", _objSpirit, nameof(Spirit.Name));
+            await txtCritterName.DoDataBindingAsync("Text", _objSpirit, nameof(Spirit.CritterName));
+            await txtCritterName.DoOneWayDataBindingAsync("Enabled", _objSpirit, nameof(Spirit.NoLinkedCharacter));
+            await nudForce.DoOneWayDataBindingAsync("Maximum", _objSpirit.CharacterObject, blnIsSpirit ? nameof(Character.MaxSpiritForce) : nameof(Character.MaxSpriteLevel));
+            await nudServices.DoDataBindingAsync("Value", _objSpirit, nameof(Spirit.ServicesOwed));
+            await nudForce.DoDataBindingAsync("Value", _objSpirit, nameof(Spirit.Force));
+            await chkFettered.DoOneWayDataBindingAsync("Enabled", _objSpirit, nameof(Spirit.AllowFettering));
+            await chkFettered.DoDataBindingAsync("Checked", _objSpirit, nameof(Spirit.Fettered));
             if (blnIsSpirit)
             {
                 string strText = await LanguageManager.GetStringAsync("Label_Spirit_Force").ConfigureAwait(false);

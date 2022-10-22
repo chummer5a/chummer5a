@@ -309,12 +309,12 @@ namespace Chummer
                 await cboMetatype.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
             }
 
-            txtContactName.DoDataBinding("Text", _objContact, nameof(_objContact.Name));
-            this.DoOneWayDataBinding("BackColor", _objContact, nameof(_objContact.PreferredColor));
+            await txtContactName.DoDataBindingAsync("Text", _objContact, nameof(Contact.Name), token).ConfigureAwait(false);
+            await this.DoOneWayDataBindingAsync("BackColor", _objContact, nameof(Contact.PreferredColor), token).ConfigureAwait(false);
 
             // Properties controllable by the character themselves
-            txtContactName.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.NoLinkedCharacter));
-            cboMetatype.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.NoLinkedCharacter));
+            await txtContactName.DoOneWayDataBindingAsync("Enabled", _objContact, nameof(Contact.NoLinkedCharacter), token).ConfigureAwait(false);
+            await cboMetatype.DoOneWayDataBindingAsync("Enabled", _objContact, nameof(Contact.NoLinkedCharacter), token).ConfigureAwait(false);
         }
 
         #endregion Methods

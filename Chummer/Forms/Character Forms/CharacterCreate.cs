@@ -244,47 +244,47 @@ namespace Chummer
                                 using (_ = await Timekeeper.StartSyncronAsync(
                                            "load_frm_create_databinding", op_load_frm_create).ConfigureAwait(false))
                                 {
-                                    lblNuyenTotal.DoOneWayDataBinding("Text", CharacterObject,
-                                                                      nameof(Character.DisplayTotalStartingNuyen));
-                                    lblStolenNuyen.DoOneWayDataBinding("Text", CharacterObject,
-                                                                       nameof(Character.DisplayStolenNuyen));
-                                    lblAttributesBase.DoOneWayDataBinding("Visible", CharacterObject,
-                                                                          nameof(Character
-                                                                              .EffectiveBuildMethodUsesPriorityTables));
+                                    await lblNuyenTotal.DoOneWayDataBindingAsync("Text", CharacterObject,
+                                        nameof(Character.DisplayTotalStartingNuyen), GenericToken).ConfigureAwait(false);
+                                    await lblStolenNuyen.DoOneWayDataBindingAsync("Text", CharacterObject,
+                                        nameof(Character.DisplayStolenNuyen), GenericToken).ConfigureAwait(false);
+                                    await lblAttributesBase.DoOneWayDataBindingAsync("Visible", CharacterObject,
+                                        nameof(Character
+                                                   .EffectiveBuildMethodUsesPriorityTables), GenericToken).ConfigureAwait(false);
 
-                                    txtGroupName.DoDataBinding("Text", CharacterObject, nameof(Character.GroupName));
-                                    txtGroupNotes.DoDataBinding("Text", CharacterObject, nameof(Character.GroupNotes));
+                                    await txtGroupName.DoDataBindingAsync("Text", CharacterObject, nameof(Character.GroupName), GenericToken).ConfigureAwait(false);
+                                    await txtGroupNotes.DoDataBindingAsync("Text", CharacterObject, nameof(Character.GroupNotes), GenericToken).ConfigureAwait(false);
 
-                                    txtCharacterName.DoDataBinding("Text", CharacterObject, nameof(Character.Name));
-                                    txtGender.DoDataBinding("Text", CharacterObject, nameof(Character.Gender));
-                                    txtAge.DoDataBinding("Text", CharacterObject, nameof(Character.Age));
-                                    txtEyes.DoDataBinding("Text", CharacterObject, nameof(Character.Eyes));
-                                    txtHeight.DoDataBinding("Text", CharacterObject, nameof(Character.Height));
-                                    txtWeight.DoDataBinding("Text", CharacterObject, nameof(Character.Weight));
-                                    txtSkin.DoDataBinding("Text", CharacterObject, nameof(Character.Skin));
-                                    txtHair.DoDataBinding("Text", CharacterObject, nameof(Character.Hair));
-                                    rtfDescription.DoDataBinding("Rtf", CharacterObject, nameof(Character.Description));
-                                    rtfBackground.DoDataBinding("Rtf", CharacterObject, nameof(Character.Background));
-                                    rtfConcept.DoDataBinding("Rtf", CharacterObject, nameof(Character.Concept));
-                                    rtfNotes.DoDataBinding("Rtf", CharacterObject, nameof(Character.Notes));
-                                    txtAlias.DoDataBinding("Text", CharacterObject, nameof(Character.Alias));
-                                    txtPlayerName.DoDataBinding("Text", CharacterObject, nameof(Character.PlayerName));
+                                    await txtCharacterName.DoDataBindingAsync("Text", CharacterObject, nameof(Character.Name), GenericToken).ConfigureAwait(false);
+                                    await txtGender.DoDataBindingAsync("Text", CharacterObject, nameof(Character.Gender), GenericToken).ConfigureAwait(false);
+                                    await txtAge.DoDataBindingAsync("Text", CharacterObject, nameof(Character.Age), GenericToken).ConfigureAwait(false);
+                                    await txtEyes.DoDataBindingAsync("Text", CharacterObject, nameof(Character.Eyes), GenericToken).ConfigureAwait(false);
+                                    await txtHeight.DoDataBindingAsync("Text", CharacterObject, nameof(Character.Height), GenericToken).ConfigureAwait(false);
+                                    await txtWeight.DoDataBindingAsync("Text", CharacterObject, nameof(Character.Weight), GenericToken).ConfigureAwait(false);
+                                    await txtSkin.DoDataBindingAsync("Text", CharacterObject, nameof(Character.Skin), GenericToken).ConfigureAwait(false);
+                                    await txtHair.DoDataBindingAsync("Text", CharacterObject, nameof(Character.Hair), GenericToken).ConfigureAwait(false);
+                                    await rtfDescription.DoDataBindingAsync("Rtf", CharacterObject, nameof(Character.Description), GenericToken).ConfigureAwait(false);
+                                    await rtfBackground.DoDataBindingAsync("Rtf", CharacterObject, nameof(Character.Background), GenericToken).ConfigureAwait(false);
+                                    await rtfConcept.DoDataBindingAsync("Rtf", CharacterObject, nameof(Character.Concept), GenericToken).ConfigureAwait(false);
+                                    await rtfNotes.DoDataBindingAsync("Rtf", CharacterObject, nameof(Character.Notes), GenericToken).ConfigureAwait(false);
+                                    await txtAlias.DoDataBindingAsync("Text", CharacterObject, nameof(Character.Alias), GenericToken).ConfigureAwait(false);
+                                    await txtPlayerName.DoDataBindingAsync("Text", CharacterObject, nameof(Character.PlayerName), GenericToken).ConfigureAwait(false);
 
-                                    lblPositiveQualitiesBP.DoOneWayDataBinding("Text", CharacterObject,
-                                                                               nameof(Character
-                                                                                   .DisplayPositiveQualityKarma));
-                                    lblNegativeQualitiesBP.DoOneWayDataBinding("Text", CharacterObject,
-                                                                               nameof(Character
-                                                                                   .DisplayNegativeQualityKarma));
-                                    lblMetagenicQualities.DoOneWayDataBinding("Text", CharacterObject,
-                                                                              nameof(Character
-                                                                                  .DisplayMetagenicQualityKarma));
-                                    lblMetagenicQualities.DoOneWayDataBinding("Visible", CharacterObject,
-                                                                              nameof(Character.IsChangeling));
-                                    lblMetagenicQualitiesLabel.DoOneWayDataBinding(
-                                        "Visible", CharacterObject, nameof(Character.IsChangeling));
-                                    lblEnemiesBP.DoOneWayDataBinding("Text", CharacterObject,
-                                                                     nameof(Character.DisplayEnemyKarma));
+                                    await lblPositiveQualitiesBP.DoOneWayDataBindingAsync("Text", CharacterObject,
+                                        nameof(Character
+                                                   .DisplayPositiveQualityKarma), GenericToken).ConfigureAwait(false);
+                                    await lblNegativeQualitiesBP.DoOneWayDataBindingAsync("Text", CharacterObject,
+                                        nameof(Character
+                                                   .DisplayNegativeQualityKarma), GenericToken).ConfigureAwait(false);
+                                    await lblMetagenicQualities.DoOneWayDataBindingAsync("Text", CharacterObject,
+                                        nameof(Character
+                                                   .DisplayMetagenicQualityKarma), GenericToken).ConfigureAwait(false);
+                                    await lblMetagenicQualities.DoOneWayDataBindingAsync("Visible", CharacterObject,
+                                        nameof(Character.IsChangeling), GenericToken).ConfigureAwait(false);
+                                    await lblMetagenicQualitiesLabel.DoOneWayDataBindingAsync(
+                                        "Visible", CharacterObject, nameof(Character.IsChangeling), GenericToken).ConfigureAwait(false);
+                                    await lblEnemiesBP.DoOneWayDataBindingAsync("Text", CharacterObject,
+                                        nameof(Character.DisplayEnemyKarma), GenericToken).ConfigureAwait(false);
 
                                     string strKarma = await LanguageManager.GetStringAsync("Label_Karma").ConfigureAwait(false);
                                     string strKarmaRemaining
@@ -299,8 +299,8 @@ namespace Chummer
                                     await tabBPSummary.DoThreadSafeAsync(x => x.Text = strBPSummaryKarma, GenericToken).ConfigureAwait(false);
                                     await lblQualityBPLabel.DoThreadSafeAsync(x => x.Text = strKarma, GenericToken).ConfigureAwait(false);
 
-                                    lblMetatype.DoOneWayDataBinding("Text", CharacterObject,
-                                                                    nameof(Character.FormattedMetatype));
+                                    await lblMetatype.DoOneWayDataBindingAsync("Text", CharacterObject,
+                                                                               nameof(Character.FormattedMetatype), GenericToken).ConfigureAwait(false);
 
                                     // Set the visibility of the Bioware Suites menu options.
                                     await mnuCreateMenu.DoThreadSafeAsync(() =>
@@ -310,21 +310,21 @@ namespace Chummer
                                             = CharacterObjectSettings.AllowBiowareSuites;
                                     }, GenericToken).ConfigureAwait(false);
 
-                                    chkJoinGroup.DoDataBinding("Checked", CharacterObject,
-                                                               nameof(Character.GroupMember));
-                                    chkInitiationGroup.DoOneWayDataBinding("Enabled", CharacterObject,
-                                                                           nameof(Character.GroupMember));
+                                    await chkJoinGroup.DoDataBindingAsync("Checked", CharacterObject,
+                                                                          nameof(Character.GroupMember), GenericToken).ConfigureAwait(false);
+                                    await chkInitiationGroup.DoOneWayDataBindingAsync("Enabled", CharacterObject,
+                                        nameof(Character.GroupMember), GenericToken).ConfigureAwait(false);
 
-                                    chkCyberwareBlackMarketDiscount.DoOneWayDataBinding(
-                                        "Visible", CharacterObject, nameof(Character.BlackMarketDiscount));
-                                    chkGearBlackMarketDiscount.DoOneWayDataBinding(
-                                        "Visible", CharacterObject, nameof(Character.BlackMarketDiscount));
-                                    chkWeaponBlackMarketDiscount.DoOneWayDataBinding(
-                                        "Visible", CharacterObject, nameof(Character.BlackMarketDiscount));
-                                    chkArmorBlackMarketDiscount.DoOneWayDataBinding(
-                                        "Visible", CharacterObject, nameof(Character.BlackMarketDiscount));
-                                    chkVehicleBlackMarketDiscount.DoOneWayDataBinding(
-                                        "Visible", CharacterObject, nameof(Character.BlackMarketDiscount));
+                                    await chkCyberwareBlackMarketDiscount.DoOneWayDataBindingAsync(
+                                        "Visible", CharacterObject, nameof(Character.BlackMarketDiscount), GenericToken).ConfigureAwait(false);
+                                    await chkGearBlackMarketDiscount.DoOneWayDataBindingAsync(
+                                        "Visible", CharacterObject, nameof(Character.BlackMarketDiscount), GenericToken).ConfigureAwait(false);
+                                    await chkWeaponBlackMarketDiscount.DoOneWayDataBindingAsync(
+                                        "Visible", CharacterObject, nameof(Character.BlackMarketDiscount), GenericToken).ConfigureAwait(false);
+                                    await chkArmorBlackMarketDiscount.DoOneWayDataBindingAsync(
+                                        "Visible", CharacterObject, nameof(Character.BlackMarketDiscount), GenericToken).ConfigureAwait(false);
+                                    await chkVehicleBlackMarketDiscount.DoOneWayDataBindingAsync(
+                                        "Visible", CharacterObject, nameof(Character.BlackMarketDiscount), GenericToken).ConfigureAwait(false);
 
                                     // If the character has a mugshot, decode it and put it in the PictureBox.
                                     if (CharacterObject.Mugshots.Count > 0)
@@ -388,15 +388,15 @@ namespace Chummer
                                 using (_ = await Timekeeper.StartSyncronAsync(
                                            "load_frm_create_refresh", op_load_frm_create).ConfigureAwait(false))
                                 {
-                                    cmdAddMetamagic.DoOneWayDataBinding("Enabled", CharacterObject,
-                                                                        nameof(Character.AddInitiationsAllowed));
+                                    await cmdAddMetamagic.DoOneWayDataBindingAsync("Enabled", CharacterObject,
+                                        nameof(Character.AddInitiationsAllowed), GenericToken).ConfigureAwait(false);
 
-                                    cmdLifeModule.DoOneWayDataBinding("Visible", CharacterObject,
-                                                                      nameof(Character
-                                                                                 .EffectiveBuildMethodIsLifeModule));
-                                    btnCreateBackstory.DoOneWayDataBinding("Visible", CharacterObject,
-                                                                           nameof(Character
-                                                                               .EnableAutomaticStoryButton));
+                                    await cmdLifeModule.DoOneWayDataBindingAsync("Visible", CharacterObject,
+                                        nameof(Character
+                                                   .EffectiveBuildMethodIsLifeModule), GenericToken).ConfigureAwait(false);
+                                    await btnCreateBackstory.DoOneWayDataBindingAsync("Visible", CharacterObject,
+                                        nameof(Character
+                                                   .EnableAutomaticStoryButton), GenericToken).ConfigureAwait(false);
 
                                     if (!await CharacterObjectSettings.BookEnabledAsync("RF", GenericToken).ConfigureAwait(false))
                                     {
@@ -581,27 +581,27 @@ namespace Chummer
                                         lstDrainAttributes.Sort(CompareListItems.CompareNames);
                                         lstDrainAttributes.Insert(0, ListItem.Blank);
                                         await cboDrain.PopulateWithListItemsAsync(lstDrainAttributes, GenericToken).ConfigureAwait(false);
-                                        cboDrain.DoDataBinding("SelectedValue", CharacterObject.MagicTradition,
-                                                               nameof(Tradition.DrainExpression));
+                                        await cboDrain.DoDataBindingAsync("SelectedValue", CharacterObject.MagicTradition,
+                                                                          nameof(Tradition.DrainExpression), GenericToken).ConfigureAwait(false);
                                     }
 
-                                    lblDrainAttributes.DoOneWayDataBinding("Text", CharacterObject.MagicTradition,
-                                                                           nameof(Tradition.DisplayDrainExpression));
-                                    lblDrainAttributesValue.DoOneWayDataBinding("Text", CharacterObject.MagicTradition,
-                                        nameof(Tradition.DrainValue));
-                                    lblDrainAttributesValue.DoOneWayDataBinding(
+                                    await lblDrainAttributes.DoOneWayDataBindingAsync("Text", CharacterObject.MagicTradition,
+                                        nameof(Tradition.DisplayDrainExpression), GenericToken).ConfigureAwait(false);
+                                    await lblDrainAttributesValue.DoOneWayDataBindingAsync("Text", CharacterObject.MagicTradition,
+                                        nameof(Tradition.DrainValue), GenericToken).ConfigureAwait(false);
+                                    await lblDrainAttributesValue.DoOneWayDataBindingAsync(
                                         "ToolTipText", CharacterObject.MagicTradition,
-                                        nameof(Tradition.DrainValueToolTip));
+                                        nameof(Tradition.DrainValueToolTip), GenericToken).ConfigureAwait(false);
                                     await CharacterObject.MagicTradition.SetSourceDetailAsync(
                                         lblTraditionSource, GenericToken).ConfigureAwait(false);
 
-                                    lblFadingAttributes.DoOneWayDataBinding("Text", CharacterObject.MagicTradition,
-                                                                            nameof(Tradition.DisplayDrainExpression));
-                                    lblFadingAttributesValue.DoOneWayDataBinding("Text", CharacterObject.MagicTradition,
-                                        nameof(Tradition.DrainValue));
-                                    lblFadingAttributesValue.DoOneWayDataBinding(
+                                    await lblFadingAttributes.DoOneWayDataBindingAsync("Text", CharacterObject.MagicTradition,
+                                        nameof(Tradition.DisplayDrainExpression), GenericToken).ConfigureAwait(false);
+                                    await lblFadingAttributesValue.DoOneWayDataBindingAsync("Text", CharacterObject.MagicTradition,
+                                        nameof(Tradition.DrainValue), GenericToken).ConfigureAwait(false);
+                                    await lblFadingAttributesValue.DoOneWayDataBindingAsync(
                                         "ToolTipText", CharacterObject.MagicTradition,
-                                        nameof(Tradition.DrainValueToolTip));
+                                        nameof(Tradition.DrainValueToolTip), GenericToken).ConfigureAwait(false);
 
                                     using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
                                                out HashSet<string> limit))
@@ -653,8 +653,8 @@ namespace Chummer
                                                 string strSpirit)
                                             {
                                                 await cboBox.PopulateWithListItemsAsync(lstSpirit, GenericToken).ConfigureAwait(false);
-                                                cboBox.DoDataBinding(
-                                                    "SelectedValue", CharacterObject.MagicTradition, strSpirit);
+                                                await cboBox.DoDataBindingAsync(
+                                                    "SelectedValue", CharacterObject.MagicTradition, strSpirit, GenericToken).ConfigureAwait(false);
                                                 await lblName.DoThreadSafeAsync(x => x.Visible
                                                         = CharacterObject.MagicTradition.Type == TraditionType.MAG,
                                                     GenericToken).ConfigureAwait(false);
@@ -729,10 +729,10 @@ namespace Chummer
                                         }
                                     }
 
-                                    nudMysticAdeptMAGMagician.DoOneWayDataBinding("Maximum", CharacterObject.MAG,
-                                        nameof(CharacterAttrib.Value));
-                                    nudMysticAdeptMAGMagician.DoDataBinding("Value", CharacterObject,
-                                                                            nameof(Character.MysticAdeptPowerPoints));
+                                    await nudMysticAdeptMAGMagician.DoOneWayDataBindingAsync("Maximum", CharacterObject.MAG,
+                                        nameof(CharacterAttrib.Value), GenericToken).ConfigureAwait(false);
+                                    await nudMysticAdeptMAGMagician.DoDataBindingAsync("Value", CharacterObject,
+                                        nameof(Character.MysticAdeptPowerPoints), GenericToken).ConfigureAwait(false);
 
                                     await this.DoThreadSafeAsync(() =>
                                     {
@@ -745,8 +745,8 @@ namespace Chummer
                                         else if (cboStream.SelectedIndex == -1 && cboStream.Items.Count > 0)
                                             cboStream.SelectedIndex = 0;
                                     }, GenericToken).ConfigureAwait(false);
-                                    txtTraditionName.DoDataBinding("Text", CharacterObject.MagicTradition,
-                                                                   nameof(Tradition.Name));
+                                    await txtTraditionName.DoDataBindingAsync("Text", CharacterObject.MagicTradition,
+                                                                              nameof(Tradition.Name), GenericToken).ConfigureAwait(false);
                                 }
 
                                 using (CustomActivity op_load_frm_create_longloads
@@ -806,258 +806,258 @@ namespace Chummer
                                     ToolStripManager.RevertMerge("toolStrip");
                                     ToolStripManager.Merge(tsMain, "toolStrip");
 
-                                    nudNuyen.DoDataBinding("Value", CharacterObject, nameof(Character.NuyenBP));
-                                    nudNuyen.DoOneWayDataBinding("Maximum", CharacterObject,
-                                                                 nameof(Character.TotalNuyenMaximumBP));
+                                    await nudNuyen.DoDataBindingAsync("Value", CharacterObject, nameof(Character.NuyenBP), GenericToken).ConfigureAwait(false);
+                                    await nudNuyen.DoOneWayDataBindingAsync("Maximum", CharacterObject,
+                                                                            nameof(Character.TotalNuyenMaximumBP), GenericToken).ConfigureAwait(false);
 
-                                    lblCMPhysical.DoOneWayDataBinding("ToolTipText", CharacterObject,
-                                                                      nameof(Character.PhysicalCMToolTip));
-                                    lblCMPhysical.DoOneWayDataBinding("Text", CharacterObject,
-                                                                      nameof(Character.PhysicalCM));
-                                    lblCMPhysicalLabel.DoOneWayDataBinding("Text", CharacterObject,
-                                                                           nameof(Character.PhysicalCMLabelText));
+                                    await lblCMPhysical.DoOneWayDataBindingAsync("ToolTipText", CharacterObject,
+                                        nameof(Character.PhysicalCMToolTip), GenericToken).ConfigureAwait(false);
+                                    await lblCMPhysical.DoOneWayDataBindingAsync("Text", CharacterObject,
+                                        nameof(Character.PhysicalCM), GenericToken).ConfigureAwait(false);
+                                    await lblCMPhysicalLabel.DoOneWayDataBindingAsync("Text", CharacterObject,
+                                        nameof(Character.PhysicalCMLabelText), GenericToken).ConfigureAwait(false);
                                     await lblCMStun.DoThreadSafeAsync(x => x.Visible = true,
                                                                       GenericToken).ConfigureAwait(false); // Needed to make sure data bindings go through
-                                    lblCMStun.DoOneWayDataBinding("ToolTipText", CharacterObject,
-                                                                  nameof(Character.StunCMToolTip));
-                                    lblCMStun.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.StunCM));
-                                    lblCMStun.DoOneWayDataBinding("Visible", CharacterObject,
-                                                                  nameof(Character.StunCMVisible));
-                                    lblCMStunLabel.DoOneWayDataBinding("Text", CharacterObject,
-                                                                       nameof(Character.StunCMLabelText));
+                                    await lblCMStun.DoOneWayDataBindingAsync("ToolTipText", CharacterObject,
+                                                                             nameof(Character.StunCMToolTip), GenericToken).ConfigureAwait(false);
+                                    await lblCMStun.DoOneWayDataBindingAsync("Text", CharacterObject, nameof(Character.StunCM), GenericToken).ConfigureAwait(false);
+                                    await lblCMStun.DoOneWayDataBindingAsync("Visible", CharacterObject,
+                                                                             nameof(Character.StunCMVisible), GenericToken).ConfigureAwait(false);
+                                    await lblCMStunLabel.DoOneWayDataBindingAsync("Text", CharacterObject,
+                                        nameof(Character.StunCMLabelText), GenericToken).ConfigureAwait(false);
 
-                                    lblESSMax.DoOneWayDataBinding("Text", CharacterObject,
-                                                                  nameof(Character.DisplayEssence));
-                                    lblCyberwareESS.DoOneWayDataBinding("Text", CharacterObject,
-                                                                        nameof(Character.DisplayCyberwareEssence));
-                                    lblBiowareESS.DoOneWayDataBinding("Text", CharacterObject,
-                                                                      nameof(Character.DisplayBiowareEssence));
-                                    lblEssenceHoleESS.DoOneWayDataBinding("Text", CharacterObject,
-                                                                          nameof(Character.DisplayEssenceHole));
+                                    await lblESSMax.DoOneWayDataBindingAsync("Text", CharacterObject,
+                                                                             nameof(Character.DisplayEssence), GenericToken).ConfigureAwait(false);
+                                    await lblCyberwareESS.DoOneWayDataBindingAsync("Text", CharacterObject,
+                                        nameof(Character.DisplayCyberwareEssence), GenericToken).ConfigureAwait(false);
+                                    await lblBiowareESS.DoOneWayDataBindingAsync("Text", CharacterObject,
+                                        nameof(Character.DisplayBiowareEssence), GenericToken).ConfigureAwait(false);
+                                    await lblEssenceHoleESS.DoOneWayDataBindingAsync("Text", CharacterObject,
+                                        nameof(Character.DisplayEssenceHole), GenericToken).ConfigureAwait(false);
 
-                                    lblPrototypeTranshumanESS.DoOneWayDataBinding("Text", CharacterObject,
+                                    await lblPrototypeTranshumanESS.DoOneWayDataBindingAsync("Text", CharacterObject,
                                         nameof(Character
-                                                   .DisplayPrototypeTranshumanEssenceUsed));
+                                                   .DisplayPrototypeTranshumanEssenceUsed), GenericToken).ConfigureAwait(false);
 
-                                    lblArmor.DoOneWayDataBinding("Text", CharacterObject,
-                                                                 nameof(Character.TotalArmorRating));
-                                    lblArmor.DoOneWayDataBinding("ToolTipText", CharacterObject,
-                                                                 nameof(Character.TotalArmorRatingToolTip));
+                                    await lblArmor.DoOneWayDataBindingAsync("Text", CharacterObject,
+                                                                            nameof(Character.TotalArmorRating), GenericToken).ConfigureAwait(false);
+                                    await lblArmor.DoOneWayDataBindingAsync("ToolTipText", CharacterObject,
+                                                                            nameof(Character.TotalArmorRatingToolTip), GenericToken).ConfigureAwait(false);
 
-                                    lblDodge.DoOneWayDataBinding("Text", CharacterObject,
-                                                                 nameof(Character.DisplayDodge));
-                                    lblDodge.DoOneWayDataBinding("ToolTipText", CharacterObject,
-                                                                 nameof(Character.DodgeToolTip));
+                                    await lblDodge.DoOneWayDataBindingAsync("Text", CharacterObject,
+                                                                            nameof(Character.DisplayDodge), GenericToken).ConfigureAwait(false);
+                                    await lblDodge.DoOneWayDataBindingAsync("ToolTipText", CharacterObject,
+                                                                            nameof(Character.DodgeToolTip), GenericToken).ConfigureAwait(false);
 
-                                    lblSpellDefenseIndirectDodge.DoOneWayDataBinding("Text", CharacterObject,
+                                    await lblSpellDefenseIndirectDodge.DoOneWayDataBindingAsync("Text", CharacterObject,
                                         nameof(Character
-                                                   .DisplaySpellDefenseIndirectDodge));
-                                    lblSpellDefenseIndirectDodge.DoOneWayDataBinding("ToolTipText", CharacterObject,
+                                                   .DisplaySpellDefenseIndirectDodge), GenericToken).ConfigureAwait(false);
+                                    await lblSpellDefenseIndirectDodge.DoOneWayDataBindingAsync("ToolTipText", CharacterObject,
                                         nameof(Character
-                                                   .SpellDefenseIndirectDodgeToolTip));
-                                    lblSpellDefenseIndirectSoak.DoOneWayDataBinding("Text", CharacterObject,
+                                                   .SpellDefenseIndirectDodgeToolTip), GenericToken).ConfigureAwait(false);
+                                    await lblSpellDefenseIndirectSoak.DoOneWayDataBindingAsync("Text", CharacterObject,
                                         nameof(Character
-                                                   .DisplaySpellDefenseIndirectSoak));
-                                    lblSpellDefenseIndirectSoak.DoOneWayDataBinding("ToolTipText", CharacterObject,
+                                                   .DisplaySpellDefenseIndirectSoak), GenericToken).ConfigureAwait(false);
+                                    await lblSpellDefenseIndirectSoak.DoOneWayDataBindingAsync("ToolTipText", CharacterObject,
                                         nameof(Character
-                                                   .SpellDefenseIndirectSoakToolTip));
-                                    lblSpellDefenseDirectSoakMana.DoOneWayDataBinding("Text", CharacterObject,
+                                                   .SpellDefenseIndirectSoakToolTip), GenericToken).ConfigureAwait(false);
+                                    await lblSpellDefenseDirectSoakMana.DoOneWayDataBindingAsync("Text", CharacterObject,
                                         nameof(Character
-                                                   .DisplaySpellDefenseDirectSoakMana));
-                                    lblSpellDefenseDirectSoakMana.DoOneWayDataBinding("ToolTipText", CharacterObject,
+                                                   .DisplaySpellDefenseDirectSoakMana), GenericToken).ConfigureAwait(false);
+                                    await lblSpellDefenseDirectSoakMana.DoOneWayDataBindingAsync("ToolTipText", CharacterObject,
                                         nameof(Character
-                                                   .SpellDefenseDirectSoakManaToolTip));
-                                    lblSpellDefenseDirectSoakPhysical.DoOneWayDataBinding("Text", CharacterObject,
-                                        nameof(Character.DisplaySpellDefenseDirectSoakPhysical));
-                                    lblSpellDefenseDirectSoakPhysical.DoOneWayDataBinding(
+                                                   .SpellDefenseDirectSoakManaToolTip), GenericToken).ConfigureAwait(false);
+                                    await lblSpellDefenseDirectSoakPhysical.DoOneWayDataBindingAsync("Text", CharacterObject,
+                                        nameof(Character.DisplaySpellDefenseDirectSoakPhysical)).ConfigureAwait(false);
+                                    await lblSpellDefenseDirectSoakPhysical.DoOneWayDataBindingAsync(
                                         "ToolTipText", CharacterObject,
-                                        nameof(Character.SpellDefenseDirectSoakPhysicalToolTip));
+                                        nameof(Character.SpellDefenseDirectSoakPhysicalToolTip)).ConfigureAwait(false);
 
-                                    lblSpellDefenseDetection.DoOneWayDataBinding("Text", CharacterObject,
+                                    await lblSpellDefenseDetection.DoOneWayDataBindingAsync("Text", CharacterObject,
                                         nameof(Character
-                                                   .DisplaySpellDefenseDetection));
-                                    lblSpellDefenseDetection.DoOneWayDataBinding("ToolTipText", CharacterObject,
+                                                   .DisplaySpellDefenseDetection), GenericToken).ConfigureAwait(false);
+                                    await lblSpellDefenseDetection.DoOneWayDataBindingAsync("ToolTipText", CharacterObject,
                                         nameof(Character
-                                                   .SpellDefenseDetectionToolTip));
-                                    lblSpellDefenseDecAttBOD.DoOneWayDataBinding("Text", CharacterObject,
+                                                   .SpellDefenseDetectionToolTip), GenericToken).ConfigureAwait(false);
+                                    await lblSpellDefenseDecAttBOD.DoOneWayDataBindingAsync("Text", CharacterObject,
                                         nameof(
                                             Character
-                                                .DisplaySpellDefenseDecreaseBOD));
-                                    lblSpellDefenseDecAttBOD.DoOneWayDataBinding("ToolTipText", CharacterObject,
+                                                .DisplaySpellDefenseDecreaseBOD), GenericToken).ConfigureAwait(false);
+                                    await lblSpellDefenseDecAttBOD.DoOneWayDataBindingAsync("ToolTipText", CharacterObject,
                                         nameof(
                                             Character
-                                                .SpellDefenseDecreaseBODToolTip));
-                                    lblSpellDefenseDecAttAGI.DoOneWayDataBinding("Text", CharacterObject,
+                                                .SpellDefenseDecreaseBODToolTip), GenericToken).ConfigureAwait(false);
+                                    await lblSpellDefenseDecAttAGI.DoOneWayDataBindingAsync("Text", CharacterObject,
                                         nameof(
                                             Character
-                                                .DisplaySpellDefenseDecreaseAGI));
-                                    lblSpellDefenseDecAttAGI.DoOneWayDataBinding("ToolTipText", CharacterObject,
+                                                .DisplaySpellDefenseDecreaseAGI), GenericToken).ConfigureAwait(false);
+                                    await lblSpellDefenseDecAttAGI.DoOneWayDataBindingAsync("ToolTipText", CharacterObject,
                                         nameof(
                                             Character
-                                                .SpellDefenseDecreaseAGIToolTip));
-                                    lblSpellDefenseDecAttREA.DoOneWayDataBinding("Text", CharacterObject,
+                                                .SpellDefenseDecreaseAGIToolTip), GenericToken).ConfigureAwait(false);
+                                    await lblSpellDefenseDecAttREA.DoOneWayDataBindingAsync("Text", CharacterObject,
                                         nameof(
                                             Character
-                                                .DisplaySpellDefenseDecreaseREA));
-                                    lblSpellDefenseDecAttREA.DoOneWayDataBinding("ToolTipText", CharacterObject,
+                                                .DisplaySpellDefenseDecreaseREA), GenericToken).ConfigureAwait(false);
+                                    await lblSpellDefenseDecAttREA.DoOneWayDataBindingAsync("ToolTipText", CharacterObject,
                                         nameof(
                                             Character
-                                                .SpellDefenseDecreaseREAToolTip));
-                                    lblSpellDefenseDecAttSTR.DoOneWayDataBinding("Text", CharacterObject,
+                                                .SpellDefenseDecreaseREAToolTip), GenericToken).ConfigureAwait(false);
+                                    await lblSpellDefenseDecAttSTR.DoOneWayDataBindingAsync("Text", CharacterObject,
                                         nameof(
                                             Character
-                                                .DisplaySpellDefenseDecreaseSTR));
-                                    lblSpellDefenseDecAttSTR.DoOneWayDataBinding("ToolTipText", CharacterObject,
+                                                .DisplaySpellDefenseDecreaseSTR), GenericToken).ConfigureAwait(false);
+                                    await lblSpellDefenseDecAttSTR.DoOneWayDataBindingAsync("ToolTipText", CharacterObject,
                                         nameof(
                                             Character
-                                                .SpellDefenseDecreaseSTRToolTip));
-                                    lblSpellDefenseDecAttCHA.DoOneWayDataBinding("Text", CharacterObject,
+                                                .SpellDefenseDecreaseSTRToolTip), GenericToken).ConfigureAwait(false);
+                                    await lblSpellDefenseDecAttCHA.DoOneWayDataBindingAsync("Text", CharacterObject,
                                         nameof(
                                             Character
-                                                .DisplaySpellDefenseDecreaseCHA));
-                                    lblSpellDefenseDecAttCHA.DoOneWayDataBinding("ToolTipText", CharacterObject,
+                                                .DisplaySpellDefenseDecreaseCHA), GenericToken).ConfigureAwait(false);
+                                    await lblSpellDefenseDecAttCHA.DoOneWayDataBindingAsync("ToolTipText", CharacterObject,
                                         nameof(
                                             Character
-                                                .SpellDefenseDecreaseCHAToolTip));
-                                    lblSpellDefenseDecAttINT.DoOneWayDataBinding("Text", CharacterObject,
+                                                .SpellDefenseDecreaseCHAToolTip), GenericToken).ConfigureAwait(false);
+                                    await lblSpellDefenseDecAttINT.DoOneWayDataBindingAsync("Text", CharacterObject,
                                         nameof(
                                             Character
-                                                .DisplaySpellDefenseDecreaseINT));
-                                    lblSpellDefenseDecAttINT.DoOneWayDataBinding("ToolTipText", CharacterObject,
+                                                .DisplaySpellDefenseDecreaseINT), GenericToken).ConfigureAwait(false);
+                                    await lblSpellDefenseDecAttINT.DoOneWayDataBindingAsync("ToolTipText", CharacterObject,
                                         nameof(
                                             Character
-                                                .SpellDefenseDecreaseINTToolTip));
-                                    lblSpellDefenseDecAttLOG.DoOneWayDataBinding("Text", CharacterObject,
+                                                .SpellDefenseDecreaseINTToolTip), GenericToken).ConfigureAwait(false);
+                                    await lblSpellDefenseDecAttLOG.DoOneWayDataBindingAsync("Text", CharacterObject,
                                         nameof(
                                             Character
-                                                .DisplaySpellDefenseDecreaseLOG));
-                                    lblSpellDefenseDecAttLOG.DoOneWayDataBinding("ToolTipText", CharacterObject,
+                                                .DisplaySpellDefenseDecreaseLOG), GenericToken).ConfigureAwait(false);
+                                    await lblSpellDefenseDecAttLOG.DoOneWayDataBindingAsync("ToolTipText", CharacterObject,
                                         nameof(
                                             Character
-                                                .SpellDefenseDecreaseLOGToolTip));
-                                    lblSpellDefenseDecAttWIL.DoOneWayDataBinding("Text", CharacterObject,
+                                                .SpellDefenseDecreaseLOGToolTip), GenericToken).ConfigureAwait(false);
+                                    await lblSpellDefenseDecAttWIL.DoOneWayDataBindingAsync("Text", CharacterObject,
                                         nameof(
                                             Character
-                                                .DisplaySpellDefenseDecreaseWIL));
-                                    lblSpellDefenseDecAttWIL.DoOneWayDataBinding("ToolTipText", CharacterObject,
+                                                .DisplaySpellDefenseDecreaseWIL), GenericToken).ConfigureAwait(false);
+                                    await lblSpellDefenseDecAttWIL.DoOneWayDataBindingAsync("ToolTipText", CharacterObject,
                                         nameof(
                                             Character
-                                                .SpellDefenseDecreaseWILToolTip));
+                                                .SpellDefenseDecreaseWILToolTip), GenericToken).ConfigureAwait(false);
 
-                                    lblSpellDefenseIllusionMana.DoOneWayDataBinding("Text", CharacterObject,
+                                    await lblSpellDefenseIllusionMana.DoOneWayDataBindingAsync("Text", CharacterObject,
                                         nameof(Character
-                                                   .DisplaySpellDefenseIllusionMana));
-                                    lblSpellDefenseIllusionMana.DoOneWayDataBinding("ToolTipText", CharacterObject,
+                                                   .DisplaySpellDefenseIllusionMana), GenericToken).ConfigureAwait(false);
+                                    await lblSpellDefenseIllusionMana.DoOneWayDataBindingAsync("ToolTipText", CharacterObject,
                                         nameof(Character
-                                                   .SpellDefenseIllusionManaToolTip));
-                                    lblSpellDefenseIllusionPhysical.DoOneWayDataBinding("Text", CharacterObject,
-                                        nameof(Character.DisplaySpellDefenseIllusionPhysical));
-                                    lblSpellDefenseIllusionPhysical.DoOneWayDataBinding("ToolTipText", CharacterObject,
-                                        nameof(Character.SpellDefenseIllusionPhysicalToolTip));
-                                    lblSpellDefenseManipMental.DoOneWayDataBinding("Text", CharacterObject,
+                                                   .SpellDefenseIllusionManaToolTip), GenericToken).ConfigureAwait(false);
+                                    await lblSpellDefenseIllusionPhysical.DoOneWayDataBindingAsync("Text", CharacterObject,
+                                        nameof(Character.DisplaySpellDefenseIllusionPhysical)).ConfigureAwait(false);
+                                    await lblSpellDefenseIllusionPhysical.DoOneWayDataBindingAsync("ToolTipText", CharacterObject,
+                                        nameof(Character.SpellDefenseIllusionPhysicalToolTip), GenericToken).ConfigureAwait(false);
+                                    await lblSpellDefenseManipMental.DoOneWayDataBindingAsync("Text", CharacterObject,
                                         nameof(Character
-                                                   .DisplaySpellDefenseManipulationMental));
-                                    lblSpellDefenseManipMental.DoOneWayDataBinding("ToolTipText", CharacterObject,
+                                                   .DisplaySpellDefenseManipulationMental), GenericToken).ConfigureAwait(false);
+                                    await lblSpellDefenseManipMental.DoOneWayDataBindingAsync("ToolTipText", CharacterObject,
                                         nameof(Character
-                                                   .SpellDefenseManipulationMentalToolTip));
-                                    lblSpellDefenseManipPhysical.DoOneWayDataBinding("Text", CharacterObject,
+                                                   .SpellDefenseManipulationMentalToolTip), GenericToken).ConfigureAwait(false);
+                                    await lblSpellDefenseManipPhysical.DoOneWayDataBindingAsync("Text", CharacterObject,
                                         nameof(Character
-                                                   .DisplaySpellDefenseManipulationPhysical));
-                                    lblSpellDefenseManipPhysical.DoOneWayDataBinding("ToolTipText", CharacterObject,
+                                                   .DisplaySpellDefenseManipulationPhysical), GenericToken).ConfigureAwait(false);
+                                    await lblSpellDefenseManipPhysical.DoOneWayDataBindingAsync("ToolTipText", CharacterObject,
                                         nameof(Character
-                                                   .SpellDefenseManipulationPhysicalToolTip));
-                                    nudCounterspellingDice.DoDataBinding("Value", CharacterObject,
-                                                                         nameof(Character.CurrentCounterspellingDice));
+                                                   .SpellDefenseManipulationPhysicalToolTip), GenericToken).ConfigureAwait(false);
+                                    await nudCounterspellingDice.DoDataBindingAsync("Value", CharacterObject,
+                                        nameof(Character.CurrentCounterspellingDice), GenericToken).ConfigureAwait(false);
 
-                                    nudLiftCarryHits.DoDataBinding("Value", CharacterObject,
-                                                                   nameof(Character.CurrentLiftCarryHits));
+                                    await nudLiftCarryHits.DoDataBindingAsync("Value", CharacterObject,
+                                                                              nameof(Character.CurrentLiftCarryHits)).ConfigureAwait(false);
 
-                                    lblMovement.DoOneWayDataBinding("Text", CharacterObject,
-                                                                    nameof(Character.DisplayMovement));
-                                    lblSwim.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.DisplaySwim));
-                                    lblFly.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.DisplayFly));
+                                    await lblMovement.DoOneWayDataBindingAsync("Text", CharacterObject,
+                                                                               nameof(Character.DisplayMovement), GenericToken).ConfigureAwait(false);
+                                    await lblSwim.DoOneWayDataBindingAsync("Text", CharacterObject, nameof(Character.DisplaySwim), GenericToken).ConfigureAwait(false);
+                                    await lblFly.DoOneWayDataBindingAsync("Text", CharacterObject, nameof(Character.DisplayFly), GenericToken).ConfigureAwait(false);
 
-                                    lblRemainingNuyen.DoOneWayDataBinding("Text", CharacterObject,
-                                                                          nameof(Character.DisplayNuyen));
+                                    await lblRemainingNuyen.DoOneWayDataBindingAsync("Text", CharacterObject,
+                                        nameof(Character.DisplayNuyen), GenericToken).ConfigureAwait(false);
 
-                                    lblStreetCredTotal.DoOneWayDataBinding("Text", CharacterObject,
-                                                                           nameof(Character.TotalStreetCred));
-                                    lblStreetCredTotal.DoOneWayDataBinding("ToolTipText", CharacterObject,
-                                                                           nameof(Character.StreetCredTooltip));
-                                    lblNotorietyTotal.DoOneWayDataBinding("Text", CharacterObject,
-                                                                          nameof(Character.TotalNotoriety));
-                                    lblNotorietyTotal.DoOneWayDataBinding("ToolTipText", CharacterObject,
-                                                                          nameof(Character.NotorietyTooltip));
-                                    lblPublicAwareTotal.DoOneWayDataBinding("Text", CharacterObject,
-                                                                            nameof(Character.TotalPublicAwareness));
-                                    lblPublicAwareTotal.DoOneWayDataBinding("ToolTipText", CharacterObject,
-                                                                            nameof(Character.PublicAwarenessTooltip));
-                                    lblAstralReputationTotal.DoOneWayDataBinding("Text", CharacterObject,
-                                        nameof(Character.TotalAstralReputation));
-                                    lblAstralReputationTotal.DoOneWayDataBinding("ToolTipText", CharacterObject,
-                                        nameof(Character.AstralReputationTooltip));
-                                    lblWildReputationTotal.DoOneWayDataBinding("Text", CharacterObject,
-                                                                               nameof(Character.TotalWildReputation));
-                                    lblWildReputationTotal.DoOneWayDataBinding("ToolTipText", CharacterObject,
-                                                                               nameof(Character.WildReputationTooltip));
+                                    await lblStreetCredTotal.DoOneWayDataBindingAsync("Text", CharacterObject,
+                                        nameof(Character.TotalStreetCred), GenericToken).ConfigureAwait(false);
+                                    await lblStreetCredTotal.DoOneWayDataBindingAsync("ToolTipText", CharacterObject,
+                                        nameof(Character.StreetCredTooltip), GenericToken).ConfigureAwait(false);
+                                    await lblNotorietyTotal.DoOneWayDataBindingAsync("Text", CharacterObject,
+                                        nameof(Character.TotalNotoriety), GenericToken).ConfigureAwait(false);
+                                    await lblNotorietyTotal.DoOneWayDataBindingAsync("ToolTipText", CharacterObject,
+                                        nameof(Character.NotorietyTooltip), GenericToken).ConfigureAwait(false);
+                                    await lblPublicAwareTotal.DoOneWayDataBindingAsync("Text", CharacterObject,
+                                        nameof(Character.TotalPublicAwareness), GenericToken).ConfigureAwait(false);
+                                    await lblPublicAwareTotal.DoOneWayDataBindingAsync("ToolTipText", CharacterObject,
+                                        nameof(Character.PublicAwarenessTooltip), GenericToken).ConfigureAwait(false);
+                                    await lblAstralReputationTotal.DoOneWayDataBindingAsync("Text", CharacterObject,
+                                        nameof(Character.TotalAstralReputation), GenericToken).ConfigureAwait(false);
+                                    await lblAstralReputationTotal.DoOneWayDataBindingAsync("ToolTipText", CharacterObject,
+                                        nameof(Character.AstralReputationTooltip), GenericToken).ConfigureAwait(false);
+                                    await lblWildReputationTotal.DoOneWayDataBindingAsync("Text", CharacterObject,
+                                        nameof(Character.TotalWildReputation), GenericToken).ConfigureAwait(false);
+                                    await lblWildReputationTotal.DoOneWayDataBindingAsync("ToolTipText", CharacterObject,
+                                        nameof(Character.WildReputationTooltip), GenericToken).ConfigureAwait(false);
 
-                                    lblMentorSpirit.DoOneWayDataBinding("Text", CharacterObject,
-                                                                        nameof(Character.FirstMentorSpiritDisplayName));
-                                    lblMentorSpiritInformation.DoOneWayDataBinding("Text", CharacterObject,
+                                    await lblMentorSpirit.DoOneWayDataBindingAsync("Text", CharacterObject,
+                                        nameof(Character.FirstMentorSpiritDisplayName), GenericToken).ConfigureAwait(false);
+                                    await lblMentorSpiritInformation.DoOneWayDataBindingAsync("Text", CharacterObject,
                                         nameof(Character
-                                                   .FirstMentorSpiritDisplayInformation));
-                                    lblParagon.DoOneWayDataBinding("Text", CharacterObject,
-                                                                   nameof(Character.FirstMentorSpiritDisplayName));
-                                    lblParagonInformation.DoOneWayDataBinding("Text", CharacterObject,
-                                                                              nameof(Character
-                                                                                  .FirstMentorSpiritDisplayInformation));
+                                                   .FirstMentorSpiritDisplayInformation), GenericToken).ConfigureAwait(false);
+                                    await lblParagon.DoOneWayDataBindingAsync("Text", CharacterObject,
+                                                                              nameof(Character.FirstMentorSpiritDisplayName), GenericToken).ConfigureAwait(false);
+                                    await lblParagonInformation.DoOneWayDataBindingAsync("Text", CharacterObject,
+                                        nameof(Character
+                                                   .FirstMentorSpiritDisplayInformation), GenericToken).ConfigureAwait(false);
 
-                                    lblComposure.DoOneWayDataBinding("ToolTipText", CharacterObject,
-                                                                     nameof(Character.ComposureToolTip));
-                                    lblComposure.DoOneWayDataBinding("Text", CharacterObject,
-                                                                     nameof(Character.Composure));
-                                    lblSurprise.DoOneWayDataBinding("ToolTipText", CharacterObject,
-                                                                    nameof(Character.SurpriseToolTip));
-                                    lblSurprise.DoOneWayDataBinding("Text", CharacterObject,
-                                                                    nameof(Character.Surprise));
-                                    lblJudgeIntentions.DoOneWayDataBinding("ToolTipText", CharacterObject,
-                                                                           nameof(Character.JudgeIntentionsToolTip));
-                                    lblJudgeIntentions.DoOneWayDataBinding("Text", CharacterObject,
-                                                                           nameof(Character.JudgeIntentions));
-                                    lblLiftCarry.DoOneWayDataBinding("ToolTipText", CharacterObject,
-                                                                     nameof(Character.LiftAndCarryToolTip));
-                                    lblLiftCarry.DoOneWayDataBinding("Text", CharacterObject,
-                                                                     nameof(Character.LiftAndCarry));
-                                    lblMemory.DoOneWayDataBinding("ToolTipText", CharacterObject,
-                                                                  nameof(Character.MemoryToolTip));
-                                    lblMemory.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.Memory));
+                                    await lblComposure.DoOneWayDataBindingAsync("ToolTipText", CharacterObject,
+                                        nameof(Character.ComposureToolTip), GenericToken).ConfigureAwait(false);
+                                    await lblComposure.DoOneWayDataBindingAsync("Text", CharacterObject,
+                                        nameof(Character.Composure), GenericToken).ConfigureAwait(false);
+                                    await lblSurprise.DoOneWayDataBindingAsync("ToolTipText", CharacterObject,
+                                                                               nameof(Character.SurpriseToolTip), GenericToken).ConfigureAwait(false);
+                                    await lblSurprise.DoOneWayDataBindingAsync("Text", CharacterObject,
+                                                                               nameof(Character.Surprise), GenericToken).ConfigureAwait(false);
+                                    await lblJudgeIntentions.DoOneWayDataBindingAsync("ToolTipText", CharacterObject,
+                                        nameof(Character.JudgeIntentionsToolTip), GenericToken).ConfigureAwait(false);
+                                    await lblJudgeIntentions.DoOneWayDataBindingAsync("Text", CharacterObject,
+                                        nameof(Character.JudgeIntentions), GenericToken).ConfigureAwait(false);
+                                    await lblLiftCarry.DoOneWayDataBindingAsync("ToolTipText", CharacterObject,
+                                        nameof(Character.LiftAndCarryToolTip), GenericToken).ConfigureAwait(false);
+                                    await lblLiftCarry.DoOneWayDataBindingAsync("Text", CharacterObject,
+                                        nameof(Character.LiftAndCarry), GenericToken).ConfigureAwait(false);
+                                    await lblMemory.DoOneWayDataBindingAsync("ToolTipText", CharacterObject,
+                                                                             nameof(Character.MemoryToolTip), GenericToken).ConfigureAwait(false);
+                                    await lblMemory.DoOneWayDataBindingAsync("Text", CharacterObject, nameof(Character.Memory), GenericToken).ConfigureAwait(false);
 
-                                    lblLiftCarryLimits.DoOneWayDataBinding("Text", CharacterObject,
-                                                                           nameof(Character.LiftAndCarryLimits));
+                                    await lblLiftCarryLimits.DoOneWayDataBindingAsync("Text", CharacterObject,
+                                        nameof(Character.LiftAndCarryLimits), GenericToken).ConfigureAwait(false);
 
-                                    lblINI.DoOneWayDataBinding("ToolTipText", CharacterObject,
-                                                               nameof(Character.InitiativeToolTip));
-                                    lblINI.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.Initiative));
-                                    lblAstralINI.DoOneWayDataBinding("ToolTipText", CharacterObject,
-                                                                     nameof(Character.AstralInitiativeToolTip));
-                                    lblAstralINI.DoOneWayDataBinding("Text", CharacterObject,
-                                                                     nameof(Character.AstralInitiative));
-                                    lblMatrixINI.DoOneWayDataBinding("ToolTipText", CharacterObject,
-                                                                     nameof(Character.MatrixInitiativeToolTip));
-                                    lblMatrixINI.DoOneWayDataBinding("Text", CharacterObject,
-                                                                     nameof(Character.MatrixInitiative));
-                                    lblMatrixINICold.DoOneWayDataBinding("ToolTipText", CharacterObject,
-                                                                         nameof(Character.MatrixInitiativeColdToolTip));
-                                    lblMatrixINICold.DoOneWayDataBinding("Text", CharacterObject,
-                                                                         nameof(Character.MatrixInitiativeCold));
-                                    lblMatrixINIHot.DoOneWayDataBinding("ToolTipText", CharacterObject,
-                                                                        nameof(Character.MatrixInitiativeHotToolTip));
-                                    lblMatrixINIHot.DoOneWayDataBinding("Text", CharacterObject,
-                                                                        nameof(Character.MatrixInitiativeHot));
-                                    lblRiggingINI.DoOneWayDataBinding("ToolTipText", CharacterObject,
-                                                                      nameof(Character.InitiativeToolTip));
-                                    lblRiggingINI.DoOneWayDataBinding("Text", CharacterObject,
-                                                                      nameof(Character.Initiative));
+                                    await lblINI.DoOneWayDataBindingAsync("ToolTipText", CharacterObject,
+                                                                          nameof(Character.InitiativeToolTip), GenericToken).ConfigureAwait(false);
+                                    await lblINI.DoOneWayDataBindingAsync("Text", CharacterObject, nameof(Character.Initiative), GenericToken).ConfigureAwait(false);
+                                    await lblAstralINI.DoOneWayDataBindingAsync("ToolTipText", CharacterObject,
+                                        nameof(Character.AstralInitiativeToolTip), GenericToken).ConfigureAwait(false);
+                                    await lblAstralINI.DoOneWayDataBindingAsync("Text", CharacterObject,
+                                        nameof(Character.AstralInitiative), GenericToken).ConfigureAwait(false);
+                                    await lblMatrixINI.DoOneWayDataBindingAsync("ToolTipText", CharacterObject,
+                                        nameof(Character.MatrixInitiativeToolTip), GenericToken).ConfigureAwait(false);
+                                    await lblMatrixINI.DoOneWayDataBindingAsync("Text", CharacterObject,
+                                        nameof(Character.MatrixInitiative), GenericToken).ConfigureAwait(false);
+                                    await lblMatrixINICold.DoOneWayDataBindingAsync("ToolTipText", CharacterObject,
+                                        nameof(Character.MatrixInitiativeColdToolTip), GenericToken).ConfigureAwait(false);
+                                    await lblMatrixINICold.DoOneWayDataBindingAsync("Text", CharacterObject,
+                                        nameof(Character.MatrixInitiativeCold), GenericToken).ConfigureAwait(false);
+                                    await lblMatrixINIHot.DoOneWayDataBindingAsync("ToolTipText", CharacterObject,
+                                        nameof(Character.MatrixInitiativeHotToolTip), GenericToken).ConfigureAwait(false);
+                                    await lblMatrixINIHot.DoOneWayDataBindingAsync("Text", CharacterObject,
+                                        nameof(Character.MatrixInitiativeHot), GenericToken).ConfigureAwait(false);
+                                    await lblRiggingINI.DoOneWayDataBindingAsync("ToolTipText", CharacterObject,
+                                        nameof(Character.InitiativeToolTip), GenericToken).ConfigureAwait(false);
+                                    await lblRiggingINI.DoOneWayDataBindingAsync("Text", CharacterObject,
+                                        nameof(Character.Initiative), GenericToken).ConfigureAwait(false);
                                 }
 
                                 using (_ = await Timekeeper.StartSyncronAsync(
@@ -4353,7 +4353,7 @@ namespace Chummer
                             // Make sure the dialogue window was not canceled.
                             if (await frmPickLifestyle.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false) == DialogResult.Cancel)
                             {
-                                frmPickLifestyle.MyForm.SelectedLifestyle.Dispose();
+                                await frmPickLifestyle.MyForm.SelectedLifestyle.DisposeAsync().ConfigureAwait(false);
                                 return;
                             }
 
@@ -6590,7 +6590,7 @@ namespace Chummer
                             {
                                 if (!ReferenceEquals(objLifestyle, frmPickLifestyle.MyForm.SelectedLifestyle)
                                     && frmPickLifestyle.MyForm.SelectedLifestyle != null)
-                                    frmPickLifestyle.MyForm.SelectedLifestyle.Dispose();
+                                    await frmPickLifestyle.MyForm.SelectedLifestyle.DisposeAsync().ConfigureAwait(false);
                                 return;
                             }
 
@@ -9033,7 +9033,7 @@ namespace Chummer
                         if (await frmPickLifestyle.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false) == DialogResult.Cancel)
                         {
                             if (!ReferenceEquals(objLifestyle, frmPickLifestyle.MyForm.SelectedLifestyle))
-                                frmPickLifestyle.MyForm.SelectedLifestyle.Dispose();
+                                await frmPickLifestyle.MyForm.SelectedLifestyle.DisposeAsync().ConfigureAwait(false);
                             return;
                         }
 
@@ -9051,7 +9051,7 @@ namespace Chummer
 
                         if (await frmPickLifestyle.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false) == DialogResult.Cancel)
                         {
-                            frmPickLifestyle.MyForm.SelectedLifestyle.Dispose();
+                            await frmPickLifestyle.MyForm.SelectedLifestyle.DisposeAsync().ConfigureAwait(false);
                             return;
                         }
 
@@ -14890,7 +14890,7 @@ namespace Chummer
                 objCyberware.Create(objXmlCyberware, frmPickCyberware.MyForm.SelectedGrade, objSource, frmPickCyberware.MyForm.SelectedRating, lstWeapons, lstVehicles, true, true, string.Empty, objSelectedCyberware);
                 if (objCyberware.InternalId.IsEmptyGuid())
                 {
-                    objCyberware.Dispose();
+                    await objCyberware.DisposeAsync().ConfigureAwait(false);
                     return false;
                 }
 
@@ -16777,7 +16777,7 @@ namespace Chummer
                 try
                 {
                     // Check if the character has more than 1 Martial Art, not counting qualities. TODO: Make the OTP check an optional rule. Make the Martial Arts limit an optional rule.
-                    int intMartialArts = await (await CharacterObject.GetMartialArtsAsync(token)).CountAsync(objArt => !objArt.IsQuality, token).ConfigureAwait(false);
+                    int intMartialArts = await (await CharacterObject.GetMartialArtsAsync(token).ConfigureAwait(false)).CountAsync(objArt => !objArt.IsQuality, token).ConfigureAwait(false);
                     if (intMartialArts > 1)
                     {
                         blnValid = false;
@@ -16790,11 +16790,11 @@ namespace Chummer
                     }
 
                     // Check if the character has more than 5 Techniques in a Martial Art
-                    if (await (await CharacterObject.GetMartialArtsAsync(token)).GetCountAsync(token).ConfigureAwait(false) > 0)
+                    if (await (await CharacterObject.GetMartialArtsAsync(token).ConfigureAwait(false)).GetCountAsync(token).ConfigureAwait(false) > 0)
                     {
                         int intTechniques
-                            = await (await CharacterObject.GetMartialArtsAsync(token)).SumAsync(
-                                x => x.Techniques.GetCountAsync(token).AsTask(), token);
+                            = await (await CharacterObject.GetMartialArtsAsync(token).ConfigureAwait(false)).SumAsync(
+                                x => x.Techniques.GetCountAsync(token).AsTask(), token).ConfigureAwait(false);
                         if (intTechniques > 5)
                         {
                             blnValid = false;
