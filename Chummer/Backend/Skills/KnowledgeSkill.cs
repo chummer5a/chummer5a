@@ -143,6 +143,15 @@ namespace Chummer.Backend.Skills
             }
         }
 
+        public override async ValueTask<bool> GetAllowDeleteAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                return (!ForcedName || await GetFreeBaseAsync(token).ConfigureAwait(false)
+                           + await GetFreeKarmaAsync(token).ConfigureAwait(false)
+                           + await RatingModifiersAsync(Attribute, token: token).ConfigureAwait(false) <= 0)
+                       && !await GetIsNativeLanguageAsync(token).ConfigureAwait(false);
+        }
+
         public override bool AllowNameChange
         {
             get
@@ -594,7 +603,7 @@ namespace Chummer.Backend.Skills
 
                     OnPropertyChanged(nameof(Type));
                     if (!await GetIsLanguageAsync(token).ConfigureAwait(false))
-                        IsNativeLanguage = false;
+                        await SetIsNativeLanguageAsync(false, token).ConfigureAwait(false);
                 }
                 finally
                 {
@@ -644,6 +653,33 @@ namespace Chummer.Backend.Skills
         {
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
                 return _blnIsNativeLanguage;
+        }
+
+        public override async ValueTask SetIsNativeLanguageAsync(bool value, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                if (_blnIsNativeLanguage == value)
+                    return;
+                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    _blnIsNativeLanguage = value;
+                    if (value)
+                    {
+                        await SetBaseAsync(0, token).ConfigureAwait(false);
+                        await SetKarmaAsync(0, token).ConfigureAwait(false);
+                        await SetBuyWithKarmaAsync(false, token).ConfigureAwait(false);
+                        await Specializations.ClearAsync(token).ConfigureAwait(false);
+                    }
+
+                    OnPropertyChanged(nameof(IsNativeLanguage));
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
+            }
         }
 
         /// <summary>
@@ -775,15 +811,14 @@ namespace Chummer.Backend.Skills
                                           .GetKarmaKnowledgeSpecializationAsync(token).ConfigureAwait(false);
                 decimal decExtraSpecCost = 0;
                 decimal decSpecCostMultiplier = 1.0m;
+                bool blnCreated = await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false);
                 await (await CharacterObject.GetImprovementsAsync(token).ConfigureAwait(false)).ForEachAsync(
                     async objLoopImprovement =>
                     {
                         if (objLoopImprovement.Minimum > intTotalBaseRating ||
                             (!string.IsNullOrEmpty(objLoopImprovement.Condition)
-                             && (objLoopImprovement.Condition == "career") !=
-                             await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false)
-                             && (objLoopImprovement.Condition == "create") ==
-                             await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false))
+                             && (objLoopImprovement.Condition == "career") != blnCreated
+                             && (objLoopImprovement.Condition == "create") == blnCreated)
                             || !objLoopImprovement.Enabled)
                             return;
                         if (objLoopImprovement.ImprovedName == await GetDictionaryKeyAsync(token).ConfigureAwait(false)
@@ -1102,21 +1137,21 @@ namespace Chummer.Backend.Skills
         {
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                int cost = BasePoints;
+                int intBasePoints = await GetBasePointsAsync(token).ConfigureAwait(false);
+                int cost = intBasePoints;
                 if (!IsExoticSkill && !await GetBuyWithKarmaAsync(token).ConfigureAwait(false))
                     cost += await Specializations.CountAsync(x => !x.Free, token: token).ConfigureAwait(false);
 
                 decimal decExtra = 0;
                 decimal decMultiplier = 1.0m;
+                bool blnCreated = await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false);
                 await (await CharacterObject.GetImprovementsAsync(token).ConfigureAwait(false)).ForEachAsync(
                     async objLoopImprovement =>
                     {
-                        if (objLoopImprovement.Minimum > BasePoints ||
+                        if (objLoopImprovement.Minimum > intBasePoints ||
                             (!string.IsNullOrEmpty(objLoopImprovement.Condition)
-                             && (objLoopImprovement.Condition == "career") !=
-                             await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false)
-                             && (objLoopImprovement.Condition == "create") ==
-                             await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false))
+                             && (objLoopImprovement.Condition == "career") != blnCreated
+                             && (objLoopImprovement.Condition == "create") == blnCreated)
                             || !objLoopImprovement.Enabled)
                             return;
                         if (objLoopImprovement.ImprovedName == await GetDictionaryKeyAsync(token).ConfigureAwait(false)
@@ -1127,7 +1162,7 @@ namespace Chummer.Backend.Skills
                                 case Improvement.ImprovementType.KnowledgeSkillPointCost:
                                     decExtra += objLoopImprovement.Value
                                                 * (Math.Min(
-                                                    BasePoints,
+                                                    intBasePoints,
                                                     objLoopImprovement.Maximum == 0
                                                         ? int.MaxValue
                                                         : objLoopImprovement.Maximum) - objLoopImprovement.Minimum);
@@ -1145,7 +1180,7 @@ namespace Chummer.Backend.Skills
                                 case Improvement.ImprovementType.SkillCategoryPointCost:
                                     decExtra += objLoopImprovement.Value
                                                 * (Math.Min(
-                                                    BasePoints,
+                                                    intBasePoints,
                                                     objLoopImprovement.Maximum == 0
                                                         ? int.MaxValue
                                                         : objLoopImprovement.Maximum) - objLoopImprovement.Minimum);

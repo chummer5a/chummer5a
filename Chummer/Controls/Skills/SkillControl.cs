@@ -700,7 +700,7 @@ namespace Chummer.UI.Skills
         {
             try
             {
-                if (!_objSkill.AllowDelete)
+                if (!await _objSkill.GetAllowDeleteAsync(_objMyToken).ConfigureAwait(false))
                     return;
                 if (!await CommonFunctions
                            .ConfirmDeleteAsync(

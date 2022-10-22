@@ -10204,7 +10204,7 @@ namespace Chummer
                 {
                     case KarmaExpenseType.ImproveAttribute:
                     {
-                        await (await CharacterObject.GetAttributeAsync(strUndoId, token: GenericToken).ConfigureAwait(false)).Degrade(1).ConfigureAwait(false);
+                        await (await CharacterObject.GetAttributeAsync(strUndoId, token: GenericToken).ConfigureAwait(false)).Degrade(1, GenericToken).ConfigureAwait(false);
                         break;
                     }
                     case KarmaExpenseType.AddPowerPoint:
@@ -10215,11 +10215,11 @@ namespace Chummer
                     case KarmaExpenseType.AddQuality:
                     {
                         // Locate the Quality that was added.
-                        for (int i = CharacterObject.Qualities.Count - 1; i >= 0; --i)
+                        for (int i = await CharacterObject.Qualities.GetCountAsync(GenericToken).ConfigureAwait(false) - 1; i >= 0; --i)
                         {
-                            if (i >= CharacterObject.Qualities.Count)
+                            if (i >= await CharacterObject.Qualities.GetCountAsync(GenericToken).ConfigureAwait(false))
                                 continue;
-                            Quality objQuality = CharacterObject.Qualities[i];
+                            Quality objQuality = await CharacterObject.Qualities.GetValueAtAsync(i, GenericToken).ConfigureAwait(false);
                             if (objQuality.InternalId == strUndoId)
                                 objQuality.DeleteQuality();
                         }
@@ -10229,11 +10229,11 @@ namespace Chummer
                     case KarmaExpenseType.AddSpell:
                     {
                         // Locate the Spell that was added.
-                        for (int i = CharacterObject.Spells.Count - 1; i >= 0; --i)
+                        for (int i = await CharacterObject.Spells.GetCountAsync(GenericToken).ConfigureAwait(false) - 1; i >= 0; --i)
                         {
-                            if (i >= CharacterObject.Spells.Count)
+                            if (i >= await CharacterObject.Spells.GetCountAsync(GenericToken).ConfigureAwait(false))
                                 continue;
-                            Spell objSpell = CharacterObject.Spells[i];
+                            Spell objSpell = await CharacterObject.Spells.GetValueAtAsync(i, GenericToken).ConfigureAwait(false);
                             if (objSpell.InternalId == strUndoId)
                                 objSpell.Remove(false); // Remove the Spell from the character.
                         }
@@ -10253,7 +10253,7 @@ namespace Chummer
                                                                         .FirstOrDefault(
                                                                             x => x.InternalId == strUndoId);
                         if (objSpec != null)
-                            await objSpec.Parent.Specializations.RemoveAsync(objSpec).ConfigureAwait(false);
+                            await objSpec.Parent.Specializations.RemoveAsync(objSpec, GenericToken).ConfigureAwait(false);
 
                         break;
                     }
@@ -10261,12 +10261,12 @@ namespace Chummer
                     {
                         // Locate the Skill Group that was affected. Old characters may have had the expense added as the Name instead of guid.
                         SkillGroup group
-                            = CharacterObject.SkillsSection.SkillGroups.FirstOrDefault(
-                                g => g.InternalId == strUndoId || g.Name == strUndoId);
+                            = await CharacterObject.SkillsSection.SkillGroups.FirstOrDefaultAsync(
+                                g => g.InternalId == strUndoId || g.Name == strUndoId, GenericToken).ConfigureAwait(false);
 
                         if (group != null)
                         {
-                            if (group.KarmaUnbroken)
+                            if (await group.GetKarmaUnbrokenAsync(GenericToken).ConfigureAwait(false))
                                 --group.Karma;
                             else
                             {
@@ -10286,30 +10286,30 @@ namespace Chummer
                     {
                         // Locate the Skill that was affected.
                         Skill objSkill
-                            = CharacterObject.SkillsSection.Skills.FirstOrDefault(s => s.InternalId == strUndoId);
+                            = await CharacterObject.SkillsSection.Skills.FirstOrDefaultAsync(s => s.InternalId == strUndoId, GenericToken).ConfigureAwait(false);
                         if (objSkill != null)
                         {
-                            if (objSkill.AllowDelete)
-                                await CharacterObject.SkillsSection.Skills.RemoveAsync(objSkill).ConfigureAwait(false);
+                            if (await objSkill.GetAllowDeleteAsync(GenericToken).ConfigureAwait(false))
+                                await CharacterObject.SkillsSection.Skills.RemoveAsync(objSkill, GenericToken).ConfigureAwait(false);
                             else
                             {
-                                objSkill.BasePoints = 0;
-                                objSkill.KarmaPoints = 0;
+                                await objSkill.SetBasePointsAsync(0, GenericToken).ConfigureAwait(false);
+                                await objSkill.SetKarmaPointsAsync(0, GenericToken).ConfigureAwait(false);
                             }
                         }
                         else
                         {
                             KnowledgeSkill objKnowledgeSkill
-                                = CharacterObject.SkillsSection.KnowledgeSkills.FirstOrDefault(
-                                    s => s.InternalId == strUndoId);
+                                = await CharacterObject.SkillsSection.KnowledgeSkills.FirstOrDefaultAsync(
+                                    s => s.InternalId == strUndoId, GenericToken).ConfigureAwait(false);
                             if (objKnowledgeSkill != null)
                             {
-                                if (objKnowledgeSkill.AllowDelete)
-                                    await CharacterObject.SkillsSection.KnowledgeSkills.RemoveAsync(objKnowledgeSkill).ConfigureAwait(false);
+                                if (await objKnowledgeSkill.GetAllowDeleteAsync(GenericToken).ConfigureAwait(false))
+                                    await CharacterObject.SkillsSection.KnowledgeSkills.RemoveAsync(objKnowledgeSkill, GenericToken).ConfigureAwait(false);
                                 else
                                 {
-                                    objKnowledgeSkill.BasePoints = 0;
-                                    objKnowledgeSkill.KarmaPoints = 0;
+                                    await objKnowledgeSkill.SetBasePointsAsync(0, GenericToken).ConfigureAwait(false);
+                                    await objKnowledgeSkill.SetKarmaPointsAsync(0, GenericToken).ConfigureAwait(false);
                                 }
                             }
                             else
@@ -10318,12 +10318,12 @@ namespace Chummer
                                 // Since skill groups can never be deleted, we don't have/need an AddSkillGroup expense type.
                                 // Locate the Skill Group that was affected.
                                 SkillGroup group
-                                    = CharacterObject.SkillsSection.SkillGroups.FirstOrDefault(
-                                        g => g.InternalId == strUndoId);
+                                    = await CharacterObject.SkillsSection.SkillGroups.FirstOrDefaultAsync(
+                                        g => g.InternalId == strUndoId, GenericToken).ConfigureAwait(false);
 
                                 if (group != null)
                                 {
-                                    if (group.KarmaUnbroken)
+                                    if (await group.GetKarmaUnbrokenAsync(GenericToken).ConfigureAwait(false))
                                         --group.Karma;
                                     else
                                     {
@@ -10345,23 +10345,33 @@ namespace Chummer
                     {
                         // Locate the Skill that was affected.
                         Skill objSkill
-                            = CharacterObject.SkillsSection.Skills.FirstOrDefault(s => s.InternalId == strUndoId) ??
-                              CharacterObject.SkillsSection.KnowledgeSkills.FirstOrDefault(
-                                  s => s.InternalId == strUndoId);
+                            = await CharacterObject.SkillsSection.Skills.FirstOrDefaultAsync(s => s.InternalId == strUndoId, GenericToken).ConfigureAwait(false) ??
+                              await CharacterObject.SkillsSection.KnowledgeSkills.FirstOrDefaultAsync(
+                                  s => s.InternalId == strUndoId, GenericToken).ConfigureAwait(false);
 
                         if (objSkill != null)
-                            --objSkill.Karma;
+                        {
+                            IAsyncDisposable objLocker = await objSkill.LockObject.EnterWriteLockAsync(GenericToken).ConfigureAwait(false);
+                            try
+                            {
+                                await objSkill.SetKarmaAsync(await objSkill.GetKarmaAsync(GenericToken).ConfigureAwait(false) - 1).ConfigureAwait(false);
+                            }
+                            finally
+                            {
+                                await objLocker.DisposeAsync().ConfigureAwait(false);
+                            }
+                        }
 
                         break;
                     }
                     case KarmaExpenseType.AddMetamagic:
                     {
                         // Locate the Metamagic that was affected.
-                        for (int i = CharacterObject.Metamagics.Count - 1; i >= 0; --i)
+                        for (int i = await CharacterObject.Metamagics.GetCountAsync(GenericToken).ConfigureAwait(false) - 1; i >= 0; --i)
                         {
-                            if (i >= CharacterObject.Metamagics.Count)
+                            if (i >= await CharacterObject.Metamagics.GetCountAsync(GenericToken).ConfigureAwait(false))
                                 continue;
-                            Metamagic objMetamagic = CharacterObject.Metamagics[i];
+                            Metamagic objMetamagic = await CharacterObject.Metamagics.GetValueAtAsync(i, GenericToken).ConfigureAwait(false);
                             if (objMetamagic.InternalId == strUndoId)
                                 objMetamagic.Remove(false); // Remove the Metamagic from the character.
                         }
@@ -10371,11 +10381,11 @@ namespace Chummer
                     case KarmaExpenseType.ImproveInitiateGrade:
                     {
                         // Locate the Initiate Grade that was affected.
-                        for (int i = CharacterObject.InitiationGrades.Count - 1; i >= 0; --i)
+                        for (int i = await CharacterObject.InitiationGrades.GetCountAsync(GenericToken).ConfigureAwait(false) - 1; i >= 0; --i)
                         {
-                            if (i >= CharacterObject.InitiationGrades.Count)
+                            if (i >= await CharacterObject.InitiationGrades.GetCountAsync(GenericToken).ConfigureAwait(false))
                                 continue;
-                            InitiationGrade objGrade = CharacterObject.InitiationGrades[i];
+                            InitiationGrade objGrade = await CharacterObject.InitiationGrades.GetValueAtAsync(i, GenericToken).ConfigureAwait(false);
                             if (objGrade.InternalId == strUndoId)
                                 objGrade.Remove(false); // Remove the Grade from the character.
                         }
@@ -10385,11 +10395,11 @@ namespace Chummer
                     case KarmaExpenseType.AddMartialArt:
                     {
                         // Locate the Martial Art that was affected.
-                        for (int i = CharacterObject.MartialArts.Count - 1; i >= 0; --i)
+                        for (int i = await CharacterObject.MartialArts.GetCountAsync(GenericToken).ConfigureAwait(false) - 1; i >= 0; --i)
                         {
-                            if (i >= CharacterObject.MartialArts.Count)
+                            if (i >= await CharacterObject.MartialArts.GetCountAsync(GenericToken).ConfigureAwait(false))
                                 continue;
-                            MartialArt objMartialArt = CharacterObject.MartialArts[i];
+                            MartialArt objMartialArt = await CharacterObject.MartialArts.GetValueAtAsync(i, GenericToken).ConfigureAwait(false);
                             if (objMartialArt.InternalId == strUndoId)
                                 objMartialArt.Remove(false); // Remove the Martial Art from the character.
                         }
@@ -10399,16 +10409,16 @@ namespace Chummer
                     case KarmaExpenseType.AddMartialArtTechnique:
                     {
                         // Locate the Martial Art Technique that was affected.
-                        for (int i = CharacterObject.MartialArts.Count - 1; i >= 0; --i)
+                        for (int i = await CharacterObject.MartialArts.GetCountAsync(GenericToken).ConfigureAwait(false) - 1; i >= 0; --i)
                         {
-                            if (i >= CharacterObject.MartialArts.Count)
+                            if (i >= await CharacterObject.MartialArts.GetCountAsync(GenericToken).ConfigureAwait(false))
                                 continue;
-                            MartialArt objMartialArt = CharacterObject.MartialArts[i];
-                            for (int j = objMartialArt.Techniques.Count - 1; j >= 0; --j)
+                            MartialArt objMartialArt = await CharacterObject.MartialArts.GetValueAtAsync(i, GenericToken).ConfigureAwait(false);
+                            for (int j = await objMartialArt.Techniques.GetCountAsync(GenericToken).ConfigureAwait(false) - 1; j >= 0; --j)
                             {
-                                if (j >= objMartialArt.Techniques.Count)
+                                if (j >= await objMartialArt.Techniques.GetCountAsync(GenericToken).ConfigureAwait(false))
                                     continue;
-                                MartialArtTechnique objTechnique = objMartialArt.Techniques[i];
+                                MartialArtTechnique objTechnique = await objMartialArt.Techniques.GetValueAtAsync(i, GenericToken).ConfigureAwait(false);
                                 if (objTechnique.InternalId == strUndoId)
                                     objTechnique.Remove(false); // Remove the Technique from the character.
                             }
@@ -10420,11 +10430,11 @@ namespace Chummer
                     case KarmaExpenseType.AddComplexForm:
                     {
                         // Locate the Complex Form that was affected.
-                        for (int i = CharacterObject.ComplexForms.Count - 1; i >= 0; --i)
+                        for (int i = await CharacterObject.ComplexForms.GetCountAsync(GenericToken).ConfigureAwait(false) - 1; i >= 0; --i)
                         {
-                            if (i >= CharacterObject.ComplexForms.Count)
+                            if (i >= await CharacterObject.ComplexForms.GetCountAsync(GenericToken).ConfigureAwait(false))
                                 continue;
-                            ComplexForm objComplexForm = CharacterObject.ComplexForms[i];
+                            ComplexForm objComplexForm = await CharacterObject.ComplexForms.GetValueAtAsync(i, GenericToken).ConfigureAwait(false);
                             if (objComplexForm.InternalId == strUndoId)
                                 objComplexForm.Remove(false); // Remove the Complex Form from the character.
                         }
@@ -10434,11 +10444,11 @@ namespace Chummer
                     case KarmaExpenseType.BindFocus:
                     {
                         // Locate the Focus that was bound.
-                        for (int i = CharacterObject.Foci.Count - 1; i >= 0; --i)
+                        for (int i = await CharacterObject.Foci.GetCountAsync(GenericToken).ConfigureAwait(false) - 1; i >= 0; --i)
                         {
-                            if (i >= CharacterObject.Foci.Count)
+                            if (i >= await CharacterObject.Foci.GetCountAsync(GenericToken).ConfigureAwait(false))
                                 continue;
-                            Focus objFocus = CharacterObject.Foci[i];
+                            Focus objFocus = await CharacterObject.Foci.GetValueAtAsync(i, GenericToken).ConfigureAwait(false);
                             if (objFocus.InternalId != strUndoId)
                                 continue;
                             await treFoci.DoThreadSafeAsync(x =>
@@ -10461,11 +10471,11 @@ namespace Chummer
                         }
 
                         // Locate the Stacked Focus that was bound.
-                        for (int i = CharacterObject.StackedFoci.Count - 1; i >= 0; --i)
+                        for (int i = await CharacterObject.StackedFoci.GetCountAsync(GenericToken).ConfigureAwait(false) - 1; i >= 0; --i)
                         {
-                            if (i >= CharacterObject.StackedFoci.Count)
+                            if (i >= await CharacterObject.StackedFoci.GetCountAsync(GenericToken).ConfigureAwait(false))
                                 continue;
-                            StackedFocus objStack = CharacterObject.StackedFoci[i];
+                            StackedFocus objStack = await CharacterObject.StackedFoci.GetValueAtAsync(i, GenericToken).ConfigureAwait(false);
                             if (objStack.InternalId != strUndoId)
                                 continue;
                             TreeNode objNode
@@ -10537,12 +10547,12 @@ namespace Chummer
                         objAddQuality.Create(objXmlQualityNode, QualitySource.Selected, lstWeapons,
                                              objExpense.Undo.Extra);
 
-                        await CharacterObject.Qualities.AddAsync(objAddQuality).ConfigureAwait(false);
+                        await CharacterObject.Qualities.AddAsync(objAddQuality, GenericToken).ConfigureAwait(false);
 
                         // Add any created Weapons to the character.
                         foreach (Weapon objWeapon in lstWeapons)
                         {
-                            await CharacterObject.Weapons.AddAsync(objWeapon).ConfigureAwait(false);
+                            await CharacterObject.Weapons.AddAsync(objWeapon, GenericToken).ConfigureAwait(false);
                         }
 
                         break;
@@ -10555,11 +10565,11 @@ namespace Chummer
                     case KarmaExpenseType.AddCritterPower:
                     {
                         // Locate the Critter Power that was affected.
-                        for (int i = CharacterObject.CritterPowers.Count - 1; i >= 0; --i)
+                        for (int i = await CharacterObject.CritterPowers.GetCountAsync(GenericToken).ConfigureAwait(false) - 1; i >= 0; --i)
                         {
-                            if (i >= CharacterObject.CritterPowers.Count)
+                            if (i >= await CharacterObject.CritterPowers.GetCountAsync(GenericToken).ConfigureAwait(false))
                                 continue;
-                            CritterPower objPower = CharacterObject.CritterPowers[i];
+                            CritterPower objPower = await CharacterObject.CritterPowers.GetValueAtAsync(i, GenericToken).ConfigureAwait(false);
                             if (objPower.InternalId == strUndoId)
                                 objPower.Remove(false); // Remove the Critter Power from the character.
                         }

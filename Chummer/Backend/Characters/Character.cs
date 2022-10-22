@@ -4783,19 +4783,23 @@ namespace Chummer
                         List<Task<bool>> lstDoOnSaveCompletedAsync = new List<Task<bool>>(Utils.MaxParallelBatchSize);
                         int i = 0;
                         int j = 0;
-                        while (i != DoOnSaveCompleted.Count || j != DoOnSaveCompletedAsync.Count)
+                        while (i != await DoOnSaveCompleted.GetCountAsync(token).ConfigureAwait(false)
+                               || j != await DoOnSaveCompletedAsync.GetCountAsync(token).ConfigureAwait(false))
                         {
                             lstDoOnSaveCompletedAsync.Clear();
                             while
-                                (i != DoOnSaveCompleted
-                                    .Count) // Set up this way because functions can potentially add more to DoOnSaveCompleted
+                                (i != await DoOnSaveCompleted
+                                            .GetCountAsync(token)
+                                            .ConfigureAwait(
+                                                false)) // Set up this way because functions can potentially add more to DoOnSaveCompleted
                             {
                                 int intCounter = 0;
                                 // ReSharper disable once ForCanBeConvertedToForeach
-                                for (; i < DoOnSaveCompleted.Count; ++i)
+                                for (; i < await DoOnSaveCompleted.GetCountAsync(token).ConfigureAwait(false); ++i)
                                 {
                                     token.ThrowIfCancellationRequested();
-                                    Func<Character, bool> funcLoopToRun = DoOnSaveCompleted[i];
+                                    Func<Character, bool> funcLoopToRun = await DoOnSaveCompleted
+                                        .GetValueAtAsync(i, token).ConfigureAwait(false);
                                     if (funcLoopToRun != null)
                                     {
                                         lstDoOnSaveCompletedAsync.Add(
@@ -4827,11 +4831,11 @@ namespace Chummer
                             }
 
                             lstDoOnSaveCompletedAsync.Clear();
-                            while (j != DoOnSaveCompletedAsync.Count)
+                            while (j != await DoOnSaveCompletedAsync.GetCountAsync(token).ConfigureAwait(false))
                             {
                                 int intCounter = 0;
                                 // ReSharper disable once ForCanBeConvertedToForeach
-                                for (; j < DoOnSaveCompletedAsync.Count; ++j)
+                                for (; j < await DoOnSaveCompletedAsync.GetCountAsync(token).ConfigureAwait(false); ++j)
                                 {
                                     Func<Character, CancellationToken, Task<bool>> funcLoopToRun
                                         = await DoOnSaveCompletedAsync.GetValueAtAsync(j, token).ConfigureAwait(false);
@@ -4931,27 +4935,30 @@ namespace Chummer
             return XmlManager.LoadAsync(strFileName, Settings.EnabledCustomDataDirectoryPaths, strLanguage, blnLoadFile, token);
         }
 
-        private bool _blnIsLoading;
+        private int _intIsLoading;
 
         /// <summary>
         /// Set to true while data is being populated by the Load function
         /// </summary>
         public bool IsLoading
         {
-            get
-            {
-                using (EnterReadLock.Enter(LockObject))
-                    return _blnIsLoading;
-            }
+            get => _intIsLoading > 0;
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                if (value)
                 {
-                    if (_blnIsLoading == value)
-                        return;
+                    if (Interlocked.Increment(ref _intIsLoading) == 1)
+                    {
+                        using (LockObject.EnterWriteLock())
+                        {
+                            OnPropertyChanged();
+                        }
+                    }
+                }
+                else if (Interlocked.Decrement(ref _intIsLoading) == 0)
+                {
                     using (LockObject.EnterWriteLock())
                     {
-                        _blnIsLoading = value;
                         OnPropertyChanged();
                     }
                 }

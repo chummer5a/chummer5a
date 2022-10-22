@@ -232,10 +232,10 @@ namespace Chummer.Backend.Skills
                     await objWriter.WriteElementStringAsync(
                         "grouped",
                         await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false)
-                            ? (SkillGroupObject != null && !SkillGroupObject.IsBroken &&
+                            ? (SkillGroupObject != null && !await SkillGroupObject.GetIsBrokenAsync(token).ConfigureAwait(false) &&
                                await SkillGroupObject.GetRatingAsync(token).ConfigureAwait(false) > 0)
                             .ToString(GlobalSettings.InvariantCultureInfo)
-                            : (SkillGroupObject != null && !SkillGroupObject.HasAnyBreakingSkills &&
+                            : (SkillGroupObject != null && !await SkillGroupObject.GetHasAnyBreakingSkillsAsync(token).ConfigureAwait(false) &&
                                await SkillGroupObject.GetRatingAsync(token).ConfigureAwait(false) > 0)
                             .ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                     await objWriter
@@ -799,6 +799,37 @@ namespace Chummer.Backend.Skills
         }
 
         /// <summary>
+        /// How many points REALLY are in _base. Better than subclasses calculating Base - FreeBase()
+        /// </summary>
+        public async ValueTask<int> GetBasePointsAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                return _intBase;
+        }
+
+        /// <summary>
+        /// How many points REALLY are in _base. Better than subclasses calculating Base - FreeBase()
+        /// </summary>
+        public async ValueTask SetBasePointsAsync(int value, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                if (_intBase == value)
+                    return;
+                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    _intBase = value;
+                    OnPropertyChanged(nameof(BasePoints));
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+        }
+
+        /// <summary>
         /// How many points REALLY are in _karma Better than subclasses calculating Karma - FreeKarma()
         /// </summary>
         public int KarmaPoints
@@ -819,6 +850,37 @@ namespace Chummer.Backend.Skills
                         _intKarma = value;
                         OnPropertyChanged();
                     }
+                }
+            }
+        }
+
+        /// <summary>
+        /// How many points REALLY are in _karma Better than subclasses calculating Karma - FreeKarma()
+        /// </summary>
+        public async ValueTask<int> GetKarmaPointsAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                return _intKarma;
+        }
+
+        /// <summary>
+        /// How many points REALLY are in _karma Better than subclasses calculating Karma - FreeKarma()
+        /// </summary>
+        public async ValueTask SetKarmaPointsAsync(int value, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                if (_intKarma == value)
+                    return;
+                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    _intKarma = value;
+                    OnPropertyChanged(nameof(KarmaPoints));
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
         }
@@ -933,14 +995,59 @@ namespace Chummer.Backend.Skills
                              && !await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false)
                              && !await CharacterObject.GetIgnoreRulesAsync(token).ConfigureAwait(false))
                             || !await objSettings.GetUsePointsOnBrokenGroupsAsync(token).ConfigureAwait(false))
-                            BasePoints = 0;
-                        return Math.Min(intGroupBase + BasePoints + await GetFreeBaseAsync(token).ConfigureAwait(false),
+                            await SetBasePointsAsync(0, token).ConfigureAwait(false);
+                        return Math.Min(intGroupBase + await GetBasePointsAsync(token).ConfigureAwait(false) + await GetFreeBaseAsync(token).ConfigureAwait(false),
                             await GetRatingMaximumAsync(token).ConfigureAwait(false));
                     }
                 }
 
-                return Math.Min(BasePoints + await GetFreeBaseAsync(token).ConfigureAwait(false),
-                    await GetRatingMaximumAsync(token).ConfigureAwait(false));
+                return Math.Min(await GetBasePointsAsync(token).ConfigureAwait(false) + await GetFreeBaseAsync(token).ConfigureAwait(false),
+                                await GetRatingMaximumAsync(token).ConfigureAwait(false));
+            }
+        }
+
+        /// <summary>
+        /// The amount of points this skill have from skill points and bonuses
+        /// to the skill rating that would be obtained in some points of character creation
+        /// </summary>
+        public async ValueTask SetBaseAsync(int value, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                int intSkillGroupBase = SkillGroupObject != null ? await SkillGroupObject.GetBaseAsync(token).ConfigureAwait(false) : 0;
+                if (intSkillGroupBase > 0
+                    && ((CharacterObject.Settings.StrictSkillGroupsInCreateMode && !await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false) &&
+                         !CharacterObject.IgnoreRules)
+                        || !CharacterObject.Settings.UsePointsOnBrokenGroups))
+                    return;
+
+                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    //Calculate how far above maximum we are.
+                    int intOverMax = value + await GetKarmaAsync(token).ConfigureAwait(false) - await GetRatingMaximumAsync(token).ConfigureAwait(false)
+                                     + await RatingModifiersAsync(Attribute, token: token).ConfigureAwait(false);
+
+                    if (intOverMax > 0) //Too much
+                    {
+                        int intKarmaPoints = await GetKarmaPointsAsync(token).ConfigureAwait(false);
+                        //Get the smaller value, how far above, how much we can reduce
+                        int intMax = Math.Min(intOverMax, intKarmaPoints);
+
+                        //reduce both by that amount
+                        await SetKarmaPointsAsync(intKarmaPoints - intMax, token).ConfigureAwait(false);
+                        intOverMax -= intMax;
+                    }
+
+                    value -= Math.Max(0, intOverMax); //reduce by 0 or points over.
+
+                    await SetBasePointsAsync(Math.Max(0, value - (await GetFreeBaseAsync(token).ConfigureAwait(false) + intSkillGroupBase)),
+                                             token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
             }
         }
 
@@ -956,7 +1063,7 @@ namespace Chummer.Backend.Skills
                     if (CharacterObject.Settings.StrictSkillGroupsInCreateMode && !CharacterObject.Created &&
                         !CharacterObject.IgnoreRules && SkillGroupObject?.Karma > 0)
                     {
-                        _intKarma = 0;
+                        KarmaPoints = 0;
                         Specializations.RemoveAll(x => !x.Free);
                         return SkillGroupObject.Karma;
                     }
@@ -1005,7 +1112,7 @@ namespace Chummer.Backend.Skills
                         && !await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false)
                         && !await CharacterObject.GetIgnoreRulesAsync(token).ConfigureAwait(false))
                     {
-                        _intKarma = 0;
+                        await SetKarmaPointsAsync(0, token).ConfigureAwait(false);
                         foreach (SkillSpecialization objSpecialization in await Specializations.ToListAsync(
                                      x => !x.Free, token).ConfigureAwait(false))
                         {
@@ -1016,8 +1123,46 @@ namespace Chummer.Backend.Skills
                     }
                 }
 
-                return Math.Min(KarmaPoints + await GetFreeKarmaAsync(token).ConfigureAwait(false) + intGroupKarma,
+                return Math.Min(await GetKarmaPointsAsync(token).ConfigureAwait(false) + await GetFreeKarmaAsync(token).ConfigureAwait(false) + intGroupKarma,
                     await GetRatingMaximumAsync(token).ConfigureAwait(false));
+            }
+        }
+
+        /// <summary>
+        /// Amount of skill points bought with karma and bonuses to the skills rating
+        /// </summary>
+        public async ValueTask SetKarmaAsync(int value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                //Calculate how far above maximum we are.
+                int intOverMax = value + await GetBaseAsync(token).ConfigureAwait(false) - await GetRatingMaximumAsync(token).ConfigureAwait(false) + await RatingModifiersAsync(Attribute, token: token).ConfigureAwait(false);
+
+                if (intOverMax > 0) //Too much
+                {
+                    int intBasePoints = await GetBasePointsAsync(token).ConfigureAwait(false);
+                    //Get the smaller value, how far above, how much we can reduce
+                    int intMax = Math.Min(intOverMax, intBasePoints);
+
+                    //reduce both by that amount
+                    await SetBasePointsAsync(intBasePoints - intMax, token).ConfigureAwait(false);
+                    intOverMax -= intMax;
+                }
+
+                value -= Math.Max(0, intOverMax); //reduce by 0 or points over.
+
+                //Handle free levels, don,t go below 0
+                await SetKarmaPointsAsync(
+                    Math.Max(
+                        0,
+                        value - (await GetFreeKarmaAsync(token).ConfigureAwait(false) + (SkillGroupObject != null
+                            ? await SkillGroupObject.GetKarmaAsync(token).ConfigureAwait(false)
+                            : 0))), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1121,7 +1266,31 @@ namespace Chummer.Backend.Skills
         public virtual async ValueTask<bool> GetBuyWithKarmaAsync(CancellationToken token = default)
         {
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
-                return (_blnBuyWithKarma || await GetForcedBuyWithKarmaAsync(token).ConfigureAwait(false)) && !await GetForcedNotBuyWithKarmaAsync(token).ConfigureAwait(false) && await Specializations.AnyAsync(x => !x.Free, token: token).ConfigureAwait(false);
+                return (_blnBuyWithKarma || await GetForcedBuyWithKarmaAsync(token).ConfigureAwait(false))
+                       && !await GetForcedNotBuyWithKarmaAsync(token).ConfigureAwait(false)
+                       && await Specializations.AnyAsync(x => !x.Free, token: token).ConfigureAwait(false);
+        }
+
+        public virtual async ValueTask SetBuyWithKarmaAsync(bool value, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                bool blnNewValue = (value || await GetForcedBuyWithKarmaAsync(token).ConfigureAwait(false))
+                                   && !await GetForcedNotBuyWithKarmaAsync(token).ConfigureAwait(false)
+                                   && await Specializations.AnyAsync(x => !x.Free, token: token).ConfigureAwait(false);
+                if (_blnBuyWithKarma == blnNewValue)
+                    return;
+                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    _blnBuyWithKarma = blnNewValue;
+                    OnPropertyChanged(nameof(BuyWithKarma));
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
+            }
         }
 
         /// <summary>
@@ -1708,21 +1877,21 @@ namespace Chummer.Backend.Skills
         {
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                int cost = BasePoints;
+                int intBasePoints = await GetBasePointsAsync(token).ConfigureAwait(false);
+                int cost = intBasePoints;
                 if (!IsExoticSkill && !await GetBuyWithKarmaAsync(token).ConfigureAwait(false))
                     cost += await Specializations.CountAsync(x => !x.Free, token: token).ConfigureAwait(false);
 
                 decimal decExtra = 0;
                 decimal decMultiplier = 1.0m;
+                bool blnCreated = await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false);
                 await (await CharacterObject.GetImprovementsAsync(token).ConfigureAwait(false)).ForEachAsync(
                     async objLoopImprovement =>
                     {
-                        if (objLoopImprovement.Minimum > BasePoints ||
+                        if (objLoopImprovement.Minimum > intBasePoints ||
                             (!string.IsNullOrEmpty(objLoopImprovement.Condition)
-                             && (objLoopImprovement.Condition == "career") !=
-                             await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false)
-                             && (objLoopImprovement.Condition == "create") ==
-                             await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false))
+                             && (objLoopImprovement.Condition == "career") != blnCreated
+                             && (objLoopImprovement.Condition == "create") == blnCreated)
                             || !objLoopImprovement.Enabled)
                             return;
                         if (objLoopImprovement.ImprovedName == await GetDictionaryKeyAsync(token).ConfigureAwait(false)
@@ -1733,7 +1902,7 @@ namespace Chummer.Backend.Skills
                                 case Improvement.ImprovementType.ActiveSkillPointCost:
                                     decExtra += objLoopImprovement.Value
                                                 * (Math.Min(
-                                                    BasePoints,
+                                                    intBasePoints,
                                                     objLoopImprovement.Maximum == 0
                                                         ? int.MaxValue
                                                         : objLoopImprovement.Maximum) - objLoopImprovement.Minimum);
@@ -1751,7 +1920,7 @@ namespace Chummer.Backend.Skills
                                 case Improvement.ImprovementType.SkillCategoryPointCost:
                                     decExtra += objLoopImprovement.Value
                                                 * (Math.Min(
-                                                    BasePoints,
+                                                    intBasePoints,
                                                     objLoopImprovement.Maximum == 0
                                                         ? int.MaxValue
                                                         : objLoopImprovement.Maximum) - objLoopImprovement.Minimum);
@@ -1907,15 +2076,14 @@ namespace Chummer.Backend.Skills
                                       .GetKarmaSpecializationAsync(token).ConfigureAwait(false);
                 decimal decExtraSpecCost = 0;
                 decimal decSpecCostMultiplier = 1.0m;
+                bool blnCreated = await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false);
                 await (await CharacterObject.GetImprovementsAsync(token).ConfigureAwait(false)).ForEachAsync(
-                    async objLoopImprovement =>
+                    objLoopImprovement =>
                     {
                         if (objLoopImprovement.Minimum > intTotalBaseRating ||
                             (!string.IsNullOrEmpty(objLoopImprovement.Condition)
-                             && (objLoopImprovement.Condition == "career") !=
-                             await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false)
-                             && (objLoopImprovement.Condition == "create") ==
-                             await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false))
+                             && (objLoopImprovement.Condition == "career") != blnCreated
+                             && (objLoopImprovement.Condition == "create") == blnCreated)
                             || !objLoopImprovement.Enabled)
                             return;
                         if (objLoopImprovement.ImprovedName != SkillCategory)
@@ -2461,7 +2629,40 @@ namespace Chummer.Backend.Skills
             }
         }
 
+        public async ValueTask<bool> GetCanUpgradeCareerAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                if (_intCachedCanUpgradeCareer < 0)
+                {
+                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        if (_intCachedCanUpgradeCareer < 0)
+                            _intCachedCanUpgradeCareer = await CharacterObject.GetKarmaAsync(token).ConfigureAwait(false) >= await GetUpgradeKarmaCostAsync(token).ConfigureAwait(false) &&
+                                                         await GetRatingMaximumAsync(token).ConfigureAwait(false) > await GetTotalBaseRatingAsync(token).ConfigureAwait(false)
+                                ? 1
+                                : 0;
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                    }
+                }
+
+                return _intCachedCanUpgradeCareer == 1;
+            }
+        }
+
         public virtual bool AllowDelete => false;
+
+#pragma warning disable CS1998
+        public virtual async ValueTask<bool> GetAllowDeleteAsync(CancellationToken token = default)
+#pragma warning restore CS1998
+        {
+            token.ThrowIfCancellationRequested();
+            return false;
+        }
 
         public bool Default
         {
@@ -2567,6 +2768,13 @@ namespace Chummer.Backend.Skills
         {
             token.ThrowIfCancellationRequested();
             return false;
+        }
+
+#pragma warning disable CS1998
+        public virtual async ValueTask SetIsNativeLanguageAsync(bool value, CancellationToken token = default)
+#pragma warning restore CS1998
+        {
+            token.ThrowIfCancellationRequested();
         }
 
         private string _strDictionaryKey;
@@ -5274,15 +5482,14 @@ namespace Chummer.Backend.Skills
 
                 decimal decMultiplier = 1.0m;
                 decimal decExtra = 0;
+                bool blnCreated = await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false);
                 await (await CharacterObject.GetImprovementsAsync(token).ConfigureAwait(false)).ForEachAsync(
                     async objLoopImprovement =>
                     {
                         if (objLoopImprovement.Minimum > lower ||
                             (!string.IsNullOrEmpty(objLoopImprovement.Condition)
-                             && (objLoopImprovement.Condition == "career") !=
-                             await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false)
-                             && (objLoopImprovement.Condition == "create") ==
-                             await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false))
+                             && (objLoopImprovement.Condition == "career") != blnCreated
+                             && (objLoopImprovement.Condition == "create") == blnCreated)
                             || !objLoopImprovement.Enabled)
                             return;
                         if (objLoopImprovement.ImprovedName == await GetDictionaryKeyAsync(token).ConfigureAwait(false)
@@ -5582,7 +5789,7 @@ namespace Chummer.Backend.Skills
             {
                 if (await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false))
                 {
-                    if (!CanUpgradeCareer)
+                    if (!await GetCanUpgradeCareerAsync(token).ConfigureAwait(false))
                         return;
 
                     int price = await GetUpgradeKarmaCostAsync(token).ConfigureAwait(false);
@@ -5609,7 +5816,7 @@ namespace Chummer.Backend.Skills
                     await CharacterObject.DecreaseKarmaAsync(price, token).ConfigureAwait(false);
                 }
 
-                ++Karma;
+                await SetKarmaAsync(await GetKarmaAsync(token).ConfigureAwait(false) + 1, token).ConfigureAwait(false);
             }
             finally
             {
@@ -5915,8 +6122,8 @@ namespace Chummer.Backend.Skills
                             _intCachedForcedNotBuyWithKarma =
                                 !await CharacterObject.GetIgnoreRulesAsync(token).ConfigureAwait(false)
                                 && await Specializations.AnyAsync(x => !x.Free, token: token).ConfigureAwait(false)
-                                && ((KarmaPoints > 0
-                                     && BasePoints + await GetFreeBaseAsync(token).ConfigureAwait(false) == 0
+                                && ((await GetKarmaPointsAsync(token).ConfigureAwait(false) > 0
+                                     && await GetBasePointsAsync(token).ConfigureAwait(false) + await GetFreeBaseAsync(token).ConfigureAwait(false) == 0
                                      && !await objSettings.GetAllowPointBuySpecializationsOnKarmaSkillsAsync(token)
                                          .ConfigureAwait(false))
                                     || (await objSettings.GetSpecializationsBreakSkillGroupsAsync(token)

@@ -166,7 +166,8 @@ namespace Chummer.UI.Skills
                                                                        .ConfigureAwait(false),
                                                       await _skillGroup.GetRatingAsync(_objMyToken)
                                                                        .ConfigureAwait(false) + 1,
-                                                      _skillGroup.UpgradeKarmaCost);
+                                                      await _skillGroup.GetUpgradeKarmaCostAsync(_objMyToken)
+                                                                       .ConfigureAwait(false));
 
                     if (!await CommonFunctions.ConfirmKarmaExpenseAsync(strConfirm, _objMyToken).ConfigureAwait(false))
                         return;

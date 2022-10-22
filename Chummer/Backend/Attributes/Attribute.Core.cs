@@ -2149,15 +2149,14 @@ namespace Chummer.Backend.Attributes
 
                 decimal decExtra = 0;
                 decimal decMultiplier = 1.0m;
-                await _objCharacter.Improvements.ForEachAsync(async objLoopImprovement =>
+                bool blnCreated = await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false);
+                await _objCharacter.Improvements.ForEachAsync(objLoopImprovement =>
                 {
                     if ((objLoopImprovement.ImprovedName == Abbrev
                          || string.IsNullOrEmpty(objLoopImprovement.ImprovedName)) &&
                         (string.IsNullOrEmpty(objLoopImprovement.Condition)
-                         || (objLoopImprovement.Condition == "career") ==
-                         await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false)
-                         || (objLoopImprovement.Condition == "create") !=
-                         await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false)) &&
+                         || (objLoopImprovement.Condition == "career") == blnCreated
+                         || (objLoopImprovement.Condition == "create") != blnCreated) &&
                         objLoopImprovement.Minimum <= intBase && objLoopImprovement.Enabled)
                     {
                         switch (objLoopImprovement.ImproveType)
@@ -2373,17 +2372,16 @@ namespace Chummer.Backend.Attributes
 
                     decimal decExtra = 0;
                     decimal decMultiplier = 1.0m;
+                    bool blnCreated = await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false);
                     await (await _objCharacter.GetImprovementsAsync(token).ConfigureAwait(false)).ForEachAsync(
-                        async objLoopImprovement =>
+                        objLoopImprovement =>
                         {
                             if ((objLoopImprovement.ImprovedName == Abbrev ||
                                  string.IsNullOrEmpty(objLoopImprovement.ImprovedName))
                                 &&
                                 (string.IsNullOrEmpty(objLoopImprovement.Condition)
-                                 || (objLoopImprovement.Condition == "career") ==
-                                 await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false)
-                                 || (objLoopImprovement.Condition == "create") !=
-                                 await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false)) &&
+                                 || (objLoopImprovement.Condition == "career") == blnCreated
+                                 || (objLoopImprovement.Condition == "create") != blnCreated) &&
                                 (objLoopImprovement.Maximum == 0 || intValue + 1 <= objLoopImprovement.Maximum)
                                 && objLoopImprovement.Minimum <= intValue + 1 && objLoopImprovement.Enabled)
                             {

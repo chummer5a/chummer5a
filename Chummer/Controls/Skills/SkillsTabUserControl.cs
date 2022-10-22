@@ -942,7 +942,7 @@ namespace Chummer.UI.Skills
                             {
                                 if (!await skill.GetIsLanguageAsync(MyToken).ConfigureAwait(false))
                                     await skill.SetTypeAsync("Language", MyToken).ConfigureAwait(false);
-                                skill.IsNativeLanguage = true;
+                                await skill.SetIsNativeLanguageAsync(true, MyToken).ConfigureAwait(false);
                                 break;
                             }
                         }
