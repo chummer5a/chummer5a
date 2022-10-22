@@ -21614,7 +21614,7 @@ namespace Chummer
                             || objInnerArmor.ArmorValue.StartsWith('+')
                             || objInnerArmor.ArmorValue.StartsWith('-'))
                             continue;
-                        if (string.IsNullOrEmpty(strCustomFitName) || strCustomFitName != objArmor.Name)
+                        if (string.IsNullOrEmpty(strCustomFitName) || strCustomFitName != objInnerArmor.Name)
                         {
                             if (objArmor.ArmorValue.StartsWith('+') || objArmor.ArmorValue.StartsWith('-'))
                                 dicArmorStackingValues[objInnerArmor] += objArmor.TotalArmor;
@@ -21744,7 +21744,7 @@ namespace Chummer
                             || objInnerArmor.ArmorValue.StartsWith('+')
                             || objInnerArmor.ArmorValue.StartsWith('-'))
                             continue;
-                        if (string.IsNullOrEmpty(strCustomFitName) || strCustomFitName != objArmor.Name)
+                        if (string.IsNullOrEmpty(strCustomFitName) || strCustomFitName != objInnerArmor.Name)
                         {
                             if (objArmor.ArmorValue.StartsWith('+') || objArmor.ArmorValue.StartsWith('-'))
                                 dicArmorStackingValues[objInnerArmor] += objArmor.TotalArmor;
@@ -23348,7 +23348,7 @@ namespace Chummer
                                 || objInnerArmor.ArmorValue.StartsWith('+')
                                 || objInnerArmor.ArmorValue.StartsWith('-'))
                                 continue;
-                            if (string.IsNullOrEmpty(strCustomFitName) || strCustomFitName != objArmor.Name)
+                            if (string.IsNullOrEmpty(strCustomFitName) || strCustomFitName != objInnerArmor.Name)
                             {
                                 (int intI, int intJ) = dicArmorStackingValues[objInnerArmor];
                                 if (objArmor.Encumbrance)
@@ -23461,7 +23461,7 @@ namespace Chummer
                             || objInnerArmor.ArmorValue.StartsWith('+')
                             || objInnerArmor.ArmorValue.StartsWith('-'))
                             continue;
-                        if (string.IsNullOrEmpty(strCustomFitName) || strCustomFitName != objArmor.Name)
+                        if (string.IsNullOrEmpty(strCustomFitName) || strCustomFitName != objInnerArmor.Name)
                         {
                             (int intI, int intJ) = dicArmorStackingValues[objInnerArmor];
                             if (objArmor.Encumbrance)
