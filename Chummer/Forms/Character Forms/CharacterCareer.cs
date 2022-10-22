@@ -218,6 +218,7 @@ namespace Chummer
                                "load_frm_career", null, CustomActivity.OperationType.RequestOperation,
                                CharacterObject?.FileName).ConfigureAwait(false))
                     {
+                        await this.DoThreadSafeAsync(x => x.SuspendLayout(), GenericToken).ConfigureAwait(false);
                         try
                         {
                             try
@@ -1163,6 +1164,11 @@ namespace Chummer
 
                             op_load_frm_career.SetSuccess(true);
                         }
+                        catch (OperationCanceledException)
+                        {
+                            //swallow this
+                            op_load_frm_career?.SetSuccess(false);
+                        }
                         catch (Exception ex)
                         {
                             if (op_load_frm_career != null)
@@ -1173,6 +1179,10 @@ namespace Chummer
 
                             Log.Error(ex);
                             throw;
+                        }
+                        finally
+                        {
+                            await this.DoThreadSafeAsync(x => x.ResumeLayout(true), GenericToken).ConfigureAwait(false);
                         }
                     }
                 }
