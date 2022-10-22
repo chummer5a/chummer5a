@@ -6076,8 +6076,8 @@ namespace Chummer
                                 if (blnDoSourceFetch)
                                 {
                                     XPathNavigator xmlCharNode
-                                        // ReSharper disable once MethodHasAsyncOverload
                                         = blnSync
+                                            // ReSharper disable once MethodHasAsyncOverload
                                             ? this.GetNodeXPath(token: token)
                                             : await this.GetNodeXPathAsync(token: token).ConfigureAwait(false);
                                     if (xmlCharNode != null)
@@ -17856,6 +17856,20 @@ namespace Chummer
                     return PowerPointsTotal.ToString(GlobalSettings.CultureInfo) + strSpace + '(' +
                            (PowerPointsTotal - PowerPointsUsed).ToString(GlobalSettings.CultureInfo) + strSpace +
                            LanguageManager.GetString("String_Remaining") + ')';
+            }
+        }
+
+        public async ValueTask<string> GetDisplayPowerPointsRemainingAsync(CancellationToken token = default)
+        {
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                decimal decTotal = await GetPowerPointsTotalAsync(token).ConfigureAwait(false);
+                return decTotal.ToString(GlobalSettings.CultureInfo) + strSpace + '(' +
+                       (decTotal - await GetPowerPointsUsedAsync(token).ConfigureAwait(false)).ToString(
+                           GlobalSettings.CultureInfo) + strSpace +
+                       await LanguageManager.GetStringAsync("String_Remaining", token: token).ConfigureAwait(false)
+                       + ')';
             }
         }
 
@@ -33801,8 +33815,11 @@ namespace Chummer
                                                                         else
                                                                             await objArmorMod.GearChildren.AddAsync(objPlugin, token).ConfigureAwait(false);
                                                                     }
-                                                                    else
+                                                                    else if (blnSync)
+                                                                        // ReSharper disable once MethodHasAsyncOverload
                                                                         objPlugin.Dispose();
+                                                                    else
+                                                                        await objPlugin.DisposeAsync().ConfigureAwait(false);
                                                                 }
 
                                                                 foreach (XPathNavigator xmlPluginToAdd in
@@ -33850,8 +33867,11 @@ namespace Chummer
                                                                 else
                                                                     await objArmor.GearChildren.AddAsync(objPlugin, token).ConfigureAwait(false);
                                                             }
-                                                            else
+                                                            else if(blnSync)
+                                                                // ReSharper disable once MethodHasAsyncOverload
                                                                 objPlugin.Dispose();
+                                                            else
+                                                                await objPlugin.DisposeAsync().ConfigureAwait(false);
                                                         }
                                                     }
                                                 }
@@ -33895,8 +33915,11 @@ namespace Chummer
                                                                         else
                                                                             await objArmorMod.GearChildren.AddAsync(objPlugin, token).ConfigureAwait(false);
                                                                     }
-                                                                    else
+                                                                    else if (blnSync)
+                                                                        // ReSharper disable once MethodHasAsyncOverload
                                                                         objPlugin.Dispose();
+                                                                    else
+                                                                        await objPlugin.DisposeAsync().ConfigureAwait(false);
                                                                 }
 
                                                                 foreach (XPathNavigator xmlPluginToAdd in
@@ -33977,8 +34000,11 @@ namespace Chummer
                                         else
                                             await _lstWeapons.AddAsync(objWeapon, token).ConfigureAwait(false);
                                     }
-                                    else
+                                    else if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverload
                                         objWeapon.Dispose();
+                                    else
+                                        await objWeapon.DisposeAsync().ConfigureAwait(false);
                                 }
 
                                 foreach (XPathNavigator xmlPluginToAdd in xmlStatBlockBaseNode.Select(
@@ -34020,8 +34046,11 @@ namespace Chummer
                                         else
                                             await _lstCyberware.AddAsync(objCyberware, token).ConfigureAwait(false);
                                     }
-                                    else
+                                    else if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverload
                                         objCyberware.Dispose();
+                                    else
+                                        await objCyberware.DisposeAsync().ConfigureAwait(false);
                                 }
 
                                 foreach (XPathNavigator xmlPluginToAdd in xmlStatBlockBaseNode.Select(
@@ -34057,8 +34086,11 @@ namespace Chummer
                                         else
                                             await _lstCyberware.AddAsync(objCyberware, token).ConfigureAwait(false);
                                     }
-                                    else
+                                    else if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverload
                                         objCyberware.Dispose();
+                                    else
+                                        await objCyberware.DisposeAsync().ConfigureAwait(false);
                                 }
 
                                 foreach (XPathNavigator xmlPluginToAdd in xmlStatBlockBaseNode.Select(

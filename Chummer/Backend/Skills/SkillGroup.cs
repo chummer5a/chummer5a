@@ -1462,6 +1462,66 @@ namespace Chummer.Backend.Skills
             }
         }
 
+        public async ValueTask<string> GetToolTipAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                if (!string.IsNullOrEmpty(_strToolTip))
+                    return _strToolTip;
+                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    if (!string.IsNullOrEmpty(_strToolTip)) // Just in case
+                        return _strToolTip;
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                  out StringBuilder sbdTooltip))
+                    {
+                        string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token)
+                                                               .ConfigureAwait(false);
+                        (await sbdTooltip
+                               .Append(await LanguageManager.GetStringAsync("Tip_SkillGroup_Skills", token: token)
+                                                            .ConfigureAwait(false)).Append(strSpace)
+                               .AppendJoinAsync(',' + strSpace,
+                                                SkillList.Select(x => x.GetCurrentDisplayNameAsync(token).AsTask()),
+                                                token).ConfigureAwait(false)).AppendLine();
+
+                        if (await GetIsDisabledAsync(token).ConfigureAwait(false))
+                        {
+                            sbdTooltip.AppendLine(await LanguageManager
+                                                        .GetStringAsync("Label_SkillGroup_DisabledBy", token: token)
+                                                        .ConfigureAwait(false));
+                            List<Improvement> lstImprovements
+                                = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                                                              _objCharacter,
+                                                              Improvement.ImprovementType.SkillGroupDisable, Name,
+                                                              token: token)
+                                                          .ConfigureAwait(false);
+                            lstImprovements.AddRange((await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                                                                                  _objCharacter,
+                                                                                  Improvement.ImprovementType
+                                                                                      .SkillGroupCategoryDisable,
+                                                                                  token: token)
+                                                                              .ConfigureAwait(false))
+                                                     .Where(x => GetRelevantSkillCategories.Contains(
+                                                                x.ImprovedName)));
+                            foreach (Improvement objImprovement in lstImprovements)
+                            {
+                                sbdTooltip.AppendLine(await CharacterObject
+                                                            .GetObjectNameAsync(objImprovement, token: token)
+                                                            .ConfigureAwait(false));
+                            }
+                        }
+
+                        return _strToolTip = sbdTooltip.ToString();
+                    }
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync();
+                }
+            }
+        }
+
         public string UpgradeToolTip
         {
             get
@@ -1480,6 +1540,27 @@ namespace Chummer.Backend.Skills
                     return string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Tip_ImproveItem"),
                         intRating + 1, UpgradeKarmaCost);
                 }
+            }
+        }
+
+        public async ValueTask<string> GetUpgradeToolTipAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                int intRating = int.MaxValue;
+                foreach (Skill objSkill in SkillList)
+                {
+                    if (await objSkill.GetEnabledAsync(token).ConfigureAwait(false))
+                        intRating = Math.Min(
+                            intRating, await objSkill.GetTotalBaseRatingAsync(token).ConfigureAwait(false));
+                }
+
+                if (intRating == int.MaxValue)
+                    intRating = 0;
+                return string.Format(GlobalSettings.CultureInfo,
+                                     await LanguageManager.GetStringAsync("Tip_ImproveItem", token: token)
+                                                          .ConfigureAwait(false), intRating + 1,
+                                     await GetUpgradeKarmaCostAsync(token).ConfigureAwait(false));
             }
         }
 

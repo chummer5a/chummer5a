@@ -1575,6 +1575,31 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Bind a control's property to a property such that only the control's property is ever updated (when the source has OnPropertyChanged)
+        /// Faster than DoDataBinding both on startup and on processing, so should be used for properties where the control's property is never set manually.
+        /// </summary>
+        /// <param name="objControl">Control to bind</param>
+        /// <param name="strPropertyName">Control's property to which <paramref name="strDataMember"/> is being bound</param>
+        /// <param name="objDataSource">Instance owner of <paramref name="strDataMember"/></param>
+        /// <param name="strDataMember">Name of the property of <paramref name="objDataSource"/> that is being bound to <paramref name="objControl"/>'s <paramref name="strPropertyName"/> property</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static Task DoOneWayDataBindingAsync(this Control objControl, string strPropertyName, object objDataSource, string strDataMember, CancellationToken token = default)
+        {
+            if (objControl == null)
+                return Task.CompletedTask;
+            return Utils.RunOnMainThreadAsync(() =>
+            {
+                if (!objControl.IsHandleCreated)
+                {
+                    IntPtr _ = objControl.Handle; // accessing Handle forces its creation
+                }
+
+                objControl.DataBindings.Add(strPropertyName, objDataSource, strDataMember, false,
+                                            DataSourceUpdateMode.Never);
+            }, token);
+        }
+
+        /// <summary>
         /// Bind a control's property to a data property with an async getter in one direction. Similar to a one-way databinding, but the processing is done
         /// with async tasks, thus bypassing potential synchronous locking issues.
         /// </summary>
@@ -1641,6 +1666,30 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Bind a control's property to a property via OnPropertyChanged
+        /// </summary>
+        /// <param name="objControl">Control to bind</param>
+        /// <param name="strPropertyName">Control's property to which <paramref name="strDataMember"/> is being bound</param>
+        /// <param name="objDataSource">Instance owner of <paramref name="strDataMember"/></param>
+        /// <param name="strDataMember">Name of the property of <paramref name="objDataSource"/> that is being bound to <paramref name="objControl"/>'s <paramref name="strPropertyName"/> property</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static Task DoDataBindingAsync(this Control objControl, string strPropertyName, object objDataSource, string strDataMember, CancellationToken token = default)
+        {
+            if (objControl == null)
+                return Task.CompletedTask;
+            return Utils.RunOnMainThreadAsync(() =>
+            {
+                if (!objControl.IsHandleCreated)
+                {
+                    IntPtr _ = objControl.Handle; // accessing Handle forces its creation
+                }
+
+                objControl.DataBindings.Add(strPropertyName, objDataSource, strDataMember, false,
+                                            DataSourceUpdateMode.OnPropertyChanged);
+            }, token);
+        }
+
+        /// <summary>
         /// Bind a control's property to the OPPOSITE of property such that only the control's property is ever updated (when the source has OnPropertyChanged). Expected to be used exclusively by boolean bindings, other attributes have not been tested.
         /// Faster than DoDataBinding both on startup and on processing, so should be used for properties where the control's property is never set manually.
         /// </summary>
@@ -1665,6 +1714,31 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Bind a control's property to the OPPOSITE of property such that only the control's property is ever updated (when the source has OnPropertyChanged). Expected to be used exclusively by boolean bindings, other attributes have not been tested.
+        /// Faster than DoDataBinding both on startup and on processing, so should be used for properties where the control's property is never set manually.
+        /// </summary>
+        /// <param name="objControl">Control to bind</param>
+        /// <param name="strPropertyName">Control's property to which <paramref name="strDataMember"/> is being bound</param>
+        /// <param name="objDataSource">Instance owner of <paramref name="strDataMember"/></param>
+        /// <param name="strDataMember">Name of the property of <paramref name="objDataSource"/> that is being bound to <paramref name="objControl"/>'s <paramref name="strPropertyName"/> property</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static Task DoOneWayNegatableDataBindingAsync(this Control objControl, string strPropertyName, object objDataSource, string strDataMember, CancellationToken token = default)
+        {
+            if (objControl == null)
+                return Task.CompletedTask;
+            return Utils.RunOnMainThreadAsync(() =>
+            {
+                if (!objControl.IsHandleCreated)
+                {
+                    IntPtr _ = objControl.Handle; // accessing Handle forces its creation
+                }
+
+                objControl.DataBindings.Add(new NegatableBinding(strPropertyName, objDataSource, strDataMember, false,
+                                                                 DataSourceUpdateMode.Never));
+            }, token);
+        }
+
+        /// <summary>
         /// Bind a control's property to the OPPOSITE of property via OnPropertyChanged. Expected to be used exclusively by boolean bindings, other attributes have not been tested.
         /// </summary>
         /// <param name="objControl">Control to bind</param>
@@ -1685,6 +1759,30 @@ namespace Chummer
                 objControl.DataBindings.Add(new NegatableBinding(strPropertyName, objDataSource, strDataMember, false,
                                                                  DataSourceUpdateMode.OnPropertyChanged));
             });
+        }
+
+        /// <summary>
+        /// Bind a control's property to the OPPOSITE of property via OnPropertyChanged. Expected to be used exclusively by boolean bindings, other attributes have not been tested.
+        /// </summary>
+        /// <param name="objControl">Control to bind</param>
+        /// <param name="strPropertyName">Control's property to which <paramref name="strDataMember"/> is being bound</param>
+        /// <param name="objDataSource">Instance owner of <paramref name="strDataMember"/></param>
+        /// <param name="strDataMember">Name of the property of <paramref name="objDataSource"/> that is being bound to <paramref name="objControl"/>'s <paramref name="strPropertyName"/> property</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static Task DoNegatableDataBindingAsync(this Control objControl, string strPropertyName, object objDataSource, string strDataMember, CancellationToken token = default)
+        {
+            if (objControl == null)
+                return Task.CompletedTask;
+            return Utils.RunOnMainThreadAsync(() =>
+            {
+                if (!objControl.IsHandleCreated)
+                {
+                    IntPtr _ = objControl.Handle; // accessing Handle forces its creation
+                }
+
+                objControl.DataBindings.Add(new NegatableBinding(strPropertyName, objDataSource, strDataMember, false,
+                                                                 DataSourceUpdateMode.OnPropertyChanged));
+            }, token);
         }
 
         /// <summary>

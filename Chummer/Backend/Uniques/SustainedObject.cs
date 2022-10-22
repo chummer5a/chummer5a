@@ -338,6 +338,9 @@ namespace Chummer
 
         public string CurrentDisplayName => DisplayName(GlobalSettings.Language);
 
+        public Task<string> GetCurrentDisplayNameAsync(CancellationToken token = default) =>
+            DisplayNameAsync(GlobalSettings.Language, token);
+
         public string Name
         {
             get

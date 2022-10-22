@@ -162,6 +162,20 @@ namespace Chummer.Backend.Skills
             }
         }
 
+        public override async ValueTask<bool> GetAllowNameChangeAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                bool blnIsNativeLanguage = await GetIsNativeLanguageAsync(token).ConfigureAwait(false);
+                return !ForcedName && (blnIsNativeLanguage || await GetAllowUpgradeAsync(token).ConfigureAwait(false))
+                                   &&
+                                   (!await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false)
+                                    || (await GetKarmaAsync(token).ConfigureAwait(false) == 0
+                                        && await GetBaseAsync(token).ConfigureAwait(false) == 0
+                                        && !blnIsNativeLanguage));
+            }
+        }
+
         public override bool AllowTypeChange
         {
             get
@@ -169,6 +183,14 @@ namespace Chummer.Backend.Skills
                 using (EnterReadLock.Enter(LockObject))
                     return (AllowNameChange || string.IsNullOrWhiteSpace(Type)) && !IsNativeLanguage;
             }
+        }
+
+        public override async ValueTask<bool> GetAllowTypeChangeAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                return (await GetAllowNameChangeAsync(token).ConfigureAwait(false)
+                        || string.IsNullOrWhiteSpace(await GetTypeAsync(token).ConfigureAwait(false)))
+                       && !await GetIsNativeLanguageAsync(token).ConfigureAwait(false);
         }
 
         private string _strType = string.Empty;
@@ -201,7 +223,7 @@ namespace Chummer.Backend.Skills
             get
             {
                 using (EnterReadLock.Enter(LockObject))
-                    return !IsNativeLanguage && _blnAllowUpgrade;
+                    return _blnAllowUpgrade && !IsNativeLanguage;
             }
             set
             {
@@ -216,6 +238,15 @@ namespace Chummer.Backend.Skills
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Is the skill allowed to be upgraded through karma or points?
+        /// </summary>
+        public async ValueTask<bool> GetAllowUpgradeAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                return _blnAllowUpgrade && !await GetIsNativeLanguageAsync(token).ConfigureAwait(false);
         }
 
         public string WritableName

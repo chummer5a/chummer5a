@@ -530,6 +530,37 @@ namespace Chummer.Backend.Attributes
         }
 
         /// <summary>
+        /// Current base value (priority points spent) of the CharacterAttribute.
+        /// </summary>
+        public async ValueTask<int> GetBaseAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                return _intBase;
+        }
+
+        /// <summary>
+        /// Current base value (priority points spent) of the CharacterAttribute.
+        /// </summary>
+        public async ValueTask SetBaseAsync(int value, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                if (value == _intBase)
+                    return;
+                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    _intBase = value;
+                    OnPropertyChanged(nameof(Base));
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+        }
+
+        /// <summary>
         /// Total Value of Base Points as used by internal methods
         /// </summary>
         public int TotalBase
@@ -603,6 +634,37 @@ namespace Chummer.Backend.Attributes
                         _intKarma = value;
                         OnPropertyChanged();
                     }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Current karma value of the CharacterAttribute.
+        /// </summary>
+        public async ValueTask<int> GetKarmaAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                return _intKarma;
+        }
+
+        /// <summary>
+        /// Current karma value of the CharacterAttribute.
+        /// </summary>
+        public async ValueTask SetKarmaAsync(int value, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                if (value == _intKarma)
+                    return;
+                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    _intKarma = value;
+                    OnPropertyChanged(nameof(Karma));
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
         }
