@@ -28,7 +28,6 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PrintMultipleCharacters));
             this.dlgOpenFile = new System.Windows.Forms.OpenFileDialog();
             this.cmdSelectCharacter = new System.Windows.Forms.Button();
@@ -50,8 +49,10 @@ namespace Chummer
             // cmdSelectCharacter
             // 
             this.cmdSelectCharacter.AutoSize = true;
+            this.cmdSelectCharacter.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdSelectCharacter.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdSelectCharacter.Location = new System.Drawing.Point(3, 3);
+            this.cmdSelectCharacter.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdSelectCharacter.Name = "cmdSelectCharacter";
             this.cmdSelectCharacter.Size = new System.Drawing.Size(106, 23);
             this.cmdSelectCharacter.TabIndex = 1;
@@ -63,8 +64,10 @@ namespace Chummer
             // cmdPrint
             // 
             this.cmdPrint.AutoSize = true;
+            this.cmdPrint.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdPrint.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdPrint.Location = new System.Drawing.Point(3, 61);
+            this.cmdPrint.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdPrint.Name = "cmdPrint";
             this.cmdPrint.Size = new System.Drawing.Size(106, 23);
             this.cmdPrint.TabIndex = 3;
@@ -76,8 +79,10 @@ namespace Chummer
             // cmdDelete
             // 
             this.cmdDelete.AutoSize = true;
+            this.cmdDelete.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdDelete.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdDelete.Location = new System.Drawing.Point(3, 32);
+            this.cmdDelete.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdDelete.Name = "cmdDelete";
             this.cmdDelete.Size = new System.Drawing.Size(106, 23);
             this.cmdDelete.TabIndex = 2;

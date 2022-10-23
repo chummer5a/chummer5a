@@ -28,7 +28,6 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
@@ -1099,9 +1098,11 @@ namespace Chummer
             // cmdCancel
             // 
             this.cmdCancel.AutoSize = true;
+            this.cmdCancel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.cmdCancel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdCancel.Location = new System.Drawing.Point(3, 3);
+            this.cmdCancel.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdCancel.Name = "cmdCancel";
             this.cmdCancel.Size = new System.Drawing.Size(80, 23);
             this.cmdCancel.TabIndex = 37;
@@ -1113,8 +1114,10 @@ namespace Chummer
             // cmdOKAdd
             // 
             this.cmdOKAdd.AutoSize = true;
+            this.cmdOKAdd.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdOKAdd.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdOKAdd.Location = new System.Drawing.Point(89, 3);
+            this.cmdOKAdd.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdOKAdd.Name = "cmdOKAdd";
             this.cmdOKAdd.Size = new System.Drawing.Size(80, 23);
             this.cmdOKAdd.TabIndex = 36;
@@ -1126,8 +1129,10 @@ namespace Chummer
             // cmdOK
             // 
             this.cmdOK.AutoSize = true;
+            this.cmdOK.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdOK.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdOK.Location = new System.Drawing.Point(175, 3);
+            this.cmdOK.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdOK.Name = "cmdOK";
             this.cmdOK.Size = new System.Drawing.Size(80, 23);
             this.cmdOK.TabIndex = 35;

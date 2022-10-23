@@ -28,7 +28,6 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(HeroLabImporter));
             this.treCharacterList = new System.Windows.Forms.TreeView();
             this.cmdSelectFile = new System.Windows.Forms.Button();
@@ -88,8 +87,10 @@ namespace Chummer
             // cmdSelectFile
             // 
             this.cmdSelectFile.AutoSize = true;
+            this.cmdSelectFile.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdSelectFile.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdSelectFile.Location = new System.Drawing.Point(3, 3);
+            this.cmdSelectFile.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdSelectFile.Name = "cmdSelectFile";
             this.cmdSelectFile.Size = new System.Drawing.Size(95, 23);
             this.cmdSelectFile.TabIndex = 1;
@@ -101,9 +102,11 @@ namespace Chummer
             // cmdImport
             // 
             this.cmdImport.AutoSize = true;
+            this.cmdImport.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdImport.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdImport.Enabled = false;
             this.cmdImport.Location = new System.Drawing.Point(104, 3);
+            this.cmdImport.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdImport.Name = "cmdImport";
             this.cmdImport.Size = new System.Drawing.Size(95, 23);
             this.cmdImport.TabIndex = 2;

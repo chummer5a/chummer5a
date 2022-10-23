@@ -43,7 +43,9 @@ namespace Chummer.UI.Powers
             // 
             this.cmdAddPower.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.cmdAddPower.AutoSize = true;
+            this.cmdAddPower.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdAddPower.Location = new System.Drawing.Point(163, 3);
+            this.cmdAddPower.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdAddPower.Name = "cmdAddPower";
             this.cmdAddPower.Size = new System.Drawing.Size(80, 23);
             this.cmdAddPower.TabIndex = 6;

@@ -28,7 +28,6 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Foundations");
             System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("Blocks");
             System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("Enhancers");
@@ -133,9 +132,11 @@ namespace Chummer
             // btnCancel
             // 
             this.btnCancel.AutoSize = true;
+            this.btnCancel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnCancel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.btnCancel.Location = new System.Drawing.Point(3, 3);
+            this.btnCancel.MinimumSize = new System.Drawing.Size(80, 0);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(80, 23);
             this.btnCancel.TabIndex = 3;
@@ -147,8 +148,10 @@ namespace Chummer
             // btnAdd
             // 
             this.btnAdd.AutoSize = true;
+            this.btnAdd.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.btnAdd.Dock = System.Windows.Forms.DockStyle.Fill;
             this.btnAdd.Location = new System.Drawing.Point(89, 3);
+            this.btnAdd.MinimumSize = new System.Drawing.Size(80, 0);
             this.btnAdd.Name = "btnAdd";
             this.btnAdd.Size = new System.Drawing.Size(80, 23);
             this.btnAdd.TabIndex = 3;

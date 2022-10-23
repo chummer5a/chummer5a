@@ -30,7 +30,6 @@ namespace Chummer
         {
             this.components = new System.ComponentModel.Container();
             this.txtContactName = new System.Windows.Forms.TextBox();
-            this.cmdDelete = new System.Windows.Forms.Button();
             this.cmsContact = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsContactOpen = new Chummer.DpiFriendlyToolStripMenuItem();
             this.tsRemoveCharacter = new Chummer.DpiFriendlyToolStripMenuItem();
@@ -41,6 +40,7 @@ namespace Chummer
             this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.cmdNotes = new Chummer.ButtonWithToolTip();
             this.cmdLink = new Chummer.ButtonWithToolTip();
+            this.cmdDelete = new Chummer.DpiFriendlyImagedButton();
             this.cmsContact.SuspendLayout();
             this.tlpMain.SuspendLayout();
             this.SuspendLayout();
@@ -55,19 +55,6 @@ namespace Chummer
             this.txtContactName.Size = new System.Drawing.Size(271, 20);
             this.txtContactName.TabIndex = 11;
             this.txtContactName.TextChanged += new System.EventHandler(this.txtContactName_TextChanged);
-            // 
-            // cmdDelete
-            // 
-            this.cmdDelete.AutoSize = true;
-            this.cmdDelete.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdDelete.Location = new System.Drawing.Point(717, 3);
-            this.cmdDelete.Name = "cmdDelete";
-            this.cmdDelete.Size = new System.Drawing.Size(48, 23);
-            this.cmdDelete.TabIndex = 18;
-            this.cmdDelete.Tag = "String_Delete";
-            this.cmdDelete.Text = "Delete";
-            this.cmdDelete.UseVisualStyleBackColor = true;
-            this.cmdDelete.Click += new System.EventHandler(this.cmdDelete_Click);
             // 
             // cmsContact
             // 
@@ -173,9 +160,8 @@ namespace Chummer
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpMain.Controls.Add(this.cmdNotes, 5, 0);
             this.tlpMain.Controls.Add(this.cmdDelete, 6, 0);
+            this.tlpMain.Controls.Add(this.cmdNotes, 5, 0);
             this.tlpMain.Controls.Add(this.lblName, 0, 0);
             this.tlpMain.Controls.Add(this.cboMetatype, 3, 0);
             this.tlpMain.Controls.Add(this.txtContactName, 1, 0);
@@ -186,7 +172,7 @@ namespace Chummer
             this.tlpMain.Name = "tlpMain";
             this.tlpMain.RowCount = 1;
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpMain.Size = new System.Drawing.Size(768, 30);
+            this.tlpMain.Size = new System.Drawing.Size(744, 30);
             this.tlpMain.TabIndex = 25;
             // 
             // cmdNotes
@@ -233,6 +219,28 @@ namespace Chummer
             this.cmdLink.UseVisualStyleBackColor = true;
             this.cmdLink.Click += new System.EventHandler(this.cmdLink_Click);
             // 
+            // cmdDelete
+            // 
+            this.cmdDelete.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.cmdDelete.AutoSize = true;
+            this.cmdDelete.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdDelete.Image = global::Chummer.Properties.Resources.delete;
+            this.cmdDelete.ImageDpi120 = null;
+            this.cmdDelete.ImageDpi144 = null;
+            this.cmdDelete.ImageDpi192 = global::Chummer.Properties.Resources.delete1;
+            this.cmdDelete.ImageDpi288 = null;
+            this.cmdDelete.ImageDpi384 = null;
+            this.cmdDelete.ImageDpi96 = global::Chummer.Properties.Resources.delete;
+            this.cmdDelete.Location = new System.Drawing.Point(717, 3);
+            this.cmdDelete.MinimumSize = new System.Drawing.Size(24, 24);
+            this.cmdDelete.Name = "cmdDelete";
+            this.cmdDelete.Padding = new System.Windows.Forms.Padding(1);
+            this.cmdDelete.Size = new System.Drawing.Size(24, 24);
+            this.cmdDelete.TabIndex = 27;
+            this.cmdDelete.Tag = "";
+            this.cmdDelete.UseVisualStyleBackColor = true;
+            this.cmdDelete.Click += new System.EventHandler(this.cmdDelete_Click);
+            // 
             // PetControl
             // 
             this.AutoSize = true;
@@ -241,7 +249,7 @@ namespace Chummer
             this.DoubleBuffered = true;
             this.MinimumSize = new System.Drawing.Size(0, 30);
             this.Name = "PetControl";
-            this.Size = new System.Drawing.Size(768, 30);
+            this.Size = new System.Drawing.Size(744, 30);
             this.Load += new System.EventHandler(this.PetControl_Load);
             this.cmsContact.ResumeLayout(false);
             this.tlpMain.ResumeLayout(false);
@@ -253,7 +261,6 @@ namespace Chummer
 
         #endregion
         private System.Windows.Forms.TextBox txtContactName;
-        private System.Windows.Forms.Button cmdDelete;
         private System.Windows.Forms.ContextMenuStrip cmsContact;
         private System.Windows.Forms.Label lblName;
         private System.Windows.Forms.Label lblMetatypeLabel;
@@ -264,5 +271,6 @@ namespace Chummer
         private DpiFriendlyToolStripMenuItem tsAttachCharacter;
         private ButtonWithToolTip cmdLink;
         private ButtonWithToolTip cmdNotes;
+        private DpiFriendlyImagedButton cmdDelete;
     }
 }

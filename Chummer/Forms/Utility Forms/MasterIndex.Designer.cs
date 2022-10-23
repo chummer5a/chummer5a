@@ -28,7 +28,6 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MasterIndex));
             this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.tlpRight = new System.Windows.Forms.TableLayoutPanel();
@@ -253,6 +252,7 @@ namespace Chummer
             // cmdEditCharacterSetting
             // 
             this.cmdEditCharacterSetting.AutoSize = true;
+            this.cmdEditCharacterSetting.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdEditCharacterSetting.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdEditCharacterSetting.Image = null;
             this.cmdEditCharacterSetting.ImageDpi120 = null;
@@ -262,6 +262,7 @@ namespace Chummer
             this.cmdEditCharacterSetting.ImageDpi384 = null;
             this.cmdEditCharacterSetting.ImageDpi96 = null;
             this.cmdEditCharacterSetting.Location = new System.Drawing.Point(683, 3);
+            this.cmdEditCharacterSetting.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdEditCharacterSetting.Name = "cmdEditCharacterSetting";
             this.cmdEditCharacterSetting.Size = new System.Drawing.Size(80, 23);
             this.cmdEditCharacterSetting.TabIndex = 20;

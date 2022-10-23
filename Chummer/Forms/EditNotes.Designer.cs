@@ -28,7 +28,6 @@ namespace Chummer
 		/// </summary>
 		private void InitializeComponent()
 		{
-            this.components = new System.ComponentModel.Container();
             this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.txtNotes = new System.Windows.Forms.TextBox();
             this.btnColorSelect = new Chummer.DpiFriendlyImagedButton();
@@ -76,6 +75,7 @@ namespace Chummer
             // btnColorSelect
             // 
             this.btnColorSelect.AutoSize = true;
+            this.btnColorSelect.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.btnColorSelect.Dock = System.Windows.Forms.DockStyle.Left;
             this.btnColorSelect.Image = global::Chummer.Properties.Resources.color_wheel;
             this.btnColorSelect.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
@@ -86,6 +86,7 @@ namespace Chummer
             this.btnColorSelect.ImageDpi384 = null;
             this.btnColorSelect.ImageDpi96 = global::Chummer.Properties.Resources.color_wheel;
             this.btnColorSelect.Location = new System.Drawing.Point(3, 295);
+            this.btnColorSelect.MinimumSize = new System.Drawing.Size(80, 0);
             this.btnColorSelect.Name = "btnColorSelect";
             this.btnColorSelect.Size = new System.Drawing.Size(96, 23);
             this.btnColorSelect.TabIndex = 2;
@@ -117,9 +118,11 @@ namespace Chummer
             // btnOK
             // 
             this.btnOK.AutoSize = true;
+            this.btnOK.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.btnOK.Dock = System.Windows.Forms.DockStyle.Fill;
             this.btnOK.Location = new System.Drawing.Point(89, 3);
+            this.btnOK.MinimumSize = new System.Drawing.Size(80, 0);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(80, 23);
             this.btnOK.TabIndex = 4;
@@ -131,9 +134,11 @@ namespace Chummer
             // btnCancel
             // 
             this.btnCancel.AutoSize = true;
+            this.btnCancel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnCancel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.btnCancel.Location = new System.Drawing.Point(3, 3);
+            this.btnCancel.MinimumSize = new System.Drawing.Size(80, 0);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(80, 23);
             this.btnCancel.TabIndex = 3;

@@ -28,7 +28,6 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EditCharacterSettings));
             this.tlpOptions = new System.Windows.Forms.TableLayoutPanel();
             this.cboSetting = new Chummer.ElasticComboBox();
@@ -124,6 +123,7 @@ namespace Chummer
             this.chkRedlinerLimbsLegs = new Chummer.ColorableCheckBox();
             this.gpbBasicOptionsRounding = new System.Windows.Forms.GroupBox();
             this.tlpBasicOptionsRounding = new System.Windows.Forms.TableLayoutPanel();
+            this.lblEssenceModifierPostExpression = new System.Windows.Forms.Label();
             this.chkDontRoundEssenceInternally = new Chummer.ColorableCheckBox();
             this.lblNuyenDecimalsMinimumLabel = new System.Windows.Forms.Label();
             this.lblNuyenDecimalsMaximumLabel = new System.Windows.Forms.Label();
@@ -131,6 +131,7 @@ namespace Chummer
             this.nudNuyenDecimalsMinimum = new Chummer.NumericUpDownEx();
             this.nudNuyenDecimalsMaximum = new Chummer.NumericUpDownEx();
             this.nudEssenceDecimals = new Chummer.NumericUpDownEx();
+            this.txtEssenceModifierPostExpression = new System.Windows.Forms.TextBox();
             this.gpbBasicOptionsInitiativeDice = new System.Windows.Forms.GroupBox();
             this.tlpBasicOptionsInitiativeDice = new System.Windows.Forms.TableLayoutPanel();
             this.lblMinInitiativeDiceLabel = new System.Windows.Forms.Label();
@@ -365,8 +366,6 @@ namespace Chummer
             this.cmdRestoreDefaults = new System.Windows.Forms.Button();
             this.cmdSave = new System.Windows.Forms.Button();
             this.cmdSaveAs = new System.Windows.Forms.Button();
-            this.lblEssenceModifierPostExpression = new System.Windows.Forms.Label();
-            this.txtEssenceModifierPostExpression = new System.Windows.Forms.TextBox();
             this.tlpOptions.SuspendLayout();
             this.tabOptions.SuspendLayout();
             this.tabBasicOptions.SuspendLayout();
@@ -580,8 +579,10 @@ namespace Chummer
             // cmdEnableSourcebooks
             // 
             this.cmdEnableSourcebooks.AutoSize = true;
+            this.cmdEnableSourcebooks.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdEnableSourcebooks.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdEnableSourcebooks.Location = new System.Drawing.Point(3, 558);
+            this.cmdEnableSourcebooks.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdEnableSourcebooks.Name = "cmdEnableSourcebooks";
             this.cmdEnableSourcebooks.Size = new System.Drawing.Size(297, 23);
             this.cmdEnableSourcebooks.TabIndex = 6;
@@ -2035,6 +2036,19 @@ namespace Chummer
             this.tlpBasicOptionsRounding.Size = new System.Drawing.Size(367, 129);
             this.tlpBasicOptionsRounding.TabIndex = 0;
             // 
+            // lblEssenceModifierPostExpression
+            // 
+            this.lblEssenceModifierPostExpression.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblEssenceModifierPostExpression.AutoSize = true;
+            this.lblEssenceModifierPostExpression.Location = new System.Drawing.Point(3, 109);
+            this.lblEssenceModifierPostExpression.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblEssenceModifierPostExpression.Name = "lblEssenceModifierPostExpression";
+            this.lblEssenceModifierPostExpression.Size = new System.Drawing.Size(175, 13);
+            this.lblEssenceModifierPostExpression.TabIndex = 35;
+            this.lblEssenceModifierPostExpression.Tag = "Label_Options_EssenceModifierPostExpression";
+            this.lblEssenceModifierPostExpression.Text = "Post-Process Essence Modifiers as:";
+            this.lblEssenceModifierPostExpression.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
             // chkDontRoundEssenceInternally
             // 
             this.chkDontRoundEssenceInternally.Anchor = System.Windows.Forms.AnchorStyles.Left;
@@ -2153,6 +2167,17 @@ namespace Chummer
             0,
             0,
             0});
+            // 
+            // txtEssenceModifierPostExpression
+            // 
+            this.txtEssenceModifierPostExpression.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.tlpBasicOptionsRounding.SetColumnSpan(this.txtEssenceModifierPostExpression, 2);
+            this.txtEssenceModifierPostExpression.Location = new System.Drawing.Point(184, 106);
+            this.txtEssenceModifierPostExpression.Name = "txtEssenceModifierPostExpression";
+            this.txtEssenceModifierPostExpression.Size = new System.Drawing.Size(180, 20);
+            this.txtEssenceModifierPostExpression.TabIndex = 36;
+            this.txtEssenceModifierPostExpression.Text = "{Modifier}";
+            this.txtEssenceModifierPostExpression.TextChanged += new System.EventHandler(this.txtEssenceModifierPostExpression_TextChanged);
             // 
             // gpbBasicOptionsInitiativeDice
             // 
@@ -4746,8 +4771,10 @@ namespace Chummer
             // cmdToTopCustomDirectoryLoadOrder
             // 
             this.cmdToTopCustomDirectoryLoadOrder.AutoSize = true;
+            this.cmdToTopCustomDirectoryLoadOrder.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdToTopCustomDirectoryLoadOrder.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdToTopCustomDirectoryLoadOrder.Location = new System.Drawing.Point(253, 3);
+            this.cmdToTopCustomDirectoryLoadOrder.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdToTopCustomDirectoryLoadOrder.Name = "cmdToTopCustomDirectoryLoadOrder";
             this.cmdToTopCustomDirectoryLoadOrder.Size = new System.Drawing.Size(119, 23);
             this.cmdToTopCustomDirectoryLoadOrder.TabIndex = 46;
@@ -4759,8 +4786,10 @@ namespace Chummer
             // cmdToBottomCustomDirectoryLoadOrder
             // 
             this.cmdToBottomCustomDirectoryLoadOrder.AutoSize = true;
+            this.cmdToBottomCustomDirectoryLoadOrder.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdToBottomCustomDirectoryLoadOrder.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdToBottomCustomDirectoryLoadOrder.Location = new System.Drawing.Point(503, 3);
+            this.cmdToBottomCustomDirectoryLoadOrder.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdToBottomCustomDirectoryLoadOrder.Name = "cmdToBottomCustomDirectoryLoadOrder";
             this.cmdToBottomCustomDirectoryLoadOrder.Size = new System.Drawing.Size(119, 23);
             this.cmdToBottomCustomDirectoryLoadOrder.TabIndex = 45;
@@ -4772,8 +4801,10 @@ namespace Chummer
             // cmdDecreaseCustomDirectoryLoadOrder
             // 
             this.cmdDecreaseCustomDirectoryLoadOrder.AutoSize = true;
+            this.cmdDecreaseCustomDirectoryLoadOrder.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdDecreaseCustomDirectoryLoadOrder.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdDecreaseCustomDirectoryLoadOrder.Location = new System.Drawing.Point(378, 3);
+            this.cmdDecreaseCustomDirectoryLoadOrder.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdDecreaseCustomDirectoryLoadOrder.Name = "cmdDecreaseCustomDirectoryLoadOrder";
             this.cmdDecreaseCustomDirectoryLoadOrder.Size = new System.Drawing.Size(119, 23);
             this.cmdDecreaseCustomDirectoryLoadOrder.TabIndex = 42;
@@ -4785,8 +4816,10 @@ namespace Chummer
             // cmdIncreaseCustomDirectoryLoadOrder
             // 
             this.cmdIncreaseCustomDirectoryLoadOrder.AutoSize = true;
+            this.cmdIncreaseCustomDirectoryLoadOrder.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdIncreaseCustomDirectoryLoadOrder.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdIncreaseCustomDirectoryLoadOrder.Location = new System.Drawing.Point(128, 3);
+            this.cmdIncreaseCustomDirectoryLoadOrder.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdIncreaseCustomDirectoryLoadOrder.Name = "cmdIncreaseCustomDirectoryLoadOrder";
             this.cmdIncreaseCustomDirectoryLoadOrder.Size = new System.Drawing.Size(119, 23);
             this.cmdIncreaseCustomDirectoryLoadOrder.TabIndex = 43;
@@ -4798,8 +4831,10 @@ namespace Chummer
             // cmdGlobalOptionsCustomData
             // 
             this.cmdGlobalOptionsCustomData.AutoSize = true;
+            this.cmdGlobalOptionsCustomData.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdGlobalOptionsCustomData.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdGlobalOptionsCustomData.Location = new System.Drawing.Point(3, 3);
+            this.cmdGlobalOptionsCustomData.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdGlobalOptionsCustomData.Name = "cmdGlobalOptionsCustomData";
             this.cmdGlobalOptionsCustomData.Size = new System.Drawing.Size(119, 23);
             this.cmdGlobalOptionsCustomData.TabIndex = 44;
@@ -5854,6 +5889,7 @@ namespace Chummer
             this.cmdRename.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdRename.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdRename.Location = new System.Drawing.Point(105, 3);
+            this.cmdRename.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdRename.Name = "cmdRename";
             this.cmdRename.Size = new System.Drawing.Size(96, 23);
             this.cmdRename.TabIndex = 10;
@@ -5868,6 +5904,7 @@ namespace Chummer
             this.cmdDelete.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdDelete.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdDelete.Location = new System.Drawing.Point(207, 3);
+            this.cmdDelete.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdDelete.Name = "cmdDelete";
             this.cmdDelete.Size = new System.Drawing.Size(96, 23);
             this.cmdDelete.TabIndex = 9;
@@ -5883,6 +5920,7 @@ namespace Chummer
             this.cmdOK.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.cmdOK.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdOK.Location = new System.Drawing.Point(513, 3);
+            this.cmdOK.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdOK.Name = "cmdOK";
             this.cmdOK.Size = new System.Drawing.Size(96, 23);
             this.cmdOK.TabIndex = 6;
@@ -5897,6 +5935,7 @@ namespace Chummer
             this.cmdRestoreDefaults.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdRestoreDefaults.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdRestoreDefaults.Location = new System.Drawing.Point(3, 3);
+            this.cmdRestoreDefaults.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdRestoreDefaults.Name = "cmdRestoreDefaults";
             this.cmdRestoreDefaults.Size = new System.Drawing.Size(96, 23);
             this.cmdRestoreDefaults.TabIndex = 8;
@@ -5912,6 +5951,7 @@ namespace Chummer
             this.cmdSave.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdSave.Enabled = false;
             this.cmdSave.Location = new System.Drawing.Point(411, 3);
+            this.cmdSave.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdSave.Name = "cmdSave";
             this.cmdSave.Size = new System.Drawing.Size(96, 23);
             this.cmdSave.TabIndex = 5;
@@ -5927,6 +5967,7 @@ namespace Chummer
             this.cmdSaveAs.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdSaveAs.Enabled = false;
             this.cmdSaveAs.Location = new System.Drawing.Point(309, 3);
+            this.cmdSaveAs.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdSaveAs.Name = "cmdSaveAs";
             this.cmdSaveAs.Size = new System.Drawing.Size(96, 23);
             this.cmdSaveAs.TabIndex = 7;
@@ -5934,30 +5975,6 @@ namespace Chummer
             this.cmdSaveAs.Text = "Save As...";
             this.cmdSaveAs.UseVisualStyleBackColor = true;
             this.cmdSaveAs.Click += new System.EventHandler(this.cmdSaveAs_Click);
-            // 
-            // lblEssenceModifierPostExpression
-            // 
-            this.lblEssenceModifierPostExpression.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblEssenceModifierPostExpression.AutoSize = true;
-            this.lblEssenceModifierPostExpression.Location = new System.Drawing.Point(3, 109);
-            this.lblEssenceModifierPostExpression.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblEssenceModifierPostExpression.Name = "lblEssenceModifierPostExpression";
-            this.lblEssenceModifierPostExpression.Size = new System.Drawing.Size(175, 13);
-            this.lblEssenceModifierPostExpression.TabIndex = 35;
-            this.lblEssenceModifierPostExpression.Tag = "Label_Options_EssenceModifierPostExpression";
-            this.lblEssenceModifierPostExpression.Text = "Post-Process Essence Modifiers as:";
-            this.lblEssenceModifierPostExpression.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // txtEssenceModifierPostExpression
-            // 
-            this.txtEssenceModifierPostExpression.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.tlpBasicOptionsRounding.SetColumnSpan(this.txtEssenceModifierPostExpression, 2);
-            this.txtEssenceModifierPostExpression.Location = new System.Drawing.Point(184, 106);
-            this.txtEssenceModifierPostExpression.Name = "txtEssenceModifierPostExpression";
-            this.txtEssenceModifierPostExpression.Size = new System.Drawing.Size(180, 20);
-            this.txtEssenceModifierPostExpression.TabIndex = 36;
-            this.txtEssenceModifierPostExpression.Text = "{Modifier}";
-            this.txtEssenceModifierPostExpression.TextChanged += new System.EventHandler(this.txtEssenceModifierPostExpression_TextChanged);
             // 
             // EditCharacterSettings
             // 

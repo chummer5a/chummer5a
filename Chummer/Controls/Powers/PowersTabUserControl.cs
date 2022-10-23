@@ -548,7 +548,7 @@ namespace Chummer.UI.Powers
                         }
                     }),
                     Tag = "ColumnHeader_Power_Points",
-                    ToolTipExtractor = (async item =>
+                    ToolTipExtractor = async item =>
                     {
                         try
                         {
@@ -558,7 +558,7 @@ namespace Chummer.UI.Powers
                         {
                             return string.Empty;
                         }
-                    })
+                    }
                 });
             powerPointsColumn.AddDependency(nameof(Power.DisplayPoints));
             powerPointsColumn.AddDependency(nameof(Power.ToolTip));
@@ -581,7 +581,7 @@ namespace Chummer.UI.Powers
                     }
                 }),
                 Tag = "Label_Source",
-                ToolTipExtractor = (async item =>
+                ToolTipExtractor = async item =>
                 {
                     try
                     {
@@ -591,7 +591,7 @@ namespace Chummer.UI.Powers
                     {
                         return string.Empty;
                     }
-                })
+                }
             });
             powerPointsColumn.AddDependency(nameof(Power.Source));
 
@@ -677,7 +677,7 @@ namespace Chummer.UI.Powers
             {
                 Text = "Notes",
                 Tag = "ColumnHeader_Notes",
-                ToolTipExtractor = (async p =>
+                ToolTipExtractor = async p =>
                 {
                     try
                     {
@@ -694,7 +694,7 @@ namespace Chummer.UI.Powers
                     {
                         return string.Empty;
                     }
-                })
+                }
             });
             noteColumn.AddDependency(nameof(Power.Notes));
 
