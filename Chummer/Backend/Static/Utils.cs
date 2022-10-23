@@ -78,10 +78,6 @@ namespace Chummer
 #endif
         }
 
-        private static readonly LockingDictionary<Tuple<Thread, SynchronizationContext>, JoinableTaskFactory>
-            s_dicJoinableTaskContexts
-                = new LockingDictionary<Tuple<Thread, SynchronizationContext>, JoinableTaskFactory>();
-
         public static SynchronizationContext MySynchronizationContext { get; private set; }
 
         public static JoinableTaskContext MyJoinableTaskContext { get; private set; }
@@ -95,9 +91,6 @@ namespace Chummer
                     MySynchronizationContext = SynchronizationContext.Current;
                     MyJoinableTaskContext
                         = new JoinableTaskContext(Thread.CurrentThread, SynchronizationContext.Current);
-                    s_dicJoinableTaskContexts.TryAdd(
-                        new Tuple<Thread, SynchronizationContext>(Thread.CurrentThread, SynchronizationContext.Current),
-                        JoinableTaskFactory);
                 }
             }
         }
@@ -1789,14 +1782,12 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (!EverDoEvents)
             {
-                Tuple<Thread, SynchronizationContext> tupKey = new Tuple<Thread, SynchronizationContext>(Thread.CurrentThread,
-                                                                                                         SynchronizationContext.Current);
-                if (!s_dicJoinableTaskContexts.TryGetValue(tupKey, out JoinableTaskFactory objFactory))
-                {
-                    objFactory = new JoinableTaskFactory(new JoinableTaskContext(Thread.CurrentThread, SynchronizationContext.Current));
-                    s_dicJoinableTaskContexts.TryAdd(tupKey, objFactory);
-                }
-                return objFactory.Run(funcToRun);
+                Task<T> objSyncTask = funcToRun.Invoke();
+                if (objSyncTask.Status == TaskStatus.Created)
+                    objSyncTask.RunSynchronously();
+                if (objSyncTask.Exception != null)
+                    throw objSyncTask.Exception;
+                return objSyncTask.GetAwaiter().GetResult();
             }
             Task<T> objTask = Task.Run(funcToRun, token);
             while (!objTask.IsCompleted)
@@ -1818,14 +1809,12 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (!EverDoEvents)
             {
-                Tuple<Thread, SynchronizationContext> tupKey = new Tuple<Thread, SynchronizationContext>(Thread.CurrentThread,
-                                                                                                         SynchronizationContext.Current);
-                if (!s_dicJoinableTaskContexts.TryGetValue(tupKey, out JoinableTaskFactory objFactory))
-                {
-                    objFactory = new JoinableTaskFactory(new JoinableTaskContext(Thread.CurrentThread, SynchronizationContext.Current));
-                    s_dicJoinableTaskContexts.TryAdd(tupKey, objFactory);
-                }
-                return objFactory.Run(() => funcToRun.Invoke(token));
+                Task<T> objSyncTask = funcToRun.Invoke(token);
+                if (objSyncTask.Status == TaskStatus.Created)
+                    objSyncTask.RunSynchronously();
+                if (objSyncTask.Exception != null)
+                    throw objSyncTask.Exception;
+                return objSyncTask.GetAwaiter().GetResult();
             }
             Task<T> objTask = Task.Run(() => funcToRun(token), token);
             while (!objTask.IsCompleted)
@@ -1967,15 +1956,12 @@ namespace Chummer
             {
                 Parallel.For(0, intLength, i =>
                 {
-                    Tuple<Thread, SynchronizationContext> tupKey = new Tuple<Thread, SynchronizationContext>(Thread.CurrentThread,
-                        SynchronizationContext.Current);
-                    if (!s_dicJoinableTaskContexts.TryGetValue(tupKey, out JoinableTaskFactory objFactory))
-                    {
-                        objFactory = new JoinableTaskFactory(new JoinableTaskContext(Thread.CurrentThread, SynchronizationContext.Current));
-                        s_dicJoinableTaskContexts.TryAdd(tupKey, objFactory);
-                    }
-                    Func<Task<T>> funcToRun = afuncToRun[i];
-                    aobjReturn[i] = objFactory.Run(funcToRun);
+                    Task<T> objSyncTask = afuncToRun[i].Invoke();
+                    if (objSyncTask.Status == TaskStatus.Created)
+                        objSyncTask.RunSynchronously();
+                    if (objSyncTask.Exception != null)
+                        throw objSyncTask.Exception;
+                    aobjReturn[i] = objSyncTask.GetAwaiter().GetResult();
                 });
                 return aobjReturn;
             }
@@ -2023,14 +2009,11 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (!EverDoEvents)
             {
-                Tuple<Thread, SynchronizationContext> tupKey = new Tuple<Thread, SynchronizationContext>(Thread.CurrentThread,
-                    SynchronizationContext.Current);
-                if (!s_dicJoinableTaskContexts.TryGetValue(tupKey, out JoinableTaskFactory objFactory))
-                {
-                    objFactory = new JoinableTaskFactory(new JoinableTaskContext(Thread.CurrentThread, SynchronizationContext.Current));
-                    s_dicJoinableTaskContexts.TryAdd(tupKey, objFactory);
-                }
-                objFactory.Run(funcToRun);
+                Task objSyncTask = funcToRun.Invoke();
+                if (objSyncTask.Status == TaskStatus.Created)
+                    objSyncTask.RunSynchronously();
+                if (objSyncTask.Exception != null)
+                    throw objSyncTask.Exception;
                 return;
             }
             Task objTask = Task.Run(funcToRun, token);
@@ -2052,14 +2035,11 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (!EverDoEvents)
             {
-                Tuple<Thread, SynchronizationContext> tupKey = new Tuple<Thread, SynchronizationContext>(Thread.CurrentThread,
-                    SynchronizationContext.Current);
-                if (!s_dicJoinableTaskContexts.TryGetValue(tupKey, out JoinableTaskFactory objFactory))
-                {
-                    objFactory = new JoinableTaskFactory(new JoinableTaskContext(Thread.CurrentThread, SynchronizationContext.Current));
-                    s_dicJoinableTaskContexts.TryAdd(tupKey, objFactory);
-                }
-                objFactory.Run(() => funcToRun.Invoke(token));
+                Task objSyncTask = funcToRun.Invoke(token);
+                if (objSyncTask.Status == TaskStatus.Created)
+                    objSyncTask.RunSynchronously();
+                if (objSyncTask.Exception != null)
+                    throw objSyncTask.Exception;
                 return;
             }
             Task objTask = Task.Run(() => funcToRun.Invoke(token), token);
@@ -2175,14 +2155,11 @@ namespace Chummer
             {
                 Parallel.ForEach(afuncToRun, funcToRun =>
                 {
-                    Tuple<Thread, SynchronizationContext> tupKey = new Tuple<Thread, SynchronizationContext>(Thread.CurrentThread,
-                        SynchronizationContext.Current);
-                    if (!s_dicJoinableTaskContexts.TryGetValue(tupKey, out JoinableTaskFactory objFactory))
-                    {
-                        objFactory = new JoinableTaskFactory(new JoinableTaskContext(Thread.CurrentThread, SynchronizationContext.Current));
-                        s_dicJoinableTaskContexts.TryAdd(tupKey, objFactory);
-                    }
-                    objFactory.Run(funcToRun);
+                    Task objSyncTask = funcToRun.Invoke();
+                    if (objSyncTask.Status == TaskStatus.Created)
+                        objSyncTask.RunSynchronously();
+                    if (objSyncTask.Exception != null)
+                        throw objSyncTask.Exception;
                 });
                 return;
             }

@@ -44,7 +44,12 @@ namespace Chummer.UI.Skills
 
         public CancellationToken MyToken { get; set; }
 
-        public SkillsTabUserControl(CancellationToken objMyToken = default)
+        public SkillsTabUserControl() : this(default)
+        {
+            // Need to set up constructors like this so that the WinForms designer doesn't freak out
+        }
+
+        public SkillsTabUserControl(CancellationToken objMyToken)
         {
             InitializeComponent();
 
@@ -59,8 +64,8 @@ namespace Chummer.UI.Skills
             this.TranslateWinForm(token: objMyToken);
 
             MyToken = objMyToken;
-            _sortList = GenerateSortList();
-            _lstSortKnowledgeList = GenerateKnowledgeSortList();
+            _lstSortSkills = GenerateSortList();
+            _lstSortKnowledgeSkills = GenerateKnowledgeSortList();
         }
 
         private void UpdateKnoSkillRemaining()
@@ -90,22 +95,35 @@ namespace Chummer.UI.Skills
 
         private Character _objCharacter;
         private List<Tuple<string, Predicate<Skill>>> _lstDropDownActiveSkills;
-        private readonly List<Tuple<string, IComparer<Skill>>> _sortList;
+        private readonly List<Tuple<string, IComparer<Skill>>> _lstSortSkills;
         private bool _blnActiveSkillSearchMode;
         private bool _blnKnowledgeSkillSearchMode;
         private List<Tuple<string, Predicate<KnowledgeSkill>>> _lstDropDownKnowledgeSkills;
-        private readonly List<Tuple<string, IComparer<KnowledgeSkill>>> _lstSortKnowledgeList;
+        private readonly List<Tuple<string, IComparer<KnowledgeSkill>>> _lstSortKnowledgeSkills;
 
         private async void SkillsTabUserControl_Load(object sender, EventArgs e)
         {
-            if (_objCharacter != null)
-                return;
             try
             {
                 CursorWait objCursorWait = await CursorWait.NewAsync(token: MyToken).ConfigureAwait(false);
                 try
                 {
-                    await RealLoad(MyToken, MyToken).ConfigureAwait(false);
+                    if (_objCharacter == null)
+                        await RealLoad(MyToken, MyToken).ConfigureAwait(false);
+                    await this.DoThreadSafeAsync(() =>
+                    {
+                        SuspendLayout();
+                        try
+                        {
+                            RefreshSkillLabels();
+                            RefreshKnowledgeSkillLabels();
+                            RefreshSkillGroupLabels();
+                        }
+                        finally
+                        {
+                            ResumeLayout(true);
+                        }
+                    }, MyToken).ConfigureAwait(false);
                 }
                 finally
                 {
@@ -127,7 +145,7 @@ namespace Chummer.UI.Skills
                 if (Interlocked.CompareExchange(ref _objCharacter, CachedCharacter, null) != null)
                     return;
             }
-            else if (ParentForm is CharacterShared frmParent)
+            else if (ParentForm is CharacterShared frmParent && frmParent.CharacterObject != null)
             {
                 if (Interlocked.CompareExchange(ref _objCharacter, frmParent.CharacterObject, null) != null)
                     return;
@@ -275,9 +293,9 @@ namespace Chummer.UI.Skills
                         cboSort.DataSource = null;
                         cboSort.ValueMember = "Item2";
                         cboSort.DisplayMember = "Item1";
-                        cboSort.DataSource = _sortList;
+                        cboSort.DataSource = _lstSortSkills;
                         cboSort.SelectedIndex = 0;
-                        cboSort.MaxDropDownItems = _sortList.Count;
+                        cboSort.MaxDropDownItems = _lstSortSkills.Count;
                     }
                     finally
                     {
@@ -290,9 +308,9 @@ namespace Chummer.UI.Skills
                         cboSortKnowledge.DataSource = null;
                         cboSortKnowledge.ValueMember = "Item2";
                         cboSortKnowledge.DisplayMember = "Item1";
-                        cboSortKnowledge.DataSource = _lstSortKnowledgeList;
+                        cboSortKnowledge.DataSource = _lstSortKnowledgeSkills;
                         cboSortKnowledge.SelectedIndex = 0;
-                        cboSortKnowledge.MaxDropDownItems = _lstSortKnowledgeList.Count;
+                        cboSortKnowledge.MaxDropDownItems = _lstSortKnowledgeSkills.Count;
                     }
                     finally
                     {
@@ -358,20 +376,6 @@ namespace Chummer.UI.Skills
                                                                objMyToken, objMyToken).ConfigureAwait(false);
                 await UpdateKnoSkillRemainingAsync(objMyToken).ConfigureAwait(false);
             }
-            await this.DoThreadSafeAsync(() =>
-            {
-                SuspendLayout();
-                try
-                {
-                    RefreshSkillLabels();
-                    RefreshKnowledgeSkillLabels();
-                    RefreshSkillGroupLabels();
-                }
-                finally
-                {
-                    ResumeLayout(true);
-                }
-            }, objMyToken).ConfigureAwait(false);
             _objCharacter.SkillsSection.Skills.ListChanged += SkillsOnListChanged;
             _objCharacter.SkillsSection.SkillGroups.ListChanged += SkillGroupsOnListChanged;
             _objCharacter.SkillsSection.KnowledgeSkills.ListChanged += KnowledgeSkillsOnListChanged;

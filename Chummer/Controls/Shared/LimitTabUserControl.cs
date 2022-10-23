@@ -70,12 +70,20 @@ namespace Chummer.UI.Shared
 
         public async Task RealLoad(CancellationToken token = default)
         {
-            if (ParentForm is CharacterShared frmParent)
-                _objCharacter = frmParent.CharacterObject;
+            if (ParentForm is CharacterShared frmParent && frmParent.CharacterObject != null)
+            {
+                if (Interlocked.CompareExchange(ref _objCharacter, frmParent.CharacterObject, null) != null)
+                    return;
+            }
             else
             {
-                _objCharacter = new Character();
-                Disposed += (sender, args) => _objCharacter.Dispose();
+                Character objCharacter = new Character();
+                if (Interlocked.CompareExchange(ref _objCharacter, objCharacter, null) != null)
+                {
+                    await objCharacter.DisposeAsync();
+                    return;
+                }
+                await this.DoThreadSafeAsync(x => x.Disposed += (sender, args) => objCharacter.Dispose(), token).ConfigureAwait(false);
                 Utils.BreakIfDebug();
             }
 

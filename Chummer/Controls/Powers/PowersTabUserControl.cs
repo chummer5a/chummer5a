@@ -38,15 +38,20 @@ namespace Chummer.UI.Powers
     {
         private TableView<Power> _table;
 
-        public PowersTabUserControl(CancellationToken objMyToken = default)
+        public PowersTabUserControl() : this(default)
+        {
+            // Need to set up constructors like this so that the WinForms designer doesn't freak out
+        }
+
+        public PowersTabUserControl(CancellationToken objMyToken)
         {
             _objMyToken = objMyToken;
             InitializeComponent();
 
             Disposed += (sender, args) => UnbindPowersTabUserControl();
 
-            this.UpdateLightDarkMode();
-            this.TranslateWinForm();
+            this.UpdateLightDarkMode(token: objMyToken);
+            this.TranslateWinForm(token: objMyToken);
 
             _dropDownList = GenerateDropdownFilter(objMyToken);
 
@@ -103,7 +108,7 @@ namespace Chummer.UI.Powers
                 if (Interlocked.CompareExchange(ref _objCharacter, CachedCharacter, null) != null)
                     return;
             }
-            else if (ParentForm is CharacterShared frmParent)
+            else if (ParentForm is CharacterShared frmParent && frmParent.CharacterObject != null)
             {
                 if (Interlocked.CompareExchange(ref _objCharacter, frmParent.CharacterObject, null) != null)
                     return;
@@ -240,11 +245,11 @@ namespace Chummer.UI.Powers
         {
             List<Tuple<string, Func<Power, Task<bool>>>> ret = new List<Tuple<string, Func<Power, Task<bool>>>>(4)
             {
-                new Tuple<string, Func<Power, Task<bool>>>(LanguageManager.GetString("String_Search"),
+                new Tuple<string, Func<Power, Task<bool>>>(LanguageManager.GetString("String_Search", token: objMyToken),
                                                            null),
-                new Tuple<string, Func<Power, Task<bool>>>(LanguageManager.GetString("String_PowerFilterAll"),
+                new Tuple<string, Func<Power, Task<bool>>>(LanguageManager.GetString("String_PowerFilterAll", token: objMyToken),
                                                            power => Task.FromResult(true)),
-                new Tuple<string, Func<Power, Task<bool>>>(LanguageManager.GetString("String_PowerFilterRatingAboveZero"),
+                new Tuple<string, Func<Power, Task<bool>>>(LanguageManager.GetString("String_PowerFilterRatingAboveZero", token: objMyToken),
                                                            async power =>
                                                            {
                                                                try
@@ -256,7 +261,7 @@ namespace Chummer.UI.Powers
                                                                    return true;
                                                                }
                                                            }),
-                new Tuple<string, Func<Power, Task<bool>>>(LanguageManager.GetString("String_PowerFilterRatingZero"),
+                new Tuple<string, Func<Power, Task<bool>>>(LanguageManager.GetString("String_PowerFilterRatingZero", token: objMyToken),
                                                            async power =>
                                                            {
                                                                try
