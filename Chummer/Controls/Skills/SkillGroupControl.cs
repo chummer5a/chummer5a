@@ -22,6 +22,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Chummer.Backend.Skills;
 using Chummer.Properties;
@@ -110,11 +111,11 @@ namespace Chummer.UI.Skills
                     tlpMain.Controls.Add(nudSkill, 2, 0);
                     tlpMain.Controls.Add(nudKarma, 3, 0);
                 }
-                
-                this.UpdateLightDarkMode();
-                this.TranslateWinForm(blnDoResumeLayout: false);
 
-                AdjustForDpi();
+                Utils.RunWithoutThreadLock(DoDataBindings, objMyToken);
+
+                this.UpdateLightDarkMode(token: objMyToken);
+                this.TranslateWinForm(blnDoResumeLayout: false, token: objMyToken);
             }
             finally
             {
@@ -124,82 +125,78 @@ namespace Chummer.UI.Skills
             sw.TaskEnd("Create skillgroup");
         }
 
-        private async void SkillGroupControl_Load(object sender, EventArgs e)
+        private async Task DoDataBindings()
         {
             try
             {
-                // Not setting it to this control because it's usually a part of a larger element
-                CursorWait objCursorWait = await CursorWait.NewAsync(token: _objMyToken).ConfigureAwait(false);
-                try
+                await lblName.RegisterOneWayAsyncDataBinding((x, y) => x.Text = y, _skillGroup,
+                                                             nameof(SkillGroup.CurrentDisplayName),
+                                                             x => x.GetCurrentDisplayNameAsync(_objMyToken)
+                                                                   .AsTask(),
+                                                             _objMyToken, _objMyToken).ConfigureAwait(false);
+                await lblName.RegisterOneWayAsyncDataBinding((x, y) => x.ToolTipText = y, _skillGroup,
+                                                             nameof(SkillGroup.ToolTip),
+                                                             x => x.GetToolTipAsync(_objMyToken).AsTask(),
+                                                             _objMyToken,
+                                                             _objMyToken).ConfigureAwait(false);
+
+                // Creating these controls outside of the designer saves on handles
+                if (await _skillGroup.CharacterObject.GetCreatedAsync(_objMyToken).ConfigureAwait(false))
                 {
-                    await lblName.RegisterOneWayAsyncDataBinding((x, y) => x.Text = y, _skillGroup,
-                                                                 nameof(SkillGroup.CurrentDisplayName),
-                                                                 x => x.GetCurrentDisplayNameAsync(_objMyToken)
-                                                                       .AsTask(),
-                                                                 _objMyToken, _objMyToken).ConfigureAwait(false);
-                    await lblName.RegisterOneWayAsyncDataBinding((x, y) => x.ToolTipText = y, _skillGroup,
-                                                                 nameof(SkillGroup.ToolTip),
-                                                                 x => x.GetToolTipAsync(_objMyToken).AsTask(),
-                                                                 _objMyToken,
-                                                                 _objMyToken).ConfigureAwait(false);
-
-                    // Creating these controls outside of the designer saves on handles
-                    if (await _skillGroup.CharacterObject.GetCreatedAsync(_objMyToken).ConfigureAwait(false))
-                    {
-                        await btnCareerIncrease.RegisterOneWayAsyncDataBinding(
-                                                   (x, y) => x.Enabled = y, _skillGroup,
-                                                   nameof(SkillGroup.CareerCanIncrease),
-                                                   x => x.GetCareerCanIncreaseAsync(_objMyToken).AsTask(), _objMyToken,
-                                                   _objMyToken)
-                                               .ConfigureAwait(false);
-                        await btnCareerIncrease.RegisterOneWayAsyncDataBinding(
-                                                   (x, y) => x.ToolTipText = y, _skillGroup,
-                                                   nameof(SkillGroup.UpgradeToolTip),
-                                                   x => x.GetUpgradeToolTipAsync(_objMyToken).AsTask(), _objMyToken,
-                                                   _objMyToken)
-                                               .ConfigureAwait(false);
-                        await lblGroupRating.RegisterOneWayAsyncDataBinding((x, y) => x.Text = y, _skillGroup,
-                                                                            nameof(SkillGroup.DisplayRating),
-                                                                            x => x.GetDisplayRatingAsync(_objMyToken)
-                                                                                .AsTask(), _objMyToken, _objMyToken)
-                                            .ConfigureAwait(false);
-                    }
-                    else
-                    {
-                        await nudSkill.RegisterOneWayAsyncDataBinding((x, y) => x.Visible = y,
-                                                                      _skillGroup.CharacterObject,
-                                                                      nameof(Character
-                                                                                 .EffectiveBuildMethodUsesPriorityTables),
-                                                                      x => x
-                                                                           .GetEffectiveBuildMethodUsesPriorityTablesAsync(
-                                                                               _objMyToken).AsTask(), _objMyToken,
-                                                                      _objMyToken)
-                                      .ConfigureAwait(false);
-                        await nudSkill.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = y, _skillGroup,
-                                                                      nameof(SkillGroup.BaseUnbroken),
-                                                                      x => x.GetBaseUnbrokenAsync(_objMyToken).AsTask(),
-                                                                      _objMyToken, _objMyToken).ConfigureAwait(false);
-                        await nudKarma.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = y, _skillGroup,
-                                                                      nameof(SkillGroup.KarmaUnbroken),
-                                                                      x => x.GetKarmaUnbrokenAsync(_objMyToken)
-                                                                            .AsTask(),
-                                                                      _objMyToken, _objMyToken).ConfigureAwait(false);
-
-                        await nudKarma.DoDataBindingAsync("Value", _skillGroup, nameof(SkillGroup.Karma), _objMyToken)
-                                      .ConfigureAwait(false);
-                        await nudSkill.DoDataBindingAsync("Value", _skillGroup, nameof(SkillGroup.Base), _objMyToken)
-                                      .ConfigureAwait(false);
-                    }
+                    await btnCareerIncrease.RegisterOneWayAsyncDataBinding(
+                                               (x, y) => x.Enabled = y, _skillGroup,
+                                               nameof(SkillGroup.CareerCanIncrease),
+                                               x => x.GetCareerCanIncreaseAsync(_objMyToken).AsTask(), _objMyToken,
+                                               _objMyToken)
+                                           .ConfigureAwait(false);
+                    await btnCareerIncrease.RegisterOneWayAsyncDataBinding(
+                                               (x, y) => x.ToolTipText = y, _skillGroup,
+                                               nameof(SkillGroup.UpgradeToolTip),
+                                               x => x.GetUpgradeToolTipAsync(_objMyToken).AsTask(), _objMyToken,
+                                               _objMyToken)
+                                           .ConfigureAwait(false);
+                    await lblGroupRating.RegisterOneWayAsyncDataBinding((x, y) => x.Text = y, _skillGroup,
+                                                                        nameof(SkillGroup.DisplayRating),
+                                                                        x => x.GetDisplayRatingAsync(_objMyToken)
+                                                                              .AsTask(), _objMyToken, _objMyToken)
+                                        .ConfigureAwait(false);
                 }
-                finally
+                else
                 {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                    await nudSkill.RegisterOneWayAsyncDataBinding((x, y) => x.Visible = y,
+                                                                  _skillGroup.CharacterObject,
+                                                                  nameof(Character
+                                                                             .EffectiveBuildMethodUsesPriorityTables),
+                                                                  x => x
+                                                                       .GetEffectiveBuildMethodUsesPriorityTablesAsync(
+                                                                           _objMyToken).AsTask(), _objMyToken,
+                                                                  _objMyToken)
+                                  .ConfigureAwait(false);
+                    await nudSkill.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = y, _skillGroup,
+                                                                  nameof(SkillGroup.BaseUnbroken),
+                                                                  x => x.GetBaseUnbrokenAsync(_objMyToken).AsTask(),
+                                                                  _objMyToken, _objMyToken).ConfigureAwait(false);
+                    await nudKarma.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = y, _skillGroup,
+                                                                  nameof(SkillGroup.KarmaUnbroken),
+                                                                  x => x.GetKarmaUnbrokenAsync(_objMyToken)
+                                                                        .AsTask(),
+                                                                  _objMyToken, _objMyToken).ConfigureAwait(false);
+
+                    await nudKarma.DoDataBindingAsync("Value", _skillGroup, nameof(SkillGroup.Karma), _objMyToken)
+                                  .ConfigureAwait(false);
+                    await nudSkill.DoDataBindingAsync("Value", _skillGroup, nameof(SkillGroup.Base), _objMyToken)
+                                  .ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
             {
                 //swallow this
             }
+        }
+
+        private void SkillGroupControl_Load(object sender, EventArgs e)
+        {
+            AdjustForDpi();
         }
 
         public void UnbindSkillGroupControl()

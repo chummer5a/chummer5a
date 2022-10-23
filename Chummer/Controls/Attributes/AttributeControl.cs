@@ -155,59 +155,58 @@ namespace Chummer.UI.Attributes
 
         private async void AttributeControl_Load(object sender, EventArgs e)
         {
-            // Not setting it to this control because it's usually a part of a larger element
-            CursorWait objCursorWait = await CursorWait.NewAsync().ConfigureAwait(false);
+            await this.DoThreadSafeAsync(x => x.SuspendLayout()).ConfigureAwait(false);
             try
             {
                 //Display
                 await lblName.DoOneWayDataBindingAsync("Text", _dataSource,
-                                                       nameof(CharacterAttrib.DisplayNameFormatted));
-                await lblValue.DoOneWayDataBindingAsync("Text", _dataSource, nameof(CharacterAttrib.DisplayValue));
+                                                       nameof(CharacterAttrib.DisplayNameFormatted)).ConfigureAwait(false);
+                await lblValue.DoOneWayDataBindingAsync("Text", _dataSource, nameof(CharacterAttrib.DisplayValue)).ConfigureAwait(false);
                 await lblLimits.DoOneWayDataBindingAsync("Text", _dataSource,
-                                                         nameof(CharacterAttrib.AugmentedMetatypeLimits));
-                await lblValue.DoOneWayDataBindingAsync("ToolTipText", _dataSource, nameof(CharacterAttrib.ToolTip));
-                if (_objCharacter.Created)
+                                                         nameof(CharacterAttrib.AugmentedMetatypeLimits)).ConfigureAwait(false);
+                await lblValue.DoOneWayDataBindingAsync("ToolTipText", _dataSource, nameof(CharacterAttrib.ToolTip)).ConfigureAwait(false);
+                if (await _objCharacter.GetCreatedAsync().ConfigureAwait(false))
                 {
                     await cmdImproveATT.DoOneWayDataBindingAsync("ToolTipText", _dataSource,
-                                                                 nameof(CharacterAttrib.UpgradeToolTip));
+                                                                 nameof(CharacterAttrib.UpgradeToolTip)).ConfigureAwait(false);
                     await cmdImproveATT.DoOneWayDataBindingAsync("Enabled", _dataSource,
-                                                                 nameof(CharacterAttrib.CanUpgradeCareer));
+                                                                 nameof(CharacterAttrib.CanUpgradeCareer)).ConfigureAwait(false);
                 }
                 else
                 {
-                    using (await EnterReadLock.EnterAsync(AttributeObject))
+                    using (await EnterReadLock.EnterAsync(AttributeObject).ConfigureAwait(false))
                     {
                         int intBase = await AttributeObject.GetBaseAsync().ConfigureAwait(false);
-                        while (intBase > 0 && await AttributeObject.GetKarmaMaximumAsync() < 0)
+                        while (intBase > 0 && await AttributeObject.GetKarmaMaximumAsync().ConfigureAwait(false) < 0)
                         {
-                            await AttributeObject.SetBaseAsync(intBase - 1);
+                            await AttributeObject.SetBaseAsync(intBase - 1).ConfigureAwait(false);
                             --intBase;
                         }
 
                         // Very rough fix for when Karma values somehow exceed KarmaMaximum after loading in. This shouldn't happen in the first place, but this ad-hoc patch will help fix crashes.
                         int intKarmaMaximum = await AttributeObject.GetKarmaMaximumAsync().ConfigureAwait(false);
-                        if (await AttributeObject.GetKarmaAsync() > intKarmaMaximum)
-                            await AttributeObject.SetKarmaAsync(intKarmaMaximum);
+                        if (await AttributeObject.GetKarmaAsync().ConfigureAwait(false) > intKarmaMaximum)
+                            await AttributeObject.SetKarmaAsync(intKarmaMaximum).ConfigureAwait(false);
                     }
 
                     await nudBase.RegisterOneWayAsyncDataBinding((x, y) => x.Visible = y, _objCharacter,
                                                                  nameof(Character
                                                                             .EffectiveBuildMethodUsesPriorityTables),
                                                                  x => x.GetEffectiveBuildMethodUsesPriorityTablesAsync()
-                                                                       .AsTask());
+                                                                       .AsTask()).ConfigureAwait(false);
                     await nudBase.DoOneWayDataBindingAsync("Maximum", _dataSource,
-                                                           nameof(CharacterAttrib.PriorityMaximum));
+                                                           nameof(CharacterAttrib.PriorityMaximum)).ConfigureAwait(false);
                     await nudBase.DoOneWayDataBindingAsync("Enabled", _dataSource,
-                                                           nameof(CharacterAttrib.BaseUnlocked));
+                                                           nameof(CharacterAttrib.BaseUnlocked)).ConfigureAwait(false);
                     await nudKarma.DoOneWayDataBindingAsync("Maximum", _dataSource,
-                                                            nameof(CharacterAttrib.KarmaMaximum));
-                    await nudBase.DoDataBindingAsync("Value", _dataSource, nameof(CharacterAttrib.Base));
-                    await nudKarma.DoDataBindingAsync("Value", _dataSource, nameof(CharacterAttrib.Karma));
+                                                            nameof(CharacterAttrib.KarmaMaximum)).ConfigureAwait(false);
+                    await nudBase.DoDataBindingAsync("Value", _dataSource, nameof(CharacterAttrib.Base)).ConfigureAwait(false);
+                    await nudKarma.DoDataBindingAsync("Value", _dataSource, nameof(CharacterAttrib.Karma)).ConfigureAwait(false);
                 }
             }
             finally
             {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                await this.DoThreadSafeAsync(x => x.ResumeLayout(true)).ConfigureAwait(false);
             }
         }
 

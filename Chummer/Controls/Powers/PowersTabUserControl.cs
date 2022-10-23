@@ -79,6 +79,8 @@ namespace Chummer.UI.Powers
             }
         }
 
+        public Character CachedCharacter { get; set; }
+
         private async void PowersTabUserControl_Load(object sender, EventArgs e)
         {
             if (_objCharacter != null)
@@ -96,15 +98,28 @@ namespace Chummer.UI.Powers
 
         public async ValueTask RealLoad(CancellationToken objMyToken = default, CancellationToken token = default)
         {
-            MyToken = objMyToken;
-            if (ParentForm is CharacterShared frmParent)
-                _objCharacter = frmParent.CharacterObject;
+            if (CachedCharacter != null)
+            {
+                if (Interlocked.CompareExchange(ref _objCharacter, CachedCharacter, null) != null)
+                    return;
+            }
+            else if (ParentForm is CharacterShared frmParent)
+            {
+                if (Interlocked.CompareExchange(ref _objCharacter, frmParent.CharacterObject, null) != null)
+                    return;
+            }
             else
             {
-                _objCharacter = new Character();
-                Disposed += (sender, args) => _objCharacter.Dispose();
+                Character objCharacter = new Character();
+                if (Interlocked.CompareExchange(ref _objCharacter, objCharacter, null) != null)
+                {
+                    await objCharacter.DisposeAsync();
+                    return;
+                }
+                await this.DoThreadSafeAsync(x => x.Disposed += (sender, args) => objCharacter.Dispose(), token).ConfigureAwait(false);
                 Utils.BreakIfDebug();
             }
+            MyToken = objMyToken;
 
             if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
                 return;

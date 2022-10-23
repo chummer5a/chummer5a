@@ -23,6 +23,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Chummer.Annotations;
 using Chummer.Backend.Skills;
@@ -202,10 +203,10 @@ namespace Chummer.UI.Skills
                     tlpMiddle.Controls.Add(chkKarma, 3, 0);
                 }
 
-                this.UpdateLightDarkMode();
-                this.TranslateWinForm(blnDoResumeLayout: false);
+                Utils.RunWithoutThreadLock(DoDataBindings, objMyToken);
 
-                AdjustForDpi();
+                this.UpdateLightDarkMode(token: objMyToken);
+                this.TranslateWinForm(blnDoResumeLayout: false, token: objMyToken);
             }
             finally
             {
@@ -217,222 +218,220 @@ namespace Chummer.UI.Skills
             objSkill.CharacterObject.SkillsSection.PropertyChanged += OnSkillsSectionPropertyChanged;
         }
 
-        private async void KnowledgeSkillControl_Load(object sender, EventArgs e)
+        private async Task DoDataBindings()
         {
             try
             {
-                // Not setting it to this control because it's usually a part of a larger element
-                CursorWait objCursorWait = await CursorWait.NewAsync(token: _objMyToken).ConfigureAwait(false);
-                try
-                {
-                    await lblModifiedRating.RegisterOneWayAsyncDataBinding((x, y) => x.Text = y, _objSkill,
+                await lblModifiedRating.RegisterOneWayAsyncDataBinding((x, y) => x.Text = y, _objSkill,
                                                                            nameof(KnowledgeSkill.DisplayPool),
                                                                            x => x.GetDisplayPoolAsync(_objMyToken),
                                                                            _objMyToken, _objMyToken)
                                            .ConfigureAwait(false);
-                    await lblModifiedRating.RegisterOneWayAsyncDataBinding((x, y) => x.ToolTipText = y, _objSkill,
-                                                                           nameof(KnowledgeSkill.PoolToolTip),
-                                                                           x => x.GetPoolToolTipAsync(_objMyToken)
+                await lblModifiedRating.RegisterOneWayAsyncDataBinding((x, y) => x.ToolTipText = y, _objSkill,
+                                                                       nameof(KnowledgeSkill.PoolToolTip),
+                                                                       x => x.GetPoolToolTipAsync(_objMyToken)
+                                                                           .AsTask(),
+                                                                       _objMyToken, _objMyToken)
+                                       .ConfigureAwait(false);
+
+                await cmdDelete.RegisterOneWayAsyncDataBinding((x, y) => x.Visible = y, _objSkill,
+                                                               nameof(KnowledgeSkill.AllowDelete),
+                                                               x => x.GetAllowDeleteAsync(_objMyToken).AsTask(),
+                                                               _objMyToken, _objMyToken).ConfigureAwait(false);
+
+                await cboType
+                      .PopulateWithListItemsAsync(_objSkill.CharacterObject.SkillsSection.MyKnowledgeTypes,
+                                                  token: _objMyToken).ConfigureAwait(false);
+                await cboType.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = y, _objSkill,
+                                                             nameof(KnowledgeSkill.AllowTypeChange),
+                                                             x => x.GetAllowTypeChangeAsync(_objMyToken).AsTask(),
+                                                             _objMyToken, _objMyToken).ConfigureAwait(false);
+                await cboType
+                      .DoDataBindingAsync("SelectedValue", _objSkill, nameof(KnowledgeSkill.Type), _objMyToken)
+                      .ConfigureAwait(false);
+
+                await lblName.RegisterOneWayAsyncDataBinding((x, y) => x.Visible = !y, _objSkill,
+                                                             nameof(KnowledgeSkill.AllowNameChange),
+                                                             x => x.GetAllowNameChangeAsync(_objMyToken).AsTask(),
+                                                             _objMyToken, _objMyToken).ConfigureAwait(false);
+                await lblName.RegisterOneWayAsyncDataBinding((x, y) => x.Text = y, _objSkill,
+                                                             nameof(KnowledgeSkill.WritableName),
+                                                             x => x.GetWritableNameAsync(_objMyToken).AsTask(),
+                                                             _objMyToken, _objMyToken).ConfigureAwait(false);
+                await lblName.RegisterOneWayAsyncDataBinding((x, y) => x.ForeColor = y, _objSkill,
+                                                             nameof(KnowledgeSkill.PreferredColor),
+                                                             x => x.GetPreferredColorAsync(_objMyToken).AsTask(),
+                                                             _objMyToken, _objMyToken).ConfigureAwait(false);
+
+                string strWritableName = await _objSkill.GetWritableNameAsync(_objMyToken).ConfigureAwait(false);
+                await cboName
+                      .PopulateWithListItemsAsync(_objSkill.CharacterObject.SkillsSection.MyDefaultKnowledgeSkills,
+                                                  token: _objMyToken).ConfigureAwait(false);
+                Interlocked.Increment(ref _intUpdatingSpec);
+                try
+                {
+                    await cboName.DoThreadSafeAsync(x =>
+                    {
+                        x.SelectedIndex = -1;
+                        x.Text = strWritableName;
+                    }, _objMyToken).ConfigureAwait(false);
+                }
+                finally
+                {
+                    Interlocked.Decrement(ref _intUpdatingSpec);
+                }
+
+                await cboName.RegisterOneWayAsyncDataBinding((x, y) => x.Visible = y, _objSkill,
+                                                             nameof(KnowledgeSkill.AllowNameChange),
+                                                             x => x.GetAllowNameChangeAsync(_objMyToken).AsTask(),
+                                                             _objMyToken, _objMyToken).ConfigureAwait(false);
+
+                if (await _objSkill.CharacterObject.GetCreatedAsync(_objMyToken).ConfigureAwait(false))
+                {
+                    await lblRating.RegisterOneWayAsyncDataBinding((x, y) => x.Visible = !y, _objSkill,
+                                                                   nameof(KnowledgeSkill.IsNativeLanguage),
+                                                                   x => x.GetIsNativeLanguageAsync(_objMyToken)
+                                                                         .AsTask(),
+                                                                   _objMyToken, _objMyToken).ConfigureAwait(false);
+                    await lblRating.RegisterOneWayAsyncDataBinding(
+                        (x, y) => x.Text = y.ToString(GlobalSettings.CultureInfo), _objSkill,
+                        nameof(KnowledgeSkill.Rating),
+                        x => x.GetRatingAsync(_objMyToken).AsTask(),
+                        _objMyToken, _objMyToken).ConfigureAwait(false);
+
+                    await btnCareerIncrease.RegisterOneWayAsyncDataBinding((x, y) => x.Visible = y, _objSkill,
+                                                                           nameof(KnowledgeSkill.AllowUpgrade),
+                                                                           x => x.GetAllowUpgradeAsync(_objMyToken)
+                                                                               .AsTask(),
+                                                                           _objMyToken, _objMyToken)
+                                           .ConfigureAwait(false);
+                    await btnCareerIncrease.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = y, _objSkill,
+                                                                           nameof(KnowledgeSkill.CanUpgradeCareer),
+                                                                           x => x.GetCanUpgradeCareerAsync(
+                                                                                   _objMyToken)
+                                                                               .AsTask(),
+                                                                           _objMyToken, _objMyToken)
+                                           .ConfigureAwait(false);
+                    await btnCareerIncrease.RegisterOneWayAsyncDataBinding((x, y) => x.ToolTipText = y, _objSkill,
+                                                                           nameof(KnowledgeSkill.UpgradeToolTip),
+                                                                           x => x.GetUpgradeToolTipAsync(
+                                                                                   _objMyToken)
                                                                                .AsTask(),
                                                                            _objMyToken, _objMyToken)
                                            .ConfigureAwait(false);
 
-                    await cmdDelete.RegisterOneWayAsyncDataBinding((x, y) => x.Visible = y, _objSkill,
-                                                                   nameof(KnowledgeSkill.AllowDelete),
-                                                                   x => x.GetAllowDeleteAsync(_objMyToken).AsTask(),
-                                                                   _objMyToken, _objMyToken).ConfigureAwait(false);
-
-                    await cboType
-                          .PopulateWithListItemsAsync(_objSkill.CharacterObject.SkillsSection.MyKnowledgeTypes,
-                                                      token: _objMyToken).ConfigureAwait(false);
-                    await cboType.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = y, _objSkill,
-                                                                 nameof(KnowledgeSkill.AllowTypeChange),
-                                                                 x => x.GetAllowTypeChangeAsync(_objMyToken).AsTask(),
-                                                                 _objMyToken, _objMyToken).ConfigureAwait(false);
-                    await cboType
-                          .DoDataBindingAsync("SelectedValue", _objSkill, nameof(KnowledgeSkill.Type), _objMyToken)
-                          .ConfigureAwait(false);
-
-                    await lblName.RegisterOneWayAsyncDataBinding((x, y) => x.Visible = !y, _objSkill,
-                                                                 nameof(KnowledgeSkill.AllowNameChange),
-                                                                 x => x.GetAllowNameChangeAsync(_objMyToken).AsTask(),
-                                                                 _objMyToken, _objMyToken).ConfigureAwait(false);
-                    await lblName.RegisterOneWayAsyncDataBinding((x, y) => x.Text = y, _objSkill,
-                                                                 nameof(KnowledgeSkill.WritableName),
-                                                                 x => x.GetWritableNameAsync(_objMyToken).AsTask(),
-                                                                 _objMyToken, _objMyToken).ConfigureAwait(false);
-                    await lblName.RegisterOneWayAsyncDataBinding((x, y) => x.ForeColor = y, _objSkill,
-                                                                 nameof(KnowledgeSkill.PreferredColor),
-                                                                 x => x.GetPreferredColorAsync(_objMyToken).AsTask(),
+                    await lblSpec.RegisterOneWayAsyncDataBinding((x, y) => x.Text = y, _objSkill,
+                                                                 nameof(KnowledgeSkill
+                                                                            .CurrentDisplaySpecialization),
+                                                                 x => x.GetCurrentDisplaySpecializationAsync(
+                                                                           _objMyToken)
+                                                                       .AsTask(),
                                                                  _objMyToken, _objMyToken).ConfigureAwait(false);
 
-                    string strWritableName = await _objSkill.GetWritableNameAsync(_objMyToken).ConfigureAwait(false);
-                    await cboName
-                          .PopulateWithListItemsAsync(_objSkill.CharacterObject.SkillsSection.MyDefaultKnowledgeSkills,
-                                                      token: _objMyToken).ConfigureAwait(false);
+                    await btnAddSpec.RegisterOneWayAsyncDataBinding((x, y) => x.Visible = y, _objSkill,
+                                                                    nameof(KnowledgeSkill.CanHaveSpecs),
+                                                                    x => x.GetCanHaveSpecsAsync(_objMyToken)
+                                                                          .AsTask(),
+                                                                    _objMyToken, _objMyToken).ConfigureAwait(false);
+                    await btnAddSpec.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = y, _objSkill,
+                                                                    nameof(KnowledgeSkill.CanAffordSpecialization),
+                                                                    x => x
+                                                                         .GetCanAffordSpecializationAsync(
+                                                                             _objMyToken)
+                                                                         .AsTask(),
+                                                                    _objMyToken, _objMyToken).ConfigureAwait(false);
+                    await btnAddSpec.RegisterOneWayAsyncDataBinding((x, y) => x.ToolTipText = y, _objSkill,
+                                                                    nameof(KnowledgeSkill.AddSpecToolTip),
+                                                                    x => x.GetAddSpecToolTipAsync(_objMyToken)
+                                                                          .AsTask(),
+                                                                    _objMyToken, _objMyToken).ConfigureAwait(false);
+                }
+                else
+                {
+                    await nudSkill.RegisterOneWayAsyncDataBinding((x, y) => x.Visible = y,
+                                                                  _objSkill.CharacterObject.SkillsSection,
+                                                                  nameof(SkillsSection.HasKnowledgePoints),
+                                                                  x => x.GetHasKnowledgePointsAsync(
+                                                                      _objMyToken).AsTask(), _objMyToken,
+                                                                  _objMyToken)
+                                  .ConfigureAwait(false);
+                    await nudSkill.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = y, _objSkill,
+                                                                  nameof(KnowledgeSkill.AllowUpgrade),
+                                                                  x => x.GetAllowUpgradeAsync(_objMyToken).AsTask(),
+                                                                  _objMyToken, _objMyToken).ConfigureAwait(false);
+                    await nudKarma.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = y, _objSkill,
+                                                                  nameof(KnowledgeSkill.AllowUpgrade),
+                                                                  x => x.GetAllowUpgradeAsync(_objMyToken).AsTask(),
+                                                                  _objMyToken, _objMyToken).ConfigureAwait(false);
+
+                    await chkNativeLanguage.RegisterOneWayAsyncDataBinding((x, y) => x.Visible = y, _objSkill,
+                                                                           nameof(KnowledgeSkill.IsLanguage),
+                                                                           x => x.GetIsLanguageAsync(_objMyToken)
+                                                                               .AsTask(),
+                                                                           _objMyToken, _objMyToken)
+                                           .ConfigureAwait(false);
+                    bool blnEnableNative
+                        = await _objSkill.GetIsNativeLanguageAsync(_objMyToken).ConfigureAwait(false)
+                          || await _objSkill.CharacterObject.SkillsSection
+                                            .GetHasAvailableNativeLanguageSlotsAsync(_objMyToken)
+                                            .ConfigureAwait(false);
+                    await chkNativeLanguage.DoThreadSafeAsync(x => x.Enabled = blnEnableNative, _objMyToken)
+                                           .ConfigureAwait(false);
+
+                    await cboSpec.PopulateWithListItemsAsync(
+                                     await _objSkill.GetCGLSpecializationsAsync(_objMyToken).ConfigureAwait(false),
+                                     token: _objMyToken)
+                                 .ConfigureAwait(false);
+                    await cboSpec.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = y, _objSkill,
+                                                                 nameof(KnowledgeSkill.CanHaveSpecs),
+                                                                 x => x.GetCanHaveSpecsAsync(_objMyToken).AsTask(),
+                                                                 _objMyToken, _objMyToken).ConfigureAwait(false);
+                    await chkKarma.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = y, _objSkill,
+                                                                  nameof(KnowledgeSkill.CanHaveSpecs),
+                                                                  x => x.GetCanHaveSpecsAsync(_objMyToken).AsTask(),
+                                                                  _objMyToken, _objMyToken).ConfigureAwait(false);
+
+                    string strDisplaySpec = await _objSkill.GetCurrentDisplaySpecializationAsync(_objMyToken)
+                                                           .ConfigureAwait(false);
                     Interlocked.Increment(ref _intUpdatingSpec);
                     try
                     {
-                        await cboName.DoThreadSafeAsync(x =>
-                        {
-                            x.SelectedIndex = -1;
-                            x.Text = strWritableName;
-                        }, _objMyToken).ConfigureAwait(false);
+                        await cboSpec.DoThreadSafeAsync(x => x.Text = strDisplaySpec, token: _objMyToken)
+                                     .ConfigureAwait(false);
                     }
                     finally
                     {
                         Interlocked.Decrement(ref _intUpdatingSpec);
                     }
 
-                    await cboName.RegisterOneWayAsyncDataBinding((x, y) => x.Visible = y, _objSkill,
-                                                                 nameof(KnowledgeSkill.AllowNameChange),
-                                                                 x => x.GetAllowNameChangeAsync(_objMyToken).AsTask(),
-                                                                 _objMyToken, _objMyToken).ConfigureAwait(false);
-
-                    if (await _objSkill.CharacterObject.GetCreatedAsync(_objMyToken).ConfigureAwait(false))
-                    {
-                        await lblRating.RegisterOneWayAsyncDataBinding((x, y) => x.Visible = !y, _objSkill,
-                                                                       nameof(KnowledgeSkill.IsNativeLanguage),
-                                                                       x => x.GetIsNativeLanguageAsync(_objMyToken)
-                                                                             .AsTask(),
-                                                                       _objMyToken, _objMyToken).ConfigureAwait(false);
-                        await lblRating.RegisterOneWayAsyncDataBinding(
-                            (x, y) => x.Text = y.ToString(GlobalSettings.CultureInfo), _objSkill,
-                            nameof(KnowledgeSkill.Rating),
-                            x => x.GetRatingAsync(_objMyToken).AsTask(),
-                            _objMyToken, _objMyToken).ConfigureAwait(false);
-
-                        await btnCareerIncrease.RegisterOneWayAsyncDataBinding((x, y) => x.Visible = y, _objSkill,
-                                                                               nameof(KnowledgeSkill.AllowUpgrade),
-                                                                               x => x.GetAllowUpgradeAsync(_objMyToken)
-                                                                                   .AsTask(),
-                                                                               _objMyToken, _objMyToken)
-                                               .ConfigureAwait(false);
-                        await btnCareerIncrease.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = y, _objSkill,
-                                                                               nameof(KnowledgeSkill.CanUpgradeCareer),
-                                                                               x => x.GetCanUpgradeCareerAsync(
-                                                                                       _objMyToken)
-                                                                                   .AsTask(),
-                                                                               _objMyToken, _objMyToken)
-                                               .ConfigureAwait(false);
-                        await btnCareerIncrease.RegisterOneWayAsyncDataBinding((x, y) => x.ToolTipText = y, _objSkill,
-                                                                               nameof(KnowledgeSkill.UpgradeToolTip),
-                                                                               x => x.GetUpgradeToolTipAsync(
-                                                                                       _objMyToken)
-                                                                                   .AsTask(),
-                                                                               _objMyToken, _objMyToken)
-                                               .ConfigureAwait(false);
-
-                        await lblSpec.RegisterOneWayAsyncDataBinding((x, y) => x.Text = y, _objSkill,
-                                                                     nameof(KnowledgeSkill
-                                                                                .CurrentDisplaySpecialization),
-                                                                     x => x.GetCurrentDisplaySpecializationAsync(
-                                                                               _objMyToken)
-                                                                           .AsTask(),
-                                                                     _objMyToken, _objMyToken).ConfigureAwait(false);
-
-                        await btnAddSpec.RegisterOneWayAsyncDataBinding((x, y) => x.Visible = y, _objSkill,
-                                                                        nameof(KnowledgeSkill.CanHaveSpecs),
-                                                                        x => x.GetCanHaveSpecsAsync(_objMyToken)
-                                                                              .AsTask(),
-                                                                        _objMyToken, _objMyToken).ConfigureAwait(false);
-                        await btnAddSpec.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = y, _objSkill,
-                                                                        nameof(KnowledgeSkill.CanAffordSpecialization),
-                                                                        x => x
-                                                                             .GetCanAffordSpecializationAsync(
-                                                                                 _objMyToken)
-                                                                             .AsTask(),
-                                                                        _objMyToken, _objMyToken).ConfigureAwait(false);
-                        await btnAddSpec.RegisterOneWayAsyncDataBinding((x, y) => x.ToolTipText = y, _objSkill,
-                                                                        nameof(KnowledgeSkill.AddSpecToolTip),
-                                                                        x => x.GetAddSpecToolTipAsync(_objMyToken)
-                                                                              .AsTask(),
-                                                                        _objMyToken, _objMyToken).ConfigureAwait(false);
-                    }
-                    else
-                    {
-                        await nudSkill.RegisterOneWayAsyncDataBinding((x, y) => x.Visible = y,
-                                                                      _objSkill.CharacterObject.SkillsSection,
-                                                                      nameof(SkillsSection.HasKnowledgePoints),
-                                                                      x => x.GetHasKnowledgePointsAsync(
-                                                                          _objMyToken).AsTask(), _objMyToken,
-                                                                      _objMyToken)
-                                      .ConfigureAwait(false);
-                        await nudSkill.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = y, _objSkill,
-                                                                      nameof(KnowledgeSkill.AllowUpgrade),
-                                                                      x => x.GetAllowUpgradeAsync(_objMyToken).AsTask(),
-                                                                      _objMyToken, _objMyToken).ConfigureAwait(false);
-                        await nudKarma.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = y, _objSkill,
-                                                                      nameof(KnowledgeSkill.AllowUpgrade),
-                                                                      x => x.GetAllowUpgradeAsync(_objMyToken).AsTask(),
-                                                                      _objMyToken, _objMyToken).ConfigureAwait(false);
-
-                        await chkNativeLanguage.RegisterOneWayAsyncDataBinding((x, y) => x.Visible = y, _objSkill,
-                                                                               nameof(KnowledgeSkill.IsLanguage),
-                                                                               x => x.GetIsLanguageAsync(_objMyToken)
-                                                                                   .AsTask(),
-                                                                               _objMyToken, _objMyToken)
-                                               .ConfigureAwait(false);
-                        bool blnEnableNative
-                            = await _objSkill.GetIsNativeLanguageAsync(_objMyToken).ConfigureAwait(false)
-                              || await _objSkill.CharacterObject.SkillsSection
-                                                .GetHasAvailableNativeLanguageSlotsAsync(_objMyToken)
-                                                .ConfigureAwait(false);
-                        await chkNativeLanguage.DoThreadSafeAsync(x => x.Enabled = blnEnableNative, _objMyToken)
-                                               .ConfigureAwait(false);
-
-                        await cboSpec.PopulateWithListItemsAsync(_objSkill.CGLSpecializations, token: _objMyToken)
-                                     .ConfigureAwait(false);
-                        await cboSpec.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = y, _objSkill,
-                                                                     nameof(KnowledgeSkill.CanHaveSpecs),
-                                                                     x => x.GetCanHaveSpecsAsync(_objMyToken).AsTask(),
-                                                                     _objMyToken, _objMyToken).ConfigureAwait(false);
-                        await chkKarma.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = y, _objSkill,
-                                                                      nameof(KnowledgeSkill.CanHaveSpecs),
-                                                                      x => x.GetCanHaveSpecsAsync(_objMyToken).AsTask(),
-                                                                      _objMyToken, _objMyToken).ConfigureAwait(false);
-
-                        string strDisplaySpec = await _objSkill.GetCurrentDisplaySpecializationAsync(_objMyToken)
-                                                               .ConfigureAwait(false);
-                        Interlocked.Increment(ref _intUpdatingSpec);
-                        try
-                        {
-                            await cboSpec.DoThreadSafeAsync(x => x.Text = strDisplaySpec, token: _objMyToken)
-                                         .ConfigureAwait(false);
-                        }
-                        finally
-                        {
-                            Interlocked.Decrement(ref _intUpdatingSpec);
-                        }
-
-                        await nudSkill.DoDataBindingAsync("Value", _objSkill, nameof(Skill.Base), _objMyToken)
-                                      .ConfigureAwait(false);
-                        await nudKarma.DoDataBindingAsync("Value", _objSkill, nameof(Skill.Karma), _objMyToken)
-                                      .ConfigureAwait(false);
-                        await chkNativeLanguage
-                              .DoDataBindingAsync("Checked", _objSkill, nameof(Skill.IsNativeLanguage), _objMyToken)
-                              .ConfigureAwait(false);
-                        await chkKarma.DoDataBindingAsync("Checked", _objSkill, nameof(Skill.BuyWithKarma), _objMyToken)
-                                      .ConfigureAwait(false);
-                    }
-
-                    if (_objSkill.ForcedName)
-                    {
-                        await this.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = y, _objSkill,
-                                                                  nameof(KnowledgeSkill.Enabled),
-                                                                  x => x.GetEnabledAsync(_objMyToken).AsTask(),
-                                                                  _objMyToken, _objMyToken).ConfigureAwait(false);
-                    }
+                    await nudSkill.DoDataBindingAsync("Value", _objSkill, nameof(Skill.Base), _objMyToken)
+                                  .ConfigureAwait(false);
+                    await nudKarma.DoDataBindingAsync("Value", _objSkill, nameof(Skill.Karma), _objMyToken)
+                                  .ConfigureAwait(false);
+                    await chkNativeLanguage
+                          .DoDataBindingAsync("Checked", _objSkill, nameof(Skill.IsNativeLanguage), _objMyToken)
+                          .ConfigureAwait(false);
+                    await chkKarma.DoDataBindingAsync("Checked", _objSkill, nameof(Skill.BuyWithKarma), _objMyToken)
+                                  .ConfigureAwait(false);
                 }
-                finally
+
+                if (_objSkill.ForcedName)
                 {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                    await this.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = y, _objSkill,
+                                                              nameof(KnowledgeSkill.Enabled),
+                                                              x => x.GetEnabledAsync(_objMyToken).AsTask(),
+                                                              _objMyToken, _objMyToken).ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
             {
                 //swallow this
             }
+        }
+
+        private void KnowledgeSkillControl_Load(object sender, EventArgs e)
+        {
+            AdjustForDpi();
         }
 
         private async void OnSkillsSectionPropertyChanged(object sender, PropertyChangedEventArgs e)

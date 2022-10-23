@@ -81,7 +81,9 @@ namespace Chummer
         {
             InitializeComponent();
             tabSkillsUc.MyToken = GenericToken;
+            tabSkillsUc.CachedCharacter = objCharacter;
             tabPowerUc.MyToken = GenericToken;
+            tabPowerUc.CachedCharacter = objCharacter;
             _fntNormal = new Font(treQualities.Font, FontStyle.Regular);
             _fntStrikeout = new Font(treQualities.Font, FontStyle.Strikeout);
             Disposed += (sender, args) =>
@@ -452,153 +454,6 @@ namespace Chummer
                                     GenericToken).ConfigureAwait(false);
 
                                 using (_ = await Timekeeper.StartSyncronAsync(
-                                           "load_frm_create_refresh", op_load_frm_create).ConfigureAwait(false))
-                                {
-                                    await cmdAddMetamagic.DoOneWayDataBindingAsync("Enabled", CharacterObject,
-                                        nameof(Character.AddInitiationsAllowed), GenericToken).ConfigureAwait(false);
-
-                                    await cmdLifeModule.DoOneWayDataBindingAsync("Visible", CharacterObject,
-                                                           nameof(Character
-                                                                      .EffectiveBuildMethodIsLifeModule), GenericToken)
-                                                       .ConfigureAwait(false);
-                                    await btnCreateBackstory.DoOneWayDataBindingAsync("Visible", CharacterObject,
-                                        nameof(Character
-                                                   .EnableAutomaticStoryButton), GenericToken).ConfigureAwait(false);
-
-                                    if (!await CharacterObjectSettings.BookEnabledAsync("RF", GenericToken)
-                                                                      .ConfigureAwait(false))
-                                    {
-                                        await cmdAddLifestyle.DoThreadSafeAsync(
-                                            x => x.SplitMenuStrip = null, GenericToken).ConfigureAwait(false);
-                                    }
-
-                                    if (!await CharacterObjectSettings.BookEnabledAsync("FA", GenericToken)
-                                                                      .ConfigureAwait(false))
-                                    {
-                                        await lblWildReputation.DoThreadSafeAsync(x => x.Visible = false, GenericToken)
-                                                               .ConfigureAwait(false);
-                                        await lblWildReputationTotal.DoThreadSafeAsync(
-                                            x => x.Visible = false, GenericToken).ConfigureAwait(false);
-                                        if (!await CharacterObjectSettings.BookEnabledAsync("SG", GenericToken)
-                                                                          .ConfigureAwait(false))
-                                        {
-                                            await lblAstralReputation.DoThreadSafeAsync(
-                                                x => x.Visible = false, GenericToken).ConfigureAwait(false);
-                                            await lblAstralReputationTotal.DoThreadSafeAsync(
-                                                x => x.Visible = false, GenericToken).ConfigureAwait(false);
-                                        }
-                                    }
-
-                                    if (!CharacterObjectSettings.EnableEnemyTracking)
-                                    {
-                                        await tabPeople.DoThreadSafeAsync(
-                                            x => x.TabPages.Remove(tabEnemies), GenericToken).ConfigureAwait(false);
-                                        await lblEnemiesBP.DoThreadSafeAsync(x => x.Visible = false, GenericToken)
-                                                          .ConfigureAwait(false);
-                                        await lblBuildEnemies.DoThreadSafeAsync(x => x.Visible = false, GenericToken)
-                                                             .ConfigureAwait(false);
-                                    }
-
-                                    await RefreshQualities(treQualities, cmsQuality, _fntNormal, _fntStrikeout,
-                                                           token: GenericToken).ConfigureAwait(false);
-                                    await RefreshSpirits(panSpirits, panSprites, token: GenericToken)
-                                        .ConfigureAwait(false);
-                                    await RefreshSpells(treSpells, treMetamagic, cmsSpell, cmsInitiationNotes,
-                                                        token: GenericToken).ConfigureAwait(false);
-                                    await RefreshComplexForms(treComplexForms, treMetamagic, cmsComplexForm,
-                                                              cmsInitiationNotes, token: GenericToken)
-                                        .ConfigureAwait(false);
-                                    await RefreshPowerCollectionListChanged(
-                                            treMetamagic, cmsMetamagic, cmsInitiationNotes, token: GenericToken)
-                                        .ConfigureAwait(false);
-                                    await RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes,
-                                                                  token: GenericToken).ConfigureAwait(false);
-                                    await RefreshAIPrograms(treAIPrograms, cmsAdvancedProgram, token: GenericToken)
-                                        .ConfigureAwait(false);
-                                    await RefreshCritterPowers(treCritterPowers, cmsCritterPowers, token: GenericToken)
-                                        .ConfigureAwait(false);
-                                    await RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique,
-                                                             token: GenericToken).ConfigureAwait(false);
-                                    await RefreshLifestyles(treLifestyles, cmsLifestyleNotes, cmsAdvancedLifestyle,
-                                                            token: GenericToken).ConfigureAwait(false);
-                                    await RefreshContacts(panContacts, panEnemies, panPets, token: GenericToken)
-                                        .ConfigureAwait(false);
-
-                                    await RefreshArmor(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear,
-                                                       token: GenericToken).ConfigureAwait(false);
-                                    await RefreshGears(treGear, cmsGearLocation, cmsGear,
-                                                       await chkCommlinks.DoThreadSafeFuncAsync(
-                                                           x => x.Checked, GenericToken).ConfigureAwait(false), false,
-                                                       token: GenericToken).ConfigureAwait(false);
-                                    await RefreshFociFromGear(treFoci, null, token: GenericToken).ConfigureAwait(false);
-                                    await RefreshCyberware(treCyberware, cmsCyberware, cmsCyberwareGear,
-                                                           token: GenericToken).ConfigureAwait(false);
-                                    await RefreshWeapons(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory,
-                                                         cmsWeaponAccessoryGear, token: GenericToken)
-                                        .ConfigureAwait(false);
-                                    await RefreshVehicles(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon,
-                                                          cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear,
-                                                          cmsVehicleGear,
-                                                          cmsWeaponMount,
-                                                          cmsVehicleCyberware, cmsVehicleCyberwareGear,
-                                                          token: GenericToken).ConfigureAwait(false);
-                                    await RefreshDrugs(treCustomDrugs, token: GenericToken).ConfigureAwait(false);
-                                }
-
-                                using (_ = await Timekeeper.StartSyncronAsync(
-                                           "load_frm_create_sortAndCallback", op_load_frm_create).ConfigureAwait(false))
-                                {
-                                    await treWeapons.DoThreadSafeAsync(x => x.SortCustomOrder(), GenericToken)
-                                                    .ConfigureAwait(false);
-                                    await treArmor.DoThreadSafeAsync(x => x.SortCustomOrder(), GenericToken)
-                                                  .ConfigureAwait(false);
-                                    await treGear.DoThreadSafeAsync(x => x.SortCustomOrder(), GenericToken)
-                                                 .ConfigureAwait(false);
-                                    await treLifestyles.DoThreadSafeAsync(x => x.SortCustomOrder(), GenericToken)
-                                                       .ConfigureAwait(false);
-                                    await treCustomDrugs.DoThreadSafeAsync(x => x.SortCustomOrder(), GenericToken)
-                                                        .ConfigureAwait(false);
-                                    await treCyberware.DoThreadSafeAsync(x => x.SortCustomOrder(), GenericToken)
-                                                      .ConfigureAwait(false);
-                                    await treVehicles.DoThreadSafeAsync(x => x.SortCustomOrder(), GenericToken)
-                                                     .ConfigureAwait(false);
-                                    await treCritterPowers.DoThreadSafeAsync(x => x.SortCustomOrder(), GenericToken)
-                                                          .ConfigureAwait(false);
-
-                                    // Set up events that would change various lists
-                                    CharacterObject.Spells.CollectionChanged += SpellCollectionChanged;
-                                    CharacterObject.ComplexForms.CollectionChanged += ComplexFormCollectionChanged;
-                                    CharacterObject.Arts.CollectionChanged += ArtCollectionChanged;
-                                    CharacterObject.Enhancements.CollectionChanged += EnhancementCollectionChanged;
-                                    CharacterObject.Metamagics.CollectionChanged += MetamagicCollectionChanged;
-                                    CharacterObject.InitiationGrades.CollectionChanged
-                                        += InitiationGradeCollectionChanged;
-                                    CharacterObject.Powers.ListChanged += PowersListChanged;
-                                    CharacterObject.Powers.BeforeRemove += PowersBeforeRemove;
-                                    CharacterObject.AIPrograms.CollectionChanged += AIProgramCollectionChanged;
-                                    CharacterObject.CritterPowers.CollectionChanged += CritterPowerCollectionChanged;
-                                    CharacterObject.Qualities.CollectionChanged += QualityCollectionChanged;
-                                    CharacterObject.MartialArts.CollectionChanged += MartialArtCollectionChanged;
-                                    CharacterObject.Lifestyles.CollectionChanged += LifestyleCollectionChanged;
-                                    CharacterObject.Contacts.CollectionChanged += ContactCollectionChanged;
-                                    CharacterObject.Spirits.CollectionChanged += SpiritCollectionChanged;
-                                    CharacterObject.Armor.CollectionChanged += ArmorCollectionChanged;
-                                    CharacterObject.ArmorLocations.CollectionChanged += ArmorLocationCollectionChanged;
-                                    CharacterObject.Weapons.CollectionChanged += WeaponCollectionChanged;
-                                    CharacterObject.WeaponLocations.CollectionChanged
-                                        += WeaponLocationCollectionChanged;
-                                    CharacterObject.Gear.CollectionChanged += GearCollectionChanged;
-                                    CharacterObject.GearLocations.CollectionChanged += GearLocationCollectionChanged;
-                                    CharacterObject.Drugs.CollectionChanged += DrugCollectionChanged;
-                                    CharacterObject.Cyberware.CollectionChanged += CyberwareCollectionChanged;
-                                    CharacterObject.Vehicles.CollectionChanged += VehicleCollectionChanged;
-                                    CharacterObject.VehicleLocations.CollectionChanged
-                                        += VehicleLocationCollectionChanged;
-
-                                    SetupCommonCollectionDatabindings(true);
-                                }
-
-                                using (_ = await Timekeeper.StartSyncronAsync(
                                            "load_frm_create_tradition", op_load_frm_create).ConfigureAwait(false))
                                 {
                                     // Populate the Magician Traditions list.
@@ -876,35 +731,6 @@ namespace Chummer
                                     await txtTraditionName.DoDataBindingAsync("Text", CharacterObject.MagicTradition,
                                                                               nameof(Tradition.Name), GenericToken)
                                                           .ConfigureAwait(false);
-                                }
-
-                                using (CustomActivity op_load_frm_create_longloads
-                                       = await Timekeeper.StartSyncronAsync("load_frm_create_longloads",
-                                                                            op_load_frm_create).ConfigureAwait(false))
-                                {
-                                    using (_ = await Timekeeper.StartSyncronAsync(
-                                               "load_frm_create_tabSkillsUc.RealLoad()",
-                                               op_load_frm_create_longloads).ConfigureAwait(false))
-                                    {
-                                        await tabSkillsUc.RealLoad(GenericToken, GenericToken).ConfigureAwait(false);
-                                    }
-
-                                    using (_ = await Timekeeper.StartSyncronAsync(
-                                               "load_frm_create_tabPowerUc.RealLoad()",
-                                               op_load_frm_create_longloads).ConfigureAwait(false))
-                                    {
-                                        await tabPowerUc.RealLoad(GenericToken, GenericToken).ConfigureAwait(false);
-                                    }
-
-                                    using (_ = await Timekeeper.StartSyncronAsync(
-                                               "load_frm_create_Run through all appropriate property changers",
-                                               op_load_frm_create_longloads).ConfigureAwait(false))
-                                    {
-                                        // Run through all appropriate property changers
-                                        foreach (PropertyInfo objProperty in typeof(Character).GetProperties())
-                                            await DoOnCharacterPropertyChanged(
-                                                new PropertyChangedEventArgs(objProperty.Name)).ConfigureAwait(false);
-                                    }
                                 }
 
                                 using (_ = await Timekeeper.StartSyncronAsync(
@@ -1304,6 +1130,206 @@ namespace Chummer
                                             lstFireModes, GenericToken).ConfigureAwait(false);
                                     }
                                 }
+
+                                using (_ = await Timekeeper.StartSyncronAsync("load_frm_create_miscstuff",
+                                                                              op_load_frm_create).ConfigureAwait(false))
+                                {
+                                    await SetTooltips(GenericToken).ConfigureAwait(false);
+                                    await RefreshAttributes(pnlAttributes, null, lblAttributes,
+                                                            await lblKarma.DoThreadSafeFuncAsync(x =>
+                                                                x.PreferredWidth, GenericToken).ConfigureAwait(false),
+                                                            await lblAttributesAug.DoThreadSafeFuncAsync(
+                                                                x => x.PreferredWidth, GenericToken).ConfigureAwait(false),
+                                                            await lblAttributesMetatype.DoThreadSafeFuncAsync(
+                                                                x => x.PreferredWidth, GenericToken).ConfigureAwait(false),
+                                                            GenericToken).ConfigureAwait(false);
+
+                                    CharacterObject.AttributeSection.Attributes.CollectionChanged
+                                        += AttributeCollectionChanged;
+
+                                    await DoRefreshPasteStatus(GenericToken).ConfigureAwait(false);
+                                    await ProcessMugshot(GenericToken).ConfigureAwait(false);
+
+                                    // Stupid hack to get the MDI icon to show up properly.
+                                    await this.DoThreadSafeFuncAsync(x => x.Icon = x.Icon.Clone() as Icon, GenericToken)
+                                              .ConfigureAwait(false);
+                                }
+
+                                using (CustomActivity op_load_frm_create_longloads
+                                       = await Timekeeper.StartSyncronAsync("load_frm_create_longloads",
+                                                                            op_load_frm_create).ConfigureAwait(false))
+                                {
+                                    using (_ = await Timekeeper.StartSyncronAsync(
+                                               "load_frm_create_Run through all appropriate property changers",
+                                               op_load_frm_create_longloads).ConfigureAwait(false))
+                                    {
+                                        // Run through all appropriate property changers
+                                        foreach (PropertyInfo objProperty in typeof(Character).GetProperties())
+                                            await DoOnCharacterPropertyChanged(
+                                                new PropertyChangedEventArgs(objProperty.Name)).ConfigureAwait(false);
+                                    }
+
+                                    using (_ = await Timekeeper.StartSyncronAsync(
+                                               "load_frm_create_tabPowerUc.RealLoad()",
+                                               op_load_frm_create_longloads).ConfigureAwait(false))
+                                    {
+                                        await tabPowerUc.RealLoad(GenericToken, GenericToken).ConfigureAwait(false);
+                                    }
+
+                                    using (_ = await Timekeeper.StartSyncronAsync(
+                                               "load_frm_create_tabSkillsUc.RealLoad()",
+                                               op_load_frm_create_longloads).ConfigureAwait(false))
+                                    {
+                                        await tabSkillsUc.RealLoad(GenericToken, GenericToken).ConfigureAwait(false);
+                                    }
+                                }
+
+                                using (_ = await Timekeeper.StartSyncronAsync(
+                                           "load_frm_create_refresh", op_load_frm_create).ConfigureAwait(false))
+                                {
+                                    await cmdAddMetamagic.DoOneWayDataBindingAsync("Enabled", CharacterObject,
+                                        nameof(Character.AddInitiationsAllowed), GenericToken).ConfigureAwait(false);
+
+                                    await cmdLifeModule.DoOneWayDataBindingAsync("Visible", CharacterObject,
+                                                           nameof(Character
+                                                                      .EffectiveBuildMethodIsLifeModule), GenericToken)
+                                                       .ConfigureAwait(false);
+                                    await btnCreateBackstory.DoOneWayDataBindingAsync("Visible", CharacterObject,
+                                        nameof(Character
+                                                   .EnableAutomaticStoryButton), GenericToken).ConfigureAwait(false);
+
+                                    if (!await CharacterObjectSettings.BookEnabledAsync("RF", GenericToken)
+                                                                      .ConfigureAwait(false))
+                                    {
+                                        await cmdAddLifestyle.DoThreadSafeAsync(
+                                            x => x.SplitMenuStrip = null, GenericToken).ConfigureAwait(false);
+                                    }
+
+                                    if (!await CharacterObjectSettings.BookEnabledAsync("FA", GenericToken)
+                                                                      .ConfigureAwait(false))
+                                    {
+                                        await lblWildReputation.DoThreadSafeAsync(x => x.Visible = false, GenericToken)
+                                                               .ConfigureAwait(false);
+                                        await lblWildReputationTotal.DoThreadSafeAsync(
+                                            x => x.Visible = false, GenericToken).ConfigureAwait(false);
+                                        if (!await CharacterObjectSettings.BookEnabledAsync("SG", GenericToken)
+                                                                          .ConfigureAwait(false))
+                                        {
+                                            await lblAstralReputation.DoThreadSafeAsync(
+                                                x => x.Visible = false, GenericToken).ConfigureAwait(false);
+                                            await lblAstralReputationTotal.DoThreadSafeAsync(
+                                                x => x.Visible = false, GenericToken).ConfigureAwait(false);
+                                        }
+                                    }
+
+                                    if (!CharacterObjectSettings.EnableEnemyTracking)
+                                    {
+                                        await tabPeople.DoThreadSafeAsync(
+                                            x => x.TabPages.Remove(tabEnemies), GenericToken).ConfigureAwait(false);
+                                        await lblEnemiesBP.DoThreadSafeAsync(x => x.Visible = false, GenericToken)
+                                                          .ConfigureAwait(false);
+                                        await lblBuildEnemies.DoThreadSafeAsync(x => x.Visible = false, GenericToken)
+                                                             .ConfigureAwait(false);
+                                    }
+
+                                    await RefreshQualities(treQualities, cmsQuality, _fntNormal, _fntStrikeout,
+                                                           token: GenericToken).ConfigureAwait(false);
+                                    await RefreshSpirits(panSpirits, panSprites, token: GenericToken)
+                                        .ConfigureAwait(false);
+                                    await RefreshSpells(treSpells, treMetamagic, cmsSpell, cmsInitiationNotes,
+                                                        token: GenericToken).ConfigureAwait(false);
+                                    await RefreshComplexForms(treComplexForms, treMetamagic, cmsComplexForm,
+                                                              cmsInitiationNotes, token: GenericToken)
+                                        .ConfigureAwait(false);
+                                    await RefreshPowerCollectionListChanged(
+                                            treMetamagic, cmsMetamagic, cmsInitiationNotes, token: GenericToken)
+                                        .ConfigureAwait(false);
+                                    await RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes,
+                                                                  token: GenericToken).ConfigureAwait(false);
+                                    await RefreshAIPrograms(treAIPrograms, cmsAdvancedProgram, token: GenericToken)
+                                        .ConfigureAwait(false);
+                                    await RefreshCritterPowers(treCritterPowers, cmsCritterPowers, token: GenericToken)
+                                        .ConfigureAwait(false);
+                                    await RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique,
+                                                             token: GenericToken).ConfigureAwait(false);
+                                    await RefreshLifestyles(treLifestyles, cmsLifestyleNotes, cmsAdvancedLifestyle,
+                                                            token: GenericToken).ConfigureAwait(false);
+                                    await RefreshContacts(panContacts, panEnemies, panPets, token: GenericToken)
+                                        .ConfigureAwait(false);
+
+                                    await RefreshArmor(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear,
+                                                       token: GenericToken).ConfigureAwait(false);
+                                    await RefreshGears(treGear, cmsGearLocation, cmsGear,
+                                                       await chkCommlinks.DoThreadSafeFuncAsync(
+                                                           x => x.Checked, GenericToken).ConfigureAwait(false), false,
+                                                       token: GenericToken).ConfigureAwait(false);
+                                    await RefreshFociFromGear(treFoci, null, token: GenericToken).ConfigureAwait(false);
+                                    await RefreshCyberware(treCyberware, cmsCyberware, cmsCyberwareGear,
+                                                           token: GenericToken).ConfigureAwait(false);
+                                    await RefreshWeapons(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory,
+                                                         cmsWeaponAccessoryGear, token: GenericToken)
+                                        .ConfigureAwait(false);
+                                    await RefreshVehicles(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon,
+                                                          cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear,
+                                                          cmsVehicleGear,
+                                                          cmsWeaponMount,
+                                                          cmsVehicleCyberware, cmsVehicleCyberwareGear,
+                                                          token: GenericToken).ConfigureAwait(false);
+                                    await RefreshDrugs(treCustomDrugs, token: GenericToken).ConfigureAwait(false);
+                                }
+
+                                using (_ = await Timekeeper.StartSyncronAsync(
+                                           "load_frm_create_sortAndCallback", op_load_frm_create).ConfigureAwait(false))
+                                {
+                                    await treWeapons.DoThreadSafeAsync(x => x.SortCustomOrder(), GenericToken)
+                                                    .ConfigureAwait(false);
+                                    await treArmor.DoThreadSafeAsync(x => x.SortCustomOrder(), GenericToken)
+                                                  .ConfigureAwait(false);
+                                    await treGear.DoThreadSafeAsync(x => x.SortCustomOrder(), GenericToken)
+                                                 .ConfigureAwait(false);
+                                    await treLifestyles.DoThreadSafeAsync(x => x.SortCustomOrder(), GenericToken)
+                                                       .ConfigureAwait(false);
+                                    await treCustomDrugs.DoThreadSafeAsync(x => x.SortCustomOrder(), GenericToken)
+                                                        .ConfigureAwait(false);
+                                    await treCyberware.DoThreadSafeAsync(x => x.SortCustomOrder(), GenericToken)
+                                                      .ConfigureAwait(false);
+                                    await treVehicles.DoThreadSafeAsync(x => x.SortCustomOrder(), GenericToken)
+                                                     .ConfigureAwait(false);
+                                    await treCritterPowers.DoThreadSafeAsync(x => x.SortCustomOrder(), GenericToken)
+                                                          .ConfigureAwait(false);
+
+                                    // Set up events that would change various lists
+                                    CharacterObject.Spells.CollectionChanged += SpellCollectionChanged;
+                                    CharacterObject.ComplexForms.CollectionChanged += ComplexFormCollectionChanged;
+                                    CharacterObject.Arts.CollectionChanged += ArtCollectionChanged;
+                                    CharacterObject.Enhancements.CollectionChanged += EnhancementCollectionChanged;
+                                    CharacterObject.Metamagics.CollectionChanged += MetamagicCollectionChanged;
+                                    CharacterObject.InitiationGrades.CollectionChanged
+                                        += InitiationGradeCollectionChanged;
+                                    CharacterObject.Powers.ListChanged += PowersListChanged;
+                                    CharacterObject.Powers.BeforeRemove += PowersBeforeRemove;
+                                    CharacterObject.AIPrograms.CollectionChanged += AIProgramCollectionChanged;
+                                    CharacterObject.CritterPowers.CollectionChanged += CritterPowerCollectionChanged;
+                                    CharacterObject.Qualities.CollectionChanged += QualityCollectionChanged;
+                                    CharacterObject.MartialArts.CollectionChanged += MartialArtCollectionChanged;
+                                    CharacterObject.Lifestyles.CollectionChanged += LifestyleCollectionChanged;
+                                    CharacterObject.Contacts.CollectionChanged += ContactCollectionChanged;
+                                    CharacterObject.Spirits.CollectionChanged += SpiritCollectionChanged;
+                                    CharacterObject.Armor.CollectionChanged += ArmorCollectionChanged;
+                                    CharacterObject.ArmorLocations.CollectionChanged += ArmorLocationCollectionChanged;
+                                    CharacterObject.Weapons.CollectionChanged += WeaponCollectionChanged;
+                                    CharacterObject.WeaponLocations.CollectionChanged
+                                        += WeaponLocationCollectionChanged;
+                                    CharacterObject.Gear.CollectionChanged += GearCollectionChanged;
+                                    CharacterObject.GearLocations.CollectionChanged += GearLocationCollectionChanged;
+                                    CharacterObject.Drugs.CollectionChanged += DrugCollectionChanged;
+                                    CharacterObject.Cyberware.CollectionChanged += CyberwareCollectionChanged;
+                                    CharacterObject.Vehicles.CollectionChanged += VehicleCollectionChanged;
+                                    CharacterObject.VehicleLocations.CollectionChanged
+                                        += VehicleLocationCollectionChanged;
+
+                                    SetupCommonCollectionDatabindings(true);
+                                }
                             }
                             finally
                             {
@@ -1313,17 +1339,6 @@ namespace Chummer
                             using (_ = await Timekeeper.StartSyncronAsync("load_frm_create_finish", op_load_frm_create)
                                                        .ConfigureAwait(false))
                             {
-                                await SetTooltips(GenericToken).ConfigureAwait(false);
-                                await RefreshAttributes(pnlAttributes, null, lblAttributes, lblKarma.PreferredWidth,
-                                                        await lblAttributesAug.DoThreadSafeFuncAsync(
-                                                            x => x.PreferredWidth, GenericToken).ConfigureAwait(false),
-                                                        await lblAttributesMetatype.DoThreadSafeFuncAsync(
-                                                            x => x.PreferredWidth, GenericToken).ConfigureAwait(false),
-                                                        GenericToken).ConfigureAwait(false);
-
-                                CharacterObject.AttributeSection.Attributes.CollectionChanged
-                                    += AttributeCollectionChanged;
-
                                 await RequestCharacterUpdate().ConfigureAwait(false);
                                 // Directly awaiting here so that we can properly unset the dirty flag after the update
                                 try
@@ -1334,16 +1349,9 @@ namespace Chummer
                                 {
                                     return;
                                 }
-
                                 // Clear the Dirty flag which gets set when creating a new Character.
                                 if (!CharacterObject.LoadAsDirty)
                                     IsDirty = false;
-                                await DoRefreshPasteStatus(GenericToken).ConfigureAwait(false);
-                                await ProcessMugshot(GenericToken).ConfigureAwait(false);
-
-                                // Stupid hack to get the MDI icon to show up properly.
-                                await this.DoThreadSafeFuncAsync(x => x.Icon = x.Icon.Clone() as Icon, GenericToken)
-                                          .ConfigureAwait(false);
 
                                 await Program.PluginLoader.CallPlugins(this, op_load_frm_create).ConfigureAwait(false);
                             }

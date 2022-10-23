@@ -55,8 +55,8 @@ namespace Chummer.UI.Skills
                 lblGroupKarma.Margin.Top,
                 lblGroupKarma.Margin.Right + SystemInformation.VerticalScrollBarWidth,
                 lblGroupKarma.Margin.Bottom);
-            this.UpdateLightDarkMode();
-            this.TranslateWinForm();
+            this.UpdateLightDarkMode(token: objMyToken);
+            this.TranslateWinForm(token: objMyToken);
 
             MyToken = objMyToken;
             _sortList = GenerateSortList();
@@ -118,17 +118,32 @@ namespace Chummer.UI.Skills
             }
         }
 
+        public Character CachedCharacter { get; set; }
+
         public async ValueTask RealLoad(CancellationToken objMyToken = default, CancellationToken token = default)
         {
-            MyToken = objMyToken;
-            if (ParentForm is CharacterShared frmParent)
-                _objCharacter = frmParent.CharacterObject;
+            if (CachedCharacter != null)
+            {
+                if (Interlocked.CompareExchange(ref _objCharacter, CachedCharacter, null) != null)
+                    return;
+            }
+            else if (ParentForm is CharacterShared frmParent)
+            {
+                if (Interlocked.CompareExchange(ref _objCharacter, frmParent.CharacterObject, null) != null)
+                    return;
+            }
             else
             {
-                _objCharacter = new Character();
-                await this.DoThreadSafeAsync(x => x.Disposed += (sender, args) => _objCharacter.Dispose(), token).ConfigureAwait(false);
+                Character objCharacter = new Character();
+                if (Interlocked.CompareExchange(ref _objCharacter, objCharacter, null) != null)
+                {
+                    await objCharacter.DisposeAsync();
+                    return;
+                }
+                await this.DoThreadSafeAsync(x => x.Disposed += (sender, args) => objCharacter.Dispose(), token).ConfigureAwait(false);
                 Utils.BreakIfDebug();
             }
+            MyToken = objMyToken;
 
             if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
                 return;
@@ -150,11 +165,11 @@ namespace Chummer.UI.Skills
                     "/chummer/skills/skill[exotic = "
                     + bool.TrueString.CleanXPath()
                     + ']') != null;
-            await this.DoThreadSafeAsync(x =>
+            await this.DoThreadSafeAsync(() =>
             {
                 Stopwatch swDisplays = Stopwatch.StartNew();
                 Stopwatch parts = Stopwatch.StartNew();
-                x.SuspendLayout();
+                SuspendLayout();
                 try
                 {
                     _lstActiveSkills
@@ -162,7 +177,7 @@ namespace Chummer.UI.Skills
                         {
                             Dock = DockStyle.Fill
                         };
-                    x.Disposed += (sender, args) => _lstActiveSkills.Dispose();
+                    Disposed += (sender, args) => _lstActiveSkills.Dispose();
 
                     Control MakeActiveSkill(Skill arg)
                     {
@@ -171,11 +186,9 @@ namespace Chummer.UI.Skills
                         return objSkillControl;
                     }
 
-                    x.RefreshSkillLabels();
-
                     swDisplays.TaskEnd("_lstActiveSkills");
 
-                    x.tlpActiveSkills.Controls.Add(_lstActiveSkills, 0, 2);
+                    tlpActiveSkills.Controls.Add(_lstActiveSkills, 0, 2);
                     tlpActiveSkills.SetColumnSpan(_lstActiveSkills, 5);
 
                     swDisplays.TaskEnd("_lstActiveSkills add");
@@ -186,8 +199,7 @@ namespace Chummer.UI.Skills
                     {
                         Dock = DockStyle.Fill
                     };
-                    x.Disposed += (sender, args) => _lstKnowledgeSkills.Dispose();
-                    x.RefreshKnowledgeSkillLabels();
+                    Disposed += (sender, args) => _lstKnowledgeSkills.Dispose();
 
                     swDisplays.TaskEnd("_lstKnowledgeSkills");
 
@@ -203,12 +215,11 @@ namespace Chummer.UI.Skills
                         {
                             Dock = DockStyle.Fill
                         };
-                        x.Disposed += (sender, args) => _lstSkillGroups.Dispose();
+                        Disposed += (sender, args) => _lstSkillGroups.Dispose();
                         _lstSkillGroups.Filter(
                             z => z.SkillList.Any(y => _objCharacter.SkillsSection.HasActiveSkill(y.DictionaryKey)),
                             true);
                         _lstSkillGroups.Sort(new SkillGroupSorter(SkillsSection.CompareSkillGroups));
-                        RefreshSkillGroupLabels();
 
                         swDisplays.TaskEnd("_lstSkillGroups");
 
@@ -313,7 +324,7 @@ namespace Chummer.UI.Skills
                 }
                 finally
                 {
-                    x.ResumeLayout(true);
+                    ResumeLayout(true);
                 }
             }, token: token).ConfigureAwait(false);
             if (!_objCharacter.Created)
@@ -347,13 +358,26 @@ namespace Chummer.UI.Skills
                                                                objMyToken, objMyToken).ConfigureAwait(false);
                 await UpdateKnoSkillRemainingAsync(objMyToken).ConfigureAwait(false);
             }
-            sw.Stop();
-            Debug.WriteLine("RealLoad() in {0} ms", sw.Elapsed.TotalMilliseconds);
-
+            await this.DoThreadSafeAsync(() =>
+            {
+                SuspendLayout();
+                try
+                {
+                    RefreshSkillLabels();
+                    RefreshKnowledgeSkillLabels();
+                    RefreshSkillGroupLabels();
+                }
+                finally
+                {
+                    ResumeLayout(true);
+                }
+            }, objMyToken).ConfigureAwait(false);
             _objCharacter.SkillsSection.Skills.ListChanged += SkillsOnListChanged;
             _objCharacter.SkillsSection.SkillGroups.ListChanged += SkillGroupsOnListChanged;
             _objCharacter.SkillsSection.KnowledgeSkills.ListChanged += KnowledgeSkillsOnListChanged;
             _objCharacter.SkillsSection.PropertyChanged += SkillsSectionOnPropertyChanged;
+            sw.Stop();
+            Debug.WriteLine("RealLoad() in {0} ms", sw.Elapsed.TotalMilliseconds);
         }
 
         private void ChildPropertyChanged(object sender, PropertyChangedEventArgs e)
