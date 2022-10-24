@@ -127,9 +127,17 @@ namespace Chummer
             {
                 if (_blnIsUnitTest == value)
                     return;
+                bool blnOldIsOkToRunDoEvents = DefaultIsOkToRunDoEvents;
                 _blnIsUnitTest = value;
                 if (!value)
                     IsUnitTestForUI = false;
+                bool blnNewIsOkToRunDoEvents = DefaultIsOkToRunDoEvents;
+                if (blnOldIsOkToRunDoEvents == blnNewIsOkToRunDoEvents)
+                    return;
+                if (blnNewIsOkToRunDoEvents)
+                    Interlocked.Increment(ref _intIsOkToRunDoEvents);
+                else
+                    Interlocked.Decrement(ref _intIsOkToRunDoEvents);
             }
         }
 
@@ -145,10 +153,17 @@ namespace Chummer
             {
                 if (_blnIsUnitTestForUI == value)
                     return;
+                bool blnOldIsOkToRunDoEvents = DefaultIsOkToRunDoEvents;
                 _blnIsUnitTestForUI = value;
                 if (value)
                     _blnIsUnitTest = true;
-                _intIsOkToRunDoEvents = DefaultIsOkToRunDoEvents ? 1 : 0;
+                bool blnNewIsOkToRunDoEvents = DefaultIsOkToRunDoEvents;
+                if (blnOldIsOkToRunDoEvents == blnNewIsOkToRunDoEvents)
+                    return;
+                if (blnNewIsOkToRunDoEvents)
+                    Interlocked.Increment(ref _intIsOkToRunDoEvents);
+                else
+                    Interlocked.Decrement(ref _intIsOkToRunDoEvents);
             }
         }
 
@@ -899,6 +914,7 @@ namespace Chummer
             }
             string strFileName = GetStartupPath + Path.DirectorySeparatorChar + AppDomain.CurrentDomain.FriendlyName;
             // Sending restart command asynchronously to MySynchronizationContext so that tasks can properly clean up before restart
+#pragma warning disable VSTHRD001
             MySynchronizationContext.Post(x =>
             {
                 (string strMyFileName, string strMyArguments) = (Tuple<string, string>) x;
@@ -916,6 +932,7 @@ namespace Chummer
                     objStartInfo.Start();
                 }
             }, new Tuple<string, string>(strFileName, strArguments));
+#pragma warning restore VSTHRD001
         }
 
         /// <summary>
@@ -1134,6 +1151,7 @@ namespace Chummer
             return tcs.Task;
         }
 
+#pragma warning disable VSTHRD001
         /// <summary>
         /// Run code on the main (UI) thread in a synchronous fashion.
         /// </summary>
@@ -1401,6 +1419,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             return await JoinableTaskFactory.RunAsync(func);
         }
+#pragma warning restore VSTHRD001
 
         /// <summary>
         /// Syntactic sugar for Thread.Sleep with the default sleep duration done in a way that makes sure the application will run queued up events afterwards.
@@ -1615,6 +1634,7 @@ namespace Chummer
         /// </summary>
         private static int _intIsOkToRunDoEvents = DefaultIsOkToRunDoEvents ? 1 : 0;
 
+#pragma warning disable VSTHRD002
         /// <summary>
         /// Syntactic sugar for synchronously waiting for code to complete while still allowing queued invocations to go through.
         /// Warning: much clumsier and slower than just using awaits inside of an async method. Use those instead if possible.
@@ -2184,6 +2204,7 @@ namespace Chummer
             if (objTask.Exception != null)
                 throw objTask.Exception;
         }
+#pragma warning restore VSTHRD002
 
         private static readonly Lazy<string> _strHumanReadableOSVersion = new Lazy<string>(GetHumanReadableOSVersion);
 

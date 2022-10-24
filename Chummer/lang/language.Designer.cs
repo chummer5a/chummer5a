@@ -113,6 +113,7 @@ namespace Chummer.lang {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
         [global::System.ComponentModel.Browsable(false)]
         [global::System.ComponentModel.DesignerSerializationVisibility(global::System.ComponentModel.DesignerSerializationVisibility.Content)]
+        [global::System.CLSCompliant(false)]
         public _stringDataTable _string {
             get {
                 return this.table_string;
@@ -370,6 +371,7 @@ namespace Chummer.lang {
         public delegate void stringsRowChangeEventHandler(object sender, stringsRowChangeEvent e);
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+        [global::System.CLSCompliant(false)]
         public delegate void _stringRowChangeEventHandler(object sender, _stringRowChangeEvent e);
         
         /// <summary>
@@ -928,6 +930,7 @@ namespace Chummer.lang {
         ///</summary>
         [global::System.Serializable()]
         [global::System.Xml.Serialization.XmlSchemaProviderAttribute("GetTypedTableSchema")]
+        [global::System.CLSCompliant(false)]
         public partial class _stringDataTable : global::System.Data.TypedTableBase<_stringRow> {
             
             private global::System.Data.DataColumn columnkey;
@@ -1011,15 +1014,19 @@ namespace Chummer.lang {
             }
             
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            [global::System.CLSCompliant(false)]
             public event _stringRowChangeEventHandler _stringRowChanging;
             
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            [global::System.CLSCompliant(false)]
             public event _stringRowChangeEventHandler _stringRowChanged;
             
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            [global::System.CLSCompliant(false)]
             public event _stringRowChangeEventHandler _stringRowDeleting;
             
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            [global::System.CLSCompliant(false)]
             public event _stringRowChangeEventHandler _stringRowDeleted;
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1328,6 +1335,7 @@ namespace Chummer.lang {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            [global::System.CLSCompliant(false)]
             public _stringRow[] GetstringRows() {
                 if ((this.Table.ChildRelations["strings_string"] == null)) {
                     return new _stringRow[0];
@@ -1341,6 +1349,7 @@ namespace Chummer.lang {
         /// <summary>
         ///Represents strongly named DataRow class.
         ///</summary>
+        [global::System.CLSCompliant(false)]
         public partial class _stringRow : global::System.Data.DataRow {
             
             private _stringDataTable table_string;
@@ -1486,6 +1495,7 @@ namespace Chummer.lang {
         ///Row event argument class
         ///</summary>
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+        [global::System.CLSCompliant(false)]
         public class _stringRowChangeEvent : global::System.EventArgs {
             
             private _stringRow eventRow;

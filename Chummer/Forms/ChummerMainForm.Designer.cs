@@ -249,11 +249,13 @@ namespace Chummer
             // 
             // toolStripSeparator3
             // 
+            this.toolStripSeparator3.DefaultColorScheme = true;
             this.toolStripSeparator3.Name = "toolStripSeparator3";
             this.toolStripSeparator3.Size = new System.Drawing.Size(192, 6);
             // 
             // toolStripSeparator4
             // 
+            this.toolStripSeparator4.DefaultColorScheme = true;
             this.toolStripSeparator4.Name = "toolStripSeparator4";
             this.toolStripSeparator4.Size = new System.Drawing.Size(192, 6);
             this.toolStripSeparator4.Visible = false;
@@ -321,6 +323,7 @@ namespace Chummer
             // 
             // mnuMURSep
             // 
+            this.mnuMURSep.DefaultColorScheme = true;
             this.mnuMURSep.Name = "mnuMURSep";
             this.mnuMURSep.Size = new System.Drawing.Size(192, 6);
             // 
@@ -646,6 +649,7 @@ namespace Chummer
             // 
             // mnuFileMRUSeparator
             // 
+            this.mnuFileMRUSeparator.DefaultColorScheme = true;
             this.mnuFileMRUSeparator.Name = "mnuFileMRUSeparator";
             this.mnuFileMRUSeparator.Size = new System.Drawing.Size(192, 6);
             this.mnuFileMRUSeparator.Visible = false;
@@ -701,6 +705,7 @@ namespace Chummer
             // 
             // toolStripSeparator5
             // 
+            this.toolStripSeparator5.DefaultColorScheme = true;
             this.toolStripSeparator5.Name = "toolStripSeparator5";
             this.toolStripSeparator5.Size = new System.Drawing.Size(168, 6);
             // 
@@ -766,6 +771,7 @@ namespace Chummer
             // 
             // toolStripSeparator6
             // 
+            this.toolStripSeparator6.DefaultColorScheme = true;
             this.toolStripSeparator6.Name = "toolStripSeparator6";
             this.toolStripSeparator6.Size = new System.Drawing.Size(168, 6);
             // 
@@ -933,6 +939,7 @@ namespace Chummer
             // 
             // toolStripSeparator8
             // 
+            this.toolStripSeparator8.DefaultColorScheme = true;
             this.toolStripSeparator8.Name = "toolStripSeparator8";
             this.toolStripSeparator8.Size = new System.Drawing.Size(214, 6);
             // 
@@ -1067,6 +1074,7 @@ namespace Chummer
             // 
             // toolStripSeparator1
             // 
+            this.toolStripSeparator1.DefaultColorScheme = true;
             this.toolStripSeparator1.MergeAction = System.Windows.Forms.MergeAction.Insert;
             this.toolStripSeparator1.MergeIndex = 5;
             this.toolStripSeparator1.Name = "toolStripSeparator1";
@@ -1075,6 +1083,7 @@ namespace Chummer
             // 
             // toolStripSeparator2
             // 
+            this.toolStripSeparator2.DefaultColorScheme = true;
             this.toolStripSeparator2.MergeAction = System.Windows.Forms.MergeAction.Insert;
             this.toolStripSeparator2.MergeIndex = 7;
             this.toolStripSeparator2.Name = "toolStripSeparator2";

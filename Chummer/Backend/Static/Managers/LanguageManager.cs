@@ -1590,6 +1590,7 @@ namespace Chummer
                                             string strTranslate = objXPathPair.Item4(objNode);
                                             if (string.IsNullOrEmpty(strTranslate))
                                                 continue;
+                                            objState.Break();
                                             return strTranslate;
                                         }
 
@@ -2043,6 +2044,7 @@ namespace Chummer
                                 string strOriginal = objXPathPair.Item3(objNode);
                                 if (string.IsNullOrEmpty(strOriginal))
                                     continue;
+                                objState.Break();
                                 return strOriginal;
                             }
 

@@ -27,7 +27,6 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(About));
             this.txtDescription = new System.Windows.Forms.TextBox();
             this.lblCompanyName = new System.Windows.Forms.Label();
@@ -173,7 +172,7 @@ namespace Chummer
             this.txtDisclaimer.Text = "Disclaimer";
             this.txtDisclaimer.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txt_KeyDown);
             // 
-            // frmAbout
+            // About
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
