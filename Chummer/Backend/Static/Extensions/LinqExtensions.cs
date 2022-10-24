@@ -515,13 +515,13 @@ namespace Chummer
 
                     if (blnMoveNext)
                     {
-                        foreach (int intLoop in Utils.RunWithoutThreadLock(() => lstTasks.ToArray(), token))
+                        foreach (int intLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
                             intReturn += intLoop;
                         lstTasks.Clear();
                     }
                 }
             }
-            foreach (int intLoop in Utils.RunWithoutThreadLock(() => lstTasks.ToArray(), token))
+            foreach (int intLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
                 intReturn += intLoop;
             return intReturn;
         }
@@ -562,13 +562,13 @@ namespace Chummer
 
                     if (blnMoveNext)
                     {
-                        foreach (int intLoop in Utils.RunWithoutThreadLock(() => lstTasks.ToArray(), token))
+                        foreach (int intLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
                             intReturn += intLoop;
                         lstTasks.Clear();
                     }
                 }
             }
-            foreach (int intLoop in Utils.RunWithoutThreadLock(() => lstTasks.ToArray(), token))
+            foreach (int intLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
                 intReturn += intLoop;
             return intReturn;
         }
@@ -609,13 +609,13 @@ namespace Chummer
 
                     if (blnMoveNext)
                     {
-                        foreach (long longLoop in Utils.RunWithoutThreadLock(() => lstTasks.ToArray(), token))
+                        foreach (long longLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
                             lngReturn += longLoop;
                         lstTasks.Clear();
                     }
                 }
             }
-            foreach (long longLoop in Utils.RunWithoutThreadLock(() => lstTasks.ToArray(), token))
+            foreach (long longLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
                 lngReturn += longLoop;
             return lngReturn;
         }
@@ -656,13 +656,13 @@ namespace Chummer
 
                     if (blnMoveNext)
                     {
-                        foreach (long longLoop in Utils.RunWithoutThreadLock(() => lstTasks.ToArray(), token))
+                        foreach (long longLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
                             lngReturn += longLoop;
                         lstTasks.Clear();
                     }
                 }
             }
-            foreach (long longLoop in Utils.RunWithoutThreadLock(() => lstTasks.ToArray(), token))
+            foreach (long longLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
                 lngReturn += longLoop;
             return lngReturn;
         }
@@ -703,13 +703,13 @@ namespace Chummer
 
                     if (blnMoveNext)
                     {
-                        foreach (float floatLoop in Utils.RunWithoutThreadLock(() => lstTasks.ToArray(), token))
+                        foreach (float floatLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
                             fltReturn += floatLoop;
                         lstTasks.Clear();
                     }
                 }
             }
-            foreach (float floatLoop in Utils.RunWithoutThreadLock(() => lstTasks.ToArray(), token))
+            foreach (float floatLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
                 fltReturn += floatLoop;
             return fltReturn;
         }
@@ -750,13 +750,13 @@ namespace Chummer
 
                     if (blnMoveNext)
                     {
-                        foreach (float floatLoop in Utils.RunWithoutThreadLock(() => lstTasks.ToArray(), token))
+                        foreach (float floatLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
                             fltReturn += floatLoop;
                         lstTasks.Clear();
                     }
                 }
             }
-            foreach (float floatLoop in Utils.RunWithoutThreadLock(() => lstTasks.ToArray(), token))
+            foreach (float floatLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
                 fltReturn += floatLoop;
             return fltReturn;
         }
@@ -797,13 +797,13 @@ namespace Chummer
 
                     if (blnMoveNext)
                     {
-                        foreach (double doubleLoop in Utils.RunWithoutThreadLock(() => lstTasks.ToArray(), token))
+                        foreach (double doubleLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
                             dblReturn += doubleLoop;
                         lstTasks.Clear();
                     }
                 }
             }
-            foreach (double doubleLoop in Utils.RunWithoutThreadLock(() => lstTasks.ToArray(), token))
+            foreach (double doubleLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
                 dblReturn += doubleLoop;
             return dblReturn;
         }
@@ -844,13 +844,13 @@ namespace Chummer
 
                     if (blnMoveNext)
                     {
-                        foreach (double doubleLoop in Utils.RunWithoutThreadLock(() => lstTasks.ToArray(), token))
+                        foreach (double doubleLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
                             dblReturn += doubleLoop;
                         lstTasks.Clear();
                     }
                 }
             }
-            foreach (double doubleLoop in Utils.RunWithoutThreadLock(() => lstTasks.ToArray(), token))
+            foreach (double doubleLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
                 dblReturn += doubleLoop;
             return dblReturn;
         }
@@ -891,13 +891,13 @@ namespace Chummer
 
                     if (blnMoveNext)
                     {
-                        foreach (decimal decimalLoop in Utils.RunWithoutThreadLock(() => lstTasks.ToArray(), token))
+                        foreach (decimal decimalLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
                             decReturn += decimalLoop;
                         lstTasks.Clear();
                     }
                 }
             }
-            foreach (decimal decimalLoop in Utils.RunWithoutThreadLock(() => lstTasks.ToArray(), token))
+            foreach (decimal decimalLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
                 decReturn += decimalLoop;
             return decReturn;
         }
@@ -938,13 +938,13 @@ namespace Chummer
 
                     if (blnMoveNext)
                     {
-                        foreach (decimal decimalLoop in Utils.RunWithoutThreadLock(() => lstTasks.ToArray(), token))
+                        foreach (decimal decimalLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
                             decReturn += decimalLoop;
                         lstTasks.Clear();
                     }
                 }
             }
-            foreach (decimal decimalLoop in Utils.RunWithoutThreadLock(() => lstTasks.ToArray(), token))
+            foreach (decimal decimalLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
                 decReturn += decimalLoop;
             return decReturn;
         }
@@ -986,13 +986,13 @@ namespace Chummer
 
                     if (blnMoveNext)
                     {
-                        foreach (int intLoop in Utils.RunWithoutThreadLock(() => lstTasks.ToArray(), token))
+                        foreach (int intLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
                             intReturn += intLoop;
                         lstTasks.Clear();
                     }
                 }
             }
-            foreach (int intLoop in Utils.RunWithoutThreadLock(() => lstTasks.ToArray(), token))
+            foreach (int intLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
                 intReturn += intLoop;
             return intReturn;
         }
@@ -1034,13 +1034,13 @@ namespace Chummer
 
                     if (blnMoveNext)
                     {
-                        foreach (int intLoop in Utils.RunWithoutThreadLock(() => lstTasks.ToArray(), token))
+                        foreach (int intLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
                             intReturn += intLoop;
                         lstTasks.Clear();
                     }
                 }
             }
-            foreach (int intLoop in Utils.RunWithoutThreadLock(() => lstTasks.ToArray(), token))
+            foreach (int intLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
                 intReturn += intLoop;
             return intReturn;
         }
@@ -1082,13 +1082,13 @@ namespace Chummer
 
                     if (blnMoveNext)
                     {
-                        foreach (long longLoop in Utils.RunWithoutThreadLock(() => lstTasks.ToArray(), token))
+                        foreach (long longLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
                             lngReturn += longLoop;
                         lstTasks.Clear();
                     }
                 }
             }
-            foreach (long longLoop in Utils.RunWithoutThreadLock(() => lstTasks.ToArray(), token))
+            foreach (long longLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
                 lngReturn += longLoop;
             return lngReturn;
         }
@@ -1130,13 +1130,13 @@ namespace Chummer
 
                     if (blnMoveNext)
                     {
-                        foreach (long longLoop in Utils.RunWithoutThreadLock(() => lstTasks.ToArray(), token))
+                        foreach (long longLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
                             lngReturn += longLoop;
                         lstTasks.Clear();
                     }
                 }
             }
-            foreach (long longLoop in Utils.RunWithoutThreadLock(() => lstTasks.ToArray(), token))
+            foreach (long longLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
                 lngReturn += longLoop;
             return lngReturn;
         }
@@ -1178,13 +1178,13 @@ namespace Chummer
 
                     if (blnMoveNext)
                     {
-                        foreach (float floatLoop in Utils.RunWithoutThreadLock(() => lstTasks.ToArray(), token))
+                        foreach (float floatLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
                             fltReturn += floatLoop;
                         lstTasks.Clear();
                     }
                 }
             }
-            foreach (float floatLoop in Utils.RunWithoutThreadLock(() => lstTasks.ToArray(), token))
+            foreach (float floatLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
                 fltReturn += floatLoop;
             return fltReturn;
         }
@@ -1226,13 +1226,13 @@ namespace Chummer
 
                     if (blnMoveNext)
                     {
-                        foreach (float floatLoop in Utils.RunWithoutThreadLock(() => lstTasks.ToArray(), token))
+                        foreach (float floatLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
                             fltReturn += floatLoop;
                         lstTasks.Clear();
                     }
                 }
             }
-            foreach (float floatLoop in Utils.RunWithoutThreadLock(() => lstTasks.ToArray(), token))
+            foreach (float floatLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
                 fltReturn += floatLoop;
             return fltReturn;
         }
@@ -1274,13 +1274,13 @@ namespace Chummer
 
                     if (blnMoveNext)
                     {
-                        foreach (double doubleLoop in Utils.RunWithoutThreadLock(() => lstTasks.ToArray(), token))
+                        foreach (double doubleLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
                             dblReturn += doubleLoop;
                         lstTasks.Clear();
                     }
                 }
             }
-            foreach (double doubleLoop in Utils.RunWithoutThreadLock(() => lstTasks.ToArray(), token))
+            foreach (double doubleLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
                 dblReturn += doubleLoop;
             return dblReturn;
         }
@@ -1322,13 +1322,13 @@ namespace Chummer
 
                     if (blnMoveNext)
                     {
-                        foreach (double doubleLoop in Utils.RunWithoutThreadLock(() => lstTasks.ToArray(), token))
+                        foreach (double doubleLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
                             dblReturn += doubleLoop;
                         lstTasks.Clear();
                     }
                 }
             }
-            foreach (double doubleLoop in Utils.RunWithoutThreadLock(() => lstTasks.ToArray(), token))
+            foreach (double doubleLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
                 dblReturn += doubleLoop;
             return dblReturn;
         }
@@ -1370,13 +1370,13 @@ namespace Chummer
 
                     if (blnMoveNext)
                     {
-                        foreach (decimal decimalLoop in Utils.RunWithoutThreadLock(() => lstTasks.ToArray(), token))
+                        foreach (decimal decimalLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
                             decReturn += decimalLoop;
                         lstTasks.Clear();
                     }
                 }
             }
-            foreach (decimal decimalLoop in Utils.RunWithoutThreadLock(() => lstTasks.ToArray(), token))
+            foreach (decimal decimalLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
                 decReturn += decimalLoop;
             return decReturn;
         }
@@ -1418,13 +1418,13 @@ namespace Chummer
 
                     if (blnMoveNext)
                     {
-                        foreach (decimal decimalLoop in Utils.RunWithoutThreadLock(() => lstTasks.ToArray(), token))
+                        foreach (decimal decimalLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
                             decReturn += decimalLoop;
                         lstTasks.Clear();
                     }
                 }
             }
-            foreach (decimal decimalLoop in Utils.RunWithoutThreadLock(() => lstTasks.ToArray(), token))
+            foreach (decimal decimalLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
                 decReturn += decimalLoop;
             return decReturn;
         }
@@ -1466,13 +1466,13 @@ namespace Chummer
 
                     if (blnMoveNext)
                     {
-                        foreach (int intLoop in Utils.RunWithoutThreadLock(() => lstTasks.ToArray(), token))
+                        foreach (int intLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
                             intReturn += intLoop;
                         lstTasks.Clear();
                     }
                 }
             }
-            foreach (int intLoop in Utils.RunWithoutThreadLock(() => lstTasks.ToArray(), token))
+            foreach (int intLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
                 intReturn += intLoop;
             return intReturn;
         }
@@ -1514,13 +1514,13 @@ namespace Chummer
 
                     if (blnMoveNext)
                     {
-                        foreach (int intLoop in Utils.RunWithoutThreadLock(() => lstTasks.ToArray(), token))
+                        foreach (int intLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
                             intReturn += intLoop;
                         lstTasks.Clear();
                     }
                 }
             }
-            foreach (int intLoop in Utils.RunWithoutThreadLock(() => lstTasks.ToArray(), token))
+            foreach (int intLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
                 intReturn += intLoop;
             return intReturn;
         }
@@ -1562,13 +1562,13 @@ namespace Chummer
 
                     if (blnMoveNext)
                     {
-                        foreach (long longLoop in Utils.RunWithoutThreadLock(() => lstTasks.ToArray(), token))
+                        foreach (long longLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
                             lngReturn += longLoop;
                         lstTasks.Clear();
                     }
                 }
             }
-            foreach (long longLoop in Utils.RunWithoutThreadLock(() => lstTasks.ToArray(), token))
+            foreach (long longLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
                 lngReturn += longLoop;
             return lngReturn;
         }
@@ -1610,13 +1610,13 @@ namespace Chummer
 
                     if (blnMoveNext)
                     {
-                        foreach (long longLoop in Utils.RunWithoutThreadLock(() => lstTasks.ToArray(), token))
+                        foreach (long longLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
                             lngReturn += longLoop;
                         lstTasks.Clear();
                     }
                 }
             }
-            foreach (long longLoop in Utils.RunWithoutThreadLock(() => lstTasks.ToArray(), token))
+            foreach (long longLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
                 lngReturn += longLoop;
             return lngReturn;
         }
@@ -1658,13 +1658,13 @@ namespace Chummer
 
                     if (blnMoveNext)
                     {
-                        foreach (float floatLoop in Utils.RunWithoutThreadLock(() => lstTasks.ToArray(), token))
+                        foreach (float floatLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
                             fltReturn += floatLoop;
                         lstTasks.Clear();
                     }
                 }
             }
-            foreach (float floatLoop in Utils.RunWithoutThreadLock(() => lstTasks.ToArray(), token))
+            foreach (float floatLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
                 fltReturn += floatLoop;
             return fltReturn;
         }
@@ -1706,13 +1706,13 @@ namespace Chummer
 
                     if (blnMoveNext)
                     {
-                        foreach (float floatLoop in Utils.RunWithoutThreadLock(() => lstTasks.ToArray(), token))
+                        foreach (float floatLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
                             fltReturn += floatLoop;
                         lstTasks.Clear();
                     }
                 }
             }
-            foreach (float floatLoop in Utils.RunWithoutThreadLock(() => lstTasks.ToArray(), token))
+            foreach (float floatLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
                 fltReturn += floatLoop;
             return fltReturn;
         }
@@ -1754,13 +1754,13 @@ namespace Chummer
 
                     if (blnMoveNext)
                     {
-                        foreach (double doubleLoop in Utils.RunWithoutThreadLock(() => lstTasks.ToArray(), token))
+                        foreach (double doubleLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
                             dblReturn += doubleLoop;
                         lstTasks.Clear();
                     }
                 }
             }
-            foreach (double doubleLoop in Utils.RunWithoutThreadLock(() => lstTasks.ToArray(), token))
+            foreach (double doubleLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
                 dblReturn += doubleLoop;
             return dblReturn;
         }
@@ -1802,13 +1802,13 @@ namespace Chummer
 
                     if (blnMoveNext)
                     {
-                        foreach (double doubleLoop in Utils.RunWithoutThreadLock(() => lstTasks.ToArray(), token))
+                        foreach (double doubleLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
                             dblReturn += doubleLoop;
                         lstTasks.Clear();
                     }
                 }
             }
-            foreach (double doubleLoop in Utils.RunWithoutThreadLock(() => lstTasks.ToArray(), token))
+            foreach (double doubleLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
                 dblReturn += doubleLoop;
             return dblReturn;
         }
@@ -1850,13 +1850,13 @@ namespace Chummer
 
                     if (blnMoveNext)
                     {
-                        foreach (decimal decimalLoop in Utils.RunWithoutThreadLock(() => lstTasks.ToArray(), token))
+                        foreach (decimal decimalLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
                             decReturn += decimalLoop;
                         lstTasks.Clear();
                     }
                 }
             }
-            foreach (decimal decimalLoop in Utils.RunWithoutThreadLock(() => lstTasks.ToArray(), token))
+            foreach (decimal decimalLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
                 decReturn += decimalLoop;
             return decReturn;
         }
@@ -1898,13 +1898,13 @@ namespace Chummer
 
                     if (blnMoveNext)
                     {
-                        foreach (decimal decimalLoop in Utils.RunWithoutThreadLock(() => lstTasks.ToArray(), token))
+                        foreach (decimal decimalLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
                             decReturn += decimalLoop;
                         lstTasks.Clear();
                     }
                 }
             }
-            foreach (decimal decimalLoop in Utils.RunWithoutThreadLock(() => lstTasks.ToArray(), token))
+            foreach (decimal decimalLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
                 decReturn += decimalLoop;
             return decReturn;
         }

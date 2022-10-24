@@ -4756,7 +4756,7 @@ namespace Chummer
                                         lstToRun.Add(() => funcLoopToRun(this));
                                 }
 
-                                bool[] ablnTemp = Utils.RunWithoutThreadLock(lstToRun.ToArray());
+                                bool[] ablnTemp = Utils.RunWithoutThreadLock(lstToRun.ToArray(), token);
                                 if (blnErrorFree && ablnTemp.FirstMatching(false) >= 0)
                                     blnErrorFree = false;
                             }
@@ -4772,7 +4772,7 @@ namespace Chummer
                                         lstToRunAsync.Add(() => funcLoopToRun(this, token));
                                 }
 
-                                bool[] ablnTemp = Utils.RunWithoutThreadLock(lstToRunAsync.ToArray());
+                                bool[] ablnTemp = Utils.RunWithoutThreadLock(lstToRunAsync.ToArray(), token);
                                 if (blnErrorFree && ablnTemp.FirstMatching(false) >= 0)
                                     blnErrorFree = false;
                             }

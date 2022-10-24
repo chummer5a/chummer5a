@@ -347,30 +347,30 @@ namespace Chummer.UI.Skills
             }, token: token).ConfigureAwait(false);
             if (!_objCharacter.Created)
             {
-                await lblGroupsSp.RegisterOneWayAsyncDataBinding((x, y) => x.Visible = y, _objCharacter,
+                await lblGroupsSp.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y, _objCharacter,
                                                                  nameof(Character
                                                                             .EffectiveBuildMethodUsesPriorityTables),
                                                                  x => x.GetEffectiveBuildMethodUsesPriorityTablesAsync(
                                                                      objMyToken).AsTask(), objMyToken, objMyToken)
                                  .ConfigureAwait(false);
-                await lblActiveSp.RegisterOneWayAsyncDataBinding((x, y) => x.Visible = y, _objCharacter,
+                await lblActiveSp.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y, _objCharacter,
                                                                  nameof(Character
                                                                             .EffectiveBuildMethodUsesPriorityTables),
                                                                  x => x.GetEffectiveBuildMethodUsesPriorityTablesAsync(
                                                                      objMyToken).AsTask(), objMyToken, objMyToken)
                                  .ConfigureAwait(false);
-                await lblBuyWithKarma.RegisterOneWayAsyncDataBinding((x, y) => x.Visible = y, _objCharacter,
+                await lblBuyWithKarma.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y, _objCharacter,
                                                                      nameof(Character
                                                                                 .EffectiveBuildMethodUsesPriorityTables),
                                                                      x => x.GetEffectiveBuildMethodUsesPriorityTablesAsync(
                                                                          objMyToken).AsTask(), objMyToken, objMyToken)
                                      .ConfigureAwait(false);
 
-                await lblKnoSp.RegisterOneWayAsyncDataBinding((x, y) => x.Visible = y, _objCharacter.SkillsSection,
+                await lblKnoSp.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y, _objCharacter.SkillsSection,
                                                               nameof(SkillsSection.HasKnowledgePoints),
                                                               x => x.GetHasKnowledgePointsAsync(objMyToken).AsTask(),
                                                               objMyToken, objMyToken).ConfigureAwait(false);
-                await lblKnoBwk.RegisterOneWayAsyncDataBinding((x, y) => x.Visible = y, _objCharacter.SkillsSection,
+                await lblKnoBwk.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y, _objCharacter.SkillsSection,
                                                                nameof(SkillsSection.HasKnowledgePoints),
                                                                x => x.GetHasKnowledgePointsAsync(objMyToken).AsTask(),
                                                                objMyToken, objMyToken).ConfigureAwait(false);

@@ -1560,11 +1560,11 @@ namespace Chummer
 
         private async ValueTask SetupDataBindings(CancellationToken token = default)
         {
-            await cmdRename.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = !y, _objCharacterSettings,
+            await cmdRename.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = !y, _objCharacterSettings,
                                                            nameof(CharacterSettings.BuiltInOption),
                                                            x => x.GetBuiltInOptionAsync(token).AsTask(), token: token)
                            .ConfigureAwait(false);
-            await cmdDelete.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = !y, _objCharacterSettings,
+            await cmdDelete.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = !y, _objCharacterSettings,
                                                            nameof(CharacterSettings.BuiltInOption),
                                                            x => x.GetBuiltInOptionAsync(token).AsTask(), token: token)
                            .ConfigureAwait(false);
@@ -1572,32 +1572,32 @@ namespace Chummer
             await cboBuildMethod
                   .DoDataBindingAsync("SelectedValue", _objCharacterSettings, nameof(CharacterSettings.BuildMethod),
                                       token).ConfigureAwait(false);
-            await lblPriorityTable.RegisterOneWayAsyncDataBinding((x, y) => x.Visible = y, _objCharacterSettings,
+            await lblPriorityTable.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y, _objCharacterSettings,
                                                                   nameof(CharacterSettings
                                                                              .BuildMethodUsesPriorityTables),
                                                                   x => x.GetBuildMethodUsesPriorityTablesAsync(token)
                                                                         .AsTask(), token: token).ConfigureAwait(false);
-            await cboPriorityTable.RegisterOneWayAsyncDataBinding((x, y) => x.Visible = y, _objCharacterSettings,
+            await cboPriorityTable.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y, _objCharacterSettings,
                                                                   nameof(CharacterSettings
                                                                              .BuildMethodUsesPriorityTables),
                                                                   x => x.GetBuildMethodUsesPriorityTablesAsync(token)
                                                                         .AsTask(), token: token).ConfigureAwait(false);
-            await lblPriorities.RegisterOneWayAsyncDataBinding((x, y) => x.Visible = y, _objCharacterSettings,
+            await lblPriorities.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y, _objCharacterSettings,
                                                                nameof(CharacterSettings.BuildMethodIsPriority),
                                                                x => x.GetBuildMethodIsPriorityAsync(token).AsTask(),
                                                                token: token).ConfigureAwait(false);
-            await txtPriorities.RegisterOneWayAsyncDataBinding((x, y) => x.Visible = y, _objCharacterSettings,
+            await txtPriorities.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y, _objCharacterSettings,
                                                                nameof(CharacterSettings.BuildMethodIsPriority),
                                                                x => x.GetBuildMethodIsPriorityAsync(token).AsTask(),
                                                                token: token).ConfigureAwait(false);
             await txtPriorities
                   .DoDataBindingAsync("Text", _objCharacterSettings, nameof(CharacterSettings.PriorityArray), token)
                   .ConfigureAwait(false);
-            await lblSumToTen.RegisterOneWayAsyncDataBinding((x, y) => x.Visible = y, _objCharacterSettings,
+            await lblSumToTen.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y, _objCharacterSettings,
                                                              nameof(CharacterSettings.BuildMethodIsSumtoTen),
                                                              x => x.GetBuildMethodIsSumtoTenAsync(token).AsTask(),
                                                              token: token).ConfigureAwait(false);
-            await nudSumToTen.RegisterOneWayAsyncDataBinding((x, y) => x.Visible = y, _objCharacterSettings,
+            await nudSumToTen.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y, _objCharacterSettings,
                                                              nameof(CharacterSettings.BuildMethodIsSumtoTen),
                                                              x => x.GetBuildMethodIsSumtoTenAsync(token).AsTask(),
                                                              token: token).ConfigureAwait(false);
@@ -1747,7 +1747,7 @@ namespace Chummer
                   .DoDataBindingAsync("Checked", _objCharacterSettings,
                                       nameof(CharacterSettings.CyberlimbAttributeBonusCapOverride), token)
                   .ConfigureAwait(false);
-            await nudCyberlimbAttributeBonusCap.RegisterOneWayAsyncDataBinding(
+            await nudCyberlimbAttributeBonusCap.RegisterOneWayAsyncDataBindingAsync(
                 (x, y) => x.Enabled = y, _objCharacterSettings,
                 nameof(CharacterSettings.CyberlimbAttributeBonusCapOverride),
                 x => x.GetCyberlimbAttributeBonusCapOverrideAsync(token).AsTask(), token: token).ConfigureAwait(false);
@@ -1826,14 +1826,14 @@ namespace Chummer
             await chkEnable4eStyleEnemyTracking
                   .DoDataBindingAsync("Checked", _objCharacterSettings, nameof(CharacterSettings.EnableEnemyTracking),
                                       token).ConfigureAwait(false);
-            await flpKarmaGainedFromEnemies.RegisterOneWayAsyncDataBinding(
+            await flpKarmaGainedFromEnemies.RegisterOneWayAsyncDataBindingAsync(
                 (x, y) => x.Enabled = y, _objCharacterSettings,
                 nameof(CharacterSettings.EnableEnemyTracking),
                 x => x.GetEnableEnemyTrackingAsync(token).AsTask(), token: token).ConfigureAwait(false);
             await nudKarmaGainedFromEnemies
                   .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaEnemy), token)
                   .ConfigureAwait(false);
-            await chkEnemyKarmaQualityLimit.RegisterOneWayAsyncDataBinding(
+            await chkEnemyKarmaQualityLimit.RegisterOneWayAsyncDataBindingAsync(
                 (x, y) => x.Enabled = y, _objCharacterSettings,
                 nameof(CharacterSettings.EnableEnemyTracking),
                 x => x.GetEnableEnemyTrackingAsync(token).AsTask(), token: token).ConfigureAwait(false);
@@ -1864,7 +1864,7 @@ namespace Chummer
             await chkMysAdPp
                   .DoDataBindingAsync("Checked", _objCharacterSettings, nameof(CharacterSettings.MysAdeptAllowPpCareer),
                                       token).ConfigureAwait(false);
-            await chkMysAdPp.RegisterOneWayAsyncDataBinding(
+            await chkMysAdPp.RegisterOneWayAsyncDataBindingAsync(
                 (x, y) => x.Enabled = !y, _objCharacterSettings,
                 nameof(CharacterSettings.MysAdeptSecondMAGAttribute),
                 x => x.GetMysAdeptSecondMAGAttributeAsync(token).AsTask(), token: token).ConfigureAwait(false);
@@ -1872,7 +1872,7 @@ namespace Chummer
                   .DoDataBindingAsync("Checked", _objCharacterSettings,
                                       nameof(CharacterSettings.PrioritySpellsAsAdeptPowers), token)
                   .ConfigureAwait(false);
-            await chkPrioritySpellsAsAdeptPowers.RegisterOneWayAsyncDataBinding(
+            await chkPrioritySpellsAsAdeptPowers.RegisterOneWayAsyncDataBindingAsync(
                 (x, y) => x.Enabled = !y, _objCharacterSettings,
                 nameof(CharacterSettings.MysAdeptSecondMAGAttribute),
                 x => x.GetMysAdeptSecondMAGAttributeAsync(token).AsTask(), token: token).ConfigureAwait(false);
@@ -1880,7 +1880,7 @@ namespace Chummer
                   .DoDataBindingAsync("Checked", _objCharacterSettings,
                                       nameof(CharacterSettings.MysAdeptSecondMAGAttribute), token)
                   .ConfigureAwait(false);
-            await chkMysAdeptSecondMAGAttribute.RegisterOneWayAsyncDataBinding(
+            await chkMysAdeptSecondMAGAttribute.RegisterOneWayAsyncDataBindingAsync(
                 (x, y) => x.Enabled = y, _objCharacterSettings,
                 nameof(CharacterSettings.MysAdeptSecondMAGAttributeEnabled),
                 x => x.GetMysAdeptSecondMAGAttributeEnabledAsync(token).AsTask(), token: token).ConfigureAwait(false);
@@ -1933,7 +1933,7 @@ namespace Chummer
                   .DoDataBindingAsync("Checked", _objCharacterSettings,
                                       nameof(CharacterSettings.DroneArmorMultiplierEnabled), token)
                   .ConfigureAwait(false);
-            await nudDroneArmorMultiplier.RegisterOneWayAsyncDataBinding(
+            await nudDroneArmorMultiplier.RegisterOneWayAsyncDataBindingAsync(
                 (x, y) => x.Enabled = y, _objCharacterSettings,
                 nameof(CharacterSettings.DroneArmorMultiplierEnabled),
                 x => x.GetDroneArmorMultiplierEnabledAsync(token).AsTask(), token: token).ConfigureAwait(false);
@@ -1946,7 +1946,7 @@ namespace Chummer
             await chkExceedNegativeQualities
                   .DoDataBindingAsync("Checked", _objCharacterSettings,
                                       nameof(CharacterSettings.ExceedNegativeQualities), token).ConfigureAwait(false);
-            await chkExceedNegativeQualitiesNoBonus.RegisterOneWayAsyncDataBinding(
+            await chkExceedNegativeQualitiesNoBonus.RegisterOneWayAsyncDataBindingAsync(
                 (x, y) => x.Enabled = y, _objCharacterSettings,
                 nameof(CharacterSettings.ExceedNegativeQualities),
                 x => x.GetExceedNegativeQualitiesAsync(token).AsTask(), token: token).ConfigureAwait(false);
@@ -1957,7 +1957,7 @@ namespace Chummer
             await chkExceedPositiveQualities
                   .DoDataBindingAsync("Checked", _objCharacterSettings,
                                       nameof(CharacterSettings.ExceedPositiveQualities), token).ConfigureAwait(false);
-            await chkExceedPositiveQualitiesCostDoubled.RegisterOneWayAsyncDataBinding(
+            await chkExceedPositiveQualitiesCostDoubled.RegisterOneWayAsyncDataBindingAsync(
                 (x, y) => x.Enabled = y, _objCharacterSettings,
                 nameof(CharacterSettings.ExceedPositiveQualities),
                 x => x.GetExceedPositiveQualitiesAsync(token).AsTask(), token: token).ConfigureAwait(false);

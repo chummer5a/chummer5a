@@ -189,7 +189,7 @@ namespace Chummer.UI.Attributes
                             await AttributeObject.SetKarmaAsync(intKarmaMaximum).ConfigureAwait(false);
                     }
 
-                    await nudBase.RegisterOneWayAsyncDataBinding((x, y) => x.Visible = y, _objCharacter,
+                    await nudBase.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y, _objCharacter,
                                                                  nameof(Character
                                                                             .EffectiveBuildMethodUsesPriorityTables),
                                                                  x => x.GetEffectiveBuildMethodUsesPriorityTablesAsync()

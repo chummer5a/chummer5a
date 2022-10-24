@@ -1504,19 +1504,28 @@ namespace Chummer
         {
             if (!EverDoEvents)
             {
-                Thread.Sleep(intDurationMilliseconds);
+                if (Program.IsMainThread)
+                    JoinableTaskFactory.Run(() => Task.Delay(intDurationMilliseconds), JoinableTaskCreationOptions.LongRunning);
+                else
+                    Thread.Sleep(intDurationMilliseconds);
                 return;
             }
 
             int i = intDurationMilliseconds;
             for (; i >= DefaultSleepDuration; i -= DefaultSleepDuration)
             {
-                Thread.Sleep(DefaultSleepDuration);
+                if (Program.IsMainThread)
+                    JoinableTaskFactory.Run(() => Task.Delay(DefaultSleepDuration));
+                else
+                    Thread.Sleep(DefaultSleepDuration);
                 DoEventsSafe(blnForceDoEvents);
             }
             if (i > 0)
             {
-                Thread.Sleep(i);
+                if (Program.IsMainThread)
+                    JoinableTaskFactory.Run(() => Task.Delay(i));
+                else
+                    Thread.Sleep(i);
                 DoEventsSafe(blnForceDoEvents);
             }
         }
@@ -1547,7 +1556,10 @@ namespace Chummer
             for (; i >= DefaultSleepDuration; i -= DefaultSleepDuration)
             {
                 token.ThrowIfCancellationRequested();
-                Thread.Sleep(DefaultSleepDuration);
+                if (Program.IsMainThread)
+                    JoinableTaskFactory.Run(() => Task.Delay(DefaultSleepDuration, token));
+                else
+                    Thread.Sleep(DefaultSleepDuration);
                 if (EverDoEvents)
                 {
                     token.ThrowIfCancellationRequested();
@@ -1557,7 +1569,10 @@ namespace Chummer
             if (i > 0)
             {
                 token.ThrowIfCancellationRequested();
-                Thread.Sleep(i);
+                if (Program.IsMainThread)
+                    JoinableTaskFactory.Run(() => Task.Delay(i, token));
+                else
+                    Thread.Sleep(i);
                 if (EverDoEvents)
                 {
                     token.ThrowIfCancellationRequested();
@@ -1645,7 +1660,7 @@ namespace Chummer
         public static void RunWithoutThreadLock(Action funcToRun, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (!EverDoEvents)
+            if (!EverDoEvents || (Program.IsMainThread && _intIsOkToRunDoEvents < 1))
             {
                 funcToRun.Invoke();
                 return;
@@ -1667,7 +1682,7 @@ namespace Chummer
         public static void RunWithoutThreadLock(Action<CancellationToken> funcToRun, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (!EverDoEvents)
+            if (!EverDoEvents || (Program.IsMainThread && _intIsOkToRunDoEvents < 1))
             {
                 funcToRun.Invoke(token);
                 return;
@@ -1687,14 +1702,50 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void RunWithoutThreadLock(params Action[] afuncToRun)
         {
-            if (!EverDoEvents)
+            RunWithoutThreadLock(afuncToRun, default);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for synchronously waiting for codes to complete in parallel while still allowing queued invocations to go through.
+        /// Warning: much clumsier and slower than just using awaits inside of an async method. Use those instead if possible.
+        /// </summary>
+        /// <param name="afuncToRun">Codes to wait for.</param>
+        /// <param name="token">Cancellation token to use.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void RunWithoutThreadLock(Action[] afuncToRun, CancellationToken token)
+        {
+            token.ThrowIfCancellationRequested();
+            if (!EverDoEvents || (Program.IsMainThread && _intIsOkToRunDoEvents < 1))
             {
-                Parallel.Invoke(afuncToRun);
+                if (token == CancellationToken.None)
+                    Parallel.Invoke(afuncToRun);
+                else
+                {
+                    Parallel.ForEach(afuncToRun, (x, y) =>
+                    {
+                        if (token.IsCancellationRequested || y.ShouldExitCurrentIteration)
+                            y.Stop();
+                        x.Invoke();
+                    });
+                    token.ThrowIfCancellationRequested();
+                }
                 return;
             }
-            Task objTask = Task.Run(() => Parallel.Invoke(afuncToRun));
+
+            Task objTask = token == CancellationToken.None
+                ? Task.Run(() => Parallel.Invoke(afuncToRun), token)
+                : Task.Run(() =>
+                {
+                    Parallel.ForEach(afuncToRun, (x, y) =>
+                    {
+                        if (token.IsCancellationRequested || y.ShouldExitCurrentIteration)
+                            y.Stop();
+                        x.Invoke();
+                    });
+                    token.ThrowIfCancellationRequested();
+                }, token);
             while (!objTask.IsCompleted)
-                SafeSleep();
+                SafeSleep(token);
             if (objTask.Exception != null)
                 throw objTask.Exception;
         }
@@ -1709,7 +1760,7 @@ namespace Chummer
         public static T RunWithoutThreadLock<T>(Func<T> funcToRun, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (!EverDoEvents)
+            if (!EverDoEvents || (Program.IsMainThread && _intIsOkToRunDoEvents < 1))
             {
                 return funcToRun.Invoke();
             }
@@ -1731,7 +1782,7 @@ namespace Chummer
         public static T RunWithoutThreadLock<T>(Func<CancellationToken, T> funcToRun, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (!EverDoEvents)
+            if (!EverDoEvents || (Program.IsMainThread && _intIsOkToRunDoEvents < 1))
             {
                 return funcToRun.Invoke(token);
             }
@@ -1751,11 +1802,30 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static T[] RunWithoutThreadLock<T>(params Func<T>[] afuncToRun)
         {
+            return RunWithoutThreadLock(afuncToRun, default);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for synchronously waiting for codes to complete in parallel while still allowing queued invocations to go through.
+        /// Warning: much clumsier and slower than just using awaits inside of an async method. Use those instead if possible.
+        /// </summary>
+        /// <param name="afuncToRun">Codes to wait for.</param>
+        /// <param name="token">Cancellation token to use.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static T[] RunWithoutThreadLock<T>(Func<T>[] afuncToRun, CancellationToken token)
+        {
+            token.ThrowIfCancellationRequested();
             int intLength = afuncToRun.Length;
             T[] aobjReturn = new T[intLength];
-            if (!EverDoEvents)
+            if (!EverDoEvents || (Program.IsMainThread && _intIsOkToRunDoEvents < 1))
             {
-                Parallel.For(0, intLength, i => aobjReturn[i] = afuncToRun[i].Invoke());
+                Parallel.For(0, intLength, (i, y) =>
+                {
+                    if (token.IsCancellationRequested || y.ShouldExitCurrentIteration)
+                        y.Stop();
+                    aobjReturn[i] = afuncToRun[i].Invoke();
+                });
+                token.ThrowIfCancellationRequested();
                 return aobjReturn;
             }
             Task<T>[] aobjTasks = new Task<T>[MaxParallelBatchSize];
@@ -1763,12 +1833,12 @@ namespace Chummer
             int intOffset = 0;
             for (int i = 0; i < intLength; ++i)
             {
-                aobjTasks[intCounter++] = Task.Run(afuncToRun[i]);
+                aobjTasks[intCounter++] = Task.Run(afuncToRun[i], token);
                 if (intCounter != MaxParallelBatchSize)
                     continue;
-                Task<T[]> tskLoop = Task.Run(() => Task.WhenAll(aobjTasks));
+                Task<T[]> tskLoop = Task.Run(() => Task.WhenAll(aobjTasks), token);
                 while (!tskLoop.IsCompleted)
-                    SafeSleep();
+                    SafeSleep(token);
                 if (tskLoop.Exception != null)
                     throw tskLoop.Exception;
                 for (int j = 0; j < MaxParallelBatchSize; ++j)
@@ -1779,9 +1849,9 @@ namespace Chummer
             int intFinalBatchSize = intLength % MaxParallelBatchSize;
             if (intFinalBatchSize != 0)
             {
-                Task<T[]> objTask = Task.Run(() => Task.WhenAll(aobjTasks));
+                Task<T[]> objTask = Task.Run(() => Task.WhenAll(aobjTasks), token);
                 while (!objTask.IsCompleted)
-                    SafeSleep();
+                    SafeSleep(token);
                 if (objTask.Exception != null)
                     throw objTask.Exception;
                 for (int j = 0; j < intFinalBatchSize; ++j)
@@ -1800,6 +1870,10 @@ namespace Chummer
         public static T RunWithoutThreadLock<T>(Func<Task<T>> funcToRun, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
+            if (Program.IsMainThread && _intIsOkToRunDoEvents < 1)
+            {
+                return JoinableTaskFactory.Run(funcToRun);
+            }
             if (!EverDoEvents)
             {
                 Task<T> objSyncTask = funcToRun.Invoke();
@@ -1827,6 +1901,10 @@ namespace Chummer
         public static T RunWithoutThreadLock<T>(Func<CancellationToken, Task<T>> funcToRun, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
+            if (Program.IsMainThread && _intIsOkToRunDoEvents < 1)
+            {
+                return JoinableTaskFactory.Run(() => funcToRun(token));
+            }
             if (!EverDoEvents)
             {
                 Task<T> objSyncTask = funcToRun.Invoke(token);
@@ -1849,133 +1927,41 @@ namespace Chummer
         /// Warning: much clumsier and slower than just using awaits inside of an async method. Use those instead if possible.
         /// </summary>
         /// <param name="afuncToRun">Codes to wait for.</param>
-        /// <param name="token">Cancellation token to use.</param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static T[] RunWithoutThreadLock<T>(Func<Task<T>[]> afuncToRun, CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            Task<T>[] atskToRun = afuncToRun.Invoke();
-            int intLength = atskToRun.Length;
-            T[] aobjReturn = new T[intLength];
-            if (!EverDoEvents)
-            {
-                Parallel.For(0, intLength, i =>
-                {
-                    Task<T> objSyncTask = atskToRun[i];
-                    if (objSyncTask.Status == TaskStatus.Created)
-                        objSyncTask.RunSynchronously();
-                    if (objSyncTask.Exception != null)
-                        throw objSyncTask.Exception;
-                    aobjReturn[i] = objSyncTask.GetAwaiter().GetResult();
-                });
-                return aobjReturn;
-            }
-            Task<T>[] aobjTasks = new Task<T>[MaxParallelBatchSize];
-            int intCounter = 0;
-            int intOffset = 0;
-            for (int i = 0; i < intLength; ++i)
-            {
-                int intLocalI = i;
-                aobjTasks[intCounter++] = Task.Run(() => atskToRun[intLocalI], token);
-                if (intCounter != MaxParallelBatchSize)
-                    continue;
-                Task<T[]> tskLoop = Task.Run(() => Task.WhenAll(aobjTasks), token);
-                while (!tskLoop.IsCompleted)
-                    SafeSleep(token);
-                if (tskLoop.Exception != null)
-                    throw tskLoop.Exception;
-                for (int j = 0; j < MaxParallelBatchSize; ++j)
-                    aobjReturn[i] = aobjTasks[j].GetAwaiter().GetResult();
-                intOffset += MaxParallelBatchSize;
-                intCounter = 0;
-            }
-            int intFinalBatchSize = intLength % MaxParallelBatchSize;
-            if (intFinalBatchSize != 0)
-            {
-                Task<T[]> objTask = Task.Run(() => Task.WhenAll(aobjTasks), token);
-                while (!objTask.IsCompleted)
-                    SafeSleep(token);
-                if (objTask.Exception != null)
-                    throw objTask.Exception;
-                for (int j = 0; j < intFinalBatchSize; ++j)
-                    aobjReturn[intOffset + j] = aobjTasks[j].GetAwaiter().GetResult();
-            }
-            return aobjReturn;
-        }
-
-        /// <summary>
-        /// Syntactic sugar for synchronously waiting for codes to complete in parallel while still allowing queued invocations to go through.
-        /// Warning: much clumsier and slower than just using awaits inside of an async method. Use those instead if possible.
-        /// </summary>
-        /// <param name="afuncToRun">Codes to wait for.</param>
-        /// <param name="token">Cancellation token to use.</param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static T[] RunWithoutThreadLock<T>(Func<CancellationToken, Task<T>[]> afuncToRun, CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            Task<T>[] atskToRun = afuncToRun.Invoke(token);
-            int intLength = atskToRun.Length;
-            T[] aobjReturn = new T[intLength];
-            if (!EverDoEvents)
-            {
-                Parallel.For(0, intLength, i =>
-                {
-                    Task<T> objSyncTask = atskToRun[i];
-                    if (objSyncTask.Status == TaskStatus.Created)
-                        objSyncTask.RunSynchronously();
-                    if (objSyncTask.Exception != null)
-                        throw objSyncTask.Exception;
-                    aobjReturn[i] = objSyncTask.GetAwaiter().GetResult();
-                });
-                return aobjReturn;
-            }
-            Task<T>[] aobjTasks = new Task<T>[MaxParallelBatchSize];
-            int intCounter = 0;
-            int intOffset = 0;
-            for (int i = 0; i < intLength; ++i)
-            {
-                int intLocalI = i;
-                aobjTasks[intCounter++] = Task.Run(() => atskToRun[intLocalI], token);
-                if (intCounter != MaxParallelBatchSize)
-                    continue;
-                Task<T[]> tskLoop = Task.Run(() => Task.WhenAll(aobjTasks), token);
-                while (!tskLoop.IsCompleted)
-                    SafeSleep(token);
-                if (tskLoop.Exception != null)
-                    throw tskLoop.Exception;
-                for (int j = 0; j < MaxParallelBatchSize; ++j)
-                    aobjReturn[i] = aobjTasks[j].GetAwaiter().GetResult();
-                intOffset += MaxParallelBatchSize;
-                intCounter = 0;
-            }
-            int intFinalBatchSize = intLength % MaxParallelBatchSize;
-            if (intFinalBatchSize != 0)
-            {
-                Task<T[]> objTask = Task.Run(() => Task.WhenAll(aobjTasks), token);
-                while (!objTask.IsCompleted)
-                    SafeSleep(token);
-                if (objTask.Exception != null)
-                    throw objTask.Exception;
-                for (int j = 0; j < intFinalBatchSize; ++j)
-                    aobjReturn[intOffset + j] = aobjTasks[j].GetAwaiter().GetResult();
-            }
-            return aobjReturn;
-        }
-
-        /// <summary>
-        /// Syntactic sugar for synchronously waiting for codes to complete in parallel while still allowing queued invocations to go through.
-        /// Warning: much clumsier and slower than just using awaits inside of an async method. Use those instead if possible.
-        /// </summary>
-        /// <param name="afuncToRun">Codes to wait for.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static T[] RunWithoutThreadLock<T>(params Func<Task<T>>[] afuncToRun)
         {
+            return RunWithoutThreadLock(afuncToRun, default);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for synchronously waiting for codes to complete in parallel while still allowing queued invocations to go through.
+        /// Warning: much clumsier and slower than just using awaits inside of an async method. Use those instead if possible.
+        /// </summary>
+        /// <param name="afuncToRun">Codes to wait for.</param>
+        /// <param name="token">Cancellation token to use.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static T[] RunWithoutThreadLock<T>(Func<Task<T>>[] afuncToRun, CancellationToken token)
+        {
+            token.ThrowIfCancellationRequested();
             int intLength = afuncToRun.Length;
             T[] aobjReturn = new T[intLength];
+            if (Program.IsMainThread && _intIsOkToRunDoEvents < 1)
+            {
+                Parallel.For(0, intLength, (i, y) =>
+                {
+                    if (token.IsCancellationRequested || y.ShouldExitCurrentIteration)
+                        y.Stop();
+                    aobjReturn[i] = JoinableTaskFactory.Run(afuncToRun[i]);
+                });
+                token.ThrowIfCancellationRequested();
+                return aobjReturn;
+            }
             if (!EverDoEvents)
             {
-                Parallel.For(0, intLength, i =>
+                Parallel.For(0, intLength, (i, y) =>
                 {
+                    if (token.IsCancellationRequested || y.ShouldExitCurrentIteration)
+                        y.Stop();
                     Task<T> objSyncTask = afuncToRun[i].Invoke();
                     if (objSyncTask.Status == TaskStatus.Created)
                         objSyncTask.RunSynchronously();
@@ -1983,6 +1969,7 @@ namespace Chummer
                         throw objSyncTask.Exception;
                     aobjReturn[i] = objSyncTask.GetAwaiter().GetResult();
                 });
+                token.ThrowIfCancellationRequested();
                 return aobjReturn;
             }
             Task<T>[] aobjTasks = new Task<T>[MaxParallelBatchSize];
@@ -1990,12 +1977,12 @@ namespace Chummer
             int intOffset = 0;
             for (int i = 0; i < intLength; ++i)
             {
-                aobjTasks[intCounter++] = Task.Run(afuncToRun[i]);
+                aobjTasks[intCounter++] = Task.Run(afuncToRun[i], token);
                 if (intCounter != MaxParallelBatchSize)
                     continue;
-                Task<T[]> tskLoop = Task.Run(() => Task.WhenAll(aobjTasks));
+                Task<T[]> tskLoop = Task.Run(() => Task.WhenAll(aobjTasks), token);
                 while (!tskLoop.IsCompleted)
-                    SafeSleep();
+                    SafeSleep(token);
                 if (tskLoop.Exception != null)
                     throw tskLoop.Exception;
                 for (int j = 0; j < MaxParallelBatchSize; ++j)
@@ -2006,9 +1993,9 @@ namespace Chummer
             int intFinalBatchSize = intLength % MaxParallelBatchSize;
             if (intFinalBatchSize != 0)
             {
-                Task<T[]> objTask = Task.Run(() => Task.WhenAll(aobjTasks));
+                Task<T[]> objTask = Task.Run(() => Task.WhenAll(aobjTasks), token);
                 while (!objTask.IsCompleted)
-                    SafeSleep();
+                    SafeSleep(token);
                 if (objTask.Exception != null)
                     throw objTask.Exception;
                 for (int j = 0; j < intFinalBatchSize; ++j)
@@ -2027,6 +2014,11 @@ namespace Chummer
         public static void RunWithoutThreadLock(Func<Task> funcToRun, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
+            if (Program.IsMainThread && _intIsOkToRunDoEvents < 1)
+            {
+                JoinableTaskFactory.Run(funcToRun);
+                return;
+            }
             if (!EverDoEvents)
             {
                 Task objSyncTask = funcToRun.Invoke();
@@ -2053,6 +2045,11 @@ namespace Chummer
         public static void RunWithoutThreadLock(Func<CancellationToken, Task> funcToRun, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
+            if (Program.IsMainThread && _intIsOkToRunDoEvents < 1)
+            {
+                JoinableTaskFactory.Run(() => funcToRun(token));
+                return;
+            }
             if (!EverDoEvents)
             {
                 Task objSyncTask = funcToRun.Invoke(token);
@@ -2074,133 +2071,65 @@ namespace Chummer
         /// Warning: much clumsier and slower than just using awaits inside of an async method. Use those instead if possible.
         /// </summary>
         /// <param name="afuncToRun">Codes to wait for.</param>
-        /// <param name="token">Cancellation token to use.</param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void RunWithoutThreadLock(Func<Task[]> afuncToRun, CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            Task[] atskToRun;
-            if (!EverDoEvents)
-            {
-                atskToRun = afuncToRun.Invoke();
-                Parallel.For(0, atskToRun.Length, i =>
-                {
-                    Task objSyncTask = atskToRun[i];
-                    if (objSyncTask.Status == TaskStatus.Created)
-                        objSyncTask.RunSynchronously();
-                    if (objSyncTask.Exception != null)
-                        throw objSyncTask.Exception;
-                });
-                return;
-            }
-            atskToRun = afuncToRun.Invoke();
-            List<Task> lstTasks = new List<Task>(MaxParallelBatchSize);
-            int intCounter = 0;
-            foreach (Task tskLoop in atskToRun)
-            {
-                lstTasks.Add(Task.Run(() => tskLoop, token));
-                if (++intCounter != MaxParallelBatchSize)
-                    continue;
-                Task tskBatchLoop = Task.Run(() => Task.WhenAll(lstTasks), token);
-                while (!tskBatchLoop.IsCompleted)
-                    SafeSleep(token);
-                if (tskBatchLoop.Exception != null)
-                    throw tskBatchLoop.Exception;
-                lstTasks.Clear();
-                intCounter = 0;
-            }
-            Task tskBatchFinal = Task.Run(() => Task.WhenAll(lstTasks), token);
-            while (!tskBatchFinal.IsCompleted)
-                SafeSleep(token);
-            if (tskBatchFinal.Exception != null)
-                throw tskBatchFinal.Exception;
-        }
-
-        /// <summary>
-        /// Syntactic sugar for synchronously waiting for codes to complete in parallel while still allowing queued invocations to go through.
-        /// Warning: much clumsier and slower than just using awaits inside of an async method. Use those instead if possible.
-        /// </summary>
-        /// <param name="afuncToRun">Codes to wait for.</param>
-        /// <param name="token">Cancellation token to use.</param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void RunWithoutThreadLock(Func<CancellationToken, Task[]> afuncToRun, CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            Task[] atskToRun;
-            if (!EverDoEvents)
-            {
-                atskToRun = afuncToRun.Invoke(token);
-                Parallel.For(0, atskToRun.Length, i =>
-                {
-                    Task objSyncTask = atskToRun[i];
-                    if (objSyncTask.Status == TaskStatus.Created)
-                        objSyncTask.RunSynchronously();
-                    if (objSyncTask.Exception != null)
-                        throw objSyncTask.Exception;
-                });
-                return;
-            }
-            atskToRun = afuncToRun.Invoke(token);
-            List<Task> lstTasks = new List<Task>(MaxParallelBatchSize);
-            int intCounter = 0;
-            foreach (Task tskLoop in atskToRun)
-            {
-                lstTasks.Add(Task.Run(() => tskLoop, token));
-                if (++intCounter != MaxParallelBatchSize)
-                    continue;
-                Task tskBatchLoop = Task.Run(() => Task.WhenAll(lstTasks), token);
-                while (!tskBatchLoop.IsCompleted)
-                    SafeSleep(token);
-                if (tskBatchLoop.Exception != null)
-                    throw tskBatchLoop.Exception;
-                lstTasks.Clear();
-                intCounter = 0;
-            }
-            Task tskBatchFinal = Task.Run(() => Task.WhenAll(lstTasks), token);
-            while (!tskBatchFinal.IsCompleted)
-                SafeSleep(token);
-            if (tskBatchFinal.Exception != null)
-                throw tskBatchFinal.Exception;
-        }
-
-        /// <summary>
-        /// Syntactic sugar for synchronously waiting for codes to complete in parallel while still allowing queued invocations to go through.
-        /// Warning: much clumsier and slower than just using awaits inside of an async method. Use those instead if possible.
-        /// </summary>
-        /// <param name="afuncToRun">Codes to wait for.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void RunWithoutThreadLock(params Func<Task>[] afuncToRun)
         {
+            RunWithoutThreadLock(afuncToRun, default);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for synchronously waiting for codes to complete in parallel while still allowing queued invocations to go through.
+        /// Warning: much clumsier and slower than just using awaits inside of an async method. Use those instead if possible.
+        /// </summary>
+        /// <param name="afuncToRun">Codes to wait for.</param>
+        /// <param name="token">Cancellation token to use.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void RunWithoutThreadLock(Func<Task>[] afuncToRun, CancellationToken token)
+        {
+            if (Program.IsMainThread && _intIsOkToRunDoEvents < 1)
+            {
+                Parallel.ForEach(afuncToRun, (funcToRun, y) =>
+                {
+                    if (token.IsCancellationRequested || y.ShouldExitCurrentIteration)
+                        y.Stop();
+                    JoinableTaskFactory.Run(funcToRun);
+                });
+                token.ThrowIfCancellationRequested();
+                return;
+            }
             if (!EverDoEvents)
             {
-                Parallel.ForEach(afuncToRun, funcToRun =>
+                Parallel.ForEach(afuncToRun, (funcToRun, y) =>
                 {
+                    if (token.IsCancellationRequested || y.ShouldExitCurrentIteration)
+                        y.Stop();
                     Task objSyncTask = funcToRun.Invoke();
                     if (objSyncTask.Status == TaskStatus.Created)
                         objSyncTask.RunSynchronously();
                     if (objSyncTask.Exception != null)
                         throw objSyncTask.Exception;
                 });
+                token.ThrowIfCancellationRequested();
                 return;
             }
             List<Task> lstTasks = new List<Task>(MaxParallelBatchSize);
             int intCounter = 0;
             foreach (Func<Task> funcToRun in afuncToRun)
             {
-                lstTasks.Add(Task.Run(funcToRun));
+                lstTasks.Add(Task.Run(funcToRun, token));
                 if (++intCounter != MaxParallelBatchSize)
                     continue;
-                Task tskLoop = Task.Run(() => Task.WhenAll(lstTasks));
+                Task tskLoop = Task.Run(() => Task.WhenAll(lstTasks), token);
                 while (!tskLoop.IsCompleted)
-                    SafeSleep();
+                    SafeSleep(token);
                 if (tskLoop.Exception != null)
                     throw tskLoop.Exception;
                 lstTasks.Clear();
                 intCounter = 0;
             }
-            Task objTask = Task.Run(() => Task.WhenAll(lstTasks));
+            Task objTask = Task.Run(() => Task.WhenAll(lstTasks), token);
             while (!objTask.IsCompleted)
-                SafeSleep();
+                SafeSleep(token);
             if (objTask.Exception != null)
                 throw objTask.Exception;
         }

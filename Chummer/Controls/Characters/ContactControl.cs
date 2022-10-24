@@ -667,7 +667,7 @@ namespace Chummer
 
         private async ValueTask DoDataBindings(CancellationToken token = default)
         {
-            await lblQuickStats.RegisterOneWayAsyncDataBinding((x, y) => x.Text = y, _objContact,
+            await lblQuickStats.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y, _objContact,
                                                                nameof(Contact.QuickText),
                                                                // ReSharper disable once MethodSupportsCancellation
                                                                x => x.GetQuickTextAsync().AsTask(), token: token).ConfigureAwait(false);
@@ -812,19 +812,19 @@ namespace Chummer
                     await nudLoyalty.DoDataBindingAsync("Value", _objContact, nameof(Contact.Loyalty), token).ConfigureAwait(false);
                     await nudConnection.DoDataBindingAsync("Value", _objContact, nameof(Contact.Connection), token).ConfigureAwait(false);
                     await nudConnection.DoOneWayNegatableDataBindingAsync("Enabled", _objContact, nameof(Contact.ReadOnly), token).ConfigureAwait(false);
-                    await chkGroup.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = y, _objContact,
+                    await chkGroup.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objContact,
                                                                   nameof(Contact.GroupEnabled),
                                                                   // ReSharper disable once MethodSupportsCancellation
                                                                   x => x.GetGroupEnabledAsync().AsTask(), token: token).ConfigureAwait(false);
-                    await chkFree.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = y, _objContact,
+                    await chkFree.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objContact,
                                                                  nameof(Contact.FreeEnabled),
                                                                  // ReSharper disable once MethodSupportsCancellation
                                                                  x => x.GetFreeEnabledAsync().AsTask(), token: token).ConfigureAwait(false);
-                    await nudLoyalty.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = y, _objContact,
+                    await nudLoyalty.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objContact,
                                                                     nameof(Contact.LoyaltyEnabled),
                                                                     // ReSharper disable once MethodSupportsCancellation
                                                                     x => x.GetLoyaltyEnabledAsync().AsTask(), token: token).ConfigureAwait(false);
-                    await nudConnection.RegisterOneWayAsyncDataBinding((x, y) => x.Maximum = y, _objContact,
+                    await nudConnection.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Maximum = y, _objContact,
                                                                        nameof(Contact.ConnectionMaximum),
                                                                        // ReSharper disable once MethodSupportsCancellation
                                                                        x => x.GetConnectionMaximumAsync().AsTask(), token: token).ConfigureAwait(false);

@@ -441,15 +441,15 @@ namespace Chummer
             await nudArea.DoDataBindingAsync("Value", _objLifestyle, nameof(Lifestyle.BindableArea)).ConfigureAwait(false);
             await nudComforts.DoDataBindingAsync("Value", _objLifestyle, nameof(Lifestyle.BindableComforts)).ConfigureAwait(false);
             await nudSecurity.DoDataBindingAsync("Value", _objLifestyle, nameof(Lifestyle.BindableSecurity)).ConfigureAwait(false);
-            await nudArea.RegisterOneWayAsyncDataBinding((x, y) => x.Maximum = y, _objLifestyle,
+            await nudArea.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Maximum = y, _objLifestyle,
                                                          nameof(Lifestyle.AreaDelta),
                                                          x => x.GetAreaDeltaAsync().AsTask())
                          .ConfigureAwait(false);
-            await nudComforts.RegisterOneWayAsyncDataBinding((x, y) => x.Maximum = y, _objLifestyle,
+            await nudComforts.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Maximum = y, _objLifestyle,
                                                              nameof(Lifestyle.ComfortsDelta),
                                                              x => x.GetComfortsDeltaAsync().AsTask())
                              .ConfigureAwait(false);
-            await nudSecurity.RegisterOneWayAsyncDataBinding((x, y) => x.Maximum = y, _objLifestyle,
+            await nudSecurity.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Maximum = y, _objLifestyle,
                                                              nameof(Lifestyle.SecurityDelta),
                                                              x => x.GetSecurityDeltaAsync().AsTask())
                              .ConfigureAwait(false);
@@ -457,36 +457,36 @@ namespace Chummer
             await chkTrustFund.DoDataBindingAsync("Checked", _objLifestyle, nameof(Lifestyle.TrustFund)).ConfigureAwait(false);
             await chkTrustFund.DoOneWayDataBindingAsync("Enabled", _objLifestyle, nameof(Lifestyle.IsTrustFundEligible)).ConfigureAwait(false);
             await chkPrimaryTenant.DoDataBindingAsync("Checked", _objLifestyle, nameof(Lifestyle.PrimaryTenant)).ConfigureAwait(false);
-            await lblCost.RegisterOneWayAsyncDataBinding((x, y) => x.Text = y, _objLifestyle,
+            await lblCost.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y, _objLifestyle,
                                                          nameof(Lifestyle.DisplayTotalMonthlyCost),
                                                          x => x.GetDisplayTotalMonthlyCostAsync().AsTask())
                          .ConfigureAwait(false);
-            await lblArea.RegisterOneWayAsyncDataBinding((x, y) => x.Text = y, _objLifestyle,
+            await lblArea.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y, _objLifestyle,
                                                               nameof(Lifestyle.FormattedArea),
                                                               x => x.GetFormattedAreaAsync().AsTask())
                               .ConfigureAwait(false);
-            await lblComforts.RegisterOneWayAsyncDataBinding((x, y) => x.Text = y, _objLifestyle,
+            await lblComforts.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y, _objLifestyle,
                                                                  nameof(Lifestyle.FormattedComforts),
                                                                  x => x.GetFormattedComfortsAsync().AsTask())
                                  .ConfigureAwait(false);
-            await lblSecurity.RegisterOneWayAsyncDataBinding((x, y) => x.Text = y,
+            await lblSecurity.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y,
                                                              _objLifestyle,
                                                              nameof(Lifestyle.FormattedSecurity),
                                                              x => x.GetFormattedSecurityAsync().AsTask())
                              .ConfigureAwait(false);
-            await lblAreaTotal.RegisterOneWayAsyncDataBinding((x, y) => x.Text = y.ToString(GlobalSettings.CultureInfo), _objLifestyle,
+            await lblAreaTotal.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y.ToString(GlobalSettings.CultureInfo), _objLifestyle,
                                                               nameof(Lifestyle.TotalArea),
                                                               x => x.GetTotalAreaAsync().AsTask())
                               .ConfigureAwait(false);
-            await lblComfortTotal.RegisterOneWayAsyncDataBinding((x, y) => x.Text = y.ToString(GlobalSettings.CultureInfo), _objLifestyle,
+            await lblComfortTotal.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y.ToString(GlobalSettings.CultureInfo), _objLifestyle,
                                                                  nameof(Lifestyle.TotalComforts),
                                                                  x => x.GetTotalComfortsAsync().AsTask())
                                  .ConfigureAwait(false);
-            await lblSecurityTotal.RegisterOneWayAsyncDataBinding((x, y) => x.Text = y.ToString(GlobalSettings.CultureInfo), _objLifestyle,
+            await lblSecurityTotal.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y.ToString(GlobalSettings.CultureInfo), _objLifestyle,
                                                                   nameof(Lifestyle.TotalSecurity),
                                                                   x => x.GetTotalSecurityAsync().AsTask())
                                   .ConfigureAwait(false);
-            await lblTotalLP.RegisterOneWayAsyncDataBinding((x, y) => x.Text = y.ToString(GlobalSettings.CultureInfo), _objLifestyle,
+            await lblTotalLP.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y.ToString(GlobalSettings.CultureInfo), _objLifestyle,
                                                             nameof(Lifestyle.TotalLP),
                                                             x => x.GetTotalLPAsync().AsTask())
                             .ConfigureAwait(false);
