@@ -50,7 +50,6 @@ namespace Chummer.Tests
     {
         public ChummerTest()
         {
-            Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException);
             Utils.CreateSynchronizationContext();
             string strPath = Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase, "TestFiles");
             DirectoryInfo objPathInfo = new DirectoryInfo(strPath);//Assuming Test is your Folder
