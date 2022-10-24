@@ -489,14 +489,20 @@ namespace Chummer.Plugins
                         {
                             case CharacterCreate frm when frm.TabCharacterTabs.TabPages.ContainsKey("SINners"):
                                 {
-                                    int index = frm.TabCharacterTabs.TabPages.IndexOfKey("SINners");
-                                    tabPage = frm.TabCharacterTabs.TabPages[index];
+                                    Utils.RunOnMainThread(() =>
+                                    {
+                                        int index = frm.TabCharacterTabs.TabPages.IndexOfKey("SINners");
+                                        tabPage = frm.TabCharacterTabs.TabPages[index];
+                                    });
                                     break;
                                 }
                             case CharacterCareer frm2 when frm2.TabCharacterTabs.TabPages.ContainsKey("SINners"):
                                 {
-                                    int index = frm2.TabCharacterTabs.TabPages.IndexOfKey("SINners");
-                                    tabPage = frm2.TabCharacterTabs.TabPages[index];
+                                    Utils.RunOnMainThread(() =>
+                                    {
+                                        int index = frm2.TabCharacterTabs.TabPages.IndexOfKey("SINners");
+                                        tabPage = frm2.TabCharacterTabs.TabPages[index];
+                                    });
                                     break;
                                 }
                         }

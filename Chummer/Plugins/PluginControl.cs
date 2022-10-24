@@ -301,13 +301,18 @@ namespace Chummer.Plugins
                 {
                     if (Program.ChummerTelemetryClient != null)
                     {
+                        string loaderexceptions = "";
+                        int counter = 0;
                         foreach (var except in e.LoaderExceptions)
                         {
+                            counter++;
+                            loaderexceptions += Environment.NewLine + "LoaderException " + counter + ": " + except.Message;
                             Program.ChummerTelemetryClient.TrackException(except);
                         }
                         Program.ChummerTelemetryClient.Flush();
                         string msg = $"Plugins (at least not all of them) could not be loaded. Logs are uploaded to the ChummerDevs. Maybe ping one of the Devs on Discord and provide your Installation-id: {Properties.Settings.Default.UploadClientId}";
                         msg += Environment.NewLine + "Exception: " + Environment.NewLine + Environment.NewLine + e + Environment.NewLine;
+                        msg += Environment.NewLine + "The LoaderExceptions are: " + Environment.NewLine + loaderexceptions + Environment.NewLine + Environment.NewLine;
                         Log.Info(e, msg);
                     }
                     else
@@ -472,7 +477,10 @@ namespace Chummer.Plugins
                     {
                         if (page != null && !frmCareer.TabCharacterTabs.TabPages.Contains(page))
                         {
-                            frmCareer.TabCharacterTabs.TabPages.Add(page);
+                            frmCareer.DoThreadSafe(() =>
+                            {
+                                frmCareer.TabCharacterTabs.TabPages.Add(page);
+                            });
                         }
                     }
                 }

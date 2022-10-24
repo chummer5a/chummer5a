@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\packages\Microsoft.CodeAnalysis.NetAnalyzers.6.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.props" Condition="Exists('..\packages\Microsoft.CodeAnalysis.NetAnalyzers.6.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.props')" />
   <PropertyGroup>
@@ -19000,20 +19000,24 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent Condition=" '$(OS)' != 'Unix' ">copy "$(SolutionDir)LICENSE.txt" "$(TargetDir)LICENSE.txt"
-</PostBuildEvent>
-    <PostBuildEvent Condition=" '$(OS)' == 'Unix' ">cp "$(SolutionDir)LICENSE.txt" "$(TargetDir)LICENSE.txt"
-</PostBuildEvent>
+    <PostBuildEvent Condition=" '$(OS)' != 'Unix' ">
+      copy "$(SolutionDir)LICENSE.txt" "$(TargetDir)LICENSE.txt"
+    </PostBuildEvent>
+    <PostBuildEvent Condition=" '$(OS)' == 'Unix' ">
+      cp "$(SolutionDir)LICENSE.txt" "$(TargetDir)LICENSE.txt"
+    </PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PostBuildEvent>copy "$(SolutionDir)LICENSE.txt" "$(TargetDir)LICENSE.txt"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>if exist "$(SolutionDir).git\hooks\" (
-copy /y "$(SolutionDir)git\hooks\*.*" "$(SolutionDir).git\hooks"
-) else (
-echo "No .git directory found, skipping copying of hooks."
-)</PreBuildEvent>
+    <PreBuildEvent>
+      if exist "$(SolutionDir).git\hooks\" (
+      copy /y "$(SolutionDir)git\hooks\*.*" "$(SolutionDir).git\hooks"
+      ) else (
+      echo "No .git directory found, skipping copying of hooks."
+      )
+    </PreBuildEvent>
   </PropertyGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
