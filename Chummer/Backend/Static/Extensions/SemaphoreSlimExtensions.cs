@@ -29,7 +29,22 @@ namespace Chummer
         /// </summary>
         public static void SafeWait(this SemaphoreSlim objSemaphoreSlim, bool blnForceDoEvents = false)
         {
-            if (Utils.EverDoEvents)
+            if (Utils.IsUnitTest)
+            {
+                if (Utils.EverDoEvents)
+                {
+                    int intLoopCount = 0;
+                    while (!objSemaphoreSlim.Wait(Utils.DefaultSleepDuration))
+                    {
+                        if (intLoopCount++ > Utils.WaitEmergencyReleaseMaxTicks)
+                            throw new TimeoutException();
+                        Utils.DoEventsSafe(blnForceDoEvents);
+                    }
+                }
+                else if (!objSemaphoreSlim.Wait(Utils.WaitEmergencyReleaseMaxTicks))
+                    throw new TimeoutException();
+            }
+            else if (Utils.EverDoEvents)
             {
                 while (!objSemaphoreSlim.Wait(Utils.DefaultSleepDuration))
                     Utils.DoEventsSafe(blnForceDoEvents);
@@ -43,7 +58,23 @@ namespace Chummer
         /// </summary>
         public static void SafeWait(this SemaphoreSlim objSemaphoreSlim, CancellationToken token, bool blnForceDoEvents = false)
         {
-            if (Utils.EverDoEvents)
+            if (Utils.IsUnitTest)
+            {
+                if (Utils.EverDoEvents)
+                {
+                    int intLoopCount = 0;
+                    while (!objSemaphoreSlim.Wait(Utils.DefaultSleepDuration, token))
+                    {
+                        if (intLoopCount++ > Utils.WaitEmergencyReleaseMaxTicks)
+                            throw new TimeoutException();
+                        Utils.DoEventsSafe(blnForceDoEvents);
+                    }
+                }
+                else if (!objSemaphoreSlim.Wait(Utils.WaitEmergencyReleaseMaxTicks, token)
+                         && !token.IsCancellationRequested)
+                    throw new TimeoutException();
+            }
+            else if (Utils.EverDoEvents)
             {
                 while (!objSemaphoreSlim.Wait(Utils.DefaultSleepDuration, token))
                     Utils.DoEventsSafe(blnForceDoEvents);

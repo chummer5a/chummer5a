@@ -390,7 +390,9 @@ namespace Chummer
 
         public const int DefaultSleepDuration = 15;
 
-        public const int SleepEmergencyReleaseMaxTicks = 1000;
+        public const int SleepEmergencyReleaseMaxTicks = 60000 / DefaultSleepDuration; // 1 minute in ticks
+
+        public const int WaitEmergencyReleaseMaxTicks = 1800000 / DefaultSleepDuration; // 30 minutes in ticks
 
         /// <summary>
         /// Can the current user context write to a given file path?
