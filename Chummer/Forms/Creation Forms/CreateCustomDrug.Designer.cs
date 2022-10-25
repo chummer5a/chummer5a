@@ -34,6 +34,7 @@ namespace Chummer
             System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Foundations");
             System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Blocks");
             System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Enhancers");
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CreateCustomDrug));
             this.treAvailableComponents = new System.Windows.Forms.TreeView();
             this.btnAddComponent = new System.Windows.Forms.Button();
             this.btnRemoveComponent = new System.Windows.Forms.Button();
@@ -302,10 +303,12 @@ namespace Chummer
             this.ClientSize = new System.Drawing.Size(752, 537);
             this.Controls.Add(this.tlpMain);
             this.DoubleBuffered = true;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(768, 576);
             this.Name = "CreateCustomDrug";
             this.Padding = new System.Windows.Forms.Padding(9);
-            this.ShowIcon = false;
             this.Tag = "Button_CreateCustomDrug";
             this.Text = "Create Custom Drug";
             this.Load += new System.EventHandler(this.CreateCustomDrug_Load);
