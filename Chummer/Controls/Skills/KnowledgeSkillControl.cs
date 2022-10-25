@@ -34,8 +34,8 @@ namespace Chummer.UI.Skills
 {
     public sealed partial class KnowledgeSkillControl : UserControl
     {
-        private int _intUpdatingName;
-        private int _intUpdatingSpec;
+        private int _intUpdatingName = 1;
+        private int _intUpdatingSpec = 1;
         private readonly KnowledgeSkill _objSkill;
         private readonly Timer _tmrNameChangeTimer;
         private readonly Timer _tmrSpecChangeTimer;
@@ -216,6 +216,8 @@ namespace Chummer.UI.Skills
             }
             objSkill.PropertyChanged += Skill_PropertyChanged;
             objSkill.CharacterObject.SkillsSection.PropertyChanged += OnSkillsSectionPropertyChanged;
+            Interlocked.Decrement(ref _intUpdatingName);
+            Interlocked.Decrement(ref _intUpdatingSpec);
         }
 
         private void DoDataBindings()
@@ -259,10 +261,10 @@ namespace Chummer.UI.Skills
                                                              _objMyToken, _objMyToken);
 
                 string strWritableName = _objSkill.WritableName;
-                cboName.PopulateWithListItems(_objSkill.CharacterObject.SkillsSection.MyDefaultKnowledgeSkills, token: _objMyToken);
-                Interlocked.Increment(ref _intUpdatingSpec);
+                Interlocked.Increment(ref _intUpdatingName);
                 try
                 {
+                    cboName.PopulateWithListItems(_objSkill.CharacterObject.SkillsSection.MyDefaultKnowledgeSkills, token: _objMyToken);
                     cboName.DoThreadSafe((x, y) =>
                     {
                         x.SelectedIndex = -1;
@@ -271,7 +273,7 @@ namespace Chummer.UI.Skills
                 }
                 finally
                 {
-                    Interlocked.Decrement(ref _intUpdatingSpec);
+                    Interlocked.Decrement(ref _intUpdatingName);
                 }
 
                 cboName.RegisterOneWayAsyncDataBinding((x, y) => x.Visible = y, _objSkill,
@@ -363,20 +365,20 @@ namespace Chummer.UI.Skills
                           || _objSkill.CharacterObject.SkillsSection.HasAvailableNativeLanguageSlots;
                     chkNativeLanguage.DoThreadSafe((x, y) => x.Enabled = blnEnableNative, _objMyToken);
 
-                    cboSpec.PopulateWithListItems(_objSkill.CGLSpecializations, token: _objMyToken);
-                    cboSpec.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = y, _objSkill,
-                                                                 nameof(KnowledgeSkill.CanHaveSpecs),
-                                                                 x => x.GetCanHaveSpecsAsync(_objMyToken).AsTask(),
-                                                                 _objMyToken, _objMyToken);
                     chkKarma.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = y, _objSkill,
                                                                   nameof(KnowledgeSkill.CanHaveSpecs),
                                                                   x => x.GetCanHaveSpecsAsync(_objMyToken).AsTask(),
                                                                   _objMyToken, _objMyToken);
 
+                    cboSpec.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = y, _objSkill,
+                                                           nameof(KnowledgeSkill.CanHaveSpecs),
+                                                           x => x.GetCanHaveSpecsAsync(_objMyToken).AsTask(),
+                                                           _objMyToken, _objMyToken);
                     string strDisplaySpec = _objSkill.CurrentDisplaySpecialization;
                     Interlocked.Increment(ref _intUpdatingSpec);
                     try
                     {
+                        cboSpec.PopulateWithListItems(_objSkill.CGLSpecializations, token: _objMyToken);
                         cboSpec.DoThreadSafe((x, y) => x.Text = strDisplaySpec, token: _objMyToken);
                     }
                     finally
@@ -450,12 +452,12 @@ namespace Chummer.UI.Skills
                                                              _objMyToken, _objMyToken).ConfigureAwait(false);
 
                 string strWritableName = await _objSkill.GetWritableNameAsync(_objMyToken).ConfigureAwait(false);
-                await cboName
-                      .PopulateWithListItemsAsync(_objSkill.CharacterObject.SkillsSection.MyDefaultKnowledgeSkills,
-                                                  token: _objMyToken).ConfigureAwait(false);
-                Interlocked.Increment(ref _intUpdatingSpec);
+                Interlocked.Increment(ref _intUpdatingName);
                 try
                 {
+                    await cboName
+                          .PopulateWithListItemsAsync(_objSkill.CharacterObject.SkillsSection.MyDefaultKnowledgeSkills,
+                                                      token: _objMyToken).ConfigureAwait(false);
                     await cboName.DoThreadSafeAsync(x =>
                     {
                         x.SelectedIndex = -1;
@@ -464,7 +466,7 @@ namespace Chummer.UI.Skills
                 }
                 finally
                 {
-                    Interlocked.Decrement(ref _intUpdatingSpec);
+                    Interlocked.Decrement(ref _intUpdatingName);
                 }
 
                 await cboName.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y, _objSkill,
@@ -564,24 +566,24 @@ namespace Chummer.UI.Skills
                     await chkNativeLanguage.DoThreadSafeAsync(x => x.Enabled = blnEnableNative, _objMyToken)
                                            .ConfigureAwait(false);
 
-                    await cboSpec.PopulateWithListItemsAsync(
-                                     await _objSkill.GetCGLSpecializationsAsync(_objMyToken).ConfigureAwait(false),
-                                     token: _objMyToken)
-                                 .ConfigureAwait(false);
-                    await cboSpec.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objSkill,
-                                                                 nameof(KnowledgeSkill.CanHaveSpecs),
-                                                                 x => x.GetCanHaveSpecsAsync(_objMyToken).AsTask(),
-                                                                 _objMyToken, _objMyToken).ConfigureAwait(false);
                     await chkKarma.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objSkill,
                                                                   nameof(KnowledgeSkill.CanHaveSpecs),
                                                                   x => x.GetCanHaveSpecsAsync(_objMyToken).AsTask(),
                                                                   _objMyToken, _objMyToken).ConfigureAwait(false);
 
+                    await cboSpec.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objSkill,
+                                                                      nameof(KnowledgeSkill.CanHaveSpecs),
+                                                                      x => x.GetCanHaveSpecsAsync(_objMyToken).AsTask(),
+                                                                      _objMyToken, _objMyToken).ConfigureAwait(false);
                     string strDisplaySpec = await _objSkill.GetCurrentDisplaySpecializationAsync(_objMyToken)
                                                            .ConfigureAwait(false);
                     Interlocked.Increment(ref _intUpdatingSpec);
                     try
                     {
+                        await cboSpec.PopulateWithListItemsAsync(
+                                         await _objSkill.GetCGLSpecializationsAsync(_objMyToken).ConfigureAwait(false),
+                                         token: _objMyToken)
+                                     .ConfigureAwait(false);
                         await cboSpec.DoThreadSafeAsync(x => x.Text = strDisplaySpec, token: _objMyToken)
                                      .ConfigureAwait(false);
                     }
