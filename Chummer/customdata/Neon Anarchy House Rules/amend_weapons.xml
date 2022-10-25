@@ -67,9 +67,7 @@
 			<useskill>Directed Energy</useskill>
 			<spec>Laser Weapons</spec>
 		</weapon>
-		<weapon xpathfilter="spec = 'Microwave'">
-			<useskill>Directed Energy</useskill>
-		</weapon>
+
 
 		<!-- Exotic Ballistic -->
 		<weapon>
@@ -127,7 +125,7 @@
 			<useskill>Spray Weapons</useskill>
 			<spec>Spray Pen</spec>
 		</weapon>
-
+		
 		<!-- Flexile Melee -->
 		<weapon>
 			<name>Monofilament Garrote</name>
@@ -288,7 +286,7 @@
 			<name>Throwing Syringe</name>
 			<useskill>Throwing Weapons</useskill>
 		</weapon>
-		<!-- Actual stst changes -->
+
 		<weapon>
 			<name>Heavy Crossbow</name>
 			<accessorymounts>
@@ -317,21 +315,23 @@
 				<!--<mount>Under</mount> I hope your dream comes true one day, Moebius-->
 			</accessorymounts>
 		</weapon>
-		<weapon>
+	<weapon>
 			<name>Mitsubishi Yakusoku MRL</name>
 			<accuracy>5</accuracy>
 		</weapon>
-		<weapon>
+	<weapon>
 			<name>Onotari Arms Ballista MML</name>
 			<accuracy>5</accuracy>
 		</weapon>
-		<weapon>
-			<name>Nodachi</name>
-			<conceal>+10</conceal>
-		</weapon>
-		<weapon>
-			<name>Osmium Mace</name>
-			<conceal>+10</conceal>
-		</weapon>
+        
+<!---banned--->
+        <weapon>
+            <name>Microwave Gun, High Frequency</name>
+            <hide />
+        </weapon>
+        <weapon>
+        <name>Microwave Gun, Low Frequency</name>
+            <hide />
+        </weapon>
 	</weapons>
 </chummer>

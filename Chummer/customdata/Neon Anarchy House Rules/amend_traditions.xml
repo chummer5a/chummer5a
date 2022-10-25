@@ -20,7 +20,7 @@
 <chummer>
   <traditions>
     <tradition>
-      <name>Dark Magic</name>
+        <name>Armanentradition</name>
       <hide />
     </tradition>
     <tradition>
@@ -35,5 +35,9 @@
       <name>Planar Magic</name>
       <hide />
     </tradition>
+    <tradition>
+      <name>Romani</name>
+        <hide />
+      </tradition>
   </traditions>
 </chummer>
