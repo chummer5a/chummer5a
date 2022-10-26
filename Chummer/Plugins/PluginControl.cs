@@ -334,8 +334,10 @@ namespace Chummer.Plugins
                 {
                     throw new ArgumentException("No plugins found in " + path + '.');
                 }
-                Log.Info("Plugins found: " + MyPlugins.Count + Environment.NewLine + "Plugins active: " + MyActivePlugins.Count);
-                foreach (IPlugin plugin in MyActivePlugins)
+
+                IReadOnlyList<IPlugin> lstActivePlugins = MyActivePlugins;
+                Log.Info("Plugins found: " + MyPlugins.Count + Environment.NewLine + "Plugins active: " + lstActivePlugins.Count);
+                foreach (IPlugin plugin in lstActivePlugins)
                 {
                     try
                     {
@@ -390,22 +392,40 @@ namespace Chummer.Plugins
             }
         }
 
+        public async ValueTask<IReadOnlyList<IPlugin>> GetMyActivePluginsAsync(CancellationToken token = default)
+        {
+            if (!GlobalSettings.PluginsEnabled)
+                return Array.Empty<IPlugin>();
+            List<IPlugin> result = new List<IPlugin>(await MyPlugins.GetCountAsync(token).ConfigureAwait(false));
+            await MyPlugins.ForEachAsync(async plugin =>
+            {
+                (bool blnSuccess, bool blnEnabled)
+                    = await GlobalSettings.PluginsEnabledDic.TryGetValueAsync(plugin.ToString(), token).ConfigureAwait(false);
+                if (!blnSuccess || blnEnabled)
+                    result.Add(plugin);
+            }, token).ConfigureAwait(false);
+
+            return result;
+        }
+
         private static void StartWatch()
         {
-            if (_objWatcher == null)
+            FileSystemWatcher objNewWatcher = new FileSystemWatcher
             {
-                _objWatcher = new FileSystemWatcher
-                {
-                    Path = ".",
-                    NotifyFilter = NotifyFilters.LastWrite
-                };
-                _objWatcher.Changed += (s, e) =>
+                Path = ".",
+                NotifyFilter = NotifyFilters.LastWrite
+            };
+            if (Interlocked.CompareExchange(ref _objWatcher, objNewWatcher, null) == null)
+            {
+                objNewWatcher.Changed += (s, e) =>
                 {
                     if (e.Name.EndsWith(".dll", StringComparison.OrdinalIgnoreCase) || e.Name.EndsWith(".exe", StringComparison.OrdinalIgnoreCase))
                         Refresh();
                 };
-                _objWatcher.EnableRaisingEvents = true;
+                objNewWatcher.EnableRaisingEvents = true;
             }
+            else
+                objNewWatcher.Dispose();
         }
 
         public static void Refresh()
@@ -471,7 +491,7 @@ namespace Chummer.Plugins
 
         internal async Task CallPlugins(CharacterCareer frmCareer, CustomActivity parentActivity, CancellationToken token = default)
         {
-            foreach (IPlugin plugin in MyActivePlugins)
+            foreach (IPlugin plugin in await GetMyActivePluginsAsync(token).ConfigureAwait(false))
             {
                 using (_ = await Timekeeper.StartSyncronAsync("load_plugin_GetTabPage_Career_" + plugin,
                                                               parentActivity, CustomActivity.OperationType.DependencyOperation, plugin.ToString(), token).ConfigureAwait(false))
@@ -497,7 +517,7 @@ namespace Chummer.Plugins
         internal async Task CallPlugins(CharacterCreate frmCreate, CustomActivity parentActivity,
                                         CancellationToken token = default)
         {
-            foreach (IPlugin plugin in MyActivePlugins)
+            foreach (IPlugin plugin in await GetMyActivePluginsAsync(token).ConfigureAwait(false))
             {
                 using (_ = await Timekeeper
                                  .StartSyncronAsync("load_plugin_GetTabPage_Create_" + plugin, parentActivity,
@@ -525,7 +545,7 @@ namespace Chummer.Plugins
         internal async Task CallPlugins(ToolStripMenuItem menu, CustomActivity parentActivity,
                                         CancellationToken token = default)
         {
-            foreach (IPlugin plugin in MyActivePlugins)
+            foreach (IPlugin plugin in await GetMyActivePluginsAsync(token).ConfigureAwait(false))
             {
                 using (_ = await Timekeeper.StartSyncronAsync("load_plugin_GetMenuItems_" + plugin,
                                                               parentActivity,
@@ -564,6 +584,11 @@ namespace Chummer.Plugins
                 foreach (IPlugin plugin in MyPlugins)
                     plugin.Dispose();
                 MyPlugins.Dispose();
+
+                Interlocked.Exchange(ref _objWatcher, null)?.Dispose();
+                _container?.Dispose();
+                _objCatalog?.Dispose();
+                _objMyDirectoryCatalog?.Dispose();
             }
         }
 
@@ -581,16 +606,21 @@ namespace Chummer.Plugins
                 if (Interlocked.CompareExchange(ref _intIsDisposed, 1, 0) > 0)
                     return;
 
-                foreach (IPlugin plugin in MyPlugins)
+                await MyPlugins.ForEachAsync(async plugin =>
                 {
                     // ReSharper disable once SuspiciousTypeConversion.Global
                     if (plugin is IAsyncDisposable objAsyncPlugin)
                         await objAsyncPlugin.DisposeAsync().ConfigureAwait(false);
                     else
                         plugin.Dispose();
-                }
+                }).ConfigureAwait(false);
 
                 await MyPlugins.DisposeAsync().ConfigureAwait(false);
+
+                Interlocked.Exchange(ref _objWatcher, null)?.Dispose();
+                _container?.Dispose();
+                _objCatalog?.Dispose();
+                _objMyDirectoryCatalog?.Dispose();
             }
         }
 

@@ -3609,11 +3609,12 @@ namespace Chummer
                             objWriter.WriteEndElement();
 
                             //Plugins
-                            if (Program.PluginLoader?.MyActivePlugins?.Count > 0)
+                            IReadOnlyList<IPlugin> lstActivePlugins = Program.PluginLoader?.MyActivePlugins;
+                            if (lstActivePlugins?.Count > 0)
                             {
                                 // <plugins>
                                 objWriter.WriteStartElement("plugins");
-                                foreach (IPlugin plugin in Program.PluginLoader.MyActivePlugins)
+                                foreach (IPlugin plugin in lstActivePlugins)
                                 {
                                     try
                                     {
@@ -4571,12 +4572,15 @@ namespace Chummer
                             // </calendar>
 
                             //Plugins
-                            if (Program.PluginLoader?.MyActivePlugins?.Count > 0)
+                            IReadOnlyList<IPlugin> lstActivePlugins = Program.PluginLoader != null
+                                ? await Program.PluginLoader.GetMyActivePluginsAsync().ConfigureAwait(false)
+                                : null;
+                            if (lstActivePlugins?.Count > 0)
                             {
                                 // <plugins>
                                 await objWriter.WriteStartElementAsync("plugins", token: innerToken)
                                                .ConfigureAwait(false);
-                                foreach (IPlugin plugin in Program.PluginLoader.MyActivePlugins)
+                                foreach (IPlugin plugin in lstActivePlugins)
                                 {
                                     try
                                     {
@@ -9090,7 +9094,10 @@ namespace Chummer
                                        : await Timekeeper.StartSyncronAsync("load_char_plugins", loadActivity, token)
                                                          .ConfigureAwait(false))
                             {
-                                foreach (IPlugin plugin in Program.PluginLoader.MyActivePlugins)
+                                foreach (IPlugin plugin in (blnSync
+                                             ? Program.PluginLoader.MyActivePlugins
+                                             : await Program.PluginLoader.GetMyActivePluginsAsync(token)
+                                                            .ConfigureAwait(false)))
                                 {
                                     foreach (XmlNode objXmlPlugin in objXmlCharacter.SelectNodes("plugins/" +
                                                  plugin.GetPluginAssembly().GetName().Name))

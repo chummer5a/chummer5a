@@ -311,9 +311,12 @@ namespace Chummer
                     {
                         await Task.WhenAll(_tskMostRecentlyUsedsRefresh.Yield()
                                                                        .Concat(_tskWatchFolderRefresh.Yield())
-                                                                       .Concat(Program.PluginLoader.MyActivePlugins
-                                                                                   .Select(x => RefreshPluginNodesAsync(
-                                                                                       x, _objGenericToken))))
+                                                                       .Concat((await Program.PluginLoader
+                                                                                   .GetMyActivePluginsAsync(
+                                                                                       objTemp.Token)
+                                                                                   .ConfigureAwait(false))
+                                                                               .Select(x => RefreshPluginNodesAsync(
+                                                                                   x, _objGenericToken))))
                                   .ConfigureAwait(false);
                     }
                     catch (OperationCanceledException)
@@ -1243,7 +1246,9 @@ namespace Chummer
             async Task RefreshPluginNodesInner(CancellationToken token = default)
             {
                 token.ThrowIfCancellationRequested();
-                int intNodeOffset = Program.PluginLoader.MyActivePlugins.IndexOf(objPluginToRefresh);
+                int intNodeOffset
+                    = (await Program.PluginLoader.GetMyActivePluginsAsync(token).ConfigureAwait(false)).IndexOf(
+                        objPluginToRefresh);
                 if (intNodeOffset >= 0)
                 {
                     Log.Info("Starting new Task to get CharacterRosterTreeNodes for plugin:" + objPluginToRefresh);
@@ -2069,27 +2074,46 @@ namespace Chummer
             }
         }
 
-        private void TreCharacterList_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
+        private async void TreCharacterList_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
         {
-            if (e.Button == MouseButtons.Right)
+            try
             {
-                treCharacterList.SelectedNode = e.Node;
+                if (e.Button == MouseButtons.Right)
+                {
+                    await treCharacterList.DoThreadSafeAsync(x => x.SelectedNode = e.Node, token: _objGenericToken)
+                                          .ConfigureAwait(false);
+                }
+
+                if (e.Node.Tag != null)
+                {
+                    string strTag = e.Node.Tag.ToString();
+                    if (!string.IsNullOrEmpty(strTag))
+                    {
+                        bool blnIncludeCloseOpenCharacter
+                            = (strTag.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase)
+                               || strTag.EndsWith(
+                                   ".chum5lz", StringComparison.OrdinalIgnoreCase))
+                              && Program.MainForm.OpenFormsWithCharacters.Any(
+                                  x => x.CharacterObjects.Any(y => y.FileName == strTag));
+                        await this.DoThreadSafeAsync(
+                            () => e.Node.ContextMenuStrip = CreateContextMenuStrip(blnIncludeCloseOpenCharacter),
+                            token: _objGenericToken).ConfigureAwait(false);
+                    }
+                    else
+                        await this.DoThreadSafeAsync(() => e.Node.ContextMenuStrip = CreateContextMenuStrip(false),
+                                                     token: _objGenericToken).ConfigureAwait(false);
+                }
+
+                foreach (IPlugin plugin in await Program.PluginLoader.GetMyActivePluginsAsync(_objGenericToken)
+                                                        .ConfigureAwait(false))
+                {
+                    await this.DoThreadSafeAsync(() => plugin.SetCharacterRosterNode(e.Node), token: _objGenericToken)
+                              .ConfigureAwait(false);
+                }
             }
-            if (e.Node.Tag != null)
+            catch (OperationCanceledException)
             {
-                string strTag = e.Node.Tag.ToString();
-                if (!string.IsNullOrEmpty(strTag))
-                    e.Node.ContextMenuStrip = CreateContextMenuStrip(
-                        (strTag.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase)
-                         || strTag.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
-                        && Program.MainForm.OpenFormsWithCharacters.Any(
-                            x => x.CharacterObjects.Any(y => y.FileName == strTag)));
-                else
-                    e.Node.ContextMenuStrip = CreateContextMenuStrip(false);
-            }
-            foreach (IPlugin plugin in Program.PluginLoader.MyActivePlugins)
-            {
-                plugin.SetCharacterRosterNode(e.Node);
+                //swallow this
             }
         }
 
