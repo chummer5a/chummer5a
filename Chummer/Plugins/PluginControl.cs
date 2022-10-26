@@ -71,7 +71,7 @@ namespace Chummer.Plugins
         Task<bool> DoCharacterList_DragDrop(object sender, DragEventArgs dragEventArgs, TreeView treCharacterList, CancellationToken token = default);
     }
 
-    public class PluginControl : IDisposable
+    public class PluginControl : IDisposable, IAsyncDisposable
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
         private static Logger Log => s_ObjLogger.Value;
@@ -301,19 +301,28 @@ namespace Chummer.Plugins
                 {
                     if (Program.ChummerTelemetryClient != null)
                     {
-                        string loaderexceptions = "";
-                        int counter = 0;
-                        foreach (var except in e.LoaderExceptions)
+                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                      out StringBuilder sbdLoaderExceptions))
                         {
-                            counter++;
-                            loaderexceptions += Environment.NewLine + "LoaderException " + counter + ": " + except.Message;
-                            Program.ChummerTelemetryClient.TrackException(except);
+                            int counter = 0;
+                            foreach (Exception except in e.LoaderExceptions)
+                            {
+                                counter++;
+                                sbdLoaderExceptions.AppendLine().Append("LoaderException ").Append(counter).Append(": ")
+                                                   .Append(except.Message);
+                                Program.ChummerTelemetryClient.TrackException(except);
+                            }
+
+                            Program.ChummerTelemetryClient.Flush();
+                            string msg
+                                = "Plugins (at least not all of them) could not be loaded. Logs are uploaded to the ChummerDevs. Maybe ping one of the Devs on Discord and provide your Installation-id: "
+                                  + Properties.Settings.Default.UploadClientId + Environment.NewLine + "Exception: "
+                                  + Environment.NewLine + Environment.NewLine + e + Environment.NewLine
+                                  + Environment.NewLine + "The LoaderExceptions are: " + Environment.NewLine
+                                  + sbdLoaderExceptions + Environment.NewLine + Environment.NewLine;
+
+                            Log.Info(e, msg);
                         }
-                        Program.ChummerTelemetryClient.Flush();
-                        string msg = $"Plugins (at least not all of them) could not be loaded. Logs are uploaded to the ChummerDevs. Maybe ping one of the Devs on Discord and provide your Installation-id: {Properties.Settings.Default.UploadClientId}";
-                        msg += Environment.NewLine + "Exception: " + Environment.NewLine + Environment.NewLine + e + Environment.NewLine;
-                        msg += Environment.NewLine + "The LoaderExceptions are: " + Environment.NewLine + loaderexceptions + Environment.NewLine + Environment.NewLine;
-                        Log.Info(e, msg);
                     }
                     else
                     {
@@ -350,8 +359,9 @@ namespace Chummer.Plugins
             }
             catch (System.Security.SecurityException e)
             {
-                string msg = "Well, the Plugin wanted to do something that requires Admin rights. Let's just ignore this: " + Environment.NewLine + Environment.NewLine;
-                msg += e.ToString();
+                string msg
+                    = "Well, the Plugin wanted to do something that requires Admin rights. Let's just ignore this: "
+                      + Environment.NewLine + Environment.NewLine + e;
                 Log.Warn(e, msg);
             }
             catch (Exception e) when (!(e is ApplicationException))
@@ -362,15 +372,15 @@ namespace Chummer.Plugins
         }
 
         [ImportMany(typeof(IPlugin))]
-        public List<IPlugin> MyPlugins { get; } = new List<IPlugin>();
+        public ThreadSafeList<IPlugin> MyPlugins { get; } = new ThreadSafeList<IPlugin>();
 
-        public List<IPlugin> MyActivePlugins
+        public IReadOnlyList<IPlugin> MyActivePlugins
         {
             get
             {
-                List<IPlugin> result = new List<IPlugin>(MyPlugins.Count);
                 if (!GlobalSettings.PluginsEnabled)
-                    return result;
+                    return Array.Empty<IPlugin>();
+                List<IPlugin> result = new List<IPlugin>(MyPlugins.Count);
                 foreach (IPlugin plugin in MyPlugins)
                 {
                     if (!GlobalSettings.PluginsEnabledDic.TryGetValue(plugin.ToString(), out bool enabled) || enabled)
@@ -430,8 +440,7 @@ namespace Chummer.Plugins
                     {
                         sbdMessage.AppendLine(exp.Message);
                     }
-                    sbdMessage.AppendLine();
-                    sbdMessage.Append(e);
+                    sbdMessage.AppendLine().Append(e);
                     Log.Warn(e, sbdMessage.ToString());
                 }
             }
@@ -445,8 +454,7 @@ namespace Chummer.Plugins
                     {
                         sbdMessage.AppendLine(exp.Exception.ToString());
                     }
-                    sbdMessage.AppendLine();
-                    sbdMessage.Append(e);
+                    sbdMessage.AppendLine().Append(e);
                     Log.Error(e, sbdMessage.ToString());
                 }
             }
@@ -456,9 +464,7 @@ namespace Chummer.Plugins
             }
             catch (Exception e)
             {
-                string msg = "Exception loading plugins: " + Environment.NewLine;
-                msg += Environment.NewLine;
-                msg += e.ToString();
+                string msg = "Exception loading plugins: " + Environment.NewLine + Environment.NewLine + e;
                 Log.Error(e, msg);
             }
         }
@@ -475,53 +481,71 @@ namespace Chummer.Plugins
                         continue;
                     foreach (TabPage page in pages)
                     {
-                        if (page != null && !frmCareer.TabCharacterTabs.TabPages.Contains(page))
+                        if (page != null)
                         {
-                            frmCareer.DoThreadSafe(() =>
+                            await frmCareer.DoThreadSafeAsync(x =>
                             {
-                                frmCareer.TabCharacterTabs.TabPages.Add(page);
-                            });
+                                if (!x.TabCharacterTabs.TabPages.Contains(page))
+                                    x.TabCharacterTabs.TabPages.Add(page);
+                            }, token).ConfigureAwait(false);
                         }
                     }
                 }
             }
         }
 
-        internal async Task CallPlugins(CharacterCreate frmCreate, CustomActivity parentActivity, CancellationToken token = default)
+        internal async Task CallPlugins(CharacterCreate frmCreate, CustomActivity parentActivity,
+                                        CancellationToken token = default)
         {
             foreach (IPlugin plugin in MyActivePlugins)
             {
-                using (_ = await Timekeeper.StartSyncronAsync("load_plugin_GetTabPage_Create_" + plugin, parentActivity, CustomActivity.OperationType.DependencyOperation, plugin.ToString(), token).ConfigureAwait(false))
+                using (_ = await Timekeeper
+                                 .StartSyncronAsync("load_plugin_GetTabPage_Create_" + plugin, parentActivity,
+                                                    CustomActivity.OperationType.DependencyOperation, plugin.ToString(),
+                                                    token).ConfigureAwait(false))
                 {
                     ICollection<TabPage> pages = await plugin.GetTabPages(frmCreate, token).ConfigureAwait(false);
                     if (pages == null)
                         continue;
                     foreach (TabPage page in pages)
                     {
-                        if (page != null && !frmCreate.TabCharacterTabs.TabPages.Contains(page))
+                        if (page != null)
                         {
-                            frmCreate.TabCharacterTabs.TabPages.Add(page);
+                            await frmCreate.DoThreadSafeAsync(x =>
+                            {
+                                if (!x.TabCharacterTabs.TabPages.Contains(page))
+                                    x.TabCharacterTabs.TabPages.Add(page);
+                            }, token).ConfigureAwait(false);
                         }
                     }
                 }
             }
         }
 
-        internal async Task CallPlugins(ToolStripMenuItem menu, CustomActivity parentActivity, CancellationToken token = default)
+        internal async Task CallPlugins(ToolStripMenuItem menu, CustomActivity parentActivity,
+                                        CancellationToken token = default)
         {
             foreach (IPlugin plugin in MyActivePlugins)
             {
                 using (_ = await Timekeeper.StartSyncronAsync("load_plugin_GetMenuItems_" + plugin,
-                                                              parentActivity, CustomActivity.OperationType.DependencyOperation, plugin.ToString(), token).ConfigureAwait(false))
+                                                              parentActivity,
+                                                              CustomActivity.OperationType.DependencyOperation,
+                                                              plugin.ToString(), token).ConfigureAwait(false))
                 {
-                    ICollection<ToolStripMenuItem> menuitems = await plugin.GetMenuItems(menu, token).ConfigureAwait(false);
+                    ICollection<ToolStripMenuItem> menuitems
+                        = await plugin.GetMenuItems(menu, token).ConfigureAwait(false);
                     if (menuitems == null)
                         continue;
                     foreach (ToolStripMenuItem plugInMenu in menuitems)
                     {
-                        if (plugInMenu != null && !menu.DropDownItems.Contains(plugInMenu))
+
+                        if (plugInMenu != null)
                         {
-                            menu.DropDownItems.Add(plugInMenu);
+                            await Utils.RunOnMainThreadAsync(() =>
+                            {
+                                if (!menu.DropDownItems.Contains(plugInMenu))
+                                    menu.DropDownItems.Add(plugInMenu);
+                            }, token).ConfigureAwait(false);
                         }
                     }
                 }
@@ -537,8 +561,9 @@ namespace Chummer.Plugins
                 if (Interlocked.CompareExchange(ref _intIsDisposed, 1, 0) > 0)
                     return;
 
-                foreach (IPlugin plugin in MyActivePlugins)
+                foreach (IPlugin plugin in MyPlugins)
                     plugin.Dispose();
+                MyPlugins.Dispose();
             }
         }
 
@@ -546,6 +571,33 @@ namespace Chummer.Plugins
         public void Dispose()
         {
             Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual async ValueTask DisposeAsync(bool disposing)
+        {
+            if (disposing)
+            {
+                if (Interlocked.CompareExchange(ref _intIsDisposed, 1, 0) > 0)
+                    return;
+
+                foreach (IPlugin plugin in MyPlugins)
+                {
+                    // ReSharper disable once SuspiciousTypeConversion.Global
+                    if (plugin is IAsyncDisposable objAsyncPlugin)
+                        await objAsyncPlugin.DisposeAsync().ConfigureAwait(false);
+                    else
+                        plugin.Dispose();
+                }
+
+                await MyPlugins.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <inheritdoc />
+        public async ValueTask DisposeAsync()
+        {
+            await DisposeAsync(true).ConfigureAwait(false);
             GC.SuppressFinalize(this);
         }
     }
