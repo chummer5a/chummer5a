@@ -33,7 +33,7 @@ namespace Chummer
             this.tabOptions = new System.Windows.Forms.TabControl();
             this.tabGlobal = new System.Windows.Forms.TabPage();
             this.tlpGlobal = new System.Windows.Forms.TableLayoutPanel();
-            this.bScanForPDFs = new Chummer.ButtonWithToolTip();
+            this.cmdScanForPDFs = new Chummer.ButtonWithToolTip();
             this.grpSelectedSourcebook = new System.Windows.Forms.GroupBox();
             this.tlpSelectedSourcebook = new System.Windows.Forms.TableLayoutPanel();
             this.txtPDFLocation = new System.Windows.Forms.TextBox();
@@ -260,7 +260,7 @@ namespace Chummer
             this.tlpGlobal.ColumnCount = 2;
             this.tlpGlobal.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.tlpGlobal.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 75F));
-            this.tlpGlobal.Controls.Add(this.bScanForPDFs, 0, 2);
+            this.tlpGlobal.Controls.Add(this.cmdScanForPDFs, 0, 2);
             this.tlpGlobal.Controls.Add(this.grpSelectedSourcebook, 1, 1);
             this.tlpGlobal.Controls.Add(this.tlpGlobalOptions, 1, 0);
             this.tlpGlobal.Controls.Add(this.gpbEditSourcebookInfo, 0, 0);
@@ -274,28 +274,28 @@ namespace Chummer
             this.tlpGlobal.Size = new System.Drawing.Size(1214, 584);
             this.tlpGlobal.TabIndex = 39;
             // 
-            // bScanForPDFs
+            // cmdScanForPDFs
             // 
-            this.bScanForPDFs.AutoSize = true;
-            this.bScanForPDFs.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.bScanForPDFs.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.bScanForPDFs.Image = null;
-            this.bScanForPDFs.ImageDpi120 = null;
-            this.bScanForPDFs.ImageDpi144 = null;
-            this.bScanForPDFs.ImageDpi192 = null;
-            this.bScanForPDFs.ImageDpi288 = null;
-            this.bScanForPDFs.ImageDpi384 = null;
-            this.bScanForPDFs.ImageDpi96 = null;
-            this.bScanForPDFs.Location = new System.Drawing.Point(3, 558);
-            this.bScanForPDFs.MinimumSize = new System.Drawing.Size(80, 0);
-            this.bScanForPDFs.Name = "bScanForPDFs";
-            this.bScanForPDFs.Size = new System.Drawing.Size(297, 23);
-            this.bScanForPDFs.TabIndex = 68;
-            this.bScanForPDFs.Tag = "Button_Options_PDFFolderScan";
-            this.bScanForPDFs.Text = "Scan Folder for PDF Files";
-            this.bScanForPDFs.ToolTipText = "";
-            this.bScanForPDFs.UseVisualStyleBackColor = true;
-            this.bScanForPDFs.Click += new System.EventHandler(this.bScanForPDFs_Click);
+            this.cmdScanForPDFs.AutoSize = true;
+            this.cmdScanForPDFs.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdScanForPDFs.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdScanForPDFs.Image = null;
+            this.cmdScanForPDFs.ImageDpi120 = null;
+            this.cmdScanForPDFs.ImageDpi144 = null;
+            this.cmdScanForPDFs.ImageDpi192 = null;
+            this.cmdScanForPDFs.ImageDpi288 = null;
+            this.cmdScanForPDFs.ImageDpi384 = null;
+            this.cmdScanForPDFs.ImageDpi96 = null;
+            this.cmdScanForPDFs.Location = new System.Drawing.Point(3, 558);
+            this.cmdScanForPDFs.MinimumSize = new System.Drawing.Size(80, 0);
+            this.cmdScanForPDFs.Name = "cmdScanForPDFs";
+            this.cmdScanForPDFs.Size = new System.Drawing.Size(297, 23);
+            this.cmdScanForPDFs.TabIndex = 68;
+            this.cmdScanForPDFs.Tag = "Button_Options_PDFFolderScan";
+            this.cmdScanForPDFs.Text = "Scan Folder for PDF Files";
+            this.cmdScanForPDFs.ToolTipText = "";
+            this.cmdScanForPDFs.UseVisualStyleBackColor = true;
+            this.cmdScanForPDFs.Click += new System.EventHandler(this.bScanForPDFs_Click);
             // 
             // grpSelectedSourcebook
             // 
@@ -2547,7 +2547,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblDirectoryPathLabel;
         private System.Windows.Forms.Label lblDefaultMasterIndexSetting;
         private Chummer.ElasticComboBox cboDefaultMasterIndexSetting;
-        private ButtonWithToolTip bScanForPDFs;
+        private ButtonWithToolTip cmdScanForPDFs;
         private System.Windows.Forms.Label chkSaveCompressionLevel;
         private ElasticComboBox cboChum5lzCompressionLevel;
     }

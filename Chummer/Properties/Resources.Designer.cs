@@ -5884,6 +5884,26 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap folder_user {
+            get {
+                object obj = ResourceManager.GetObject("folder_user", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap folder_user1 {
+            get {
+                object obj = ResourceManager.GetObject("folder_user1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap font {
             get {
                 object obj = ResourceManager.GetObject("font", resourceCulture);
@@ -6107,6 +6127,26 @@ namespace Chummer.Properties {
         public static System.Drawing.Bitmap house1 {
             get {
                 object obj = ResourceManager.GetObject("house1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap html_go {
+            get {
+                object obj = ResourceManager.GetObject("html_go", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap html_go1 {
+            get {
+                object obj = ResourceManager.GetObject("html_go1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -6587,6 +6627,26 @@ namespace Chummer.Properties {
         public static System.Drawing.Bitmap printer_empty1 {
             get {
                 object obj = ResourceManager.GetObject("printer_empty1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap printer_magnify {
+            get {
+                object obj = ResourceManager.GetObject("printer_magnify", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap printer_magnify1 {
+            get {
+                object obj = ResourceManager.GetObject("printer_magnify1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -7427,6 +7487,26 @@ namespace Chummer.Properties {
         public static System.Drawing.Bitmap world_go1 {
             get {
                 object obj = ResourceManager.GetObject("world_go1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap xml_go {
+            get {
+                object obj = ResourceManager.GetObject("xml_go", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap xml_go1 {
+            get {
+                object obj = ResourceManager.GetObject("xml_go1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

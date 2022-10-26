@@ -5247,6 +5247,7 @@
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\printer_delete.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\printer_empty.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\printer_error.png" />
+    <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\printer_magnify.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\printer_network.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\printscreen_insert.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\print_size.png" />
@@ -6426,6 +6427,7 @@
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\xhtml_valid.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\xing.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\xml_exports.png" />
+    <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\xml_go.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\xml_imports.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\x_ray.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\yacht.png" />
@@ -13123,6 +13125,7 @@
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\printer_delete.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\printer_empty.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\printer_error.png" />
+    <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\printer_magnify.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\printer_network.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\printscreen_insert.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\print_size.png" />
@@ -14302,6 +14305,7 @@
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\xhtml_valid.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\xing.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\xml_exports.png" />
+    <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\xml_go.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\xml_imports.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\x_ray.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\yacht.png" />

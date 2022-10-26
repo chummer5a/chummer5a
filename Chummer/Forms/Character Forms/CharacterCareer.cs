@@ -144,7 +144,6 @@ namespace Chummer
                 cmsVehicleWeapon,
                 cmsVehicleWeaponAccessory,
                 cmsVehicleWeaponAccessoryGear,
-                cmsVehicleWeaponMod,
                 cmsWeapon,
                 cmsWeaponAccessory,
                 cmsWeaponAccessoryGear,

@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -114,6 +115,9 @@ namespace Chummer
                 Interlocked.Decrement(ref _intLoading);
                 await UpdateWindowTitleAsync(_objGenericToken).ConfigureAwait(false);
                 await DoLanguageUpdate(_objGenericToken).ConfigureAwait(false);
+                // Stupid hack to get the MDI icon to show up properly.
+                await this.DoThreadSafeFuncAsync(x => x.Icon = x.Icon.Clone() as Icon,
+                                                 _objGenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {

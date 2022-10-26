@@ -2235,19 +2235,19 @@ namespace Chummer
             this.cmsSpellButton.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsCreateSpell});
             this.cmsSpellButton.Name = "cmsSpellButton";
-            this.cmsSpellButton.Size = new System.Drawing.Size(137, 26);
+            this.cmsSpellButton.Size = new System.Drawing.Size(181, 48);
             // 
             // tsCreateSpell
             // 
-            this.tsCreateSpell.Image = null;
+            this.tsCreateSpell.Image = global::Chummer.Properties.Resources.wand;
             this.tsCreateSpell.ImageDpi120 = null;
             this.tsCreateSpell.ImageDpi144 = null;
-            this.tsCreateSpell.ImageDpi192 = null;
+            this.tsCreateSpell.ImageDpi192 = global::Chummer.Properties.Resources.wand1;
             this.tsCreateSpell.ImageDpi288 = null;
             this.tsCreateSpell.ImageDpi384 = null;
-            this.tsCreateSpell.ImageDpi96 = null;
+            this.tsCreateSpell.ImageDpi96 = global::Chummer.Properties.Resources.wand;
             this.tsCreateSpell.Name = "tsCreateSpell";
-            this.tsCreateSpell.Size = new System.Drawing.Size(136, 22);
+            this.tsCreateSpell.Size = new System.Drawing.Size(180, 22);
             this.tsCreateSpell.Tag = "Menu_CreateSpell";
             this.tsCreateSpell.Text = "&Create Spell";
             this.tsCreateSpell.Visible = false;
@@ -14358,19 +14358,19 @@ namespace Chummer
             this.cmsAddContact.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsAddFromFile});
             this.cmsAddContact.Name = "cmsAddContact";
-            this.cmsAddContact.Size = new System.Drawing.Size(149, 26);
+            this.cmsAddContact.Size = new System.Drawing.Size(181, 48);
             // 
             // tsAddFromFile
             // 
-            this.tsAddFromFile.Image = null;
+            this.tsAddFromFile.Image = global::Chummer.Properties.Resources.folder_user;
             this.tsAddFromFile.ImageDpi120 = null;
             this.tsAddFromFile.ImageDpi144 = null;
-            this.tsAddFromFile.ImageDpi192 = null;
+            this.tsAddFromFile.ImageDpi192 = global::Chummer.Properties.Resources.folder_user1;
             this.tsAddFromFile.ImageDpi288 = null;
             this.tsAddFromFile.ImageDpi384 = null;
-            this.tsAddFromFile.ImageDpi96 = null;
+            this.tsAddFromFile.ImageDpi96 = global::Chummer.Properties.Resources.folder_user;
             this.tsAddFromFile.Name = "tsAddFromFile";
-            this.tsAddFromFile.Size = new System.Drawing.Size(148, 22);
+            this.tsAddFromFile.Size = new System.Drawing.Size(180, 22);
             this.tsAddFromFile.Tag = "Menu_AddFromFile";
             this.tsAddFromFile.Text = "&Add From File";
             this.tsAddFromFile.Click += new System.EventHandler(this.tsAddFromFile_Click);
