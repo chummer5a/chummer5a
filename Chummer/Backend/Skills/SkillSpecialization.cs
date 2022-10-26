@@ -213,20 +213,14 @@ namespace Chummer.Backend.Skills
                     int intOld = Interlocked.CompareExchange(ref _intNameLoaded, 2, 1);
                     while (intOld < 3) // Need this in case we reset name while in the process of fetching it
                     {
-                        while (intOld == 0 || intOld == 2)
-                        {
-                            Utils.SafeSleep();
-                            intOld = Interlocked.CompareExchange(ref _intNameLoaded, 2, 1);
-                        }
-
-                        if (intOld == 1)
+                        if (intOld == 0)
                         {
                             CancellationTokenSource objNewSource = new CancellationTokenSource();
                             CancellationTokenSource objOldSource
                                 = Interlocked.CompareExchange(ref _objNameLoaderCancellationTokenSource, objNewSource,
                                                               null);
                             // Cancellation token source is only null if it's our first time running
-                            if (objOldSource == null)
+                            if (objOldSource == null && Interlocked.CompareExchange(ref _intNameLoaded, 2, 0) == 0)
                             {
                                 CancellationToken objToken = objNewSource.Token;
                                 Task<string> tskNewTask
@@ -240,10 +234,17 @@ namespace Chummer.Backend.Skills
                                     Utils.BreakIfDebug();
                                     throw new InvalidOperationException();
                                 }
+                                _strName = Utils.JoinableTaskFactory.Run(() => _tskNameLoader);
+                                intOld = Interlocked.CompareExchange(ref _intNameLoaded, 3, 2);
                             }
+                            else
+                                objNewSource.Dispose();
+                        }
 
-                            _strName = Utils.JoinableTaskFactory.Run(() => _tskNameLoader);
-                            intOld = Interlocked.CompareExchange(ref _intNameLoaded, 3, 2);
+                        while (intOld == 0 || intOld == 2)
+                        {
+                            Utils.SafeSleep();
+                            intOld = Interlocked.CompareExchange(ref _intNameLoaded, 2, 1);
                         }
                     }
                 }
