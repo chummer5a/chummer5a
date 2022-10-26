@@ -372,11 +372,7 @@ namespace Chummer.Backend.Skills
             Task<string> tskOld = Interlocked.Exchange(ref _tskNameLoader, null);
             if (tskOld != null)
             {
-                Utils.JoinableTaskFactory.Run(async () =>
-                {
-                    using (tskOld)
-                        return await tskOld;
-                });
+                Utils.JoinableTaskFactory.Run(() => tskOld);
             }
         }
     }
