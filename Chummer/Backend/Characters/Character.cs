@@ -2506,10 +2506,21 @@ namespace Chummer
                         if (objSkill.Specializations.All(x => x.Name != strSpec))
                         {
                             SkillSpecialization objSpec = new SkillSpecialization(this, strSpec);
-                            objSkill.Specializations.Add(objSpec);
-                            ImprovementManager.CreateImprovement(this, strSkill, Improvement.ImprovementSource.Metatype,
-                                string.Empty, Improvement.ImprovementType.SkillSpecialization, objSpec.InternalId);
-                            ImprovementManager.Commit(this);
+                            try
+                            {
+                                objSkill.Specializations.Add(objSpec);
+                                ImprovementManager.CreateImprovement(this, strSkill,
+                                                                     Improvement.ImprovementSource.Metatype,
+                                                                     string.Empty,
+                                                                     Improvement.ImprovementType.SkillSpecialization,
+                                                                     objSpec.InternalId);
+                                ImprovementManager.Commit(this);
+                            }
+                            catch
+                            {
+                                objSpec.Dispose();
+                                throw;
+                            }
                         }
                     }
                 }

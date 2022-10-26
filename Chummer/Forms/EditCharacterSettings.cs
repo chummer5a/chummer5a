@@ -45,11 +45,11 @@ namespace Chummer
         private readonly TypedOrderedDictionary<object, bool> _dicCharacterCustomDataDirectoryInfos = new TypedOrderedDictionary<object, bool>();
 
         private int _intLoading = 1;
-        private bool _blnSkipLimbCountUpdate;
+        private int _intSkipLimbCountUpdate;
         private bool _blnDirty;
         private bool _blnSourcebookToggle = true;
         private bool _blnWasRenamed;
-        private bool _blnIsLayoutSuspended = true;
+        private int _intSuspendLayoutCount;
         private bool _blnForceMasterIndexRepopulateOnClose;
 
         // Used to revert to old selected setting if user cancels out of selecting a different one
@@ -111,7 +111,6 @@ namespace Chummer
 
             await SetIsDirty(false).ConfigureAwait(false);
             Interlocked.Decrement(ref _intLoading);
-            _blnIsLayoutSuspended = false;
         }
 
         #endregion Form Events
@@ -152,13 +151,8 @@ namespace Chummer
             CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
             try
             {
-                bool blnDoResumeLayout = !_blnIsLayoutSuspended;
-                if (blnDoResumeLayout)
-                {
-                    _blnIsLayoutSuspended = true;
+                if (Interlocked.Increment(ref _intSuspendLayoutCount) == 1)
                     await this.DoThreadSafeAsync(x => x.SuspendLayout()).ConfigureAwait(false);
-                }
-
                 try
                 {
                     int intCurrentSelectedSettingIndex = await cboSetting.DoThreadSafeFuncAsync(x => x.SelectedIndex).ConfigureAwait(false);
@@ -184,11 +178,8 @@ namespace Chummer
                 }
                 finally
                 {
-                    if (blnDoResumeLayout)
-                    {
-                        _blnIsLayoutSuspended = false;
+                    if (Interlocked.Decrement(ref _intSuspendLayoutCount) == 0)
                         await this.DoThreadSafeAsync(x => x.ResumeLayout()).ConfigureAwait(false);
-                    }
                 }
 
                 _intOldSelectedSettingIndex = await cboSetting.DoThreadSafeFuncAsync(x => x.SelectedIndex).ConfigureAwait(false);
@@ -238,13 +229,9 @@ namespace Chummer
                     if (await objCharacter.GetSettingsKeyAsync().ConfigureAwait(false) == _objReferenceCharacterSettings.FileName)
                         await objCharacter.SetSettingsKeyAsync(kvpReplacementOption.Key).ConfigureAwait(false);
                 }).ConfigureAwait(false);
-                bool blnDoResumeLayout = !_blnIsLayoutSuspended;
-                if (blnDoResumeLayout)
-                {
-                    _blnIsLayoutSuspended = true;
-                    await this.DoThreadSafeAsync(x => x.SuspendLayout()).ConfigureAwait(false);
-                }
 
+                if (Interlocked.Increment(ref _intSuspendLayoutCount) == 1)
+                    await this.DoThreadSafeAsync(x => x.SuspendLayout()).ConfigureAwait(false);
                 try
                 {
                     _objReferenceCharacterSettings = kvpReplacementOption.Value;
@@ -255,11 +242,8 @@ namespace Chummer
                 }
                 finally
                 {
-                    if (blnDoResumeLayout)
-                    {
-                        _blnIsLayoutSuspended = false;
+                    if (Interlocked.Decrement(ref _intSuspendLayoutCount) == 0)
                         await this.DoThreadSafeAsync(x => x.ResumeLayout()).ConfigureAwait(false);
-                    }
                 }
             }
             finally
@@ -345,13 +329,8 @@ namespace Chummer
             try
             {
                 _objCharacterSettings.Name = strSelectedName;
-                bool blnDoResumeLayout = !_blnIsLayoutSuspended;
-                if (blnDoResumeLayout)
-                {
-                    _blnIsLayoutSuspended = true;
+                if (Interlocked.Increment(ref _intSuspendLayoutCount) == 1)
                     await this.DoThreadSafeAsync(x => x.SuspendLayout()).ConfigureAwait(false);
-                }
-
                 try
                 {
                     CharacterSettings objNewCharacterSettings
@@ -379,11 +358,8 @@ namespace Chummer
                 }
                 finally
                 {
-                    if (blnDoResumeLayout)
-                    {
-                        _blnIsLayoutSuspended = false;
+                    if (Interlocked.Decrement(ref _intSuspendLayoutCount) == 0)
                         await this.DoThreadSafeAsync(x => x.ResumeLayout()).ConfigureAwait(false);
-                    }
                 }
             }
             finally
@@ -426,13 +402,8 @@ namespace Chummer
 
                 if (!_objCharacterSettings.Save())
                     return;
-                bool blnDoResumeLayout = !_blnIsLayoutSuspended;
-                if (blnDoResumeLayout)
-                {
-                    _blnIsLayoutSuspended = true;
+                if (Interlocked.Increment(ref _intSuspendLayoutCount) == 1)
                     await this.DoThreadSafeAsync(x => x.SuspendLayout()).ConfigureAwait(false);
-                }
-
                 try
                 {
                     await _objReferenceCharacterSettings.CopyValuesAsync(_objCharacterSettings).ConfigureAwait(false);
@@ -440,11 +411,8 @@ namespace Chummer
                 }
                 finally
                 {
-                    if (blnDoResumeLayout)
-                    {
-                        _blnIsLayoutSuspended = false;
+                    if (Interlocked.Decrement(ref _intSuspendLayoutCount) == 0)
                         await this.DoThreadSafeAsync(x => x.ResumeLayout()).ConfigureAwait(false);
-                    }
                 }
             }
             finally
@@ -493,13 +461,8 @@ namespace Chummer
                 Interlocked.Increment(ref _intLoading);
                 try
                 {
-                    bool blnDoResumeLayout = !_blnIsLayoutSuspended;
-                    if (blnDoResumeLayout)
-                    {
-                        _blnIsLayoutSuspended = true;
+                    if (Interlocked.Increment(ref _intSuspendLayoutCount) == 1)
                         await this.DoThreadSafeAsync(x => x.SuspendLayout()).ConfigureAwait(false);
-                    }
-
                     try
                     {
                         if (_blnWasRenamed && _intOldSelectedSettingIndex >= 0)
@@ -522,11 +485,8 @@ namespace Chummer
                     }
                     finally
                     {
-                        if (blnDoResumeLayout)
-                        {
-                            _blnIsLayoutSuspended = false;
+                        if (Interlocked.Decrement(ref _intSuspendLayoutCount) == 0)
                             await this.DoThreadSafeAsync(x => x.ResumeLayout()).ConfigureAwait(false);
-                        }
                     }
                 }
                 finally
@@ -557,13 +517,8 @@ namespace Chummer
                 Interlocked.Increment(ref _intLoading);
                 try
                 {
-                    bool blnDoResumeLayout = !_blnIsLayoutSuspended;
-                    if (blnDoResumeLayout)
-                    {
-                        _blnIsLayoutSuspended = true;
+                    if (Interlocked.Increment(ref _intSuspendLayoutCount) == 1)
                         await this.DoThreadSafeAsync(x => x.SuspendLayout()).ConfigureAwait(false);
-                    }
-
                     try
                     {
                         int intCurrentSelectedSettingIndex
@@ -585,11 +540,8 @@ namespace Chummer
                     }
                     finally
                     {
-                        if (blnDoResumeLayout)
-                        {
-                            _blnIsLayoutSuspended = false;
+                        if (Interlocked.Decrement(ref _intSuspendLayoutCount) == 0)
                             await this.DoThreadSafeAsync(x => x.ResumeLayout()).ConfigureAwait(false);
-                        }
                     }
                 }
                 finally
@@ -607,7 +559,7 @@ namespace Chummer
 
         private void cboLimbCount_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_intLoading > 0 || _blnSkipLimbCountUpdate)
+            if (_intLoading > 0 || _intSkipLimbCountUpdate > 0)
                 return;
 
             string strLimbCount = cboLimbCount.SelectedValue?.ToString();
@@ -1244,13 +1196,8 @@ namespace Chummer
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
-                bool blnDoResumeLayout = !_blnIsLayoutSuspended;
-                if (blnDoResumeLayout)
-                {
-                    _blnIsLayoutSuspended = true;
-                    await this.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
-                }
-
+                if (Interlocked.Increment(ref _intSuspendLayoutCount) == 1)
+                    await this.DoThreadSafeAsync(x => x.SuspendLayout(), token: token).ConfigureAwait(false);
                 try
                 {
                     await PopulateSourcebookTreeView(token).ConfigureAwait(false);
@@ -1261,11 +1208,8 @@ namespace Chummer
                 }
                 finally
                 {
-                    if (blnDoResumeLayout)
-                    {
-                        _blnIsLayoutSuspended = false;
+                    if (Interlocked.Decrement(ref _intSuspendLayoutCount) == 0)
                         await this.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
-                    }
                 }
             }
             finally
@@ -1340,7 +1284,7 @@ namespace Chummer
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
-                _blnSkipLimbCountUpdate = true;
+                Interlocked.Increment(ref _intSkipLimbCountUpdate);
                 try
                 {
                     using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
@@ -1395,7 +1339,7 @@ namespace Chummer
                 }
                 finally
                 {
-                    _blnSkipLimbCountUpdate = false;
+                    Interlocked.Decrement(ref _intSkipLimbCountUpdate);
                 }
             }
             finally

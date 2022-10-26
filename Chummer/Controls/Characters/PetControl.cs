@@ -32,7 +32,7 @@ namespace Chummer
     public partial class PetControl : UserControl
     {
         private readonly Contact _objContact;
-        private bool _blnLoading = true;
+        private int _intLoading = 1;
 
         // Events.
         public event EventHandler<TextEventArgs> ContactDetailChanged;
@@ -63,7 +63,7 @@ namespace Chummer
 
             await DoDataBindings().ConfigureAwait(false);
 
-            _blnLoading = false;
+            Interlocked.Decrement(ref _intLoading);
         }
 
         public void UnbindPetControl()
@@ -76,20 +76,30 @@ namespace Chummer
 
         private void txtContactName_TextChanged(object sender, EventArgs e)
         {
-            if (!_blnLoading)
+            if (_intLoading == 0)
                 ContactDetailChanged?.Invoke(this, new TextEventArgs("Name"));
         }
 
         private void UpdateMetatype(object sender, EventArgs e)
         {
-            if (_blnLoading || _objContact.DisplayMetatype == cboMetatype.Text)
+            if (_intLoading > 0 || _objContact.DisplayMetatype == cboMetatype.Text)
                 return;
             _objContact.DisplayMetatype = cboMetatype.Text;
             if (_objContact.DisplayMetatype != cboMetatype.Text)
             {
-                _blnLoading = true;
-                cboMetatype.Text = _objContact.DisplayMetatype;
-                _blnLoading = false;
+                if (Interlocked.Increment(ref _intLoading) != 1)
+                {
+                    Interlocked.Decrement(ref _intLoading);
+                    return;
+                }
+                try
+                {
+                    cboMetatype.Text = _objContact.DisplayMetatype;
+                }
+                finally
+                {
+                    Interlocked.Decrement(ref _intLoading);
+                }
             }
             ContactDetailChanged?.Invoke(this, new TextEventArgs("Metatype"));
         }

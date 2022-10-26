@@ -6286,8 +6286,16 @@ namespace Chummer
                 // Create the Improvement.
                 string strSpec = bonusNode["spec"]?.InnerText ?? string.Empty;
                 SkillSpecialization objSpec = new SkillSpecialization(_objCharacter, strSpec);
-                objSkill.Specializations.Add(objSpec);
-                CreateImprovement(strSkill, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillSpecialization, objSpec.InternalId);
+                try
+                {
+                    objSkill.Specializations.Add(objSpec);
+                    CreateImprovement(strSkill, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillSpecialization, objSpec.InternalId);
+                }
+                catch
+                {
+                    objSpec.Dispose();
+                    throw;
+                }
             }
         }
 
@@ -6327,8 +6335,16 @@ namespace Chummer
                     if (_objCharacter.Settings.FreeMartialArtSpecialization && _objImprovementSource == Improvement.ImprovementSource.MartialArt)
                     {
                         SkillSpecialization objSpec = new SkillSpecialization(_objCharacter, strSpec);
-                        objSkill.Specializations.Add(objSpec);
-                        CreateImprovement(objSkill.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillSpecialization, objSpec.InternalId);
+                        try
+                        {
+                            objSkill.Specializations.Add(objSpec);
+                            CreateImprovement(objSkill.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillSpecialization, objSpec.InternalId);
+                        }
+                        catch
+                        {
+                            objSpec.Dispose();
+                            throw;
+                        }
                     }
                 }
             }
@@ -7594,8 +7610,16 @@ namespace Chummer
             }
             // Create the Improvement.
             SkillSpecialization objExpertise = new SkillSpecialization(_objCharacter, SelectedValue, true, true);
-            objSkill.Specializations.Add(objExpertise);
-            CreateImprovement(strSkill, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillExpertise, objExpertise.InternalId);
+            try
+            {
+                objSkill.Specializations.Add(objExpertise);
+                CreateImprovement(strSkill, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillSpecialization, objExpertise.InternalId);
+            }
+            catch
+            {
+                objExpertise.Dispose();
+                throw;
+            }
         }
 
         public void penaltyfreesustain(XmlNode bonusNode)
