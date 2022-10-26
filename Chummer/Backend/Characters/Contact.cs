@@ -210,9 +210,6 @@ namespace Chummer
                 new DependencyGraphNode<string, Contact>(nameof(IsEnemy),
                                                          new DependencyGraphNode<string, Contact>(nameof(EntityType))
                 ),
-                new DependencyGraphNode<string, Contact>(nameof(NotReadOnly),
-                                                         new DependencyGraphNode<string, Contact>(nameof(ReadOnly))
-                ),
                 new DependencyGraphNode<string, Contact>(nameof(GroupEnabled),
                                                          new DependencyGraphNode<string, Contact>(nameof(ReadOnly))
                 ),
@@ -602,8 +599,6 @@ namespace Chummer
         #region Properties
 
         public bool ReadOnly => _blnReadOnly;
-
-        public bool NotReadOnly => !ReadOnly;
 
         /// <summary>
         /// Total points used for this contact.
@@ -1303,11 +1298,10 @@ namespace Chummer
             get => _eContactType;
             set
             {
-                if (_eContactType != value)
-                {
-                    _eContactType = value;
-                    OnPropertyChanged();
-                }
+                if (_eContactType == value)
+                    return;
+                _eContactType = value;
+                OnPropertyChanged();
             }
         }
 

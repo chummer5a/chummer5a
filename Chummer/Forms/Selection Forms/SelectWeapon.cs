@@ -162,12 +162,13 @@ namespace Chummer
                 Weapon objWeapon = new Weapon(_objCharacter);
                 objWeapon.Create(xmlWeapon, null, true, false, true);
                 objWeapon.Parent = ParentWeapon;
-                _objSelectedWeapon?.Dispose();
+                if (_objSelectedWeapon != null)
+                    await _objSelectedWeapon.DisposeAsync().ConfigureAwait(false);
                 _objSelectedWeapon = objWeapon;
             }
-            else
+            else if (_objSelectedWeapon != null)
             {
-                _objSelectedWeapon?.Dispose();
+                await _objSelectedWeapon.DisposeAsync().ConfigureAwait(false);
                 _objSelectedWeapon = null;
             }
 

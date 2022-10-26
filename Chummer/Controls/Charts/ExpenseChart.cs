@@ -71,14 +71,20 @@ namespace Chummer.UI.Charts
 
         private async void ExpenseChart_Load(object sender, EventArgs e)
         {
-            if (_objCharacter != null)
-                return;
-            if (ParentForm is CharacterShared frmParent)
-                _objCharacter = frmParent.CharacterObject;
+            if (ParentForm is CharacterShared frmParent && frmParent.CharacterObject != null)
+            {
+                if (Interlocked.CompareExchange(ref _objCharacter, frmParent.CharacterObject, null) != null)
+                    return;
+            }
             else
             {
-                _objCharacter = new Character();
-                Disposed += (o, args) => _objCharacter.Dispose();
+                Character objCharacter = new Character();
+                if (Interlocked.CompareExchange(ref _objCharacter, objCharacter, null) != null)
+                {
+                    await objCharacter.DisposeAsync();
+                    return;
+                }
+                await this.DoThreadSafeAsync(x => x.Disposed += (o, args) => objCharacter.Dispose()).ConfigureAwait(false);
                 Utils.BreakIfDebug();
             }
             if (NuyenMode)

@@ -17,6 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
+using System;
 using System.Threading;
 
 namespace Chummer
@@ -28,7 +29,22 @@ namespace Chummer
         /// </summary>
         public static void SafeEnterReadLock(this ReaderWriterLockSlim rwlLockerObject, bool blnForceDoEvents = false)
         {
-            if (Utils.EverDoEvents)
+            if (Utils.IsUnitTest)
+            {
+                if (Utils.EverDoEvents)
+                {
+                    int intLoopCount = 0;
+                    while (!rwlLockerObject.TryEnterReadLock(Utils.DefaultSleepDuration))
+                    {
+                        if (intLoopCount++ > Utils.WaitEmergencyReleaseMaxTicks)
+                            throw new TimeoutException();
+                        Utils.DoEventsSafe(blnForceDoEvents);
+                    }
+                }
+                else if (!rwlLockerObject.TryEnterReadLock(Utils.WaitEmergencyReleaseMaxTicks))
+                    throw new TimeoutException();
+            }
+            else if (Utils.EverDoEvents)
             {
                 while (!rwlLockerObject.TryEnterReadLock(Utils.DefaultSleepDuration))
                     Utils.DoEventsSafe(blnForceDoEvents);
@@ -42,7 +58,22 @@ namespace Chummer
         /// </summary>
         public static void SafeEnterUpgradeableReadLock(this ReaderWriterLockSlim rwlLockerObject, bool blnForceDoEvents = false)
         {
-            if (Utils.EverDoEvents)
+            if (Utils.IsUnitTest)
+            {
+                if (Utils.EverDoEvents)
+                {
+                    int intLoopCount = 0;
+                    while (!rwlLockerObject.TryEnterUpgradeableReadLock(Utils.DefaultSleepDuration))
+                    {
+                        if (intLoopCount++ > Utils.WaitEmergencyReleaseMaxTicks)
+                            throw new TimeoutException();
+                        Utils.DoEventsSafe(blnForceDoEvents);
+                    }
+                }
+                else if (!rwlLockerObject.TryEnterUpgradeableReadLock(Utils.WaitEmergencyReleaseMaxTicks))
+                    throw new TimeoutException();
+            }
+            else if (Utils.EverDoEvents)
             {
                 while (!rwlLockerObject.TryEnterUpgradeableReadLock(Utils.DefaultSleepDuration))
                     Utils.DoEventsSafe(blnForceDoEvents);
@@ -56,7 +87,22 @@ namespace Chummer
         /// </summary>
         public static void SafeEnterWriteLock(this ReaderWriterLockSlim rwlLockerObject, bool blnForceDoEvents = false)
         {
-            if (Utils.EverDoEvents)
+            if (Utils.IsUnitTest)
+            {
+                if (Utils.EverDoEvents)
+                {
+                    int intLoopCount = 0;
+                    while (!rwlLockerObject.TryEnterWriteLock(Utils.DefaultSleepDuration))
+                    {
+                        if (intLoopCount++ > Utils.WaitEmergencyReleaseMaxTicks)
+                            throw new TimeoutException();
+                        Utils.DoEventsSafe(blnForceDoEvents);
+                    }
+                }
+                else if (!rwlLockerObject.TryEnterWriteLock(Utils.WaitEmergencyReleaseMaxTicks))
+                    throw new TimeoutException();
+            }
+            else if (Utils.EverDoEvents)
             {
                 while (!rwlLockerObject.TryEnterWriteLock(Utils.DefaultSleepDuration))
                     Utils.DoEventsSafe(blnForceDoEvents);

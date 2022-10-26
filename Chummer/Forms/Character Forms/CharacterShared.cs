@@ -9018,7 +9018,8 @@ namespace Chummer
         {
             if (disposing)
             {
-                _objCharacter.PropertyChanged -= CharacterPropertyChanged;
+                if (_objCharacter != null)
+                    _objCharacter.PropertyChanged -= CharacterPropertyChanged;
                 Interlocked.Exchange(ref _objCharacterFileWatcher, null)?.Dispose();
                 CancellationTokenSource objTemp = Interlocked.Exchange(ref _objUpdateCharacterInfoCancellationTokenSource, null);
                 if (objTemp != null)
@@ -9037,7 +9038,7 @@ namespace Chummer
                     }
                 }
                 _objUpdateCharacterInfoSemaphoreSlim.Dispose();
-                dlgSaveFile.Dispose();
+                dlgSaveFile?.Dispose();
             }
             base.Dispose(disposing);
         }

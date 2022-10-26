@@ -143,6 +143,15 @@ namespace Chummer.Backend.Skills
             }
         }
 
+        public override async ValueTask<bool> GetAllowDeleteAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                return (!ForcedName || await GetFreeBaseAsync(token).ConfigureAwait(false)
+                           + await GetFreeKarmaAsync(token).ConfigureAwait(false)
+                           + await RatingModifiersAsync(Attribute, token: token).ConfigureAwait(false) <= 0)
+                       && !await GetIsNativeLanguageAsync(token).ConfigureAwait(false);
+        }
+
         public override bool AllowNameChange
         {
             get
@@ -153,6 +162,20 @@ namespace Chummer.Backend.Skills
             }
         }
 
+        public override async ValueTask<bool> GetAllowNameChangeAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                bool blnIsNativeLanguage = await GetIsNativeLanguageAsync(token).ConfigureAwait(false);
+                return !ForcedName && (blnIsNativeLanguage || await GetAllowUpgradeAsync(token).ConfigureAwait(false))
+                                   &&
+                                   (!await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false)
+                                    || (await GetKarmaAsync(token).ConfigureAwait(false) == 0
+                                        && await GetBaseAsync(token).ConfigureAwait(false) == 0
+                                        && !blnIsNativeLanguage));
+            }
+        }
+
         public override bool AllowTypeChange
         {
             get
@@ -160,6 +183,14 @@ namespace Chummer.Backend.Skills
                 using (EnterReadLock.Enter(LockObject))
                     return (AllowNameChange || string.IsNullOrWhiteSpace(Type)) && !IsNativeLanguage;
             }
+        }
+
+        public override async ValueTask<bool> GetAllowTypeChangeAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                return (await GetAllowNameChangeAsync(token).ConfigureAwait(false)
+                        || string.IsNullOrWhiteSpace(await GetTypeAsync(token).ConfigureAwait(false)))
+                       && !await GetIsNativeLanguageAsync(token).ConfigureAwait(false);
         }
 
         private string _strType = string.Empty;
@@ -192,7 +223,7 @@ namespace Chummer.Backend.Skills
             get
             {
                 using (EnterReadLock.Enter(LockObject))
-                    return !IsNativeLanguage && _blnAllowUpgrade;
+                    return _blnAllowUpgrade && !IsNativeLanguage;
             }
             set
             {
@@ -209,6 +240,15 @@ namespace Chummer.Backend.Skills
             }
         }
 
+        /// <summary>
+        /// Is the skill allowed to be upgraded through karma or points?
+        /// </summary>
+        public async ValueTask<bool> GetAllowUpgradeAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                return _blnAllowUpgrade && !await GetIsNativeLanguageAsync(token).ConfigureAwait(false);
+        }
+
         public string WritableName
         {
             get => CurrentDisplayName;
@@ -218,7 +258,7 @@ namespace Chummer.Backend.Skills
                 {
                     if (ForcedName)
                         return;
-                    if (string.Equals(CurrentDisplayName, value, StringComparison.CurrentCulture))
+                    if (string.Equals(CurrentDisplayName, value, StringComparison.Ordinal))
                         return;
                     using (LockObject.EnterWriteLock())
                     {
@@ -230,15 +270,15 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        public ValueTask<string> GetWriteableNameAsync(CancellationToken token = default) => GetCurrentDisplayNameAsync(token);
+        public ValueTask<string> GetWritableNameAsync(CancellationToken token = default) => GetCurrentDisplayNameAsync(token);
 
-        public async ValueTask SetWriteableNameAsync(string value, CancellationToken token = default)
+        public async ValueTask SetWritableNameAsync(string value, CancellationToken token = default)
         {
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
                 if (ForcedName)
                     return;
-                if (string.Equals(await GetCurrentDisplayNameAsync(token).ConfigureAwait(false), value, StringComparison.CurrentCulture))
+                if (string.Equals(await GetCurrentDisplayNameAsync(token).ConfigureAwait(false), value, StringComparison.Ordinal))
                     return;
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
@@ -594,7 +634,7 @@ namespace Chummer.Backend.Skills
 
                     OnPropertyChanged(nameof(Type));
                     if (!await GetIsLanguageAsync(token).ConfigureAwait(false))
-                        IsNativeLanguage = false;
+                        await SetIsNativeLanguageAsync(false, token).ConfigureAwait(false);
                 }
                 finally
                 {
@@ -644,6 +684,33 @@ namespace Chummer.Backend.Skills
         {
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
                 return _blnIsNativeLanguage;
+        }
+
+        public override async ValueTask SetIsNativeLanguageAsync(bool value, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                if (_blnIsNativeLanguage == value)
+                    return;
+                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    _blnIsNativeLanguage = value;
+                    if (value)
+                    {
+                        await SetBaseAsync(0, token).ConfigureAwait(false);
+                        await SetKarmaAsync(0, token).ConfigureAwait(false);
+                        await SetBuyWithKarmaAsync(false, token).ConfigureAwait(false);
+                        await Specializations.ClearAsync(token).ConfigureAwait(false);
+                    }
+
+                    OnPropertyChanged(nameof(IsNativeLanguage));
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
+            }
         }
 
         /// <summary>
@@ -775,15 +842,14 @@ namespace Chummer.Backend.Skills
                                           .GetKarmaKnowledgeSpecializationAsync(token).ConfigureAwait(false);
                 decimal decExtraSpecCost = 0;
                 decimal decSpecCostMultiplier = 1.0m;
+                bool blnCreated = await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false);
                 await (await CharacterObject.GetImprovementsAsync(token).ConfigureAwait(false)).ForEachAsync(
                     async objLoopImprovement =>
                     {
                         if (objLoopImprovement.Minimum > intTotalBaseRating ||
                             (!string.IsNullOrEmpty(objLoopImprovement.Condition)
-                             && (objLoopImprovement.Condition == "career") !=
-                             await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false)
-                             && (objLoopImprovement.Condition == "create") ==
-                             await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false))
+                             && (objLoopImprovement.Condition == "career") != blnCreated
+                             && (objLoopImprovement.Condition == "create") == blnCreated)
                             || !objLoopImprovement.Enabled)
                             return;
                         if (objLoopImprovement.ImprovedName == await GetDictionaryKeyAsync(token).ConfigureAwait(false)
@@ -1102,21 +1168,21 @@ namespace Chummer.Backend.Skills
         {
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                int cost = BasePoints;
+                int intBasePoints = await GetBasePointsAsync(token).ConfigureAwait(false);
+                int cost = intBasePoints;
                 if (!IsExoticSkill && !await GetBuyWithKarmaAsync(token).ConfigureAwait(false))
                     cost += await Specializations.CountAsync(x => !x.Free, token: token).ConfigureAwait(false);
 
                 decimal decExtra = 0;
                 decimal decMultiplier = 1.0m;
+                bool blnCreated = await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false);
                 await (await CharacterObject.GetImprovementsAsync(token).ConfigureAwait(false)).ForEachAsync(
                     async objLoopImprovement =>
                     {
-                        if (objLoopImprovement.Minimum > BasePoints ||
+                        if (objLoopImprovement.Minimum > intBasePoints ||
                             (!string.IsNullOrEmpty(objLoopImprovement.Condition)
-                             && (objLoopImprovement.Condition == "career") !=
-                             await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false)
-                             && (objLoopImprovement.Condition == "create") ==
-                             await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false))
+                             && (objLoopImprovement.Condition == "career") != blnCreated
+                             && (objLoopImprovement.Condition == "create") == blnCreated)
                             || !objLoopImprovement.Enabled)
                             return;
                         if (objLoopImprovement.ImprovedName == await GetDictionaryKeyAsync(token).ConfigureAwait(false)
@@ -1127,7 +1193,7 @@ namespace Chummer.Backend.Skills
                                 case Improvement.ImprovementType.KnowledgeSkillPointCost:
                                     decExtra += objLoopImprovement.Value
                                                 * (Math.Min(
-                                                    BasePoints,
+                                                    intBasePoints,
                                                     objLoopImprovement.Maximum == 0
                                                         ? int.MaxValue
                                                         : objLoopImprovement.Maximum) - objLoopImprovement.Minimum);
@@ -1145,7 +1211,7 @@ namespace Chummer.Backend.Skills
                                 case Improvement.ImprovementType.SkillCategoryPointCost:
                                     decExtra += objLoopImprovement.Value
                                                 * (Math.Min(
-                                                    BasePoints,
+                                                    intBasePoints,
                                                     objLoopImprovement.Maximum == 0
                                                         ? int.MaxValue
                                                         : objLoopImprovement.Maximum) - objLoopImprovement.Minimum);

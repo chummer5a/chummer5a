@@ -43,12 +43,12 @@ namespace CrashHandler
             this.pnlDesc = new System.Windows.Forms.Panel();
             this.lblDesc = new System.Windows.Forms.Label();
             this.tabUserStory = new System.Windows.Forms.TabPage();
+            this.rtbUserStory = new System.Windows.Forms.RichTextBox();
             this.cmdSubmitIssue = new System.Windows.Forms.Button();
             this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
             this.cmdRestart = new System.Windows.Forms.Button();
             this.lblDescriptionWarning = new System.Windows.Forms.Label();
-            this.rtbUserStory = new System.Windows.Forms.RichTextBox();
             this.stpMain.SuspendLayout();
             this.tabUserStories.SuspendLayout();
             this.tabGeneral.SuspendLayout();
@@ -82,6 +82,7 @@ namespace CrashHandler
             this.cmdClose.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdClose.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdClose.Location = new System.Drawing.Point(231, 3);
+            this.cmdClose.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdClose.Name = "cmdClose";
             this.cmdClose.Size = new System.Drawing.Size(108, 36);
             this.cmdClose.TabIndex = 4;
@@ -239,6 +240,18 @@ namespace CrashHandler
             this.tabUserStory.Text = "Error Description";
             this.tabUserStory.UseVisualStyleBackColor = true;
             // 
+            // rtbUserStory
+            // 
+            this.rtbUserStory.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.rtbUserStory.Location = new System.Drawing.Point(3, 3);
+            this.rtbUserStory.Name = "rtbUserStory";
+            this.rtbUserStory.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
+            this.rtbUserStory.Size = new System.Drawing.Size(764, 456);
+            this.rtbUserStory.TabIndex = 1;
+            this.rtbUserStory.Text = "### Expected behaviour\n(Enter text here)\n\n### Actual behaviour\n(Enter text here)\n" +
+    "\n### Steps to reproduce the behaviour\n(Enter text here)\n";
+            this.rtbUserStory.TextChanged += new System.EventHandler(this.rtbUserStory_TextChanged);
+            // 
             // cmdSubmitIssue
             // 
             this.cmdSubmitIssue.AutoSize = true;
@@ -246,6 +259,7 @@ namespace CrashHandler
             this.cmdSubmitIssue.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdSubmitIssue.Enabled = false;
             this.cmdSubmitIssue.Location = new System.Drawing.Point(3, 3);
+            this.cmdSubmitIssue.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdSubmitIssue.Name = "cmdSubmitIssue";
             this.cmdSubmitIssue.Size = new System.Drawing.Size(108, 36);
             this.cmdSubmitIssue.TabIndex = 12;
@@ -299,6 +313,7 @@ namespace CrashHandler
             this.cmdRestart.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdRestart.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdRestart.Location = new System.Drawing.Point(117, 3);
+            this.cmdRestart.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdRestart.Name = "cmdRestart";
             this.cmdRestart.Size = new System.Drawing.Size(108, 36);
             this.cmdRestart.TabIndex = 13;
@@ -317,18 +332,6 @@ namespace CrashHandler
             this.lblDescriptionWarning.TabIndex = 15;
             this.lblDescriptionWarning.Text = "Please make sure you have written some useful information in the Error Descriptio" +
     "n before creating an issue on GitHub.";
-            // 
-            // rtbUserStory
-            // 
-            this.rtbUserStory.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.rtbUserStory.Location = new System.Drawing.Point(3, 3);
-            this.rtbUserStory.Name = "rtbUserStory";
-            this.rtbUserStory.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
-            this.rtbUserStory.Size = new System.Drawing.Size(764, 456);
-            this.rtbUserStory.TabIndex = 1;
-            this.rtbUserStory.Text = "### Expected behaviour\n(Enter text here)\n\n### Actual behaviour\n(Enter text here)\n" +
-    "\n### Steps to reproduce the behaviour\n(Enter text here)\n";
-            this.rtbUserStory.TextChanged += new System.EventHandler(this.rtbUserStory_TextChanged);
             // 
             // CrashReporter
             // 

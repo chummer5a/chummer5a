@@ -38,15 +38,20 @@ namespace Chummer.UI.Powers
     {
         private TableView<Power> _table;
 
-        public PowersTabUserControl(CancellationToken objMyToken = default)
+        public PowersTabUserControl() : this(default)
+        {
+            // Need to set up constructors like this so that the WinForms designer doesn't freak out
+        }
+
+        public PowersTabUserControl(CancellationToken objMyToken)
         {
             _objMyToken = objMyToken;
             InitializeComponent();
 
             Disposed += (sender, args) => UnbindPowersTabUserControl();
 
-            this.UpdateLightDarkMode();
-            this.TranslateWinForm();
+            this.UpdateLightDarkMode(token: objMyToken);
+            this.TranslateWinForm(token: objMyToken);
 
             _dropDownList = GenerateDropdownFilter(objMyToken);
 
@@ -79,6 +84,8 @@ namespace Chummer.UI.Powers
             }
         }
 
+        public Character CachedCharacter { get; set; }
+
         private async void PowersTabUserControl_Load(object sender, EventArgs e)
         {
             if (_objCharacter != null)
@@ -96,15 +103,28 @@ namespace Chummer.UI.Powers
 
         public async ValueTask RealLoad(CancellationToken objMyToken = default, CancellationToken token = default)
         {
-            MyToken = objMyToken;
-            if (ParentForm is CharacterShared frmParent)
-                _objCharacter = frmParent.CharacterObject;
+            if (CachedCharacter != null)
+            {
+                if (Interlocked.CompareExchange(ref _objCharacter, CachedCharacter, null) != null)
+                    return;
+            }
+            else if (ParentForm is CharacterShared frmParent && frmParent.CharacterObject != null)
+            {
+                if (Interlocked.CompareExchange(ref _objCharacter, frmParent.CharacterObject, null) != null)
+                    return;
+            }
             else
             {
-                _objCharacter = new Character();
-                Disposed += (sender, args) => _objCharacter.Dispose();
+                Character objCharacter = new Character();
+                if (Interlocked.CompareExchange(ref _objCharacter, objCharacter, null) != null)
+                {
+                    await objCharacter.DisposeAsync();
+                    return;
+                }
+                await this.DoThreadSafeAsync(x => x.Disposed += (sender, args) => objCharacter.Dispose(), token).ConfigureAwait(false);
                 Utils.BreakIfDebug();
             }
+            MyToken = objMyToken;
 
             if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
                 return;
@@ -123,9 +143,6 @@ namespace Chummer.UI.Powers
                 try
                 {
                     Stopwatch parts = Stopwatch.StartNew();
-
-                    lblPowerPoints.DoOneWayDataBinding("Text", _objCharacter,
-                                                       nameof(Character.DisplayPowerPointsRemaining));
 
                     parts.TaskEnd("MakePowerDisplay()");
 
@@ -160,7 +177,10 @@ namespace Chummer.UI.Powers
                     x.ResumeLayout(true);
                 }
             }, token: token).ConfigureAwait(false);
-
+            await lblPowerPoints.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y, _objCharacter,
+                                                          nameof(Character.DisplayPowerPointsRemaining),
+                                                          x => x.GetDisplayPowerPointsRemainingAsync(MyToken).AsTask(),
+                                                          MyToken, MyToken);
             sw.Stop();
             Debug.WriteLine("RealLoad() in {0} ms", sw.Elapsed.TotalMilliseconds);
 
@@ -225,11 +245,11 @@ namespace Chummer.UI.Powers
         {
             List<Tuple<string, Func<Power, Task<bool>>>> ret = new List<Tuple<string, Func<Power, Task<bool>>>>(4)
             {
-                new Tuple<string, Func<Power, Task<bool>>>(LanguageManager.GetString("String_Search"),
+                new Tuple<string, Func<Power, Task<bool>>>(LanguageManager.GetString("String_Search", token: objMyToken),
                                                            null),
-                new Tuple<string, Func<Power, Task<bool>>>(LanguageManager.GetString("String_PowerFilterAll"),
+                new Tuple<string, Func<Power, Task<bool>>>(LanguageManager.GetString("String_PowerFilterAll", token: objMyToken),
                                                            power => Task.FromResult(true)),
-                new Tuple<string, Func<Power, Task<bool>>>(LanguageManager.GetString("String_PowerFilterRatingAboveZero"),
+                new Tuple<string, Func<Power, Task<bool>>>(LanguageManager.GetString("String_PowerFilterRatingAboveZero", token: objMyToken),
                                                            async power =>
                                                            {
                                                                try
@@ -241,7 +261,7 @@ namespace Chummer.UI.Powers
                                                                    return true;
                                                                }
                                                            }),
-                new Tuple<string, Func<Power, Task<bool>>>(LanguageManager.GetString("String_PowerFilterRatingZero"),
+                new Tuple<string, Func<Power, Task<bool>>>(LanguageManager.GetString("String_PowerFilterRatingZero", token: objMyToken),
                                                            async power =>
                                                            {
                                                                try
@@ -533,7 +553,7 @@ namespace Chummer.UI.Powers
                         }
                     }),
                     Tag = "ColumnHeader_Power_Points",
-                    ToolTipExtractor = (async item =>
+                    ToolTipExtractor = async item =>
                     {
                         try
                         {
@@ -543,7 +563,7 @@ namespace Chummer.UI.Powers
                         {
                             return string.Empty;
                         }
-                    })
+                    }
                 });
             powerPointsColumn.AddDependency(nameof(Power.DisplayPoints));
             powerPointsColumn.AddDependency(nameof(Power.ToolTip));
@@ -566,7 +586,7 @@ namespace Chummer.UI.Powers
                     }
                 }),
                 Tag = "Label_Source",
-                ToolTipExtractor = (async item =>
+                ToolTipExtractor = async item =>
                 {
                     try
                     {
@@ -576,7 +596,7 @@ namespace Chummer.UI.Powers
                     {
                         return string.Empty;
                     }
-                })
+                }
             });
             powerPointsColumn.AddDependency(nameof(Power.Source));
 
@@ -662,7 +682,7 @@ namespace Chummer.UI.Powers
             {
                 Text = "Notes",
                 Tag = "ColumnHeader_Notes",
-                ToolTipExtractor = (async p =>
+                ToolTipExtractor = async p =>
                 {
                     try
                     {
@@ -679,7 +699,7 @@ namespace Chummer.UI.Powers
                     {
                         return string.Empty;
                     }
-                })
+                }
             });
             noteColumn.AddDependency(nameof(Power.Notes));
 

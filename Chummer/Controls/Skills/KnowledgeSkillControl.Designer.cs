@@ -28,7 +28,6 @@ namespace Chummer.UI.Skills
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             this.lblModifiedRating = new Chummer.LabelWithToolTip();
             this.cmdDelete = new System.Windows.Forms.Button();
             this.cboName = new Chummer.ElasticComboBox();
@@ -82,7 +81,7 @@ namespace Chummer.UI.Skills
             this.cboName.Location = new System.Drawing.Point(50, 1);
             this.cboName.Margin = new System.Windows.Forms.Padding(3, 1, 3, 0);
             this.cboName.Name = "cboName";
-            this.cboName.Size = new System.Drawing.Size(195, 21);
+            this.cboName.Size = new System.Drawing.Size(196, 21);
             this.cboName.TabIndex = 20;
             this.cboName.TabStop = false;
             this.cboName.TooltipText = "";
@@ -119,7 +118,7 @@ namespace Chummer.UI.Skills
             this.tlpMain.Name = "tlpMain";
             this.tlpMain.RowCount = 1;
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpMain.Size = new System.Drawing.Size(827, 23);
+            this.tlpMain.Size = new System.Drawing.Size(830, 23);
             this.tlpMain.TabIndex = 27;
             // 
             // tlpLeft
@@ -137,7 +136,7 @@ namespace Chummer.UI.Skills
             this.tlpLeft.Name = "tlpLeft";
             this.tlpLeft.RowCount = 1;
             this.tlpLeft.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpLeft.Size = new System.Drawing.Size(248, 23);
+            this.tlpLeft.Size = new System.Drawing.Size(249, 23);
             this.tlpLeft.TabIndex = 28;
             // 
             // lblName
@@ -162,12 +161,12 @@ namespace Chummer.UI.Skills
             this.tlpMiddle.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpMiddle.Controls.Add(this.lblModifiedRating, 0, 0);
             this.tlpMiddle.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpMiddle.Location = new System.Drawing.Point(248, 0);
+            this.tlpMiddle.Location = new System.Drawing.Point(249, 0);
             this.tlpMiddle.Margin = new System.Windows.Forms.Padding(0);
             this.tlpMiddle.Name = "tlpMiddle";
             this.tlpMiddle.RowCount = 1;
             this.tlpMiddle.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpMiddle.Size = new System.Drawing.Size(330, 23);
+            this.tlpMiddle.Size = new System.Drawing.Size(332, 23);
             this.tlpMiddle.TabIndex = 29;
             // 
             // tlpRight
@@ -180,7 +179,7 @@ namespace Chummer.UI.Skills
             this.tlpRight.Controls.Add(this.cmdDelete, 1, 0);
             this.tlpRight.Controls.Add(this.cboType, 0, 0);
             this.tlpRight.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpRight.Location = new System.Drawing.Point(578, 0);
+            this.tlpRight.Location = new System.Drawing.Point(581, 0);
             this.tlpRight.Margin = new System.Windows.Forms.Padding(0);
             this.tlpRight.Name = "tlpRight";
             this.tlpRight.RowCount = 1;
@@ -197,7 +196,8 @@ namespace Chummer.UI.Skills
             this.DoubleBuffered = true;
             this.Margin = new System.Windows.Forms.Padding(0);
             this.Name = "KnowledgeSkillControl";
-            this.Size = new System.Drawing.Size(827, 23);
+            this.Size = new System.Drawing.Size(830, 23);
+            this.Load += new System.EventHandler(this.KnowledgeSkillControl_Load);
             this.MouseLeave += new System.EventHandler(this.OnMouseLeave);
             this.DpiChangedAfterParent += new System.EventHandler(this.KnowledgeSkillControl_DpiChangedAfterParent);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.OnMouseMove);

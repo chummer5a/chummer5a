@@ -16,6 +16,10 @@ Application Changes:
 - Non-retroactive 'ware Essence modifiers now always automatically apply at character creation instead of only to 'ware bought sequentially after acquiring the source of a given non-retroactive 'ware Essence modifier. The non-retroactiveness now only starts applying after character creation.
 - A toggle has been added to allow the user to choose if they wish to pay for a lifestyle quality that would be free at their lifestyle level using nuyen instead of Lifestyle Points in accordance with Hard Targets p. 140. Fixes #4916.
 - Setting any values in ReplaceAttribute nodes to 0 now properly does not override those base values for a character's metatype.
+- Spirits with a Force greater than 3 but not divisible by 3 no longer receive an extra optional power. Fixes #4946.
+- Capacity violations for gear located inside armor, armor mods, weapon accessories, cyberware, gear that is already located inside other gear, and any of the aforementioned inside a vehicle are now properly checked when checking character validity.
+- Reported capacity violations from character validity checks now display each item's translated and/or specific name instead of just its general, English name.
+- Custom Fit (Stack) now works properly when the underlying armor piece has a different name than the armor that is to be treated as an accessory.
 
 Data Changes:
 - Added bonus nodes for Shooter (The Soldier) paragon's Compiling dice pool penalty and +1 limit for attack actions. Fixes #4935.

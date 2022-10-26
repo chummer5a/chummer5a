@@ -28,7 +28,6 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ChummerUpdater));
             this.webNotes = new System.Windows.Forms.WebBrowser();
             this.cmdUpdate = new System.Windows.Forms.Button();
@@ -38,11 +37,9 @@ namespace Chummer
             this.lblUpdaterStatus = new System.Windows.Forms.Label();
             this.cmdRestart = new System.Windows.Forms.Button();
             this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
-            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
-            this.bufferedTableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpBottom = new System.Windows.Forms.TableLayoutPanel();
             this.tlpMain.SuspendLayout();
-            this.tableLayoutPanel2.SuspendLayout();
-            this.bufferedTableLayoutPanel1.SuspendLayout();
+            this.tlpBottom.SuspendLayout();
             this.SuspendLayout();
             // 
             // webNotes
@@ -59,10 +56,12 @@ namespace Chummer
             // 
             // cmdUpdate
             // 
-            this.cmdUpdate.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.cmdUpdate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdUpdate.AutoSize = true;
+            this.cmdUpdate.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdUpdate.Enabled = false;
             this.cmdUpdate.Location = new System.Drawing.Point(3, 7);
+            this.cmdUpdate.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdUpdate.Name = "cmdUpdate";
             this.cmdUpdate.Size = new System.Drawing.Size(80, 23);
             this.cmdUpdate.TabIndex = 1;
@@ -76,18 +75,20 @@ namespace Chummer
             this.pgbOverallProgress.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pgbOverallProgress.Location = new System.Drawing.Point(89, 3);
             this.pgbOverallProgress.Name = "pgbOverallProgress";
-            this.pgbOverallProgress.Size = new System.Drawing.Size(458, 31);
+            this.pgbOverallProgress.Size = new System.Drawing.Size(473, 31);
             this.pgbOverallProgress.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
             this.pgbOverallProgress.TabIndex = 2;
             // 
             // cmdCleanReinstall
             // 
+            this.cmdCleanReinstall.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdCleanReinstall.AutoSize = true;
-            this.cmdCleanReinstall.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdCleanReinstall.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdCleanReinstall.Enabled = false;
-            this.cmdCleanReinstall.Location = new System.Drawing.Point(111, 3);
+            this.cmdCleanReinstall.Location = new System.Drawing.Point(676, 7);
+            this.cmdCleanReinstall.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdCleanReinstall.Name = "cmdCleanReinstall";
-            this.cmdCleanReinstall.Size = new System.Drawing.Size(102, 23);
+            this.cmdCleanReinstall.Size = new System.Drawing.Size(87, 23);
             this.cmdCleanReinstall.TabIndex = 4;
             this.cmdCleanReinstall.Tag = "Button_Clean_Reinstall";
             this.cmdCleanReinstall.Text = "Clean Reinstall";
@@ -122,10 +123,12 @@ namespace Chummer
             // 
             // cmdRestart
             // 
+            this.cmdRestart.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdRestart.AutoSize = true;
-            this.cmdRestart.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdRestart.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdRestart.Enabled = false;
-            this.cmdRestart.Location = new System.Drawing.Point(3, 3);
+            this.cmdRestart.Location = new System.Drawing.Point(568, 7);
+            this.cmdRestart.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdRestart.Name = "cmdRestart";
             this.cmdRestart.Size = new System.Drawing.Size(102, 23);
             this.cmdRestart.TabIndex = 3;
@@ -144,7 +147,7 @@ namespace Chummer
             this.tlpMain.Controls.Add(this.webNotes, 0, 0);
             this.tlpMain.Controls.Add(this.lblUpdaterStatus, 1, 1);
             this.tlpMain.Controls.Add(this.lblUpdaterStatusLabel, 0, 1);
-            this.tlpMain.Controls.Add(this.tableLayoutPanel2, 0, 2);
+            this.tlpMain.Controls.Add(this.tlpBottom, 0, 2);
             this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpMain.Location = new System.Drawing.Point(9, 9);
             this.tlpMain.Name = "tlpMain";
@@ -155,44 +158,29 @@ namespace Chummer
             this.tlpMain.Size = new System.Drawing.Size(766, 543);
             this.tlpMain.TabIndex = 107;
             // 
-            // tableLayoutPanel2
+            // tlpBottom
             // 
-            this.tableLayoutPanel2.AutoSize = true;
-            this.tableLayoutPanel2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tableLayoutPanel2.ColumnCount = 3;
-            this.tlpMain.SetColumnSpan(this.tableLayoutPanel2, 2);
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel2.Controls.Add(this.pgbOverallProgress, 1, 0);
-            this.tableLayoutPanel2.Controls.Add(this.cmdUpdate, 0, 0);
-            this.tableLayoutPanel2.Controls.Add(this.bufferedTableLayoutPanel1, 2, 0);
-            this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.tableLayoutPanel2.Location = new System.Drawing.Point(0, 506);
-            this.tableLayoutPanel2.Margin = new System.Windows.Forms.Padding(0);
-            this.tableLayoutPanel2.Name = "tableLayoutPanel2";
-            this.tableLayoutPanel2.RowCount = 1;
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(766, 37);
-            this.tableLayoutPanel2.TabIndex = 107;
-            // 
-            // bufferedTableLayoutPanel1
-            // 
-            this.bufferedTableLayoutPanel1.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.bufferedTableLayoutPanel1.AutoSize = true;
-            this.bufferedTableLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.bufferedTableLayoutPanel1.ColumnCount = 2;
-            this.bufferedTableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.bufferedTableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.bufferedTableLayoutPanel1.Controls.Add(this.cmdCleanReinstall, 1, 0);
-            this.bufferedTableLayoutPanel1.Controls.Add(this.cmdRestart, 0, 0);
-            this.bufferedTableLayoutPanel1.Location = new System.Drawing.Point(550, 4);
-            this.bufferedTableLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
-            this.bufferedTableLayoutPanel1.Name = "bufferedTableLayoutPanel1";
-            this.bufferedTableLayoutPanel1.RowCount = 1;
-            this.bufferedTableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.bufferedTableLayoutPanel1.Size = new System.Drawing.Size(216, 29);
-            this.bufferedTableLayoutPanel1.TabIndex = 5;
+            this.tlpBottom.AutoSize = true;
+            this.tlpBottom.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpBottom.ColumnCount = 4;
+            this.tlpMain.SetColumnSpan(this.tlpBottom, 2);
+            this.tlpBottom.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpBottom.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpBottom.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpBottom.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpBottom.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpBottom.Controls.Add(this.cmdRestart, 2, 0);
+            this.tlpBottom.Controls.Add(this.pgbOverallProgress, 1, 0);
+            this.tlpBottom.Controls.Add(this.cmdUpdate, 0, 0);
+            this.tlpBottom.Controls.Add(this.cmdCleanReinstall, 3, 0);
+            this.tlpBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.tlpBottom.Location = new System.Drawing.Point(0, 506);
+            this.tlpBottom.Margin = new System.Windows.Forms.Padding(0);
+            this.tlpBottom.Name = "tlpBottom";
+            this.tlpBottom.RowCount = 1;
+            this.tlpBottom.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpBottom.Size = new System.Drawing.Size(766, 37);
+            this.tlpBottom.TabIndex = 107;
             // 
             // ChummerUpdater
             // 
@@ -210,10 +198,8 @@ namespace Chummer
             this.Load += new System.EventHandler(this.ChummerUpdater_Load);
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
-            this.tableLayoutPanel2.ResumeLayout(false);
-            this.tableLayoutPanel2.PerformLayout();
-            this.bufferedTableLayoutPanel1.ResumeLayout(false);
-            this.bufferedTableLayoutPanel1.PerformLayout();
+            this.tlpBottom.ResumeLayout(false);
+            this.tlpBottom.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -229,7 +215,6 @@ namespace Chummer
         private System.Windows.Forms.Label lblUpdaterStatus;
         private System.Windows.Forms.Button cmdRestart;
         private System.Windows.Forms.TableLayoutPanel tlpMain;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
-        private System.Windows.Forms.TableLayoutPanel bufferedTableLayoutPanel1;
+        private System.Windows.Forms.TableLayoutPanel tlpBottom;
     }
 }

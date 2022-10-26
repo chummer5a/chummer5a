@@ -3232,11 +3232,26 @@ namespace Chummer
             }
         }
 
+        public async ValueTask<bool> GetBuildMethodUsesPriorityTablesAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                return _eBuildMethod.UsesPriorityTables();
+        }
+
         public bool BuildMethodIsPriority => BuildMethod == CharacterBuildMethod.Priority;
+
+        public async ValueTask<bool> GetBuildMethodIsPriorityAsync(CancellationToken token = default) =>
+            await GetBuildMethodAsync(token).ConfigureAwait(false) == CharacterBuildMethod.Priority;
 
         public bool BuildMethodIsSumtoTen => BuildMethod == CharacterBuildMethod.SumtoTen;
 
+        public async ValueTask<bool> GetBuildMethodIsSumtoTenAsync(CancellationToken token = default) =>
+            await GetBuildMethodAsync(token).ConfigureAwait(false) == CharacterBuildMethod.SumtoTen;
+
         public bool BuildMethodIsLifeModule => BuildMethod == CharacterBuildMethod.LifeModule;
+
+        public async ValueTask<bool> GetBuildMethodIsLifeModuleAsync(CancellationToken token = default) =>
+            await GetBuildMethodAsync(token).ConfigureAwait(false) == CharacterBuildMethod.LifeModule;
 
         /// <summary>
         /// The priority configuration used in Priority mode.
@@ -4693,6 +4708,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Whether or not Armor
+        /// </summary>
+        public async ValueTask<bool> GetDroneArmorMultiplierEnabledAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                return _blnDroneArmorMultiplierEnabled;
+        }
+
+        /// <summary>
         /// House Rule: Ignore Armor Encumbrance entirely.
         /// </summary>
         public bool NoArmorEncumbrance
@@ -5132,6 +5156,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Whether or not characters can have more than 25 BP in Positive Qualities.
+        /// </summary>
+        public async ValueTask<bool> GetExceedPositiveQualitiesAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                return _blnExceedPositiveQualities;
+        }
+
+        /// <summary>
         /// If true, the karma cost of qualities is doubled after the initial 25.
         /// </summary>
         public bool ExceedPositiveQualitiesCostDoubled
@@ -5190,6 +5223,15 @@ namespace Chummer
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Whether or not characters can have more than 25 BP in Negative Qualities.
+        /// </summary>
+        public async ValueTask<bool> GetExceedNegativeQualitiesAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                return _blnExceedNegativeQualities;
         }
 
         /// <summary>
@@ -6955,6 +6997,15 @@ namespace Chummer
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Override the maximum value of bonuses that can affect cyberlimbs.
+        /// </summary>
+        public async ValueTask<bool> GetCyberlimbAttributeBonusCapOverrideAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                return _blnCyberlimbAttributeBonusCapOverride;
         }
 
         /// <summary>

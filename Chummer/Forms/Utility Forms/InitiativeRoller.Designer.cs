@@ -39,9 +39,21 @@ namespace Chummer
             // 
             // nudDiceResult
             // 
-            this.nudDiceResult.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudDiceResult.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.nudDiceResult.AutoSize = true;
-            this.nudDiceResult.Location = new System.Drawing.Point(122, 31);
+            this.nudDiceResult.CausesValidation = false;
+            this.tlpMain.SetColumnSpan(this.nudDiceResult, 2);
+            this.nudDiceResult.Location = new System.Drawing.Point(103, 31);
+            this.nudDiceResult.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudDiceResult.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudDiceResult.Name = "nudDiceResult";
             this.nudDiceResult.Size = new System.Drawing.Size(41, 20);
             this.nudDiceResult.TabIndex = 7;
@@ -50,7 +62,7 @@ namespace Chummer
             // 
             this.lblDice.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblDice.AutoSize = true;
-            this.lblDice.Location = new System.Drawing.Point(41, 34);
+            this.lblDice.Location = new System.Drawing.Point(22, 34);
             this.lblDice.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblDice.Name = "lblDice";
             this.lblDice.Size = new System.Drawing.Size(75, 13);
@@ -64,9 +76,10 @@ namespace Chummer
             this.cmdOK.AutoSize = true;
             this.cmdOK.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdOK.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdOK.Location = new System.Drawing.Point(122, 57);
+            this.cmdOK.Location = new System.Drawing.Point(103, 57);
+            this.cmdOK.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdOK.Name = "cmdOK";
-            this.cmdOK.Size = new System.Drawing.Size(41, 23);
+            this.cmdOK.Size = new System.Drawing.Size(80, 23);
             this.cmdOK.TabIndex = 9;
             this.cmdOK.Tag = "String_OK";
             this.cmdOK.Text = "OK";
@@ -107,7 +120,7 @@ namespace Chummer
             this.tlpMain.Size = new System.Drawing.Size(286, 83);
             this.tlpMain.TabIndex = 10;
             // 
-            // frmInitRoller
+            // InitiativeRoller
             // 
             this.AcceptButton = this.cmdOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);

@@ -530,6 +530,37 @@ namespace Chummer.Backend.Attributes
         }
 
         /// <summary>
+        /// Current base value (priority points spent) of the CharacterAttribute.
+        /// </summary>
+        public async ValueTask<int> GetBaseAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                return _intBase;
+        }
+
+        /// <summary>
+        /// Current base value (priority points spent) of the CharacterAttribute.
+        /// </summary>
+        public async ValueTask SetBaseAsync(int value, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                if (value == _intBase)
+                    return;
+                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    _intBase = value;
+                    OnPropertyChanged(nameof(Base));
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+        }
+
+        /// <summary>
         /// Total Value of Base Points as used by internal methods
         /// </summary>
         public int TotalBase
@@ -603,6 +634,37 @@ namespace Chummer.Backend.Attributes
                         _intKarma = value;
                         OnPropertyChanged();
                     }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Current karma value of the CharacterAttribute.
+        /// </summary>
+        public async ValueTask<int> GetKarmaAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                return _intKarma;
+        }
+
+        /// <summary>
+        /// Current karma value of the CharacterAttribute.
+        /// </summary>
+        public async ValueTask SetKarmaAsync(int value, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                if (value == _intKarma)
+                    return;
+                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    _intKarma = value;
+                    OnPropertyChanged(nameof(Karma));
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
         }
@@ -2149,15 +2211,14 @@ namespace Chummer.Backend.Attributes
 
                 decimal decExtra = 0;
                 decimal decMultiplier = 1.0m;
-                await _objCharacter.Improvements.ForEachAsync(async objLoopImprovement =>
+                bool blnCreated = await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false);
+                await _objCharacter.Improvements.ForEachAsync(objLoopImprovement =>
                 {
                     if ((objLoopImprovement.ImprovedName == Abbrev
                          || string.IsNullOrEmpty(objLoopImprovement.ImprovedName)) &&
                         (string.IsNullOrEmpty(objLoopImprovement.Condition)
-                         || (objLoopImprovement.Condition == "career") ==
-                         await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false)
-                         || (objLoopImprovement.Condition == "create") !=
-                         await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false)) &&
+                         || (objLoopImprovement.Condition == "career") == blnCreated
+                         || (objLoopImprovement.Condition == "create") != blnCreated) &&
                         objLoopImprovement.Minimum <= intBase && objLoopImprovement.Enabled)
                     {
                         switch (objLoopImprovement.ImproveType)
@@ -2373,17 +2434,16 @@ namespace Chummer.Backend.Attributes
 
                     decimal decExtra = 0;
                     decimal decMultiplier = 1.0m;
+                    bool blnCreated = await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false);
                     await (await _objCharacter.GetImprovementsAsync(token).ConfigureAwait(false)).ForEachAsync(
-                        async objLoopImprovement =>
+                        objLoopImprovement =>
                         {
                             if ((objLoopImprovement.ImprovedName == Abbrev ||
                                  string.IsNullOrEmpty(objLoopImprovement.ImprovedName))
                                 &&
                                 (string.IsNullOrEmpty(objLoopImprovement.Condition)
-                                 || (objLoopImprovement.Condition == "career") ==
-                                 await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false)
-                                 || (objLoopImprovement.Condition == "create") !=
-                                 await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false)) &&
+                                 || (objLoopImprovement.Condition == "career") == blnCreated
+                                 || (objLoopImprovement.Condition == "create") != blnCreated) &&
                                 (objLoopImprovement.Maximum == 0 || intValue + 1 <= objLoopImprovement.Maximum)
                                 && objLoopImprovement.Minimum <= intValue + 1 && objLoopImprovement.Enabled)
                             {

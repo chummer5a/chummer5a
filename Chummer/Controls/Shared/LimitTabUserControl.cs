@@ -68,31 +68,51 @@ namespace Chummer.UI.Shared
             }
         }
 
-        public Task RealLoad(CancellationToken token = default)
+        public async Task RealLoad(CancellationToken token = default)
         {
-            if (ParentForm is CharacterShared frmParent)
-                _objCharacter = frmParent.CharacterObject;
+            if (ParentForm is CharacterShared frmParent && frmParent.CharacterObject != null)
+            {
+                if (Interlocked.CompareExchange(ref _objCharacter, frmParent.CharacterObject, null) != null)
+                    return;
+            }
             else
             {
-                _objCharacter = new Character();
-                Disposed += (sender, args) => _objCharacter.Dispose();
+                Character objCharacter = new Character();
+                if (Interlocked.CompareExchange(ref _objCharacter, objCharacter, null) != null)
+                {
+                    await objCharacter.DisposeAsync();
+                    return;
+                }
+                await this.DoThreadSafeAsync(x => x.Disposed += (sender, args) => objCharacter.Dispose(), token).ConfigureAwait(false);
                 Utils.BreakIfDebug();
             }
 
             if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
-                return Task.CompletedTask;
+                return;
 
-            lblPhysical.DoOneWayDataBinding("Text", _objCharacter, nameof(Character.LimitPhysical));
-            lblPhysical.DoOneWayDataBinding("ToolTipText", _objCharacter, nameof(Character.LimitPhysicalToolTip));
-            lblMental.DoOneWayDataBinding("Text", _objCharacter, nameof(Character.LimitMental));
-            lblMental.DoOneWayDataBinding("ToolTipText", _objCharacter, nameof(Character.LimitMentalToolTip));
-            lblSocial.DoOneWayDataBinding("Text", _objCharacter, nameof(Character.LimitSocial));
-            lblSocial.DoOneWayDataBinding("ToolTipText", _objCharacter, nameof(Character.LimitSocialToolTip));
-            lblAstral.DoOneWayDataBinding("Text", _objCharacter, nameof(Character.LimitAstral));
-            lblAstral.DoOneWayDataBinding("ToolTipText", _objCharacter, nameof(Character.LimitAstralToolTip));
+            await lblPhysical.DoOneWayDataBindingAsync("Text", _objCharacter, nameof(Character.LimitPhysical), token)
+                             .ConfigureAwait(false);
+            await lblPhysical
+                  .DoOneWayDataBindingAsync("ToolTipText", _objCharacter, nameof(Character.LimitPhysicalToolTip), token)
+                  .ConfigureAwait(false);
+            await lblMental.DoOneWayDataBindingAsync("Text", _objCharacter, nameof(Character.LimitMental), token)
+                           .ConfigureAwait(false);
+            await lblMental
+                  .DoOneWayDataBindingAsync("ToolTipText", _objCharacter, nameof(Character.LimitMentalToolTip), token)
+                  .ConfigureAwait(false);
+            await lblSocial.DoOneWayDataBindingAsync("Text", _objCharacter, nameof(Character.LimitSocial), token)
+                           .ConfigureAwait(false);
+            await lblSocial
+                  .DoOneWayDataBindingAsync("ToolTipText", _objCharacter, nameof(Character.LimitSocialToolTip), token)
+                  .ConfigureAwait(false);
+            await lblAstral.DoOneWayDataBindingAsync("Text", _objCharacter, nameof(Character.LimitAstral), token)
+                           .ConfigureAwait(false);
+            await lblAstral
+                  .DoOneWayDataBindingAsync("ToolTipText", _objCharacter, nameof(Character.LimitAstralToolTip), token)
+                  .ConfigureAwait(false);
 
             _objCharacter.LimitModifiers.CollectionChanged += LimitModifierCollectionChanged;
-            return RefreshLimitModifiers(token: token);
+            await RefreshLimitModifiers(token: token).ConfigureAwait(false);
         }
 
         #region Click Events

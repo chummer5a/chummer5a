@@ -499,7 +499,7 @@ namespace Chummer
                             if (await objXmlLifestyle.SelectSingleNodeAndCacheExpressionAsync("hide").ConfigureAwait(false) != null)
                                 continue;
                             string strIncrement = (await objXmlLifestyle.SelectSingleNodeAndCacheExpressionAsync("increment").ConfigureAwait(false))?.Value;
-                            if ((await objXmlLifestyle.SelectSingleNodeAndCacheExpressionAsync("type").ConfigureAwait(false))?.Value.Equals("SAFEHOUSE", StringComparison.InvariantCultureIgnoreCase) == true)
+                            if ((await objXmlLifestyle.SelectSingleNodeAndCacheExpressionAsync("type").ConfigureAwait(false))?.Value.Equals("SAFEHOUSE", StringComparison.OrdinalIgnoreCase) == true)
                                 strIncrement = "week";
                             string strIncrementString;
                             int intPermanentAmount;

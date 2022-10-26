@@ -223,7 +223,22 @@ namespace Chummer
         /// </summary>
         public void SafeWait(bool blnForceDoEvents = false)
         {
-            if (Utils.EverDoEvents)
+            if (Utils.IsUnitTest)
+            {
+                if (Utils.EverDoEvents)
+                {
+                    int intLoopCount = 0;
+                    while (!Wait(Utils.DefaultSleepDuration))
+                    {
+                        if (intLoopCount++ > Utils.WaitEmergencyReleaseMaxTicks)
+                            throw new TimeoutException();
+                        Utils.DoEventsSafe(blnForceDoEvents);
+                    }
+                }
+                else if (!Wait(Utils.WaitEmergencyReleaseMaxTicks))
+                    throw new TimeoutException();
+            }
+            else if (Utils.EverDoEvents)
             {
                 while (!Wait(Utils.DefaultSleepDuration))
                     Utils.DoEventsSafe(blnForceDoEvents);
@@ -237,7 +252,22 @@ namespace Chummer
         /// </summary>
         public void SafeWait(CancellationToken token, bool blnForceDoEvents = false)
         {
-            if (Utils.EverDoEvents)
+            if (Utils.IsUnitTest)
+            {
+                if (Utils.EverDoEvents)
+                {
+                    int intLoopCount = 0;
+                    while (!Wait(Utils.DefaultSleepDuration, token))
+                    {
+                        if (intLoopCount++ > Utils.WaitEmergencyReleaseMaxTicks)
+                            throw new TimeoutException();
+                        Utils.DoEventsSafe(blnForceDoEvents);
+                    }
+                }
+                else if (!Wait(Utils.WaitEmergencyReleaseMaxTicks, token) && !token.IsCancellationRequested)
+                    throw new TimeoutException();
+            }
+            else if (Utils.EverDoEvents)
             {
                 while (!Wait(Utils.DefaultSleepDuration, token))
                     Utils.DoEventsSafe(blnForceDoEvents);

@@ -832,21 +832,24 @@ namespace Chummer
         private async void clbPlugins_VisibleChanged(object sender, EventArgs e)
         {
             await clbPlugins.DoThreadSafeAsync(x => x.Items.Clear()).ConfigureAwait(false);
-            if (Program.PluginLoader.MyPlugins.Count == 0)
+            if (await Program.PluginLoader.MyPlugins.GetCountAsync().ConfigureAwait(false) == 0)
                 return;
             CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
             try
             {
-                foreach (IPlugin objPlugin in Program.PluginLoader.MyPlugins)
+                await Program.PluginLoader.MyPlugins.ForEachAsync(async objPlugin =>
                 {
                     try
                     {
-                        await Program.MainForm.DoThreadSafeAsync(x => objPlugin.CustomInitialize(x)).ConfigureAwait(false);
+                        await Program.MainForm.DoThreadSafeAsync(objPlugin.CustomInitialize)
+                                     .ConfigureAwait(false);
                         (bool blnSuccess, bool blnChecked)
-                            = await GlobalSettings.PluginsEnabledDic.TryGetValueAsync(objPlugin.ToString()).ConfigureAwait(false);
+                            = await GlobalSettings.PluginsEnabledDic.TryGetValueAsync(objPlugin.ToString())
+                                                  .ConfigureAwait(false);
                         if (blnSuccess)
                         {
-                            await clbPlugins.DoThreadSafeAsync(x => x.Items.Add(objPlugin, blnChecked)).ConfigureAwait(false);
+                            await clbPlugins.DoThreadSafeAsync(x => x.Items.Add(objPlugin, blnChecked))
+                                            .ConfigureAwait(false);
                         }
                         else
                         {
@@ -857,7 +860,7 @@ namespace Chummer
                     {
                         Log.Debug(ae);
                     }
-                }
+                }).ConfigureAwait(false);
 
                 await clbPlugins.DoThreadSafeAsync(x =>
                 {

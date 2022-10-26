@@ -28,15 +28,14 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             this.nudDiceResult = new Chummer.NumericUpDownEx();
             this.lblDice = new System.Windows.Forms.Label();
             this.lblDescription = new System.Windows.Forms.Label();
             this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
+            this.cmdRoll = new System.Windows.Forms.Button();
             this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
             this.cmdCancel = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
-            this.cmdRoll = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.nudDiceResult)).BeginInit();
             this.tlpMain.SuspendLayout();
             this.tlpButtons.SuspendLayout();
@@ -108,6 +107,20 @@
             this.tlpMain.Size = new System.Drawing.Size(326, 143);
             this.tlpMain.TabIndex = 5;
             // 
+            // cmdRoll
+            // 
+            this.cmdRoll.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.cmdRoll.AutoSize = true;
+            this.cmdRoll.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdRoll.Image = global::Chummer.Properties.Resources.die;
+            this.cmdRoll.Location = new System.Drawing.Point(123, 87);
+            this.cmdRoll.Name = "cmdRoll";
+            this.cmdRoll.Padding = new System.Windows.Forms.Padding(1);
+            this.cmdRoll.Size = new System.Drawing.Size(24, 24);
+            this.cmdRoll.TabIndex = 123;
+            this.cmdRoll.UseVisualStyleBackColor = true;
+            this.cmdRoll.Click += new System.EventHandler(this.cmdRoll_Click);
+            // 
             // tlpButtons
             // 
             this.tlpButtons.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -130,9 +143,11 @@
             // cmdCancel
             // 
             this.cmdCancel.AutoSize = true;
+            this.cmdCancel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.cmdCancel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdCancel.Location = new System.Drawing.Point(3, 3);
+            this.cmdCancel.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdCancel.Name = "cmdCancel";
             this.cmdCancel.Size = new System.Drawing.Size(80, 23);
             this.cmdCancel.TabIndex = 18;
@@ -144,8 +159,10 @@
             // button1
             // 
             this.button1.AutoSize = true;
+            this.button1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.button1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.button1.Location = new System.Drawing.Point(89, 3);
+            this.button1.MinimumSize = new System.Drawing.Size(80, 0);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(80, 23);
             this.button1.TabIndex = 17;
@@ -153,20 +170,6 @@
             this.button1.Text = "OK";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.cmdOK_Click);
-            // 
-            // cmdRoll
-            // 
-            this.cmdRoll.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.cmdRoll.AutoSize = true;
-            this.cmdRoll.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdRoll.Image = global::Chummer.Properties.Resources.die;
-            this.cmdRoll.Location = new System.Drawing.Point(123, 87);
-            this.cmdRoll.Name = "cmdRoll";
-            this.cmdRoll.Padding = new System.Windows.Forms.Padding(1);
-            this.cmdRoll.Size = new System.Drawing.Size(24, 24);
-            this.cmdRoll.TabIndex = 123;
-            this.cmdRoll.UseVisualStyleBackColor = true;
-            this.cmdRoll.Click += new System.EventHandler(this.cmdRoll_Click);
             // 
             // SelectDiceHits
             // 

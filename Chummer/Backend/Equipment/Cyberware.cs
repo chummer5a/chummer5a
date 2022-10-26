@@ -3397,12 +3397,12 @@ namespace Chummer.Backend.Equipment
             return Math.Max(Math.Min(_intRating, await GetMaxRatingAsync(token).ConfigureAwait(false)), await GetMinRatingAsync(token).ConfigureAwait(false));
         }
 
-        private bool ProcessPropertyChanges { get; set; } = true;
+        private int _intProcessPropertyChanges = 1;
 
         private void DoPropertyChanges(bool blnDoRating, bool blnDoGrade)
         {
             // Do not do property changes if we're not directly equipped to a character
-            if (!ProcessPropertyChanges || (ParentVehicle != null && string.IsNullOrEmpty(PlugsIntoModularMount)))
+            if (_intProcessPropertyChanges == 0 || (ParentVehicle != null && string.IsNullOrEmpty(PlugsIntoModularMount)))
                 return;
             using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>>(
                        Utils.DictionaryForMultiplePropertyChangedPool,
@@ -3712,15 +3712,16 @@ namespace Chummer.Backend.Equipment
                     // Run through all of the child pieces and make sure their Grade matches.
                     foreach (Cyberware objChild in Children)
                     {
-                        bool blnOldProcessPropertyChanges = objChild.ProcessPropertyChanges;
+                        int intMyProcessPropertyChanges = _intProcessPropertyChanges;
+                        int intOldChildProcessPropertyChanges = Interlocked.Exchange(ref objChild._intProcessPropertyChanges, _intProcessPropertyChanges);
                         try
                         {
-                            objChild.ProcessPropertyChanges = ProcessPropertyChanges;
                             objChild.Grade = value;
                         }
                         finally
                         {
-                            objChild.ProcessPropertyChanges = blnOldProcessPropertyChanges;
+                            Interlocked.CompareExchange(ref objChild._intProcessPropertyChanges,
+                                                        intOldChildProcessPropertyChanges, intMyProcessPropertyChanges);
                         }
                     }
                     if (blnGradeEssenceChanged)
@@ -6781,8 +6782,7 @@ namespace Chummer.Backend.Equipment
             ExpenseUndo objUndo = new ExpenseUndo();
             objUndo.CreateNuyen(NuyenExpenseType.AddGear, InternalId);
             objExpense.Undo = objUndo;
-            bool blnOldProcessPropertyChanges = ProcessPropertyChanges;
-            ProcessPropertyChanges = false;
+            Interlocked.Decrement(ref _intProcessPropertyChanges);
             try
             {
                 Rating = intRating;
@@ -6790,7 +6790,7 @@ namespace Chummer.Backend.Equipment
             }
             finally
             {
-                ProcessPropertyChanges = blnOldProcessPropertyChanges;
+                Interlocked.Increment(ref _intProcessPropertyChanges);
             }
             decimal decEssDelta = GetCalculatedESSPrototypeInvariant(intRating, objGrade) - decOldEssence;
             if (decEssDelta > 0)

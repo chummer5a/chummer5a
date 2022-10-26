@@ -889,6 +889,8 @@ namespace Chummer
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
+                List<string> lstPathsToRestoreOnFail = new List<string>(lstFilesToDelete.Count);
+                List<string> lstPathsToDeleteOnFail = new List<string>(lstFilesToDelete.Count);
                 // Copy over the archive from the temp directory.
                 Log.Info("Extracting downloaded archive into application path: " + strZipPath);
                 try
@@ -922,9 +924,12 @@ namespace Chummer
                                     }
 
                                     File.Move(strLoopPath, strLoopPath + ".old");
+                                    lstPathsToRestoreOnFail.Add(strLoopPath + ".old");
                                 }
+                                else
+                                    lstPathsToDeleteOnFail.Add(strLoopPath);
 
-                                objEntry.ExtractToFile(strLoopPath, false);
+                                objEntry.ExtractToFile(strLoopPath, true);
                             }
                             catch (IOException)
                             {
@@ -933,7 +938,9 @@ namespace Chummer
                                         this,
                                         string.Format(GlobalSettings.CultureInfo,
                                                       await LanguageManager.GetStringAsync(
-                                                          "Message_File_Cannot_Be_Accessed", token: token).ConfigureAwait(false),
+                                                                               "Message_File_Cannot_Be_Accessed",
+                                                                               token: token)
+                                                                           .ConfigureAwait(false),
                                                       Path.GetFileName(strLoopPath)));
                                 blnDoRestart = false;
                                 break;
@@ -945,7 +952,9 @@ namespace Chummer
                                         this,
                                         string.Format(GlobalSettings.CultureInfo,
                                                       await LanguageManager.GetStringAsync(
-                                                          "Message_File_Cannot_Be_Accessed", token: token).ConfigureAwait(false),
+                                                                               "Message_File_Cannot_Be_Accessed",
+                                                                               token: token)
+                                                                           .ConfigureAwait(false),
                                                       Path.GetFileName(strLoopPath)));
                                 blnDoRestart = false;
                                 break;
@@ -956,7 +965,9 @@ namespace Chummer
                                     Program.ShowMessageBox(
                                         this,
                                         await LanguageManager.GetStringAsync(
-                                            "Message_Insufficient_Permissions_Warning", token: token).ConfigureAwait(false));
+                                                                 "Message_Insufficient_Permissions_Warning",
+                                                                 token: token)
+                                                             .ConfigureAwait(false));
                                 blnDoRestart = false;
                                 break;
                             }
@@ -971,7 +982,9 @@ namespace Chummer
                         Program.ShowMessageBox(
                             this,
                             string.Format(GlobalSettings.CultureInfo,
-                                          await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed", token: token).ConfigureAwait(false),
+                                          await LanguageManager
+                                                .GetStringAsync("Message_File_Cannot_Be_Accessed", token: token)
+                                                .ConfigureAwait(false),
                                           strZipPath));
                     blnDoRestart = false;
                 }
@@ -981,7 +994,9 @@ namespace Chummer
                         Program.ShowMessageBox(
                             this,
                             string.Format(GlobalSettings.CultureInfo,
-                                          await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed", token: token).ConfigureAwait(false),
+                                          await LanguageManager
+                                                .GetStringAsync("Message_File_Cannot_Be_Accessed", token: token)
+                                                .ConfigureAwait(false),
                                           strZipPath));
                     blnDoRestart = false;
                 }
@@ -989,7 +1004,10 @@ namespace Chummer
                 {
                     if (!SilentMode)
                         Program.ShowMessageBox(
-                            this, await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning", token: token).ConfigureAwait(false));
+                            this,
+                            await LanguageManager
+                                  .GetStringAsync("Message_Insufficient_Permissions_Warning", token: token)
+                                  .ConfigureAwait(false));
                     blnDoRestart = false;
                 }
 
@@ -1031,7 +1049,9 @@ namespace Chummer
                                                                           out StringBuilder sbdOutput))
                             {
                                 sbdOutput.Append(
-                                    await LanguageManager.GetStringAsync("Message_Files_Cannot_Be_Removed", token: token).ConfigureAwait(false));
+                                    await LanguageManager
+                                          .GetStringAsync("Message_Files_Cannot_Be_Removed", token: token)
+                                          .ConfigureAwait(false));
                                 foreach (string strFile in lstBlocked)
                                 {
                                     sbdOutput.AppendLine().Append(strFile);
@@ -1045,12 +1065,35 @@ namespace Chummer
                 }
                 else
                 {
-                    foreach (string strBackupFileName in Directory.GetFiles(
-                                 _strAppPath, "*.old", SearchOption.AllDirectories))
+                    foreach (string strToDelete in lstPathsToDeleteOnFail)
                     {
                         try
                         {
-                            File.Move(strBackupFileName, strBackupFileName.Substring(0, strBackupFileName.Length - 4));
+                            await Utils.SafeDeleteFileAsync(strToDelete, false, token: token).ConfigureAwait(false);
+                        }
+                        catch (IOException)
+                        {
+                            // Swallow this
+                        }
+                        catch (NotSupportedException)
+                        {
+                            // Swallow this
+                        }
+                        catch (UnauthorizedAccessException)
+                        {
+                            // Swallow this
+                        }
+                    }
+                    foreach (string strBackupFileName in lstPathsToRestoreOnFail)
+                    {
+                        try
+                        {
+                            string strOriginal = strBackupFileName.Substring(0, strBackupFileName.Length - 4);
+                            if (File.Exists(strOriginal)
+                                && !await Utils.SafeDeleteFileAsync(strOriginal, false, token: token)
+                                               .ConfigureAwait(false))
+                                continue;
+                            File.Move(strBackupFileName, strOriginal);
                         }
                         catch (IOException)
                         {
@@ -1086,7 +1129,10 @@ namespace Chummer
                 await cmdUpdate.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
                 await cmdRestart.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
                 await cmdCleanReinstall.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
-                await Utils.SafeDeleteFileAsync(_strTempLatestVersionZipPath, !SilentMode, token: token).ConfigureAwait(false);
+                if (File.Exists(_strTempLatestVersionZipPath))
+                {
+                    File.Move(_strTempLatestVersionZipPath, _strTempLatestVersionZipPath + ".old");
+                }
                 token.ThrowIfCancellationRequested();
                 try
                 {
@@ -1144,6 +1190,21 @@ namespace Chummer
             Log.Info("wc_DownloadExeFileCompleted enter");
             try
             {
+                if (File.Exists(_strTempLatestVersionZipPath + ".old"))
+                {
+                    if (e.Cancelled || e.Error != null)
+                    {
+                        await Utils.SafeDeleteFileAsync(_strTempLatestVersionZipPath, !SilentMode,
+                                                        token: _objGenericToken).ConfigureAwait(false);
+                        File.Move(_strTempLatestVersionZipPath + ".old", _strTempLatestVersionZipPath);
+                    }
+                    else
+                    {
+                        await Utils.SafeDeleteFileAsync(_strTempLatestVersionZipPath + ".old", !SilentMode,
+                                                        token: _objGenericToken).ConfigureAwait(false);
+                    }
+                }
+
                 string strText1 = await LanguageManager.GetStringAsync("Button_Redownload", token: _objGenericToken).ConfigureAwait(false);
                 string strText2 = await LanguageManager.GetStringAsync("Button_Up_To_Date", token: _objGenericToken).ConfigureAwait(false);
                 await cmdUpdate.DoThreadSafeAsync(x =>

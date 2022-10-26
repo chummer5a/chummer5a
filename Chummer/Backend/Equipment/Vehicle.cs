@@ -1773,6 +1773,11 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Display name.
         /// </summary>
+        public ValueTask<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default) => DisplayNameShortAsync(GlobalSettings.Language, token);
+
+        /// <summary>
+        /// Display name.
+        /// </summary>
         public string CurrentDisplayName => DisplayName(GlobalSettings.Language);
 
         /// <summary>

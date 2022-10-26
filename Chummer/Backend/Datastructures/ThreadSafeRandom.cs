@@ -26,10 +26,12 @@ namespace Chummer
     /// <summary>
     /// Pairs Random with a lock object and overrides all of Random's methods with versions that engage the lock while the internal Random object is in use.
     /// </summary>
-    public sealed class ThreadSafeRandom : Random, IDisposable
+    public class ThreadSafeRandom : Random, IDisposable, IAsyncDisposable
     {
-        private readonly Random _objRandom;
-        private DebuggableSemaphoreSlim _objLock = Utils.SemaphorePool.Get();
+        [CLSCompliant(false)]
+        protected readonly Random _objRandom;
+        [CLSCompliant(false)]
+        protected DebuggableSemaphoreSlim _objLock = Utils.SemaphorePool.Get();
 
         public ThreadSafeRandom()
         {
@@ -124,8 +126,9 @@ namespace Chummer
             return dblReturn;
         }
 
-        public async Task<int> NextAsync(CancellationToken token = default)
+        public virtual async Task<int> NextAsync(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             int intReturn;
             await _objLock.WaitAsync(token).ConfigureAwait(false);
             try
@@ -139,8 +142,9 @@ namespace Chummer
             return intReturn;
         }
 
-        public async Task<int> NextAsync(int minValue, int maxValue, CancellationToken token = default)
+        public virtual async Task<int> NextAsync(int minValue, int maxValue, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             int intReturn;
             await _objLock.WaitAsync(token).ConfigureAwait(false);
             try
@@ -154,8 +158,9 @@ namespace Chummer
             return intReturn;
         }
 
-        public async Task<int> NextAsync(int maxValue, CancellationToken token = default)
+        public virtual async Task<int> NextAsync(int maxValue, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             int intReturn;
             await _objLock.WaitAsync(token).ConfigureAwait(false);
             try
@@ -169,8 +174,9 @@ namespace Chummer
             return intReturn;
         }
 
-        public async Task NextBytesAsync(byte[] buffer, CancellationToken token = default)
+        public virtual async Task NextBytesAsync(byte[] buffer, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             await _objLock.WaitAsync(token).ConfigureAwait(false);
             try
             {
@@ -182,8 +188,9 @@ namespace Chummer
             }
         }
 
-        public async Task<double> NextDoubleAsync(CancellationToken token = default)
+        public virtual async Task<double> NextDoubleAsync(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             double dblReturn;
             await _objLock.WaitAsync(token).ConfigureAwait(false);
             try
@@ -207,12 +214,48 @@ namespace Chummer
 
         public bool IsDisposed => _intIsDisposed > 0;
 
+        protected virtual void Dispose(bool disposing)
+        {
+        }
+
+#pragma warning disable CS1998
+        protected virtual async ValueTask DisposeAsync(bool disposing)
+#pragma warning restore CS1998
+        {
+        }
+
         /// <inheritdoc />
         public void Dispose()
         {
             if (Interlocked.CompareExchange(ref _intIsDisposed, 1, 0) > 0)
                 return;
+            _objLock.SafeWait();
+            try
+            {
+                Dispose(true);
+            }
+            finally
+            {
+                _objLock.Release();
+            }
             Utils.SemaphorePool.Return(ref _objLock);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <inheritdoc />
+        public async ValueTask DisposeAsync()
+        {
+            await _objLock.WaitAsync().ConfigureAwait(false);
+            try
+            {
+                await DisposeAsync(true).ConfigureAwait(false);
+            }
+            finally
+            {
+                _objLock.Release();
+            }
+            Utils.SemaphorePool.Return(ref _objLock);
+            GC.SuppressFinalize(this);
         }
     }
 }

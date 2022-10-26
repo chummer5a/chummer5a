@@ -28,19 +28,18 @@ namespace Chummer.Forms
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
-            this.imgIcon = new System.Windows.Forms.PictureBox();
             this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
             this.cmdButton3 = new System.Windows.Forms.Button();
             this.cmdButton2 = new System.Windows.Forms.Button();
             this.cmdButton1 = new System.Windows.Forms.Button();
-            this.txtText = new System.Windows.Forms.TextBox();
             this.tlpTop = new System.Windows.Forms.TableLayoutPanel();
+            this.imgIcon = new System.Windows.Forms.PictureBox();
+            this.txtText = new System.Windows.Forms.TextBox();
             this.tlpMain.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.imgIcon)).BeginInit();
             this.tlpButtons.SuspendLayout();
             this.tlpTop.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.imgIcon)).BeginInit();
             this.SuspendLayout();
             // 
             // tlpMain
@@ -59,17 +58,6 @@ namespace Chummer.Forms
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.Size = new System.Drawing.Size(464, 281);
             this.tlpMain.TabIndex = 0;
-            // 
-            // imgIcon
-            // 
-            this.imgIcon.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.imgIcon.Location = new System.Drawing.Point(24, 33);
-            this.imgIcon.Margin = new System.Windows.Forms.Padding(24, 33, 0, 9);
-            this.imgIcon.Name = "imgIcon";
-            this.imgIcon.Size = new System.Drawing.Size(100, 100);
-            this.imgIcon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
-            this.imgIcon.TabIndex = 2;
-            this.imgIcon.TabStop = false;
             // 
             // tlpButtons
             // 
@@ -94,8 +82,10 @@ namespace Chummer.Forms
             // cmdButton3
             // 
             this.cmdButton3.AutoSize = true;
+            this.cmdButton3.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdButton3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdButton3.Location = new System.Drawing.Point(3, 3);
+            this.cmdButton3.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdButton3.Name = "cmdButton3";
             this.cmdButton3.Size = new System.Drawing.Size(80, 23);
             this.cmdButton3.TabIndex = 2;
@@ -106,8 +96,10 @@ namespace Chummer.Forms
             // cmdButton2
             // 
             this.cmdButton2.AutoSize = true;
+            this.cmdButton2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdButton2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdButton2.Location = new System.Drawing.Point(89, 3);
+            this.cmdButton2.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdButton2.Name = "cmdButton2";
             this.cmdButton2.Size = new System.Drawing.Size(80, 23);
             this.cmdButton2.TabIndex = 1;
@@ -118,30 +110,16 @@ namespace Chummer.Forms
             // cmdButton1
             // 
             this.cmdButton1.AutoSize = true;
+            this.cmdButton1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdButton1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdButton1.Location = new System.Drawing.Point(175, 3);
+            this.cmdButton1.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdButton1.Name = "cmdButton1";
             this.cmdButton1.Size = new System.Drawing.Size(80, 23);
             this.cmdButton1.TabIndex = 0;
             this.cmdButton1.Text = "OK";
             this.cmdButton1.UseVisualStyleBackColor = true;
             this.cmdButton1.Click += new System.EventHandler(this.cmdButton1_Click);
-            // 
-            // txtText
-            // 
-            this.txtText.BackColor = System.Drawing.SystemColors.Window;
-            this.txtText.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.txtText.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtText.Location = new System.Drawing.Point(140, 33);
-            this.txtText.Margin = new System.Windows.Forms.Padding(16, 33, 6, 9);
-            this.txtText.MaxLength = 2147483647;
-            this.txtText.Multiline = true;
-            this.txtText.Name = "txtText";
-            this.txtText.ReadOnly = true;
-            this.txtText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtText.Size = new System.Drawing.Size(318, 193);
-            this.txtText.TabIndex = 6;
-            this.txtText.TabStop = false;
             // 
             // tlpTop
             // 
@@ -162,6 +140,33 @@ namespace Chummer.Forms
             this.tlpTop.Size = new System.Drawing.Size(464, 235);
             this.tlpTop.TabIndex = 7;
             // 
+            // imgIcon
+            // 
+            this.imgIcon.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.imgIcon.Location = new System.Drawing.Point(24, 33);
+            this.imgIcon.Margin = new System.Windows.Forms.Padding(24, 33, 0, 9);
+            this.imgIcon.Name = "imgIcon";
+            this.imgIcon.Size = new System.Drawing.Size(100, 100);
+            this.imgIcon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
+            this.imgIcon.TabIndex = 2;
+            this.imgIcon.TabStop = false;
+            // 
+            // txtText
+            // 
+            this.txtText.BackColor = System.Drawing.SystemColors.Window;
+            this.txtText.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.txtText.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtText.Location = new System.Drawing.Point(140, 33);
+            this.txtText.Margin = new System.Windows.Forms.Padding(16, 33, 6, 9);
+            this.txtText.MaxLength = 2147483647;
+            this.txtText.Multiline = true;
+            this.txtText.Name = "txtText";
+            this.txtText.ReadOnly = true;
+            this.txtText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.txtText.Size = new System.Drawing.Size(318, 193);
+            this.txtText.TabIndex = 6;
+            this.txtText.TabStop = false;
+            // 
             // ScrollableMessageBox
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -178,11 +183,11 @@ namespace Chummer.Forms
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.imgIcon)).EndInit();
             this.tlpButtons.ResumeLayout(false);
             this.tlpButtons.PerformLayout();
             this.tlpTop.ResumeLayout(false);
             this.tlpTop.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.imgIcon)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 

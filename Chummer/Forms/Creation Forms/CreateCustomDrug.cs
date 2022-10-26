@@ -147,7 +147,9 @@ namespace Chummer
                 await objNewDrug.Components.AddAsync(objDrugComponent, token: token).ConfigureAwait(false);
             }
 
-            Interlocked.Exchange(ref _objDrug, objNewDrug)?.Dispose();
+            Drug objOldDrug = Interlocked.Exchange(ref _objDrug, objNewDrug);
+            if (objOldDrug != null)
+                await objOldDrug.DisposeAsync().ConfigureAwait(false);
         }
 
         private async ValueTask AcceptForm(CancellationToken token = default)

@@ -594,7 +594,7 @@ namespace Chummer
 
 #if !DEBUG
                             // If Automatic Updates are enabled, check for updates immediately.
-                            StartAutoUpdateChecker();
+                            StartAutoUpdateChecker(_objGenericToken);
 #endif
 
                             GlobalSettings.MruChanged += PopulateMruToolstripMenu;
@@ -3550,10 +3550,16 @@ namespace Chummer
                 WindowState = FormWindowState.Normal;
             // get our current "TopMost" value (ours will always be false though)
             bool blnOldTopMost = TopMost;
-            // make our form jump to the top of everything
-            TopMost = true;
-            // set it back to whatever it was
-            TopMost = blnOldTopMost;
+            try
+            {
+                // make our form jump to the top of everything
+                TopMost = true;
+            }
+            finally
+            {
+                // set it back to whatever it was
+                TopMost = blnOldTopMost;
+            }
         }
 
         private static void ProcessCommandLineArguments(IReadOnlyCollection<string> strArgs, out bool blnShowTest, out HashSet<string> setFilesToLoad, CustomActivity opLoadActivity = null)

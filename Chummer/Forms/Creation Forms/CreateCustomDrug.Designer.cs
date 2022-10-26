@@ -28,13 +28,13 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Foundations");
             System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("Blocks");
             System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("Enhancers");
             System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Foundations");
             System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Blocks");
             System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Enhancers");
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CreateCustomDrug));
             this.treAvailableComponents = new System.Windows.Forms.TreeView();
             this.btnAddComponent = new System.Windows.Forms.Button();
             this.btnRemoveComponent = new System.Windows.Forms.Button();
@@ -133,9 +133,11 @@ namespace Chummer
             // btnCancel
             // 
             this.btnCancel.AutoSize = true;
+            this.btnCancel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnCancel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.btnCancel.Location = new System.Drawing.Point(3, 3);
+            this.btnCancel.MinimumSize = new System.Drawing.Size(80, 0);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(80, 23);
             this.btnCancel.TabIndex = 3;
@@ -147,8 +149,10 @@ namespace Chummer
             // btnAdd
             // 
             this.btnAdd.AutoSize = true;
+            this.btnAdd.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.btnAdd.Dock = System.Windows.Forms.DockStyle.Fill;
             this.btnAdd.Location = new System.Drawing.Point(89, 3);
+            this.btnAdd.MinimumSize = new System.Drawing.Size(80, 0);
             this.btnAdd.Name = "btnAdd";
             this.btnAdd.Size = new System.Drawing.Size(80, 23);
             this.btnAdd.TabIndex = 3;
@@ -299,10 +303,12 @@ namespace Chummer
             this.ClientSize = new System.Drawing.Size(752, 537);
             this.Controls.Add(this.tlpMain);
             this.DoubleBuffered = true;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(768, 576);
             this.Name = "CreateCustomDrug";
             this.Padding = new System.Windows.Forms.Padding(9);
-            this.ShowIcon = false;
             this.Tag = "Button_CreateCustomDrug";
             this.Text = "Create Custom Drug";
             this.Load += new System.EventHandler(this.CreateCustomDrug_Load);

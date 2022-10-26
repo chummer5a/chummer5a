@@ -28,7 +28,6 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ExportCharacter));
             this.lblExport = new System.Windows.Forms.Label();
             this.cboXSLT = new Chummer.ElasticComboBox();
@@ -73,9 +72,11 @@ namespace Chummer
             // cmdExportClose
             // 
             this.cmdExportClose.AutoSize = true;
+            this.cmdExportClose.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdExportClose.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdExportClose.Enabled = false;
             this.cmdExportClose.Location = new System.Drawing.Point(106, 3);
+            this.cmdExportClose.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdExportClose.Name = "cmdExportClose";
             this.cmdExportClose.Size = new System.Drawing.Size(97, 23);
             this.cmdExportClose.TabIndex = 2;
@@ -154,9 +155,11 @@ namespace Chummer
             // cmdExport
             // 
             this.cmdExport.AutoSize = true;
+            this.cmdExport.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdExport.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdExport.Enabled = false;
             this.cmdExport.Location = new System.Drawing.Point(3, 3);
+            this.cmdExport.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdExport.Name = "cmdExport";
             this.cmdExport.Size = new System.Drawing.Size(97, 23);
             this.cmdExport.TabIndex = 4;

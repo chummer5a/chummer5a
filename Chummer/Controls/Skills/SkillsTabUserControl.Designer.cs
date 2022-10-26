@@ -248,10 +248,12 @@ namespace Chummer.UI.Skills
             // 
             // btnResetCustomDisplayAttribute
             // 
+            this.btnResetCustomDisplayAttribute.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnResetCustomDisplayAttribute.AutoSize = true;
-            this.btnResetCustomDisplayAttribute.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.btnResetCustomDisplayAttribute.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.btnResetCustomDisplayAttribute.Location = new System.Drawing.Point(155, 29);
             this.btnResetCustomDisplayAttribute.Margin = new System.Windows.Forms.Padding(0);
+            this.btnResetCustomDisplayAttribute.MinimumSize = new System.Drawing.Size(80, 0);
             this.btnResetCustomDisplayAttribute.Name = "btnResetCustomDisplayAttribute";
             this.btnResetCustomDisplayAttribute.Size = new System.Drawing.Size(80, 23);
             this.btnResetCustomDisplayAttribute.TabIndex = 53;
@@ -313,7 +315,9 @@ namespace Chummer.UI.Skills
             // 
             this.btnExotic.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.btnExotic.AutoSize = true;
+            this.btnExotic.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.btnExotic.Location = new System.Drawing.Point(428, 3);
+            this.btnExotic.MinimumSize = new System.Drawing.Size(80, 0);
             this.btnExotic.Name = "btnExotic";
             this.btnExotic.Size = new System.Drawing.Size(90, 23);
             this.btnExotic.TabIndex = 2;
@@ -470,7 +474,9 @@ namespace Chummer.UI.Skills
             // 
             this.btnKnowledge.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.btnKnowledge.AutoSize = true;
+            this.btnKnowledge.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.btnKnowledge.Location = new System.Drawing.Point(3, 3);
+            this.btnKnowledge.MinimumSize = new System.Drawing.Size(80, 0);
             this.btnKnowledge.Name = "btnKnowledge";
             this.btnKnowledge.Size = new System.Drawing.Size(80, 23);
             this.btnKnowledge.TabIndex = 0;

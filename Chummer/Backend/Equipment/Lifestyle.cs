@@ -987,6 +987,11 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public int TotalLP => LP - Comforts - Area - Security + Roommates + BonusLP - LifestyleQualities.Sum(x => x.LP);
 
+        public async ValueTask<int> GetTotalLPAsync(CancellationToken token = default)
+        {
+            return LP - Comforts - Area - Security + Roommates + BonusLP - await LifestyleQualities.SumAsync(x => x.LP, token: token).ConfigureAwait(false);
+        }
+
         /// <summary>
         /// Free Lifestyle points from Traveler lifestyle.
         /// </summary>
@@ -1161,13 +1166,28 @@ namespace Chummer.Backend.Equipment
                                            + LifestyleQualities.Sum(x => x.OriginSource != QualitySource.BuiltIn,
                                                                     lq => lq.ComfortsMaximum);
 
+        public async ValueTask<int> GetTotalComfortsMaximumAsync(CancellationToken token = default) => ComfortsMaximum
+            + await LifestyleQualities
+                    .SumAsync(x => x.OriginSource != QualitySource.BuiltIn, lq => lq.ComfortsMaximum, token)
+                    .ConfigureAwait(false);
+
         public int TotalSecurityMaximum => SecurityMaximum
                                            + LifestyleQualities.Sum(x => x.OriginSource != QualitySource.BuiltIn,
                                                                     lq => lq.SecurityMaximum);
 
+        public async ValueTask<int> GetTotalSecurityMaximumAsync(CancellationToken token = default) => SecurityMaximum
+            + await LifestyleQualities
+                    .SumAsync(x => x.OriginSource != QualitySource.BuiltIn, lq => lq.SecurityMaximum, token)
+                    .ConfigureAwait(false);
+
         public int TotalAreaMaximum => AreaMaximum
                                        + LifestyleQualities.Sum(x => x.OriginSource != QualitySource.BuiltIn,
                                                                 lq => lq.AreaMaximum);
+
+        public async ValueTask<int> GetTotalAreaMaximumAsync(CancellationToken token = default) => AreaMaximum
+            + await LifestyleQualities
+                    .SumAsync(x => x.OriginSource != QualitySource.BuiltIn, lq => lq.AreaMaximum, token)
+                    .ConfigureAwait(false);
 
         private readonly ThreadSafeObservableCollection<LifestyleQuality> _lstLifestyleQualities = new ThreadSafeObservableCollection<LifestyleQuality>();
 
@@ -1498,12 +1518,41 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        public async ValueTask<decimal> GetCostMultiplierAsync(CancellationToken token = default)
+        {
+            decimal d = (Roommates + Area + Comforts + Security) * 10;
+            d += await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.LifestyleCost, false,
+                                                       BaseLifestyle, true, true, token).ConfigureAwait(false);
+            if (StyleType == LifestyleType.Standard)
+            {
+                d += await ImprovementManager
+                           .ValueOfAsync(_objCharacter, Improvement.ImprovementType.BasicLifestyleCost, token: token)
+                           .ConfigureAwait(false);
+                d += await ImprovementManager.ValueOfAsync(_objCharacter,
+                                                           Improvement.ImprovementType.BasicLifestyleCost, false,
+                                                           BaseLifestyle, token: token).ConfigureAwait(false);
+            }
+
+            d += await LifestyleQualities
+                       .SumAsync(x => x.OriginSource != QualitySource.BuiltIn, lq => lq.Multiplier, token: token)
+                       .ConfigureAwait(false);
+            d += 100M;
+            return Math.Max(d / 100, 0);
+        }
+
         /// <summary>
         /// Total Area of the Lifestyle, including all Lifestyle qualities.
         /// </summary>
         public int TotalArea => BaseArea + Area
                                          + LifestyleQualities.Sum(x => x.OriginSource != QualitySource.BuiltIn,
                                                                   lq => lq.Area);
+
+        /// <summary>
+        /// Total Area of the Lifestyle, including all Lifestyle qualities.
+        /// </summary>
+        public async ValueTask<int> GetTotalAreaAsync(CancellationToken token = default) => BaseArea + Area
+                                         + await LifestyleQualities.SumAsync(x => x.OriginSource != QualitySource.BuiltIn,
+                                                                             lq => lq.Area, token: token).ConfigureAwait(false);
 
         /// <summary>
         /// Total Comforts of the Lifestyle, including all Lifestyle qualities.
@@ -1513,11 +1562,25 @@ namespace Chummer.Backend.Equipment
                                                      x => x.OriginSource != QualitySource.BuiltIn, lq => lq.Comforts);
 
         /// <summary>
+        /// Total Comforts of the Lifestyle, including all Lifestyle qualities.
+        /// </summary>
+        public async ValueTask<int> GetTotalComfortsAsync(CancellationToken token = default) => BaseComforts + Comforts
+            + await LifestyleQualities.SumAsync(x => x.OriginSource != QualitySource.BuiltIn,
+                                                lq => lq.Comforts, token: token).ConfigureAwait(false);
+
+        /// <summary>
         /// Total Security of the Lifestyle, including all Lifestyle qualities.
         /// </summary>
         public int TotalSecurity => BaseSecurity + Security
                                                  + LifestyleQualities.Sum(
                                                      x => x.OriginSource != QualitySource.BuiltIn, lq => lq.Security);
+
+        /// <summary>
+        /// Total Security of the Lifestyle, including all Lifestyle qualities.
+        /// </summary>
+        public async ValueTask<int> GetTotalSecurityAsync(CancellationToken token = default) => BaseSecurity + Security
+            + await LifestyleQualities.SumAsync(x => x.OriginSource != QualitySource.BuiltIn,
+                                                lq => lq.Security, token: token).ConfigureAwait(false);
 
         public decimal AreaDelta =>
             Math.Max(
@@ -1525,11 +1588,21 @@ namespace Chummer.Backend.Equipment
                                     + LifestyleQualities.Sum(x => x.OriginSource != QualitySource.BuiltIn,
                                                              lq => lq.Area)), 0);
 
+        public async ValueTask<decimal> GetAreaDeltaAsync(CancellationToken token = default) => Math.Max(
+            await GetTotalAreaMaximumAsync(token).ConfigureAwait(false) - (BaseArea + await LifestyleQualities
+                .SumAsync(x => x.OriginSource != QualitySource.BuiltIn, lq => lq.Area, token: token)
+                .ConfigureAwait(false)), 0);
+
         public decimal ComfortsDelta =>
             Math.Max(
                 TotalComfortsMaximum - (BaseComforts
                                         + LifestyleQualities.Sum(x => x.OriginSource != QualitySource.BuiltIn,
                                                                  lq => lq.Comforts)), 0);
+
+        public async ValueTask<decimal> GetComfortsDeltaAsync(CancellationToken token = default) => Math.Max(
+            await GetTotalComfortsMaximumAsync(token).ConfigureAwait(false) - (BaseComforts + await LifestyleQualities
+                .SumAsync(x => x.OriginSource != QualitySource.BuiltIn, lq => lq.Comforts, token: token)
+                .ConfigureAwait(false)), 0);
 
         public decimal SecurityDelta =>
             Math.Max(
@@ -1537,17 +1610,40 @@ namespace Chummer.Backend.Equipment
                                         + LifestyleQualities.Sum(x => x.OriginSource != QualitySource.BuiltIn,
                                                                  lq => lq.Security)), 0);
 
+        public async ValueTask<decimal> GetSecurityDeltaAsync(CancellationToken token = default) => Math.Max(
+            await GetTotalSecurityMaximumAsync(token).ConfigureAwait(false) - (BaseSecurity + await LifestyleQualities
+                .SumAsync(x => x.OriginSource != QualitySource.BuiltIn, lq => lq.Security, token: token)
+                .ConfigureAwait(false)), 0);
+
         public string FormattedArea => string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Label_SelectAdvancedLifestyle_Base"),
             BaseArea.ToString(GlobalSettings.CultureInfo),
             TotalAreaMaximum.ToString(GlobalSettings.CultureInfo));
 
+        public async ValueTask<string> GetFormattedAreaAsync(CancellationToken token = default) => string.Format(
+            GlobalSettings.CultureInfo,
+            await LanguageManager.GetStringAsync("Label_SelectAdvancedLifestyle_Base", token: token)
+                                 .ConfigureAwait(false), BaseArea.ToString(GlobalSettings.CultureInfo),
+            (await GetTotalAreaMaximumAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo));
+
         public string FormattedComforts => string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Label_SelectAdvancedLifestyle_Base"),
-            BaseComforts.ToString(GlobalSettings.CultureInfo),
-            TotalComfortsMaximum.ToString(GlobalSettings.CultureInfo));
+                                                         BaseComforts.ToString(GlobalSettings.CultureInfo),
+                                                         TotalComfortsMaximum.ToString(GlobalSettings.CultureInfo));
+
+        public async ValueTask<string> GetFormattedComfortsAsync(CancellationToken token = default) => string.Format(
+            GlobalSettings.CultureInfo,
+            await LanguageManager.GetStringAsync("Label_SelectAdvancedLifestyle_Base", token: token)
+                                 .ConfigureAwait(false), BaseComforts.ToString(GlobalSettings.CultureInfo),
+            (await GetTotalComfortsMaximumAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo));
 
         public string FormattedSecurity => string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Label_SelectAdvancedLifestyle_Base"),
             BaseSecurity.ToString(GlobalSettings.CultureInfo),
             TotalSecurityMaximum.ToString(GlobalSettings.CultureInfo));
+
+        public async ValueTask<string> GetFormattedSecurityAsync(CancellationToken token = default) => string.Format(
+            GlobalSettings.CultureInfo,
+            await LanguageManager.GetStringAsync("Label_SelectAdvancedLifestyle_Base", token: token)
+                                 .ConfigureAwait(false), BaseSecurity.ToString(GlobalSettings.CultureInfo),
+            (await GetTotalSecurityMaximumAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo));
 
         /// <summary>
         /// Base cost of the Lifestyle itself, including all multipliers from Improvements, qualities and upgraded attributes.
@@ -1555,10 +1651,22 @@ namespace Chummer.Backend.Equipment
         public decimal BaseCost => Cost * (CostMultiplier + BaseCostMultiplier);
 
         /// <summary>
+        /// Base cost of the Lifestyle itself, including all multipliers from Improvements, qualities and upgraded attributes.
+        /// </summary>
+        public async ValueTask<decimal> GetBaseCostAsync(CancellationToken token = default) =>
+            Cost * (await GetCostMultiplierAsync(token).ConfigureAwait(false) + await GetBaseCostMultiplierAsync(token).ConfigureAwait(false));
+
+        /// <summary>
         /// Base Cost Multiplier from any Lifestyle Qualities the Lifestyle has.
         /// </summary>
         public decimal BaseCostMultiplier =>
             LifestyleQualities.Sum(x => x.OriginSource != QualitySource.BuiltIn, lq => lq.BaseMultiplier) / 100.0m;
+
+        /// <summary>
+        /// Base Cost Multiplier from any Lifestyle Qualities the Lifestyle has.
+        /// </summary>
+        public async ValueTask<decimal> GetBaseCostMultiplierAsync(CancellationToken token = default) =>
+            await LifestyleQualities.SumAsync(x => x.OriginSource != QualitySource.BuiltIn, lq => lq.BaseMultiplier, token: token).ConfigureAwait(false) / 100.0m;
 
         /// <summary>
         /// Total monthly cost of the Lifestyle.
@@ -1617,7 +1725,70 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public string DisplayTotalMonthlyCost => TotalMonthlyCost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol");
+        /// <summary>
+        /// Total monthly cost of the Lifestyle.
+        /// </summary>
+        public async ValueTask<decimal> GetTotalMonthlyCostAsync(CancellationToken token = default)
+        {
+            decimal decReturn = 0;
+
+            if (!TrustFund)
+            {
+                decReturn += await GetBaseCostAsync(token).ConfigureAwait(false);
+            }
+
+            decReturn += Area * CostForArea;
+            decReturn += Comforts * CostForComforts;
+            decReturn += Security * CostForSecurity;
+
+            decimal decExtraAssetCost = 0;
+            decimal decContractCost = await LifestyleQualities.SumAsync(objQuality =>
+            {
+                if (objQuality.OriginSource != QualitySource.BuiltIn)
+                {
+                    //Add the flat cost from Qualities.
+                    if (objQuality.Type == QualityType.Contracts)
+                        return objQuality.Cost;
+                    decExtraAssetCost += objQuality.Cost;
+                }
+                return 0;
+            }, token: token).ConfigureAwait(false);
+
+            decReturn += decExtraAssetCost;
+
+            //Qualities may have reduced the cost below zero. No spooky mansion payouts here, so clamp it to zero or higher.
+            decReturn = Math.Max(decReturn, 0);
+
+            if (!PrimaryTenant)
+            {
+                decReturn /= Roommates + 1.0m;
+            }
+
+            decReturn *= Percentage / 100;
+
+            switch (IncrementType)
+            {
+                case LifestyleIncrement.Day:
+                    decContractCost /= (4.34812m * 7);
+                    break;
+
+                case LifestyleIncrement.Week:
+                    decContractCost /= 4.34812m;
+                    break;
+            }
+
+            decReturn += decContractCost;
+
+            return decReturn;
+        }
+
+        public string DisplayTotalMonthlyCost =>
+            TotalMonthlyCost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo)
+            + LanguageManager.GetString("String_NuyenSymbol");
+
+        public async ValueTask<string> GetDisplayTotalMonthlyCostAsync(CancellationToken token = default) =>
+            (await GetTotalMonthlyCostAsync(token).ConfigureAwait(false)).ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo)
+            + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
 
         public static string GetEquivalentLifestyle(string strLifestyle)
         {
