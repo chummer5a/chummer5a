@@ -65,6 +65,17 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Wraps Random::Next(minValue, maxValue) around code that eliminates modulo bias (i.e. the fact that certain results will be more common based on the remainder when dividing int.MaxValue by them)
+        /// </summary>
+        /// <param name="objRandom">Instance of Random to use.</param>
+        /// <param name="minValue">Minimum value (inclusive) to generate.</param>
+        /// <param name="maxValue">Maximum value (exclusive) to generate.</param>
+        public static int NextModuloBiasRemoved(this Random objRandom, int minValue, int maxValue)
+        {
+            return objRandom.NextModuloBiasRemoved(maxValue - minValue) + minValue;
+        }
+
+        /// <summary>
         /// Special version of NextModuloBiasRemoved(minValue, maxValue) built specifically for a 1D6 roll. The modulo bias to check is calculated at compile time, so the code should run faster.
         /// </summary>
         /// <param name="objRandom">Instance of Random to use.</param>
@@ -135,17 +146,6 @@ namespace Chummer
 
                 return intLoopResult % maxValue;
             }
-        }
-
-        /// <summary>
-        /// Wraps Random::Next(minValue, maxValue) around code that eliminates modulo bias (i.e. the fact that certain results will be more common based on the remainder when dividing int.MaxValue by them)
-        /// </summary>
-        /// <param name="objRandom">Instance of Random to use.</param>
-        /// <param name="minValue">Minimum value (inclusive) to generate.</param>
-        /// <param name="maxValue">Maximum value (exclusive) to generate.</param>
-        public static int NextModuloBiasRemoved(this Random objRandom, int minValue, int maxValue)
-        {
-            return objRandom.NextModuloBiasRemoved(maxValue - minValue) + minValue;
         }
     }
 }
