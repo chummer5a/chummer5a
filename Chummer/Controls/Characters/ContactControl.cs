@@ -34,7 +34,7 @@ namespace Chummer
     public partial class ContactControl : UserControl
     {
         private readonly Contact _objContact;
-        private bool _blnLoading = true;
+        private int _intLoading = 1;
 
         private bool _blnStatBlockIsLoaded;
         //private readonly int _intLowHeight = 25;
@@ -104,7 +104,7 @@ namespace Chummer
                 await cmdNotes.SetToolTipTextAsync(strTooltip.WordWrap()).ConfigureAwait(false);
             }
 
-            _blnLoading = false;
+            Interlocked.Decrement(ref _intLoading);
         }
 
         public void UnbindContactControl()
@@ -118,7 +118,7 @@ namespace Chummer
         private void nudConnection_ValueChanged(object sender, EventArgs e)
         {
             // Raise the ContactDetailChanged Event when the NumericUpDown's Value changes.
-            if (!_blnLoading && _blnStatBlockIsLoaded)
+            if (_intLoading == 0 && _blnStatBlockIsLoaded)
                 ContactDetailChanged?.Invoke(this, new TextEventArgs("Connection"));
         }
 
@@ -126,7 +126,7 @@ namespace Chummer
         {
             // Raise the ContactDetailChanged Event when the NumericUpDown's Value changes.
             // The entire ContactControl is passed as an argument so the handling event can evaluate its contents.
-            if (!_blnLoading && _blnStatBlockIsLoaded)
+            if (_intLoading == 0 && _blnStatBlockIsLoaded)
                 ContactDetailChanged?.Invoke(this, new TextEventArgs("Loyalty"));
         }
 
@@ -139,7 +139,7 @@ namespace Chummer
 
         private void chkGroup_CheckedChanged(object sender, EventArgs e)
         {
-            if (!_blnLoading && _blnStatBlockIsLoaded)
+            if (_intLoading == 0 && _blnStatBlockIsLoaded)
                 ContactDetailChanged?.Invoke(this, new TextEventArgs("Group"));
         }
 
@@ -150,28 +150,28 @@ namespace Chummer
 
         private void cboContactRole_TextChanged(object sender, EventArgs e)
         {
-            if (_blnLoading)
+            if (_intLoading > 0)
                 return;
             ContactDetailChanged?.Invoke(this, new TextEventArgs("Role"));
         }
 
         private void txtContactName_TextChanged(object sender, EventArgs e)
         {
-            if (_blnLoading)
+            if (_intLoading > 0)
                 return;
             ContactDetailChanged?.Invoke(this, new TextEventArgs("Name"));
         }
 
         private void txtContactLocation_TextChanged(object sender, EventArgs e)
         {
-            if (_blnLoading)
+            if (_intLoading > 0)
                 return;
             ContactDetailChanged?.Invoke(this, new TextEventArgs("Location"));
         }
 
         private async void UpdateMetatype(object sender, EventArgs e)
         {
-            if (_blnLoading || !_blnStatBlockIsLoaded)
+            if (_intLoading > 0 || !_blnStatBlockIsLoaded)
                 return;
             string strNew = await cboMetatype.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false);
             string strOld = await _objContact.GetDisplayMetatypeAsync().ConfigureAwait(false);
@@ -181,14 +181,14 @@ namespace Chummer
             strOld = await _objContact.GetDisplayMetatypeAsync().ConfigureAwait(false);
             if (strOld != strNew)
             {
-                _blnLoading = true;
+                Interlocked.Increment(ref _intLoading);
                 try
                 {
                     await cboMetatype.DoThreadSafeAsync(x => x.Text = strOld).ConfigureAwait(false);
                 }
                 finally
                 {
-                    _blnLoading = false;
+                    Interlocked.Decrement(ref _intLoading);
                 }
             }
 
@@ -197,7 +197,7 @@ namespace Chummer
 
         private async void UpdateGender(object sender, EventArgs e)
         {
-            if (_blnLoading || !_blnStatBlockIsLoaded)
+            if (_intLoading > 0 || !_blnStatBlockIsLoaded)
                 return;
             string strNew = await cboGender.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false);
             string strOld = await _objContact.GetDisplayGenderAsync().ConfigureAwait(false);
@@ -207,15 +207,14 @@ namespace Chummer
             strOld = await _objContact.GetDisplayGenderAsync().ConfigureAwait(false);
             if (strOld != strNew)
             {
-                bool blnOld = _blnLoading;
+                Interlocked.Increment(ref _intLoading);
                 try
                 {
-                    _blnLoading = true;
                     await cboGender.DoThreadSafeAsync(x => x.Text = strOld).ConfigureAwait(false);
                 }
                 finally
                 {
-                    _blnLoading = blnOld;
+                    Interlocked.Decrement(ref _intLoading);
                 }
             }
 
@@ -224,7 +223,7 @@ namespace Chummer
 
         private async void UpdateAge(object sender, EventArgs e)
         {
-            if (_blnLoading || !_blnStatBlockIsLoaded)
+            if (_intLoading > 0 || !_blnStatBlockIsLoaded)
                 return;
             string strNew = await cboAge.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false);
             string strOld = await _objContact.GetDisplayAgeAsync().ConfigureAwait(false);
@@ -234,15 +233,14 @@ namespace Chummer
             strOld = await _objContact.GetDisplayAgeAsync().ConfigureAwait(false);
             if (strOld != strNew)
             {
-                bool blnOld = _blnLoading;
+                Interlocked.Increment(ref _intLoading);
                 try
                 {
-                    _blnLoading = true;
                     await cboAge.DoThreadSafeAsync(x => x.Text = strOld).ConfigureAwait(false);
                 }
                 finally
                 {
-                    _blnLoading = blnOld;
+                    Interlocked.Decrement(ref _intLoading);
                 }
             }
 
@@ -251,7 +249,7 @@ namespace Chummer
 
         private async void UpdatePersonalLife(object sender, EventArgs e)
         {
-            if (_blnLoading || !_blnStatBlockIsLoaded)
+            if (_intLoading > 0 || !_blnStatBlockIsLoaded)
                 return;
             string strNew = await cboPersonalLife.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false);
             string strOld = await _objContact.GetDisplayPersonalLifeAsync().ConfigureAwait(false);
@@ -261,15 +259,14 @@ namespace Chummer
             strOld = await _objContact.GetDisplayPersonalLifeAsync().ConfigureAwait(false);
             if (strOld != strNew)
             {
-                bool blnOld = _blnLoading;
+                Interlocked.Increment(ref _intLoading);
                 try
                 {
-                    _blnLoading = true;
                     await cboPersonalLife.DoThreadSafeAsync(x => x.Text = strOld).ConfigureAwait(false);
                 }
                 finally
                 {
-                    _blnLoading = blnOld;
+                    Interlocked.Decrement(ref _intLoading);
                 }
             }
 
@@ -278,7 +275,7 @@ namespace Chummer
 
         private async void UpdateType(object sender, EventArgs e)
         {
-            if (_blnLoading || !_blnStatBlockIsLoaded)
+            if (_intLoading > 0 || !_blnStatBlockIsLoaded)
                 return;
             string strNew = await cboType.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false);
             string strOld = await _objContact.GetDisplayTypeAsync().ConfigureAwait(false);
@@ -288,15 +285,14 @@ namespace Chummer
             strOld = await _objContact.GetDisplayTypeAsync().ConfigureAwait(false);
             if (strOld != strNew)
             {
-                bool blnOld = _blnLoading;
+                Interlocked.Increment(ref _intLoading);
                 try
                 {
-                    _blnLoading = true;
                     await cboType.DoThreadSafeAsync(x => x.Text = strOld).ConfigureAwait(false);
                 }
                 finally
                 {
-                    _blnLoading = blnOld;
+                    Interlocked.Decrement(ref _intLoading);
                 }
             }
 
@@ -305,7 +301,7 @@ namespace Chummer
 
         private async void UpdatePreferredPayment(object sender, EventArgs e)
         {
-            if (_blnLoading || !_blnStatBlockIsLoaded)
+            if (_intLoading > 0 || !_blnStatBlockIsLoaded)
                 return;
             string strNew = await cboPreferredPayment.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false);
             string strOld = await _objContact.GetDisplayPreferredPaymentAsync().ConfigureAwait(false);
@@ -315,15 +311,14 @@ namespace Chummer
             strOld = await _objContact.GetDisplayPreferredPaymentAsync().ConfigureAwait(false);
             if (strOld != strNew)
             {
-                bool blnOld = _blnLoading;
+                Interlocked.Increment(ref _intLoading);
                 try
                 {
-                    _blnLoading = true;
                     await cboPreferredPayment.DoThreadSafeAsync(x => x.Text = strOld).ConfigureAwait(false);
                 }
                 finally
                 {
-                    _blnLoading = blnOld;
+                    Interlocked.Decrement(ref _intLoading);
                 }
             }
 
@@ -332,7 +327,7 @@ namespace Chummer
 
         private async void UpdateHobbiesVice(object sender, EventArgs e)
         {
-            if (_blnLoading || !_blnStatBlockIsLoaded)
+            if (_intLoading > 0 || !_blnStatBlockIsLoaded)
                 return;
             string strNew = await cboHobbiesVice.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false);
             string strOld = await _objContact.GetDisplayHobbiesViceAsync().ConfigureAwait(false);
@@ -342,15 +337,14 @@ namespace Chummer
             strOld = await _objContact.GetDisplayHobbiesViceAsync().ConfigureAwait(false);
             if (strOld != strNew)
             {
-                bool blnOld = _blnLoading;
+                Interlocked.Increment(ref _intLoading);
                 try
                 {
-                    _blnLoading = true;
                     await cboHobbiesVice.DoThreadSafeAsync(x => x.Text = strOld).ConfigureAwait(false);
                 }
                 finally
                 {
-                    _blnLoading = blnOld;
+                    Interlocked.Decrement(ref _intLoading);
                 }
             }
 
@@ -359,7 +353,7 @@ namespace Chummer
 
         private async void UpdateContactRole(object sender, EventArgs e)
         {
-            if (_blnLoading || !_blnStatBlockIsLoaded)
+            if (_intLoading > 0 || !_blnStatBlockIsLoaded)
                 return;
             string strNew = await cboContactRole.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false);
             string strOld = await _objContact.GetDisplayRoleAsync().ConfigureAwait(false);
@@ -369,15 +363,14 @@ namespace Chummer
             strOld = await _objContact.GetDisplayRoleAsync().ConfigureAwait(false);
             if (strOld != strNew)
             {
-                bool blnOld = _blnLoading;
+                Interlocked.Increment(ref _intLoading);
                 try
                 {
-                    _blnLoading = true;
                     await cboContactRole.DoThreadSafeAsync(x => x.Text = strOld).ConfigureAwait(false);
                 }
                 finally
                 {
-                    _blnLoading = blnOld;
+                    Interlocked.Decrement(ref _intLoading);
                 }
             }
 
@@ -552,19 +545,19 @@ namespace Chummer
 
         private void chkFree_CheckedChanged(object sender, EventArgs e)
         {
-            if (!_blnLoading && _blnStatBlockIsLoaded)
+            if (_intLoading == 0 && _blnStatBlockIsLoaded)
                 ContactDetailChanged?.Invoke(this, new TextEventArgs("Free"));
         }
 
         private void chkBlackmail_CheckedChanged(object sender, EventArgs e)
         {
-            if (!_blnLoading && _blnStatBlockIsLoaded)
+            if (_intLoading == 0 && _blnStatBlockIsLoaded)
                 ContactDetailChanged?.Invoke(this, new TextEventArgs("Blackmail"));
         }
 
         private void chkFamily_CheckedChanged(object sender, EventArgs e)
         {
-            if (!_blnLoading && _blnStatBlockIsLoaded)
+            if (_intLoading == 0 && _blnStatBlockIsLoaded)
                 ContactDetailChanged?.Invoke(this, new TextEventArgs("Family"));
         }
 

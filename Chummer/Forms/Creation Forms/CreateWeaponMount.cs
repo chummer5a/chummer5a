@@ -33,7 +33,7 @@ namespace Chummer
     public partial class CreateWeaponMount : Form
     {
         private readonly List<VehicleMod> _lstMods = new List<VehicleMod>(1);
-        private bool _blnLoading = true;
+        private int _intLoading = 1;
         private readonly bool _blnAllowEditOptions;
         private readonly Vehicle _objVehicle;
         private readonly Character _objCharacter;
@@ -173,7 +173,7 @@ namespace Chummer
 
             await chkBlackMarketDiscount.DoThreadSafeAsync(x => x.Visible = _objCharacter.BlackMarketDiscount).ConfigureAwait(false);
 
-            _blnLoading = false;
+            Interlocked.Decrement(ref _intLoading);
             await UpdateInfo().ConfigureAwait(false);
         }
 
@@ -516,7 +516,7 @@ namespace Chummer
         private async ValueTask UpdateInfo(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (_blnLoading)
+            if (_intLoading > 0)
                 return;
 
             XmlNode xmlSelectedMount = null;
@@ -1075,40 +1075,52 @@ namespace Chummer
                     }
                 }
 
-                bool blnOldLoading = _blnLoading;
-                _blnLoading = true;
-                string strOldVisibility = await cboVisibility.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false);
-                string strOldFlexibility = await cboFlexibility.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false);
-                string strOldControl = await cboControl.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false);
-                await cboVisibility.PopulateWithListItemsAsync(lstVisibility, token: token).ConfigureAwait(false);
-                await cboVisibility.DoThreadSafeAsync(x =>
+                Interlocked.Increment(ref _intLoading);
+                try
                 {
-                    x.Enabled = _blnAllowEditOptions && lstVisibility.Count > 1;
-                    if (!string.IsNullOrEmpty(strOldVisibility))
-                        x.SelectedValue = strOldVisibility;
-                    if (x.SelectedIndex == -1 && lstVisibility.Count > 0)
-                        x.SelectedIndex = 0;
-                }, token: token).ConfigureAwait(false);
-                await cboFlexibility.PopulateWithListItemsAsync(lstFlexibility, token: token).ConfigureAwait(false);
-                await cboFlexibility.DoThreadSafeAsync(x =>
+                    string strOldVisibility = await cboVisibility
+                                                    .DoThreadSafeFuncAsync(
+                                                        x => x.SelectedValue?.ToString(), token: token)
+                                                    .ConfigureAwait(false);
+                    string strOldFlexibility = await cboFlexibility
+                                                     .DoThreadSafeFuncAsync(
+                                                         x => x.SelectedValue?.ToString(), token: token)
+                                                     .ConfigureAwait(false);
+                    string strOldControl = await cboControl
+                                                 .DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token)
+                                                 .ConfigureAwait(false);
+                    await cboVisibility.PopulateWithListItemsAsync(lstVisibility, token: token).ConfigureAwait(false);
+                    await cboVisibility.DoThreadSafeAsync(x =>
+                    {
+                        x.Enabled = _blnAllowEditOptions && lstVisibility.Count > 1;
+                        if (!string.IsNullOrEmpty(strOldVisibility))
+                            x.SelectedValue = strOldVisibility;
+                        if (x.SelectedIndex == -1 && lstVisibility.Count > 0)
+                            x.SelectedIndex = 0;
+                    }, token: token).ConfigureAwait(false);
+                    await cboFlexibility.PopulateWithListItemsAsync(lstFlexibility, token: token).ConfigureAwait(false);
+                    await cboFlexibility.DoThreadSafeAsync(x =>
+                    {
+                        x.Enabled = _blnAllowEditOptions && lstFlexibility.Count > 1;
+                        if (!string.IsNullOrEmpty(strOldFlexibility))
+                            x.SelectedValue = strOldFlexibility;
+                        if (x.SelectedIndex == -1 && lstFlexibility.Count > 0)
+                            x.SelectedIndex = 0;
+                    }, token: token).ConfigureAwait(false);
+                    await cboControl.PopulateWithListItemsAsync(lstControl, token: token).ConfigureAwait(false);
+                    await cboControl.DoThreadSafeAsync(x =>
+                    {
+                        x.Enabled = _blnAllowEditOptions && lstControl.Count > 1;
+                        if (!string.IsNullOrEmpty(strOldControl))
+                            x.SelectedValue = strOldControl;
+                        if (x.SelectedIndex == -1 && lstControl.Count > 0)
+                            x.SelectedIndex = 0;
+                    }, token: token).ConfigureAwait(false);
+                }
+                finally
                 {
-                    x.Enabled = _blnAllowEditOptions && lstFlexibility.Count > 1;
-                    if (!string.IsNullOrEmpty(strOldFlexibility))
-                        x.SelectedValue = strOldFlexibility;
-                    if (x.SelectedIndex == -1 && lstFlexibility.Count > 0)
-                        x.SelectedIndex = 0;
-                }, token: token).ConfigureAwait(false);
-                await cboControl.PopulateWithListItemsAsync(lstControl, token: token).ConfigureAwait(false);
-                await cboControl.DoThreadSafeAsync(x =>
-                {
-                    x.Enabled = _blnAllowEditOptions && lstControl.Count > 1;
-                    if (!string.IsNullOrEmpty(strOldControl))
-                        x.SelectedValue = strOldControl;
-                    if (x.SelectedIndex == -1 && lstControl.Count > 0)
-                        x.SelectedIndex = 0;
-                }, token: token).ConfigureAwait(false);
-
-                _blnLoading = blnOldLoading;
+                    Interlocked.Decrement(ref _intLoading);
+                }
             }
         }
 

@@ -14672,7 +14672,6 @@ namespace Chummer
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
-                bool blnOldSkipUpdate = SkipUpdate;
                 SkipUpdate = true;
                 try
                 {
@@ -14773,7 +14772,7 @@ namespace Chummer
                                 }
 
                                 await CharacterObject.SetCreatedAsync(false, false, token: token).ConfigureAwait(false);
-                                SkipUpdate = blnOldSkipUpdate;
+                                SkipUpdate = false;
                                 return false;
                             }
                         }
@@ -14789,7 +14788,7 @@ namespace Chummer
                 }
                 catch
                 {
-                    SkipUpdate = blnOldSkipUpdate;
+                    SkipUpdate = false;
                     throw;
                 }
             }
