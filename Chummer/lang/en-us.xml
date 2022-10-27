@@ -4808,7 +4808,7 @@
     </string>
     <string>
       <key>Tip_SpellsSelectedSpells</key>
-      <text>Each Spell costs {0} Karma.</text>
+      <text>Each Spell costs {0} Karma.\n Mastery Qualities use 1 Free Spell Point per 5 Karma (MP).</text>
     </string>
     <string>
       <key>Tip_SpellsSpirits</key>
@@ -9184,6 +9184,10 @@
     <string>
       <key>String_SpellPoints</key>
       <text>Spell Points</text>
+    </string>
+    <string>
+      <key>String_MasteryPointsAcronym</key>
+      <text>MP</text>
     </string>
     <string>
       <key>Tip_SelectSpell_MasteryQuality</key>

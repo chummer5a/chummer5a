@@ -11988,6 +11988,7 @@ namespace Chummer
                 int ritualCost = await CharacterObject.SpellKarmaCostAsync("Rituals", token).ConfigureAwait(false);
                 int prepCost = await CharacterObject.SpellKarmaCostAsync("Preparations", token).ConfigureAwait(false);
                 int intFreeSpells = await CharacterObject.GetFreeSpellsAsync(token).ConfigureAwait(false);
+                int intQualityKarmaToSpellPoints = 0;
                 int limit = intFreeSpells;
 
                 token.ThrowIfCancellationRequested();
@@ -11997,7 +11998,7 @@ namespace Chummer
                 int intKarmaSpell = await CharacterObjectSettings.GetKarmaSpellAsync(token).ConfigureAwait(false);
                 if (spellCost <= intKarmaSpell && intFreeSpells > 0)
                 {
-                    int intQualityKarmaToSpellPoints = intKarmaSpell;
+                    intQualityKarmaToSpellPoints = intKarmaSpell;
                     if (intQualityKarmaToSpellPoints != 0)
                     {
                         // Assume that every [spell cost] karma spent on a Mastery quality is paid for with a priority-given spell point instead, as that is the most karma-efficient.
@@ -12176,6 +12177,9 @@ namespace Chummer
                             if (intSpellPointsUsed > 0)
                                 strText += string.Format(GlobalSettings.CultureInfo, "{0}{1}{2}{1}{3}", strColon,
                                                          strSpace, intSpellPointsUsed, strPoints);
+                            if (intQualityKarmaToSpellPoints > 0)
+                                strText += string.Format(GlobalSettings.CultureInfo, "{0}{1}{2}{1}{3}", strColon,
+                                    strSpace, intQualityKarmaToSpellPoints, LanguageManager.GetString("String_MasteryPointsAcronym"));
                             await lblSpellsBP.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
                         }
 

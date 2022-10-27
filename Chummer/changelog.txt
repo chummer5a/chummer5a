@@ -20,6 +20,7 @@ Application Changes:
 - Capacity violations for gear located inside armor, armor mods, weapon accessories, cyberware, gear that is already located inside other gear, and any of the aforementioned inside a vehicle are now properly checked when checking character validity.
 - Reported capacity violations from character validity checks now display each item's translated and/or specific name instead of just its general, English name.
 - Custom Fit (Stack) now works properly when the underlying armor piece has a different name than the armor that is to be treated as an accessory.
+- Added a helper reference to show how many free spells have been used by mastery qualities.
 
 Data Changes:
 - Added bonus nodes for Shooter (The Soldier) paragon's Compiling dice pool penalty and +1 limit for attack actions. Fixes #4935.
@@ -37,6 +38,7 @@ Data Changes:
 - HK Urban Combat and HK Urban Fighter can properly no longer accept any modifications or accessories. The HK Urban Fighter now also properly cannot accept regular Spare Clips, needing instead its own, special versions with higher cost and availability.
 - Plastic Components no longer duplicates its rating in its name.
 - Buying Injection Darts no longer forces the user to pick a weapon category that's forced to be Exotic Ranged Weapons
+- Fixed Flashback System Enables Cyberzombie Conversion customdata not applying correctly.
 
 Changed/New Strings:
 - LimitCondition_SoldierParagon
@@ -51,6 +53,8 @@ Changed/New Strings:
 - Label_LP
 - Label_BonusLP
 - Label_QualityLP
+- Tip_SpellsSelectedSpells
+- String_MasteryPointsAcronym
 
 Build 224
 Application Changes:
