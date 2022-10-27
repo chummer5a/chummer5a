@@ -628,10 +628,13 @@ namespace Chummer
                             intOld = Interlocked.CompareExchange(ref _intStatBlockIsLoaded, 1, 0);
                         }
 
-                        // Create second row and statblock only on the first expansion to save on handles and load times
-                        await CreateSecondRowAsync(token).ConfigureAwait(false);
-                        await CreateStatBlockAsync(token).ConfigureAwait(false);
-                        intOld = Interlocked.CompareExchange(ref _intStatBlockIsLoaded, 2, 1);
+                        if (tlpStatBlock == null || intOld < 2)
+                        {
+                            // Create second row and statblock only on the first expansion to save on handles and load times
+                            await CreateSecondRowAsync(token).ConfigureAwait(false);
+                            await CreateStatBlockAsync(token).ConfigureAwait(false);
+                            intOld = Interlocked.CompareExchange(ref _intStatBlockIsLoaded, 2, 1);
+                        }
                     }
                 }
                 catch
