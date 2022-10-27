@@ -25,6 +25,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
 using NLog;
 
@@ -35,7 +36,7 @@ namespace Chummer.Controls.Shared
         private static readonly Logger Log = LogManager.GetCurrentClassLogger(typeof(ObservableCollectionDisplay<TType>));
         public PropertyChangedEventHandler ChildPropertyChanged { get; set; }
 
-        private bool _blnIsTopmostSuspendLayout;
+        private int _intSuspendLayoutCount;
         private readonly Func<TType, Control> _funcCreateControl;  //Function to create a control out of a item
         private readonly bool _blnLoadVisibleOnly;
         private readonly List<ControlWithMetaData> _lstContentList = new List<ControlWithMetaData>(10);
@@ -54,7 +55,8 @@ namespace Chummer.Controls.Shared
             Contents = contents ?? throw new ArgumentNullException(nameof(contents));
             _funcCreateControl = funcCreateControl;
             _blnLoadVisibleOnly = blnLoadVisibleOnly;
-            pnlDisplay.SuspendLayout();
+            if (Interlocked.Increment(ref _intSuspendLayoutCount) == 1)
+                pnlDisplay.SuspendLayout();
             try
             {
                 int intMaxControlHeight = 0;
@@ -89,8 +91,8 @@ namespace Chummer.Controls.Shared
             }
             finally
             {
-                _blnIsTopmostSuspendLayout = true;
-                pnlDisplay.ResumeLayout();
+                if (Interlocked.Decrement(ref _intSuspendLayoutCount) == 0)
+                    pnlDisplay.ResumeLayout();
             }
         }
 
@@ -129,10 +131,8 @@ namespace Chummer.Controls.Shared
             max = Math.Min(_lstDisplayIndex.Count, max);
             if (_ablnRendered.FirstMatching(false, min) > max)
                 return;
-            bool blnIsTopmostSuspendLayout = _blnIsTopmostSuspendLayout;
-            if (blnIsTopmostSuspendLayout)
-                _blnIsTopmostSuspendLayout = false;
-            pnlDisplay.DoThreadSafe(x => x.SuspendLayout());
+            if (Interlocked.Increment(ref _intSuspendLayoutCount) == 1)
+                pnlDisplay.DoThreadSafe(x => x.SuspendLayout());
             try
             {
                 for (int i = min; i < max; ++i)
@@ -152,11 +152,8 @@ namespace Chummer.Controls.Shared
             }
             finally
             {
-                if (blnIsTopmostSuspendLayout)
-                {
-                    _blnIsTopmostSuspendLayout = true;
+                if (Interlocked.Decrement(ref _intSuspendLayoutCount) == 0)
                     pnlDisplay.DoThreadSafe(x => x.ResumeLayout());
-                }
             }
         }
 
@@ -266,21 +263,16 @@ namespace Chummer.Controls.Shared
             end = Math.Min(end, firstUnrendered + _intOffScreenChunkSize);
             Stopwatch sw = Stopwatch.StartNew();
 
-            bool blnIsTopmostSuspendLayout = _blnIsTopmostSuspendLayout;
-            if (blnIsTopmostSuspendLayout)
-                _blnIsTopmostSuspendLayout = false;
-            pnlDisplay.SuspendLayout();
+            if (Interlocked.Increment(ref _intSuspendLayoutCount) == 1)
+                pnlDisplay.SuspendLayout();
             try
             {
                 LoadRange(firstUnrendered, end);
             }
             finally
             {
-                if (blnIsTopmostSuspendLayout)
-                {
-                    _blnIsTopmostSuspendLayout = true;
+                if (Interlocked.Decrement(ref _intSuspendLayoutCount) == 0)
                     pnlDisplay.ResumeLayout();
-                }
             }
 
             sw.Stop();
@@ -305,21 +297,16 @@ namespace Chummer.Controls.Shared
             if (_visibleFilter == predicate && !forceRefresh) return;
             _visibleFilter = predicate;
 
-            bool blnIsTopmostSuspendLayout = _blnIsTopmostSuspendLayout;
-            if (blnIsTopmostSuspendLayout)
-                _blnIsTopmostSuspendLayout = false;
-            pnlDisplay.DoThreadSafe(x => x.SuspendLayout());
+            if (Interlocked.Increment(ref _intSuspendLayoutCount) == 1)
+                pnlDisplay.DoThreadSafe(x => x.SuspendLayout());
             try
             {
                 RedrawControls(_lstContentList);
             }
             finally
             {
-                if (blnIsTopmostSuspendLayout)
-                {
-                    _blnIsTopmostSuspendLayout = true;
+                if (Interlocked.Decrement(ref _intSuspendLayoutCount) == 0)
                     pnlDisplay.DoThreadSafe(x => x.ResumeLayout());
-                }
             }
         }
 
@@ -328,21 +315,16 @@ namespace Chummer.Controls.Shared
             if (Equals(_comparison, comparison)) return;
             _comparison = comparison;
 
-            bool blnIsTopmostSuspendLayout = _blnIsTopmostSuspendLayout;
-            if (blnIsTopmostSuspendLayout)
-                _blnIsTopmostSuspendLayout = false;
+            if (Interlocked.Increment(ref _intSuspendLayoutCount) == 1)
+                pnlDisplay.DoThreadSafe(x => x.SuspendLayout());
             try
             {
-                pnlDisplay.DoThreadSafe(x => x.SuspendLayout());
                 RedrawControls(_lstContentList);
             }
             finally
             {
-                if (blnIsTopmostSuspendLayout)
-                {
-                    _blnIsTopmostSuspendLayout = true;
+                if (Interlocked.Decrement(ref _intSuspendLayoutCount) == 0)
                     pnlDisplay.DoThreadSafe(x => x.ResumeLayout());
-                }
             }
         }
 
@@ -425,10 +407,8 @@ namespace Chummer.Controls.Shared
                     }
                 case NotifyCollectionChangedAction.Reset:
                     {
-                        bool blnIsTopmostSuspendLayout = _blnIsTopmostSuspendLayout;
-                        if (blnIsTopmostSuspendLayout)
-                            _blnIsTopmostSuspendLayout = false;
-                        pnlDisplay.SuspendLayout();
+                        if (Interlocked.Increment(ref _intSuspendLayoutCount) == 1)
+                            pnlDisplay.SuspendLayout();
                         try
                         {
                             foreach (ControlWithMetaData objLoopControl in _lstContentList)
@@ -446,11 +426,8 @@ namespace Chummer.Controls.Shared
                         }
                         finally
                         {
-                            if (blnIsTopmostSuspendLayout)
-                            {
-                                _blnIsTopmostSuspendLayout = true;
+                            if (Interlocked.Decrement(ref _intSuspendLayoutCount) == 0)
                                 pnlDisplay.ResumeLayout();
-                            }
                         }
 
                         _indexComparer.Reset(Contents);
@@ -460,10 +437,8 @@ namespace Chummer.Controls.Shared
             }
             if (lstToRedraw != null)
             {
-                bool blnIsTopmostSuspendLayout = _blnIsTopmostSuspendLayout;
-                if (blnIsTopmostSuspendLayout)
-                    _blnIsTopmostSuspendLayout = false;
-                pnlDisplay.SuspendLayout();
+                if (Interlocked.Increment(ref _intSuspendLayoutCount) == 1)
+                    pnlDisplay.SuspendLayout();
                 try
                 {
                     ChildPropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Contents)));
@@ -471,41 +446,31 @@ namespace Chummer.Controls.Shared
                 }
                 finally
                 {
-                    if (blnIsTopmostSuspendLayout)
-                    {
-                        _blnIsTopmostSuspendLayout = true;
+                    if (Interlocked.Decrement(ref _intSuspendLayoutCount) == 0)
                         pnlDisplay.ResumeLayout();
-                    }
                 }
             }
         }
 
         private void ObservableCollectionDisplay_Scroll(object sender, ScrollEventArgs e)
         {
-            bool blnIsTopmostSuspendLayout = _blnIsTopmostSuspendLayout;
-            if (blnIsTopmostSuspendLayout)
-                _blnIsTopmostSuspendLayout = false;
-            pnlDisplay.SuspendLayout();
+            if (Interlocked.Increment(ref _intSuspendLayoutCount) == 1)
+                pnlDisplay.SuspendLayout();
             try
             {
                 LoadScreenContent();
             }
             finally
             {
-                if (blnIsTopmostSuspendLayout)
-                {
-                    _blnIsTopmostSuspendLayout = true;
+                if (Interlocked.Decrement(ref _intSuspendLayoutCount) == 0)
                     pnlDisplay.ResumeLayout();
-                }
             }
         }
 
         private void ObservableCollectionDisplay_SizeChanged(object sender, EventArgs e)
         {
-            bool blnIsTopmostSuspendLayout = _blnIsTopmostSuspendLayout;
-            if (blnIsTopmostSuspendLayout)
-                _blnIsTopmostSuspendLayout = false;
-            pnlDisplay.SuspendLayout();
+            if (Interlocked.Increment(ref _intSuspendLayoutCount) == 1)
+                pnlDisplay.SuspendLayout();
             try
             {
                 pnlDisplay.Width = Width - SystemInformation.VerticalScrollBarWidth;
@@ -531,11 +496,8 @@ namespace Chummer.Controls.Shared
             }
             finally
             {
-                if (blnIsTopmostSuspendLayout)
-                {
-                    _blnIsTopmostSuspendLayout = true;
+                if (Interlocked.Decrement(ref _intSuspendLayoutCount) == 0)
                     pnlDisplay.ResumeLayout();
-                }
             }
         }
 

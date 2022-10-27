@@ -207,7 +207,7 @@ namespace Chummer
             }
             finally
             {
-                IsFinishedLoading = true;
+                Interlocked.Increment(ref _intIsFinishedLoading);
             }
         }
 
@@ -326,10 +326,9 @@ namespace Chummer
             using (CustomActivity opLoadMasterindex = await Timekeeper.StartSyncronAsync("op_load_frm_masterindex", null,
                        CustomActivity.OperationType.RequestOperation, null, token).ConfigureAwait(false))
             {
-                bool blnOldIsFinishedLoading = IsFinishedLoading;
+                Interlocked.Decrement(ref _intIsFinishedLoading);
                 try
                 {
-                    IsFinishedLoading = false;
                     await _dicCachedNotes.ClearAsync(token).ConfigureAwait(false);
                     foreach (object objUncastedExistingEntry in _lstItems.Select(x => x.Value))
                     {
@@ -577,7 +576,7 @@ namespace Chummer
                 finally
                 {
                     Interlocked.Decrement(ref _intSkipRefresh);
-                    IsFinishedLoading = blnOldIsFinishedLoading;
+                    Interlocked.Increment(ref _intIsFinishedLoading);
                 }
             }
         }
@@ -829,9 +828,11 @@ namespace Chummer
             }
         }
 
+        private int _intIsFinishedLoading;
+
         /// <summary>
         /// Set to True at the end of the OnLoad method. Useful because the load method is executed asynchronously, so form might end up getting closed before it fully loads.
         /// </summary>
-        public bool IsFinishedLoading { get; private set; }
+        public bool IsFinishedLoading => _intIsFinishedLoading > 0;
     }
 }

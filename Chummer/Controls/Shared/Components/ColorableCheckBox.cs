@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace Chummer
@@ -41,18 +42,24 @@ namespace Chummer
             FlatAppearance.MouseOverBackColor = BackColor;
         }
 
-        private bool _blnEnabledBeingSetFromOutside = true;
+        private int _intEnabledBeingSetFromOutside = 1;
 
-        private bool _blnRealEnabled = true;
+        private int _intRealEnabled = 1;
 
         protected override void OnEnabledChanged(EventArgs e)
         {
             // Safety check to make sure that if base Enabled property is set on the base class instead of this one, we still end up coloring things properly
-            if (_blnEnabledBeingSetFromOutside)
+            if (_intEnabledBeingSetFromOutside > 0)
             {
-                _blnEnabledBeingSetFromOutside = false;
-                Enabled = base.Enabled;
-                _blnEnabledBeingSetFromOutside = true;
+                Interlocked.Decrement(ref _intEnabledBeingSetFromOutside);
+                try
+                {
+                    Enabled = base.Enabled;
+                }
+                finally
+                {
+                    Interlocked.Increment(ref _intEnabledBeingSetFromOutside);
+                }
             }
             else
                 base.OnEnabledChanged(e);
@@ -60,25 +67,31 @@ namespace Chummer
 
         public new bool Enabled
         {
-            get => _blnRealEnabled;
+            get => _intRealEnabled > 0;
             set
             {
-                if (_blnRealEnabled == value)
+                int intNewValue = value ? 1 : 0;
+                if (Interlocked.Exchange(ref _intRealEnabled, intNewValue) == intNewValue)
                     return;
-                _blnRealEnabled = value;
-                bool blnOldEnabledBeingSetFromOutside = _blnEnabledBeingSetFromOutside;
-                _blnEnabledBeingSetFromOutside = false;
-                if (DefaultColorScheme)
+                Interlocked.Decrement(ref _intEnabledBeingSetFromOutside);
+                try
                 {
-                    base.Enabled = value;
+                    if (DefaultColorScheme)
+                    {
+                        base.Enabled = value;
+                    }
+                    else
+                    {
+                        AutoCheck = value;
+                        ForeColor = value ? ColorManager.ControlText : ColorManager.GrayText;
+                        base.Enabled = true; // Makes sure we always enable the control so that it obeys color schemes
+                    }
                 }
-                else
+                finally
                 {
-                    AutoCheck = value;
-                    ForeColor = value ? ColorManager.ControlText : ColorManager.GrayText;
-                    base.Enabled = true; // Makes sure we always enable the control so that it obeys color schemes
+                    Interlocked.Increment(ref _intEnabledBeingSetFromOutside);
                 }
-                _blnEnabledBeingSetFromOutside = blnOldEnabledBeingSetFromOutside;
+                
                 if (value)
                 {
                     FlatAppearance.MouseDownBackColor = ColorManager.ControlDarkest;
@@ -102,23 +115,29 @@ namespace Chummer
                 if (_blnDefaultColorScheme == value)
                     return;
                 _blnDefaultColorScheme = value;
-                bool blnOldEnabledBeingSetFromOutside = _blnEnabledBeingSetFromOutside;
-                _blnEnabledBeingSetFromOutside = false;
-                if (value)
+                Interlocked.Decrement(ref _intEnabledBeingSetFromOutside);
+                try
                 {
-                    AutoCheck = true;
-                    FlatStyle = FlatStyle.Standard;
-                    ForeColor = ColorManager.ControlText;
-                    base.Enabled = _blnRealEnabled;
+                    bool blnRealEnabled = _intRealEnabled > 0;
+                    if (value)
+                    {
+                        AutoCheck = true;
+                        FlatStyle = FlatStyle.Standard;
+                        ForeColor = ColorManager.ControlText;
+                        base.Enabled = blnRealEnabled;
+                    }
+                    else
+                    {
+                        AutoCheck = blnRealEnabled;
+                        FlatStyle = FlatStyle.Flat; // Flat checkboxes' borders obey ForeColor
+                        ForeColor = blnRealEnabled ? ColorManager.ControlText : ColorManager.GrayText;
+                        base.Enabled = true;
+                    }
                 }
-                else
+                finally
                 {
-                    AutoCheck = _blnRealEnabled;
-                    FlatStyle = FlatStyle.Flat; // Flat checkboxes' borders obey ForeColor
-                    ForeColor = _blnRealEnabled ? ColorManager.ControlText : ColorManager.GrayText;
-                    base.Enabled = true;
+                    Interlocked.Increment(ref _intEnabledBeingSetFromOutside);
                 }
-                _blnEnabledBeingSetFromOutside = blnOldEnabledBeingSetFromOutside;
             }
         }
     }

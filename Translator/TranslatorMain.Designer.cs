@@ -128,9 +128,10 @@ namespace Translator
             this.cmdCreate.AutoSize = true;
             this.cmdCreate.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdCreate.Enabled = false;
-            this.cmdCreate.Location = new System.Drawing.Point(240, 57);
+            this.cmdCreate.Location = new System.Drawing.Point(208, 57);
+            this.cmdCreate.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdCreate.Name = "cmdCreate";
-            this.cmdCreate.Size = new System.Drawing.Size(48, 23);
+            this.cmdCreate.Size = new System.Drawing.Size(80, 23);
             this.cmdCreate.TabIndex = 4;
             this.cmdCreate.Text = "Create";
             this.cmdCreate.UseVisualStyleBackColor = true;
@@ -247,6 +248,7 @@ namespace Translator
             this.cmdRebuild.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdRebuild.Enabled = false;
             this.cmdRebuild.Location = new System.Drawing.Point(196, 30);
+            this.cmdRebuild.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdRebuild.Name = "cmdRebuild";
             this.cmdRebuild.Size = new System.Drawing.Size(92, 50);
             this.cmdRebuild.TabIndex = 7;
@@ -261,6 +263,7 @@ namespace Translator
             this.cmdUpdate.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdUpdate.Enabled = false;
             this.cmdUpdate.Location = new System.Drawing.Point(99, 30);
+            this.cmdUpdate.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdUpdate.Name = "cmdUpdate";
             this.cmdUpdate.Size = new System.Drawing.Size(91, 50);
             this.cmdUpdate.TabIndex = 8;
@@ -287,6 +290,7 @@ namespace Translator
             this.cmdEdit.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdEdit.Enabled = false;
             this.cmdEdit.Location = new System.Drawing.Point(3, 30);
+            this.cmdEdit.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdEdit.Name = "cmdEdit";
             this.cmdEdit.Size = new System.Drawing.Size(90, 50);
             this.cmdEdit.TabIndex = 6;
@@ -299,7 +303,7 @@ namespace Translator
             this.pbProcessProgress.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.pbProcessProgress.Location = new System.Drawing.Point(3, 117);
             this.pbProcessProgress.Name = "pbProcessProgress";
-            this.pbProcessProgress.Size = new System.Drawing.Size(544, 23);
+            this.pbProcessProgress.Size = new System.Drawing.Size(514, 23);
             this.pbProcessProgress.Step = 1;
             this.pbProcessProgress.TabIndex = 147;
             // 
@@ -309,9 +313,10 @@ namespace Translator
             this.cmdCancel.AutoSize = true;
             this.cmdCancel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdCancel.Enabled = false;
-            this.cmdCancel.Location = new System.Drawing.Point(553, 117);
+            this.cmdCancel.Location = new System.Drawing.Point(523, 117);
+            this.cmdCancel.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdCancel.Name = "cmdCancel";
-            this.cmdCancel.Size = new System.Drawing.Size(50, 23);
+            this.cmdCancel.Size = new System.Drawing.Size(80, 23);
             this.cmdCancel.TabIndex = 8;
             this.cmdCancel.Text = "Cancel";
             this.cmdCancel.UseVisualStyleBackColor = true;

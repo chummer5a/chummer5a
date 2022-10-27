@@ -45,11 +45,11 @@ namespace Chummer
         private readonly TypedOrderedDictionary<object, bool> _dicCharacterCustomDataDirectoryInfos = new TypedOrderedDictionary<object, bool>();
 
         private int _intLoading = 1;
-        private bool _blnSkipLimbCountUpdate;
+        private int _intSkipLimbCountUpdate;
         private bool _blnDirty;
         private bool _blnSourcebookToggle = true;
         private bool _blnWasRenamed;
-        private bool _blnIsLayoutSuspended = true;
+        private int _intSuspendLayoutCount;
         private bool _blnForceMasterIndexRepopulateOnClose;
 
         // Used to revert to old selected setting if user cancels out of selecting a different one
@@ -111,7 +111,6 @@ namespace Chummer
 
             await SetIsDirty(false).ConfigureAwait(false);
             Interlocked.Decrement(ref _intLoading);
-            _blnIsLayoutSuspended = false;
         }
 
         #endregion Form Events
@@ -152,13 +151,8 @@ namespace Chummer
             CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
             try
             {
-                bool blnDoResumeLayout = !_blnIsLayoutSuspended;
-                if (blnDoResumeLayout)
-                {
-                    _blnIsLayoutSuspended = true;
+                if (Interlocked.Increment(ref _intSuspendLayoutCount) == 1)
                     await this.DoThreadSafeAsync(x => x.SuspendLayout()).ConfigureAwait(false);
-                }
-
                 try
                 {
                     int intCurrentSelectedSettingIndex = await cboSetting.DoThreadSafeFuncAsync(x => x.SelectedIndex).ConfigureAwait(false);
@@ -184,11 +178,8 @@ namespace Chummer
                 }
                 finally
                 {
-                    if (blnDoResumeLayout)
-                    {
-                        _blnIsLayoutSuspended = false;
+                    if (Interlocked.Decrement(ref _intSuspendLayoutCount) == 0)
                         await this.DoThreadSafeAsync(x => x.ResumeLayout()).ConfigureAwait(false);
-                    }
                 }
 
                 _intOldSelectedSettingIndex = await cboSetting.DoThreadSafeFuncAsync(x => x.SelectedIndex).ConfigureAwait(false);
@@ -238,13 +229,9 @@ namespace Chummer
                     if (await objCharacter.GetSettingsKeyAsync().ConfigureAwait(false) == _objReferenceCharacterSettings.FileName)
                         await objCharacter.SetSettingsKeyAsync(kvpReplacementOption.Key).ConfigureAwait(false);
                 }).ConfigureAwait(false);
-                bool blnDoResumeLayout = !_blnIsLayoutSuspended;
-                if (blnDoResumeLayout)
-                {
-                    _blnIsLayoutSuspended = true;
-                    await this.DoThreadSafeAsync(x => x.SuspendLayout()).ConfigureAwait(false);
-                }
 
+                if (Interlocked.Increment(ref _intSuspendLayoutCount) == 1)
+                    await this.DoThreadSafeAsync(x => x.SuspendLayout()).ConfigureAwait(false);
                 try
                 {
                     _objReferenceCharacterSettings = kvpReplacementOption.Value;
@@ -255,11 +242,8 @@ namespace Chummer
                 }
                 finally
                 {
-                    if (blnDoResumeLayout)
-                    {
-                        _blnIsLayoutSuspended = false;
+                    if (Interlocked.Decrement(ref _intSuspendLayoutCount) == 0)
                         await this.DoThreadSafeAsync(x => x.ResumeLayout()).ConfigureAwait(false);
-                    }
                 }
             }
             finally
@@ -345,13 +329,8 @@ namespace Chummer
             try
             {
                 _objCharacterSettings.Name = strSelectedName;
-                bool blnDoResumeLayout = !_blnIsLayoutSuspended;
-                if (blnDoResumeLayout)
-                {
-                    _blnIsLayoutSuspended = true;
+                if (Interlocked.Increment(ref _intSuspendLayoutCount) == 1)
                     await this.DoThreadSafeAsync(x => x.SuspendLayout()).ConfigureAwait(false);
-                }
-
                 try
                 {
                     CharacterSettings objNewCharacterSettings
@@ -379,11 +358,8 @@ namespace Chummer
                 }
                 finally
                 {
-                    if (blnDoResumeLayout)
-                    {
-                        _blnIsLayoutSuspended = false;
+                    if (Interlocked.Decrement(ref _intSuspendLayoutCount) == 0)
                         await this.DoThreadSafeAsync(x => x.ResumeLayout()).ConfigureAwait(false);
-                    }
                 }
             }
             finally
@@ -426,13 +402,8 @@ namespace Chummer
 
                 if (!_objCharacterSettings.Save())
                     return;
-                bool blnDoResumeLayout = !_blnIsLayoutSuspended;
-                if (blnDoResumeLayout)
-                {
-                    _blnIsLayoutSuspended = true;
+                if (Interlocked.Increment(ref _intSuspendLayoutCount) == 1)
                     await this.DoThreadSafeAsync(x => x.SuspendLayout()).ConfigureAwait(false);
-                }
-
                 try
                 {
                     await _objReferenceCharacterSettings.CopyValuesAsync(_objCharacterSettings).ConfigureAwait(false);
@@ -440,11 +411,8 @@ namespace Chummer
                 }
                 finally
                 {
-                    if (blnDoResumeLayout)
-                    {
-                        _blnIsLayoutSuspended = false;
+                    if (Interlocked.Decrement(ref _intSuspendLayoutCount) == 0)
                         await this.DoThreadSafeAsync(x => x.ResumeLayout()).ConfigureAwait(false);
-                    }
                 }
             }
             finally
@@ -493,13 +461,8 @@ namespace Chummer
                 Interlocked.Increment(ref _intLoading);
                 try
                 {
-                    bool blnDoResumeLayout = !_blnIsLayoutSuspended;
-                    if (blnDoResumeLayout)
-                    {
-                        _blnIsLayoutSuspended = true;
+                    if (Interlocked.Increment(ref _intSuspendLayoutCount) == 1)
                         await this.DoThreadSafeAsync(x => x.SuspendLayout()).ConfigureAwait(false);
-                    }
-
                     try
                     {
                         if (_blnWasRenamed && _intOldSelectedSettingIndex >= 0)
@@ -522,11 +485,8 @@ namespace Chummer
                     }
                     finally
                     {
-                        if (blnDoResumeLayout)
-                        {
-                            _blnIsLayoutSuspended = false;
+                        if (Interlocked.Decrement(ref _intSuspendLayoutCount) == 0)
                             await this.DoThreadSafeAsync(x => x.ResumeLayout()).ConfigureAwait(false);
-                        }
                     }
                 }
                 finally
@@ -557,13 +517,8 @@ namespace Chummer
                 Interlocked.Increment(ref _intLoading);
                 try
                 {
-                    bool blnDoResumeLayout = !_blnIsLayoutSuspended;
-                    if (blnDoResumeLayout)
-                    {
-                        _blnIsLayoutSuspended = true;
+                    if (Interlocked.Increment(ref _intSuspendLayoutCount) == 1)
                         await this.DoThreadSafeAsync(x => x.SuspendLayout()).ConfigureAwait(false);
-                    }
-
                     try
                     {
                         int intCurrentSelectedSettingIndex
@@ -585,11 +540,8 @@ namespace Chummer
                     }
                     finally
                     {
-                        if (blnDoResumeLayout)
-                        {
-                            _blnIsLayoutSuspended = false;
+                        if (Interlocked.Decrement(ref _intSuspendLayoutCount) == 0)
                             await this.DoThreadSafeAsync(x => x.ResumeLayout()).ConfigureAwait(false);
-                        }
                     }
                 }
                 finally
@@ -607,7 +559,7 @@ namespace Chummer
 
         private void cboLimbCount_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_intLoading > 0 || _blnSkipLimbCountUpdate)
+            if (_intLoading > 0 || _intSkipLimbCountUpdate > 0)
                 return;
 
             string strLimbCount = cboLimbCount.SelectedValue?.ToString();
@@ -1244,13 +1196,8 @@ namespace Chummer
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
-                bool blnDoResumeLayout = !_blnIsLayoutSuspended;
-                if (blnDoResumeLayout)
-                {
-                    _blnIsLayoutSuspended = true;
-                    await this.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
-                }
-
+                if (Interlocked.Increment(ref _intSuspendLayoutCount) == 1)
+                    await this.DoThreadSafeAsync(x => x.SuspendLayout(), token: token).ConfigureAwait(false);
                 try
                 {
                     await PopulateSourcebookTreeView(token).ConfigureAwait(false);
@@ -1261,11 +1208,8 @@ namespace Chummer
                 }
                 finally
                 {
-                    if (blnDoResumeLayout)
-                    {
-                        _blnIsLayoutSuspended = false;
+                    if (Interlocked.Decrement(ref _intSuspendLayoutCount) == 0)
                         await this.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
-                    }
                 }
             }
             finally
@@ -1340,7 +1284,7 @@ namespace Chummer
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
-                _blnSkipLimbCountUpdate = true;
+                Interlocked.Increment(ref _intSkipLimbCountUpdate);
                 try
                 {
                     using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
@@ -1395,7 +1339,7 @@ namespace Chummer
                 }
                 finally
                 {
-                    _blnSkipLimbCountUpdate = false;
+                    Interlocked.Decrement(ref _intSkipLimbCountUpdate);
                 }
             }
             finally
@@ -1560,11 +1504,11 @@ namespace Chummer
 
         private async ValueTask SetupDataBindings(CancellationToken token = default)
         {
-            await cmdRename.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = !y, _objCharacterSettings,
+            await cmdRename.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = !y, _objCharacterSettings,
                                                            nameof(CharacterSettings.BuiltInOption),
                                                            x => x.GetBuiltInOptionAsync(token).AsTask(), token: token)
                            .ConfigureAwait(false);
-            await cmdDelete.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = !y, _objCharacterSettings,
+            await cmdDelete.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = !y, _objCharacterSettings,
                                                            nameof(CharacterSettings.BuiltInOption),
                                                            x => x.GetBuiltInOptionAsync(token).AsTask(), token: token)
                            .ConfigureAwait(false);
@@ -1572,32 +1516,32 @@ namespace Chummer
             await cboBuildMethod
                   .DoDataBindingAsync("SelectedValue", _objCharacterSettings, nameof(CharacterSettings.BuildMethod),
                                       token).ConfigureAwait(false);
-            await lblPriorityTable.RegisterOneWayAsyncDataBinding((x, y) => x.Visible = y, _objCharacterSettings,
+            await lblPriorityTable.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y, _objCharacterSettings,
                                                                   nameof(CharacterSettings
                                                                              .BuildMethodUsesPriorityTables),
                                                                   x => x.GetBuildMethodUsesPriorityTablesAsync(token)
                                                                         .AsTask(), token: token).ConfigureAwait(false);
-            await cboPriorityTable.RegisterOneWayAsyncDataBinding((x, y) => x.Visible = y, _objCharacterSettings,
+            await cboPriorityTable.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y, _objCharacterSettings,
                                                                   nameof(CharacterSettings
                                                                              .BuildMethodUsesPriorityTables),
                                                                   x => x.GetBuildMethodUsesPriorityTablesAsync(token)
                                                                         .AsTask(), token: token).ConfigureAwait(false);
-            await lblPriorities.RegisterOneWayAsyncDataBinding((x, y) => x.Visible = y, _objCharacterSettings,
+            await lblPriorities.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y, _objCharacterSettings,
                                                                nameof(CharacterSettings.BuildMethodIsPriority),
                                                                x => x.GetBuildMethodIsPriorityAsync(token).AsTask(),
                                                                token: token).ConfigureAwait(false);
-            await txtPriorities.RegisterOneWayAsyncDataBinding((x, y) => x.Visible = y, _objCharacterSettings,
+            await txtPriorities.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y, _objCharacterSettings,
                                                                nameof(CharacterSettings.BuildMethodIsPriority),
                                                                x => x.GetBuildMethodIsPriorityAsync(token).AsTask(),
                                                                token: token).ConfigureAwait(false);
             await txtPriorities
                   .DoDataBindingAsync("Text", _objCharacterSettings, nameof(CharacterSettings.PriorityArray), token)
                   .ConfigureAwait(false);
-            await lblSumToTen.RegisterOneWayAsyncDataBinding((x, y) => x.Visible = y, _objCharacterSettings,
+            await lblSumToTen.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y, _objCharacterSettings,
                                                              nameof(CharacterSettings.BuildMethodIsSumtoTen),
                                                              x => x.GetBuildMethodIsSumtoTenAsync(token).AsTask(),
                                                              token: token).ConfigureAwait(false);
-            await nudSumToTen.RegisterOneWayAsyncDataBinding((x, y) => x.Visible = y, _objCharacterSettings,
+            await nudSumToTen.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y, _objCharacterSettings,
                                                              nameof(CharacterSettings.BuildMethodIsSumtoTen),
                                                              x => x.GetBuildMethodIsSumtoTenAsync(token).AsTask(),
                                                              token: token).ConfigureAwait(false);
@@ -1747,7 +1691,7 @@ namespace Chummer
                   .DoDataBindingAsync("Checked", _objCharacterSettings,
                                       nameof(CharacterSettings.CyberlimbAttributeBonusCapOverride), token)
                   .ConfigureAwait(false);
-            await nudCyberlimbAttributeBonusCap.RegisterOneWayAsyncDataBinding(
+            await nudCyberlimbAttributeBonusCap.RegisterOneWayAsyncDataBindingAsync(
                 (x, y) => x.Enabled = y, _objCharacterSettings,
                 nameof(CharacterSettings.CyberlimbAttributeBonusCapOverride),
                 x => x.GetCyberlimbAttributeBonusCapOverrideAsync(token).AsTask(), token: token).ConfigureAwait(false);
@@ -1826,14 +1770,14 @@ namespace Chummer
             await chkEnable4eStyleEnemyTracking
                   .DoDataBindingAsync("Checked", _objCharacterSettings, nameof(CharacterSettings.EnableEnemyTracking),
                                       token).ConfigureAwait(false);
-            await flpKarmaGainedFromEnemies.RegisterOneWayAsyncDataBinding(
+            await flpKarmaGainedFromEnemies.RegisterOneWayAsyncDataBindingAsync(
                 (x, y) => x.Enabled = y, _objCharacterSettings,
                 nameof(CharacterSettings.EnableEnemyTracking),
                 x => x.GetEnableEnemyTrackingAsync(token).AsTask(), token: token).ConfigureAwait(false);
             await nudKarmaGainedFromEnemies
                   .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaEnemy), token)
                   .ConfigureAwait(false);
-            await chkEnemyKarmaQualityLimit.RegisterOneWayAsyncDataBinding(
+            await chkEnemyKarmaQualityLimit.RegisterOneWayAsyncDataBindingAsync(
                 (x, y) => x.Enabled = y, _objCharacterSettings,
                 nameof(CharacterSettings.EnableEnemyTracking),
                 x => x.GetEnableEnemyTrackingAsync(token).AsTask(), token: token).ConfigureAwait(false);
@@ -1864,7 +1808,7 @@ namespace Chummer
             await chkMysAdPp
                   .DoDataBindingAsync("Checked", _objCharacterSettings, nameof(CharacterSettings.MysAdeptAllowPpCareer),
                                       token).ConfigureAwait(false);
-            await chkMysAdPp.RegisterOneWayAsyncDataBinding(
+            await chkMysAdPp.RegisterOneWayAsyncDataBindingAsync(
                 (x, y) => x.Enabled = !y, _objCharacterSettings,
                 nameof(CharacterSettings.MysAdeptSecondMAGAttribute),
                 x => x.GetMysAdeptSecondMAGAttributeAsync(token).AsTask(), token: token).ConfigureAwait(false);
@@ -1872,7 +1816,7 @@ namespace Chummer
                   .DoDataBindingAsync("Checked", _objCharacterSettings,
                                       nameof(CharacterSettings.PrioritySpellsAsAdeptPowers), token)
                   .ConfigureAwait(false);
-            await chkPrioritySpellsAsAdeptPowers.RegisterOneWayAsyncDataBinding(
+            await chkPrioritySpellsAsAdeptPowers.RegisterOneWayAsyncDataBindingAsync(
                 (x, y) => x.Enabled = !y, _objCharacterSettings,
                 nameof(CharacterSettings.MysAdeptSecondMAGAttribute),
                 x => x.GetMysAdeptSecondMAGAttributeAsync(token).AsTask(), token: token).ConfigureAwait(false);
@@ -1880,7 +1824,7 @@ namespace Chummer
                   .DoDataBindingAsync("Checked", _objCharacterSettings,
                                       nameof(CharacterSettings.MysAdeptSecondMAGAttribute), token)
                   .ConfigureAwait(false);
-            await chkMysAdeptSecondMAGAttribute.RegisterOneWayAsyncDataBinding(
+            await chkMysAdeptSecondMAGAttribute.RegisterOneWayAsyncDataBindingAsync(
                 (x, y) => x.Enabled = y, _objCharacterSettings,
                 nameof(CharacterSettings.MysAdeptSecondMAGAttributeEnabled),
                 x => x.GetMysAdeptSecondMAGAttributeEnabledAsync(token).AsTask(), token: token).ConfigureAwait(false);
@@ -1933,7 +1877,7 @@ namespace Chummer
                   .DoDataBindingAsync("Checked", _objCharacterSettings,
                                       nameof(CharacterSettings.DroneArmorMultiplierEnabled), token)
                   .ConfigureAwait(false);
-            await nudDroneArmorMultiplier.RegisterOneWayAsyncDataBinding(
+            await nudDroneArmorMultiplier.RegisterOneWayAsyncDataBindingAsync(
                 (x, y) => x.Enabled = y, _objCharacterSettings,
                 nameof(CharacterSettings.DroneArmorMultiplierEnabled),
                 x => x.GetDroneArmorMultiplierEnabledAsync(token).AsTask(), token: token).ConfigureAwait(false);
@@ -1946,7 +1890,7 @@ namespace Chummer
             await chkExceedNegativeQualities
                   .DoDataBindingAsync("Checked", _objCharacterSettings,
                                       nameof(CharacterSettings.ExceedNegativeQualities), token).ConfigureAwait(false);
-            await chkExceedNegativeQualitiesNoBonus.RegisterOneWayAsyncDataBinding(
+            await chkExceedNegativeQualitiesNoBonus.RegisterOneWayAsyncDataBindingAsync(
                 (x, y) => x.Enabled = y, _objCharacterSettings,
                 nameof(CharacterSettings.ExceedNegativeQualities),
                 x => x.GetExceedNegativeQualitiesAsync(token).AsTask(), token: token).ConfigureAwait(false);
@@ -1957,7 +1901,7 @@ namespace Chummer
             await chkExceedPositiveQualities
                   .DoDataBindingAsync("Checked", _objCharacterSettings,
                                       nameof(CharacterSettings.ExceedPositiveQualities), token).ConfigureAwait(false);
-            await chkExceedPositiveQualitiesCostDoubled.RegisterOneWayAsyncDataBinding(
+            await chkExceedPositiveQualitiesCostDoubled.RegisterOneWayAsyncDataBindingAsync(
                 (x, y) => x.Enabled = y, _objCharacterSettings,
                 nameof(CharacterSettings.ExceedPositiveQualities),
                 x => x.GetExceedPositiveQualitiesAsync(token).AsTask(), token: token).ConfigureAwait(false);

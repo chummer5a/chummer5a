@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Drawing;
 using System.Drawing.Printing;
 using System.Globalization;
 using System.IO;
@@ -174,6 +175,9 @@ namespace Chummer
             {
                 await SetDocumentText(await LanguageManager.GetStringAsync("String_Loading_Characters", token: _objGenericToken).ConfigureAwait(false),
                                       _objGenericToken).ConfigureAwait(false);
+                // Stupid hack to get the MDI icon to show up properly.
+                await this.DoThreadSafeFuncAsync(x => x.Icon = x.Icon.Clone() as Icon,
+                                                 _objGenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -617,6 +621,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
 
             CancellationTokenSource objNewSource = new CancellationTokenSource();
+            CancellationToken objToken = objNewSource.Token;
             objTempTokenSource = Interlocked.Exchange(ref _objRefresherCancellationTokenSource, objNewSource);
             if (objTempTokenSource?.IsCancellationRequested == false)
             {
@@ -651,7 +656,6 @@ namespace Chummer
                 throw;
             }
 
-            CancellationToken objToken = objNewSource.Token;
             _tskRefresher = Task.Run(() => RefreshCharacterXml(objToken), objToken);
         }
 
@@ -662,6 +666,7 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             CancellationTokenSource objNewSource = new CancellationTokenSource();
+            CancellationToken objToken = objNewSource.Token;
             CancellationTokenSource objTempTokenSource = Interlocked.Exchange(ref _objOutputGeneratorCancellationTokenSource, objNewSource);
             if (objTempTokenSource?.IsCancellationRequested == false)
             {
@@ -696,7 +701,6 @@ namespace Chummer
                 throw;
             }
 
-            CancellationToken objToken = objNewSource.Token;
             _tskOutputGenerator = Task.Run(() => AsyncGenerateOutput(objToken), objToken);
         }
 

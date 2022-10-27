@@ -33,7 +33,7 @@ namespace Chummer
 {
     public partial class SelectGear : Form
     {
-        private bool _blnLoading = true;
+        private int _intLoading = 1;
         private string _strSelectedGear = string.Empty;
         private int _intSelectedRating;
         private decimal _decSelectedQty = 1;
@@ -182,7 +182,7 @@ namespace Chummer
                 }).ConfigureAwait(false);
             }
 
-            _blnLoading = false;
+            Interlocked.Decrement(ref _intLoading);
             // Select the first Category in the list.
             bool blnRefreshList = false;
             await cboCategory.DoThreadSafeAsync(x =>
@@ -205,7 +205,7 @@ namespace Chummer
 
         private async void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_blnLoading)
+            if (_intLoading > 0)
                 return;
 
             // Show the Do It Yourself CheckBox if the Commlink Upgrade category is selected.
@@ -225,7 +225,7 @@ namespace Chummer
 
         private async void lstGear_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_blnLoading)
+            if (_intLoading > 0)
                 return;
 
             string strSelectedId = await lstGear.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()).ConfigureAwait(false);
@@ -593,7 +593,7 @@ namespace Chummer
         /// </summary>
         private async ValueTask UpdateGearInfo(CancellationToken token = default)
         {
-            if (_blnLoading)
+            if (_intLoading > 0)
             {
                 await tlpRight.DoThreadSafeAsync(x => x.Visible = false, token: token).ConfigureAwait(false);
                 return;
@@ -1317,10 +1317,16 @@ namespace Chummer
                     }
                     
                     string strOldSelected = await lstGear.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false);
-                    bool blnOldLoading = _blnLoading;
-                    _blnLoading = true;
-                    await lstGear.PopulateWithListItemsAsync(lstGears, token: token).ConfigureAwait(false);
-                    _blnLoading = blnOldLoading;
+                    Interlocked.Increment(ref _intLoading);
+                    try
+                    {
+                        await lstGear.PopulateWithListItemsAsync(lstGears, token: token).ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        Interlocked.Decrement(ref _intLoading);
+                    }
+                    
                     await lstGear.DoThreadSafeAsync(x =>
                     {
                         if (string.IsNullOrEmpty(strOldSelected))

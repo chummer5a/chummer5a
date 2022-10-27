@@ -36,7 +36,7 @@ namespace Chummer.Backend.Skills
 {
     public sealed class SkillsSection : INotifyMultiplePropertyChanged, IHasLockObject
     {
-        private bool _blnLoading = true;
+        private int _intLoading = 1;
         private readonly Character _objCharacter;
         private readonly LockingDictionary<Guid, Skill> _dicSkillBackups = new LockingDictionary<Guid, Skill>();
 
@@ -58,7 +58,7 @@ namespace Chummer.Backend.Skills
             using (await EnterReadLock.EnterAsync(SkillGroups.LockObject).ConfigureAwait(false))
             using (await EnterReadLock.EnterAsync(LockObject).ConfigureAwait(false))
             {
-                if (_blnLoading)
+                if (_intLoading > 0)
                     return;
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
                 try
@@ -78,7 +78,7 @@ namespace Chummer.Backend.Skills
             using (await EnterReadLock.EnterAsync(_dicSkillBackups.LockObject).ConfigureAwait(false))
             using (await EnterReadLock.EnterAsync(LockObject).ConfigureAwait(false))
             {
-                if (_blnLoading)
+                if (_intLoading > 0)
                     return;
                 Skill objSkill = await Skills.GetValueAtAsync(e.OldIndex).ConfigureAwait(false);
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
@@ -102,7 +102,7 @@ namespace Chummer.Backend.Skills
             using (await EnterReadLock.EnterAsync(KnowsoftSkills.LockObject).ConfigureAwait(false))
             using (await EnterReadLock.EnterAsync(LockObject).ConfigureAwait(false))
             {
-                if (_blnLoading)
+                if (_intLoading > 0)
                     return;
                 KnowledgeSkill objSkill = await KnowledgeSkills.GetValueAtAsync(e.OldIndex).ConfigureAwait(false);
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
@@ -127,7 +127,7 @@ namespace Chummer.Backend.Skills
             using (await EnterReadLock.EnterAsync(KnowledgeSkills.LockObject).ConfigureAwait(false))
             using (await EnterReadLock.EnterAsync(LockObject).ConfigureAwait(false))
             {
-                if (_blnLoading)
+                if (_intLoading > 0)
                     return;
                 KnowledgeSkill objSkill = await KnowsoftSkills.GetValueAtAsync(e.OldIndex).ConfigureAwait(false);
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
@@ -150,7 +150,7 @@ namespace Chummer.Backend.Skills
         {
             using (await EnterReadLock.EnterAsync(LockObject).ConfigureAwait(false))
             {
-                if (_blnLoading)
+                if (_intLoading > 0)
                     return;
                 switch (e.ListChangedType)
                 {
@@ -207,7 +207,7 @@ namespace Chummer.Backend.Skills
         {
             using (await EnterReadLock.EnterAsync(LockObject).ConfigureAwait(false))
             {
-                if (_blnLoading)
+                if (_intLoading > 0)
                     return;
                 switch (e.ListChangedType)
                 {
@@ -260,7 +260,7 @@ namespace Chummer.Backend.Skills
         {
             using (await EnterReadLock.EnterAsync(LockObject).ConfigureAwait(false))
             {
-                if (_blnLoading)
+                if (_intLoading > 0)
                     return;
                 switch (e.PropertyName)
                 {
@@ -279,7 +279,7 @@ namespace Chummer.Backend.Skills
         {
             using (await EnterReadLock.EnterAsync(LockObject).ConfigureAwait(false))
             {
-                if (_blnLoading)
+                if (_intLoading > 0)
                     return;
                 if (e?.PropertyName == nameof(Character.EffectiveBuildMethodUsesPriorityTables))
                     OnPropertyChanged(nameof(SkillPointsSpentOnKnoskills));
@@ -290,7 +290,7 @@ namespace Chummer.Backend.Skills
         {
             using (await EnterReadLock.EnterAsync(LockObject).ConfigureAwait(false))
             {
-                if (_blnLoading)
+                if (_intLoading > 0)
                     return;
                 switch (e?.PropertyName)
                 {
@@ -760,10 +760,9 @@ namespace Chummer.Backend.Skills
                 objLockerAsync = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
-                bool blnOldLoading = _blnLoading;
+                Interlocked.Increment(ref _intLoading);
                 try
                 {
-                    _blnLoading = true;
                     using (CustomActivity opLoadCharSkills = blnSync
                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                ? Timekeeper.StartSyncron("load_char_skills_skillnode", parentActivity)
@@ -1246,7 +1245,7 @@ namespace Chummer.Backend.Skills
                 }
                 finally
                 {
-                    _blnLoading = blnOldLoading;
+                    Interlocked.Decrement(ref _intLoading);
                 }
             }
             finally
@@ -1263,10 +1262,9 @@ namespace Chummer.Backend.Skills
         {
             using (LockObject.EnterWriteLock())
             {
-                bool blnOldLoading = _blnLoading;
+                Interlocked.Increment(ref _intLoading);
                 try
                 {
-                    _blnLoading = true;
                     using (_ = Timekeeper.StartSyncron("load_char_skills_groups", parentActivity))
                     {
                         foreach (XPathNavigator xmlNode in xmlSkillNode.SelectAndCacheExpression("groups/skill"))
@@ -1510,7 +1508,7 @@ namespace Chummer.Backend.Skills
                 }
                 finally
                 {
-                    _blnLoading = blnOldLoading;
+                    Interlocked.Decrement(ref _intLoading);
                 }
             }
         }
@@ -1709,10 +1707,9 @@ namespace Chummer.Backend.Skills
         {
             using (LockObject.EnterWriteLock())
             {
-                bool blnOldLoading = !blnFirstTime && _blnLoading;
+                Interlocked.Increment(ref _intLoading);
                 try
                 {
-                    _blnLoading = true;
                     foreach (Skill objSkill in _dicSkillBackups.Values)
                         objSkill.Remove();
                     foreach (Skill objSkill in _lstSkills)
@@ -1736,7 +1733,9 @@ namespace Chummer.Backend.Skills
                 }
                 finally
                 {
-                    _blnLoading = blnOldLoading;
+                    Interlocked.Decrement(ref _intLoading);
+                    if (blnFirstTime)
+                        Interlocked.Decrement(ref _intLoading);
                 }
             }
         }
@@ -1746,10 +1745,9 @@ namespace Chummer.Backend.Skills
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
-                bool blnOldLoading = !blnFirstTime && _blnLoading;
+                Interlocked.Increment(ref _intLoading);
                 try
                 {
-                    _blnLoading = true;
                     foreach (Skill objSkill in await _dicSkillBackups.GetValuesAsync(token).ConfigureAwait(false))
                         await objSkill.DisposeAsync().ConfigureAwait(false);
                     foreach (Skill objSkill in _lstSkills)
@@ -1773,7 +1771,9 @@ namespace Chummer.Backend.Skills
                 }
                 finally
                 {
-                    _blnLoading = blnOldLoading;
+                    Interlocked.Decrement(ref _intLoading);
+                    if (blnFirstTime)
+                        Interlocked.Decrement(ref _intLoading);
                 }
             }
             finally
@@ -2648,7 +2648,7 @@ namespace Chummer.Backend.Skills
             XPath
         }
 
-        internal bool IsLoading => _blnLoading;
+        internal bool IsLoading => _intLoading > 0;
 
         internal void ForcePropertyChangedNotificationAll(string strName)
         {

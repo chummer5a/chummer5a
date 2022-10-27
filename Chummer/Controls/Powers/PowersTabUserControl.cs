@@ -177,7 +177,7 @@ namespace Chummer.UI.Powers
                     x.ResumeLayout(true);
                 }
             }, token: token).ConfigureAwait(false);
-            await lblPowerPoints.RegisterOneWayAsyncDataBinding((x, y) => x.Text = y, _objCharacter,
+            await lblPowerPoints.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y, _objCharacter,
                                                           nameof(Character.DisplayPowerPointsRemaining),
                                                           x => x.GetDisplayPowerPointsRemainingAsync(MyToken).AsTask(),
                                                           MyToken, MyToken);

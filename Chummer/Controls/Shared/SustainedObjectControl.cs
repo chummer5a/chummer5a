@@ -50,7 +50,7 @@ namespace Chummer
         {
             try
             {
-                await lblSustainedSpell.RegisterOneWayAsyncDataBinding((x, y) => x.Text = y, _objLinkedSustainedObject,
+                await lblSustainedSpell.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y, _objLinkedSustainedObject,
                                                                        nameof(SustainedObject.CurrentDisplayName),
                                                                        x => x.GetCurrentDisplayNameAsync())
                                        .ConfigureAwait(false);

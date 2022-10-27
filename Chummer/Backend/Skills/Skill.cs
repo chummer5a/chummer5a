@@ -3292,7 +3292,7 @@ namespace Chummer.Backend.Skills
                         });
                         return;
                     }
-
+                    
                     Specializations[intIndexToReplace] = new SkillSpecialization(CharacterObject, value);
                     // For safety's, remove all non-free specializations after the one we are replacing.
                     intIndexToReplace = Specializations.FindIndex(intIndexToReplace + 1, x => !x.Free);
@@ -3349,7 +3349,7 @@ namespace Chummer.Backend.Skills
                                                                }, token: token).ConfigureAwait(false);
                         return;
                     }
-
+                    
                     await Specializations.SetValueAtAsync(intIndexToReplace,
                                                           new SkillSpecialization(CharacterObject, value), token).ConfigureAwait(false);
                     // For safety's, remove all non-free specializations after the one we are replacing.
@@ -5378,21 +5378,25 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        private bool _blnSkipSpecializationRefresh;
+        private int _intSkipSpecializationRefresh;
 
         private void SpecializationsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (_blnSkipSpecializationRefresh)
+            if (_intSkipSpecializationRefresh > 0)
                 return;
             using (LockObject.EnterWriteLock())
             {
-                _dicCachedStringSpec.Clear();
-                if (IsExoticSkill)
-                    _strDictionaryKey = null;
-                _blnSkipSpecializationRefresh =
-                    true; // Needed to make sure we don't call this method another time when we set the specialization's Parent
+                // Needed to make sure we don't call this method another time when we set the specialization's Parent
+                if (Interlocked.Increment(ref _intSkipSpecializationRefresh) != 1)
+                {
+                    Interlocked.Decrement(ref _intSkipSpecializationRefresh);
+                    return;
+                }
                 try
                 {
+                    _dicCachedStringSpec.Clear();
+                    if (IsExoticSkill)
+                        _strDictionaryKey = null;
                     switch (e.Action)
                     {
                         case NotifyCollectionChangedAction.Add:
@@ -5405,6 +5409,7 @@ namespace Chummer.Backend.Skills
                             {
                                 if (objSkillSpecialization.Parent == this)
                                     objSkillSpecialization.Parent = null;
+                                objSkillSpecialization.Dispose();
                             }
 
                             break;
@@ -5414,6 +5419,7 @@ namespace Chummer.Backend.Skills
                             {
                                 if (objSkillSpecialization.Parent == this)
                                     objSkillSpecialization.Parent = null;
+                                objSkillSpecialization.Dispose();
                             }
 
                             foreach (SkillSpecialization objSkillSpecialization in e.NewItems)
@@ -5428,7 +5434,7 @@ namespace Chummer.Backend.Skills
                 }
                 finally
                 {
-                    _blnSkipSpecializationRefresh = false;
+                    Interlocked.Decrement(ref _intSkipSpecializationRefresh);
                 }
 
                 if (CharacterObject?.IsLoading == false)
@@ -5438,23 +5444,28 @@ namespace Chummer.Backend.Skills
 
         private void SpecializationsOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (_blnSkipSpecializationRefresh)
+            if (_intSkipSpecializationRefresh > 0)
                 return;
             using (LockObject.EnterWriteLock())
             {
-                _blnSkipSpecializationRefresh =
-                    true; // Needed to make sure we don't call this method another time when we set the specialization's Parent
+                // Needed to make sure we don't call this method another time when we set the specialization's Parent
+                if (Interlocked.Increment(ref _intSkipSpecializationRefresh) != 1)
+                {
+                    Interlocked.Decrement(ref _intSkipSpecializationRefresh);
+                    return;
+                }
                 try
                 {
                     foreach (SkillSpecialization objSkillSpecialization in e.OldItems)
                     {
                         if (objSkillSpecialization.Parent == this)
                             objSkillSpecialization.Parent = null;
+                        objSkillSpecialization.Dispose();
                     }
                 }
                 finally
                 {
-                    _blnSkipSpecializationRefresh = false;
+                    Interlocked.Decrement(ref _intSkipSpecializationRefresh);
                 }
             }
         }
@@ -6564,6 +6575,8 @@ namespace Chummer.Backend.Skills
                     AttributeObject.PropertyChanged -= OnLinkedAttributeChanged;
                 if (SkillGroupObject != null)
                     SkillGroupObject.PropertyChanged -= OnSkillGroupChanged;
+                foreach (SkillSpecialization objSpec in _lstSpecializations)
+                    objSpec.Dispose();
                 _lstSpecializations.Dispose();
                 if (_lstCachedSuggestedSpecializations != null)
                     Utils.ListItemListPool.Return(_lstCachedSuggestedSpecializations);
@@ -6595,6 +6608,7 @@ namespace Chummer.Backend.Skills
                     AttributeObject.PropertyChanged -= OnLinkedAttributeChanged;
                 if (SkillGroupObject != null)
                     SkillGroupObject.PropertyChanged -= OnSkillGroupChanged;
+                await _lstSpecializations.ForEachAsync(x => x.Dispose()).ConfigureAwait(false);
                 await _lstSpecializations.DisposeAsync().ConfigureAwait(false);
                 if (_lstCachedSuggestedSpecializations != null)
                     Utils.ListItemListPool.Return(_lstCachedSuggestedSpecializations);

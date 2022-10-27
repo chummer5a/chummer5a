@@ -65,13 +65,13 @@ namespace Chummer
             // tsSaveAsXml
             // 
             this.tsSaveAsXml.Enabled = false;
-            this.tsSaveAsXml.Image = null;
+            this.tsSaveAsXml.Image = global::Chummer.Properties.Resources.xml_go;
             this.tsSaveAsXml.ImageDpi120 = null;
             this.tsSaveAsXml.ImageDpi144 = null;
-            this.tsSaveAsXml.ImageDpi192 = null;
+            this.tsSaveAsXml.ImageDpi192 = global::Chummer.Properties.Resources.xml_go1;
             this.tsSaveAsXml.ImageDpi288 = null;
             this.tsSaveAsXml.ImageDpi384 = null;
-            this.tsSaveAsXml.ImageDpi96 = null;
+            this.tsSaveAsXml.ImageDpi96 = global::Chummer.Properties.Resources.xml_go;
             this.tsSaveAsXml.Name = "tsSaveAsXml";
             this.tsSaveAsXml.Size = new System.Drawing.Size(147, 22);
             this.tsSaveAsXml.Tag = "Button_Viewer_SaveAsXml";
@@ -81,13 +81,13 @@ namespace Chummer
             // tsSaveAsHtml
             // 
             this.tsSaveAsHtml.Enabled = false;
-            this.tsSaveAsHtml.Image = null;
+            this.tsSaveAsHtml.Image = global::Chummer.Properties.Resources.html_go;
             this.tsSaveAsHtml.ImageDpi120 = null;
             this.tsSaveAsHtml.ImageDpi144 = null;
-            this.tsSaveAsHtml.ImageDpi192 = null;
+            this.tsSaveAsHtml.ImageDpi192 = global::Chummer.Properties.Resources.html_go1;
             this.tsSaveAsHtml.ImageDpi288 = null;
             this.tsSaveAsHtml.ImageDpi384 = null;
-            this.tsSaveAsHtml.ImageDpi96 = null;
+            this.tsSaveAsHtml.ImageDpi96 = global::Chummer.Properties.Resources.html_go;
             this.tsSaveAsHtml.Name = "tsSaveAsHtml";
             this.tsSaveAsHtml.Size = new System.Drawing.Size(147, 22);
             this.tsSaveAsHtml.Tag = "Button_Viewer_SaveAsHtml";
@@ -104,13 +104,13 @@ namespace Chummer
             // tsPrintPreview
             // 
             this.tsPrintPreview.Enabled = false;
-            this.tsPrintPreview.Image = null;
+            this.tsPrintPreview.Image = global::Chummer.Properties.Resources.printer_magnify;
             this.tsPrintPreview.ImageDpi120 = null;
             this.tsPrintPreview.ImageDpi144 = null;
-            this.tsPrintPreview.ImageDpi192 = null;
+            this.tsPrintPreview.ImageDpi192 = global::Chummer.Properties.Resources.printer_magnify1;
             this.tsPrintPreview.ImageDpi288 = null;
             this.tsPrintPreview.ImageDpi384 = null;
-            this.tsPrintPreview.ImageDpi96 = null;
+            this.tsPrintPreview.ImageDpi96 = global::Chummer.Properties.Resources.printer_magnify;
             this.tsPrintPreview.Name = "tsPrintPreview";
             this.tsPrintPreview.Size = new System.Drawing.Size(143, 22);
             this.tsPrintPreview.Tag = "Menu_FilePrintPreview";

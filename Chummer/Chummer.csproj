@@ -124,35 +124,35 @@
     <Reference Include="HtmlRenderer.WinForms, Version=1.5.0.6, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\HtmlRenderer.WinForms.1.5.0.6\lib\net45\HtmlRenderer.WinForms.dll</HintPath>
     </Reference>
-    <Reference Include="itext.barcodes, Version=7.2.3.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>..\packages\itext7.7.2.3\lib\net461\itext.barcodes.dll</HintPath>
+    <Reference Include="itext.barcodes, Version=7.2.4.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itext7.7.2.4\lib\net461\itext.barcodes.dll</HintPath>
     </Reference>
-    <Reference Include="itext.commons, Version=7.2.3.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>..\packages\itext7.commons.7.2.3\lib\net461\itext.commons.dll</HintPath>
+    <Reference Include="itext.commons, Version=7.2.4.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itext7.commons.7.2.4\lib\net461\itext.commons.dll</HintPath>
     </Reference>
-    <Reference Include="itext.forms, Version=7.2.3.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>..\packages\itext7.7.2.3\lib\net461\itext.forms.dll</HintPath>
+    <Reference Include="itext.forms, Version=7.2.4.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itext7.7.2.4\lib\net461\itext.forms.dll</HintPath>
     </Reference>
-    <Reference Include="itext.io, Version=7.2.3.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>..\packages\itext7.7.2.3\lib\net461\itext.io.dll</HintPath>
+    <Reference Include="itext.io, Version=7.2.4.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itext7.7.2.4\lib\net461\itext.io.dll</HintPath>
     </Reference>
-    <Reference Include="itext.kernel, Version=7.2.3.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>..\packages\itext7.7.2.3\lib\net461\itext.kernel.dll</HintPath>
+    <Reference Include="itext.kernel, Version=7.2.4.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itext7.7.2.4\lib\net461\itext.kernel.dll</HintPath>
     </Reference>
-    <Reference Include="itext.layout, Version=7.2.3.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>..\packages\itext7.7.2.3\lib\net461\itext.layout.dll</HintPath>
+    <Reference Include="itext.layout, Version=7.2.4.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itext7.7.2.4\lib\net461\itext.layout.dll</HintPath>
     </Reference>
-    <Reference Include="itext.pdfa, Version=7.2.3.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>..\packages\itext7.7.2.3\lib\net461\itext.pdfa.dll</HintPath>
+    <Reference Include="itext.pdfa, Version=7.2.4.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itext7.7.2.4\lib\net461\itext.pdfa.dll</HintPath>
     </Reference>
-    <Reference Include="itext.sign, Version=7.2.3.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>..\packages\itext7.7.2.3\lib\net461\itext.sign.dll</HintPath>
+    <Reference Include="itext.sign, Version=7.2.4.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itext7.7.2.4\lib\net461\itext.sign.dll</HintPath>
     </Reference>
-    <Reference Include="itext.styledxmlparser, Version=7.2.3.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>..\packages\itext7.7.2.3\lib\net461\itext.styledxmlparser.dll</HintPath>
+    <Reference Include="itext.styledxmlparser, Version=7.2.4.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itext7.7.2.4\lib\net461\itext.styledxmlparser.dll</HintPath>
     </Reference>
-    <Reference Include="itext.svg, Version=7.2.3.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>..\packages\itext7.7.2.3\lib\net461\itext.svg.dll</HintPath>
+    <Reference Include="itext.svg, Version=7.2.4.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itext7.7.2.4\lib\net461\itext.svg.dll</HintPath>
     </Reference>
     <Reference Include="LiveCharts, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
       <HintPath>..\packages\LiveCharts.0.9.7\lib\net45\LiveCharts.dll</HintPath>
@@ -347,6 +347,7 @@
     <Compile Include="Backend\Datastructures\OrderedSet.cs" />
     <Compile Include="Backend\Datastructures\PropertyDependencyGraph.cs" />
     <Compile Include="Backend\Datastructures\ThreadSafeBindingList.cs" />
+    <Compile Include="Backend\Datastructures\ThreadSafeCachedRandom.cs" />
     <Compile Include="Backend\Datastructures\ThreadSafeList.cs" />
     <Compile Include="Backend\Datastructures\DependencyGraphNodeWithCondition.cs" />
     <Compile Include="Backend\Datastructures\MostRecentlyUsedCollection.cs" />
@@ -5247,6 +5248,7 @@
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\printer_delete.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\printer_empty.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\printer_error.png" />
+    <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\printer_magnify.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\printer_network.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\printscreen_insert.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\print_size.png" />
@@ -6426,6 +6428,7 @@
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\xhtml_valid.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\xing.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\xml_exports.png" />
+    <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\xml_go.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\xml_imports.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\x_ray.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\yacht.png" />
@@ -13123,6 +13126,7 @@
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\printer_delete.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\printer_empty.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\printer_error.png" />
+    <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\printer_magnify.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\printer_network.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\printscreen_insert.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\print_size.png" />
@@ -14302,6 +14306,7 @@
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\xhtml_valid.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\xing.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\xml_exports.png" />
+    <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\xml_go.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\xml_imports.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\x_ray.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\yacht.png" />
@@ -19000,20 +19005,24 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent Condition=" '$(OS)' != 'Unix' ">copy "$(SolutionDir)LICENSE.txt" "$(TargetDir)LICENSE.txt"
-</PostBuildEvent>
-    <PostBuildEvent Condition=" '$(OS)' == 'Unix' ">cp "$(SolutionDir)LICENSE.txt" "$(TargetDir)LICENSE.txt"
-</PostBuildEvent>
+    <PostBuildEvent Condition=" '$(OS)' != 'Unix' ">
+      copy "$(SolutionDir)LICENSE.txt" "$(TargetDir)LICENSE.txt"
+    </PostBuildEvent>
+    <PostBuildEvent Condition=" '$(OS)' == 'Unix' ">
+      cp "$(SolutionDir)LICENSE.txt" "$(TargetDir)LICENSE.txt"
+    </PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PostBuildEvent>copy "$(SolutionDir)LICENSE.txt" "$(TargetDir)LICENSE.txt"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>if exist "$(SolutionDir).git\hooks\" (
-copy /y "$(SolutionDir)git\hooks\*.*" "$(SolutionDir).git\hooks"
-) else (
-echo "No .git directory found, skipping copying of hooks."
-)</PreBuildEvent>
+    <PreBuildEvent>
+      if exist "$(SolutionDir).git\hooks\" (
+      copy /y "$(SolutionDir)git\hooks\*.*" "$(SolutionDir).git\hooks"
+      ) else (
+      echo "No .git directory found, skipping copying of hooks."
+      )
+    </PreBuildEvent>
   </PropertyGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

@@ -1379,8 +1379,6 @@ namespace Chummer
             this.tsVehicleWeaponAccessoryNotes = new Chummer.DpiFriendlyToolStripMenuItem();
             this.cmsVehicleWeaponAccessoryGear = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsVehicleWeaponAccessoryGearMenuAddAsPlugin = new Chummer.DpiFriendlyToolStripMenuItem();
-            this.cmsVehicleWeaponMod = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsVehicleWeaponModNotes = new Chummer.DpiFriendlyToolStripMenuItem();
             this.cmsWeaponLocation = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsWeaponLocationAddWeapon = new Chummer.DpiFriendlyToolStripMenuItem();
             this.tsWeaponRenameLocation = new Chummer.DpiFriendlyToolStripMenuItem();
@@ -1684,7 +1682,6 @@ namespace Chummer
             this.cmsVehicleLocation.SuspendLayout();
             this.cmsVehicleWeaponAccessory.SuspendLayout();
             this.cmsVehicleWeaponAccessoryGear.SuspendLayout();
-            this.cmsVehicleWeaponMod.SuspendLayout();
             this.cmsWeaponLocation.SuspendLayout();
             this.cmsTechnique.SuspendLayout();
             this.cmsAdvancedProgram.SuspendLayout();
@@ -1721,6 +1718,7 @@ namespace Chummer
             this.tabPowerUc.AutoSize = true;
             this.tabPowerUc.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tabPowerUc.BackColor = System.Drawing.SystemColors.Control;
+            this.tabPowerUc.CachedCharacter = null;
             this.tabPowerUc.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabPowerUc.ForeColor = System.Drawing.SystemColors.ControlText;
             this.tabPowerUc.Location = new System.Drawing.Point(0, 0);
@@ -2544,13 +2542,13 @@ namespace Chummer
             // 
             // tsCreateSpell
             // 
-            this.tsCreateSpell.Image = null;
+            this.tsCreateSpell.Image = global::Chummer.Properties.Resources.wand;
             this.tsCreateSpell.ImageDpi120 = null;
             this.tsCreateSpell.ImageDpi144 = null;
-            this.tsCreateSpell.ImageDpi192 = null;
+            this.tsCreateSpell.ImageDpi192 = global::Chummer.Properties.Resources.wand1;
             this.tsCreateSpell.ImageDpi288 = null;
             this.tsCreateSpell.ImageDpi384 = null;
-            this.tsCreateSpell.ImageDpi96 = null;
+            this.tsCreateSpell.ImageDpi96 = global::Chummer.Properties.Resources.wand;
             this.tsCreateSpell.Name = "tsCreateSpell";
             this.tsCreateSpell.Size = new System.Drawing.Size(136, 22);
             this.tsCreateSpell.Tag = "Menu_CreateSpell";
@@ -7343,6 +7341,7 @@ namespace Chummer
             // tabSkillsUc
             // 
             this.tabSkillsUc.BackColor = System.Drawing.SystemColors.Control;
+            this.tabSkillsUc.CachedCharacter = null;
             this.tabSkillsUc.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabSkillsUc.ForeColor = System.Drawing.SystemColors.ControlText;
             this.tabSkillsUc.Location = new System.Drawing.Point(0, 0);
@@ -21763,13 +21762,13 @@ namespace Chummer
             // 
             // tsAddFromFile
             // 
-            this.tsAddFromFile.Image = null;
+            this.tsAddFromFile.Image = global::Chummer.Properties.Resources.folder_user;
             this.tsAddFromFile.ImageDpi120 = null;
             this.tsAddFromFile.ImageDpi144 = null;
-            this.tsAddFromFile.ImageDpi192 = null;
+            this.tsAddFromFile.ImageDpi192 = global::Chummer.Properties.Resources.folder_user1;
             this.tsAddFromFile.ImageDpi288 = null;
             this.tsAddFromFile.ImageDpi384 = null;
-            this.tsAddFromFile.ImageDpi96 = null;
+            this.tsAddFromFile.ImageDpi96 = global::Chummer.Properties.Resources.folder_user;
             this.tsAddFromFile.Name = "tsAddFromFile";
             this.tsAddFromFile.Size = new System.Drawing.Size(148, 22);
             this.tsAddFromFile.Tag = "Menu_AddFromFile";
@@ -22359,25 +22358,6 @@ namespace Chummer
             this.tsVehicleWeaponAccessoryGearMenuAddAsPlugin.Tag = "Menu_AddAsPlugin";
             this.tsVehicleWeaponAccessoryGearMenuAddAsPlugin.Text = "&Add as Plugin";
             this.tsVehicleWeaponAccessoryGearMenuAddAsPlugin.Click += new System.EventHandler(this.tsVehicleWeaponAccessoryGearMenuAddAsPlugin_Click);
-            // 
-            // cmsVehicleWeaponMod
-            // 
-            this.cmsVehicleWeaponMod.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsVehicleWeaponModNotes});
-            this.cmsVehicleWeaponMod.Name = "cmsVehicleWeaponMod";
-            this.cmsVehicleWeaponMod.Size = new System.Drawing.Size(68, 26);
-            // 
-            // tsVehicleWeaponModNotes
-            // 
-            this.tsVehicleWeaponModNotes.Image = null;
-            this.tsVehicleWeaponModNotes.ImageDpi120 = null;
-            this.tsVehicleWeaponModNotes.ImageDpi144 = null;
-            this.tsVehicleWeaponModNotes.ImageDpi192 = null;
-            this.tsVehicleWeaponModNotes.ImageDpi288 = null;
-            this.tsVehicleWeaponModNotes.ImageDpi384 = null;
-            this.tsVehicleWeaponModNotes.ImageDpi96 = null;
-            this.tsVehicleWeaponModNotes.Name = "tsVehicleWeaponModNotes";
-            this.tsVehicleWeaponModNotes.Size = new System.Drawing.Size(67, 22);
             // 
             // cmsWeaponLocation
             // 
@@ -23115,7 +23095,6 @@ namespace Chummer
             this.cmsVehicleLocation.ResumeLayout(false);
             this.cmsVehicleWeaponAccessory.ResumeLayout(false);
             this.cmsVehicleWeaponAccessoryGear.ResumeLayout(false);
-            this.cmsVehicleWeaponMod.ResumeLayout(false);
             this.cmsWeaponLocation.ResumeLayout(false);
             this.cmsTechnique.ResumeLayout(false);
             this.cmsAdvancedProgram.ResumeLayout(false);
@@ -23226,7 +23205,6 @@ namespace Chummer
         private System.Windows.Forms.ToolStripMenuItem mnuCreateEdit;
         private System.Windows.Forms.ContextMenuStrip cmsVehicleWeaponAccessory;
         private System.Windows.Forms.ContextMenuStrip cmsVehicleWeaponAccessoryGear;
-        private System.Windows.Forms.ContextMenuStrip cmsVehicleWeaponMod;
         private System.Windows.Forms.ContextMenuStrip cmsWeaponLocation;
         private System.Windows.Forms.Label lblArmorLabel;
         private LabelWithToolTip lblRiggingINI;
@@ -24369,7 +24347,6 @@ namespace Chummer
         private DpiFriendlyToolStripMenuItem tsVehicleWeaponAccessoryAddGear;
         private DpiFriendlyToolStripMenuItem tsVehicleWeaponAccessoryNotes;
         private DpiFriendlyToolStripMenuItem tsVehicleWeaponAccessoryGearMenuAddAsPlugin;
-        private DpiFriendlyToolStripMenuItem tsVehicleWeaponModNotes;
         private DpiFriendlyToolStripMenuItem tsWeaponLocationAddWeapon;
         private DpiFriendlyToolStripMenuItem tsWeaponRenameLocation;
         private DpiFriendlyToolStripMenuItem tsTechniqueAddNotes;

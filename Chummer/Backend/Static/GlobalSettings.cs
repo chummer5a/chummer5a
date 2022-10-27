@@ -232,7 +232,7 @@ namespace Chummer
         public const int MaxStackLimit = 1024;
         private static bool _blnShowCharacterCustomDataWarning;
 
-        public static ThreadSafeRandom RandomGenerator { get; } = new ThreadSafeRandom(new XoRoShiRo128starstar().GetRandomCompatible());
+        public static ThreadSafeCachedRandom RandomGenerator { get; } = new ThreadSafeCachedRandom(new XoRoShiRo128starstar().GetRandomCompatible(), true);
 
         // Plugins information
         private static readonly LockingDictionary<string, bool> s_dicPluginsEnabled = new LockingDictionary<string, bool>();

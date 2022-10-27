@@ -29,11 +29,12 @@ namespace Chummer.Backend.Skills
     /// <summary>
     /// Type of Specialization
     /// </summary>
-    public class SkillSpecialization : IHasName, IHasXmlDataNode
+    public sealed class SkillSpecialization : IHasName, IHasXmlDataNode, IDisposable
     {
         private Guid _guiID;
-        private bool _blnNameLoaded;
+        private int _intNameLoaded;
         private Task<string> _tskNameLoader;
+        private CancellationTokenSource _objNameLoaderCancellationTokenSource;
         private string _strName;
         private readonly bool _blnFree;
         private readonly bool _blnExpertise;
@@ -207,17 +208,45 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                if (!_blnNameLoaded)
+                if (_intNameLoaded <= 1)
                 {
-                    if (_tskNameLoader == null)
+                    int intOld = Interlocked.CompareExchange(ref _intNameLoaded, 2, 1);
+                    while (intOld < 3) // Need this in case we reset name while in the process of fetching it
                     {
-                        _tskNameLoader
-                            = Task.Run(() => _objCharacter.ReverseTranslateExtraAsync(
-                                           _strName, GlobalSettings.Language, "skills.xml"));
-                    }
+                        if (intOld == 0)
+                        {
+                            CancellationTokenSource objNewSource = new CancellationTokenSource();
+                            CancellationTokenSource objOldSource
+                                = Interlocked.CompareExchange(ref _objNameLoaderCancellationTokenSource, objNewSource,
+                                                              null);
+                            // Cancellation token source is only null if it's our first time running
+                            if (objOldSource == null && Interlocked.CompareExchange(ref _intNameLoaded, 2, 0) == 0)
+                            {
+                                CancellationToken objToken = objNewSource.Token;
+                                Task<string> tskNewTask
+                                    = Task.Run(
+                                        () => _objCharacter.ReverseTranslateExtraAsync(
+                                            _strName, GlobalSettings.Language, "skills.xml", objToken), objToken);
+                                Task<string> tskOld = Interlocked.CompareExchange(ref _tskNameLoader, tskNewTask, null);
+                                if (tskOld != null)
+                                {
+                                    // This should never happen, throw an exception immediately
+                                    Utils.BreakIfDebug();
+                                    throw new InvalidOperationException();
+                                }
+                                _strName = Utils.JoinableTaskFactory.Run(() => _tskNameLoader);
+                                intOld = Interlocked.CompareExchange(ref _intNameLoaded, 3, 2);
+                            }
+                            else
+                                objNewSource.Dispose();
+                        }
 
-                    _strName = Utils.JoinableTaskFactory.Run(() => _tskNameLoader);
-                    _blnNameLoaded = true;
+                        while (intOld == 0 || intOld == 2)
+                        {
+                            Utils.SafeSleep();
+                            intOld = Interlocked.CompareExchange(ref _intNameLoaded, 2, 1);
+                        }
+                    }
                 }
                 return _strName;
             }
@@ -225,10 +254,23 @@ namespace Chummer.Backend.Skills
             {
                 if (Name == value)
                     return;
-                _blnNameLoaded = false;
-                _tskNameLoader
-                    = Task.Run(() => _objCharacter.ReverseTranslateExtraAsync(
-                                   value, GlobalSettings.Language, "skills.xml"));
+                _intNameLoaded = 0;
+                CancellationTokenSource objNewSource = new CancellationTokenSource();
+                CancellationTokenSource objOldSource
+                    = Interlocked.Exchange(ref _objNameLoaderCancellationTokenSource, objNewSource);
+                if (objOldSource != null)
+                {
+                    objOldSource.Cancel(false);
+                    objOldSource.Dispose();
+                }
+                CancellationToken objToken = objNewSource.Token;
+                Task<string> tskOld = Interlocked.Exchange(ref _tskNameLoader, Task.Run(
+                                                               () => _objCharacter.ReverseTranslateExtraAsync(
+                                                                   value, GlobalSettings.Language, "skills.xml",
+                                                                   objToken), objToken));
+                if (tskOld != null)
+                    Utils.JoinableTaskFactory.Run(() => tskOld);
+                Interlocked.CompareExchange(ref _intNameLoaded, 1, 0);
                 _objCachedMyXmlNode = null;
                 _objCachedMyXPathNode = null;
             }
@@ -318,5 +360,21 @@ namespace Chummer.Backend.Skills
         }
 
         #endregion Properties
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            CancellationTokenSource objSource = _objNameLoaderCancellationTokenSource;
+            if (objSource != null)
+            {
+                objSource.Cancel(false);
+                objSource.Dispose();
+            }
+            Task<string> tskOld = Interlocked.Exchange(ref _tskNameLoader, null);
+            if (tskOld != null)
+            {
+                Utils.JoinableTaskFactory.Run(() => tskOld);
+            }
+        }
     }
 }

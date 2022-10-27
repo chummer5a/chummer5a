@@ -37,7 +37,7 @@ namespace Chummer.Backend.Attributes
 {
     public sealed class AttributeSection : INotifyMultiplePropertyChanged, IHasLockObject
     {
-        private bool _blnLoading = true;
+        private int _intLoading = 1;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -298,7 +298,7 @@ namespace Chummer.Backend.Attributes
         {
             using (EnterReadLock.Enter(LockObject))
             {
-                if (_blnLoading)
+                if (_intLoading > 0)
                     return;
                 foreach (CharacterAttrib objAttribute in e.OldItems)
                 {
@@ -313,7 +313,7 @@ namespace Chummer.Backend.Attributes
         {
             using (EnterReadLock.Enter(LockObject))
             {
-                if (_blnLoading)
+                if (_intLoading > 0)
                     return;
                 foreach (CharacterAttrib objAttribute in e.OldItems)
                 {
@@ -328,7 +328,7 @@ namespace Chummer.Backend.Attributes
         {
             using (EnterReadLock.Enter(LockObject))
             {
-                if (_blnLoading)
+                if (_intLoading > 0)
                     return;
                 switch (e.Action)
                 {
@@ -377,7 +377,7 @@ namespace Chummer.Backend.Attributes
         {
             using (EnterReadLock.Enter(LockObject))
             {
-                if (_blnLoading)
+                if (_intLoading > 0)
                     return;
                 switch (e.Action)
                 {
@@ -484,10 +484,9 @@ namespace Chummer.Backend.Attributes
             using (_objCharacter.LockObject.EnterWriteLock(token))
             using (LockObject.EnterWriteLock(token))
             {
-                bool blnOldLoading = _blnLoading;
+                Interlocked.Increment(ref _intLoading);
                 try
                 {
-                    _blnLoading = true;
                     using (_ = Timekeeper.StartSyncron("create_char_attrib", null,
                                                        CustomActivity.OperationType.RequestOperation,
                                                        charNode.InnerText))
@@ -649,7 +648,7 @@ namespace Chummer.Backend.Attributes
                 }
                 finally
                 {
-                    _blnLoading = blnOldLoading;
+                    Interlocked.Decrement(ref _intLoading);
                 }
             }
         }
@@ -677,10 +676,9 @@ namespace Chummer.Backend.Attributes
                 objLockerAsync = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
-                bool blnOldLoading = _blnLoading;
+                Interlocked.Increment(ref _intLoading);
                 try
                 {
-                    _blnLoading = true;
                     //Timekeeper.Start("load_char_attrib");
                     if (blnSync)
                     {
@@ -826,7 +824,7 @@ namespace Chummer.Backend.Attributes
                 }
                 finally
                 {
-                    _blnLoading = blnOldLoading;
+                    Interlocked.Decrement(ref _intLoading);
                 }
                 //Timekeeper.Finish("load_char_attrib");
             }
@@ -849,10 +847,9 @@ namespace Chummer.Backend.Attributes
             {
                 using (_ = Timekeeper.StartSyncron("load_char_attrib", parentActivity))
                 {
-                    bool blnOldLoading = _blnLoading;
+                    Interlocked.Increment(ref _intLoading);
                     try
                     {
-                        _blnLoading = true;
                         AttributeList.Clear();
                         SpecialAttributeList.Clear();
                         XPathNavigator xmlCharNode = _objCharacter.GetNodeXPath(token);
@@ -1054,7 +1051,7 @@ namespace Chummer.Backend.Attributes
                     }
                     finally
                     {
-                        _blnLoading = blnOldLoading;
+                        Interlocked.Decrement(ref _intLoading);
                     }
                     //Timekeeper.Finish("load_char_attrib");
                 }
@@ -1745,10 +1742,9 @@ namespace Chummer.Backend.Attributes
         {
             using (LockObject.EnterWriteLock())
             {
-                bool blnOldLoading = !blnFirstTime && _blnLoading;
+                Interlocked.Increment(ref _intLoading);
                 try
                 {
-                    _blnLoading = true;
                     AttributeList.Clear();
                     SpecialAttributeList.Clear();
                     foreach (string strAttribute in AttributeStrings)
@@ -1785,7 +1781,9 @@ namespace Chummer.Backend.Attributes
                 }
                 finally
                 {
-                    _blnLoading = blnOldLoading;
+                    Interlocked.Decrement(ref _intLoading);
+                    if (blnFirstTime)
+                        Interlocked.Decrement(ref _intLoading);
                 }
             }
         }
@@ -1795,10 +1793,9 @@ namespace Chummer.Backend.Attributes
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
-                bool blnOldLoading = !blnFirstTime && _blnLoading;
+                Interlocked.Increment(ref _intLoading);
                 try
                 {
-                    _blnLoading = true;
                     ThreadSafeObservableCollection<CharacterAttrib> lstAttributes = await GetAttributeListAsync(token).ConfigureAwait(false);
                     ThreadSafeObservableCollection<CharacterAttrib> lstSpecialAttributes = await GetSpecialAttributeListAsync(token).ConfigureAwait(false);
                     await lstAttributes.ClearAsync(token).ConfigureAwait(false);
@@ -1837,7 +1834,9 @@ namespace Chummer.Backend.Attributes
                 }
                 finally
                 {
-                    _blnLoading = blnOldLoading;
+                    Interlocked.Decrement(ref _intLoading);
+                    if (blnFirstTime)
+                        Interlocked.Decrement(ref _intLoading);
                 }
             }
             finally

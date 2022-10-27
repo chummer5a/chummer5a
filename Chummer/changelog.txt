@@ -38,6 +38,7 @@ Data Changes:
 - HK Urban Combat and HK Urban Fighter can properly no longer accept any modifications or accessories. The HK Urban Fighter now also properly cannot accept regular Spare Clips, needing instead its own, special versions with higher cost and availability.
 - Plastic Components no longer duplicates its rating in its name.
 - Buying Injection Darts no longer forces the user to pick a weapon category that's forced to be Exotic Ranged Weapons
+- Added city district and neighborhood lists (under lifestyles) for Neo-Tokyo, Hong Kong, Los Angeles, New York City, Cheyenne, Atlanta, Berlin, FDC, Portland, and Chicago.
 - Fixed Flashback System Enables Cyberzombie Conversion customdata not applying correctly.
 
 Changed/New Strings:

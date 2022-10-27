@@ -34,9 +34,9 @@ namespace Chummer
     public partial class ContactControl : UserControl
     {
         private readonly Contact _objContact;
-        private bool _blnLoading = true;
+        private int _intLoading = 1;
 
-        private bool _blnStatBlockIsLoaded;
+        private int _intStatBlockIsLoaded;
         //private readonly int _intLowHeight = 25;
         //private readonly int _intFullHeight = 156;
 
@@ -104,7 +104,7 @@ namespace Chummer
                 await cmdNotes.SetToolTipTextAsync(strTooltip.WordWrap()).ConfigureAwait(false);
             }
 
-            _blnLoading = false;
+            Interlocked.Decrement(ref _intLoading);
         }
 
         public void UnbindContactControl()
@@ -118,16 +118,19 @@ namespace Chummer
         private void nudConnection_ValueChanged(object sender, EventArgs e)
         {
             // Raise the ContactDetailChanged Event when the NumericUpDown's Value changes.
-            if (!_blnLoading && _blnStatBlockIsLoaded)
+            if (_intLoading == 0 && _intStatBlockIsLoaded > 1)
                 ContactDetailChanged?.Invoke(this, new TextEventArgs("Connection"));
         }
 
-        private void nudLoyalty_ValueChanged(object sender, EventArgs e)
+        private async void nudLoyalty_ValueChanged(object sender, EventArgs e)
         {
             // Raise the ContactDetailChanged Event when the NumericUpDown's Value changes.
             // The entire ContactControl is passed as an argument so the handling event can evaluate its contents.
-            if (!_blnLoading && _blnStatBlockIsLoaded)
-                ContactDetailChanged?.Invoke(this, new TextEventArgs("Loyalty"));
+            if (_intLoading > 0 || _intStatBlockIsLoaded < 1)
+                return;
+            while (_intStatBlockIsLoaded == 1)
+                await Utils.SafeSleepAsync().ConfigureAwait(false);
+            ContactDetailChanged?.Invoke(this, new TextEventArgs("Loyalty"));
         }
 
         private void cmdDelete_Click(object sender, EventArgs e)
@@ -137,10 +140,13 @@ namespace Chummer
             DeleteContact?.Invoke(this, e);
         }
 
-        private void chkGroup_CheckedChanged(object sender, EventArgs e)
+        private async void chkGroup_CheckedChanged(object sender, EventArgs e)
         {
-            if (!_blnLoading && _blnStatBlockIsLoaded)
-                ContactDetailChanged?.Invoke(this, new TextEventArgs("Group"));
+            if (_intLoading > 0 || _intStatBlockIsLoaded < 1)
+                return;
+            while (_intStatBlockIsLoaded == 1)
+                await Utils.SafeSleepAsync().ConfigureAwait(false);
+            ContactDetailChanged?.Invoke(this, new TextEventArgs("Group"));
         }
 
         private async void cmdExpand_Click(object sender, EventArgs e)
@@ -150,29 +156,31 @@ namespace Chummer
 
         private void cboContactRole_TextChanged(object sender, EventArgs e)
         {
-            if (_blnLoading)
+            if (_intLoading > 0)
                 return;
             ContactDetailChanged?.Invoke(this, new TextEventArgs("Role"));
         }
 
         private void txtContactName_TextChanged(object sender, EventArgs e)
         {
-            if (_blnLoading)
+            if (_intLoading > 0)
                 return;
             ContactDetailChanged?.Invoke(this, new TextEventArgs("Name"));
         }
 
         private void txtContactLocation_TextChanged(object sender, EventArgs e)
         {
-            if (_blnLoading)
+            if (_intLoading > 0)
                 return;
             ContactDetailChanged?.Invoke(this, new TextEventArgs("Location"));
         }
 
         private async void UpdateMetatype(object sender, EventArgs e)
         {
-            if (_blnLoading || !_blnStatBlockIsLoaded)
+            if (_intLoading > 0 || _intStatBlockIsLoaded < 1)
                 return;
+            while (_intStatBlockIsLoaded == 1)
+                await Utils.SafeSleepAsync().ConfigureAwait(false);
             string strNew = await cboMetatype.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false);
             string strOld = await _objContact.GetDisplayMetatypeAsync().ConfigureAwait(false);
             if (strOld == strNew)
@@ -181,14 +189,14 @@ namespace Chummer
             strOld = await _objContact.GetDisplayMetatypeAsync().ConfigureAwait(false);
             if (strOld != strNew)
             {
-                _blnLoading = true;
+                Interlocked.Increment(ref _intLoading);
                 try
                 {
                     await cboMetatype.DoThreadSafeAsync(x => x.Text = strOld).ConfigureAwait(false);
                 }
                 finally
                 {
-                    _blnLoading = false;
+                    Interlocked.Decrement(ref _intLoading);
                 }
             }
 
@@ -197,8 +205,10 @@ namespace Chummer
 
         private async void UpdateGender(object sender, EventArgs e)
         {
-            if (_blnLoading || !_blnStatBlockIsLoaded)
+            if (_intLoading > 0 || _intStatBlockIsLoaded < 1)
                 return;
+            while (_intStatBlockIsLoaded == 1)
+                await Utils.SafeSleepAsync().ConfigureAwait(false);
             string strNew = await cboGender.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false);
             string strOld = await _objContact.GetDisplayGenderAsync().ConfigureAwait(false);
             if (strOld == strNew)
@@ -207,15 +217,14 @@ namespace Chummer
             strOld = await _objContact.GetDisplayGenderAsync().ConfigureAwait(false);
             if (strOld != strNew)
             {
-                bool blnOld = _blnLoading;
+                Interlocked.Increment(ref _intLoading);
                 try
                 {
-                    _blnLoading = true;
                     await cboGender.DoThreadSafeAsync(x => x.Text = strOld).ConfigureAwait(false);
                 }
                 finally
                 {
-                    _blnLoading = blnOld;
+                    Interlocked.Decrement(ref _intLoading);
                 }
             }
 
@@ -224,7 +233,7 @@ namespace Chummer
 
         private async void UpdateAge(object sender, EventArgs e)
         {
-            if (_blnLoading || !_blnStatBlockIsLoaded)
+            if (_intLoading > 0 || _intStatBlockIsLoaded <= 1)
                 return;
             string strNew = await cboAge.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false);
             string strOld = await _objContact.GetDisplayAgeAsync().ConfigureAwait(false);
@@ -234,15 +243,14 @@ namespace Chummer
             strOld = await _objContact.GetDisplayAgeAsync().ConfigureAwait(false);
             if (strOld != strNew)
             {
-                bool blnOld = _blnLoading;
+                Interlocked.Increment(ref _intLoading);
                 try
                 {
-                    _blnLoading = true;
                     await cboAge.DoThreadSafeAsync(x => x.Text = strOld).ConfigureAwait(false);
                 }
                 finally
                 {
-                    _blnLoading = blnOld;
+                    Interlocked.Decrement(ref _intLoading);
                 }
             }
 
@@ -251,8 +259,10 @@ namespace Chummer
 
         private async void UpdatePersonalLife(object sender, EventArgs e)
         {
-            if (_blnLoading || !_blnStatBlockIsLoaded)
+            if (_intLoading > 0 || _intStatBlockIsLoaded < 1)
                 return;
+            while (_intStatBlockIsLoaded == 1)
+                await Utils.SafeSleepAsync().ConfigureAwait(false);
             string strNew = await cboPersonalLife.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false);
             string strOld = await _objContact.GetDisplayPersonalLifeAsync().ConfigureAwait(false);
             if (strOld == strNew)
@@ -261,15 +271,14 @@ namespace Chummer
             strOld = await _objContact.GetDisplayPersonalLifeAsync().ConfigureAwait(false);
             if (strOld != strNew)
             {
-                bool blnOld = _blnLoading;
+                Interlocked.Increment(ref _intLoading);
                 try
                 {
-                    _blnLoading = true;
                     await cboPersonalLife.DoThreadSafeAsync(x => x.Text = strOld).ConfigureAwait(false);
                 }
                 finally
                 {
-                    _blnLoading = blnOld;
+                    Interlocked.Decrement(ref _intLoading);
                 }
             }
 
@@ -278,8 +287,10 @@ namespace Chummer
 
         private async void UpdateType(object sender, EventArgs e)
         {
-            if (_blnLoading || !_blnStatBlockIsLoaded)
+            if (_intLoading > 0 || _intStatBlockIsLoaded < 1)
                 return;
+            while (_intStatBlockIsLoaded == 1)
+                await Utils.SafeSleepAsync().ConfigureAwait(false);
             string strNew = await cboType.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false);
             string strOld = await _objContact.GetDisplayTypeAsync().ConfigureAwait(false);
             if (strOld == strNew)
@@ -288,15 +299,14 @@ namespace Chummer
             strOld = await _objContact.GetDisplayTypeAsync().ConfigureAwait(false);
             if (strOld != strNew)
             {
-                bool blnOld = _blnLoading;
+                Interlocked.Increment(ref _intLoading);
                 try
                 {
-                    _blnLoading = true;
                     await cboType.DoThreadSafeAsync(x => x.Text = strOld).ConfigureAwait(false);
                 }
                 finally
                 {
-                    _blnLoading = blnOld;
+                    Interlocked.Decrement(ref _intLoading);
                 }
             }
 
@@ -305,8 +315,10 @@ namespace Chummer
 
         private async void UpdatePreferredPayment(object sender, EventArgs e)
         {
-            if (_blnLoading || !_blnStatBlockIsLoaded)
+            if (_intLoading > 0 || _intStatBlockIsLoaded < 1)
                 return;
+            while (_intStatBlockIsLoaded == 1)
+                await Utils.SafeSleepAsync().ConfigureAwait(false);
             string strNew = await cboPreferredPayment.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false);
             string strOld = await _objContact.GetDisplayPreferredPaymentAsync().ConfigureAwait(false);
             if (strOld == strNew)
@@ -315,15 +327,14 @@ namespace Chummer
             strOld = await _objContact.GetDisplayPreferredPaymentAsync().ConfigureAwait(false);
             if (strOld != strNew)
             {
-                bool blnOld = _blnLoading;
+                Interlocked.Increment(ref _intLoading);
                 try
                 {
-                    _blnLoading = true;
                     await cboPreferredPayment.DoThreadSafeAsync(x => x.Text = strOld).ConfigureAwait(false);
                 }
                 finally
                 {
-                    _blnLoading = blnOld;
+                    Interlocked.Decrement(ref _intLoading);
                 }
             }
 
@@ -332,8 +343,10 @@ namespace Chummer
 
         private async void UpdateHobbiesVice(object sender, EventArgs e)
         {
-            if (_blnLoading || !_blnStatBlockIsLoaded)
+            if (_intLoading > 0 || _intStatBlockIsLoaded < 1)
                 return;
+            while (_intStatBlockIsLoaded == 1)
+                await Utils.SafeSleepAsync().ConfigureAwait(false);
             string strNew = await cboHobbiesVice.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false);
             string strOld = await _objContact.GetDisplayHobbiesViceAsync().ConfigureAwait(false);
             if (strOld == strNew)
@@ -342,15 +355,14 @@ namespace Chummer
             strOld = await _objContact.GetDisplayHobbiesViceAsync().ConfigureAwait(false);
             if (strOld != strNew)
             {
-                bool blnOld = _blnLoading;
+                Interlocked.Increment(ref _intLoading);
                 try
                 {
-                    _blnLoading = true;
                     await cboHobbiesVice.DoThreadSafeAsync(x => x.Text = strOld).ConfigureAwait(false);
                 }
                 finally
                 {
-                    _blnLoading = blnOld;
+                    Interlocked.Decrement(ref _intLoading);
                 }
             }
 
@@ -359,8 +371,10 @@ namespace Chummer
 
         private async void UpdateContactRole(object sender, EventArgs e)
         {
-            if (_blnLoading || !_blnStatBlockIsLoaded)
+            if (_intLoading > 0 || _intStatBlockIsLoaded < 1)
                 return;
+            while (_intStatBlockIsLoaded == 1)
+                await Utils.SafeSleepAsync().ConfigureAwait(false);
             string strNew = await cboContactRole.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false);
             string strOld = await _objContact.GetDisplayRoleAsync().ConfigureAwait(false);
             if (strOld == strNew)
@@ -369,15 +383,14 @@ namespace Chummer
             strOld = await _objContact.GetDisplayRoleAsync().ConfigureAwait(false);
             if (strOld != strNew)
             {
-                bool blnOld = _blnLoading;
+                Interlocked.Increment(ref _intLoading);
                 try
                 {
-                    _blnLoading = true;
                     await cboContactRole.DoThreadSafeAsync(x => x.Text = strOld).ConfigureAwait(false);
                 }
                 finally
                 {
-                    _blnLoading = blnOld;
+                    Interlocked.Decrement(ref _intLoading);
                 }
             }
 
@@ -550,22 +563,31 @@ namespace Chummer
             ContactDetailChanged?.Invoke(this, new TextEventArgs("Notes"));
         }
 
-        private void chkFree_CheckedChanged(object sender, EventArgs e)
+        private async void chkFree_CheckedChanged(object sender, EventArgs e)
         {
-            if (!_blnLoading && _blnStatBlockIsLoaded)
-                ContactDetailChanged?.Invoke(this, new TextEventArgs("Free"));
+            if (_intLoading > 0 || _intStatBlockIsLoaded < 1)
+                return;
+            while (_intStatBlockIsLoaded == 1)
+                await Utils.SafeSleepAsync().ConfigureAwait(false);
+            ContactDetailChanged?.Invoke(this, new TextEventArgs("Free"));
         }
 
-        private void chkBlackmail_CheckedChanged(object sender, EventArgs e)
+        private async void chkBlackmail_CheckedChanged(object sender, EventArgs e)
         {
-            if (!_blnLoading && _blnStatBlockIsLoaded)
-                ContactDetailChanged?.Invoke(this, new TextEventArgs("Blackmail"));
+            if (_intLoading > 0 || _intStatBlockIsLoaded < 1)
+                return;
+            while (_intStatBlockIsLoaded == 1)
+                await Utils.SafeSleepAsync().ConfigureAwait(false);
+            ContactDetailChanged?.Invoke(this, new TextEventArgs("Blackmail"));
         }
 
-        private void chkFamily_CheckedChanged(object sender, EventArgs e)
+        private async void chkFamily_CheckedChanged(object sender, EventArgs e)
         {
-            if (!_blnLoading && _blnStatBlockIsLoaded)
-                ContactDetailChanged?.Invoke(this, new TextEventArgs("Family"));
+            if (_intLoading > 0 || _intStatBlockIsLoaded < 1)
+                return;
+            while (_intStatBlockIsLoaded == 1)
+                await Utils.SafeSleepAsync().ConfigureAwait(false);
+            ContactDetailChanged?.Invoke(this, new TextEventArgs("Family"));
         }
 
         #endregion Control Events
@@ -593,12 +615,32 @@ namespace Chummer
                 x.ImageDpi96 = value ? Resources.toggle : Resources.toggle_expand;
                 x.ImageDpi192 = value ? Resources.toggle1 : Resources.toggle_expand1;
             }, token).ConfigureAwait(false);
-            if (value && (tlpStatBlock == null || !_blnStatBlockIsLoaded))
+            if (value)
             {
-                // Create second row and statblock only on the first expansion to save on handles and load times
-                await CreateSecondRowAsync(token).ConfigureAwait(false);
-                await CreateStatBlockAsync(token).ConfigureAwait(false);
-                _blnStatBlockIsLoaded = true;
+                int intOld = Interlocked.CompareExchange(ref _intStatBlockIsLoaded, 1, 0);
+                try
+                {
+                    while (tlpStatBlock == null || intOld < 2)
+                    {
+                        while (intOld == 1)
+                        {
+                            await Utils.SafeSleepAsync(token).ConfigureAwait(false);
+                            intOld = Interlocked.CompareExchange(ref _intStatBlockIsLoaded, 1, 0);
+                        }
+
+                        if (tlpStatBlock == null || intOld < 2)
+                        {
+                            // Create second row and statblock only on the first expansion to save on handles and load times
+                            await CreateSecondRowAsync(token).ConfigureAwait(false);
+                            await CreateStatBlockAsync(token).ConfigureAwait(false);
+                            intOld = Interlocked.CompareExchange(ref _intStatBlockIsLoaded, 2, 1);
+                        }
+                    }
+                }
+                catch
+                {
+                    Interlocked.CompareExchange(ref _intStatBlockIsLoaded, intOld, 1);
+                }
             }
 
             using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
@@ -667,7 +709,7 @@ namespace Chummer
 
         private async ValueTask DoDataBindings(CancellationToken token = default)
         {
-            await lblQuickStats.RegisterOneWayAsyncDataBinding((x, y) => x.Text = y, _objContact,
+            await lblQuickStats.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y, _objContact,
                                                                nameof(Contact.QuickText),
                                                                // ReSharper disable once MethodSupportsCancellation
                                                                x => x.GetQuickTextAsync().AsTask(), token: token).ConfigureAwait(false);
@@ -812,19 +854,19 @@ namespace Chummer
                     await nudLoyalty.DoDataBindingAsync("Value", _objContact, nameof(Contact.Loyalty), token).ConfigureAwait(false);
                     await nudConnection.DoDataBindingAsync("Value", _objContact, nameof(Contact.Connection), token).ConfigureAwait(false);
                     await nudConnection.DoOneWayNegatableDataBindingAsync("Enabled", _objContact, nameof(Contact.ReadOnly), token).ConfigureAwait(false);
-                    await chkGroup.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = y, _objContact,
+                    await chkGroup.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objContact,
                                                                   nameof(Contact.GroupEnabled),
                                                                   // ReSharper disable once MethodSupportsCancellation
                                                                   x => x.GetGroupEnabledAsync().AsTask(), token: token).ConfigureAwait(false);
-                    await chkFree.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = y, _objContact,
+                    await chkFree.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objContact,
                                                                  nameof(Contact.FreeEnabled),
                                                                  // ReSharper disable once MethodSupportsCancellation
                                                                  x => x.GetFreeEnabledAsync().AsTask(), token: token).ConfigureAwait(false);
-                    await nudLoyalty.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = y, _objContact,
+                    await nudLoyalty.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objContact,
                                                                     nameof(Contact.LoyaltyEnabled),
                                                                     // ReSharper disable once MethodSupportsCancellation
                                                                     x => x.GetLoyaltyEnabledAsync().AsTask(), token: token).ConfigureAwait(false);
-                    await nudConnection.RegisterOneWayAsyncDataBinding((x, y) => x.Maximum = y, _objContact,
+                    await nudConnection.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Maximum = y, _objContact,
                                                                        nameof(Contact.ConnectionMaximum),
                                                                        // ReSharper disable once MethodSupportsCancellation
                                                                        x => x.GetConnectionMaximumAsync().AsTask(), token: token).ConfigureAwait(false);

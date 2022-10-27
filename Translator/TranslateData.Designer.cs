@@ -66,7 +66,7 @@ namespace Translator
             this.cboFile.FormattingEnabled = true;
             this.cboFile.Location = new System.Drawing.Point(3, 4);
             this.cboFile.Name = "cboFile";
-            this.cboFile.Size = new System.Drawing.Size(322, 21);
+            this.cboFile.Size = new System.Drawing.Size(312, 21);
             this.cboFile.TabIndex = 8;
             this.cboFile.SelectedIndexChanged += new System.EventHandler(this.cboFile_SelectedIndexChanged);
             // 
@@ -153,7 +153,7 @@ namespace Translator
             // 
             this.chkOnlyTranslation.AutoSize = true;
             this.chkOnlyTranslation.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.chkOnlyTranslation.Location = new System.Drawing.Point(659, 3);
+            this.chkOnlyTranslation.Location = new System.Drawing.Point(639, 3);
             this.chkOnlyTranslation.Name = "chkOnlyTranslation";
             this.chkOnlyTranslation.Size = new System.Drawing.Size(199, 23);
             this.chkOnlyTranslation.TabIndex = 10;
@@ -166,9 +166,9 @@ namespace Translator
             this.cboSection.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.cboSection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboSection.FormattingEnabled = true;
-            this.cboSection.Location = new System.Drawing.Point(331, 4);
+            this.cboSection.Location = new System.Drawing.Point(321, 4);
             this.cboSection.Name = "cboSection";
-            this.cboSection.Size = new System.Drawing.Size(322, 21);
+            this.cboSection.Size = new System.Drawing.Size(312, 21);
             this.cboSection.TabIndex = 9;
             this.cboSection.Visible = false;
             this.cboSection.SelectedIndexChanged += new System.EventHandler(this.cboSection_SelectedIndexChanged);
@@ -221,10 +221,10 @@ namespace Translator
             // txtSearch
             // 
             this.txtSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtSearch.Location = new System.Drawing.Point(864, 4);
+            this.txtSearch.Location = new System.Drawing.Point(844, 4);
             this.txtSearch.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtSearch.Name = "txtSearch";
-            this.txtSearch.Size = new System.Drawing.Size(322, 20);
+            this.txtSearch.Size = new System.Drawing.Size(312, 20);
             this.txtSearch.TabIndex = 11;
             this.txtSearch.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtSearch_KeyPressed);
             // 
@@ -233,9 +233,10 @@ namespace Translator
             this.btnSearch.AutoSize = true;
             this.btnSearch.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.btnSearch.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnSearch.Location = new System.Drawing.Point(1192, 3);
+            this.btnSearch.Location = new System.Drawing.Point(1162, 3);
+            this.btnSearch.MinimumSize = new System.Drawing.Size(80, 0);
             this.btnSearch.Name = "btnSearch";
-            this.btnSearch.Size = new System.Drawing.Size(51, 23);
+            this.btnSearch.Size = new System.Drawing.Size(81, 23);
             this.btnSearch.TabIndex = 12;
             this.btnSearch.Text = "Search";
             this.btnSearch.UseVisualStyleBackColor = true;

@@ -2506,10 +2506,21 @@ namespace Chummer
                         if (objSkill.Specializations.All(x => x.Name != strSpec))
                         {
                             SkillSpecialization objSpec = new SkillSpecialization(this, strSpec);
-                            objSkill.Specializations.Add(objSpec);
-                            ImprovementManager.CreateImprovement(this, strSkill, Improvement.ImprovementSource.Metatype,
-                                string.Empty, Improvement.ImprovementType.SkillSpecialization, objSpec.InternalId);
-                            ImprovementManager.Commit(this);
+                            try
+                            {
+                                objSkill.Specializations.Add(objSpec);
+                                ImprovementManager.CreateImprovement(this, strSkill,
+                                                                     Improvement.ImprovementSource.Metatype,
+                                                                     string.Empty,
+                                                                     Improvement.ImprovementType.SkillSpecialization,
+                                                                     objSpec.InternalId);
+                                ImprovementManager.Commit(this);
+                            }
+                            catch
+                            {
+                                objSpec.Dispose();
+                                throw;
+                            }
                         }
                     }
                 }
@@ -3609,11 +3620,12 @@ namespace Chummer
                             objWriter.WriteEndElement();
 
                             //Plugins
-                            if (Program.PluginLoader?.MyActivePlugins?.Count > 0)
+                            IReadOnlyList<IPlugin> lstActivePlugins = Program.PluginLoader?.MyActivePlugins;
+                            if (lstActivePlugins?.Count > 0)
                             {
                                 // <plugins>
                                 objWriter.WriteStartElement("plugins");
-                                foreach (IPlugin plugin in Program.PluginLoader.MyActivePlugins)
+                                foreach (IPlugin plugin in lstActivePlugins)
                                 {
                                     try
                                     {
@@ -4571,12 +4583,15 @@ namespace Chummer
                             // </calendar>
 
                             //Plugins
-                            if (Program.PluginLoader?.MyActivePlugins?.Count > 0)
+                            IReadOnlyList<IPlugin> lstActivePlugins = Program.PluginLoader != null
+                                ? await Program.PluginLoader.GetMyActivePluginsAsync().ConfigureAwait(false)
+                                : null;
+                            if (lstActivePlugins?.Count > 0)
                             {
                                 // <plugins>
                                 await objWriter.WriteStartElementAsync("plugins", token: innerToken)
                                                .ConfigureAwait(false);
-                                foreach (IPlugin plugin in Program.PluginLoader.MyActivePlugins)
+                                foreach (IPlugin plugin in lstActivePlugins)
                                 {
                                     try
                                     {
@@ -4756,7 +4771,7 @@ namespace Chummer
                                         lstToRun.Add(() => funcLoopToRun(this));
                                 }
 
-                                bool[] ablnTemp = Utils.RunWithoutThreadLock(lstToRun.ToArray());
+                                bool[] ablnTemp = Utils.RunWithoutThreadLock(lstToRun.ToArray(), token);
                                 if (blnErrorFree && ablnTemp.FirstMatching(false) >= 0)
                                     blnErrorFree = false;
                             }
@@ -4772,7 +4787,7 @@ namespace Chummer
                                         lstToRunAsync.Add(() => funcLoopToRun(this, token));
                                 }
 
-                                bool[] ablnTemp = Utils.RunWithoutThreadLock(lstToRunAsync.ToArray());
+                                bool[] ablnTemp = Utils.RunWithoutThreadLock(lstToRunAsync.ToArray(), token);
                                 if (blnErrorFree && ablnTemp.FirstMatching(false) >= 0)
                                     blnErrorFree = false;
                             }
@@ -9090,7 +9105,10 @@ namespace Chummer
                                        : await Timekeeper.StartSyncronAsync("load_char_plugins", loadActivity, token)
                                                          .ConfigureAwait(false))
                             {
-                                foreach (IPlugin plugin in Program.PluginLoader.MyActivePlugins)
+                                foreach (IPlugin plugin in (blnSync
+                                             ? Program.PluginLoader.MyActivePlugins
+                                             : await Program.PluginLoader.GetMyActivePluginsAsync(token)
+                                                            .ConfigureAwait(false)))
                                 {
                                     foreach (XmlNode objXmlPlugin in objXmlCharacter.SelectNodes("plugins/" +
                                                  plugin.GetPluginAssembly().GetName().Name))
