@@ -17,7 +17,6 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
-using System.Buffers;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -158,21 +157,7 @@ namespace Chummer
             encoder.SetCoderProperties(propIDs, properties);
             encoder.WriteCoderProperties(objOutStream);
             long fileSize = eos || stdInMode ? -1 : objInStream.Length;
-            byte[] achrBuffer = ArrayPool<byte>.Shared.Rent(8);
-            try
-            {
-                unchecked
-                {
-                    for (int i = 0; i < 8; i++)
-                        achrBuffer[i] = (byte) (fileSize >> (8 * i));
-                }
-
-                objOutStream.Write(achrBuffer, 0, 8);
-            }
-            finally
-            {
-                ArrayPool<byte>.Shared.Return(achrBuffer);
-            }
+            objOutStream.Write(BitConverter.GetBytes(fileSize), 0, 8);
             ICodeProgress funcProgress = funcOnProgress != null ? new DelegateCodeProgress(funcOnProgress) : null;
             encoder.Code(objInStream, objOutStream, -1, -1, funcProgress);
         }
@@ -292,21 +277,7 @@ namespace Chummer
             encoder.SetCoderProperties(propIDs, properties);
             encoder.WriteCoderProperties(objOutStream);
             long fileSize = eos || stdInMode ? -1 : objInStream.Length;
-            byte[] achrBuffer = ArrayPool<byte>.Shared.Rent(8);
-            try
-            {
-                unchecked
-                {
-                    for (int i = 0; i < 8; i++)
-                        achrBuffer[i] = (byte)(fileSize >> (8 * i));
-                }
-
-                await objOutStream.WriteAsync(achrBuffer, 0, 8, token);
-            }
-            finally
-            {
-                ArrayPool<byte>.Shared.Return(achrBuffer);
-            }
+            await objOutStream.WriteAsync(BitConverter.GetBytes(fileSize), 0, 8, token);
             token.ThrowIfCancellationRequested();
             IAsyncCodeProgress funcProgress = funcOnProgress != null ? new AsyncDelegateCodeProgress(funcOnProgress) : null;
             await Task.Run(() => encoder.CodeAsync(objInStream, objOutStream, -1, -1, funcProgress, token), token);
@@ -320,17 +291,9 @@ namespace Chummer
             if (objInStream.Read(properties, 0, 5) != 5)
                 throw new ArgumentException("input .lzma is too short");
             decoder.SetDecoderProperties(properties);
-            long outSize = 0;
-            unchecked
-            {
-                for (int i = 0; i < 8; i++)
-                {
-                    int v = objInStream.ReadByte();
-                    if (v < 0)
-                        throw new ArgumentException("Can't Read 1");
-                    outSize |= (long)(byte)v << (8 * i);
-                }
-            }
+            byte[] achrBuffer = new byte[8];
+            _ = objInStream.Read(achrBuffer, 0, 8);
+            long outSize = BitConverter.ToInt64(achrBuffer, 0);
             long compressedSize = objInStream.Length - objInStream.Position;
             ICodeProgress funcProgress = funcOnProgress != null ? new DelegateCodeProgress(funcOnProgress) : null;
             decoder.Code(objInStream, objOutStream, compressedSize, outSize, funcProgress);
@@ -346,19 +309,10 @@ namespace Chummer
             if (await objInStream.ReadAsync(properties, 0, 5, token).ConfigureAwait(false) != 5)
                 throw new ArgumentException("input .lzma is too short");
             decoder.SetDecoderProperties(properties);
-            long outSize = 0;
-            unchecked
-            {
-                for (int i = 0; i < 8; i++)
-                {
-                    token.ThrowIfCancellationRequested();
-                    int v = objInStream.ReadByte();
-                    if (v < 0)
-                        throw new ArgumentException("Can't Read 1");
-                    token.ThrowIfCancellationRequested();
-                    outSize |= (long)(byte)v << (8 * i);
-                }
-            }
+            byte[] achrBuffer = new byte[8];
+            _ = await objInStream.ReadAsync(achrBuffer, 0, 8, token);
+            long outSize = BitConverter.ToInt64(achrBuffer, 0);
+            token.ThrowIfCancellationRequested();
             long compressedSize = objInStream.Length - objInStream.Position;
             token.ThrowIfCancellationRequested();
             IAsyncCodeProgress funcProgress = funcOnProgress != null ? new AsyncDelegateCodeProgress(funcOnProgress) : null;

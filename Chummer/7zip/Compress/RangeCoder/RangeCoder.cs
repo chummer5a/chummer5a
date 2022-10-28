@@ -168,10 +168,12 @@ namespace SevenZip.Compression.RangeCoder
 
             Code = 0;
             Range = 0xFFFFFFFF;
+            byte[] achrBuffer = new byte[5];
+            _ = Stream.Read(achrBuffer, 0, 5);
             unchecked
             {
                 for (int i = 0; i < 5; i++)
-                    Code = (Code << 8) | (byte)Stream.ReadByte();
+                    Code = (Code << 8) | achrBuffer[i];
             }
         }
 
@@ -190,9 +192,15 @@ namespace SevenZip.Compression.RangeCoder
         {
             unchecked
             {
+                int intNumReads = Chummer.IntegerExtensions.DivAwayFromZero((int) (kTopValue / Range), 8);
+                if (intNumReads <= 0)
+                    return;
+                byte[] achrBuffer = new byte[intNumReads];
+                _ = Stream.Read(achrBuffer, 0, intNumReads);
+                int i = 0;
                 while (Range < kTopValue)
                 {
-                    Code = (Code << 8) | (byte)Stream.ReadByte();
+                    Code = (Code << 8) | achrBuffer[i++];
                     Range <<= 8;
                 }
             }

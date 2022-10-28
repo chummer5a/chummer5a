@@ -107,7 +107,9 @@ namespace Chummer
         /// <returns>The string representation, in base 64, of the contents of <paramref name="objStream"/>.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="objStream"/> is null.</exception>
         /// <exception cref="OutOfMemoryException"><paramref name="objStream"/> is too large to be converted to a base64-encoded string.</exception>
-        public static string ToBase64String(this Stream objStream, Base64FormattingOptions eFormattingOptions = Base64FormattingOptions.None, CancellationToken token = default)
+        public static string ToBase64String(this Stream objStream,
+                                            Base64FormattingOptions eFormattingOptions = Base64FormattingOptions.None,
+                                            CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (objStream == null)
@@ -127,7 +129,7 @@ namespace Chummer
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
                 sbdReturn.Capacity = intStringLength;
-                _ = ConvertToBase64Array(sbdReturn, objStream, 0, (int)intLength, blnInsertLineBreaks);
+                _ = ConvertToBase64Array(sbdReturn, objStream, 0, (int) intLength, blnInsertLineBreaks);
                 return sbdReturn.ToString();
             }
 
@@ -156,10 +158,11 @@ namespace Chummer
                     throw new OutOfMemoryException();
                 }
 
-                return (int)num;
+                return (int) num;
             }
 
-            unsafe int ConvertToBase64Array(StringBuilder sbdChars, Stream inData, int offset, int length, bool insertLineBreaks)
+            unsafe int ConvertToBase64Array(StringBuilder sbdChars, Stream inData, int offset, int length,
+                                            bool insertLineBreaks)
             {
                 int num = length % 3;
                 int num2 = offset + (length - num);
@@ -168,12 +171,11 @@ namespace Chummer
                 fixed (char* ptr = s_Base64Table)
                 {
                     inData.Position = offset;
+                    byte[] achrBuffer = new byte[3];
                     while (inData.Position < num2)
                     {
                         token.ThrowIfCancellationRequested();
-                        byte chrOne = (byte)inData.ReadByte();
-                        byte chrTwo = (byte)inData.ReadByte();
-                        byte chrThree = (byte)inData.ReadByte();
+                        _ = inData.Read(achrBuffer, 0, 3);
 
                         if (insertLineBreaks)
                         {
@@ -187,10 +189,10 @@ namespace Chummer
                             num4 += 4;
                         }
 
-                        sbdChars.Append(ptr[(chrOne & 0xFC) >> 2])
-                                .Append(ptr[((chrOne & 3) << 4) | ((chrTwo & 0xF0) >> 4)])
-                                .Append(ptr[((chrTwo & 0xF) << 2) | ((chrThree & 0xC0) >> 6)])
-                                .Append(ptr[chrThree & 0x3F]);
+                        sbdChars.Append(ptr[(achrBuffer[0] & 0xFC) >> 2])
+                                .Append(ptr[((achrBuffer[0] & 3) << 4) | ((achrBuffer[1] & 0xF0) >> 4)])
+                                .Append(ptr[((achrBuffer[1] & 0xF) << 2) | ((achrBuffer[2] & 0xC0) >> 6)])
+                                .Append(ptr[achrBuffer[2] & 0x3F]);
                         num3 += 4;
                     }
 
@@ -206,20 +208,19 @@ namespace Chummer
                     {
                         case 2:
                         {
-                            byte chrOne = (byte)inData.ReadByte();
-                            byte chrTwo = (byte)inData.ReadByte();
-                            sbdChars.Append(ptr[(chrOne & 0xFC) >> 2])
-                                    .Append(ptr[((chrOne & 3) << 4) | ((chrTwo & 0xF0) >> 4)])
-                                    .Append(ptr[(chrTwo & 0xF) << 2])
+                            _ = inData.Read(achrBuffer, 0, 2);
+                            sbdChars.Append(ptr[(achrBuffer[0] & 0xFC) >> 2])
+                                    .Append(ptr[((achrBuffer[0] & 3) << 4) | ((achrBuffer[1] & 0xF0) >> 4)])
+                                    .Append(ptr[(achrBuffer[1] & 0xF) << 2])
                                     .Append(ptr[64]);
                             num3 += 4;
                             break;
                         }
                         case 1:
                         {
-                            byte chrOne = (byte)inData.ReadByte();
-                            sbdChars.Append(ptr[(chrOne & 0xFC) >> 2])
-                                    .Append(ptr[(chrOne & 3) << 4])
+                            _ = inData.Read(achrBuffer, 0, 1);
+                            sbdChars.Append(ptr[(achrBuffer[0] & 0xFC) >> 2])
+                                    .Append(ptr[(achrBuffer[0] & 3) << 4])
                                     .Append(ptr[64])
                                     .Append(ptr[64]);
                             num3 += 4;
