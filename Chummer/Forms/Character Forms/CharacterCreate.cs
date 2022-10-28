@@ -12185,7 +12185,10 @@ namespace Chummer
                                                          strSpace, intSpellPointsUsed, strPoints);
                             if (intQualityKarmaToSpellPoints > 0)
                                 strText += string.Format(GlobalSettings.CultureInfo, "{0}{1}{2}{1}{3}", strColon,
-                                    strSpace, intQualityKarmaToSpellPoints, LanguageManager.GetString("String_MasteryPointsAcronym"));
+                                                         strSpace, intQualityKarmaToSpellPoints,
+                                                         await LanguageManager
+                                                               .GetStringAsync("String_MasteryPointsAcronym", token: token)
+                                                               .ConfigureAwait(false));
                             await lblSpellsBP.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
                         }
 

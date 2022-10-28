@@ -8075,10 +8075,10 @@ namespace Chummer.Backend.Equipment
         public async ValueTask DisposeAsync()
         {
             foreach (WeaponAccessory objChild in _lstAccessories)
-                await objChild.DisposeAsync();
+                await objChild.DisposeAsync().ConfigureAwait(false);
             foreach (Weapon objChild in _lstUnderbarrel)
-                await objChild.DisposeAsync();
-            await DisposeSelfAsync();
+                await objChild.DisposeAsync().ConfigureAwait(false);
+            await DisposeSelfAsync().ConfigureAwait(false);
         }
 
         private async ValueTask DisposeSelfAsync()

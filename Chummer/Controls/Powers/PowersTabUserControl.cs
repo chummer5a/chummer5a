@@ -118,7 +118,7 @@ namespace Chummer.UI.Powers
                 Character objCharacter = new Character();
                 if (Interlocked.CompareExchange(ref _objCharacter, objCharacter, null) != null)
                 {
-                    await objCharacter.DisposeAsync();
+                    await objCharacter.DisposeAsync().ConfigureAwait(false);
                     return;
                 }
                 await this.DoThreadSafeAsync(x => x.Disposed += (sender, args) => objCharacter.Dispose(), token).ConfigureAwait(false);
@@ -178,9 +178,9 @@ namespace Chummer.UI.Powers
                 }
             }, token: token).ConfigureAwait(false);
             await lblPowerPoints.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y, _objCharacter,
-                                                          nameof(Character.DisplayPowerPointsRemaining),
-                                                          x => x.GetDisplayPowerPointsRemainingAsync(MyToken).AsTask(),
-                                                          MyToken, MyToken);
+                                                                     nameof(Character.DisplayPowerPointsRemaining),
+                                                                     x => x.GetDisplayPowerPointsRemainingAsync(MyToken).AsTask(),
+                                                                     MyToken, MyToken).ConfigureAwait(false);
             sw.Stop();
             Debug.WriteLine("RealLoad() in {0} ms", sw.Elapsed.TotalMilliseconds);
 

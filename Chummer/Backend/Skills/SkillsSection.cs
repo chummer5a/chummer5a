@@ -2519,14 +2519,14 @@ namespace Chummer.Backend.Skills
             using (await EnterReadLock.EnterAsync(objExistingSkill, token).ConfigureAwait(false))
             {
                 objExistingSkill.CopyInternalId(objNewSkill);
-                int intExistingBasePoints = await objExistingSkill.GetBasePointsAsync(token);
-                int intNewBasePoints = await objNewSkill.GetBasePointsAsync(token);
+                int intExistingBasePoints = await objExistingSkill.GetBasePointsAsync(token).ConfigureAwait(false);
+                int intNewBasePoints = await objNewSkill.GetBasePointsAsync(token).ConfigureAwait(false);
                 if (intExistingBasePoints < intNewBasePoints)
-                    await objExistingSkill.SetBasePointsAsync(intNewBasePoints, token);
-                int intExistingKarmaPoints = await objExistingSkill.GetKarmaPointsAsync(token);
-                int intNewKarmaPoints = await objNewSkill.GetKarmaPointsAsync(token);
+                    await objExistingSkill.SetBasePointsAsync(intNewBasePoints, token).ConfigureAwait(false);
+                int intExistingKarmaPoints = await objExistingSkill.GetKarmaPointsAsync(token).ConfigureAwait(false);
+                int intNewKarmaPoints = await objNewSkill.GetKarmaPointsAsync(token).ConfigureAwait(false);
                 if (intExistingKarmaPoints < intNewKarmaPoints)
-                    await objExistingSkill.SetKarmaPointsAsync(intNewKarmaPoints, token);
+                    await objExistingSkill.SetKarmaPointsAsync(intNewKarmaPoints, token).ConfigureAwait(false);
                 await objExistingSkill
                       .SetBuyWithKarmaAsync(await objNewSkill.GetBuyWithKarmaAsync(token).ConfigureAwait(false), token)
                       .ConfigureAwait(false);

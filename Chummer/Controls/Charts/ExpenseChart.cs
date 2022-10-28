@@ -81,7 +81,7 @@ namespace Chummer.UI.Charts
                 Character objCharacter = new Character();
                 if (Interlocked.CompareExchange(ref _objCharacter, objCharacter, null) != null)
                 {
-                    await objCharacter.DisposeAsync();
+                    await objCharacter.DisposeAsync().ConfigureAwait(false);
                     return;
                 }
                 await this.DoThreadSafeAsync(x => x.Disposed += (o, args) => objCharacter.Dispose()).ConfigureAwait(false);

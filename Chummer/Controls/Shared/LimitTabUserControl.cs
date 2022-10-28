@@ -80,7 +80,7 @@ namespace Chummer.UI.Shared
                 Character objCharacter = new Character();
                 if (Interlocked.CompareExchange(ref _objCharacter, objCharacter, null) != null)
                 {
-                    await objCharacter.DisposeAsync();
+                    await objCharacter.DisposeAsync().ConfigureAwait(false);
                     return;
                 }
                 await this.DoThreadSafeAsync(x => x.Disposed += (sender, args) => objCharacter.Dispose(), token).ConfigureAwait(false);

@@ -1713,30 +1713,30 @@ namespace Chummer
                         blnDoSwitch = false;
                         foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
                         {
-                            if (await objSkill.GetBaseAsync(token) > 0)
+                            if (await objSkill.GetBaseAsync(token).ConfigureAwait(false) > 0)
                             {
                                 blnDoSwitch = false;
                                 break;
                             }
 
-                            if (await objSkill.GetKarmaAsync(token) > 0)
+                            if (await objSkill.GetKarmaAsync(token).ConfigureAwait(false) > 0)
                                 blnDoSwitch = true;
                         }
 
                         if (blnDoSwitch)
                         {
                             int intPointsSpent = 0;
-                            SkillsSection objSkillsSection = await _objCharacter.GetSkillsSectionAsync(token);
+                            SkillsSection objSkillsSection = await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false);
                             while (intPointsSpent < objSkillsSection.SkillGroupPointsMaximum)
                             {
                                 Skill objSkillToShift = null;
                                 int intSkillToShiftKarma = 0;
                                 foreach (Skill objSkill in objSkillsSection.Skills)
                                 {
-                                    int intLoopKarma = await objSkill.GetKarmaAsync(token);
+                                    int intLoopKarma = await objSkill.GetKarmaAsync(token).ConfigureAwait(false);
                                     if (intLoopKarma > 0 && (objSkillToShift == null
-                                                             || await objSkillToShift.GetRatingAsync(token)
-                                                             < await objSkill.GetRatingAsync(token)))
+                                                             || await objSkillToShift.GetRatingAsync(token).ConfigureAwait(false)
+                                                             < await objSkill.GetRatingAsync(token).ConfigureAwait(false)))
                                     {
                                         objSkillToShift = objSkill;
                                         intSkillToShiftKarma = intLoopKarma;
@@ -1747,8 +1747,8 @@ namespace Chummer
                                     break;
                                 int intKarma = Math.Min(intSkillToShiftKarma,
                                                         objSkillsSection.SkillGroupPointsMaximum - intPointsSpent);
-                                await objSkillToShift.SetKarmaAsync(intSkillToShiftKarma - intKarma, token);
-                                await objSkillToShift.SetBaseAsync(await objSkillToShift.GetBaseAsync(token) + intKarma, token);
+                                await objSkillToShift.SetKarmaAsync(intSkillToShiftKarma - intKarma, token).ConfigureAwait(false);
+                                await objSkillToShift.SetBaseAsync(await objSkillToShift.GetBaseAsync(token).ConfigureAwait(false) + intKarma, token).ConfigureAwait(false);
                                 intPointsSpent += intKarma;
                             }
                         }

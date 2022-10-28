@@ -4584,7 +4584,7 @@ namespace Chummer
 
                             //Plugins
                             IReadOnlyList<IPlugin> lstActivePlugins = Program.PluginLoader != null
-                                ? await Program.PluginLoader.GetMyActivePluginsAsync().ConfigureAwait(false)
+                                ? await Program.PluginLoader.GetMyActivePluginsAsync(innerToken).ConfigureAwait(false)
                                 : null;
                             if (lstActivePlugins?.Count > 0)
                             {

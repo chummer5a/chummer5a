@@ -1519,7 +1519,7 @@ namespace Chummer.Backend.Skills
                 }
                 finally
                 {
-                    await objLocker.DisposeAsync();
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
         }
