@@ -514,7 +514,8 @@ namespace Chummer
                         }
                     }
                 }
-                
+
+                lstCity.Sort();
                 await cboCity.PopulateWithListItemsAsync(lstCity).ConfigureAwait(false);
                 await cboCity.DoDataBindingAsync("SelectedValue", _objLifestyle, nameof(Lifestyle.City)).ConfigureAwait(false);
             }
@@ -880,7 +881,8 @@ namespace Chummer
                         }
                     }
                 }
-                
+
+                lstDistrict.Sort();
                 await cboDistrict.PopulateWithListItemsAsync(lstDistrict, token: token).ConfigureAwait(false);
             }
         }
@@ -908,7 +910,8 @@ namespace Chummer
                         }
                     }
                 }
-                
+
+                lstBorough.Sort();
                 await cboBorough.PopulateWithListItemsAsync(lstBorough, token: token).ConfigureAwait(false);
             }
         }

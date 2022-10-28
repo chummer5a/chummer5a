@@ -110,7 +110,8 @@ namespace Chummer
                         }
                     }
                 }
-                
+
+                lstCity.Sort();
                 await cboCity.PopulateWithListItemsAsync(lstCity).ConfigureAwait(false);
             }
 
@@ -611,7 +612,8 @@ namespace Chummer
                         }
                     }
                 }
-                
+
+                lstDistrict.Sort();
                 await cboDistrict.PopulateWithListItemsAsync(lstDistrict, token: token).ConfigureAwait(false);
             }
         }
@@ -640,7 +642,8 @@ namespace Chummer
                         }
                     }
                 }
-                
+
+                lstBorough.Sort();
                 await cboBorough.PopulateWithListItemsAsync(lstBorough, token: token).ConfigureAwait(false);
             }
         }
