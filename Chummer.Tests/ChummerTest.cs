@@ -576,7 +576,7 @@ namespace Chummer.Tests
                 {
                     objExportCultureInfo = CultureInfo.InvariantCulture;
                 }
-                Utils.JoinableTaskFactory.Run(async () =>
+                Utils.RunOnMainThread(async () =>
                 {
                     XmlDocument xmlDocument
                         = await objCharacter.GenerateExportXml(objExportCultureInfo, strExportLanguage);

@@ -611,9 +611,12 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="IDictionary{TKey, TValue}.TryGetValue" />
-        public bool TryGetValue(TKey key, out TValue value)
+        public bool TryGetValue(TKey key, out TValue value) => TryGetValue(key, out value, default);
+
+        /// <inheritdoc cref="IDictionary{TKey, TValue}.TryGetValue" />
+        public bool TryGetValue(TKey key, out TValue value, CancellationToken token)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (EnterReadLock.Enter(LockObject, token))
                 return _dicData.TryGetValue(key, out value);
         }
 

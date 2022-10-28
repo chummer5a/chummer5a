@@ -234,7 +234,7 @@ namespace Chummer.Backend.Skills
                                     Utils.BreakIfDebug();
                                     throw new InvalidOperationException();
                                 }
-                                _strName = Utils.RunWithoutThreadLock(() => _tskNameLoader);
+                                _strName = Utils.SafelyRunSynchronously(() => _tskNameLoader);
                                 intOld = Interlocked.CompareExchange(ref _intNameLoaded, 3, 2);
                             }
                             else
@@ -269,7 +269,7 @@ namespace Chummer.Backend.Skills
                                                                    value, GlobalSettings.Language, "skills.xml",
                                                                    objToken), objToken));
                 if (tskOld != null)
-                    Utils.RunWithoutThreadLock(() => tskOld);
+                    Utils.SafelyRunSynchronously(() => tskOld);
                 Interlocked.CompareExchange(ref _intNameLoaded, 1, 0);
                 _objCachedMyXmlNode = null;
                 _objCachedMyXPathNode = null;
@@ -372,7 +372,7 @@ namespace Chummer.Backend.Skills
             }
             Task<string> tskOld = Interlocked.Exchange(ref _tskNameLoader, null);
             if (tskOld != null)
-                Utils.RunWithoutThreadLock(() => tskOld);
+                Utils.SafelyRunSynchronously(() => tskOld);
         }
 
         /// <inheritdoc />

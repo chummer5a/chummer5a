@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Buffers;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.CompilerServices;
@@ -284,7 +285,15 @@ namespace Chummer
                 return default;
             using (RecyclableMemoryStream objStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
             {
-                strBase64String.ToBase64Stream(objStream);
+                byte[] achrBuffer = strBase64String.ToBase64PooledByteArray(out int intArrayLength);
+                try
+                {
+                    objStream.Write(achrBuffer, 0, intArrayLength);
+                }
+                finally
+                {
+                    ArrayPool<byte>.Shared.Return(achrBuffer);
+                }
                 return Image.FromStream(objStream, true);
             }
         }
@@ -328,11 +337,19 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             return string.IsNullOrEmpty(strBase64String)
                 ? default
-                : await Task.Run(() =>
+                : await Task.Run(async () =>
                 {
                     using (RecyclableMemoryStream objStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
                     {
-                        strBase64String.ToBase64Stream(objStream, token: token);
+                        byte[] achrBuffer = strBase64String.ToBase64PooledByteArray(out int intArrayLength);
+                        try
+                        {
+                            await objStream.WriteAsync(achrBuffer, 0, intArrayLength, token);
+                        }
+                        finally
+                        {
+                            ArrayPool<byte>.Shared.Return(achrBuffer);
+                        }
                         return Image.FromStream(objStream, true);
                     }
                 }, token).ConfigureAwait(false);

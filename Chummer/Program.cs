@@ -80,6 +80,10 @@ namespace Chummer
             SetProcessDPI(GlobalSettings.DpiScalingMethodSetting);
             if (IsMainThread)
                 SetThreadDPI(GlobalSettings.DpiScalingMethodSetting);
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException);
+            Utils.CreateSynchronizationContext();
 
             using (GlobalChummerMutex = new Mutex(false, @"Global\" + ChummerGuid, out bool blnIsNewInstance))
             {
@@ -182,9 +186,6 @@ namespace Chummer
 
                     sw.TaskEnd("infoprnt");
 
-                    Application.EnableVisualStyles();
-                    Application.SetCompatibleTextRenderingDefault(false);
-
                     sw.TaskEnd("languagefreestartup");
 
                     void HandleCrash(object o, UnhandledExceptionEventArgs exa)
@@ -230,10 +231,6 @@ namespace Chummer
                         AppDomain.CurrentDomain.UnhandledException += HandleCrash;
 
                     sw.TaskEnd("Startup");
-
-                    Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException);
-
-                    Utils.CreateSynchronizationContext();
 
                     // Delete old ProfileOptimization file because we don't want it anymore, instead we restart profiling for each newly generated assembly
                     Utils.SafeDeleteFile(Path.Combine(Utils.GetStartupPath, "chummerprofile"));
@@ -732,7 +729,7 @@ namespace Chummer
                     for (; j < MainFormOnAssignAsyncActions.Count; ++j)
                     {
                         int j1 = j;
-                        Utils.RunWithoutThreadLock(() => MainFormOnAssignAsyncActions[j1](value));
+                        Utils.SafelyRunSynchronously(() => MainFormOnAssignAsyncActions[j1](value));
                     }
                 }
                 MainFormOnAssignActions.Clear();
@@ -1006,7 +1003,7 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         public static Character LoadCharacter(string strFileName, string strNewName = "", bool blnClearFileName = false, bool blnShowErrors = true, LoadingBar frmLoadingBar = null, CancellationToken token = default)
         {
-            return Utils.RunWithoutThreadLock(() => LoadCharacterCoreAsync(true, strFileName, strNewName, blnClearFileName, blnShowErrors, frmLoadingBar, token));
+            return Utils.SafelyRunSynchronously(() => LoadCharacterCoreAsync(true, strFileName, strNewName, blnClearFileName, blnShowErrors, frmLoadingBar, token));
         }
 
         /// <summary>

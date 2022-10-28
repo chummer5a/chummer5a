@@ -655,7 +655,7 @@ namespace Chummer.Backend.Attributes
 
         public void Load(XmlNode xmlSavedCharacterNode, CancellationToken token = default)
         {
-            Utils.RunWithoutThreadLock(() => LoadCoreAsync(true, xmlSavedCharacterNode, token), token);
+            Utils.SafelyRunSynchronously(() => LoadCoreAsync(true, xmlSavedCharacterNode, token), token);
         }
 
         public Task LoadAsync(XmlNode xmlSavedCharacterNode, CancellationToken token = default)

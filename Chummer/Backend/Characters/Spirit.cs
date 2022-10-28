@@ -107,7 +107,7 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         public void Save(XmlWriter objWriter, CancellationToken token = default)
         {
-            Utils.RunWithoutThreadLock(() => SaveCoreAsync(true, objWriter, token), token);
+            Utils.SafelyRunSynchronously(() => SaveCoreAsync(true, objWriter, token), token);
         }
 
         /// <summary>
@@ -1293,7 +1293,7 @@ namespace Chummer
 
         public void SaveMugshots(XmlWriter objWriter, CancellationToken token = default)
         {
-            Utils.RunWithoutThreadLock(() => SaveMugshotsCore(true, objWriter, token), token);
+            Utils.SafelyRunSynchronously(() => SaveMugshotsCore(true, objWriter, token), token);
         }
 
         public Task SaveMugshotsAsync(XmlWriter objWriter, CancellationToken token = default)

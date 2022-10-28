@@ -120,19 +120,26 @@ namespace Chummer
                 return strInput;
             if (intLength > GlobalSettings.MaxStackLimit)
             {
+                string strReturn;
                 char[] achrNewChars = ArrayPool<char>.Shared.Rent(intLength);
-                // What we're doing here is copying the string-as-CharArray char-by-char into a new CharArray, but skipping over any instance of chrToDelete...
-                int intCurrent = 0;
-                for (int i = 0; i < intLength; ++i)
+                try
                 {
-                    char chrLoop = strInput[i];
-                    if (chrLoop != chrToDelete)
-                        achrNewChars[intCurrent++] = chrLoop;
-                }
+                    // What we're doing here is copying the string-as-CharArray char-by-char into a new CharArray, but skipping over any instance of chrToDelete...
+                    int intCurrent = 0;
+                    for (int i = 0; i < intLength; ++i)
+                    {
+                        char chrLoop = strInput[i];
+                        if (chrLoop != chrToDelete)
+                            achrNewChars[intCurrent++] = chrLoop;
+                    }
 
-                // ... then we create a new string from the new CharArray, but only up to the number of characters that actually ended up getting copied
-                string strReturn = new string(achrNewChars, 0, intCurrent);
-                ArrayPool<char>.Shared.Return(achrNewChars);
+                    // ... then we create a new string from the new CharArray, but only up to the number of characters that actually ended up getting copied
+                    strReturn = new string(achrNewChars, 0, intCurrent);
+                }
+                finally
+                {
+                    ArrayPool<char>.Shared.Return(achrNewChars);
+                }
                 return strReturn;
             }
             // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
@@ -171,29 +178,36 @@ namespace Chummer
                 return strInput;
             if (intLength > GlobalSettings.MaxStackLimit)
             {
+                string strReturn;
                 char[] achrNewChars = ArrayPool<char>.Shared.Rent(intLength);
-                // What we're doing here is copying the string-as-CharArray char-by-char into a new CharArray, but skipping over any instance of chars in achrToDelete...
-                int intCurrent = 0;
-                for (int i = 0; i < intLength; ++i)
+                try
                 {
-                    bool blnDoChar = true;
-                    char chrLoop = strInput[i];
-                    for (int j = 0; j < intDeleteLength; ++j)
+                    // What we're doing here is copying the string-as-CharArray char-by-char into a new CharArray, but skipping over any instance of chars in achrToDelete...
+                    int intCurrent = 0;
+                    for (int i = 0; i < intLength; ++i)
                     {
-                        if (chrLoop == achrToDelete[j])
+                        bool blnDoChar = true;
+                        char chrLoop = strInput[i];
+                        for (int j = 0; j < intDeleteLength; ++j)
                         {
-                            blnDoChar = false;
-                            break;
+                            if (chrLoop == achrToDelete[j])
+                            {
+                                blnDoChar = false;
+                                break;
+                            }
                         }
+
+                        if (blnDoChar)
+                            achrNewChars[intCurrent++] = chrLoop;
                     }
 
-                    if (blnDoChar)
-                        achrNewChars[intCurrent++] = chrLoop;
+                    // ... then we create a new string from the new CharArray, but only up to the number of characters that actually ended up getting copied
+                    strReturn = new string(achrNewChars, 0, intCurrent);
                 }
-
-                // ... then we create a new string from the new CharArray, but only up to the number of characters that actually ended up getting copied
-                string strReturn = new string(achrNewChars, 0, intCurrent);
-                ArrayPool<char>.Shared.Return(achrNewChars);
+                finally
+                {
+                    ArrayPool<char>.Shared.Return(achrNewChars);
+                }
                 return strReturn;
             }
             // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
@@ -451,45 +465,51 @@ namespace Chummer
                 funcIsWhiteSpace = x => char.IsWhiteSpace(x) && !char.IsControl(x);
             if (intLength > GlobalSettings.MaxStackLimit)
             {
+                string strReturn;
                 char[] achrNewChars = ArrayPool<char>.Shared.Rent(intLength);
-                // What we're going here is copying the string-as-CharArray char-by-char into a new CharArray, but processing whitespace characters differently...
-                int intCurrent = 0;
-                int intLoopWhitespaceCount = 0;
-                bool blnTrimMode = true;
-                char chrLastAddedCharacter = ' ';
-                for (int i = 0; i < intLength; ++i)
+                try
                 {
-                    char chrLoop = strInput[i];
-                    // If we encounter a block of identical whitespace chars, we replace the first instance with chrWhiteSpace, then skip over the rest until we encounter a char that isn't whitespace
-                    if (funcIsWhiteSpace(chrLoop))
+                    // What we're going here is copying the string-as-CharArray char-by-char into a new CharArray, but processing whitespace characters differently...
+                    int intCurrent = 0;
+                    int intLoopWhitespaceCount = 0;
+                    bool blnTrimMode = true;
+                    char chrLastAddedCharacter = ' ';
+                    for (int i = 0; i < intLength; ++i)
                     {
-                        ++intLoopWhitespaceCount;
-                        if (chrLastAddedCharacter != chrLoop && !blnTrimMode)
+                        char chrLoop = strInput[i];
+                        // If we encounter a block of identical whitespace chars, we replace the first instance with chrWhiteSpace, then skip over the rest until we encounter a char that isn't whitespace
+                        if (funcIsWhiteSpace(chrLoop))
                         {
+                            ++intLoopWhitespaceCount;
+                            if (chrLastAddedCharacter != chrLoop && !blnTrimMode)
+                            {
+                                achrNewChars[intCurrent++] = chrLoop;
+                                chrLastAddedCharacter = chrLoop;
+                            }
+                        }
+                        else
+                        {
+                            intLoopWhitespaceCount = 0;
+                            blnTrimMode = false;
                             achrNewChars[intCurrent++] = chrLoop;
                             chrLastAddedCharacter = chrLoop;
                         }
                     }
-                    else
-                    {
-                        intLoopWhitespaceCount = 0;
-                        blnTrimMode = false;
-                        achrNewChars[intCurrent++] = chrLoop;
-                        chrLastAddedCharacter = chrLoop;
-                    }
-                }
 
-                // If all we had was whitespace, return a string with just a single space character
-                if (intLoopWhitespaceCount >= intCurrent)
+                    // If all we had was whitespace, return a string with just a single space character
+                    if (intLoopWhitespaceCount >= intCurrent)
+                    {
+                        return " ";
+                    }
+
+                    // ... then we create a new string from the new CharArray, but only up to the number of characters that actually ended up getting copied.
+                    // If the last char is whitespace, we don't copy that, either.
+                    strReturn = new string(achrNewChars, 0, intCurrent - intLoopWhitespaceCount);
+                }
+                finally
                 {
                     ArrayPool<char>.Shared.Return(achrNewChars);
-                    return " ";
                 }
-
-                // ... then we create a new string from the new CharArray, but only up to the number of characters that actually ended up getting copied.
-                // If the last char is whitespace, we don't copy that, either.
-                string strReturn = new string(achrNewChars, 0, intCurrent - intLoopWhitespaceCount);
-                ArrayPool<char>.Shared.Return(achrNewChars);
                 return strReturn;
             }
             // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
@@ -1666,17 +1686,20 @@ namespace Chummer
         /// Nearly identical to Convert.FromBase64String(), but the byte array that's returned is from a shared ArrayPool instead of newly allocated.
         /// </summary>
         /// <param name="s">The string to convert.</param>
+        /// <param name="arrayLength">Actual length of the array used. Important because ArrayPool array can be larger than the lengths requested</param>
         /// <param name="token">Cancellation token to listen to, if any.</param>
         /// <returns>A rented array (from ArrayPool.Shared) of 8-bit unsigned integers that is equivalent to s.</returns>
         /// <exception cref="ArgumentNullException">s is null.</exception>
         /// <exception cref="FormatException">The length of s, ignoring white-space characters, is not zero or a multiple of 4. -or-The format of s is invalid. s contains a non-base-64 character, more than two padding characters, or a non-white space-character among the padding characters.</exception>
-        public static byte[] ToBase64PooledByteArray(this string s, CancellationToken token = default)
+        public static byte[] ToBase64PooledByteArray(this string s, out int arrayLength, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (s == null)
             {
                 throw new ArgumentNullException(nameof(s));
             }
+
+            arrayLength = 0;
 
             unchecked
             {
@@ -1697,21 +1720,21 @@ namespace Chummer
                             inputLength--;
                         }
 
-                        int num2 = FromBase64_ComputeResultLength(inputPtr, inputLength);
-                        byte[] array = ArrayPool<byte>.Shared.Rent(num2);
-                        Array.Clear(array, 0, array.Length);
+                        arrayLength = FromBase64_ComputeResultLength(inputPtr, inputLength);
+                        byte[] array = ArrayPool<byte>.Shared.Rent(arrayLength);
                         try
                         {
+                            Array.Clear(array, 0, arrayLength);
                             fixed (byte* startDestPtr = array)
                             {
-                                _ = FromBase64_Decode(inputPtr, inputLength, startDestPtr, num2);
+                                _ = FromBase64_Decode(inputPtr, inputLength, startDestPtr, arrayLength);
                             }
 
                             return array;
                         }
                         catch
                         {
-                            ArrayPool<byte>.Shared.Return(array, true);
+                            ArrayPool<byte>.Shared.Return(array);
                             throw;
                         }
                     }
@@ -1932,6 +1955,7 @@ namespace Chummer
         /// <summary>
         /// Reads the specified string that encodes binary data as base-64 digits into a stream directly.
         /// Much more memory-efficient version of Convert.FromBase64String() if the byte array would just be immediately fed into a stream anyway.
+        /// However, much slower than using Convert.FromBase64String() or ToBase64PooledByteArray() because of unusable optimizations around writing to streams in unsafe code.
         /// </summary>
         /// <param name="s">The string to convert and feed into <paramref name="stream"/>.</param>
         /// <param name="stream">Stream to hold the byte array of the base-64 decoded version of <paramref name="s"/>.</param>
@@ -2105,8 +2129,7 @@ namespace Chummer
                                                 return -1;
                                             }
 
-                                            stream.WriteByte((byte)(num >> 16));
-                                            stream.WriteByte((byte)(num >> 8));
+                                            stream.Write(new[] {(byte) (num >> 16), (byte) (num >> 8)}, 0, 2);
                                             num = 255u;
                                             break;
                                         }
@@ -2159,9 +2182,7 @@ namespace Chummer
                                     return -1;
                                 }
 
-                                stream.WriteByte((byte)(num >> 16));
-                                stream.WriteByte((byte)(num >> 8));
-                                stream.WriteByte((byte)num);
+                                stream.Write(new[] {(byte) (num >> 16), (byte) (num >> 8), (byte) num}, 0, 3);
                                 num = 255u;
                             }
 

@@ -4574,7 +4574,7 @@ namespace Chummer.Backend.Equipment
 
         public decimal GetCalculatedESSPrototypeInvariant(int intRating, Grade objGrade)
         {
-            return Utils.RunWithoutThreadLock(() => GetCalculatedESSPrototypeInvariantCoreAsync(true, intRating, objGrade));
+            return Utils.SafelyRunSynchronously(() => GetCalculatedESSPrototypeInvariantCoreAsync(true, intRating, objGrade));
         }
 
         public Task<decimal> GetCalculatedESSPrototypeInvariantAsync(int intRating, Grade objGrade, CancellationToken token = default)

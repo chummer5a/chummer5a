@@ -17,6 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
+using System.Buffers;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -157,10 +158,20 @@ namespace Chummer
             encoder.SetCoderProperties(propIDs, properties);
             encoder.WriteCoderProperties(objOutStream);
             long fileSize = eos || stdInMode ? -1 : objInStream.Length;
-            unchecked
+            byte[] achrBuffer = ArrayPool<byte>.Shared.Rent(8);
+            try
             {
-                for (int i = 0; i < 8; i++)
-                    objOutStream.WriteByte((byte)(fileSize >> (8 * i)));
+                unchecked
+                {
+                    for (int i = 0; i < 8; i++)
+                        achrBuffer[i] = (byte) (fileSize >> (8 * i));
+                }
+
+                objOutStream.Write(achrBuffer, 0, 8);
+            }
+            finally
+            {
+                ArrayPool<byte>.Shared.Return(achrBuffer);
             }
             ICodeProgress funcProgress = funcOnProgress != null ? new DelegateCodeProgress(funcOnProgress) : null;
             encoder.Code(objInStream, objOutStream, -1, -1, funcProgress);
@@ -229,7 +240,7 @@ namespace Chummer
             // ReSharper restore RedundantArgumentDefaultValue
         }
 
-        public static Task CompressToLzmaFileAsync(this Stream objInStream, FileStream objOutStream,
+        public static async Task CompressToLzmaFileAsync(this Stream objInStream, FileStream objOutStream,
                                                    int intCompressionLevel = Encoder.kDefaultDictionaryLogSize,
                                                    int numFastBytes = (int)Encoder.kNumFastBytesDefault,
                                                    Encoder.EMatchFinderType mf = Encoder.EMatchFinderType.BT4,
@@ -281,17 +292,24 @@ namespace Chummer
             encoder.SetCoderProperties(propIDs, properties);
             encoder.WriteCoderProperties(objOutStream);
             long fileSize = eos || stdInMode ? -1 : objInStream.Length;
-            unchecked
+            byte[] achrBuffer = ArrayPool<byte>.Shared.Rent(8);
+            try
             {
-                for (int i = 0; i < 8; i++)
+                unchecked
                 {
-                    token.ThrowIfCancellationRequested();
-                    objOutStream.WriteByte((byte)(fileSize >> (8 * i)));
+                    for (int i = 0; i < 8; i++)
+                        achrBuffer[i] = (byte)(fileSize >> (8 * i));
                 }
+
+                await objOutStream.WriteAsync(achrBuffer, 0, 8, token);
+            }
+            finally
+            {
+                ArrayPool<byte>.Shared.Return(achrBuffer);
             }
             token.ThrowIfCancellationRequested();
             IAsyncCodeProgress funcProgress = funcOnProgress != null ? new AsyncDelegateCodeProgress(funcOnProgress) : null;
-            return Task.Run(() => encoder.CodeAsync(objInStream, objOutStream, -1, -1, funcProgress, token), token);
+            await Task.Run(() => encoder.CodeAsync(objInStream, objOutStream, -1, -1, funcProgress, token), token);
         }
 
         public static void DecompressLzmaFile(this FileStream objInStream, Stream objOutStream, Action<long, long> funcOnProgress = null)

@@ -488,7 +488,7 @@ namespace Chummer
 
         public XmlNode GetNode(bool blnReturnMetatypeOnly, string strLanguage = "", CancellationToken token = default)
         {
-            return Utils.RunWithoutThreadLock(() => GetNodeCoreAsync(true, blnReturnMetatypeOnly, strLanguage, token));
+            return Utils.SafelyRunSynchronously(() => GetNodeCoreAsync(true, blnReturnMetatypeOnly, strLanguage, token));
         }
 
         public Task<XmlNode> GetNodeAsync(bool blnReturnMetatypeOnly, string strLanguage = "", CancellationToken token = default)
@@ -546,7 +546,7 @@ namespace Chummer
 
         public XPathNavigator GetNodeXPath(bool blnReturnMetatypeOnly, string strLanguage = "", CancellationToken token = default)
         {
-            return Utils.RunWithoutThreadLock(() => GetNodeXPathCoreAsync(true, blnReturnMetatypeOnly, strLanguage, token));
+            return Utils.SafelyRunSynchronously(() => GetNodeXPathCoreAsync(true, blnReturnMetatypeOnly, strLanguage, token));
         }
 
         public Task<XPathNavigator> GetNodeXPathAsync(bool blnReturnMetatypeOnly, string strLanguage = "", CancellationToken token = default)
@@ -2861,7 +2861,7 @@ namespace Chummer
         /// </summary>
         public bool Save(string strFileName = "", bool addToMRU = true, bool callOnSaveCallBack = true, CancellationToken token = default)
         {
-            return Utils.RunWithoutThreadLock(() => SaveCoreAsync(true, strFileName, addToMRU, callOnSaveCallBack, token));
+            return Utils.SafelyRunSynchronously(() => SaveCoreAsync(true, strFileName, addToMRU, callOnSaveCallBack, token));
         }
 
         /// <summary>
@@ -4771,7 +4771,7 @@ namespace Chummer
                                         lstToRun.Add(() => funcLoopToRun(this));
                                 }
 
-                                bool[] ablnTemp = Utils.RunWithoutThreadLock(lstToRun.ToArray(), token);
+                                bool[] ablnTemp = Utils.RunWithoutThreadLock(lstToRun, token);
                                 if (blnErrorFree && ablnTemp.FirstMatching(false) >= 0)
                                     blnErrorFree = false;
                             }
@@ -4787,7 +4787,7 @@ namespace Chummer
                                         lstToRunAsync.Add(() => funcLoopToRun(this, token));
                                 }
 
-                                bool[] ablnTemp = Utils.RunWithoutThreadLock(lstToRunAsync.ToArray(), token);
+                                bool[] ablnTemp = Utils.RunWithoutThreadLock(lstToRunAsync, token);
                                 if (blnErrorFree && ablnTemp.FirstMatching(false) >= 0)
                                     blnErrorFree = false;
                             }
@@ -5013,7 +5013,7 @@ namespace Chummer
         /// <param name="token">Cancellation token to use.</param>
         public bool Load(string strFileName = "", LoadingBar frmLoadingForm = null, bool showWarnings = true, CancellationToken token = default)
         {
-            return Utils.RunWithoutThreadLock(() => LoadCoreAsync(true, strFileName, frmLoadingForm, showWarnings, token));
+            return Utils.SafelyRunSynchronously(() => LoadCoreAsync(true, strFileName, frmLoadingForm, showWarnings, token));
         }
 
         /// <summary>
@@ -9242,7 +9242,7 @@ namespace Chummer
 
                                 foreach (Func<CancellationToken, Task<bool>> funcToCall in PostLoadMethodsAsync)
                                 {
-                                    if (!Utils.RunWithoutThreadLock(() => funcToCall.Invoke(token)))
+                                    if (!Utils.SafelyRunSynchronously(() => funcToCall.Invoke(token)))
                                         return false;
                                 }
 
@@ -14368,7 +14368,7 @@ namespace Chummer
                         OnPropertyChanged();
                         if (_objSettings != null)
                         {
-                            Utils.RunWithoutThreadLock(async () =>
+                            Utils.SafelyRunSynchronously(async () =>
                             {
                                 foreach (string strProperty in _objSettings.GetDifferingPropertyNames(objOldSettings))
                                     await DoOptionsOnPropertyChanged(this, new PropertyChangedEventArgs(strProperty)).ConfigureAwait(false);
@@ -14376,7 +14376,7 @@ namespace Chummer
                         }
                         else
                         {
-                            Utils.RunWithoutThreadLock(async () =>
+                            Utils.SafelyRunSynchronously(async () =>
                             {
                                 foreach (string strProperty in objOldSettings.GetDifferingPropertyNames(_objSettings))
                                     await DoOptionsOnPropertyChanged(this, new PropertyChangedEventArgs(strProperty)).ConfigureAwait(false);
@@ -14666,7 +14666,7 @@ namespace Chummer
 
         public void SaveMugshots(XmlWriter objWriter, CancellationToken token = default)
         {
-            Utils.RunWithoutThreadLock(() => SaveMugshotsCore(true, objWriter, token), token);
+            Utils.SafelyRunSynchronously(() => SaveMugshotsCore(true, objWriter, token), token);
         }
 
         public Task SaveMugshotsAsync(XmlWriter objWriter, CancellationToken token = default)
@@ -32345,7 +32345,7 @@ namespace Chummer
         /// </summary>
         public bool LoadFromHeroLabFile(string strPorFile, string strCharacterId, string strSettingsKey = "")
         {
-            return Utils.RunWithoutThreadLock(() => LoadFromHeroLabFileCoreAsync(true, strPorFile, strCharacterId, strSettingsKey));
+            return Utils.SafelyRunSynchronously(() => LoadFromHeroLabFileCoreAsync(true, strPorFile, strCharacterId, strSettingsKey));
         }
 
         /// <summary>

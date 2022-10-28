@@ -44,7 +44,7 @@ namespace Chummer
             byte[] achrReturn = ArrayPool<byte>.Shared.Rent(intLength);
             try
             {
-                Array.Clear(achrReturn, 0, achrReturn.Length);
+                Array.Clear(achrReturn, 0, intLength);
                 _ = objStream.Read(achrReturn, 0, intLength);
             }
             catch
@@ -75,7 +75,7 @@ namespace Chummer
                 byte[] achrReturn = ArrayPool<byte>.Shared.Rent(intLength);
                 try
                 {
-                    Array.Clear(achrReturn, 0, achrReturn.Length);
+                    Array.Clear(achrReturn, 0, intLength);
                     _ = await objStream.ReadAsync(achrReturn, 0, intLength, token).ConfigureAwait(false);
                 }
                 catch

@@ -76,6 +76,7 @@ namespace Chummer
                 x.Value = 0;
                 x.Maximum = intMaxProgressBarValue + 1;
             });
+            Utils.DoEventsSafe();
         }
 
         /// <summary>
@@ -95,6 +96,7 @@ namespace Chummer
                 x.Value = 0;
                 x.Maximum = intMaxProgressBarValue + 1;
             }, token).ConfigureAwait(false);
+            Utils.DoEventsSafe();
         }
 
         /// <summary>
@@ -157,6 +159,7 @@ namespace Chummer
                 x.PerformStep();
             });
             lblLoadingInfo.DoThreadSafe(x => x.Text = strNewText);
+            Utils.DoEventsSafe();
         }
 
         /// <summary>
@@ -221,6 +224,7 @@ namespace Chummer
                 x.PerformStep();
             }, token).ConfigureAwait(false);
             await lblLoadingInfo.DoThreadSafeAsync(x => x.Text = strNewText, token).ConfigureAwait(false);
+            Utils.DoEventsSafe();
         }
     }
 }

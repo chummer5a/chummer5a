@@ -1515,7 +1515,7 @@ namespace Chummer
                     s_DicSourcebookInfos = new LockingDictionary<string, SourcebookInfo>();
                 else
                     s_DicSourcebookInfos.Clear();
-                Utils.RunWithoutThreadLock(async () => // Retrieve the SourcebookInfo objects.
+                Utils.SafelyRunSynchronously(async () => // Retrieve the SourcebookInfo objects.
                 {
                     foreach (XPathNavigator xmlBook in await (await XmlManager.LoadXPathAsync("books.xml").ConfigureAwait(false))
                                                              .SelectAndCacheExpressionAsync("/chummer/books/book").ConfigureAwait(false))

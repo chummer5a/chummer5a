@@ -594,23 +594,29 @@ namespace Chummer
                 return;
             try
             {
-                bool blnRefreshMru = false;
-                // Because the Recent Characters list can have characters listed that aren't in either MRU, refresh it if we are moving or removing any such character
-                foreach (ExportCharacter objForm in e.OldItems)
+                using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                out HashSet<string> setToRefresh))
                 {
-                    if (await GlobalSettings.FavoriteCharacters.ContainsAsync(
-                            objForm.CharacterObject.FileName, token: _objGenericToken).ConfigureAwait(false))
-                        continue;
-                    if (await GlobalSettings.MostRecentlyUsedCharacters.ContainsAsync(
-                            objForm.CharacterObject.FileName, token: _objGenericToken).ConfigureAwait(false))
-                        continue;
-                    blnRefreshMru = true;
-                    break;
-                }
+                    bool blnRefreshMru = false;
+                    // Because the Recent Characters list can have characters listed that aren't in either MRU, refresh it if we are moving or removing any such character
+                    foreach (ExportCharacter objForm in e.OldItems)
+                    {
+                        string strFile = objForm.CharacterObject.FileName;
+                        setToRefresh.Add(strFile);
+                        if (await GlobalSettings.FavoriteCharacters.ContainsAsync(
+                                strFile, token: _objGenericToken).ConfigureAwait(false))
+                            continue;
+                        if (await GlobalSettings.MostRecentlyUsedCharacters.ContainsAsync(
+                                strFile, token: _objGenericToken).ConfigureAwait(false))
+                            continue;
+                        blnRefreshMru = true;
+                        break;
+                    }
 
-                if (blnRefreshMru)
-                    await RefreshMruLists("mru", _objGenericToken).ConfigureAwait(false);
-                await RefreshNodeTexts(_objGenericToken).ConfigureAwait(false);
+                    if (blnRefreshMru)
+                        await RefreshMruLists("mru", _objGenericToken).ConfigureAwait(false);
+                    await RefreshNodeTexts(setToRefresh, _objGenericToken).ConfigureAwait(false);
+                }
             }
             catch (OperationCanceledException)
             {
@@ -629,30 +635,43 @@ namespace Chummer
                 switch (e.Action)
                 {
                     case NotifyCollectionChangedAction.Add:
-                        await RefreshNodeTexts(_objGenericToken).ConfigureAwait(false);
+                        using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                        out HashSet<string> setToRefresh))
+                        {
+                            foreach (ExportCharacter objForm in e.NewItems)
+                                setToRefresh.Add(objForm.CharacterObject.FileName);
+                            await RefreshNodeTexts(token: _objGenericToken).ConfigureAwait(false);
+                        }
+
                         break;
 
                     case NotifyCollectionChangedAction.Move:
                     case NotifyCollectionChangedAction.Replace:
                     case NotifyCollectionChangedAction.Remove:
                         {
-                            bool blnRefreshMru = false;
-                            // Because the Recent Characters list can have characters listed that aren't in either MRU, refresh it if we are moving or removing any such character
-                            foreach (ExportCharacter objForm in e.OldItems)
+                            using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                            out HashSet<string> setToRefresh))
                             {
-                                if (await GlobalSettings.FavoriteCharacters.ContainsAsync(
-                                        objForm.CharacterObject.FileName, token: _objGenericToken).ConfigureAwait(false))
-                                    continue;
-                                if (await GlobalSettings.MostRecentlyUsedCharacters.ContainsAsync(
-                                        objForm.CharacterObject.FileName, token: _objGenericToken).ConfigureAwait(false))
-                                    continue;
-                                blnRefreshMru = true;
-                                break;
-                            }
+                                bool blnRefreshMru = false;
+                                // Because the Recent Characters list can have characters listed that aren't in either MRU, refresh it if we are moving or removing any such character
+                                foreach (ExportCharacter objForm in e.OldItems)
+                                {
+                                    string strFile = objForm.CharacterObject.FileName;
+                                    setToRefresh.Add(strFile);
+                                    if (await GlobalSettings.FavoriteCharacters.ContainsAsync(
+                                            strFile, token: _objGenericToken).ConfigureAwait(false))
+                                        continue;
+                                    if (await GlobalSettings.MostRecentlyUsedCharacters.ContainsAsync(
+                                            strFile, token: _objGenericToken).ConfigureAwait(false))
+                                        continue;
+                                    blnRefreshMru = true;
+                                    break;
+                                }
 
-                            if (blnRefreshMru)
-                                await RefreshMruLists("mru", _objGenericToken).ConfigureAwait(false);
-                            await RefreshNodeTexts(_objGenericToken).ConfigureAwait(false);
+                                if (blnRefreshMru)
+                                    await RefreshMruLists("mru", _objGenericToken).ConfigureAwait(false);
+                                await RefreshNodeTexts(setToRefresh, _objGenericToken).ConfigureAwait(false);
+                            }
                         }
                         break;
 
@@ -675,28 +694,33 @@ namespace Chummer
                 return;
             try
             {
-                bool blnRefreshMru = false;
-                using (new FetchSafelyFromPool<HashSet<string>>(
-                           Utils.StringHashSetPool, out HashSet<string> setCharacters))
+                using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                out HashSet<string> setToRefresh))
                 {
-                    // Because the Recent Characters list can have characters listed that aren't in either MRU, refresh it if we are moving or removing any such character
-                    foreach (CharacterSheetViewer objForm in e.OldItems)
+                    bool blnRefreshMru = false;
+                    using (new FetchSafelyFromPool<HashSet<string>>(
+                               Utils.StringHashSetPool, out HashSet<string> setCharacters))
                     {
-                        setCharacters.Clear();
-                        setCharacters.AddRange(objForm.CharacterObjects.Select(x => x.FileName));
-                        setCharacters.ExceptWith(GlobalSettings.FavoriteCharacters);
-                        setCharacters.ExceptWith(GlobalSettings.MostRecentlyUsedCharacters);
-                        if (setCharacters.Count > 0)
+                        // Because the Recent Characters list can have characters listed that aren't in either MRU, refresh it if we are moving or removing any such character
+                        foreach (CharacterSheetViewer objForm in e.OldItems)
                         {
-                            blnRefreshMru = true;
-                            break;
+                            setCharacters.Clear();
+                            setCharacters.AddRange(objForm.CharacterObjects.Select(x => x.FileName));
+                            setToRefresh.AddRange(setCharacters);
+                            setCharacters.ExceptWith(GlobalSettings.FavoriteCharacters);
+                            setCharacters.ExceptWith(GlobalSettings.MostRecentlyUsedCharacters);
+                            if (setCharacters.Count > 0)
+                            {
+                                blnRefreshMru = true;
+                                break;
+                            }
                         }
                     }
-                }
 
-                if (blnRefreshMru)
-                    await RefreshMruLists("mru", _objGenericToken).ConfigureAwait(false);
-                await RefreshNodeTexts(_objGenericToken).ConfigureAwait(false);
+                    if (blnRefreshMru)
+                        await RefreshMruLists("mru", _objGenericToken).ConfigureAwait(false);
+                    await RefreshNodeTexts(setToRefresh, _objGenericToken).ConfigureAwait(false);
+                }
             }
             catch (OperationCanceledException)
             {
@@ -715,35 +739,49 @@ namespace Chummer
                 switch (e.Action)
                 {
                     case NotifyCollectionChangedAction.Add:
-                        await RefreshNodeTexts(_objGenericToken).ConfigureAwait(false);
+                        using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                        out HashSet<string> setToRefresh))
+                        {
+                            foreach (CharacterSheetViewer objForm in e.NewItems)
+                            {
+                                setToRefresh.AddRange(objForm.CharacterObjects.Select(x => x.FileName));
+                            }
+                            await RefreshNodeTexts(setToRefresh, _objGenericToken).ConfigureAwait(false);
+                        }
+
                         break;
 
                     case NotifyCollectionChangedAction.Move:
                     case NotifyCollectionChangedAction.Replace:
                     case NotifyCollectionChangedAction.Remove:
                     {
-                        bool blnRefreshMru = false;
-                        using (new FetchSafelyFromPool<HashSet<string>>(
-                                   Utils.StringHashSetPool, out HashSet<string> setCharacters))
+                        using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                        out HashSet<string> setToRefresh))
                         {
-                            // Because the Recent Characters list can have characters listed that aren't in either MRU, refresh it if we are moving or removing any such character
-                            foreach (CharacterSheetViewer objForm in e.OldItems)
+                            bool blnRefreshMru = false;
+                            using (new FetchSafelyFromPool<HashSet<string>>(
+                                       Utils.StringHashSetPool, out HashSet<string> setCharacters))
                             {
-                                setCharacters.Clear();
-                                setCharacters.AddRange(objForm.CharacterObjects.Select(x => x.FileName));
-                                setCharacters.ExceptWith(GlobalSettings.FavoriteCharacters);
-                                setCharacters.ExceptWith(GlobalSettings.MostRecentlyUsedCharacters);
-                                if (setCharacters.Count > 0)
+                                // Because the Recent Characters list can have characters listed that aren't in either MRU, refresh it if we are moving or removing any such character
+                                foreach (CharacterSheetViewer objForm in e.OldItems)
                                 {
-                                    blnRefreshMru = true;
-                                    break;
+                                    setCharacters.Clear();
+                                    setCharacters.AddRange(objForm.CharacterObjects.Select(x => x.FileName));
+                                    setToRefresh.AddRange(setCharacters);
+                                    setCharacters.ExceptWith(GlobalSettings.FavoriteCharacters);
+                                    setCharacters.ExceptWith(GlobalSettings.MostRecentlyUsedCharacters);
+                                    if (setCharacters.Count > 0)
+                                    {
+                                        blnRefreshMru = true;
+                                        break;
+                                    }
                                 }
                             }
-                        }
 
-                        if (blnRefreshMru)
-                            await RefreshMruLists("mru", _objGenericToken).ConfigureAwait(false);
-                        await RefreshNodeTexts(_objGenericToken).ConfigureAwait(false);
+                            if (blnRefreshMru)
+                                await RefreshMruLists("mru", _objGenericToken).ConfigureAwait(false);
+                            await RefreshNodeTexts(setToRefresh, _objGenericToken).ConfigureAwait(false);
+                        }
                     }
                         break;
 
@@ -766,23 +804,29 @@ namespace Chummer
                 return;
             try
             {
-                bool blnRefreshMru = false;
-                // Because the Recent Characters list can have characters listed that aren't in either MRU, refresh it if we are moving or removing any such character
-                foreach (CharacterShared objForm in e.OldItems)
+                using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                out HashSet<string> setToRefresh))
                 {
-                    if (await GlobalSettings.FavoriteCharacters.ContainsAsync(
-                            objForm.CharacterObject.FileName, token: _objGenericToken).ConfigureAwait(false))
-                        continue;
-                    if (await GlobalSettings.MostRecentlyUsedCharacters.ContainsAsync(
-                            objForm.CharacterObject.FileName, token: _objGenericToken).ConfigureAwait(false))
-                        continue;
-                    blnRefreshMru = true;
-                    break;
-                }
+                    bool blnRefreshMru = false;
+                    // Because the Recent Characters list can have characters listed that aren't in either MRU, refresh it if we are moving or removing any such character
+                    foreach (CharacterShared objForm in e.OldItems)
+                    {
+                        string strFile = objForm.CharacterObject.FileName;
+                        setToRefresh.Add(strFile);
+                        if (await GlobalSettings.FavoriteCharacters.ContainsAsync(
+                                strFile, token: _objGenericToken).ConfigureAwait(false))
+                            continue;
+                        if (await GlobalSettings.MostRecentlyUsedCharacters.ContainsAsync(
+                                strFile, token: _objGenericToken).ConfigureAwait(false))
+                            continue;
+                        blnRefreshMru = true;
+                        break;
+                    }
 
-                if (blnRefreshMru)
-                    await RefreshMruLists("mru", _objGenericToken).ConfigureAwait(false);
-                await RefreshNodeTexts(_objGenericToken).ConfigureAwait(false);
+                    if (blnRefreshMru)
+                        await RefreshMruLists("mru", _objGenericToken).ConfigureAwait(false);
+                    await RefreshNodeTexts(setToRefresh, _objGenericToken).ConfigureAwait(false);
+                }
             }
             catch (OperationCanceledException)
             {
@@ -801,30 +845,44 @@ namespace Chummer
                 switch (e.Action)
                 {
                     case NotifyCollectionChangedAction.Add:
-                        await RefreshNodeTexts(_objGenericToken).ConfigureAwait(false);
+                        using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                        out HashSet<string> setToRefresh))
+                        {
+                            foreach (CharacterShared objForm in e.NewItems)
+                                setToRefresh.Add(objForm.CharacterObject.FileName);
+                            await RefreshNodeTexts(token: _objGenericToken).ConfigureAwait(false);
+                        }
                         break;
 
                     case NotifyCollectionChangedAction.Move:
                     case NotifyCollectionChangedAction.Replace:
                     case NotifyCollectionChangedAction.Remove:
                     {
-                        bool blnRefreshMru = false;
-                        // Because the Recent Characters list can have characters listed that aren't in either MRU, refresh it if we are moving or removing any such character
-                        foreach (CharacterShared objForm in e.OldItems)
+                        using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                        out HashSet<string> setToRefresh))
                         {
-                            if (await GlobalSettings.FavoriteCharacters.ContainsAsync(
-                                    objForm.CharacterObject.FileName, token: _objGenericToken).ConfigureAwait(false))
-                                continue;
-                            if (await GlobalSettings.MostRecentlyUsedCharacters.ContainsAsync(
-                                    objForm.CharacterObject.FileName, token: _objGenericToken).ConfigureAwait(false))
-                                continue;
-                            blnRefreshMru = true;
-                            break;
-                        }
+                            bool blnRefreshMru = false;
+                            // Because the Recent Characters list can have characters listed that aren't in either MRU, refresh it if we are moving or removing any such character
+                            foreach (CharacterShared objForm in e.OldItems)
+                            {
+                                string strFile = objForm.CharacterObject.FileName;
+                                setToRefresh.Add(strFile);
+                                if (await GlobalSettings.FavoriteCharacters.ContainsAsync(
+                                                            objForm.CharacterObject.FileName, token: _objGenericToken)
+                                                        .ConfigureAwait(false))
+                                    continue;
+                                if (await GlobalSettings.MostRecentlyUsedCharacters.ContainsAsync(
+                                                            objForm.CharacterObject.FileName, token: _objGenericToken)
+                                                        .ConfigureAwait(false))
+                                    continue;
+                                blnRefreshMru = true;
+                                break;
+                            }
 
-                        if (blnRefreshMru)
-                            await RefreshMruLists("mru", _objGenericToken).ConfigureAwait(false);
-                        await RefreshNodeTexts(_objGenericToken).ConfigureAwait(false);
+                            if (blnRefreshMru)
+                                await RefreshMruLists("mru", _objGenericToken).ConfigureAwait(false);
+                            await RefreshNodeTexts(setToRefresh, _objGenericToken).ConfigureAwait(false);
+                        }
                     }
                         break;
 
@@ -839,7 +897,7 @@ namespace Chummer
             }
         }
 
-        public async ValueTask RefreshNodeTexts(CancellationToken token = default)
+        public async ValueTask RefreshNodeTexts(ICollection<string> lstNames = null, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (treCharacterList.IsNullOrDisposed())
@@ -847,19 +905,41 @@ namespace Chummer
             if (!IsFinishedLoading)
                 return;
 
-            string strErrorPrefix = await LanguageManager.GetStringAsync("String_Error", token: token).ConfigureAwait(false)
-                                    + await LanguageManager.GetStringAsync("String_Colon", token: token).ConfigureAwait(false) + Environment.NewLine;
+            string strErrorPrefix
+                = await LanguageManager.GetStringAsync("String_Error", token: token).ConfigureAwait(false)
+                  + await LanguageManager.GetStringAsync("String_Colon", token: token).ConfigureAwait(false)
+                  + Environment.NewLine;
             Color objWindowTextColor = await ColorManager.GetWindowTextAsync(token).ConfigureAwait(false);
-            await treCharacterList.DoThreadSafeAsync(x =>
+
+            Dictionary<TreeNode, string> dicNodeNames = new Dictionary<TreeNode, string>();
+            foreach (TreeNode objCharacterNode in await treCharacterList
+                                                        .DoThreadSafeFuncAsync(
+                                                            x => x.Nodes.Cast<TreeNode>()
+                                                                  .DeepWhere(y => y.Nodes.Cast<TreeNode>(),
+                                                                             y => y.Tag is CharacterCache z
+                                                                                 && (lstNames == null
+                                                                                     || lstNames.Contains(z.FilePath)))
+                                                                  .ToList(),
+                                                            token: token).ConfigureAwait(false))
             {
-                foreach (TreeNode objCharacterNode in x.Nodes.Cast<TreeNode>().GetAllDescendants(y => y.Nodes.Cast<TreeNode>()))
+                if (!(objCharacterNode.Tag is CharacterCache objCache))
+                    continue;
+                dicNodeNames.Add(objCharacterNode,
+                                 await objCache.CalculatedNameAsync(token: token).ConfigureAwait(false));
+            }
+
+            await treCharacterList.DoThreadSafeAsync(() =>
+            {
+                foreach (KeyValuePair<TreeNode, string> kvpNode in dicNodeNames)
                 {
+                    TreeNode objCharacterNode = kvpNode.Key;
                     if (!(objCharacterNode.Tag is CharacterCache objCache))
                         continue;
-                    objCharacterNode.Text = objCache.CalculatedName();
+                    objCharacterNode.Text = kvpNode.Value;
                     string strTooltip = string.Empty;
                     if (!string.IsNullOrEmpty(objCache.FilePath))
-                        strTooltip = objCache.FilePath.Replace(Utils.GetStartupPath, '<' + Application.ProductName + '>');
+                        strTooltip = objCache.FilePath.Replace(Utils.GetStartupPath,
+                                                               '<' + Application.ProductName + '>');
                     if (!string.IsNullOrEmpty(objCache.ErrorText))
                     {
                         objCharacterNode.ForeColor = ColorManager.ErrorColor;
@@ -869,6 +949,7 @@ namespace Chummer
                     }
                     else
                         objCharacterNode.ForeColor = objWindowTextColor;
+
                     objCharacterNode.ToolTipText = strTooltip;
                 }
             }, token).ConfigureAwait(false);

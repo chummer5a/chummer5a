@@ -378,7 +378,7 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 if (funcPredicate(objCurrent))
-                    intReturn += Utils.RunWithoutThreadLock(() => funcSelector.Invoke(objCurrent), token);
+                    intReturn += Utils.SafelyRunSynchronously(() => funcSelector.Invoke(objCurrent), token);
             }
             return intReturn;
         }
@@ -402,7 +402,7 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 if (funcPredicate(objCurrent))
-                    lngReturn += Utils.RunWithoutThreadLock(() => funcSelector.Invoke(objCurrent), token);
+                    lngReturn += Utils.SafelyRunSynchronously(() => funcSelector.Invoke(objCurrent), token);
             }
             return lngReturn;
         }
@@ -426,7 +426,7 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 if (funcPredicate(objCurrent))
-                    fltReturn += Utils.RunWithoutThreadLock(() => funcSelector.Invoke(objCurrent), token);
+                    fltReturn += Utils.SafelyRunSynchronously(() => funcSelector.Invoke(objCurrent), token);
             }
             return fltReturn;
         }
@@ -450,7 +450,7 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 if (funcPredicate(objCurrent))
-                    dblReturn += Utils.RunWithoutThreadLock(() => funcSelector.Invoke(objCurrent), token);
+                    dblReturn += Utils.SafelyRunSynchronously(() => funcSelector.Invoke(objCurrent), token);
             }
             return dblReturn;
         }
@@ -474,7 +474,7 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 if (funcPredicate(objCurrent))
-                    decReturn += Utils.RunWithoutThreadLock(() => funcSelector.Invoke(objCurrent), token);
+                    decReturn += Utils.SafelyRunSynchronously(() => funcSelector.Invoke(objCurrent), token);
             }
             return decReturn;
         }
@@ -515,13 +515,13 @@ namespace Chummer
 
                     if (blnMoveNext)
                     {
-                        foreach (int intLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
+                        foreach (int intLoop in Utils.SafelyRunSynchronously(() => Task.WhenAll(lstTasks), token))
                             intReturn += intLoop;
                         lstTasks.Clear();
                     }
                 }
             }
-            foreach (int intLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
+            foreach (int intLoop in Utils.SafelyRunSynchronously(() => Task.WhenAll(lstTasks), token))
                 intReturn += intLoop;
             return intReturn;
         }
@@ -537,7 +537,7 @@ namespace Chummer
                         return 0;
 
                     case 1:
-                        return Utils.RunWithoutThreadLock(() => funcSelector.Invoke(objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0)), token);
+                        return Utils.SafelyRunSynchronously(() => funcSelector.Invoke(objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0)), token);
 
                     default:
                         lstTasks = new List<Task<int>>(Math.Max(Utils.MaxParallelBatchSize, objTemp.Count));
@@ -562,13 +562,13 @@ namespace Chummer
 
                     if (blnMoveNext)
                     {
-                        foreach (int intLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
+                        foreach (int intLoop in Utils.SafelyRunSynchronously(() => Task.WhenAll(lstTasks), token))
                             intReturn += intLoop;
                         lstTasks.Clear();
                     }
                 }
             }
-            foreach (int intLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
+            foreach (int intLoop in Utils.SafelyRunSynchronously(() => Task.WhenAll(lstTasks), token))
                 intReturn += intLoop;
             return intReturn;
         }
@@ -609,13 +609,13 @@ namespace Chummer
 
                     if (blnMoveNext)
                     {
-                        foreach (long longLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
+                        foreach (long longLoop in Utils.SafelyRunSynchronously(() => Task.WhenAll(lstTasks), token))
                             lngReturn += longLoop;
                         lstTasks.Clear();
                     }
                 }
             }
-            foreach (long longLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
+            foreach (long longLoop in Utils.SafelyRunSynchronously(() => Task.WhenAll(lstTasks), token))
                 lngReturn += longLoop;
             return lngReturn;
         }
@@ -631,7 +631,7 @@ namespace Chummer
                         return 0;
 
                     case 1:
-                        return Utils.RunWithoutThreadLock(() => funcSelector.Invoke(objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0)), token);
+                        return Utils.SafelyRunSynchronously(() => funcSelector.Invoke(objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0)), token);
 
                     default:
                         lstTasks = new List<Task<long>>(Math.Max(Utils.MaxParallelBatchSize, objTemp.Count));
@@ -656,13 +656,13 @@ namespace Chummer
 
                     if (blnMoveNext)
                     {
-                        foreach (long longLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
+                        foreach (long longLoop in Utils.SafelyRunSynchronously(() => Task.WhenAll(lstTasks), token))
                             lngReturn += longLoop;
                         lstTasks.Clear();
                     }
                 }
             }
-            foreach (long longLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
+            foreach (long longLoop in Utils.SafelyRunSynchronously(() => Task.WhenAll(lstTasks), token))
                 lngReturn += longLoop;
             return lngReturn;
         }
@@ -703,13 +703,13 @@ namespace Chummer
 
                     if (blnMoveNext)
                     {
-                        foreach (float floatLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
+                        foreach (float floatLoop in Utils.SafelyRunSynchronously(() => Task.WhenAll(lstTasks), token))
                             fltReturn += floatLoop;
                         lstTasks.Clear();
                     }
                 }
             }
-            foreach (float floatLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
+            foreach (float floatLoop in Utils.SafelyRunSynchronously(() => Task.WhenAll(lstTasks), token))
                 fltReturn += floatLoop;
             return fltReturn;
         }
@@ -725,7 +725,7 @@ namespace Chummer
                         return 0;
 
                     case 1:
-                        return Utils.RunWithoutThreadLock(() => funcSelector.Invoke(objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0)), token);
+                        return Utils.SafelyRunSynchronously(() => funcSelector.Invoke(objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0)), token);
 
                     default:
                         lstTasks = new List<Task<float>>(Math.Max(Utils.MaxParallelBatchSize, objTemp.Count));
@@ -750,13 +750,13 @@ namespace Chummer
 
                     if (blnMoveNext)
                     {
-                        foreach (float floatLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
+                        foreach (float floatLoop in Utils.SafelyRunSynchronously(() => Task.WhenAll(lstTasks), token))
                             fltReturn += floatLoop;
                         lstTasks.Clear();
                     }
                 }
             }
-            foreach (float floatLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
+            foreach (float floatLoop in Utils.SafelyRunSynchronously(() => Task.WhenAll(lstTasks), token))
                 fltReturn += floatLoop;
             return fltReturn;
         }
@@ -797,13 +797,13 @@ namespace Chummer
 
                     if (blnMoveNext)
                     {
-                        foreach (double doubleLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
+                        foreach (double doubleLoop in Utils.SafelyRunSynchronously(() => Task.WhenAll(lstTasks), token))
                             dblReturn += doubleLoop;
                         lstTasks.Clear();
                     }
                 }
             }
-            foreach (double doubleLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
+            foreach (double doubleLoop in Utils.SafelyRunSynchronously(() => Task.WhenAll(lstTasks), token))
                 dblReturn += doubleLoop;
             return dblReturn;
         }
@@ -819,7 +819,7 @@ namespace Chummer
                         return 0;
 
                     case 1:
-                        return Utils.RunWithoutThreadLock(() => funcSelector.Invoke(objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0)), token);
+                        return Utils.SafelyRunSynchronously(() => funcSelector.Invoke(objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0)), token);
 
                     default:
                         lstTasks = new List<Task<double>>(Math.Max(Utils.MaxParallelBatchSize, objTemp.Count));
@@ -844,13 +844,13 @@ namespace Chummer
 
                     if (blnMoveNext)
                     {
-                        foreach (double doubleLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
+                        foreach (double doubleLoop in Utils.SafelyRunSynchronously(() => Task.WhenAll(lstTasks), token))
                             dblReturn += doubleLoop;
                         lstTasks.Clear();
                     }
                 }
             }
-            foreach (double doubleLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
+            foreach (double doubleLoop in Utils.SafelyRunSynchronously(() => Task.WhenAll(lstTasks), token))
                 dblReturn += doubleLoop;
             return dblReturn;
         }
@@ -891,13 +891,13 @@ namespace Chummer
 
                     if (blnMoveNext)
                     {
-                        foreach (decimal decimalLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
+                        foreach (decimal decimalLoop in Utils.SafelyRunSynchronously(() => Task.WhenAll(lstTasks), token))
                             decReturn += decimalLoop;
                         lstTasks.Clear();
                     }
                 }
             }
-            foreach (decimal decimalLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
+            foreach (decimal decimalLoop in Utils.SafelyRunSynchronously(() => Task.WhenAll(lstTasks), token))
                 decReturn += decimalLoop;
             return decReturn;
         }
@@ -913,7 +913,7 @@ namespace Chummer
                         return 0;
 
                     case 1:
-                        return Utils.RunWithoutThreadLock(() => funcSelector.Invoke(objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0)), token);
+                        return Utils.SafelyRunSynchronously(() => funcSelector.Invoke(objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0)), token);
 
                     default:
                         lstTasks = new List<Task<decimal>>(Math.Max(Utils.MaxParallelBatchSize, objTemp.Count));
@@ -938,13 +938,13 @@ namespace Chummer
 
                     if (blnMoveNext)
                     {
-                        foreach (decimal decimalLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
+                        foreach (decimal decimalLoop in Utils.SafelyRunSynchronously(() => Task.WhenAll(lstTasks), token))
                             decReturn += decimalLoop;
                         lstTasks.Clear();
                     }
                 }
             }
-            foreach (decimal decimalLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
+            foreach (decimal decimalLoop in Utils.SafelyRunSynchronously(() => Task.WhenAll(lstTasks), token))
                 decReturn += decimalLoop;
             return decReturn;
         }
@@ -986,13 +986,13 @@ namespace Chummer
 
                     if (blnMoveNext)
                     {
-                        foreach (int intLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
+                        foreach (int intLoop in Utils.SafelyRunSynchronously(() => Task.WhenAll(lstTasks), token))
                             intReturn += intLoop;
                         lstTasks.Clear();
                     }
                 }
             }
-            foreach (int intLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
+            foreach (int intLoop in Utils.SafelyRunSynchronously(() => Task.WhenAll(lstTasks), token))
                 intReturn += intLoop;
             return intReturn;
         }
@@ -1009,7 +1009,7 @@ namespace Chummer
 
                     case 1:
                         T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
-                        return funcPredicate(objFirstElement) ? Utils.RunWithoutThreadLock(() => funcSelector.Invoke(objFirstElement), token) : 0;
+                        return funcPredicate(objFirstElement) ? Utils.SafelyRunSynchronously(() => funcSelector.Invoke(objFirstElement), token) : 0;
 
                     default:
                         lstTasks = new List<Task<int>>(objTemp.Count);
@@ -1034,13 +1034,13 @@ namespace Chummer
 
                     if (blnMoveNext)
                     {
-                        foreach (int intLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
+                        foreach (int intLoop in Utils.SafelyRunSynchronously(() => Task.WhenAll(lstTasks), token))
                             intReturn += intLoop;
                         lstTasks.Clear();
                     }
                 }
             }
-            foreach (int intLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
+            foreach (int intLoop in Utils.SafelyRunSynchronously(() => Task.WhenAll(lstTasks), token))
                 intReturn += intLoop;
             return intReturn;
         }
@@ -1082,13 +1082,13 @@ namespace Chummer
 
                     if (blnMoveNext)
                     {
-                        foreach (long longLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
+                        foreach (long longLoop in Utils.SafelyRunSynchronously(() => Task.WhenAll(lstTasks), token))
                             lngReturn += longLoop;
                         lstTasks.Clear();
                     }
                 }
             }
-            foreach (long longLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
+            foreach (long longLoop in Utils.SafelyRunSynchronously(() => Task.WhenAll(lstTasks), token))
                 lngReturn += longLoop;
             return lngReturn;
         }
@@ -1105,7 +1105,7 @@ namespace Chummer
 
                     case 1:
                         T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
-                        return funcPredicate(objFirstElement) ? Utils.RunWithoutThreadLock(() => funcSelector.Invoke(objFirstElement), token) : 0;
+                        return funcPredicate(objFirstElement) ? Utils.SafelyRunSynchronously(() => funcSelector.Invoke(objFirstElement), token) : 0;
 
                     default:
                         lstTasks = new List<Task<long>>(objTemp.Count);
@@ -1130,13 +1130,13 @@ namespace Chummer
 
                     if (blnMoveNext)
                     {
-                        foreach (long longLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
+                        foreach (long longLoop in Utils.SafelyRunSynchronously(() => Task.WhenAll(lstTasks), token))
                             lngReturn += longLoop;
                         lstTasks.Clear();
                     }
                 }
             }
-            foreach (long longLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
+            foreach (long longLoop in Utils.SafelyRunSynchronously(() => Task.WhenAll(lstTasks), token))
                 lngReturn += longLoop;
             return lngReturn;
         }
@@ -1178,13 +1178,13 @@ namespace Chummer
 
                     if (blnMoveNext)
                     {
-                        foreach (float floatLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
+                        foreach (float floatLoop in Utils.SafelyRunSynchronously(() => Task.WhenAll(lstTasks), token))
                             fltReturn += floatLoop;
                         lstTasks.Clear();
                     }
                 }
             }
-            foreach (float floatLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
+            foreach (float floatLoop in Utils.SafelyRunSynchronously(() => Task.WhenAll(lstTasks), token))
                 fltReturn += floatLoop;
             return fltReturn;
         }
@@ -1201,7 +1201,7 @@ namespace Chummer
 
                     case 1:
                         T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
-                        return funcPredicate(objFirstElement) ? Utils.RunWithoutThreadLock(() => funcSelector.Invoke(objFirstElement), token) : 0;
+                        return funcPredicate(objFirstElement) ? Utils.SafelyRunSynchronously(() => funcSelector.Invoke(objFirstElement), token) : 0;
 
                     default:
                         lstTasks = new List<Task<float>>(objTemp.Count);
@@ -1226,13 +1226,13 @@ namespace Chummer
 
                     if (blnMoveNext)
                     {
-                        foreach (float floatLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
+                        foreach (float floatLoop in Utils.SafelyRunSynchronously(() => Task.WhenAll(lstTasks), token))
                             fltReturn += floatLoop;
                         lstTasks.Clear();
                     }
                 }
             }
-            foreach (float floatLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
+            foreach (float floatLoop in Utils.SafelyRunSynchronously(() => Task.WhenAll(lstTasks), token))
                 fltReturn += floatLoop;
             return fltReturn;
         }
@@ -1274,13 +1274,13 @@ namespace Chummer
 
                     if (blnMoveNext)
                     {
-                        foreach (double doubleLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
+                        foreach (double doubleLoop in Utils.SafelyRunSynchronously(() => Task.WhenAll(lstTasks), token))
                             dblReturn += doubleLoop;
                         lstTasks.Clear();
                     }
                 }
             }
-            foreach (double doubleLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
+            foreach (double doubleLoop in Utils.SafelyRunSynchronously(() => Task.WhenAll(lstTasks), token))
                 dblReturn += doubleLoop;
             return dblReturn;
         }
@@ -1297,7 +1297,7 @@ namespace Chummer
 
                     case 1:
                         T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
-                        return funcPredicate(objFirstElement) ? Utils.RunWithoutThreadLock(() => funcSelector.Invoke(objFirstElement), token) : 0;
+                        return funcPredicate(objFirstElement) ? Utils.SafelyRunSynchronously(() => funcSelector.Invoke(objFirstElement), token) : 0;
 
                     default:
                         lstTasks = new List<Task<double>>(objTemp.Count);
@@ -1322,13 +1322,13 @@ namespace Chummer
 
                     if (blnMoveNext)
                     {
-                        foreach (double doubleLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
+                        foreach (double doubleLoop in Utils.SafelyRunSynchronously(() => Task.WhenAll(lstTasks), token))
                             dblReturn += doubleLoop;
                         lstTasks.Clear();
                     }
                 }
             }
-            foreach (double doubleLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
+            foreach (double doubleLoop in Utils.SafelyRunSynchronously(() => Task.WhenAll(lstTasks), token))
                 dblReturn += doubleLoop;
             return dblReturn;
         }
@@ -1370,13 +1370,13 @@ namespace Chummer
 
                     if (blnMoveNext)
                     {
-                        foreach (decimal decimalLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
+                        foreach (decimal decimalLoop in Utils.SafelyRunSynchronously(() => Task.WhenAll(lstTasks), token))
                             decReturn += decimalLoop;
                         lstTasks.Clear();
                     }
                 }
             }
-            foreach (decimal decimalLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
+            foreach (decimal decimalLoop in Utils.SafelyRunSynchronously(() => Task.WhenAll(lstTasks), token))
                 decReturn += decimalLoop;
             return decReturn;
         }
@@ -1393,7 +1393,7 @@ namespace Chummer
 
                     case 1:
                         T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
-                        return funcPredicate(objFirstElement) ? Utils.RunWithoutThreadLock(() => funcSelector.Invoke(objFirstElement), token) : 0;
+                        return funcPredicate(objFirstElement) ? Utils.SafelyRunSynchronously(() => funcSelector.Invoke(objFirstElement), token) : 0;
 
                     default:
                         lstTasks = new List<Task<decimal>>(objTemp.Count);
@@ -1418,13 +1418,13 @@ namespace Chummer
 
                     if (blnMoveNext)
                     {
-                        foreach (decimal decimalLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
+                        foreach (decimal decimalLoop in Utils.SafelyRunSynchronously(() => Task.WhenAll(lstTasks), token))
                             decReturn += decimalLoop;
                         lstTasks.Clear();
                     }
                 }
             }
-            foreach (decimal decimalLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
+            foreach (decimal decimalLoop in Utils.SafelyRunSynchronously(() => Task.WhenAll(lstTasks), token))
                 decReturn += decimalLoop;
             return decReturn;
         }
@@ -1441,7 +1441,7 @@ namespace Chummer
 
                     case 1:
                         T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
-                        return Utils.RunWithoutThreadLock(() => funcPredicate(objFirstElement), token) ? funcSelector.Invoke(objFirstElement) : 0;
+                        return Utils.SafelyRunSynchronously(() => funcPredicate(objFirstElement), token) ? funcSelector.Invoke(objFirstElement) : 0;
 
                     default:
                         lstTasks = new List<Task<int>>(objTemp.Count);
@@ -1466,13 +1466,13 @@ namespace Chummer
 
                     if (blnMoveNext)
                     {
-                        foreach (int intLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
+                        foreach (int intLoop in Utils.SafelyRunSynchronously(() => Task.WhenAll(lstTasks), token))
                             intReturn += intLoop;
                         lstTasks.Clear();
                     }
                 }
             }
-            foreach (int intLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
+            foreach (int intLoop in Utils.SafelyRunSynchronously(() => Task.WhenAll(lstTasks), token))
                 intReturn += intLoop;
             return intReturn;
         }
@@ -1489,7 +1489,7 @@ namespace Chummer
 
                     case 1:
                         T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
-                        return Utils.RunWithoutThreadLock(async () => await funcPredicate(objFirstElement).ConfigureAwait(false) ? await funcSelector.Invoke(objFirstElement).ConfigureAwait(false) : 0, token);
+                        return Utils.SafelyRunSynchronously(async () => await funcPredicate(objFirstElement).ConfigureAwait(false) ? await funcSelector.Invoke(objFirstElement).ConfigureAwait(false) : 0, token);
 
                     default:
                         lstTasks = new List<Task<int>>(objTemp.Count);
@@ -1514,13 +1514,13 @@ namespace Chummer
 
                     if (blnMoveNext)
                     {
-                        foreach (int intLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
+                        foreach (int intLoop in Utils.SafelyRunSynchronously(() => Task.WhenAll(lstTasks), token))
                             intReturn += intLoop;
                         lstTasks.Clear();
                     }
                 }
             }
-            foreach (int intLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
+            foreach (int intLoop in Utils.SafelyRunSynchronously(() => Task.WhenAll(lstTasks), token))
                 intReturn += intLoop;
             return intReturn;
         }
@@ -1537,7 +1537,7 @@ namespace Chummer
 
                     case 1:
                         T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
-                        return Utils.RunWithoutThreadLock(() => funcPredicate(objFirstElement), token) ? funcSelector.Invoke(objFirstElement) : 0;
+                        return Utils.SafelyRunSynchronously(() => funcPredicate(objFirstElement), token) ? funcSelector.Invoke(objFirstElement) : 0;
 
                     default:
                         lstTasks = new List<Task<long>>(objTemp.Count);
@@ -1562,13 +1562,13 @@ namespace Chummer
 
                     if (blnMoveNext)
                     {
-                        foreach (long longLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
+                        foreach (long longLoop in Utils.SafelyRunSynchronously(() => Task.WhenAll(lstTasks), token))
                             lngReturn += longLoop;
                         lstTasks.Clear();
                     }
                 }
             }
-            foreach (long longLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
+            foreach (long longLoop in Utils.SafelyRunSynchronously(() => Task.WhenAll(lstTasks), token))
                 lngReturn += longLoop;
             return lngReturn;
         }
@@ -1585,7 +1585,7 @@ namespace Chummer
 
                     case 1:
                         T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
-                        return Utils.RunWithoutThreadLock(async () => await funcPredicate(objFirstElement).ConfigureAwait(false) ? await funcSelector.Invoke(objFirstElement).ConfigureAwait(false) : 0, token);
+                        return Utils.SafelyRunSynchronously(async () => await funcPredicate(objFirstElement).ConfigureAwait(false) ? await funcSelector.Invoke(objFirstElement).ConfigureAwait(false) : 0, token);
 
                     default:
                         lstTasks = new List<Task<long>>(objTemp.Count);
@@ -1610,13 +1610,13 @@ namespace Chummer
 
                     if (blnMoveNext)
                     {
-                        foreach (long longLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
+                        foreach (long longLoop in Utils.SafelyRunSynchronously(() => Task.WhenAll(lstTasks), token))
                             lngReturn += longLoop;
                         lstTasks.Clear();
                     }
                 }
             }
-            foreach (long longLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
+            foreach (long longLoop in Utils.SafelyRunSynchronously(() => Task.WhenAll(lstTasks), token))
                 lngReturn += longLoop;
             return lngReturn;
         }
@@ -1633,7 +1633,7 @@ namespace Chummer
 
                     case 1:
                         T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
-                        return Utils.RunWithoutThreadLock(() => funcPredicate(objFirstElement), token) ? funcSelector.Invoke(objFirstElement) : 0;
+                        return Utils.SafelyRunSynchronously(() => funcPredicate(objFirstElement), token) ? funcSelector.Invoke(objFirstElement) : 0;
 
                     default:
                         lstTasks = new List<Task<float>>(objTemp.Count);
@@ -1658,13 +1658,13 @@ namespace Chummer
 
                     if (blnMoveNext)
                     {
-                        foreach (float floatLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
+                        foreach (float floatLoop in Utils.SafelyRunSynchronously(() => Task.WhenAll(lstTasks), token))
                             fltReturn += floatLoop;
                         lstTasks.Clear();
                     }
                 }
             }
-            foreach (float floatLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
+            foreach (float floatLoop in Utils.SafelyRunSynchronously(() => Task.WhenAll(lstTasks), token))
                 fltReturn += floatLoop;
             return fltReturn;
         }
@@ -1681,7 +1681,7 @@ namespace Chummer
 
                     case 1:
                         T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
-                        return Utils.RunWithoutThreadLock(async () => await funcPredicate(objFirstElement).ConfigureAwait(false) ? await funcSelector.Invoke(objFirstElement).ConfigureAwait(false) : 0, token);
+                        return Utils.SafelyRunSynchronously(async () => await funcPredicate(objFirstElement).ConfigureAwait(false) ? await funcSelector.Invoke(objFirstElement).ConfigureAwait(false) : 0, token);
 
                     default:
                         lstTasks = new List<Task<float>>(objTemp.Count);
@@ -1706,13 +1706,13 @@ namespace Chummer
 
                     if (blnMoveNext)
                     {
-                        foreach (float floatLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
+                        foreach (float floatLoop in Utils.SafelyRunSynchronously(() => Task.WhenAll(lstTasks), token))
                             fltReturn += floatLoop;
                         lstTasks.Clear();
                     }
                 }
             }
-            foreach (float floatLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
+            foreach (float floatLoop in Utils.SafelyRunSynchronously(() => Task.WhenAll(lstTasks), token))
                 fltReturn += floatLoop;
             return fltReturn;
         }
@@ -1729,7 +1729,7 @@ namespace Chummer
 
                     case 1:
                         T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
-                        return Utils.RunWithoutThreadLock(() => funcPredicate(objFirstElement), token) ? funcSelector.Invoke(objFirstElement) : 0;
+                        return Utils.SafelyRunSynchronously(() => funcPredicate(objFirstElement), token) ? funcSelector.Invoke(objFirstElement) : 0;
 
                     default:
                         lstTasks = new List<Task<double>>(objTemp.Count);
@@ -1754,13 +1754,13 @@ namespace Chummer
 
                     if (blnMoveNext)
                     {
-                        foreach (double doubleLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
+                        foreach (double doubleLoop in Utils.SafelyRunSynchronously(() => Task.WhenAll(lstTasks), token))
                             dblReturn += doubleLoop;
                         lstTasks.Clear();
                     }
                 }
             }
-            foreach (double doubleLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
+            foreach (double doubleLoop in Utils.SafelyRunSynchronously(() => Task.WhenAll(lstTasks), token))
                 dblReturn += doubleLoop;
             return dblReturn;
         }
@@ -1777,7 +1777,7 @@ namespace Chummer
 
                     case 1:
                         T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
-                        return Utils.RunWithoutThreadLock(async () => await funcPredicate(objFirstElement).ConfigureAwait(false) ? await funcSelector.Invoke(objFirstElement).ConfigureAwait(false) : 0, token);
+                        return Utils.SafelyRunSynchronously(async () => await funcPredicate(objFirstElement).ConfigureAwait(false) ? await funcSelector.Invoke(objFirstElement).ConfigureAwait(false) : 0, token);
 
                     default:
                         lstTasks = new List<Task<double>>(objTemp.Count);
@@ -1802,13 +1802,13 @@ namespace Chummer
 
                     if (blnMoveNext)
                     {
-                        foreach (double doubleLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
+                        foreach (double doubleLoop in Utils.SafelyRunSynchronously(() => Task.WhenAll(lstTasks), token))
                             dblReturn += doubleLoop;
                         lstTasks.Clear();
                     }
                 }
             }
-            foreach (double doubleLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
+            foreach (double doubleLoop in Utils.SafelyRunSynchronously(() => Task.WhenAll(lstTasks), token))
                 dblReturn += doubleLoop;
             return dblReturn;
         }
@@ -1825,7 +1825,7 @@ namespace Chummer
 
                     case 1:
                         T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
-                        return Utils.RunWithoutThreadLock(() => funcPredicate(objFirstElement), token) ? funcSelector.Invoke(objFirstElement) : 0;
+                        return Utils.SafelyRunSynchronously(() => funcPredicate(objFirstElement), token) ? funcSelector.Invoke(objFirstElement) : 0;
 
                     default:
                         lstTasks = new List<Task<decimal>>(objTemp.Count);
@@ -1850,13 +1850,13 @@ namespace Chummer
 
                     if (blnMoveNext)
                     {
-                        foreach (decimal decimalLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
+                        foreach (decimal decimalLoop in Utils.SafelyRunSynchronously(() => Task.WhenAll(lstTasks), token))
                             decReturn += decimalLoop;
                         lstTasks.Clear();
                     }
                 }
             }
-            foreach (decimal decimalLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
+            foreach (decimal decimalLoop in Utils.SafelyRunSynchronously(() => Task.WhenAll(lstTasks), token))
                 decReturn += decimalLoop;
             return decReturn;
         }
@@ -1873,7 +1873,7 @@ namespace Chummer
 
                     case 1:
                         T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
-                        return Utils.RunWithoutThreadLock(async () => await funcPredicate(objFirstElement).ConfigureAwait(false) ? await funcSelector.Invoke(objFirstElement).ConfigureAwait(false) : 0, token);
+                        return Utils.SafelyRunSynchronously(async () => await funcPredicate(objFirstElement).ConfigureAwait(false) ? await funcSelector.Invoke(objFirstElement).ConfigureAwait(false) : 0, token);
 
                     default:
                         lstTasks = new List<Task<decimal>>(objTemp.Count);
@@ -1898,13 +1898,13 @@ namespace Chummer
 
                     if (blnMoveNext)
                     {
-                        foreach (decimal decimalLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
+                        foreach (decimal decimalLoop in Utils.SafelyRunSynchronously(() => Task.WhenAll(lstTasks), token))
                             decReturn += decimalLoop;
                         lstTasks.Clear();
                     }
                 }
             }
-            foreach (decimal decimalLoop in Utils.RunWithoutThreadLock(() => Task.WhenAll(lstTasks), token))
+            foreach (decimal decimalLoop in Utils.SafelyRunSynchronously(() => Task.WhenAll(lstTasks), token))
                 decReturn += decimalLoop;
             return decReturn;
         }

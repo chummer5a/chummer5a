@@ -16408,7 +16408,7 @@ namespace Chummer
 
                         try
                         {
-                            Utils.RunWithoutThreadLock(() => MoveTreeNode(objSelectedNode, intNewIndex), GenericToken);
+                            Utils.SafelyRunSynchronously(() => MoveTreeNode(objSelectedNode, intNewIndex), GenericToken);
                         }
                         catch (OperationCanceledException)
                         {

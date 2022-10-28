@@ -58,7 +58,7 @@ namespace Chummer.UI.Table
             }
 
             _lstColumns.Add(objColumn);
-            Utils.RunWithoutThreadLock(() => _table.ColumnAdded(objColumn, token).AsTask(), token);
+            Utils.SafelyRunSynchronously(() => _table.ColumnAdded(objColumn, token).AsTask(), token);
         }
 
         public async ValueTask AddAsync(TableColumn<T> objColumn, CancellationToken token = default)

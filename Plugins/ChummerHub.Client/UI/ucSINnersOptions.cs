@@ -338,7 +338,7 @@ namespace ChummerHub.Client.UI
                     lUsername.DoThreadSafe(x => x.Text = mail);
                     //also, since we are logged in in now, refresh the frmCharacterRoster!
                     if (PluginHandler.MainForm != null)
-                        Chummer.Utils.RunWithoutThreadLock(
+                        Chummer.Utils.SafelyRunSynchronously(
                             () => PluginHandler.MainForm.CharacterRoster.RefreshPluginNodesAsync(
                                 PluginHandler.MyPluginHandlerInstance));
                     bLogin.DoThreadSafe(x => x.Text = "Logout");
@@ -414,7 +414,7 @@ namespace ChummerHub.Client.UI
                     SinnersClient client = StaticUtils.GetClient();
                     if (client == null)
                         return null;
-                    ResultAccountGetUserByAuthorization result = Chummer.Utils.RunWithoutThreadLock(() => client.GetUserByAuthorizationAsync());
+                    ResultAccountGetUserByAuthorization result = Chummer.Utils.SafelyRunSynchronously(() => client.GetUserByAuthorizationAsync());
                     if (result == null)
                     {
                         LoginStatus = false;
@@ -737,7 +737,7 @@ namespace ChummerHub.Client.UI
                 if (client != null)
                 {
                     ResultAccountGetRoles myresult
-                        = Chummer.Utils.RunWithoutThreadLock(() => client.GetRolesAsync());
+                        = Chummer.Utils.SafelyRunSynchronously(() => client.GetRolesAsync());
                     Utils.ShowErrorResponseForm(myresult);
                     PluginHandler.MainForm.DoThreadSafe(() =>
                     {

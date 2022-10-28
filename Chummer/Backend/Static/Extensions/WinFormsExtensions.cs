@@ -119,14 +119,15 @@ namespace Chummer
         /// <param name="owner"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        public static async Task<DialogResult> ShowDialogSafeAsync(this Form frmForm, IWin32Window owner = null, CancellationToken token = default)
+        public static Task<DialogResult> ShowDialogSafeAsync(this Form frmForm, IWin32Window owner = null, CancellationToken token = default)
         {
-            token.ThrowIfCancellationRequested();
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<DialogResult>(token);
             // Unit tests cannot use ShowDialog because that will stall them out
             if (frmForm == null)
-                throw new ArgumentNullException(nameof(frmForm));
+                return Task.FromException<DialogResult>(new ArgumentNullException(nameof(frmForm)));
             if (frmForm.IsDisposed)
-                throw new ObjectDisposedException(nameof(frmForm));
+                return Task.FromException<DialogResult>(new ObjectDisposedException(nameof(frmForm)));
             if (!Utils.IsUnitTest)
             {
 #if USE_INVOKE
@@ -182,7 +183,7 @@ namespace Chummer
 
                 return frmForm.ShowDialog(owner);
 #else
-                return await Utils.RunOnMainThreadAsync(() => frmForm.ShowDialog(owner), token).ConfigureAwait(false);
+                return Utils.RunOnMainThreadAsync(() => frmForm.ShowDialog(owner), token);
 #endif
             }
 
@@ -203,7 +204,7 @@ namespace Chummer
 
                 Action<Form> funcBegin = BeginShow;
                 frmForm.BeginInvoke(funcBegin, frmForm);
-                return await objCompletionSource.Task.ConfigureAwait(false);
+                return objCompletionSource.Task;
             }
         }
 
@@ -576,16 +577,17 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         // Note: we cannot do a flag hack here because .GetAwaiter().GetResult() can run into object disposed issues for this special case.
-        public static async Task DoThreadSafeAsync<T>(this T objControl, Action funcToRun, CancellationToken token = default) where T : Control
+        public static Task DoThreadSafeAsync<T>(this T objControl, Action funcToRun, CancellationToken token = default) where T : Control
         {
-            token.ThrowIfCancellationRequested();
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
             if (funcToRun == null)
-                return;
+                return Task.CompletedTask;
             try
             {
                 if (objControl == null)
                 {
-                    await Task.Run(funcToRun, token).ConfigureAwait(false);
+                    return Task.Run(funcToRun, token);
                 }
 #if USE_INVOKE
                 else if (!objControl.Disposing && !objControl.IsDisposed)
@@ -621,7 +623,7 @@ namespace Chummer
                 }
 #else
                 else
-                    await Utils.RunOnMainThreadAsync(funcToRun, token).ConfigureAwait(false);
+                    return Utils.RunOnMainThreadAsync(funcToRun, token);
 #endif
             }
             catch (ObjectDisposedException) // e)
@@ -638,9 +640,9 @@ namespace Chummer
             {
                 //no need to do anything here - actually we can't anyway...
             }
-            catch (OperationCanceledException)
+            catch (OperationCanceledException e)
             {
-                throw;
+                return Task.FromException(e);
             }
             catch (Exception e)
             {
@@ -648,8 +650,9 @@ namespace Chummer
 #if DEBUG
                 Program.ShowMessageBox(objControl, e.ToString());
 #endif
-                throw;
+                return Task.FromException(e);
             }
+            return Task.CompletedTask;
         }
 
         /// <summary>
@@ -660,16 +663,17 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         // Note: we cannot do a flag hack here because .GetAwaiter().GetResult() can run into object disposed issues for this special case.
-        public static async Task DoThreadSafeAsync<T>(this T objControl, Action<T> funcToRun, CancellationToken token = default) where T : Control
+        public static Task DoThreadSafeAsync<T>(this T objControl, Action<T> funcToRun, CancellationToken token = default) where T : Control
         {
-            token.ThrowIfCancellationRequested();
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
             if (funcToRun == null)
-                return;
+                return Task.CompletedTask;
             try
             {
                 if (objControl == null)
                 {
-                    await Task.Run(() => funcToRun(null), token).ConfigureAwait(false);
+                    return Task.Run(() => funcToRun(null), token);
                 }
 #if USE_INVOKE
                 else if (!objControl.Disposing && !objControl.IsDisposed)
@@ -705,7 +709,7 @@ namespace Chummer
                 }
 #else
                 else
-                    await Utils.RunOnMainThreadAsync(() => funcToRun(objControl), token).ConfigureAwait(false);
+                    return Utils.RunOnMainThreadAsync(() => funcToRun(objControl), token);
 #endif
             }
             catch (ObjectDisposedException) // e)
@@ -722,9 +726,9 @@ namespace Chummer
             {
                 //no need to do anything here - actually we can't anyway...
             }
-            catch (OperationCanceledException)
+            catch (OperationCanceledException e)
             {
-                throw;
+                return Task.FromException(e);
             }
             catch (Exception e)
             {
@@ -732,8 +736,9 @@ namespace Chummer
 #if DEBUG
                 Program.ShowMessageBox(objControl, e.ToString());
 #endif
-                throw;
+                return Task.FromException(e);
             }
+            return Task.CompletedTask;
         }
 
         /// <summary>
@@ -744,16 +749,17 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         // Note: we cannot do a flag hack here because .GetAwaiter().GetResult() can run into object disposed issues for this special case.
-        public static async Task DoThreadSafeAsync<T>(this T objControl, Action<CancellationToken> funcToRun, CancellationToken token = default) where T : Control
+        public static Task DoThreadSafeAsync<T>(this T objControl, Action<CancellationToken> funcToRun, CancellationToken token = default) where T : Control
         {
-            token.ThrowIfCancellationRequested();
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
             if (funcToRun == null)
-                return;
+                return Task.CompletedTask;
             try
             {
                 if (objControl == null)
                 {
-                    await Task.Run(() => funcToRun(token), token).ConfigureAwait(false);
+                    return Task.Run(() => funcToRun(token), token);
                 }
 #if USE_INVOKE
                 else if (!objControl.Disposing && !objControl.IsDisposed)
@@ -789,7 +795,7 @@ namespace Chummer
                 }
 #else
                 else
-                    await Utils.RunOnMainThreadAsync(() => funcToRun(token), token).ConfigureAwait(false);
+                    return Utils.RunOnMainThreadAsync(() => funcToRun(token), token);
 #endif
             }
             catch (ObjectDisposedException) // e)
@@ -806,9 +812,9 @@ namespace Chummer
             {
                 //no need to do anything here - actually we can't anyway...
             }
-            catch (OperationCanceledException)
+            catch (OperationCanceledException e)
             {
-                throw;
+                return Task.FromException(e);
             }
             catch (Exception e)
             {
@@ -816,8 +822,9 @@ namespace Chummer
 #if DEBUG
                 Program.ShowMessageBox(objControl, e.ToString());
 #endif
-                throw;
+                return Task.FromException(e);
             }
+            return Task.CompletedTask;
         }
 
         /// <summary>
@@ -828,16 +835,17 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         // Note: we cannot do a flag hack here because .GetAwaiter().GetResult() can run into object disposed issues for this special case.
-        public static async Task DoThreadSafeAsync<T>(this T objControl, Action<T, CancellationToken> funcToRun, CancellationToken token = default) where T : Control
+        public static Task DoThreadSafeAsync<T>(this T objControl, Action<T, CancellationToken> funcToRun, CancellationToken token = default) where T : Control
         {
-            token.ThrowIfCancellationRequested();
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
             if (funcToRun == null)
-                return;
+                return Task.CompletedTask;
             try
             {
                 if (objControl == null)
                 {
-                    await Task.Run(() => funcToRun(null, token), token).ConfigureAwait(false);
+                    return Task.Run(() => funcToRun(null, token), token);
                 }
 #if USE_INVOKE
                 else if (!objControl.Disposing && !objControl.IsDisposed)
@@ -873,7 +881,7 @@ namespace Chummer
                 }
 #else
                 else
-                    await Utils.RunOnMainThreadAsync(() => funcToRun(objControl, token), token).ConfigureAwait(false);
+                    return Utils.RunOnMainThreadAsync(() => funcToRun(objControl, token), token);
 #endif
             }
             catch (ObjectDisposedException) // e)
@@ -890,9 +898,9 @@ namespace Chummer
             {
                 //no need to do anything here - actually we can't anyway...
             }
-            catch (OperationCanceledException)
+            catch (OperationCanceledException e)
             {
-                throw;
+                return Task.FromException(e);
             }
             catch (Exception e)
             {
@@ -900,8 +908,9 @@ namespace Chummer
 #if DEBUG
                 Program.ShowMessageBox(objControl, e.ToString());
 #endif
-                throw;
+                return Task.FromException(e);
             }
+            return Task.CompletedTask;
         }
 
         /// <summary>
@@ -1190,12 +1199,12 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         // Note: we cannot do a flag hack here because .GetAwaiter().GetResult() can run into object disposed issues for this special case.
-        public static async Task<T2> DoThreadSafeFuncAsync<T1, T2>(this T1 objControl, Func<T2> funcToRun, CancellationToken token = default) where T1 : Control
+        public static Task<T2> DoThreadSafeFuncAsync<T1, T2>(this T1 objControl, Func<T2> funcToRun, CancellationToken token = default) where T1 : Control
         {
-            token.ThrowIfCancellationRequested();
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<T2>(token);
             if (funcToRun == null)
-                return default;
-            T2 objReturn = default;
+                return Task.FromResult<T2>(default);
             try
             {
 #if USE_INVOKE
@@ -1239,9 +1248,9 @@ namespace Chummer
                         objReturn = funcToRun.Invoke();
                 }
 #else
-                objReturn = objControl == null
-                    ? await Task.Run(funcToRun, token).ConfigureAwait(false)
-                    : await Utils.RunOnMainThreadAsync(funcToRun, token).ConfigureAwait(false);
+                return objControl == null
+                    ? Task.Run(funcToRun, token)
+                    : Utils.RunOnMainThreadAsync(funcToRun, token);
 #endif
             }
             catch (ObjectDisposedException) // e)
@@ -1254,13 +1263,13 @@ namespace Chummer
                 //we really don't need to care about that.
                 Log.Trace(e);
             }
-            catch (OperationCanceledException)
-            {
-                throw;
-            }
             catch (ThreadAbortException)
             {
                 //no need to do anything here - actually we can't anyway...
+            }
+            catch (OperationCanceledException e)
+            {
+                return Task.FromException<T2>(e);
             }
             catch (Exception e)
             {
@@ -1268,10 +1277,10 @@ namespace Chummer
 #if DEBUG
                 Program.ShowMessageBox(objControl, e.ToString());
 #endif
-                throw;
+                return Task.FromException<T2>(e);
             }
 
-            return objReturn;
+            return Task.FromResult<T2>(default);
         }
 
         /// <summary>
@@ -1282,12 +1291,12 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         // Note: we cannot do a flag hack here because .GetAwaiter().GetResult() can run into object disposed issues for this special case.
-        public static async Task<T2> DoThreadSafeFuncAsync<T1, T2>(this T1 objControl, Func<T1, T2> funcToRun, CancellationToken token = default) where T1 : Control
+        public static Task<T2> DoThreadSafeFuncAsync<T1, T2>(this T1 objControl, Func<T1, T2> funcToRun, CancellationToken token = default) where T1 : Control
         {
-            token.ThrowIfCancellationRequested();
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<T2>(token);
             if (funcToRun == null)
-                return default;
-            T2 objReturn = default;
+                return Task.FromResult<T2>(default);
             try
             {
 #if USE_INVOKE
@@ -1331,9 +1340,9 @@ namespace Chummer
                         objReturn = funcToRun.Invoke(myControlCopy);
                 }
 #else
-                objReturn = objControl == null
-                    ? await Task.Run(() => funcToRun(null), token).ConfigureAwait(false)
-                    : await Utils.RunOnMainThreadAsync(() => funcToRun(objControl), token).ConfigureAwait(false);
+                return objControl == null
+                    ? Task.Run(() => funcToRun(null), token)
+                    : Utils.RunOnMainThreadAsync(() => funcToRun(objControl), token);
 #endif
             }
             catch (ObjectDisposedException) // e)
@@ -1350,9 +1359,9 @@ namespace Chummer
             {
                 //no need to do anything here - actually we can't anyway...
             }
-            catch (OperationCanceledException)
+            catch (OperationCanceledException e)
             {
-                throw;
+                return Task.FromException<T2>(e);
             }
             catch (Exception e)
             {
@@ -1360,10 +1369,10 @@ namespace Chummer
 #if DEBUG
                 Program.ShowMessageBox(objControl, e.ToString());
 #endif
-                throw;
+                return Task.FromException<T2>(e);
             }
 
-            return objReturn;
+            return Task.FromResult<T2>(default);
         }
 
         /// <summary>
@@ -1374,12 +1383,12 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         // Note: we cannot do a flag hack here because .GetAwaiter().GetResult() can run into object disposed issues for this special case.
-        public static async Task<T2> DoThreadSafeFuncAsync<T1, T2>(this T1 objControl, Func<CancellationToken, T2> funcToRun, CancellationToken token = default) where T1 : Control
+        public static Task<T2> DoThreadSafeFuncAsync<T1, T2>(this T1 objControl, Func<CancellationToken, T2> funcToRun, CancellationToken token = default) where T1 : Control
         {
-            token.ThrowIfCancellationRequested();
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<T2>(token);
             if (funcToRun == null)
-                return default;
-            T2 objReturn = default;
+                return Task.FromResult<T2>(default);
             try
             {
 #if USE_INVOKE
@@ -1423,9 +1432,9 @@ namespace Chummer
                         objReturn = funcToRun.Invoke(token);
                 }
 #else
-                objReturn = objControl == null
-                    ? await Task.Run(() => funcToRun(token), token).ConfigureAwait(false)
-                    : await Utils.RunOnMainThreadAsync(() => funcToRun(token), token).ConfigureAwait(false);
+                return objControl == null
+                    ? Task.Run(() => funcToRun(token), token)
+                    : Utils.RunOnMainThreadAsync(() => funcToRun(token), token);
 #endif
             }
             catch (ObjectDisposedException) // e)
@@ -1442,9 +1451,9 @@ namespace Chummer
             {
                 //no need to do anything here - actually we can't anyway...
             }
-            catch (OperationCanceledException)
+            catch (OperationCanceledException e)
             {
-                throw;
+                return Task.FromException<T2>(e);
             }
             catch (Exception e)
             {
@@ -1452,10 +1461,10 @@ namespace Chummer
 #if DEBUG
                 Program.ShowMessageBox(objControl, e.ToString());
 #endif
-                throw;
+                return Task.FromException<T2>(e);
             }
 
-            return objReturn;
+            return Task.FromResult<T2>(default);
         }
 
         /// <summary>
@@ -1466,12 +1475,12 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         // Note: we cannot do a flag hack here because .GetAwaiter().GetResult() can run into object disposed issues for this special case.
-        public static async Task<T2> DoThreadSafeFuncAsync<T1, T2>(this T1 objControl, Func<T1, CancellationToken, T2> funcToRun, CancellationToken token = default) where T1 : Control
+        public static Task<T2> DoThreadSafeFuncAsync<T1, T2>(this T1 objControl, Func<T1, CancellationToken, T2> funcToRun, CancellationToken token = default) where T1 : Control
         {
-            token.ThrowIfCancellationRequested();
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<T2>(token);
             if (funcToRun == null)
-                return default;
-            T2 objReturn = default;
+                return Task.FromResult<T2>(default);
             try
             {
 #if USE_INVOKE
@@ -1515,9 +1524,9 @@ namespace Chummer
                         objReturn = funcToRun.Invoke(myControlCopy, token);
                 }
 #else
-                objReturn = objControl == null
-                    ? await Task.Run(() => funcToRun(null, token), token).ConfigureAwait(false)
-                    : await Utils.RunOnMainThreadAsync(() => funcToRun(objControl, token), token).ConfigureAwait(false);
+                return objControl == null
+                    ? Task.Run(() => funcToRun(null, token), token)
+                    : Utils.RunOnMainThreadAsync(() => funcToRun(objControl, token), token);
 #endif
             }
             catch (ObjectDisposedException) // e)
@@ -1534,9 +1543,9 @@ namespace Chummer
             {
                 //no need to do anything here - actually we can't anyway...
             }
-            catch (OperationCanceledException)
+            catch (OperationCanceledException e)
             {
-                throw;
+                return Task.FromException<T2>(e);
             }
             catch (Exception e)
             {
@@ -1544,10 +1553,10 @@ namespace Chummer
 #if DEBUG
                 Program.ShowMessageBox(objControl, e.ToString());
 #endif
-                throw;
+                return Task.FromException<T2>(e);
             }
 
-            return objReturn;
+            return Task.FromResult<T2>(default);
         }
 
         /// <summary>
@@ -1628,7 +1637,7 @@ namespace Chummer
                     IntPtr _ = objControl.Handle; // accessing Handle forces its creation
                 }
             }, token);
-            T3 objData = Utils.RunWithoutThreadLock(() => funcAsyncDataGetter.Invoke(objDataSource), token);
+            T3 objData = Utils.SafelyRunSynchronously(() => funcAsyncDataGetter.Invoke(objDataSource), token);
             objControl.DoThreadSafe((x, y) => funcControlSetter.Invoke(x, objData), objGetterToken);
             objDataSource.PropertyChanged += OnPropertyChangedAsync;
             Utils.RunOnMainThread(() => objControl.Disposed += (o, args) => objDataSource.PropertyChanged -= OnPropertyChangedAsync, token);

@@ -1251,7 +1251,7 @@ namespace Chummer.Backend.Attributes
         /// </summary>
         public int CalculatedTotalValue(bool blnIncludeCyberlimbs = true, CancellationToken token = default)
         {
-            return Utils.RunWithoutThreadLock(() => CalculatedTotalValueCore(true, blnIncludeCyberlimbs, token));
+            return Utils.SafelyRunSynchronously(() => CalculatedTotalValueCore(true, blnIncludeCyberlimbs, token));
         }
 
         /// <summary>

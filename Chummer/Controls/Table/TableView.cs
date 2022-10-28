@@ -48,149 +48,155 @@ namespace Chummer.UI.Table
                     _table.SuspendLayout();
                     try
                     {
-                        int[] aintSharedWidths = _table._columns.Count > GlobalSettings.MaxStackLimit
-                            ? ArrayPool<int>.Shared.Rent(_table._columns.Count)
+                        int intCount = _table._columns.Count;
+                        int[] aintSharedWidths = intCount > GlobalSettings.MaxStackLimit
+                            ? ArrayPool<int>.Shared.Rent(intCount)
                             : null;
-                        // ReSharper disable once MergeConditionalExpression
+                        try
+                        {
+                            // ReSharper disable once MergeConditionalExpression
 #pragma warning disable IDE0029 // Use coalesce expression
-                        Span<int> widths = aintSharedWidths != null
-                            ? aintSharedWidths
-                            : stackalloc int[_table._columns.Count];
+                            Span<int> widths = aintSharedWidths != null
+                                ? aintSharedWidths
+                                : stackalloc int[intCount];
 #pragma warning restore IDE0029 // Use coalesce expression
 
-                        int y = 0;
+                            int y = 0;
 
-                        // determine minimal widths
-                        for (int i = 0; i < widths.Length; i++)
-                        {
-                            Size headerMinSize = _table._lstCells[i].header.MinimumSize;
-                            int width = Math.Max(_table._columns[i].MinWidth, headerMinSize.Width);
-                            if (y < headerMinSize.Height)
+                            // determine minimal widths
+                            for (int i = 0; i < intCount; i++)
                             {
-                                y = headerMinSize.Height;
-                            }
-
-                            widths[i] = width;
-                        }
-
-                        for (int i = 0; i < _table._lstRowCells.Count; i++)
-                        {
-                            TableRow row = _table._lstRowCells[i];
-                            if (row.Parent != null)
-                            {
-                                for (int j = 0; j < widths.Length; j++)
+                                Size headerMinSize = _table._lstCells[i].header.MinimumSize;
+                                int width = Math.Max(_table._columns[i].MinWidth, headerMinSize.Width);
+                                if (y < headerMinSize.Height)
                                 {
-                                    int w = _table._lstCells[j].cells[i].MinimumSize.Width;
-                                    if (widths[j] < w)
-                                    {
-                                        widths[j] = w;
-                                    }
+                                    y = headerMinSize.Height;
                                 }
+
+                                widths[i] = width;
                             }
-                        }
 
-                        int widthSum = 0;
-                        foreach (int w in widths)
-                        {
-                            widthSum += w;
-                        }
-
-                        if (widthSum > _table.Width)
-                        {
-                            // modify container size if content does not fit
-                            _table.Width = widthSum;
-                        }
-                        else
-                        {
-                            // grow columns to preferred sizes starting at the leftmost
-                            int delta = _table.Width - widthSum;
-                            for (int i = 0; delta > 0 && i < widths.Length; i++)
+                            for (int i = 0; i < _table._lstRowCells.Count; i++)
                             {
-                                int w = widths[i];
-                                int pW = _table._columns[i].PrefWidth;
-                                if (w < pW)
+                                TableRow row = _table._lstRowCells[i];
+                                if (row.Parent != null)
                                 {
-                                    int diff = pW - w;
-                                    if (delta > diff)
+                                    for (int j = 0; j < widths.Length; j++)
                                     {
-                                        widths[i] = pW;
-                                        delta -= diff;
-                                    }
-                                    else
-                                    {
-                                        widths[i] = w + delta;
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-
-                        int x = 0;
-
-                        // layout headers
-                        for (int i = 0; i < widths.Length; i++)
-                        {
-                            Control header = _table._lstCells[i].header;
-                            header.Location = new Point(x, 0);
-                            header.Size = new Size(widths[i], y);
-                            x += widths[i];
-                        }
-
-                        int rowIndex = 0;
-
-                        // layout cells
-                        foreach (int index in _table._lstPermutation)
-                        {
-                            x = 0;
-                            TableRow row = _table._lstRowCells[index];
-                            if (row.Parent != null)
-                            {
-                                row.SuspendLayout();
-                                try
-                                {
-                                    row.Index = rowIndex;
-                                    row.Selected = (_table._intSelectedIndex == index);
-                                    row.Location = new Point(0, y);
-                                    row.Width = widthSum;
-                                    int dy = 0;
-                                    for (int i = 0; i < _table._columns.Count; i++)
-                                    {
-                                        TableCell cell = _table._lstCells[i].cells[index];
-                                        cell.Location = new Point(x, row.Margin.Top);
-                                        int intHeight = Math.Max(cell.Height, cell.PreferredSize.Height);
-                                        if (dy < intHeight)
+                                        int w = _table._lstCells[j].cells[i].MinimumSize.Width;
+                                        if (widths[j] < w)
                                         {
-                                            dy = intHeight;
+                                            widths[j] = w;
+                                        }
+                                    }
+                                }
+                            }
+
+                            int widthSum = 0;
+                            foreach (int w in widths)
+                            {
+                                widthSum += w;
+                            }
+
+                            if (widthSum > _table.Width)
+                            {
+                                // modify container size if content does not fit
+                                _table.Width = widthSum;
+                            }
+                            else
+                            {
+                                // grow columns to preferred sizes starting at the leftmost
+                                int delta = _table.Width - widthSum;
+                                for (int i = 0; delta > 0 && i < widths.Length; i++)
+                                {
+                                    int w = widths[i];
+                                    int pW = _table._columns[i].PrefWidth;
+                                    if (w < pW)
+                                    {
+                                        int diff = pW - w;
+                                        if (delta > diff)
+                                        {
+                                            widths[i] = pW;
+                                            delta -= diff;
+                                        }
+                                        else
+                                        {
+                                            widths[i] = w + delta;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+
+                            int x = 0;
+
+                            // layout headers
+                            for (int i = 0; i < widths.Length; i++)
+                            {
+                                Control header = _table._lstCells[i].header;
+                                header.Location = new Point(x, 0);
+                                header.Size = new Size(widths[i], y);
+                                x += widths[i];
+                            }
+
+                            int rowIndex = 0;
+
+                            // layout cells
+                            foreach (int index in _table._lstPermutation)
+                            {
+                                x = 0;
+                                TableRow row = _table._lstRowCells[index];
+                                if (row.Parent != null)
+                                {
+                                    row.SuspendLayout();
+                                    try
+                                    {
+                                        row.Index = rowIndex;
+                                        row.Selected = (_table._intSelectedIndex == index);
+                                        row.Location = new Point(0, y);
+                                        row.Width = widthSum;
+                                        int dy = 0;
+                                        for (int i = 0; i < _table._columns.Count; i++)
+                                        {
+                                            TableCell cell = _table._lstCells[i].cells[index];
+                                            cell.Location = new Point(x, row.Margin.Top);
+                                            int intHeight = Math.Max(cell.Height, cell.PreferredSize.Height);
+                                            if (dy < intHeight)
+                                            {
+                                                dy = intHeight;
+                                            }
+
+                                            x += widths[i];
                                         }
 
-                                        x += widths[i];
-                                    }
+                                        for (int i = 0; i < _table._columns.Count; i++)
+                                        {
+                                            TableCell cell = _table._lstCells[i].cells[index];
+                                            cell.UpdateAvailableSize(widths[i], dy);
+                                        }
 
-                                    for (int i = 0; i < _table._columns.Count; i++)
+                                        row.Height = dy + row.Margin.Top + row.Margin.Bottom;
+                                    }
+                                    finally
                                     {
-                                        TableCell cell = _table._lstCells[i].cells[index];
-                                        cell.UpdateAvailableSize(widths[i], dy);
+                                        row.ResumeLayout(false);
                                     }
 
-                                    row.Height = dy + row.Margin.Top + row.Margin.Bottom;
+                                    y += row.Height;
+                                    rowIndex++;
                                 }
-                                finally
-                                {
-                                    row.ResumeLayout(false);
-                                }
+                            }
 
-                                y += row.Height;
-                                rowIndex++;
+                            if (y > _table.Height)
+                            {
+                                _table.Height = y;
                             }
                         }
-
-                        if (y > _table.Height)
+                        finally
                         {
-                            _table.Height = y;
+                            if (aintSharedWidths != null)
+                                ArrayPool<int>.Shared.Return(aintSharedWidths);
                         }
-
-                        if (aintSharedWidths != null)
-                            ArrayPool<int>.Shared.Return(aintSharedWidths);
                     }
                     finally
                     {
@@ -301,7 +307,7 @@ namespace Chummer.UI.Table
             {
                 Func<T, T, Task<int>> comparison = _sortColumn.CreateSorter();
 
-                _lstPermutation.Sort((i1, i2) => Utils.RunWithoutThreadLock(
+                _lstPermutation.Sort((i1, i2) => Utils.SafelyRunSynchronously(
                                          async () => await comparison(await Items.GetValueAtAsync(i1).ConfigureAwait(false),
                                                                       await Items.GetValueAtAsync(i2).ConfigureAwait(false)).ConfigureAwait(false)));
                 if (_eSortType == SortOrder.Descending)
@@ -767,7 +773,7 @@ namespace Chummer.UI.Table
                                 {
                                     int j1 = j;
                                     TableCell cell
-                                        = Utils.RunWithoutThreadLock(() => CreateCell(value[j1], column).AsTask());
+                                        = Utils.SafelyRunSynchronously(() => CreateCell(value[j1], column).AsTask());
                                     cells.Add(cell);
                                     _lstRowCells[j1].Controls.Add(cell);
                                 }
@@ -803,11 +809,11 @@ namespace Chummer.UI.Table
                         for (int i = 0; i < intLimit; i++)
                         {
                             int i1 = i;
-                            Utils.RunWithoutThreadLock(() => UpdateRow(i1, value[i1]).AsTask());
+                            Utils.SafelyRunSynchronously(() => UpdateRow(i1, value[i1]).AsTask());
                         }
 
                         Sort(false);
-                        Utils.RunWithoutThreadLock(() => DoFilter().AsTask());
+                        Utils.SafelyRunSynchronously(() => DoFilter().AsTask());
                     }
                     finally
                     {

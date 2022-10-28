@@ -3520,7 +3520,7 @@ namespace Chummer
                             }
                         }
 
-                        Utils.RunWithoutThreadLock(async () =>
+                        Utils.SafelyRunSynchronously(async () =>
                         {
                             if (objCharacterLoadingTask?.IsCompleted == false)
                                 await objCharacterLoadingTask.ConfigureAwait(false);
@@ -3533,7 +3533,7 @@ namespace Chummer
                     }
 
                     if (lstCharactersToLoad.Count > 0)
-                        Utils.RunWithoutThreadLock(
+                        Utils.SafelyRunSynchronously(
                             () => OpenCharacterList(lstCharactersToLoad, token: _objGenericToken), _objGenericToken);
                 }
                 catch (OperationCanceledException)

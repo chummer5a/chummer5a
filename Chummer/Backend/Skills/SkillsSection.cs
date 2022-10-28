@@ -738,7 +738,7 @@ namespace Chummer.Backend.Skills
 
         internal void Load(XmlNode xmlSkillNode, bool blnLegacy, CustomActivity parentActivity, CancellationToken token = default)
         {
-            Utils.RunWithoutThreadLock(() => LoadCoreAsync(true, xmlSkillNode, blnLegacy, parentActivity, token), token);
+            Utils.SafelyRunSynchronously(() => LoadCoreAsync(true, xmlSkillNode, blnLegacy, parentActivity, token), token);
         }
 
         internal Task LoadAsync(XmlNode xmlSkillNode, bool blnLegacy, CustomActivity parentActivity, CancellationToken token = default)

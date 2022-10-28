@@ -172,29 +172,37 @@ namespace Chummer.Controls.Shared
             objTTypeList.Sort((x, y) => _comparison.Compare(x.Item1, y.Item1));
 
             // Array is temporary and of primitives, so stackalloc used instead of List.ToArray() (which would put the array on the heap) when possible
-            int[] aintSharedOldDisplayIndexes = _lstDisplayIndex.Count > GlobalSettings.MaxStackLimit ? ArrayPool<int>.Shared.Rent(_lstDisplayIndex.Count) : null;
-            // ReSharper disable once MergeConditionalExpression
-#pragma warning disable IDE0029 // Use coalesce expression
-            Span<int> aintOldDisplayIndex = aintSharedOldDisplayIndexes != null
-                ? aintSharedOldDisplayIndexes
-                : stackalloc int[_lstDisplayIndex.Count];
-#pragma warning restore IDE0029 // Use coalesce expression
-            for (int i = 0; i < aintOldDisplayIndex.Length; ++i)
-                aintOldDisplayIndex[i] = _lstDisplayIndex[i];
-            _lstDisplayIndex.Clear();
-            _lstDisplayIndex.AddRange(objTTypeList.Select(x => x.Item2));
-
-            if (_ablnRendered == null || _ablnRendered.Length != _lstDisplayIndex.Count)
-                _ablnRendered = new bool[_lstDisplayIndex.Count];
-            else
+            int[] aintSharedOldDisplayIndexes = _lstDisplayIndex.Count > GlobalSettings.MaxStackLimit
+                ? ArrayPool<int>.Shared.Rent(_lstDisplayIndex.Count)
+                : null;
+            try
             {
-                for (int i = 0; i < _ablnRendered.Length; ++i)
+                // ReSharper disable once MergeConditionalExpression
+#pragma warning disable IDE0029 // Use coalesce expression
+                Span<int> aintOldDisplayIndex = aintSharedOldDisplayIndexes != null
+                    ? aintSharedOldDisplayIndexes
+                    : stackalloc int[_lstDisplayIndex.Count];
+#pragma warning restore IDE0029 // Use coalesce expression
+                for (int i = 0; i < _lstDisplayIndex.Count; ++i)
+                    aintOldDisplayIndex[i] = _lstDisplayIndex[i];
+                _lstDisplayIndex.Clear();
+                _lstDisplayIndex.AddRange(objTTypeList.Select(x => x.Item2));
+
+                if (_ablnRendered == null || _ablnRendered.Length != _lstDisplayIndex.Count)
+                    _ablnRendered = new bool[_lstDisplayIndex.Count];
+                else
                 {
-                    _ablnRendered[i] &= _lstDisplayIndex[i] == aintOldDisplayIndex[i];
+                    for (int i = 0; i < _ablnRendered.Length; ++i)
+                    {
+                        _ablnRendered[i] &= _lstDisplayIndex[i] == aintOldDisplayIndex[i];
+                    }
                 }
             }
-            if (aintSharedOldDisplayIndexes != null)
-                ArrayPool<int>.Shared.Return(aintSharedOldDisplayIndexes);
+            finally
+            {
+                if (aintSharedOldDisplayIndexes != null)
+                    ArrayPool<int>.Shared.Return(aintSharedOldDisplayIndexes);
+            }
         }
 
         private void LoadScreenContent()
