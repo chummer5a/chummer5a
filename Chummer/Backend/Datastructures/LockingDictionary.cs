@@ -658,8 +658,17 @@ namespace Chummer
         {
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                if (_dicData.TryGetValue(key, out TValue objValue) && objValue.Equals(value))
-                    return;
+                if (_dicData.TryGetValue(key, out TValue objValue))
+                {
+                    if (objValue == null)
+                    {
+                        if (value == null)
+                            return;
+                    }
+                    else if (objValue.Equals(value))
+                        return;
+                }
+
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {

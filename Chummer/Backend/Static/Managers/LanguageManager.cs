@@ -35,7 +35,6 @@ namespace Chummer
 {
     public static class LanguageManager
     {
-        private static readonly LockingDictionary<string, DebuggableSemaphoreSlim> s_DicLanguageDataLockers = new LockingDictionary<string, DebuggableSemaphoreSlim>();
         private static readonly LockingDictionary<string, LanguageData> s_DicLanguageData = new LockingDictionary<string, LanguageData>();
         private static readonly LockingDictionary<string, string> s_DicEnglishStrings = new LockingDictionary<string, string>();
         public static IAsyncReadOnlyDictionary<string, LanguageData> LoadedLanguageData => s_DicLanguageData;
@@ -193,7 +192,8 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool LoadLanguage(string strLanguage, CancellationToken token = default)
         {
-            return Utils.JoinableTaskFactory.Run(() => LoadLanguageCoreAsync(true, strLanguage, token));
+            return strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
+                   || Utils.RunWithoutThreadLock(() => LoadLanguageCoreAsync(true, strLanguage, token));
         }
 
         /// <summary>
@@ -223,91 +223,86 @@ namespace Chummer
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return true;
             string strKey = strLanguage.ToUpperInvariant();
-            DebuggableSemaphoreSlim objLockerObject;
+
+            LanguageData objNewLanguage;
             if (blnSync)
             {
-                // ReSharper disable once MethodHasAsyncOverload
-                while (!s_DicLanguageDataLockers.TryGetValue(strKey, out objLockerObject))
+                // ReSharper disable MethodHasAsyncOverload
+                // ReSharper disable MethodHasAsyncOverloadWithCancellation
+                bool blnSuccess = s_DicLanguageData.TryGetValue(strKey, out objNewLanguage);
+                while (!blnSuccess)
                 {
-                    objLockerObject = Utils.SemaphorePool.Get();
-                    bool blnSuccess = false;
-                    // ReSharper disable once MethodHasAsyncOverload
-                    try
+                    if (!s_DicLanguageData.TryAdd(strKey, null))
                     {
-                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                        blnSuccess = s_DicLanguageDataLockers.TryAdd(strKey, objLockerObject);
-                        if (blnSuccess)
-                            break;
+                        blnSuccess = s_DicLanguageData.TryGetValue(strKey, out objNewLanguage);
                     }
-                    finally
+                    else
                     {
-                        if (!blnSuccess)
-                            Utils.SemaphorePool.Return(ref objLockerObject);
+                        objNewLanguage = new LanguageData(strLanguage);
+                        s_DicLanguageData[strKey] = objNewLanguage;
+                        blnSuccess = true;
                     }
-                    Utils.SafeSleep(token);
                 }
+
+                // If this is null, a different thread is currently loading the language, so spin until it's done
+                while (objNewLanguage == null)
+                {
+                    Utils.SafeSleep(token);
+                    blnSuccess = s_DicLanguageData.TryGetValue(strKey, out objNewLanguage);
+                    while (!blnSuccess)
+                    {
+                        if (!s_DicLanguageData.TryAdd(strKey, null))
+                        {
+                            blnSuccess = s_DicLanguageData.TryGetValue(strKey, out objNewLanguage);
+                        }
+                        else
+                        {
+                            objNewLanguage = new LanguageData(strLanguage);
+                            s_DicLanguageData[strKey] = objNewLanguage;
+                            blnSuccess = true;
+                        }
+                    }
+                }
+                // ReSharper restore MethodHasAsyncOverloadWithCancellation
+                // ReSharper restore MethodHasAsyncOverload
             }
             else
             {
                 bool blnSuccess;
-                (blnSuccess, objLockerObject) = await s_DicLanguageDataLockers.TryGetValueAsync(strKey, token).ConfigureAwait(false);
+                (blnSuccess, objNewLanguage) = await s_DicLanguageData.TryGetValueAsync(strKey, token).ConfigureAwait(false);
                 while (!blnSuccess)
                 {
-                    objLockerObject = Utils.SemaphorePool.Get();
-                    try
+                    if (!await s_DicLanguageData.TryAddAsync(strKey, null, token).ConfigureAwait(false))
                     {
-                        blnSuccess = await s_DicLanguageDataLockers.TryAddAsync(strKey, objLockerObject, token).ConfigureAwait(false);
-                        if (blnSuccess)
-                            break;
+                        (blnSuccess, objNewLanguage) = await s_DicLanguageData.TryGetValueAsync(strKey, token).ConfigureAwait(false);
                     }
-                    finally
+                    else
                     {
-                        if (!blnSuccess)
-                            Utils.SemaphorePool.Return(ref objLockerObject);
-                    }
-                    await Utils.SafeSleepAsync(token).ConfigureAwait(false);
-                    (blnSuccess, objLockerObject) = await s_DicLanguageDataLockers.TryGetValueAsync(strKey, token).ConfigureAwait(false);
-                }
-            }
-
-            LanguageData objNewLanguage;
-            if (blnSync)
-                // ReSharper disable once MethodHasAsyncOverload
-                objLockerObject.SafeWait(token);
-            else
-                await objLockerObject.WaitAsync(token).ConfigureAwait(false);
-            try
-            {
-                if (blnSync)
-                {
-                    // ReSharper disable MethodHasAsyncOverload
-                    // ReSharper disable MethodHasAsyncOverloadWithCancellation
-                    if (!s_DicLanguageData.TryGetValue(strKey, out objNewLanguage) || objNewLanguage == null)
-                    {
-                        if (s_DicLanguageData.ContainsKey(strKey))
-                            s_DicLanguageData.Remove(strKey);
-                        objNewLanguage = new LanguageData(strLanguage);
-                        s_DicLanguageData.Add(strKey, objNewLanguage);
-                    }
-                    // ReSharper restore MethodHasAsyncOverloadWithCancellation
-                    // ReSharper restore MethodHasAsyncOverload
-                }
-                else
-                {
-                    bool blnSuccess;
-                    (blnSuccess, objNewLanguage) = await s_DicLanguageData.TryGetValueAsync(strKey, token).ConfigureAwait(false);
-                    if (!blnSuccess || objNewLanguage == null)
-                    {
-                        if (await s_DicLanguageData.ContainsKeyAsync(strKey, token).ConfigureAwait(false))
-                            await s_DicLanguageData.RemoveAsync(strKey, token).ConfigureAwait(false);
                         objNewLanguage = await Task.Run(() => new LanguageData(strLanguage), token).ConfigureAwait(false);
-                        await s_DicLanguageData.AddAsync(strKey, objNewLanguage, token).ConfigureAwait(false);
+                        await s_DicLanguageData.SetValueAtAsync(strKey, objNewLanguage, token).ConfigureAwait(false);
+                        blnSuccess = true;
                     }
                 }
-            }
-            finally
-            {
-                objLockerObject.Release();
+
+                // If this is null, a different thread is currently loading the language, so spin until it's done
+                while (objNewLanguage == null)
+                {
+                    await Utils.SafeSleepAsync(token);
+                    (blnSuccess, objNewLanguage) = await s_DicLanguageData.TryGetValueAsync(strKey, token).ConfigureAwait(false);
+                    while (!blnSuccess)
+                    {
+                        if (!await s_DicLanguageData.TryAddAsync(strKey, null, token).ConfigureAwait(false))
+                        {
+                            (blnSuccess, objNewLanguage) = await s_DicLanguageData.TryGetValueAsync(strKey, token).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            objNewLanguage = await Task.Run(() => new LanguageData(strLanguage), token).ConfigureAwait(false);
+                            await s_DicLanguageData.SetValueAtAsync(strKey, objNewLanguage, token).ConfigureAwait(false);
+                            blnSuccess = true;
+                        }
+                    }
+                }
             }
 
             if (!string.IsNullOrEmpty(objNewLanguage.ErrorMessage))
