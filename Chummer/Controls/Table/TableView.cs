@@ -301,7 +301,7 @@ namespace Chummer.UI.Table
             {
                 Func<T, T, Task<int>> comparison = _sortColumn.CreateSorter();
 
-                _lstPermutation.Sort((i1, i2) => Utils.JoinableTaskFactory.Run(
+                _lstPermutation.Sort((i1, i2) => Utils.RunWithoutThreadLock(
                                          async () => await comparison(await Items.GetValueAtAsync(i1).ConfigureAwait(false),
                                                                       await Items.GetValueAtAsync(i2).ConfigureAwait(false)).ConfigureAwait(false)));
                 if (_eSortType == SortOrder.Descending)
@@ -767,7 +767,7 @@ namespace Chummer.UI.Table
                                 {
                                     int j1 = j;
                                     TableCell cell
-                                        = Utils.JoinableTaskFactory.Run(() => CreateCell(value[j1], column).AsTask());
+                                        = Utils.RunWithoutThreadLock(() => CreateCell(value[j1], column).AsTask());
                                     cells.Add(cell);
                                     _lstRowCells[j1].Controls.Add(cell);
                                 }
@@ -803,11 +803,11 @@ namespace Chummer.UI.Table
                         for (int i = 0; i < intLimit; i++)
                         {
                             int i1 = i;
-                            Utils.JoinableTaskFactory.Run(() => UpdateRow(i1, value[i1]).AsTask());
+                            Utils.RunWithoutThreadLock(() => UpdateRow(i1, value[i1]).AsTask());
                         }
 
                         Sort(false);
-                        Utils.JoinableTaskFactory.Run(() => DoFilter().AsTask());
+                        Utils.RunWithoutThreadLock(() => DoFilter().AsTask());
                     }
                     finally
                     {

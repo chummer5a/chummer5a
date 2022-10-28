@@ -70,7 +70,7 @@ namespace Chummer
         public static bool ProcessFilterOperationNode(this XPathNavigator xmlParentNode,
                                                       XPathNavigator xmlOperationNode, bool blnIsOrNode)
         {
-            return Utils.JoinableTaskFactory.Run(() => ProcessFilterOperationNodeCoreAsync(true, xmlParentNode, xmlOperationNode, blnIsOrNode));
+            return Utils.RunWithoutThreadLock(() => ProcessFilterOperationNodeCoreAsync(true, xmlParentNode, xmlOperationNode, blnIsOrNode));
         }
 
         /// <summary>

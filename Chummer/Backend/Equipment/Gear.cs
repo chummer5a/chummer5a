@@ -2409,7 +2409,7 @@ namespace Chummer.Backend.Equipment
 
         public XmlNode GetNode(string strLanguage, string strName, string strCategory, CancellationToken token = default)
         {
-            return Utils.JoinableTaskFactory.Run(() => GetNodeCoreAsync(true, strLanguage, strName, strCategory, token));
+            return Utils.RunWithoutThreadLock(() => GetNodeCoreAsync(true, strLanguage, strName, strCategory, token));
         }
 
         public Task<XmlNode> GetNodeAsync(string strLanguage, string strName, string strCategory, CancellationToken token = default)
@@ -2456,7 +2456,7 @@ namespace Chummer.Backend.Equipment
 
         public XPathNavigator GetNodeXPath(string strLanguage, string strName, string strCategory, CancellationToken token = default)
         {
-            return Utils.JoinableTaskFactory.Run(() => GetNodeXPathCoreAsync(true, strLanguage, strName, strCategory, token));
+            return Utils.RunWithoutThreadLock(() => GetNodeXPathCoreAsync(true, strLanguage, strName, strCategory, token));
         }
 
         public Task<XPathNavigator> GetNodeXPathAsync(string strLanguage, string strName, string strCategory, CancellationToken token = default)

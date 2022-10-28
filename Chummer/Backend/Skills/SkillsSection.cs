@@ -674,7 +674,7 @@ namespace Chummer.Backend.Skills
                             return "Professional";
                         return (await xmlCategories.SelectSingleNodeAndCacheExpressionAsync("category[@type = \"knowledge\"]", token).ConfigureAwait(false))?.Value
                                ?? "Professional";
-                    }, Utils.JoinableTaskFactory);
+                    });
                 }
 
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
@@ -738,7 +738,7 @@ namespace Chummer.Backend.Skills
 
         internal void Load(XmlNode xmlSkillNode, bool blnLegacy, CustomActivity parentActivity, CancellationToken token = default)
         {
-            Utils.JoinableTaskFactory.Run(() => LoadCoreAsync(true, xmlSkillNode, blnLegacy, parentActivity, token));
+            Utils.RunWithoutThreadLock(() => LoadCoreAsync(true, xmlSkillNode, blnLegacy, parentActivity, token), token);
         }
 
         internal Task LoadAsync(XmlNode xmlSkillNode, bool blnLegacy, CustomActivity parentActivity, CancellationToken token = default)

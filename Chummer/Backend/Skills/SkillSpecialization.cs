@@ -29,7 +29,7 @@ namespace Chummer.Backend.Skills
     /// <summary>
     /// Type of Specialization
     /// </summary>
-    public sealed class SkillSpecialization : IHasName, IHasXmlDataNode, IDisposable
+    public sealed class SkillSpecialization : IHasName, IHasXmlDataNode, IDisposable, IAsyncDisposable
     {
         private Guid _guiID;
         private int _intNameLoaded;
@@ -234,7 +234,7 @@ namespace Chummer.Backend.Skills
                                     Utils.BreakIfDebug();
                                     throw new InvalidOperationException();
                                 }
-                                _strName = Utils.JoinableTaskFactory.Run(() => _tskNameLoader);
+                                _strName = Utils.RunWithoutThreadLock(() => _tskNameLoader);
                                 intOld = Interlocked.CompareExchange(ref _intNameLoaded, 3, 2);
                             }
                             else
@@ -269,7 +269,7 @@ namespace Chummer.Backend.Skills
                                                                    value, GlobalSettings.Language, "skills.xml",
                                                                    objToken), objToken));
                 if (tskOld != null)
-                    Utils.JoinableTaskFactory.Run(() => tskOld);
+                    Utils.RunWithoutThreadLock(() => tskOld);
                 Interlocked.CompareExchange(ref _intNameLoaded, 1, 0);
                 _objCachedMyXmlNode = null;
                 _objCachedMyXPathNode = null;
@@ -372,9 +372,21 @@ namespace Chummer.Backend.Skills
             }
             Task<string> tskOld = Interlocked.Exchange(ref _tskNameLoader, null);
             if (tskOld != null)
+                Utils.RunWithoutThreadLock(() => tskOld);
+        }
+
+        /// <inheritdoc />
+        public async ValueTask DisposeAsync()
+        {
+            CancellationTokenSource objSource = _objNameLoaderCancellationTokenSource;
+            if (objSource != null)
             {
-                Utils.JoinableTaskFactory.Run(() => tskOld);
+                objSource.Cancel(false);
+                objSource.Dispose();
             }
+            Task<string> tskOld = Interlocked.Exchange(ref _tskNameLoader, null);
+            if (tskOld != null)
+                await tskOld;
         }
     }
 }

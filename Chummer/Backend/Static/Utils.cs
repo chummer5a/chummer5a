@@ -475,7 +475,7 @@ namespace Chummer
         /// <returns>True if file does not exist or deletion was successful. False if deletion was unsuccessful.</returns>
         public static bool SafeDeleteFile(string strPath, bool blnShowUnauthorizedAccess = false, int intTimeout = DefaultSleepDuration * 60, CancellationToken token = default)
         {
-            return JoinableTaskFactory.Run(() => SafeDeleteFileCoreAsync(true, strPath, blnShowUnauthorizedAccess, intTimeout, token));
+            return RunWithoutThreadLock(() => SafeDeleteFileCoreAsync(true, strPath, blnShowUnauthorizedAccess, intTimeout, token));
         }
 
         /// <summary>
@@ -599,7 +599,7 @@ namespace Chummer
         /// <returns>True if directory does not exist or deletion was successful. False if deletion was unsuccessful.</returns>
         public static bool SafeDeleteDirectory(string strPath, bool blnShowUnauthorizedAccess = false, int intTimeout = DefaultSleepDuration * 60, CancellationToken token = default)
         {
-            return JoinableTaskFactory.Run(() => SafeDeleteDirectoryCoreAsync(true, strPath, blnShowUnauthorizedAccess, intTimeout, token));
+            return RunWithoutThreadLock(() => SafeDeleteDirectoryCoreAsync(true, strPath, blnShowUnauthorizedAccess, intTimeout, token));
         }
 
         /// <summary>
@@ -735,9 +735,9 @@ namespace Chummer
         /// <returns>True if directory does not exist or deletion was successful. False if deletion was unsuccessful.</returns>
         public static bool SafeClearDirectory(string strPath, string strSearchPattern = "*", bool blnRecursive = true, bool blnShowUnauthorizedAccess = false, int intTimeout = DefaultSleepDuration * 60, CancellationToken token = default)
         {
-            return JoinableTaskFactory.Run(() => SafeClearDirectoryCoreAsync(
-                                               true, strPath, strSearchPattern, blnRecursive, blnShowUnauthorizedAccess,
-                                               intTimeout, token));
+            return RunWithoutThreadLock(() => SafeClearDirectoryCoreAsync(
+                                            true, strPath, strSearchPattern, blnRecursive, blnShowUnauthorizedAccess,
+                                            intTimeout, token));
         }
 
         /// <summary>
@@ -1164,7 +1164,7 @@ namespace Chummer
                 func.Invoke();
                 return;
             }
-            
+
             MySynchronizationContext.Send(x =>
             {
                 Action funcToRun = (Action)x;
@@ -1507,7 +1507,10 @@ namespace Chummer
             if (!EverDoEvents)
             {
                 if (Program.IsMainThread)
-                    JoinableTaskFactory.Run(() => Task.Delay(intDurationMilliseconds), JoinableTaskCreationOptions.LongRunning);
+                    JoinableTaskFactory.Run(() => Task.Delay(intDurationMilliseconds),
+                                            intDurationMilliseconds > 1000
+                                                ? JoinableTaskCreationOptions.LongRunning
+                                                : JoinableTaskCreationOptions.None);
                 else
                     Thread.Sleep(intDurationMilliseconds);
                 return;

@@ -1006,7 +1006,7 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         public static Character LoadCharacter(string strFileName, string strNewName = "", bool blnClearFileName = false, bool blnShowErrors = true, LoadingBar frmLoadingBar = null, CancellationToken token = default)
         {
-            return Utils.JoinableTaskFactory.Run(() => LoadCharacterCoreAsync(true, strFileName, strNewName, blnClearFileName, blnShowErrors, frmLoadingBar, token));
+            return Utils.RunWithoutThreadLock(() => LoadCharacterCoreAsync(true, strFileName, strNewName, blnClearFileName, blnShowErrors, frmLoadingBar, token));
         }
 
         /// <summary>

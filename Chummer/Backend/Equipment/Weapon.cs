@@ -2512,7 +2512,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string CalculatedDamage(CultureInfo objCulture, string strLanguage)
         {
-            return Utils.JoinableTaskFactory.Run(() => CalculatedDamageCoreAsync(true, objCulture, strLanguage));
+            return Utils.RunWithoutThreadLock(() => CalculatedDamageCoreAsync(true, objCulture, strLanguage));
         }
 
         /// <summary>
@@ -3185,7 +3185,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string CalculatedAmmo(CultureInfo objCulture, string strLanguage)
         {
-            return Utils.JoinableTaskFactory.Run(() => CalculatedAmmoCoreAsync(true, objCulture, strLanguage));
+            return Utils.RunWithoutThreadLock(() => CalculatedAmmoCoreAsync(true, objCulture, strLanguage));
         }
 
         /// <summary>
@@ -3476,7 +3476,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string CalculatedMode(string strLanguage)
         {
-            return Utils.JoinableTaskFactory.Run(() => CalculatedModeCoreAsync(true, strLanguage));
+            return Utils.RunWithoutThreadLock(() => CalculatedModeCoreAsync(true, strLanguage));
         }
 
         /// <summary>
@@ -3956,7 +3956,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string TotalAP(CultureInfo objCulture, string strLanguage)
         {
-            return Utils.JoinableTaskFactory.Run(() => TotalAPCoreAsync(true, objCulture, strLanguage));
+            return Utils.RunWithoutThreadLock(() => TotalAPCoreAsync(true, objCulture, strLanguage));
         }
 
         /// <summary>
@@ -4166,7 +4166,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string TotalRC(CultureInfo objCulture, string strLanguage, bool blnRefreshRCToolTip = false)
         {
-            return Utils.JoinableTaskFactory.Run(() => TotalRCCoreAsync(true, objCulture, strLanguage, blnRefreshRCToolTip));
+            return Utils.RunWithoutThreadLock(() => TotalRCCoreAsync(true, objCulture, strLanguage, blnRefreshRCToolTip));
         }
 
         /// <summary>

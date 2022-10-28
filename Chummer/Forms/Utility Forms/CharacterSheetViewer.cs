@@ -464,7 +464,9 @@ namespace Chummer
                         PdfConvertEnvironment objPdfConvertEnvironment = new PdfConvertEnvironment
                             {WkHtmlToPdfPath = Path.Combine(Utils.GetStartupPath, "wkhtmltopdf.exe")};
                         PdfOutput objPdfOutput = new PdfOutput {OutputFilePath = strSaveFile};
-                        await PdfConvert.ConvertHtmlToPdfAsync(objPdfDocument, objPdfConvertEnvironment, objPdfOutput).ConfigureAwait(false);
+                        await PdfConvert
+                              .ConvertHtmlToPdfAsync(objPdfDocument, objPdfConvertEnvironment, objPdfOutput,
+                                                     _objGenericToken).ConfigureAwait(false);
 
                         if (!string.IsNullOrWhiteSpace(GlobalSettings.PdfAppPath))
                         {
@@ -481,6 +483,10 @@ namespace Chummer
                             };
                             objPdfProgramProcess.Start();
                         }
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        throw;
                     }
                     catch (Exception ex)
                     {

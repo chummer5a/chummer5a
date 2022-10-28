@@ -106,7 +106,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void TranslateWinForm(this Control objObject, string strIntoLanguage = "", bool blnDoResumeLayout = true, CancellationToken token = default)
         {
-            Utils.JoinableTaskFactory.Run(() => TranslateWinFormCoreAsync(true, objObject, strIntoLanguage, blnDoResumeLayout, token));
+            Utils.RunWithoutThreadLock(() => TranslateWinFormCoreAsync(true, objObject, strIntoLanguage, blnDoResumeLayout, token), token);
         }
 
         /// <summary>
@@ -581,7 +581,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string GetString(string strKey, string strLanguage = "", bool blnReturnError = true, CancellationToken token = default)
         {
-            return Utils.JoinableTaskFactory.Run(() => GetStringCoreAsync(true, strKey, strLanguage, blnReturnError, token));
+            return Utils.RunWithoutThreadLock(() => GetStringCoreAsync(true, strKey, strLanguage, blnReturnError, token));
         }
 
         /// <summary>
@@ -631,7 +631,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static char GetChar(string strKey, string strLanguage, CancellationToken token = default)
         {
-            string strReturn = Utils.JoinableTaskFactory.Run(() => GetStringCoreAsync(true, strKey, strLanguage, false, token));
+            string strReturn = Utils.RunWithoutThreadLock(() => GetStringCoreAsync(true, strKey, strLanguage, false, token));
             return string.IsNullOrWhiteSpace(strReturn) ? default : strReturn[0];
         }
 
@@ -841,7 +841,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static XPathDocument GetDataDocument(string strLanguage, CancellationToken token = default)
         {
-            return Utils.JoinableTaskFactory.Run(() => GetDataDocumentCoreAsync(true, strLanguage, token));
+            return Utils.RunWithoutThreadLock(() => GetDataDocumentCoreAsync(true, strLanguage, token));
         }
 
         /// <summary>
@@ -1122,7 +1122,7 @@ namespace Chummer
         {
             return string.IsNullOrWhiteSpace(strExtra)
                 ? string.Empty
-                : Utils.JoinableTaskFactory.Run(() => TranslateExtraCoreAsync(true, strExtra, strIntoLanguage, objCharacter, strPreferFile, token));
+                : Utils.RunWithoutThreadLock(() => TranslateExtraCoreAsync(true, strExtra, strIntoLanguage, objCharacter, strPreferFile, token), token);
             /*
             // This task can normally end up locking up the UI thread because of the Parallel.Foreach call, so we manually schedule it and intermittently do events while waiting for it
             // Because of how ubiquitous this method is, setting it to async so that we can await this instead would require a massive overhaul.
@@ -1635,7 +1635,7 @@ namespace Chummer
         {
             return string.IsNullOrWhiteSpace(strExtra)
                 ? string.Empty
-                : Utils.JoinableTaskFactory.Run(() => ReverseTranslateExtraCoreAsync(true, strExtra, strFromLanguage, objCharacter, strPreferFile, token));
+                : Utils.RunWithoutThreadLock(() => ReverseTranslateExtraCoreAsync(true, strExtra, strFromLanguage, objCharacter, strPreferFile, token), token);
             /*
             // This task can normally end up locking up the UI thread because of the Parallel.Foreach call, so we manually schedule it and intermittently do events while waiting for it
             // Because of how ubiquitous this method is, setting it to async so that we can await this instead would require a massive overhaul.

@@ -674,8 +674,8 @@ namespace Chummer
                                                                      bool blnAddToRating, string strImprovedName,
                                                                      bool blnUnconditionalOnly, bool blnIncludeNonImproved, CancellationToken token = default)
         {
-            return Utils.JoinableTaskFactory.Run(() => MetaValueOfCoreAsync(true, objCharacter, eImprovementType, funcValueGetter, dicCachedValuesToUse,
-                                                                            blnAddToRating, strImprovedName, blnUnconditionalOnly, blnIncludeNonImproved, token));
+            return Utils.RunWithoutThreadLock(() => MetaValueOfCoreAsync(true, objCharacter, eImprovementType, funcValueGetter, dicCachedValuesToUse,
+                                                                         blnAddToRating, strImprovedName, blnUnconditionalOnly, blnIncludeNonImproved, token));
         }
 
         /// <summary>
@@ -1872,8 +1872,8 @@ namespace Chummer
                                               XmlNode nodBonus, int intRating = 1, string strFriendlyName = "",
                                               bool blnAddImprovementsToCharacter = true)
         {
-            return Utils.JoinableTaskFactory.Run(() => CreateImprovementsCoreAsync(true, objCharacter, objImprovementSource, strSourceName, nodBonus,
-                                                         intRating, strFriendlyName, blnAddImprovementsToCharacter));
+            return Utils.RunWithoutThreadLock(() => CreateImprovementsCoreAsync(true, objCharacter, objImprovementSource, strSourceName, nodBonus,
+                                                  intRating, strFriendlyName, blnAddImprovementsToCharacter));
         }
 
         /// <summary>
@@ -3291,8 +3291,8 @@ namespace Chummer
                                                  bool blnReapplyImprovements = false,
                                                  bool blnAllowDuplicatesFromSameSource = false)
         {
-            return Utils.JoinableTaskFactory.Run(() => RemoveImprovementsCoreAsync(false, objCharacter, objImprovementList, blnReapplyImprovements,
-                                                     blnAllowDuplicatesFromSameSource));
+            return Utils.RunWithoutThreadLock(() => RemoveImprovementsCoreAsync(false, objCharacter, objImprovementList, blnReapplyImprovements,
+                                                  blnAllowDuplicatesFromSameSource));
         }
 
         /// <summary>

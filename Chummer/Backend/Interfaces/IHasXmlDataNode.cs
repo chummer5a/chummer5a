@@ -54,7 +54,7 @@ namespace Chummer
         /// </summary>
         public static XPathNavigator GetNodeXPath(this IHasXmlDataNode objThis, CancellationToken token = default)
         {
-            return Utils.JoinableTaskFactory.Run(() => objThis.GetNodeXPathCoreAsync(true, GlobalSettings.DefaultLanguage, token));
+            return Utils.RunWithoutThreadLock(() => objThis.GetNodeXPathCoreAsync(true, GlobalSettings.DefaultLanguage, token));
         }
 
         /// <summary>
@@ -62,7 +62,7 @@ namespace Chummer
         /// </summary>
         public static XPathNavigator GetNodeXPath(this IHasXmlDataNode objThis, string strLanguage, CancellationToken token = default)
         {
-            return Utils.JoinableTaskFactory.Run(() => objThis.GetNodeXPathCoreAsync(true, strLanguage, token));
+            return Utils.RunWithoutThreadLock(() => objThis.GetNodeXPathCoreAsync(true, strLanguage, token));
         }
 
         /// <summary>
@@ -86,7 +86,7 @@ namespace Chummer
         /// </summary>
         public static XmlNode GetNode(this IHasXmlDataNode objThis, CancellationToken token = default)
         {
-            return Utils.JoinableTaskFactory.Run(() => objThis.GetNodeCoreAsync(true, GlobalSettings.DefaultLanguage, token));
+            return Utils.RunWithoutThreadLock(() => objThis.GetNodeCoreAsync(true, GlobalSettings.DefaultLanguage, token));
         }
 
         /// <summary>
@@ -94,7 +94,7 @@ namespace Chummer
         /// </summary>
         public static XmlNode GetNode(this IHasXmlDataNode objThis, string strLanguage, CancellationToken token = default)
         {
-            return Utils.JoinableTaskFactory.Run(() => objThis.GetNodeCoreAsync(true, strLanguage, token));
+            return Utils.RunWithoutThreadLock(() => objThis.GetNodeCoreAsync(true, strLanguage, token));
         }
 
         /// <summary>

@@ -1251,7 +1251,7 @@ namespace Chummer.Backend.Attributes
         /// </summary>
         public int CalculatedTotalValue(bool blnIncludeCyberlimbs = true, CancellationToken token = default)
         {
-            return Utils.JoinableTaskFactory.Run(() => CalculatedTotalValueCore(true, blnIncludeCyberlimbs, token));
+            return Utils.RunWithoutThreadLock(() => CalculatedTotalValueCore(true, blnIncludeCyberlimbs, token));
         }
 
         /// <summary>
@@ -2386,7 +2386,7 @@ namespace Chummer.Backend.Attributes
                             intUpgradeCost = (intUpgradeCost * decMultiplier + decExtra).StandardRound();
                         else
                             intUpgradeCost += decExtra.StandardRound();
-                        
+
                         return _intCachedUpgradeKarmaCost = Math.Max(intUpgradeCost, Math.Min(1, intOptionsCost));
                     }
                 }
@@ -3001,7 +3001,7 @@ namespace Chummer.Backend.Attributes
 
                         await _objCharacter.ExpenseEntries.AddWithSortAsync(objExpense, token: token)
                             .ConfigureAwait(false);
-                        
+
                         await _objCharacter.DecreaseKarmaAsync(intPrice, token).ConfigureAwait(false);
 
                         // Undo burned Edge if possible first

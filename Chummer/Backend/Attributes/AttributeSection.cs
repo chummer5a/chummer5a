@@ -655,7 +655,7 @@ namespace Chummer.Backend.Attributes
 
         public void Load(XmlNode xmlSavedCharacterNode, CancellationToken token = default)
         {
-            Utils.JoinableTaskFactory.Run(() => LoadCoreAsync(true, xmlSavedCharacterNode, token));
+            Utils.RunWithoutThreadLock(() => LoadCoreAsync(true, xmlSavedCharacterNode, token), token);
         }
 
         public Task LoadAsync(XmlNode xmlSavedCharacterNode, CancellationToken token = default)
@@ -1105,7 +1105,7 @@ namespace Chummer.Backend.Attributes
             catch (XPathException) { intAugValue = 1; }
             catch (OverflowException) { intAugValue = 1; }
             catch (InvalidCastException) { intAugValue = 1; }
-            
+
             objNewAttribute.AssignBaseKarmaLimits(
                 objCharacterNode.SelectSingleNodeAndCacheExpression("base")?.ValueAsInt ?? 0,
                 objCharacterNode.SelectSingleNodeAndCacheExpression("base")?.ValueAsInt ?? 0, intMinValue, intMaxValue,

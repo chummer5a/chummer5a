@@ -696,7 +696,7 @@ namespace Chummer
 
         public bool LoadFromFile(string strFile)
         {
-            return Utils.JoinableTaskFactory.Run(() => LoadFromFileCoreAsync(true, strFile));
+            return Utils.RunWithoutThreadLock(() => LoadFromFileCoreAsync(true, strFile));
         }
 
         public Task<bool> LoadFromFileAsync(string strFile, CancellationToken token = default)

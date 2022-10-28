@@ -488,7 +488,7 @@ namespace Chummer
 
         public XmlNode GetNode(bool blnReturnMetatypeOnly, string strLanguage = "", CancellationToken token = default)
         {
-            return Utils.JoinableTaskFactory.Run(() => GetNodeCoreAsync(true, blnReturnMetatypeOnly, strLanguage, token));
+            return Utils.RunWithoutThreadLock(() => GetNodeCoreAsync(true, blnReturnMetatypeOnly, strLanguage, token));
         }
 
         public Task<XmlNode> GetNodeAsync(bool blnReturnMetatypeOnly, string strLanguage = "", CancellationToken token = default)
@@ -546,7 +546,7 @@ namespace Chummer
 
         public XPathNavigator GetNodeXPath(bool blnReturnMetatypeOnly, string strLanguage = "", CancellationToken token = default)
         {
-            return Utils.JoinableTaskFactory.Run(() => GetNodeXPathCoreAsync(true, blnReturnMetatypeOnly, strLanguage, token));
+            return Utils.RunWithoutThreadLock(() => GetNodeXPathCoreAsync(true, blnReturnMetatypeOnly, strLanguage, token));
         }
 
         public Task<XPathNavigator> GetNodeXPathAsync(bool blnReturnMetatypeOnly, string strLanguage = "", CancellationToken token = default)
@@ -2861,7 +2861,7 @@ namespace Chummer
         /// </summary>
         public bool Save(string strFileName = "", bool addToMRU = true, bool callOnSaveCallBack = true, CancellationToken token = default)
         {
-            return Utils.JoinableTaskFactory.Run(() => SaveCoreAsync(true, strFileName, addToMRU, callOnSaveCallBack, token));
+            return Utils.RunWithoutThreadLock(() => SaveCoreAsync(true, strFileName, addToMRU, callOnSaveCallBack, token));
         }
 
         /// <summary>
@@ -3293,7 +3293,7 @@ namespace Chummer
                             objWriter.WriteStartElement("contacts");
                             foreach (Contact objContact in _lstContacts)
                             {
-                                objContact.Save(objWriter);
+                                objContact.Save(objWriter, token);
                             }
 
                             // </contacts>
@@ -3343,7 +3343,7 @@ namespace Chummer
                             objWriter.WriteStartElement("spirits");
                             foreach (Spirit objSpirit in _lstSpirits)
                             {
-                                objSpirit.Save(objWriter);
+                                objSpirit.Save(objWriter, token);
                             }
 
                             // </spirits>
@@ -4235,7 +4235,7 @@ namespace Chummer
                             await objWriter.WriteStartElementAsync("contacts", token: innerToken).ConfigureAwait(false);
                             foreach (Contact objContact in _lstContacts)
                             {
-                                await objContact.SaveAsync(objWriter).ConfigureAwait(false);
+                                await objContact.SaveAsync(objWriter, innerToken).ConfigureAwait(false);
                             }
 
                             // </contacts>
@@ -4286,7 +4286,7 @@ namespace Chummer
                             await objWriter.WriteStartElementAsync("spirits", token: innerToken).ConfigureAwait(false);
                             foreach (Spirit objSpirit in _lstSpirits)
                             {
-                                await objSpirit.SaveAsync(objWriter).ConfigureAwait(false);
+                                await objSpirit.SaveAsync(objWriter, innerToken).ConfigureAwait(false);
                             }
 
                             // </spirits>
@@ -5013,7 +5013,7 @@ namespace Chummer
         /// <param name="token">Cancellation token to use.</param>
         public bool Load(string strFileName = "", LoadingBar frmLoadingForm = null, bool showWarnings = true, CancellationToken token = default)
         {
-            return Utils.JoinableTaskFactory.Run(() => LoadCoreAsync(true, strFileName, frmLoadingForm, showWarnings, token));
+            return Utils.RunWithoutThreadLock(() => LoadCoreAsync(true, strFileName, frmLoadingForm, showWarnings, token));
         }
 
         /// <summary>
@@ -9242,7 +9242,7 @@ namespace Chummer
 
                                 foreach (Func<CancellationToken, Task<bool>> funcToCall in PostLoadMethodsAsync)
                                 {
-                                    if (!Utils.JoinableTaskFactory.Run(() => funcToCall.Invoke(token)))
+                                    if (!Utils.RunWithoutThreadLock(() => funcToCall.Invoke(token)))
                                         return false;
                                 }
 
@@ -14666,7 +14666,7 @@ namespace Chummer
 
         public void SaveMugshots(XmlWriter objWriter, CancellationToken token = default)
         {
-            Utils.JoinableTaskFactory.Run(() => SaveMugshotsCore(true, objWriter, token));
+            Utils.RunWithoutThreadLock(() => SaveMugshotsCore(true, objWriter, token), token);
         }
 
         public Task SaveMugshotsAsync(XmlWriter objWriter, CancellationToken token = default)
@@ -29108,7 +29108,7 @@ namespace Chummer
                                 intDEPMinimumReduction =
                                     intDepMinReduction + DEP.TotalMaximum - DEP.MaximumNoEssenceLoss(true);
                             }
-                            
+
                             // If the new DEP reduction is greater than the old one...
                             int intDEPMinimumReductionDelta = intDEPMinimumReduction - intOldDEPCareerMinimumReduction;
                             if (intDEPMinimumReductionDelta > 0)
@@ -29164,7 +29164,7 @@ namespace Chummer
 
                         ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.EssenceLoss);
                         ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.EssenceLossChargen);
-                        
+
                         if (intMagMaxReduction != 0 || intMAGMinimumReduction != 0 || intMAGAdeptMinimumReduction != 0)
                         {
                             ImprovementManager.CreateImprovement(this, "MAG",
@@ -32345,7 +32345,7 @@ namespace Chummer
         /// </summary>
         public bool LoadFromHeroLabFile(string strPorFile, string strCharacterId, string strSettingsKey = "")
         {
-            return Utils.JoinableTaskFactory.Run(() => LoadFromHeroLabFileCoreAsync(true, strPorFile, strCharacterId, strSettingsKey));
+            return Utils.RunWithoutThreadLock(() => LoadFromHeroLabFileCoreAsync(true, strPorFile, strCharacterId, strSettingsKey));
         }
 
         /// <summary>

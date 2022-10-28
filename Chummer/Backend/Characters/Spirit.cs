@@ -104,18 +104,20 @@ namespace Chummer
         /// Save the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Save(XmlWriter objWriter)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public void Save(XmlWriter objWriter, CancellationToken token = default)
         {
-            Utils.JoinableTaskFactory.Run(() => SaveCoreAsync(true, objWriter));
+            Utils.RunWithoutThreadLock(() => SaveCoreAsync(true, objWriter, token), token);
         }
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public Task SaveAsync(XmlWriter objWriter)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public Task SaveAsync(XmlWriter objWriter, CancellationToken token = default)
         {
-            return SaveCoreAsync(false, objWriter);
+            return SaveCoreAsync(false, objWriter, token);
         }
 
         /// <summary>
@@ -123,13 +125,15 @@ namespace Chummer
         /// </summary>
         /// <param name="blnSync"></param>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        private async Task SaveCoreAsync(bool blnSync, XmlWriter objWriter)
+        /// <param name="token">Cancellation token to listen to.</param>
+        private async Task SaveCoreAsync(bool blnSync, XmlWriter objWriter, CancellationToken token = default)
         {
             if (objWriter == null)
                 return;
             if (blnSync)
             {
                 // ReSharper disable MethodHasAsyncOverload
+                // ReSharper disable MethodHasAsyncOverloadWithCancellation
                 using (objWriter.StartElement("spirit"))
                 {
                     objWriter.WriteElementString(
@@ -150,33 +154,35 @@ namespace Chummer
                     objWriter.WriteElementString("notes", _strNotes.CleanOfInvalidUnicodeChars());
                     objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
 
-                    SaveMugshots(objWriter);
+                    SaveMugshots(objWriter, token);
                 }
+                // ReSharper enable MethodHasAsyncOverload
+                // ReSharper enable MethodHasAsyncOverloadWithCancellation
             }
             else
             {
                 // <spirit>
-                XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("spirit").ConfigureAwait(false);
+                XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("spirit", token: token).ConfigureAwait(false);
                 try
                 {
                     await objWriter.WriteElementStringAsync(
-                        "guid", _guiId.ToString("D", GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("name", _strName).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("crittername", _strCritterName).ConfigureAwait(false);
+                        "guid", _guiId.ToString("D", GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("name", _strName, token: token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("crittername", _strCritterName, token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync(
-                        "services", _intServicesOwed.ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
+                        "services", _intServicesOwed.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync(
-                        "force", _intForce.ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
+                        "force", _intForce.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync(
-                        "bound", _blnBound.ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
+                        "bound", _blnBound.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync(
-                        "fettered", _blnFettered.ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("type", _eEntityType.ToString()).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("file", _strFileName).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("relative", _strRelativeName).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("notes", _strNotes.CleanOfInvalidUnicodeChars()).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("notesColor", ColorTranslator.ToHtml(_colNotes)).ConfigureAwait(false);
-                    await SaveMugshotsAsync(objWriter).ConfigureAwait(false);
+                        "fettered", _blnFettered.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("type", _eEntityType.ToString(), token: token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("file", _strFileName, token: token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("relative", _strRelativeName, token: token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("notes", _strNotes.CleanOfInvalidUnicodeChars(), token: token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("notesColor", ColorTranslator.ToHtml(_colNotes), token: token).ConfigureAwait(false);
+                    await SaveMugshotsAsync(objWriter, token).ConfigureAwait(false);
                 }
                 finally
                 {
@@ -1287,7 +1293,7 @@ namespace Chummer
 
         public void SaveMugshots(XmlWriter objWriter, CancellationToken token = default)
         {
-            Utils.JoinableTaskFactory.Run(() => SaveMugshotsCore(true, objWriter, token));
+            Utils.RunWithoutThreadLock(() => SaveMugshotsCore(true, objWriter, token), token);
         }
 
         public Task SaveMugshotsAsync(XmlWriter objWriter, CancellationToken token = default)

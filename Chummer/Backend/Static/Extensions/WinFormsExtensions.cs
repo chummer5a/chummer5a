@@ -1628,7 +1628,7 @@ namespace Chummer
                     IntPtr _ = objControl.Handle; // accessing Handle forces its creation
                 }
             }, token);
-            T3 objData = Utils.JoinableTaskFactory.Run(() => funcAsyncDataGetter.Invoke(objDataSource));
+            T3 objData = Utils.RunWithoutThreadLock(() => funcAsyncDataGetter.Invoke(objDataSource), token);
             objControl.DoThreadSafe((x, y) => funcControlSetter.Invoke(x, objData), objGetterToken);
             objDataSource.PropertyChanged += OnPropertyChangedAsync;
             Utils.RunOnMainThread(() => objControl.Disposed += (o, args) => objDataSource.PropertyChanged -= OnPropertyChangedAsync, token);

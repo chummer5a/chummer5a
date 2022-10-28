@@ -315,18 +315,20 @@ namespace Chummer
         /// Save the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Save(XmlWriter objWriter)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public void Save(XmlWriter objWriter, CancellationToken token = default)
         {
-            Utils.JoinableTaskFactory.Run(() => SaveCoreAsync(true, objWriter));
+            Utils.RunWithoutThreadLock(() => SaveCoreAsync(true, objWriter, token), token);
         }
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public Task SaveAsync(XmlWriter objWriter)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public Task SaveAsync(XmlWriter objWriter, CancellationToken token = default)
         {
-            return SaveCoreAsync(false, objWriter);
+            return SaveCoreAsync(false, objWriter, token);
         }
 
         /// <summary>
@@ -334,7 +336,8 @@ namespace Chummer
         /// </summary>
         /// <param name="blnSync"></param>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        private async Task SaveCoreAsync(bool blnSync, XmlWriter objWriter)
+        /// <param name="token">Cancellation token to listen to.</param>
+        private async Task SaveCoreAsync(bool blnSync, XmlWriter objWriter, CancellationToken token = default)
         {
             if (objWriter == null)
                 return;
@@ -376,7 +379,7 @@ namespace Chummer
                 if (_strUnique != null)
                     objWriter.WriteElementString("guid", _strUnique);
 
-                SaveMugshots(objWriter);
+                SaveMugshots(objWriter, token);
 
                 objWriter.WriteEndElement();
                 // ReSharper restore MethodHasAsyncOverload
@@ -385,61 +388,61 @@ namespace Chummer
             {
                 // <contact>
                 XmlElementWriteHelper objBaseElement
-                    = await objWriter.StartElementAsync("contact").ConfigureAwait(false);
+                    = await objWriter.StartElementAsync("contact", token: token).ConfigureAwait(false);
                 try
                 {
-                    await objWriter.WriteElementStringAsync("name", _strName).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("role", _strRole).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("location", _strLocation).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("name", _strName, token: token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("role", _strRole, token: token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("location", _strLocation, token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("connection",
                                                             _intConnection.ToString(
-                                                                GlobalSettings.InvariantCultureInfo))
+                                                                GlobalSettings.InvariantCultureInfo), token: token)
                                    .ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync(
-                        "loyalty", _intLoyalty.ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("metatype", _strMetatype).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("gender", _strGender).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("age", _strAge).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("contacttype", _strType).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("preferredpayment", _strPreferredPayment)
+                        "loyalty", _intLoyalty.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("metatype", _strMetatype, token: token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("gender", _strGender, token: token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("age", _strAge, token: token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("contacttype", _strType, token: token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("preferredpayment", _strPreferredPayment, token: token)
                                    .ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("hobbiesvice", _strHobbiesVice).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("personallife", _strPersonalLife).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("type", _eContactType.ToString()).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("file", _strFileName).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("relative", _strRelativeName).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("notes", _strNotes.CleanOfInvalidUnicodeChars())
+                    await objWriter.WriteElementStringAsync("hobbiesvice", _strHobbiesVice, token: token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("personallife", _strPersonalLife, token: token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("type", _eContactType.ToString(), token: token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("file", _strFileName, token: token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("relative", _strRelativeName, token: token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("notes", _strNotes.CleanOfInvalidUnicodeChars(), token: token)
                                    .ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("notesColor", ColorTranslator.ToHtml(_colNotes))
+                    await objWriter.WriteElementStringAsync("notesColor", ColorTranslator.ToHtml(_colNotes), token: token)
                                    .ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("groupname", _strGroupName).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("groupname", _strGroupName, token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync(
-                                       "colour", _objColour.ToArgb().ToString(GlobalSettings.InvariantCultureInfo))
+                                       "colour", _objColour.ToArgb().ToString(GlobalSettings.InvariantCultureInfo), token: token)
                                    .ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync(
-                        "group", _blnIsGroup.ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
+                        "group", _blnIsGroup.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync(
-                        "family", _blnFamily.ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
+                        "family", _blnFamily.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("blackmail",
                                                             _blnBlackmail.ToString(
-                                                                GlobalSettings.InvariantCultureInfo))
+                                                                GlobalSettings.InvariantCultureInfo), token: token)
                                    .ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync(
-                        "free", _blnFree.ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
+                        "free", _blnFree.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("groupenabled",
                                                             _blnGroupEnabled.ToString(
-                                                                GlobalSettings.InvariantCultureInfo))
+                                                                GlobalSettings.InvariantCultureInfo), token: token)
                                    .ConfigureAwait(false);
 
                     if (_blnReadOnly)
-                        await objWriter.WriteElementStringAsync("readonly", string.Empty).ConfigureAwait(false);
+                        await objWriter.WriteElementStringAsync("readonly", string.Empty, token: token).ConfigureAwait(false);
 
                     if (_strUnique != null)
                     {
-                        await objWriter.WriteElementStringAsync("guid", _strUnique).ConfigureAwait(false);
+                        await objWriter.WriteElementStringAsync("guid", _strUnique, token: token).ConfigureAwait(false);
                     }
 
-                    await SaveMugshotsAsync(objWriter).ConfigureAwait(false);
+                    await SaveMugshotsAsync(objWriter, token).ConfigureAwait(false);
                 }
                 finally
                 {
@@ -1813,7 +1816,7 @@ namespace Chummer
 
         public void SaveMugshots(XmlWriter objWriter, CancellationToken token = default)
         {
-            Utils.JoinableTaskFactory.Run(() => SaveMugshotsCore(true, objWriter, token));
+            Utils.RunWithoutThreadLock(() => SaveMugshotsCore(true, objWriter, token), token);
         }
 
         public Task SaveMugshotsAsync(XmlWriter objWriter, CancellationToken token = default)
