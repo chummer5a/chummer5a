@@ -23,26 +23,14 @@
 	https://www.reddit.com/r/NeonAnarchy
 -->
 <chummer>
-	<accessories>
-		<accessory>
-			<id>6c0af59c-f2e5-45fd-b4d7-6afd7782fc3c</id>
-			<name>Peak-Discharge Battery Pack, Power Clip (Twin)</name>
-			<mount />
-			<avail>12F</avail>
-			<cost>800</cost>
-			<source>RG</source>
-			<page>52</page>
-			<ammoreplace>20 or External Source</ammoreplace>
-			<ammoslots>1</ammoslots>
-			<rating>0</rating>
-			<required>
-				<weapondetails>
-					<OR>
-						<name>Ares Lancer MP Laser</name>
-						<name>Narcoject PEP</name>
-					</OR>
-				</weapondetails>
-			</required>
-		</accessory>
-	</accessories>
+	<ranges>
+		<range>
+			<name>Carbines</name>
+			<min>0</min>
+			<short>10</short>
+			<medium>40</medium>
+			<long>80</long>
+			<extreme>150</extreme>
+		</range>
+	</ranges>
 </chummer>

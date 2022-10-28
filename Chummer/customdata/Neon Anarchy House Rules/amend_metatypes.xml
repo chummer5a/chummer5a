@@ -43,11 +43,18 @@
 		</metatype>
 		<metatype>
 			<name>Sasquatch</name>
-			<bonus>
-				<lifestylecost />
-			</bonus>
+			<hide />
 		</metatype>
 		<metatype>
+			<name>Human</name>
+			<metavariants>
+				<metavariant>
+					<name>Narataki</name>
+					<hide />
+				</metavariant>
+            </metavariants>
+        </metatype>
+        <metatype>
 			<name>Dwarf</name>
 			<bonus>
 				<lifestylecost />
@@ -115,9 +122,7 @@
 		</metatype>
 		<metatype>
 			<name>Centaur</name>
-			<walk>4/1/0</walk>
-			<run>8/0/0</run>
-			<sprint>4/1/0</sprint>
+            <hide />
 		</metatype>
 		<metatype amendoperation="addnode">
 			<!--

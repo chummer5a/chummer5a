@@ -65,10 +65,6 @@
 			<hide />
 		</gear>
 		<gear>
-			<name>Grenade: COS</name>
-			<hide />
-		</gear>
-		<gear>
 			<name>Grenade: Douser</name>
 			<hide />
 		</gear>
@@ -119,19 +115,6 @@
 		<gear>
 			<name>Fab Sensor Upkeep (1 Month Advance Payment)</name>
 			<category>Contracts/Upkeep</category>
-		</gear>
-		<gear>
-		    <name>Naga Venom</name>
-			<rating amendoperation="replace">12</rating>
-		</gear>
-		<gear>
-			<name>Micro-Transceiver</name>
-			<gears amendoperation="addnode">
-				<usegear amendoperation="addnode">
-				  <name amendoperation="addnode">Subvocal Mic</name>
-				  <category amendoperation="addnode">Electronics Accessories</category>
-				</usegear>
-			</gears>
 		</gear>
 	</gears>
 </chummer>

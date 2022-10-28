@@ -33,13 +33,5 @@
 				</weaponcategorydv>
 			</bonus>
 		</power>
-		<power>
-			<name>Missile Mastery</name>
-			<bonus>
-				<addweapon amendoperation="addnode">
-				  <name>Improvised Thrown Weapon (Missile Mastery)</name>
-				</addweapon>
-			</bonus>
-		</power>
 	</powers>
 </chummer>

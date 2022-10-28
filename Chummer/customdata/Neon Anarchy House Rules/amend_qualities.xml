@@ -61,6 +61,18 @@
 			<karma>3</karma>
 			<category>Positive</category>
 		</quality>
+        <quality>
+              <name>Day Job (10 hrs)</name>
+            <hide />
+        </quality>
+        <quality>
+              <name>Day Job (20 hrs)</name>
+            <hide />
+        </quality>
+        <quality>
+              <name>Day Job (40 hrs)</name>
+            <hide />
+        </quality>
 		<quality>
 			<name>Dead Emotion</name>
 			<hide />
@@ -91,6 +103,14 @@
 		</quality>
 		<quality>
 			<name>Echo Chamber</name>
+			<hide />
+		</quality>
+        <quality>
+			<name>Fame: Megacorporate</name>
+			<hide />
+		</quality>
+        <quality>
+			<name>Fame: Global</name>
 			<hide />
 		</quality>
 		<quality>
@@ -230,14 +250,23 @@
 				</oneof>
 			</required>
 		</quality>
-		<quality>
-			<name>Puppet Master</name>
-			<hide />
-		</quality>
-		<quality>
-			<name>Revels in Murder</name>
-			<hide />
-		</quality>
+        <quality>
+            <name>Prototype Transhuman</name>
+            <bonus amendoperation="replace">
+                <prototypetranshuman>1</prototypetranshuman>
+                <selectquality >
+                    <quality>Aged</quality>
+                    <quality>Albinism II</quality>
+                    <quality>Allergy (Common, Moderate)</quality>
+                    <quality>Astral Beacon</quality>
+                    <quality>Blank Slate</quality>
+                    <quality>Incomplete Deprogramming</quality>
+                    <quality>Insomnia (Basic)</quality>
+                    <quality>Low Pain Tolerance</quality>
+                    <quality>Sensitive System</quality>
+                </selectquality>
+            </bonus>
+        </quality>
 		<quality>
 			<name>Sensei</name>
 			<bonus>
@@ -275,43 +304,19 @@
 		</quality>
 		<quality>
 			<name>Trust Fund I</name>
-			<required amendoperation="replace">
-				<oneof>
-					<quality>SINner (National)</quality>
-					<quality>SINner (Corporate)</quality>
-					<quality>SINner (Corporate Limited)</quality>
-				</oneof>
-			</required>
+			<hide />
 		</quality>
 		<quality>
 			<name>Trust Fund II</name>
-			<required amendoperation="replace">
-				<oneof>
-					<quality>SINner (National)</quality>
-					<quality>SINner (Corporate)</quality>
-					<quality>SINner (Corporate Limited)</quality>
-				</oneof>
-			</required>
+			<hide />
 		</quality>
 		<quality>
 			<name>Trust Fund III</name>
-			<required amendoperation="replace">
-				<oneof>
-					<quality>SINner (National)</quality>
-					<quality>SINner (Corporate)</quality>
-					<quality>SINner (Corporate Limited)</quality>
-				</oneof>
-			</required>
+			<hide />
 		</quality>
 		<quality>
 			<name>Trust Fund IV</name>
-			<required amendoperation="replace">
-				<oneof>
-					<quality>SINner (National)</quality>
-					<quality>SINner (Corporate)</quality>
-					<quality>SINner (Corporate Limited)</quality>
-				</oneof>
-			</required>
+			<hide />
 		</quality>
 		<quality>
 			<name>Brilliant Heuristics</name>
@@ -352,10 +357,6 @@
 		<quality>
 			<name>Wired User</name>
 			<required />
-		</quality>
-		<quality>
-			<name>Illusionist</name>
-			<limit>1</limit>
 		</quality>
 		<quality>
 			<name>Mystic Foreman</name>
