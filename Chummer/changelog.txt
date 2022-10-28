@@ -21,6 +21,7 @@ Application Changes:
 - Reported capacity violations from character validity checks now display each item's translated and/or specific name instead of just its general, English name.
 - Custom Fit (Stack) now works properly when the underlying armor piece has a different name than the armor that is to be treated as an accessory.
 - Added a helper reference to show how many free spells have been used by mastery qualities.
+- Qualities marked as not having levels no longer show a stray "1" next to their names when added to characters' sheets.
 
 Data Changes:
 - Added bonus nodes for Shooter (The Soldier) paragon's Compiling dice pool penalty and +1 limit for attack actions. Fixes #4935.

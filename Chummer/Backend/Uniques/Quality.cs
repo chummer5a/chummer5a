@@ -857,9 +857,16 @@ namespace Chummer
             else
             {
                 // Add a "1" to qualities that have levels, but for which we are only at level 1
-                XPathNavigator xmlMyLimitNode = this.GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("limit");
-                if (xmlMyLimitNode != null && int.TryParse(xmlMyLimitNode.Value, out int _))
-                    strReturn += strSpace + intLevels.ToString(objCulture);
+                XPathNavigator xmlDataNode = this.GetNodeXPath(strLanguage);
+                if (xmlDataNode != null)
+                {
+                    XPathNavigator xmlMyLimitNode = xmlDataNode.SelectSingleNodeAndCacheExpression("limit");
+                    if (xmlMyLimitNode != null && int.TryParse(xmlMyLimitNode.Value, out int _)
+                                               && xmlDataNode.SelectSingleNodeAndCacheExpression("nolevels") != null)
+                    {
+                        strReturn += strSpace + intLevels.ToString(objCulture);
+                    }
+                }
             }
 
             return strReturn;
@@ -888,12 +895,15 @@ namespace Chummer
             else
             {
                 // Add a "1" to qualities that have levels, but for which we are only at level 1
-                XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
-                if (objNode != null)
+                XPathNavigator xmlDataNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
+                if (xmlDataNode != null)
                 {
-                    XPathNavigator xmlMyLimitNode = await objNode.SelectSingleNodeAndCacheExpressionAsync("limit", token: token).ConfigureAwait(false);
-                    if (xmlMyLimitNode != null && int.TryParse(xmlMyLimitNode.Value, out int _))
+                    XPathNavigator xmlMyLimitNode = await xmlDataNode.SelectSingleNodeAndCacheExpressionAsync("limit", token).ConfigureAwait(false);
+                    if (xmlMyLimitNode != null && int.TryParse(xmlMyLimitNode.Value, out int _)
+                                               && await xmlDataNode.SelectSingleNodeAndCacheExpressionAsync("nolevels", token).ConfigureAwait(false) != null)
+                    {
                         strReturn += strSpace + intLevels.ToString(objCulture);
+                    }
                 }
             }
 
