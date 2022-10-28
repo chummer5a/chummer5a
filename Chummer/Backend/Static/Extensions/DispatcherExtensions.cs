@@ -46,23 +46,9 @@ namespace Chummer
             try
             {
                 if (objDispatcher == null)
-                {
                     funcToRun.Invoke();
-                }
-#if USE_INVOKE
-                else
-                {
-                    // ReSharper disable once InlineTemporaryVariable
-                    T objDispatcherCopy = objDispatcher; //to have the Object for sure, regardless of other threads
-                    if (objDispatcherCopy.CheckAccess())
-                        funcToRun.Invoke();
-                    else
-                        objDispatcherCopy.Dispatcher.Invoke(funcToRun);
-                }
-#else
                 else
                     Utils.RunOnMainThread(() => funcToRun);
-#endif
             }
             catch (ObjectDisposedException) // e)
             {
@@ -106,23 +92,9 @@ namespace Chummer
             try
             {
                 if (objDispatcher == null)
-                {
                     funcToRun.Invoke(null);
-                }
-#if USE_INVOKE
-                else
-                {
-                    // ReSharper disable once InlineTemporaryVariable
-                    T objDispatcherCopy = objDispatcher; //to have the Object for sure, regardless of other threads
-                    if (objDispatcherCopy.CheckAccess())
-                        funcToRun.Invoke(objDispatcherCopy);
-                    else
-                        objDispatcherCopy.Dispatcher.Invoke(funcToRun, objDispatcherCopy);
-                }
-#else
                 else
                     Utils.RunOnMainThread(() => funcToRun(objDispatcher));
-#endif
             }
             catch (ObjectDisposedException) // e)
             {
@@ -168,29 +140,9 @@ namespace Chummer
             try
             {
                 if (objDispatcher == null)
-                {
                     funcToRun.Invoke(token);
-                }
-#if USE_INVOKE
-                else
-                {
-                    // ReSharper disable once InlineTemporaryVariable
-                    T objDispatcherCopy = objDispatcher; //to have the Object for sure, regardless of other threads
-                    if (objDispatcherCopy.CheckAccess())
-                    {
-                        token.ThrowIfCancellationRequested();
-                        funcToRun.Invoke(token);
-                    }
-                    else
-                    {
-                        token.ThrowIfCancellationRequested();
-                        objDispatcherCopy.Dispatcher.Invoke(funcToRun, token);
-                    }
-                }
-#else
                 else
                     Utils.RunOnMainThread(() => funcToRun(token), token);
-#endif
             }
             catch (ObjectDisposedException) // e)
             {
@@ -236,29 +188,9 @@ namespace Chummer
             try
             {
                 if (objDispatcher == null)
-                {
                     funcToRun.Invoke(null, token);
-                }
-#if USE_INVOKE
-                else
-                {
-                    // ReSharper disable once InlineTemporaryVariable
-                    T objDispatcherCopy = objDispatcher; //to have the Object for sure, regardless of other threads
-                    if (objDispatcherCopy.CheckAccess())
-                    {
-                        token.ThrowIfCancellationRequested();
-                        funcToRun.Invoke(objDispatcherCopy, token);
-                    }
-                    else
-                    {
-                        token.ThrowIfCancellationRequested();
-                        objDispatcherCopy.Dispatcher.Invoke(funcToRun, objDispatcherCopy, token);
-                    }
-                }
-#else
                 else
                     Utils.RunOnMainThread(() => funcToRun(objDispatcher, token), token);
-#endif
             }
             catch (ObjectDisposedException) // e)
             {
@@ -296,36 +228,17 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         // Note: we cannot do a flag hack here because .GetAwaiter().GetResult() can run into object disposed issues for this special case.
-        public static async Task DoThreadSafeAsync<T>(this T objDispatcher, Action funcToRun, CancellationToken token = default) where T : DispatcherObject
+        public static Task DoThreadSafeAsync<T>(this T objDispatcher, Action funcToRun, CancellationToken token = default) where T : DispatcherObject
         {
-            token.ThrowIfCancellationRequested();
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
             if (funcToRun == null)
-                return;
+                return Task.CompletedTask;
             try
             {
-                if (objDispatcher == null)
-                {
-                    funcToRun.Invoke();
-                }
-#if USE_INVOKE
-                else
-                {
-                    // ReSharper disable once InlineTemporaryVariable
-                    T objDispatcherCopy = objDispatcher; //to have the Object for sure, regardless of other threads
-                    if (objDispatcherCopy.CheckAccess())
-                    {
-                        token.ThrowIfCancellationRequested();
-                        funcToRun.Invoke();
-                    }
-                    else
-                    {
-                        await objDispatcherCopy.Dispatcher.InvokeAsync(funcToRun, DispatcherPriority.Normal, token).Task.ConfigureAwait(false);
-                    }
-                }
-#else
-                else
-                    await Utils.RunOnMainThreadAsync(funcToRun, token).ConfigureAwait(false);
-#endif
+                return objDispatcher == null
+                    ? Task.Run(funcToRun, token)
+                    : Utils.RunOnMainThreadAsync(funcToRun, token);
             }
             catch (ObjectDisposedException) // e)
             {
@@ -341,9 +254,9 @@ namespace Chummer
             {
                 //no need to do anything here - actually we can't anyway...
             }
-            catch (OperationCanceledException)
+            catch (OperationCanceledException e)
             {
-                throw;
+                return Task.FromException(e);
             }
             catch (Exception e)
             {
@@ -351,8 +264,9 @@ namespace Chummer
 #if DEBUG
                 Program.ShowMessageBox(e.ToString());
 #endif
-                throw;
+                return Task.FromException(e);
             }
+            return Task.CompletedTask;
         }
 
         /// <summary>
@@ -363,43 +277,17 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         // Note: we cannot do a flag hack here because .GetAwaiter().GetResult() can run into object disposed issues for this special case.
-        public static async Task DoThreadSafeAsync<T>(this T objDispatcher, Action<T> funcToRun, CancellationToken token = default) where T : DispatcherObject
+        public static Task DoThreadSafeAsync<T>(this T objDispatcher, Action<T> funcToRun, CancellationToken token = default) where T : DispatcherObject
         {
-            token.ThrowIfCancellationRequested();
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
             if (funcToRun == null)
-                return;
+                return Task.CompletedTask;
             try
             {
-                if (objDispatcher == null)
-                {
-                    funcToRun.Invoke(null);
-                }
-#if USE_INVOKE
-                else
-                {
-                    // ReSharper disable once InlineTemporaryVariable
-                    T objDispatcherCopy = objDispatcher; //to have the Object for sure, regardless of other threads
-                    if (objDispatcherCopy.CheckAccess())
-                    {
-                        token.ThrowIfCancellationRequested();
-                        funcToRun.Invoke(objDispatcherCopy);
-                    }
-                    else if (token != default)
-                    {
-                        DispatcherOperation objOperation = objDispatcherCopy.Dispatcher.BeginInvoke(funcToRun, objDispatcherCopy);
-                        using (token.Register(() => objOperation.Abort()))
-                            await objOperation.Task.ConfigureAwait(false);
-                        token.ThrowIfCancellationRequested();
-                    }
-                    else
-                    {
-                        await objDispatcherCopy.Dispatcher.BeginInvoke(funcToRun, objDispatcherCopy).Task.ConfigureAwait(false);
-                    }
-                }
-#else
-                else
-                    await Utils.RunOnMainThreadAsync(() => funcToRun(objDispatcher), token).ConfigureAwait(false);
-#endif
+                return objDispatcher == null
+                    ? Task.Run(() => funcToRun(null), token)
+                    : Utils.RunOnMainThreadAsync(() => funcToRun(objDispatcher), token);
             }
             catch (ObjectDisposedException) // e)
             {
@@ -415,9 +303,9 @@ namespace Chummer
             {
                 //no need to do anything here - actually we can't anyway...
             }
-            catch (OperationCanceledException)
+            catch (OperationCanceledException e)
             {
-                throw;
+                return Task.FromException(e);
             }
             catch (Exception e)
             {
@@ -425,8 +313,9 @@ namespace Chummer
 #if DEBUG
                 Program.ShowMessageBox(e.ToString());
 #endif
-                throw;
+                return Task.FromException(e);
             }
+            return Task.CompletedTask;
         }
 
         /// <summary>
@@ -437,43 +326,17 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         // Note: we cannot do a flag hack here because .GetAwaiter().GetResult() can run into object disposed issues for this special case.
-        public static async Task DoThreadSafeAsync<T>(this T objDispatcher, Action<CancellationToken> funcToRun, CancellationToken token = default) where T : DispatcherObject
+        public static Task DoThreadSafeAsync<T>(this T objDispatcher, Action<CancellationToken> funcToRun, CancellationToken token = default) where T : DispatcherObject
         {
-            token.ThrowIfCancellationRequested();
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
             if (funcToRun == null)
-                return;
+                return Task.CompletedTask;
             try
             {
-                if (objDispatcher == null)
-                {
-                    funcToRun.Invoke(token);
-                }
-#if USE_INVOKE
-                else
-                {
-                    // ReSharper disable once InlineTemporaryVariable
-                    T objDispatcherCopy = objDispatcher; //to have the Object for sure, regardless of other threads
-                    if (objDispatcherCopy.CheckAccess())
-                    {
-                        token.ThrowIfCancellationRequested();
-                        funcToRun.Invoke(token);
-                    }
-                    else if (token != default)
-                    {
-                        DispatcherOperation objOperation = objDispatcherCopy.Dispatcher.BeginInvoke(funcToRun, token);
-                        using (token.Register(() => objOperation.Abort()))
-                            await objOperation.Task.ConfigureAwait(false);
-                        token.ThrowIfCancellationRequested();
-                    }
-                    else
-                    {
-                        await objDispatcherCopy.Dispatcher.BeginInvoke(funcToRun, token).Task.ConfigureAwait(false);
-                    }
-                }
-#else
-                else
-                    await Utils.RunOnMainThreadAsync(() => funcToRun(token), token).ConfigureAwait(false);
-#endif
+                return objDispatcher == null
+                    ? Task.Run(() => funcToRun(token), token)
+                    : Utils.RunOnMainThreadAsync(() => funcToRun(token), token);
             }
             catch (ObjectDisposedException) // e)
             {
@@ -489,9 +352,9 @@ namespace Chummer
             {
                 //no need to do anything here - actually we can't anyway...
             }
-            catch (OperationCanceledException)
+            catch (OperationCanceledException e)
             {
-                throw;
+                return Task.FromException(e);
             }
             catch (Exception e)
             {
@@ -499,8 +362,9 @@ namespace Chummer
 #if DEBUG
                 Program.ShowMessageBox(e.ToString());
 #endif
-                throw;
+                return Task.FromException(e);
             }
+            return Task.CompletedTask;
         }
 
         /// <summary>
@@ -511,43 +375,17 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         // Note: we cannot do a flag hack here because .GetAwaiter().GetResult() can run into object disposed issues for this special case.
-        public static async Task DoThreadSafeAsync<T>(this T objDispatcher, Action<T, CancellationToken> funcToRun, CancellationToken token = default) where T : DispatcherObject
+        public static Task DoThreadSafeAsync<T>(this T objDispatcher, Action<T, CancellationToken> funcToRun, CancellationToken token = default) where T : DispatcherObject
         {
-            token.ThrowIfCancellationRequested();
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
             if (funcToRun == null)
-                return;
+                return Task.CompletedTask;
             try
             {
-                if (objDispatcher == null)
-                {
-                    funcToRun.Invoke(null, token);
-                }
-#if USE_INVOKE
-                else
-                {
-                    // ReSharper disable once InlineTemporaryVariable
-                    T objDispatcherCopy = objDispatcher; //to have the Object for sure, regardless of other threads
-                    if (objDispatcherCopy.CheckAccess())
-                    {
-                        token.ThrowIfCancellationRequested();
-                        funcToRun.Invoke(objDispatcherCopy, token);
-                    }
-                    else if (token != default)
-                    {
-                        DispatcherOperation objOperation = objDispatcherCopy.Dispatcher.BeginInvoke(funcToRun, objDispatcherCopy, token);
-                        using (token.Register(() => objOperation.Abort()))
-                            await objOperation.Task.ConfigureAwait(false);
-                        token.ThrowIfCancellationRequested();
-                    }
-                    else
-                    {
-                        await objDispatcherCopy.Dispatcher.BeginInvoke(funcToRun, objDispatcherCopy, token).Task.ConfigureAwait(false);
-                    }
-                }
-#else
-                else
-                    await Utils.RunOnMainThreadAsync(() => funcToRun(objDispatcher, token), token).ConfigureAwait(false);
-#endif
+                return objDispatcher == null
+                    ? Task.Run(() => funcToRun(null, token), token)
+                    : Utils.RunOnMainThreadAsync(() => funcToRun(objDispatcher, token), token);
             }
             catch (ObjectDisposedException) // e)
             {
@@ -563,9 +401,9 @@ namespace Chummer
             {
                 //no need to do anything here - actually we can't anyway...
             }
-            catch (OperationCanceledException)
+            catch (OperationCanceledException e)
             {
-                throw;
+                return Task.FromException(e);
             }
             catch (Exception e)
             {
@@ -573,8 +411,9 @@ namespace Chummer
 #if DEBUG
                 Program.ShowMessageBox(e.ToString());
 #endif
-                throw;
+                return Task.FromException(e);
             }
+            return Task.CompletedTask;
         }
 
         /// <summary>
@@ -588,22 +427,9 @@ namespace Chummer
         {
             if (funcToRun == null)
                 return default;
-            T2 objReturn = default;
             try
             {
-#if USE_INVOKE
-                if (objDispatcher == null)
-                    objReturn = funcToRun.Invoke();
-                else
-                {
-                    T1 objDispatcherCopy = objDispatcher; //to have the Object for sure, regardless of other threads
-                    objReturn = objDispatcherCopy.CheckAccess()
-                        ? funcToRun.Invoke()
-                        : objDispatcherCopy.Dispatcher.Invoke(funcToRun);
-                }
-#else
-                objReturn = objDispatcher == null ? funcToRun.Invoke() : Utils.RunOnMainThread(funcToRun);
-#endif
+                return objDispatcher == null ? funcToRun.Invoke() : Utils.RunOnMainThread(funcToRun);
             }
             catch (ObjectDisposedException) // e)
             {
@@ -632,7 +458,7 @@ namespace Chummer
                 throw;
             }
 
-            return objReturn;
+            return default;
         }
 
         /// <summary>
@@ -646,32 +472,11 @@ namespace Chummer
         {
             if (funcToRun == null)
                 return default;
-            T2 objReturn = default;
             try
             {
-#if USE_INVOKE
-                if (objDispatcher == null)
-                    objReturn = funcToRun.Invoke(null);
-                else
-                {
-                    T1 objDispatcherCopy = objDispatcher; //to have the Object for sure, regardless of other threads
-                    if (objDispatcherCopy.CheckAccess())
-                        objReturn = funcToRun.Invoke(objDispatcherCopy);
-                    else
-                    {
-                        switch (objDispatcherCopy.Dispatcher.Invoke(funcToRun, objDispatcherCopy))
-                        {
-                            case Exception ex:
-                                throw ex;
-                            case T2 objReturnRawCast:
-                                objReturn = objReturnRawCast;
-                                break;
-                        }
-                    }
-                }
-#else
-                objReturn = objDispatcher == null ? funcToRun.Invoke(null) : Utils.RunOnMainThread(() => funcToRun(objDispatcher));
-#endif
+                return objDispatcher == null
+                    ? funcToRun.Invoke(null)
+                    : Utils.RunOnMainThread(() => funcToRun(objDispatcher));
             }
             catch (ObjectDisposedException) // e)
             {
@@ -700,7 +505,7 @@ namespace Chummer
                 throw;
             }
 
-            return objReturn;
+            return default;
         }
 
         /// <summary>
@@ -716,36 +521,9 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (funcToRun == null)
                 return default;
-            T2 objReturn = default;
             try
             {
-#if USE_INVOKE
-                if (objDispatcher == null)
-                    objReturn = funcToRun.Invoke(token);
-                else
-                {
-                    T1 objDispatcherCopy = objDispatcher; //to have the Object for sure, regardless of other threads
-                    if (objDispatcherCopy.CheckAccess())
-                    {
-                        token.ThrowIfCancellationRequested();
-                        objReturn = funcToRun.Invoke(token);
-                    }
-                    else
-                    {
-                        token.ThrowIfCancellationRequested();
-                        switch (objDispatcherCopy.Dispatcher.Invoke(funcToRun, token))
-                        {
-                            case Exception ex:
-                                throw ex;
-                            case T2 objReturnRawCast:
-                                objReturn = objReturnRawCast;
-                                break;
-                        }
-                    }
-                }
-#else
-                objReturn = objDispatcher == null ? funcToRun.Invoke(token) : Utils.RunOnMainThread(() => funcToRun(token));
-#endif
+                return objDispatcher == null ? funcToRun.Invoke(token) : Utils.RunOnMainThread(() => funcToRun(token));
             }
             catch (ObjectDisposedException) // e)
             {
@@ -774,7 +552,7 @@ namespace Chummer
                 throw;
             }
 
-            return objReturn;
+            return default;
         }
 
         /// <summary>
@@ -790,36 +568,11 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (funcToRun == null)
                 return default;
-            T2 objReturn = default;
             try
             {
-#if USE_INVOKE
-                if (objDispatcher == null)
-                    objReturn = funcToRun.Invoke(null, token);
-                else
-                {
-                    T1 objDispatcherCopy = objDispatcher; //to have the Object for sure, regardless of other threads
-                    if (objDispatcherCopy.CheckAccess())
-                    {
-                        token.ThrowIfCancellationRequested();
-                        objReturn = funcToRun.Invoke(objDispatcherCopy, token);
-                    }
-                    else
-                    {
-                        token.ThrowIfCancellationRequested();
-                        switch (objDispatcherCopy.Dispatcher.Invoke(funcToRun, objDispatcherCopy, token))
-                        {
-                            case Exception ex:
-                                throw ex;
-                            case T2 objReturnRawCast:
-                                objReturn = objReturnRawCast;
-                                break;
-                        }
-                    }
-                }
-#else
-                objReturn = objDispatcher == null ? funcToRun.Invoke(null, token) : Utils.RunOnMainThread(() => funcToRun(objDispatcher, token));
-#endif
+                return objDispatcher == null
+                    ? funcToRun.Invoke(null, token)
+                    : Utils.RunOnMainThread(() => funcToRun(objDispatcher, token));
             }
             catch (ObjectDisposedException) // e)
             {
@@ -848,7 +601,7 @@ namespace Chummer
                 throw;
             }
 
-            return objReturn;
+            return default;
         }
 
         /// <summary>
@@ -859,34 +612,17 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         // Note: we cannot do a flag hack here because .GetAwaiter().GetResult() can run into object disposed issues for this special case.
-        public static async Task<T2> DoThreadSafeFuncAsync<T1, T2>(this T1 objDispatcher, Func<T2> funcToRun, CancellationToken token = default) where T1 : DispatcherObject
+        public static Task<T2> DoThreadSafeFuncAsync<T1, T2>(this T1 objDispatcher, Func<T2> funcToRun, CancellationToken token = default) where T1 : DispatcherObject
         {
-            token.ThrowIfCancellationRequested();
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<T2>(token);
             if (funcToRun == null)
-                return default;
-            T2 objReturn = default;
+                return Task.FromResult<T2>(default);
             try
             {
-#if USE_INVOKE
-                if (objDispatcher == null)
-                    objReturn = funcToRun.Invoke();
-                else
-                {
-                    T1 objDispatcherCopy = objDispatcher; //to have the Object for sure, regardless of other threads
-                    if (objDispatcherCopy.CheckAccess())
-                    {
-                        token.ThrowIfCancellationRequested();
-                        objReturn = funcToRun.Invoke();
-                    }
-                    else
-                    {
-                        token.ThrowIfCancellationRequested();
-                        objReturn = await objDispatcherCopy.Dispatcher.InvokeAsync(funcToRun, DispatcherPriority.Normal, token).Task.ConfigureAwait(false);
-                    }
-                }
-#else
-                objReturn = objDispatcher == null ? funcToRun.Invoke() : await Utils.RunOnMainThreadAsync(funcToRun, token).ConfigureAwait(false);
-#endif
+                return objDispatcher == null
+                    ? Task.Run(funcToRun, token)
+                    : Utils.RunOnMainThreadAsync(funcToRun, token);
             }
             catch (ObjectDisposedException) // e)
             {
@@ -902,9 +638,9 @@ namespace Chummer
             {
                 //no need to do anything here - actually we can't anyway...
             }
-            catch (OperationCanceledException)
+            catch (OperationCanceledException e)
             {
-                throw;
+                return Task.FromException<T2>(e);
             }
             catch (Exception e)
             {
@@ -912,10 +648,10 @@ namespace Chummer
 #if DEBUG
                 Program.ShowMessageBox(e.ToString());
 #endif
-                throw;
+                return Task.FromException<T2>(e);
             }
 
-            return objReturn;
+            return Task.FromResult<T2>(default);
         }
 
         /// <summary>
@@ -926,51 +662,17 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         // Note: we cannot do a flag hack here because .GetAwaiter().GetResult() can run into object disposed issues for this special case.
-        public static async Task<T2> DoThreadSafeFuncAsync<T1, T2>(this T1 objDispatcher, Func<T1, T2> funcToRun, CancellationToken token = default) where T1 : DispatcherObject
+        public static Task<T2> DoThreadSafeFuncAsync<T1, T2>(this T1 objDispatcher, Func<T1, T2> funcToRun, CancellationToken token = default) where T1 : DispatcherObject
         {
-            token.ThrowIfCancellationRequested();
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<T2>(token);
             if (funcToRun == null)
-                return default;
-            T2 objReturn = default;
+                return Task.FromResult<T2>(default);
             try
             {
-#if USE_INVOKE
-                if (objDispatcher == null)
-                    objReturn = funcToRun.Invoke(null);
-                else
-                {
-                    T1 objDispatcherCopy = objDispatcher; //to have the Object for sure, regardless of other threads
-                    if (objDispatcherCopy.CheckAccess())
-                    {
-                        token.ThrowIfCancellationRequested();
-                        objReturn = funcToRun.Invoke(objDispatcherCopy);
-                    }
-                    else
-                    {
-                        DispatcherOperation objOperation = objDispatcherCopy.Dispatcher.BeginInvoke(funcToRun, objDispatcherCopy);
-                        if (token != default)
-                        {
-                            using (token.Register(() => objOperation.Abort()))
-                                await objOperation.Task.ConfigureAwait(false);
-                            token.ThrowIfCancellationRequested();
-                        }
-                        else
-                        {
-                            await objOperation.Task.ConfigureAwait(false);
-                        }
-                        switch (objOperation.Result)
-                        {
-                            case Exception ex:
-                                throw ex;
-                            case T2 objReturnRawCast:
-                                objReturn = objReturnRawCast;
-                                break;
-                        }
-                    }
-                }
-#else
-                objReturn = objDispatcher == null ? funcToRun.Invoke(null) : await Utils.RunOnMainThreadAsync(() => funcToRun(objDispatcher), token).ConfigureAwait(false);
-#endif
+                return objDispatcher == null
+                    ? Task.Run(() => funcToRun(null), token)
+                    : Utils.RunOnMainThreadAsync(() => funcToRun(objDispatcher), token);
             }
             catch (ObjectDisposedException) // e)
             {
@@ -986,9 +688,9 @@ namespace Chummer
             {
                 //no need to do anything here - actually we can't anyway...
             }
-            catch (OperationCanceledException)
+            catch (OperationCanceledException e)
             {
-                throw;
+                return Task.FromException<T2>(e);
             }
             catch (Exception e)
             {
@@ -996,10 +698,10 @@ namespace Chummer
 #if DEBUG
                 Program.ShowMessageBox(e.ToString());
 #endif
-                throw;
+                return Task.FromException<T2>(e);
             }
 
-            return objReturn;
+            return Task.FromResult<T2>(default);
         }
 
         /// <summary>
@@ -1010,51 +712,17 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         // Note: we cannot do a flag hack here because .GetAwaiter().GetResult() can run into object disposed issues for this special case.
-        public static async Task<T2> DoThreadSafeFuncAsync<T1, T2>(this T1 objDispatcher, Func<CancellationToken, T2> funcToRun, CancellationToken token = default) where T1 : DispatcherObject
+        public static Task<T2> DoThreadSafeFuncAsync<T1, T2>(this T1 objDispatcher, Func<CancellationToken, T2> funcToRun, CancellationToken token = default) where T1 : DispatcherObject
         {
-            token.ThrowIfCancellationRequested();
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<T2>(token);
             if (funcToRun == null)
-                return default;
-            T2 objReturn = default;
+                return Task.FromResult<T2>(default);
             try
             {
-#if USE_INVOKE
-                if (objDispatcher == null)
-                    objReturn = funcToRun.Invoke(token);
-                else
-                {
-                    T1 objDispatcherCopy = objDispatcher; //to have the Object for sure, regardless of other threads
-                    if (objDispatcherCopy.CheckAccess())
-                    {
-                        token.ThrowIfCancellationRequested();
-                        objReturn = funcToRun.Invoke(token);
-                    }
-                    else
-                    {
-                        DispatcherOperation objOperation = objDispatcherCopy.Dispatcher.BeginInvoke(funcToRun, token);
-                        if (token != default)
-                        {
-                            using (token.Register(() => objOperation.Abort()))
-                                await objOperation.Task.ConfigureAwait(false);
-                            token.ThrowIfCancellationRequested();
-                        }
-                        else
-                        {
-                            await objOperation.Task.ConfigureAwait(false);
-                        }
-                        switch (objOperation.Result)
-                        {
-                            case Exception ex:
-                                throw ex;
-                            case T2 objReturnRawCast:
-                                objReturn = objReturnRawCast;
-                                break;
-                        }
-                    }
-                }
-#else
-                objReturn = objDispatcher == null ? funcToRun.Invoke(token) : await Utils.RunOnMainThreadAsync(() => funcToRun(token), token).ConfigureAwait(false);
-#endif
+                return objDispatcher == null
+                    ? Task.Run(() => funcToRun(token), token)
+                    : Utils.RunOnMainThreadAsync(() => funcToRun(token), token);
             }
             catch (ObjectDisposedException) // e)
             {
@@ -1070,9 +738,9 @@ namespace Chummer
             {
                 //no need to do anything here - actually we can't anyway...
             }
-            catch (OperationCanceledException)
+            catch (OperationCanceledException e)
             {
-                throw;
+                return Task.FromException<T2>(e);
             }
             catch (Exception e)
             {
@@ -1080,10 +748,10 @@ namespace Chummer
 #if DEBUG
                 Program.ShowMessageBox(e.ToString());
 #endif
-                throw;
+                return Task.FromException<T2>(e);
             }
 
-            return objReturn;
+            return Task.FromResult<T2>(default);
         }
 
         /// <summary>
@@ -1094,51 +762,17 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         // Note: we cannot do a flag hack here because .GetAwaiter().GetResult() can run into object disposed issues for this special case.
-        public static async Task<T2> DoThreadSafeFuncAsync<T1, T2>(this T1 objDispatcher, Func<T1, CancellationToken, T2> funcToRun, CancellationToken token = default) where T1 : DispatcherObject
+        public static Task<T2> DoThreadSafeFuncAsync<T1, T2>(this T1 objDispatcher, Func<T1, CancellationToken, T2> funcToRun, CancellationToken token = default) where T1 : DispatcherObject
         {
-            token.ThrowIfCancellationRequested();
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<T2>(token);
             if (funcToRun == null)
-                return default;
-            T2 objReturn = default;
+                return Task.FromResult<T2>(default);
             try
             {
-#if USE_INVOKE
-                if (objDispatcher == null)
-                    objReturn = funcToRun.Invoke(null, token);
-                else
-                {
-                    T1 objDispatcherCopy = objDispatcher; //to have the Object for sure, regardless of other threads
-                    if (objDispatcherCopy.CheckAccess())
-                    {
-                        token.ThrowIfCancellationRequested();
-                        objReturn = funcToRun.Invoke(objDispatcherCopy, token);
-                    }
-                    else
-                    {
-                        DispatcherOperation objOperation = objDispatcherCopy.Dispatcher.BeginInvoke(funcToRun, objDispatcherCopy, token);
-                        if (token != default)
-                        {
-                            using (token.Register(() => objOperation.Abort()))
-                                await objOperation.Task.ConfigureAwait(false);
-                            token.ThrowIfCancellationRequested();
-                        }
-                        else
-                        {
-                            await objOperation.Task.ConfigureAwait(false);
-                        }
-                        switch (objOperation.Result)
-                        {
-                            case Exception ex:
-                                throw ex;
-                            case T2 objReturnRawCast:
-                                objReturn = objReturnRawCast;
-                                break;
-                        }
-                    }
-                }
-#else
-                objReturn = objDispatcher == null ? funcToRun.Invoke(null, token) : await Utils.RunOnMainThreadAsync(() => funcToRun(objDispatcher, token), token).ConfigureAwait(false);
-#endif
+                return objDispatcher == null
+                    ? Task.Run(() => funcToRun(null, token), token)
+                    : Utils.RunOnMainThreadAsync(() => funcToRun(objDispatcher, token), token);
             }
             catch (ObjectDisposedException) // e)
             {
@@ -1154,9 +788,9 @@ namespace Chummer
             {
                 //no need to do anything here - actually we can't anyway...
             }
-            catch (OperationCanceledException)
+            catch (OperationCanceledException e)
             {
-                throw;
+                return Task.FromException<T2>(e);
             }
             catch (Exception e)
             {
@@ -1164,10 +798,10 @@ namespace Chummer
 #if DEBUG
                 Program.ShowMessageBox(e.ToString());
 #endif
-                throw;
+                return Task.FromException<T2>(e);
             }
 
-            return objReturn;
+            return Task.FromResult<T2>(default);
         }
     }
 }

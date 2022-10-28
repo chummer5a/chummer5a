@@ -17,9 +17,6 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
-// Uncomment to use invoke-based thread safety stuff instead of SynchronizationContext-based thread safety stuff
-//#define USE_INVOKE
-
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
@@ -58,25 +55,8 @@ namespace Chummer
             if (frmForm.IsDisposed)
                 throw new ObjectDisposedException(nameof(frmForm));
             if (!Utils.IsUnitTest)
-            {
-#if USE_INVOKE
-                DialogResult FuncToRun(Form x, IWin32Window y = null) => x.ShowDialog(y);
-
-                if (!frmForm.InvokeRequired)
-                {
-                    token.ThrowIfCancellationRequested();
-                    if (!(owner is Control objOwner) || !objOwner.InvokeRequired)
-                        return frmForm.ShowDialog(owner);
-                    return (DialogResult) objOwner.Invoke((Func<Form, IWin32Window, DialogResult>) FuncToRun, frmForm,
-                                                          owner);
-                }
-                token.ThrowIfCancellationRequested();
-                return (DialogResult) frmForm.Invoke((Func<Form, IWin32Window, DialogResult>) FuncToRun, frmForm,
-                                                     owner);
-#else
                 return Utils.RunOnMainThread(() => frmForm.ShowDialog(owner), token);
-#endif
-            }
+
             // Unit tests cannot use ShowDialog because that will stall them out
             bool blnDoClose = false;
             void FormOnShown(object sender, EventArgs args) => blnDoClose = true;
@@ -129,63 +109,7 @@ namespace Chummer
             if (frmForm.IsDisposed)
                 return Task.FromException<DialogResult>(new ObjectDisposedException(nameof(frmForm)));
             if (!Utils.IsUnitTest)
-            {
-#if USE_INVOKE
-                DialogResult FuncToRun(Form x, IWin32Window y = null) => x.ShowDialog(y);
-
-                if (frmForm.InvokeRequired)
-                {
-                    IAsyncResult objInvoke
-                        = frmForm.BeginInvoke((Func<Form, IWin32Window, DialogResult>)FuncToRun, frmForm,
-                                              owner);
-                    WaitHandle objHandle = objInvoke.AsyncWaitHandle;
-                    try
-                    {
-                        await objHandle.WaitOneAsync(token);
-                    }
-                    finally
-                    {
-                        if (!objHandle.SafeWaitHandle.IsClosed)
-                            objHandle.Dispose();
-                    }
-                    token.ThrowIfCancellationRequested();
-                    if (frmForm.IsNullOrDisposed())
-                        return default;
-                    object objReturn = frmForm.EndInvoke(objInvoke);
-                    if (objReturn is Exception ex)
-                        throw ex;
-                    return (DialogResult)objReturn;
-                }
-
-                if (owner is Control objOwner && objOwner.InvokeRequired)
-                {
-                    IAsyncResult objInvoke
-                        = objOwner.BeginInvoke((Func<Form, IWin32Window, DialogResult>)FuncToRun, frmForm,
-                                               owner);
-                    WaitHandle objHandle = objInvoke.AsyncWaitHandle;
-                    try
-                    {
-                        await objHandle.WaitOneAsync(token);
-                    }
-                    finally
-                    {
-                        if (!objHandle.SafeWaitHandle.IsClosed)
-                            objHandle.Dispose();
-                    }
-                    token.ThrowIfCancellationRequested();
-                    if (objOwner.IsNullOrDisposed())
-                        return default;
-                    object objReturn = objOwner.EndInvoke(objInvoke);
-                    if (objReturn is Exception ex)
-                        throw ex;
-                    return (DialogResult)objReturn;
-                }
-
-                return frmForm.ShowDialog(owner);
-#else
                 return Utils.RunOnMainThreadAsync(() => frmForm.ShowDialog(owner), token);
-#endif
-            }
 
             TaskCompletionSource<DialogResult> objCompletionSource = new TaskCompletionSource<DialogResult>();
             using (token.Register(() => objCompletionSource.TrySetCanceled(token)))
@@ -326,26 +250,9 @@ namespace Chummer
             try
             {
                 if (objControl == null)
-                {
                     funcToRun.Invoke();
-                }
-#if USE_INVOKE
-                else if (!objControl.Disposing && !objControl.IsDisposed)
-                {
-                    // ReSharper disable once InlineTemporaryVariable
-                    T myControlCopy = objControl; //to have the Object for sure, regardless of other threads
-                    if (myControlCopy.InvokeRequired)
-                    {
-                        if (myControlCopy.Invoke(funcToRun) is Exception ex)
-                            throw ex;
-                    }
-                    else
-                        funcToRun.Invoke();
-                }
-#else
                 else
                     Utils.RunOnMainThread(funcToRun);
-#endif
             }
             catch (ObjectDisposedException) // e)
             {
@@ -389,26 +296,9 @@ namespace Chummer
             try
             {
                 if (objControl == null)
-                {
                     funcToRun.Invoke(null);
-                }
-#if USE_INVOKE
-                else if (!objControl.Disposing && !objControl.IsDisposed)
-                {
-                    // ReSharper disable once InlineTemporaryVariable
-                    T myControlCopy = objControl; //to have the Object for sure, regardless of other threads
-                    if (myControlCopy.InvokeRequired)
-                    {
-                        if (myControlCopy.Invoke(funcToRun, myControlCopy) is Exception ex)
-                            throw ex;
-                    }
-                    else
-                        funcToRun.Invoke(myControlCopy);
-                }
-#else
                 else
                     Utils.RunOnMainThread(() => funcToRun(objControl));
-#endif
             }
             catch (ObjectDisposedException) // e)
             {
@@ -454,26 +344,9 @@ namespace Chummer
             try
             {
                 if (objControl == null)
-                {
                     funcToRun.Invoke(token);
-                }
-#if USE_INVOKE
-                else if (!objControl.Disposing && !objControl.IsDisposed)
-                {
-                    // ReSharper disable once InlineTemporaryVariable
-                    T myControlCopy = objControl; //to have the Object for sure, regardless of other threads
-                    if (myControlCopy.InvokeRequired)
-                    {
-                        if (myControlCopy.Invoke(funcToRun, token) is Exception ex)
-                            throw ex;
-                    }
-                    else
-                        funcToRun.Invoke(token);
-                }
-#else
                 else
                     Utils.RunOnMainThread(() => funcToRun(token), token);
-#endif
             }
             catch (ObjectDisposedException) // e)
             {
@@ -519,27 +392,9 @@ namespace Chummer
             try
             {
                 if (objControl == null)
-                {
                     funcToRun.Invoke(null, token);
-                }
-#if USE_INVOKE
-                else if (!objControl.Disposing && !objControl.IsDisposed)
-                {
-                    // ReSharper disable once InlineTemporaryVariable
-                    T myControlCopy = objControl; //to have the Object for sure, regardless of other threads
-                    if (myControlCopy.InvokeRequired)
-                    {
-                        token.ThrowIfCancellationRequested();
-                        if (myControlCopy.Invoke(funcToRun, myControlCopy, token) is Exception ex)
-                            throw ex;
-                    }
-                    else
-                        funcToRun.Invoke(myControlCopy, token);
-                }
-#else
                 else
                     Utils.RunOnMainThread(() => funcToRun(objControl, token), token);
-#endif
             }
             catch (ObjectDisposedException) // e)
             {
@@ -585,46 +440,7 @@ namespace Chummer
                 return Task.CompletedTask;
             try
             {
-                if (objControl == null)
-                {
-                    return Task.Run(funcToRun, token);
-                }
-#if USE_INVOKE
-                else if (!objControl.Disposing && !objControl.IsDisposed)
-                {
-                    // ReSharper disable once InlineTemporaryVariable
-                    T myControlCopy = objControl; //to have the Object for sure, regardless of other threads
-                    if (myControlCopy.InvokeRequired)
-                    {
-                        token.ThrowIfCancellationRequested();
-                        // Second check needed just in case form got disposed in the meantime
-                        if (!objControl.Disposing && !objControl.IsDisposed)
-                        {
-                            IAsyncResult objInvoke = myControlCopy.BeginInvoke(funcToRun);
-                            WaitHandle objHandle = objInvoke.AsyncWaitHandle;
-                            try
-                            {
-                                await objHandle.WaitOneAsync(token);
-                            }
-                            finally
-                            {
-                                if (!objHandle.SafeWaitHandle.IsClosed)
-                                    objHandle.Dispose();
-                            }
-                            token.ThrowIfCancellationRequested();
-                            if (myControlCopy.IsNullOrDisposed())
-                                return;
-                            if (myControlCopy.EndInvoke(objInvoke) is Exception ex)
-                                throw ex;
-                        }
-                    }
-                    else
-                        funcToRun.Invoke();
-                }
-#else
-                else
-                    return Utils.RunOnMainThreadAsync(funcToRun, token);
-#endif
+                return objControl == null ? Task.Run(funcToRun, token) : Utils.RunOnMainThreadAsync(funcToRun, token);
             }
             catch (ObjectDisposedException) // e)
             {
@@ -671,46 +487,9 @@ namespace Chummer
                 return Task.CompletedTask;
             try
             {
-                if (objControl == null)
-                {
-                    return Task.Run(() => funcToRun(null), token);
-                }
-#if USE_INVOKE
-                else if (!objControl.Disposing && !objControl.IsDisposed)
-                {
-                    // ReSharper disable once InlineTemporaryVariable
-                    T myControlCopy = objControl; //to have the Object for sure, regardless of other threads
-                    if (myControlCopy.InvokeRequired)
-                    {
-                        token.ThrowIfCancellationRequested();
-                        // Second check needed just in case form got disposed in the meantime
-                        if (!objControl.Disposing && !objControl.IsDisposed)
-                        {
-                            IAsyncResult objInvoke = myControlCopy.BeginInvoke(funcToRun, myControlCopy);
-                            WaitHandle objHandle = objInvoke.AsyncWaitHandle;
-                            try
-                            {
-                                await objHandle.WaitOneAsync(token);
-                            }
-                            finally
-                            {
-                                if (!objHandle.SafeWaitHandle.IsClosed)
-                                    objHandle.Dispose();
-                            }
-                            token.ThrowIfCancellationRequested();
-                            if (myControlCopy.IsNullOrDisposed())
-                                return;
-                            if (myControlCopy.EndInvoke(objInvoke) is Exception ex)
-                                throw ex;
-                        }
-                    }
-                    else
-                        funcToRun.Invoke(myControlCopy);
-                }
-#else
-                else
-                    return Utils.RunOnMainThreadAsync(() => funcToRun(objControl), token);
-#endif
+                return objControl == null
+                    ? Task.Run(() => funcToRun(null), token)
+                    : Utils.RunOnMainThreadAsync(() => funcToRun(objControl), token);
             }
             catch (ObjectDisposedException) // e)
             {
@@ -757,46 +536,9 @@ namespace Chummer
                 return Task.CompletedTask;
             try
             {
-                if (objControl == null)
-                {
-                    return Task.Run(() => funcToRun(token), token);
-                }
-#if USE_INVOKE
-                else if (!objControl.Disposing && !objControl.IsDisposed)
-                {
-                    // ReSharper disable once InlineTemporaryVariable
-                    T myControlCopy = objControl; //to have the Object for sure, regardless of other threads
-                    if (myControlCopy.InvokeRequired)
-                    {
-                        token.ThrowIfCancellationRequested();
-                        // Second check needed just in case form got disposed in the meantime
-                        if (!objControl.Disposing && !objControl.IsDisposed)
-                        {
-                            IAsyncResult objInvoke = myControlCopy.BeginInvoke(funcToRun, token);
-                            WaitHandle objHandle = objInvoke.AsyncWaitHandle;
-                            try
-                            {
-                                await objHandle.WaitOneAsync(token);
-                            }
-                            finally
-                            {
-                                if (!objHandle.SafeWaitHandle.IsClosed)
-                                    objHandle.Dispose();
-                            }
-                            token.ThrowIfCancellationRequested();
-                            if (myControlCopy.IsNullOrDisposed())
-                                return;
-                            if (myControlCopy.EndInvoke(objInvoke) is Exception ex)
-                                throw ex;
-                        }
-                    }
-                    else
-                        funcToRun.Invoke(token);
-                }
-#else
-                else
-                    return Utils.RunOnMainThreadAsync(() => funcToRun(token), token);
-#endif
+                return objControl == null
+                    ? Task.Run(() => funcToRun(token), token)
+                    : Utils.RunOnMainThreadAsync(() => funcToRun(token), token);
             }
             catch (ObjectDisposedException) // e)
             {
@@ -843,46 +585,9 @@ namespace Chummer
                 return Task.CompletedTask;
             try
             {
-                if (objControl == null)
-                {
-                    return Task.Run(() => funcToRun(null, token), token);
-                }
-#if USE_INVOKE
-                else if (!objControl.Disposing && !objControl.IsDisposed)
-                {
-                    // ReSharper disable once InlineTemporaryVariable
-                    T myControlCopy = objControl; //to have the Object for sure, regardless of other threads
-                    if (myControlCopy.InvokeRequired)
-                    {
-                        token.ThrowIfCancellationRequested();
-                        // Second check needed just in case form got disposed in the meantime
-                        if (!objControl.Disposing && !objControl.IsDisposed)
-                        {
-                            IAsyncResult objInvoke = myControlCopy.BeginInvoke(funcToRun, myControlCopy, token);
-                            WaitHandle objHandle = objInvoke.AsyncWaitHandle;
-                            try
-                            {
-                                await objHandle.WaitOneAsync(token);
-                            }
-                            finally
-                            {
-                                if (!objHandle.SafeWaitHandle.IsClosed)
-                                    objHandle.Dispose();
-                            }
-                            token.ThrowIfCancellationRequested();
-                            if (myControlCopy.IsNullOrDisposed())
-                                return;
-                            if (myControlCopy.EndInvoke(objInvoke) is Exception ex)
-                                throw ex;
-                        }
-                    }
-                    else
-                        funcToRun.Invoke(myControlCopy, token);
-                }
-#else
-                else
-                    return Utils.RunOnMainThreadAsync(() => funcToRun(objControl, token), token);
-#endif
+                return objControl == null
+                    ? Task.Run(() => funcToRun(null, token), token)
+                    : Utils.RunOnMainThreadAsync(() => funcToRun(objControl, token), token);
             }
             catch (ObjectDisposedException) // e)
             {
@@ -924,32 +629,9 @@ namespace Chummer
         {
             if (funcToRun == null)
                 return default;
-            T2 objReturn = default;
             try
             {
-#if USE_INVOKE
-                if (objControl == null)
-                    objReturn = funcToRun.Invoke();
-                else if (!objControl.Disposing && !objControl.IsDisposed)
-                {
-                    T1 myControlCopy = objControl; //to have the Object for sure, regardless of other threads
-                    if (myControlCopy.InvokeRequired)
-                    {
-                        switch (myControlCopy.Invoke(funcToRun))
-                        {
-                            case Exception ex:
-                                throw ex;
-                            case T2 objReturnRawCast:
-                                objReturn = objReturnRawCast;
-                                break;
-                        }
-                    }
-                    else
-                        objReturn = funcToRun.Invoke();
-                }
-#else
-                objReturn = objControl == null ? funcToRun.Invoke() : Utils.RunOnMainThread(funcToRun);
-#endif
+                return objControl == null ? funcToRun.Invoke() : Utils.RunOnMainThread(funcToRun);
             }
             catch (ObjectDisposedException) // e)
             {
@@ -978,7 +660,7 @@ namespace Chummer
                 throw;
             }
 
-            return objReturn;
+            return default;
         }
 
         /// <summary>
@@ -992,32 +674,9 @@ namespace Chummer
         {
             if (funcToRun == null)
                 return default;
-            T2 objReturn = default;
             try
             {
-#if USE_INVOKE
-                if (objControl == null)
-                    objReturn = funcToRun.Invoke(null);
-                else if (!objControl.Disposing && !objControl.IsDisposed)
-                {
-                    T1 myControlCopy = objControl; //to have the Object for sure, regardless of other threads
-                    if (myControlCopy.InvokeRequired)
-                    {
-                        switch (myControlCopy.Invoke(funcToRun, myControlCopy))
-                        {
-                            case Exception ex:
-                                throw ex;
-                            case T2 objReturnRawCast:
-                                objReturn = objReturnRawCast;
-                                break;
-                        }
-                    }
-                    else
-                        objReturn = funcToRun.Invoke(myControlCopy);
-                }
-#else
-                objReturn = objControl == null ? funcToRun.Invoke(null) : Utils.RunOnMainThread(() => funcToRun(objControl));
-#endif
+                return objControl == null ? funcToRun.Invoke(null) : Utils.RunOnMainThread(() => funcToRun(objControl));
             }
             catch (ObjectDisposedException) // e)
             {
@@ -1046,7 +705,7 @@ namespace Chummer
                 throw;
             }
 
-            return objReturn;
+            return default;
         }
 
         /// <summary>
@@ -1062,33 +721,11 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (funcToRun == null)
                 return default;
-            T2 objReturn = default;
             try
             {
-#if USE_INVOKE
-                if (objControl == null)
-                    objReturn = funcToRun.Invoke(token);
-                else if (!objControl.Disposing && !objControl.IsDisposed)
-                {
-                    T1 myControlCopy = objControl; //to have the Object for sure, regardless of other threads
-                    if (myControlCopy.InvokeRequired)
-                    {
-                        token.ThrowIfCancellationRequested();
-                        switch (myControlCopy.Invoke(funcToRun, token))
-                        {
-                            case Exception ex:
-                                throw ex;
-                            case T2 objReturnRawCast:
-                                objReturn = objReturnRawCast;
-                                break;
-                        }
-                    }
-                    else
-                        objReturn = funcToRun.Invoke(token);
-                }
-#else
-                objReturn = objControl == null ? funcToRun.Invoke(token) : Utils.RunOnMainThread(() => funcToRun(token), token);
-#endif
+                return objControl == null
+                    ? funcToRun.Invoke(token)
+                    : Utils.RunOnMainThread(() => funcToRun(token), token);
             }
             catch (ObjectDisposedException) // e)
             {
@@ -1117,7 +754,7 @@ namespace Chummer
                 throw;
             }
 
-            return objReturn;
+            return default;
         }
 
         /// <summary>
@@ -1133,33 +770,11 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (funcToRun == null)
                 return default;
-            T2 objReturn = default;
             try
             {
-#if USE_INVOKE
-                if (objControl == null)
-                    objReturn = funcToRun.Invoke(null, token);
-                else if (!objControl.Disposing && !objControl.IsDisposed)
-                {
-                    T1 myControlCopy = objControl; //to have the Object for sure, regardless of other threads
-                    if (myControlCopy.InvokeRequired)
-                    {
-                        token.ThrowIfCancellationRequested();
-                        switch (myControlCopy.Invoke(funcToRun, myControlCopy, token))
-                        {
-                            case Exception ex:
-                                throw ex;
-                            case T2 objReturnRawCast:
-                                objReturn = objReturnRawCast;
-                                break;
-                        }
-                    }
-                    else
-                        objReturn = funcToRun.Invoke(myControlCopy, token);
-                }
-#else
-                objReturn = objControl == null ? funcToRun.Invoke(null, token) : Utils.RunOnMainThread(() => funcToRun(objControl, token), token);
-#endif
+                return objControl == null
+                    ? funcToRun.Invoke(null, token)
+                    : Utils.RunOnMainThread(() => funcToRun(objControl, token), token);
             }
             catch (ObjectDisposedException) // e)
             {
@@ -1188,7 +803,7 @@ namespace Chummer
                 throw;
             }
 
-            return objReturn;
+            return default;
         }
 
         /// <summary>
@@ -1207,51 +822,9 @@ namespace Chummer
                 return Task.FromResult<T2>(default);
             try
             {
-#if USE_INVOKE
-                if (objControl == null)
-                    objReturn = await Task.Run(funcToRun, token);
-                else if (!objControl.Disposing && !objControl.IsDisposed)
-                {
-                    T1 myControlCopy = objControl; //to have the Object for sure, regardless of other threads
-                    if (myControlCopy.InvokeRequired)
-                    {
-                        token.ThrowIfCancellationRequested();
-                        // Second check needed just in case form got disposed in the meantime
-                        if (!objControl.Disposing && !objControl.IsDisposed)
-                        {
-                            IAsyncResult objInvoke = myControlCopy.BeginInvoke(funcToRun);
-                            WaitHandle objHandle = objInvoke.AsyncWaitHandle;
-                            try
-                            {
-                                await objHandle.WaitOneAsync(token);
-                            }
-                            finally
-                            {
-                                if (!objHandle.SafeWaitHandle.IsClosed)
-                                    objHandle.Dispose();
-                            }
-                            token.ThrowIfCancellationRequested();
-                            if (!myControlCopy.IsNullOrDisposed())
-                            {
-                                switch (myControlCopy.EndInvoke(objInvoke))
-                                {
-                                    case Exception ex:
-                                        throw ex;
-                                    case T2 objReturnRawCast:
-                                        objReturn = objReturnRawCast;
-                                        break;
-                                }
-                            }
-                        }
-                    }
-                    else
-                        objReturn = funcToRun.Invoke();
-                }
-#else
                 return objControl == null
                     ? Task.Run(funcToRun, token)
                     : Utils.RunOnMainThreadAsync(funcToRun, token);
-#endif
             }
             catch (ObjectDisposedException) // e)
             {
@@ -1299,51 +872,9 @@ namespace Chummer
                 return Task.FromResult<T2>(default);
             try
             {
-#if USE_INVOKE
-                if (objControl == null)
-                    objReturn = await Task.Run(() => funcToRun(null), token);
-                else if (!objControl.Disposing && !objControl.IsDisposed)
-                {
-                    T1 myControlCopy = objControl; //to have the Object for sure, regardless of other threads
-                    if (myControlCopy.InvokeRequired)
-                    {
-                        token.ThrowIfCancellationRequested();
-                        // Second check needed just in case form got disposed in the meantime
-                        if (!objControl.Disposing && !objControl.IsDisposed)
-                        {
-                            IAsyncResult objInvoke = myControlCopy.BeginInvoke(funcToRun, myControlCopy);
-                            WaitHandle objHandle = objInvoke.AsyncWaitHandle;
-                            try
-                            {
-                                await objHandle.WaitOneAsync(token);
-                            }
-                            finally
-                            {
-                                if (!objHandle.SafeWaitHandle.IsClosed)
-                                    objHandle.Dispose();
-                            }
-                            token.ThrowIfCancellationRequested();
-                            if (!myControlCopy.IsNullOrDisposed())
-                            {
-                                switch (myControlCopy.EndInvoke(objInvoke))
-                                {
-                                    case Exception ex:
-                                        throw ex;
-                                    case T2 objReturnRawCast:
-                                        objReturn = objReturnRawCast;
-                                        break;
-                                }
-                            }
-                        }
-                    }
-                    else
-                        objReturn = funcToRun.Invoke(myControlCopy);
-                }
-#else
                 return objControl == null
                     ? Task.Run(() => funcToRun(null), token)
                     : Utils.RunOnMainThreadAsync(() => funcToRun(objControl), token);
-#endif
             }
             catch (ObjectDisposedException) // e)
             {
@@ -1391,51 +922,9 @@ namespace Chummer
                 return Task.FromResult<T2>(default);
             try
             {
-#if USE_INVOKE
-                if (objControl == null)
-                    objReturn = await Task.Run(() => funcToRun(token), token);
-                else if (!objControl.Disposing && !objControl.IsDisposed)
-                {
-                    T1 myControlCopy = objControl; //to have the Object for sure, regardless of other threads
-                    if (myControlCopy.InvokeRequired)
-                    {
-                        token.ThrowIfCancellationRequested();
-                        // Second check needed just in case form got disposed in the meantime
-                        if (!objControl.Disposing && !objControl.IsDisposed)
-                        {
-                            IAsyncResult objInvoke = myControlCopy.BeginInvoke(funcToRun, token);
-                            WaitHandle objHandle = objInvoke.AsyncWaitHandle;
-                            try
-                            {
-                                await objHandle.WaitOneAsync(token);
-                            }
-                            finally
-                            {
-                                if (!objHandle.SafeWaitHandle.IsClosed)
-                                    objHandle.Dispose();
-                            }
-                            token.ThrowIfCancellationRequested();
-                            if (!myControlCopy.IsNullOrDisposed())
-                            {
-                                switch (myControlCopy.EndInvoke(objInvoke))
-                                {
-                                    case Exception ex:
-                                        throw ex;
-                                    case T2 objReturnRawCast:
-                                        objReturn = objReturnRawCast;
-                                        break;
-                                }
-                            }
-                        }
-                    }
-                    else
-                        objReturn = funcToRun.Invoke(token);
-                }
-#else
                 return objControl == null
                     ? Task.Run(() => funcToRun(token), token)
                     : Utils.RunOnMainThreadAsync(() => funcToRun(token), token);
-#endif
             }
             catch (ObjectDisposedException) // e)
             {
@@ -1483,51 +972,9 @@ namespace Chummer
                 return Task.FromResult<T2>(default);
             try
             {
-#if USE_INVOKE
-                if (objControl == null)
-                    objReturn = await Task.Run(() => funcToRun(null, token), token);
-                else if (!objControl.Disposing && !objControl.IsDisposed)
-                {
-                    T1 myControlCopy = objControl; //to have the Object for sure, regardless of other threads
-                    if (myControlCopy.InvokeRequired)
-                    {
-                        token.ThrowIfCancellationRequested();
-                        // Second check needed just in case form got disposed in the meantime
-                        if (!objControl.Disposing && !objControl.IsDisposed)
-                        {
-                            IAsyncResult objInvoke = myControlCopy.BeginInvoke(funcToRun, myControlCopy, token);
-                            WaitHandle objHandle = objInvoke.AsyncWaitHandle;
-                            try
-                            {
-                                await objHandle.WaitOneAsync(token);
-                            }
-                            finally
-                            {
-                                if (!objHandle.SafeWaitHandle.IsClosed)
-                                    objHandle.Dispose();
-                            }
-                            token.ThrowIfCancellationRequested();
-                            if (!myControlCopy.IsNullOrDisposed())
-                            {
-                                switch (myControlCopy.EndInvoke(objInvoke))
-                                {
-                                    case Exception ex:
-                                        throw ex;
-                                    case T2 objReturnRawCast:
-                                        objReturn = objReturnRawCast;
-                                        break;
-                                }
-                            }
-                        }
-                    }
-                    else
-                        objReturn = funcToRun.Invoke(myControlCopy, token);
-                }
-#else
                 return objControl == null
                     ? Task.Run(() => funcToRun(null, token), token)
                     : Utils.RunOnMainThreadAsync(() => funcToRun(objControl, token), token);
-#endif
             }
             catch (ObjectDisposedException) // e)
             {
