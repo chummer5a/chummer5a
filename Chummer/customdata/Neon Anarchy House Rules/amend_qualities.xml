@@ -254,7 +254,7 @@
             <name>Prototype Transhuman</name>
             <bonus amendoperation="replace">
                 <prototypetranshuman>1</prototypetranshuman>
-                <selectquality amendoperation="replace">
+                <selectquality >
                     <quality>Aged</quality>
                     <quality>Albinism II</quality>
                     <quality>Allergy (Common, Moderate)</quality>
@@ -316,7 +316,7 @@
 		</quality>
 		<quality>
 			<name>Trust Fund IV</name>
-			<hide />>
+			<hide />
 		</quality>
 		<quality>
 			<name>Brilliant Heuristics</name>
