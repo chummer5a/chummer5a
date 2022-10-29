@@ -3445,7 +3445,7 @@ namespace Chummer
                     using (CursorWait.New(this, true))
                     using (ThreadSafeForm<LoadingBar> frmLoadingBar = Program.CreateAndShowProgressBar())
                     {
-                        Task objCharacterLoadingTask = null;
+                        Task<Character[]> tskCharacterLoading = null;
                         Task<Character>[] atskLoadingTasks = null;
                         // Extract the file name
                         NativeMethods.CopyDataStruct objReceivedData
@@ -3540,7 +3540,7 @@ namespace Chummer
                                                     token: _objGenericToken), _objGenericToken);
                                     }
 
-                                    objCharacterLoadingTask = Task.WhenAll(atskLoadingTasks);
+                                    tskCharacterLoading = Task.WhenAll(atskLoadingTasks);
                                 }
                             }
                             finally
@@ -3557,8 +3557,8 @@ namespace Chummer
 
                         Utils.SafelyRunSynchronously(async () =>
                         {
-                            if (objCharacterLoadingTask?.IsCompleted == false)
-                                await objCharacterLoadingTask.ConfigureAwait(false);
+                            if (tskCharacterLoading?.IsCompleted == false)
+                                await tskCharacterLoading.ConfigureAwait(false);
                             if (atskLoadingTasks != null)
                             {
                                 foreach (Task<Character> tskLoadingTask in atskLoadingTasks)

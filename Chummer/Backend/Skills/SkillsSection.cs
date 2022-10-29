@@ -674,7 +674,7 @@ namespace Chummer.Backend.Skills
                             return "Professional";
                         return (await xmlCategories.SelectSingleNodeAndCacheExpressionAsync("category[@type = \"knowledge\"]", token).ConfigureAwait(false))?.Value
                                ?? "Professional";
-                    });
+                    }, Utils.JoinableTaskFactory);
                 }
 
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);

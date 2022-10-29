@@ -209,7 +209,7 @@ namespace Chummer
         public static bool LoadLanguage(string strLanguage, CancellationToken token = default)
         {
             return strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
-                   || Utils.SafelyRunSynchronously(() => LoadLanguageCoreAsync(true, strLanguage, token));
+                   || Utils.SafelyRunSynchronously(() => LoadLanguageCoreAsync(true, strLanguage, token), token);
         }
 
         /// <summary>
@@ -246,12 +246,13 @@ namespace Chummer
             {
                 // ReSharper disable MethodHasAsyncOverload
                 // ReSharper disable MethodHasAsyncOverloadWithCancellation
-                bool blnSuccess = s_DicLanguageData.TryGetValue(strKey, out objNewLanguage);
+                bool blnSuccess = s_DicLanguageData.TryGetValue(strKey, out objNewLanguage, token);
                 while (!blnSuccess)
                 {
+                    token.ThrowIfCancellationRequested();
                     if (!s_DicLanguageData.TryAdd(strKey, null))
                     {
-                        blnSuccess = s_DicLanguageData.TryGetValue(strKey, out objNewLanguage);
+                        blnSuccess = s_DicLanguageData.TryGetValue(strKey, out objNewLanguage, token);
                     }
                     else
                     {
@@ -265,12 +266,13 @@ namespace Chummer
                 while (objNewLanguage == null)
                 {
                     Utils.SafeSleep(token);
-                    blnSuccess = s_DicLanguageData.TryGetValue(strKey, out objNewLanguage);
+                    blnSuccess = s_DicLanguageData.TryGetValue(strKey, out objNewLanguage, token);
                     while (!blnSuccess)
                     {
+                        token.ThrowIfCancellationRequested();
                         if (!s_DicLanguageData.TryAdd(strKey, null))
                         {
-                            blnSuccess = s_DicLanguageData.TryGetValue(strKey, out objNewLanguage);
+                            blnSuccess = s_DicLanguageData.TryGetValue(strKey, out objNewLanguage, token);
                         }
                         else
                         {
@@ -614,7 +616,7 @@ namespace Chummer
                                        CancellationToken token = default)
         {
             return Utils.SafelyRunSynchronously(
-                () => GetStringCoreAsync(true, strKey, strLanguage, blnReturnError, token));
+                () => GetStringCoreAsync(true, strKey, strLanguage, blnReturnError, token), token);
         }
 
         /// <summary>
@@ -666,7 +668,7 @@ namespace Chummer
         public static char GetChar(string strKey, string strLanguage, CancellationToken token = default)
         {
             string strReturn
-                = Utils.SafelyRunSynchronously(() => GetStringCoreAsync(true, strKey, strLanguage, false, token));
+                = Utils.SafelyRunSynchronously(() => GetStringCoreAsync(true, strKey, strLanguage, false, token), token);
             return string.IsNullOrWhiteSpace(strReturn) ? default : strReturn[0];
         }
 
@@ -743,7 +745,7 @@ namespace Chummer
             if (blnSync)
             {
                 // ReSharper disable once MethodHasAsyncOverload
-                if (s_DicEnglishStrings.TryGetValue(strKey, out strReturn))
+                if (s_DicEnglishStrings.TryGetValue(strKey, out strReturn, token))
                     return strReturn;
             }
             else
@@ -888,7 +890,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static XPathDocument GetDataDocument(string strLanguage, CancellationToken token = default)
         {
-            return Utils.SafelyRunSynchronously(() => GetDataDocumentCoreAsync(true, strLanguage, token));
+            return Utils.SafelyRunSynchronously(() => GetDataDocumentCoreAsync(true, strLanguage, token), token);
         }
 
         /// <summary>
@@ -1556,10 +1558,8 @@ namespace Chummer
                                                 () => FindString(strPreferFile, objCombinedToken),
                                                 objCombinedToken).ConfigureAwait(false);
                                         }
-                                        catch (OperationCanceledException)
+                                        catch (OperationCanceledException) when (objCancellationToken.IsCancellationRequested)
                                         {
-                                            if (!objCancellationToken.IsCancellationRequested)
-                                                throw;
                                             //swallow this
                                         }
                                     }
@@ -1644,10 +1644,8 @@ namespace Chummer
                                             () => FindString(innerToken: objCombinedToken),
                                             objCombinedToken).ConfigureAwait(false);
                                     }
-                                    catch (OperationCanceledException)
+                                    catch (OperationCanceledException) when (objCancellationToken.IsCancellationRequested)
                                     {
-                                        if (!objCancellationToken.IsCancellationRequested)
-                                            throw;
                                         //swallow this
                                     }
                                 }
@@ -2019,10 +2017,8 @@ namespace Chummer
                                     () => FindString(strPreferFile, objCombinedToken),
                                     objCombinedToken).ConfigureAwait(false);
                             }
-                            catch (OperationCanceledException)
+                            catch (OperationCanceledException) when (objCancellationToken.IsCancellationRequested)
                             {
-                                if (!objCancellationToken.IsCancellationRequested)
-                                    throw;
                                 //swallow this
                             }
                         }
@@ -2101,10 +2097,8 @@ namespace Chummer
                                 () => FindString(innerToken: objCombinedToken),
                                 objCombinedToken).ConfigureAwait(false);
                         }
-                        catch (OperationCanceledException)
+                        catch (OperationCanceledException) when (objCancellationToken.IsCancellationRequested)
                         {
-                            if (!objCancellationToken.IsCancellationRequested)
-                                throw;
                             //swallow this
                         }
                     }

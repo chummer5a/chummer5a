@@ -279,7 +279,7 @@ namespace Chummer
             IAsyncDisposable objLocker = await s_dicCachedIconBitmaps.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
-                if (s_dicStockIconBitmapsForSystemIcons.TryGetValue(objIcon, out bmpReturn))
+                if (s_dicStockIconBitmapsForSystemIcons.TryGetValue(objIcon, out bmpReturn, token))
                     return bmpReturn;
                 if (objIcon == SystemIcons.Application)
                 {
@@ -361,7 +361,7 @@ namespace Chummer
                                                     ? new JoinableTaskContext()
                                                     : MyJoinableTaskContext));
 
-        private static JoinableTaskFactory JoinableTaskFactory => s_objJoinableTaskFactory.Value;
+        public static JoinableTaskFactory JoinableTaskFactory => s_objJoinableTaskFactory.Value;
 
         private static readonly Lazy<string[]> s_astrBasicDataFileNames = new Lazy<string[]>(() =>
         {
@@ -1154,7 +1154,6 @@ namespace Chummer
             return tcs.Task;
         }
 
-#pragma warning disable VSTHRD001
         /// <summary>
         /// Run code on the main (UI) thread in a synchronous fashion.
         /// </summary>
@@ -1289,7 +1288,6 @@ namespace Chummer
                 ? Task.FromCanceled<T>(token)
                 : JoinableTaskFactory.RunAsync(func).Task;
         }
-#pragma warning restore VSTHRD001
 
         /// <summary>
         /// Syntactic sugar for Thread.Sleep with the default sleep duration done in a way that makes sure the application will run queued up events afterwards.

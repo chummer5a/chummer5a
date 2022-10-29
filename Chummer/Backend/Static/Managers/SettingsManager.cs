@@ -373,7 +373,7 @@ namespace Chummer
                         }
                     }
                     return strReturn;
-                });
+                }, Utils.JoinableTaskFactory);
                 await Program.OpenCharacters.ForEachAsync(async objCharacter =>
                 {
                     if (await objCharacter.GetSettingsKeyAsync(token).ConfigureAwait(false) == strKeyToDelete)

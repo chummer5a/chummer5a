@@ -910,7 +910,7 @@ namespace Chummer
     /// <summary>
     /// Holds all information about an Dependency or Incompatibility
     /// </summary>
-    public readonly struct DirectoryDependency
+    public readonly struct DirectoryDependency : IEquatable<DirectoryDependency>
     {
         public DirectoryDependency(string name, Guid guid, Version minVersion, Version maxVersion)
         {
@@ -970,6 +970,43 @@ namespace Chummer
                 ? string.Format(GlobalSettings.CultureInfo, "{0}{1}({1}<{1}{2})", Name, strSpace, MaximumVersion)
                 // If neither min and max version are given, just display the Name instead of the decimal.min and decimal.max
                 : Name;
+        }
+
+        /// <inheritdoc />
+        public bool Equals(DirectoryDependency other)
+        {
+            return Name == other.Name && UniqueIdentifier.Equals(other.UniqueIdentifier)
+                                      && Equals(MinimumVersion, other.MinimumVersion)
+                                      && Equals(MaximumVersion, other.MaximumVersion);
+        }
+
+        /// <inheritdoc />
+        public override bool Equals(object obj)
+        {
+            return obj is DirectoryDependency other && Equals(other);
+        }
+
+        /// <inheritdoc />
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int hashCode = (Name != null ? Name.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ UniqueIdentifier.GetHashCode();
+                hashCode = (hashCode * 397) ^ (MinimumVersion != null ? MinimumVersion.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (MaximumVersion != null ? MaximumVersion.GetHashCode() : 0);
+                return hashCode;
+            }
+        }
+
+        public static bool operator ==(DirectoryDependency left, DirectoryDependency right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(DirectoryDependency left, DirectoryDependency right)
+        {
+            return !left.Equals(right);
         }
     }
 }

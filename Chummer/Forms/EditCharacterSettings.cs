@@ -1159,7 +1159,7 @@ namespace Chummer
                 if (_dicCharacterCustomDataDirectoryInfos.Count != treCustomDataDirectories.Nodes.Count)
                 {
                     List<TreeNode> lstNodes = new List<TreeNode>(_dicCharacterCustomDataDirectoryInfos.Count);
-                    foreach (KeyValuePair<object, bool> kvpInfo in _dicCharacterCustomDataDirectoryInfos)
+                    foreach (KeyValuePair<object, bool> kvpInfo in _dicCharacterCustomDataDirectoryInfos.OfType<KeyValuePair<object, bool>>())
                     {
                         token.ThrowIfCancellationRequested();
                         TreeNode objNode = new TreeNode
