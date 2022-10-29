@@ -8540,7 +8540,7 @@ namespace Chummer
                 // Store our new order so it's loaded properly the next time we open the character
                 x.CacheSortOrder();
             }, token).ConfigureAwait(false);
-            
+
             await SetDirty(true, token).ConfigureAwait(false);
         }
 
@@ -8578,11 +8578,7 @@ namespace Chummer
                 if (value)
                     Interlocked.Increment(ref _intRefreshingCount);
                 else
-                {
-                    int intCurrentRefreshingCount = Interlocked.Decrement(ref _intRefreshingCount);
-                    if (intCurrentRefreshingCount < 0)
-                        Interlocked.CompareExchange(ref _intRefreshingCount, 0, intCurrentRefreshingCount);
-                }
+                    Interlocked.Decrement(ref _intRefreshingCount);
             }
         }
 
@@ -8594,11 +8590,7 @@ namespace Chummer
                 if (value)
                     Interlocked.Increment(ref _intLoadingCount);
                 else
-                {
-                    int intCurrentLoadingCount = Interlocked.Decrement(ref _intLoadingCount);
-                    if (intCurrentLoadingCount < 0)
-                        Interlocked.CompareExchange(ref _intLoadingCount, 0, intCurrentLoadingCount);
-                }
+                    Interlocked.Decrement(ref _intLoadingCount);
             }
         }
 
