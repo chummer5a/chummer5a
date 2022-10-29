@@ -42,7 +42,8 @@ namespace Chummer
         private readonly List<ListItem> _lstSettings = Utils.ListItemListPool.Get();
 
         // List of custom data directory infos on the character, in load order. If the character has a directory name for which we have no info, key will be a string instead of an info
-        private readonly TypedOrderedDictionary<object, bool> _dicCharacterCustomDataDirectoryInfos = new TypedOrderedDictionary<object, bool>();
+        private readonly TypedOrderedDictionary<object, bool> _dicCharacterCustomDataDirectoryInfos
+            = new TypedOrderedDictionary<object, bool>();
 
         private int _intLoading = 1;
         private int _intSkipLimbCountUpdate;
@@ -71,12 +72,13 @@ namespace Chummer
                                                                         out CharacterSettings objSetting))
                     _objReferenceCharacterSettings = objSetting;
                 else if (SettingsManager.LoadedCharacterSettings.TryGetValue(
-                    GlobalSettings.DefaultCharacterSettingDefaultValue,
-                    out objSetting))
+                             GlobalSettings.DefaultCharacterSettingDefaultValue,
+                             out objSetting))
                     _objReferenceCharacterSettings = objSetting;
                 else
                     _objReferenceCharacterSettings = SettingsManager.LoadedCharacterSettings.Values.First();
             }
+
             _objCharacterSettings = new CharacterSettings(_objReferenceCharacterSettings);
             _objCharacterSettings.PropertyChanged += SettingsChanged;
             Disposed += (sender, args) =>
@@ -96,12 +98,19 @@ namespace Chummer
 
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstBuildMethods))
             {
-                lstBuildMethods.Add(new ListItem(CharacterBuildMethod.Priority, await LanguageManager.GetStringAsync("String_Priority").ConfigureAwait(false)));
-                lstBuildMethods.Add(new ListItem(CharacterBuildMethod.SumtoTen, await LanguageManager.GetStringAsync("String_SumtoTen").ConfigureAwait(false)));
-                lstBuildMethods.Add(new ListItem(CharacterBuildMethod.Karma, await LanguageManager.GetStringAsync("String_Karma").ConfigureAwait(false)));
+                lstBuildMethods.Add(new ListItem(CharacterBuildMethod.Priority,
+                                                 await LanguageManager.GetStringAsync("String_Priority")
+                                                                      .ConfigureAwait(false)));
+                lstBuildMethods.Add(new ListItem(CharacterBuildMethod.SumtoTen,
+                                                 await LanguageManager.GetStringAsync("String_SumtoTen")
+                                                                      .ConfigureAwait(false)));
+                lstBuildMethods.Add(new ListItem(CharacterBuildMethod.Karma,
+                                                 await LanguageManager.GetStringAsync("String_Karma")
+                                                                      .ConfigureAwait(false)));
                 if (GlobalSettings.LifeModuleEnabled)
                     lstBuildMethods.Add(new ListItem(CharacterBuildMethod.LifeModule,
-                                                     await LanguageManager.GetStringAsync("String_LifeModule").ConfigureAwait(false)));
+                                                     await LanguageManager.GetStringAsync("String_LifeModule")
+                                                                          .ConfigureAwait(false)));
 
                 await cboBuildMethod.PopulateWithListItemsAsync(lstBuildMethods).ConfigureAwait(false);
             }
@@ -125,7 +134,8 @@ namespace Chummer
                 using (ThreadSafeForm<EditGlobalSettings> frmOptions =
                        await ThreadSafeForm<EditGlobalSettings>.GetAsync(() =>
                                                                              new EditGlobalSettings(
-                                                                                 "tabCustomDataDirectories")).ConfigureAwait(false))
+                                                                                 "tabCustomDataDirectories"))
+                                                               .ConfigureAwait(false))
                     await frmOptions.ShowDialogSafeAsync(this).ConfigureAwait(false);
             }
             finally
@@ -136,12 +146,14 @@ namespace Chummer
 
         private async void cmdRename_Click(object sender, EventArgs e)
         {
-            string strRename = await LanguageManager.GetStringAsync("Message_CharacterOptions_SettingRename").ConfigureAwait(false);
-            using (ThreadSafeForm<SelectText> frmSelectName = await ThreadSafeForm<SelectText>.GetAsync(() => new SelectText
-                   {
-                       DefaultString = _objCharacterSettings.Name,
-                       Description = strRename
-                   }).ConfigureAwait(false))
+            string strRename = await LanguageManager.GetStringAsync("Message_CharacterOptions_SettingRename")
+                                                    .ConfigureAwait(false);
+            using (ThreadSafeForm<SelectText> frmSelectName = await ThreadSafeForm<SelectText>.GetAsync(
+                       () => new SelectText
+                       {
+                           DefaultString = _objCharacterSettings.Name,
+                           Description = strRename
+                       }).ConfigureAwait(false))
             {
                 if (await frmSelectName.ShowDialogSafeAsync(this).ConfigureAwait(false) != DialogResult.OK)
                     return;
@@ -155,7 +167,8 @@ namespace Chummer
                     await this.DoThreadSafeAsync(x => x.SuspendLayout()).ConfigureAwait(false);
                 try
                 {
-                    int intCurrentSelectedSettingIndex = await cboSetting.DoThreadSafeFuncAsync(x => x.SelectedIndex).ConfigureAwait(false);
+                    int intCurrentSelectedSettingIndex
+                        = await cboSetting.DoThreadSafeFuncAsync(x => x.SelectedIndex).ConfigureAwait(false);
                     if (intCurrentSelectedSettingIndex >= 0)
                     {
                         ListItem objNewListItem = new ListItem(_lstSettings[intCurrentSelectedSettingIndex].Value,
@@ -165,7 +178,8 @@ namespace Chummer
                         {
                             _lstSettings[intCurrentSelectedSettingIndex] = objNewListItem;
                             await cboSetting.PopulateWithListItemsAsync(_lstSettings).ConfigureAwait(false);
-                            await cboSetting.DoThreadSafeAsync(x => x.SelectedIndex = intCurrentSelectedSettingIndex).ConfigureAwait(false);
+                            await cboSetting.DoThreadSafeAsync(x => x.SelectedIndex = intCurrentSelectedSettingIndex)
+                                            .ConfigureAwait(false);
                         }
                         finally
                         {
@@ -182,7 +196,8 @@ namespace Chummer
                         await this.DoThreadSafeAsync(x => x.ResumeLayout()).ConfigureAwait(false);
                 }
 
-                _intOldSelectedSettingIndex = await cboSetting.DoThreadSafeFuncAsync(x => x.SelectedIndex).ConfigureAwait(false);
+                _intOldSelectedSettingIndex
+                    = await cboSetting.DoThreadSafeFuncAsync(x => x.SelectedIndex).ConfigureAwait(false);
             }
             finally
             {
@@ -194,27 +209,37 @@ namespace Chummer
         {
             // Verify that the user wants to delete this setting
             if (Program.ShowMessageBox(
-                string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_CharacterOptions_ConfirmDelete").ConfigureAwait(false),
-                    _objReferenceCharacterSettings.Name),
-                await LanguageManager.GetStringAsync("MessageTitle_CharacterOptions_ConfirmDelete").ConfigureAwait(false),
-                MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
+                    string.Format(GlobalSettings.CultureInfo,
+                                  await LanguageManager.GetStringAsync("Message_CharacterOptions_ConfirmDelete")
+                                                       .ConfigureAwait(false),
+                                  _objReferenceCharacterSettings.Name),
+                    await LanguageManager.GetStringAsync("MessageTitle_CharacterOptions_ConfirmDelete")
+                                         .ConfigureAwait(false),
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
                 return;
 
             CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
             try
             {
-                LockingDictionary<string, CharacterSettings> dicCharacterSettings = await SettingsManager.GetLoadedCharacterSettingsAsModifiableAsync().ConfigureAwait(false);
+                LockingDictionary<string, CharacterSettings> dicCharacterSettings
+                    = await SettingsManager.GetLoadedCharacterSettingsAsModifiableAsync().ConfigureAwait(false);
                 (bool blnSuccess, CharacterSettings objDeletedSettings)
                     = await dicCharacterSettings.TryRemoveAsync(
-                        await _objReferenceCharacterSettings.GetDictionaryKeyAsync().ConfigureAwait(false)).ConfigureAwait(false);
+                                                    await _objReferenceCharacterSettings.GetDictionaryKeyAsync()
+                                                        .ConfigureAwait(false))
+                                                .ConfigureAwait(false);
                 if (!blnSuccess)
                     return;
                 if (!await Utils.SafeDeleteFileAsync(
-                        Path.Combine(Utils.GetStartupPath, "settings", _objReferenceCharacterSettings.FileName), true).ConfigureAwait(false))
+                                    Path.Combine(Utils.GetStartupPath, "settings",
+                                                 _objReferenceCharacterSettings.FileName), true)
+                                .ConfigureAwait(false))
                 {
                     // Revert removal of setting if we cannot delete the file
                     await dicCharacterSettings.AddAsync(
-                        await objDeletedSettings.GetDictionaryKeyAsync().ConfigureAwait(false), objDeletedSettings).ConfigureAwait(false);
+                                                  await objDeletedSettings.GetDictionaryKeyAsync()
+                                                                          .ConfigureAwait(false), objDeletedSettings)
+                                              .ConfigureAwait(false);
                     return;
                 }
 
@@ -222,11 +247,14 @@ namespace Chummer
                 _blnForceMasterIndexRepopulateOnClose = true;
                 KeyValuePair<string, CharacterSettings> kvpReplacementOption
                     = await dicCharacterSettings.FirstOrDefaultAsync(
-                        x => x.Value.BuiltInOption
-                             && x.Value.BuildMethod == _objReferenceCharacterSettings.BuildMethod).ConfigureAwait(false);
+                                                    x => x.Value.BuiltInOption
+                                                         && x.Value.BuildMethod
+                                                         == _objReferenceCharacterSettings.BuildMethod)
+                                                .ConfigureAwait(false);
                 await Program.OpenCharacters.ForEachAsync(async objCharacter =>
                 {
-                    if (await objCharacter.GetSettingsKeyAsync().ConfigureAwait(false) == _objReferenceCharacterSettings.FileName)
+                    if (await objCharacter.GetSettingsKeyAsync().ConfigureAwait(false)
+                        == _objReferenceCharacterSettings.FileName)
                         await objCharacter.SetSettingsKeyAsync(kvpReplacementOption.Key).ConfigureAwait(false);
                 }).ConfigureAwait(false);
 
@@ -257,19 +285,22 @@ namespace Chummer
             string strSelectedName;
             string strSelectedFullFileName;
             string strSelectSettingName
-                = await LanguageManager.GetStringAsync("Message_CharacterOptions_SelectSettingName").ConfigureAwait(false);
-            LockingDictionary<string, CharacterSettings> dicCharacterSettings = await SettingsManager.GetLoadedCharacterSettingsAsModifiableAsync().ConfigureAwait(false);
+                = await LanguageManager.GetStringAsync("Message_CharacterOptions_SelectSettingName")
+                                       .ConfigureAwait(false);
+            LockingDictionary<string, CharacterSettings> dicCharacterSettings
+                = await SettingsManager.GetLoadedCharacterSettingsAsModifiableAsync().ConfigureAwait(false);
             do
             {
                 do
                 {
-                    using (ThreadSafeForm<SelectText> frmSelectName = await ThreadSafeForm<SelectText>.GetAsync(() => new SelectText
-                           {
-                               DefaultString = _objCharacterSettings.BuiltInOption
-                                   ? string.Empty
-                                   : _objCharacterSettings.FileName.TrimEndOnce(".xml"),
-                               Description = strSelectSettingName
-                           }).ConfigureAwait(false))
+                    using (ThreadSafeForm<SelectText> frmSelectName = await ThreadSafeForm<SelectText>.GetAsync(
+                               () => new SelectText
+                               {
+                                   DefaultString = _objCharacterSettings.BuiltInOption
+                                       ? string.Empty
+                                       : _objCharacterSettings.FileName.TrimEndOnce(".xml"),
+                                   Description = strSelectSettingName
+                               }).ConfigureAwait(false))
                     {
                         if (await frmSelectName.ShowDialogSafeAsync(this).ConfigureAwait(false) != DialogResult.OK)
                             return;
@@ -279,9 +310,12 @@ namespace Chummer
                     if (dicCharacterSettings.Any(x => x.Value.Name == strSelectedName))
                     {
                         DialogResult eCreateDuplicateSetting = Program.ShowMessageBox(
-                            string.Format(await LanguageManager.GetStringAsync("Message_CharacterOptions_DuplicateSettingName").ConfigureAwait(false),
+                            string.Format(
+                                await LanguageManager.GetStringAsync("Message_CharacterOptions_DuplicateSettingName")
+                                                     .ConfigureAwait(false),
                                 strSelectedName),
-                            await LanguageManager.GetStringAsync("MessageTitle_CharacterOptions_DuplicateFileName").ConfigureAwait(false),
+                            await LanguageManager.GetStringAsync("MessageTitle_CharacterOptions_DuplicateFileName")
+                                                 .ConfigureAwait(false),
                             MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
                         switch (eCreateDuplicateSetting)
                         {
@@ -307,12 +341,17 @@ namespace Chummer
                 string strSeparator = "_";
                 while (dicCharacterSettings.Any(x => x.Value.FileName == strSelectedFullFileName))
                 {
-                    strSelectedFullFileName = strBaseFileName + strSeparator + uintAccumulator.ToString(GlobalSettings.InvariantCultureInfo) + ".xml";
+                    strSelectedFullFileName = strBaseFileName + strSeparator
+                                                              + uintAccumulator.ToString(
+                                                                  GlobalSettings.InvariantCultureInfo) + ".xml";
                     if (strSelectedFullFileName.Length > intMaxNameLength)
                     {
                         Program.ShowMessageBox(
-                            await LanguageManager.GetStringAsync("Message_CharacterOptions_SettingFileNameTooLongError").ConfigureAwait(false),
-                            await LanguageManager.GetStringAsync("MessageTitle_CharacterOptions_SettingFileNameTooLongError").ConfigureAwait(false),
+                            await LanguageManager.GetStringAsync("Message_CharacterOptions_SettingFileNameTooLongError")
+                                                 .ConfigureAwait(false),
+                            await LanguageManager
+                                  .GetStringAsync("MessageTitle_CharacterOptions_SettingFileNameTooLongError")
+                                  .ConfigureAwait(false),
                             MessageBoxButtons.OK, MessageBoxIcon.Error);
                         strSelectedName = string.Empty;
                         break;
@@ -389,11 +428,13 @@ namespace Chummer
                         {
                             Program.ShowMessageBox(this,
                                                    await LanguageManager.GetStringAsync(
-                                                       "Message_CharacterOptions_OpenCharacterOnBuildMethodChange").ConfigureAwait(false)
+                                                                            "Message_CharacterOptions_OpenCharacterOnBuildMethodChange")
+                                                                        .ConfigureAwait(false)
                                                    +
                                                    sbdConflictingCharacters,
                                                    await LanguageManager.GetStringAsync(
-                                                       "MessageTitle_CharacterOptions_OpenCharacterOnBuildMethodChange").ConfigureAwait(false),
+                                                                            "MessageTitle_CharacterOptions_OpenCharacterOnBuildMethodChange")
+                                                                        .ConfigureAwait(false),
                                                    MessageBoxButtons.OK, MessageBoxIcon.Error);
                             return;
                         }
@@ -425,18 +466,22 @@ namespace Chummer
         {
             if (_intLoading > 0)
                 return;
-            string strSelectedFile = await cboSetting.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()).ConfigureAwait(false);
+            string strSelectedFile = await cboSetting.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString())
+                                                     .ConfigureAwait(false);
             if (string.IsNullOrEmpty(strSelectedFile))
                 return;
             (bool blnSuccess, CharacterSettings objNewOption)
-                = await (await SettingsManager.GetLoadedCharacterSettingsAsync().ConfigureAwait(false)).TryGetValueAsync(strSelectedFile).ConfigureAwait(false);
+                = await (await SettingsManager.GetLoadedCharacterSettingsAsync().ConfigureAwait(false))
+                        .TryGetValueAsync(strSelectedFile).ConfigureAwait(false);
             if (!blnSuccess)
                 return;
 
             if (IsDirty)
             {
-                string text = await LanguageManager.GetStringAsync("Message_CharacterOptions_UnsavedDirty").ConfigureAwait(false);
-                string caption = await LanguageManager.GetStringAsync("MessageTitle_CharacterOptions_UnsavedDirty").ConfigureAwait(false);
+                string text = await LanguageManager.GetStringAsync("Message_CharacterOptions_UnsavedDirty")
+                                                   .ConfigureAwait(false);
+                string caption = await LanguageManager.GetStringAsync("MessageTitle_CharacterOptions_UnsavedDirty")
+                                                      .ConfigureAwait(false);
 
                 if (Program.ShowMessageBox(text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question) !=
                     DialogResult.Yes)
@@ -444,14 +489,17 @@ namespace Chummer
                     Interlocked.Increment(ref _intLoading);
                     try
                     {
-                        await cboSetting.DoThreadSafeFuncAsync(x => x.SelectedIndex = _intOldSelectedSettingIndex).ConfigureAwait(false);
+                        await cboSetting.DoThreadSafeFuncAsync(x => x.SelectedIndex = _intOldSelectedSettingIndex)
+                                        .ConfigureAwait(false);
                     }
                     finally
                     {
                         Interlocked.Decrement(ref _intLoading);
                     }
+
                     return;
                 }
+
                 await SetIsDirty(false).ConfigureAwait(false);
             }
 
@@ -474,7 +522,8 @@ namespace Chummer
                                              _objReferenceCharacterSettings.DisplayName);
                             _lstSettings[_intOldSelectedSettingIndex] = objNewListItem;
                             await cboSetting.PopulateWithListItemsAsync(_lstSettings).ConfigureAwait(false);
-                            await cboSetting.DoThreadSafeAsync(x => x.SelectedIndex = intCurrentSelectedSettingIndex).ConfigureAwait(false);
+                            await cboSetting.DoThreadSafeAsync(x => x.SelectedIndex = intCurrentSelectedSettingIndex)
+                                            .ConfigureAwait(false);
                         }
 
                         _objReferenceCharacterSettings = objNewOption;
@@ -506,9 +555,9 @@ namespace Chummer
         {
             // Verify that the user wants to reset these values.
             if (Program.ShowMessageBox(
-                await LanguageManager.GetStringAsync("Message_Options_RestoreDefaults").ConfigureAwait(false),
-                await LanguageManager.GetStringAsync("MessageTitle_Options_RestoreDefaults").ConfigureAwait(false),
-                MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                    await LanguageManager.GetStringAsync("Message_Options_RestoreDefaults").ConfigureAwait(false),
+                    await LanguageManager.GetStringAsync("MessageTitle_Options_RestoreDefaults").ConfigureAwait(false),
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 return;
 
             CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
@@ -530,10 +579,12 @@ namespace Chummer
                                              _objReferenceCharacterSettings.DisplayName);
                             _lstSettings[intCurrentSelectedSettingIndex] = objNewListItem;
                             await cboSetting.PopulateWithListItemsAsync(_lstSettings).ConfigureAwait(false);
-                            await cboSetting.DoThreadSafeAsync(x => x.SelectedIndex = intCurrentSelectedSettingIndex).ConfigureAwait(false);
+                            await cboSetting.DoThreadSafeAsync(x => x.SelectedIndex = intCurrentSelectedSettingIndex)
+                                            .ConfigureAwait(false);
                         }
 
-                        await _objCharacterSettings.CopyValuesAsync(_objReferenceCharacterSettings).ConfigureAwait(false);
+                        await _objCharacterSettings.CopyValuesAsync(_objReferenceCharacterSettings)
+                                                   .ConfigureAwait(false);
                         await RebuildCustomDataDirectoryInfosAsync().ConfigureAwait(false);
                         await PopulateOptions().ConfigureAwait(false);
                         await SetIsDirty(false).ConfigureAwait(false);
@@ -573,22 +624,26 @@ namespace Chummer
                 int intSeparatorIndex = strLimbCount.IndexOf('<');
                 if (intSeparatorIndex == -1)
                 {
-                    if (int.TryParse(strLimbCount, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out int intLimbCount))
+                    if (int.TryParse(strLimbCount, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
+                                     out int intLimbCount))
                         _objCharacterSettings.LimbCount = intLimbCount;
                     else
                     {
                         Utils.BreakIfDebug();
                         _objCharacterSettings.LimbCount = 6;
                     }
+
                     _objCharacterSettings.ExcludeLimbSlot = string.Empty;
                 }
                 else
                 {
                     if (int.TryParse(strLimbCount.Substring(0, intSeparatorIndex), NumberStyles.Any,
-                        GlobalSettings.InvariantCultureInfo, out int intLimbCount))
+                                     GlobalSettings.InvariantCultureInfo, out int intLimbCount))
                     {
                         _objCharacterSettings.LimbCount = intLimbCount;
-                        _objCharacterSettings.ExcludeLimbSlot = intSeparatorIndex + 1 < strLimbCount.Length ? strLimbCount.Substring(intSeparatorIndex + 1) : string.Empty;
+                        _objCharacterSettings.ExcludeLimbSlot = intSeparatorIndex + 1 < strLimbCount.Length
+                            ? strLimbCount.Substring(intSeparatorIndex + 1)
+                            : string.Empty;
                     }
                     else
                     {
@@ -607,8 +662,11 @@ namespace Chummer
 
         private async void EditCharacterSettings_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (IsDirty && Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_CharacterOptions_UnsavedDirty").ConfigureAwait(false),
-                await LanguageManager.GetStringAsync("MessageTitle_CharacterOptions_UnsavedDirty").ConfigureAwait(false), MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+            if (IsDirty && Program.ShowMessageBox(
+                    await LanguageManager.GetStringAsync("Message_CharacterOptions_UnsavedDirty").ConfigureAwait(false),
+                    await LanguageManager.GetStringAsync("MessageTitle_CharacterOptions_UnsavedDirty")
+                                         .ConfigureAwait(false), MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+                != DialogResult.Yes)
             {
                 e.Cancel = true;
             }
@@ -641,6 +699,7 @@ namespace Chummer
             {
                 Interlocked.Decrement(ref _intLoading);
             }
+
             _objCharacterSettings.OnPropertyChanged(nameof(CharacterSettings.Books));
             _blnSourcebookToggle = !_blnSourcebookToggle;
         }
@@ -653,7 +712,8 @@ namespace Chummer
             if (objNode == null)
                 return;
             string strBookCode = objNode.Tag.ToString();
-            if (string.IsNullOrEmpty(strBookCode) || (_setPermanentSourcebooks.Contains(strBookCode) && !objNode.Checked))
+            if (string.IsNullOrEmpty(strBookCode)
+                || (_setPermanentSourcebooks.Contains(strBookCode) && !objNode.Checked))
             {
                 Interlocked.Increment(ref _intLoading);
                 try
@@ -664,8 +724,10 @@ namespace Chummer
                 {
                     Interlocked.Decrement(ref _intLoading);
                 }
+
                 return;
             }
+
             if (objNode.Checked)
                 _objCharacterSettings.BooksWritable.Add(strBookCode);
             else
@@ -675,7 +737,8 @@ namespace Chummer
 
         private async void cmdIncreaseCustomDirectoryLoadOrder_Click(object sender, EventArgs e)
         {
-            TreeNode nodSelected = await treCustomDataDirectories.DoThreadSafeFuncAsync(x => x.SelectedNode).ConfigureAwait(false);
+            TreeNode nodSelected = await treCustomDataDirectories.DoThreadSafeFuncAsync(x => x.SelectedNode)
+                                                                 .ConfigureAwait(false);
             if (nodSelected == null)
                 return;
             int intIndex = nodSelected.Index;
@@ -689,7 +752,8 @@ namespace Chummer
 
         private async void cmdToTopCustomDirectoryLoadOrder_Click(object sender, EventArgs e)
         {
-            TreeNode nodSelected = await treCustomDataDirectories.DoThreadSafeFuncAsync(x => x.SelectedNode).ConfigureAwait(false);
+            TreeNode nodSelected = await treCustomDataDirectories.DoThreadSafeFuncAsync(x => x.SelectedNode)
+                                                                 .ConfigureAwait(false);
             if (nodSelected == null)
                 return;
             int intIndex = nodSelected.Index;
@@ -700,13 +764,15 @@ namespace Chummer
                 _dicCharacterCustomDataDirectoryInfos.Reverse(i - 1, 2);
                 _objCharacterSettings.CustomDataDirectoryKeys.Reverse(i - 1, 2);
             }
+
             _objCharacterSettings.OnPropertyChanged(nameof(CharacterSettings.CustomDataDirectoryKeys));
             await PopulateCustomDataDirectoryTreeView().ConfigureAwait(false);
         }
 
         private async void cmdDecreaseCustomDirectoryLoadOrder_Click(object sender, EventArgs e)
         {
-            TreeNode nodSelected = await treCustomDataDirectories.DoThreadSafeFuncAsync(x => x.SelectedNode).ConfigureAwait(false);
+            TreeNode nodSelected = await treCustomDataDirectories.DoThreadSafeFuncAsync(x => x.SelectedNode)
+                                                                 .ConfigureAwait(false);
             if (nodSelected == null)
                 return;
             int intIndex = nodSelected.Index;
@@ -720,7 +786,8 @@ namespace Chummer
 
         private async void cmdToBottomCustomDirectoryLoadOrder_Click(object sender, EventArgs e)
         {
-            TreeNode nodSelected = await treCustomDataDirectories.DoThreadSafeFuncAsync(x => x.SelectedNode).ConfigureAwait(false);
+            TreeNode nodSelected = await treCustomDataDirectories.DoThreadSafeFuncAsync(x => x.SelectedNode)
+                                                                 .ConfigureAwait(false);
             if (nodSelected == null)
                 return;
             int intIndex = nodSelected.Index;
@@ -731,6 +798,7 @@ namespace Chummer
                 _dicCharacterCustomDataDirectoryInfos.Reverse(i, 2);
                 _objCharacterSettings.CustomDataDirectoryKeys.Reverse(i, 2);
             }
+
             _objCharacterSettings.OnPropertyChanged(nameof(CharacterSettings.CustomDataDirectoryKeys));
             await PopulateCustomDataDirectoryTreeView().ConfigureAwait(false);
         }
@@ -747,11 +815,15 @@ namespace Chummer
             _dicCharacterCustomDataDirectoryInfos[objKey] = objNode.Checked;
             switch (objNode.Tag)
             {
-                case CustomDataDirectoryInfo objCustomDataDirectoryInfo when _objCharacterSettings.CustomDataDirectoryKeys.ContainsKey(objCustomDataDirectoryInfo.CharacterSettingsSaveKey):
-                    _objCharacterSettings.CustomDataDirectoryKeys[objCustomDataDirectoryInfo.CharacterSettingsSaveKey] = objNode.Checked;
+                case CustomDataDirectoryInfo objCustomDataDirectoryInfo
+                    when _objCharacterSettings.CustomDataDirectoryKeys.ContainsKey(
+                        objCustomDataDirectoryInfo.CharacterSettingsSaveKey):
+                    _objCharacterSettings.CustomDataDirectoryKeys[objCustomDataDirectoryInfo.CharacterSettingsSaveKey]
+                        = objNode.Checked;
                     _objCharacterSettings.OnPropertyChanged(nameof(CharacterSettings.CustomDataDirectoryKeys));
                     break;
-                case string strCustomDataDirectoryKey when _objCharacterSettings.CustomDataDirectoryKeys.ContainsKey(strCustomDataDirectoryKey):
+                case string strCustomDataDirectoryKey
+                    when _objCharacterSettings.CustomDataDirectoryKeys.ContainsKey(strCustomDataDirectoryKey):
                     _objCharacterSettings.CustomDataDirectoryKeys[strCustomDataDirectoryKey] = objNode.Checked;
                     _objCharacterSettings.OnPropertyChanged(nameof(CharacterSettings.CustomDataDirectoryKeys));
                     break;
@@ -761,8 +833,10 @@ namespace Chummer
         private void txtPriorities_KeyPress(object sender, KeyPressEventArgs e)
         {
             e.Handled = !char.IsControl(e.KeyChar)
-                        && e.KeyChar != 'A' && e.KeyChar != 'B' && e.KeyChar != 'C' && e.KeyChar != 'D' && e.KeyChar != 'E'
-                        && e.KeyChar != 'a' && e.KeyChar != 'b' && e.KeyChar != 'c' && e.KeyChar != 'd' && e.KeyChar != 'e';
+                        && e.KeyChar != 'A' && e.KeyChar != 'B' && e.KeyChar != 'C' && e.KeyChar != 'D'
+                        && e.KeyChar != 'E'
+                        && e.KeyChar != 'a' && e.KeyChar != 'b' && e.KeyChar != 'c' && e.KeyChar != 'd'
+                        && e.KeyChar != 'e';
             switch (e.KeyChar)
             {
                 case 'a':
@@ -800,7 +874,9 @@ namespace Chummer
         {
             Color objColor
                 = await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
-                    await txtContactPoints.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false)).ConfigureAwait(false)
+                                           await txtContactPoints.DoThreadSafeFuncAsync(x => x.Text)
+                                                                 .ConfigureAwait(false))
+                                       .ConfigureAwait(false)
                     ? await ColorManager.GetWindowTextAsync().ConfigureAwait(false)
                     : ColorManager.ErrorColor;
             await txtContactPoints.DoThreadSafeAsync(x => x.ForeColor = objColor).ConfigureAwait(false);
@@ -810,7 +886,9 @@ namespace Chummer
         {
             Color objColor
                 = await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
-                    await txtKnowledgePoints.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false)).ConfigureAwait(false)
+                                           await txtKnowledgePoints.DoThreadSafeFuncAsync(x => x.Text)
+                                                                   .ConfigureAwait(false))
+                                       .ConfigureAwait(false)
                     ? await ColorManager.GetWindowTextAsync().ConfigureAwait(false)
                     : ColorManager.ErrorColor;
             await txtKnowledgePoints.DoThreadSafeAsync(x => x.ForeColor = objColor).ConfigureAwait(false);
@@ -827,14 +905,17 @@ namespace Chummer
                     ? await ColorManager.GetWindowTextAsync().ConfigureAwait(false)
                     : ColorManager.ErrorColor;
             await txtNuyenExpression.DoThreadSafeAsync(x => x.ForeColor = objColor).ConfigureAwait(false);
-            await _objCharacterSettings.SetChargenKarmaToNuyenExpressionAsync(strText).ConfigureAwait(false); // Not data-bound so that the setter can be asynchronous
+            await _objCharacterSettings.SetChargenKarmaToNuyenExpressionAsync(strText)
+                                       .ConfigureAwait(false); // Not data-bound so that the setter can be asynchronous
         }
 
         private async void txtBoundSpiritLimit_TextChanged(object sender, EventArgs e)
         {
             Color objColor
                 = await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
-                    await txtBoundSpiritLimit.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false)).ConfigureAwait(false)
+                                           await txtBoundSpiritLimit.DoThreadSafeFuncAsync(x => x.Text)
+                                                                    .ConfigureAwait(false))
+                                       .ConfigureAwait(false)
                     ? await ColorManager.GetWindowTextAsync().ConfigureAwait(false)
                     : ColorManager.ErrorColor;
             await txtBoundSpiritLimit.DoThreadSafeAsync(x => x.ForeColor = objColor).ConfigureAwait(false);
@@ -844,7 +925,9 @@ namespace Chummer
         {
             Color objColor
                 = await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
-                    await txtRegisteredSpriteLimit.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false)).ConfigureAwait(false)
+                                           await txtRegisteredSpriteLimit.DoThreadSafeFuncAsync(x => x.Text)
+                                                                         .ConfigureAwait(false))
+                                       .ConfigureAwait(false)
                     ? await ColorManager.GetWindowTextAsync().ConfigureAwait(false)
                     : ColorManager.ErrorColor;
             await txtRegisteredSpriteLimit.DoThreadSafeAsync(x => x.ForeColor = objColor).ConfigureAwait(false);
@@ -852,7 +935,8 @@ namespace Chummer
 
         private async void txtEssenceModifierPostExpression_TextChanged(object sender, EventArgs e)
         {
-            string strText = await txtEssenceModifierPostExpression.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false);
+            string strText = await txtEssenceModifierPostExpression.DoThreadSafeFuncAsync(x => x.Text)
+                                                                   .ConfigureAwait(false);
             Color objColor
                 = await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
                     strText.Replace("{Modifier}", "1.0")).ConfigureAwait(false)
@@ -885,7 +969,9 @@ namespace Chummer
         {
             Color objColor
                 = await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
-                    await txtEncumbranceInterval.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false)).ConfigureAwait(false)
+                                           await txtEncumbranceInterval.DoThreadSafeFuncAsync(x => x.Text)
+                                                                       .ConfigureAwait(false))
+                                       .ConfigureAwait(false)
                     ? await ColorManager.GetWindowTextAsync().ConfigureAwait(false)
                     : ColorManager.ErrorColor;
             await txtEncumbranceInterval.DoThreadSafeAsync(x => x.ForeColor = objColor).ConfigureAwait(false);
@@ -922,21 +1008,28 @@ namespace Chummer
             _objCharacterSettings.PriorityTable = strNewPriorityTable;
         }
 
-        private void treCustomDataDirectories_AfterSelect(object sender, TreeViewEventArgs e)
+        private async void treCustomDataDirectories_AfterSelect(object sender, TreeViewEventArgs e)
         {
             if (!(e.Node?.Tag is CustomDataDirectoryInfo objSelected))
             {
-                gpbDirectoryInfo.Visible = false;
+                await gpbDirectoryInfo.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);
                 return;
             }
 
-            gpbDirectoryInfo.SuspendLayout();
+            await gpbDirectoryInfo.DoThreadSafeAsync(x => x.SuspendLayout()).ConfigureAwait(false);
             try
             {
-                rtbDirectoryDescription.Text = objSelected.DisplayDescription;
-                lblDirectoryVersion.Text = objSelected.MyVersion.ToString();
-                lblDirectoryAuthors.Text = objSelected.DisplayAuthors;
-                lblDirectoryName.Text = objSelected.Name;
+                string strDescription = await objSelected.GetDisplayDescriptionAsync(GlobalSettings.Language)
+                                                         .ConfigureAwait(false);
+                await rtbDirectoryDescription.DoThreadSafeAsync(x => x.Text = strDescription).ConfigureAwait(false);
+                await lblDirectoryVersion.DoThreadSafeAsync(x => x.Text = objSelected.MyVersion.ToString())
+                                         .ConfigureAwait(false);
+                string strAuthors = await objSelected
+                                          .GetDisplayAuthorsAsync(GlobalSettings.Language, GlobalSettings.CultureInfo)
+                                          .ConfigureAwait(false);
+                await lblDirectoryAuthors.DoThreadSafeAsync(x => x.Text = strAuthors).ConfigureAwait(false);
+                string strName = await objSelected.GetDisplayNameAsync().ConfigureAwait(false);
+                await lblDirectoryName.DoThreadSafeAsync(x => x.Text = strName).ConfigureAwait(false);
 
                 if (objSelected.DependenciesList.Count > 0)
                 {
@@ -944,14 +1037,15 @@ namespace Chummer
                                                                   out StringBuilder sbdDependencies))
                     {
                         foreach (DirectoryDependency dependency in objSelected.DependenciesList)
-                            sbdDependencies.AppendLine(dependency.DisplayName);
-                        lblDependencies.Text = sbdDependencies.ToString();
+                            sbdDependencies.AppendLine(await dependency.GetDisplayNameAsync().ConfigureAwait(false));
+                        await lblDependencies.DoThreadSafeAsync(x => x.Text = sbdDependencies.ToString())
+                                             .ConfigureAwait(false);
                     }
                 }
                 else
                 {
                     //Make sure all old information is discarded
-                    lblDependencies.Text = string.Empty;
+                    await lblDependencies.DoThreadSafeAsync(x => x.Text = string.Empty).ConfigureAwait(false);
                 }
 
                 if (objSelected.IncompatibilitiesList.Count > 0)
@@ -960,21 +1054,23 @@ namespace Chummer
                                                                   out StringBuilder sbdIncompatibilities))
                     {
                         foreach (DirectoryDependency exclusivity in objSelected.IncompatibilitiesList)
-                            sbdIncompatibilities.AppendLine(exclusivity.DisplayName);
-                        lblIncompatibilities.Text = sbdIncompatibilities.ToString();
+                            sbdIncompatibilities.AppendLine(
+                                await exclusivity.GetDisplayNameAsync().ConfigureAwait(false));
+                        await lblIncompatibilities.DoThreadSafeAsync(x => x.Text = sbdIncompatibilities.ToString())
+                                                  .ConfigureAwait(false);
                     }
                 }
                 else
                 {
                     //Make sure all old information is discarded
-                    lblIncompatibilities.Text = string.Empty;
+                    await lblIncompatibilities.DoThreadSafeAsync(x => x.Text = string.Empty).ConfigureAwait(false);
                 }
 
-                gpbDirectoryInfo.Visible = true;
+                await gpbDirectoryInfo.DoThreadSafeAsync(x => x.Visible = true).ConfigureAwait(false);
             }
             finally
             {
-                gpbDirectoryInfo.ResumeLayout();
+                await gpbDirectoryInfo.DoThreadSafeAsync(x => x.ResumeLayout()).ConfigureAwait(false);
             }
         }
 
@@ -987,23 +1083,31 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             // Load the Sourcebook information.
             // Put the Sourcebooks into a List so they can first be sorted.
-            object objOldSelected = await treSourcebook.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token).ConfigureAwait(false);
+            object objOldSelected = await treSourcebook.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token)
+                                                       .ConfigureAwait(false);
             await treSourcebook.DoThreadSafeAsync(x => x.BeginUpdate(), token).ConfigureAwait(false);
             try
             {
                 await treSourcebook.DoThreadSafeAsync(x => x.Nodes.Clear(), token).ConfigureAwait(false);
                 _setPermanentSourcebooks.Clear();
                 foreach (XPathNavigator objXmlBook in await (await XmlManager.LoadXPathAsync(
-                                                                "books.xml", _objCharacterSettings.EnabledCustomDataDirectoryPaths, token: token).ConfigureAwait(false))
-                                                            .SelectAndCacheExpressionAsync("/chummer/books/book", token: token).ConfigureAwait(false))
+                                                                "books.xml",
+                                                                _objCharacterSettings.EnabledCustomDataDirectoryPaths,
+                                                                token: token).ConfigureAwait(false))
+                                                            .SelectAndCacheExpressionAsync(
+                                                                "/chummer/books/book", token: token)
+                                                            .ConfigureAwait(false))
                 {
-                    if (await objXmlBook.SelectSingleNodeAndCacheExpressionAsync("hide", token: token).ConfigureAwait(false) != null)
+                    if (await objXmlBook.SelectSingleNodeAndCacheExpressionAsync("hide", token: token)
+                                        .ConfigureAwait(false) != null)
                         continue;
-                    string strCode = (await objXmlBook.SelectSingleNodeAndCacheExpressionAsync("code", token: token).ConfigureAwait(false))?.Value;
+                    string strCode = (await objXmlBook.SelectSingleNodeAndCacheExpressionAsync("code", token: token)
+                                                      .ConfigureAwait(false))?.Value;
                     if (string.IsNullOrEmpty(strCode))
                         continue;
                     bool blnChecked = _objCharacterSettings.Books.Contains(strCode);
-                    if (await objXmlBook.SelectSingleNodeAndCacheExpressionAsync("permanent", token: token).ConfigureAwait(false) != null)
+                    if (await objXmlBook.SelectSingleNodeAndCacheExpressionAsync("permanent", token: token)
+                                        .ConfigureAwait(false) != null)
                     {
                         _setPermanentSourcebooks.Add(strCode);
                         if (_objCharacterSettings.BooksWritable.Add(strCode))
@@ -1011,8 +1115,11 @@ namespace Chummer
                         blnChecked = true;
                     }
 
-                    string strTranslate = (await objXmlBook.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value;
-                    string strName = (await objXmlBook.SelectSingleNodeAndCacheExpressionAsync("name", token: token).ConfigureAwait(false))?.Value;
+                    string strTranslate
+                        = (await objXmlBook.SelectSingleNodeAndCacheExpressionAsync("translate", token: token)
+                                           .ConfigureAwait(false))?.Value;
+                    string strName = (await objXmlBook.SelectSingleNodeAndCacheExpressionAsync("name", token: token)
+                                                      .ConfigureAwait(false))?.Value;
                     await treSourcebook.DoThreadSafeAsync(x =>
                     {
                         TreeNode objNode = new TreeNode
@@ -1041,11 +1148,13 @@ namespace Chummer
         private async ValueTask PopulateCustomDataDirectoryTreeView(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            object objOldSelected = await treCustomDataDirectories.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token).ConfigureAwait(false);
+            object objOldSelected = await treCustomDataDirectories
+                                          .DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token).ConfigureAwait(false);
             await treCustomDataDirectories.DoThreadSafeAsync(x => x.BeginUpdate(), token).ConfigureAwait(false);
             try
             {
-                string strFileNotFound = await LanguageManager.GetStringAsync("MessageTitle_FileNotFound", token: token).ConfigureAwait(false);
+                string strFileNotFound = await LanguageManager.GetStringAsync("MessageTitle_FileNotFound", token: token)
+                                                              .ConfigureAwait(false);
                 Color objGrayTextColor = await ColorManager.GetGrayTextAsync(token).ConfigureAwait(false);
                 if (_dicCharacterCustomDataDirectoryInfos.Count != treCustomDataDirectories.Nodes.Count)
                 {
@@ -1066,11 +1175,16 @@ namespace Chummer
                                 // check dependencies and exclusivities only if they could exist at all instead of calling and running into empty an foreach.
                                 string missingDirectories = string.Empty;
                                 if (objInfo.DependenciesList.Count > 0)
-                                    missingDirectories = await objInfo.CheckDependencyAsync(_objCharacterSettings, token).ConfigureAwait(false);
+                                    missingDirectories = await objInfo
+                                                               .CheckDependencyAsync(_objCharacterSettings, token)
+                                                               .ConfigureAwait(false);
 
                                 string prohibitedDirectories = string.Empty;
                                 if (objInfo.IncompatibilitiesList.Count > 0)
-                                    prohibitedDirectories = await objInfo.CheckIncompatibilityAsync(_objCharacterSettings, token).ConfigureAwait(false);
+                                    prohibitedDirectories = await objInfo
+                                                                  .CheckIncompatibilityAsync(
+                                                                      _objCharacterSettings, token)
+                                                                  .ConfigureAwait(false);
 
                                 if (!string.IsNullOrEmpty(missingDirectories)
                                     || !string.IsNullOrEmpty(prohibitedDirectories))
@@ -1091,6 +1205,7 @@ namespace Chummer
 
                         lstNodes.Add(objNode);
                     }
+
                     await treCustomDataDirectories.DoThreadSafeAsync(x =>
                     {
                         x.Nodes.Clear();
@@ -1105,7 +1220,8 @@ namespace Chummer
                     {
                         KeyValuePair<object, bool> kvpInfo = _dicCharacterCustomDataDirectoryInfos[i];
                         int i1 = i;
-                        TreeNode objNode = await treCustomDataDirectories.DoThreadSafeFuncAsync(x => x.Nodes[i1], token).ConfigureAwait(false);
+                        TreeNode objNode = await treCustomDataDirectories.DoThreadSafeFuncAsync(x => x.Nodes[i1], token)
+                                                                         .ConfigureAwait(false);
                         await treCustomDataDirectories.DoThreadSafeAsync(() =>
                         {
                             objNode.Tag = kvpInfo.Key;
@@ -1114,17 +1230,23 @@ namespace Chummer
                         if (kvpInfo.Key is CustomDataDirectoryInfo objInfo)
                         {
                             string strText = await objInfo.GetDisplayNameAsync(token).ConfigureAwait(false);
-                            await treCustomDataDirectories.DoThreadSafeAsync(() => objNode.Text = strText, token).ConfigureAwait(false);
+                            await treCustomDataDirectories.DoThreadSafeAsync(() => objNode.Text = strText, token)
+                                                          .ConfigureAwait(false);
                             if (objNode.Checked)
                             {
                                 // check dependencies and exclusivities only if they could exist at all instead of calling and running into empty an foreach.
                                 string missingDirectories = string.Empty;
                                 if (objInfo.DependenciesList.Count > 0)
-                                    missingDirectories = await objInfo.CheckDependencyAsync(_objCharacterSettings, token).ConfigureAwait(false);
+                                    missingDirectories = await objInfo
+                                                               .CheckDependencyAsync(_objCharacterSettings, token)
+                                                               .ConfigureAwait(false);
 
                                 string prohibitedDirectories = string.Empty;
                                 if (objInfo.IncompatibilitiesList.Count > 0)
-                                    prohibitedDirectories = await objInfo.CheckIncompatibilityAsync(_objCharacterSettings, token).ConfigureAwait(false);
+                                    prohibitedDirectories = await objInfo
+                                                                  .CheckIncompatibilityAsync(
+                                                                      _objCharacterSettings, token)
+                                                                  .ConfigureAwait(false);
 
                                 if (!string.IsNullOrEmpty(missingDirectories)
                                     || !string.IsNullOrEmpty(prohibitedDirectories))
@@ -1177,7 +1299,8 @@ namespace Chummer
                     }
                     else
                     {
-                        await treCustomDataDirectories.DoThreadSafeAsync(x => x.ShowNodeToolTips = true, token).ConfigureAwait(false);
+                        await treCustomDataDirectories.DoThreadSafeAsync(x => x.ShowNodeToolTips = true, token)
+                                                      .ConfigureAwait(false);
                     }
                 }
             }
@@ -1229,17 +1352,20 @@ namespace Chummer
                 {
                     foreach (XPathNavigator objXmlNode in await (await XmlManager
                                                                        .LoadXPathAsync("priorities.xml",
-                                                                           _objCharacterSettings.EnabledCustomDataDirectoryPaths,
+                                                                           _objCharacterSettings
+                                                                               .EnabledCustomDataDirectoryPaths,
                                                                            token: token).ConfigureAwait(false))
                                                                 .SelectAndCacheExpressionAsync(
-                                                                    "/chummer/prioritytables/prioritytable", token: token).ConfigureAwait(false))
+                                                                    "/chummer/prioritytables/prioritytable",
+                                                                    token: token).ConfigureAwait(false))
                     {
                         string strName = objXmlNode.Value;
                         if (!string.IsNullOrEmpty(strName))
                             lstPriorityTables.Add(new ListItem(objXmlNode.Value,
                                                                (await objXmlNode
                                                                       .SelectSingleNodeAndCacheExpressionAsync(
-                                                                          "@translate", token: token).ConfigureAwait(false))
+                                                                          "@translate", token: token)
+                                                                      .ConfigureAwait(false))
                                                                ?.Value ?? strName));
                     }
 
@@ -1267,7 +1393,8 @@ namespace Chummer
                 }
 
                 string strSelectedTable
-                    = await cboPriorityTable.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false);
+                    = await cboPriorityTable.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token)
+                                            .ConfigureAwait(false);
                 if (!string.IsNullOrWhiteSpace(strSelectedTable) &&
                     _objCharacterSettings.PriorityTable != strSelectedTable)
                     _objCharacterSettings.PriorityTable = strSelectedTable;
@@ -1359,14 +1486,20 @@ namespace Chummer
                 {
                     foreach (XPathNavigator objXmlNode in await (await XmlManager
                                                                        .LoadXPathAsync("bioware.xml",
-                                                                           _objCharacterSettings.EnabledCustomDataDirectoryPaths,
+                                                                           _objCharacterSettings
+                                                                               .EnabledCustomDataDirectoryPaths,
                                                                            token: token).ConfigureAwait(false))
-                                                                .SelectAndCacheExpressionAsync("/chummer/grades/grade[not(hide)]", token: token).ConfigureAwait(false))
+                                                                .SelectAndCacheExpressionAsync(
+                                                                    "/chummer/grades/grade[not(hide)]", token: token)
+                                                                .ConfigureAwait(false))
                     {
-                        string strName = (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("name", token: token).ConfigureAwait(false))?.Value;
+                        string strName = (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("name", token: token)
+                                                          .ConfigureAwait(false))?.Value;
                         if (!string.IsNullOrEmpty(strName) && strName != "None")
                         {
-                            string strBook = (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("source", token: token).ConfigureAwait(false))
+                            string strBook = (await objXmlNode
+                                                    .SelectSingleNodeAndCacheExpressionAsync("source", token: token)
+                                                    .ConfigureAwait(false))
                                 ?.Value;
                             if (!string.IsNullOrEmpty(strBook)
                                 && treSourcebook.Nodes.Cast<TreeNode>().All(x => x.Tag.ToString() != strBook))
@@ -1379,7 +1512,9 @@ namespace Chummer
                                 lstGrades.Remove(objExistingCoveredGrade);
                             lstGrades.Add(new ListItem(
                                               strName,
-                                              (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))
+                                              (await objXmlNode
+                                                     .SelectSingleNodeAndCacheExpressionAsync("translate", token: token)
+                                                     .ConfigureAwait(false))
                                               ?.Value
                                               ?? strName));
                         }
@@ -1387,14 +1522,20 @@ namespace Chummer
 
                     foreach (XPathNavigator objXmlNode in await (await XmlManager
                                                                        .LoadXPathAsync("cyberware.xml",
-                                                                           _objCharacterSettings.EnabledCustomDataDirectoryPaths,
+                                                                           _objCharacterSettings
+                                                                               .EnabledCustomDataDirectoryPaths,
                                                                            token: token).ConfigureAwait(false))
-                                                                .SelectAndCacheExpressionAsync("/chummer/grades/grade[not(hide)]", token: token).ConfigureAwait(false))
+                                                                .SelectAndCacheExpressionAsync(
+                                                                    "/chummer/grades/grade[not(hide)]", token: token)
+                                                                .ConfigureAwait(false))
                     {
-                        string strName = (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("name", token: token).ConfigureAwait(false))?.Value;
+                        string strName = (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("name", token: token)
+                                                          .ConfigureAwait(false))?.Value;
                         if (!string.IsNullOrEmpty(strName) && strName != "None")
                         {
-                            string strBook = (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("source", token: token).ConfigureAwait(false))
+                            string strBook = (await objXmlNode
+                                                    .SelectSingleNodeAndCacheExpressionAsync("source", token: token)
+                                                    .ConfigureAwait(false))
                                 ?.Value;
                             if (!string.IsNullOrEmpty(strBook)
                                 && treSourcebook.Nodes.Cast<TreeNode>().All(x => x.Tag.ToString() != strBook))
@@ -1407,7 +1548,9 @@ namespace Chummer
                                 lstGrades.Remove(objExistingCoveredGrade);
                             lstGrades.Add(new ListItem(
                                               strName,
-                                              (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))
+                                              (await objXmlNode
+                                                     .SelectSingleNodeAndCacheExpressionAsync("translate", token: token)
+                                                     .ConfigureAwait(false))
                                               ?.Value
                                               ?? strName));
                         }
@@ -1491,60 +1634,97 @@ namespace Chummer
 
         private async ValueTask SetToolTips(CancellationToken token = default)
         {
-            await chkUnarmedSkillImprovements.SetToolTipAsync((await LanguageManager.GetStringAsync("Tip_OptionsUnarmedSkillImprovements", token: token).ConfigureAwait(false)).WordWrap(), token).ConfigureAwait(false);
-            await chkIgnoreArt.SetToolTipAsync((await LanguageManager.GetStringAsync("Tip_OptionsIgnoreArt", token: token).ConfigureAwait(false)).WordWrap(), token).ConfigureAwait(false);
-            await chkIgnoreComplexFormLimit.SetToolTipAsync((await LanguageManager.GetStringAsync("Tip_OptionsIgnoreComplexFormLimit", token: token).ConfigureAwait(false)).WordWrap(), token).ConfigureAwait(false);
-            await chkCyberlegMovement.SetToolTipAsync((await LanguageManager.GetStringAsync("Tip_OptionsCyberlegMovement", token: token).ConfigureAwait(false)).WordWrap(), token).ConfigureAwait(false);
-            await chkDontDoubleQualityPurchases.SetToolTipAsync((await LanguageManager.GetStringAsync("Tip_OptionsDontDoubleQualityPurchases", token: token).ConfigureAwait(false)).WordWrap(), token).ConfigureAwait(false);
-            await chkDontDoubleQualityRefunds.SetToolTipAsync((await LanguageManager.GetStringAsync("Tip_OptionsDontDoubleQualityRefunds", token: token).ConfigureAwait(false)).WordWrap(), token).ConfigureAwait(false);
-            await chkStrictSkillGroups.SetToolTipAsync((await LanguageManager.GetStringAsync("Tip_OptionStrictSkillGroups", token: token).ConfigureAwait(false)).WordWrap(), token).ConfigureAwait(false);
-            await chkAllowInitiation.SetToolTipAsync((await LanguageManager.GetStringAsync("Tip_OptionsAllowInitiation", token: token).ConfigureAwait(false)).WordWrap(), token).ConfigureAwait(false);
-            await chkUseCalculatedPublicAwareness.SetToolTipAsync((await LanguageManager.GetStringAsync("Tip_PublicAwareness", token: token).ConfigureAwait(false)).WordWrap(), token).ConfigureAwait(false);
+            await chkUnarmedSkillImprovements
+                  .SetToolTipAsync(
+                      (await LanguageManager.GetStringAsync("Tip_OptionsUnarmedSkillImprovements", token: token)
+                                            .ConfigureAwait(false)).WordWrap(), token).ConfigureAwait(false);
+            await chkIgnoreArt
+                  .SetToolTipAsync(
+                      (await LanguageManager.GetStringAsync("Tip_OptionsIgnoreArt", token: token).ConfigureAwait(false))
+                      .WordWrap(), token).ConfigureAwait(false);
+            await chkIgnoreComplexFormLimit
+                  .SetToolTipAsync(
+                      (await LanguageManager.GetStringAsync("Tip_OptionsIgnoreComplexFormLimit", token: token)
+                                            .ConfigureAwait(false)).WordWrap(), token).ConfigureAwait(false);
+            await chkCyberlegMovement
+                  .SetToolTipAsync(
+                      (await LanguageManager.GetStringAsync("Tip_OptionsCyberlegMovement", token: token)
+                                            .ConfigureAwait(false)).WordWrap(), token).ConfigureAwait(false);
+            await chkDontDoubleQualityPurchases
+                  .SetToolTipAsync(
+                      (await LanguageManager.GetStringAsync("Tip_OptionsDontDoubleQualityPurchases", token: token)
+                                            .ConfigureAwait(false)).WordWrap(), token).ConfigureAwait(false);
+            await chkDontDoubleQualityRefunds
+                  .SetToolTipAsync(
+                      (await LanguageManager.GetStringAsync("Tip_OptionsDontDoubleQualityRefunds", token: token)
+                                            .ConfigureAwait(false)).WordWrap(), token).ConfigureAwait(false);
+            await chkStrictSkillGroups
+                  .SetToolTipAsync(
+                      (await LanguageManager.GetStringAsync("Tip_OptionStrictSkillGroups", token: token)
+                                            .ConfigureAwait(false)).WordWrap(), token).ConfigureAwait(false);
+            await chkAllowInitiation
+                  .SetToolTipAsync(
+                      (await LanguageManager.GetStringAsync("Tip_OptionsAllowInitiation", token: token)
+                                            .ConfigureAwait(false)).WordWrap(), token).ConfigureAwait(false);
+            await chkUseCalculatedPublicAwareness
+                  .SetToolTipAsync(
+                      (await LanguageManager.GetStringAsync("Tip_PublicAwareness", token: token).ConfigureAwait(false))
+                      .WordWrap(), token).ConfigureAwait(false);
         }
 
         private async ValueTask SetupDataBindings(CancellationToken token = default)
         {
             await cmdRename.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = !y, _objCharacterSettings,
-                                                           nameof(CharacterSettings.BuiltInOption),
-                                                           x => x.GetBuiltInOptionAsync(token).AsTask(), token: token)
+                                                                nameof(CharacterSettings.BuiltInOption),
+                                                                x => x.GetBuiltInOptionAsync(token).AsTask(),
+                                                                token: token)
                            .ConfigureAwait(false);
             await cmdDelete.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = !y, _objCharacterSettings,
-                                                           nameof(CharacterSettings.BuiltInOption),
-                                                           x => x.GetBuiltInOptionAsync(token).AsTask(), token: token)
+                                                                nameof(CharacterSettings.BuiltInOption),
+                                                                x => x.GetBuiltInOptionAsync(token).AsTask(),
+                                                                token: token)
                            .ConfigureAwait(false);
 
             await cboBuildMethod
                   .DoDataBindingAsync("SelectedValue", _objCharacterSettings, nameof(CharacterSettings.BuildMethod),
                                       token).ConfigureAwait(false);
             await lblPriorityTable.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y, _objCharacterSettings,
-                                                                  nameof(CharacterSettings
-                                                                             .BuildMethodUsesPriorityTables),
-                                                                  x => x.GetBuildMethodUsesPriorityTablesAsync(token)
-                                                                        .AsTask(), token: token).ConfigureAwait(false);
+                                                                       nameof(CharacterSettings
+                                                                                  .BuildMethodUsesPriorityTables),
+                                                                       x => x
+                                                                            .GetBuildMethodUsesPriorityTablesAsync(
+                                                                                token)
+                                                                            .AsTask(), token: token)
+                                  .ConfigureAwait(false);
             await cboPriorityTable.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y, _objCharacterSettings,
-                                                                  nameof(CharacterSettings
-                                                                             .BuildMethodUsesPriorityTables),
-                                                                  x => x.GetBuildMethodUsesPriorityTablesAsync(token)
-                                                                        .AsTask(), token: token).ConfigureAwait(false);
+                                                                       nameof(CharacterSettings
+                                                                                  .BuildMethodUsesPriorityTables),
+                                                                       x => x
+                                                                            .GetBuildMethodUsesPriorityTablesAsync(
+                                                                                token)
+                                                                            .AsTask(), token: token)
+                                  .ConfigureAwait(false);
             await lblPriorities.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y, _objCharacterSettings,
-                                                               nameof(CharacterSettings.BuildMethodIsPriority),
-                                                               x => x.GetBuildMethodIsPriorityAsync(token).AsTask(),
-                                                               token: token).ConfigureAwait(false);
+                                                                    nameof(CharacterSettings.BuildMethodIsPriority),
+                                                                    x => x.GetBuildMethodIsPriorityAsync(token)
+                                                                          .AsTask(),
+                                                                    token: token).ConfigureAwait(false);
             await txtPriorities.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y, _objCharacterSettings,
-                                                               nameof(CharacterSettings.BuildMethodIsPriority),
-                                                               x => x.GetBuildMethodIsPriorityAsync(token).AsTask(),
-                                                               token: token).ConfigureAwait(false);
+                                                                    nameof(CharacterSettings.BuildMethodIsPriority),
+                                                                    x => x.GetBuildMethodIsPriorityAsync(token)
+                                                                          .AsTask(),
+                                                                    token: token).ConfigureAwait(false);
             await txtPriorities
                   .DoDataBindingAsync("Text", _objCharacterSettings, nameof(CharacterSettings.PriorityArray), token)
                   .ConfigureAwait(false);
             await lblSumToTen.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y, _objCharacterSettings,
-                                                             nameof(CharacterSettings.BuildMethodIsSumtoTen),
-                                                             x => x.GetBuildMethodIsSumtoTenAsync(token).AsTask(),
-                                                             token: token).ConfigureAwait(false);
+                                                                  nameof(CharacterSettings.BuildMethodIsSumtoTen),
+                                                                  x => x.GetBuildMethodIsSumtoTenAsync(token).AsTask(),
+                                                                  token: token).ConfigureAwait(false);
             await nudSumToTen.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y, _objCharacterSettings,
-                                                             nameof(CharacterSettings.BuildMethodIsSumtoTen),
-                                                             x => x.GetBuildMethodIsSumtoTenAsync(token).AsTask(),
-                                                             token: token).ConfigureAwait(false);
+                                                                  nameof(CharacterSettings.BuildMethodIsSumtoTen),
+                                                                  x => x.GetBuildMethodIsSumtoTenAsync(token).AsTask(),
+                                                                  token: token).ConfigureAwait(false);
             await nudSumToTen
                   .DoDataBindingAsync("Value", _objCharacterSettings, nameof(CharacterSettings.SumtoTen), token)
                   .ConfigureAwait(false);
@@ -2078,9 +2258,11 @@ namespace Chummer
             {
                 string strSelect = string.Empty;
                 if (_intLoading == 0)
-                    strSelect = await cboSetting.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false);
+                    strSelect = await cboSetting.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token)
+                                                .ConfigureAwait(false);
                 _lstSettings.Clear();
-                foreach (KeyValuePair<string, CharacterSettings> kvpCharacterSettingsEntry in await SettingsManager.GetLoadedCharacterSettingsAsync(token).ConfigureAwait(false))
+                foreach (KeyValuePair<string, CharacterSettings> kvpCharacterSettingsEntry in await SettingsManager
+                             .GetLoadedCharacterSettingsAsync(token).ConfigureAwait(false))
                 {
                     _lstSettings.Add(new ListItem(kvpCharacterSettingsEntry.Key,
                                                   kvpCharacterSettingsEntry.Value.DisplayName));
@@ -2099,7 +2281,8 @@ namespace Chummer
                     if (x.SelectedIndex == -1 && _lstSettings.Count > 0)
                         x.SelectedIndex = 0;
                 }, token).ConfigureAwait(false);
-                _intOldSelectedSettingIndex = await cboSetting.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false);
+                _intOldSelectedSettingIndex = await cboSetting.DoThreadSafeFuncAsync(x => x.SelectedIndex, token)
+                                                              .ConfigureAwait(false);
             }
             finally
             {
@@ -2116,7 +2299,9 @@ namespace Chummer
                 {
                     try
                     {
-                        await SetIsDirty(!await _objCharacterSettings.HasIdenticalSettingsAsync(_objReferenceCharacterSettings).ConfigureAwait(false)).ConfigureAwait(false);
+                        await SetIsDirty(!await _objCharacterSettings
+                                                .HasIdenticalSettingsAsync(_objReferenceCharacterSettings)
+                                                .ConfigureAwait(false)).ConfigureAwait(false);
                         switch (e.PropertyName)
                         {
                             case nameof(CharacterSettings.EnabledCustomDataDirectoryPaths):
@@ -2149,16 +2334,20 @@ namespace Chummer
                         case nameof(CharacterSettings.BuildMethod):
                         {
                             bool blnAllTextBoxesLegal = await IsAllTextBoxesLegalAsync().ConfigureAwait(false);
-                            await cmdSaveAs.DoThreadSafeAsync(x => x.Enabled = IsDirty && blnAllTextBoxesLegal).ConfigureAwait(false);
+                            await cmdSaveAs.DoThreadSafeAsync(x => x.Enabled = IsDirty && blnAllTextBoxesLegal)
+                                           .ConfigureAwait(false);
                             await cmdSave.DoThreadSafeAsync(
                                 x => x.Enabled = IsDirty && blnAllTextBoxesLegal
                                                          && !_objCharacterSettings.BuiltInOption).ConfigureAwait(false);
                             break;
                         }
-                        case nameof(CharacterSettings.ChargenKarmaToNuyenExpression): // Not data-bound so that the setter can be asynchronous
+                        case nameof(CharacterSettings.ChargenKarmaToNuyenExpression)
+                            : // Not data-bound so that the setter can be asynchronous
                         {
                             await txtNuyenExpression.DoThreadSafeAsync(
-                                x => x.Text = _objCharacterSettings.ChargenKarmaToNuyenExpression).ConfigureAwait(false);
+                                                        x => x.Text = _objCharacterSettings
+                                                            .ChargenKarmaToNuyenExpression)
+                                                    .ConfigureAwait(false);
                             break;
                         }
                     }
@@ -2172,7 +2361,8 @@ namespace Chummer
 
         private bool IsAllTextBoxesLegal()
         {
-            if (_objCharacterSettings.BuildMethod == CharacterBuildMethod.Priority && _objCharacterSettings.PriorityArray.Length != 5)
+            if (_objCharacterSettings.BuildMethod == CharacterBuildMethod.Priority
+                && _objCharacterSettings.PriorityArray.Length != 5)
                 return false;
 
             return CommonFunctions.IsCharacterAttributeXPathValidOrNull(
@@ -2198,7 +2388,8 @@ namespace Chummer
 
         private async ValueTask<bool> IsAllTextBoxesLegalAsync(CancellationToken token = default)
         {
-            if (_objCharacterSettings.BuildMethod == CharacterBuildMethod.Priority && _objCharacterSettings.PriorityArray.Length != 5)
+            if (_objCharacterSettings.BuildMethod == CharacterBuildMethod.Priority
+                && _objCharacterSettings.PriorityArray.Length != 5)
                 return false;
 
             return await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
@@ -2206,10 +2397,13 @@ namespace Chummer
                    await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
                        _objCharacterSettings.KnowledgePointsExpression, token: token).ConfigureAwait(false) &&
                    await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
-                       (await _objCharacterSettings.GetChargenKarmaToNuyenExpressionAsync(token).ConfigureAwait(false)).Replace("{Karma}", "1")
+                       (await _objCharacterSettings.GetChargenKarmaToNuyenExpressionAsync(token).ConfigureAwait(false))
+                       .Replace("{Karma}", "1")
                        .Replace("{PriorityNuyen}", "1"), token: token).ConfigureAwait(false) &&
                    await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
-                       _objCharacterSettings.EssenceModifierPostExpression.Replace("{Modifier}", "1.0"), token:token).ConfigureAwait(false) &&
+                                            _objCharacterSettings.EssenceModifierPostExpression.Replace("{Modifier}",
+                                                "1.0"), token: token)
+                                        .ConfigureAwait(false) &&
                    await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
                        _objCharacterSettings.RegisteredSpriteExpression, token: token).ConfigureAwait(false) &&
                    await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
@@ -2229,7 +2423,8 @@ namespace Chummer
             if (_blnDirty == value)
                 return;
             _blnDirty = value;
-            string strText = await LanguageManager.GetStringAsync(value ? "String_Cancel" : "String_OK", token: token).ConfigureAwait(false);
+            string strText = await LanguageManager.GetStringAsync(value ? "String_Cancel" : "String_OK", token: token)
+                                                  .ConfigureAwait(false);
             await cmdOK.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
             if (value)
             {

@@ -32,7 +32,8 @@ namespace Chummer
     /// <summary>
     /// This class holds all information about an CustomDataDirectory
     /// </summary>
-    public sealed class CustomDataDirectoryInfo : IComparable, IEquatable<CustomDataDirectoryInfo>, IComparable<CustomDataDirectoryInfo>, IHasInternalId
+    public sealed class CustomDataDirectoryInfo : IComparable, IEquatable<CustomDataDirectoryInfo>,
+        IComparable<CustomDataDirectoryInfo>, IHasInternalId
     {
         private readonly Version _objMyVersion = new Version(1, 0);
         private Guid _guid = Guid.NewGuid();
@@ -44,8 +45,8 @@ namespace Chummer
         private readonly List<DirectoryDependency> _lstDependencies = new List<DirectoryDependency>();
         private readonly List<DirectoryDependency> _lstIncompatibilities = new List<DirectoryDependency>();
 
-        private readonly Dictionary<string, bool> _authorDictionary = new Dictionary<string, bool>();
-        private readonly Dictionary<string, string> _descriptionDictionary = new Dictionary<string, string>();
+        private readonly Dictionary<string, bool> _dicAuthorDictionary = new Dictionary<string, bool>();
+        private readonly Dictionary<string, string> _dicDescriptionDictionary = new Dictionary<string, string>();
 
         public CustomDataDirectoryInfo(string strName, string strDirectoryPath)
         {
@@ -61,7 +62,8 @@ namespace Chummer
                 {
                     HasManifest = true;
                     XPathDocument xmlObjManifest = XPathDocumentExtensions.LoadStandardFromFile(strFullDirectory);
-                    XPathNavigator xmlNode = xmlObjManifest.CreateNavigator().SelectSingleNodeAndCacheExpression("manifest");
+                    XPathNavigator xmlNode = xmlObjManifest.CreateNavigator()
+                                                           .SelectSingleNodeAndCacheExpression("manifest");
 
                     if (!xmlNode.TryGetField("version", VersionExtensions.TryParse, out _objMyVersion))
                         _objMyVersion = new Version(1, 0);
@@ -84,7 +86,8 @@ namespace Chummer
 
             void GetManifestDescriptions(XPathNavigator xmlDocument)
             {
-                foreach (XPathNavigator descriptionNode in xmlDocument.SelectAndCacheExpression("descriptions/description"))
+                foreach (XPathNavigator descriptionNode in xmlDocument.SelectAndCacheExpression(
+                             "descriptions/description"))
                 {
                     string language = string.Empty;
                     descriptionNode.TryGetStringFieldQuickly("lang", ref language);
@@ -93,7 +96,7 @@ namespace Chummer
                     {
                         string text = string.Empty;
                         if (descriptionNode.TryGetStringFieldQuickly("text", ref text))
-                            _descriptionDictionary.Add(language, text);
+                            _dicDescriptionDictionary.Add(language, text);
                     }
                 }
             }
@@ -109,9 +112,9 @@ namespace Chummer
                     objXmlNode.TryGetStringFieldQuickly("name", ref authorName);
                     objXmlNode.TryGetBoolFieldQuickly("main", ref isMain);
 
-                    if (!string.IsNullOrEmpty(authorName) && !_authorDictionary.ContainsKey(authorName))
+                    if (!string.IsNullOrEmpty(authorName) && !_dicAuthorDictionary.ContainsKey(authorName))
                         //Maybe a stupid idea? But who would add two authors with the same name anyway?
-                        _authorDictionary.Add(authorName, isMain);
+                        _dicAuthorDictionary.Add(authorName, isMain);
                 }
                 //After the list is fully formed, set the display author
                 //SetDisplayAuthors();
@@ -135,14 +138,17 @@ namespace Chummer
                     objXmlNode.TryGetField("maxversion", VersionExtensions.TryParse, out Version objNewMaximumVersion);
                     objXmlNode.TryGetField("minversion", VersionExtensions.TryParse, out Version objNewMinimumVersion);
 
-                    DirectoryDependency objDependency = new DirectoryDependency(strDependencyName, guidId, objNewMinimumVersion, objNewMaximumVersion);
+                    DirectoryDependency objDependency
+                        = new DirectoryDependency(strDependencyName, guidId, objNewMinimumVersion,
+                                                  objNewMaximumVersion);
                     _lstDependencies.Add(objDependency);
                 }
             }
 
             void GetIncompatibilities(XPathNavigator xmlDocument)
             {
-                foreach (XPathNavigator objXmlNode in xmlDocument.SelectAndCacheExpression("incompatibilities/incompatibility"))
+                foreach (XPathNavigator objXmlNode in xmlDocument.SelectAndCacheExpression(
+                             "incompatibilities/incompatibility"))
                 {
                     Guid guidId = Guid.Empty;
                     string strDependencyName = string.Empty;
@@ -157,7 +163,9 @@ namespace Chummer
                     objXmlNode.TryGetField("maxversion", VersionExtensions.TryParse, out Version objNewMaximumVersion);
                     objXmlNode.TryGetField("minversion", VersionExtensions.TryParse, out Version objNewMinimumVersion);
 
-                    DirectoryDependency objIncompatibility = new DirectoryDependency(strDependencyName, guidId, objNewMinimumVersion, objNewMaximumVersion);
+                    DirectoryDependency objIncompatibility
+                        = new DirectoryDependency(strDependencyName, guidId, objNewMinimumVersion,
+                                                  objNewMaximumVersion);
                     _lstIncompatibilities.Add(objIncompatibility);
                 }
             }
@@ -207,11 +215,13 @@ namespace Chummer
         /// <returns>List of the names of all missing dependencies as a single string</returns>
         public string CheckDependency(CharacterSettings objCharacterSettings)
         {
-            int intMyLoadOrderPosition = objCharacterSettings.EnabledCustomDataDirectoryInfos.FindIndex(x => x.Equals(this));
+            int intMyLoadOrderPosition
+                = objCharacterSettings.EnabledCustomDataDirectoryInfos.FindIndex(x => x.Equals(this));
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdReturn))
             {
-                List<CustomDataDirectoryInfo> lstEnabledCustomData = new List<CustomDataDirectoryInfo>(DependenciesList.Count);
+                List<CustomDataDirectoryInfo> lstEnabledCustomData
+                    = new List<CustomDataDirectoryInfo>(DependenciesList.Count);
                 foreach (DirectoryDependency dependency in DependenciesList)
                 {
                     lstEnabledCustomData.Clear();
@@ -242,6 +252,7 @@ namespace Chummer
                             {
                                 blnMismatch = lstEnabledCustomData.All(x => x.MyVersion > objMaxVersion);
                             }
+
                             if (blnMismatch)
                             {
                                 sbdReturn.AppendFormat(LanguageManager.GetString("Tooltip_Dependency_VersionMismatch"),
@@ -249,6 +260,7 @@ namespace Chummer
                                          .AppendLine();
                                 continue;
                             }
+
                             // Remove all from the list where version does not match before moving on to load orders
                             if (objMinVersion != default && objMaxVersion != default)
                             {
@@ -290,13 +302,16 @@ namespace Chummer
         /// <param name="objCharacterSettings"></param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>List of the names of all missing dependencies as a single string</returns>
-        public async ValueTask<string> CheckDependencyAsync(CharacterSettings objCharacterSettings, CancellationToken token = default)
+        public async ValueTask<string> CheckDependencyAsync(CharacterSettings objCharacterSettings,
+                                                            CancellationToken token = default)
         {
-            int intMyLoadOrderPosition = objCharacterSettings.EnabledCustomDataDirectoryInfos.FindIndex(x => x.Equals(this));
+            int intMyLoadOrderPosition
+                = objCharacterSettings.EnabledCustomDataDirectoryInfos.FindIndex(x => x.Equals(this));
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdReturn))
             {
-                List<CustomDataDirectoryInfo> lstEnabledCustomData = new List<CustomDataDirectoryInfo>(DependenciesList.Count);
+                List<CustomDataDirectoryInfo> lstEnabledCustomData
+                    = new List<CustomDataDirectoryInfo>(DependenciesList.Count);
                 foreach (DirectoryDependency dependency in DependenciesList)
                 {
                     lstEnabledCustomData.Clear();
@@ -327,13 +342,20 @@ namespace Chummer
                             {
                                 blnMismatch = lstEnabledCustomData.All(x => x.MyVersion > objMaxVersion);
                             }
+
                             if (blnMismatch)
                             {
-                                sbdReturn.AppendFormat(await LanguageManager.GetStringAsync("Tooltip_Dependency_VersionMismatch", token: token).ConfigureAwait(false),
-                                                       await lstEnabledCustomData[0].GetDisplayNameAsync(token).ConfigureAwait(false), await dependency.GetDisplayNameAsync(token).ConfigureAwait(false))
+                                sbdReturn.AppendFormat(
+                                             await LanguageManager
+                                                   .GetStringAsync("Tooltip_Dependency_VersionMismatch", token: token)
+                                                   .ConfigureAwait(false),
+                                             await lstEnabledCustomData[0].GetDisplayNameAsync(token)
+                                                                          .ConfigureAwait(false),
+                                             await dependency.GetDisplayNameAsync(token).ConfigureAwait(false))
                                          .AppendLine();
                                 continue;
                             }
+
                             // Remove all from the list where version does not match before moving on to load orders
                             if (objMinVersion != default && objMaxVersion != default)
                             {
@@ -354,8 +376,10 @@ namespace Chummer
                             < objCharacterSettings.EnabledCustomDataDirectoryInfos.FindLastIndex(
                                 x => lstEnabledCustomData.Contains(x)))
                         {
-                            sbdReturn.AppendFormat(await LanguageManager.GetStringAsync("Tooltip_Dependency_BadLoadOrder", token: token).ConfigureAwait(false),
-                                                   lstEnabledCustomData[0].Name, Name).AppendLine();
+                            sbdReturn.AppendFormat(
+                                await LanguageManager.GetStringAsync("Tooltip_Dependency_BadLoadOrder", token: token)
+                                                     .ConfigureAwait(false),
+                                lstEnabledCustomData[0].Name, Name).AppendLine();
                         }
                     }
                     else
@@ -379,7 +403,8 @@ namespace Chummer
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdReturn))
             {
-                List<CustomDataDirectoryInfo> lstEnabledCustomData = new List<CustomDataDirectoryInfo>(IncompatibilitiesList.Count);
+                List<CustomDataDirectoryInfo> lstEnabledCustomData
+                    = new List<CustomDataDirectoryInfo>(IncompatibilitiesList.Count);
                 foreach (DirectoryDependency incompatibility in IncompatibilitiesList)
                 {
                     Guid objIncompatibilityGuid = incompatibility.UniqueIdentifier;
@@ -434,12 +459,14 @@ namespace Chummer
         /// <param name="objCharacterSettings"></param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>List of the names of all prohibited custom data directories as a single string</returns>
-        public async ValueTask<string> CheckIncompatibilityAsync(CharacterSettings objCharacterSettings, CancellationToken token = default)
+        public async ValueTask<string> CheckIncompatibilityAsync(CharacterSettings objCharacterSettings,
+                                                                 CancellationToken token = default)
         {
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdReturn))
             {
-                List<CustomDataDirectoryInfo> lstEnabledCustomData = new List<CustomDataDirectoryInfo>(IncompatibilitiesList.Count);
+                List<CustomDataDirectoryInfo> lstEnabledCustomData
+                    = new List<CustomDataDirectoryInfo>(IncompatibilitiesList.Count);
                 foreach (DirectoryDependency incompatibility in IncompatibilitiesList)
                 {
                     Guid objIncompatibilityGuid = incompatibility.UniqueIdentifier;
@@ -479,8 +506,12 @@ namespace Chummer
                     //if the version is within the version range add it to the list.
                     if (objInfoToDisplay != default)
                     {
-                        sbdReturn.AppendFormat(await LanguageManager.GetStringAsync("Tooltip_Incompatibility_VersionMismatch", token: token).ConfigureAwait(false),
-                                               await objInfoToDisplay.GetDisplayNameAsync(token).ConfigureAwait(false), await incompatibility.GetDisplayNameAsync(token).ConfigureAwait(false)).AppendLine();
+                        sbdReturn.AppendFormat(
+                            await LanguageManager
+                                  .GetStringAsync("Tooltip_Incompatibility_VersionMismatch", token: token)
+                                  .ConfigureAwait(false),
+                            await objInfoToDisplay.GetDisplayNameAsync(token).ConfigureAwait(false),
+                            await incompatibility.GetDisplayNameAsync(token).ConfigureAwait(false)).AppendLine();
                     }
                 }
 
@@ -494,20 +525,23 @@ namespace Chummer
         /// <param name="missingDependency">The string of all missing Dependencies</param>
         /// <param name="presentIncompatibilities">The string of all incompatibilities that are active</param>
         /// <returns></returns>
-        public static string BuildIncompatibilityDependencyString(string missingDependency = "", string presentIncompatibilities = "")
+        public static string BuildIncompatibilityDependencyString(string missingDependency = "",
+                                                                  string presentIncompatibilities = "")
         {
             string strReturn = string.Empty;
 
             if (!string.IsNullOrEmpty(missingDependency))
             {
-                strReturn = LanguageManager.GetString("Tooltip_Dependency_Missing") + Environment.NewLine + missingDependency;
+                strReturn = LanguageManager.GetString("Tooltip_Dependency_Missing") + Environment.NewLine
+                    + missingDependency;
             }
 
             if (!string.IsNullOrEmpty(presentIncompatibilities))
             {
                 if (!string.IsNullOrEmpty(strReturn))
                     strReturn += Environment.NewLine;
-                strReturn += LanguageManager.GetString("Tooltip_Incompatibility_Present") + Environment.NewLine + presentIncompatibilities;
+                strReturn += LanguageManager.GetString("Tooltip_Incompatibility_Present") + Environment.NewLine
+                    + presentIncompatibilities;
             }
 
             return strReturn;
@@ -520,20 +554,24 @@ namespace Chummer
         /// <param name="presentIncompatibilities">The string of all incompatibilities that are active</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns></returns>
-        public static async ValueTask<string> BuildIncompatibilityDependencyStringAsync(string missingDependency = "", string presentIncompatibilities = "", CancellationToken token = default)
+        public static async ValueTask<string> BuildIncompatibilityDependencyStringAsync(
+            string missingDependency = "", string presentIncompatibilities = "", CancellationToken token = default)
         {
             string strReturn = string.Empty;
 
             if (!string.IsNullOrEmpty(missingDependency))
             {
-                strReturn = await LanguageManager.GetStringAsync("Tooltip_Dependency_Missing", token: token).ConfigureAwait(false) + Environment.NewLine + missingDependency;
+                strReturn = await LanguageManager.GetStringAsync("Tooltip_Dependency_Missing", token: token)
+                                                 .ConfigureAwait(false) + Environment.NewLine + missingDependency;
             }
 
             if (!string.IsNullOrEmpty(presentIncompatibilities))
             {
                 if (!string.IsNullOrEmpty(strReturn))
                     strReturn += Environment.NewLine;
-                strReturn += await LanguageManager.GetStringAsync("Tooltip_Incompatibility_Present", token: token).ConfigureAwait(false) + Environment.NewLine + presentIncompatibilities;
+                strReturn += await LanguageManager.GetStringAsync("Tooltip_Incompatibility_Present", token: token)
+                                                  .ConfigureAwait(false) + Environment.NewLine
+                                                                         + presentIncompatibilities;
             }
 
             return strReturn;
@@ -574,7 +612,7 @@ namespace Chummer
         /// <summary>
         /// A Dictionary containing all Descriptions, which uses the language code as key
         /// </summary>
-        public IReadOnlyDictionary<string, string> DescriptionDictionary => _descriptionDictionary;
+        public IReadOnlyDictionary<string, string> DescriptionDictionary => _dicDescriptionDictionary;
 
         private string _strDisplayDescriptionLanguage = GlobalSettings.Language;
 
@@ -592,7 +630,8 @@ namespace Chummer
                 // and Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException); to throw an exception if they are called after
                 // SetProcessDPI(GlobalSettings.DpiScalingMethodSetting); in program.cs. To prevent any unexpected problems with moving those to methods to the start of
                 // the global mutex LazyCreate() handles all the offending methods and should be called, when the CharacterSettings are opened.
-                if (_strDisplayDescription == null || _strDisplayDescriptionLanguage != GlobalSettings.Language)
+                if (string.IsNullOrEmpty(_strDisplayDescription)
+                    || _strDisplayDescriptionLanguage != GlobalSettings.Language)
                 {
                     _strDisplayDescriptionLanguage = GlobalSettings.Language;
                     _strDisplayDescription = GetDisplayDescription(GlobalSettings.Language);
@@ -621,13 +660,17 @@ namespace Chummer
         public async Task<string> GetDisplayDescriptionAsync(string strLanguage, CancellationToken token = default)
         {
             if (!File.Exists(Path.Combine(DirectoryPath, "manifest.xml")))
-                return await LanguageManager.GetStringAsync("Tooltip_CharacterOptions_ManifestMissing", strLanguage, token: token).ConfigureAwait(false);
+                return await LanguageManager
+                             .GetStringAsync("Tooltip_CharacterOptions_ManifestMissing", strLanguage, token: token)
+                             .ConfigureAwait(false);
 
             if (DescriptionDictionary.TryGetValue(strLanguage, out string description))
                 return description.NormalizeLineEndings(true);
 
             if (!DescriptionDictionary.TryGetValue(GlobalSettings.DefaultLanguage, out description))
-                return await LanguageManager.GetStringAsync("Tooltip_CharacterOptions_ManifestDescriptionMissing", strLanguage, token: token).ConfigureAwait(false);
+                return await LanguageManager
+                             .GetStringAsync("Tooltip_CharacterOptions_ManifestDescriptionMissing", strLanguage,
+                                             token: token).ConfigureAwait(false);
 
             return await LanguageManager.GetStringAsync("Tooltip_CharacterOptions_LanguageSpecificManifestMissing",
                                                         strLanguage, token: token).ConfigureAwait(false) +
@@ -637,7 +680,7 @@ namespace Chummer
         /// <summary>
         /// A Dictionary, that uses the author name as key and provides a bool if he is the main author
         /// </summary>
-        public IReadOnlyDictionary<string, bool> AuthorDictionary => _authorDictionary;
+        public IReadOnlyDictionary<string, bool> AuthorDictionary => _dicAuthorDictionary;
 
         private string _strDisplayAuthorsLanguage = GlobalSettings.Language;
 
@@ -655,7 +698,7 @@ namespace Chummer
                 // and Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException); to throw an exception if they are called after
                 // SetProcessDPI(GlobalSettings.DpiScalingMethodSetting); in program.cs. To prevent any unexpected problems with moving those to methods to the start of
                 // the global mutex LazyCreate() handles all the offending methods and should be called, when the CharacterSettings are opened.
-                if (_strDisplayAuthors == null || _strDisplayAuthorsLanguage != GlobalSettings.Language)
+                if (string.IsNullOrEmpty(_strDisplayAuthors) || _strDisplayAuthorsLanguage != GlobalSettings.Language)
                 {
                     _strDisplayAuthorsLanguage = GlobalSettings.Language;
                     _strDisplayAuthors = GetDisplayAuthors(GlobalSettings.Language, GlobalSettings.CultureInfo);
@@ -683,7 +726,8 @@ namespace Chummer
             }
         }
 
-        public async Task<string> GetDisplayAuthorsAsync(string strLanguage, CultureInfo objCultureInfo, CancellationToken token = default)
+        public async Task<string> GetDisplayAuthorsAsync(string strLanguage, CultureInfo objCultureInfo,
+                                                         CancellationToken token = default)
         {
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdDisplayAuthors))
@@ -693,7 +737,8 @@ namespace Chummer
                     sbdDisplayAuthors.AppendLine(kvp.Value
                                                      ? string.Format(objCultureInfo, kvp.Key,
                                                                      await LanguageManager.GetStringAsync(
-                                                                         "String_IsMainAuthor", strLanguage, token: token).ConfigureAwait(false))
+                                                                         "String_IsMainAuthor", strLanguage,
+                                                                         token: token).ConfigureAwait(false))
                                                      : kvp.Key);
                 }
 
@@ -732,7 +777,8 @@ namespace Chummer
             return MyVersion == default
                 ? Name
                 : string.Format(GlobalSettings.CultureInfo, "{0}{1}({2})", Name,
-                                await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false), MyVersion);
+                                await LanguageManager.GetStringAsync("String_Space", token: token)
+                                                     .ConfigureAwait(false), MyVersion);
         }
 
         public string InternalId => Guid.ToString("D", GlobalSettings.InvariantCultureInfo);
@@ -864,7 +910,7 @@ namespace Chummer
     /// <summary>
     /// Holds all information about an Dependency or Incompatibility
     /// </summary>
-    public class DirectoryDependency
+    public readonly struct DirectoryDependency
     {
         public DirectoryDependency(string name, Guid guid, Version minVersion, Version maxVersion)
         {
@@ -891,9 +937,11 @@ namespace Chummer
                 if (MinimumVersion != default)
                 {
                     return MaximumVersion != default
-                        ? string.Format(GlobalSettings.CultureInfo, "{0}{1}({2}{1}-{1}{3})", Name, strSpace, MinimumVersion, MaximumVersion)
+                        ? string.Format(GlobalSettings.CultureInfo, "{0}{1}({2}{1}-{1}{3})", Name, strSpace,
+                                        MinimumVersion, MaximumVersion)
                         // If maxversion is not given, don't display decimal.max display > instead
-                        : string.Format(GlobalSettings.CultureInfo, "{0}{1}({1}>{1}{2})", Name, strSpace, MinimumVersion);
+                        : string.Format(GlobalSettings.CultureInfo, "{0}{1}({1}>{1}{2})", Name, strSpace,
+                                        MinimumVersion);
                 }
 
                 return MaximumVersion != default
