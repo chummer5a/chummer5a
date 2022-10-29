@@ -54,7 +54,7 @@ namespace Chummer
         private CancellationTokenSource _objOutputGeneratorCancellationTokenSource;
         private readonly CancellationTokenSource _objGenericFormClosingCancellationTokenSource = new CancellationTokenSource();
         private readonly CancellationToken _objGenericToken;
-        private bool _blnSheetError;
+        private bool _blnCanPrint;
         private Task _tskRefresher;
         private Task _tskOutputGenerator;
         private readonly string _strTempSheetFilePath = Path.Combine(Utils.GetTempPath(), Path.GetRandomFileName() + ".htm");
@@ -719,6 +719,7 @@ namespace Chummer
             CursorWait objCursorWait = await CursorWait.NewAsync(this, true, token).ConfigureAwait(false);
             try
             {
+                _blnCanPrint = false;
                 try
                 {
                     await this.DoThreadSafeAsync(x =>
@@ -768,7 +769,7 @@ namespace Chummer
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
-                _blnSheetError = true;
+                _blnCanPrint = false;
                 await this.DoThreadSafeAsync(x =>
                 {
                     x.tsPrintPreview.Enabled = false;
@@ -912,7 +913,7 @@ namespace Chummer
 
                 token.ThrowIfCancellationRequested();
 
-                _blnSheetError = false;
+                _blnCanPrint = true;
 
                 // This reads from a static file, outputs to an HTML file, then has the browser read from that file. For debugging purposes.
                 //objXSLTransform.Transform("D:\\temp\\print.xml", "D:\\temp\\output.htm");
@@ -949,15 +950,26 @@ namespace Chummer
             try
             {
                 await this.DoThreadSafeAsync(x => x.UseWaitCursor = false, _objGenericToken).ConfigureAwait(false);
-                if (_tskOutputGenerator?.IsCompleted == true && _tskRefresher?.IsCompleted == true)
+                if (_blnCanPrint)
                 {
                     await this.DoThreadSafeAsync(x =>
                     {
-                        x.tsPrintPreview.Enabled = !_blnSheetError;
-                        x.tsSaveAsHtml.Enabled = !_blnSheetError;
+                        x.tsPrintPreview.Enabled = true;
+                        x.tsSaveAsHtml.Enabled = true;
                     }, _objGenericToken).ConfigureAwait(false);
-                    await cmdPrint.DoThreadSafeAsync(x => x.Enabled = !_blnSheetError, _objGenericToken).ConfigureAwait(false);
-                    await cmdSaveAsPdf.DoThreadSafeAsync(x => x.Enabled = !_blnSheetError, _objGenericToken).ConfigureAwait(false);
+                    await cmdPrint.DoThreadSafeAsync(x => x.Enabled = true, _objGenericToken).ConfigureAwait(false);
+                    await cmdSaveAsPdf.DoThreadSafeAsync(x => x.Enabled = true, _objGenericToken).ConfigureAwait(false);
+                }
+                else
+                {
+                    await this.DoThreadSafeAsync(x =>
+                    {
+                        x.tsPrintPreview.Enabled = false;
+                        x.tsSaveAsHtml.Enabled = false;
+                    }, _objGenericToken).ConfigureAwait(false);
+                    await cmdPrint.DoThreadSafeAsync(x => x.Enabled = false, _objGenericToken).ConfigureAwait(false);
+                    await cmdSaveAsPdf.DoThreadSafeAsync(x => x.Enabled = false, _objGenericToken)
+                                      .ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
