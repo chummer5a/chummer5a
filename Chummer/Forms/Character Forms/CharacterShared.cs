@@ -330,13 +330,13 @@ namespace Chummer
                         }
                     }
 
-                    string strShowFileName = Path.GetFileName(CharacterObject.FileName);
+                    string strShowFileName = Path.GetFileNameWithoutExtension(CharacterObject.FileName);
 
                     if (string.IsNullOrEmpty(strShowFileName))
-                    {
-                        // Autosaves are always compressed
                         strShowFileName = CharacterObject.CharacterName.CleanForFileName() + ".chum5lz";
-                    }
+                    else
+                        // Autosaves are always compressed
+                        strShowFileName += ".chum5lz";
 
                     string strFilePath = Path.Combine(strAutosavePath, strShowFileName);
                     if (!await CharacterObject.SaveAsync(strFilePath, false, false, token).ConfigureAwait(false))

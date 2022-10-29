@@ -1046,7 +1046,6 @@ namespace Chummer
                                              || strFileName.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase)))
             {
                 //Timekeeper.Start("loading");
-                string strAutosavesPath = Utils.GetAutosavesFolderPath;
                 if (string.IsNullOrEmpty(strNewName) && !blnClearFileName)
                 {
                     objCharacter = blnSync
@@ -1061,6 +1060,7 @@ namespace Chummer
                 {
                     FileName = strFileName
                 };
+                string strAutosavesPath = Utils.GetAutosavesFolderPath;
                 string strAutosaveName = string.Empty;
                 if (blnShowErrors) // Only do the autosave prompt if we will show prompts
                 {
