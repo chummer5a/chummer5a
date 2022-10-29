@@ -110,7 +110,11 @@ namespace Chummer
         public async ValueTask<bool> ContainsAsync(KeyValuePair<TKey, TValue> item, CancellationToken token = default)
         {
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
-                return _dicUnorderedData.TryGetValue(item.Key, out TValue objValue) && objValue.Equals(item.Value);
+            {
+                if (!_dicUnorderedData.TryGetValue(item.Key, out TValue objValue))
+                    return false;
+                return objValue == null ? item.Value == null : objValue.Equals(item.Value);
+            }
         }
 
         public async ValueTask CopyToAsync(KeyValuePair<TKey, TValue>[] array, int index, CancellationToken token = default)
@@ -166,14 +170,22 @@ namespace Chummer
         public bool Contains(KeyValuePair<TKey, TValue> item)
         {
             using (EnterReadLock.Enter(LockObject))
-                return _dicUnorderedData.TryGetValue(item.Key, out TValue objValue) && item.Value.Equals(objValue);
+            {
+                if (!_dicUnorderedData.TryGetValue(item.Key, out TValue objValue))
+                    return false;
+                return objValue == null ? item.Value == null : objValue.Equals(item.Value);
+            }
         }
 
         public bool Contains(Tuple<TKey, TValue> item)
         {
             (TKey objKey, TValue objValue) = item;
             using (EnterReadLock.Enter(LockObject))
-                return _dicUnorderedData.TryGetValue(objKey, out TValue objExistingValue) && objValue.Equals(objExistingValue);
+            {
+                if (!_dicUnorderedData.TryGetValue(objKey, out TValue objExistingValue))
+                    return false;
+                return objExistingValue == null ? objValue == null : objExistingValue.Equals(objValue);
+            }
         }
 
         /// <inheritdoc cref="Dictionary{TKey, TValue}.ContainsKey" />
@@ -682,7 +694,12 @@ namespace Chummer
                 using (EnterReadLock.Enter(LockObject))
                 {
                     TValue objOldValue = _dicUnorderedData[key];
-                    if (objOldValue.Equals(value))
+                    if (objOldValue == null)
+                    {
+                        if (value == null)
+                            return;
+                    }
+                    else if (objOldValue.Equals(value))
                         return;
                     using (LockObject.EnterWriteLock())
                         _dicUnorderedData[key] = value;
@@ -701,7 +718,12 @@ namespace Chummer
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
                 TValue objOldValue = _dicUnorderedData[key];
-                if (objOldValue.Equals(value))
+                if (objOldValue == null)
+                {
+                    if (value == null)
+                        return;
+                }
+                else if (objOldValue.Equals(value))
                     return;
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
@@ -782,7 +804,7 @@ namespace Chummer
                             _lstIndexes.RemoveAt(_lstIndexes.Count - 1);
                             if (objKeyToRemove != null)
                                 _dicUnorderedData.Remove(objKeyToRemove);
-                            if (!objOldValue.Equals(value.Value))
+                            if (objOldValue == null ? value.Value != null : !objOldValue.Equals(value.Value))
                                 _dicUnorderedData[value.Key] = value.Value;
                         }
                     }
@@ -829,7 +851,7 @@ namespace Chummer
                         _lstIndexes.RemoveAt(_lstIndexes.Count - 1);
                         if (objKeyToRemove != null)
                             _dicUnorderedData.Remove(objKeyToRemove);
-                        if (!objOldValue.Equals(value.Value))
+                        if (objOldValue == null ? value.Value != null : !objOldValue.Equals(value.Value))
                             _dicUnorderedData[value.Key] = value.Value;
                     }
                     finally

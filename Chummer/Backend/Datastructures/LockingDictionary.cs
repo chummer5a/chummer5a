@@ -269,8 +269,11 @@ namespace Chummer
             // Immediately enter a write lock to prevent attempted reads until we have either removed the item we want to remove or failed to do so
             using (LockObject.EnterWriteLock())
             {
-                return _dicData.TryGetValue(item.Key, out TValue objValue) && objValue.Equals(item.Value)
-                                                                           && _dicData.Remove(item.Key);
+                if (!_dicData.TryGetValue(item.Key, out TValue objValue))
+                    return false;
+                if (objValue == null)
+                    return item.Value == null && _dicData.Remove(item.Key);
+                return objValue.Equals(item.Value) && _dicData.Remove(item.Key);
             }
         }
 
@@ -288,8 +291,11 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                return _dicData.TryGetValue(item.Key, out TValue objValue) && objValue.Equals(item.Value)
-                                                                           && _dicData.Remove(item.Key);
+                if (!_dicData.TryGetValue(item.Key, out TValue objValue))
+                    return false;
+                if (objValue == null)
+                    return item.Value == null && _dicData.Remove(item.Key);
+                return objValue.Equals(item.Value) && _dicData.Remove(item.Key);
             }
             finally
             {
@@ -643,8 +649,16 @@ namespace Chummer
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_dicData.TryGetValue(key, out TValue objValue) && objValue.Equals(value))
-                        return;
+                    if (_dicData.TryGetValue(key, out TValue objValue))
+                    {
+                        if (objValue == null)
+                        {
+                            if (value == null)
+                                return;
+                        }
+                        else if (objValue.Equals(value))
+                            return;
+                    }
                     using (LockObject.EnterWriteLock())
                         _dicData[key] = value;
                 }
