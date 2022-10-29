@@ -6134,6 +6134,16 @@
       <avail>4R</avail>
       <cost>250</cost>
     </gear>
+	<gear>
+      <id>075435ea-d988-44e1-9603-5e64eab762e8</id>
+      <name>Cry Wolf</name>
+      <category>Hacking Programs</category>
+      <rating>0</rating>
+      <source>KC</source>
+      <page>63</page>
+      <avail>4R</avail>
+      <cost>250</cost>
+    </gear>
     <gear>
       <id>d900aa9c-5914-4e5b-baa4-b4e0c0625123</id>
       <name>Pantheon Industries "Co-Pilot" Mk I</name>

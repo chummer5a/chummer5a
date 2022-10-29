@@ -41,6 +41,7 @@ Data Changes:
 - Buying Injection Darts no longer forces the user to pick a weapon category that's forced to be Exotic Ranged Weapons
 - Added city district and neighborhood lists (under lifestyles) for Neo-Tokyo, Hong Kong, Los Angeles, New York City, Cheyenne, Atlanta, Berlin, FDC, Portland, and Chicago.
 - Fixed Flashback System Enables Cyberzombie Conversion customdata not applying correctly.
+- The Cry Wolf Hacking Cyberprogram from Kill Code is now available for purchase for the standard price and availability of Hacking Cyberprograms.
 
 Changed/New Strings:
 - LimitCondition_SoldierParagon
