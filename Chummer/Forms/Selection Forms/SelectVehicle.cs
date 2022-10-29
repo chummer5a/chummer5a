@@ -64,6 +64,7 @@ namespace Chummer
                 Utils.StringHashSetPool.Return(_setBlackMarketMaps);
             };
             InitializeComponent();
+            tabViews.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
             lblMarkupLabel.Visible = objCharacter.Created;

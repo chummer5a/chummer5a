@@ -850,15 +850,6 @@ namespace Chummer
             return false;
         }
 
-        public override int GetHashCode()
-        {
-            int dependencyHash = DependenciesList.GetEnsembleHashCode();
-            int incompatibilityHash = IncompatibilitiesList.GetEnsembleHashCode();
-            Guid guid = HasManifest ? Guid : Guid.Empty;
-            //Path and Guid should already be enough because they are both unique, but just to be sure.
-            return (Name, guid, DirectoryPath, MyVersion, incompatibilityHash, dependencyHash).GetHashCode();
-        }
-
         public bool Equals(CustomDataDirectoryInfo other)
         {
             //This should be enough to uniquely identify an object.
@@ -867,6 +858,15 @@ namespace Chummer
                    (other.Guid == Guid || (!other.HasManifest && !HasManifest)) && other.MyVersion.Equals(MyVersion) &&
                    other.DependenciesList.CollectionEqual(DependenciesList) &&
                    other.IncompatibilitiesList.CollectionEqual(IncompatibilitiesList);
+        }
+
+        public override int GetHashCode()
+        {
+            int dependencyHash = DependenciesList.GetEnsembleHashCode();
+            int incompatibilityHash = IncompatibilitiesList.GetEnsembleHashCode();
+            Guid guid = HasManifest ? Guid : Guid.Empty;
+            //Path and Guid should already be enough because they are both unique, but just to be sure.
+            return (Name, guid, DirectoryPath, MyVersion, incompatibilityHash, dependencyHash).GetHashCode();
         }
 
         public static bool operator ==(CustomDataDirectoryInfo left, CustomDataDirectoryInfo right)

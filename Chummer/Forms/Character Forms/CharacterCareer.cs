@@ -89,6 +89,17 @@ namespace Chummer
                 _fntStrikeout.Dispose();
             };
 
+            tabCharacterTabs.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
+            tabInfo.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
+            tabLongTexts.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
+            tabPeople.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
+            tabStreetGearTabs.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
+            tabArmorCM.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
+            tabCyberwareCM.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
+            tabGearCM.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
+            panVehicleCM.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
+            tabWeaponCM.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
+
             // Add EventHandlers for the MAG and RES enabled events and tab enabled events.
             CharacterObject.PropertyChanged += OnCharacterPropertyChanged;
             CharacterObject.SettingsPropertyChanged += OnCharacterSettingsPropertyChanged;

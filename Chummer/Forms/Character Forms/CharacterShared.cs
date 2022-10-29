@@ -8778,27 +8778,6 @@ namespace Chummer
 
         protected virtual string FormMode => string.Empty;
 
-        protected void ShiftTabsOnMouseScroll(object sender, MouseEventArgs e)
-        {
-            if (e == null)
-                return;
-            //TODO: Global option to switch behaviour on/off, method to emulate clicking the scroll buttons instead of changing the selected index,
-            //allow wrapping back to first/last tab item based on scroll direction
-            if (sender is TabControl tabControl && e.Location.Y <= tabControl.ItemSize.Height)
-            {
-                int intScrollAmount = e.Delta;
-                int intSelectedTabIndex = tabControl.SelectedIndex;
-
-                if (intScrollAmount < 0)
-                {
-                    if (intSelectedTabIndex < tabControl.TabCount - 1)
-                        tabControl.SelectedIndex = intSelectedTabIndex + 1;
-                }
-                else if (intSelectedTabIndex > 0)
-                    tabControl.SelectedIndex = intSelectedTabIndex - 1;
-            }
-        }
-
         /// <summary>
         /// Update the Window title to show the Character's name and unsaved changes status.
         /// </summary>

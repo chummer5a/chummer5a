@@ -1323,9 +1323,29 @@ namespace Chummer
             lsbThis?.DoThreadSafe(x => PopulateWithListItemsCore(x, lstItems, token));
         }
 
+        public static void PopulateWithListItems(this ComboBox cboThis, IEnumerable<ListItem> lstItems, CancellationToken token = default)
+        {
+            cboThis?.DoThreadSafe(x => PopulateWithListItemsCore(x, lstItems, token));
+        }
+
+        public static void PopulateWithListItems(this ElasticComboBox cboThis, IEnumerable<ListItem> lstItems, CancellationToken token = default)
+        {
+            cboThis?.DoThreadSafe(x => PopulateWithListItemsCore(x, lstItems, token));
+        }
+
         public static Task PopulateWithListItemsAsync([NotNull] this ListBox lsbThis, IEnumerable<ListItem> lstItems, CancellationToken token = default)
         {
             return lsbThis.DoThreadSafeAsync(x => PopulateWithListItemsCore(x, lstItems, token), token);
+        }
+
+        public static Task PopulateWithListItemsAsync([NotNull] this ComboBox cboThis, IEnumerable<ListItem> lstItems, CancellationToken token = default)
+        {
+            return cboThis.DoThreadSafeAsync(x => PopulateWithListItemsCore(x, lstItems, token), token);
+        }
+
+        public static Task PopulateWithListItemsAsync([NotNull] this ElasticComboBox cboThis, IEnumerable<ListItem> lstItems, CancellationToken token = default)
+        {
+            return cboThis.DoThreadSafeAsync(x => PopulateWithListItemsCore(x, lstItems, token), token);
         }
 
         private static void PopulateWithListItemsCore(this ListBox lsbThis, IEnumerable<ListItem> lstItems, CancellationToken token = default)
@@ -1398,16 +1418,6 @@ namespace Chummer
             }
         }
 
-        public static void PopulateWithListItems(this ComboBox cboThis, IEnumerable<ListItem> lstItems, CancellationToken token = default)
-        {
-            cboThis?.DoThreadSafe(x => PopulateWithListItemsCore(x, lstItems, token));
-        }
-
-        public static Task PopulateWithListItemsAsync([NotNull] this ComboBox cboThis, IEnumerable<ListItem> lstItems, CancellationToken token = default)
-        {
-            return cboThis.DoThreadSafeAsync(x => PopulateWithListItemsCore(x, lstItems, token), token);
-        }
-
         private static void PopulateWithListItemsCore(this ComboBox cboThis, IEnumerable<ListItem> lstItems, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -1476,16 +1486,6 @@ namespace Chummer
                 if (blnDoReturnList)
                     Utils.ListItemListPool.Return(lstItemsToSet);
             }
-        }
-
-        public static void PopulateWithListItems(this ElasticComboBox cboThis, IEnumerable<ListItem> lstItems, CancellationToken token = default)
-        {
-            cboThis?.DoThreadSafe(x => PopulateWithListItemsCore(x, lstItems, token));
-        }
-
-        public static Task PopulateWithListItemsAsync([NotNull] this ElasticComboBox cboThis, IEnumerable<ListItem> lstItems, CancellationToken token = default)
-        {
-            return cboThis.DoThreadSafeAsync(x => PopulateWithListItemsCore(x, lstItems, token), token);
         }
 
         private static void PopulateWithListItemsCore(this ElasticComboBox cboThis, IEnumerable<ListItem> lstItems, CancellationToken token = default)

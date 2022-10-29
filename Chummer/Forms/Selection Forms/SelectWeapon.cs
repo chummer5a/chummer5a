@@ -64,6 +64,7 @@ namespace Chummer
                 Utils.StringHashSetPool.Return(Mounts);
             };
             InitializeComponent();
+            tabControl.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
             _objCharacter = objCharacter;
@@ -121,7 +122,7 @@ namespace Chummer
             _lstCategory.Sort(CompareListItems.CompareNames);
 
             _lstCategory.Insert(0, new ListItem("Show All", await LanguageManager.GetStringAsync("String_ShowAll").ConfigureAwait(false)));
-            
+
             await cboCategory.PopulateWithListItemsAsync(_lstCategory).ConfigureAwait(false);
             await cboCategory.DoThreadSafeAsync(x =>
             {
@@ -563,7 +564,7 @@ namespace Chummer
             {
                 await this.DoThreadSafeAsync(x => x.ResumeLayout(), token: token).ConfigureAwait(false);
             }
-            
+
             return true;
         }
 

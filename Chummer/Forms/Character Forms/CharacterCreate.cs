@@ -93,10 +93,11 @@ namespace Chummer
             };
 
             GlobalSettings.ClipboardChanged += RefreshPasteStatus;
-            tabStreetGearTabs.MouseWheel += ShiftTabsOnMouseScroll;
-            tabPeople.MouseWheel += ShiftTabsOnMouseScroll;
-            tabInfo.MouseWheel += ShiftTabsOnMouseScroll;
-            tabCharacterTabs.MouseWheel += ShiftTabsOnMouseScroll;
+            tabCharacterTabs.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
+            tabInfo.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
+            tabLongTexts.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
+            tabPeople.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
+            tabStreetGearTabs.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
 
             // Add EventHandlers for the various events MAG, RES, Qualities, etc.
             CharacterObject.PropertyChanged += OnCharacterPropertyChanged;

@@ -222,6 +222,7 @@ namespace Chummer
         private static bool _blnConfirmKarmaExpense = true;
         private static bool _blnHideItemsOverAvailLimit = true;
         private static bool _blnAllowHoverIncrement;
+        private static bool _blnSwitchTabsOnHoverScroll;
         private static bool _blnSearchInCategoryOnly = true;
         private static bool _blnAllowSkillDiceRolling;
         private static bool _blnPrintExpenses;
@@ -529,6 +530,7 @@ namespace Chummer
             LoadBoolFromRegistry(ref _blnConfirmKarmaExpense, "confirmkarmaexpense");
             LoadBoolFromRegistry(ref _blnHideItemsOverAvailLimit, "hideitemsoveravaillimit");
             LoadBoolFromRegistry(ref _blnAllowHoverIncrement, "allowhoverincrement");
+            LoadBoolFromRegistry(ref _blnSwitchTabsOnHoverScroll, "switchtabsonhoverscroll");
             LoadBoolFromRegistry(ref _blnSearchInCategoryOnly, "searchincategoryonly");
             // Whether or not dice rolling is allowed for Skills.
             LoadBoolFromRegistry(ref _blnAllowSkillDiceRolling, "allowskilldicerolling");
@@ -858,6 +860,7 @@ namespace Chummer
                 objRegistry.SetValue("hideitemsoveravaillimit",
                                      HideItemsOverAvailLimit.ToString(InvariantCultureInfo));
                 objRegistry.SetValue("allowhoverincrement", AllowHoverIncrement.ToString(InvariantCultureInfo));
+                objRegistry.SetValue("switchtabsonhoverscroll", SwitchTabsOnHoverScroll.ToString(InvariantCultureInfo));
                 objRegistry.SetValue("searchincategoryonly", SearchInCategoryOnly.ToString(InvariantCultureInfo));
                 objRegistry.SetValue("allowskilldicerolling", AllowSkillDiceRolling.ToString(InvariantCultureInfo));
                 objRegistry.SetValue("pluginsenabled", PluginsEnabled.ToString(InvariantCultureInfo));
@@ -1061,6 +1064,15 @@ namespace Chummer
         {
             get => _blnAllowHoverIncrement;
             set => _blnAllowHoverIncrement = value;
+        }
+
+        /// <summary>
+        /// Whether or not scrolling the mouse wheel while hovering over tab page labels switches tabs
+        /// </summary>
+        public static bool SwitchTabsOnHoverScroll
+        {
+            get => _blnSwitchTabsOnHoverScroll;
+            set => _blnSwitchTabsOnHoverScroll = value;
         }
 
         /// <summary>

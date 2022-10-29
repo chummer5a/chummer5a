@@ -1490,6 +1490,16 @@ namespace Chummer
             return decValue;
         }
 
+        public static void ShiftTabsOnMouseScroll(object sender, MouseEventArgs e)
+        {
+            if (!GlobalSettings.SwitchTabsOnHoverScroll || e == null)
+                return;
+            if (sender is TabControl tabControl && tabControl.DisplayRectangle.Contains(e.Location))
+            {
+                tabControl.SelectedIndex = (tabControl.SelectedIndex + e.Delta) % tabControl.TabCount;
+            }
+        }
+
         /// <summary>
         /// Verify that the user wants to delete an item.
         /// </summary>

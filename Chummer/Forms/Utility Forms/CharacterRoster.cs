@@ -54,6 +54,7 @@ namespace Chummer
         {
             _objGenericToken = _objGenericFormClosingCancellationTokenSource.Token;
             InitializeComponent();
+            tabCharacterText.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
 

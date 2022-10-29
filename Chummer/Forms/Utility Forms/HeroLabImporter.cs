@@ -47,6 +47,7 @@ namespace Chummer
                 _dicImages.Dispose();
             };
             InitializeComponent();
+            tabCharacterText.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
         }

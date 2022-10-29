@@ -1339,6 +1339,29 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Syntactic sugar for Thread.Sleep done in a way that makes sure the application will run queued up events afterwards.
+        /// This means that this method can (in theory) be put in a loop without it ever causing the UI thread to get locked.
+        /// </summary>
+        /// <param name="objTimeSpan">Duration to wait. If 0 or less milliseconds, DefaultSleepDuration is used instead.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Task SafeSleepAsync(TimeSpan objTimeSpan)
+        {
+            return SafeSleepAsync(objTimeSpan.Milliseconds);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for Thread.Sleep done in a way that makes sure the application will run queued up events afterwards.
+        /// This means that this method can (in theory) be put in a loop without it ever causing the UI thread to get locked.
+        /// </summary>
+        /// <param name="objTimeSpan">Duration to wait. If 0 or less milliseconds, DefaultSleepDuration is used instead.</param>
+        /// <param name="token">Cancellation token to use.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Task SafeSleepAsync(TimeSpan objTimeSpan, CancellationToken token)
+        {
+            return SafeSleepAsync(objTimeSpan.Milliseconds, token);
+        }
+
+        /// <summary>
         /// Syntactic sugar for Thread.Sleep with the default sleep duration done in a way that makes sure the application will run queued up events afterwards.
         /// This means that this method can (in theory) be put in a loop without it ever causing the UI thread to get locked.
         /// </summary>
@@ -1465,29 +1488,6 @@ namespace Chummer
             SafeSleep(objTimeSpan.Milliseconds, token, blnForceDoEvents);
         }
 
-        /// <summary>
-        /// Syntactic sugar for Thread.Sleep done in a way that makes sure the application will run queued up events afterwards.
-        /// This means that this method can (in theory) be put in a loop without it ever causing the UI thread to get locked.
-        /// </summary>
-        /// <param name="objTimeSpan">Duration to wait. If 0 or less milliseconds, DefaultSleepDuration is used instead.</param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Task SafeSleepAsync(TimeSpan objTimeSpan)
-        {
-            return SafeSleepAsync(objTimeSpan.Milliseconds);
-        }
-
-        /// <summary>
-        /// Syntactic sugar for Thread.Sleep done in a way that makes sure the application will run queued up events afterwards.
-        /// This means that this method can (in theory) be put in a loop without it ever causing the UI thread to get locked.
-        /// </summary>
-        /// <param name="objTimeSpan">Duration to wait. If 0 or less milliseconds, DefaultSleepDuration is used instead.</param>
-        /// <param name="token">Cancellation token to use.</param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Task SafeSleepAsync(TimeSpan objTimeSpan, CancellationToken token)
-        {
-            return SafeSleepAsync(objTimeSpan.Milliseconds, token);
-        }
-
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DoEventsSafe(bool blnForceDoEvents = false)
         {
@@ -1521,6 +1521,7 @@ namespace Chummer
         private static int _intIsOkToRunDoEvents = DefaultIsOkToRunDoEvents ? 1 : 0;
 
 #pragma warning disable VSTHRD002
+#pragma warning disable VSTHRD104 // Offer async methods
         /// <summary>
         /// Syntactic sugar for synchronously running an async task in a way that uses the Main Thread's JoinableTaskFactory where possible.
         /// Warning: much clumsier and slower than just using awaits inside of an async method. Use those instead if possible.
@@ -2107,6 +2108,7 @@ namespace Chummer
             if (objTask.Exception != null)
                 throw objTask.Exception;
         }
+#pragma warning restore VSTHRD104 // Offer async methods
 #pragma warning restore VSTHRD002
 
         private static readonly Lazy<string> _strHumanReadableOSVersion = new Lazy<string>(GetHumanReadableOSVersion);

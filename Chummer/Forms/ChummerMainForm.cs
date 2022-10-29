@@ -82,6 +82,7 @@ namespace Chummer
             Utils.IsUnitTest = blnIsUnitTest;
             Utils.IsUnitTestForUI = blnIsUnitTestForUI;
             InitializeComponent();
+            tabForms.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
             _strCurrentVersion = Utils.CurrentChummerVersion.ToString(3);
