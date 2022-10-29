@@ -886,8 +886,9 @@ namespace Chummer
             }
 
             Log.Info("Restart Chummer");
-            Application.UseWaitCursor = true;
+            string strFileName;
             string strArguments;
+            Application.UseWaitCursor = true;
             try
             {
                 // Get the parameters/arguments passed to program if any
@@ -900,13 +901,14 @@ namespace Chummer
 
                     if (sbdArguments.Length > 0)
                         --sbdArguments.Length;
-                    // Restart current application, with same arguments/parameters
-                    foreach (Form objForm in Program.MainForm.MdiChildren)
-                    {
-                        await objForm.DoThreadSafeAsync(x => x.Close(), token: token).ConfigureAwait(false);
-                    }
 
                     strArguments = sbdArguments.ToString();
+                }
+                strFileName = GetStartupPath + Path.DirectorySeparatorChar + AppDomain.CurrentDomain.FriendlyName;
+                // Restart current application, with same arguments/parameters
+                foreach (Form objForm in Program.MainForm.MdiChildren)
+                {
+                    await objForm.DoThreadSafeAsync(x => x.Close(), token: token).ConfigureAwait(false);
                 }
             }
             catch (Exception)
@@ -914,7 +916,6 @@ namespace Chummer
                 Application.UseWaitCursor = false;
                 throw;
             }
-            string strFileName = GetStartupPath + Path.DirectorySeparatorChar + AppDomain.CurrentDomain.FriendlyName;
             // Sending restart command asynchronously to MySynchronizationContext so that tasks can properly clean up before restart
 #pragma warning disable VSTHRD001
             MySynchronizationContext.Post(x =>
