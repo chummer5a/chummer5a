@@ -2013,13 +2013,16 @@
         </borough>
       </district>
       <district>
-        <name>Northside Corridor</name>
-      </district>
-      <district>
-        <name>Southside Corridor</name>
-      </district>
-      <district>
-        <name>Westside Corridor</name>
+        <name>Corridor</name>
+        <borough>
+          <name>Northside</name>
+        </borough>
+        <borough>
+          <name>Southside</name>
+        </borough>
+        <borough>
+          <name>Westside</name>
+        </borough>
       </district>
       <district>
         <name>Gary</name>
@@ -2040,46 +2043,70 @@
     <city>
       <name>Los Angeles</name>
       <district>
-        <name>Santa Clarita Valley</name>
+        <name>LA Central</name>
+        <borough>
+          <name>Downtown</name>
+        </borough>
+        <borough>
+          <name>Hollywood</name>
+        </borough>
+        <borough>
+          <name>East LA</name>
+        </borough>
+        <borough>
+          <name>South Central</name>
+        </borough>
+        <borough>
+          <name>Santa Monica</name>
+        </borough>
+        <borough>
+          <name>Westside</name>
+        </borough>
+        <borough>
+          <name>Long Beach</name>
+        </borough>
+        <borough>
+          <name>South Bay</name>
+        </borough>
+        <borough>
+          <name>San Fernando Valley</name>
+        </borough>
       </district>
       <district>
-        <name>Antelope Valley</name>
+        <name>Inland Empire</name>
+        <borough>
+          <name>Pomona</name>
+        </borough>
+        <borough>
+          <name>Covina Floodwall</name>
+        </borough>
+        <borough>
+          <name>Ontario Air Center</name>
+        </borough>
+        <borough>
+          <name>Pasadena</name>
+        </borough>
+        <borough>
+          <name>Riverside</name>
+        </borough>
+        <borough>
+          <name>San Bernardino</name>
+        </borough>
       </district>
       <district>
-        <name>San Gabriel Valley</name>
+        <name>Orange County (Fun City)</name>
+        <borough>
+          <name>Tustin</name>
+        </borough>
+        <borough>
+          <name>Irvine</name>
+        </borough>
       </district>
       <district>
-        <name>San Fernando Valley</name>
+        <name>San Onofre Irradiated Zone</name>
       </district>
       <district>
-        <name>West Side</name>
-      </district>
-      <district>
-        <name>South Bay</name>
-      </district>
-      <district>
-        <name>Santa Catalina</name>
-      </district>
-      <district>
-        <name>Gateway Cities</name>
-      </district>
-      <district>
-        <name>South Central</name>
-      </district>
-      <district>
-        <name>Wilshire</name>
-      </district>
-      <district>
-        <name>Hollywood</name>
-      </district>
-      <district>
-        <name>Northwest LA</name>
-      </district>
-      <district>
-        <name>East Side</name>
-      </district>
-      <district>
-        <name>Downtown</name>
+        <name>Barstow</name>
       </district>
     </city>
     <city>
@@ -2101,6 +2128,71 @@
       </district>
       <district>
         <name>Manhattan</name>
+        <borough>
+          <name>Inwood</name>
+        </borough>
+        <borough>
+          <name>Washington Heights</name>
+        </borough>
+        <borough>
+          <name>Newtown</name>
+        </borough>
+        <borough>
+          <name>Riverside</name>
+        </borough>
+        <borough>
+          <name>Westside</name>
+        </borough>
+        <borough>
+          <name>Eastside</name>
+        </borough>
+        <borough>
+          <name>Central Park</name>
+          <secRating>AAA</secRating>
+        </borough>
+        <borough>
+          <name>Midtown</name>
+        </borough>
+        <borough>
+          <name>Times Square</name>
+        </borough>
+        <borough>
+          <name>Downtown</name>
+        </borough>
+        <borough>
+          <name>Stuyvesant</name>
+          <secRating>AAA</secRating>
+        </borough>
+        <borough>
+          <name>Terminal</name>
+        </borough>
+        <borough>
+          <name>Southside</name>
+        </borough>
+        <borough>
+          <name>The Village</name>
+        </borough>
+        <borough>
+          <name>The Pit</name>
+        </borough>
+        <borough>
+          <name>Soho</name>
+        </borough>
+        <borough>
+          <name>The Towers</name>
+        </borough>
+        <borough>
+          <name>City Center</name>
+        </borough>
+        <borough>
+          <name>Chinatown</name>
+        </borough>
+        <borough>
+          <name>Battery City</name>
+        </borough>
+        <borough>
+          <name>The Underground</name>
+        </borough>
       </district>
       <district>
         <name>Queens</name>
@@ -2111,6 +2203,9 @@
       <district>
         <name>Staten Island</name>
       </district>
+      <district>
+        <name>Long Island</name>
+      </district>
     </city>
     <city>
       <name>Atlanta</name>
@@ -2118,22 +2213,19 @@
         <name>Downtown</name>
       </district>
       <district>
-        <name>Midtown</name>
+        <name>Southtown</name>
       </district>
       <district>
-        <name>Westside</name>
+        <name>Norcross</name>
       </district>
       <district>
-        <name>Eastside</name>
+        <name>Marietta</name>
       </district>
       <district>
-        <name>Southeast</name>
+        <name>Douglasville</name>
       </district>
       <district>
-        <name>Southwest</name>
-      </district>
-      <district>
-        <name>Northwest</name>
+        <name>Decatur</name>
       </district>
       <district>
         <name>Buckhead</name>
