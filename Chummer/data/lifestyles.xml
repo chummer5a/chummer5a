@@ -2352,6 +2352,72 @@
       </district>
     </city>
     <city>
+      <name>Dubai</name>
+      <district>
+        <name>Jebel Ali</name>
+      </district>
+      <district>
+        <name>Jumeirah</name>
+      </district>
+      <district>
+        <name>World Archipelago</name>
+      </district>
+    </city>
+    <city>
+      <name>Europort</name>
+      <district>
+        <name>Portoplex</name>
+      </district>
+      <district>
+        <name>Oude Centraal</name>
+      </district>
+      <district>
+        <name>De Kop van Zuid</name>
+      </district>
+      <district>
+        <name>Vlaardingen</name>
+      </district>
+      <district>
+        <name>Schiedam</name>
+      </district>
+    </city>
+    <city>
+      <name>Nairobi</name>
+      <district>
+        <name>Downtown</name>
+      </district>
+      <district>
+        <name>Corporate Court Complex</name>
+      </district>
+      <district>
+        <name>River Road</name>
+      </district>
+      <district>
+        <name>Kibera</name>
+      </district>
+      <district>
+        <name>Uplands</name>
+      </district>
+      <district>
+        <name>Westlands</name>
+      </district>
+      <district>
+        <name>Southern Naibori</name>
+      </district>
+    </city>
+    <city>
+      <name>Tenochtitlán</name>
+      <district>
+        <name>Ciudad Satélite</name>
+      </district>
+      <district>
+        <name>Distrito Federal</name>
+      </district>
+      <district>
+        <name>Zócalo</name>
+      </district>
+    </city>
+    <city>
       <name>Neo-Tokyo</name>
       <district>
         <name>Adachi</name>
