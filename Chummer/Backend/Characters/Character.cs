@@ -8974,6 +8974,7 @@ namespace Chummer
                                     if (objOldQuality != null)
                                     {
                                         if (blnSync)
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             objOldQuality.DeleteQuality();
                                         else
                                             await objOldQuality.DeleteQualityAsync(token: token).ConfigureAwait(false);
@@ -14584,6 +14585,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Character's name.
+        /// </summary>
+        public async ValueTask<string> GetNameAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                return _strName;
+        }
+
+        /// <summary>
         /// Character's portraits encoded using Base64.
         /// </summary>
         public ThreadSafeList<Image> Mugshots
@@ -15568,6 +15578,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Character's alias.
+        /// </summary>
+        public async ValueTask<string> GetAliasAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                return _strAlias;
+        }
+
+        /// <summary>
         /// Character's name to use when loading them in a new tab.
         /// </summary>
         public string CharacterName
@@ -15585,7 +15604,28 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Character's name to use when loading them in a new tab.
+        /// </summary>
+        public async ValueTask<string> GetCharacterNameAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                string strAlias = await GetAliasAsync(token).ConfigureAwait(false);
+                if (!string.IsNullOrWhiteSpace(strAlias))
+                    return strAlias;
+                string strName = await GetNameAsync(token).ConfigureAwait(false);
+                return !string.IsNullOrWhiteSpace(strName)
+                    ? strName
+                    : await LanguageManager.GetStringAsync("String_UnnamedCharacter", token: token)
+                                           .ConfigureAwait(false);
+            }
+        }
+
         public string CurrentDisplayName => CharacterName;
+
+        public ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default) =>
+            GetCharacterNameAsync(token);
 
         /// <summary>
         /// Street Cred.

@@ -1040,62 +1040,122 @@ namespace Chummer.Backend.Equipment
         /// <param name="objCulture">Culture in which to print.</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
+        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint,
+                                     CancellationToken token = default)
         {
             if (objWriter == null)
                 return;
-            objWriter.WriteStartElement("vehicle");
-            objWriter.WriteElementString("guid", InternalId);
-            objWriter.WriteElementString("sourceid", SourceIDString);
-            objWriter.WriteElementString("name", await DisplayNameShortAsync(strLanguageToPrint, token).ConfigureAwait(false));
-            objWriter.WriteElementString("name_english", Name);
-            objWriter.WriteElementString("fullname", await DisplayNameAsync(strLanguageToPrint, token).ConfigureAwait(false));
-            objWriter.WriteElementString("category", await DisplayCategoryAsync(strLanguageToPrint, token).ConfigureAwait(false));
-            objWriter.WriteElementString("category_english", Category);
-            objWriter.WriteElementString("isdrone", IsDrone.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("handling", TotalHandling);
-            objWriter.WriteElementString("accel", TotalAccel);
-            objWriter.WriteElementString("speed", TotalSpeed);
-            objWriter.WriteElementString("pilot", Pilot.ToString(objCulture));
-            objWriter.WriteElementString("body", TotalBody.ToString(objCulture));
-            objWriter.WriteElementString("armor", TotalArmor.ToString(objCulture));
-            objWriter.WriteElementString("seats", TotalSeats.ToString(objCulture));
-            objWriter.WriteElementString("sensor", CalculatedSensor.ToString(objCulture));
-            objWriter.WriteElementString("avail", TotalAvail(objCulture, strLanguageToPrint));
-            objWriter.WriteElementString("cost", TotalCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
-            objWriter.WriteElementString("owncost", OwnCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
-            objWriter.WriteElementString("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint, token).ConfigureAwait(false));
-            objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
-            objWriter.WriteElementString("physicalcm", PhysicalCM.ToString(objCulture));
-            objWriter.WriteElementString("physicalcmfilled", PhysicalCMFilled.ToString(objCulture));
-            objWriter.WriteElementString("vehiclename", CustomName);
-            objWriter.WriteElementString("maneuver", Maneuver.ToString(objCulture));
-            objWriter.WriteElementString("location", Location?.DisplayName(strLanguageToPrint));
+            await objWriter.WriteStartElementAsync("vehicle", token: token).ConfigureAwait(false);
+            await objWriter.WriteElementStringAsync("guid", InternalId, token).ConfigureAwait(false);
+            await objWriter.WriteElementStringAsync("sourceid", SourceIDString, token).ConfigureAwait(false);
+            await objWriter
+                  .WriteElementStringAsync(
+                      "name", await DisplayNameShortAsync(strLanguageToPrint, token).ConfigureAwait(false), token)
+                  .ConfigureAwait(false);
+            await objWriter.WriteElementStringAsync("name_english", Name, token).ConfigureAwait(false);
+            await objWriter
+                  .WriteElementStringAsync(
+                      "fullname", await DisplayNameAsync(strLanguageToPrint, token).ConfigureAwait(false), token)
+                  .ConfigureAwait(false);
+            await objWriter
+                  .WriteElementStringAsync(
+                      "category", await DisplayCategoryAsync(strLanguageToPrint, token).ConfigureAwait(false), token)
+                  .ConfigureAwait(false);
+            await objWriter.WriteElementStringAsync("category_english", Category, token).ConfigureAwait(false);
+            await objWriter
+                  .WriteElementStringAsync("isdrone", IsDrone.ToString(GlobalSettings.InvariantCultureInfo), token)
+                  .ConfigureAwait(false);
+            await objWriter.WriteElementStringAsync("handling", TotalHandling, token).ConfigureAwait(false);
+            await objWriter.WriteElementStringAsync("accel", TotalAccel, token).ConfigureAwait(false);
+            await objWriter.WriteElementStringAsync("speed", TotalSpeed, token).ConfigureAwait(false);
+            await objWriter.WriteElementStringAsync("pilot", Pilot.ToString(objCulture), token).ConfigureAwait(false);
+            await objWriter.WriteElementStringAsync("body", TotalBody.ToString(objCulture), token)
+                           .ConfigureAwait(false);
+            await objWriter.WriteElementStringAsync("armor", TotalArmor.ToString(objCulture), token)
+                           .ConfigureAwait(false);
+            await objWriter.WriteElementStringAsync("seats", TotalSeats.ToString(objCulture), token)
+                           .ConfigureAwait(false);
+            await objWriter.WriteElementStringAsync("sensor", CalculatedSensor.ToString(objCulture), token)
+                           .ConfigureAwait(false);
+            await objWriter.WriteElementStringAsync("avail", TotalAvail(objCulture, strLanguageToPrint), token)
+                           .ConfigureAwait(false);
+            await objWriter
+                  .WriteElementStringAsync("cost", TotalCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture),
+                                           token).ConfigureAwait(false);
+            await objWriter
+                  .WriteElementStringAsync("owncost", OwnCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture),
+                                           token).ConfigureAwait(false);
+            await objWriter
+                  .WriteElementStringAsync(
+                      "source",
+                      await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint, token)
+                                         .ConfigureAwait(false), token).ConfigureAwait(false);
+            await objWriter.WriteElementStringAsync("page", DisplayPage(strLanguageToPrint), token)
+                           .ConfigureAwait(false);
+            await objWriter.WriteElementStringAsync("physicalcm", PhysicalCM.ToString(objCulture), token)
+                           .ConfigureAwait(false);
+            await objWriter.WriteElementStringAsync("physicalcmfilled", PhysicalCMFilled.ToString(objCulture), token)
+                           .ConfigureAwait(false);
+            await objWriter.WriteElementStringAsync("vehiclename", CustomName, token).ConfigureAwait(false);
+            await objWriter.WriteElementStringAsync("maneuver", Maneuver.ToString(objCulture), token)
+                           .ConfigureAwait(false);
+            await objWriter
+                  .WriteElementStringAsync(
+                      "location",
+                      Location != null
+                          ? await Location.DisplayNameAsync(strLanguageToPrint, token).ConfigureAwait(false)
+                          : string.Empty, token).ConfigureAwait(false);
 
-            objWriter.WriteElementString("attack", this.GetTotalMatrixAttribute("Attack").ToString(objCulture));
-            objWriter.WriteElementString("sleaze", this.GetTotalMatrixAttribute("Sleaze").ToString(objCulture));
-            objWriter.WriteElementString("dataprocessing", this.GetTotalMatrixAttribute("Data Processing").ToString(objCulture));
-            objWriter.WriteElementString("firewall", this.GetTotalMatrixAttribute("Firewall").ToString(objCulture));
-            objWriter.WriteElementString("devicerating", this.GetTotalMatrixAttribute("Device Rating").ToString(objCulture));
-            objWriter.WriteElementString("programlimit", this.GetTotalMatrixAttribute("Program Limit").ToString(objCulture));
-            objWriter.WriteElementString("iscommlink", IsCommlink.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("isprogram", IsProgram.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("active", this.IsActiveCommlink(_objCharacter).ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("homenode", this.IsHomeNode(_objCharacter).ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("matrixcm", MatrixCM.ToString(objCulture));
-            objWriter.WriteElementString("matrixcmfilled", MatrixCMFilled.ToString(objCulture));
+            await objWriter
+                  .WriteElementStringAsync("attack", this.GetTotalMatrixAttribute("Attack").ToString(objCulture), token)
+                  .ConfigureAwait(false);
+            await objWriter
+                  .WriteElementStringAsync("sleaze", this.GetTotalMatrixAttribute("Sleaze").ToString(objCulture), token)
+                  .ConfigureAwait(false);
+            await objWriter.WriteElementStringAsync("dataprocessing",
+                                                    this.GetTotalMatrixAttribute("Data Processing")
+                                                        .ToString(objCulture), token).ConfigureAwait(false);
+            await objWriter
+                  .WriteElementStringAsync("firewall", this.GetTotalMatrixAttribute("Firewall").ToString(objCulture),
+                                           token).ConfigureAwait(false);
+            await objWriter
+                  .WriteElementStringAsync("devicerating",
+                                           this.GetTotalMatrixAttribute("Device Rating").ToString(objCulture), token)
+                  .ConfigureAwait(false);
+            await objWriter
+                  .WriteElementStringAsync("programlimit",
+                                           this.GetTotalMatrixAttribute("Program Limit").ToString(objCulture), token)
+                  .ConfigureAwait(false);
+            await objWriter
+                  .WriteElementStringAsync("iscommlink", IsCommlink.ToString(GlobalSettings.InvariantCultureInfo),
+                                           token).ConfigureAwait(false);
+            await objWriter
+                  .WriteElementStringAsync("isprogram", IsProgram.ToString(GlobalSettings.InvariantCultureInfo), token)
+                  .ConfigureAwait(false);
+            await objWriter
+                  .WriteElementStringAsync(
+                      "active", this.IsActiveCommlink(_objCharacter).ToString(GlobalSettings.InvariantCultureInfo),
+                      token).ConfigureAwait(false);
+            await objWriter
+                  .WriteElementStringAsync(
+                      "homenode", this.IsHomeNode(_objCharacter).ToString(GlobalSettings.InvariantCultureInfo), token)
+                  .ConfigureAwait(false);
+            await objWriter.WriteElementStringAsync("matrixcm", MatrixCM.ToString(objCulture), token)
+                           .ConfigureAwait(false);
+            await objWriter.WriteElementStringAsync("matrixcmfilled", MatrixCMFilled.ToString(objCulture), token)
+                           .ConfigureAwait(false);
 
-            objWriter.WriteStartElement("mods");
+            await objWriter.WriteStartElementAsync("mods", token: token).ConfigureAwait(false);
             foreach (VehicleMod objMod in Mods)
                 await objMod.Print(objWriter, objCulture, strLanguageToPrint, token).ConfigureAwait(false);
             foreach (WeaponMount objMount in WeaponMounts)
                 await objMount.Print(objWriter, objCulture, strLanguageToPrint, token).ConfigureAwait(false);
             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
-            objWriter.WriteStartElement("gears");
+            await objWriter.WriteStartElementAsync("gears", token: token).ConfigureAwait(false);
             foreach (Gear objGear in GearChildren)
                 await objGear.Print(objWriter, objCulture, strLanguageToPrint, token).ConfigureAwait(false);
             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
-            objWriter.WriteStartElement("weapons");
+            await objWriter.WriteStartElementAsync("weapons", token: token).ConfigureAwait(false);
             foreach (Weapon objWeapon in Weapons)
                 await objWeapon.Print(objWriter, objCulture, strLanguageToPrint, token).ConfigureAwait(false);
             await objWriter.WriteEndElementAsync().ConfigureAwait(false);

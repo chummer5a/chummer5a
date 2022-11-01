@@ -127,7 +127,10 @@ namespace Chummer
         {
             try
             {
-                if (await treCharacters.DoThreadSafeFuncAsync(x => x.SelectedNode, _objGenericToken).ConfigureAwait(false) != null)
+                TreeNode objSelectedNode = await treCharacters
+                                                 .DoThreadSafeFuncAsync(x => x.SelectedNode, _objGenericToken)
+                                                 .ConfigureAwait(false);
+                if (objSelectedNode != null)
                 {
                     CancellationTokenSource objNewSource = new CancellationTokenSource();
                     CancellationTokenSource objTemp = Interlocked.Exchange(ref _objPrinterCancellationTokenSource, objNewSource);
@@ -142,7 +145,7 @@ namespace Chummer
                             await _tskPrinter.ConfigureAwait(false);
                         await cmdPrint.DoThreadSafeAsync(x => x.Enabled = true, _objGenericToken).ConfigureAwait(false);
                         await prgProgress.DoThreadSafeAsync(x => x.Value = 0, _objGenericToken).ConfigureAwait(false);
-                        await treCharacters.DoThreadSafeAsync(x => x.SelectedNode.Remove(), _objGenericToken).ConfigureAwait(false);
+                        await treCharacters.DoThreadSafeAsync(() => objSelectedNode.Remove(), _objGenericToken).ConfigureAwait(false);
                     }
                     catch (OperationCanceledException)
                     {

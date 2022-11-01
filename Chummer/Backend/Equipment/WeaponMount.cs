@@ -1198,7 +1198,7 @@ namespace Chummer.Backend.Equipment
                         if (objOption.Name != "None")
                         {
                             blnCloseParantheses = true;
-                            sbdReturn.Append(objOption.DisplayName(strLanguage)).Append(',').Append(strSpace);
+                            sbdReturn.Append(await objOption.DisplayNameAsync(strLanguage, token).ConfigureAwait(false)).Append(',').Append(strSpace);
                         }
                     }
 
@@ -1696,6 +1696,27 @@ namespace Chummer.Backend.Equipment
         public string CurrentDisplayNameShort => DisplayNameShort(GlobalSettings.Language);
 
         public string CurrentDisplayName => DisplayName(GlobalSettings.Language);
+
+        public async ValueTask<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
+        {
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                return Name;
+
+            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
+            return objNode != null
+                ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate", token).ConfigureAwait(false))
+                ?.Value ?? Name
+                : Name;
+        }
+
+        public ValueTask<string> DisplayNameAsync(string strLanguage, CancellationToken token = default)
+        {
+            return DisplayNameShortAsync(strLanguage, token);
+        }
+
+        public ValueTask<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default) => DisplayNameShortAsync(GlobalSettings.Language, token);
+
+        public ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default) => DisplayNameAsync(GlobalSettings.Language, token);
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.

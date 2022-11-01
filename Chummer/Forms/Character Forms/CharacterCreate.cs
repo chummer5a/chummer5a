@@ -6597,14 +6597,15 @@ namespace Chummer
             try
             {
                 // Select the Martial Arts node if we're currently on a child.
-                await treMartialArts.DoThreadSafeAsync(x =>
+                TreeNode objSelectedNode = await treMartialArts.DoThreadSafeFuncAsync(x =>
                 {
-                    while (x.SelectedNode?.Level > 1)
-                        x.SelectedNode = x.SelectedNode.Parent;
+                    TreeNode objReturn = x.SelectedNode;
+                    while (objReturn?.Level > 1)
+                        objReturn = objReturn.Parent;
+                    return objReturn;
                 }, GenericToken).ConfigureAwait(false);
 
-                if (await treMartialArts.DoThreadSafeFuncAsync(
-                        x => x.SelectedNode == null || x.SelectedNode.Level <= 0).ConfigureAwait(false))
+                if (objSelectedNode == null || objSelectedNode.Level <= 0)
                 {
                     Program.ShowMessageBox(
                         this, await LanguageManager.GetStringAsync("Message_SelectMartialArtTechnique").ConfigureAwait(false),
@@ -6613,7 +6614,7 @@ namespace Chummer
                     return;
                 }
 
-                if (!(await treMartialArts.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag).ConfigureAwait(false) is MartialArt objMartialArt))
+                if (!(objSelectedNode.Tag is MartialArt objMartialArt))
                 {
                     Program.ShowMessageBox(
                         this, await LanguageManager.GetStringAsync("Message_SelectMartialArtTechnique").ConfigureAwait(false),
@@ -6672,7 +6673,10 @@ namespace Chummer
             {
                 Vehicle objSelectedVehicle;
                 Location objLocation = null;
-                switch (await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken).ConfigureAwait(false))
+                TreeNode objSelectedNode = await treVehicles
+                                                 .DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
+                                                 .ConfigureAwait(false);
+                switch (objSelectedNode?.Tag)
                 {
                     case Vehicle vehicle:
                         objSelectedVehicle = vehicle;
@@ -6680,8 +6684,7 @@ namespace Chummer
 
                     case Location location:
                         objLocation = location;
-                        objSelectedVehicle
-                            = await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode.Parent.Tag).ConfigureAwait(false) as Vehicle;
+                        objSelectedVehicle = objSelectedNode.Parent.Tag as Vehicle;
                         break;
 
                     default:
@@ -6829,25 +6832,30 @@ namespace Chummer
         {
             try
             {
-                switch (await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken).ConfigureAwait(false))
+                TreeNode objSelectedNode = await treVehicles
+                                                 .DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
+                                                 .ConfigureAwait(false);
+                switch (objSelectedNode?.Tag)
                 {
                     case Gear objGear:
                     {
                         using (ThreadSafeForm<EditNotes> frmItemNotes
                                = await ThreadSafeForm<EditNotes>.GetAsync(
-                                   () => new EditNotes(objGear.Notes, objGear.NotesColor, GenericToken)).ConfigureAwait(false))
+                                                                    () => new EditNotes(objGear.Notes,
+                                                                        objGear.NotesColor, GenericToken))
+                                                                .ConfigureAwait(false))
                         {
                             if (await frmItemNotes.ShowDialogSafeAsync(this).ConfigureAwait(false) != DialogResult.OK)
                                 return;
                             objGear.Notes = frmItemNotes.MyForm.Notes;
                             objGear.NotesColor = frmItemNotes.MyForm.NotesColor;
-                            await SetDirty(true).ConfigureAwait(false);
-
-                            await treVehicles.DoThreadSafeAsync(x =>
+                            string strTooltip = objGear.Notes.WordWrap();
+                            await treVehicles.DoThreadSafeAsync(() =>
                             {
-                                x.SelectedNode.ForeColor = objGear.PreferredColor;
-                                x.SelectedNode.ToolTipText = objGear.Notes.WordWrap();
+                                objSelectedNode.ForeColor = objGear.PreferredColor;
+                                objSelectedNode.ToolTipText = strTooltip;
                             }).ConfigureAwait(false);
+                            await SetDirty(true).ConfigureAwait(false);
                         }
 
                         break;
@@ -6909,14 +6917,16 @@ namespace Chummer
         {
             try
             {
-                await treWeapons.DoThreadSafeAsync(x =>
+                TreeNode objSelectedNode = await treWeapons.DoThreadSafeFuncAsync(x =>
                 {
-                    while (x.SelectedNode?.Level > 1)
-                        x.SelectedNode = x.SelectedNode.Parent;
+                    TreeNode objReturn = x.SelectedNode;
+                    while (objReturn?.Level > 1)
+                        objReturn = objReturn.Parent;
+                    return objReturn;
                 }, GenericToken).ConfigureAwait(false);
 
                 // Make sure a parent item is selected, then open the Select Accessory window.
-                if (await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode == null || x.SelectedNode.Level <= 0).ConfigureAwait(false))
+                if (objSelectedNode == null || objSelectedNode.Level <= 0)
                 {
                     Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectWeaponName").ConfigureAwait(false),
                                            await LanguageManager.GetStringAsync("MessageTitle_SelectWeapon").ConfigureAwait(false),
@@ -6925,7 +6935,7 @@ namespace Chummer
                 }
 
                 // Get the information for the currently selected Weapon.
-                if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag).ConfigureAwait(false) is Weapon objWeapon))
+                if (!(objSelectedNode.Tag is Weapon objWeapon))
                 {
                     Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectWeaponName").ConfigureAwait(false),
                                            await LanguageManager.GetStringAsync("MessageTitle_SelectWeapon").ConfigureAwait(false),
@@ -6949,7 +6959,7 @@ namespace Chummer
                 }
 
                 string strText = await objWeapon.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false);
-                await treWeapons.DoThreadSafeAsync(x => x.SelectedNode.Text = strText, GenericToken).ConfigureAwait(false);
+                await treWeapons.DoThreadSafeAsync(() => objSelectedNode.Text = strText, GenericToken).ConfigureAwait(false);
 
                 await SetDirty(true).ConfigureAwait(false);
             }
@@ -6963,7 +6973,8 @@ namespace Chummer
         {
             try
             {
-                if (await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode == null || x.SelectedNode.Level <= 0, GenericToken).ConfigureAwait(false))
+                TreeNode objSelectedNode = await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken).ConfigureAwait(false);
+                if (objSelectedNode == null || objSelectedNode.Level <= 0)
                 {
                     Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectGearName").ConfigureAwait(false),
                                            await LanguageManager.GetStringAsync("MessageTitle_SelectGear").ConfigureAwait(false),
@@ -6972,7 +6983,7 @@ namespace Chummer
                 }
 
                 // Get the information for the currently selected Gear.
-                if (!(await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken).ConfigureAwait(false) is Gear objGear))
+                if (!(objSelectedNode.Tag is Gear objGear))
                 {
                     Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectGearName").ConfigureAwait(false),
                                            await LanguageManager.GetStringAsync("MessageTitle_SelectGear").ConfigureAwait(false),
@@ -6996,7 +7007,7 @@ namespace Chummer
                 }
 
                 string strText = await objGear.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false);
-                await treGear.DoThreadSafeAsync(x => x.SelectedNode.Text = strText, GenericToken).ConfigureAwait(false);
+                await treGear.DoThreadSafeAsync(() => objSelectedNode.Text = strText, GenericToken).ConfigureAwait(false);
 
                 await SetDirty(true).ConfigureAwait(false);
             }
@@ -7084,8 +7095,8 @@ namespace Chummer
         {
             try
             {
-                if (!(await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag,
-                                                          token: GenericToken).ConfigureAwait(false) is Gear objGear))
+                TreeNode objSelectedNode = await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken).ConfigureAwait(false);
+                if (!(objSelectedNode?.Tag is Gear objGear))
                     return;
                 using (ThreadSafeForm<SelectText> frmPickText
                        = await ThreadSafeForm<SelectText>.GetAsync(() => new SelectText(), GenericToken).ConfigureAwait(false))
@@ -7094,7 +7105,7 @@ namespace Chummer
                         return;
                     objGear.Extra = frmPickText.MyForm.SelectedValue;
                     string strText = await objGear.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false);
-                    await treGear.DoThreadSafeAsync(x => x.SelectedNode.Text = strText,
+                    await treGear.DoThreadSafeAsync(() => objSelectedNode.Text = strText,
                                                     token: GenericToken).ConfigureAwait(false);
                     await SetDirty(true).ConfigureAwait(false);
                 }
@@ -7385,16 +7396,15 @@ namespace Chummer
         {
             try
             {
-                await treVehicles.DoThreadSafeAsync(x =>
+                TreeNode objSelectedNode = await treVehicles.DoThreadSafeFuncAsync(x =>
                 {
-                    while (x.SelectedNode?.Level > 1)
-                    {
-                        x.SelectedNode = x.SelectedNode.Parent;
-                    }
+                    TreeNode objReturn = x.SelectedNode;
+                    while (objReturn?.Level > 1)
+                        objReturn = objReturn.Parent;
+                    return objReturn;
                 }, GenericToken).ConfigureAwait(false);
 
                 // Make sure a parent item is selected.
-                TreeNode objSelectedNode = await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode).ConfigureAwait(false);
                 if (objSelectedNode == null || objSelectedNode.Level <= 0)
                 {
                     Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectVehicleName").ConfigureAwait(false),
@@ -7655,15 +7665,15 @@ namespace Chummer
         {
             try
             {
-                await treArmor.DoThreadSafeAsync(x =>
+                TreeNode objSelectedNode = await treArmor.DoThreadSafeFuncAsync(x =>
                 {
-                    while (x.SelectedNode?.Level > 1)
-                        x.SelectedNode = x.SelectedNode.Parent;
+                    TreeNode objReturn = x.SelectedNode;
+                    while (objReturn?.Level > 1)
+                        objReturn = objReturn.Parent;
+                    return objReturn;
                 }, GenericToken).ConfigureAwait(false);
 
                 // Make sure a parent item is selected, then open the Select Accessory window.
-                TreeNode objSelectedNode = await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
-                                         .ConfigureAwait(false);
                 if (objSelectedNode == null || objSelectedNode.Level <= 0)
                 {
                     Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectArmorName").ConfigureAwait(false),
@@ -7712,8 +7722,9 @@ namespace Chummer
             try
             {
                 // Get the information for the currently selected Lifestyle.
-                if (!(await treLifestyles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken).ConfigureAwait(false) is
-                        IHasCustomName objCustomName))
+                TreeNode objSelectedNode = await treLifestyles.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
+                                                              .ConfigureAwait(false);
+                if (!(objSelectedNode?.Tag is IHasCustomName objCustomName))
                 {
                     Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectLifestyleName").ConfigureAwait(false),
                                            await LanguageManager.GetStringAsync("MessageTitle_SelectLifestyle").ConfigureAwait(false),
@@ -7738,7 +7749,7 @@ namespace Chummer
                     objCustomName.CustomName = frmPickText.MyForm.SelectedValue;
 
                     string strText = await objCustomName.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false);
-                    await treLifestyles.DoThreadSafeAsync(x => x.SelectedNode.Text = strText).ConfigureAwait(false);
+                    await treLifestyles.DoThreadSafeAsync(() => objSelectedNode.Text = strText).ConfigureAwait(false);
 
                     await SetDirty(true).ConfigureAwait(false);
                 }
@@ -7753,7 +7764,9 @@ namespace Chummer
         {
             try
             {
-                if (!(await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken).ConfigureAwait(false) is Location objLocation))
+                TreeNode objSelectedNode = await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
+                                                        .ConfigureAwait(false);
+                if (!(objSelectedNode?.Tag is Location objLocation))
                     return;
                 string strDescription = await LanguageManager.GetStringAsync("String_AddLocation").ConfigureAwait(false);
                 using (ThreadSafeForm<SelectText> frmPickText = await ThreadSafeForm<SelectText>.GetAsync(
@@ -7769,7 +7782,8 @@ namespace Chummer
                     objLocation.Name = frmPickText.MyForm.SelectedValue;
                 }
 
-                await treGear.DoThreadSafeAsync(x => x.SelectedNode.Text = objLocation.DisplayName(), GenericToken).ConfigureAwait(false);
+                string strText = await objLocation.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false);
+                await treGear.DoThreadSafeAsync(() => objSelectedNode.Text = strText, GenericToken).ConfigureAwait(false);
 
                 await SetDirty(true).ConfigureAwait(false);
             }
@@ -7783,7 +7797,9 @@ namespace Chummer
         {
             try
             {
-                if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken).ConfigureAwait(false) is Location objLocation))
+                TreeNode objSelectedNode = await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
+                                                        .ConfigureAwait(false);
+                if (!(objSelectedNode?.Tag is Location objLocation))
                     return;
                 string strDescription = await LanguageManager.GetStringAsync("String_AddLocation").ConfigureAwait(false);
                 using (ThreadSafeForm<SelectText> frmPickText = await ThreadSafeForm<SelectText>.GetAsync(
@@ -7799,7 +7815,8 @@ namespace Chummer
                     objLocation.Name = frmPickText.MyForm.SelectedValue;
                 }
 
-                await treWeapons.DoThreadSafeAsync(x => x.SelectedNode.Text = objLocation.DisplayName()).ConfigureAwait(false);
+                string strText = await objLocation.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false);
+                await treWeapons.DoThreadSafeAsync(() => objSelectedNode.Text = strText).ConfigureAwait(false);
 
                 await SetDirty(true).ConfigureAwait(false);
             }
@@ -7851,7 +7868,9 @@ namespace Chummer
         {
             try
             {
-                if (!(await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken).ConfigureAwait(false) is Location objLocation))
+                TreeNode objSelectedNode = await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
+                                                           .ConfigureAwait(false);
+                if (!(objSelectedNode?.Tag is Location objLocation))
                     return;
                 string strDescription = await LanguageManager.GetStringAsync("String_AddLocation").ConfigureAwait(false);
                 using (ThreadSafeForm<SelectText> frmPickText = await ThreadSafeForm<SelectText>.GetAsync(
@@ -7867,7 +7886,8 @@ namespace Chummer
                     objLocation.Name = frmPickText.MyForm.SelectedValue;
                 }
 
-                await treArmor.DoThreadSafeAsync(x => x.SelectedNode.Text = objLocation.DisplayName(), GenericToken).ConfigureAwait(false);
+                string strText = await objLocation.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false);
+                await treArmor.DoThreadSafeAsync(() => objSelectedNode.Text = strText, GenericToken).ConfigureAwait(false);
 
                 await SetDirty(true).ConfigureAwait(false);
             }
@@ -8521,10 +8541,13 @@ namespace Chummer
         {
             try
             {
-                if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken).ConfigureAwait(false) is Location objLocation))
+                TreeNode objSelectedNode = await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
+                                                            .ConfigureAwait(false);
+                if (!(objSelectedNode?.Tag is Location objLocation))
                     return;
 
-                string strDescription = await LanguageManager.GetStringAsync("String_AddLocation").ConfigureAwait(false);
+                string strDescription
+                    = await LanguageManager.GetStringAsync("String_AddLocation").ConfigureAwait(false);
                 using (ThreadSafeForm<SelectText> frmPickText = await ThreadSafeForm<SelectText>.GetAsync(
                            () => new SelectText
                            {
@@ -8532,13 +8555,17 @@ namespace Chummer
                                DefaultString = objLocation.Name
                            }, GenericToken).ConfigureAwait(false))
                 {
-                    if (await frmPickText.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false) == DialogResult.Cancel)
+                    if (await frmPickText.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
+                        == DialogResult.Cancel)
                         return;
 
                     objLocation.Name = frmPickText.MyForm.SelectedValue;
                 }
 
-                treVehicles.SelectedNode.Text = objLocation.DisplayName();
+                string strText = await objLocation.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false);
+                await treVehicles
+                      .DoThreadSafeAsync(() => objSelectedNode.Text = strText, GenericToken)
+                      .ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -9108,7 +9135,9 @@ namespace Chummer
                 return;
             try
             {
-                switch (await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken).ConfigureAwait(false))
+                TreeNode objSelectedNode = await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
+                                                           .ConfigureAwait(false);
+                switch (objSelectedNode?.Tag)
                 {
                     // Locate the selected piece of Cyberware.
                     case Cyberware objCyberware:
@@ -9161,7 +9190,9 @@ namespace Chummer
                                 await objCyberware.ChangeModularEquipAsync(false, token: GenericToken).ConfigureAwait(false);
                         }
 
-                        await treCyberware.DoThreadSafeAsync(x => x.SelectedNode.Text = objCyberware.CurrentDisplayName, GenericToken).ConfigureAwait(false);
+                        string strText = await objCyberware.GetCurrentDisplayNameAsync(GenericToken)
+                                                           .ConfigureAwait(false);
+                        await treCyberware.DoThreadSafeAsync(() => objSelectedNode.Text = strText, GenericToken).ConfigureAwait(false);
                         break;
                     }
                     case Gear objGear:
@@ -9212,7 +9243,7 @@ namespace Chummer
                         }
 
                         string strName = await objGear.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false);
-                        await treCyberware.DoThreadSafeAsync(x => x.SelectedNode.Text = strName, GenericToken).ConfigureAwait(false);
+                        await treCyberware.DoThreadSafeAsync(() => objSelectedNode.Text = strName, GenericToken).ConfigureAwait(false);
                         break;
                     }
                 }
@@ -10448,14 +10479,19 @@ namespace Chummer
 
             try
             {
-                switch (await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken).ConfigureAwait(false))
+                TreeNode objSelectedNode = await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
+                                                           .ConfigureAwait(false);
+                switch (objSelectedNode?.Tag)
                 {
                     case VehicleMod objMod:
-                        objMod.Rating = await nudVehicleRating.DoThreadSafeFuncAsync(x => x.ValueAsInt, GenericToken).ConfigureAwait(false);
-                        await treVehicles.DoThreadSafeAsync(x => x.SelectedNode.Text = objMod.CurrentDisplayName,
-                                                            GenericToken).ConfigureAwait(false);
+                    {
+                        objMod.Rating = await nudVehicleRating.DoThreadSafeFuncAsync(x => x.ValueAsInt, GenericToken)
+                                                              .ConfigureAwait(false);
+                        string strText = await objMod.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false);
+                        await treVehicles.DoThreadSafeAsync(() => objSelectedNode.Text = strText, GenericToken)
+                                         .ConfigureAwait(false);
                         break;
-
+                    }
                     case Gear objGear:
                     {
                         if (objGear.Category == "Foci" || objGear.Category == "Metamagic Foci"
@@ -10463,7 +10499,8 @@ namespace Chummer
                         {
                             if (!await objGear.RefreshSingleFocusRating(
                                     treFoci,
-                                    await nudVehicleRating.DoThreadSafeFuncAsync(x => x.ValueAsInt, GenericToken).ConfigureAwait(false)).ConfigureAwait(false))
+                                    await nudVehicleRating.DoThreadSafeFuncAsync(x => x.ValueAsInt, GenericToken)
+                                                          .ConfigureAwait(false)).ConfigureAwait(false))
                             {
                                 IsRefreshing = true;
                                 try
@@ -10481,26 +10518,36 @@ namespace Chummer
                         }
                         else
                             objGear.Rating
-                                = await nudVehicleRating.DoThreadSafeFuncAsync(x => x.ValueAsInt, GenericToken).ConfigureAwait(false);
+                                = await nudVehicleRating.DoThreadSafeFuncAsync(x => x.ValueAsInt, GenericToken)
+                                                        .ConfigureAwait(false);
 
-                        await treVehicles.DoThreadSafeAsync(x => x.SelectedNode.Text = objGear.CurrentDisplayName,
-                                                            GenericToken).ConfigureAwait(false);
+                        string strText = await objGear.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false);
+                        await treVehicles.DoThreadSafeAsync(() => objSelectedNode.Text = strText, GenericToken)
+                                         .ConfigureAwait(false);
                         break;
                     }
                     case WeaponAccessory objAccessory:
+                    {
                         objAccessory.Rating
-                            = await nudVehicleRating.DoThreadSafeFuncAsync(x => x.ValueAsInt, GenericToken).ConfigureAwait(false);
-                        await treVehicles.DoThreadSafeAsync(x => x.SelectedNode.Text = objAccessory.CurrentDisplayName,
-                                                            GenericToken).ConfigureAwait(false);
+                            = await nudVehicleRating.DoThreadSafeFuncAsync(x => x.ValueAsInt, GenericToken)
+                                                    .ConfigureAwait(false);
+                        string strText = await objAccessory.GetCurrentDisplayNameAsync(GenericToken)
+                                                           .ConfigureAwait(false);
+                        await treVehicles.DoThreadSafeAsync(() => objSelectedNode.Text = strText, GenericToken)
+                                         .ConfigureAwait(false);
                         break;
-
+                    }
                     case Cyberware objCyberware:
+                    {
                         objCyberware.Rating
-                            = await nudVehicleRating.DoThreadSafeFuncAsync(x => x.ValueAsInt, GenericToken).ConfigureAwait(false);
-                        await treVehicles.DoThreadSafeAsync(x => x.SelectedNode.Text = objCyberware.CurrentDisplayName,
-                                                            GenericToken).ConfigureAwait(false);
+                            = await nudVehicleRating.DoThreadSafeFuncAsync(x => x.ValueAsInt, GenericToken)
+                                                    .ConfigureAwait(false);
+                        string strText = await objCyberware.GetCurrentDisplayNameAsync(GenericToken)
+                                                           .ConfigureAwait(false);
+                        await treVehicles.DoThreadSafeAsync(() => objSelectedNode.Text = strText, GenericToken)
+                                         .ConfigureAwait(false);
                         break;
-
+                    }
                     default:
                         return;
                 }
@@ -10541,11 +10588,15 @@ namespace Chummer
 
             try
             {
-                if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken).ConfigureAwait(false) is Gear objGear))
+                TreeNode objSelectedNode = await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
+                                                            .ConfigureAwait(false);
+                if (!(objSelectedNode?.Tag is Gear objGear))
                     return;
-                objGear.Quantity = await nudVehicleGearQty.DoThreadSafeFuncAsync(x => x.Value, GenericToken).ConfigureAwait(false);
-                await treVehicles.DoThreadSafeAsync(x => x.SelectedNode.Text = objGear.CurrentDisplayName,
-                                                    GenericToken).ConfigureAwait(false);
+                objGear.Quantity = await nudVehicleGearQty.DoThreadSafeFuncAsync(x => x.Value, GenericToken)
+                                                          .ConfigureAwait(false);
+                string strText = await objGear.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false);
+                await treVehicles.DoThreadSafeAsync(() => objSelectedNode.Text = strText, GenericToken)
+                                 .ConfigureAwait(false);
 
                 await RequestCharacterUpdate().ConfigureAwait(false);
                 await SetDirty(true).ConfigureAwait(false);
@@ -10804,7 +10855,7 @@ namespace Chummer
 
                         objStack.Bonded = true;
                         string strName = await objStackGear.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false);
-                        await treViewToUse.DoThreadSafeAsync(x => x.SelectedNode.Text = strName, GenericToken).ConfigureAwait(false);
+                        await treViewToUse.DoThreadSafeAsync(() => e.Node.Text = strName, GenericToken).ConfigureAwait(false);
                     }
                 }
 
@@ -10824,14 +10875,18 @@ namespace Chummer
 
             try
             {
-                switch (await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken).ConfigureAwait(false))
+                TreeNode objSelectedNode = await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
+                                                            .ConfigureAwait(false);
+                switch (objSelectedNode?.Tag)
                 {
                     // Locate the selected ArmorMod.
                     case ArmorMod objMod:
                     {
-                        objMod.Rating = await nudArmorRating.DoThreadSafeFuncAsync(x => x.ValueAsInt, GenericToken).ConfigureAwait(false);
-                        await treArmor.DoThreadSafeAsync(x => x.SelectedNode.Text = objMod.CurrentDisplayName,
-                                                         GenericToken).ConfigureAwait(false);
+                        objMod.Rating = await nudArmorRating.DoThreadSafeFuncAsync(x => x.ValueAsInt, GenericToken)
+                                                            .ConfigureAwait(false);
+                        string strText = await objMod.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false);
+                        await treArmor.DoThreadSafeAsync(() => objSelectedNode.Text = strText, GenericToken)
+                                      .ConfigureAwait(false);
 
                         // See if a Bonus node exists.
                         if (objMod.Bonus?.InnerXml.Contains("Rating") == true || objMod.WirelessOn
@@ -10839,15 +10894,20 @@ namespace Chummer
                         {
                             // If the Bonus contains "Rating", remove the existing Improvements and create new ones.
                             await ImprovementManager.RemoveImprovementsAsync(
-                                CharacterObject, Improvement.ImprovementSource.ArmorMod, objMod.InternalId).ConfigureAwait(false);
+                                                        CharacterObject, Improvement.ImprovementSource.ArmorMod,
+                                                        objMod.InternalId)
+                                                    .ConfigureAwait(false);
                             if (objMod.Bonus != null)
                                 await ImprovementManager.CreateImprovementsAsync(
                                     CharacterObject, Improvement.ImprovementSource.ArmorMod, objMod.InternalId,
                                     objMod.Bonus, objMod.Rating, objMod.CurrentDisplayNameShort).ConfigureAwait(false);
                             if (objMod.WirelessOn && objMod.WirelessBonus != null)
                                 await ImprovementManager.CreateImprovementsAsync(
-                                    CharacterObject, Improvement.ImprovementSource.ArmorMod, objMod.InternalId,
-                                    objMod.WirelessBonus, objMod.Rating, objMod.CurrentDisplayNameShort).ConfigureAwait(false);
+                                                            CharacterObject, Improvement.ImprovementSource.ArmorMod,
+                                                            objMod.InternalId,
+                                                            objMod.WirelessBonus, objMod.Rating,
+                                                            objMod.CurrentDisplayNameShort)
+                                                        .ConfigureAwait(false);
                         }
 
                         break;
@@ -10859,7 +10919,8 @@ namespace Chummer
                         {
                             if (!await objGear.RefreshSingleFocusRating(
                                     treFoci,
-                                    await nudArmorRating.DoThreadSafeFuncAsync(x => x.ValueAsInt, GenericToken).ConfigureAwait(false)).ConfigureAwait(false))
+                                    await nudArmorRating.DoThreadSafeFuncAsync(x => x.ValueAsInt, GenericToken)
+                                                        .ConfigureAwait(false)).ConfigureAwait(false))
                             {
                                 IsRefreshing = true;
                                 try
@@ -10877,10 +10938,12 @@ namespace Chummer
                         }
                         else
                             objGear.Rating
-                                = await nudArmorRating.DoThreadSafeFuncAsync(x => x.ValueAsInt, GenericToken).ConfigureAwait(false);
+                                = await nudArmorRating.DoThreadSafeFuncAsync(x => x.ValueAsInt, GenericToken)
+                                                      .ConfigureAwait(false);
 
                         string strName = await objGear.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false);
-                        await treArmor.DoThreadSafeAsync(x => x.SelectedNode.Text = strName, GenericToken).ConfigureAwait(false);
+                        await treArmor.DoThreadSafeAsync(() => objSelectedNode.Text = strName, GenericToken)
+                                      .ConfigureAwait(false);
 
                         // See if a Bonus node exists.
                         if (objGear.Bonus?.InnerXml.Contains("Rating") == true || objGear.WirelessOn
@@ -10888,15 +10951,25 @@ namespace Chummer
                         {
                             // If the Bonus contains "Rating", remove the existing Improvements and create new ones.
                             await ImprovementManager.RemoveImprovementsAsync(
-                                CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId).ConfigureAwait(false);
+                                                        CharacterObject, Improvement.ImprovementSource.Gear,
+                                                        objGear.InternalId)
+                                                    .ConfigureAwait(false);
                             if (objGear.Bonus != null)
                                 await ImprovementManager.CreateImprovementsAsync(
-                                    CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId,
-                                    objGear.Bonus, objGear.Rating, await objGear.GetCurrentDisplayNameShortAsync(GenericToken).ConfigureAwait(false)).ConfigureAwait(false);
+                                                            CharacterObject, Improvement.ImprovementSource.Gear,
+                                                            objGear.InternalId,
+                                                            objGear.Bonus, objGear.Rating,
+                                                            await objGear.GetCurrentDisplayNameShortAsync(GenericToken)
+                                                                         .ConfigureAwait(false))
+                                                        .ConfigureAwait(false);
                             if (objGear.WirelessOn && objGear.WirelessBonus != null)
                                 await ImprovementManager.CreateImprovementsAsync(
-                                    CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId,
-                                    objGear.WirelessBonus, objGear.Rating, await objGear.GetCurrentDisplayNameShortAsync(GenericToken).ConfigureAwait(false)).ConfigureAwait(false);
+                                                            CharacterObject, Improvement.ImprovementSource.Gear,
+                                                            objGear.InternalId,
+                                                            objGear.WirelessBonus, objGear.Rating,
+                                                            await objGear.GetCurrentDisplayNameShortAsync(GenericToken)
+                                                                         .ConfigureAwait(false))
+                                                        .ConfigureAwait(false);
 
                             if (!objGear.Equipped)
                                 await objGear.ChangeEquippedStatusAsync(false).ConfigureAwait(false);
@@ -10905,10 +10978,14 @@ namespace Chummer
                         break;
                     }
                     case Armor objArmor:
-                        objArmor.Rating = await nudArmorRating.DoThreadSafeFuncAsync(x => x.ValueAsInt, GenericToken).ConfigureAwait(false);
-                        await treArmor.DoThreadSafeAsync(x => x.SelectedNode.Text = objArmor.CurrentDisplayName,
-                                                         GenericToken).ConfigureAwait(false);
+                    {
+                        objArmor.Rating = await nudArmorRating.DoThreadSafeFuncAsync(x => x.ValueAsInt, GenericToken)
+                                                              .ConfigureAwait(false);
+                        string strText = await objArmor.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false);
+                        await treArmor.DoThreadSafeAsync(() => objSelectedNode.Text = strText, GenericToken)
+                                      .ConfigureAwait(false);
                         break;
+                    }
                 }
 
                 await RequestCharacterUpdate().ConfigureAwait(false);

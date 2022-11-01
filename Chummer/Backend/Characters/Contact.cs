@@ -642,7 +642,17 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Name of the Contact.
+        /// </summary>
+        public async ValueTask<string> GetNameAsync(CancellationToken token = default) => LinkedCharacter != null
+            ? await LinkedCharacter.GetCharacterNameAsync(token).ConfigureAwait(false)
+            : _strName;
+
         public string CurrentDisplayName => Name;
+
+        public ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default) =>
+            GetNameAsync(token);
 
         public string DisplayRoleMethod(string strLanguage)
         {

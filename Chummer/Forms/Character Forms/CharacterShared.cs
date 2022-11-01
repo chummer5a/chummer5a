@@ -2550,7 +2550,7 @@ namespace Chummer
                     Quality objQuality = await CharacterObject.Qualities.FirstOrDefaultAsync(x => x.Name == objNode.Value, token).ConfigureAwait(false);
                     if (objQuality != null)
                     {
-                        objQuality.DeleteQuality();
+                        await objQuality.DeleteQualityAsync(token: token).ConfigureAwait(false);
                         await ImprovementManager.RemoveImprovementsAsync(
                             CharacterObject, Improvement.ImprovementSource.CritterPower,
                             objQuality.InternalId, token).ConfigureAwait(false);
@@ -2963,10 +2963,11 @@ namespace Chummer
                                 if (notifyCollectionChangedEventArgs.NewItems[intNewItemsIndex] is Location
                                     objNewLocation)
                                 {
+                                    string strText = await objNewLocation.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
                                     await treSelected.DoThreadSafeAsync(() =>
                                     {
                                         objNode.Tag = objNewLocation;
-                                        objNode.Text = objNewLocation.DisplayName();
+                                        objNode.Text = strText;
                                     }, token).ConfigureAwait(false);
                                 }
 

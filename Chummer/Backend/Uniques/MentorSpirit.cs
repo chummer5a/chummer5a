@@ -527,6 +527,10 @@ namespace Chummer
 
         public string CurrentDisplayName => CurrentDisplayNameShort;
 
+        public ValueTask<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default) => DisplayNameShortAsync(GlobalSettings.Language, token);
+
+        public ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default) => GetCurrentDisplayNameShortAsync(token);
+
         /// <summary>
         /// Sourcebook.
         /// </summary>

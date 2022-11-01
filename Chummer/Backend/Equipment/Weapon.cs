@@ -1422,7 +1422,7 @@ namespace Chummer.Backend.Equipment
                 await objWriter.WriteElementStringAsync("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("weaponname", CustomName, token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("location", Location?.DisplayName(strLanguageToPrint), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("location", Location != null ? await Location.DisplayNameAsync(strLanguageToPrint, token).ConfigureAwait(false) : string.Empty, token).ConfigureAwait(false);
 
                 await objWriter.WriteElementStringAsync("attack", this.GetTotalMatrixAttribute("Attack").ToString(objCulture), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("sleaze", this.GetTotalMatrixAttribute("Sleaze").ToString(objCulture), token).ConfigureAwait(false);

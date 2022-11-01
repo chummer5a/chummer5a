@@ -159,13 +159,14 @@ namespace Chummer.UI.Shared
 
         private async void tssLimitModifierNotes_Click(object sender, EventArgs e)
         {
-            object objSelectedNodeTag = await treLimit.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag).ConfigureAwait(false);
+            TreeNode objSelectedNode = await treLimit.DoThreadSafeFuncAsync(x => x.SelectedNode).ConfigureAwait(false);
+            object objSelectedNodeTag = objSelectedNode?.Tag;
             switch (objSelectedNodeTag)
             {
                 case null:
                     return;
                 case IHasNotes objNotes:
-                    await WriteNotes(objNotes, await treLimit.DoThreadSafeFuncAsync(x => x.SelectedNode).ConfigureAwait(false)).ConfigureAwait(false);
+                    await WriteNotes(objNotes, objSelectedNode).ConfigureAwait(false);
                     break;
                 default:
                 {
@@ -175,17 +176,24 @@ namespace Chummer.UI.Shared
                         if (objImprovement.ImproveType != Improvement.ImprovementType.LimitModifier ||
                             objImprovement.SourceName != objSelectedNodeTag.ToString())
                             continue;
-                        using (ThreadSafeForm<EditNotes> frmItemNotes = await ThreadSafeForm<EditNotes>.GetAsync(() => new EditNotes(objImprovement.Notes, objImprovement.NotesColor)).ConfigureAwait(false))
+                        using (ThreadSafeForm<EditNotes> frmItemNotes = await ThreadSafeForm<EditNotes>
+                                                                              .GetAsync(() => new EditNotes(
+                                                                                  objImprovement.Notes,
+                                                                                  objImprovement.NotesColor))
+                                                                              .ConfigureAwait(false))
                         {
-                            if (await frmItemNotes.ShowDialogSafeAsync(_objCharacter).ConfigureAwait(false) != DialogResult.OK)
+                            if (await frmItemNotes.ShowDialogSafeAsync(_objCharacter).ConfigureAwait(false)
+                                != DialogResult.OK)
                                 continue;
 
                             objImprovement.Notes = frmItemNotes.MyForm.Notes;
                         }
-                        await treLimit.DoThreadSafeAsync(x =>
+
+                        string strTooltip = objImprovement.Notes.WordWrap();
+                        await treLimit.DoThreadSafeAsync(() =>
                         {
-                            x.SelectedNode.ForeColor = objImprovement.PreferredColor;
-                            x.SelectedNode.ToolTipText = objImprovement.Notes.WordWrap();
+                            objSelectedNode.ForeColor = objImprovement.PreferredColor;
+                            objSelectedNode.ToolTipText = strTooltip;
                         }).ConfigureAwait(false);
                         MakeDirty?.Invoke(this, EventArgs.Empty);
                     }

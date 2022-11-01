@@ -607,7 +607,7 @@ namespace Chummer.Backend.Uniques
         /// <summary>
         /// The name of the object as it should be displayed in lists. Name (Extra).
         /// </summary>
-        public async Task<string> DisplayNameAsync(string strLanguage, CancellationToken token = default)
+        public async ValueTask<string> DisplayNameAsync(string strLanguage, CancellationToken token = default)
         {
             string strReturn = await DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
 
@@ -618,6 +618,8 @@ namespace Chummer.Backend.Uniques
         }
 
         public string CurrentDisplayName => DisplayName(GlobalSettings.Language);
+
+        public ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default) => DisplayNameAsync(GlobalSettings.Language, token);
 
         /// <summary>
         /// What type of forms do spirits of these traditions come in? Defaults to Materialization.

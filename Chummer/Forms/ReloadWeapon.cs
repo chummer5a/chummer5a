@@ -51,7 +51,7 @@ namespace Chummer
                 // Add each of the items to a new List since we need to also grab their plugin information.
                 foreach (Gear objGear in _lstAmmo)
                 {
-                    string strName = await objGear.DisplayNameShortAsync(GlobalSettings.Language).ConfigureAwait(false) + " x"
+                    string strName = await objGear.GetCurrentDisplayNameShortAsync().ConfigureAwait(false) + " x"
                         + objGear.Quantity.ToString(GlobalSettings.InvariantCultureInfo);
                     if (objGear.Rating > 0)
                         strName += strSpace + '(' + await LanguageManager.GetStringAsync(objGear.RatingLabel).ConfigureAwait(false) + strSpace
@@ -59,16 +59,16 @@ namespace Chummer
 
                     if (objGear.Parent is Gear objParent)
                     {
-                        if (!string.IsNullOrEmpty(await objParent.DisplayNameShortAsync(GlobalSettings.Language).ConfigureAwait(false)))
+                        if (!string.IsNullOrEmpty(await objParent.GetCurrentDisplayNameShortAsync().ConfigureAwait(false)))
                         {
-                            strName += strSpace + '(' + await objParent.DisplayNameShortAsync(GlobalSettings.Language).ConfigureAwait(false);
+                            strName += strSpace + '(' + await objParent.GetCurrentDisplayNameShortAsync().ConfigureAwait(false);
                             if (objParent.Location != null)
-                                strName += strSpace + '@' + strSpace + objParent.Location.DisplayName();
+                                strName += strSpace + '@' + strSpace + await objParent.Location.GetCurrentDisplayNameAsync().ConfigureAwait(false);
                             strName += ')';
                         }
                     }
                     else if (objGear.Location != null)
-                        strName += strSpace + '(' + objGear.Location.DisplayName() + ')';
+                        strName += strSpace + '(' + await objGear.Location.GetCurrentDisplayNameAsync().ConfigureAwait(false) + ')';
 
                     // Retrieve the plugin information if it has any.
                     if (objGear.Children.Count > 0)

@@ -23,6 +23,7 @@ using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
@@ -137,7 +138,9 @@ namespace Chummer
             set => _strName = value;
         }
 
-        public string CurrentDisplayName => Name;
+        public string CurrentDisplayName => DisplayName(GlobalSettings.Language);
+
+        public string CurrentDisplayNameShort => DisplayNameShort(GlobalSettings.Language);
 
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
@@ -160,6 +163,33 @@ namespace Chummer
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalSettings.Language;
             return DisplayNameShort(strLanguage);
+        }
+
+        public ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default) => DisplayNameAsync(GlobalSettings.Language, token);
+
+        public ValueTask<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default) => DisplayNameShortAsync(GlobalSettings.Language, token);
+
+        /// <summary>
+        /// The name of the object as it should be displayed on printouts (translated name only).
+        /// </summary>
+        public async ValueTask<string> DisplayNameShortAsync(string strLanguage = "", CancellationToken token = default)
+        {
+            if (string.IsNullOrEmpty(strLanguage) || strLanguage == GlobalSettings.Language)
+                return Name;
+            return await _objCharacter.TranslateExtraAsync(
+                !GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
+                    ? await LanguageManager.ReverseTranslateExtraAsync(Name, GlobalSettings.Language, _objCharacter, token: token)
+                    : Name, strLanguage, token: token);
+        }
+
+        /// <summary>
+        /// The name of the object as it should be displayed in lists. Name (Extra).
+        /// </summary>
+        public async ValueTask<string> DisplayNameAsync(string strLanguage = "", CancellationToken token = default)
+        {
+            if (string.IsNullOrEmpty(strLanguage))
+                strLanguage = GlobalSettings.Language;
+            return await DisplayNameShortAsync(strLanguage, token);
         }
 
         /// <summary>
@@ -206,7 +236,7 @@ namespace Chummer
 
         public TreeNode CreateTreeNode(ContextMenuStrip cmsLocation)
         {
-            string strText = DisplayName(GlobalSettings.Language);
+            string strText = CurrentDisplayName;
             TreeNode objNode = new TreeNode
             {
                 Name = InternalId,

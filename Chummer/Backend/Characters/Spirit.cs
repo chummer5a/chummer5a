@@ -662,6 +662,13 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Name of the Spirit.
+        /// </summary>
+        public async ValueTask<string> GetCritterNameAsync(CancellationToken token = default) => LinkedCharacter != null
+            ? await LinkedCharacter.GetCharacterNameAsync(token).ConfigureAwait(false)
+            : _strCritterName;
+
         public string CurrentDisplayName
         {
             get
@@ -671,6 +678,14 @@ namespace Chummer
                     strReturn = LanguageManager.TranslateExtra(Name, strPreferFile: "critters.xml");
                 return strReturn;
             }
+        }
+
+        public async ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default)
+        {
+            string strReturn = await GetCritterNameAsync(token).ConfigureAwait(false);
+            if (string.IsNullOrEmpty(strReturn))
+                strReturn = await LanguageManager.TranslateExtraAsync(Name, strPreferFile: "critters.xml", token: token);
+            return strReturn;
         }
 
         public string RatingLabel

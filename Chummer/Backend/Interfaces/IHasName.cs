@@ -17,6 +17,9 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
+using System.Threading;
+using System.Threading.Tasks;
+
 namespace Chummer
 {
     public interface IHasName
@@ -24,5 +27,7 @@ namespace Chummer
         string Name { get; set; }
 
         string CurrentDisplayName { get; }
+
+        ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default);
     }
 }

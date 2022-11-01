@@ -680,6 +680,8 @@ namespace Chummer.Backend.Equipment
 
         public string CurrentDisplayNameShort => DisplayNameShort(GlobalSettings.Language);
 
+        public ValueTask<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default) => DisplayNameShortAsync(GlobalSettings.Language, token);
+
         /// <summary>
         ///     The name of the object as it should be displayed in lists. Name (Extra).
         /// </summary>
@@ -709,6 +711,8 @@ namespace Chummer.Backend.Equipment
         }
 
         public string CurrentDisplayName => DisplayName(GlobalSettings.Language);
+
+        public ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default) => DisplayNameAsync(GlobalSettings.Language, token);
 
         public string FormattedDisplayName(CultureInfo objCulture, string strLanguage)
         {
