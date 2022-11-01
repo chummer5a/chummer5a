@@ -2304,12 +2304,12 @@ namespace Chummer
                                 }
                                 else
                                 {
-                                    objCyberware.DeleteCyberware();
+                                    await objCyberware.DeleteCyberwareAsync(token: GenericToken).ConfigureAwait(false);
                                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                                     string strEntry = await LanguageManager.GetStringAsync("String_ExpenseSoldBioware").ConfigureAwait(false);
                                     objExpense.Create(0,
                                                       strEntry + strBiowareDisabledSource +
-                                                      objCyberware.CurrentDisplayNameShort,
+                                                      await objCyberware.GetCurrentDisplayNameShortAsync(GenericToken).ConfigureAwait(false),
                                                       ExpenseType.Nuyen,
                                                       DateTime.Now);
                                     await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken).ConfigureAwait(false);
@@ -2356,13 +2356,13 @@ namespace Chummer
                                 }
                                 else
                                 {
-                                    objCyberware.DeleteCyberware();
+                                    await objCyberware.DeleteCyberwareAsync(token: GenericToken).ConfigureAwait(false);
                                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                                     string strEntry
                                         = await LanguageManager.GetStringAsync("String_ExpenseSoldCyberware").ConfigureAwait(false);
                                     objExpense.Create(0,
                                                       strEntry + strCyberwareDisabledSource +
-                                                      objCyberware.CurrentDisplayNameShort,
+                                                      await objCyberware.GetCurrentDisplayNameShortAsync(token: GenericToken).ConfigureAwait(false),
                                                       ExpenseType.Nuyen,
                                                       DateTime.Now);
                                     await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken).ConfigureAwait(false);
@@ -2411,7 +2411,7 @@ namespace Chummer
                                 }
                                 else
                                 {
-                                    objCyberware.DeleteCyberware();
+                                    await objCyberware.DeleteCyberwareAsync().ConfigureAwait(false);
                                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                                     string strEntry = await LanguageManager.GetStringAsync(
                                         objCyberware.SourceType == Improvement.ImprovementSource.Cyberware
@@ -2419,7 +2419,7 @@ namespace Chummer
                                             : "String_ExpenseSoldBioware").ConfigureAwait(false);
                                     objExpense.Create(0,
                                                       strEntry + strExConString
-                                                               + objCyberware.CurrentDisplayNameShort,
+                                                               + await objCyberware.GetCurrentDisplayNameShortAsync(GenericToken).ConfigureAwait(false),
                                                       ExpenseType.Nuyen, DateTime.Now);
                                     await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken).ConfigureAwait(false);
                                 }
@@ -5269,7 +5269,7 @@ namespace Chummer
                         // Make sure the dialogue window was not canceled.
                         if (await frmPickLifestyle.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false) == DialogResult.Cancel)
                         {
-                            await frmPickLifestyle.MyForm.SelectedLifestyle.DisposeAsync();
+                            await frmPickLifestyle.MyForm.SelectedLifestyle.DisposeAsync().ConfigureAwait(false);
                             return;
                         }
 
@@ -6177,7 +6177,8 @@ namespace Chummer
         {
             try
             {
-                TreeNode objSelectedNode = await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken).ConfigureAwait(false);
+                TreeNode objSelectedNode = await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
+                                                        .ConfigureAwait(false);
                 if (!(objSelectedNode?.Tag is Gear objGear))
                     return;
 
@@ -6192,7 +6193,8 @@ namespace Chummer
                 }
 
                 decimal decSelectedValue;
-                string strDescription = await LanguageManager.GetStringAsync("String_ReduceGear", token: GenericToken).ConfigureAwait(false);
+                string strDescription = await LanguageManager.GetStringAsync("String_ReduceGear", token: GenericToken)
+                                                             .ConfigureAwait(false);
                 using (ThreadSafeForm<SelectNumber> frmPickNumber = await ThreadSafeForm<SelectNumber>.GetAsync(
                            () => new SelectNumber(intDecimalPlaces)
                            {
@@ -6201,7 +6203,8 @@ namespace Chummer
                                Description = strDescription
                            }, GenericToken).ConfigureAwait(false))
                 {
-                    if (await frmPickNumber.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false) == DialogResult.Cancel)
+                    if (await frmPickNumber.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
+                        == DialogResult.Cancel)
                         return;
 
                     decSelectedValue = frmPickNumber.MyForm.SelectedValue;
@@ -6209,22 +6212,28 @@ namespace Chummer
 
                 if (!await CommonFunctions.ConfirmDeleteAsync(string.Format(GlobalSettings.CultureInfo,
                                                                             await LanguageManager.GetStringAsync(
-                                                                                "Message_ReduceQty", token: GenericToken).ConfigureAwait(false),
-                                                                            decSelectedValue.ToString(GlobalSettings.CultureInfo))).ConfigureAwait(false))
+                                                                                    "Message_ReduceQty",
+                                                                                    token: GenericToken)
+                                                                                .ConfigureAwait(false),
+                                                                            decSelectedValue.ToString(
+                                                                                GlobalSettings.CultureInfo)))
+                                          .ConfigureAwait(false))
                     return;
 
                 objGear.Quantity -= decSelectedValue;
 
                 if (objGear.Quantity > 0)
                 {
-                    objSelectedNode.Text = objGear.CurrentDisplayName;
+                    string strText = await objGear.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false);
+                    await treGear.DoThreadSafeAsync(() => objSelectedNode.Text = strText, GenericToken)
+                                 .ConfigureAwait(false);
                     await RequestCharacterUpdate().ConfigureAwait(false);
                     await SetDirty(true).ConfigureAwait(false);
                 }
                 else
                 {
                     // Remove any Weapons that came with it.
-                    objGear.DeleteGear();
+                    await objGear.DeleteGearAsync(token: GenericToken).ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -6289,7 +6298,9 @@ namespace Chummer
 
                     // Update the selected item.
                     objSelectedGear.Quantity -= objGear.Quantity;
-                    objSelectedNode.Text = objSelectedGear.CurrentDisplayName;
+                    string strText = await objGear.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false);
+                    await treGear.DoThreadSafeAsync(() => objSelectedNode.Text = strText, GenericToken)
+                                 .ConfigureAwait(false);
 
                     await CharacterObject.Gear.AddAsync(objGear, GenericToken).ConfigureAwait(false);
                 }
@@ -6363,10 +6374,14 @@ namespace Chummer
 
                     // Increase the quantity for the selected item.
                     objSelectedGear.Quantity += frmPickNumber.MyForm.SelectedValue;
-                    // Located the item in the Tree and update its display information.
-                    TreeNode objNode = treGear.FindNode(objSelectedGear.InternalId);
-                    if (objNode != null)
-                        objNode.Text = objSelectedGear.CurrentDisplayName;
+                    string strText = await objGear.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false);
+                    await treGear.DoThreadSafeAsync(x =>
+                    {
+                        // Located the item in the Tree and update its display information.
+                        TreeNode objNode = x.FindNode(objSelectedGear.InternalId);
+                        if (objNode != null)
+                            objNode.Text = strText;
+                    }, GenericToken).ConfigureAwait(false);
 
                     // Reduce the quantity for the selected item.
                     objGear.Quantity -= frmPickNumber.MyForm.SelectedValue;
@@ -6376,11 +6391,13 @@ namespace Chummer
                 if (objGear.Quantity <= 0)
                 {
                     // Remove the Gear if its quantity has been reduced to 0.
-                    objGear.DeleteGear();
+                    await objGear.DeleteGearAsync(token: GenericToken).ConfigureAwait(false);
                 }
                 else
                 {
-                    objSelectedNode.Text = objGear.CurrentDisplayName;
+                    string strText = await objGear.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false);
+                    await treGear.DoThreadSafeAsync(() => objSelectedNode.Text = strText, GenericToken)
+                                 .ConfigureAwait(false);
                     await RequestCharacterUpdate().ConfigureAwait(false);
                     await SetDirty(true).ConfigureAwait(false);
                 }
@@ -6471,11 +6488,12 @@ namespace Chummer
                 {
                     // Everything matches up, so just increase the quantity.
                     objFoundGear.Quantity += decMove;
+                    string strText = await objFoundGear.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false);
                     await treVehicles.DoThreadSafeAsync(x =>
                     {
                         TreeNode objFoundNode = x.FindNode(objFoundGear.InternalId);
                         if (objFoundNode != null)
-                            objFoundNode.Text = objFoundGear.CurrentDisplayName;
+                            objFoundNode.Text = strText;
                     }, GenericToken).ConfigureAwait(false);
                 }
 
@@ -6483,11 +6501,13 @@ namespace Chummer
                 objSelectedGear.Quantity -= decMove;
                 if (objSelectedGear.Quantity <= 0)
                 {
-                    objSelectedGear.DeleteGear();
+                    await objSelectedGear.DeleteGearAsync(token: GenericToken).ConfigureAwait(false);
                 }
                 else
                 {
-                    objSelectedNode.Text = objSelectedGear.CurrentDisplayName;
+                    string strText = await objSelectedGear.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false);
+                    await treVehicles.DoThreadSafeAsync(() => objSelectedNode.Text = strText, GenericToken)
+                                     .ConfigureAwait(false);
                     await RequestCharacterUpdate().ConfigureAwait(false);
                     await SetDirty(true).ConfigureAwait(false);
                 }
@@ -6624,11 +6644,12 @@ namespace Chummer
                             {
                                 // Everything matches up, so just increase the quantity.
                                 objFoundGear.Quantity += decMove;
+                                string strText = await objFoundGear.GetCurrentDisplayNameAsync(token: GenericToken).ConfigureAwait(false);
                                 await treGear.DoThreadSafeAsync(x =>
                                 {
                                     TreeNode objFoundNode = x.FindNode(objFoundGear.InternalId);
                                     if (objFoundNode != null)
-                                        objFoundNode.Text = objFoundGear.CurrentDisplayName;
+                                        objFoundNode.Text = strText;
                                 }, GenericToken).ConfigureAwait(false);
                             }
 
@@ -6636,11 +6657,12 @@ namespace Chummer
                             objSelectedGear.Quantity -= decMove;
                             if (objSelectedGear.Quantity <= 0)
                             {
-                                objSelectedGear.DeleteGear();
+                                await objSelectedGear.DeleteGearAsync(token: GenericToken).ConfigureAwait(false);
                             }
                             else
                             {
-                                objSelectedNode.Text = objSelectedGear.CurrentDisplayName;
+                                string strText = await objSelectedGear.GetCurrentDisplayNameAsync(token: GenericToken).ConfigureAwait(false);
+                                await treGear.DoThreadSafeAsync(() => objSelectedNode.Text = strText).ConfigureAwait(false);
                                 await RequestCharacterUpdate().ConfigureAwait(false);
                                 await SetDirty(true).ConfigureAwait(false);
                             }
@@ -6715,14 +6737,15 @@ namespace Chummer
 
                 if (objGear.Quantity > 0)
                 {
-                    await treVehicles.DoThreadSafeAsync(() => objSelectedNode.Text = objGear.CurrentDisplayName, GenericToken).ConfigureAwait(false);
+                    string strText = await objGear.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false);
+                    await treVehicles.DoThreadSafeAsync(() => objSelectedNode.Text = strText, GenericToken).ConfigureAwait(false);
                     await RequestCharacterUpdate().ConfigureAwait(false);
                     await SetDirty(true).ConfigureAwait(false);
                 }
                 else
                 {
                     // Remove the Gear if its quantity has been reduced to 0.
-                    objGear.DeleteGear();
+                    await objGear.DeleteGearAsync(token: GenericToken).ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -6771,129 +6794,174 @@ namespace Chummer
                     if (objXmlQuality.TryGetStringFieldQuickly("category", ref strTemp))
                         eQualityType = Quality.ConvertToQualityType(strTemp);
 
-                    for (int i = 1; i <= intRatingToAdd; ++i)
+                    // Helps to capture a write lock here for performance purposes
+                    IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterWriteLockAsync(GenericToken)
+                                                                      .ConfigureAwait(false);
+                    try
                     {
-                        // Positive Metagenetic Qualities are free if you're a Changeling.
-                        if (CharacterObject.MetagenicLimit > 0 && objXmlQuality["metagenic"]?.InnerText == bool.TrueString)
-                            blnFreeCost = true;
-                        // The Beast's Way and the Spiritual Way get the Mentor Spirit for free.
-                        else if (objXmlQuality["name"]?.InnerText == "Mentor Spirit" &&
-                                 await CharacterObject.Qualities.AnyAsync(x =>
-                                                                              x.Name == "The Beast's Way"
-                                                                              || x.Name == "The Spiritual Way",
-                                                                          GenericToken).ConfigureAwait(false))
-                            blnFreeCost = true;
-
-                        int intQualityBP = 0;
-                        if (!blnFreeCost)
+                        for (int i = 1; i <= intRatingToAdd; ++i)
                         {
-                            objXmlQuality.TryGetInt32FieldQuickly("karma", ref intQualityBP);
-                            XmlNode xmlDiscountNode = objXmlQuality["costdiscount"];
-                            if (xmlDiscountNode?.CreateNavigator().RequirementsMet(CharacterObject) == true)
-                            {
-                                int intTemp = 0;
-                                xmlDiscountNode.TryGetInt32FieldQuickly("value", ref intTemp);
-                                switch (eQualityType)
-                                {
-                                    case QualityType.Positive:
-                                        intQualityBP += intTemp;
-                                        break;
+                            // Positive Metagenetic Qualities are free if you're a Changeling.
+                            if (CharacterObject.MetagenicLimit > 0
+                                && objXmlQuality["metagenic"]?.InnerText == bool.TrueString)
+                                blnFreeCost = true;
+                            // The Beast's Way and the Spiritual Way get the Mentor Spirit for free.
+                            else if (objXmlQuality["name"]?.InnerText == "Mentor Spirit" &&
+                                     await CharacterObject.Qualities.AnyAsync(x =>
+                                                                                  x.Name == "The Beast's Way"
+                                                                                  || x.Name == "The Spiritual Way",
+                                                                              GenericToken).ConfigureAwait(false))
+                                blnFreeCost = true;
 
-                                    case QualityType.Negative:
-                                        intQualityBP -= intTemp;
-                                        break;
-                                }
-                            }
-                        }
-
-                        int intKarmaCost = intQualityBP * CharacterObjectSettings.KarmaQuality;
-                        if (!CharacterObjectSettings.DontDoubleQualityPurchases &&
-                            objXmlQuality["doublecareer"]?.InnerText != bool.FalseString)
-                            intKarmaCost *= 2;
-
-                        // Make sure the character has enough Karma to pay for the Quality.
-                        if (eQualityType == QualityType.Positive)
-                        {
+                            int intQualityBP = 0;
                             if (!blnFreeCost)
                             {
-                                if (intKarmaCost > await CharacterObject.GetKarmaAsync(GenericToken).ConfigureAwait(false) &&
-                                    objXmlQuality["stagedpurchase"]?.InnerText != bool.TrueString)
+                                objXmlQuality.TryGetInt32FieldQuickly("karma", ref intQualityBP);
+                                XmlNode xmlDiscountNode = objXmlQuality["costdiscount"];
+                                if (xmlDiscountNode?.CreateNavigator().RequirementsMet(CharacterObject) == true)
                                 {
-                                    Program.ShowMessageBox(this,
-                                                           await LanguageManager.GetStringAsync("Message_NotEnoughKarma").ConfigureAwait(false),
-                                                           await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma").ConfigureAwait(false), MessageBoxButtons.OK,
-                                                           MessageBoxIcon.Information);
-                                    break;
+                                    int intTemp = 0;
+                                    xmlDiscountNode.TryGetInt32FieldQuickly("value", ref intTemp);
+                                    switch (eQualityType)
+                                    {
+                                        case QualityType.Positive:
+                                            intQualityBP += intTemp;
+                                            break;
+
+                                        case QualityType.Negative:
+                                            intQualityBP -= intTemp;
+                                            break;
+                                    }
                                 }
-
-                                string strDisplayName = objXmlQuality["translate"]?.InnerText ??
-                                                        objXmlQuality["name"]?.InnerText ??
-                                                        await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
-                                if (!await CommonFunctions.ConfirmKarmaExpenseAsync(string.Format(GlobalSettings.CultureInfo,
-                                        await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpenseSpend").ConfigureAwait(false), strDisplayName,
-                                        intKarmaCost.ToString(GlobalSettings.CultureInfo))).ConfigureAwait(false))
-                                    break;
                             }
-                        }
-                        else if (Program.ShowMessageBox(this,
-                                                        await LanguageManager.GetStringAsync("Message_AddNegativeQuality").ConfigureAwait(false),
-                                                        await LanguageManager.GetStringAsync("MessageTitle_AddNegativeQuality").ConfigureAwait(false), MessageBoxButtons.YesNo,
-                                                        MessageBoxIcon.Question) == DialogResult.No)
-                            break;
 
-                        List<Weapon> lstWeapons = new List<Weapon>(1);
-                        Quality objQuality = new Quality(CharacterObject);
+                            int intKarmaCost = intQualityBP * CharacterObjectSettings.KarmaQuality;
+                            if (!CharacterObjectSettings.DontDoubleQualityPurchases &&
+                                objXmlQuality["doublecareer"]?.InnerText != bool.FalseString)
+                                intKarmaCost *= 2;
 
-                        objQuality.Create(objXmlQuality, QualitySource.Selected, lstWeapons);
-                        if (objQuality.InternalId.IsEmptyGuid())
-                        {
-                            // If the Quality could not be added, remove the Improvements that were added during the Quality Creation process.
-                            await ImprovementManager.RemoveImprovementsAsync(CharacterObject, Improvement.ImprovementSource.Quality,
-                                                                             objQuality.InternalId).ConfigureAwait(false);
-                            break;
-                        }
-
-                        // Make sure the character has enough Karma to pay for the Quality.
-                        if (objQuality.Type == QualityType.Positive)
-                        {
-                            if (objQuality.ContributeToBP)
+                            // Make sure the character has enough Karma to pay for the Quality.
+                            if (eQualityType == QualityType.Positive)
                             {
-                                // Create the Karma expense.
+                                if (!blnFreeCost)
+                                {
+                                    if (intKarmaCost > await CharacterObject.GetKarmaAsync(GenericToken)
+                                                                            .ConfigureAwait(false) &&
+                                        objXmlQuality["stagedpurchase"]?.InnerText != bool.TrueString)
+                                    {
+                                        Program.ShowMessageBox(this,
+                                                               await LanguageManager
+                                                                     .GetStringAsync("Message_NotEnoughKarma")
+                                                                     .ConfigureAwait(false),
+                                                               await LanguageManager
+                                                                     .GetStringAsync("MessageTitle_NotEnoughKarma")
+                                                                     .ConfigureAwait(false), MessageBoxButtons.OK,
+                                                               MessageBoxIcon.Information);
+                                        break;
+                                    }
+
+                                    string strDisplayName = objXmlQuality["translate"]?.InnerText ??
+                                                            objXmlQuality["name"]?.InnerText ??
+                                                            await LanguageManager.GetStringAsync("String_Unknown")
+                                                                .ConfigureAwait(false);
+                                    if (!await CommonFunctions.ConfirmKarmaExpenseAsync(
+                                                                  string.Format(GlobalSettings.CultureInfo,
+                                                                      await LanguageManager
+                                                                            .GetStringAsync(
+                                                                                "Message_ConfirmKarmaExpenseSpend")
+                                                                            .ConfigureAwait(false), strDisplayName,
+                                                                      intKarmaCost.ToString(GlobalSettings
+                                                                          .CultureInfo)))
+                                                              .ConfigureAwait(false))
+                                        break;
+                                }
+                            }
+                            else if (Program.ShowMessageBox(this,
+                                                            await LanguageManager
+                                                                  .GetStringAsync("Message_AddNegativeQuality")
+                                                                  .ConfigureAwait(false),
+                                                            await LanguageManager
+                                                                  .GetStringAsync("MessageTitle_AddNegativeQuality")
+                                                                  .ConfigureAwait(false), MessageBoxButtons.YesNo,
+                                                            MessageBoxIcon.Question) == DialogResult.No)
+                                break;
+
+                            List<Weapon> lstWeapons = new List<Weapon>(1);
+                            Quality objQuality = new Quality(CharacterObject);
+
+                            objQuality.Create(objXmlQuality, QualitySource.Selected, lstWeapons);
+                            if (objQuality.InternalId.IsEmptyGuid())
+                            {
+                                // If the Quality could not be added, remove the Improvements that were added during the Quality Creation process.
+                                await ImprovementManager.RemoveImprovementsAsync(
+                                    CharacterObject, Improvement.ImprovementSource.Quality,
+                                    objQuality.InternalId).ConfigureAwait(false);
+                                break;
+                            }
+
+                            // Make sure the character has enough Karma to pay for the Quality.
+                            if (objQuality.Type == QualityType.Positive)
+                            {
+                                if (objQuality.ContributeToBP)
+                                {
+                                    // Create the Karma expense.
+                                    ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                                    objExpense.Create(intKarmaCost * -1,
+                                                      await LanguageManager
+                                                            .GetStringAsync(
+                                                                "String_ExpenseAddPositiveQuality", token: GenericToken)
+                                                            .ConfigureAwait(false) +
+                                                      await LanguageManager
+                                                            .GetStringAsync("String_Space", token: GenericToken)
+                                                            .ConfigureAwait(false) +
+                                                      await objQuality.GetCurrentDisplayNameShortAsync(GenericToken)
+                                                                      .ConfigureAwait(false), ExpenseType.Karma,
+                                                      DateTime.Now);
+                                    await CharacterObject.ExpenseEntries
+                                                         .AddWithSortAsync(objExpense, token: GenericToken)
+                                                         .ConfigureAwait(false);
+                                    await CharacterObject.DecreaseKarmaAsync(intKarmaCost, GenericToken)
+                                                         .ConfigureAwait(false);
+
+                                    ExpenseUndo objUndo = new ExpenseUndo();
+                                    objUndo.CreateKarma(KarmaExpenseType.AddQuality, objQuality.InternalId);
+                                    objExpense.Undo = objUndo;
+                                }
+                            }
+                            else
+                            {
+                                // Create a Karma Expense for the Negative Quality.
                                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                                objExpense.Create(intKarmaCost * -1,
-                                                  await LanguageManager.GetStringAsync("String_ExpenseAddPositiveQuality", token: GenericToken).ConfigureAwait(false) +
-                                                  await LanguageManager.GetStringAsync("String_Space", token: GenericToken).ConfigureAwait(false) +
-                                                  await objQuality.GetCurrentDisplayNameShortAsync(GenericToken).ConfigureAwait(false), ExpenseType.Karma, DateTime.Now);
-                                await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken).ConfigureAwait(false);
-                                await CharacterObject.DecreaseKarmaAsync(intKarmaCost, GenericToken).ConfigureAwait(false);
+                                objExpense.Create(0,
+                                                  await LanguageManager
+                                                        .GetStringAsync("String_ExpenseAddNegativeQuality",
+                                                                        token: GenericToken).ConfigureAwait(false) +
+                                                  await LanguageManager
+                                                        .GetStringAsync("String_Space", token: GenericToken)
+                                                        .ConfigureAwait(false) +
+                                                  await objQuality.GetCurrentDisplayNameShortAsync(GenericToken)
+                                                                  .ConfigureAwait(false), ExpenseType.Karma,
+                                                  DateTime.Now);
+                                await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken)
+                                                     .ConfigureAwait(false);
 
                                 ExpenseUndo objUndo = new ExpenseUndo();
                                 objUndo.CreateKarma(KarmaExpenseType.AddQuality, objQuality.InternalId);
                                 objExpense.Undo = objUndo;
                             }
-                        }
-                        else
-                        {
-                            // Create a Karma Expense for the Negative Quality.
-                            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                            objExpense.Create(0,
-                                              await LanguageManager.GetStringAsync("String_ExpenseAddNegativeQuality", token: GenericToken).ConfigureAwait(false) +
-                                              await LanguageManager.GetStringAsync("String_Space", token: GenericToken).ConfigureAwait(false) +
-                                              await objQuality.GetCurrentDisplayNameShortAsync(GenericToken).ConfigureAwait(false), ExpenseType.Karma, DateTime.Now);
-                            await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken).ConfigureAwait(false);
 
-                            ExpenseUndo objUndo = new ExpenseUndo();
-                            objUndo.CreateKarma(KarmaExpenseType.AddQuality, objQuality.InternalId);
-                            objExpense.Undo = objUndo;
-                        }
+                            await CharacterObject.Qualities.AddAsync(objQuality, GenericToken).ConfigureAwait(false);
 
-                        await CharacterObject.Qualities.AddAsync(objQuality, GenericToken).ConfigureAwait(false);
-
-                        // Add any created Weapons to the character.
-                        foreach (Weapon objWeapon in lstWeapons)
-                        {
-                            await CharacterObject.Weapons.AddAsync(objWeapon, GenericToken).ConfigureAwait(false);
+                            // Add any created Weapons to the character.
+                            foreach (Weapon objWeapon in lstWeapons)
+                            {
+                                await CharacterObject.Weapons.AddAsync(objWeapon, GenericToken).ConfigureAwait(false);
+                            }
                         }
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
                     }
                 }
                 while (blnAddAgain);
@@ -6989,138 +7057,229 @@ namespace Chummer
             }
         }
 
-        private async ValueTask<bool> RemoveQuality(Quality objSelectedQuality, bool blnConfirmDelete = true, bool blnCompleteDelete = true, CancellationToken token = default)
+        private async ValueTask<bool> RemoveQuality(Quality objSelectedQuality, bool blnConfirmDelete = true,
+                                                    bool blnCompleteDelete = true, CancellationToken token = default)
         {
-            XPathNavigator objXmlDeleteQuality = await objSelectedQuality.GetNodeXPathAsync(token).ConfigureAwait(false);
+            XPathNavigator objXmlDeleteQuality
+                = await objSelectedQuality.GetNodeXPathAsync(token).ConfigureAwait(false);
             bool blnMetatypeQuality = false;
 
             switch (objSelectedQuality.OriginSource)
             {
                 // Qualities that come from a Metatype cannot be removed.
                 case QualitySource.Metatype:
-                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_MetavariantQuality", token: token).ConfigureAwait(false), await LanguageManager.GetStringAsync("MessageTitle_MetavariantQuality", token: token).ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    Program.ShowMessageBox(
+                        this,
+                        await LanguageManager.GetStringAsync("Message_MetavariantQuality", token: token)
+                                             .ConfigureAwait(false),
+                        await LanguageManager.GetStringAsync("MessageTitle_MetavariantQuality", token: token)
+                                             .ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return false;
 
                 case QualitySource.Improvement:
-                    Program.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_ImprovementQuality", token: token).ConfigureAwait(false), await objSelectedQuality.GetSourceNameAsync(GlobalSettings.Language, token).ConfigureAwait(false)), await LanguageManager.GetStringAsync("MessageTitle_MetavariantQuality", token: token).ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    Program.ShowMessageBox(
+                        this,
+                        string.Format(GlobalSettings.CultureInfo,
+                                      await LanguageManager.GetStringAsync("Message_ImprovementQuality", token: token)
+                                                           .ConfigureAwait(false),
+                                      await objSelectedQuality.GetSourceNameAsync(GlobalSettings.Language, token)
+                                                              .ConfigureAwait(false)),
+                        await LanguageManager.GetStringAsync("MessageTitle_MetavariantQuality", token: token)
+                                             .ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return false;
 
                 case QualitySource.MetatypeRemovable:
+                {
+                    // Look up the cost of the Quality.
+                    int intBP = 0;
+                    if (objSelectedQuality.Type == QualityType.Negative || await objXmlDeleteQuality
+                            .SelectSingleNodeAndCacheExpressionAsync("refundkarmaonremove", token: token)
+                            .ConfigureAwait(false) != null)
                     {
-                        // Look up the cost of the Quality.
-                        int intBP = 0;
-                        if (objSelectedQuality.Type == QualityType.Negative || await objXmlDeleteQuality.SelectSingleNodeAndCacheExpressionAsync("refundkarmaonremove", token: token).ConfigureAwait(false) != null)
+                        intBP = Convert.ToInt32(
+                            (await objXmlDeleteQuality.SelectSingleNodeAndCacheExpressionAsync("karma", token: token)
+                                                      .ConfigureAwait(false))?.Value,
+                            GlobalSettings.InvariantCultureInfo) * CharacterObjectSettings.KarmaQuality;
+                        if (blnCompleteDelete)
+                            intBP *= objSelectedQuality.Levels;
+                        if (!CharacterObjectSettings.DontDoubleQualityPurchases && objSelectedQuality.DoubleCost)
                         {
-                            intBP = Convert.ToInt32((await objXmlDeleteQuality.SelectSingleNodeAndCacheExpressionAsync("karma", token: token).ConfigureAwait(false))?.Value, GlobalSettings.InvariantCultureInfo) * CharacterObjectSettings.KarmaQuality;
-                            if (blnCompleteDelete)
-                                intBP *= objSelectedQuality.Levels;
-                            if (!CharacterObjectSettings.DontDoubleQualityPurchases && objSelectedQuality.DoubleCost)
-                            {
-                                intBP *= 2;
-                            }
-                            if (objSelectedQuality.Type == QualityType.Positive)
-                                intBP *= -1;
+                            intBP *= 2;
                         }
-                        string strBP = intBP.ToString(GlobalSettings.CultureInfo) + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + await LanguageManager.GetStringAsync("String_Karma", token: token).ConfigureAwait(false);
 
-                        if (blnConfirmDelete && !await CommonFunctions.ConfirmDeleteAsync(
-                                string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync(blnCompleteDelete ? "Message_DeleteMetatypeQuality" : "Message_LowerMetatypeQualityLevel", token: token).ConfigureAwait(false), strBP), token).ConfigureAwait(false))
-                            return false;
-
-                        blnMetatypeQuality = true;
-                        break;
+                        if (objSelectedQuality.Type == QualityType.Positive)
+                            intBP *= -1;
                     }
+
+                    string strBP = intBP.ToString(GlobalSettings.CultureInfo)
+                                   + await LanguageManager.GetStringAsync("String_Space", token: token)
+                                                          .ConfigureAwait(false) + await LanguageManager
+                                       .GetStringAsync("String_Karma", token: token).ConfigureAwait(false);
+
+                    if (blnConfirmDelete && !await CommonFunctions.ConfirmDeleteAsync(
+                            string.Format(GlobalSettings.CultureInfo,
+                                          await LanguageManager
+                                                .GetStringAsync(
+                                                    blnCompleteDelete
+                                                        ? "Message_DeleteMetatypeQuality"
+                                                        : "Message_LowerMetatypeQualityLevel", token: token)
+                                                .ConfigureAwait(false), strBP), token).ConfigureAwait(false))
+                        return false;
+
+                    blnMetatypeQuality = true;
+                    break;
+                }
             }
 
-            if (objSelectedQuality.Type == QualityType.Positive)
+            // Helps to capture a write lock here for performance purposes
+            IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterWriteLockAsync(token)
+                                                              .ConfigureAwait(false);
+            try
             {
-                if (await objXmlDeleteQuality.SelectSingleNodeAndCacheExpressionAsync("refundkarmaonremove", token: token).ConfigureAwait(false) != null)
+                if (objSelectedQuality.Type == QualityType.Positive)
                 {
-                    int intKarmaCost = objSelectedQuality.BP * CharacterObjectSettings.KarmaQuality;
+                    if (await objXmlDeleteQuality
+                              .SelectSingleNodeAndCacheExpressionAsync("refundkarmaonremove", token: token)
+                              .ConfigureAwait(false) != null)
+                    {
+                        int intKarmaCost = objSelectedQuality.BP * CharacterObjectSettings.KarmaQuality;
 
-                    if (!CharacterObjectSettings.DontDoubleQualityPurchases && objSelectedQuality.DoubleCost)
+                        if (!CharacterObjectSettings.DontDoubleQualityPurchases && objSelectedQuality.DoubleCost)
+                        {
+                            intKarmaCost *= 2;
+                        }
+
+                        ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                        objExpense.Create(intKarmaCost, string.Format(GlobalSettings.CultureInfo,
+                                                                      await LanguageManager
+                                                                            .GetStringAsync(
+                                                                                "String_ExpenseSwapPositiveQuality",
+                                                                                token: token).ConfigureAwait(false)
+                                                                      , await objSelectedQuality
+                                                                              .GetCurrentDisplayNameShortAsync(token)
+                                                                              .ConfigureAwait(false)
+                                                                      , await LanguageManager.GetStringAsync("String_Karma", token: token).ConfigureAwait(false)),
+                                          ExpenseType.Karma, DateTime.Now, true);
+                        await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token)
+                                             .ConfigureAwait(false);
+                        await CharacterObject.IncreaseKarmaAsync(intKarmaCost, token).ConfigureAwait(false);
+
+                        ExpenseUndo objUndo = new ExpenseUndo();
+                        objUndo.CreateKarma(KarmaExpenseType.RemoveQuality, objSelectedQuality.SourceIDString);
+                        objUndo.Extra = objSelectedQuality.Extra;
+                        objExpense.Undo = objUndo;
+                    }
+                    else if (!blnMetatypeQuality && blnConfirmDelete && !await CommonFunctions.ConfirmDeleteAsync(
+                                 blnCompleteDelete
+                                     ? await LanguageManager
+                                             .GetStringAsync("Message_DeletePositiveQualityCareer", token: token)
+                                             .ConfigureAwait(false)
+                                     : await LanguageManager
+                                             .GetStringAsync("Message_LowerPositiveQualityLevelCareer", token: token)
+                                             .ConfigureAwait(false), token).ConfigureAwait(false))
+                        return false;
+                }
+                else
+                {
+                    // Make sure the character has enough Karma to buy off the Quality.
+                    int intKarmaCost = -(objSelectedQuality.BP * CharacterObjectSettings.KarmaQuality);
+                    if (!CharacterObjectSettings.DontDoubleQualityRefunds)
                     {
                         intKarmaCost *= 2;
                     }
 
+                    int intTotalKarmaCost = intKarmaCost;
+                    if (blnCompleteDelete)
+                        intTotalKarmaCost *= objSelectedQuality.Levels;
+                    if (intTotalKarmaCost > await CharacterObject.GetKarmaAsync(token).ConfigureAwait(false))
+                    {
+                        Program.ShowMessageBox(
+                            this,
+                            await LanguageManager.GetStringAsync("Message_NotEnoughKarma", token: token)
+                                                 .ConfigureAwait(false),
+                            await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma", token: token)
+                                                 .ConfigureAwait(false), MessageBoxButtons.OK,
+                            MessageBoxIcon.Information);
+                        return false;
+                    }
+
+                    if (!blnMetatypeQuality && blnConfirmDelete && !await CommonFunctions.ConfirmKarmaExpenseAsync(
+                                string.Format(GlobalSettings.CultureInfo, blnCompleteDelete
+                                                  ? await LanguageManager
+                                                          .GetStringAsync(
+                                                              "Message_ConfirmKarmaExpenseRemove", token: token)
+                                                          .ConfigureAwait(false)
+                                                  : await LanguageManager
+                                                          .GetStringAsync("Message_ConfirmKarmaExpenseLowerLevel",
+                                                                          token: token).ConfigureAwait(false),
+                                              objSelectedQuality.CurrentDisplayNameShort, intTotalKarmaCost), token)
+                            .ConfigureAwait(false))
+                        return false;
+
+                    // Create the Karma expense.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                    objExpense.Create(intKarmaCost, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_ExpenseSwapPositiveQuality", token: token).ConfigureAwait(false)
-                        , await objSelectedQuality.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false)
-                        , await LanguageManager.GetStringAsync("String_Karma", token: token).ConfigureAwait(false)), ExpenseType.Karma, DateTime.Now, true);
-                    await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token).ConfigureAwait(false);
-                    await CharacterObject.IncreaseKarmaAsync(intKarmaCost, token).ConfigureAwait(false);
+                    objExpense.Create(-intTotalKarmaCost,
+                                      await LanguageManager
+                                            .GetStringAsync("String_ExpenseRemoveNegativeQuality", token: token)
+                                            .ConfigureAwait(false)
+                                      + await LanguageManager.GetStringAsync("String_Space", token: token)
+                                                             .ConfigureAwait(false)
+                                      + objSelectedQuality.CurrentDisplayNameShort, ExpenseType.Karma, DateTime.Now);
+                    await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token)
+                                         .ConfigureAwait(false);
+                    await CharacterObject.DecreaseKarmaAsync(intTotalKarmaCost, token).ConfigureAwait(false);
 
                     ExpenseUndo objUndo = new ExpenseUndo();
                     objUndo.CreateKarma(KarmaExpenseType.RemoveQuality, objSelectedQuality.SourceIDString);
                     objUndo.Extra = objSelectedQuality.Extra;
                     objExpense.Undo = objUndo;
                 }
-                else if (!blnMetatypeQuality && blnConfirmDelete && !await CommonFunctions.ConfirmDeleteAsync(blnCompleteDelete
-                             ? await LanguageManager.GetStringAsync("Message_DeletePositiveQualityCareer", token: token).ConfigureAwait(false)
-                             : await LanguageManager.GetStringAsync("Message_LowerPositiveQualityLevelCareer", token: token).ConfigureAwait(false), token).ConfigureAwait(false))
-                    return false;
-            }
-            else
-            {
-                // Make sure the character has enough Karma to buy off the Quality.
-                int intKarmaCost = -(objSelectedQuality.BP * CharacterObjectSettings.KarmaQuality);
-                if (!CharacterObjectSettings.DontDoubleQualityRefunds)
+
+                // Remove any Critter Powers that are gained through the Quality (Infected).
+                if (await objXmlDeleteQuality.SelectSingleNodeAndCacheExpressionAsync("powers/power", token: token)
+                                             .ConfigureAwait(false) != null)
                 {
-                    intKarmaCost *= 2;
-                }
-                int intTotalKarmaCost = intKarmaCost;
-                if (blnCompleteDelete)
-                    intTotalKarmaCost *= objSelectedQuality.Levels;
-                if (intTotalKarmaCost > await CharacterObject.GetKarmaAsync(token).ConfigureAwait(false))
-                {
-                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma", token: token).ConfigureAwait(false), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma", token: token).ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return false;
-                }
-
-                if (!blnMetatypeQuality && blnConfirmDelete && !await CommonFunctions.ConfirmKarmaExpenseAsync(
-                        string.Format(GlobalSettings.CultureInfo, blnCompleteDelete
-                                          ? await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpenseRemove", token: token).ConfigureAwait(false) : await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpenseLowerLevel", token: token).ConfigureAwait(false),
-                                      objSelectedQuality.CurrentDisplayNameShort, intTotalKarmaCost), token).ConfigureAwait(false))
-                    return false;
-
-                // Create the Karma expense.
-                ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                objExpense.Create(-intTotalKarmaCost, await LanguageManager.GetStringAsync("String_ExpenseRemoveNegativeQuality", token: token).ConfigureAwait(false) + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + objSelectedQuality.CurrentDisplayNameShort, ExpenseType.Karma, DateTime.Now);
-                await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token).ConfigureAwait(false);
-                await CharacterObject.DecreaseKarmaAsync(intTotalKarmaCost, token).ConfigureAwait(false);
-
-                ExpenseUndo objUndo = new ExpenseUndo();
-                objUndo.CreateKarma(KarmaExpenseType.RemoveQuality, objSelectedQuality.SourceIDString);
-                objUndo.Extra = objSelectedQuality.Extra;
-                objExpense.Undo = objUndo;
-            }
-
-            // Remove any Critter Powers that are gained through the Quality (Infected).
-            if (await objXmlDeleteQuality.SelectSingleNodeAndCacheExpressionAsync("powers/power", token: token).ConfigureAwait(false) != null)
-            {
-                foreach (XPathNavigator objXmlPower in await (await CharacterObject.LoadDataXPathAsync("critterpowers.xml", token: token).ConfigureAwait(false)).SelectAndCacheExpressionAsync("optionalpowers/optionalpower", token: token).ConfigureAwait(false))
-                {
-                    string strExtra = (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("@select", token: token).ConfigureAwait(false))?.Value;
-
-                    foreach (CritterPower objPower in CharacterObject.CritterPowers)
+                    foreach (XPathNavigator objXmlPower in await (await CharacterObject
+                                                                        .LoadDataXPathAsync(
+                                                                            "critterpowers.xml", token: token)
+                                                                        .ConfigureAwait(false))
+                                                                 .SelectAndCacheExpressionAsync(
+                                                                     "optionalpowers/optionalpower", token: token)
+                                                                 .ConfigureAwait(false))
                     {
-                        if (objPower.Name != objXmlPower.Value || objPower.Extra != strExtra)
-                            continue;
-                        // Remove any Improvements created by the Critter Power.
-                        await ImprovementManager.RemoveImprovementsAsync(CharacterObject, Improvement.ImprovementSource.CritterPower, objPower.InternalId, token).ConfigureAwait(false);
+                        string strExtra = (await objXmlPower
+                                                 .SelectSingleNodeAndCacheExpressionAsync("@select", token: token)
+                                                 .ConfigureAwait(false))?.Value;
 
-                        // Remove the Critter Power from the character.
-                        await CharacterObject.CritterPowers.RemoveAsync(objPower, token).ConfigureAwait(false);
-                        break;
+                        foreach (CritterPower objPower in CharacterObject.CritterPowers)
+                        {
+                            if (objPower.Name != objXmlPower.Value || objPower.Extra != strExtra)
+                                continue;
+                            // Remove any Improvements created by the Critter Power.
+                            await ImprovementManager
+                                  .RemoveImprovementsAsync(CharacterObject, Improvement.ImprovementSource.CritterPower,
+                                                           objPower.InternalId, token).ConfigureAwait(false);
+
+                            // Remove the Critter Power from the character.
+                            await CharacterObject.CritterPowers.RemoveAsync(objPower, token).ConfigureAwait(false);
+                            break;
+                        }
                     }
                 }
+
+                // Fix for legacy characters with old addqualities improvements.
+                await RemoveAddedQualities(
+                    await objXmlDeleteQuality.SelectAndCacheExpressionAsync("addqualities/addquality", token)
+                                             .ConfigureAwait(false), token).ConfigureAwait(false);
+
+                // Perform removal
+                await objSelectedQuality.DeleteQualityAsync(blnCompleteDelete, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
 
-            // Fix for legacy characters with old addqualities improvements.
-            await RemoveAddedQualities(await objXmlDeleteQuality.SelectAndCacheExpressionAsync("addqualities/addquality", token).ConfigureAwait(false), token).ConfigureAwait(false);
-
-            // Perform removal
-            objSelectedQuality.DeleteQuality(blnCompleteDelete);
             return true;
         }
 
@@ -7175,175 +7334,214 @@ namespace Chummer
                 int intCurrentLevels = objSelectedQuality.Levels;
                 int intSelectedLevels
                     = await nudQualityLevel.DoThreadSafeFuncAsync(x => x.ValueAsInt, GenericToken).ConfigureAwait(false);
-                // Adding a new level
-                for (; intSelectedLevels > intCurrentLevels; ++intCurrentLevels)
+
+                // Helps to capture a write lock here for performance purposes
+                IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterWriteLockAsync(GenericToken)
+                                                                  .ConfigureAwait(false);
+                try
                 {
-                    XPathNavigator objXmlSelectedQuality = await objSelectedQuality.GetNodeXPathAsync(GenericToken).ConfigureAwait(false);
-                    if (!objXmlSelectedQuality.RequirementsMet(CharacterObject,
-                                                               await LanguageManager.GetStringAsync(
-                                                                   "String_Quality", token: GenericToken).ConfigureAwait(false)))
+                    // Adding a new level
+                    for (; intSelectedLevels > intCurrentLevels; ++intCurrentLevels)
                     {
-                        await UpdateQualityLevelValue(objSelectedQuality, GenericToken).ConfigureAwait(false);
-                        break;
-                    }
-
-                    bool blnFreeCost = objSelectedQuality.BP == 0 || !objSelectedQuality.ContributeToBP;
-
-                    QualityType eQualityType = objSelectedQuality.Type;
-
-                    int intQualityBP = 0;
-                    if (!blnFreeCost)
-                    {
-                        objXmlSelectedQuality.TryGetInt32FieldQuickly("karma", ref intQualityBP);
-                        XPathNavigator xpnDiscountNode
-                            = await objXmlSelectedQuality.SelectSingleNodeAndCacheExpressionAsync("costdiscount").ConfigureAwait(false);
-                        if (xpnDiscountNode?.RequirementsMet(CharacterObject) == true)
-                        {
-                            int intTemp = 0;
-                            xpnDiscountNode.TryGetInt32FieldQuickly("value", ref intTemp);
-                            switch (eQualityType)
-                            {
-                                case QualityType.Positive:
-                                    intQualityBP += intTemp;
-                                    break;
-
-                                case QualityType.Negative:
-                                    intQualityBP -= intTemp;
-                                    break;
-                            }
-                        }
-                    }
-
-                    int intKarmaCost = intQualityBP * CharacterObjectSettings.KarmaQuality;
-                    if (!CharacterObjectSettings.DontDoubleQualityPurchases && objSelectedQuality.DoubleCost)
-                        intKarmaCost *= 2;
-
-                    // Make sure the character has enough Karma to pay for the Quality.
-                    if (eQualityType == QualityType.Positive)
-                    {
-                        if (!blnFreeCost)
-                        {
-                            if (intKarmaCost > await CharacterObject.GetKarmaAsync(GenericToken).ConfigureAwait(false) && !objSelectedQuality.StagedPurchase)
-                            {
-                                Program.ShowMessageBox(
-                                    this,
-                                    await LanguageManager.GetStringAsync("Message_NotEnoughKarma", token: GenericToken).ConfigureAwait(false),
-                                    await LanguageManager.GetStringAsync(
-                                        "MessageTitle_NotEnoughKarma", token: GenericToken).ConfigureAwait(false),
-                                    MessageBoxButtons.OK,
-                                    MessageBoxIcon.Information);
-                                await UpdateQualityLevelValue(objSelectedQuality, GenericToken).ConfigureAwait(false);
-                                break;
-                            }
-
-                            string strDisplayName
-                                = (await objXmlSelectedQuality.SelectSingleNodeAndCacheExpressionAsync("translate").ConfigureAwait(false))
-                                  ?.Value
-                                  ?? (await objXmlSelectedQuality.SelectSingleNodeAndCacheExpressionAsync("name").ConfigureAwait(false))
-                                  ?.Value
-                                  ?? await LanguageManager.GetStringAsync("String_Unknown", token: GenericToken).ConfigureAwait(false);
-                            if (!await CommonFunctions.ConfirmKarmaExpenseAsync(string.Format(GlobalSettings.CultureInfo,
-                                    await LanguageManager.GetStringAsync(
-                                        "Message_ConfirmKarmaExpenseSpend",
-                                        token: GenericToken).ConfigureAwait(false)
-                                    , strDisplayName
-                                    , intKarmaCost.ToString(GlobalSettings.CultureInfo))).ConfigureAwait(false))
-                            {
-                                await UpdateQualityLevelValue(objSelectedQuality, GenericToken).ConfigureAwait(false);
-                                break;
-                            }
-                        }
-                    }
-                    else if (Program.ShowMessageBox(
-                                 this,
-                                 await LanguageManager.GetStringAsync("Message_AddNegativeQuality",
-                                                                      token: GenericToken).ConfigureAwait(false),
-                                 await LanguageManager.GetStringAsync("MessageTitle_AddNegativeQuality",
-                                                                      token: GenericToken).ConfigureAwait(false),
-                                 MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
-                    {
-                        await UpdateQualityLevelValue(objSelectedQuality, GenericToken).ConfigureAwait(false);
-                        break;
-                    }
-
-                    List<Weapon> lstWeapons = new List<Weapon>(1);
-                    Quality objQuality = new Quality(CharacterObject);
-
-                    objQuality.Create(await objSelectedQuality.GetNodeAsync(GenericToken).ConfigureAwait(false), QualitySource.Selected,
-                                      lstWeapons, objSelectedQuality.Extra);
-                    if (objQuality.InternalId.IsEmptyGuid())
-                    {
-                        // If the Quality could not be added, remove the Improvements that were added during the Quality Creation process.
-                        await ImprovementManager.RemoveImprovementsAsync(
-                            CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId).ConfigureAwait(false);
-                        await UpdateQualityLevelValue(objSelectedQuality, GenericToken).ConfigureAwait(false);
-                        break;
-                    }
-
-                    objQuality.BP = objSelectedQuality.BP;
-                    objQuality.ContributeToLimit = objSelectedQuality.ContributeToLimit;
-
-                    // Make sure the character has enough Karma to pay for the Quality.
-                    if (objQuality.Type == QualityType.Positive)
-                    {
-                        // Create the Karma expense.
-                        ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                        objExpense.Create(intKarmaCost * -1,
-                                          await LanguageManager.GetStringAsync(
-                                              "String_ExpenseAddPositiveQuality", token: GenericToken).ConfigureAwait(false)
-                                          + await LanguageManager.GetStringAsync("String_Space", token: GenericToken).ConfigureAwait(false)
-                                          + await objQuality.GetCurrentDisplayNameShortAsync(GenericToken).ConfigureAwait(false), ExpenseType.Karma, DateTime.Now);
-                        await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken).ConfigureAwait(false);
-                        await CharacterObject.DecreaseKarmaAsync(intKarmaCost, GenericToken).ConfigureAwait(false);
-
-                        ExpenseUndo objUndo = new ExpenseUndo();
-                        objUndo.CreateKarma(KarmaExpenseType.AddQuality, objQuality.InternalId);
-                        objExpense.Undo = objUndo;
-                    }
-                    else
-                    {
-                        // Create a Karma Expense for the Negative Quality.
-                        ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                        objExpense.Create(
-                            0,
-                            await LanguageManager.GetStringAsync("String_ExpenseAddNegativeQuality",
-                                                                 token: GenericToken).ConfigureAwait(false)
-                            + await LanguageManager.GetStringAsync("String_Space", token: GenericToken).ConfigureAwait(false)
-                            + objQuality.CurrentDisplayNameShort, ExpenseType.Karma, DateTime.Now);
-                        await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense).ConfigureAwait(false);
-
-                        ExpenseUndo objUndo = new ExpenseUndo();
-                        objUndo.CreateKarma(KarmaExpenseType.AddQuality, objQuality.InternalId);
-                        objExpense.Undo = objUndo;
-                    }
-
-                    // Add the Quality to the appropriate parent node.
-                    await CharacterObject.Qualities.AddAsync(objQuality, GenericToken).ConfigureAwait(false);
-
-                    // Add any created Weapons to the character.
-                    foreach (Weapon objWeapon in lstWeapons)
-                    {
-                        await CharacterObject.Weapons.AddAsync(objWeapon, GenericToken).ConfigureAwait(false);
-                    }
-                }
-
-                // Removing a level
-                for (; intSelectedLevels < intCurrentLevels; --intCurrentLevels)
-                {
-                    Quality objInvisibleQuality = CharacterObject.Qualities.FirstOrDefault(
-                        x => x.SourceIDString == objSelectedQuality.SourceIDString
-                             && x.Extra == objSelectedQuality.Extra && x.SourceName == objSelectedQuality.SourceName
-                             && x.InternalId != objSelectedQuality.InternalId);
-                    if (objInvisibleQuality == null
-                        || !await RemoveQuality(objInvisibleQuality, false, false, GenericToken).ConfigureAwait(false))
-                    {
-                        if (!await RemoveQuality(objSelectedQuality, false, false, GenericToken).ConfigureAwait(false))
+                        XPathNavigator objXmlSelectedQuality
+                            = await objSelectedQuality.GetNodeXPathAsync(GenericToken).ConfigureAwait(false);
+                        if (!objXmlSelectedQuality.RequirementsMet(CharacterObject,
+                                                                   await LanguageManager.GetStringAsync(
+                                                                           "String_Quality", token: GenericToken)
+                                                                       .ConfigureAwait(false)))
                         {
                             await UpdateQualityLevelValue(objSelectedQuality, GenericToken).ConfigureAwait(false);
+                            break;
                         }
 
-                        break;
+                        bool blnFreeCost = objSelectedQuality.BP == 0 || !objSelectedQuality.ContributeToBP;
+
+                        QualityType eQualityType = objSelectedQuality.Type;
+
+                        int intQualityBP = 0;
+                        if (!blnFreeCost)
+                        {
+                            objXmlSelectedQuality.TryGetInt32FieldQuickly("karma", ref intQualityBP);
+                            XPathNavigator xpnDiscountNode
+                                = await objXmlSelectedQuality.SelectSingleNodeAndCacheExpressionAsync("costdiscount")
+                                                             .ConfigureAwait(false);
+                            if (xpnDiscountNode?.RequirementsMet(CharacterObject) == true)
+                            {
+                                int intTemp = 0;
+                                xpnDiscountNode.TryGetInt32FieldQuickly("value", ref intTemp);
+                                switch (eQualityType)
+                                {
+                                    case QualityType.Positive:
+                                        intQualityBP += intTemp;
+                                        break;
+
+                                    case QualityType.Negative:
+                                        intQualityBP -= intTemp;
+                                        break;
+                                }
+                            }
+                        }
+
+                        int intKarmaCost = intQualityBP * CharacterObjectSettings.KarmaQuality;
+                        if (!CharacterObjectSettings.DontDoubleQualityPurchases && objSelectedQuality.DoubleCost)
+                            intKarmaCost *= 2;
+
+                        // Make sure the character has enough Karma to pay for the Quality.
+                        if (eQualityType == QualityType.Positive)
+                        {
+                            if (!blnFreeCost)
+                            {
+                                if (intKarmaCost
+                                    > await CharacterObject.GetKarmaAsync(GenericToken).ConfigureAwait(false)
+                                    && !objSelectedQuality.StagedPurchase)
+                                {
+                                    Program.ShowMessageBox(
+                                        this,
+                                        await LanguageManager
+                                              .GetStringAsync("Message_NotEnoughKarma", token: GenericToken)
+                                              .ConfigureAwait(false),
+                                        await LanguageManager.GetStringAsync(
+                                            "MessageTitle_NotEnoughKarma", token: GenericToken).ConfigureAwait(false),
+                                        MessageBoxButtons.OK,
+                                        MessageBoxIcon.Information);
+                                    await UpdateQualityLevelValue(objSelectedQuality, GenericToken)
+                                        .ConfigureAwait(false);
+                                    break;
+                                }
+
+                                string strDisplayName
+                                    = (await objXmlSelectedQuality.SelectSingleNodeAndCacheExpressionAsync("translate")
+                                                                  .ConfigureAwait(false))
+                                      ?.Value
+                                      ?? (await objXmlSelectedQuality.SelectSingleNodeAndCacheExpressionAsync("name")
+                                                                     .ConfigureAwait(false))
+                                      ?.Value
+                                      ?? await LanguageManager.GetStringAsync("String_Unknown", token: GenericToken)
+                                                              .ConfigureAwait(false);
+                                if (!await CommonFunctions.ConfirmKarmaExpenseAsync(
+                                                              string.Format(GlobalSettings.CultureInfo,
+                                                                            await LanguageManager.GetStringAsync(
+                                                                                    "Message_ConfirmKarmaExpenseSpend",
+                                                                                    token: GenericToken)
+                                                                                .ConfigureAwait(false)
+                                                                            , strDisplayName
+                                                                            , intKarmaCost.ToString(GlobalSettings.CultureInfo)))
+                                                          .ConfigureAwait(false))
+                                {
+                                    await UpdateQualityLevelValue(objSelectedQuality, GenericToken)
+                                        .ConfigureAwait(false);
+                                    break;
+                                }
+                            }
+                        }
+                        else if (Program.ShowMessageBox(
+                                     this,
+                                     await LanguageManager.GetStringAsync("Message_AddNegativeQuality",
+                                                                          token: GenericToken).ConfigureAwait(false),
+                                     await LanguageManager.GetStringAsync("MessageTitle_AddNegativeQuality",
+                                                                          token: GenericToken).ConfigureAwait(false),
+                                     MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                        {
+                            await UpdateQualityLevelValue(objSelectedQuality, GenericToken).ConfigureAwait(false);
+                            break;
+                        }
+
+                        List<Weapon> lstWeapons = new List<Weapon>(1);
+                        Quality objQuality = new Quality(CharacterObject);
+
+                        objQuality.Create(await objSelectedQuality.GetNodeAsync(GenericToken).ConfigureAwait(false),
+                                          QualitySource.Selected,
+                                          lstWeapons, objSelectedQuality.Extra);
+                        if (objQuality.InternalId.IsEmptyGuid())
+                        {
+                            // If the Quality could not be added, remove the Improvements that were added during the Quality Creation process.
+                            await ImprovementManager.RemoveImprovementsAsync(
+                                                        CharacterObject, Improvement.ImprovementSource.Quality,
+                                                        objQuality.InternalId)
+                                                    .ConfigureAwait(false);
+                            await UpdateQualityLevelValue(objSelectedQuality, GenericToken).ConfigureAwait(false);
+                            break;
+                        }
+
+                        objQuality.BP = objSelectedQuality.BP;
+                        objQuality.ContributeToLimit = objSelectedQuality.ContributeToLimit;
+
+                        // Make sure the character has enough Karma to pay for the Quality.
+                        if (objQuality.Type == QualityType.Positive)
+                        {
+                            // Create the Karma expense.
+                            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                            objExpense.Create(intKarmaCost * -1,
+                                              await LanguageManager.GetStringAsync(
+                                                                       "String_ExpenseAddPositiveQuality",
+                                                                       token: GenericToken)
+                                                                   .ConfigureAwait(false)
+                                              + await LanguageManager
+                                                      .GetStringAsync("String_Space", token: GenericToken)
+                                                      .ConfigureAwait(false)
+                                              + await objQuality.GetCurrentDisplayNameShortAsync(GenericToken)
+                                                                .ConfigureAwait(false), ExpenseType.Karma,
+                                              DateTime.Now);
+                            await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken)
+                                                 .ConfigureAwait(false);
+                            await CharacterObject.DecreaseKarmaAsync(intKarmaCost, GenericToken).ConfigureAwait(false);
+
+                            ExpenseUndo objUndo = new ExpenseUndo();
+                            objUndo.CreateKarma(KarmaExpenseType.AddQuality, objQuality.InternalId);
+                            objExpense.Undo = objUndo;
+                        }
+                        else
+                        {
+                            // Create a Karma Expense for the Negative Quality.
+                            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                            objExpense.Create(
+                                0,
+                                await LanguageManager.GetStringAsync("String_ExpenseAddNegativeQuality",
+                                                                     token: GenericToken).ConfigureAwait(false)
+                                + await LanguageManager.GetStringAsync("String_Space", token: GenericToken)
+                                                       .ConfigureAwait(false)
+                                + objQuality.CurrentDisplayNameShort, ExpenseType.Karma, DateTime.Now);
+                            await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense).ConfigureAwait(false);
+
+                            ExpenseUndo objUndo = new ExpenseUndo();
+                            objUndo.CreateKarma(KarmaExpenseType.AddQuality, objQuality.InternalId);
+                            objExpense.Undo = objUndo;
+                        }
+
+                        // Add the Quality to the appropriate parent node.
+                        await CharacterObject.Qualities.AddAsync(objQuality, GenericToken).ConfigureAwait(false);
+
+                        // Add any created Weapons to the character.
+                        foreach (Weapon objWeapon in lstWeapons)
+                        {
+                            await CharacterObject.Weapons.AddAsync(objWeapon, GenericToken).ConfigureAwait(false);
+                        }
                     }
+
+                    // Removing a level
+                    for (; intSelectedLevels < intCurrentLevels; --intCurrentLevels)
+                    {
+                        Quality objInvisibleQuality = CharacterObject.Qualities.FirstOrDefault(
+                            x => x.SourceIDString == objSelectedQuality.SourceIDString
+                                 && x.Extra == objSelectedQuality.Extra && x.SourceName == objSelectedQuality.SourceName
+                                 && x.InternalId != objSelectedQuality.InternalId);
+                        if (objInvisibleQuality == null
+                            || !await RemoveQuality(objInvisibleQuality, false, false, GenericToken)
+                                .ConfigureAwait(false))
+                        {
+                            if (!await RemoveQuality(objSelectedQuality, false, false, GenericToken)
+                                    .ConfigureAwait(false))
+                            {
+                                await UpdateQualityLevelValue(objSelectedQuality, GenericToken).ConfigureAwait(false);
+                            }
+
+                            break;
+                        }
+                    }
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -8053,7 +8251,7 @@ namespace Chummer
                 if (objSelectedNode == null || objSelectedNode.Level != 1)
                     return;
 
-                string strSelectedSpell = objSelectedNode.Text;
+                string strSelectedSpell = await treSpells.DoThreadSafeFuncAsync(() => objSelectedNode.Text, GenericToken).ConfigureAwait(false);
                 int intKarmaCost;
                 string strDescription = string.Format(GlobalSettings.CultureInfo,
                                                       await LanguageManager.GetStringAsync("String_QuickeningKarma").ConfigureAwait(false),
@@ -10265,7 +10463,7 @@ namespace Chummer
                                 continue;
                             Quality objQuality = await CharacterObject.Qualities.GetValueAtAsync(i, GenericToken).ConfigureAwait(false);
                             if (objQuality.InternalId == strUndoId)
-                                objQuality.DeleteQuality();
+                                await objQuality.DeleteQualityAsync(token: GenericToken).ConfigureAwait(false);
                         }
                     }
                         break;
@@ -10724,7 +10922,8 @@ namespace Chummer
                             Cyberware objCyberware = CharacterObject.Cyberware.DeepFindById(strUndoId) ??
                                                      CharacterObject.Vehicles.FindVehicleCyberware(
                                                          x => x.InternalId == strUndoId);
-                            objCyberware?.DeleteCyberware(blnIncreaseEssenceHole: false);
+                            if (objCyberware != null)
+                                await objCyberware.DeleteCyberwareAsync(blnIncreaseEssenceHole: false).ConfigureAwait(false);
                         }
                             break;
 
@@ -10753,12 +10952,14 @@ namespace Chummer
 
                             if (objGear.Quantity <= 0)
                             {
-                                objGear.DeleteGear();
+                                await objGear.DeleteGearAsync(token: GenericToken).ConfigureAwait(false);
                             }
                             else if (objNode != null)
                             {
+                                string strText = await objGear.GetCurrentDisplayNameAsync(GenericToken)
+                                                              .ConfigureAwait(false);
                                 await objNode.TreeView.DoThreadSafeAsync(
-                                    () => objNode.Text = objGear.CurrentDisplayName, GenericToken).ConfigureAwait(false);
+                                    () => objNode.Text = strText, GenericToken).ConfigureAwait(false);
                             }
                         }
                             break;
@@ -10767,7 +10968,8 @@ namespace Chummer
                         {
                             // Locate the Vehicle that was added.
                             Vehicle objVehicle = CharacterObject.Vehicles.FindById(strUndoId);
-                            objVehicle?.DeleteVehicle();
+                            if (objVehicle != null)
+                                await objVehicle.DeleteVehicleAsync(token: GenericToken).ConfigureAwait(false);
                         }
                             break;
 
@@ -10776,7 +10978,8 @@ namespace Chummer
                             // Locate the Vehicle Mod that was added.
                             VehicleMod objVehicleMod
                                 = CharacterObject.Vehicles.FindVehicleMod(x => x.InternalId == strUndoId);
-                            objVehicleMod?.DeleteVehicleMod();
+                            if (objVehicleMod != null)
+                                await objVehicleMod.DeleteVehicleModAsync(token: GenericToken).ConfigureAwait(false);
                         }
                             break;
 
@@ -10818,12 +11021,13 @@ namespace Chummer
                                 // Remove the Gear if its Qty has been reduced to 0.
                                 if (objGear.Quantity <= 0)
                                 {
-                                    objGear.DeleteGear();
+                                    await objGear.DeleteGearAsync(token: GenericToken).ConfigureAwait(false);
                                 }
                                 else if (objNode != null)
                                 {
+                                    string strText = await objGear.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false);
                                     await objNode.TreeView.DoThreadSafeAsync(
-                                        () => objNode.Text = objGear.CurrentDisplayName, GenericToken).ConfigureAwait(false);
+                                        () => objNode.Text = strText, GenericToken).ConfigureAwait(false);
                                 }
                             }
                         }
@@ -10834,7 +11038,8 @@ namespace Chummer
                             // Locate the Weapon that was added.
                             Weapon objWeapon = CharacterObject.Vehicles.FindVehicleWeapon(strUndoId) ??
                                                CharacterObject.Weapons.DeepFindById(strUndoId);
-                            objWeapon?.DeleteWeapon();
+                            if (objWeapon != null)
+                                await objWeapon.DeleteWeaponAsync(token: GenericToken).ConfigureAwait(false);
                         }
                             break;
 
@@ -10844,21 +11049,24 @@ namespace Chummer
                             WeaponAccessory objWeaponAccessory
                                 = CharacterObject.Vehicles.FindVehicleWeaponAccessory(strUndoId) ??
                                   CharacterObject.Weapons.FindWeaponAccessory(strUndoId);
-                            objWeaponAccessory?.DeleteWeaponAccessory();
+                            if (objWeaponAccessory != null)
+                                await objWeaponAccessory.DeleteWeaponAccessoryAsync(token: GenericToken).ConfigureAwait(false);
                         }
                             break;
 
                         case NuyenExpenseType.AddVehicleWeaponMount:
                         {
                             WeaponMount objWeaponMount = CharacterObject.Vehicles.FindVehicleWeaponMount(strUndoId);
-                            objWeaponMount?.DeleteWeaponMount();
+                            if (objWeaponMount != null)
+                                await objWeaponMount.DeleteWeaponMountAsync(token: GenericToken).ConfigureAwait(false);
                         }
                             break;
 
                         case NuyenExpenseType.AddVehicleWeaponMountMod:
                         {
                             VehicleMod objVehicleMod = CharacterObject.Vehicles.FindVehicleWeaponMountMod(strUndoId);
-                            objVehicleMod?.DeleteVehicleMod();
+                            if (objVehicleMod != null)
+                                await objVehicleMod.DeleteVehicleModAsync(token: GenericToken).ConfigureAwait(false);
                         }
                             break;
 
@@ -10866,7 +11074,8 @@ namespace Chummer
                         {
                             // Locate the Armor that was added.
                             Armor objArmor = CharacterObject.Armor.FindById(strUndoId);
-                            objArmor?.DeleteArmor();
+                            if (objArmor != null)
+                                await objArmor.DeleteArmorAsync(token: GenericToken).ConfigureAwait(false);
                         }
                             break;
 
@@ -10874,7 +11083,8 @@ namespace Chummer
                         {
                             // Locate the Armor Mod that was added.
                             ArmorMod objArmorMod = CharacterObject.Armor.FindArmorMod(strUndoId);
-                            objArmorMod?.DeleteArmorMod();
+                            if (objArmorMod != null)
+                                await objArmorMod.DeleteArmorModAsync(token: GenericToken).ConfigureAwait(false);
                         }
                             break;
 
@@ -10883,7 +11093,8 @@ namespace Chummer
                             // Locate the Weapon that was added.
                             Weapon objWeapon = CharacterObject.Weapons.DeepFindById(strUndoId) ??
                                                CharacterObject.Vehicles.FindVehicleWeapon(strUndoId);
-                            objWeapon?.DeleteWeapon();
+                            if (objWeapon != null)
+                                await objWeapon.DeleteWeaponAsync(token: GenericToken).ConfigureAwait(false);
                         }
                             break;
 
@@ -10893,7 +11104,8 @@ namespace Chummer
                             WeaponAccessory objWeaponAccessory
                                 = CharacterObject.Weapons.FindWeaponAccessory(strUndoId) ??
                                   CharacterObject.Vehicles.FindVehicleWeaponAccessory(strUndoId);
-                            objWeaponAccessory?.DeleteWeaponAccessory();
+                            if (objWeaponAccessory != null)
+                                await objWeaponAccessory.DeleteWeaponAccessoryAsync(token: GenericToken).ConfigureAwait(false);
                         }
                             break;
 
@@ -10901,7 +11113,7 @@ namespace Chummer
                         {
                             // Locate the Lifestyle that was increased.
                             Lifestyle objLifestyle
-                                = CharacterObject.Lifestyles.FirstOrDefault(x => x.InternalId == strUndoId);
+                                = await CharacterObject.Lifestyles.FirstOrDefaultAsync(x => x.InternalId == strUndoId).ConfigureAwait(false);
                             if (objLifestyle != null)
                                 --objLifestyle.Increments;
                         }
@@ -10919,15 +11131,16 @@ namespace Chummer
                                 // Remove the Gear if its Qty has been reduced to 0.
                                 if (objGear.Quantity <= 0)
                                 {
-                                    objGear.DeleteGear();
+                                    await objGear.DeleteGearAsync(token: GenericToken).ConfigureAwait(false);
                                 }
                                 else
                                 {
+                                    string strText = await objGear.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false);
                                     await treArmor.DoThreadSafeAsync(x =>
                                     {
                                         TreeNode objNode = x.FindNode(strUndoId);
                                         if (objNode != null)
-                                            objNode.Text = objGear.CurrentDisplayName;
+                                            objNode.Text = strText;
                                     }, GenericToken).ConfigureAwait(false);
                                 }
                             }
@@ -10940,7 +11153,8 @@ namespace Chummer
                             Cyberware objCyberware
                                 = CharacterObject.Vehicles.FindVehicleCyberware(x => x.InternalId == strUndoId) ??
                                   CharacterObject.Cyberware.DeepFindById(strUndoId);
-                            objCyberware?.DeleteCyberware(blnIncreaseEssenceHole: false);
+                            if (objCyberware != null)
+                                await objCyberware.DeleteCyberwareAsync(blnIncreaseEssenceHole: false, token: GenericToken).ConfigureAwait(false);
                         }
                             break;
 
@@ -10950,7 +11164,8 @@ namespace Chummer
                             Gear objGear = CharacterObject.Cyberware.FindCyberwareGear(strUndoId) ??
                                            CharacterObject.Vehicles.FindVehicleGear(strUndoId) ??
                                            CharacterObject.Gear.DeepFindById(strUndoId);
-                            objGear?.DeleteGear();
+                            if (objGear != null)
+                                await objGear.DeleteGearAsync(token: GenericToken).ConfigureAwait(false);
                         }
                             break;
 
@@ -10960,7 +11175,8 @@ namespace Chummer
                             Gear objGear = CharacterObject.Weapons.FindWeaponGear(strUndoId) ??
                                            CharacterObject.Vehicles.FindVehicleGear(strUndoId) ??
                                            CharacterObject.Gear.DeepFindById(strUndoId);
-                            objGear?.DeleteGear();
+                            if (objGear != null)
+                                await objGear.DeleteGearAsync(token: GenericToken).ConfigureAwait(false);
                         }
                             break;
 
@@ -11443,7 +11659,7 @@ namespace Chummer
                                                    frmPickCyberware.MyForm.Markup, frmPickCyberware.MyForm.FreeCost,
                                                    frmPickCyberware.MyForm.BlackMarketDiscount, true,
                                                    "String_ExpensePurchaseVehicleCyberware", objCyberwareParent))
-                            objCyberware.DeleteCyberware();
+                            await objCyberware.DeleteCyberwareAsync(token: GenericToken).ConfigureAwait(false);
                     }
                 } while (blnAddAgain);
             }
@@ -11867,7 +12083,7 @@ namespace Chummer
 
                                 if (decCost > CharacterObject.Nuyen)
                                 {
-                                    objGear.DeleteGear();
+                                    await objGear.DeleteGearAsync(token: GenericToken).ConfigureAwait(false);
                                     Program.ShowMessageBox(
                                         this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen").ConfigureAwait(false),
                                         await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen").ConfigureAwait(false),
@@ -11881,7 +12097,7 @@ namespace Chummer
                                                   await LanguageManager.GetStringAsync(
                                                       "String_ExpensePurchaseCyberwareGear").ConfigureAwait(false)
                                                   + await LanguageManager.GetStringAsync("String_Space").ConfigureAwait(false)
-                                                  + objGear.CurrentDisplayNameShort, ExpenseType.Nuyen,
+                                                  + await objGear.GetCurrentDisplayNameShortAsync(GenericToken).ConfigureAwait(false), ExpenseType.Nuyen,
                                                   DateTime.Now);
                                 await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense).ConfigureAwait(false);
                                 CharacterObject.Nuyen -= decCost;
@@ -12011,7 +12227,7 @@ namespace Chummer
 
                                 if (decCost > CharacterObject.Nuyen)
                                 {
-                                    objGear.DeleteGear();
+                                    await objGear.DeleteGearAsync(token: GenericToken).ConfigureAwait(false);
                                     Program.ShowMessageBox(
                                         this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen").ConfigureAwait(false),
                                         await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen").ConfigureAwait(false),
@@ -12025,7 +12241,7 @@ namespace Chummer
                                                   await LanguageManager.GetStringAsync(
                                                       "String_ExpensePurchaseCyberwareGear").ConfigureAwait(false)
                                                   + await LanguageManager.GetStringAsync("String_Space").ConfigureAwait(false)
-                                                  + objGear.CurrentDisplayNameShort, ExpenseType.Nuyen,
+                                                  + await objGear.GetCurrentDisplayNameShortAsync(GenericToken).ConfigureAwait(false), ExpenseType.Nuyen,
                                                   DateTime.Now);
                                 await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense).ConfigureAwait(false);
                                 CharacterObject.Nuyen -= decCost;
@@ -12162,7 +12378,7 @@ namespace Chummer
 
                                 if (decCost > CharacterObject.Nuyen)
                                 {
-                                    objGear.DeleteGear();
+                                    await objGear.DeleteGearAsync(token: GenericToken).ConfigureAwait(false);
                                     Program.ShowMessageBox(
                                         this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen").ConfigureAwait(false),
                                         await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen").ConfigureAwait(false),
@@ -12176,7 +12392,7 @@ namespace Chummer
                                                   await LanguageManager.GetStringAsync(
                                                       "String_ExpensePurchaseCyberwareGear").ConfigureAwait(false)
                                                   + await LanguageManager.GetStringAsync("String_Space").ConfigureAwait(false)
-                                                  + objGear.CurrentDisplayNameShort, ExpenseType.Nuyen,
+                                                  + await objGear.GetCurrentDisplayNameShortAsync(GenericToken).ConfigureAwait(false), ExpenseType.Nuyen,
                                                   DateTime.Now);
                                 await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken).ConfigureAwait(false);
                                 CharacterObject.Nuyen -= decCost;
@@ -12300,7 +12516,7 @@ namespace Chummer
 
                                 if (decCost > CharacterObject.Nuyen)
                                 {
-                                    objGear.DeleteGear();
+                                    await objGear.DeleteGearAsync(token: GenericToken).ConfigureAwait(false);
                                     Program.ShowMessageBox(
                                         this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen").ConfigureAwait(false),
                                         await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen").ConfigureAwait(false),
@@ -12314,7 +12530,7 @@ namespace Chummer
                                                   await LanguageManager.GetStringAsync(
                                                       "String_ExpensePurchaseCyberwareGear").ConfigureAwait(false)
                                                   + await LanguageManager.GetStringAsync("String_Space").ConfigureAwait(false)
-                                                  + objGear.CurrentDisplayNameShort, ExpenseType.Nuyen,
+                                                  + await objGear.GetCurrentDisplayNameShortAsync(GenericToken).ConfigureAwait(false), ExpenseType.Nuyen,
                                                   DateTime.Now);
                                 await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken).ConfigureAwait(false);
                                 CharacterObject.Nuyen -= decCost;
@@ -12435,7 +12651,7 @@ namespace Chummer
 
                                 if (decCost > CharacterObject.Nuyen)
                                 {
-                                    objGear.DeleteGear();
+                                    await objGear.DeleteGearAsync(token: GenericToken).ConfigureAwait(false);
                                     Program.ShowMessageBox(
                                         this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen").ConfigureAwait(false),
                                         await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen").ConfigureAwait(false),
@@ -12449,7 +12665,7 @@ namespace Chummer
                                                   await LanguageManager.GetStringAsync(
                                                       "String_ExpensePurchaseWeaponGear").ConfigureAwait(false)
                                                   + await LanguageManager.GetStringAsync("String_Space").ConfigureAwait(false)
-                                                  + objGear.CurrentDisplayNameShort, ExpenseType.Nuyen,
+                                                  + await objGear.GetCurrentDisplayNameShortAsync(GenericToken).ConfigureAwait(false), ExpenseType.Nuyen,
                                                   DateTime.Now);
                                 await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken).ConfigureAwait(false);
                                 CharacterObject.Nuyen -= decCost;
@@ -12575,7 +12791,7 @@ namespace Chummer
 
                                 if (decCost > CharacterObject.Nuyen)
                                 {
-                                    objGear.DeleteGear();
+                                    await objGear.DeleteGearAsync(token: GenericToken).ConfigureAwait(false);
                                     Program.ShowMessageBox(
                                         this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen").ConfigureAwait(false),
                                         await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen").ConfigureAwait(false),
@@ -12589,7 +12805,7 @@ namespace Chummer
                                                   await LanguageManager.GetStringAsync(
                                                       "String_ExpensePurchaseWeaponGear").ConfigureAwait(false)
                                                   + await LanguageManager.GetStringAsync("String_Space").ConfigureAwait(false)
-                                                  + objGear.CurrentDisplayNameShort, ExpenseType.Nuyen,
+                                                  + await objGear.GetCurrentDisplayNameShortAsync(GenericToken).ConfigureAwait(false), ExpenseType.Nuyen,
                                                   DateTime.Now);
                                 await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken).ConfigureAwait(false);
                                 CharacterObject.Nuyen -= decCost;
@@ -12766,7 +12982,7 @@ namespace Chummer
 
                                 if (decCost > CharacterObject.Nuyen)
                                 {
-                                    objGear.DeleteGear();
+                                    await objGear.DeleteGearAsync(token: GenericToken).ConfigureAwait(false);
                                     Program.ShowMessageBox(
                                         this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen").ConfigureAwait(false),
                                         await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen").ConfigureAwait(false),
@@ -12780,7 +12996,7 @@ namespace Chummer
                                                   await LanguageManager.GetStringAsync(
                                                       "String_ExpensePurchaseWeaponGear").ConfigureAwait(false)
                                                   + await LanguageManager.GetStringAsync("String_Space").ConfigureAwait(false)
-                                                  + objGear.CurrentDisplayNameShort, ExpenseType.Nuyen,
+                                                  + await objGear.GetCurrentDisplayNameShortAsync(GenericToken).ConfigureAwait(false), ExpenseType.Nuyen,
                                                   DateTime.Now);
                                 await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken).ConfigureAwait(false);
                                 CharacterObject.Nuyen -= decCost;
@@ -12903,7 +13119,7 @@ namespace Chummer
 
                                 if (decCost > CharacterObject.Nuyen)
                                 {
-                                    objGear.DeleteGear();
+                                    await objGear.DeleteGearAsync(token: GenericToken).ConfigureAwait(false);
                                     Program.ShowMessageBox(
                                         this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen").ConfigureAwait(false),
                                         await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen").ConfigureAwait(false),
@@ -12917,7 +13133,7 @@ namespace Chummer
                                                   await LanguageManager.GetStringAsync(
                                                       "String_ExpensePurchaseWeaponGear").ConfigureAwait(false)
                                                   + await LanguageManager.GetStringAsync("String_Space").ConfigureAwait(false)
-                                                  + objGear.CurrentDisplayNameShort, ExpenseType.Nuyen,
+                                                  + await objGear.GetCurrentDisplayNameShortAsync(GenericToken).ConfigureAwait(false), ExpenseType.Nuyen,
                                                   DateTime.Now);
                                 await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken).ConfigureAwait(false);
                                 CharacterObject.Nuyen -= decCost;
@@ -17081,14 +17297,14 @@ namespace Chummer
         protected override async Task DoUpdateCharacterInfo(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            while (SkipUpdate)
-                await Utils.SafeSleepAsync(token).ConfigureAwait(false);
-            SkipUpdate = true;
-            try
+            using (await EnterReadLock.EnterAsync(CharacterObject, token).ConfigureAwait(false))
             {
-                Task tskAutosave = Task.CompletedTask;
-                using (await EnterReadLock.EnterAsync(CharacterObject, token).ConfigureAwait(false))
+                while (SkipUpdate)
+                    await Utils.SafeSleepAsync(token).ConfigureAwait(false);
+                SkipUpdate = true;
+                try
                 {
+                    Task tskAutosave = Task.CompletedTask;
                     if (AutosaveStopWatch.Elapsed.Minutes >= 5 && IsDirty)
                     {
                         tskAutosave = AutoSaveCharacter(token);
@@ -17100,10 +17316,14 @@ namespace Chummer
                         // TODO: DataBind these wherever possible
                         if (await CharacterObject.GetMetatypeAsync(token).ConfigureAwait(false) == "Free Spirit"
                             && !await CharacterObject.GetIsCritterAsync(token).ConfigureAwait(false)
-                            || (await CharacterObject.GetMetatypeCategoryAsync(token).ConfigureAwait(false)).EndsWith("Spirits", StringComparison.Ordinal))
+                            || (await CharacterObject.GetMetatypeCategoryAsync(token).ConfigureAwait(false)).EndsWith(
+                                "Spirits", StringComparison.Ordinal))
                         {
-                            await lblCritterPowerPointsLabel.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
-                            string strFreeSpiritPowerPoints = await CharacterObject.CalculateFreeSpiritPowerPointsAsync(token).ConfigureAwait(false);
+                            await lblCritterPowerPointsLabel.DoThreadSafeAsync(x => x.Visible = true, token)
+                                                            .ConfigureAwait(false);
+                            string strFreeSpiritPowerPoints = await CharacterObject
+                                                                    .CalculateFreeSpiritPowerPointsAsync(token)
+                                                                    .ConfigureAwait(false);
                             await lblCritterPowerPoints.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = true;
@@ -17112,8 +17332,11 @@ namespace Chummer
                         }
                         else if (await CharacterObject.GetIsFreeSpriteAsync(token).ConfigureAwait(false))
                         {
-                            await lblCritterPowerPointsLabel.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
-                            string strFreeSpritePowerPoints = await CharacterObject.CalculateFreeSpritePowerPointsAsync(token).ConfigureAwait(false);
+                            await lblCritterPowerPointsLabel.DoThreadSafeAsync(x => x.Visible = true, token)
+                                                            .ConfigureAwait(false);
+                            string strFreeSpritePowerPoints = await CharacterObject
+                                                                    .CalculateFreeSpritePowerPointsAsync(token)
+                                                                    .ConfigureAwait(false);
                             await lblCritterPowerPoints.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = true;
@@ -17122,8 +17345,10 @@ namespace Chummer
                         }
                         else
                         {
-                            await lblCritterPowerPointsLabel.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
-                            await lblCritterPowerPoints.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
+                            await lblCritterPowerPointsLabel.DoThreadSafeAsync(x => x.Visible = false, token)
+                                                            .ConfigureAwait(false);
+                            await lblCritterPowerPoints.DoThreadSafeAsync(x => x.Visible = false, token)
+                                                       .ConfigureAwait(false);
                         }
 
                         await Task.WhenAll(RefreshSelectedQuality(token), RefreshSelectedCyberware(token),
@@ -17143,10 +17368,10 @@ namespace Chummer
                         await objCursorWait.DisposeAsync().ConfigureAwait(false);
                     }
                 }
-            }
-            finally
-            {
-                SkipUpdate = false;
+                finally
+                {
+                    SkipUpdate = false;
+                }
             }
         }
 
@@ -19788,7 +20013,7 @@ namespace Chummer
                                            CharacterObject.Vehicles,
                                            CharacterObject.Weapons, frmPickCyberware.MyForm.Markup, frmPickCyberware.MyForm.FreeCost,
                                            frmPickCyberware.MyForm.BlackMarketDiscount, objParent: objSelectedCyberware))
-                    objCyberware.DeleteCyberware();
+                    await objCyberware.DeleteCyberwareAsync(token: token).ConfigureAwait(false);
 
                 return frmPickCyberware.MyForm.AddAgain;
             }
@@ -20223,7 +20448,7 @@ namespace Chummer
                         // A match was found, so increase the quantity instead.
                         objMatchingGear.Quantity += decGearQuantity;
 
-                        objGear.DeleteGear();
+                        await objGear.DeleteGearAsync(token: token).ConfigureAwait(false);
                         if (CharacterObjectSettings.EnforceCapacity && objMatchingGear.CapacityRemaining < 0)
                         {
                             objMatchingGear.Quantity -= decGearQuantity;
@@ -20240,7 +20465,7 @@ namespace Chummer
                         await objSelectedGear.Children.AddAsync(objGear, token).ConfigureAwait(false);
                         if (CharacterObjectSettings.EnforceCapacity && objSelectedGear.CapacityRemaining < 0)
                         {
-                            objGear.DeleteGear();
+                            await objGear.DeleteGearAsync(token: token).ConfigureAwait(false);
                             Program.ShowMessageBox(
                                 this, await LanguageManager.GetStringAsync("Message_CapacityReached", token: token).ConfigureAwait(false),
                                 await LanguageManager.GetStringAsync("MessageTitle_CapacityReached", token: token).ConfigureAwait(false),
@@ -20253,7 +20478,7 @@ namespace Chummer
                         await objSelectedMod.GearChildren.AddAsync(objGear, token).ConfigureAwait(false);
                         if (CharacterObjectSettings.EnforceCapacity && objSelectedMod.GearCapacityRemaining < 0)
                         {
-                            objGear.DeleteGear();
+                            await objGear.DeleteGearAsync(token: token).ConfigureAwait(false);
                             Program.ShowMessageBox(
                                 this, await LanguageManager.GetStringAsync("Message_CapacityReached", token: token).ConfigureAwait(false),
                                 await LanguageManager.GetStringAsync("MessageTitle_CapacityReached", token: token).ConfigureAwait(false),
@@ -20266,7 +20491,7 @@ namespace Chummer
                         await objSelectedArmor.GearChildren.AddAsync(objGear, token).ConfigureAwait(false);
                         if (CharacterObjectSettings.EnforceCapacity && objSelectedArmor.CapacityRemaining < 0)
                         {
-                            objGear.DeleteGear();
+                            await objGear.DeleteGearAsync(token: token).ConfigureAwait(false);
                             Program.ShowMessageBox(
                                 this, await LanguageManager.GetStringAsync("Message_CapacityReached", token: token).ConfigureAwait(false),
                                 await LanguageManager.GetStringAsync("MessageTitle_CapacityReached", token: token).ConfigureAwait(false),
@@ -20285,7 +20510,7 @@ namespace Chummer
                                 objMatchingGear.Quantity -= decGearQuantity;
                             // Remove any Improvements created by the Gear.
                             else
-                                objGear.DeleteGear();
+                                await objGear.DeleteGearAsync(token: token).ConfigureAwait(false);
                             Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen", token: token).ConfigureAwait(false),
                                                    await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen", token: token).ConfigureAwait(false),
                                                    MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -20297,7 +20522,7 @@ namespace Chummer
                         objExpense.Create(decCost * -1,
                                           await LanguageManager.GetStringAsync("String_ExpensePurchaseArmorGear", token: token).ConfigureAwait(false)
                                           + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false)
-                                          + objGear.CurrentDisplayNameShort, ExpenseType.Nuyen,
+                                          + await objGear.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), ExpenseType.Nuyen,
                                           DateTime.Now);
                         await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token).ConfigureAwait(false);
                         CharacterObject.Nuyen -= decCost;
@@ -24244,11 +24469,12 @@ namespace Chummer
                 objExpense.Create(decCost * -1,
                                   await LanguageManager.GetStringAsync("String_ExpensePurchaseDrug").ConfigureAwait(false) +
                                   await LanguageManager.GetStringAsync("String_Space").ConfigureAwait(false) +
-                                  selectedDrug.CurrentDisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
+                                  await selectedDrug.GetCurrentDisplayNameShortAsync(GenericToken).ConfigureAwait(false), ExpenseType.Nuyen, DateTime.Now);
                 await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken).ConfigureAwait(false);
                 CharacterObject.Nuyen -= decCost;
                 selectedDrug.Quantity++;
-                await treCustomDrugs.DoThreadSafeAsync(() => objSelectedNode.Text = selectedDrug.CurrentDisplayName,
+                string strText = await selectedDrug.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false);
+                await treCustomDrugs.DoThreadSafeAsync(() => objSelectedNode.Text = strText,
                                                        GenericToken).ConfigureAwait(false);
                 ExpenseUndo objUndo = new ExpenseUndo();
                 objUndo.CreateNuyen(NuyenExpenseType.AddGear, selectedDrug.InternalId);
@@ -24294,7 +24520,8 @@ namespace Chummer
                         return;
 
                     objDrug.Quantity -= decSelectedValue;
-                    await treCustomDrugs.DoThreadSafeAsync(() => objSelectedNode.Text = objDrug.CurrentDisplayName,
+                    string strText = await objDrug.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false);
+                    await treCustomDrugs.DoThreadSafeAsync(() => objSelectedNode.Text = strText,
                                                            GenericToken).ConfigureAwait(false);
                 }
 

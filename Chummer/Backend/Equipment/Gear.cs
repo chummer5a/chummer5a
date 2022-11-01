@@ -3980,9 +3980,156 @@ namespace Chummer.Backend.Equipment
             return decReturn;
         }
 
+        /// <summary>
+        /// Recursive method to delete a piece of Gear and its Improvements from the character. Returns total extra cost removed unrelated to children.
+        /// </summary>
+        public async ValueTask<decimal> DeleteGearAsync(bool blnDoRemoval = true, CancellationToken token = default)
+        {
+            if (blnDoRemoval)
+            {
+                switch (Parent)
+                {
+                    case IHasGear objHasChildren:
+                        await objHasChildren.GearChildren.RemoveAsync(this, token).ConfigureAwait(false);
+                        break;
+
+                    case IHasChildren<Gear> objHasChildren:
+                        await objHasChildren.Children.RemoveAsync(this, token).ConfigureAwait(false);
+                        break;
+
+                    default:
+                        await CharacterObject.Gear.RemoveAsync(this, token).ConfigureAwait(false);
+                        break;
+                }
+            }
+
+            LoadedIntoClip = null;
+
+            // Remove any children the Gear may have.
+            decimal decReturn = await Children.SumAsync(x => x.DeleteGearAsync(false, token).AsTask(), token)
+                                              .ConfigureAwait(false);
+
+            // Remove the Gear Weapon created by the Gear if applicable.
+            if (!WeaponID.IsEmptyGuid())
+            {
+                foreach (Weapon objDeleteWeapon in _objCharacter.Weapons
+                                                                .DeepWhere(x => x.Children,
+                                                                           x => x.ParentID == InternalId).ToList())
+                {
+                    decReturn += objDeleteWeapon.TotalCost
+                                 + await objDeleteWeapon.DeleteWeaponAsync(token: token).ConfigureAwait(false);
+                }
+
+                foreach (Vehicle objVehicle in _objCharacter.Vehicles)
+                {
+                    foreach (Weapon objDeleteWeapon in objVehicle.Weapons
+                                                                 .DeepWhere(x => x.Children,
+                                                                            x => x.ParentID == InternalId).ToList())
+                    {
+                        decReturn += objDeleteWeapon.TotalCost
+                                     + await objDeleteWeapon.DeleteWeaponAsync(token: token).ConfigureAwait(false);
+                    }
+
+                    foreach (VehicleMod objMod in objVehicle.Mods)
+                    {
+                        foreach (Weapon objDeleteWeapon in objMod.Weapons
+                                                                 .DeepWhere(x => x.Children,
+                                                                            x => x.ParentID == InternalId).ToList())
+                        {
+                            decReturn += objDeleteWeapon.TotalCost
+                                         + await objDeleteWeapon.DeleteWeaponAsync(token: token).ConfigureAwait(false);
+                        }
+                    }
+
+                    foreach (WeaponMount objMount in objVehicle.WeaponMounts)
+                    {
+                        foreach (Weapon objDeleteWeapon in objMount.Weapons
+                                                                   .DeepWhere(x => x.Children,
+                                                                              x => x.ParentID == InternalId).ToList())
+                        {
+                            decReturn += objDeleteWeapon.TotalCost
+                                         + await objDeleteWeapon.DeleteWeaponAsync(token: token).ConfigureAwait(false);
+                        }
+
+                        foreach (VehicleMod objMod in objMount.Mods)
+                        {
+                            foreach (Weapon objDeleteWeapon in objMod.Weapons
+                                                                     .DeepWhere(x => x.Children,
+                                                                         x => x.ParentID == InternalId).ToList())
+                            {
+                                decReturn += objDeleteWeapon.TotalCost
+                                             + await objDeleteWeapon.DeleteWeaponAsync(token: token)
+                                                                    .ConfigureAwait(false);
+                            }
+                        }
+                    }
+                }
+            }
+
+            decReturn +=
+                await ImprovementManager
+                      .RemoveImprovementsAsync(_objCharacter, Improvement.ImprovementSource.Gear, InternalId, token)
+                      .ConfigureAwait(false);
+
+            switch (Category)
+            {
+                // If a Focus is being removed, make sure the actual Focus is being removed from the character as well.
+                case "Foci":
+                case "Metamagic Foci":
+                {
+                    HashSet<Focus> lstRemoveFoci = new HashSet<Focus>();
+                    foreach (Focus objFocus in _objCharacter.Foci)
+                    {
+                        if (objFocus.GearObject == this)
+                            lstRemoveFoci.Add(objFocus);
+                    }
+
+                    foreach (Focus objFocus in lstRemoveFoci)
+                    {
+                        /*
+                        foreach (Power objPower in objCharacter.Powers)
+                        {
+                            if (objPower.BonusSource == objFocus.GearId)
+                            {
+                                //objPower.FreeLevels -= (objFocus.Rating / 4);
+                            }
+                        }
+                        */
+                        await _objCharacter.Foci.RemoveAsync(objFocus, token).ConfigureAwait(false);
+                    }
+
+                    break;
+                }
+                // If a Stacked Focus is being removed, make sure the Stacked Foci and its bonuses are being removed.
+                case "Stacked Focus":
+                {
+                    StackedFocus objStack = await _objCharacter.StackedFoci
+                                                               .FindAsync(x => x.GearId == InternalId, token)
+                                                               .ConfigureAwait(false);
+                    if (objStack != null)
+                    {
+                        decReturn += await ImprovementManager.RemoveImprovementsAsync(_objCharacter,
+                                                                 Improvement.ImprovementSource.StackedFocus,
+                                                                 objStack.InternalId, token)
+                                                             .ConfigureAwait(false);
+                        await _objCharacter.StackedFoci.RemoveAsync(objStack, token).ConfigureAwait(false);
+                        await objStack.DisposeAsync().ConfigureAwait(false);
+                    }
+
+                    break;
+                }
+            }
+
+            this.SetActiveCommlink(_objCharacter, false);
+
+            await DisposeSelfAsync().ConfigureAwait(false);
+
+            return decReturn;
+        }
+
         public async ValueTask ReaddImprovements(TreeView treGears, StringBuilder sbdOutdatedItems,
-            ICollection<string> lstInternalIdFilter,
-            Improvement.ImprovementSource eSource = Improvement.ImprovementSource.Gear, bool blnStackEquipped = true)
+                                                 ICollection<string> lstInternalIdFilter,
+                                                 Improvement.ImprovementSource eSource = Improvement.ImprovementSource.Gear, bool blnStackEquipped = true)
         {
             // We're only re-apply improvements a list of items, not all of them
             if (lstInternalIdFilter?.Contains(InternalId) != false)

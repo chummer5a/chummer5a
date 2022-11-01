@@ -51,7 +51,7 @@ namespace Chummer
                 = await dicCharacterSettings.TryGetValueAsync(GlobalSettings.DefaultMasterIndexSettingDefaultValue, token).ConfigureAwait(false);
             return blnSuccess
                 ? objReturn
-                : dicCharacterSettings.Values.First();
+                : (await dicCharacterSettings.GetReadOnlyValuesAsync(token).ConfigureAwait(false)).First();
         }
 
         private static readonly ReadOnlyCollection<string> _astrFileNames = Array.AsReadOnly(new[]

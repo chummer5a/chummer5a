@@ -8675,64 +8675,68 @@ namespace Chummer
         {
             if (IsLoading)
                 return;
-            CancellationTokenSource objSource = null;
-            if (token != GenericToken)
+            using (await EnterReadLock.EnterAsync(CharacterObject, token).ConfigureAwait(false))
             {
-                objSource = CancellationTokenSource.CreateLinkedTokenSource(token, GenericToken);
-                token = objSource.Token;
-            }
-            try
-            {
-                token.ThrowIfCancellationRequested();
-                if (!await _objUpdateCharacterInfoSemaphoreSlim.WaitAsync(0, token).ConfigureAwait(false))
-                    return;
+                CancellationTokenSource objSource = null;
+                if (token != GenericToken)
+                {
+                    objSource = CancellationTokenSource.CreateLinkedTokenSource(token, GenericToken);
+                    token = objSource.Token;
+                }
+
                 try
                 {
-                    GenericToken.ThrowIfCancellationRequested();
-                    if (_objUpdateCharacterInfoCancellationTokenSource != null)
+                    token.ThrowIfCancellationRequested();
+                    if (!await _objUpdateCharacterInfoSemaphoreSlim.WaitAsync(0, token).ConfigureAwait(false))
+                        return;
+                    try
                     {
-                        if (!_objUpdateCharacterInfoCancellationTokenSource.IsCancellationRequested)
+                        GenericToken.ThrowIfCancellationRequested();
+                        if (_objUpdateCharacterInfoCancellationTokenSource != null)
+                        {
+                            if (!_objUpdateCharacterInfoCancellationTokenSource.IsCancellationRequested)
+                            {
+                                try
+                                {
+                                    _objUpdateCharacterInfoCancellationTokenSource.Cancel(false);
+                                }
+                                catch (ObjectDisposedException)
+                                {
+                                    //swallow this
+                                }
+                            }
+
+                            _objUpdateCharacterInfoCancellationTokenSource.Dispose();
+                            _objUpdateCharacterInfoCancellationTokenSource = null;
+                        }
+
+                        token.ThrowIfCancellationRequested();
+                        if (_tskUpdateCharacterInfo != null)
                         {
                             try
                             {
-                                _objUpdateCharacterInfoCancellationTokenSource.Cancel(false);
+                                await _tskUpdateCharacterInfo.ConfigureAwait(false);
                             }
-                            catch (ObjectDisposedException)
+                            catch (OperationCanceledException)
                             {
                                 //swallow this
                             }
                         }
 
-                        _objUpdateCharacterInfoCancellationTokenSource.Dispose();
-                        _objUpdateCharacterInfoCancellationTokenSource = null;
+                        token.ThrowIfCancellationRequested();
+                        _objUpdateCharacterInfoCancellationTokenSource = new CancellationTokenSource();
+                        CancellationToken objToken = _objUpdateCharacterInfoCancellationTokenSource.Token;
+                        _tskUpdateCharacterInfo = Task.Run(() => DoUpdateCharacterInfo(objToken), objToken);
                     }
-
-                    token.ThrowIfCancellationRequested();
-                    if (_tskUpdateCharacterInfo != null)
+                    finally
                     {
-                        try
-                        {
-                            await _tskUpdateCharacterInfo.ConfigureAwait(false);
-                        }
-                        catch (OperationCanceledException)
-                        {
-                            //swallow this
-                        }
+                        _objUpdateCharacterInfoSemaphoreSlim.Release();
                     }
-
-                    token.ThrowIfCancellationRequested();
-                    _objUpdateCharacterInfoCancellationTokenSource = new CancellationTokenSource();
-                    CancellationToken objToken = _objUpdateCharacterInfoCancellationTokenSource.Token;
-                    _tskUpdateCharacterInfo = Task.Run(() => DoUpdateCharacterInfo(objToken), objToken);
                 }
                 finally
                 {
-                    _objUpdateCharacterInfoSemaphoreSlim.Release();
+                    objSource?.Dispose();
                 }
-            }
-            finally
-            {
-                objSource?.Dispose();
             }
         }
 

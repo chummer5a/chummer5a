@@ -6011,6 +6011,281 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Recursive method to delete a piece of 'ware and its Improvements from the character. Returns total extra cost removed unrelated to children.
+        /// </summary>
+        public async ValueTask<decimal> DeleteCyberwareAsync(bool blnDoRemoval = true,
+                                                             bool blnIncreaseEssenceHole = true,
+                                                             CancellationToken token = default)
+        {
+            // Unequip all modular children first so that we don't delete them
+            Cyberware objModularChild
+                = Children.DeepFirstOrDefault(x => x.Children, x => !string.IsNullOrEmpty(x.PlugsIntoModularMount));
+            while (objModularChild != null)
+            {
+                await Children.RemoveAsync(objModularChild, token).ConfigureAwait(false);
+                await _objCharacter.Cyberware.AddAsync(objModularChild, token).ConfigureAwait(false);
+                await objModularChild.ChangeModularEquipAsync(false, token: token).ConfigureAwait(false);
+                objModularChild
+                    = Children.DeepFirstOrDefault(x => x.Children, x => !string.IsNullOrEmpty(x.PlugsIntoModularMount));
+            }
+
+            // Remove the cyberware from the actual parent
+            if (blnDoRemoval)
+            {
+                if (Parent != null)
+                {
+                    await Parent.Children.RemoveAsync(this, token).ConfigureAwait(false);
+                }
+                else if (ParentVehicle != null)
+                {
+                    _objCharacter.Vehicles.FindVehicleCyberware(x => x.InternalId == InternalId,
+                                                                out VehicleMod objMod);
+                    await objMod.Cyberware.RemoveAsync(this, token).ConfigureAwait(false);
+                }
+                else if (await _objCharacter.Cyberware.ContainsAsync(this, token).ConfigureAwait(false))
+                {
+                    if (blnIncreaseEssenceHole && _objCharacter.Created && SourceID != EssenceAntiHoleGUID
+                        && SourceID != EssenceHoleGUID)
+                    {
+                        // Add essence hole.
+                        decimal decEssenceHoleToAdd = await GetCalculatedESSAsync(token).ConfigureAwait(false);
+                        await _objCharacter.Cyberware.RemoveAsync(this, token).ConfigureAwait(false);
+                        _objCharacter.IncreaseEssenceHole(decEssenceHoleToAdd);
+                    }
+                    else
+                        await _objCharacter.Cyberware.RemoveAsync(this, token).ConfigureAwait(false);
+                }
+            }
+
+            // Remove any children the Gear may have.
+            decimal decReturn = await Children
+                                      .SumAsync(x => x.DeleteCyberwareAsync(false, token: token).AsTask(), token: token)
+                                      .ConfigureAwait(false);
+
+            // Remove the Gear Weapon created by the Gear if applicable.
+            if (!WeaponID.IsEmptyGuid())
+            {
+                foreach (Weapon objDeleteWeapon in _objCharacter.Weapons
+                                                                .DeepWhere(x => x.Children,
+                                                                           x => x.ParentID == InternalId).ToList())
+                {
+                    decReturn += objDeleteWeapon.TotalCost
+                                 + await objDeleteWeapon.DeleteWeaponAsync(token: token).ConfigureAwait(false);
+                }
+
+                foreach (Vehicle objVehicle in _objCharacter.Vehicles)
+                {
+                    foreach (Weapon objDeleteWeapon in objVehicle.Weapons
+                                                                 .DeepWhere(x => x.Children,
+                                                                            x => x.ParentID == InternalId).ToList())
+                    {
+                        decReturn += objDeleteWeapon.TotalCost
+                                     + await objDeleteWeapon.DeleteWeaponAsync(token: token).ConfigureAwait(false);
+                    }
+
+                    foreach (VehicleMod objMod in objVehicle.Mods)
+                    {
+                        foreach (Weapon objDeleteWeapon in objMod.Weapons
+                                                                 .DeepWhere(x => x.Children,
+                                                                            x => x.ParentID == InternalId).ToList())
+                        {
+                            decReturn += objDeleteWeapon.TotalCost
+                                         + await objDeleteWeapon.DeleteWeaponAsync(token: token).ConfigureAwait(false);
+                        }
+                    }
+
+                    foreach (WeaponMount objMount in objVehicle.WeaponMounts)
+                    {
+                        foreach (Weapon objDeleteWeapon in objMount.Weapons
+                                                                   .DeepWhere(x => x.Children,
+                                                                              x => x.ParentID == InternalId).ToList())
+                        {
+                            decReturn += objDeleteWeapon.TotalCost
+                                         + await objDeleteWeapon.DeleteWeaponAsync(token: token).ConfigureAwait(false);
+                        }
+                    }
+                }
+            }
+
+            if (!WeaponAccessoryID.IsEmptyGuid())
+            {
+                // Locate the Weapon Accessory that was added.
+                WeaponAccessory objWeaponAccessory
+                    = _objCharacter.Vehicles.FindVehicleWeaponAccessory(WeaponAccessoryID) ??
+                      _objCharacter.Weapons.FindWeaponAccessory(WeaponAccessoryID);
+                if (objWeaponAccessory != null)
+                    await objWeaponAccessory.DeleteWeaponAccessoryAsync(token: token).ConfigureAwait(false);
+            }
+
+            // Remove any Vehicle that the Cyberware created.
+            if (!VehicleID.IsEmptyGuid())
+            {
+                foreach (Vehicle objLoopVehicle in await _objCharacter.Vehicles
+                                                                      .ToListAsync(
+                                                                          x => x.ParentID == InternalId, token: token)
+                                                                      .ConfigureAwait(false))
+                {
+                    decReturn += objLoopVehicle.TotalCost
+                                 + await objLoopVehicle.DeleteVehicleAsync(token).ConfigureAwait(false);
+                }
+            }
+
+            decReturn += await ImprovementManager.RemoveImprovementsAsync(_objCharacter, SourceType, InternalId, token)
+                                                 .ConfigureAwait(false);
+            decReturn += await ImprovementManager
+                               .RemoveImprovementsAsync(_objCharacter, SourceType, InternalId + "Pair", token)
+                               .ConfigureAwait(false);
+            if (PairBonus != null)
+            {
+                // This cyberware should not be included in the count to make things easier.
+                List<Cyberware> lstPairableCyberwares = _objCharacter.Cyberware.DeepWhere(x => x.Children,
+                                                                         x => x != this && IncludePair.Contains(x.Name)
+                                                                             && x.Extra == Extra &&
+                                                                             x.IsModularCurrentlyEquipped)
+                                                                     .ToList();
+                int intCount = lstPairableCyberwares.Count;
+                // Need to use slightly different logic if this cyberware has a location (Left or Right) and only pairs with itself because Lefts can only be paired with Rights and Rights only with Lefts
+                if (!string.IsNullOrEmpty(Location) && IncludePair.All(x => x == Name))
+                {
+                    int intMatchLocationCount = 0;
+                    int intNotMatchLocationCount = 0;
+                    foreach (Cyberware objPairableCyberware in lstPairableCyberwares)
+                    {
+                        if (objPairableCyberware.Location != Location)
+                            ++intNotMatchLocationCount;
+                        else
+                            ++intMatchLocationCount;
+                    }
+
+                    // Set the count to the total number of cyberwares in matching pairs, which would mean 2x the number of whichever location contains the fewest members (since every single one of theirs would have a pair)
+                    intCount = Math.Min(intMatchLocationCount, intNotMatchLocationCount) * 2;
+                }
+
+                foreach (Cyberware objLoopCyberware in lstPairableCyberwares)
+                {
+                    await ImprovementManager.RemoveImprovementsAsync(_objCharacter, objLoopCyberware.SourceType,
+                                                                     objLoopCyberware.InternalId + "Pair", token)
+                                            .ConfigureAwait(false);
+                    // Go down the list and create pair bonuses for every second item
+                    if (intCount > 0 && (intCount & 1) == 0)
+                    {
+                        if (!string.IsNullOrEmpty(objLoopCyberware.Forced) && objLoopCyberware.Forced != "Left"
+                                                                           && objLoopCyberware.Forced != "Right")
+                            ImprovementManager.ForcedValue = objLoopCyberware.Forced;
+                        else if (objLoopCyberware.Bonus != null && !string.IsNullOrEmpty(objLoopCyberware.Extra))
+                            ImprovementManager.ForcedValue = objLoopCyberware.Extra;
+                        await ImprovementManager.CreateImprovementsAsync(_objCharacter, objLoopCyberware.SourceType,
+                                                                         objLoopCyberware.InternalId + "Pair",
+                                                                         objLoopCyberware.PairBonus,
+                                                                         await objLoopCyberware.GetRatingAsync(token)
+                                                                             .ConfigureAwait(false),
+                                                                         await objLoopCyberware
+                                                                               .GetCurrentDisplayNameShortAsync(token)
+                                                                               .ConfigureAwait(false), token: token)
+                                                .ConfigureAwait(false);
+                    }
+
+                    --intCount;
+                }
+            }
+
+            decReturn += await ImprovementManager
+                               .RemoveImprovementsAsync(_objCharacter, SourceType, InternalId + "WirelessPair", token)
+                               .ConfigureAwait(false);
+            if (WirelessPairBonus != null)
+            {
+                // This cyberware should not be included in the count to make things easier.
+                List<Cyberware> lstPairableCyberwares = _objCharacter.Cyberware.DeepWhere(x => x.Children,
+                    x => x != this && IncludeWirelessPair.Contains(x.Name) && x.Extra == Extra &&
+                         x.IsModularCurrentlyEquipped).ToList();
+                int intCount = lstPairableCyberwares.Count;
+                // Need to use slightly different logic if this cyberware has a location (Left or Right) and only pairs with itself because Lefts can only be paired with Rights and Rights only with Lefts
+                if (!string.IsNullOrEmpty(Location) && IncludeWirelessPair.All(x => x == Name))
+                {
+                    int intMatchLocationCount = 0;
+                    int intNotMatchLocationCount = 0;
+                    foreach (Cyberware objPairableCyberware in lstPairableCyberwares)
+                    {
+                        if (objPairableCyberware.Location != Location)
+                            ++intNotMatchLocationCount;
+                        else
+                            ++intMatchLocationCount;
+                    }
+
+                    // Set the count to the total number of cyberwares in matching pairs, which would mean 2x the number of whichever location contains the fewest members (since every single one of theirs would have a pair)
+                    intCount = Math.Min(intMatchLocationCount, intNotMatchLocationCount) * 2;
+                }
+
+                foreach (Cyberware objLoopCyberware in lstPairableCyberwares)
+                {
+                    await ImprovementManager.RemoveImprovementsAsync(_objCharacter, objLoopCyberware.SourceType,
+                                                                     objLoopCyberware.InternalId + "WirelessPair",
+                                                                     token).ConfigureAwait(false);
+                    if (objLoopCyberware.WirelessPairBonus?.SelectSingleNode("@mode")?.Value == "replace")
+                    {
+                        ImprovementManager.DisableImprovements(_objCharacter,
+                                                               await _objCharacter.Improvements
+                                                                   .ToListAsync(
+                                                                       x => x.ImproveSource
+                                                                            == objLoopCyberware.SourceType
+                                                                            && x.SourceName
+                                                                            == objLoopCyberware.InternalId,
+                                                                       token: token)
+                                                                   .ConfigureAwait(false));
+                    }
+
+                    // Go down the list and create pair bonuses for every second item
+                    if (intCount > 0 && intCount % 2 == 0)
+                    {
+                        await ImprovementManager.CreateImprovementsAsync(_objCharacter, objLoopCyberware.SourceType,
+                                                                         objLoopCyberware.InternalId + "WirelessPair",
+                                                                         objLoopCyberware.WirelessPairBonus,
+                                                                         await objLoopCyberware.GetRatingAsync(token)
+                                                                             .ConfigureAwait(false),
+                                                                         await objLoopCyberware
+                                                                               .GetCurrentDisplayNameShortAsync(token)
+                                                                               .ConfigureAwait(false),
+                                                                         token: token).ConfigureAwait(false);
+                    }
+
+                    --intCount;
+                }
+            }
+
+            decReturn += await GearChildren.SumAsync(x => x.DeleteGearAsync(false, token).AsTask(), token)
+                                           .ConfigureAwait(false);
+
+            // Fix for legacy characters with old addqualities improvements.
+            XPathNavigator objDataNode = await this.GetNodeXPathAsync(token: token).ConfigureAwait(false);
+            XPathNodeIterator xmlOldAddQualitiesList = objDataNode != null
+                ? await objDataNode.SelectAndCacheExpressionAsync("addqualities/addquality", token)
+                                   .ConfigureAwait(false)
+                : null;
+            if (xmlOldAddQualitiesList?.Count > 0)
+            {
+                foreach (XPathNavigator objNode in xmlOldAddQualitiesList)
+                {
+                    string strText = objNode.Value;
+                    Quality objQuality = await _objCharacter.Qualities
+                                                            .FirstOrDefaultAsync(x => x.Name == strText, token)
+                                                            .ConfigureAwait(false);
+                    if (objQuality == null)
+                        continue;
+                    // We need to add in the return cost of deleting the quality, so call this manually
+                    decReturn += await objQuality.DeleteQualityAsync(token: token).ConfigureAwait(false);
+                    decReturn += await ImprovementManager
+                                       .RemoveImprovementsAsync(_objCharacter,
+                                                                Improvement.ImprovementSource.CritterPower,
+                                                                objQuality.InternalId, token).ConfigureAwait(false);
+                }
+            }
+
+            await DisposeSelfAsync().ConfigureAwait(false);
+
+            return decReturn;
+        }
+
+        /// <summary>
         /// Checks a nominated piece of gear for Availability requirements.
         /// </summary>
         /// <param name="dicRestrictedGearLimits">Dictionary of Restricted Gear availabilities still available with the amount of items that can still use that availability.</param>

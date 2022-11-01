@@ -1777,12 +1777,22 @@ namespace Chummer.Backend.Equipment
         {
             if (blnDoRemoval)
                 Parent.WeaponAccessories.Remove(this);
-            decimal decReturn = 0;
             // Remove any children the Gear may have.
-            foreach (Gear objLoopGear in GearChildren)
-                decReturn += objLoopGear.DeleteGear(false);
+            decimal decReturn = GearChildren.Sum(x => x.DeleteGear(false));
 
             DisposeSelf();
+
+            return decReturn;
+        }
+
+        public async ValueTask<decimal> DeleteWeaponAccessoryAsync(bool blnDoRemoval = true, CancellationToken token = default)
+        {
+            if (blnDoRemoval)
+                await Parent.WeaponAccessories.RemoveAsync(this, token).ConfigureAwait(false);
+            // Remove any children the Gear may have.
+            decimal decReturn = await GearChildren.SumAsync(x => x.DeleteGearAsync(false, token).AsTask(), token).ConfigureAwait(false);
+
+            await DisposeSelfAsync().ConfigureAwait(false);
 
             return decReturn;
         }

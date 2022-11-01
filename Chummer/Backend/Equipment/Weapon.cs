@@ -163,7 +163,7 @@ namespace Chummer.Backend.Equipment
             _lstAccessories.AddTaggedCollectionChanged(this, AccessoriesOnCollectionChanged);
         }
 
-        private void AccessoriesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async void AccessoriesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == NotifyCollectionChangedAction.Move)
                 return;
@@ -200,7 +200,7 @@ namespace Chummer.Backend.Equipment
                         }
                         if (objOldItem.AmmoSlots > 0)
                         {
-                            RemoveAmmoSlots(objOldItem);
+                            await RemoveAmmoSlotsAsync(objOldItem).ConfigureAwait(false);
                         }
                     }
                     break;
@@ -217,7 +217,7 @@ namespace Chummer.Backend.Equipment
                         }
                         if (objOldItem.AmmoSlots > 0)
                         {
-                            RemoveAmmoSlots(objOldItem);
+                            await RemoveAmmoSlotsAsync(objOldItem).ConfigureAwait(false);
                         }
                     }
                     foreach (WeaponAccessory objNewItem in e.NewItems)
@@ -6546,13 +6546,9 @@ namespace Chummer.Backend.Equipment
             // unload any clips before we die
             UnloadAll();
 
-            decimal decReturn = 0;
             // Remove any children the Gear may have.
-            foreach (Weapon objChild in Children)
-                decReturn += objChild.DeleteWeapon(false);
-
-            foreach (WeaponAccessory objLoopAccessory in WeaponAccessories)
-                decReturn += objLoopAccessory.DeleteWeaponAccessory(false);
+            decimal decReturn = Children.Sum(x => x.DeleteWeapon(false))
+                                + WeaponAccessories.Sum(x => x.DeleteWeaponAccessory(false));
 
             foreach (Weapon objDeleteWeapon in _objCharacter.Weapons.DeepWhere(x => x.Children, x => x.ParentID == InternalId).ToList())
             {
@@ -6585,6 +6581,89 @@ namespace Chummer.Backend.Equipment
             decReturn += ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Weapon, InternalId + "Wireless");
 
             DisposeSelf();
+
+            return decReturn;
+        }
+
+        /// <summary>
+        /// Recursive method to delete a piece of 'ware and its Improvements from the character. Returns total extra cost removed unrelated to children.
+        /// </summary>
+        public async ValueTask<decimal> DeleteWeaponAsync(bool blnDoRemoval = true, CancellationToken token = default)
+        {
+            // Remove the Weapon from the character.
+            if (blnDoRemoval)
+            {
+                if (Parent != null)
+                    await Parent.Children.RemoveAsync(this, token).ConfigureAwait(false);
+                else if (ParentVehicle != null)
+                {
+                    if (ParentVehicleMod != null)
+                        await ParentVehicleMod.Weapons.RemoveAsync(this, token).ConfigureAwait(false);
+                    else if (ParentMount != null)
+                        await ParentMount.Weapons.RemoveAsync(this, token).ConfigureAwait(false);
+                    else
+                        await ParentVehicle.Weapons.RemoveAsync(this, token).ConfigureAwait(false);
+                }
+                else
+                    await _objCharacter.Weapons.RemoveAsync(this, token).ConfigureAwait(false);
+            }
+
+            // unload any clips before we die
+            await UnloadAllAsync(token).ConfigureAwait(false);
+
+            // Remove any children the Gear may have.
+            decimal decReturn = await Children.SumAsync(x => x.DeleteWeaponAsync(false, token).AsTask(), token: token)
+                                              .ConfigureAwait(false)
+                                + await WeaponAccessories
+                                        .SumAsync(x => x.DeleteWeaponAccessoryAsync(false, token).AsTask(), token)
+                                        .ConfigureAwait(false);
+
+            foreach (Weapon objDeleteWeapon in _objCharacter.Weapons
+                                                            .DeepWhere(x => x.Children, x => x.ParentID == InternalId)
+                                                            .ToList())
+            {
+                decReturn += objDeleteWeapon.TotalCost
+                             + await objDeleteWeapon.DeleteWeaponAsync(token: token).ConfigureAwait(false);
+            }
+
+            foreach (Vehicle objVehicle in _objCharacter.Vehicles)
+            {
+                foreach (Weapon objDeleteWeapon in objVehicle.Weapons
+                                                             .DeepWhere(x => x.Children, x => x.ParentID == InternalId)
+                                                             .ToList())
+                {
+                    decReturn += objDeleteWeapon.TotalCost
+                                 + await objDeleteWeapon.DeleteWeaponAsync(token: token).ConfigureAwait(false);
+                }
+
+                foreach (VehicleMod objMod in objVehicle.Mods)
+                {
+                    foreach (Weapon objDeleteWeapon in objMod.Weapons
+                                                             .DeepWhere(x => x.Children, x => x.ParentID == InternalId)
+                                                             .ToList())
+                    {
+                        decReturn += objDeleteWeapon.TotalCost
+                                     + await objDeleteWeapon.DeleteWeaponAsync(token: token).ConfigureAwait(false);
+                    }
+                }
+
+                foreach (WeaponMount objMount in objVehicle.WeaponMounts)
+                {
+                    foreach (Weapon objDeleteWeapon in objMount.Weapons
+                                                               .DeepWhere(x => x.Children,
+                                                                          x => x.ParentID == InternalId).ToList())
+                    {
+                        decReturn += objDeleteWeapon.TotalCost
+                                     + await objDeleteWeapon.DeleteWeaponAsync(token: token).ConfigureAwait(false);
+                    }
+                }
+            }
+
+            decReturn += await ImprovementManager
+                               .RemoveImprovementsAsync(_objCharacter, Improvement.ImprovementSource.Weapon,
+                                                        InternalId + "Wireless", token).ConfigureAwait(false);
+
+            await DisposeSelfAsync().ConfigureAwait(false);
 
             return decReturn;
         }
@@ -6645,7 +6724,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public async ValueTask Reload(ICollection<Gear> lstGears, TreeView treGearView, CancellationToken token = default)
+        public async ValueTask Reload(IAsyncCollection<Gear> lstGears, TreeView treGearView, CancellationToken token = default)
         {
             List<string> lstCount = new List<string>(1);
             string ammoString = await CalculatedAmmoAsync(GlobalSettings.CultureInfo, GlobalSettings.DefaultLanguage, token).ConfigureAwait(false);
@@ -6814,7 +6893,7 @@ namespace Chummer.Backend.Equipment
                             Gear objDuplicatedParent = new Gear(_objCharacter);
                             objDuplicatedParent.Copy(objParent);
                             objDuplicatedParent.Quantity = 1;
-                            lstGears.Add(objDuplicatedParent);
+                            await lstGears.AddAsync(objDuplicatedParent, token).ConfigureAwait(false);
                             --objParent.Quantity;
                             Gear objNewSelectedAmmo = objDuplicatedParent.Children.DeepFindById(frmReloadWeapon.MyForm.SelectedAmmo);
                             if (objNewSelectedAmmo == null)
@@ -6840,7 +6919,7 @@ namespace Chummer.Backend.Equipment
                         {
                             // We need more ammo for a full top-up than the quantity of gear, so just merge the gears and delete the old gear.
                             objCurrentlyLoadedAmmo.Quantity += objSelectedAmmo.Quantity;
-                            objSelectedAmmo.DeleteGear();
+                            await objSelectedAmmo.DeleteGearAsync(token: token).ConfigureAwait(false);
                             GetClip(_intActiveAmmoSlot).Ammo = objCurrentlyLoadedAmmo.Quantity.ToInt32(); // Bypass AmmoRemaining so as not to alter the gear quantity
                         }
                         else
@@ -6869,7 +6948,7 @@ namespace Chummer.Backend.Equipment
                         Gear objNewSelectedAmmo = new Gear(_objCharacter);
                         objNewSelectedAmmo.Copy(objSelectedAmmo);
                         objNewSelectedAmmo.Quantity = decQty.ToInt32();
-                        lstGears.Add(objNewSelectedAmmo);
+                        await lstGears.AddAsync(objNewSelectedAmmo, token).ConfigureAwait(false);
                         objSelectedAmmo.Quantity -= decQty.ToInt32();
                         string strId2 = objSelectedAmmo.InternalId;
                         string strText2 = await objSelectedAmmo.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
@@ -6919,21 +6998,21 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public Task Unload(ICollection<Gear> lstGears, TreeView treGearView, CancellationToken token = default)
+        public async Task Unload(IAsyncCollection<Gear> lstGears, TreeView treGearView, CancellationToken token = default)
         {
             Clip objClip = GetClip(ActiveAmmoSlot);
-            Gear objAmmo = Unload(lstGears, objClip);
+            Gear objAmmo = await UnloadGearAsync(lstGears, objClip, token).ConfigureAwait(false);
             if (objAmmo == null)
-                return Task.CompletedTask;
-            return treGearView.DoThreadSafeAsync(x =>
+                return;
+            await treGearView.DoThreadSafeAsync(x =>
             {
                 // Refresh the Gear tree.
                 TreeNode objSelectedNode = x.FindNode(objAmmo.InternalId);
                 if (objSelectedNode != null) objSelectedNode.Text = objAmmo.CurrentDisplayName;
-            }, token: token);
+            }, token: token).ConfigureAwait(false);
         }
 
-        private static Gear Unload(ICollection<Gear> lstGears, Clip clipToUnload)
+        private static Gear UnloadGear(IAsyncCollection<Gear> lstGears, Clip clipToUnload)
         {
             Gear objAmmo = clipToUnload.AmmoGear;
             if (objAmmo == null)
@@ -6947,6 +7026,27 @@ namespace Chummer.Backend.Equipment
                 objAmmo.DeleteGear();
                 return objMergeGear;
             }
+            return objAmmo;
+        }
+
+        private static async ValueTask<Gear> UnloadGearAsync(IAsyncCollection<Gear> lstGears, Clip clipToUnload,
+                                                             CancellationToken token = default)
+        {
+            Gear objAmmo = clipToUnload.AmmoGear;
+            if (objAmmo == null)
+                return null;
+            clipToUnload.AmmoGear = null;
+            Gear objMergeGear = await lstGears
+                                      .FirstOrDefaultAsync(
+                                          x => x.InternalId != objAmmo.InternalId
+                                               && x.IsIdenticalToOtherGear(objAmmo, true), token).ConfigureAwait(false);
+            if (objMergeGear != null)
+            {
+                objMergeGear.Quantity += objAmmo.Quantity;
+                await objAmmo.DeleteGearAsync(token: token).ConfigureAwait(false);
+                return objMergeGear;
+            }
+
             return objAmmo;
         }
 
@@ -7403,12 +7503,30 @@ namespace Chummer.Backend.Equipment
                 Clip clip = _lstAmmo[i];
                 if (clip.OwnedBy == accessory.InternalId)
                 {
-                    ICollection<Gear> gears = ParentVehicle != null
+                    IAsyncCollection<Gear> gears = ParentVehicle != null
                         ? ParentVehicle.GearChildren
                         : _objCharacter.Gear;
                     if (ActiveAmmoSlot == i + 1)
                         ActiveAmmoSlot = 1;
-                    Unload(gears, clip);
+                    UnloadGear(gears, clip);
+                    _lstAmmo.RemoveAt(i);
+                }
+            }
+        }
+
+        private async ValueTask RemoveAmmoSlotsAsync(WeaponAccessory accessory, CancellationToken token = default)
+        {
+            for (int i = _lstAmmo.Count - 1; i >= 0; i--)
+            {
+                Clip clip = _lstAmmo[i];
+                if (clip.OwnedBy == accessory.InternalId)
+                {
+                    IAsyncCollection<Gear> gears = ParentVehicle != null
+                        ? ParentVehicle.GearChildren
+                        : _objCharacter.Gear;
+                    if (ActiveAmmoSlot == i + 1)
+                        ActiveAmmoSlot = 1;
+                    await UnloadGearAsync(gears, clip, token).ConfigureAwait(false);
                     _lstAmmo.RemoveAt(i);
                 }
             }
@@ -7419,12 +7537,26 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public void UnloadAll()
         {
-            ICollection<Gear> gears = ParentVehicle != null
+            IAsyncCollection<Gear> gears = ParentVehicle != null
                         ? ParentVehicle.GearChildren
                         : _objCharacter.Gear;
             foreach (Clip clip in Clips)
             {
-                Unload(gears, clip);
+                UnloadGear(gears, clip);
+            }
+        }
+
+        /// <summary>
+        /// Unload every clip.
+        /// </summary>
+        public async ValueTask UnloadAllAsync(CancellationToken token = default)
+        {
+            IAsyncCollection<Gear> gears = ParentVehicle != null
+                ? ParentVehicle.GearChildren
+                : _objCharacter.Gear;
+            foreach (Clip clip in Clips)
+            {
+                await UnloadGearAsync(gears, clip, token).ConfigureAwait(false);
             }
         }
 
@@ -8083,8 +8215,8 @@ namespace Chummer.Backend.Equipment
 
         private async ValueTask DisposeSelfAsync()
         {
-            await _lstAccessories.DisposeAsync();
-            await _lstUnderbarrel.DisposeAsync();
+            await _lstAccessories.DisposeAsync().ConfigureAwait(false);
+            await _lstUnderbarrel.DisposeAsync().ConfigureAwait(false);
         }
     }
 }

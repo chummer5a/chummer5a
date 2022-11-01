@@ -1518,114 +1518,146 @@ namespace Chummer
         {
             if (objOldQuality == null)
                 throw new ArgumentNullException(nameof(objOldQuality));
-            List<Weapon> lstWeapons = new List<Weapon>(1);
-            Create(objXmlQuality, QualitySource.Selected, lstWeapons);
-
-            bool blnAddItem = true;
-            int intKarmaCost = (BP * intNewQualityRating - objOldQuality.BP * objOldQuality.Levels)
-                               * _objCharacter.Settings.KarmaQuality;
-
-            // Make sure the character has enough Karma to pay for the Quality.
-            if (Type == QualityType.Positive)
+            // Helps to capture a write lock here for performance purposes
+            IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterWriteLockAsync(token)
+                                                                .ConfigureAwait(false);
+            try
             {
-                if (await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false) && !_objCharacter.Settings.DontDoubleQualityPurchases)
-                {
-                    intKarmaCost *= 2;
-                }
+                List<Weapon> lstWeapons = new List<Weapon>(1);
+                Create(objXmlQuality, QualitySource.Selected, lstWeapons);
 
-                if (intKarmaCost > await _objCharacter.GetKarmaAsync(token).ConfigureAwait(false))
-                {
-                    Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_NotEnoughKarma", token: token).ConfigureAwait(false),
-                                           await LanguageManager.GetStringAsync(
-                                               "MessageTitle_NotEnoughKarma", token: token).ConfigureAwait(false), MessageBoxButtons.OK,
-                                           MessageBoxIcon.Information);
-                    blnAddItem = false;
-                }
+                bool blnAddItem = true;
+                int intKarmaCost = (BP * intNewQualityRating - objOldQuality.BP * objOldQuality.Levels)
+                                   * _objCharacter.Settings.KarmaQuality;
 
-                if (blnAddItem && !await CommonFunctions.ConfirmKarmaExpenseAsync(
-                        string.Format(GlobalSettings.CultureInfo,
-                                      await LanguageManager.GetStringAsync("Message_QualitySwap", token: token).ConfigureAwait(false)
-                                      , await objOldQuality.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false)
-                                      , await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false)), token).ConfigureAwait(false))
+                // Make sure the character has enough Karma to pay for the Quality.
+                if (Type == QualityType.Positive)
                 {
-                    blnAddItem = false;
-                }
+                    if (await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false)
+                        && !_objCharacter.Settings.DontDoubleQualityPurchases)
+                    {
+                        intKarmaCost *= 2;
+                    }
 
-                if (!blnAddItem)
-                    return false;
-            }
-            else
-            {
-                if (!_objCharacter.Settings.DontDoubleQualityRefunds)
-                {
-                    intKarmaCost *= 2;
-                }
-
-                // This should only happen when a character is trading up to a less-costly Quality.
-                if (intKarmaCost > 0)
-                {
                     if (intKarmaCost > await _objCharacter.GetKarmaAsync(token).ConfigureAwait(false))
                     {
                         Program.ShowMessageBox(
-                            await LanguageManager.GetStringAsync("Message_NotEnoughKarma", token: token).ConfigureAwait(false),
-                            await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma", token: token).ConfigureAwait(false),
-                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            await LanguageManager.GetStringAsync("Message_NotEnoughKarma", token: token)
+                                                 .ConfigureAwait(false),
+                            await LanguageManager.GetStringAsync(
+                                "MessageTitle_NotEnoughKarma", token: token).ConfigureAwait(false),
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Information);
                         blnAddItem = false;
                     }
 
                     if (blnAddItem && !await CommonFunctions.ConfirmKarmaExpenseAsync(
-                            string.Format(GlobalSettings.CultureInfo,
-                                          await LanguageManager.GetStringAsync("Message_QualitySwap", token: token).ConfigureAwait(false),
-                                          await objOldQuality.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
-                                          await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false)), token).ConfigureAwait(false))
+                                                                string.Format(GlobalSettings.CultureInfo,
+                                                                              await LanguageManager
+                                                                                  .GetStringAsync("Message_QualitySwap",
+                                                                                      token: token)
+                                                                                  .ConfigureAwait(false)
+                                                                              , await objOldQuality
+                                                                                  .GetCurrentDisplayNameShortAsync(
+                                                                                      token)
+                                                                                  .ConfigureAwait(false)
+                                                                              , await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false)),
+                                                                token)
+                                                            .ConfigureAwait(false))
                     {
                         blnAddItem = false;
                     }
+
+                    if (!blnAddItem)
+                        return false;
                 }
                 else
                 {
-                    // Trading a more expensive quality for a less expensive quality shouldn't give you karma. TODO: Optional rule to govern this behaviour.
-                    intKarmaCost = 0;
+                    if (!_objCharacter.Settings.DontDoubleQualityRefunds)
+                    {
+                        intKarmaCost *= 2;
+                    }
+
+                    // This should only happen when a character is trading up to a less-costly Quality.
+                    if (intKarmaCost > 0)
+                    {
+                        if (intKarmaCost > await _objCharacter.GetKarmaAsync(token).ConfigureAwait(false))
+                        {
+                            Program.ShowMessageBox(
+                                await LanguageManager.GetStringAsync("Message_NotEnoughKarma", token: token)
+                                                     .ConfigureAwait(false),
+                                await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma", token: token)
+                                                     .ConfigureAwait(false),
+                                MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            blnAddItem = false;
+                        }
+
+                        if (blnAddItem && !await CommonFunctions.ConfirmKarmaExpenseAsync(
+                                string.Format(GlobalSettings.CultureInfo,
+                                              await LanguageManager.GetStringAsync("Message_QualitySwap", token: token)
+                                                                   .ConfigureAwait(false),
+                                              await objOldQuality.GetCurrentDisplayNameShortAsync(token)
+                                                                 .ConfigureAwait(false),
+                                              await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false)),
+                                token).ConfigureAwait(false))
+                        {
+                            blnAddItem = false;
+                        }
+                    }
+                    else
+                    {
+                        // Trading a more expensive quality for a less expensive quality shouldn't give you karma. TODO: Optional rule to govern this behaviour.
+                        intKarmaCost = 0;
+                    }
+
+                    if (!blnAddItem)
+                        return false;
                 }
 
-                if (!blnAddItem)
-                    return false;
+                // Removing the old quality from the character
+                await objOldQuality.DeleteQualityAsync(true, token).ConfigureAwait(false);
+
+                // Add the new Quality to the character.
+                await _objCharacter.Qualities.AddAsync(this, token).ConfigureAwait(false);
+
+                for (int i = 2; i <= intNewQualityRating; ++i)
+                {
+                    Quality objNewQualityLevel = new Quality(_objCharacter);
+                    objNewQualityLevel.Create(objXmlQuality, QualitySource.Selected, lstWeapons, _strExtra,
+                                              _strSourceName);
+                    await _objCharacter.Qualities.AddAsync(objNewQualityLevel, token).ConfigureAwait(false);
+                }
+
+                // Add any created Weapons to the character.
+                foreach (Weapon objWeapon in lstWeapons)
+                {
+                    await _objCharacter.Weapons.AddAsync(objWeapon, token).ConfigureAwait(false);
+                }
+
+                if (await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
+                {
+                    // Create the Karma expense.
+                    ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
+                    objExpense.Create(intKarmaCost * -1,
+                                      string.Format(GlobalSettings.CultureInfo,
+                                                    await LanguageManager.GetStringAsync(
+                                                                             Type == QualityType.Positive
+                                                                                 ? "String_ExpenseSwapPositiveQuality"
+                                                                                 : "String_ExpenseSwapNegativeQuality",
+                                                                             token: token)
+                                                                         .ConfigureAwait(false)
+                                                    , await objOldQuality.GetCurrentDisplayNameAsync(token)
+                                                                         .ConfigureAwait(false)
+                                                    , await GetCurrentDisplayNameAsync(token).ConfigureAwait(false)),
+                                      ExpenseType.Karma,
+                                      DateTime.Now);
+                    await _objCharacter.ExpenseEntries.AddWithSortAsync(objExpense, token: token).ConfigureAwait(false);
+                    await _objCharacter.DecreaseKarmaAsync(intKarmaCost, token).ConfigureAwait(false);
+                }
             }
-
-            // Removing the old quality from the character
-            objOldQuality.DeleteQuality(true);
-
-            // Add the new Quality to the character.
-            await _objCharacter.Qualities.AddAsync(this, token).ConfigureAwait(false);
-
-            for (int i = 2; i <= intNewQualityRating; ++i)
+            finally
             {
-                Quality objNewQualityLevel = new Quality(_objCharacter);
-                objNewQualityLevel.Create(objXmlQuality, QualitySource.Selected, lstWeapons, _strExtra, _strSourceName);
-                await _objCharacter.Qualities.AddAsync(objNewQualityLevel, token).ConfigureAwait(false);
-            }
-
-            // Add any created Weapons to the character.
-            foreach (Weapon objWeapon in lstWeapons)
-            {
-                await _objCharacter.Weapons.AddAsync(objWeapon, token).ConfigureAwait(false);
-            }
-
-            if (_objCharacter.Created)
-            {
-                // Create the Karma expense.
-                ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
-                objExpense.Create(intKarmaCost * -1,
-                                  string.Format(GlobalSettings.CultureInfo,
-                                                await LanguageManager.GetStringAsync(
-                                                    Type == QualityType.Positive
-                                                        ? "String_ExpenseSwapPositiveQuality"
-                                                        : "String_ExpenseSwapNegativeQuality", token: token).ConfigureAwait(false)
-                                                , await objOldQuality.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)
-                                                , await GetCurrentDisplayNameAsync(token).ConfigureAwait(false)), ExpenseType.Karma,
-                                  DateTime.Now);
-                await _objCharacter.ExpenseEntries.AddWithSortAsync(objExpense, token: token).ConfigureAwait(false);
-                await _objCharacter.DecreaseKarmaAsync(intKarmaCost, token).ConfigureAwait(false);
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
 
             return true;
@@ -1751,6 +1783,83 @@ namespace Chummer
                         foreach (Weapon objDeleteWeapon in objMount.Weapons.DeepWhere(x => x.Children, x => x.ParentID == InternalId).ToList())
                         {
                             decReturn += objDeleteWeapon.TotalCost + objDeleteWeapon.DeleteWeapon();
+                        }
+                    }
+                }
+            }
+
+            return decReturn;
+        }
+
+        /// <summary>
+        /// Removes a quality from the character, assuming we have already gone through all the necessary UI prompts.
+        /// TODO: make Quality properly inherit from ICanRemove by also putting the UI stuff in here as well
+        /// </summary>
+        /// <returns>Nuyen cost of the actual removal (necessary for removing some stuff that adds qualities as part of their effects).</returns>
+        public async ValueTask<decimal> DeleteQualityAsync(bool blnFullRemoval = false,
+                                                           CancellationToken token = default)
+        {
+            await _objCharacter.Qualities.RemoveAsync(this, token).ConfigureAwait(false);
+            if (blnFullRemoval)
+            {
+                for (int i = _objCharacter.Qualities.Count - 1; i >= 0; --i)
+                {
+                    if (i >= _objCharacter.Qualities.Count)
+                        continue;
+                    Quality objLoopQuality = _objCharacter.Qualities[i];
+                    if (objLoopQuality.SourceIDString == SourceIDString
+                        && objLoopQuality.Extra == Extra
+                        && objLoopQuality.SourceName == SourceName
+                        && objLoopQuality.Type == Type)
+                        await objLoopQuality.DeleteQualityAsync(token: token).ConfigureAwait(false);
+                }
+            }
+
+            // Remove the Improvements that were created by the Quality.
+            decimal decReturn = await ImprovementManager
+                                      .RemoveImprovementsAsync(_objCharacter, Improvement.ImprovementSource.Quality,
+                                                               InternalId, token).ConfigureAwait(false);
+
+            // Remove any Weapons created by the Quality if applicable.
+            if (!WeaponID.IsEmptyGuid())
+            {
+                foreach (Weapon objDeleteWeapon in _objCharacter.Weapons
+                                                                .DeepWhere(x => x.Children,
+                                                                           x => x.ParentID == InternalId).ToList())
+                {
+                    decReturn += objDeleteWeapon.TotalCost
+                                 + await objDeleteWeapon.DeleteWeaponAsync(token: token).ConfigureAwait(false);
+                }
+
+                foreach (Vehicle objVehicle in _objCharacter.Vehicles)
+                {
+                    foreach (Weapon objDeleteWeapon in objVehicle.Weapons
+                                                                 .DeepWhere(x => x.Children,
+                                                                            x => x.ParentID == InternalId).ToList())
+                    {
+                        decReturn += objDeleteWeapon.TotalCost
+                                     + await objDeleteWeapon.DeleteWeaponAsync(token: token).ConfigureAwait(false);
+                    }
+
+                    foreach (VehicleMod objMod in objVehicle.Mods)
+                    {
+                        foreach (Weapon objDeleteWeapon in objMod.Weapons
+                                                                 .DeepWhere(x => x.Children,
+                                                                            x => x.ParentID == InternalId).ToList())
+                        {
+                            decReturn += objDeleteWeapon.TotalCost
+                                         + await objDeleteWeapon.DeleteWeaponAsync(token: token).ConfigureAwait(false);
+                        }
+                    }
+
+                    foreach (WeaponMount objMount in objVehicle.WeaponMounts)
+                    {
+                        foreach (Weapon objDeleteWeapon in objMount.Weapons
+                                                                   .DeepWhere(x => x.Children,
+                                                                              x => x.ParentID == InternalId).ToList())
+                        {
+                            decReturn += objDeleteWeapon.TotalCost
+                                         + await objDeleteWeapon.DeleteWeaponAsync(token: token).ConfigureAwait(false);
                         }
                     }
                 }

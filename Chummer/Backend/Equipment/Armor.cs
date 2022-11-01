@@ -2455,6 +2455,74 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Method to delete an Armor object. Returns total extra cost removed unrelated to children.
+        /// </summary>
+        public async ValueTask<decimal> DeleteArmorAsync(CancellationToken token = default)
+        {
+            await _objCharacter.Armor.RemoveAsync(this, token).ConfigureAwait(false);
+
+            // Remove any Improvements created by the Armor and its children.
+            // Remove any Improvements created by the Armor's Gear.
+            decimal decReturn = await ArmorMods.SumAsync(x => x.DeleteArmorModAsync(false, token).AsTask(), token)
+                                               .ConfigureAwait(false)
+                                + await GearChildren.SumAsync(x => x.DeleteGearAsync(false, token).AsTask(), token)
+                                                    .ConfigureAwait(false);
+
+            decReturn += await ImprovementManager
+                               .RemoveImprovementsAsync(_objCharacter, Improvement.ImprovementSource.Armor, InternalId,
+                                                        token).ConfigureAwait(false);
+
+            // Remove the Cyberweapon created by the Mod if applicable.
+            if (!WeaponID.IsEmptyGuid())
+            {
+                foreach (Weapon objDeleteWeapon in _objCharacter.Weapons
+                                                                .DeepWhere(x => x.Children,
+                                                                           x => x.ParentID == InternalId).ToList())
+                {
+                    decReturn += objDeleteWeapon.TotalCost
+                                 + await objDeleteWeapon.DeleteWeaponAsync(token: token).ConfigureAwait(false);
+                }
+
+                foreach (Vehicle objVehicle in _objCharacter.Vehicles)
+                {
+                    foreach (Weapon objDeleteWeapon in objVehicle.Weapons
+                                                                 .DeepWhere(x => x.Children,
+                                                                            x => x.ParentID == InternalId).ToList())
+                    {
+                        decReturn += objDeleteWeapon.TotalCost
+                                     + await objDeleteWeapon.DeleteWeaponAsync(token: token).ConfigureAwait(false);
+                    }
+
+                    foreach (VehicleMod objMod in objVehicle.Mods)
+                    {
+                        foreach (Weapon objDeleteWeapon in objMod.Weapons
+                                                                 .DeepWhere(x => x.Children,
+                                                                            x => x.ParentID == InternalId).ToList())
+                        {
+                            decReturn += objDeleteWeapon.TotalCost
+                                         + await objDeleteWeapon.DeleteWeaponAsync(token: token).ConfigureAwait(false);
+                        }
+                    }
+
+                    foreach (WeaponMount objMount in objVehicle.WeaponMounts)
+                    {
+                        foreach (Weapon objDeleteWeapon in objMount.Weapons
+                                                                   .DeepWhere(x => x.Children,
+                                                                              x => x.ParentID == InternalId).ToList())
+                        {
+                            decReturn += objDeleteWeapon.TotalCost
+                                         + await objDeleteWeapon.DeleteWeaponAsync(token: token).ConfigureAwait(false);
+                        }
+                    }
+                }
+            }
+
+            await DisposeSelfAsync().ConfigureAwait(false);
+
+            return decReturn;
+        }
+
+        /// <summary>
         /// Toggle the Wireless Bonus for this armor.
         /// </summary>
         public void RefreshWirelessBonuses()

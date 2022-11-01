@@ -1338,6 +1338,22 @@ namespace Chummer.Backend.Equipment
             return decReturn;
         }
 
+        public async ValueTask<decimal> DeleteWeaponMountAsync(bool blnDoRemoval = true,
+                                                               CancellationToken token = default)
+        {
+            if (blnDoRemoval)
+                await Parent.WeaponMounts.RemoveAsync(this, token).ConfigureAwait(false);
+
+            decimal decReturn = await Weapons.SumAsync(x => x.DeleteWeaponAsync(false, token).AsTask(), token)
+                                             .ConfigureAwait(false)
+                                + await Mods.SumAsync(x => x.DeleteVehicleModAsync(false, token).AsTask(), token)
+                                            .ConfigureAwait(false);
+
+            await DisposeSelfAsync().ConfigureAwait(false);
+
+            return decReturn;
+        }
+
         /// <summary>
         /// Checks a nominated piece of gear for Availability requirements.
         /// </summary>

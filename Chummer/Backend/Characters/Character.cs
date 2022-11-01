@@ -8964,13 +8964,20 @@ namespace Chummer
                                 // converting from old dwarven resistance to new dwarven resistance
                                 if (Metatype.Equals("dwarf", StringComparison.OrdinalIgnoreCase))
                                 {
-                                    Quality objOldQuality =
-                                        Qualities.FirstOrDefault(x =>
-                                                                     x.Name.Equals("Resistance to Pathogens and Toxins",
-                                                                         StringComparison.Ordinal));
+                                    Quality objOldQuality = blnSync
+                                        ? Qualities.FirstOrDefault(x =>
+                                                                       x.Name.Equals("Resistance to Pathogens and Toxins",
+                                                                           StringComparison.Ordinal))
+                                        : await Qualities.FirstOrDefaultAsync(x =>
+                                                                       x.Name.Equals("Resistance to Pathogens and Toxins",
+                                                                           StringComparison.Ordinal), token).ConfigureAwait(false);
                                     if (objOldQuality != null)
                                     {
-                                        objOldQuality.DeleteQuality();
+                                        if (blnSync)
+                                            objOldQuality.DeleteQuality();
+                                        else
+                                            await objOldQuality.DeleteQualityAsync(token: token).ConfigureAwait(false);
+
                                         if (Qualities.All(x =>
                                                               !x.Name.Equals("Resistance to Pathogens/Toxins",
                                                                              StringComparison.Ordinal))
@@ -13153,7 +13160,7 @@ namespace Chummer
                             continue;
                         Quality objQuality = await lstQualities.GetValueAtAsync(i, token).ConfigureAwait(false);
                         if (objQuality.OriginSource == QualitySource.LifeModule)
-                            objQuality.DeleteQuality();
+                            await objQuality.DeleteQualityAsync(token: token).ConfigureAwait(false);
                     }
                 }
             }
