@@ -12470,7 +12470,7 @@ namespace Chummer
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdFociPointsTooltip))
             {
-                await (await CharacterObject.GetFociAsync(token).ConfigureAwait(false)).ForEachWithBreak(
+                await (await CharacterObject.GetFociAsync(token).ConfigureAwait(false)).ForEachWithBreakAsync(
                     async objFocus =>
                     {
                         token.ThrowIfCancellationRequested();
