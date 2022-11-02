@@ -862,32 +862,33 @@ namespace Chummer
                                 // Only fetch based on cached values if the dictionary contains at least one element with matching characters and types and none of those elements have a "reset" value of decimal.MinValue
                                 if (blnSync)
                                 {
-                                    foreach (KeyValuePair<ImprovementDictionaryKey, Tuple<decimal, List<Improvement>>>
-                                                 objLoopCachedEntry in dicCachedValuesToUse)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    dicCachedValuesToUse.ForEachWithBreak(objLoopCachedEntry =>
                                     {
                                         ImprovementDictionaryKey objLoopKey = objLoopCachedEntry.Key;
                                         if (objLoopKey.CharacterObject != objCharacter ||
                                             objLoopKey.ImprovementType != eImprovementType)
-                                            continue;
+                                            return true;
                                         if (!string.IsNullOrWhiteSpace(strImprovedName)
                                             && !string.IsNullOrWhiteSpace(objLoopKey.ImprovementName)
                                             && strImprovedName != objLoopKey.ImprovementName)
-                                            continue;
+                                            return true;
                                         blnDoRecalculate = false;
                                         decimal decLoopCachedValue = objLoopCachedEntry.Value.Item1;
                                         if (decLoopCachedValue == decimal.MinValue)
                                         {
                                             blnDoRecalculate = true;
-                                            break;
+                                            return false;
                                         }
 
                                         decCachedValue += decLoopCachedValue;
                                         lstUsedImprovements.AddRange(objLoopCachedEntry.Value.Item2);
-                                    }
+                                        return true;
+                                    }, token: token);
                                 }
                                 else
                                 {
-                                    await dicCachedValuesToUse.ForEachWithBreak(x =>
+                                    await dicCachedValuesToUse.ForEachWithBreakAsync(x =>
                                     {
                                         ImprovementDictionaryKey objLoopKey = x.Key;
                                         if (objLoopKey.CharacterObject != objCharacter
@@ -907,7 +908,6 @@ namespace Chummer
 
                                         decCachedValue += decLoopCachedValue;
                                         lstUsedImprovements.AddRange(x.Value.Item2);
-
                                         return true;
                                     }, token: token).ConfigureAwait(false);
                                 }

@@ -1717,7 +1717,7 @@ namespace Chummer.Backend.Skills
                 if (string.IsNullOrEmpty(strUseAttribute))
                     strUseAttribute = Attribute;
                 List<Improvement> lstReturn = new List<Improvement>();
-                await (await CharacterObject.GetImprovementsAsync(token).ConfigureAwait(false)).ForEachWithBreak(
+                await (await CharacterObject.GetImprovementsAsync(token).ConfigureAwait(false)).ForEachWithBreakAsync(
                     objImprovement =>
                     {
                         if (!objImprovement.Enabled || funcWherePredicate?.Invoke(objImprovement) == false)

@@ -6380,6 +6380,18 @@ namespace Chummer
             return await LastOrDefaultAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, token).ConfigureAwait(false);
         }
 
+        public static void ForEach<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Action<T> objFuncToRun, CancellationToken token = default)
+        {
+            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    objFuncToRun.Invoke(objEnumerator.Current);
+                }
+            }
+        }
+
         public static async Task ForEachAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Action<T> objFuncToRun, CancellationToken token = default)
         {
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token).ConfigureAwait(false))
@@ -6432,7 +6444,45 @@ namespace Chummer
         /// <param name="objEnumerable">Enumerable on which to perform tasks.</param>
         /// <param name="objFuncToRunWithPossibleTerminate">Action to perform. Return true to continue iterating and false to break.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static async Task ForEachWithBreak<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, bool> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
+        public static void ForEachWithBreak<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, bool> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
+        {
+            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (!objFuncToRunWithPossibleTerminate.Invoke(objEnumerator.Current))
+                        return;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Perform a synchronous action on every element in an enumerable with support for breaking out of the loop.
+        /// </summary>
+        /// <param name="objEnumerable">Enumerable on which to perform tasks.</param>
+        /// <param name="objFuncToRunWithPossibleTerminate">Action to perform. Return true to continue iterating and false to break.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static void ForEachWithBreak<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, bool> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
+        {
+            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (!objFuncToRunWithPossibleTerminate.Invoke(objEnumerator.Current, token))
+                        return;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Perform a synchronous action on every element in an enumerable with support for breaking out of the loop.
+        /// </summary>
+        /// <param name="objEnumerable">Enumerable on which to perform tasks.</param>
+        /// <param name="objFuncToRunWithPossibleTerminate">Action to perform. Return true to continue iterating and false to break.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async Task ForEachWithBreakAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, bool> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
         {
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token).ConfigureAwait(false))
             {
@@ -6451,7 +6501,7 @@ namespace Chummer
         /// <param name="objEnumerable">Enumerable on which to perform tasks.</param>
         /// <param name="objFuncToRunWithPossibleTerminate">Action to perform. Return true to continue iterating and false to break.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static async Task ForEachWithBreak<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
+        public static async Task ForEachWithBreakAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
         {
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token).ConfigureAwait(false))
             {
@@ -6470,9 +6520,9 @@ namespace Chummer
         /// <param name="tskEnumerable">Enumerable on which to perform tasks.</param>
         /// <param name="objFuncToRunWithPossibleTerminate">Action to perform. Return true to continue iterating and false to break.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static async Task ForEachWithBreak<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, bool> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
+        public static async Task ForEachWithBreakAsync<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, bool> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
         {
-            await ForEachWithBreak(await tskEnumerable.ConfigureAwait(false), objFuncToRunWithPossibleTerminate, token).ConfigureAwait(false);
+            await ForEachWithBreakAsync(await tskEnumerable.ConfigureAwait(false), objFuncToRunWithPossibleTerminate, token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -6481,9 +6531,9 @@ namespace Chummer
         /// <param name="tskEnumerable">Enumerable on which to perform tasks.</param>
         /// <param name="objFuncToRunWithPossibleTerminate">Action to perform. Return true to continue iterating and false to break.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static async Task ForEachWithBreak<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
+        public static async Task ForEachWithBreakAsync<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
         {
-            await ForEachWithBreak(await tskEnumerable.ConfigureAwait(false), objFuncToRunWithPossibleTerminate, token).ConfigureAwait(false);
+            await ForEachWithBreakAsync(await tskEnumerable.ConfigureAwait(false), objFuncToRunWithPossibleTerminate, token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -6492,7 +6542,7 @@ namespace Chummer
         /// <param name="objEnumerable">Enumerable on which to perform tasks.</param>
         /// <param name="objFuncToRunWithPossibleTerminate">Action to perform. Return true to continue iterating and false to break.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static async Task ForEachWithBreak<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
+        public static async Task ForEachWithBreakAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
         {
             using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
             {
@@ -6511,7 +6561,7 @@ namespace Chummer
         /// <param name="objEnumerable">Enumerable on which to perform tasks.</param>
         /// <param name="objFuncToRunWithPossibleTerminate">Action to perform. Return true to continue iterating and false to break.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static async Task ForEachWithBreak<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, bool> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
+        public static async Task ForEachWithBreakAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, bool> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
         {
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token).ConfigureAwait(false))
             {
@@ -6530,7 +6580,7 @@ namespace Chummer
         /// <param name="objEnumerable">Enumerable on which to perform tasks.</param>
         /// <param name="objFuncToRunWithPossibleTerminate">Action to perform. Return true to continue iterating and false to break.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static async Task ForEachWithBreak<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, Task<bool>> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
+        public static async Task ForEachWithBreakAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, Task<bool>> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
         {
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token).ConfigureAwait(false))
             {
@@ -6549,9 +6599,9 @@ namespace Chummer
         /// <param name="tskEnumerable">Enumerable on which to perform tasks.</param>
         /// <param name="objFuncToRunWithPossibleTerminate">Action to perform. Return true to continue iterating and false to break.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static async Task ForEachWithBreak<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, CancellationToken, bool> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
+        public static async Task ForEachWithBreakAsync<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, CancellationToken, bool> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
         {
-            await ForEachWithBreak(await tskEnumerable.ConfigureAwait(false), objFuncToRunWithPossibleTerminate, token).ConfigureAwait(false);
+            await ForEachWithBreakAsync(await tskEnumerable.ConfigureAwait(false), objFuncToRunWithPossibleTerminate, token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -6560,9 +6610,9 @@ namespace Chummer
         /// <param name="tskEnumerable">Enumerable on which to perform tasks.</param>
         /// <param name="objFuncToRunWithPossibleTerminate">Action to perform. Return true to continue iterating and false to break.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static async Task ForEachWithBreak<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, CancellationToken, Task<bool>> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
+        public static async Task ForEachWithBreakAsync<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, CancellationToken, Task<bool>> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
         {
-            await ForEachWithBreak(await tskEnumerable.ConfigureAwait(false), objFuncToRunWithPossibleTerminate, token).ConfigureAwait(false);
+            await ForEachWithBreakAsync(await tskEnumerable.ConfigureAwait(false), objFuncToRunWithPossibleTerminate, token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -6571,7 +6621,7 @@ namespace Chummer
         /// <param name="objEnumerable">Enumerable on which to perform tasks.</param>
         /// <param name="objFuncToRunWithPossibleTerminate">Action to perform. Return true to continue iterating and false to break.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static async Task ForEachWithBreak<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, Task<bool>> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
+        public static async Task ForEachWithBreakAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, Task<bool>> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
         {
             using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
             {
@@ -6718,7 +6768,7 @@ namespace Chummer
             await Task.WhenAll(lstTasks).ConfigureAwait(false);
         }
 
-        public static async Task ForEachParallelWithBreak<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, bool> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
+        public static async Task ForEachParallelWithBreakAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, bool> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
         {
             using (CancellationTokenSource objSource = new CancellationTokenSource())
             // ReSharper disable once AccessToDisposedClosure
@@ -6777,7 +6827,7 @@ namespace Chummer
             }
         }
 
-        public static async Task ForEachParallelWithBreak<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
+        public static async Task ForEachParallelWithBreakAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
         {
             using (CancellationTokenSource objSource = new CancellationTokenSource())
             // ReSharper disable once AccessToDisposedClosure
@@ -6836,17 +6886,17 @@ namespace Chummer
             }
         }
 
-        public static async Task ForEachParallelWithBreak<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, bool> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
+        public static async Task ForEachParallelWithBreakAsync<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, bool> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
         {
-            await ForEachParallelWithBreak(await tskEnumerable.ConfigureAwait(false), objFuncToRunWithPossibleTerminate, token).ConfigureAwait(false);
+            await ForEachParallelWithBreakAsync(await tskEnumerable.ConfigureAwait(false), objFuncToRunWithPossibleTerminate, token).ConfigureAwait(false);
         }
 
-        public static async Task ForEachParallelWithBreak<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
+        public static async Task ForEachParallelWithBreakAsync<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
         {
-            await ForEachParallelWithBreak(await tskEnumerable.ConfigureAwait(false), objFuncToRunWithPossibleTerminate, token).ConfigureAwait(false);
+            await ForEachParallelWithBreakAsync(await tskEnumerable.ConfigureAwait(false), objFuncToRunWithPossibleTerminate, token).ConfigureAwait(false);
         }
 
-        public static async Task ForEachParallelWithBreak<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, bool> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
+        public static async Task ForEachParallelWithBreakAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, bool> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
         {
             using (CancellationTokenSource objSource = new CancellationTokenSource())
             // ReSharper disable once AccessToDisposedClosure
@@ -6905,7 +6955,7 @@ namespace Chummer
             }
         }
 
-        public static async Task ForEachParallelWithBreak<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
+        public static async Task ForEachParallelWithBreakAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
         {
             using (CancellationTokenSource objSource = new CancellationTokenSource())
             // ReSharper disable once AccessToDisposedClosure
@@ -6964,7 +7014,7 @@ namespace Chummer
             }
         }
 
-        public static async Task ForEachParallelWithBreak<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, bool> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
+        public static async Task ForEachParallelWithBreakAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, bool> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
         {
             using (CancellationTokenSource objSource = new CancellationTokenSource())
             // ReSharper disable once AccessToDisposedClosure
@@ -7023,7 +7073,7 @@ namespace Chummer
             }
         }
 
-        public static async Task ForEachParallelWithBreak<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, Task<bool>> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
+        public static async Task ForEachParallelWithBreakAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, Task<bool>> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
         {
             using (CancellationTokenSource objSource = new CancellationTokenSource())
             // ReSharper disable once AccessToDisposedClosure
@@ -7082,17 +7132,17 @@ namespace Chummer
             }
         }
 
-        public static async Task ForEachParallelWithBreak<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, CancellationToken, bool> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
+        public static async Task ForEachParallelWithBreakAsync<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, CancellationToken, bool> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
         {
-            await ForEachParallelWithBreak(await tskEnumerable.ConfigureAwait(false), objFuncToRunWithPossibleTerminate, token).ConfigureAwait(false);
+            await ForEachParallelWithBreakAsync(await tskEnumerable.ConfigureAwait(false), objFuncToRunWithPossibleTerminate, token).ConfigureAwait(false);
         }
 
-        public static async Task ForEachParallelWithBreak<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, CancellationToken, Task<bool>> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
+        public static async Task ForEachParallelWithBreakAsync<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, CancellationToken, Task<bool>> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
         {
-            await ForEachParallelWithBreak(await tskEnumerable.ConfigureAwait(false), objFuncToRunWithPossibleTerminate, token).ConfigureAwait(false);
+            await ForEachParallelWithBreakAsync(await tskEnumerable.ConfigureAwait(false), objFuncToRunWithPossibleTerminate, token).ConfigureAwait(false);
         }
 
-        public static async Task ForEachParallelWithBreak<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, bool> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
+        public static async Task ForEachParallelWithBreakAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, bool> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
         {
             using (CancellationTokenSource objSource = new CancellationTokenSource())
             // ReSharper disable once AccessToDisposedClosure
@@ -7151,7 +7201,7 @@ namespace Chummer
             }
         }
 
-        public static async Task ForEachParallelWithBreak<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, Task<bool>> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
+        public static async Task ForEachParallelWithBreakAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, Task<bool>> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
         {
             using (CancellationTokenSource objSource = new CancellationTokenSource())
             // ReSharper disable once AccessToDisposedClosure
