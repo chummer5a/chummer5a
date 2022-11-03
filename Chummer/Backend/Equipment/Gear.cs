@@ -1180,17 +1180,16 @@ namespace Chummer.Backend.Equipment
                         {
                             if (!string.IsNullOrEmpty(Extra))
                                 ImprovementManager.ForcedValue = Extra;
-                            if (Bonus != null)
+                            if (Bonus != null && ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Gear,
+                                    InternalId, Bonus, Rating, CurrentDisplayNameShort))
                             {
-                                ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Gear,
-                                    InternalId, Bonus, Rating, DisplayNameShort(GlobalSettings.Language));
                                 Extra = ImprovementManager.SelectedValue;
                             }
 
                             if (WirelessOn && WirelessBonus != null)
                             {
                                 ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Gear,
-                                    InternalId, WirelessBonus, Rating, DisplayNameShort(GlobalSettings.Language));
+                                    InternalId, WirelessBonus, Rating, CurrentDisplayNameShort);
                             }
                         }
                     }
@@ -1199,28 +1198,26 @@ namespace Chummer.Backend.Equipment
                         // Stacked Foci need to be handled a little differently.
                         foreach (StackedFocus objStack in _objCharacter.StackedFoci)
                         {
-                            if (objStack.GearId == InternalId && objStack.Bonded)
+                            if (objStack.GearId != InternalId || !objStack.Bonded)
+                                continue;
+                            foreach (Gear objFociGear in objStack.Gear)
                             {
-                                foreach (Gear objFociGear in objStack.Gear)
+                                if (!string.IsNullOrEmpty(objFociGear.Extra))
+                                    ImprovementManager.ForcedValue = objFociGear.Extra;
+                                if (objFociGear.Bonus != null && ImprovementManager.CreateImprovements(_objCharacter,
+                                        Improvement.ImprovementSource.StackedFocus, objStack.InternalId,
+                                        objFociGear.Bonus, objFociGear.Rating,
+                                        objFociGear.CurrentDisplayNameShort))
                                 {
-                                    if (!string.IsNullOrEmpty(objFociGear.Extra))
-                                        ImprovementManager.ForcedValue = objFociGear.Extra;
-                                    if (objFociGear.Bonus != null)
-                                    {
-                                        ImprovementManager.CreateImprovements(_objCharacter,
-                                            Improvement.ImprovementSource.StackedFocus, objStack.InternalId,
-                                            objFociGear.Bonus, objFociGear.Rating,
-                                            objFociGear.DisplayNameShort(GlobalSettings.Language));
-                                        objFociGear.Extra = ImprovementManager.SelectedValue;
-                                    }
+                                    objFociGear.Extra = ImprovementManager.SelectedValue;
+                                }
 
-                                    if (objFociGear.WirelessOn && objFociGear.WirelessBonus != null)
-                                    {
-                                        ImprovementManager.CreateImprovements(_objCharacter,
-                                            Improvement.ImprovementSource.StackedFocus, objStack.InternalId,
-                                            objFociGear.WirelessBonus, Rating,
-                                            objFociGear.DisplayNameShort(GlobalSettings.Language));
-                                    }
+                                if (objFociGear.WirelessOn && objFociGear.WirelessBonus != null)
+                                {
+                                    ImprovementManager.CreateImprovements(_objCharacter,
+                                                                          Improvement.ImprovementSource.StackedFocus, objStack.InternalId,
+                                                                          objFociGear.WirelessBonus, Rating,
+                                                                          objFociGear.CurrentDisplayNameShort);
                                 }
                             }
                         }
@@ -1244,17 +1241,16 @@ namespace Chummer.Backend.Equipment
                     {
                         if (!string.IsNullOrEmpty(Extra))
                             ImprovementManager.ForcedValue = Extra;
-                        if (Bonus != null)
+                        if (Bonus != null && ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Gear,
+                                InternalId, Bonus, Rating, CurrentDisplayNameShort))
                         {
-                            ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Gear,
-                                InternalId, Bonus, Rating, DisplayNameShort(GlobalSettings.Language));
                             Extra = ImprovementManager.SelectedValue;
                         }
 
                         if (WirelessOn && WirelessBonus != null)
                         {
                             ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Gear,
-                                InternalId, WirelessBonus, Rating, DisplayNameShort(GlobalSettings.Language));
+                                InternalId, WirelessBonus, Rating, CurrentDisplayNameShort);
                         }
                     }
                 }
@@ -1263,28 +1259,27 @@ namespace Chummer.Backend.Equipment
                     // Stacked Foci need to be handled a little differently.
                     foreach (StackedFocus objStack in _objCharacter.StackedFoci)
                     {
-                        if (objStack.GearId == InternalId && objStack.Bonded)
+                        if (objStack.GearId != InternalId || !objStack.Bonded)
+                            continue;
+                        foreach (Gear objFociGear in objStack.Gear)
                         {
-                            foreach (Gear objFociGear in objStack.Gear)
+                            if (!string.IsNullOrEmpty(objFociGear.Extra))
+                                ImprovementManager.ForcedValue = objFociGear.Extra;
+                            if (objFociGear.Bonus != null && ImprovementManager.CreateImprovements(_objCharacter,
+                                    Improvement.ImprovementSource
+                                               .StackedFocus, objStack.InternalId,
+                                    objFociGear.Bonus, objFociGear.Rating,
+                                    objFociGear.CurrentDisplayNameShort))
                             {
-                                if (!string.IsNullOrEmpty(objFociGear.Extra))
-                                    ImprovementManager.ForcedValue = objFociGear.Extra;
-                                if (objFociGear.Bonus != null)
-                                {
-                                    ImprovementManager.CreateImprovements(_objCharacter,
-                                        Improvement.ImprovementSource.StackedFocus, objStack.InternalId,
-                                        objFociGear.Bonus, objFociGear.Rating,
-                                        objFociGear.DisplayNameShort(GlobalSettings.Language));
-                                    objFociGear.Extra = ImprovementManager.SelectedValue;
-                                }
+                                objFociGear.Extra = ImprovementManager.SelectedValue;
+                            }
 
-                                if (objFociGear.WirelessOn && objFociGear.WirelessBonus != null)
-                                {
-                                    ImprovementManager.CreateImprovements(_objCharacter,
-                                        Improvement.ImprovementSource.StackedFocus, objStack.InternalId,
-                                        objFociGear.WirelessBonus, Rating,
-                                        objFociGear.DisplayNameShort(GlobalSettings.Language));
-                                }
+                            if (objFociGear.WirelessOn && objFociGear.WirelessBonus != null)
+                            {
+                                ImprovementManager.CreateImprovements(_objCharacter,
+                                                                      Improvement.ImprovementSource.StackedFocus, objStack.InternalId,
+                                                                      objFociGear.WirelessBonus, Rating,
+                                                                      objFociGear.CurrentDisplayNameShort);
                             }
                         }
                     }
@@ -1871,9 +1866,8 @@ namespace Chummer.Backend.Equipment
             set
             {
                 string strNewValue = _objCharacter.ReverseTranslateExtra(value);
-                if (_strExtra != strNewValue)
+                if (Interlocked.Exchange(ref _strExtra, strNewValue) != strNewValue)
                 {
-                    _strExtra = strNewValue;
                     OnPropertyChanged();
                 }
             }
@@ -3797,10 +3791,10 @@ namespace Chummer.Backend.Equipment
                                                                    x.SourceName == InternalId));
                     }
 
-                    ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Gear,
-                        InternalId + "Wireless", WirelessBonus, Rating, CurrentDisplayNameShort);
-
-                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(_strExtra))
+                    if (ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Gear,
+                                                              InternalId + "Wireless", WirelessBonus, Rating,
+                                                              CurrentDisplayNameShort)
+                        && !string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(_strExtra))
                         _strExtra = ImprovementManager.SelectedValue;
                 }
                 else
@@ -3847,12 +3841,12 @@ namespace Chummer.Backend.Equipment
                                                                               x.SourceName == InternalId, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
                     }
 
-                    await ImprovementManager.CreateImprovementsAsync(_objCharacter, Improvement.ImprovementSource.Gear,
-                                                                     InternalId + "Wireless", WirelessBonus, Rating,
-                                                                     await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
-                                                                     token: token).ConfigureAwait(false);
-
-                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(_strExtra))
+                    if (await ImprovementManager.CreateImprovementsAsync(
+                            _objCharacter, Improvement.ImprovementSource.Gear,
+                            InternalId + "Wireless", WirelessBonus, Rating,
+                            await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
+                            token: token).ConfigureAwait(false)
+                        && !string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(_strExtra))
                         _strExtra = ImprovementManager.SelectedValue;
                 }
                 else
@@ -3872,7 +3866,8 @@ namespace Chummer.Backend.Equipment
                                                                              x.ImproveSource
                                                                              == Improvement.ImprovementSource.Gear &&
                                                                              x.SourceName == strSourceNameToRemove,
-                                                                         token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                                                                         token).ConfigureAwait(false), token: token)
+                                            .ConfigureAwait(false);
                 }
             }
 
@@ -4153,23 +4148,28 @@ namespace Chummer.Backend.Equipment
 
         public async ValueTask ReaddImprovements(TreeView treGears, StringBuilder sbdOutdatedItems,
                                                  ICollection<string> lstInternalIdFilter,
-                                                 Improvement.ImprovementSource eSource = Improvement.ImprovementSource.Gear, bool blnStackEquipped = true)
+                                                 Improvement.ImprovementSource eSource
+                                                     = Improvement.ImprovementSource.Gear, bool blnStackEquipped = true,
+                                                 CancellationToken token = default)
         {
             // We're only re-apply improvements a list of items, not all of them
             if (lstInternalIdFilter?.Contains(InternalId) != false)
             {
-                XmlNode objNode = await this.GetNodeAsync().ConfigureAwait(false);
+                XmlNode objNode = await this.GetNodeAsync(token: token).ConfigureAwait(false);
                 if (objNode != null)
                 {
                     if (Category == "Stacked Focus")
                     {
-                        StackedFocus objStack = await _objCharacter.StackedFoci.FindAsync(x => x.GearId == InternalId).ConfigureAwait(false);
+                        StackedFocus objStack = await _objCharacter.StackedFoci
+                                                                   .FindAsync(x => x.GearId == InternalId, token)
+                                                                   .ConfigureAwait(false);
                         if (objStack != null)
                         {
                             foreach (Gear objFociGear in objStack.Gear)
                             {
                                 await objFociGear.ReaddImprovements(treGears, sbdOutdatedItems, lstInternalIdFilter,
-                                                                    Improvement.ImprovementSource.StackedFocus, blnStackEquipped).ConfigureAwait(false);
+                                                                    Improvement.ImprovementSource.StackedFocus,
+                                                                    blnStackEquipped, token).ConfigureAwait(false);
                             }
                         }
                     }
@@ -4181,43 +4181,55 @@ namespace Chummer.Backend.Equipment
                         if (Bonus != null)
                         {
                             ImprovementManager.ForcedValue = Extra;
-                            await ImprovementManager.CreateImprovementsAsync(_objCharacter, eSource, InternalId, Bonus, Rating,
-                                                                             await DisplayNameShortAsync(GlobalSettings.Language).ConfigureAwait(false)).ConfigureAwait(false);
+                            await ImprovementManager.CreateImprovementsAsync(
+                                                        _objCharacter, eSource, InternalId, Bonus, Rating,
+                                                        await GetCurrentDisplayNameShortAsync(token)
+                                                            .ConfigureAwait(false), token: token)
+                                                    .ConfigureAwait(false);
                             if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                             {
                                 Extra = ImprovementManager.SelectedValue;
-                                TreeNode objGearNode = treGears.FindNode(InternalId);
-                                if (objGearNode != null)
-                                    objGearNode.Text = CurrentDisplayName;
+                                string strText = await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false);
+                                await treGears.DoThreadSafeAsync(x =>
+                                {
+                                    TreeNode objGearNode = x.FindNode(InternalId);
+                                    if (objGearNode != null)
+                                        objGearNode.Text = strText;
+                                }, token: token).ConfigureAwait(false);
                             }
                         }
 
                         if (WirelessOn && WirelessBonus != null)
                         {
                             ImprovementManager.ForcedValue = Extra;
-                            await ImprovementManager.CreateImprovementsAsync(_objCharacter, eSource, InternalId, WirelessBonus,
-                                                                             Rating, await DisplayNameShortAsync(GlobalSettings.Language).ConfigureAwait(false)).ConfigureAwait(false);
-                            if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                            if (await ImprovementManager.CreateImprovementsAsync(
+                                    _objCharacter, eSource, InternalId, WirelessBonus,
+                                    Rating, await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
+                                    token: token).ConfigureAwait(false)
+                                && !string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                             {
                                 Extra = ImprovementManager.SelectedValue;
+                                string strText = await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false);
                                 await treGears.DoThreadSafeAsync(x =>
                                 {
                                     TreeNode objGearNode = x.FindNode(InternalId);
                                     if (objGearNode != null)
-                                        objGearNode.Text = CurrentDisplayName;
-                                }).ConfigureAwait(false);
+                                        objGearNode.Text = strText;
+                                }, token: token).ConfigureAwait(false);
                             }
                         }
                     }
                 }
                 else
                 {
-                    sbdOutdatedItems?.AppendLine(CurrentDisplayName);
+                    sbdOutdatedItems?.AppendLine(await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false));
                 }
             }
 
             foreach (Gear objChild in Children)
-                await objChild.ReaddImprovements(treGears, sbdOutdatedItems, lstInternalIdFilter, eSource, blnStackEquipped).ConfigureAwait(false);
+                await objChild
+                      .ReaddImprovements(treGears, sbdOutdatedItems, lstInternalIdFilter, eSource, blnStackEquipped,
+                                         token).ConfigureAwait(false);
         }
 
         /// <summary>

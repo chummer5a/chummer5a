@@ -369,7 +369,7 @@ namespace Chummer.UI.Powers
                             await _objCharacter.Powers.AddAsync(objPower, MyToken).ConfigureAwait(false);
                         }
                         else
-                            objPower.DeletePower();
+                            await objPower.DeletePowerAsync(MyToken).ConfigureAwait(false);
                     }
                 } while (blnAddAgain);
             }
@@ -758,7 +758,7 @@ namespace Chummer.UI.Powers
                                                                                         }
                                                                                     }
 
-                                                                                    p.DeletePower();
+                                                                                    await p.DeletePowerAsync(MyToken).ConfigureAwait(false);
 
                                                                                     if (frmParent is CharacterShared
                                                                                      objParent)
