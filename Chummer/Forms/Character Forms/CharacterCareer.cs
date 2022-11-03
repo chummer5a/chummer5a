@@ -16410,10 +16410,10 @@ namespace Chummer
                     Improvement objImprovement))
                 return;
             if (await chkImprovementActive.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false))
-                await ImprovementManager.EnableImprovementsAsync(CharacterObject, objImprovement, token: GenericToken)
+                await ImprovementManager.EnableImprovementsAsync(CharacterObject, objImprovement, GenericToken)
                                         .ConfigureAwait(false);
             else
-                await ImprovementManager.DisableImprovementsAsync(CharacterObject, objImprovement, token: GenericToken)
+                await ImprovementManager.DisableImprovementsAsync(CharacterObject, objImprovement, GenericToken)
                                         .ConfigureAwait(false);
 
             await RequestCharacterUpdate().ConfigureAwait(false);
