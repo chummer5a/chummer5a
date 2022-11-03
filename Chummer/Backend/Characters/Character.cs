@@ -19767,7 +19767,9 @@ namespace Chummer
                     // Remove any existing Submersion Improvements.
                     if (value == 0)
                     {
-                        await ImprovementManager.RemoveImprovementsAsync(this, Improvement.ImprovementSource.Submersion, token: token).ConfigureAwait(false);
+                        await ImprovementManager
+                              .RemoveImprovementsAsync(this, Improvement.ImprovementSource.Submersion, token: token)
+                              .ConfigureAwait(false);
                         // Update any Echo Improvements the character might have.
                         await Metamagics.ForEachAsync(async objMetamagic =>
                         {
@@ -19775,16 +19777,19 @@ namespace Chummer
                                 && objMetamagic.Bonus?.InnerXml.Contains("Rating") == true)
                             {
                                 await ImprovementManager.RemoveImprovementsAsync(
-                                    this, Improvement.ImprovementSource.Echo, objMetamagic.InternalId, token: token).ConfigureAwait(false);
+                                                            this, Improvement.ImprovementSource.Echo,
+                                                            objMetamagic.InternalId, token: token)
+                                                        .ConfigureAwait(false);
                             }
                         }, token).ConfigureAwait(false);
                     }
                     else if (blnFirstSubmersion)
                     {
                         // Create the new Improvement.
-                        await ImprovementManager.CreateImprovementAsync(this, "RES", Improvement.ImprovementSource.Submersion,
-                                                                        string.Empty, Improvement.ImprovementType.Attribute,
-                                                                        string.Empty, 0, value, 0, 1, token: token).ConfigureAwait(false);
+                        await ImprovementManager.CreateImprovementAsync(
+                            this, "RES", Improvement.ImprovementSource.Submersion,
+                            string.Empty, Improvement.ImprovementType.Attribute,
+                            string.Empty, 0, value, 0, 1, token: token).ConfigureAwait(false);
                         await ImprovementManager.CommitAsync(this, token).ConfigureAwait(false);
                         // Update any Echo Improvements the character might have.
                         await Metamagics.ForEachAsync(async objMetamagic =>
@@ -19795,20 +19800,24 @@ namespace Chummer
                                 await ImprovementManager.CreateImprovementsAsync(
                                     this, Improvement.ImprovementSource.Echo, objMetamagic.InternalId,
                                     objMetamagic.Bonus, value,
-                                    await objMetamagic.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                                    await objMetamagic.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
+                                    token: token).ConfigureAwait(false);
                             }
                         }, token).ConfigureAwait(false);
                     }
                     else
                     {
-                        if (await Improvements.AllAsync(x => x.ImproveSource != Improvement.ImprovementSource.Submersion, token: token).ConfigureAwait(false))
+                        if (await Improvements
+                                  .AllAsync(x => x.ImproveSource != Improvement.ImprovementSource.Submersion,
+                                            token: token).ConfigureAwait(false))
                         {
                             // Create the new Improvement.
                             await ImprovementManager.CreateImprovementAsync(this, "RES",
                                                                             Improvement.ImprovementSource.Submersion,
                                                                             string.Empty,
                                                                             Improvement.ImprovementType.Attribute,
-                                                                            string.Empty, 0, value, 0, 1, token: token).ConfigureAwait(false);
+                                                                            string.Empty, 0, value, 0, 1, token: token)
+                                                    .ConfigureAwait(false);
                             await ImprovementManager.CommitAsync(this, token).ConfigureAwait(false);
                         }
                         else
@@ -19816,7 +19825,8 @@ namespace Chummer
                             // ReSharper disable once ForCanBeConvertedToForeach
                             for (int i = 0; i < await Improvements.GetCountAsync(token).ConfigureAwait(false); ++i)
                             {
-                                Improvement objImprovement = await Improvements.GetValueAtAsync(i, token).ConfigureAwait(false);
+                                Improvement objImprovement
+                                    = await Improvements.GetValueAtAsync(i, token).ConfigureAwait(false);
                                 if (objImprovement.ImproveSource == Improvement.ImprovementSource.Submersion)
                                     objImprovement.Rating = value;
                             }
@@ -19836,14 +19846,19 @@ namespace Chummer
                                 {
                                     await ImprovementManager.CreateImprovementsAsync(
                                         this, Improvement.ImprovementSource.Echo, strMetamagicId, objMetamagic.Bonus,
-                                        value, await objMetamagic.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                                        value,
+                                        await objMetamagic.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
+                                        token: token).ConfigureAwait(false);
                                 }
                                 else
                                 {
                                     // ReSharper disable once ForCanBeConvertedToForeach
-                                    for (int i = 0; i < await Improvements.GetCountAsync(token).ConfigureAwait(false); ++i)
+                                    for (int i = 0;
+                                         i < await Improvements.GetCountAsync(token).ConfigureAwait(false);
+                                         ++i)
                                     {
-                                        Improvement objImprovement = await Improvements.GetValueAtAsync(i, token).ConfigureAwait(false);
+                                        Improvement objImprovement = await Improvements.GetValueAtAsync(i, token)
+                                            .ConfigureAwait(false);
                                         if (objImprovement.SourceName == strMetamagicId && objImprovement.ImproveSource
                                             == Improvement.ImprovementSource.Echo)
                                             objImprovement.Rating = value;
@@ -19854,6 +19869,10 @@ namespace Chummer
                     }
 
                     OnPropertyChanged(nameof(SubmersionGrade));
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
         }
