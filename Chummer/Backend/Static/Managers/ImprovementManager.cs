@@ -2423,9 +2423,9 @@ namespace Chummer
             return new Tuple<bool, string>(true, strSourceName);
         }
 
-        public static void EnableImprovements(Character objCharacter, IEnumerable<Improvement> objImprovementList)
+        public static void EnableImprovements(Character objCharacter, IEnumerable<Improvement> objImprovementList, CancellationToken token = default)
         {
-            EnableImprovements(objCharacter, objImprovementList.ToList());
+            EnableImprovements(objCharacter, objImprovementList.ToList(), token);
         }
 
         public static void EnableImprovements(Character objCharacter, params Improvement[] objImprovementList)
@@ -2433,15 +2433,37 @@ namespace Chummer
             EnableImprovements(objCharacter, Array.AsReadOnly(objImprovementList));
         }
 
-        public static void EnableImprovements(Character objCharacter,
-                                              IReadOnlyCollection<Improvement> objImprovementList)
+        public static void EnableImprovements(Character objCharacter, IReadOnlyCollection<Improvement> objImprovementList, CancellationToken token = default)
+        {
+            Utils.SafelyRunSynchronously(() => EnableImprovementsCoreAsync(true, objCharacter, objImprovementList, token), token);
+        }
+
+        public static Task EnableImprovementsAsync(Character objCharacter, IEnumerable<Improvement> objImprovementList, CancellationToken token = default)
+        {
+            return EnableImprovementsAsync(objCharacter, objImprovementList.ToList(), token);
+        }
+
+        public static Task EnableImprovementsAsync(Character objCharacter, params Improvement[] objImprovementList)
+        {
+            return EnableImprovementsAsync(objCharacter, Array.AsReadOnly(objImprovementList));
+        }
+
+        public static Task EnableImprovementsAsync(Character objCharacter, IReadOnlyCollection<Improvement> objImprovementList, CancellationToken token = default)
+        {
+            return EnableImprovementsCoreAsync(false, objCharacter, objImprovementList, token);
+        }
+
+        public static async Task EnableImprovementsCoreAsync(bool blnSync, Character objCharacter,
+                                                             IReadOnlyCollection<Improvement> objImprovementList,
+                                                             CancellationToken token = default)
         {
             if (objCharacter == null)
                 throw new ArgumentNullException(nameof(objCharacter));
             if (objImprovementList == null)
                 throw new ArgumentNullException(nameof(objImprovementList));
 
-            using (objCharacter.LockObject.EnterWriteLock())
+            IAsyncDisposable objLocker = await objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
             {
                 foreach (Improvement objImprovement in objImprovementList)
                 {
@@ -2450,7 +2472,12 @@ namespace Chummer
                 }
 
                 bool blnCharacterHasSkillsoftAccess
-                    = ValueOf(objCharacter, Improvement.ImprovementType.SkillsoftAccess) > 0;
+                    = (blnSync
+                          // ReSharper disable once MethodHasAsyncOverload
+                          ? ValueOf(objCharacter, Improvement.ImprovementType.SkillsoftAccess)
+                          : await ValueOfAsync(objCharacter, Improvement.ImprovementType.SkillsoftAccess, token: token)
+                              .ConfigureAwait(false))
+                      > 0;
                 // Now that the entire list is deleted from the character's improvements list, we do the checking of duplicates and extra effects
                 foreach (Improvement objImprovement in objImprovementList)
                 {
@@ -2485,25 +2512,63 @@ namespace Chummer
                             break;
 
                         case Improvement.ImprovementType.SkillsoftAccess:
-                            foreach (KnowledgeSkill objKnowledgeSkill in objCharacter.SkillsSection.KnowsoftSkills)
+                            if (blnSync)
                             {
-                                if (!objCharacter.SkillsSection.KnowledgeSkills.Contains(objKnowledgeSkill))
-                                    objCharacter.SkillsSection.KnowledgeSkills.Add(objKnowledgeSkill);
+                                // ReSharper disable once MethodHasAsyncOverload
+                                objCharacter.SkillsSection.KnowsoftSkills.ForEach(objKnowledgeSkill =>
+                                {
+                                    if (!objCharacter.SkillsSection.KnowledgeSkills.Contains(objKnowledgeSkill))
+                                        objCharacter.SkillsSection.KnowledgeSkills.Add(objKnowledgeSkill);
+                                }, token);
+                            }
+                            else
+                            {
+                                await objCharacter.SkillsSection.KnowsoftSkills.ForEachAsync(async objKnowledgeSkill =>
+                                {
+                                    if (!await objCharacter.SkillsSection.KnowledgeSkills
+                                                           .ContainsAsync(objKnowledgeSkill, token)
+                                                           .ConfigureAwait(false))
+                                        await objCharacter.SkillsSection.KnowledgeSkills
+                                                          .AddAsync(objKnowledgeSkill, token).ConfigureAwait(false);
+                                }, token).ConfigureAwait(false);
                             }
 
                             break;
 
                         case Improvement.ImprovementType.Skillsoft:
+                        {
+                            if (blnCharacterHasSkillsoftAccess)
                             {
-                                foreach (KnowledgeSkill objKnowledgeSkill in
-                                         objCharacter.SkillsSection.KnowsoftSkills.Where(
-                                             x => x.InternalId == strImprovedName))
+                                if (blnSync)
                                 {
-                                    if (blnCharacterHasSkillsoftAccess
-                                        && !objCharacter.SkillsSection.KnowledgeSkills.Contains(objKnowledgeSkill))
-                                        objCharacter.SkillsSection.KnowledgeSkills.Add(objKnowledgeSkill);
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    objCharacter.SkillsSection.KnowsoftSkills.ForEach(objKnowledgeSkill =>
+                                    {
+                                        if (objKnowledgeSkill.InternalId == strImprovedName
+                                            && !objCharacter.SkillsSection.KnowledgeSkills.Contains(objKnowledgeSkill))
+                                        {
+                                            objCharacter.SkillsSection.KnowledgeSkills.Add(objKnowledgeSkill);
+                                        }
+                                    }, token);
+                                }
+                                else
+                                {
+                                    await objCharacter.SkillsSection.KnowsoftSkills.ForEachAsync(
+                                        async objKnowledgeSkill =>
+                                        {
+                                            if (objKnowledgeSkill.InternalId == strImprovedName
+                                                && !await objCharacter.SkillsSection.KnowledgeSkills
+                                                                      .ContainsAsync(objKnowledgeSkill, token)
+                                                                      .ConfigureAwait(false))
+                                            {
+                                                await objCharacter.SkillsSection.KnowledgeSkills
+                                                                  .AddAsync(objKnowledgeSkill, token)
+                                                                  .ConfigureAwait(false);
+                                            }
+                                        }, token).ConfigureAwait(false);
                                 }
                             }
+                        }
                             break;
 
                         case Improvement.ImprovementType.Attribute:
@@ -2513,15 +2578,24 @@ namespace Chummer
                                 switch (strImprovedName)
                                 {
                                     case "MAG":
-                                        objCharacter.MAGEnabled = true;
+                                        if (blnSync)
+                                            objCharacter.MAGEnabled = true;
+                                        else
+                                            await objCharacter.SetMAGEnabledAsync(true, token).ConfigureAwait(false);
                                         break;
 
                                     case "RES":
-                                        objCharacter.RESEnabled = true;
+                                        if (blnSync)
+                                            objCharacter.RESEnabled = true;
+                                        else
+                                            await objCharacter.SetRESEnabledAsync(true, token).ConfigureAwait(false);
                                         break;
 
                                     case "DEP":
-                                        objCharacter.DEPEnabled = true;
+                                        if (blnSync)
+                                            objCharacter.DEPEnabled = true;
+                                        else
+                                            await objCharacter.SetDEPEnabledAsync(true, token).ConfigureAwait(false);
                                         break;
                                 }
                             }
@@ -2529,9 +2603,9 @@ namespace Chummer
                             break;
 
                         case Improvement.ImprovementType.SpecialTab:
+                            // Determine if access to any special tabs have been lost.
                             switch (strUniqueName)
                             {
-                                // Determine if access to any special tabs have been lost.
                                 case "enabletab":
                                     switch (strImprovedName)
                                     {
@@ -2584,87 +2658,155 @@ namespace Chummer
                                     += Convert.ToDecimal(strImprovedName, GlobalSettings.InvariantCultureInfo);
                             break;
 
-                        case Improvement.ImprovementType.Adapsin:
-                            break;
-
                         case Improvement.ImprovementType.AddContact:
                             Contact objNewContact
-                                = objCharacter.Contacts.FirstOrDefault(c => c.UniqueId == strImprovedName);
+                                = blnSync
+                                    ? objCharacter.Contacts.FirstOrDefault(c => c.UniqueId == strImprovedName)
+                                    : await objCharacter.Contacts.FirstOrDefaultAsync(
+                                        c => c.UniqueId == strImprovedName, token).ConfigureAwait(false);
                             if (objNewContact != null)
                             {
-                                // TODO: Add code to enable disabled contact
+                                // TODO: Add code to disable contact
                             }
 
                             break;
 
                         case Improvement.ImprovementType.Art:
-                            Art objArt = objCharacter.Arts.FirstOrDefault(x => x.InternalId == strImprovedName);
+                            Art objArt = blnSync
+                                ? objCharacter.Arts.FirstOrDefault(x => x.InternalId == strImprovedName)
+                                : await objCharacter.Arts.FirstOrDefaultAsync(
+                                    x => x.InternalId == strImprovedName, token).ConfigureAwait(false);
                             if (objArt != null)
                             {
-                                Improvement.ImprovementSource eSource
-                                    = objArt.SourceType;
-                                EnableImprovements(objCharacter,
-                                                   objCharacter.Improvements.Where(
-                                                       x => x.ImproveSource == eSource
-                                                            && x.SourceName == strImprovedName && x.Enabled));
+                                Improvement.ImprovementSource eSource = objArt.SourceType;
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    EnableImprovements(objCharacter,
+                                                       objCharacter.Improvements.Where(
+                                                           x => x.ImproveSource == eSource
+                                                                && x.SourceName == strImprovedName && x.Enabled),
+                                                       token);
+                                else
+                                    await EnableImprovementsAsync(objCharacter,
+                                                                  await objCharacter.Improvements.ToListAsync(
+                                                                          x => x.ImproveSource == eSource
+                                                                               && x.SourceName == strImprovedName
+                                                                               && x.Enabled, token: token)
+                                                                      .ConfigureAwait(false), token)
+                                        .ConfigureAwait(false);
                             }
 
                             break;
 
                         case Improvement.ImprovementType.Metamagic:
                         case Improvement.ImprovementType.Echo:
-                            Metamagic objMetamagic
-                                = objCharacter.Metamagics.FirstOrDefault(x => x.InternalId == strImprovedName);
+                            Metamagic objMetamagic = blnSync
+                                ? objCharacter.Metamagics.FirstOrDefault(o => o.InternalId == strImprovedName)
+                                : await objCharacter.Metamagics.FirstOrDefaultAsync(
+                                    o => o.InternalId == strImprovedName, token).ConfigureAwait(false);
                             if (objMetamagic != null)
                             {
                                 Improvement.ImprovementSource eSource
                                     = objImprovement.ImproveType == Improvement.ImprovementType.Metamagic
                                         ? Improvement.ImprovementSource.Metamagic
                                         : Improvement.ImprovementSource.Echo;
-                                EnableImprovements(objCharacter,
-                                                   objCharacter.Improvements.Where(
-                                                       x => x.ImproveSource == eSource
-                                                            && x.SourceName == strImprovedName && x.Enabled));
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    EnableImprovements(objCharacter,
+                                                       objCharacter.Improvements.Where(
+                                                           x => x.ImproveSource == eSource
+                                                                && x.SourceName == strImprovedName && x.Enabled),
+                                                       token);
+                                else
+                                    await EnableImprovementsAsync(objCharacter,
+                                                                  await objCharacter.Improvements.ToListAsync(
+                                                                          x => x.ImproveSource == eSource
+                                                                               && x.SourceName == strImprovedName
+                                                                               && x.Enabled, token: token)
+                                                                      .ConfigureAwait(false), token)
+                                        .ConfigureAwait(false);
                             }
 
                             break;
 
                         case Improvement.ImprovementType.CritterPower:
-                            CritterPower objCritterPower = objCharacter.CritterPowers.FirstOrDefault(
-                                x => x.InternalId == strImprovedName || (x.Name == strImprovedName
-                                                                         && x.Extra == strUniqueName));
+                            CritterPower objCritterPower = blnSync
+                                ? objCharacter.CritterPowers.FirstOrDefault(
+                                    x => x.InternalId == strImprovedName
+                                         || (x.Name == strImprovedName && x.Extra == strUniqueName))
+                                : await objCharacter.CritterPowers.FirstOrDefaultAsync(
+                                                        x => x.InternalId == strImprovedName
+                                                             || (x.Name == strImprovedName && x.Extra == strUniqueName),
+                                                        token)
+                                                    .ConfigureAwait(false);
                             if (objCritterPower != null)
                             {
                                 string strPowerId = objCritterPower.InternalId;
-                                EnableImprovements(objCharacter,
-                                                   objCharacter.Improvements.Where(
-                                                       x => x.ImproveSource
-                                                            == Improvement.ImprovementSource.CritterPower
-                                                            && x.SourceName == strPowerId && x.Enabled));
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    EnableImprovements(objCharacter,
+                                                       objCharacter.Improvements.Where(
+                                                           x => x.ImproveSource
+                                                                == Improvement.ImprovementSource.CritterPower
+                                                                && x.SourceName == strPowerId && x.Enabled), token);
+                                else
+                                    await EnableImprovementsAsync(objCharacter,
+                                                                  await objCharacter.Improvements.ToListAsync(
+                                                                          x => x.ImproveSource
+                                                                               == Improvement.ImprovementSource
+                                                                                   .CritterPower
+                                                                               && x.SourceName == strPowerId
+                                                                               && x.Enabled, token: token)
+                                                                      .ConfigureAwait(false), token)
+                                        .ConfigureAwait(false);
                             }
 
                             break;
 
                         case Improvement.ImprovementType.MentorSpirit:
                         case Improvement.ImprovementType.Paragon:
-                            MentorSpirit objMentor
-                                = objCharacter.MentorSpirits.FirstOrDefault(
-                                    x => x.InternalId == strImprovedName);
+                            MentorSpirit objMentor = blnSync
+                                ? objCharacter.MentorSpirits.FirstOrDefault(o => o.InternalId == strImprovedName)
+                                : await objCharacter.MentorSpirits.FirstOrDefaultAsync(
+                                    o => o.InternalId == strImprovedName, token).ConfigureAwait(false);
                             if (objMentor != null)
                             {
-                                EnableImprovements(objCharacter,
-                                                   objCharacter.Improvements.Where(
-                                                       x => x.ImproveSource
-                                                            == Improvement.ImprovementSource.MentorSpirit
-                                                            && x.SourceName == strImprovedName && x.Enabled));
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    EnableImprovements(objCharacter,
+                                                       objCharacter.Improvements.Where(
+                                                           x => x.ImproveSource
+                                                                == Improvement.ImprovementSource.MentorSpirit
+                                                                && x.SourceName == strImprovedName && x.Enabled),
+                                                       token);
+                                else
+                                    await EnableImprovementsAsync(objCharacter,
+                                                                  await objCharacter.Improvements.ToListAsync(
+                                                                          x => x.ImproveSource
+                                                                               == Improvement.ImprovementSource
+                                                                                   .MentorSpirit
+                                                                               && x.SourceName == strImprovedName
+                                                                               && x.Enabled, token: token)
+                                                                      .ConfigureAwait(false), token)
+                                        .ConfigureAwait(false);
                             }
 
                             break;
 
                         case Improvement.ImprovementType.Gear:
-                            Gear objGear
-                                = objCharacter.Gear.FirstOrDefault(x => x.InternalId == strImprovedName);
-                            objGear?.ChangeEquippedStatus(true);
+                            Gear objGear = blnSync
+                                ? objCharacter.Gear.FirstOrDefault(o => o.InternalId == strImprovedName)
+                                : await objCharacter.Gear.FirstOrDefaultAsync(
+                                    o => o.InternalId == strImprovedName, token).ConfigureAwait(false);
+                            if (objGear != null)
+                            {
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    objGear.ChangeEquippedStatus(true);
+                                else
+                                    await objGear.ChangeEquippedStatusAsync(true, token: token).ConfigureAwait(false);
+                            }
+
                             break;
 
                         case Improvement.ImprovementType.Weapon:
@@ -2678,77 +2820,158 @@ namespace Chummer
                             break;
 
                         case Improvement.ImprovementType.Spell:
-                            Spell objSpell
-                                = objCharacter.Spells.FirstOrDefault(x => x.InternalId == strImprovedName);
+                            Spell objSpell = blnSync
+                                ? objCharacter.Spells.FirstOrDefault(o => o.InternalId == strImprovedName)
+                                : await objCharacter.Spells.FirstOrDefaultAsync(
+                                    o => o.InternalId == strImprovedName, token).ConfigureAwait(false);
                             if (objSpell != null)
                             {
-                                EnableImprovements(objCharacter,
-                                                   objCharacter.Improvements.Where(
-                                                       x => x.ImproveSource == Improvement.ImprovementSource.Spell
-                                                            && x.SourceName == strImprovedName && x.Enabled));
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    EnableImprovements(objCharacter,
+                                                       objCharacter.Improvements.Where(
+                                                           x => x.ImproveSource == Improvement.ImprovementSource.Spell
+                                                                && x.SourceName == strImprovedName && x.Enabled),
+                                                       token);
+                                else
+                                    await EnableImprovementsAsync(objCharacter,
+                                                                  await objCharacter.Improvements.ToListAsync(
+                                                                          x => x.ImproveSource
+                                                                               == Improvement.ImprovementSource.Spell
+                                                                               && x.SourceName == strImprovedName
+                                                                               && x.Enabled, token: token)
+                                                                      .ConfigureAwait(false), token)
+                                        .ConfigureAwait(false);
                             }
 
                             break;
 
                         case Improvement.ImprovementType.ComplexForm:
-                            ComplexForm objComplexForm
-                                = objCharacter.ComplexForms.FirstOrDefault(
-                                    x => x.InternalId == strImprovedName);
+                            ComplexForm objComplexForm = blnSync
+                                ? objCharacter.ComplexForms.FirstOrDefault(o => o.InternalId == strImprovedName)
+                                : await objCharacter.ComplexForms.FirstOrDefaultAsync(
+                                    o => o.InternalId == strImprovedName, token).ConfigureAwait(false);
                             if (objComplexForm != null)
                             {
-                                EnableImprovements(objCharacter,
-                                                   objCharacter.Improvements.Where(
-                                                       x => x.ImproveSource == Improvement.ImprovementSource.ComplexForm
-                                                            && x.SourceName == strImprovedName && x.Enabled));
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    EnableImprovements(objCharacter,
+                                                       objCharacter.Improvements.Where(
+                                                           x => x.ImproveSource == Improvement.ImprovementSource
+                                                                    .ComplexForm
+                                                                && x.SourceName == strImprovedName && x.Enabled),
+                                                       token);
+                                else
+                                    await EnableImprovementsAsync(objCharacter,
+                                                                  await objCharacter.Improvements.ToListAsync(
+                                                                          x => x.ImproveSource
+                                                                               == Improvement.ImprovementSource
+                                                                                   .ComplexForm
+                                                                               && x.SourceName == strImprovedName
+                                                                               && x.Enabled, token: token)
+                                                                      .ConfigureAwait(false), token)
+                                        .ConfigureAwait(false);
                             }
 
                             break;
 
                         case Improvement.ImprovementType.MartialArt:
-                            MartialArt objMartialArt
-                                = objCharacter.MartialArts.FirstOrDefault(x => x.InternalId == strImprovedName);
+                            MartialArt objMartialArt = blnSync
+                                ? objCharacter.MartialArts.FirstOrDefault(o => o.InternalId == strImprovedName)
+                                : await objCharacter.MartialArts.FirstOrDefaultAsync(
+                                    o => o.InternalId == strImprovedName, token).ConfigureAwait(false);
                             if (objMartialArt != null)
                             {
-                                EnableImprovements(objCharacter,
-                                                   objCharacter.Improvements.Where(
-                                                       x => x.ImproveSource == Improvement.ImprovementSource.MartialArt
-                                                            && x.SourceName == strImprovedName && x.Enabled));
-                                // Remove the Improvements for any Techniques for the Martial Art that is being removed.
-                                foreach (MartialArtTechnique objTechnique in objMartialArt.Techniques)
-                                {
-                                    string strTechniqueId = objTechnique.InternalId;
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
                                     EnableImprovements(objCharacter,
                                                        objCharacter.Improvements.Where(
                                                            x => x.ImproveSource == Improvement.ImprovementSource
-                                                                    .MartialArtTechnique
-                                                                && x.SourceName == strTechniqueId && x.Enabled));
+                                                                    .MartialArt
+                                                                && x.SourceName == strImprovedName && x.Enabled),
+                                                       token);
+                                else
+                                    await EnableImprovementsAsync(objCharacter,
+                                                                  await objCharacter.Improvements.ToListAsync(
+                                                                          x => x.ImproveSource
+                                                                               == Improvement.ImprovementSource
+                                                                                   .MartialArt
+                                                                               && x.SourceName == strImprovedName
+                                                                               && x.Enabled, token: token)
+                                                                      .ConfigureAwait(false), token)
+                                        .ConfigureAwait(false);
+                                // Remove the Improvements for any Techniques for the Martial Art that is being removed.
+                                if (blnSync)
+                                {
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    objMartialArt.Techniques.ForEach(objTechnique =>
+                                    {
+                                        string strTechniqueId = objTechnique.InternalId;
+                                        EnableImprovements(objCharacter,
+                                                           objCharacter.Improvements.Where(
+                                                               x => x.ImproveSource == Improvement.ImprovementSource
+                                                                        .MartialArtTechnique
+                                                                    && x.SourceName == strTechniqueId && x.Enabled),
+                                                           token);
+                                    }, token: token);
+                                }
+                                else
+                                {
+                                    await objMartialArt.Techniques.ForEachAsync(async objTechnique =>
+                                    {
+                                        string strTechniqueId = objTechnique.InternalId;
+                                        await EnableImprovementsAsync(objCharacter,
+                                                                      await objCharacter.Improvements.ToListAsync(
+                                                                              x => x.ImproveSource
+                                                                                  == Improvement.ImprovementSource
+                                                                                      .MartialArtTechnique
+                                                                                  && x.SourceName == strTechniqueId
+                                                                                  && x.Enabled, token: token)
+                                                                          .ConfigureAwait(false), token)
+                                            .ConfigureAwait(false);
+                                    }, token: token).ConfigureAwait(false);
                                 }
                             }
 
                             break;
 
                         case Improvement.ImprovementType.SpecialSkills:
+                        {
+                            SkillsSection.FilterOption eFilterOption
+                                = (SkillsSection.FilterOption) Enum.Parse(
+                                    typeof(SkillsSection.FilterOption), strImprovedName);
+                            foreach (Skill objSkill in await objCharacter.SkillsSection.GetActiveSkillsFromDataAsync(
+                                         eFilterOption, false, objImprovement.Target, token).ConfigureAwait(false))
                             {
-                                SkillsSection.FilterOption eFilterOption
-                                    = (SkillsSection.FilterOption)Enum.Parse(
-                                        typeof(SkillsSection.FilterOption), strImprovedName);
-                                foreach (Skill objSkill in objCharacter.SkillsSection.GetActiveSkillsFromData(
-                                             eFilterOption, false, objImprovement.Target))
-                                {
-                                    objSkill.ForceDisabled = false;
-                                }
+                                objSkill.ForceDisabled = false;
                             }
+                        }
                             break;
 
                         case Improvement.ImprovementType.SpecificQuality:
-                            Quality objQuality = objCharacter.Qualities.FirstOrDefault(
-                                objLoopQuality => objLoopQuality.InternalId == strImprovedName);
+                            Quality objQuality = blnSync
+                                ? objCharacter.Qualities.FirstOrDefault(o => o.InternalId == strImprovedName)
+                                : await objCharacter.Qualities.FirstOrDefaultAsync(
+                                    o => o.InternalId == strImprovedName, token).ConfigureAwait(false);
                             if (objQuality != null)
                             {
-                                EnableImprovements(objCharacter,
-                                                   objCharacter.Improvements.Where(
-                                                       x => x.ImproveSource == Improvement.ImprovementSource.Quality
-                                                            && x.SourceName == strImprovedName && x.Enabled));
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    EnableImprovements(objCharacter,
+                                                       objCharacter.Improvements.Where(
+                                                           x => x.ImproveSource
+                                                                == Improvement.ImprovementSource.Quality
+                                                                && x.SourceName == strImprovedName && x.Enabled),
+                                                       token);
+                                else
+                                    await EnableImprovementsAsync(objCharacter,
+                                                                  await objCharacter.Improvements.ToListAsync(
+                                                                          x => x.ImproveSource
+                                                                               == Improvement.ImprovementSource.Quality
+                                                                               && x.SourceName == strImprovedName
+                                                                               && x.Enabled, token: token)
+                                                                      .ConfigureAwait(false), token)
+                                        .ConfigureAwait(false);
                             }
 
                             break;
@@ -2758,40 +2981,70 @@ namespace Chummer
                                 Skill objSkill = objCharacter.SkillsSection.GetActiveSkill(strImprovedName);
                                 SkillSpecialization objSkillSpec = objSkill?.Specializations.FirstOrDefault(x => x.Name == strUniqueName);
                                 //if (objSkillSpec != null)
-                                // TODO: Add temporarily remove skill specialization
+                                    // TODO: Temporarily remove skill specialization
                             }
                             break;
                             */
                         case Improvement.ImprovementType.AIProgram:
-                            AIProgram objProgram = objCharacter.AIPrograms.FirstOrDefault(
-                                objLoopProgram => objLoopProgram.InternalId == strImprovedName);
+                            AIProgram objProgram = blnSync
+                                ? objCharacter.AIPrograms.FirstOrDefault(o => o.InternalId == strImprovedName)
+                                : await objCharacter.AIPrograms.FirstOrDefaultAsync(
+                                    o => o.InternalId == strImprovedName, token).ConfigureAwait(false);
                             if (objProgram != null)
                             {
-                                DisableImprovements(objCharacter,
-                                                    objCharacter.Improvements.Where(
-                                                        x => x.ImproveSource == Improvement.ImprovementSource.AIProgram
-                                                             && x.SourceName == strImprovedName && x.Enabled));
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    EnableImprovements(objCharacter,
+                                                       objCharacter.Improvements.Where(
+                                                           x => x.ImproveSource
+                                                                == Improvement.ImprovementSource.AIProgram
+                                                                && x.SourceName == strImprovedName && x.Enabled),
+                                                       token);
+                                else
+                                    await EnableImprovementsAsync(objCharacter,
+                                                                  await objCharacter.Improvements.ToListAsync(
+                                                                          x => x.ImproveSource
+                                                                               == Improvement.ImprovementSource
+                                                                                   .AIProgram
+                                                                               && x.SourceName == strImprovedName
+                                                                               && x.Enabled, token: token)
+                                                                      .ConfigureAwait(false), token)
+                                        .ConfigureAwait(false);
                             }
 
                             break;
 
                         case Improvement.ImprovementType.FreeWare:
+                        {
+                            Cyberware objCyberware = blnSync
+                                ? objCharacter.Cyberware.FirstOrDefault(o => o.InternalId == strImprovedName)
+                                : await objCharacter.Cyberware.FirstOrDefaultAsync(
+                                    o => o.InternalId == strImprovedName, token).ConfigureAwait(false);
+                            if (objCyberware != null)
                             {
-                                Cyberware objCyberware
-                                    = objCharacter.Cyberware.FirstOrDefault(o => o.InternalId == strImprovedName);
-                                objCyberware?.ChangeModularEquip(true);
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    objCyberware.ChangeModularEquip(true);
+                                else
+                                    await objCyberware.ChangeModularEquipAsync(true, token: token)
+                                                      .ConfigureAwait(false);
                             }
+                        }
                             break;
                     }
                 }
 
                 objImprovementList.ProcessRelevantEvents();
             }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
-        public static void DisableImprovements(Character objCharacter, IEnumerable<Improvement> objImprovementList)
+        public static void DisableImprovements(Character objCharacter, IEnumerable<Improvement> objImprovementList, CancellationToken token = default)
         {
-            DisableImprovements(objCharacter, objImprovementList.ToList());
+            DisableImprovements(objCharacter, objImprovementList.ToList(), token);
         }
 
         public static void DisableImprovements(Character objCharacter, params Improvement[] objImprovementList)
@@ -2800,14 +3053,43 @@ namespace Chummer
         }
 
         public static void DisableImprovements(Character objCharacter,
-                                               IReadOnlyCollection<Improvement> objImprovementList)
+                                               IReadOnlyCollection<Improvement> objImprovementList, CancellationToken token = default)
+        {
+            Utils.SafelyRunSynchronously(() => DisableImprovementsCoreAsync(true, objCharacter, objImprovementList, token), token);
+        }
+
+        public static Task DisableImprovementsAsync(Character objCharacter, IEnumerable<Improvement> objImprovementList, CancellationToken token = default)
+        {
+            return DisableImprovementsAsync(objCharacter, objImprovementList.ToList(), token);
+        }
+
+        public static Task DisableImprovementsAsync(Character objCharacter, params Improvement[] objImprovementList)
+        {
+            return DisableImprovementsAsync(objCharacter, Array.AsReadOnly(objImprovementList));
+        }
+
+        public static Task DisableImprovementsAsync(Character objCharacter,
+                                                    IReadOnlyCollection<Improvement> objImprovementList, CancellationToken token = default)
+        {
+            return DisableImprovementsCoreAsync(false, objCharacter, objImprovementList, token);
+        }
+
+        public static async Task DisableImprovementsCoreAsync(bool blnSync, Character objCharacter,
+                                                              IReadOnlyCollection<Improvement> objImprovementList,
+                                                              CancellationToken token = default)
         {
             if (objCharacter == null)
                 throw new ArgumentNullException(nameof(objCharacter));
             if (objImprovementList == null)
                 throw new ArgumentNullException(nameof(objImprovementList));
 
-            using (objCharacter.LockObject.EnterWriteLock())
+            IDisposable objLocker = null;
+            IAsyncDisposable objAsyncLocker = null;
+            if (blnSync)
+                objLocker = objCharacter.LockObject.EnterWriteLock(token);
+            else
+                objAsyncLocker = await objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
             {
                 foreach (Improvement objImprovement in objImprovementList)
                 {
@@ -2822,11 +3104,17 @@ namespace Chummer
                     string strUniqueName = objImprovement.UniqueName;
                     Improvement.ImprovementType eImprovementType = objImprovement.ImproveType;
                     string strSourceName = objImprovement.SourceName;
-                    bool blnHasDuplicate = objCharacter.Improvements.Any(
-                        x => x.UniqueName == strUniqueName && x.ImprovedName == strImprovedName
-                                                           && x.ImproveType == eImprovementType
-                                                           && x.SourceName != strSourceName
-                                                           && x.Enabled);
+                    bool blnHasDuplicate = blnSync
+                        ? objCharacter.Improvements.Any(
+                            x => x.UniqueName == strUniqueName && x.ImprovedName == strImprovedName
+                                                               && x.ImproveType == eImprovementType
+                                                               && x.SourceName != strSourceName
+                                                               && x.Enabled)
+                        : await objCharacter.Improvements.AnyAsync(
+                            x => x.UniqueName == strUniqueName && x.ImprovedName == strImprovedName
+                                                               && x.ImproveType == eImprovementType
+                                                               && x.SourceName != strSourceName
+                                                               && x.Enabled, token: token).ConfigureAwait(false);
 
                     switch (eImprovementType)
                     {
@@ -2859,9 +3147,20 @@ namespace Chummer
                         case Improvement.ImprovementType.SkillsoftAccess:
                             if (!blnHasDuplicate)
                             {
-                                foreach (KnowledgeSkill objKnowledgeSkill in objCharacter.SkillsSection.KnowsoftSkills)
+                                if (blnSync)
                                 {
-                                    objCharacter.SkillsSection.KnowledgeSkills.Remove(objKnowledgeSkill);
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    objCharacter.SkillsSection.KnowsoftSkills.ForEach(
+                                        objKnowledgeSkill =>
+                                            objCharacter.SkillsSection.KnowledgeSkills.Remove(objKnowledgeSkill),
+                                        token: token);
+                                }
+                                else
+                                {
+                                    await objCharacter.SkillsSection.KnowsoftSkills.ForEachAsync(
+                                        objKnowledgeSkill => objCharacter.SkillsSection.KnowledgeSkills
+                                                                         .RemoveAsync(objKnowledgeSkill, token)
+                                                                         .AsTask(), token: token).ConfigureAwait(false);
                                 }
                             }
 
@@ -2870,8 +3169,16 @@ namespace Chummer
                         case Improvement.ImprovementType.Skillsoft:
                             if (!blnHasDuplicate)
                             {
-                                objCharacter.SkillsSection.KnowsoftSkills.RemoveAll(
-                                    x => x.InternalId == strImprovedName);
+                                if (blnSync)
+                                {
+                                    objCharacter.SkillsSection.KnowsoftSkills.RemoveAll(
+                                        x => x.InternalId == strImprovedName);
+                                }
+                                else
+                                {
+                                    await objCharacter.SkillsSection.KnowsoftSkills.RemoveAllAsync(
+                                        x => x.InternalId == strImprovedName, token: token).ConfigureAwait(false);
+                                }
                             }
 
                             break;
@@ -2883,15 +3190,24 @@ namespace Chummer
                                 switch (strImprovedName)
                                 {
                                     case "MAG":
-                                        objCharacter.MAGEnabled = false;
+                                        if (blnSync)
+                                            objCharacter.MAGEnabled = false;
+                                        else
+                                            await objCharacter.SetMAGEnabledAsync(false, token).ConfigureAwait(false);
                                         break;
 
                                     case "RES":
-                                        objCharacter.RESEnabled = false;
+                                        if (blnSync)
+                                            objCharacter.RESEnabled = false;
+                                        else
+                                            await objCharacter.SetRESEnabledAsync(false, token).ConfigureAwait(false);
                                         break;
 
                                     case "DEP":
-                                        objCharacter.DEPEnabled = false;
+                                        if (blnSync)
+                                            objCharacter.DEPEnabled = false;
+                                        else
+                                            await objCharacter.SetDEPEnabledAsync(false, token).ConfigureAwait(false);
                                         break;
                                 }
                             }
@@ -2966,7 +3282,10 @@ namespace Chummer
 
                         case Improvement.ImprovementType.AddContact:
                             Contact objNewContact
-                                = objCharacter.Contacts.FirstOrDefault(c => c.UniqueId == strImprovedName);
+                                = blnSync
+                                    ? objCharacter.Contacts.FirstOrDefault(c => c.UniqueId == strImprovedName)
+                                    : await objCharacter.Contacts.FirstOrDefaultAsync(
+                                        c => c.UniqueId == strImprovedName, token).ConfigureAwait(false);
                             if (objNewContact != null)
                             {
                                 // TODO: Add code to disable contact
@@ -2975,72 +3294,141 @@ namespace Chummer
                             break;
 
                         case Improvement.ImprovementType.Art:
-                            Art objArt = objCharacter.Arts.FirstOrDefault(x => x.InternalId == strImprovedName);
+                            Art objArt = blnSync
+                                ? objCharacter.Arts.FirstOrDefault(x => x.InternalId == strImprovedName)
+                                : await objCharacter.Arts.FirstOrDefaultAsync(
+                                    x => x.InternalId == strImprovedName, token).ConfigureAwait(false);
                             if (objArt != null)
                             {
                                 Improvement.ImprovementSource eSource = objArt.SourceType;
-                                DisableImprovements(objCharacter,
-                                                    objCharacter.Improvements.Where(
-                                                        x => x.ImproveSource == eSource
-                                                             && x.SourceName == strImprovedName && x.Enabled));
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    DisableImprovements(objCharacter,
+                                                        objCharacter.Improvements.Where(
+                                                            x => x.ImproveSource == eSource
+                                                                 && x.SourceName == strImprovedName && x.Enabled),
+                                                        token);
+                                else
+                                    await DisableImprovementsAsync(objCharacter,
+                                                                   await objCharacter.Improvements.ToListAsync(
+                                                                           x => x.ImproveSource == eSource
+                                                                               && x.SourceName == strImprovedName
+                                                                               && x.Enabled, token: token)
+                                                                       .ConfigureAwait(false), token)
+                                        .ConfigureAwait(false);
                             }
 
                             break;
 
                         case Improvement.ImprovementType.Metamagic:
                         case Improvement.ImprovementType.Echo:
-                            Metamagic objMetamagic
-                                = objCharacter.Metamagics.FirstOrDefault(x => x.InternalId == strImprovedName);
+                            Metamagic objMetamagic = blnSync
+                                ? objCharacter.Metamagics.FirstOrDefault(o => o.InternalId == strImprovedName)
+                                : await objCharacter.Metamagics.FirstOrDefaultAsync(
+                                    o => o.InternalId == strImprovedName, token).ConfigureAwait(false);
                             if (objMetamagic != null)
                             {
                                 Improvement.ImprovementSource eSource
                                     = objImprovement.ImproveType == Improvement.ImprovementType.Metamagic
                                         ? Improvement.ImprovementSource.Metamagic
                                         : Improvement.ImprovementSource.Echo;
-                                DisableImprovements(objCharacter,
-                                                    objCharacter.Improvements.Where(
-                                                        x => x.ImproveSource == eSource
-                                                             && x.SourceName == strImprovedName && x.Enabled));
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    DisableImprovements(objCharacter,
+                                                        objCharacter.Improvements.Where(
+                                                            x => x.ImproveSource == eSource
+                                                                 && x.SourceName == strImprovedName && x.Enabled),
+                                                        token);
+                                else
+                                    await DisableImprovementsAsync(objCharacter,
+                                                                   await objCharacter.Improvements.ToListAsync(
+                                                                           x => x.ImproveSource == eSource
+                                                                               && x.SourceName == strImprovedName
+                                                                               && x.Enabled, token: token)
+                                                                       .ConfigureAwait(false), token)
+                                        .ConfigureAwait(false);
                             }
 
                             break;
 
                         case Improvement.ImprovementType.CritterPower:
-                            CritterPower objCritterPower = objCharacter.CritterPowers.FirstOrDefault(
-                                x => x.InternalId == strImprovedName || (x.Name == strImprovedName
-                                                                         && x.Extra == strUniqueName));
+                            CritterPower objCritterPower = blnSync
+                                ? objCharacter.CritterPowers.FirstOrDefault(
+                                    x => x.InternalId == strImprovedName
+                                         || (x.Name == strImprovedName && x.Extra == strUniqueName))
+                                : await objCharacter.CritterPowers.FirstOrDefaultAsync(
+                                                        x => x.InternalId == strImprovedName
+                                                             || (x.Name == strImprovedName && x.Extra == strUniqueName),
+                                                        token)
+                                                    .ConfigureAwait(false);
                             if (objCritterPower != null)
                             {
                                 string strPowerId = objCritterPower.InternalId;
-                                DisableImprovements(objCharacter,
-                                                    objCharacter.Improvements.Where(
-                                                        x => x.ImproveSource
-                                                             == Improvement.ImprovementSource.CritterPower
-                                                             && x.SourceName == strPowerId && x.Enabled));
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    DisableImprovements(objCharacter,
+                                                        objCharacter.Improvements.Where(
+                                                            x => x.ImproveSource
+                                                                 == Improvement.ImprovementSource.CritterPower
+                                                                 && x.SourceName == strPowerId && x.Enabled), token);
+                                else
+                                    await DisableImprovementsAsync(objCharacter,
+                                                                   await objCharacter.Improvements.ToListAsync(
+                                                                           x => x.ImproveSource
+                                                                               == Improvement.ImprovementSource
+                                                                                   .CritterPower
+                                                                               && x.SourceName == strPowerId
+                                                                               && x.Enabled, token: token)
+                                                                       .ConfigureAwait(false), token)
+                                        .ConfigureAwait(false);
                             }
 
                             break;
 
                         case Improvement.ImprovementType.MentorSpirit:
                         case Improvement.ImprovementType.Paragon:
-                            MentorSpirit objMentor
-                                = objCharacter.MentorSpirits.FirstOrDefault(
-                                    x => x.InternalId == strImprovedName);
+                            MentorSpirit objMentor = blnSync
+                                ? objCharacter.MentorSpirits.FirstOrDefault(o => o.InternalId == strImprovedName)
+                                : await objCharacter.MentorSpirits.FirstOrDefaultAsync(
+                                    o => o.InternalId == strImprovedName, token).ConfigureAwait(false);
                             if (objMentor != null)
                             {
-                                DisableImprovements(objCharacter,
-                                                    objCharacter.Improvements.Where(
-                                                        x => x.ImproveSource
-                                                             == Improvement.ImprovementSource.MentorSpirit
-                                                             && x.SourceName == strImprovedName && x.Enabled));
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    DisableImprovements(objCharacter,
+                                                        objCharacter.Improvements.Where(
+                                                            x => x.ImproveSource
+                                                                 == Improvement.ImprovementSource.MentorSpirit
+                                                                 && x.SourceName == strImprovedName && x.Enabled),
+                                                        token);
+                                else
+                                    await DisableImprovementsAsync(objCharacter,
+                                                                   await objCharacter.Improvements.ToListAsync(
+                                                                           x => x.ImproveSource
+                                                                               == Improvement.ImprovementSource
+                                                                                   .MentorSpirit
+                                                                               && x.SourceName == strImprovedName
+                                                                               && x.Enabled, token: token)
+                                                                       .ConfigureAwait(false), token)
+                                        .ConfigureAwait(false);
                             }
 
                             break;
 
                         case Improvement.ImprovementType.Gear:
-                            Gear objGear
-                                = objCharacter.Gear.FirstOrDefault(x => x.InternalId == strImprovedName);
-                            objGear?.ChangeEquippedStatus(false);
+                            Gear objGear = blnSync
+                                ? objCharacter.Gear.FirstOrDefault(o => o.InternalId == strImprovedName)
+                                : await objCharacter.Gear.FirstOrDefaultAsync(
+                                    o => o.InternalId == strImprovedName, token).ConfigureAwait(false);
+                            if (objGear != null)
+                            {
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    objGear.ChangeEquippedStatus(false);
+                                else
+                                    await objGear.ChangeEquippedStatusAsync(false, token: token).ConfigureAwait(false);
+                            }
+
                             break;
 
                         case Improvement.ImprovementType.Weapon:
@@ -3054,51 +3442,116 @@ namespace Chummer
                             break;
 
                         case Improvement.ImprovementType.Spell:
-                            Spell objSpell
-                                = objCharacter.Spells.FirstOrDefault(x => x.InternalId == strImprovedName);
+                            Spell objSpell = blnSync
+                                ? objCharacter.Spells.FirstOrDefault(o => o.InternalId == strImprovedName)
+                                : await objCharacter.Spells.FirstOrDefaultAsync(
+                                    o => o.InternalId == strImprovedName, token).ConfigureAwait(false);
                             if (objSpell != null)
                             {
-                                DisableImprovements(objCharacter,
-                                                    objCharacter.Improvements.Where(
-                                                        x => x.ImproveSource == Improvement.ImprovementSource.Spell
-                                                             && x.SourceName == strImprovedName && x.Enabled));
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    DisableImprovements(objCharacter,
+                                                        objCharacter.Improvements.Where(
+                                                            x => x.ImproveSource == Improvement.ImprovementSource.Spell
+                                                                 && x.SourceName == strImprovedName && x.Enabled),
+                                                        token);
+                                else
+                                    await DisableImprovementsAsync(objCharacter,
+                                                                   await objCharacter.Improvements.ToListAsync(
+                                                                           x => x.ImproveSource
+                                                                               == Improvement.ImprovementSource.Spell
+                                                                               && x.SourceName == strImprovedName
+                                                                               && x.Enabled, token: token)
+                                                                       .ConfigureAwait(false), token)
+                                        .ConfigureAwait(false);
                             }
 
                             break;
 
                         case Improvement.ImprovementType.ComplexForm:
-                            ComplexForm objComplexForm
-                                = objCharacter.ComplexForms.FirstOrDefault(
-                                    x => x.InternalId == strImprovedName);
+                            ComplexForm objComplexForm = blnSync
+                                ? objCharacter.ComplexForms.FirstOrDefault(o => o.InternalId == strImprovedName)
+                                : await objCharacter.ComplexForms.FirstOrDefaultAsync(
+                                    o => o.InternalId == strImprovedName, token).ConfigureAwait(false);
                             if (objComplexForm != null)
                             {
-                                DisableImprovements(objCharacter,
-                                                    objCharacter.Improvements.Where(
-                                                        x => x.ImproveSource
-                                                             == Improvement.ImprovementSource.ComplexForm
-                                                             && x.SourceName == strImprovedName && x.Enabled));
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    DisableImprovements(objCharacter,
+                                                        objCharacter.Improvements.Where(
+                                                            x => x.ImproveSource == Improvement.ImprovementSource
+                                                                     .ComplexForm
+                                                                 && x.SourceName == strImprovedName && x.Enabled),
+                                                        token);
+                                else
+                                    await DisableImprovementsAsync(objCharacter,
+                                                                   await objCharacter.Improvements.ToListAsync(
+                                                                           x => x.ImproveSource
+                                                                               == Improvement.ImprovementSource
+                                                                                   .ComplexForm
+                                                                               && x.SourceName == strImprovedName
+                                                                               && x.Enabled, token: token)
+                                                                       .ConfigureAwait(false), token)
+                                        .ConfigureAwait(false);
                             }
 
                             break;
 
                         case Improvement.ImprovementType.MartialArt:
-                            MartialArt objMartialArt
-                                = objCharacter.MartialArts.FirstOrDefault(x => x.InternalId == strImprovedName);
+                            MartialArt objMartialArt = blnSync
+                                ? objCharacter.MartialArts.FirstOrDefault(o => o.InternalId == strImprovedName)
+                                : await objCharacter.MartialArts.FirstOrDefaultAsync(
+                                    o => o.InternalId == strImprovedName, token).ConfigureAwait(false);
                             if (objMartialArt != null)
                             {
-                                DisableImprovements(objCharacter,
-                                                    objCharacter.Improvements.Where(
-                                                        x => x.ImproveSource == Improvement.ImprovementSource.MartialArt
-                                                             && x.SourceName == strImprovedName && x.Enabled));
-                                // Remove the Improvements for any Techniques for the Martial Art that is being removed.
-                                foreach (MartialArtTechnique objTechnique in objMartialArt.Techniques)
-                                {
-                                    string strTechniqueId = objTechnique.InternalId;
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
                                     DisableImprovements(objCharacter,
                                                         objCharacter.Improvements.Where(
                                                             x => x.ImproveSource == Improvement.ImprovementSource
-                                                                     .MartialArtTechnique
-                                                                 && x.SourceName == strTechniqueId && x.Enabled));
+                                                                     .MartialArt
+                                                                 && x.SourceName == strImprovedName && x.Enabled),
+                                                        token);
+                                else
+                                    await DisableImprovementsAsync(objCharacter,
+                                                                   await objCharacter.Improvements.ToListAsync(
+                                                                           x => x.ImproveSource
+                                                                               == Improvement.ImprovementSource
+                                                                                   .MartialArt
+                                                                               && x.SourceName == strImprovedName
+                                                                               && x.Enabled, token: token)
+                                                                       .ConfigureAwait(false), token)
+                                        .ConfigureAwait(false);
+                                // Remove the Improvements for any Techniques for the Martial Art that is being removed.
+                                if (blnSync)
+                                {
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    objMartialArt.Techniques.ForEach(objTechnique =>
+                                    {
+                                        string strTechniqueId = objTechnique.InternalId;
+                                        DisableImprovements(objCharacter,
+                                                            objCharacter.Improvements.Where(
+                                                                x => x.ImproveSource == Improvement.ImprovementSource
+                                                                         .MartialArtTechnique
+                                                                     && x.SourceName == strTechniqueId && x.Enabled),
+                                                            token);
+                                    }, token: token);
+                                }
+                                else
+                                {
+                                    await objMartialArt.Techniques.ForEachAsync(async objTechnique =>
+                                    {
+                                        string strTechniqueId = objTechnique.InternalId;
+                                        await DisableImprovementsAsync(objCharacter,
+                                                                       await objCharacter.Improvements.ToListAsync(
+                                                                               x => x.ImproveSource
+                                                                                   == Improvement.ImprovementSource
+                                                                                       .MartialArtTechnique
+                                                                                   && x.SourceName == strTechniqueId
+                                                                                   && x.Enabled, token: token)
+                                                                           .ConfigureAwait(false), token)
+                                            .ConfigureAwait(false);
+                                    }, token: token).ConfigureAwait(false);
                                 }
                             }
 
@@ -3108,22 +3561,28 @@ namespace Chummer
                             if (!blnHasDuplicate)
                             {
                                 SkillsSection.FilterOption eFilterOption
-                                    = (SkillsSection.FilterOption)Enum.Parse(
+                                    = (SkillsSection.FilterOption) Enum.Parse(
                                         typeof(SkillsSection.FilterOption), strImprovedName);
                                 HashSet<Skill> setSkillsToDisable
-                                    = new HashSet<Skill>(objCharacter.SkillsSection.GetActiveSkillsFromData(
-                                                             eFilterOption, false, objImprovement.Target));
-                                foreach (Improvement objLoopImprovement in GetCachedImprovementListForValueOf(
-                                             objCharacter, Improvement.ImprovementType.SpecialSkills))
+                                    = new HashSet<Skill>(await objCharacter.SkillsSection.GetActiveSkillsFromDataAsync(
+                                                                               eFilterOption, false,
+                                                                               objImprovement.Target, token)
+                                                                           .ConfigureAwait(false));
+                                foreach (Improvement objLoopImprovement in await
+                                             GetCachedImprovementListForValueOfAsync(
+                                                     objCharacter, Improvement.ImprovementType.SpecialSkills,
+                                                     token: token)
+                                                 .ConfigureAwait(false))
                                 {
                                     if (objLoopImprovement == objImprovement)
                                         continue;
                                     eFilterOption
-                                        = (SkillsSection.FilterOption)Enum.Parse(
+                                        = (SkillsSection.FilterOption) Enum.Parse(
                                             typeof(SkillsSection.FilterOption), objLoopImprovement.ImprovedName);
                                     setSkillsToDisable.ExceptWith(
-                                        objCharacter.SkillsSection.GetActiveSkillsFromData(
-                                            eFilterOption, false, objLoopImprovement.Target));
+                                        await objCharacter.SkillsSection.GetActiveSkillsFromDataAsync(
+                                                              eFilterOption, false, objLoopImprovement.Target, token)
+                                                          .ConfigureAwait(false));
                                     if (setSkillsToDisable.Count == 0)
                                         return;
                                 }
@@ -3137,14 +3596,29 @@ namespace Chummer
                             break;
 
                         case Improvement.ImprovementType.SpecificQuality:
-                            Quality objQuality = objCharacter.Qualities.FirstOrDefault(
-                                objLoopQuality => objLoopQuality.InternalId == strImprovedName);
+                            Quality objQuality = blnSync
+                                ? objCharacter.Qualities.FirstOrDefault(o => o.InternalId == strImprovedName)
+                                : await objCharacter.Qualities.FirstOrDefaultAsync(
+                                    o => o.InternalId == strImprovedName, token).ConfigureAwait(false);
                             if (objQuality != null)
                             {
-                                DisableImprovements(objCharacter,
-                                                    objCharacter.Improvements.Where(
-                                                        x => x.ImproveSource == Improvement.ImprovementSource.Quality
-                                                             && x.SourceName == strImprovedName && x.Enabled));
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    DisableImprovements(objCharacter,
+                                                        objCharacter.Improvements.Where(
+                                                            x => x.ImproveSource
+                                                                 == Improvement.ImprovementSource.Quality
+                                                                 && x.SourceName == strImprovedName && x.Enabled),
+                                                        token);
+                                else
+                                    await DisableImprovementsAsync(objCharacter,
+                                                                   await objCharacter.Improvements.ToListAsync(
+                                                                           x => x.ImproveSource
+                                                                               == Improvement.ImprovementSource.Quality
+                                                                               && x.SourceName == strImprovedName
+                                                                               && x.Enabled, token: token)
+                                                                       .ConfigureAwait(false), token)
+                                        .ConfigureAwait(false);
                             }
 
                             break;
@@ -3159,29 +3633,61 @@ namespace Chummer
                             break;
                             */
                         case Improvement.ImprovementType.AIProgram:
-                            AIProgram objProgram = objCharacter.AIPrograms.FirstOrDefault(
-                                objLoopProgram => objLoopProgram.InternalId == strImprovedName);
+                            AIProgram objProgram = blnSync
+                                ? objCharacter.AIPrograms.FirstOrDefault(o => o.InternalId == strImprovedName)
+                                : await objCharacter.AIPrograms.FirstOrDefaultAsync(
+                                    o => o.InternalId == strImprovedName, token).ConfigureAwait(false);
                             if (objProgram != null)
                             {
-                                DisableImprovements(objCharacter,
-                                                    objCharacter.Improvements.Where(
-                                                        x => x.ImproveSource == Improvement.ImprovementSource.AIProgram
-                                                             && x.SourceName == strImprovedName && x.Enabled));
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    DisableImprovements(objCharacter,
+                                                        objCharacter.Improvements.Where(
+                                                            x => x.ImproveSource
+                                                                 == Improvement.ImprovementSource.AIProgram
+                                                                 && x.SourceName == strImprovedName && x.Enabled),
+                                                        token);
+                                else
+                                    await DisableImprovementsAsync(objCharacter,
+                                                                   await objCharacter.Improvements.ToListAsync(
+                                                                           x => x.ImproveSource
+                                                                               == Improvement.ImprovementSource
+                                                                                   .AIProgram
+                                                                               && x.SourceName == strImprovedName
+                                                                               && x.Enabled, token: token)
+                                                                       .ConfigureAwait(false), token)
+                                        .ConfigureAwait(false);
                             }
 
                             break;
 
                         case Improvement.ImprovementType.FreeWare:
+                        {
+                            Cyberware objCyberware = blnSync
+                                ? objCharacter.Cyberware.FirstOrDefault(o => o.InternalId == strImprovedName)
+                                : await objCharacter.Cyberware.FirstOrDefaultAsync(
+                                    o => o.InternalId == strImprovedName, token).ConfigureAwait(false);
+                            if (objCyberware != null)
                             {
-                                Cyberware objCyberware
-                                    = objCharacter.Cyberware.FirstOrDefault(o => o.InternalId == strImprovedName);
-                                objCyberware?.ChangeModularEquip(false);
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    objCyberware.ChangeModularEquip(false);
+                                else
+                                    await objCyberware.ChangeModularEquipAsync(false, token: token)
+                                                      .ConfigureAwait(false);
                             }
+                        }
                             break;
                     }
                 }
 
                 objImprovementList.ProcessRelevantEvents();
+            }
+            finally
+            {
+                objLocker?.Dispose();
+                if (objAsyncLocker != null)
+                    await objAsyncLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -3322,9 +3828,11 @@ namespace Chummer
         /// <param name="blnReapplyImprovements">Whether we're reapplying Improvements.</param>
         /// <param name="blnAllowDuplicatesFromSameSource">If we ignore checking whether a potential duplicate improvement has the same SourceName</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        private static async Task<decimal> RemoveImprovementsCoreAsync(bool blnSync, Character objCharacter, ICollection<Improvement> objImprovementList,
-                                                             bool blnReapplyImprovements,
-                                                             bool blnAllowDuplicatesFromSameSource, CancellationToken token = default)
+        private static async Task<decimal> RemoveImprovementsCoreAsync(bool blnSync, Character objCharacter,
+                                                                       ICollection<Improvement> objImprovementList,
+                                                                       bool blnReapplyImprovements,
+                                                                       bool blnAllowDuplicatesFromSameSource,
+                                                                       CancellationToken token = default)
         {
             Log.Debug("RemoveImprovements enter");
             //TODO: report a AI-operation (maybe with dependencies), so we get an idea how long this takes.
@@ -3419,18 +3927,19 @@ namespace Chummer
                             {
                                 if (blnSync)
                                 {
-                                    foreach (KnowledgeSkill objKnowledgeSkill in objCharacter.SkillsSection.KnowsoftSkills)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    objCharacter.SkillsSection.KnowsoftSkills.ForEach(objKnowledgeSkill =>
                                     {
                                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         objCharacter.SkillsSection.KnowledgeSkills.Remove(objKnowledgeSkill);
-                                    }
+                                    }, token);
                                 }
                                 else
                                 {
-                                    foreach (KnowledgeSkill objKnowledgeSkill in objCharacter.SkillsSection.KnowsoftSkills)
-                                    {
-                                        await objCharacter.SkillsSection.KnowledgeSkills.RemoveAsync(objKnowledgeSkill, token).ConfigureAwait(false);
-                                    }
+                                    await objCharacter.SkillsSection.KnowsoftSkills.ForEachAsync(
+                                        objKnowledgeSkill => objCharacter.SkillsSection.KnowledgeSkills
+                                                                         .RemoveAsync(objKnowledgeSkill, token)
+                                                                         .AsTask(), token).ConfigureAwait(false);
                                 }
                             }
 
@@ -3457,14 +3966,20 @@ namespace Chummer
                                 }
                                 else
                                 {
-                                    for (int i = objCharacter.SkillsSection.KnowsoftSkills.Count - 1; i >= 0; --i)
+                                    for (int i = await objCharacter.SkillsSection.KnowsoftSkills.GetCountAsync(token)
+                                                                   .ConfigureAwait(false) - 1;
+                                         i >= 0;
+                                         --i)
                                     {
-                                        KnowledgeSkill objSkill = objCharacter.SkillsSection.KnowsoftSkills[i];
+                                        KnowledgeSkill objSkill = await objCharacter.SkillsSection.KnowsoftSkills
+                                            .GetValueAtAsync(i, token).ConfigureAwait(false);
                                         if (objSkill.InternalId == strImprovedName)
                                         {
                                             await Task.WhenAll(
-                                                objCharacter.SkillsSection.KnowledgeSkills.RemoveAsync(objSkill, token).AsTask(),
-                                                objCharacter.SkillsSection.KnowsoftSkills.RemoveAtAsync(i, token).AsTask()).ConfigureAwait(false);
+                                                objCharacter.SkillsSection.KnowledgeSkills.RemoveAsync(objSkill, token)
+                                                            .AsTask(),
+                                                objCharacter.SkillsSection.KnowsoftSkills.RemoveAtAsync(i, token)
+                                                            .AsTask()).ConfigureAwait(false);
                                         }
                                     }
                                 }
@@ -3480,15 +3995,15 @@ namespace Chummer
                                 switch (strImprovedName)
                                 {
                                     case "MAG":
-                                        objCharacter.MAGEnabled = false;
+                                        await objCharacter.SetMAGEnabledAsync(false, token).ConfigureAwait(false);
                                         break;
 
                                     case "RES":
-                                        objCharacter.RESEnabled = false;
+                                        await objCharacter.SetRESEnabledAsync(false, token).ConfigureAwait(false);
                                         break;
 
                                     case "DEP":
-                                        objCharacter.DEPEnabled = false;
+                                        await objCharacter.SetDEPEnabledAsync(false, token).ConfigureAwait(false);
                                         break;
                                 }
                             }
@@ -3561,25 +4076,28 @@ namespace Chummer
                             break;
 
                         case Improvement.ImprovementType.Adapsin:
+                        {
+                            if (!blnHasDuplicate && !blnReapplyImprovements)
                             {
-                                if (!blnHasDuplicate && !blnReapplyImprovements)
+                                foreach (Cyberware objCyberware in objCharacter.Cyberware.DeepWhere(
+                                             x => x.Children, x => x.Grade.Adapsin))
                                 {
-                                    foreach (Cyberware objCyberware in objCharacter.Cyberware.DeepWhere(
-                                                 x => x.Children, x => x.Grade.Adapsin))
-                                    {
-                                        string strNewName = objCyberware.Grade.Name.FastEscapeOnceFromEnd("(Adapsin)")
-                                                                        .Trim();
-                                        // Determine which GradeList to use for the Cyberware.
-                                        objCyberware.Grade = objCharacter.GetGrades(objCyberware.SourceType, true)
-                                                                         .FirstOrDefault(x => x.Name == strNewName);
-                                    }
+                                    string strNewName = objCyberware.Grade.Name.FastEscapeOnceFromEnd("(Adapsin)")
+                                                                    .Trim();
+                                    // Determine which GradeList to use for the Cyberware.
+                                    objCyberware.Grade = objCharacter.GetGrades(objCyberware.SourceType, true)
+                                                                     .FirstOrDefault(x => x.Name == strNewName);
                                 }
                             }
+                        }
                             break;
 
                         case Improvement.ImprovementType.AddContact:
-                            Contact objNewContact
-                                = objCharacter.Contacts.FirstOrDefault(c => c.UniqueId == strImprovedName);
+                            Contact objNewContact = blnSync
+                                ? objCharacter.Contacts.FirstOrDefault(c => c.UniqueId == strImprovedName)
+                                : await objCharacter.Contacts
+                                                    .FirstOrDefaultAsync(c => c.UniqueId == strImprovedName, token)
+                                                    .ConfigureAwait(false);
                             if (objNewContact != null)
                             {
                                 if (blnSync)
@@ -3588,16 +4106,22 @@ namespace Chummer
                                 else
                                     await objCharacter.Contacts.RemoveAsync(objNewContact, token).ConfigureAwait(false);
                             }
+
                             break;
 
                         case Improvement.ImprovementType.Art:
-                            Art objArt = objCharacter.Arts.FirstOrDefault(x => x.InternalId == strImprovedName);
+                            Art objArt = blnSync
+                                ? objCharacter.Arts.FirstOrDefault(x => x.InternalId == strImprovedName)
+                                : await objCharacter.Arts
+                                                    .FirstOrDefaultAsync(x => x.InternalId == strImprovedName, token)
+                                                    .ConfigureAwait(false);
                             if (objArt != null)
                             {
                                 decReturn += blnSync
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     ? RemoveImprovements(objCharacter, objArt.SourceType, objArt.InternalId)
-                                    : await RemoveImprovementsAsync(objCharacter, objArt.SourceType, objArt.InternalId, token).ConfigureAwait(false);
+                                    : await RemoveImprovementsAsync(objCharacter, objArt.SourceType, objArt.InternalId,
+                                                                    token).ConfigureAwait(false);
                                 if (blnSync)
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     objCharacter.Arts.Remove(objArt);
@@ -3609,8 +4133,11 @@ namespace Chummer
 
                         case Improvement.ImprovementType.Metamagic:
                         case Improvement.ImprovementType.Echo:
-                            Metamagic objMetamagic
-                                = objCharacter.Metamagics.FirstOrDefault(x => x.InternalId == strImprovedName);
+                            Metamagic objMetamagic = blnSync
+                                ? objCharacter.Metamagics.FirstOrDefault(x => x.InternalId == strImprovedName)
+                                : await objCharacter.Metamagics
+                                                    .FirstOrDefaultAsync(x => x.InternalId == strImprovedName, token)
+                                                    .ConfigureAwait(false);
                             if (objMetamagic != null)
                             {
                                 decReturn += blnSync
@@ -3626,105 +4153,142 @@ namespace Chummer
                                                                     == Improvement.ImprovementType.Metamagic
                                                                         ? Improvement.ImprovementSource.Metamagic
                                                                         : Improvement.ImprovementSource.Echo,
-                                                                    objMetamagic.InternalId, token).ConfigureAwait(false);
+                                                                    objMetamagic.InternalId, token)
+                                        .ConfigureAwait(false);
                                 if (blnSync)
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     objCharacter.Metamagics.Remove(objMetamagic);
                                 else
-                                    await objCharacter.Metamagics.RemoveAsync(objMetamagic, token).ConfigureAwait(false);
+                                    await objCharacter.Metamagics.RemoveAsync(objMetamagic, token)
+                                                      .ConfigureAwait(false);
                             }
 
                             break;
 
                         case Improvement.ImprovementType.LimitModifier:
-                            LimitModifier limitMod
-                                = objCharacter.LimitModifiers.FirstOrDefault(
-                                    x => x.InternalId == strImprovedName);
+                            LimitModifier limitMod = blnSync
+                                ? objCharacter.LimitModifiers.FirstOrDefault(x => x.InternalId == strImprovedName)
+                                : await objCharacter.LimitModifiers.FirstOrDefaultAsync(
+                                    x => x.InternalId == strImprovedName, token).ConfigureAwait(false);
                             if (limitMod != null)
                             {
                                 if (blnSync)
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     objCharacter.LimitModifiers.Remove(limitMod);
                                 else
-                                    await objCharacter.LimitModifiers.RemoveAsync(limitMod, token).ConfigureAwait(false);
+                                    await objCharacter.LimitModifiers.RemoveAsync(limitMod, token)
+                                                      .ConfigureAwait(false);
                             }
 
                             break;
 
                         case Improvement.ImprovementType.CritterPower:
-                            CritterPower objCritterPower = objCharacter.CritterPowers.FirstOrDefault(
-                                x => x.InternalId == strImprovedName || (x.Name == strImprovedName
-                                                                         && x.Extra == strUniqueName));
+                            CritterPower objCritterPower = blnSync
+                                ? objCharacter.CritterPowers.FirstOrDefault(
+                                    x => x.InternalId == strImprovedName
+                                         || (x.Name == strImprovedName && x.Extra == strUniqueName))
+                                : await objCharacter.CritterPowers.FirstOrDefaultAsync(
+                                                        x => x.InternalId == strImprovedName
+                                                             || (x.Name == strImprovedName && x.Extra == strUniqueName),
+                                                        token)
+                                                    .ConfigureAwait(false);
                             if (objCritterPower != null)
                             {
                                 decReturn += blnSync
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    ? RemoveImprovements(objCharacter, Improvement.ImprovementSource.CritterPower, objCritterPower.InternalId)
-                                    : await RemoveImprovementsAsync(objCharacter, Improvement.ImprovementSource.CritterPower, objCritterPower.InternalId, token).ConfigureAwait(false);
+                                    ? RemoveImprovements(objCharacter, Improvement.ImprovementSource.CritterPower,
+                                                         objCritterPower.InternalId)
+                                    : await RemoveImprovementsAsync(objCharacter,
+                                                                    Improvement.ImprovementSource.CritterPower,
+                                                                    objCritterPower.InternalId, token)
+                                        .ConfigureAwait(false);
                                 if (blnSync)
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     objCharacter.CritterPowers.Remove(objCritterPower);
                                 else
-                                    await objCharacter.CritterPowers.RemoveAsync(objCritterPower, token).ConfigureAwait(false);
+                                    await objCharacter.CritterPowers.RemoveAsync(objCritterPower, token)
+                                                      .ConfigureAwait(false);
                             }
 
                             break;
 
                         case Improvement.ImprovementType.MentorSpirit:
                         case Improvement.ImprovementType.Paragon:
-                            MentorSpirit objMentor
-                                = objCharacter.MentorSpirits.FirstOrDefault(
-                                    x => x.InternalId == strImprovedName);
+                            MentorSpirit objMentor = blnSync
+                                ? objCharacter.MentorSpirits.FirstOrDefault(x => x.InternalId == strImprovedName)
+                                : await objCharacter.MentorSpirits
+                                                    .FirstOrDefaultAsync(x => x.InternalId == strImprovedName, token)
+                                                    .ConfigureAwait(false);
                             if (objMentor != null)
                             {
                                 decReturn += blnSync
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    ? RemoveImprovements(objCharacter, Improvement.ImprovementSource.MentorSpirit, objMentor.InternalId)
-                                    : await RemoveImprovementsAsync(objCharacter, Improvement.ImprovementSource.MentorSpirit, objMentor.InternalId, token).ConfigureAwait(false);
+                                    ? RemoveImprovements(objCharacter, Improvement.ImprovementSource.MentorSpirit,
+                                                         objMentor.InternalId)
+                                    : await RemoveImprovementsAsync(objCharacter,
+                                                                    Improvement.ImprovementSource.MentorSpirit,
+                                                                    objMentor.InternalId, token).ConfigureAwait(false);
                                 if (blnSync)
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     objCharacter.MentorSpirits.Remove(objMentor);
                                 else
-                                    await objCharacter.MentorSpirits.RemoveAsync(objMentor, token).ConfigureAwait(false);
+                                    await objCharacter.MentorSpirits.RemoveAsync(objMentor, token)
+                                                      .ConfigureAwait(false);
                             }
 
                             break;
 
                         case Improvement.ImprovementType.Gear:
-                            Gear objGear
-                                = objCharacter.Gear.FirstOrDefault(x => x.InternalId == strImprovedName);
+                            Gear objGear = blnSync
+                                ? objCharacter.Gear.FirstOrDefault(x => x.InternalId == strImprovedName)
+                                : await objCharacter.Gear
+                                                    .FirstOrDefaultAsync(x => x.InternalId == strImprovedName, token)
+                                                    .ConfigureAwait(false);
                             if (objGear != null)
                             {
-                                decReturn += objGear.TotalCost;
-                                decReturn += objGear.DeleteGear();
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    decReturn += objGear.TotalCost + objGear.DeleteGear();
+                                else
+                                    decReturn += objGear.TotalCost
+                                                 + await objGear.DeleteGearAsync(token: token).ConfigureAwait(false);
                             }
 
                             break;
 
                         case Improvement.ImprovementType.Weapon:
+                        {
+                            Weapon objWeapon
+                                = objCharacter.Weapons.DeepFirstOrDefault(x => x.Children,
+                                                                          x => x.InternalId == strImprovedName)
+                                  ??
+                                  objCharacter.Vehicles.FindVehicleWeapon(strImprovedName);
+                            if (objWeapon != null)
                             {
-                                Weapon objWeapon
-                                    = objCharacter.Weapons.DeepFirstOrDefault(x => x.Children,
-                                                                              x => x.InternalId == strImprovedName)
-                                      ??
-                                      objCharacter.Vehicles.FindVehicleWeapon(strImprovedName);
-                                if (objWeapon != null)
-                                {
-                                    decReturn += objWeapon.TotalCost;
-                                    decReturn += objWeapon.DeleteWeapon();
-                                }
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    decReturn += objWeapon.TotalCost + objWeapon.DeleteWeapon();
+                                else
+                                    decReturn += objWeapon.TotalCost + await objWeapon.DeleteWeaponAsync(token: token)
+                                        .ConfigureAwait(false);
                             }
+                        }
                             break;
 
                         case Improvement.ImprovementType.Spell:
-                            Spell objSpell
-                                = objCharacter.Spells.FirstOrDefault(x => x.InternalId == strImprovedName);
+                            Spell objSpell = blnSync
+                                ? objCharacter.Spells.FirstOrDefault(x => x.InternalId == strImprovedName)
+                                : await objCharacter.Spells
+                                                    .FirstOrDefaultAsync(x => x.InternalId == strImprovedName, token)
+                                                    .ConfigureAwait(false);
                             if (objSpell != null)
                             {
                                 decReturn += blnSync
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    ? RemoveImprovements(objCharacter, Improvement.ImprovementSource.Spell, objSpell.InternalId)
-                                    : await RemoveImprovementsAsync(objCharacter, Improvement.ImprovementSource.Spell, objSpell.InternalId, token).ConfigureAwait(false);
+                                    ? RemoveImprovements(objCharacter, Improvement.ImprovementSource.Spell,
+                                                         objSpell.InternalId)
+                                    : await RemoveImprovementsAsync(objCharacter, Improvement.ImprovementSource.Spell,
+                                                                    objSpell.InternalId, token).ConfigureAwait(false);
                                 if (blnSync)
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     objCharacter.Spells.Remove(objSpell);
@@ -3735,30 +4299,44 @@ namespace Chummer
                             break;
 
                         case Improvement.ImprovementType.ComplexForm:
-                            ComplexForm objComplexForm
-                                = objCharacter.ComplexForms.FirstOrDefault(
-                                    x => x.InternalId == strImprovedName);
+                            ComplexForm objComplexForm = blnSync
+                                ? objCharacter.ComplexForms.FirstOrDefault(x => x.InternalId == strImprovedName)
+                                : await objCharacter.ComplexForms
+                                                    .FirstOrDefaultAsync(x => x.InternalId == strImprovedName, token)
+                                                    .ConfigureAwait(false);
                             if (objComplexForm != null)
                             {
                                 decReturn += blnSync
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    ? RemoveImprovements(objCharacter, Improvement.ImprovementSource.ComplexForm, objComplexForm.InternalId)
-                                    : await RemoveImprovementsAsync(objCharacter, Improvement.ImprovementSource.ComplexForm, objComplexForm.InternalId, token).ConfigureAwait(false);
+                                    ? RemoveImprovements(objCharacter, Improvement.ImprovementSource.ComplexForm,
+                                                         objComplexForm.InternalId)
+                                    : await RemoveImprovementsAsync(objCharacter,
+                                                                    Improvement.ImprovementSource.ComplexForm,
+                                                                    objComplexForm.InternalId, token)
+                                        .ConfigureAwait(false);
                                 if (blnSync)
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     objCharacter.ComplexForms.Remove(objComplexForm);
                                 else
-                                    await objCharacter.ComplexForms.RemoveAsync(objComplexForm, token).ConfigureAwait(false);
+                                    await objCharacter.ComplexForms.RemoveAsync(objComplexForm, token)
+                                                      .ConfigureAwait(false);
                             }
 
                             break;
 
                         case Improvement.ImprovementType.MartialArt:
                             MartialArt objMartialArt
-                                = objCharacter.MartialArts.FirstOrDefault(x => x.InternalId == strImprovedName);
+                                = blnSync
+                                    ? objCharacter.MartialArts.FirstOrDefault(x => x.InternalId == strImprovedName)
+                                    : await objCharacter.MartialArts.FirstOrDefaultAsync(
+                                        x => x.InternalId == strImprovedName, token).ConfigureAwait(false);
                             if (objMartialArt != null)
                             {
-                                decReturn += objMartialArt.DeleteMartialArt();
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    decReturn += objMartialArt.DeleteMartialArt();
+                                else
+                                    decReturn += await objMartialArt.DeleteMartialArtAsync(token).ConfigureAwait(false);
                             }
 
                             break;
@@ -3769,60 +4347,91 @@ namespace Chummer
                                 if (blnSync)
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     objCharacter.SkillsSection.RemoveSkills(
-                                        (SkillsSection.FilterOption)Enum.Parse(typeof(SkillsSection.FilterOption),
+                                        (SkillsSection.FilterOption) Enum.Parse(typeof(SkillsSection.FilterOption),
                                             strImprovedName), objImprovement.Target,
                                         !blnReapplyImprovements && objCharacter.Created);
                                 else
                                     await objCharacter.SkillsSection.RemoveSkillsAsync(
-                                        (SkillsSection.FilterOption)Enum.Parse(typeof(SkillsSection.FilterOption),
-                                                                               strImprovedName), objImprovement.Target,
+                                        (SkillsSection.FilterOption) Enum.Parse(typeof(SkillsSection.FilterOption),
+                                            strImprovedName), objImprovement.Target,
                                         !blnReapplyImprovements && objCharacter.Created, token).ConfigureAwait(false);
                             }
 
                             break;
 
                         case Improvement.ImprovementType.SpecificQuality:
-                            Quality objQuality = objCharacter.Qualities.FirstOrDefault(
-                                objLoopQuality => objLoopQuality.InternalId == strImprovedName);
+                            Quality objQuality = blnSync
+                                ? objCharacter.Qualities.FirstOrDefault(
+                                    objLoopQuality => objLoopQuality.InternalId == strImprovedName)
+                                : await objCharacter.Qualities
+                                                    .FirstOrDefaultAsync(
+                                                        objLoopQuality => objLoopQuality.InternalId == strImprovedName,
+                                                        token).ConfigureAwait(false);
                             if (objQuality != null)
                             {
                                 // We need to add in the return cost of deleting the quality, so call this manually
-                                decReturn += objQuality.DeleteQuality();
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    decReturn += objQuality.DeleteQuality();
+                                else
+                                    decReturn += await objQuality.DeleteQualityAsync(token: token)
+                                                                 .ConfigureAwait(false);
                             }
 
                             break;
 
                         case Improvement.ImprovementType.SkillSpecialization:
                         case Improvement.ImprovementType.SkillExpertise:
+                        {
+                            Skill objSkill = blnSync
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                ? objCharacter.SkillsSection.GetActiveSkill(strImprovedName)
+                                : await objCharacter.SkillsSection.GetActiveSkillAsync(strImprovedName, token)
+                                                    .ConfigureAwait(false);
+                            if (objSkill != null)
                             {
-                                Skill objSkill = blnSync
-                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    ? objCharacter.SkillsSection.GetActiveSkill(strImprovedName)
-                                    : await objCharacter.SkillsSection.GetActiveSkillAsync(strImprovedName, token).ConfigureAwait(false);
-                                SkillSpecialization objSkillSpec = strUniqueName.IsGuid()
-                                    ? objSkill?.Specializations.FirstOrDefault(x => x.InternalId == strUniqueName)
-                                    // Kept for legacy reasons
-                                    : objSkill?.Specializations.FirstOrDefault(x => x.Name == strUniqueName);
+                                SkillSpecialization objSkillSpec = blnSync
+                                    ? strUniqueName.IsGuid()
+                                        ? objSkill.Specializations.FirstOrDefault(
+                                            x => x.InternalId == strUniqueName)
+                                        // Kept for legacy reasons
+                                        : objSkill.Specializations.FirstOrDefault(x => x.Name == strUniqueName)
+                                    : strUniqueName.IsGuid()
+                                        ? await objSkill.Specializations.FirstOrDefaultAsync(
+                                            x => x.InternalId == strUniqueName, token).ConfigureAwait(false)
+                                        // Kept for legacy reasons
+                                        : await objSkill.Specializations.FirstOrDefaultAsync(
+                                            x => x.Name == strUniqueName, token).ConfigureAwait(false);
                                 if (objSkillSpec != null)
                                 {
                                     if (blnSync)
                                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         objSkill.Specializations.Remove(objSkillSpec);
                                     else
-                                        await objSkill.Specializations.RemoveAsync(objSkillSpec, token).ConfigureAwait(false);
+                                        await objSkill.Specializations.RemoveAsync(objSkillSpec, token)
+                                                      .ConfigureAwait(false);
                                 }
                             }
+                        }
                             break;
 
                         case Improvement.ImprovementType.AIProgram:
-                            AIProgram objProgram = objCharacter.AIPrograms.FirstOrDefault(
-                                objLoopProgram => objLoopProgram.InternalId == strImprovedName);
+                            AIProgram objProgram = blnSync
+                                ? objCharacter.AIPrograms.FirstOrDefault(
+                                    objLoopProgram => objLoopProgram.InternalId == strImprovedName)
+                                : await objCharacter.AIPrograms
+                                                    .FirstOrDefaultAsync(
+                                                        objLoopProgram => objLoopProgram.InternalId == strImprovedName,
+                                                        token).ConfigureAwait(false);
                             if (objProgram != null)
                             {
                                 decReturn += blnSync
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    ? RemoveImprovements(objCharacter, Improvement.ImprovementSource.AIProgram, objProgram.InternalId)
-                                    : await RemoveImprovementsAsync(objCharacter, Improvement.ImprovementSource.AIProgram, objProgram.InternalId, token).ConfigureAwait(false);
+                                    ? RemoveImprovements(objCharacter, Improvement.ImprovementSource.AIProgram,
+                                                         objProgram.InternalId)
+                                    : await RemoveImprovementsAsync(objCharacter,
+                                                                    Improvement.ImprovementSource.AIProgram,
+                                                                    objProgram.InternalId, token).ConfigureAwait(false);
                                 if (blnSync)
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     objCharacter.AIPrograms.Remove(objProgram);
@@ -3835,35 +4444,57 @@ namespace Chummer
                         case Improvement.ImprovementType.AdeptPowerFreeLevels:
                         case Improvement.ImprovementType.AdeptPowerFreePoints:
                             // Get the power improved by this improvement
-                            Power objImprovedPower = objCharacter.Powers.FirstOrDefault(
-                                objPower => objPower.Name == strImprovedName &&
-                                            objPower.Extra == strUniqueName);
+                            Power objImprovedPower = blnSync
+                                ? objCharacter.Powers.FirstOrDefault(
+                                    objPower => objPower.Name == strImprovedName && objPower.Extra == strUniqueName)
+                                : await objCharacter.Powers
+                                                    .FirstOrDefaultAsync(
+                                                        objPower => objPower.Name == strImprovedName
+                                                                    && objPower.Extra == strUniqueName, token)
+                                                    .ConfigureAwait(false);
                             if (objImprovedPower != null)
                             {
-                                if (objImprovedPower.TotalRating <= 0)
+                                if (blnSync)
                                 {
-                                    objImprovedPower.DeletePower();
+                                    if (objImprovedPower.TotalRating <= 0)
+                                    {
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                        objImprovedPower.DeletePower();
+                                    }
+                                }
+                                else if (await objImprovedPower.GetTotalRatingAsync(token).ConfigureAwait(false) <= 0)
+                                {
+                                    await objImprovedPower.DeletePowerAsync(token).ConfigureAwait(false);
                                 }
 
-                                objImprovedPower.OnPropertyChanged(nameof(objImprovedPower.TotalRating));
-                                objImprovedPower.OnPropertyChanged(
-                                    objImprovement.ImproveType == Improvement.ImprovementType.AdeptPowerFreeLevels
-                                        ? nameof(Power.FreeLevels)
-                                        : nameof(Power.FreePoints));
+                                // ReSharper disable once ConvertIfStatementToConditionalTernaryExpression
+                                if (objImprovement.ImproveType == Improvement.ImprovementType.AdeptPowerFreeLevels)
+                                    objImprovedPower.OnMultiplePropertyChanged(
+                                        nameof(objImprovedPower.TotalRating), nameof(objImprovedPower.FreeLevels));
+                                else
+                                    objImprovedPower.OnMultiplePropertyChanged(
+                                        nameof(objImprovedPower.TotalRating), nameof(objImprovedPower.FreePoints));
                             }
 
                             break;
 
                         case Improvement.ImprovementType.FreeWare:
+                        {
+                            Cyberware objCyberware = blnSync
+                                ? objCharacter.Cyberware.FirstOrDefault(o => o.InternalId == strImprovedName)
+                                : await objCharacter.Cyberware
+                                                    .FirstOrDefaultAsync(o => o.InternalId == strImprovedName, token)
+                                                    .ConfigureAwait(false);
+                            if (objCyberware != null)
                             {
-                                Cyberware objCyberware
-                                    = objCharacter.Cyberware.FirstOrDefault(o => o.InternalId == strImprovedName);
-                                if (objCyberware != null)
-                                {
-                                    decReturn += objCyberware.TotalCost;
-                                    decReturn += objCyberware.DeleteCyberware();
-                                }
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    decReturn += objCyberware.TotalCost + objCyberware.DeleteCyberware();
+                                else
+                                    decReturn += objCyberware.TotalCost + await objCyberware
+                                        .DeleteCyberwareAsync(token: token).ConfigureAwait(false);
                             }
+                        }
                             break;
                     }
                 }

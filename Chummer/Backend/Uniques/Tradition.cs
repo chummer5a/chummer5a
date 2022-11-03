@@ -98,6 +98,22 @@ namespace Chummer.Backend.Uniques
             _objCachedSourceDetail = default;
         }
 
+        public async ValueTask ResetTraditionAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            await ImprovementManager.RemoveImprovementsAsync(_objCharacter, Improvement.ImprovementSource.Tradition, InternalId, token).ConfigureAwait(false);
+            Bonus = null;
+            Name = string.Empty;
+            Extra = string.Empty;
+            Source = string.Empty;
+            _strPage = string.Empty;
+            DrainExpression = string.Empty;
+            SpiritForm = "Materialization";
+            _lstAvailableSpirits.Clear();
+            Type = TraditionType.None;
+            _objCachedSourceDetail = default;
+        }
+
         /// <summary>
         /// Create a Tradition from an XmlNode.
         /// </summary>

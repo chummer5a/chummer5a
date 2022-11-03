@@ -1627,6 +1627,23 @@ namespace Chummer
             return true;
         }
 
+        public async ValueTask<bool> RemoveAsync(bool blnConfirmDelete = true, CancellationToken token = default)
+        {
+            if (blnConfirmDelete && !await CommonFunctions
+                                           .ConfirmDeleteAsync(
+                                               await LanguageManager.GetStringAsync("Message_DeleteSpell", token: token)
+                                                                    .ConfigureAwait(false), token)
+                                           .ConfigureAwait(false))
+                return false;
+
+            await _objCharacter.Spells.RemoveAsync(this, token).ConfigureAwait(false);
+            await ImprovementManager
+                  .RemoveImprovementsAsync(_objCharacter, Improvement.ImprovementSource.Spell, InternalId, token)
+                  .ConfigureAwait(false);
+            Dispose();
+            return true;
+        }
+
         public void SetSourceDetail(Control sourceControl)
         {
             if (_objCachedSourceDetail.Language != GlobalSettings.Language)

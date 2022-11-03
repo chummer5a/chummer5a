@@ -243,7 +243,7 @@ namespace Chummer.Backend.Equipment
             }
 
             if (blnRecreateInternalClip)
-                await RecreateInternalClipAsync();
+                await RecreateInternalClipAsync().ConfigureAwait(false);
             if (blnDoEncumbranceRefresh && _objCharacter?.IsLoading == false)
                 _objCharacter.OnPropertyChanged(nameof(Character.TotalCarriedWeight));
         }
@@ -917,7 +917,7 @@ namespace Chummer.Backend.Equipment
 
             // First try to get the max ammo capacity for this weapon because that will be the capacity of the internal clip
             List<string> lstCount = new List<string>(1);
-            string ammoString = await CalculatedAmmoAsync(GlobalSettings.CultureInfo, GlobalSettings.DefaultLanguage, token);
+            string ammoString = await CalculatedAmmoAsync(GlobalSettings.CultureInfo, GlobalSettings.DefaultLanguage, token).ConfigureAwait(false);
             // Determine which loading methods are available to the Weapon.
             if (ammoString.IndexOfAny('x', '+') != -1 ||
                 ammoString.Contains(" or ", StringComparison.OrdinalIgnoreCase) ||
@@ -6550,11 +6550,11 @@ namespace Chummer.Backend.Equipment
                 {
                     if (WirelessBonus?.SelectSingleNode("@mode")?.Value == "replace")
                     {
-                        ImprovementManager.DisableImprovements(_objCharacter,
-                                                               await _objCharacter.Improvements.ToListAsync(
-                                                                   x => x.ImproveSource
-                                                                        == Improvement.ImprovementSource.Weapon
-                                                                        && x.SourceName == InternalId, token: token).ConfigureAwait(false));
+                        await ImprovementManager.DisableImprovementsAsync(_objCharacter,
+                                                                          await _objCharacter.Improvements.ToListAsync(
+                                                                              x => x.ImproveSource
+                                                                                  == Improvement.ImprovementSource.Weapon
+                                                                                  && x.SourceName == InternalId, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
                     }
 
                     await ImprovementManager.CreateImprovementsAsync(_objCharacter,
@@ -6567,11 +6567,11 @@ namespace Chummer.Backend.Equipment
                 {
                     if (WirelessBonus?.SelectSingleNode("@mode")?.Value == "replace")
                     {
-                        ImprovementManager.EnableImprovements(_objCharacter,
-                                                              await _objCharacter.Improvements.ToListAsync(
-                                                                  x => x.ImproveSource
-                                                                       == Improvement.ImprovementSource.Weapon
-                                                                       && x.SourceName == InternalId, token: token).ConfigureAwait(false));
+                        await ImprovementManager.EnableImprovementsAsync(_objCharacter,
+                                                                         await _objCharacter.Improvements.ToListAsync(
+                                                                             x => x.ImproveSource
+                                                                                 == Improvement.ImprovementSource.Weapon
+                                                                                 && x.SourceName == InternalId, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
                     }
 
                     string strSourceNameToRemove = InternalId + "Wireless";
@@ -6809,7 +6809,7 @@ namespace Chummer.Backend.Equipment
                 Clip objInternalClip = GetClip(ActiveAmmoSlot);
                 if (objInternalClip == null)
                 {
-                    await RecreateInternalClipAsync(token);
+                    await RecreateInternalClipAsync(token).ConfigureAwait(false);
                     objInternalClip = GetClip(ActiveAmmoSlot);
                     if (objInternalClip == null)
                         throw new InvalidOperationException(nameof(objInternalClip));

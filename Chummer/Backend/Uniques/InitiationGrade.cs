@@ -430,6 +430,108 @@ namespace Chummer
             return true;
         }
 
+        public ValueTask<bool> RemoveAsync(bool blnConfirmDelete = true, CancellationToken token = default)
+        {
+            return RemoveAsync(blnConfirmDelete, true, token);
+        }
+
+        public async ValueTask<bool> RemoveAsync(bool blnConfirmDelete, bool blnPerformGradeCheck,
+                                                 CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            // Stop if this isn't the highest grade
+            if (await _objCharacter.GetMAGEnabledAsync(token).ConfigureAwait(false))
+            {
+                if (Grade != await _objCharacter.GetInitiateGradeAsync(token).ConfigureAwait(false)
+                    && blnPerformGradeCheck)
+                {
+                    Program.ShowMessageBox(
+                        await LanguageManager.GetStringAsync("Message_DeleteGrade", token: token).ConfigureAwait(false),
+                        await LanguageManager.GetStringAsync("MessageTitle_DeleteGrade", token: token)
+                                             .ConfigureAwait(false), MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
+                    return false;
+                }
+
+                if (blnConfirmDelete && !await CommonFunctions
+                                               .ConfirmDeleteAsync(
+                                                   await LanguageManager
+                                                         .GetStringAsync("Message_DeleteInitiateGrade", token: token)
+                                                         .ConfigureAwait(false), token).ConfigureAwait(false))
+                    return false;
+            }
+            else if (await _objCharacter.GetRESEnabledAsync(token).ConfigureAwait(false))
+            {
+                if (Grade != await _objCharacter.GetSubmersionGradeAsync(token).ConfigureAwait(false)
+                    && blnPerformGradeCheck)
+                {
+                    Program.ShowMessageBox(
+                        await LanguageManager.GetStringAsync("Message_DeleteGrade", token: token).ConfigureAwait(false),
+                        await LanguageManager.GetStringAsync("MessageTitle_DeleteGrade", token: token)
+                                             .ConfigureAwait(false), MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
+                    return false;
+                }
+
+                if (blnConfirmDelete && !await CommonFunctions
+                                               .ConfirmDeleteAsync(
+                                                   await LanguageManager
+                                                         .GetStringAsync("Message_DeleteSubmersionGrade", token: token)
+                                                         .ConfigureAwait(false), token).ConfigureAwait(false))
+                    return false;
+
+                await ImprovementManager
+                      .RemoveImprovementsAsync(_objCharacter, Improvement.ImprovementSource.CyberadeptDaemon,
+                                               InternalId, token).ConfigureAwait(false);
+            }
+            else
+                return false;
+
+            await _objCharacter.InitiationGrades.RemoveAsync(this, token).ConfigureAwait(false);
+            // Remove the child objects (arts, metamagics, enhancements, enchantments, rituals)
+            // Arts
+            for (int i = await _objCharacter.Arts.GetCountAsync(token).ConfigureAwait(false) - 1; i > 0; --i)
+            {
+                Art objLoop = await _objCharacter.Arts.GetValueAtAsync(i, token).ConfigureAwait(false);
+                if (objLoop.Grade == Grade)
+                    await objLoop.RemoveAsync(false, token).ConfigureAwait(false);
+            }
+
+            // Metamagics
+            for (int i = await _objCharacter.Metamagics.GetCountAsync(token).ConfigureAwait(false) - 1; i > 0; --i)
+            {
+                Metamagic objLoop = await _objCharacter.Metamagics.GetValueAtAsync(i, token).ConfigureAwait(false);
+                if (objLoop.Grade == Grade)
+                    await objLoop.RemoveAsync(false, token).ConfigureAwait(false);
+            }
+
+            // Enhancements
+            for (int i = await _objCharacter.Enhancements.GetCountAsync(token).ConfigureAwait(false) - 1; i > 0; --i)
+            {
+                Enhancement objLoop = await _objCharacter.Enhancements.GetValueAtAsync(i, token).ConfigureAwait(false);
+                if (objLoop.Grade == Grade)
+                    await objLoop.RemoveAsync(false, token).ConfigureAwait(false);
+            }
+
+            // Spells
+            for (int i = await _objCharacter.Spells.GetCountAsync(token).ConfigureAwait(false) - 1; i > 0; --i)
+            {
+                Spell objLoop = await _objCharacter.Spells.GetValueAtAsync(i, token).ConfigureAwait(false);
+                if (objLoop.Grade == Grade)
+                    await objLoop.RemoveAsync(false, token).ConfigureAwait(false);
+            }
+
+            // Complex Forms
+            for (int i = await _objCharacter.ComplexForms.GetCountAsync(token).ConfigureAwait(false) - 1; i > 0; --i)
+            {
+                ComplexForm objLoop = await _objCharacter.ComplexForms.GetValueAtAsync(i, token).ConfigureAwait(false);
+                if (objLoop.Grade == Grade)
+                    await objLoop.RemoveAsync(false, token).ConfigureAwait(false);
+            }
+
+            return true;
+        }
+
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(this, obj))

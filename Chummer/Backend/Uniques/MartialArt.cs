@@ -707,6 +707,22 @@ namespace Chummer
             return true;
         }
 
+        public async ValueTask<bool> RemoveAsync(bool blnConfirmDelete = true, CancellationToken token = default)
+        {
+            // Delete the selected Martial Art.
+            if (IsQuality)
+                return false;
+            if (blnConfirmDelete && !await CommonFunctions
+                                           .ConfirmDeleteAsync(
+                                               await LanguageManager
+                                                     .GetStringAsync("Message_DeleteMartialArt", token: token)
+                                                     .ConfigureAwait(false), token).ConfigureAwait(false))
+                return false;
+
+            await DeleteMartialArtAsync(token).ConfigureAwait(false);
+            return true;
+        }
+
         public decimal DeleteMartialArt()
         {
             _objCharacter.MartialArts.Remove(this);
@@ -721,6 +737,23 @@ namespace Chummer
                                                            InternalId);
 
             Dispose();
+            return decReturn;
+        }
+
+        public async ValueTask<decimal> DeleteMartialArtAsync(CancellationToken token = default)
+        {
+            await _objCharacter.MartialArts.RemoveAsync(this, token).ConfigureAwait(false);
+
+            decimal decReturn = 0;
+            // Remove the Improvements for any Techniques for the Martial Art that is being removed.
+            foreach (MartialArtTechnique objTechnique in Techniques.ToList()) // Need ToList() because removing techniques alters parent Art's Techniques list
+            {
+                decReturn += await objTechnique.DeleteTechniqueAsync(false, token).ConfigureAwait(false);
+            }
+            decReturn += await ImprovementManager.RemoveImprovementsAsync(_objCharacter, Improvement.ImprovementSource.MartialArt,
+                                                                          InternalId, token).ConfigureAwait(false);
+
+            await DisposeAsync().ConfigureAwait(false);
             return decReturn;
         }
 
