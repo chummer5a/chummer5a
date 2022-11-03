@@ -1083,7 +1083,7 @@ namespace Chummer
                                     await RefreshContacts(panContacts, panEnemies, panPets, token: GenericToken).ConfigureAwait(false);
 
                                     await RefreshArmor(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear, token: GenericToken).ConfigureAwait(false);
-                                    await RefreshGears(treGear, cmsGearLocation, cmsGear,
+                                    await RefreshGears(treGear, cmsGearLocation, cmsGear, null,
                                                        await chkCommlinks.DoThreadSafeFuncAsync(
                                                            x => x.Checked, GenericToken).ConfigureAwait(false),
                                                        await chkHideLoadedAmmo.DoThreadSafeFuncAsync(
@@ -1525,7 +1525,7 @@ namespace Chummer
         {
             try
             {
-                await RefreshGears(treGear, cmsGearLocation, cmsGear,
+                await RefreshGears(treGear, cmsGearLocation, cmsGear, null,
                                    await chkCommlinks.DoThreadSafeFuncAsync(x => x.Checked, GenericToken).ConfigureAwait(false),
                                    await chkHideLoadedAmmo.DoThreadSafeFuncAsync(x => x.Checked, GenericToken).ConfigureAwait(false),
                                    e, GenericToken).ConfigureAwait(false);
@@ -2615,7 +2615,7 @@ namespace Chummer
                                                                  chkPsycheActiveTechnomancer, token: GenericToken).ConfigureAwait(false);
 
                                     await RefreshArmor(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear, token: GenericToken).ConfigureAwait(false);
-                                    await RefreshGears(treGear, cmsGearLocation, cmsGear,
+                                    await RefreshGears(treGear, cmsGearLocation, cmsGear, null,
                                                        await chkCommlinks.DoThreadSafeFuncAsync(
                                                            x => x.Checked, GenericToken).ConfigureAwait(false),
                                                        await chkHideLoadedAmmo.DoThreadSafeFuncAsync(
@@ -14238,7 +14238,7 @@ namespace Chummer
         {
             bool commlinksOnly = await chkCommlinks.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false);
             bool hideLoadedAmmo = await chkHideLoadedAmmo.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false);
-            await RefreshGears(treGear, cmsGearLocation, cmsGear, commlinksOnly, hideLoadedAmmo, token: token).ConfigureAwait(false);
+            await RefreshGears(treGear, cmsGearLocation, cmsGear, null, commlinksOnly, hideLoadedAmmo, token: token).ConfigureAwait(false);
         }
 
         private void chkGearActiveCommlink_CheckedChanged(object sender, EventArgs e)

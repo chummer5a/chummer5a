@@ -1260,7 +1260,7 @@ namespace Chummer
 
                                     await RefreshArmor(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear,
                                                        token: GenericToken).ConfigureAwait(false);
-                                    await RefreshGears(treGear, cmsGearLocation, cmsGear,
+                                    await RefreshGears(treGear, cmsGearLocation, cmsGear, cmsGearAllowRename,
                                                        await chkCommlinks.DoThreadSafeFuncAsync(
                                                            x => x.Checked, GenericToken).ConfigureAwait(false), false,
                                                        token: GenericToken).ConfigureAwait(false);
@@ -2332,7 +2332,7 @@ namespace Chummer
                                 await RefreshContacts(panContacts, panEnemies, panPets, token: GenericToken).ConfigureAwait(false);
 
                                 await RefreshArmor(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear, token: GenericToken).ConfigureAwait(false);
-                                await RefreshGears(treGear, cmsGearLocation, cmsGear,
+                                await RefreshGears(treGear, cmsGearLocation, cmsGear, cmsGearAllowRename,
                                                    await chkCommlinks.DoThreadSafeFuncAsync(
                                                        x => x.Checked, GenericToken).ConfigureAwait(false), false, token: GenericToken).ConfigureAwait(false);
                                 await RefreshFociFromGear(treFoci, null, token: GenericToken).ConfigureAwait(false);
@@ -9917,7 +9917,9 @@ namespace Chummer
         {
             try
             {
-                await RefreshGears(treGear, cmsGearLocation, cmsGear, await chkCommlinks.DoThreadSafeFuncAsync(x => x.Checked, GenericToken).ConfigureAwait(false), false).ConfigureAwait(false);
+                await RefreshGears(treGear, cmsGearLocation, cmsGear, cmsGearAllowRename,
+                                   await chkCommlinks.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
+                                                     .ConfigureAwait(false), false).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -21156,7 +21158,10 @@ namespace Chummer
         {
             try
             {
-                await RefreshGears(treGear, cmsGearLocation, cmsGear, await chkCommlinks.DoThreadSafeFuncAsync(x => x.Checked, GenericToken).ConfigureAwait(false), false, e, GenericToken).ConfigureAwait(false);
+                await RefreshGears(treGear, cmsGearLocation, cmsGear, cmsGearAllowRename,
+                                   await chkCommlinks.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
+                                                     .ConfigureAwait(false), false, e, GenericToken)
+                    .ConfigureAwait(false);
                 await RefreshFociFromGear(treFoci, null, e, token: GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)

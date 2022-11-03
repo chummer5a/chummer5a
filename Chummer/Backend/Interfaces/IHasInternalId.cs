@@ -33,7 +33,7 @@ namespace Chummer
 
     public static class InternalId
     {
-        public static async ValueTask RefreshChildrenGears(this IHasInternalId objParent, TreeView treGear, ContextMenuStrip cmsGear, Func<int> funcOffset, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs, NotifyCollectionChangedEventHandler funcMakeDirty, CancellationToken token = default)
+        public static async ValueTask RefreshChildrenGears(this IHasInternalId objParent, TreeView treGear, ContextMenuStrip cmsGear, ContextMenuStrip cmsCustomGear, Func<int> funcOffset, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs, NotifyCollectionChangedEventHandler funcMakeDirty, CancellationToken token = default)
         {
             if (notifyCollectionChangedEventArgs == null || objParent == null || treGear == null)
                 return;
@@ -52,7 +52,7 @@ namespace Chummer
                         foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
                         {
                             await AddToTree(objGear, intNewIndex).ConfigureAwait(false);
-                            objGear.SetupChildrenGearsCollectionChanged(true, treGear, cmsGear, funcMakeDirty);
+                            objGear.SetupChildrenGearsCollectionChanged(true, treGear, cmsGear, cmsCustomGear, funcMakeDirty);
                             ++intNewIndex;
                         }
 
@@ -87,7 +87,7 @@ namespace Chummer
                         foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
                         {
                             await AddToTree(objGear, intNewIndex).ConfigureAwait(false);
-                            objGear.SetupChildrenGearsCollectionChanged(true, treGear, cmsGear, funcMakeDirty);
+                            objGear.SetupChildrenGearsCollectionChanged(true, treGear, cmsGear, cmsCustomGear, funcMakeDirty);
                             ++intNewIndex;
                         }
 
@@ -139,7 +139,7 @@ namespace Chummer
 
             async ValueTask AddToTree(Gear objGear, int intIndex = -1, bool blnSingleAdd = true)
             {
-                TreeNode objNode = objGear.CreateTreeNode(cmsGear);
+                TreeNode objNode = objGear.CreateTreeNode(cmsCustomGear != null && objGear.AllowRename ? cmsCustomGear : cmsGear);
                 if (objNode == null)
                     return;
                 if (objGear.Location == null)
@@ -446,14 +446,14 @@ namespace Chummer
 
                             async void FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y) =>
                                 await objWeaponAccessory.RefreshChildrenGears(
-                                    treWeapons, cmsWeaponAccessoryGear, null, y, funcMakeDirty, token: token).ConfigureAwait(false);
+                                    treWeapons, cmsWeaponAccessoryGear, null, null, y, funcMakeDirty, token: token).ConfigureAwait(false);
 
                             await objWeaponAccessory.GearChildren.AddTaggedCollectionChangedAsync(
                                 treWeapons, FuncDelegateToAdd, token).ConfigureAwait(false);
                             if (funcMakeDirty != null)
                                 await objWeaponAccessory.GearChildren.AddTaggedCollectionChangedAsync(treWeapons, funcMakeDirty, token).ConfigureAwait(false);
                             foreach (Gear objGear in objWeaponAccessory.GearChildren)
-                                objGear.SetupChildrenGearsCollectionChanged(true, treWeapons, cmsWeaponAccessoryGear, funcMakeDirty);
+                                objGear.SetupChildrenGearsCollectionChanged(true, treWeapons, cmsWeaponAccessoryGear, null, funcMakeDirty);
                             ++intNewIndex;
                         }
 
@@ -495,14 +495,14 @@ namespace Chummer
 
                             async void FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y) =>
                                 await objWeaponAccessory.RefreshChildrenGears(
-                                    treWeapons, cmsWeaponAccessoryGear, null, y, funcMakeDirty, token: token).ConfigureAwait(false);
+                                    treWeapons, cmsWeaponAccessoryGear, null, null, y, funcMakeDirty, token: token).ConfigureAwait(false);
 
                             await objWeaponAccessory.GearChildren.AddTaggedCollectionChangedAsync(
                                 treWeapons, FuncDelegateToAdd, token).ConfigureAwait(false);
                             if (funcMakeDirty != null)
                                 await objWeaponAccessory.GearChildren.AddTaggedCollectionChangedAsync(treWeapons, funcMakeDirty, token).ConfigureAwait(false);
                             foreach (Gear objGear in objWeaponAccessory.GearChildren)
-                                objGear.SetupChildrenGearsCollectionChanged(true, treWeapons, cmsWeaponAccessoryGear, funcMakeDirty);
+                                objGear.SetupChildrenGearsCollectionChanged(true, treWeapons, cmsWeaponAccessoryGear, null, funcMakeDirty);
                             ++intNewIndex;
                         }
 

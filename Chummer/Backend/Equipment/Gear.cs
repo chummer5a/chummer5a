@@ -2053,7 +2053,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Allow Renaming the Gear in Create Mode
         /// </summary>
-        public bool AllowRename => _blnAllowRename;
+        public bool AllowRename => _blnAllowRename && _objCharacter?.Created != true;
 
         /// <summary>
         /// Get the base value of a Matrix attribute of this gear (without children or Overclocker)
@@ -4312,7 +4312,8 @@ namespace Chummer.Backend.Equipment
         /// Build up the Tree for the current piece of Gear and all of its children.
         /// </summary>
         /// <param name="cmsGear">ContextMenuStrip for the Gear to use.</param>
-        public TreeNode CreateTreeNode(ContextMenuStrip cmsGear)
+        /// <param name="cmsCustomGear">ContextMenuStrip for the Gear to use if it can be renamed the way Custom Gear can (in Create mode).</param>
+        public TreeNode CreateTreeNode(ContextMenuStrip cmsGear, ContextMenuStrip cmsCustomGear)
         {
             if (!string.IsNullOrEmpty(ParentID) && !string.IsNullOrEmpty(Source) &&
                 !_objCharacter.Settings.BookEnabled(Source))
@@ -4323,12 +4324,12 @@ namespace Chummer.Backend.Equipment
                 Name = InternalId,
                 Text = CurrentDisplayName,
                 Tag = this,
-                ContextMenuStrip = cmsGear,
+                ContextMenuStrip = cmsCustomGear != null && AllowRename ? cmsCustomGear : cmsGear,
                 ForeColor = PreferredColor,
                 ToolTipText = Notes.WordWrap()
             };
 
-            BuildChildrenGearTree(objNode, cmsGear);
+            BuildChildrenGearTree(objNode, cmsGear, cmsCustomGear);
 
             return objNode;
         }
@@ -4361,14 +4362,15 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         /// <param name="objParentNode">Parent node to which to append children gear.</param>
         /// <param name="cmsGear">ContextMenuStrip for the Gear's children to use to use.</param>
-        public void BuildChildrenGearTree(TreeNode objParentNode, ContextMenuStrip cmsGear)
+        /// <param name="cmsCustomGear">ContextMenuStrip for the Gear's children to use if they can be renamed the way Custom Gear can (in Create mode).</param>
+        public void BuildChildrenGearTree(TreeNode objParentNode, ContextMenuStrip cmsGear, ContextMenuStrip cmsCustomGear)
         {
             if (objParentNode == null)
                 return;
             bool blnExpandNode = false;
             foreach (Gear objChild in Children)
             {
-                TreeNode objChildNode = objChild.CreateTreeNode(cmsGear);
+                TreeNode objChildNode = objChild.CreateTreeNode(cmsGear, cmsCustomGear);
                 if (objChildNode != null)
                 {
                     objParentNode.Nodes.Add(objChildNode);
@@ -4382,19 +4384,19 @@ namespace Chummer.Backend.Equipment
                 objParentNode.Expand();
         }
 
-        public void SetupChildrenGearsCollectionChanged(bool blnAdd, TreeView treGear, ContextMenuStrip cmsGear = null, NotifyCollectionChangedEventHandler funcMakeDirty = null)
+        public void SetupChildrenGearsCollectionChanged(bool blnAdd, TreeView treGear, ContextMenuStrip cmsGear = null, ContextMenuStrip cmsCustomGear = null, NotifyCollectionChangedEventHandler funcMakeDirty = null)
         {
             if (blnAdd)
             {
                 async void FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y) =>
-                    await this.RefreshChildrenGears(treGear, cmsGear, null, y, funcMakeDirty).ConfigureAwait(false);
+                    await this.RefreshChildrenGears(treGear, cmsGear, cmsCustomGear, null, y, funcMakeDirty).ConfigureAwait(false);
 
                 Children.AddTaggedCollectionChanged(treGear, FuncDelegateToAdd);
                 if (funcMakeDirty != null)
                     Children.AddTaggedCollectionChanged(treGear, funcMakeDirty);
                 foreach (Gear objChild in Children)
                 {
-                    objChild.SetupChildrenGearsCollectionChanged(true, treGear, cmsGear, funcMakeDirty);
+                    objChild.SetupChildrenGearsCollectionChanged(true, treGear, cmsGear, cmsCustomGear, funcMakeDirty);
                 }
             }
             else

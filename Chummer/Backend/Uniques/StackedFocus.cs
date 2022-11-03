@@ -446,7 +446,7 @@ namespace Chummer
         {
             if (objGear == null)
                 throw new ArgumentNullException(nameof(objGear));
-            TreeNode objNode = objGear.CreateTreeNode(cmsStackedFocus);
+            TreeNode objNode = objGear.CreateTreeNode(cmsStackedFocus, null);
 
             objNode.Name = InternalId;
             objNode.Text = LanguageManager.GetString("String_StackedFocus")

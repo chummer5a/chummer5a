@@ -3302,7 +3302,7 @@ namespace Chummer
 
                             async void FuncArmorGearToAdd(object x, NotifyCollectionChangedEventArgs y) =>
                                 await objArmor.RefreshChildrenGears(
-                                    treArmor, cmsArmorGear, () => objArmor.ArmorMods.Count, y,
+                                    treArmor, cmsArmorGear, null, () => objArmor.ArmorMods.Count, y,
                                     MakeDirtyWithCharacterUpdate, token: token).ConfigureAwait(false);
 
                             await objArmor.ArmorMods.AddTaggedCollectionChangedAsync(
@@ -3315,12 +3315,12 @@ namespace Chummer
                                 FuncArmorGearToAdd, token).ConfigureAwait(false);
                             foreach (Gear objGear in objArmor.GearChildren)
                                 objGear.SetupChildrenGearsCollectionChanged(
-                                    true, treArmor, cmsArmorGear, MakeDirtyWithCharacterUpdate);
+                                    true, treArmor, cmsArmorGear, null, MakeDirtyWithCharacterUpdate);
                             foreach (ArmorMod objArmorMod in objArmor.ArmorMods)
                             {
                                 async void FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y) =>
                                     await objArmorMod.RefreshChildrenGears(
-                                        treArmor, cmsArmorGear, null, y, MakeDirtyWithCharacterUpdate, token: token).ConfigureAwait(false);
+                                        treArmor, cmsArmorGear, null, null, y, MakeDirtyWithCharacterUpdate, token: token).ConfigureAwait(false);
 
                                 await objArmorMod.GearChildren.AddTaggedCollectionChangedAsync(
                                     treArmor, MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
@@ -3328,7 +3328,7 @@ namespace Chummer
                                     treArmor, FuncDelegateToAdd, token).ConfigureAwait(false);
                                 foreach (Gear objGear in objArmorMod.GearChildren)
                                     objGear.SetupChildrenGearsCollectionChanged(
-                                        true, treArmor, cmsArmorGear, MakeDirtyWithCharacterUpdate);
+                                        true, treArmor, cmsArmorGear, null, MakeDirtyWithCharacterUpdate);
                             }
                         }
 
@@ -3358,7 +3358,7 @@ namespace Chummer
 
                                 async void FuncArmorGearToAdd(object x, NotifyCollectionChangedEventArgs y) =>
                                     await objArmor.RefreshChildrenGears(
-                                        treArmor, cmsArmorGear, () => objArmor.ArmorMods.Count, y,
+                                        treArmor, cmsArmorGear, null, () => objArmor.ArmorMods.Count, y,
                                         MakeDirtyWithCharacterUpdate, token: token).ConfigureAwait(false);
 
                                 await objArmor.ArmorMods.AddTaggedCollectionChangedAsync(
@@ -3371,12 +3371,12 @@ namespace Chummer
                                     FuncArmorGearToAdd, token).ConfigureAwait(false);
                                 foreach (Gear objGear in objArmor.GearChildren)
                                     objGear.SetupChildrenGearsCollectionChanged(
-                                        true, treArmor, cmsArmorGear, MakeDirtyWithCharacterUpdate);
+                                        true, treArmor, cmsArmorGear, null, MakeDirtyWithCharacterUpdate);
                                 foreach (ArmorMod objArmorMod in objArmor.ArmorMods)
                                 {
                                     async void FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y) =>
                                         await objArmorMod.RefreshChildrenGears(
-                                            treArmor, cmsArmorGear, null, y, MakeDirtyWithCharacterUpdate, token: token).ConfigureAwait(false);
+                                            treArmor, cmsArmorGear, null, null, y, MakeDirtyWithCharacterUpdate, token: token).ConfigureAwait(false);
 
                                     await objArmorMod.GearChildren.AddTaggedCollectionChangedAsync(
                                         treArmor, MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
@@ -3384,7 +3384,7 @@ namespace Chummer
                                         treArmor, FuncDelegateToAdd, token).ConfigureAwait(false);
                                     foreach (Gear objGear in objArmorMod.GearChildren)
                                         objGear.SetupChildrenGearsCollectionChanged(
-                                            true, treArmor, cmsArmorGear, MakeDirtyWithCharacterUpdate);
+                                            true, treArmor, cmsArmorGear, null, MakeDirtyWithCharacterUpdate);
                                 }
 
                                 ++intNewIndex;
@@ -3450,7 +3450,7 @@ namespace Chummer
 
                                 async void FuncArmorGearToAdd(object x, NotifyCollectionChangedEventArgs y) =>
                                     await objArmor.RefreshChildrenGears(
-                                        treArmor, cmsArmorGear, () => objArmor.ArmorMods.Count, y,
+                                        treArmor, cmsArmorGear, null, () => objArmor.ArmorMods.Count, y,
                                         MakeDirtyWithCharacterUpdate, token: token).ConfigureAwait(false);
 
                                 await objArmor.ArmorMods.AddTaggedCollectionChangedAsync(
@@ -3463,12 +3463,12 @@ namespace Chummer
                                     FuncArmorGearToAdd, token).ConfigureAwait(false);
                                 foreach (Gear objGear in objArmor.GearChildren)
                                     objGear.SetupChildrenGearsCollectionChanged(
-                                        true, treArmor, cmsArmorGear, MakeDirtyWithCharacterUpdate);
+                                        true, treArmor, cmsArmorGear, null, MakeDirtyWithCharacterUpdate);
                                 foreach (ArmorMod objArmorMod in objArmor.ArmorMods)
                                 {
                                     async void FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y) =>
                                         await objArmorMod.RefreshChildrenGears(
-                                            treArmor, cmsArmorGear, null, y, MakeDirtyWithCharacterUpdate, token: token).ConfigureAwait(false);
+                                            treArmor, cmsArmorGear, null, null, y, MakeDirtyWithCharacterUpdate, token: token).ConfigureAwait(false);
 
                                     await objArmorMod.GearChildren.AddTaggedCollectionChangedAsync(
                                         treArmor, MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
@@ -3476,7 +3476,7 @@ namespace Chummer
                                         treArmor, FuncDelegateToAdd, token).ConfigureAwait(false);
                                     foreach (Gear objGear in objArmorMod.GearChildren)
                                         objGear.SetupChildrenGearsCollectionChanged(
-                                            true, treArmor, cmsArmorGear, MakeDirtyWithCharacterUpdate);
+                                            true, treArmor, cmsArmorGear, null, MakeDirtyWithCharacterUpdate);
                                 }
 
                                 ++intNewIndex;
@@ -3594,14 +3594,14 @@ namespace Chummer
                                 treArmor, MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
 
                             async void FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y) =>
-                                await objArmorMod.RefreshChildrenGears(treArmor, cmsArmorGear, null, y,
+                                await objArmorMod.RefreshChildrenGears(treArmor, cmsArmorGear, null, null, y,
                                                                        MakeDirtyWithCharacterUpdate, token: token).ConfigureAwait(false);
 
                             await objArmorMod.GearChildren.AddTaggedCollectionChangedAsync(treArmor,
                                 FuncDelegateToAdd, token).ConfigureAwait(false);
                             foreach (Gear objGear in objArmorMod.GearChildren)
                                 objGear.SetupChildrenGearsCollectionChanged(
-                                    true, treArmor, cmsArmorGear, MakeDirtyWithCharacterUpdate);
+                                    true, treArmor, cmsArmorGear, null, MakeDirtyWithCharacterUpdate);
                             ++intNewIndex;
                         }
 
@@ -3643,14 +3643,14 @@ namespace Chummer
                                 treArmor, MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
 
                             async void FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y) =>
-                                await objArmorMod.RefreshChildrenGears(treArmor, cmsArmorGear, null, y,
+                                await objArmorMod.RefreshChildrenGears(treArmor, cmsArmorGear, null, null, y,
                                                                        MakeDirtyWithCharacterUpdate, token: token).ConfigureAwait(false);
 
                             await objArmorMod.GearChildren.AddTaggedCollectionChangedAsync(treArmor,
                                 FuncDelegateToAdd, token).ConfigureAwait(false);
                             foreach (Gear objGear in objArmorMod.GearChildren)
                                 objGear.SetupChildrenGearsCollectionChanged(
-                                    true, treArmor, cmsArmorGear, MakeDirtyWithCharacterUpdate);
+                                    true, treArmor, cmsArmorGear, null, MakeDirtyWithCharacterUpdate);
                             ++intNewIndex;
                         }
 
@@ -3723,7 +3723,7 @@ namespace Chummer
             }
         }
 
-        protected async ValueTask RefreshGears(TreeView treGear, ContextMenuStrip cmsGearLocation, ContextMenuStrip cmsGear, bool blnCommlinksOnly, bool blnHideLoadedAmmo, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null, CancellationToken token = default)
+        protected async ValueTask RefreshGears(TreeView treGear, ContextMenuStrip cmsGearLocation, ContextMenuStrip cmsGear, ContextMenuStrip cmsCustomGear, bool blnCommlinksOnly, bool blnHideLoadedAmmo, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null, CancellationToken token = default)
         {
             if (treGear == null)
                 return;
@@ -3756,7 +3756,7 @@ namespace Chummer
                         {
                             await AddToTree(objGear, -1, false).ConfigureAwait(false);
                             objGear.SetupChildrenGearsCollectionChanged(
-                                true, treGear, cmsGear, MakeDirtyWithCharacterUpdate);
+                                true, treGear, cmsGear, cmsCustomGear, MakeDirtyWithCharacterUpdate);
                         }
 
                         await treGear.DoThreadSafeAsync(x => x.SelectedNode = x.FindNode(strSelectedId), token).ConfigureAwait(false);
@@ -3780,7 +3780,7 @@ namespace Chummer
                             {
                                 await AddToTree(objGear, intNewIndex).ConfigureAwait(false);
                                 objGear.SetupChildrenGearsCollectionChanged(
-                                    true, treGear, cmsGear, MakeDirtyWithCharacterUpdate);
+                                    true, treGear, cmsGear, cmsCustomGear, MakeDirtyWithCharacterUpdate);
                                 ++intNewIndex;
                             }
                         }
@@ -3810,7 +3810,7 @@ namespace Chummer
                                 await AddToTree(objGear, intNewIndex).ConfigureAwait(false);
 
                                 async void FuncGearToAdd(object x, NotifyCollectionChangedEventArgs y) =>
-                                    await objGear.RefreshChildrenGears(treGear, cmsGear, null, y,
+                                    await objGear.RefreshChildrenGears(treGear, cmsGear, cmsCustomGear, null, y,
                                                                        MakeDirtyWithCharacterUpdate, token: token).ConfigureAwait(false);
 
                                 await objGear.Children.AddTaggedCollectionChangedAsync(
@@ -3818,7 +3818,7 @@ namespace Chummer
                                 await objGear.Children.AddTaggedCollectionChangedAsync(
                                     treGear, FuncGearToAdd, token).ConfigureAwait(false);
                                 objGear.SetupChildrenGearsCollectionChanged(
-                                    true, treGear, cmsGear, MakeDirtyWithCharacterUpdate);
+                                    true, treGear, cmsGear, cmsCustomGear, MakeDirtyWithCharacterUpdate);
                                 ++intNewIndex;
                             }
 
@@ -3859,7 +3859,7 @@ namespace Chummer
                     if (blnHideLoadedAmmo && objGear.LoadedIntoClip != null)
                         return;
 
-                    TreeNode objNode = objGear.CreateTreeNode(cmsGear);
+                    TreeNode objNode = objGear.CreateTreeNode(cmsGear, cmsCustomGear);
                     if (objNode == null)
                         return;
                     TreeNode nodParent = null;
@@ -4473,7 +4473,7 @@ namespace Chummer
 
                             async void FuncVehicleGearToAdd(object x, NotifyCollectionChangedEventArgs y) =>
                                 await objVehicle.RefreshChildrenGears(
-                                    treVehicles, cmsVehicleGear,
+                                    treVehicles, cmsVehicleGear, null,
                                     () => objVehicle.Mods.Count + objVehicle.Weapons.Count
                                                                 + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0),
                                     y, MakeDirtyWithCharacterUpdate, token: token).ConfigureAwait(false);
@@ -4491,7 +4491,7 @@ namespace Chummer
                                 treVehicles, FuncVehicleGearToAdd, token).ConfigureAwait(false);
                             foreach (Gear objGear in objVehicle.GearChildren)
                                 objGear.SetupChildrenGearsCollectionChanged(
-                                    true, treVehicles, cmsVehicleGear, MakeDirtyWithCharacterUpdate);
+                                    true, treVehicles, cmsVehicleGear, null, MakeDirtyWithCharacterUpdate);
                             await objVehicle.Locations.AddTaggedCollectionChangedAsync(
                                 treVehicles, MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
                             await objVehicle.Locations.AddTaggedCollectionChangedAsync(
@@ -4655,7 +4655,7 @@ namespace Chummer
 
                                 async void FuncVehicleGearToAdd(object x, NotifyCollectionChangedEventArgs y) =>
                                     await objVehicle.RefreshChildrenGears(
-                                        treVehicles, cmsVehicleGear,
+                                        treVehicles, cmsVehicleGear, null,
                                         () => objVehicle.Mods.Count + objVehicle.Weapons.Count
                                                                     + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0),
                                         y, MakeDirtyWithCharacterUpdate, token: token).ConfigureAwait(false);
@@ -4674,7 +4674,7 @@ namespace Chummer
                                     treVehicles, FuncVehicleGearToAdd, token).ConfigureAwait(false);
                                 foreach (Gear objGear in objVehicle.GearChildren)
                                     objGear.SetupChildrenGearsCollectionChanged(
-                                        true, treVehicles, cmsVehicleGear, MakeDirtyWithCharacterUpdate);
+                                        true, treVehicles, cmsVehicleGear, null, MakeDirtyWithCharacterUpdate);
                                 await objVehicle.Locations.AddTaggedCollectionChangedAsync(
                                     treVehicles, MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
                                 await objVehicle.Locations.AddTaggedCollectionChangedAsync(
@@ -4915,7 +4915,7 @@ namespace Chummer
 
                                 async void FuncVehicleGearToAdd(object x, NotifyCollectionChangedEventArgs y) =>
                                     await objVehicle.RefreshChildrenGears(
-                                        treVehicles, cmsVehicleGear,
+                                        treVehicles, cmsVehicleGear, null,
                                         () => objVehicle.Mods.Count + objVehicle.Weapons.Count
                                                                     + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0),
                                         y, MakeDirtyWithCharacterUpdate, token: token).ConfigureAwait(false);
@@ -4934,7 +4934,7 @@ namespace Chummer
                                     treVehicles, FuncVehicleGearToAdd, token).ConfigureAwait(false);
                                 foreach (Gear objGear in objVehicle.GearChildren)
                                     objGear.SetupChildrenGearsCollectionChanged(
-                                        true, treVehicles, cmsVehicleGear, MakeDirtyWithCharacterUpdate);
+                                        true, treVehicles, cmsVehicleGear, null, MakeDirtyWithCharacterUpdate);
                                 await objVehicle.Locations.AddTaggedCollectionChangedAsync(
                                     treVehicles, MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
                                 await objVehicle.Locations.AddTaggedCollectionChangedAsync(
@@ -5055,7 +5055,7 @@ namespace Chummer
                                 case "Foci":
                                 case "Metamagic Foci":
                                 {
-                                    TreeNode objNode = objGear.CreateTreeNode(cmsFocus);
+                                    TreeNode objNode = objGear.CreateTreeNode(cmsFocus, null);
                                     if (objNode == null)
                                         continue;
                                     objNode.Text = await objNode.Text.CheapReplaceAsync(
@@ -5158,7 +5158,7 @@ namespace Chummer
                                     case "Foci":
                                     case "Metamagic Foci":
                                     {
-                                        TreeNode objNode = objGear.CreateTreeNode(cmsFocus);
+                                        TreeNode objNode = objGear.CreateTreeNode(cmsFocus, null);
                                         if (objNode == null)
                                             continue;
                                         objNode.Text = await objNode.Text.CheapReplaceAsync(
@@ -5366,7 +5366,7 @@ namespace Chummer
                                     case "Foci":
                                     case "Metamagic Foci":
                                     {
-                                        TreeNode objNode = objGear.CreateTreeNode(cmsFocus);
+                                        TreeNode objNode = objGear.CreateTreeNode(cmsFocus, null);
                                         if (objNode == null)
                                             continue;
                                         objNode.Text = await objNode.Text.CheapReplaceAsync(

@@ -3222,7 +3222,7 @@ namespace Chummer.Backend.Equipment
             // Vehicle Gear.
             foreach (Gear objGear in GearChildren)
             {
-                TreeNode objLoopNode = objGear.CreateTreeNode(cmsVehicleGear);
+                TreeNode objLoopNode = objGear.CreateTreeNode(cmsVehicleGear, null);
                 if (objLoopNode != null)
                 {
                     TreeNode objParent = objNode;
