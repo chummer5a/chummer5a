@@ -1663,7 +1663,7 @@ namespace Chummer
         {
             return string.IsNullOrEmpty(strInput)
                 ? string.Empty
-                : s_RgxInvalidUnicodeCharsExpression.Replace(strInput, string.Empty);
+                : GlobalSettings.InvalidUnicodeCharsExpression.Replace(strInput, string.Empty);
         }
 
         private static readonly Regex s_RgxHtmlTagExpression = new Regex(@"/<\/?[a-z][\s\S]*>/i",
@@ -1673,9 +1673,6 @@ namespace Chummer
             RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
         private static readonly Regex s_RgxEscapedLineEndingsExpression = new Regex(@"\\r\\n|\\n\\r|\\n|\\r",
-            RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Compiled | RegexOptions.CultureInvariant);
-
-        private static readonly Regex s_RgxInvalidUnicodeCharsExpression = new Regex(@"[\u0000-\u0008\u000B\u000C\u000E-\u001F]",
             RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
         private static readonly DebuggableSemaphoreSlim s_RtbRtfManipulatorLock = new DebuggableSemaphoreSlim();

@@ -60,7 +60,7 @@ namespace Chummer
                 //Regex to extract anything in between [ ]
                 //Not sure why i don't just split by , and remove it during
                 //next phase
-                MatchCollection m2 = Regex.Matches(strValues, @"\[([^\]]*)\]");
+                MatchCollection m2 = s_RgxSquareBrackets.Matches(strValues);
 
                 //double junk; //Not used, tryparse needs out
 
@@ -73,6 +73,11 @@ namespace Chummer
                 _dblFixedValues = lstValues.ToArray();
             }
         }
+
+        private static readonly Regex s_RgxSquareBrackets
+            = new Regex(@"\[([^\]]*)\]",
+                        RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Compiled
+                        | RegexOptions.CultureInvariant);
 
         public Gear Gear => _objGear;
 

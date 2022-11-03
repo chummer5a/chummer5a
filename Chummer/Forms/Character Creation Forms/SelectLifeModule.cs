@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
@@ -34,7 +35,7 @@ namespace Chummer
         private string _strDefaultStageName;
         private readonly XmlDocument _xmlDocument;
         private string _strSelectedId;
-        private Regex _rgxSearchRegex;
+        private Regex _rgxSearchExpression;
 
         private string _strWorkStage;
 
@@ -57,7 +58,7 @@ namespace Chummer
             {
                 _strWorkStage = _strDefaultStageName = xmlStageNode.InnerText;
 
-                await BuildTree(GetSelectString()).ConfigureAwait(false);
+                await BuildTree(await GetSelectString().ConfigureAwait(false)).ConfigureAwait(false);
             }
             else
             {
@@ -65,25 +66,26 @@ namespace Chummer
             }
         }
 
-        private Task BuildTree(string stageString)
+        private async ValueTask BuildTree(string stageString, CancellationToken token = default)
         {
             XmlNodeList matches = _xmlDocument.SelectNodes("chummer/modules/module" + stageString);
-            return treModules.DoThreadSafeAsync(x =>
+            TreeNode[] aobjNodes = await BuildList(matches, token).ConfigureAwait(false);
+            await treModules.DoThreadSafeAsync(x =>
             {
                 x.Nodes.Clear();
-                x.Nodes.AddRange(
-                    BuildList(matches));
-            });
+                x.Nodes.AddRange(aobjNodes);
+            }, token: token).ConfigureAwait(false);
         }
 
-        private TreeNode[] BuildList(XmlNodeList xmlNodes)
+        private async ValueTask<TreeNode[]> BuildList(XmlNodeList xmlNodes, CancellationToken token = default)
         {
             List<TreeNode> lstTreeNodes = new List<TreeNode>(xmlNodes.Count);
+            bool blnLimitList = await chkLimitList.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
             for (int i = 0; i < xmlNodes.Count; i++)
             {
                 XmlNode xmlNode = xmlNodes[i];
 
-                if (!chkLimitList.Checked || xmlNode.CreateNavigator().RequirementsMet(_objCharacter))
+                if (!blnLimitList || xmlNode.CreateNavigator().RequirementsMet(_objCharacter))
                 {
                     TreeNode treNode = new TreeNode
                     {
@@ -91,14 +93,17 @@ namespace Chummer
                     };
                     if (xmlNode["versions"] != null)
                     {
-                        treNode.Nodes.AddRange(
-                            BuildList(xmlNode.SelectNodes("versions/version[" + _objCharacter.Settings.BookXPath() + "or not(source)]")));
+                        TreeNode[] aobjNodes = await BuildList(
+                            xmlNode.SelectNodes("versions/version["
+                                                + await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false)
+                                                + "or not(source)]")).ConfigureAwait(false);
+                        treNode.Nodes.AddRange(aobjNodes);
                     }
 
                     treNode.Tag = xmlNode["id"]?.InnerText;
-                    if (_rgxSearchRegex != null)
+                    if (_rgxSearchExpression != null)
                     {
-                        if (_rgxSearchRegex.IsMatch(treNode.Text))
+                        if (_rgxSearchExpression.IsMatch(treNode.Text))
                         {
                             lstTreeNodes.Add(treNode);
                         }
@@ -258,7 +263,7 @@ namespace Chummer
             else
             {
                 _strWorkStage = _strDefaultStageName;
-                await BuildTree(GetSelectString()).ConfigureAwait(false);
+                await BuildTree(await GetSelectString().ConfigureAwait(false)).ConfigureAwait(false);
             }
         }
 
@@ -273,7 +278,7 @@ namespace Chummer
             {
                 _strWorkStage = _xmlDocument.SelectSingleNode("chummer/stages/stage[@order = " + strSelected.CleanXPath() + ']')?.InnerText ?? string.Empty;
             }
-            await BuildTree(GetSelectString()).ConfigureAwait(false);
+            await BuildTree(await GetSelectString().ConfigureAwait(false)).ConfigureAwait(false);
         }
 
         private async void txtSearch_TextChanged(object sender, EventArgs e)
@@ -281,26 +286,29 @@ namespace Chummer
             string strText = await txtSearch.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false);
             if (string.IsNullOrWhiteSpace(strText))
             {
-                _rgxSearchRegex = null;
+                _rgxSearchExpression = null;
             }
             else
             {
                 try
                 {
-                    _rgxSearchRegex = new Regex(strText, RegexOptions.IgnoreCase);
+                    bool _ = Regex.IsMatch("Test for properly formatted Regular Expression pattern.",
+                                           strText);
                 }
                 catch (ArgumentException)
                 {
-                    //No other way to check for a valid regex that i know of
+                    // Test to make sure RegEx pattern is properly formatted
+                    return;
                 }
+                _rgxSearchExpression = new Regex(strText, RegexOptions.IgnoreCase | RegexOptions.Multiline);
             }
 
-            await BuildTree(GetSelectString()).ConfigureAwait(false);
+            await BuildTree(await GetSelectString().ConfigureAwait(false)).ConfigureAwait(false);
         }
 
-        private string GetSelectString()
+        private async ValueTask<string> GetSelectString(CancellationToken token = default)
         {
-            string strReturn = "[(" + _objCharacter.Settings.BookXPath();
+            string strReturn = "[(" + await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false);
 
             //chummer/modules/module//name[contains(., "C")]/..["" = string.Empty]
             // /chummer/modules/module//name[contains(., "can")]/..[id]
@@ -314,9 +322,8 @@ namespace Chummer
             {
                 strReturn += ") and (stage = " + _strWorkStage.CleanXPath();
             }
-            strReturn += ")]";
 
-            return strReturn;
+            return strReturn + ")]";
         }
     }
 }

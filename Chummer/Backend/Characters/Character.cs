@@ -5124,8 +5124,7 @@ namespace Chummer
                                     }
                                     catch (XmlException ex)
                                     {
-                                        if (System.Text.RegularExpressions.Regex.IsMatch(ex.Message,
-                                                GlobalSettings.InvalidXmlCharacterRegex))
+                                        if (GlobalSettings.InvalidUnicodeCharsExpression.IsMatch(ex.Message))
                                         {
                                             /*If we found a known control character that's preventing the character from
                                             being loaded (Expected to be notes ingested from PDF mostly) prompt the user whether to use unsafe methods.
@@ -5189,8 +5188,7 @@ namespace Chummer
                                     }
                                     catch (XmlException ex)
                                     {
-                                        if (System.Text.RegularExpressions.Regex.IsMatch(ex.Message,
-                                                GlobalSettings.InvalidXmlCharacterRegex))
+                                        if (GlobalSettings.InvalidUnicodeCharsExpression.IsMatch(ex.Message))
                                         {
                                             /*If we found a known control character that's preventing the character from
                                             being loaded (Expected to be notes ingested from PDF mostly) prompt the user whether to use unsafe methods.

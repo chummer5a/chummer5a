@@ -25,6 +25,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -1397,7 +1398,8 @@ namespace Chummer
         /// <summary>
         /// Regex that indicates whether a given string is a match for text that cannot be saved in XML. Match == true.
         /// </summary>
-        public const string InvalidXmlCharacterRegex = "[\u0000-\u0008\u000B\u000C\u000E-\u001F]";
+        public static Regex InvalidUnicodeCharsExpression { get; } = new Regex(@"[\u0000-\u0008\u000B\u000C\u000E-\u001F]",
+            RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
         /// <summary>
         /// Clipboard.

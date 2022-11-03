@@ -243,7 +243,7 @@ namespace Chummer.Backend.Equipment
             }
 
             if (blnRecreateInternalClip)
-                RecreateInternalClip();
+                await RecreateInternalClipAsync();
             if (blnDoEncumbranceRefresh && _objCharacter?.IsLoading == false)
                 _objCharacter.OnPropertyChanged(nameof(Character.TotalCarriedWeight));
         }
@@ -854,6 +854,70 @@ namespace Chummer.Backend.Equipment
             // First try to get the max ammo capacity for this weapon because that will be the capacity of the internal clip
             List<string> lstCount = new List<string>(1);
             string ammoString = CalculatedAmmo(GlobalSettings.CultureInfo, GlobalSettings.DefaultLanguage);
+            // Determine which loading methods are available to the Weapon.
+            if (ammoString.IndexOfAny('x', '+') != -1 ||
+                ammoString.Contains(" or ", StringComparison.OrdinalIgnoreCase) ||
+                ammoString.Contains("Special", StringComparison.OrdinalIgnoreCase) ||
+                ammoString.Contains("External Source", StringComparison.OrdinalIgnoreCase))
+            {
+                string strWeaponAmmo = ammoString.FastEscape("External Source", StringComparison.OrdinalIgnoreCase);
+                strWeaponAmmo = strWeaponAmmo.ToLowerInvariant();
+                // Get rid of or belt, and + energy.
+                strWeaponAmmo = strWeaponAmmo.FastEscapeOnceFromEnd(" + energy")
+                    .Replace(" or belt", " or 250(belt)");
+
+                foreach (string strAmmo in strWeaponAmmo.SplitNoAlloc(" or ", StringSplitOptions.RemoveEmptyEntries))
+                {
+                    lstCount.Add(AmmoCapacity(strAmmo));
+                }
+            }
+            else
+            {
+                // Nothing weird in the ammo string, so just use the number given.
+                string strAmmo = ammoString;
+                int intPos = strAmmo.IndexOf('(');
+                if (intPos != -1)
+                    strAmmo = strAmmo.Substring(0, intPos);
+                lstCount.Add(strAmmo);
+            }
+
+            foreach (string strAmmo in lstCount)
+            {
+                if (int.TryParse(strAmmo, NumberStyles.Any, GlobalSettings.InvariantCultureInfo
+                    , out int intNewAmmoCount))
+                {
+                    if (intAmmoCount > intNewAmmoCount)
+                        intAmmoCount = intNewAmmoCount;
+                    break;
+                }
+            }
+
+            Clip objInternalClip = new Clip(_objCharacter, null, this, null, intAmmoCount);
+            _lstAmmo.Add(objInternalClip);
+        }
+
+        /// <summary>
+        /// Recreates the single internal clip used by weapons that have an ammo capacity but do not require ammo (i.e. they use charges)
+        /// </summary>
+        private async ValueTask RecreateInternalClipAsync(CancellationToken token = default)
+        {
+            if (RequireAmmo || string.IsNullOrWhiteSpace(Ammo) || Ammo == "0")
+                return;
+
+            int intAmmoCount = 0;
+            if (_lstAmmo.Count > 0)
+            {
+                Clip objCurrentClip = GetClip(_intActiveAmmoSlot);
+                if (objCurrentClip != null)
+                    intAmmoCount = objCurrentClip.Ammo;
+            }
+
+            _lstAmmo.Clear();
+            _intActiveAmmoSlot = 1;
+
+            // First try to get the max ammo capacity for this weapon because that will be the capacity of the internal clip
+            List<string> lstCount = new List<string>(1);
+            string ammoString = await CalculatedAmmoAsync(GlobalSettings.CultureInfo, GlobalSettings.DefaultLanguage, token);
             // Determine which loading methods are available to the Weapon.
             if (ammoString.IndexOfAny('x', '+') != -1 ||
                 ammoString.Contains(" or ", StringComparison.OrdinalIgnoreCase) ||
@@ -1938,9 +2002,8 @@ namespace Chummer.Backend.Equipment
             get => _strAmmo;
             set
             {
-                if (_strAmmo == value)
+                if (Interlocked.Exchange(ref _strAmmo, value) == value)
                     return;
-                _strAmmo = value;
                 RecreateInternalClip();
             }
         }
@@ -1965,21 +2028,19 @@ namespace Chummer.Backend.Equipment
             {
                 Clip objCurrentClip = GetClip(_intActiveAmmoSlot);
                 int intCurrentAmmo = objCurrentClip.Ammo;
-                if (intCurrentAmmo != value)
+                if (intCurrentAmmo == value)
+                    return;
+                objCurrentClip.Ammo = value;
+                Gear objGear = objCurrentClip.AmmoGear;
+                if (objGear == null)
+                    return;
+                if (objGear.Quantity + value - intCurrentAmmo <= 0)
                 {
-                    objCurrentClip.Ammo = value;
-                    Gear objGear = objCurrentClip.AmmoGear;
-                    if (objGear != null)
-                    {
-                        if (objGear.Quantity + value - intCurrentAmmo <= 0)
-                        {
-                            objGear.DeleteGear();
-                        }
-                        else
-                        {
-                            objGear.Quantity += value - intCurrentAmmo;
-                        }
-                    }
+                    objGear.DeleteGear();
+                }
+                else
+                {
+                    objGear.Quantity += value - intCurrentAmmo;
                 }
             }
         }
@@ -1991,13 +2052,13 @@ namespace Chummer.Backend.Equipment
         {
             // Assuming base text of 10(ml)x2
             // matches [2x]10(ml) or [10x]2(ml)
-            foreach (Match m in Regex.Matches(strAmmo, "^[0-9]*[0-9]*x"))
+            foreach (Match m in s_RgxAmmoCapacityFirst.Matches(strAmmo))
             {
                 strAmmo = strAmmo.TrimStartOnce(m.Value);
             }
 
             // Matches 2(ml[)x10] (But does not capture the ')') or 10(ml)[x2]
-            foreach (Match m in Regex.Matches(strAmmo, "(?<=\\))(x[0-9]*[0-9]*$)*"))
+            foreach (Match m in s_RgxAmmoCapacitySecond.Matches(strAmmo))
             {
                 strAmmo = strAmmo.TrimEndOnce(m.Value);
             }
@@ -2007,6 +2068,15 @@ namespace Chummer.Backend.Equipment
                 strAmmo = strAmmo.Substring(0, intPos);
             return strAmmo;
         }
+
+        private static readonly Regex s_RgxAmmoCapacityFirst
+            = new Regex(@"^[0-9]*[0-9]*x",
+                        RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Compiled
+                        | RegexOptions.CultureInvariant);
+        private static readonly Regex s_RgxAmmoCapacitySecond
+            = new Regex(@"(?<=\))(x[0-9]*[0-9]*$)*",
+                        RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Compiled
+                        | RegexOptions.CultureInvariant);
 
         /// <summary>
         /// The type of Ammunition loaded in the Weapon.
@@ -6739,7 +6809,7 @@ namespace Chummer.Backend.Equipment
                 Clip objInternalClip = GetClip(ActiveAmmoSlot);
                 if (objInternalClip == null)
                 {
-                    RecreateInternalClip();
+                    await RecreateInternalClipAsync(token);
                     objInternalClip = GetClip(ActiveAmmoSlot);
                     if (objInternalClip == null)
                         throw new InvalidOperationException(nameof(objInternalClip));
