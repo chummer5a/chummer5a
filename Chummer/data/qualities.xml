@@ -15646,7 +15646,10 @@
               <name>Spellcasting</name>
               <val>4</val>
             </skill>
-            <tradition>Black Magic</tradition>
+            <grouponeof>
+              <tradition>Black Magic</tradition>
+              <tradition>Black Magic [Alt]</tradition>
+            </grouponeof>
           </group>
           <group>
             <skill>
@@ -15659,7 +15662,10 @@
               <val>2</val>
               <spec>Manipulation</spec>
             </skill>
-            <tradition>Black Magic</tradition>
+            <grouponeof>
+              <tradition>Black Magic</tradition>
+              <tradition>Black Magic [Alt]</tradition>
+            </grouponeof>
           </group>
         </oneof>
       </required>
