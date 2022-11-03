@@ -6799,7 +6799,7 @@ namespace Chummer.Backend.Equipment
         {
             List<string> lstCount = new List<string>(1);
             string ammoString
-                = await CalculatedAmmoAsync(GlobalSettings.CultureInfo, GlobalSettings.DefaultLanguage, token)
+                = await CalculatedAmmoAsync(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage, token)
                     .ConfigureAwait(false);
             if (!RequireAmmo)
             {

@@ -18822,8 +18822,8 @@ namespace Chummer
                             await chkWeaponEquipped.DoThreadSafeAsync(x =>
                             {
                                 x.Text = strText;
-                                x.Enabled = !objGear.IncludedInParent;
                                 x.Checked = objGear.Equipped;
+                                x.Enabled = objGear.CanChangeEquip;
                             }, token).ConfigureAwait(false);
                             await chkIncludedInWeapon.DoThreadSafeAsync(x => x.Visible = false, token)
                                                      .ConfigureAwait(false);
@@ -19153,7 +19153,7 @@ namespace Chummer
                             {
                                 x.Visible = true;
                                 x.Checked = objArmorMod.Equipped;
-                                x.Enabled = true;
+                                x.Enabled = !objArmorMod.IncludedInArmor;
                             }, token).ConfigureAwait(false);
                             await chkIncludedInArmor.DoThreadSafeAsync(x =>
                             {
@@ -19231,7 +19231,7 @@ namespace Chummer
                                     {
                                         x.Visible = true;
                                         x.Checked = objSelectedGear.Equipped;
-                                        x.Enabled = true;
+                                        x.Enabled = objSelectedGear.CanChangeEquip;
                                     }, token).ConfigureAwait(false);
                                     await chkIncludedInArmor.DoThreadSafeAsync(x =>
                                     {
@@ -19672,6 +19672,7 @@ namespace Chummer
                         {
                             x.Visible = true;
                             x.Checked = objGear.Equipped;
+                            x.Enabled = objGear.CanChangeEquip;
                         }, token).ConfigureAwait(false);
                         // If this is a Program, determine if its parent Gear (if any) is a Commlink. If so, show the Equipped checkbox.
                         if (objGear.IsProgram && objGear.Parent is IHasMatrixAttributes objCommlink

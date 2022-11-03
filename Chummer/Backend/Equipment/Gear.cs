@@ -1985,7 +1985,14 @@ namespace Chummer.Backend.Equipment
                 if (objOldValue != null)
                     objOldValue.AmmoGear = null;
                 if (value != null)
+                {
                     value.AmmoGear = this;
+                    if (objOldValue == null)
+                    {
+                        Equipped = true;
+                        ChangeEquippedStatus(true);
+                    }
+                }
             }
         }
 
@@ -2385,6 +2392,11 @@ namespace Chummer.Backend.Equipment
         /// Whether or not the Gear is included in its parent item when purchased (currently applies to Armor only).
         /// </summary>
         public bool IncludedInParent => !string.IsNullOrEmpty(ParentID);
+
+        /// <summary>
+        /// Whether or not the Gear's equipped status can be changed.
+        /// </summary>
+        public bool CanChangeEquip => !IncludedInParent && LoadedIntoClip == null;
 
         /// <summary>
         /// ID of the object that added this cyberware (if any).
