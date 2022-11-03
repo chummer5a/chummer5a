@@ -7320,13 +7320,13 @@ namespace Chummer.Backend.Equipment
                 foreach (WeaponAccessory objChild in WeaponAccessories)
                 {
                     async void FuncWeaponAccessoryGearToAdd(object x, NotifyCollectionChangedEventArgs y) =>
-                        await objChild.RefreshChildrenGears(treWeapons, cmsWeaponAccessoryGear, null, y, funcMakeDirty).ConfigureAwait(false);
+                        await objChild.RefreshChildrenGears(treWeapons, cmsWeaponAccessoryGear, null, null, y, funcMakeDirty).ConfigureAwait(false);
 
                     objChild.GearChildren.AddTaggedCollectionChanged(treWeapons, FuncWeaponAccessoryGearToAdd);
                     if (funcMakeDirty != null)
                         objChild.GearChildren.AddTaggedCollectionChanged(treWeapons, funcMakeDirty);
                     foreach (Gear objGear in objChild.GearChildren)
-                        objGear.SetupChildrenGearsCollectionChanged(true, treWeapons, cmsWeaponAccessoryGear, funcMakeDirty);
+                        objGear.SetupChildrenGearsCollectionChanged(true, treWeapons, cmsWeaponAccessoryGear, null, funcMakeDirty);
                 }
             }
             else

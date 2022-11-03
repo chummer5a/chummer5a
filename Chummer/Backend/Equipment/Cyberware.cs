@@ -6393,7 +6393,7 @@ namespace Chummer.Backend.Equipment
 
             foreach (Gear objGear in GearChildren)
             {
-                TreeNode objLoopNode = objGear.CreateTreeNode(cmsGear);
+                TreeNode objLoopNode = objGear.CreateTreeNode(cmsGear, null);
                 if (objLoopNode != null)
                     lstChildNodes.Add(objLoopNode);
             }
@@ -6429,7 +6429,7 @@ namespace Chummer.Backend.Equipment
                     await this.RefreshChildrenCyberware(treCyberware, cmsCyberware, cmsCyberwareGear, null, y, funcMakeDirty).ConfigureAwait(false);
 
                 async void FuncGearToAdd(object x, NotifyCollectionChangedEventArgs y) =>
-                    await this.RefreshChildrenGears(treCyberware, cmsCyberwareGear, () => Children.Count, y, funcMakeDirty).ConfigureAwait(false);
+                    await this.RefreshChildrenGears(treCyberware, cmsCyberwareGear, null, () => Children.Count, y, funcMakeDirty).ConfigureAwait(false);
 
                 Children.AddTaggedCollectionChanged(treCyberware, FuncCyberwareToAdd);
                 GearChildren.AddTaggedCollectionChanged(treCyberware, FuncGearToAdd);
@@ -6445,7 +6445,7 @@ namespace Chummer.Backend.Equipment
                 }
 
                 foreach (Gear objGear in GearChildren)
-                    objGear.SetupChildrenGearsCollectionChanged(true, treCyberware, cmsCyberwareGear, funcMakeDirty);
+                    objGear.SetupChildrenGearsCollectionChanged(true, treCyberware, cmsCyberwareGear, null, funcMakeDirty);
             }
             else
             {

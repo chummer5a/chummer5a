@@ -1817,7 +1817,7 @@ namespace Chummer.Backend.Equipment
             TreeNodeCollection lstChildNodes = objNode.Nodes;
             foreach (Gear objGear in GearChildren)
             {
-                TreeNode objLoopNode = objGear.CreateTreeNode(cmsWeaponAccessoryGear);
+                TreeNode objLoopNode = objGear.CreateTreeNode(cmsWeaponAccessoryGear, null);
                 if (objLoopNode != null)
                 {
                     lstChildNodes.Add(objLoopNode);

@@ -139,7 +139,7 @@ namespace Chummer
 
             async ValueTask AddToTree(Gear objGear, int intIndex = -1, bool blnSingleAdd = true)
             {
-                TreeNode objNode = objGear.CreateTreeNode(cmsCustomGear != null && objGear.AllowRename ? cmsCustomGear : cmsGear);
+                TreeNode objNode = objGear.CreateTreeNode(cmsGear, cmsCustomGear);
                 if (objNode == null)
                     return;
                 if (objGear.Location == null)
