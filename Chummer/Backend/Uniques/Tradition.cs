@@ -143,7 +143,7 @@ namespace Chummer.Backend.Uniques
                 string strOldFocedValue = ImprovementManager.ForcedValue;
                 string strOldSelectedValue = ImprovementManager.SelectedValue;
                 ImprovementManager.ForcedValue = strForcedValue;
-                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Tradition, InternalId, _nodBonus, strFriendlyName: DisplayNameShort(GlobalSettings.Language)))
+                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Tradition, InternalId, _nodBonus, strFriendlyName: CurrentDisplayNameShort))
                 {
                     ImprovementManager.ForcedValue = strOldFocedValue;
                     return false;
@@ -570,7 +570,7 @@ namespace Chummer.Backend.Uniques
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
         /// </summary>
-        public async Task<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
+        public async ValueTask<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
         {
             if (IsCustomTradition)
             {
@@ -636,6 +636,10 @@ namespace Chummer.Backend.Uniques
         public string CurrentDisplayName => DisplayName(GlobalSettings.Language);
 
         public ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default) => DisplayNameAsync(GlobalSettings.Language, token);
+
+        public string CurrentDisplayNameShort => DisplayNameShort(GlobalSettings.Language);
+
+        public ValueTask<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default) => DisplayNameShortAsync(GlobalSettings.Language, token);
 
         /// <summary>
         /// What type of forms do spirits of these traditions come in? Defaults to Materialization.

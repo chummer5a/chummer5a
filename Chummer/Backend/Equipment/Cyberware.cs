@@ -832,7 +832,7 @@ namespace Chummer.Backend.Equipment
                                        Description = string.Format(
                                            GlobalSettings.CultureInfo,
                                            LanguageManager.GetString("String_SelectVariableCost"),
-                                           DisplayNameShort(GlobalSettings.Language)),
+                                           CurrentDisplayNameShort),
                                        AllowCancel = false
                                    }))
                             {

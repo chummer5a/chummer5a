@@ -2021,7 +2021,7 @@ namespace Chummer
 
                 _objCharacter.AIPrograms.Add(objProgram);
 
-                SelectedValue = objProgram.DisplayNameShort(GlobalSettings.Language);
+                SelectedValue = objProgram.CurrentDisplayNameShort;
 
                 CreateImprovement(objProgram.InternalId, _objImprovementSource, SourceName,
                     Improvement.ImprovementType.AIProgram,
@@ -2090,7 +2090,7 @@ namespace Chummer
                 if (objProgram.InternalId.IsEmptyGuid())
                     throw new AbortedException();
 
-                SelectedValue = objProgram.DisplayNameShort(GlobalSettings.Language);
+                SelectedValue = objProgram.CurrentDisplayNameShort;
 
                 _objCharacter.AIPrograms.Add(objProgram);
 
@@ -5782,7 +5782,7 @@ namespace Chummer
                             && objWeapon.GetNodeXPath()?.SelectSingleNode("self::node()[" + strWeaponDetails + ']') == null)
                             continue;
                         lstWeapons.Add(new ListItem(objWeapon.InternalId,
-                                                    objWeapon.DisplayNameShort(GlobalSettings.Language)));
+                                                    objWeapon.CurrentDisplayNameShort));
                     }
 
                     if (string.IsNullOrWhiteSpace(LimitSelection)

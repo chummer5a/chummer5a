@@ -69,7 +69,9 @@ namespace Chummer
                     Log.Warn("Unknown category " + strCategory + " in component " + objItem.Key);
                     return;
                 }
-                TreeNode objNode = await treAvailableComponents.DoThreadSafeFuncAsync(() => nodCategoryNode.Nodes.Add(objItem.Value.DisplayNameShort(GlobalSettings.Language))).ConfigureAwait(false);
+
+                string strName = await objItem.Value.GetCurrentDisplayNameShortAsync().ConfigureAwait(false);
+                TreeNode objNode = await treAvailableComponents.DoThreadSafeFuncAsync(() => nodCategoryNode.Nodes.Add(strName)).ConfigureAwait(false);
                 int intLevelCount = objItem.Value.DrugEffects.Count;
                 if (intLevelCount == 1)
                 {

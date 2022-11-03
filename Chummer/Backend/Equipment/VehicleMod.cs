@@ -255,7 +255,7 @@ namespace Chummer.Backend.Equipment
                                Description = string.Format(
                                    GlobalSettings.CultureInfo,
                                    LanguageManager.GetString("String_SelectVariableCost"),
-                                   DisplayNameShort(GlobalSettings.Language)),
+                                   CurrentDisplayNameShort),
                                AllowCancel = false
                            }))
                     {
@@ -287,7 +287,7 @@ namespace Chummer.Backend.Equipment
                 ImprovementManager.ForcedValue = strForcedValue;
                 if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.VehicleMod,
                                                            InternalId, Bonus, intRating,
-                                                           DisplayNameShort(GlobalSettings.Language), false))
+                                                           CurrentDisplayNameShort, false))
                 {
                     _guiID = Guid.Empty;
                     return;
@@ -2017,7 +2017,7 @@ namespace Chummer.Backend.Equipment
             decAmount += (decOriginal - (objParent?.TotalCost ?? 0)) * percentage;
             // Create the Expense Log Entry for the sale.
             ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
-            objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldVehicleMod") + ' ' + DisplayNameShort(GlobalSettings.Language), ExpenseType.Nuyen, DateTime.Now);
+            objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldVehicleMod") + ' ' + CurrentDisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
             _objCharacter.ExpenseEntries.AddWithSort(objExpense);
             _objCharacter.Nuyen += decAmount;
             return true;

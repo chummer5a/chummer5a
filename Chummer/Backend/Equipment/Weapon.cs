@@ -434,7 +434,7 @@ namespace Chummer.Backend.Equipment
                                    Description = string.Format(
                                        GlobalSettings.CultureInfo,
                                        LanguageManager.GetString("String_SelectVariableCost"),
-                                       DisplayNameShort(GlobalSettings.Language)),
+                                       CurrentDisplayNameShort),
                                    AllowCancel = false
                                }))
                         {
@@ -5463,7 +5463,7 @@ namespace Chummer.Backend.Equipment
                                 if (objSkill.Specializations.Count > 0 && !objSkill.IsExoticSkill)
                                 {
                                     SkillSpecialization objSpec =
-                                        objSkill.GetSpecialization(DisplayNameShort(GlobalSettings.Language)) ??
+                                        objSkill.GetSpecialization(CurrentDisplayNameShort) ??
                                         objSkill.GetSpecialization(Name) ??
                                         objSkill.GetSpecialization(DisplayCategory(GlobalSettings.Language)) ??
                                         objSkill.GetSpecialization(Category);
@@ -5850,7 +5850,7 @@ namespace Chummer.Backend.Equipment
                                 if (objSkill.Specializations.Count > 0 && !objSkill.IsExoticSkill)
                                 {
                                     SkillSpecialization spec =
-                                        objSkill.GetSpecialization(DisplayNameShort(GlobalSettings.Language)) ??
+                                        objSkill.GetSpecialization(CurrentDisplayNameShort) ??
                                         objSkill.GetSpecialization(Name) ??
                                         objSkill.GetSpecialization(DisplayCategory(GlobalSettings.Language)) ??
                                         objSkill.GetSpecialization(Category);
@@ -6513,7 +6513,7 @@ namespace Chummer.Backend.Equipment
                                 x.SourceName == InternalId));
                     }
 
-                    ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.ArmorMod, InternalId + "Wireless", WirelessBonus, 1, DisplayNameShort(GlobalSettings.Language));
+                    ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.ArmorMod, InternalId + "Wireless", WirelessBonus, 1, CurrentDisplayNameShort);
                 }
                 else
                 {
@@ -7911,7 +7911,7 @@ namespace Chummer.Backend.Equipment
             decAmount += (decOriginal - (objParent?.TotalCost ?? 0)) * percentage;
             // Create the Expense Log Entry for the sale.
             ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
-            objExpense.Create(decAmount, LanguageManager.GetString(strExpense) + ' ' + DisplayNameShort(GlobalSettings.Language), ExpenseType.Nuyen, DateTime.Now);
+            objExpense.Create(decAmount, LanguageManager.GetString(strExpense) + ' ' + CurrentDisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
             _objCharacter.ExpenseEntries.AddWithSort(objExpense);
             _objCharacter.Nuyen += decAmount;
             return true;

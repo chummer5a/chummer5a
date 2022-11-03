@@ -212,7 +212,7 @@ namespace Chummer
                 string strOldForce = ImprovementManager.ForcedValue;
                 string strOldSelected = ImprovementManager.SelectedValue;
                 ImprovementManager.ForcedValue = Extra;
-                if (!ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Power, InternalId, Bonus, TotalRating, DisplayNameShort(GlobalSettings.Language)))
+                if (!ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Power, InternalId, Bonus, TotalRating, CurrentDisplayNameShort))
                 {
                     ImprovementManager.ForcedValue = strOldForce;
                     DeletePower();
@@ -1367,7 +1367,7 @@ namespace Chummer
                         ImprovementManager.ForcedValue = Extra;
                         ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Power,
                                                               InternalId, Bonus, intTotalRating,
-                                                              DisplayNameShort(GlobalSettings.Language));
+                                                              CurrentDisplayNameShort);
                     }
                 }
 

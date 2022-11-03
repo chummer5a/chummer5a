@@ -1707,6 +1707,8 @@ namespace Chummer.Backend.Equipment
 
         public string CurrentDisplayName => DisplayName(GlobalSettings.CultureInfo, GlobalSettings.Language);
 
+        public string CurrentDisplayNameShort => DisplayNameShort(GlobalSettings.Language);
+
         /// <summary>
         /// The name of the object as it should appear on printouts (translated name only).
         /// </summary>
@@ -1739,6 +1741,8 @@ namespace Chummer.Backend.Equipment
         }
 
         public ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default) => DisplayNameAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
+
+        public ValueTask<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default) => DisplayNameShortAsync(GlobalSettings.Language, token);
 
         /// <summary>
         /// Translated Category.

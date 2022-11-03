@@ -310,7 +310,7 @@ namespace Chummer.Backend.Equipment
                                    Description = string.Format(
                                        GlobalSettings.CultureInfo,
                                        LanguageManager.GetString("String_SelectVariableCost"),
-                                       DisplayNameShort(GlobalSettings.Language)),
+                                       CurrentDisplayNameShort),
                                    AllowCancel = false
                                }))
                         {
@@ -417,7 +417,7 @@ namespace Chummer.Backend.Equipment
                     string strSource = _guiID.ToString("D", GlobalSettings.InvariantCultureInfo);
                     ImprovementManager.ForcedValue = _strForcedValue;
                     if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Gear,
-                        strSource, Bonus, intRating, DisplayNameShort(GlobalSettings.Language), blnAddImprovements))
+                        strSource, Bonus, intRating, CurrentDisplayNameShort, blnAddImprovements))
                     {
                         _guiID = Guid.Empty;
                         return;
@@ -4807,10 +4807,10 @@ namespace Chummer.Backend.Equipment
                 ImprovementManager.ForcedValue = strForce;
                 if (Bonus != null)
                     ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear,
-                        InternalId, Bonus, Rating, DisplayNameShort(GlobalSettings.Language));
+                        InternalId, Bonus, Rating, CurrentDisplayNameShort);
                 if (WirelessOn && WirelessBonus != null)
                     ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear,
-                        InternalId, WirelessBonus, Rating, DisplayNameShort(GlobalSettings.Language));
+                        InternalId, WirelessBonus, Rating, CurrentDisplayNameShort);
             }
 
             foreach (Gear objChild in Children)
@@ -4844,7 +4844,7 @@ namespace Chummer.Backend.Equipment
             decAmount += (decOriginal - (objParent?.TotalCost ?? 0)) * percentage;
             ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
             string strEntry = LanguageManager.GetString("String_ExpenseSoldCyberwareGear");
-            objExpense.Create(decAmount, strEntry + ' ' + DisplayNameShort(GlobalSettings.Language), ExpenseType.Nuyen,
+            objExpense.Create(decAmount, strEntry + ' ' + CurrentDisplayNameShort, ExpenseType.Nuyen,
                 DateTime.Now);
             CharacterObject.ExpenseEntries.AddWithSort(objExpense);
             CharacterObject.Nuyen += decAmount;
