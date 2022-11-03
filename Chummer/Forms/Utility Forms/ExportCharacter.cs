@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Drawing;
 using System.Globalization;
@@ -84,9 +85,39 @@ namespace Chummer
         {
             try
             {
-                _objCharacter.PropertyChanged += ObjCharacterOnPropertyChanged;
-                _objCharacter.SettingsPropertyChanged += ObjCharacterOnSettingsPropertyChanged;
-                await LanguageManager.PopulateSheetLanguageListAsync(cboLanguage, GlobalSettings.DefaultCharacterSheet, _objCharacter.Yield(), _objExportCulture, token: _objGenericToken).ConfigureAwait(false);
+                IAsyncDisposable objInnerLocker = await _objCharacter.LockObject.EnterWriteLockAsync(_objGenericToken)
+                                                                     .ConfigureAwait(false);
+                try
+                {
+                    _objCharacter.PropertyChanged += ObjCharacterOnPropertyChanged;
+                    _objCharacter.SettingsPropertyChanged += ObjCharacterOnSettingsPropertyChanged;
+                    // TODO: Make these also work for any children collection changes
+                    _objCharacter.Cyberware.CollectionChanged += OnCharacterCollectionChanged;
+                    _objCharacter.Armor.CollectionChanged += OnCharacterCollectionChanged;
+                    _objCharacter.Weapons.CollectionChanged += OnCharacterCollectionChanged;
+                    _objCharacter.Gear.CollectionChanged += OnCharacterCollectionChanged;
+                    _objCharacter.Contacts.CollectionChanged += OnCharacterCollectionChanged;
+                    _objCharacter.ExpenseEntries.CollectionChanged += OnCharacterCollectionChanged;
+                    _objCharacter.MentorSpirits.CollectionChanged += OnCharacterCollectionChanged;
+                    _objCharacter.Powers.ListChanged += OnCharacterListChanged;
+                    _objCharacter.Qualities.CollectionChanged += OnCharacterCollectionChanged;
+                    _objCharacter.MartialArts.CollectionChanged += OnCharacterCollectionChanged;
+                    _objCharacter.Metamagics.CollectionChanged += OnCharacterCollectionChanged;
+                    _objCharacter.Spells.CollectionChanged += OnCharacterCollectionChanged;
+                    _objCharacter.ComplexForms.CollectionChanged += OnCharacterCollectionChanged;
+                    _objCharacter.CritterPowers.CollectionChanged += OnCharacterCollectionChanged;
+                    _objCharacter.SustainedCollection.CollectionChanged += OnCharacterCollectionChanged;
+                    _objCharacter.InitiationGrades.CollectionChanged += OnCharacterCollectionChanged;
+                }
+                finally
+                {
+                    await objInnerLocker.DisposeAsync().ConfigureAwait(false);
+                }
+
+                await LanguageManager
+                      .PopulateSheetLanguageListAsync(cboLanguage, GlobalSettings.DefaultCharacterSheet,
+                                                      _objCharacter.Yield(), _objExportCulture, token: _objGenericToken)
+                      .ConfigureAwait(false);
                 using (new FetchSafelyFromPool<List<ListItem>>(
                            Utils.ListItemListPool, out List<ListItem> lstExportMethods))
                 {
@@ -101,8 +132,16 @@ namespace Chummer
                             lstExportMethods.Add(new ListItem(strFileName, strFileName));
                         }
                     }
+
                     lstExportMethods.Sort();
-                    lstExportMethods.Insert(0, new ListItem("JSON", string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_Export_Blank", token: _objGenericToken).ConfigureAwait(false), "JSON")));
+                    lstExportMethods.Insert(
+                        0,
+                        new ListItem(
+                            "JSON",
+                            string.Format(GlobalSettings.CultureInfo,
+                                          await LanguageManager
+                                                .GetStringAsync("String_Export_Blank", token: _objGenericToken)
+                                                .ConfigureAwait(false), "JSON")));
 
                     await cboXSLT.PopulateWithListItemsAsync(lstExportMethods, _objGenericToken).ConfigureAwait(false);
                     await cboXSLT.DoThreadSafeAsync(x =>
@@ -131,6 +170,7 @@ namespace Chummer
             {
                 if (e.PropertyName == nameof(CharacterSettings.Name))
                     await UpdateWindowTitleAsync(_objGenericToken).ConfigureAwait(false);
+                await DoXsltUpdate(_objGenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -144,6 +184,38 @@ namespace Chummer
             {
                 if (e.PropertyName == nameof(Character.CharacterName) || e.PropertyName == nameof(Character.Created))
                     await UpdateWindowTitleAsync(_objGenericToken).ConfigureAwait(false);
+                await DoXsltUpdate(_objGenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void OnCharacterListChanged(object sender, ListChangedEventArgs e)
+        {
+            if (e.ListChangedType == ListChangedType.ItemMoved
+                || e.ListChangedType == ListChangedType.PropertyDescriptorAdded
+                || e.ListChangedType == ListChangedType.PropertyDescriptorChanged
+                || e.ListChangedType == ListChangedType.PropertyDescriptorDeleted)
+                return;
+            try
+            {
+                await DoXsltUpdate(_objGenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void OnCharacterCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Move)
+                return;
+            try
+            {
+                await DoXsltUpdate(_objGenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -159,6 +231,7 @@ namespace Chummer
                 objTemp.Cancel(false);
                 objTemp.Dispose();
             }
+
             objTemp = Interlocked.Exchange(ref _objCharacterXmlGeneratorCancellationTokenSource, null);
             if (objTemp?.IsCancellationRequested == false)
             {
@@ -166,8 +239,33 @@ namespace Chummer
                 objTemp.Dispose();
             }
 
-            _objCharacter.PropertyChanged -= ObjCharacterOnPropertyChanged;
-            _objCharacter.SettingsPropertyChanged -= ObjCharacterOnSettingsPropertyChanged;
+            IAsyncDisposable objInnerLocker = await _objCharacter.LockObject.EnterWriteLockAsync(CancellationToken.None)
+                                                                 .ConfigureAwait(false);
+            try
+            {
+                _objCharacter.PropertyChanged -= ObjCharacterOnPropertyChanged;
+                _objCharacter.SettingsPropertyChanged -= ObjCharacterOnSettingsPropertyChanged;
+                _objCharacter.Cyberware.CollectionChanged -= OnCharacterCollectionChanged;
+                _objCharacter.Armor.CollectionChanged -= OnCharacterCollectionChanged;
+                _objCharacter.Weapons.CollectionChanged -= OnCharacterCollectionChanged;
+                _objCharacter.Gear.CollectionChanged -= OnCharacterCollectionChanged;
+                _objCharacter.Contacts.CollectionChanged -= OnCharacterCollectionChanged;
+                _objCharacter.ExpenseEntries.CollectionChanged -= OnCharacterCollectionChanged;
+                _objCharacter.MentorSpirits.CollectionChanged -= OnCharacterCollectionChanged;
+                _objCharacter.Powers.ListChanged -= OnCharacterListChanged;
+                _objCharacter.Qualities.CollectionChanged -= OnCharacterCollectionChanged;
+                _objCharacter.MartialArts.CollectionChanged -= OnCharacterCollectionChanged;
+                _objCharacter.Metamagics.CollectionChanged -= OnCharacterCollectionChanged;
+                _objCharacter.Spells.CollectionChanged -= OnCharacterCollectionChanged;
+                _objCharacter.ComplexForms.CollectionChanged -= OnCharacterCollectionChanged;
+                _objCharacter.CritterPowers.CollectionChanged -= OnCharacterCollectionChanged;
+                _objCharacter.SustainedCollection.CollectionChanged -= OnCharacterCollectionChanged;
+                _objCharacter.InitiationGrades.CollectionChanged -= OnCharacterCollectionChanged;
+            }
+            finally
+            {
+                await objInnerLocker.DisposeAsync().ConfigureAwait(false);
+            }
 
             try
             {
@@ -177,6 +275,7 @@ namespace Chummer
             {
                 // Swallow this
             }
+
             try
             {
                 await _tskCharacterXmlGenerator.ConfigureAwait(false);
@@ -185,9 +284,10 @@ namespace Chummer
             {
                 // Swallow this
             }
+
             _objGenericFormClosingCancellationTokenSource?.Cancel(false);
         }
-        
+
         private async void cmdExport_Click(object sender, EventArgs e)
         {
             try
@@ -445,12 +545,13 @@ namespace Chummer
                 await cmdExportClose.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
                 await txtText.DoThreadSafeAsync(x => x.Text = strGeneratingData, token).ConfigureAwait(false);
                 token.ThrowIfCancellationRequested();
+                XmlDocument objNewDocument;
                 using (token.Register(() => _objCharacterXmlGeneratorCancellationTokenSource.Cancel(false)))
-                    _objCharacterXml = await _objCharacter.GenerateExportXml(_objExportCulture, _strExportLanguage,
-                                                                             _objCharacterXmlGeneratorCancellationTokenSource
-                                                                                 .Token).ConfigureAwait(false);
+                    objNewDocument = await _objCharacter.GenerateExportXml(_objExportCulture, _strExportLanguage,
+                                                                           _objCharacterXmlGeneratorCancellationTokenSource
+                                                                               .Token).ConfigureAwait(false);
                 token.ThrowIfCancellationRequested();
-                if (_objCharacterXml != null)
+                if ((_objCharacterXml = objNewDocument) != null)
                     await DoXsltUpdate(token).ConfigureAwait(false);
             }
             finally
@@ -524,7 +625,7 @@ namespace Chummer
             }
             if (string.IsNullOrEmpty(strSaveFile))
                 return;
-            
+
             (bool blnSuccess, Tuple<string, string> strBoxText)
                 = await _dicCache.TryGetValueAsync(new Tuple<string, string>(_strExportLanguage, _strXslt), token).ConfigureAwait(false);
             File.WriteAllText(strSaveFile, // Change this to a proper path.

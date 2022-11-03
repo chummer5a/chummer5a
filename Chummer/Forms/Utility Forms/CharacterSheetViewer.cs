@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
@@ -1110,16 +1111,65 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 foreach (Character objCharacter in _lstCharacters)
                 {
-                    objCharacter.PropertyChanged -= ObjCharacterOnPropertyChanged;
-                    objCharacter.SettingsPropertyChanged -= ObjCharacterOnSettingsPropertyChanged;
+                    IAsyncDisposable objInnerLocker = await objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        objCharacter.PropertyChanged -= ObjCharacterOnPropertyChanged;
+                        objCharacter.SettingsPropertyChanged -= ObjCharacterOnSettingsPropertyChanged;
+                        objCharacter.Cyberware.CollectionChanged -= OnCharacterCollectionChanged;
+                        objCharacter.Armor.CollectionChanged -= OnCharacterCollectionChanged;
+                        objCharacter.Weapons.CollectionChanged -= OnCharacterCollectionChanged;
+                        objCharacter.Gear.CollectionChanged -= OnCharacterCollectionChanged;
+                        objCharacter.Contacts.CollectionChanged -= OnCharacterCollectionChanged;
+                        objCharacter.ExpenseEntries.CollectionChanged -= OnCharacterCollectionChanged;
+                        objCharacter.MentorSpirits.CollectionChanged -= OnCharacterCollectionChanged;
+                        objCharacter.Powers.ListChanged -= OnCharacterListChanged;
+                        objCharacter.Qualities.CollectionChanged -= OnCharacterCollectionChanged;
+                        objCharacter.MartialArts.CollectionChanged -= OnCharacterCollectionChanged;
+                        objCharacter.Metamagics.CollectionChanged -= OnCharacterCollectionChanged;
+                        objCharacter.Spells.CollectionChanged -= OnCharacterCollectionChanged;
+                        objCharacter.ComplexForms.CollectionChanged -= OnCharacterCollectionChanged;
+                        objCharacter.CritterPowers.CollectionChanged -= OnCharacterCollectionChanged;
+                        objCharacter.SustainedCollection.CollectionChanged -= OnCharacterCollectionChanged;
+                        objCharacter.InitiationGrades.CollectionChanged -= OnCharacterCollectionChanged;
+                    }
+                    finally
+                    {
+                        await objInnerLocker.DisposeAsync().ConfigureAwait(false);
+                    }
                 }
                 await _lstCharacters.ClearAsync(token).ConfigureAwait(false);
                 if (lstCharacters != null)
                     await _lstCharacters.AddRangeAsync(lstCharacters, token).ConfigureAwait(false);
                 foreach (Character objCharacter in _lstCharacters)
                 {
-                    objCharacter.PropertyChanged += ObjCharacterOnPropertyChanged;
-                    objCharacter.SettingsPropertyChanged += ObjCharacterOnSettingsPropertyChanged;
+                    IAsyncDisposable objInnerLocker = await objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        objCharacter.PropertyChanged += ObjCharacterOnPropertyChanged;
+                        objCharacter.SettingsPropertyChanged += ObjCharacterOnSettingsPropertyChanged;
+                        // TODO: Make these also work for any children collection changes
+                        objCharacter.Cyberware.CollectionChanged += OnCharacterCollectionChanged;
+                        objCharacter.Armor.CollectionChanged += OnCharacterCollectionChanged;
+                        objCharacter.Weapons.CollectionChanged += OnCharacterCollectionChanged;
+                        objCharacter.Gear.CollectionChanged += OnCharacterCollectionChanged;
+                        objCharacter.Contacts.CollectionChanged += OnCharacterCollectionChanged;
+                        objCharacter.ExpenseEntries.CollectionChanged += OnCharacterCollectionChanged;
+                        objCharacter.MentorSpirits.CollectionChanged += OnCharacterCollectionChanged;
+                        objCharacter.Powers.ListChanged += OnCharacterListChanged;
+                        objCharacter.Qualities.CollectionChanged += OnCharacterCollectionChanged;
+                        objCharacter.MartialArts.CollectionChanged += OnCharacterCollectionChanged;
+                        objCharacter.Metamagics.CollectionChanged += OnCharacterCollectionChanged;
+                        objCharacter.Spells.CollectionChanged += OnCharacterCollectionChanged;
+                        objCharacter.ComplexForms.CollectionChanged += OnCharacterCollectionChanged;
+                        objCharacter.CritterPowers.CollectionChanged += OnCharacterCollectionChanged;
+                        objCharacter.SustainedCollection.CollectionChanged += OnCharacterCollectionChanged;
+                        objCharacter.InitiationGrades.CollectionChanged += OnCharacterCollectionChanged;
+                    }
+                    finally
+                    {
+                        await objInnerLocker.DisposeAsync().ConfigureAwait(false);
+                    }
                 }
             }
             finally
@@ -1141,6 +1191,37 @@ namespace Chummer
             finally
             {
                 Interlocked.Decrement(ref _intLoading);
+            }
+        }
+
+        private async void OnCharacterListChanged(object sender, ListChangedEventArgs e)
+        {
+            if (e.ListChangedType == ListChangedType.ItemMoved
+                || e.ListChangedType == ListChangedType.PropertyDescriptorAdded
+                || e.ListChangedType == ListChangedType.PropertyDescriptorChanged
+                || e.ListChangedType == ListChangedType.PropertyDescriptorDeleted)
+                return;
+            try
+            {
+                await RefreshCharacters(_objGenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void OnCharacterCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Move)
+                return;
+            try
+            {
+                await RefreshCharacters(_objGenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
             }
         }
 
