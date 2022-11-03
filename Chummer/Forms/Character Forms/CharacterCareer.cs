@@ -3169,7 +3169,7 @@ namespace Chummer
                                                         .ConfigureAwait(false))?.Tag;
                 await ReapplySpecificImprovements((objSelected as IHasInternalId)?.InternalId,
                                                   objSelected is IHasName objHasName
-                                                      ? await objHasName.GetCurrentDisplayNameAsync(GenericToken)
+                                                      ? await objHasName.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false)
                                                       : string.Empty, GenericToken)
                     .ConfigureAwait(false);
             }
@@ -3187,7 +3187,7 @@ namespace Chummer
                                                         .ConfigureAwait(false))?.Tag;
                 await ReapplySpecificImprovements((objSelected as IHasInternalId)?.InternalId,
                                                   objSelected is IHasName objHasName
-                                                      ? await objHasName.GetCurrentDisplayNameAsync(GenericToken)
+                                                      ? await objHasName.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false)
                                                       : string.Empty, GenericToken)
                     .ConfigureAwait(false);
             }
@@ -3205,7 +3205,7 @@ namespace Chummer
                                                         .ConfigureAwait(false))?.Tag;
                 await ReapplySpecificImprovements((objSelected as IHasInternalId)?.InternalId,
                                                   objSelected is IHasName objHasName
-                                                      ? await objHasName.GetCurrentDisplayNameAsync(GenericToken)
+                                                      ? await objHasName.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false)
                                                       : string.Empty, GenericToken)
                     .ConfigureAwait(false);
             }
@@ -3223,7 +3223,7 @@ namespace Chummer
                                                       .ConfigureAwait(false))?.Tag;
                 await ReapplySpecificImprovements((objSelected as IHasInternalId)?.InternalId,
                                                   objSelected is IHasName objHasName
-                                                      ? await objHasName.GetCurrentDisplayNameAsync(GenericToken)
+                                                      ? await objHasName.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false)
                                                       : string.Empty, GenericToken)
                     .ConfigureAwait(false);
             }
@@ -3241,7 +3241,7 @@ namespace Chummer
                                                         .ConfigureAwait(false))?.Tag;
                 await ReapplySpecificImprovements((objSelected as IHasInternalId)?.InternalId,
                                                   objSelected is IHasName objHasName
-                                                      ? await objHasName.GetCurrentDisplayNameAsync(GenericToken)
+                                                      ? await objHasName.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false)
                                                       : string.Empty, GenericToken)
                     .ConfigureAwait(false);
             }
@@ -3259,7 +3259,7 @@ namespace Chummer
                                                         .ConfigureAwait(false))?.Tag;
                 await ReapplySpecificImprovements((objSelected as IHasInternalId)?.InternalId,
                                                   objSelected is IHasName objHasName
-                                                      ? await objHasName.GetCurrentDisplayNameAsync(GenericToken)
+                                                      ? await objHasName.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false)
                                                       : string.Empty, GenericToken)
                     .ConfigureAwait(false);
             }
@@ -3277,7 +3277,7 @@ namespace Chummer
                                                      .ConfigureAwait(false))?.Tag;
                 await ReapplySpecificImprovements((objSelected as IHasInternalId)?.InternalId,
                                                   objSelected is IHasName objHasName
-                                                      ? await objHasName.GetCurrentDisplayNameAsync(GenericToken)
+                                                      ? await objHasName.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false)
                                                       : string.Empty, GenericToken)
                     .ConfigureAwait(false);
             }
@@ -3295,7 +3295,7 @@ namespace Chummer
                                                            .ConfigureAwait(false))?.Tag;
                 await ReapplySpecificImprovements((objSelected as IHasInternalId)?.InternalId,
                                                   objSelected is IHasName objHasName
-                                                      ? await objHasName.GetCurrentDisplayNameAsync(GenericToken)
+                                                      ? await objHasName.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false)
                                                       : string.Empty, GenericToken)
                     .ConfigureAwait(false);
             }
@@ -3313,7 +3313,7 @@ namespace Chummer
                                                          .ConfigureAwait(false))?.Tag;
                 await ReapplySpecificImprovements((objSelected as IHasInternalId)?.InternalId,
                                                   objSelected is IHasName objHasName
-                                                      ? await objHasName.GetCurrentDisplayNameAsync(GenericToken)
+                                                      ? await objHasName.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false)
                                                       : string.Empty, GenericToken)
                     .ConfigureAwait(false);
             }
@@ -3331,7 +3331,7 @@ namespace Chummer
                                                             .ConfigureAwait(false))?.Tag;
                 await ReapplySpecificImprovements((objSelected as IHasInternalId)?.InternalId,
                                                   objSelected is IHasName objHasName
-                                                      ? await objHasName.GetCurrentDisplayNameAsync(GenericToken)
+                                                      ? await objHasName.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false)
                                                       : string.Empty, GenericToken)
                     .ConfigureAwait(false);
             }
@@ -3349,7 +3349,7 @@ namespace Chummer
                                                         .ConfigureAwait(false))?.Tag;
                 await ReapplySpecificImprovements((objSelected as IHasInternalId)?.InternalId,
                                                   objSelected is IHasName objHasName
-                                                      ? await objHasName.GetCurrentDisplayNameAsync(GenericToken)
+                                                      ? await objHasName.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false)
                                                       : string.Empty, GenericToken)
                     .ConfigureAwait(false);
             }
@@ -8172,7 +8172,7 @@ namespace Chummer
 
                 if (lstImprovementsEnabled.Count == 0)
                     return;
-                ImprovementManager.EnableImprovements(CharacterObject, lstImprovementsEnabled);
+                await ImprovementManager.EnableImprovementsAsync(CharacterObject, lstImprovementsEnabled, GenericToken).ConfigureAwait(false);
                 await RequestCharacterUpdate().ConfigureAwait(false);
                 await SetDirty(true).ConfigureAwait(false);
             }
@@ -8210,7 +8210,7 @@ namespace Chummer
 
                 if (lstImprovementsDisabled.Count == 0)
                     return;
-                ImprovementManager.DisableImprovements(CharacterObject, lstImprovementsDisabled);
+                await ImprovementManager.DisableImprovementsAsync(CharacterObject, lstImprovementsDisabled, GenericToken).ConfigureAwait(false);
                 await RequestCharacterUpdate().ConfigureAwait(false);
                 await SetDirty(true).ConfigureAwait(false);
             }
@@ -10505,7 +10505,7 @@ namespace Chummer
                                 continue;
                             Spell objSpell = await CharacterObject.Spells.GetValueAtAsync(i, GenericToken).ConfigureAwait(false);
                             if (objSpell.InternalId == strUndoId)
-                                objSpell.Remove(false); // Remove the Spell from the character.
+                                await objSpell.RemoveAsync(false, GenericToken).ConfigureAwait(false); // Remove the Spell from the character.
                         }
 
                         break;
@@ -10643,7 +10643,7 @@ namespace Chummer
                                 continue;
                             Metamagic objMetamagic = await CharacterObject.Metamagics.GetValueAtAsync(i, GenericToken).ConfigureAwait(false);
                             if (objMetamagic.InternalId == strUndoId)
-                                objMetamagic.Remove(false); // Remove the Metamagic from the character.
+                                await objMetamagic.RemoveAsync(false, GenericToken).ConfigureAwait(false); // Remove the Metamagic from the character.
                         }
 
                         break;
@@ -10657,7 +10657,7 @@ namespace Chummer
                                 continue;
                             InitiationGrade objGrade = await CharacterObject.InitiationGrades.GetValueAtAsync(i, GenericToken).ConfigureAwait(false);
                             if (objGrade.InternalId == strUndoId)
-                                objGrade.Remove(false); // Remove the Grade from the character.
+                                await objGrade.RemoveAsync(false, GenericToken).ConfigureAwait(false); // Remove the Grade from the character.
                         }
 
                         break;
@@ -10671,7 +10671,7 @@ namespace Chummer
                                 continue;
                             MartialArt objMartialArt = await CharacterObject.MartialArts.GetValueAtAsync(i, GenericToken).ConfigureAwait(false);
                             if (objMartialArt.InternalId == strUndoId)
-                                objMartialArt.Remove(false); // Remove the Martial Art from the character.
+                                await objMartialArt.RemoveAsync(false, GenericToken).ConfigureAwait(false); // Remove the Martial Art from the character.
                         }
 
                         break;
@@ -10690,7 +10690,7 @@ namespace Chummer
                                     continue;
                                 MartialArtTechnique objTechnique = await objMartialArt.Techniques.GetValueAtAsync(i, GenericToken).ConfigureAwait(false);
                                 if (objTechnique.InternalId == strUndoId)
-                                    objTechnique.Remove(false); // Remove the Technique from the character.
+                                    await objTechnique.RemoveAsync(false, GenericToken).ConfigureAwait(false); // Remove the Technique from the character.
                             }
                         }
 
@@ -10706,7 +10706,7 @@ namespace Chummer
                                 continue;
                             ComplexForm objComplexForm = await CharacterObject.ComplexForms.GetValueAtAsync(i, GenericToken).ConfigureAwait(false);
                             if (objComplexForm.InternalId == strUndoId)
-                                objComplexForm.Remove(false); // Remove the Complex Form from the character.
+                                await objComplexForm.RemoveAsync(false, GenericToken).ConfigureAwait(false); // Remove the Complex Form from the character.
                         }
 
                         break;
@@ -15566,7 +15566,7 @@ namespace Chummer
 
                     if (CharacterObject.MagicTradition.Type == TraditionType.MAG)
                     {
-                        CharacterObject.MagicTradition.ResetTradition();
+                        await CharacterObject.MagicTradition.ResetTraditionAsync(GenericToken).ConfigureAwait(false);
                         await RequestCharacterUpdate().ConfigureAwait(false);
                         await SetDirty(true).ConfigureAwait(false);
                     }
@@ -15618,7 +15618,7 @@ namespace Chummer
                     }
                     else
                     {
-                        CharacterObject.MagicTradition.ResetTradition();
+                        await CharacterObject.MagicTradition.ResetTraditionAsync(GenericToken).ConfigureAwait(false);
                         await cboTradition.DoThreadSafeAsync(
                             x => x.SelectedValue = CharacterObject.MagicTradition.SourceID, GenericToken).ConfigureAwait(false);
                     }
@@ -15667,7 +15667,7 @@ namespace Chummer
                 }
                 else
                 {
-                    CharacterObject.MagicTradition.ResetTradition();
+                    await CharacterObject.MagicTradition.ResetTraditionAsync(GenericToken).ConfigureAwait(false);
                     await cboTradition.DoThreadSafeAsync(
                         x => x.SelectedValue = CharacterObject.MagicTradition.SourceID, GenericToken).ConfigureAwait(false);
                 }
@@ -15729,7 +15729,7 @@ namespace Chummer
                 {
                     if (CharacterObject.MagicTradition.Type == TraditionType.RES)
                     {
-                        CharacterObject.MagicTradition.ResetTradition();
+                        await CharacterObject.MagicTradition.ResetTraditionAsync(GenericToken).ConfigureAwait(false);
                         await RequestCharacterUpdate().ConfigureAwait(false);
                         await SetDirty(true).ConfigureAwait(false);
                     }
@@ -16406,12 +16406,15 @@ namespace Chummer
             if (IsRefreshing)
                 return;
 
-            if (!(await treImprovements.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag).ConfigureAwait(false) is Improvement objImprovement))
+            if (!(await treImprovements.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag).ConfigureAwait(false) is
+                    Improvement objImprovement))
                 return;
             if (await chkImprovementActive.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false))
-                ImprovementManager.EnableImprovements(CharacterObject, objImprovement);
+                await ImprovementManager.EnableImprovementsAsync(CharacterObject, objImprovement, GenericToken)
+                                        .ConfigureAwait(false);
             else
-                ImprovementManager.DisableImprovements(CharacterObject, objImprovement);
+                await ImprovementManager.DisableImprovementsAsync(CharacterObject, objImprovement, GenericToken)
+                                        .ConfigureAwait(false);
 
             await RequestCharacterUpdate().ConfigureAwait(false);
             await SetDirty(true).ConfigureAwait(false);

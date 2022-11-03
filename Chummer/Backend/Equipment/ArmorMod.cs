@@ -1575,11 +1575,11 @@ namespace Chummer.Backend.Equipment
                 {
                     if (WirelessBonus.SelectSingleNode("@mode")?.Value == "replace")
                     {
-                        ImprovementManager.DisableImprovements(_objCharacter,
-                                                               await _objCharacter.Improvements.ToListAsync(x =>
-                                                                   x.ImproveSource == Improvement.ImprovementSource
-                                                                       .ArmorMod &&
-                                                                   x.SourceName == InternalId, token: token).ConfigureAwait(false));
+                        await ImprovementManager.DisableImprovementsAsync(_objCharacter,
+                                                                          await _objCharacter.Improvements.ToListAsync(x =>
+                                                                              x.ImproveSource == Improvement.ImprovementSource
+                                                                                  .ArmorMod &&
+                                                                              x.SourceName == InternalId, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
                     }
 
                     await ImprovementManager.CreateImprovementsAsync(_objCharacter,
@@ -1595,11 +1595,11 @@ namespace Chummer.Backend.Equipment
                 {
                     if (WirelessBonus.SelectSingleNode("@mode")?.Value == "replace")
                     {
-                        ImprovementManager.EnableImprovements(_objCharacter,
-                                                              await _objCharacter.Improvements.ToListAsync(x =>
-                                                                  x.ImproveSource == Improvement.ImprovementSource
-                                                                      .ArmorMod &&
-                                                                  x.SourceName == InternalId, token: token).ConfigureAwait(false));
+                        await ImprovementManager.EnableImprovementsAsync(_objCharacter,
+                                                                         await _objCharacter.Improvements.ToListAsync(x =>
+                                                                             x.ImproveSource == Improvement.ImprovementSource
+                                                                                 .ArmorMod &&
+                                                                             x.SourceName == InternalId, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
                     }
 
                     string strSourceNameToRemove = InternalId + "Wireless";

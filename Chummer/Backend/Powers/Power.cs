@@ -99,6 +99,14 @@ namespace Chummer
             Dispose();
         }
 
+        public async ValueTask DeletePowerAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            await ImprovementManager.RemoveImprovementsAsync(CharacterObject, Improvement.ImprovementSource.Power, InternalId, token).ConfigureAwait(false);
+            await CharacterObject.Powers.RemoveAsync(this, token).ConfigureAwait(false);
+            await DisposeAsync().ConfigureAwait(false);
+        }
+
         /// <summary>
         /// Save the object's XML to the XmlWriter.
         /// </summary>

@@ -2879,11 +2879,11 @@ namespace Chummer.Backend.Equipment
                     {
                         if (WirelessBonus?.SelectSingleNode("@mode")?.Value == "replace")
                         {
-                            ImprovementManager.DisableImprovements(_objCharacter,
-                                                                   await _objCharacter.Improvements.ToListAsync(
-                                                                       x => x.ImproveSource == SourceType
-                                                                            && x.SourceName == InternalId,
-                                                                       token: token).ConfigureAwait(false));
+                            await ImprovementManager.DisableImprovementsAsync(_objCharacter,
+                                                                              await _objCharacter.Improvements.ToListAsync(
+                                                                                  x => x.ImproveSource == SourceType
+                                                                                      && x.SourceName == InternalId,
+                                                                                  token: token).ConfigureAwait(false), token).ConfigureAwait(false);
                         }
 
                         string strSourceNameToUse = InternalId + "Wireless";
@@ -2930,11 +2930,11 @@ namespace Chummer.Backend.Equipment
                         {
                             if (WirelessPairBonus?.SelectSingleNode("@mode")?.Value == "replace")
                             {
-                                ImprovementManager.DisableImprovements(_objCharacter,
-                                                                       await _objCharacter.Improvements.ToListAsync(
-                                                                           x => x.ImproveSource == SourceType
-                                                                               && x.SourceName == InternalId,
-                                                                           token: token).ConfigureAwait(false));
+                                await ImprovementManager.DisableImprovementsAsync(_objCharacter,
+                                    await _objCharacter.Improvements.ToListAsync(
+                                        x => x.ImproveSource == SourceType
+                                             && x.SourceName == InternalId,
+                                        token: token).ConfigureAwait(false), token).ConfigureAwait(false);
                             }
 
                             string strSourceNameToUse = InternalId + "WirelessPair";
@@ -2958,13 +2958,13 @@ namespace Chummer.Backend.Equipment
                                                                              + "WirelessPair", token).ConfigureAwait(false);
                             if (objLoopCyberware.WirelessPairBonus?.SelectSingleNode("@mode")?.Value == "replace")
                             {
-                                ImprovementManager.DisableImprovements(_objCharacter,
-                                                                       await _objCharacter.Improvements.ToListAsync(
-                                                                           x => x.ImproveSource
-                                                                               == objLoopCyberware.SourceType
-                                                                               && x.SourceName
-                                                                               == objLoopCyberware.InternalId,
-                                                                           token: token).ConfigureAwait(false));
+                                await ImprovementManager.DisableImprovementsAsync(_objCharacter,
+                                    await _objCharacter.Improvements.ToListAsync(
+                                        x => x.ImproveSource
+                                             == objLoopCyberware.SourceType
+                                             && x.SourceName
+                                             == objLoopCyberware.InternalId,
+                                        token: token).ConfigureAwait(false), token).ConfigureAwait(false);
                             }
 
                             // Go down the list and create pair bonuses for every second item
@@ -2987,11 +2987,11 @@ namespace Chummer.Backend.Equipment
                     {
                         if (WirelessBonus.SelectSingleNode("@mode")?.Value == "replace")
                         {
-                            ImprovementManager.EnableImprovements(_objCharacter,
-                                                                  await _objCharacter.Improvements.ToListAsync(
-                                                                      x => x.ImproveSource == SourceType
-                                                                           && x.SourceName == InternalId,
-                                                                      token: token).ConfigureAwait(false));
+                            await ImprovementManager.EnableImprovementsAsync(_objCharacter,
+                                                                             await _objCharacter.Improvements.ToListAsync(
+                                                                                 x => x.ImproveSource == SourceType
+                                                                                     && x.SourceName == InternalId,
+                                                                                 token: token).ConfigureAwait(false), token).ConfigureAwait(false);
                         }
 
                         string strSourceNameToRemove = InternalId + "Wireless";
@@ -3031,10 +3031,10 @@ namespace Chummer.Backend.Equipment
 
                         if (WirelessPairBonus.SelectSingleNode("@mode")?.Value == "replace")
                         {
-                            ImprovementManager.EnableImprovements(_objCharacter,
-                                                                  await _objCharacter.Improvements.ToListAsync(
-                                                                      x => x.ImproveSource == SourceType
-                                                                           && x.SourceName == InternalId, token: token).ConfigureAwait(false));
+                            await ImprovementManager.EnableImprovementsAsync(_objCharacter,
+                                                                             await _objCharacter.Improvements.ToListAsync(
+                                                                                 x => x.ImproveSource == SourceType
+                                                                                     && x.SourceName == InternalId, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
                         }
 
                         foreach (Cyberware objLoopCyberware in lstPairableCyberwares)
@@ -3212,11 +3212,11 @@ namespace Chummer.Backend.Equipment
         {
             if (blnEquip)
             {
-                ImprovementManager.EnableImprovements(_objCharacter,
-                                                      await (await _objCharacter.GetImprovementsAsync(token).ConfigureAwait(false))
-                                                            .ToListAsync(
-                                                                x => x.ImproveSource == SourceType
-                                                                     && x.SourceName == InternalId, token: token).ConfigureAwait(false));
+                await ImprovementManager.EnableImprovementsAsync(_objCharacter,
+                                                                 await (await _objCharacter.GetImprovementsAsync(token).ConfigureAwait(false))
+                                                                       .ToListAsync(
+                                                                           x => x.ImproveSource == SourceType
+                                                                               && x.SourceName == InternalId, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
 
                 /*
                 // If the piece grants a bonus, pass the information to the Improvement Manager.
@@ -3275,10 +3275,10 @@ namespace Chummer.Backend.Equipment
             }
             else
             {
-                ImprovementManager.DisableImprovements(_objCharacter,
-                                                       await (await _objCharacter.GetImprovementsAsync(token).ConfigureAwait(false)).ToListAsync(
-                                                           x => x.ImproveSource == SourceType
-                                                                && x.SourceName == InternalId, token: token).ConfigureAwait(false));
+                await ImprovementManager.DisableImprovementsAsync(_objCharacter,
+                                                                  await (await _objCharacter.GetImprovementsAsync(token).ConfigureAwait(false)).ToListAsync(
+                                                                      x => x.ImproveSource == SourceType
+                                                                           && x.SourceName == InternalId, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
 
                 if (PairBonus != null)
                 {
@@ -6223,15 +6223,15 @@ namespace Chummer.Backend.Equipment
                                                                      token).ConfigureAwait(false);
                     if (objLoopCyberware.WirelessPairBonus?.SelectSingleNode("@mode")?.Value == "replace")
                     {
-                        ImprovementManager.DisableImprovements(_objCharacter,
-                                                               await _objCharacter.Improvements
-                                                                   .ToListAsync(
-                                                                       x => x.ImproveSource
-                                                                            == objLoopCyberware.SourceType
-                                                                            && x.SourceName
-                                                                            == objLoopCyberware.InternalId,
-                                                                       token: token)
-                                                                   .ConfigureAwait(false));
+                        await ImprovementManager.DisableImprovementsAsync(_objCharacter,
+                                                                          await _objCharacter.Improvements
+                                                                              .ToListAsync(
+                                                                                  x => x.ImproveSource
+                                                                                      == objLoopCyberware.SourceType
+                                                                                      && x.SourceName
+                                                                                      == objLoopCyberware.InternalId,
+                                                                                  token: token)
+                                                                              .ConfigureAwait(false), token).ConfigureAwait(false);
                     }
 
                     // Go down the list and create pair bonuses for every second item

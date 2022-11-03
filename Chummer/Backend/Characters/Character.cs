@@ -364,8 +364,8 @@ namespace Chummer
                             ++intAddInitiation;
                     }
 
-                    SubmersionGrade += intAddSubmersion;
-                    InitiateGrade += intAddInitiation;
+                    await SetSubmersionGradeAsync(await GetInitiateGradeAsync().ConfigureAwait(false) + intAddSubmersion).ConfigureAwait(false);
+                    await SetInitiateGradeAsync(await GetInitiateGradeAsync().ConfigureAwait(false) + intAddInitiation).ConfigureAwait(false);
                     break;
                 }
                 case NotifyCollectionChangedAction.Remove:
@@ -381,14 +381,16 @@ namespace Chummer
                             ++intRemoveInitiation;
                     }
 
-                    if (SubmersionGrade < intRemoveSubmersion)
-                        SubmersionGrade = 0;
+                    int intNewSubmersionValue = await GetSubmersionGradeAsync().ConfigureAwait(false) - intRemoveSubmersion;
+                    if (intNewSubmersionValue < 0)
+                        await SetSubmersionGradeAsync(0).ConfigureAwait(false);
                     else
-                        SubmersionGrade -= intRemoveSubmersion;
-                    if (InitiateGrade < intRemoveInitiation)
-                        InitiateGrade = 0;
+                        await SetSubmersionGradeAsync(intNewSubmersionValue).ConfigureAwait(false);
+                    int intNewValue = await GetInitiateGradeAsync().ConfigureAwait(false) - intRemoveInitiation;
+                    if (intNewValue < 0)
+                        await SetInitiateGradeAsync(0).ConfigureAwait(false);
                     else
-                        InitiateGrade -= intRemoveInitiation;
+                        await SetInitiateGradeAsync(intNewValue).ConfigureAwait(false);
                     break;
                 }
                 case NotifyCollectionChangedAction.Replace:
@@ -412,14 +414,16 @@ namespace Chummer
                             ++intAddInitiation;
                     }
 
-                    if (SubmersionGrade + intAddSubmersion < 0)
-                        SubmersionGrade = 0;
+                    int intNewSubmersionValue = await GetSubmersionGradeAsync().ConfigureAwait(false) + intAddSubmersion;
+                    if (intNewSubmersionValue < 0)
+                        await SetSubmersionGradeAsync(0).ConfigureAwait(false);
                     else
-                        SubmersionGrade += intAddSubmersion;
-                    if (InitiateGrade + intAddInitiation < 0)
-                        InitiateGrade = 0;
+                        await SetSubmersionGradeAsync(intNewSubmersionValue).ConfigureAwait(false);
+                    int intNewValue = await GetInitiateGradeAsync().ConfigureAwait(false) + intAddInitiation;
+                    if (intNewValue < 0)
+                        await SetInitiateGradeAsync(0).ConfigureAwait(false);
                     else
-                        InitiateGrade += intAddInitiation;
+                        await SetInitiateGradeAsync(intNewValue).ConfigureAwait(false);
                     break;
                 }
                 case NotifyCollectionChangedAction.Move:
@@ -439,8 +443,8 @@ namespace Chummer
                                 ++intInitiation;
                         }
 
-                        SubmersionGrade = intSubmersion;
-                        InitiateGrade = intInitiation;
+                        await SetSubmersionGradeAsync(intSubmersion).ConfigureAwait(false);
+                        await SetInitiateGradeAsync(intInitiation).ConfigureAwait(false);
                     }
 
                     break;
@@ -7110,7 +7114,13 @@ namespace Chummer
                                         if (xmlTraditionDataNode != null)
                                         {
                                             if (!_objTradition.Create(xmlTraditionDataNode, true))
-                                                _objTradition.ResetTradition();
+                                            {
+                                                if (blnSync)
+                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                    _objTradition.ResetTradition();
+                                                else
+                                                    await _objTradition.ResetTraditionAsync(token).ConfigureAwait(false);
+                                            }
                                         }
                                         else
                                         {
@@ -7120,7 +7130,13 @@ namespace Chummer
                                             if (xmlTraditionDataNode != null)
                                             {
                                                 if (!_objTradition.Create(xmlTraditionDataNode, true))
-                                                    _objTradition.ResetTradition();
+                                                {
+                                                    if (blnSync)
+                                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                        _objTradition.ResetTradition();
+                                                    else
+                                                        await _objTradition.ResetTraditionAsync(token).ConfigureAwait(false);
+                                                }
                                             }
                                             else
                                             {
@@ -7128,7 +7144,13 @@ namespace Chummer
                                                     xmlTraditionListDataNode.SelectSingleNode("tradition");
                                                 if (xmlTraditionDataNode != null &&
                                                     !_objTradition.Create(xmlTraditionDataNode, true))
-                                                    _objTradition.ResetTradition();
+                                                {
+                                                    if (blnSync)
+                                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                        _objTradition.ResetTradition();
+                                                    else
+                                                        await _objTradition.ResetTraditionAsync(token).ConfigureAwait(false);
+                                                }
                                             }
                                         }
                                     }
@@ -7186,7 +7208,13 @@ namespace Chummer
                                                 if (xmlTraditionDataNode != null)
                                                 {
                                                     if (!_objTradition.Create(xmlTraditionDataNode))
-                                                        _objTradition.ResetTradition();
+                                                    {
+                                                        if (blnSync)
+                                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                            _objTradition.ResetTradition();
+                                                        else
+                                                            await _objTradition.ResetTraditionAsync(token).ConfigureAwait(false);
+                                                    }
                                                 }
                                                 else
                                                 {
@@ -7197,7 +7225,11 @@ namespace Chummer
                                                     if (xmlTraditionDataNode != null &&
                                                         !_objTradition.Create(xmlTraditionDataNode))
                                                     {
-                                                        _objTradition.ResetTradition();
+                                                        if (blnSync)
+                                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                            _objTradition.ResetTradition();
+                                                        else
+                                                            await _objTradition.ResetTraditionAsync(token).ConfigureAwait(false);
                                                     }
                                                 }
                                             }
@@ -7228,7 +7260,13 @@ namespace Chummer
                                             if (xmlTraditionDataNode != null)
                                             {
                                                 if (!_objTradition.Create(xmlTraditionDataNode))
-                                                    _objTradition.ResetTradition();
+                                                {
+                                                    if (blnSync)
+                                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                        _objTradition.ResetTradition();
+                                                    else
+                                                        await _objTradition.ResetTraditionAsync(token).ConfigureAwait(false);
+                                                }
                                             }
                                             else
                                             {
@@ -7239,7 +7277,11 @@ namespace Chummer
                                                 if (xmlTraditionDataNode != null &&
                                                     !_objTradition.Create(xmlTraditionDataNode))
                                                 {
-                                                    _objTradition.ResetTradition();
+                                                    if (blnSync)
+                                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                        _objTradition.ResetTradition();
+                                                    else
+                                                        await _objTradition.ResetTraditionAsync(token).ConfigureAwait(false);
                                                 }
                                             }
                                         }
@@ -9237,7 +9279,13 @@ namespace Chummer
                             }
 
                             if (!InitiationEnabled || !AddInitiationsAllowed)
-                                ClearInitiations(token);
+                            {
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    ClearInitiations(token);
+                                else
+                                    await ClearInitiationsAsync(token).ConfigureAwait(false);
+                            }
                             foreach (Func<bool> funcToCall in PostLoadMethods)
                                 if (!funcToCall.Invoke())
                                     return false;
@@ -9953,7 +10001,7 @@ namespace Chummer
                                    .ConfigureAwait(false);
 
                     // Astral Initiative.
-                    if (MAGEnabled)
+                    if (await GetMAGEnabledAsync(token).ConfigureAwait(false))
                     {
                         await objWriter.WriteElementStringAsync("astralinit",
                                                                 GetAstralInitiative(objCulture, strLanguageToPrint),
@@ -10006,7 +10054,7 @@ namespace Chummer
 
                     // <magenabled />
                     await objWriter.WriteElementStringAsync("magenabled",
-                                                            MAGEnabled.ToString(GlobalSettings.InvariantCultureInfo),
+                                                            (await GetMAGEnabledAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
                                                             token: token).ConfigureAwait(false);
                     // <initiategrade />
                     await objWriter
@@ -14329,6 +14377,33 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Clear all Initiation tab elements from the character that were not added by improvements.
+        /// </summary>
+        public async ValueTask ClearInitiationsAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                // Do not update grade numbers until after we're done processing everything
+                _blnClearingInitiations = true;
+                // We need to remove grades that can potentially add stuff that adds grades, so we cannot use foreach
+                for (int i = await InitiationGrades.GetCountAsync(token).ConfigureAwait(false) - 1; i >= 0; --i)
+                {
+                    await (await InitiationGrades.GetValueAtAsync(i, token).ConfigureAwait(false)).RemoveAsync(false, false, token).ConfigureAwait(false);
+                }
+
+                // Now update our grade numbers
+                _blnClearingInitiations = false;
+                await SetInitiateGradeAsync(0, token).ConfigureAwait(false);
+                await SetSubmersionGradeAsync(0, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         #endregion Tab clearing
 
         #endregion UI Methods
@@ -17736,6 +17811,269 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Is the MAG CharacterAttribute enabled?
+        /// </summary>
+        public async ValueTask SetMAGEnabledAsync(bool value, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                if (_blnMAGEnabled == value)
+                    return;
+                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    _blnMAGEnabled = value;
+                    if (IsLoading)
+                    {
+                        OnPropertyChanged(nameof(MAGEnabled));
+                        return;
+                    }
+
+                    if (value)
+                    {
+                        // Career mode, so no extra calculations need to be done for EssenceAtSpecialStart
+                        if (await GetCreatedAsync(token).ConfigureAwait(false))
+                        {
+                            await ResetCachedEssenceAsync(token).ConfigureAwait(false);
+                            await SetEssenceAtSpecialStartAsync(
+                                    await EssenceAsync(true, "MAG", token).ConfigureAwait(false), token)
+                                .ConfigureAwait(false);
+                        }
+                        // EssenceAtSpecialStart needs to be calculated by assuming that the character took the MAG-enabling quality with the highest essence penalty first, as that would be the most optimal
+                        else
+                        {
+                            // If this character has any MAG-enabling bonuses that could be granted before all others (because they're priority and/or metatype-given),
+                            // it has to be assumed those are taken first.
+                            List<Improvement> lstAttributeImprovements = await ImprovementManager
+                                                                               .GetCachedImprovementListForValueOfAsync(
+                                                                                   this,
+                                                                                   Improvement.ImprovementType
+                                                                                       .Attribute,
+                                                                                   "MAG", token: token)
+                                                                               .ConfigureAwait(false);
+                            bool blnCountOnlyPriorityOrMetatypeGivenBonuses = lstAttributeImprovements.Any(
+                                x => x.ImproveSource
+                                     == Improvement.ImprovementSource
+                                                   .Metatype
+                                     || x.ImproveSource
+                                     == Improvement.ImprovementSource
+                                                   .Metavariant
+                                     || x.ImproveSource
+                                     == Improvement.ImprovementSource
+                                                   .Heritage);
+                            if (!blnCountOnlyPriorityOrMetatypeGivenBonuses)
+                            {
+                                List<string> lstMAGEnablingQualityIds = lstAttributeImprovements
+                                                                        .Where(x => x.ImproveSource
+                                                                                   == Improvement.ImprovementSource
+                                                                                       .Quality).Select(
+                                                                            x => x.SourceName).ToList();
+                                // Can't use foreach because new items can get added to this list while it is looping
+                                for (int i = 0; i < lstMAGEnablingQualityIds.Count; ++i)
+                                {
+                                    int i1 = i;
+                                    Quality objQuality
+                                        = await Qualities.FirstOrDefaultAsync(
+                                                             x => x.InternalId == lstMAGEnablingQualityIds[i1],
+                                                             token: token)
+                                                         .ConfigureAwait(false);
+                                    if (objQuality != null)
+                                    {
+                                        if (objQuality.OriginSource == QualitySource.Metatype
+                                            || objQuality.OriginSource == QualitySource.MetatypeRemovable
+                                            || objQuality.OriginSource == QualitySource.BuiltIn
+                                            || objQuality.OriginSource == QualitySource.LifeModule
+                                            || objQuality.OriginSource == QualitySource.Heritage)
+                                        {
+                                            blnCountOnlyPriorityOrMetatypeGivenBonuses = true;
+                                            break;
+                                        }
+
+                                        if (objQuality.OriginSource == QualitySource.Improvement)
+                                        {
+                                            List<Improvement> lstSpecificQualityImprovements = await ImprovementManager
+                                                .GetCachedImprovementListForValueOfAsync(
+                                                    this, Improvement.ImprovementType.SpecificQuality,
+                                                    objQuality.InternalId, token: token).ConfigureAwait(false);
+                                            if (lstSpecificQualityImprovements.Any(x =>
+                                                    x.ImproveSource == Improvement.ImprovementSource.Metatype
+                                                    || x.ImproveSource == Improvement.ImprovementSource
+                                                        .Metavariant
+                                                    || x.ImproveSource
+                                                    == Improvement.ImprovementSource.Heritage))
+                                            {
+                                                blnCountOnlyPriorityOrMetatypeGivenBonuses = true;
+                                                break;
+                                            }
+
+                                            // Qualities that add other qualities get added to the list to be checked, too
+                                            lstMAGEnablingQualityIds.AddRange(
+                                                lstSpecificQualityImprovements
+                                                    .Where(
+                                                        x => x.ImproveSource
+                                                             == Improvement.ImprovementSource.Quality)
+                                                    .Select(x => x.SourceName));
+                                        }
+                                    }
+                                }
+                            }
+
+                            Dictionary<string, decimal> dicImprovementEssencePenalties =
+                                new Dictionary<string, decimal>(
+                                    await Improvements.GetCountAsync(token).ConfigureAwait(false));
+                            foreach (Improvement objImprovement in Improvements)
+                            {
+                                if (!objImprovement.Enabled)
+                                    continue;
+                                bool blnCountImprovement = !blnCountOnlyPriorityOrMetatypeGivenBonuses
+                                                           || objImprovement.ImproveSource
+                                                           == Improvement.ImprovementSource.Metatype
+                                                           || objImprovement.ImproveSource
+                                                           == Improvement.ImprovementSource.Metavariant
+                                                           || objImprovement.ImproveSource
+                                                           == Improvement.ImprovementSource.Heritage;
+                                if (!blnCountImprovement && objImprovement.ImproveSource
+                                    == Improvement.ImprovementSource.Quality)
+                                {
+                                    Quality objQuality
+                                        = await Qualities.FirstOrDefaultAsync(
+                                                             x => x.InternalId == objImprovement.SourceName,
+                                                             token: token)
+                                                         .ConfigureAwait(false);
+                                    while (objQuality != null)
+                                    {
+                                        if (objQuality.OriginSource == QualitySource.Metatype
+                                            || objQuality.OriginSource == QualitySource.MetatypeRemovable
+                                            || objQuality.OriginSource == QualitySource.BuiltIn
+                                            || objQuality.OriginSource == QualitySource.LifeModule
+                                            || objQuality.OriginSource == QualitySource.Heritage)
+                                        {
+                                            blnCountImprovement = true;
+                                            break;
+                                        }
+
+                                        if (objQuality.OriginSource == QualitySource.Improvement)
+                                        {
+                                            Improvement objParentImprovement = (await ImprovementManager
+                                                    .GetCachedImprovementListForValueOfAsync(
+                                                        this,
+                                                        Improvement.ImprovementType
+                                                                   .SpecificQuality,
+                                                        objQuality.InternalId, token: token).ConfigureAwait(false))
+                                                .FirstOrDefault();
+                                            if (objParentImprovement == null)
+                                                break;
+                                            if (objParentImprovement.ImproveSource
+                                                == Improvement.ImprovementSource.Metatype
+                                                || objParentImprovement.ImproveSource
+                                                == Improvement.ImprovementSource.Metavariant
+                                                || objParentImprovement.ImproveSource
+                                                == Improvement.ImprovementSource.Heritage)
+                                            {
+                                                blnCountImprovement = true;
+                                                break;
+                                            }
+
+                                            if (objParentImprovement.ImproveSource
+                                                == Improvement.ImprovementSource.Quality)
+                                            {
+                                                // Qualities that add other qualities get added to the list to be checked, too
+                                                objQuality = await Qualities.FirstOrDefaultAsync(
+                                                                                x => x.InternalId
+                                                                                    == objParentImprovement.SourceName,
+                                                                                token: token)
+                                                                            .ConfigureAwait(false);
+                                            }
+                                            else
+                                                break;
+                                        }
+                                        else
+                                            break;
+                                    }
+                                }
+
+                                if (blnCountImprovement)
+                                {
+                                    decimal decLoopEssencePenalty = 0;
+                                    switch (objImprovement.ImproveType)
+                                    {
+                                        case Improvement.ImprovementType.EssencePenalty:
+                                            decLoopEssencePenalty += objImprovement.Value;
+                                            break;
+
+                                        case Improvement.ImprovementType.EssencePenaltyT100:
+                                        case Improvement.ImprovementType.EssencePenaltyMAGOnlyT100:
+                                            decLoopEssencePenalty += objImprovement.Value / 100.0m;
+                                            break;
+                                    }
+
+                                    if (decLoopEssencePenalty != 0)
+                                    {
+                                        if (dicImprovementEssencePenalties.TryGetValue(
+                                                objImprovement.SourceName, out decimal decExistingPenalty))
+                                            dicImprovementEssencePenalties[objImprovement.SourceName]
+                                                = decExistingPenalty + decLoopEssencePenalty;
+                                        else
+                                            dicImprovementEssencePenalties.Add(objImprovement.SourceName,
+                                                                               decLoopEssencePenalty);
+                                    }
+                                }
+                            }
+
+                            if (dicImprovementEssencePenalties.Count > 0)
+                                await SetEssenceAtSpecialStartAsync(
+                                    await ESS.GetMetatypeMaximumAsync(token).ConfigureAwait(false)
+                                    + dicImprovementEssencePenalties.Values.Min(), token).ConfigureAwait(false);
+                            else
+                                await SetEssenceAtSpecialStartAsync(
+                                        await ESS.GetMetatypeMaximumAsync(token).ConfigureAwait(false), token)
+                                    .ConfigureAwait(false);
+                        }
+                    }
+                    else
+                    {
+                        if (!await GetRESEnabledAsync(token).ConfigureAwait(false))
+                        {
+                            await ClearInitiationsAsync(token).ConfigureAwait(false);
+                            await MagicTradition.ResetTraditionAsync(token).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            XmlNode xmlTraditionListDataNode
+                                = (await LoadDataAsync("streams.xml", token: token).ConfigureAwait(false))
+                                .SelectSingleNode("/chummer/traditions");
+                            if (xmlTraditionListDataNode != null)
+                            {
+                                XmlNode xmlTraditionDataNode
+                                    = xmlTraditionListDataNode.SelectSingleNode("tradition[name = \"Default\"]");
+                                if (xmlTraditionDataNode != null)
+                                {
+                                    if (!MagicTradition.Create(xmlTraditionDataNode, true))
+                                        await MagicTradition.ResetTraditionAsync(token).ConfigureAwait(false);
+                                }
+                                else
+                                    await MagicTradition.ResetTraditionAsync(token).ConfigureAwait(false);
+                            }
+                            else
+                                await MagicTradition.ResetTraditionAsync(token).ConfigureAwait(false);
+                        }
+
+                        if (!await GetCreatedAsync(token).ConfigureAwait(false)
+                            && !await GetRESEnabledAsync(token).ConfigureAwait(false)
+                            && !await GetDEPEnabledAsync(token).ConfigureAwait(false))
+                            await SetEssenceAtSpecialStartAsync(decimal.MinValue, token).ConfigureAwait(false);
+                    }
+
+                    OnPropertyChanged(nameof(MAGEnabled));
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+        }
+
+        /// <summary>
         /// Maximum force of spirits summonable/bindable by the character. Limited to MAG at creation.
         /// </summary>
         public int MaxSpiritForce
@@ -18121,6 +18459,153 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Initiate Grade.
+        /// </summary>
+        public async ValueTask<int> GetInitiateGradeAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                return _intInitiateGrade;
+        }
+
+        /// <summary>
+        /// Initiate Grade.
+        /// </summary>
+        public async ValueTask SetInitiateGradeAsync(int value, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                if (_intInitiateGrade == value)
+                    return;
+                bool blnFirstInitiation = _intInitiateGrade == 0;
+                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    _intInitiateGrade = value;
+                    // Remove any existing Initiation Improvements.
+                    if (value == 0)
+                    {
+                        await ImprovementManager
+                              .RemoveImprovementsAsync(this, Improvement.ImprovementSource.Initiation, token: token)
+                              .ConfigureAwait(false);
+                        // Update any Metamagic Improvements the character might have.
+                        await Metamagics.ForEachAsync(async objMetamagic =>
+                        {
+                            if (objMetamagic.SourceType == Improvement.ImprovementSource.Metamagic
+                                && objMetamagic.Bonus?.InnerXml.Contains("Rating") == true)
+                            {
+                                await ImprovementManager.RemoveImprovementsAsync(
+                                    this, Improvement.ImprovementSource.Metamagic,
+                                    objMetamagic.InternalId, token).ConfigureAwait(false);
+                            }
+                        }, token).ConfigureAwait(false);
+                    }
+                    else if (blnFirstInitiation)
+                    {
+                        // Create the new Improvement.
+                        await ImprovementManager.CreateImprovementAsync(
+                            this, "MAG", Improvement.ImprovementSource.Initiation,
+                            string.Empty, Improvement.ImprovementType.Attribute,
+                            string.Empty, 0, value, 0, 1, token: token).ConfigureAwait(false);
+                        await ImprovementManager.CreateImprovementAsync(this, "MAGAdept",
+                                                                        Improvement.ImprovementSource.Initiation,
+                                                                        string.Empty,
+                                                                        Improvement.ImprovementType.Attribute,
+                                                                        string.Empty, 0, value, 0, 1, token: token)
+                                                .ConfigureAwait(false);
+                        await ImprovementManager.CommitAsync(this, token).ConfigureAwait(false);
+                        // Update any Metamagic Improvements the character might have.
+                        await Metamagics.ForEachAsync(async objMetamagic =>
+                        {
+                            if (objMetamagic.SourceType == Improvement.ImprovementSource.Metamagic
+                                && objMetamagic.Bonus?.InnerXml.Contains("Rating") == true)
+                            {
+                                await ImprovementManager.CreateImprovementsAsync(
+                                    this, Improvement.ImprovementSource.Metamagic, objMetamagic.InternalId,
+                                    objMetamagic.Bonus, value,
+                                    await objMetamagic.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
+                                    token: token).ConfigureAwait(false);
+                            }
+                        }, token).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        if (await Improvements
+                                  .AllAsync(x => x.ImproveSource != Improvement.ImprovementSource.Initiation, token)
+                                  .ConfigureAwait(false))
+                        {
+                            // Create the new Improvement.
+                            await ImprovementManager.CreateImprovementAsync(this, "MAG",
+                                                                            Improvement.ImprovementSource.Initiation,
+                                                                            string.Empty,
+                                                                            Improvement.ImprovementType.Attribute,
+                                                                            string.Empty, 0, value, 0, 1, token: token)
+                                                    .ConfigureAwait(false);
+                            await ImprovementManager.CreateImprovementAsync(this, "MAGAdept",
+                                                                            Improvement.ImprovementSource.Initiation,
+                                                                            string.Empty,
+                                                                            Improvement.ImprovementType.Attribute,
+                                                                            string.Empty, 0, value, 0, 1, token: token)
+                                                    .ConfigureAwait(false);
+                            await ImprovementManager.CommitAsync(this, token).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            // ReSharper disable once ForCanBeConvertedToForeach
+                            for (int i = 0; i < await Improvements.GetCountAsync(token).ConfigureAwait(false); ++i)
+                            {
+                                Improvement objImprovement
+                                    = await Improvements.GetValueAtAsync(i, token).ConfigureAwait(false);
+                                if (objImprovement.ImproveSource == Improvement.ImprovementSource.Initiation)
+                                    objImprovement.Rating = value;
+                            }
+                        }
+
+                        // Update any Metamagic Improvements the character might have.
+                        await Metamagics.ForEachAsync(async objMetamagic =>
+                        {
+                            if (objMetamagic.SourceType == Improvement.ImprovementSource.Metamagic
+                                && objMetamagic.Bonus?.InnerXml.Contains("Rating") == true)
+                            {
+                                string strMetamagicId = objMetamagic.InternalId;
+                                // If the Bonus contains "Rating", refresh ratings of existing Improvements.
+                                if (await Improvements.AllAsync(
+                                        x => x.ImproveSource != Improvement.ImprovementSource.Metamagic
+                                             || x.SourceName != strMetamagicId, token).ConfigureAwait(false))
+                                {
+                                    await ImprovementManager.CreateImprovementsAsync(
+                                        this, Improvement.ImprovementSource.Metamagic, strMetamagicId,
+                                        objMetamagic.Bonus, value,
+                                        await objMetamagic.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
+                                        token: token).ConfigureAwait(false);
+                                }
+                                else
+                                {
+                                    // ReSharper disable once ForCanBeConvertedToForeach
+                                    for (int i = 0;
+                                         i < await Improvements.GetCountAsync(token).ConfigureAwait(false);
+                                         ++i)
+                                    {
+                                        Improvement objImprovement = await Improvements.GetValueAtAsync(i, token)
+                                            .ConfigureAwait(false);
+                                        if (objImprovement.SourceName == strMetamagicId && objImprovement.ImproveSource
+                                            == Improvement.ImprovementSource.Initiation)
+                                            objImprovement.Rating = value;
+                                    }
+                                }
+                            }
+                        }, token).ConfigureAwait(false);
+                    }
+
+                    OnPropertyChanged(nameof(InitiateGrade));
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+        }
+
+        /// <summary>
         /// Is the RES CharacterAttribute enabled?
         /// </summary>
         [HubTag]
@@ -18400,6 +18885,270 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Is the RES CharacterAttribute enabled?
+        /// </summary>
+        public async ValueTask SetRESEnabledAsync(bool value, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                if (_blnRESEnabled == value)
+                    return;
+                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    _blnRESEnabled = value;
+                    if (IsLoading)
+                    {
+                        OnPropertyChanged(nameof(RESEnabled));
+                        return;
+                    }
+
+                    if (value)
+                    {
+                        // Career mode, so no extra calculations need to be done for EssenceAtSpecialStart
+                        if (await GetCreatedAsync(token).ConfigureAwait(false))
+                        {
+                            await ResetCachedEssenceAsync(token).ConfigureAwait(false);
+                            await SetEssenceAtSpecialStartAsync(
+                                    await EssenceAsync(true, "RES", token).ConfigureAwait(false), token)
+                                .ConfigureAwait(false);
+                        }
+                        // EssenceAtSpecialStart needs to be calculated by assuming that the character took the RES-enabling quality with the highest essence penalty first, as that would be the most optimal
+                        else
+                        {
+                            // If this character has any RES-enabling bonuses that could be granted before all others (because they're priority and/or metatype-given),
+                            // it has to be assumed those are taken first.
+                            List<Improvement> lstAttributeImprovements = await ImprovementManager
+                                                                               .GetCachedImprovementListForValueOfAsync(
+                                                                                   this,
+                                                                                   Improvement.ImprovementType
+                                                                                       .Attribute,
+                                                                                   "RES", token: token)
+                                                                               .ConfigureAwait(false);
+                            bool blnCountOnlyPriorityOrMetatypeGivenBonuses = lstAttributeImprovements.Any(
+                                x => x.ImproveSource
+                                     == Improvement.ImprovementSource
+                                                   .Metatype
+                                     || x.ImproveSource
+                                     == Improvement.ImprovementSource
+                                                   .Metavariant
+                                     || x.ImproveSource
+                                     == Improvement.ImprovementSource
+                                                   .Heritage);
+                            if (!blnCountOnlyPriorityOrMetatypeGivenBonuses)
+                            {
+                                List<string> lstRESEnablingQualityIds = lstAttributeImprovements
+                                                                        .Where(x => x.ImproveSource
+                                                                                   == Improvement.ImprovementSource
+                                                                                       .Quality).Select(
+                                                                            x => x.SourceName).ToList();
+                                // Can't use foreach because new items can get added to this list while it is looping
+                                for (int i = 0; i < lstRESEnablingQualityIds.Count; ++i)
+                                {
+                                    int i1 = i;
+                                    Quality objQuality
+                                        = await Qualities.FirstOrDefaultAsync(
+                                                             x => x.InternalId == lstRESEnablingQualityIds[i1],
+                                                             token: token)
+                                                         .ConfigureAwait(false);
+                                    if (objQuality != null)
+                                    {
+                                        if (objQuality.OriginSource == QualitySource.Metatype
+                                            || objQuality.OriginSource == QualitySource.MetatypeRemovable
+                                            || objQuality.OriginSource == QualitySource.BuiltIn
+                                            || objQuality.OriginSource == QualitySource.LifeModule
+                                            || objQuality.OriginSource == QualitySource.Heritage)
+                                        {
+                                            blnCountOnlyPriorityOrMetatypeGivenBonuses = true;
+                                            break;
+                                        }
+
+                                        if (objQuality.OriginSource == QualitySource.Improvement)
+                                        {
+                                            List<Improvement> lstSpecificQualityImprovements = await ImprovementManager
+                                                .GetCachedImprovementListForValueOfAsync(
+                                                    this, Improvement.ImprovementType.SpecificQuality,
+                                                    objQuality.InternalId, token: token).ConfigureAwait(false);
+                                            if (lstSpecificQualityImprovements.Any(x =>
+                                                    x.ImproveSource == Improvement.ImprovementSource.Metatype
+                                                    || x.ImproveSource == Improvement.ImprovementSource
+                                                        .Metavariant
+                                                    || x.ImproveSource
+                                                    == Improvement.ImprovementSource.Heritage))
+                                            {
+                                                blnCountOnlyPriorityOrMetatypeGivenBonuses = true;
+                                                break;
+                                            }
+
+                                            // Qualities that add other qualities get added to the list to be checked, too
+                                            lstRESEnablingQualityIds.AddRange(
+                                                lstSpecificQualityImprovements
+                                                    .Where(
+                                                        x => x.ImproveSource
+                                                             == Improvement.ImprovementSource.Quality)
+                                                    .Select(x => x.SourceName));
+                                        }
+                                    }
+                                }
+                            }
+
+                            Dictionary<string, decimal> dicImprovementEssencePenalties =
+                                new Dictionary<string, decimal>(
+                                    await Improvements.GetCountAsync(token).ConfigureAwait(false));
+                            foreach (Improvement objImprovement in Improvements)
+                            {
+                                if (!objImprovement.Enabled)
+                                    continue;
+                                bool blnCountImprovement = !blnCountOnlyPriorityOrMetatypeGivenBonuses
+                                                           || objImprovement.ImproveSource
+                                                           == Improvement.ImprovementSource.Metatype
+                                                           || objImprovement.ImproveSource
+                                                           == Improvement.ImprovementSource.Metavariant
+                                                           || objImprovement.ImproveSource
+                                                           == Improvement.ImprovementSource.Heritage;
+                                if (!blnCountImprovement && objImprovement.ImproveSource
+                                    == Improvement.ImprovementSource.Quality)
+                                {
+                                    Quality objQuality
+                                        = await Qualities.FirstOrDefaultAsync(
+                                                             x => x.InternalId == objImprovement.SourceName,
+                                                             token: token)
+                                                         .ConfigureAwait(false);
+                                    while (objQuality != null)
+                                    {
+                                        if (objQuality.OriginSource == QualitySource.Metatype
+                                            || objQuality.OriginSource == QualitySource.MetatypeRemovable
+                                            || objQuality.OriginSource == QualitySource.BuiltIn
+                                            || objQuality.OriginSource == QualitySource.LifeModule
+                                            || objQuality.OriginSource == QualitySource.Heritage)
+                                        {
+                                            blnCountImprovement = true;
+                                            break;
+                                        }
+
+                                        if (objQuality.OriginSource == QualitySource.Improvement)
+                                        {
+                                            Improvement objParentImprovement = (await ImprovementManager
+                                                    .GetCachedImprovementListForValueOfAsync(
+                                                        this,
+                                                        Improvement.ImprovementType
+                                                                   .SpecificQuality,
+                                                        objQuality.InternalId, token: token).ConfigureAwait(false))
+                                                .FirstOrDefault();
+                                            if (objParentImprovement == null)
+                                                break;
+                                            if (objParentImprovement.ImproveSource
+                                                == Improvement.ImprovementSource.Metatype
+                                                || objParentImprovement.ImproveSource
+                                                == Improvement.ImprovementSource.Metavariant
+                                                || objParentImprovement.ImproveSource
+                                                == Improvement.ImprovementSource.Heritage)
+                                            {
+                                                blnCountImprovement = true;
+                                                break;
+                                            }
+
+                                            if (objParentImprovement.ImproveSource
+                                                == Improvement.ImprovementSource.Quality)
+                                            {
+                                                // Qualities that add other qualities get added to the list to be checked, too
+                                                objQuality = await Qualities.FirstOrDefaultAsync(
+                                                                                x => x.InternalId
+                                                                                    == objParentImprovement.SourceName,
+                                                                                token: token)
+                                                                            .ConfigureAwait(false);
+                                            }
+                                            else
+                                                break;
+                                        }
+                                        else
+                                            break;
+                                    }
+                                }
+
+                                if (blnCountImprovement)
+                                {
+                                    decimal decLoopEssencePenalty = 0;
+                                    switch (objImprovement.ImproveType)
+                                    {
+                                        case Improvement.ImprovementType.EssencePenalty:
+                                            decLoopEssencePenalty += objImprovement.Value;
+                                            break;
+
+                                        case Improvement.ImprovementType.EssencePenaltyT100:
+                                        case Improvement.ImprovementType.EssencePenaltyRESOnlyT100:
+                                            decLoopEssencePenalty += objImprovement.Value / 100.0m;
+                                            break;
+                                    }
+
+                                    if (decLoopEssencePenalty != 0)
+                                    {
+                                        if (dicImprovementEssencePenalties.TryGetValue(
+                                                objImprovement.SourceName, out decimal decExistingPenalty))
+                                            dicImprovementEssencePenalties[objImprovement.SourceName]
+                                                = decExistingPenalty + decLoopEssencePenalty;
+                                        else
+                                            dicImprovementEssencePenalties.Add(objImprovement.SourceName,
+                                                                               decLoopEssencePenalty);
+                                    }
+                                }
+                            }
+
+                            if (dicImprovementEssencePenalties.Count > 0)
+                                await SetEssenceAtSpecialStartAsync(
+                                    await ESS.GetMetatypeMaximumAsync(token).ConfigureAwait(false)
+                                    + dicImprovementEssencePenalties.Values.Min(), token).ConfigureAwait(false);
+                            else
+                                await SetEssenceAtSpecialStartAsync(
+                                        await ESS.GetMetatypeMaximumAsync(token).ConfigureAwait(false), token)
+                                    .ConfigureAwait(false);
+                        }
+                    }
+                    else
+                    {
+                        if (!await GetMAGEnabledAsync(token).ConfigureAwait(false))
+                        {
+                            await ClearInitiationsAsync(token).ConfigureAwait(false);
+                            await MagicTradition.ResetTraditionAsync(token).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            XmlNode xmlTraditionListDataNode
+                                = (await LoadDataAsync("streams.xml", token: token).ConfigureAwait(false))
+                                .SelectSingleNode("/chummer/traditions");
+                            if (xmlTraditionListDataNode != null)
+                            {
+                                XmlNode xmlTraditionDataNode
+                                    = xmlTraditionListDataNode.SelectSingleNode("tradition[name = \"Default\"]");
+                                if (xmlTraditionDataNode != null)
+                                {
+                                    if (!MagicTradition.Create(xmlTraditionDataNode, true))
+                                        await MagicTradition.ResetTraditionAsync(token).ConfigureAwait(false);
+                                }
+                                else
+                                    await MagicTradition.ResetTraditionAsync(token).ConfigureAwait(false);
+                            }
+                            else
+                                await MagicTradition.ResetTraditionAsync(token).ConfigureAwait(false);
+                        }
+
+                        if (!await GetCreatedAsync(token).ConfigureAwait(false)
+                            && !await GetMAGEnabledAsync(token).ConfigureAwait(false)
+                            && !await GetDEPEnabledAsync(token).ConfigureAwait(false))
+                            await SetEssenceAtSpecialStartAsync(decimal.MinValue, token).ConfigureAwait(false);
+                    }
+
+                    await ImprovementManager.ClearCachedValueAsync(this, Improvement.ImprovementType.MatrixInitiativeDice, token: token).ConfigureAwait(false);
+                    OnPropertyChanged(nameof(RESEnabled));
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+        }
+
+        /// <summary>
         /// Is the DEP CharacterAttribute enabled?
         /// </summary>
         [HubTag]
@@ -18625,6 +19374,240 @@ namespace Chummer
                 return _blnDEPEnabled;
         }
 
+        /// <summary>
+        /// Is the DEP CharacterAttribute enabled?
+        /// </summary>
+        public async ValueTask SetDEPEnabledAsync(bool value, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                if (_blnDEPEnabled == value)
+                    return;
+                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    _blnDEPEnabled = value;
+                    if (IsLoading)
+                    {
+                        OnPropertyChanged(nameof(DEPEnabled));
+                        return;
+                    }
+
+                    if (value)
+                    {
+                        // Career mode, so no extra calculations need to be done for EssenceAtSpecialStart
+                        if (await GetCreatedAsync(token).ConfigureAwait(false))
+                        {
+                            await ResetCachedEssenceAsync(token).ConfigureAwait(false);
+                            await SetEssenceAtSpecialStartAsync(
+                                    await EssenceAsync(true, "DEP", token).ConfigureAwait(false), token)
+                                .ConfigureAwait(false);
+                        }
+                        // EssenceAtSpecialStart needs to be calculated by assuming that the character took the DEP-enabling quality with the highest essence penalty first, as that would be the most optimal
+                        else
+                        {
+                            // If this character has any DEP-enabling bonuses that could be granted before all others (because they're priority and/or metatype-given),
+                            // it has to be assumed those are taken first.
+                            List<Improvement> lstAttributeImprovements = await ImprovementManager
+                                                                               .GetCachedImprovementListForValueOfAsync(
+                                                                                   this,
+                                                                                   Improvement.ImprovementType
+                                                                                       .Attribute,
+                                                                                   "DEP", token: token)
+                                                                               .ConfigureAwait(false);
+                            bool blnCountOnlyPriorityOrMetatypeGivenBonuses = lstAttributeImprovements.Any(
+                                x => x.ImproveSource
+                                     == Improvement.ImprovementSource
+                                                   .Metatype
+                                     || x.ImproveSource
+                                     == Improvement.ImprovementSource
+                                                   .Metavariant
+                                     || x.ImproveSource
+                                     == Improvement.ImprovementSource
+                                                   .Heritage);
+                            if (!blnCountOnlyPriorityOrMetatypeGivenBonuses)
+                            {
+                                List<string> lstDEPEnablingQualityIds = lstAttributeImprovements
+                                                                        .Where(x => x.ImproveSource
+                                                                                   == Improvement.ImprovementSource
+                                                                                       .Quality).Select(
+                                                                            x => x.SourceName).ToList();
+                                // Can't use foreach because new items can get added to this list while it is looping
+                                for (int i = 0; i < lstDEPEnablingQualityIds.Count; ++i)
+                                {
+                                    int i1 = i;
+                                    Quality objQuality
+                                        = await Qualities.FirstOrDefaultAsync(
+                                                             x => x.InternalId == lstDEPEnablingQualityIds[i1],
+                                                             token: token)
+                                                         .ConfigureAwait(false);
+                                    if (objQuality != null)
+                                    {
+                                        if (objQuality.OriginSource == QualitySource.Metatype
+                                            || objQuality.OriginSource == QualitySource.MetatypeRemovable
+                                            || objQuality.OriginSource == QualitySource.BuiltIn
+                                            || objQuality.OriginSource == QualitySource.LifeModule
+                                            || objQuality.OriginSource == QualitySource.Heritage)
+                                        {
+                                            blnCountOnlyPriorityOrMetatypeGivenBonuses = true;
+                                            break;
+                                        }
+
+                                        if (objQuality.OriginSource == QualitySource.Improvement)
+                                        {
+                                            List<Improvement> lstSpecificQualityImprovements = await ImprovementManager
+                                                .GetCachedImprovementListForValueOfAsync(
+                                                    this, Improvement.ImprovementType.SpecificQuality,
+                                                    objQuality.InternalId, token: token).ConfigureAwait(false);
+                                            if (lstSpecificQualityImprovements.Any(x =>
+                                                    x.ImproveSource == Improvement.ImprovementSource.Metatype
+                                                    || x.ImproveSource == Improvement.ImprovementSource
+                                                        .Metavariant
+                                                    || x.ImproveSource
+                                                    == Improvement.ImprovementSource.Heritage))
+                                            {
+                                                blnCountOnlyPriorityOrMetatypeGivenBonuses = true;
+                                                break;
+                                            }
+
+                                            // Qualities that add other qualities get added to the list to be checked, too
+                                            lstDEPEnablingQualityIds.AddRange(
+                                                lstSpecificQualityImprovements
+                                                    .Where(
+                                                        x => x.ImproveSource
+                                                             == Improvement.ImprovementSource.Quality)
+                                                    .Select(x => x.SourceName));
+                                        }
+                                    }
+                                }
+                            }
+
+                            Dictionary<string, decimal> dicImprovementEssencePenalties =
+                                new Dictionary<string, decimal>(
+                                    await Improvements.GetCountAsync(token).ConfigureAwait(false));
+                            foreach (Improvement objImprovement in Improvements)
+                            {
+                                if (!objImprovement.Enabled)
+                                    continue;
+                                bool blnCountImprovement = !blnCountOnlyPriorityOrMetatypeGivenBonuses
+                                                           || objImprovement.ImproveSource
+                                                           == Improvement.ImprovementSource.Metatype
+                                                           || objImprovement.ImproveSource
+                                                           == Improvement.ImprovementSource.Metavariant
+                                                           || objImprovement.ImproveSource
+                                                           == Improvement.ImprovementSource.Heritage;
+                                if (!blnCountImprovement && objImprovement.ImproveSource
+                                    == Improvement.ImprovementSource.Quality)
+                                {
+                                    Quality objQuality
+                                        = await Qualities.FirstOrDefaultAsync(
+                                                             x => x.InternalId == objImprovement.SourceName,
+                                                             token: token)
+                                                         .ConfigureAwait(false);
+                                    while (objQuality != null)
+                                    {
+                                        if (objQuality.OriginSource == QualitySource.Metatype
+                                            || objQuality.OriginSource == QualitySource.MetatypeRemovable
+                                            || objQuality.OriginSource == QualitySource.BuiltIn
+                                            || objQuality.OriginSource == QualitySource.LifeModule
+                                            || objQuality.OriginSource == QualitySource.Heritage)
+                                        {
+                                            blnCountImprovement = true;
+                                            break;
+                                        }
+
+                                        if (objQuality.OriginSource == QualitySource.Improvement)
+                                        {
+                                            Improvement objParentImprovement = (await ImprovementManager
+                                                    .GetCachedImprovementListForValueOfAsync(
+                                                        this,
+                                                        Improvement.ImprovementType
+                                                                   .SpecificQuality,
+                                                        objQuality.InternalId, token: token).ConfigureAwait(false))
+                                                .FirstOrDefault();
+                                            if (objParentImprovement == null)
+                                                break;
+                                            if (objParentImprovement.ImproveSource
+                                                == Improvement.ImprovementSource.Metatype
+                                                || objParentImprovement.ImproveSource
+                                                == Improvement.ImprovementSource.Metavariant
+                                                || objParentImprovement.ImproveSource
+                                                == Improvement.ImprovementSource.Heritage)
+                                            {
+                                                blnCountImprovement = true;
+                                                break;
+                                            }
+
+                                            if (objParentImprovement.ImproveSource
+                                                == Improvement.ImprovementSource.Quality)
+                                            {
+                                                // Qualities that add other qualities get added to the list to be checked, too
+                                                objQuality = await Qualities.FirstOrDefaultAsync(
+                                                                                x => x.InternalId
+                                                                                    == objParentImprovement.SourceName,
+                                                                                token: token)
+                                                                            .ConfigureAwait(false);
+                                            }
+                                            else
+                                                break;
+                                        }
+                                        else
+                                            break;
+                                    }
+                                }
+
+                                if (blnCountImprovement)
+                                {
+                                    decimal decLoopEssencePenalty = 0;
+                                    switch (objImprovement.ImproveType)
+                                    {
+                                        case Improvement.ImprovementType.EssencePenalty:
+                                            decLoopEssencePenalty += objImprovement.Value;
+                                            break;
+
+                                        case Improvement.ImprovementType.EssencePenaltyT100:
+                                        case Improvement.ImprovementType.EssencePenaltyDEPOnlyT100:
+                                            decLoopEssencePenalty += objImprovement.Value / 100.0m;
+                                            break;
+                                    }
+
+                                    if (decLoopEssencePenalty != 0)
+                                    {
+                                        if (dicImprovementEssencePenalties.TryGetValue(
+                                                objImprovement.SourceName, out decimal decExistingPenalty))
+                                            dicImprovementEssencePenalties[objImprovement.SourceName]
+                                                = decExistingPenalty + decLoopEssencePenalty;
+                                        else
+                                            dicImprovementEssencePenalties.Add(objImprovement.SourceName,
+                                                                               decLoopEssencePenalty);
+                                    }
+                                }
+                            }
+
+                            if (dicImprovementEssencePenalties.Count > 0)
+                                await SetEssenceAtSpecialStartAsync(
+                                    await ESS.GetMetatypeMaximumAsync(token).ConfigureAwait(false)
+                                    + dicImprovementEssencePenalties.Values.Min(), token).ConfigureAwait(false);
+                            else
+                                await SetEssenceAtSpecialStartAsync(
+                                        await ESS.GetMetatypeMaximumAsync(token).ConfigureAwait(false), token)
+                                    .ConfigureAwait(false);
+                        }
+                    }
+                    else if (!await GetCreatedAsync(token).ConfigureAwait(false)
+                             && !await GetRESEnabledAsync(token).ConfigureAwait(false)
+                             && !await GetMAGEnabledAsync(token).ConfigureAwait(false))
+                        await SetEssenceAtSpecialStartAsync(decimal.MinValue, token).ConfigureAwait(false);
+
+                    OnPropertyChanged(nameof(DEPEnabled));
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+        }
+
         [HubTag]
         public bool IsAI
         {
@@ -18759,6 +19742,142 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Submersion Grade.
+        /// </summary>
+        public async ValueTask<int> GetSubmersionGradeAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                return _intSubmersionGrade;
+        }
+
+        /// <summary>
+        /// Submersion Grade.
+        /// </summary>
+        public async ValueTask SetSubmersionGradeAsync(int value, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                if (_intSubmersionGrade == value)
+                    return;
+                bool blnFirstSubmersion = _intSubmersionGrade == 0;
+                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    _intSubmersionGrade = value;
+                    // Remove any existing Submersion Improvements.
+                    if (value == 0)
+                    {
+                        await ImprovementManager
+                              .RemoveImprovementsAsync(this, Improvement.ImprovementSource.Submersion, token: token)
+                              .ConfigureAwait(false);
+                        // Update any Echo Improvements the character might have.
+                        await Metamagics.ForEachAsync(async objMetamagic =>
+                        {
+                            if (objMetamagic.SourceType == Improvement.ImprovementSource.Echo
+                                && objMetamagic.Bonus?.InnerXml.Contains("Rating") == true)
+                            {
+                                await ImprovementManager.RemoveImprovementsAsync(
+                                                            this, Improvement.ImprovementSource.Echo,
+                                                            objMetamagic.InternalId, token: token)
+                                                        .ConfigureAwait(false);
+                            }
+                        }, token).ConfigureAwait(false);
+                    }
+                    else if (blnFirstSubmersion)
+                    {
+                        // Create the new Improvement.
+                        await ImprovementManager.CreateImprovementAsync(
+                            this, "RES", Improvement.ImprovementSource.Submersion,
+                            string.Empty, Improvement.ImprovementType.Attribute,
+                            string.Empty, 0, value, 0, 1, token: token).ConfigureAwait(false);
+                        await ImprovementManager.CommitAsync(this, token).ConfigureAwait(false);
+                        // Update any Echo Improvements the character might have.
+                        await Metamagics.ForEachAsync(async objMetamagic =>
+                        {
+                            if (objMetamagic.SourceType == Improvement.ImprovementSource.Echo
+                                && objMetamagic.Bonus?.InnerXml.Contains("Rating") == true)
+                            {
+                                await ImprovementManager.CreateImprovementsAsync(
+                                    this, Improvement.ImprovementSource.Echo, objMetamagic.InternalId,
+                                    objMetamagic.Bonus, value,
+                                    await objMetamagic.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
+                                    token: token).ConfigureAwait(false);
+                            }
+                        }, token).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        if (await Improvements
+                                  .AllAsync(x => x.ImproveSource != Improvement.ImprovementSource.Submersion,
+                                            token: token).ConfigureAwait(false))
+                        {
+                            // Create the new Improvement.
+                            await ImprovementManager.CreateImprovementAsync(this, "RES",
+                                                                            Improvement.ImprovementSource.Submersion,
+                                                                            string.Empty,
+                                                                            Improvement.ImprovementType.Attribute,
+                                                                            string.Empty, 0, value, 0, 1, token: token)
+                                                    .ConfigureAwait(false);
+                            await ImprovementManager.CommitAsync(this, token).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            // ReSharper disable once ForCanBeConvertedToForeach
+                            for (int i = 0; i < await Improvements.GetCountAsync(token).ConfigureAwait(false); ++i)
+                            {
+                                Improvement objImprovement
+                                    = await Improvements.GetValueAtAsync(i, token).ConfigureAwait(false);
+                                if (objImprovement.ImproveSource == Improvement.ImprovementSource.Submersion)
+                                    objImprovement.Rating = value;
+                            }
+                        }
+
+                        // Update any Echo Improvements the character might have.
+                        await Metamagics.ForEachAsync(async objMetamagic =>
+                        {
+                            if (objMetamagic.SourceType == Improvement.ImprovementSource.Echo
+                                && objMetamagic.Bonus?.InnerXml.Contains("Rating") == true)
+                            {
+                                string strMetamagicId = objMetamagic.InternalId;
+                                // If the Bonus contains "Rating", refresh ratings of existing Improvements.
+                                if (await Improvements.AllAsync(
+                                        x => x.ImproveSource != Improvement.ImprovementSource.Echo
+                                             || x.SourceName != strMetamagicId, token).ConfigureAwait(false))
+                                {
+                                    await ImprovementManager.CreateImprovementsAsync(
+                                        this, Improvement.ImprovementSource.Echo, strMetamagicId, objMetamagic.Bonus,
+                                        value,
+                                        await objMetamagic.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
+                                        token: token).ConfigureAwait(false);
+                                }
+                                else
+                                {
+                                    // ReSharper disable once ForCanBeConvertedToForeach
+                                    for (int i = 0;
+                                         i < await Improvements.GetCountAsync(token).ConfigureAwait(false);
+                                         ++i)
+                                    {
+                                        Improvement objImprovement = await Improvements.GetValueAtAsync(i, token)
+                                            .ConfigureAwait(false);
+                                        if (objImprovement.SourceName == strMetamagicId && objImprovement.ImproveSource
+                                            == Improvement.ImprovementSource.Echo)
+                                            objImprovement.Rating = value;
+                                    }
+                                }
+                            }
+                        }, token).ConfigureAwait(false);
+                    }
+
+                    OnPropertyChanged(nameof(SubmersionGrade));
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+        }
+
+        /// <summary>
         /// Whether or not the character is a member of a Group or Network.
         /// </summary>
         public bool GroupMember
@@ -18864,6 +19983,37 @@ namespace Chummer
                         _decEssenceAtSpecialStart = value;
                         RefreshEssenceLossImprovements();
                     }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Essence the character had when the first gained access to MAG/RES.
+        /// </summary>
+        public async ValueTask<decimal> GetEssenceAtSpecialStartAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                return _decEssenceAtSpecialStart;
+        }
+
+        /// <summary>
+        /// Essence the character had when the first gained access to MAG/RES.
+        /// </summary>
+        public async ValueTask SetEssenceAtSpecialStartAsync(decimal value, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                if (_decEssenceAtSpecialStart == value)
+                    return;
+                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    _decEssenceAtSpecialStart = value;
+                    await RefreshEssenceLossImprovementsAsync(token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
         }
@@ -29907,7 +31057,7 @@ namespace Chummer
                                     }
 
                                     if (!MagicianEnabled && !AdeptEnabled)
-                                        MAGEnabled = false;
+                                        await SetMAGEnabledAsync(false, token).ConfigureAwait(false);
                                 }
                                 else if (intMagMaxReduction >= await MAG.GetTotalMaximumAsync(token).ConfigureAwait(false))
                                 {
@@ -29915,7 +31065,7 @@ namespace Chummer
 
                                     MagicianEnabled = false;
                                     AdeptEnabled = false;
-                                    MAGEnabled = false;
+                                    await SetMAGEnabledAsync(false, token).ConfigureAwait(false);
                                 }
                             }
                             else if (Settings.MysAdeptSecondMAGAttribute && IsMysticAdept)
@@ -29942,7 +31092,7 @@ namespace Chummer
                                 }
 
                                 if (!MagicianEnabled && !AdeptEnabled)
-                                    MAGEnabled = false;
+                                    await SetMAGEnabledAsync(false, token).ConfigureAwait(false);
                             }
                             else if (await MAG.GetTotalMaximumAsync(token).ConfigureAwait(false) < 1)
                             {
@@ -29950,11 +31100,11 @@ namespace Chummer
 
                                 MagicianEnabled = false;
                                 AdeptEnabled = false;
-                                MAGEnabled = false;
+                                await SetMAGEnabledAsync(false, token).ConfigureAwait(false);
                             }
                         }
 
-                        if (RESEnabled)
+                        if (await GetRESEnabledAsync(token).ConfigureAwait(false))
                         {
                             int intResTotalMaximum = await RES.GetTotalMaximumAsync(token).ConfigureAwait(false);
                             if (Settings.SpecialKarmaCostBasedOnShownValue
@@ -29964,7 +31114,7 @@ namespace Chummer
                             {
                                 await RES.AssignBaseKarmaLimitsAsync(0, 0, 0, 0, 0, token).ConfigureAwait(false);
 
-                                RESEnabled = false;
+                                await SetRESEnabledAsync(false, token).ConfigureAwait(false);
                                 TechnomancerEnabled = false;
                             }
                         }
@@ -35163,7 +36313,13 @@ namespace Chummer
                             }
 
                             if (!InitiationEnabled || !AddInitiationsAllowed)
-                                ClearInitiations(token);
+                            {
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    ClearInitiations(token);
+                                else
+                                    await ClearInitiationsAsync(token).ConfigureAwait(false);
+                            }
                             //Timekeeper.Finish("load_char_improvementrefreshers");
                         }
                     }
@@ -35940,7 +37096,7 @@ namespace Chummer
 
                 // Convert the character.
                 // Characters lose access to Resonance.
-                RESEnabled = false;
+                await SetRESEnabledAsync(false, token).ConfigureAwait(false);
 
                 // Gain MAG that is permanently set to 1.
                 await MAG.AssignBaseKarmaLimitsAsync(0, 0, 1, 1, 1, token).ConfigureAwait(false);

@@ -394,6 +394,29 @@ namespace Chummer
                                                          Improvement.ImprovementSource.MartialArtTechnique, InternalId);
         }
 
+        public async ValueTask<bool> RemoveAsync(bool blnConfirmDelete = true, CancellationToken token = default)
+        {
+            if (blnConfirmDelete && !await CommonFunctions
+                                           .ConfirmDeleteAsync(
+                                               await LanguageManager
+                                                     .GetStringAsync("Message_DeleteMartialArt", token: token)
+                                                     .ConfigureAwait(false), token).ConfigureAwait(false))
+                return false;
+
+            await DeleteTechniqueAsync(token: token).ConfigureAwait(false);
+            return true;
+        }
+
+        public async ValueTask<decimal> DeleteTechniqueAsync(bool blnDoRemoval = true,
+                                                             CancellationToken token = default)
+        {
+            if (blnDoRemoval && Parent != null)
+                await Parent.Techniques.RemoveAsync(this, token).ConfigureAwait(false);
+            return await ImprovementManager.RemoveImprovementsAsync(_objCharacter,
+                                                                    Improvement.ImprovementSource.MartialArtTechnique,
+                                                                    InternalId, token).ConfigureAwait(false);
+        }
+
         #endregion Methods
 
         #region UI Methods
