@@ -43,6 +43,7 @@ Data Changes:
 - Added city district and neighborhood lists (under lifestyles) for Neo-Tokyo, Hong Kong, Los Angeles, New York City, Cheyenne, Atlanta, Berlin, FDC, Portland, Chicago, Nairobi, Dubai, Europort, and Tenochtitlán.
 - Fixed Flashback System Enables Cyberzombie Conversion customdata not applying correctly.
 - The Cry Wolf Hacking Cyberprogram from Kill Code is now available for purchase for the standard price and availability of Hacking Cyberprograms.
+- Fixed incorrect bonusnode for First Impression quality.
 
 Changed/New Strings:
 - LimitCondition_SoldierParagon

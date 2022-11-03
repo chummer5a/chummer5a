@@ -201,13 +201,11 @@
       <category>Positive</category>
       <bonus>
         <notoriety>-1</notoriety>
-        <bonus>
-          <skillcategory>
-            <name>Social Active</name>
-            <bonus>2</bonus>
-            <condition>Meeting people the first time</condition>
-          </skillcategory>
-        </bonus>
+        <skillcategory>
+          <name>Social Active</name>
+          <bonus>2</bonus>
+          <condition>Meeting people the first time</condition>
+        </skillcategory>
       </bonus>
       <source>SR5</source>
       <page>74</page>
